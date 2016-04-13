@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="true"
+         backupStaticAttributes="false"
+         bootstrap="./unit-tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="true"
+         debug="true">
+    <testsuites>
+        <testsuite name="all">
+            <directory suffix="Test.php">./unit-tests</directory>
+        </testsuite>
+        <testsuite name="cache">
+            <file>./unit-tests/CacheTest.php</file>
+            <file>./unit-tests/CacheAdapterMemoryTest.php</file>
+            <file>./unit-tests/CacheAdapterFileTest.php</file>
+            <file>./unit-tests/CacheAdapterRedisTest.php</file>
+        </testsuite>
+        <testsuite name="store">
+            <file>./unit-tests/StoreTest.php</file>
+            <file>./unit-tests/StoreAdapterMemoryTest.php</file>
+            <file>./unit-tests/StoreAdapterFileTest.php</file>
+            <file>./unit-tests/StoreAdapterRedisTest.php</file>
+        </testsuite>
+        <testsuite name="serializer">
+            <file>./unit-tests/SerializerAdapterJsonPhpTest.php</file>
+            <file>./unit-tests/SerializerAdapterJsonTest.php</file>
+            <file>./unit-tests/SerializerAdapterPhpTest.php</file>
+        </testsuite>
+        <testsuite name="di">
+            <file>./unit-tests/DiTest.php</file>
+        </testsuite>
+        <testsuite name="router">
+            <file>./unit-tests/MvcRouterRouteTest.php</file>
+            <file>./unit-tests/MvcRouterTest.php</file>
+        </testsuite>
+        <testsuite name="mvc">
+            <file>./unit-tests/MvcApplicationTest.php</file>
+            <file>./unit-tests/MvcDispatcherTest.php</file>
+            <file>./unit-tests/MvcModelQueryBuilderTest.php</file>
+            <file>./unit-tests/MvcModelTest.php</file>
+            <file>./unit-tests/MvcRouterRouteTest.php</file>
+            <file>./unit-tests/MvcRouterTest.php</file>
+        </testsuite>
+        <testsuite name="image">
+            <file>./unit-tests/ImageTest.php</file>
+            <file>./unit-tests/ImageAdapterGdTest.php</file>
+            <file>./unit-tests/ImageAdapterImagickTest.php</file>
+        </testsuite>
+
+    </testsuites>
+</phpunit>

@@ -1,0 +1,35 @@
+<style>
+    h1 {
+        font-size: 50px;
+        font-weight: normal;
+        text-align: center;
+    }
+
+    h1 sub {
+        font-size: 40%;
+    }
+
+    h2 {
+        font-size: 36px;
+    }
+
+    .mana_container {
+        width: 70%;
+        margin: 10px auto;
+    }
+</style>
+<div class="copyright"><?php $view->widget('Copyright'); ?></div>
+
+<div class="mana_container">
+    <h1>ManaPHP <sub>v<?= $version ?></sub></h1>
+    <?= $current_time ?>
+
+    <p>
+        <?= round(memory_get_usage() / 1024) . ' k/' . round(memory_get_peak_usage() / 1024) . ' k' ?>
+        <?= round(memory_get_usage(true) / 1024) . ' k/' . round(memory_get_peak_usage(true) / 1024) . ' k' ?>
+    </p>
+</div>
+
+
+
+

@@ -1,0 +1,6 @@
+/.idea
+*.bak
+*.log
+/*.phar
+/unit-tests/Image/Result
+/unit-tests/Image/Adapter

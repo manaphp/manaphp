@@ -1,0 +1,26 @@
+<style>
+    .manaphp_copyright {
+        position: fixed;
+        bottom: 200px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .manaphp_copyright a {
+        color: blue;
+    }
+
+    .manaphp_included_files {
+        display: none;
+    }
+</style>
+
+<div class="manaphp_copyright">
+    &copy; <?= $year ?> <a href="https://github.com/manaphp">ManaPHP</a>
+</div>
+
+<?php if ($view->configure->debug) { ?>
+    <div class="manaphp_included_files">
+        <?php print_r(get_included_files()); ?>
+    </div>
+<?php } ?>
