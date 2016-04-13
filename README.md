@@ -15,7 +15,7 @@ ManaPHP inherits the main spirit behind [Phalcon](https://phalconphp.com/), [Zen
 Requirements
 ------------
 
-ManaPHP is only supported on PHP 5.4 and up. ManaPHP has been tested with Apache HTTP server on Windows and Linux operating systems.
+ManaPHP is only supported on PHP 5.4+. ManaPHP has been tested with Apache HTTP server on Windows and Linux operating systems.
 
 Installation
 ------------

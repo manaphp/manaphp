@@ -42,8 +42,6 @@ $classes = array_reverse($classes);
 require $rootPath . '/Autoloader.php';
 \ManaPHP\Autoloader::register();
 
-$template_rootPath = 'D:\\wamp\\www\\manaphp\\ManaPHP';
-
 $loadedClasses = [];
 
 $class_parents = [];

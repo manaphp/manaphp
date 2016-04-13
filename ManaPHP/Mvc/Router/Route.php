@@ -75,7 +75,7 @@ namespace ManaPHP\Mvc\Router {
             }
 
             if (strpos($pattern, '(') !== false || strpos($pattern, '[') !== false) {
-                return '#^' . $pattern . '$#';
+                return '#^' . $pattern . '$#i';
             } else {
                 return $pattern;
             }

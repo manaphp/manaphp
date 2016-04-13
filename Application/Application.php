@@ -17,7 +17,13 @@ namespace Application {
             $this->_dependencyInjector->setShared('configure', new Configure());
 
             $this->_dependencyInjector->setShared('router', function () {
-                return (new Router())->mount(new Group(), 'Home', '/');
+                if (isset($_SERVER['SCRIPT_NAME'])) {
+                    $prefix = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+                } else {
+                    $prefix = '/';
+                }
+
+                return (new Router())->mount(new Group(), 'Home', $prefix);
             });
 
             $this->_dependencyInjector->setShared('logger', function () use ($self) {

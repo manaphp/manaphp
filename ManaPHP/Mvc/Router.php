@@ -182,53 +182,45 @@ namespace ManaPHP\Mvc {
             if ($this->_removeExtraSlashes) {
                 $uri = rtrim($uri, '/');
             }
-            $refined_uri = $uri === '' ? '/' : $uri;
+            $refinedUri = $uri === '' ? '/' : $uri;
 
             $this->fireEvent('router:beforeCheckRoutes');
 
             $module = null;
-            $route_found = false;
+            $routeFound = false;
             for ($i = count($this->_groups) - 1; $i >= 0; $i--) {
                 /**
                  * @var \ManaPHP\Mvc\Router\Group $group
                  */
                 list($path, $module, $group) = $this->_groups[$i];
 
-                $pos = strpos($path, '/');
-                if ($pos === 0) {
-                    if (stripos($refined_uri, $path) !== 0) {
-                        continue;
-                    }
-                    $handle_uri = substr($refined_uri, strlen($path) - 1);
+                if ($path === '' || $path[0] === '/') {
+                    $checkedUri = $refinedUri;
                 } else {
-                    if (!isset($refined_host)) {
-                        if ($host === null) {
-                            if (isset($_SERVER['HTTP_HOST'])) {
-                                $refined_host = $_SERVER['HTTP_HOST'];
-                            } else {
-                                throw new Exception('router handle need host, but can not fetch.');
-                            }
-                        } else {
-                            $refined_host = $host;
-                        }
-                    }
-
-                    if (stripos($refined_host . $refined_uri, $path) !== 0) {
-                        continue;
-                    }
-
-                    $handle_uri = substr($refined_uri, strlen($path) - $pos - 1);
+                    $checkedUri = $_SERVER['HTTP_HOST'] . $refinedUri;
                 }
 
-                $route_found = $this->_findMatchedRoute($handle_uri, $group->getRoutes(), $parts);
-                if ($route_found) {
+                /**
+                 * strpos('/','')===false NOT true
+                 */
+                if ($path !== '' && stripos($checkedUri, $path) !== 0) {
+                    continue;
+                }
+
+                /**
+                 * substr('a',1)===false NOT ''
+                 */
+                $handledUri = strlen($checkedUri) === strlen($path) ? '/' : substr($checkedUri, strlen($path));
+
+                $routeFound = $this->_findMatchedRoute($handledUri, $group->getRoutes(), $parts);
+                if ($routeFound) {
                     break;
                 }
             }
 
-            $this->_wasMatched = $route_found;
+            $this->_wasMatched = $routeFound;
 
-            if ($route_found) {
+            if ($routeFound) {
 
                 $this->_module = $module;
                 $this->_controller = $this->_defaultController;
@@ -267,11 +259,11 @@ namespace ManaPHP\Mvc {
 
             $this->fireEvent('router:afterCheckRoutes');
 
-            if (!$route_found && !$silent) {
+            if (!$routeFound && !$silent) {
                 throw new NotFoundRouteException('not found matched route: ' . $uri);
             }
 
-            return $route_found;
+            return $routeFound;
         }
 
         /**
@@ -289,7 +281,7 @@ namespace ManaPHP\Mvc {
                 $path = '/' . $module;
             }
 
-            $path = rtrim($path, '/') . '/';
+            $path = rtrim($path, '/');
 
             $this->_groups[] = [$path, $module, $group];
 
