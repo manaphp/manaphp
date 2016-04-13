@@ -469,7 +469,7 @@ class MvcRouterTest extends TestCase
         $this->assertEquals('detail', $router->getActionName());
 
         //multiple module usage with binding to domain
-        $_SERVER['HTTP_HOST']='blog.manaphp.com';
+        $_SERVER['HTTP_HOST'] = 'blog.manaphp.com';
         $router = (new \ManaPHP\Mvc\Router())->mount($group, 'blog', 'blog.manaphp.com');
         $router->handle('/article/1', 'blog.manaphp.com');
         $this->assertTrue($router->wasMatched());
@@ -495,19 +495,19 @@ class MvcRouterTest extends TestCase
         $router->mount($groupPath, 'path', '/');
         $router->mount($groupDomain, 'domain', 'blog.manaphp.com');
         $router->mount($groupDomainPath, 'domain_path', 'www.manaphp.com/blog');
-        $_SERVER['HTTP_HOST']='blog.manaphp.com';
+        $_SERVER['HTTP_HOST'] = 'blog.manaphp.com';
         $this->assertTrue($router->handle('/article', 'blog.manaphp.com'));
         $this->assertEquals('domain', $router->getModuleName());
         $this->assertEquals('article', $router->getControllerName());
         $this->assertEquals('index', $router->getActionName());
 
-        $_SERVER['HTTP_HOST']='manaphp.com';
+        $_SERVER['HTTP_HOST'] = 'manaphp.com';
         $this->assertTrue($router->handle('/blog/add', 'manaphp.com'));
         $this->assertEquals('path', $router->getModuleName());
         $this->assertEquals('blog', $router->getControllerName());
         $this->assertEquals('add', $router->getActionName());
 
-        $_SERVER['HTTP_HOST']='www.manaphp.com';
+        $_SERVER['HTTP_HOST'] = 'www.manaphp.com';
         $this->assertTrue($router->handle('/blog/comments/list', 'www.manaphp.com'));
         $this->assertEquals('domain_path', $router->getModuleName());
         $this->assertEquals('comments', $router->getControllerName());

@@ -266,21 +266,21 @@ namespace ManaPHP\Mvc {
                     throw new Exception('Invalid handler type returned from the services container: ' . gettype($controllerInstance));
                 }
 
-                $hasAction=false;
+                $hasAction = false;
                 $actionMethod = strtolower($this->_actionName . $this->_actionSuffix);
-                foreach(get_class_methods($controllerInstance) as $method){
-                    if($actionMethod===strtolower($method)){
-                        if(substr($method,-strlen($this->_actionSuffix)) !==$this->_actionSuffix){
+                foreach (get_class_methods($controllerInstance) as $method) {
+                    if ($actionMethod === strtolower($method)) {
+                        if (substr($method, -strlen($this->_actionSuffix)) !== $this->_actionSuffix) {
                             throw new Exception("The action '$method' of {$this->_controllerName}{$this->_controllerSuffix}  does not suffix with '{$this->_actionSuffix}' case sensitively, please amend it first.");
                         }
 
-                        if(strtolower($method['0']) !==$method['0']){
+                        if (strtolower($method['0']) !== $method['0']) {
                             throw new Exception("The action '$method' of {$this->_controllerName}{$this->_controllerSuffix}  does not prefix with lowercase character, please amend it first.");
                         }
 
-                        $hasAction=true;
-                        $this->_actionName=substr($method,0, -strlen($this->_actionSuffix));
-                        $actionMethod=$method;
+                        $hasAction = true;
+                        $this->_actionName = substr($method, 0, -strlen($this->_actionSuffix));
+                        $actionMethod = $method;
                         break;
                     }
                 }

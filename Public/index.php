@@ -7,7 +7,7 @@
  */
 
 error_reporting(E_ALL);
-ini_set('html_errors','on');
+ini_set('html_errors', 'on');
 
 require dirname(__DIR__) . '/ManaPHP/Autoloader.php';
 \ManaPHP\Autoloader::register(false);
