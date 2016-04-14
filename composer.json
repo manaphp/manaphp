@@ -1,0 +1,14 @@
+{
+    "name": "manaphp/manaphp",
+    "description": "a component-based PHP MVC framework",
+    "require": {
+        "smarty/smarty": "^3.1"
+    },
+    "authors": [
+        {
+            "name": "ManaPHP Mark",
+            "email": "manaphp@qq.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}

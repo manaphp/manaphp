@@ -13,6 +13,8 @@ require dirname(__DIR__) . '/ManaPHP/Autoloader.php';
 \ManaPHP\Autoloader::register(false);
 new \ManaPHP\Mvc\Router\RewriteChecker();
 
+include dirname(__DIR__).'/vendor/autoload.php';
+
 require dirname(__DIR__) . '/Application/Application.php';
 $application = new \Application\Application();
 

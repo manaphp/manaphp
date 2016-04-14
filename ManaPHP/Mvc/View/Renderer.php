@@ -20,7 +20,8 @@ namespace ManaPHP\Mvc\View {
         public function __construct()
         {
             $this->_registeredEngines['.phtml'] = 'ManaPHP\Mvc\View\Renderer\Engine\Php';
-            $this->_registeredEngines['.html'] = 'ManPHP\Mvc\View\Renderer\Engine\Html';
+            $this->_registeredEngines['.tpl'] = 'ManaPHP\Mvc\View\Renderer\Engine\Smarty';
+            $this->_registeredEngines['.html'] = 'ManaPHP\Mvc\View\Renderer\Engine\Html';
         }
 
         /**
@@ -83,12 +84,21 @@ namespace ManaPHP\Mvc\View {
                     $eventArguments = ['file' => $file, 'vars' => $vars];
                     $this->fireEvent('renderer:beforeRenderView', $eventArguments);
 
+                    if (isset($vars['view'])) {
+                        throw new Exception('variable \'view\' is reserved for PHP renderer engine.');
+                    }
+                    $vars['view'] = $this->_dependencyInjector->has('view') ? $this->_dependencyInjector->getShared('view') : null;
+
+                    if (isset($vars['renderer'])) {
+                        throw new Exception('variable \'render\' is reserved for PHP renderer engine.');
+                    }
+                    $vars['renderer'] = $this;
+
                     if ($directOutput) {
                         $engine->render($file, $vars);
                         $content = null;
                     } else {
                         ob_start();
-
                         try {
                             $engine->render($file, $vars);
                         } catch (\Exception $e) {

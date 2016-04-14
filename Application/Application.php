@@ -17,13 +17,11 @@ namespace Application {
             $this->_dependencyInjector->setShared('configure', new Configure());
 
             $this->_dependencyInjector->setShared('router', function () {
-                if (isset($_SERVER['SCRIPT_NAME'])) {
-                    $prefix = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-                } else {
-                    $prefix = '/';
+                if ($_SERVER['SCRIPT_NAME'] !== '/index.php') {
+                    throw new Exception("Current DocumentRoot is $_SERVER[SCRIPT_NAME], please change the DocumentRoot to /index.php or change the path parameter of Route Group mount.");
                 }
 
-                return (new Router())->mount(new Group(), 'Home', $prefix);
+                return (new Router())->mount(new Group(), 'Home', '/');
             });
 
             $this->_dependencyInjector->setShared('logger', function () use ($self) {

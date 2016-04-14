@@ -72,7 +72,7 @@ namespace ManaPHP\Caching\Cache\Adapter {
             $cacheFile = $this->_getFileName($key);
 
             $cacheDir = dirname($cacheFile);
-            if (@mkdir($cacheDir, 0755, true) && !is_dir($cacheDir)) {
+            if (!@mkdir($cacheDir, 0755, true) && !is_dir($cacheDir)) {
                 throw new Exception('Create cache directory "' . $cacheDir . '" failed: ' . error_get_last()['message']);
             }
 

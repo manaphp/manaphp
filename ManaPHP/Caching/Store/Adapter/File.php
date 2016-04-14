@@ -80,7 +80,7 @@ namespace ManaPHP\Caching\Store\Adapter {
             $storeFile = $this->_getFileName($id);
 
             $storeDir = dirname($storeFile);
-            if (@mkdir($storeDir, 0755, true) && !is_dir($storeDir)) {
+            if (!@mkdir($storeDir, 0755, true) && !is_dir($storeDir)) {
                 throw new Exception('Create store directory "' . $storeDir . '" failed: ' . error_get_last()['message']);
             }
 
