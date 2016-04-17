@@ -27,21 +27,14 @@ namespace ManaPHP {
          *
          * @var string
          */
-        protected $_sqlStatement;
+        protected $_sql;
 
         /**
          * Active SQL bound parameter variables
          *
          * @var array
          */
-        protected $_sqlBindParams;
-
-        /**
-         * Active SQL Bind Types
-         *
-         * @var array
-         */
-        protected $_sqlBindTypes;
+        protected $_bind;
 
         /**
          * Current transaction level
@@ -130,91 +123,41 @@ namespace ManaPHP {
          * $result = $connection->executePrepared($statement, array('name' => 'mana'));
          *</code>
          *
-         * @param \PDOStatement statement
-         * @param array         $bindParams
-         * @param array         $bindTypes
+         * @param \PDOStatement $statement
+         * @param array         $bind
          *
          * @return \PDOStatement
          * @throws \ManaPHP\Db\Exception
          */
-        protected function _executePrepared($statement, $bindParams, $bindTypes)
+        protected function _executePrepared($statement, $bind)
         {
-            foreach ($bindParams as $parameter => $value) {
-                if (is_int($parameter)) {
-                    $statement->bindValue($parameter + 1, $value, $bindTypes[$parameter]);
+            foreach ($bind as $parameter => $value) {
+                if (is_string($value)) {
+                    $type = \PDO::PARAM_STR;
+                } elseif (is_int($value)) {
+                    $type = \PDO::PARAM_INT;
+                } elseif (is_bool($value)) {
+                    $type = \PDO::PARAM_BOOL;
+                } elseif ($value === null) {
+                    $type = \PDO::PARAM_NULL;
                 } else {
-                    $statement->bindValue($parameter, $value, $bindTypes[$parameter]);
+                    throw new Exception("The type of parameter of '$parameter' is not support: " . gettype($value));
+                }
+
+                if (is_int($parameter)) {
+                    $statement->bindValue($parameter + 1, $value, $type);
+                } else {
+                    if ($parameter[0] === ':') {
+                        throw new Exception("Bind does not require started with ':' for parameter: " . $parameter);
+                    }
+
+                    $statement->bindValue(':' . $parameter, $value, $type);
                 }
             }
 
             $statement->execute();
 
             return $statement;
-        }
-
-        /**
-         * @param $binds
-         * @param $bindParams
-         * @param $bindTypes
-         *
-         * @throws \ManaPHP\Db\Exception
-         */
-        protected function _parseBinds($binds, &$bindParams, &$bindTypes)
-        {
-            $bindParams = null;
-            $bindTypes = null;
-
-            if ($binds === null || count($binds) === 0) {
-                return;
-            }
-
-            $bindParams = [];
-            $bindTypes = [];
-
-            foreach ($binds as $k => $v) {
-                if (is_int($k)) {
-                    $column = $k;
-                } else {
-                    $column = ($k[0] === ':') ? $k : (':' . $k);
-                }
-
-                if (is_scalar($v) || $v === null) {
-                    $data = $v;
-                    $type = null;
-                } elseif (is_array($v)) {
-                    if (count($v) === 1) {
-                        $data = $v[0];
-                        $type = null;
-                    } elseif (count($v) === 2) {
-                        list($data, $type) = $v;
-                    } else {
-                        throw new Exception('one of binds has invalid values: ' . $column);
-                    }
-                } else {
-                    throw new Exception('one of binds has invalid values: ' . $column);
-                }
-
-                if (!is_scalar($data) && $data !== null) {
-                    throw new Exception('one of binds has invalid values: ' . $column);
-                }
-
-                if ($type === null) {
-                    if (is_string($data)) {
-                        $type = \PDO::PARAM_STR;
-                    } elseif (is_int($data)) {
-                        $type = \PDO::PARAM_INT;
-                    } elseif (is_bool($data)) {
-                        $type = \PDO::PARAM_BOOL;
-                    } elseif ($data === null) {
-                        $type = \PDO::PARAM_NULL;
-                    } else {
-                        $type = \PDO::PARAM_STR;
-                    }
-                }
-
-                $bindParams[$column] = $data;
-                $bindTypes[$column] = $type;
-            }
         }
 
         /**
@@ -228,28 +171,25 @@ namespace ManaPHP {
          *</code>
          *
          * @param string $sql
-         * @param array  $binds
+         * @param array  $bind
          * @param int    $fetchMode
          *
          * @return \PdoStatement
          * @throws \ManaPHP\Db\Exception
          */
-        public function query($sql, $binds = null, $fetchMode = \PDO::FETCH_ASSOC)
+        public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
         {
-            $this->_parseBinds($binds, $bindParams, $bindTypes);
-
-            $this->_sqlStatement = $sql;
-            $this->_sqlBindParams = $bindParams;
-            $this->_sqlBindTypes = $bindTypes;
+            $this->_sql = $sql;
+            $this->_bind = $bind;
 
             if ($this->fireEvent('db:beforeQuery') === false) {
                 return false;
             }
 
             try {
-                if ($bindParams !== null) {
+                if (count($bind) !== 0) {
                     $statement = $this->_pdo->prepare($sql);
-                    $statement = $this->_executePrepared($statement, $bindParams, $bindTypes);
+                    $statement = $this->_executePrepared($statement, $bind);
                 } else {
                     $statement = $this->_pdo->query($sql);
                 }
@@ -275,27 +215,24 @@ namespace ManaPHP {
          *</code>
          *
          * @param string $sql
-         * @param array  $binds
+         * @param array  $bind
          *
          * @return int
          * @throws \ManaPHP\Db\Exception
          */
-        public function execute($sql, $binds = null)
+        public function execute($sql, $bind = [])
         {
-            $this->_parseBinds($binds, $bindParams, $bindTypes);
-
-            $this->_sqlStatement = $sql;
-            $this->_sqlBindParams = $bindParams;
-            $this->_sqlBindTypes = $bindTypes;
+            $this->_sql = $sql;
+            $this->_bind = $bind;
 
             $this->_affectedRows = 0;
 
             $this->fireEvent('db:beforeQuery');
 
             try {
-                if ($bindParams !== null) {
+                if (count($bind) !== 0) {
                     $statement = $this->_pdo->prepare($sql);
-                    $newStatement = $this->_executePrepared($statement, $bindParams, $bindTypes);
+                    $newStatement = $this->_executePrepared($statement, $bind);
                     $this->_affectedRows = $newStatement->rowCount();
                 } else {
                     $this->_affectedRows = $this->_pdo->exec($sql);
@@ -316,42 +253,27 @@ namespace ManaPHP {
          *
          * <code>
          * echo $connection->escapeIdentifier('my_table'); // `my_table`
-         * echo $connection->escapeIdentifier(['companies', 'name']); // `companies`.`name`
+         * echo $connection->escapeIdentifier('companies.name']); // `companies`.`name`
          * <code>
          *
-         * @param string|array identifier
+         * @param string|array $identifier
          *
          * @return string
          */
         public function escapeIdentifier($identifier)
         {
-            if (is_array($identifier)) {
-                return '`' . $identifier[0] . '`.`' . $identifier[1] . '`';
-            } else {
-                return '`' . $identifier . '`';
-            }
-        }
+            $identifiers = explode('.', $identifier);
 
-        /**
-         * Escapes a column/table/schema name
-         *
-         * <code>
-         * echo $connection->escapeIdentifier('my_table'); // `my_table`
-         * echo $connection->escapeIdentifier(['companies', 'name']); // `companies`.`name`
-         * <code>
-         *
-         * @param array $identifiers
-         *
-         * @return string
-         */
-        public function _escapeIdentifiers($identifiers)
-        {
-            $escaped_identifiers = [];
+            $list = [];
             foreach ($identifiers as $identifier) {
-                $escaped_identifiers[] = '`' . $identifier . '`';
+                if ($identifier[0] === '`') {
+                    $list[] = $identifier;
+                } else {
+                    $list[] = "`$identifier`";
+                }
             }
 
-            return $escaped_identifiers;
+            return implode('.', $list);
         }
 
         /**
@@ -378,15 +300,15 @@ namespace ManaPHP {
          *</code>
          *
          * @param string $sql
-         * @param array  $binds
+         * @param array  $bind
          * @param int    $fetchMode
          *
          * @throws \ManaPHP\Db\Exception
          * @return array|false
          */
-        public function fetchOne($sql, $binds = null, $fetchMode = \PDO::FETCH_ASSOC)
+        public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
         {
-            $result = $this->query($sql, $binds, $fetchMode);
+            $result = $this->query($sql, $bind, $fetchMode);
 
             return $result->fetch();
         }
@@ -412,15 +334,15 @@ namespace ManaPHP {
          *</code>
          *
          * @param string $sql
-         * @param array  $binds
+         * @param array  $bind
          * @param int    $fetchMode
          *
          * @throws \ManaPHP\Db\Exception
          * @return array
          */
-        public function fetchAll($sql, $binds = null, $fetchMode = \PDO::FETCH_ASSOC)
+        public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
         {
-            $result = $this->query($sql, $binds, $fetchMode);
+            $result = $this->query($sql, $bind, $fetchMode);
 
             return $result->fetchAll();
         }
@@ -489,12 +411,12 @@ namespace ManaPHP {
          * @param    string       $table
          * @param    array        $columnValues
          * @param    string|array $conditions
-         * @param    array        $binds
+         * @param    array        $bind
          *
          * @return    int|false
          * @throws \ManaPHP\Db\Exception
          */
-        public function update($table, $columnValues, $conditions, $binds = null)
+        public function update($table, $columnValues, $conditions, $bind = [])
         {
             $escapedTable = "`$table`";
 
@@ -502,20 +424,20 @@ namespace ManaPHP {
                 throw new Exception('Unable to update ' . $table . ' without data');
             }
 
-            $where = (new ConditionParser())->parse($conditions, $conditionBinds);
-            $binds = $binds ? array_merge($conditionBinds, $binds) : $conditionBinds;
+            $where = (new ConditionParser())->parse($conditions, $conditionBind);
+            $bind = $bind ? array_merge($conditionBind, $bind) : $conditionBind;
 
             $setColumns = [];
             foreach ($columnValues as $k => $v) {
                 $setColumns[] = "`$k`=:$k";
-                $binds[$k] = $v;
+                $bind[$k] = $v;
             }
 
             $updateColumns = implode(',', $setColumns);
             $updateSql = /** @lang Text */
                 "UPDATE $escapedTable SET $updateColumns WHERE  $where";
 
-            return $this->execute($updateSql, $binds);
+            return $this->execute($updateSql, $bind);
         }
 
         /**
@@ -534,25 +456,25 @@ namespace ManaPHP {
          *
          * @param  string       $table
          * @param  string|array $conditions
-         * @param  array        $binds
+         * @param  array        $bind
          *
          * @return boolean
          * @throws \ManaPHP\Db\Exception
          */
-        public function delete($table, $conditions, $binds = null)
+        public function delete($table, $conditions, $bind = [])
         {
-            $where = (new ConditionParser())->parse($conditions, $conditionBinds);
+            $where = (new ConditionParser())->parse($conditions, $conditionBind);
 
             $sql = /**@lang Text */
                 "DELETE FROM `$table` WHERE " . $where;
 
-            if ($binds === null) {
-                $binds = $conditionBinds;
+            if ($bind === null) {
+                $bind = $conditionBind;
             } else {
-                $binds = array_merge($conditionBinds, $binds);
+                $bind = array_merge($conditionBind, $bind);
             }
 
-            return $this->execute($sql, $binds);
+            return $this->execute($sql, $bind);
         }
 
         /**
@@ -578,9 +500,34 @@ namespace ManaPHP {
          *
          * @return string
          */
-        public function getSQLStatement()
+        public function getSQL()
         {
-            return $this->_sqlStatement;
+            return $this->_sql;
+        }
+
+        /**
+         * @param mixed $value
+         * @param int   $preservedStrLength
+         *
+         * @return int|string
+         */
+        protected function _parseBindValue($value, $preservedStrLength)
+        {
+            if (is_string($value)) {
+                if ($preservedStrLength > 0 && strlen($value) >= $preservedStrLength) {
+                    return $this->_pdo->quote(substr($value, 0, $preservedStrLength) . '...');
+                } else {
+                    return $this->_pdo->quote($value);
+                }
+            } elseif (is_int($value)) {
+                return $value;
+            } elseif ($value===null) {
+                return 'NULL';
+            } elseif (is_bool($value)) {
+                return (int)$value;
+            } else {
+                return $value;
+            }
         }
 
         /**
@@ -591,10 +538,28 @@ namespace ManaPHP {
          * @return string
          * @throws \ManaPHP\Db\Exception
          */
-        public function getEmulatePrepareSQLStatement($preservedStrLength = -1)
+        public function getEmulatedSQL($preservedStrLength = -1)
         {
-            return (new PrepareEmulation($this->_pdo))->emulate($this->_sqlStatement, $this->_sqlBindParams,
-                $this->_sqlBindTypes, $preservedStrLength);
+            if ($this->_bind === null || count($this->_bind) === 0) {
+                return $this->_sql;
+            }
+
+            $bind=$this->_bind;
+            if (isset($bind[0])) {
+                $pos = 0;
+
+                return preg_replace_callback('/(\?)/',
+                    function () use ($bind, &$pos, $preservedStrLength) {
+                        return $this->_parseBindValue($bind[$pos++], $preservedStrLength);
+                    }, $this->_sql);
+            } else {
+                $replaces = [];
+                foreach ($bind as $key => $value) {
+                    $replaces[':'.$key] = $this->_parseBindValue($value,  $preservedStrLength);
+                }
+
+                return strtr($this->_sql, $replaces);
+            }
         }
 
         /**
@@ -602,19 +567,9 @@ namespace ManaPHP {
          *
          * @return array
          */
-        public function getSQLBindParams()
+        public function getBind()
         {
-            return $this->_sqlBindParams;
-        }
-
-        /**
-         * Active SQL statement in the object
-         *
-         * @return array
-         */
-        public function getSQLBindTypes()
-        {
-            return $this->_sqlBindTypes;
+            return $this->_bind;
         }
 
         /**

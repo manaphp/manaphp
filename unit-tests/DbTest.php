@@ -16,11 +16,11 @@ class DbTest extends TestCase
 
     public function setUp()
     {
-        $config = require 'config.database.php';
+        $config = require __DIR__.'/config.database.php';
         $this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
         $this->db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
-            //var_dump(['sql'=>$source->getSQLStatement(),'bind'=>$source->getSQLBindParams(),'bindTypes'=>$source->getSQLBindTypes()]);
-            //      var_dump($source->getSQLStatement(), $source->getEmulatePrepareSQLStatement(2));
+          //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
+                  var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
         });
         $this->db->query('SET GLOBAL innodb_flush_log_at_trx_commit=2');
@@ -74,21 +74,9 @@ class DbTest extends TestCase
 
         //query with bind and has related records
         $statement = $this->db->query('SELECT city_id, city, country_id, last_update FROM city WHERE city_id=:city_id',
-            [':city_id' => 1]);
+            ['city_id' => 1]);
         $row = $statement->fetch();
         $this->assertCount(4, $row);
-
-        //query with bind and has related records
-        $statement = $this->db->query('SELECT city_id, city, country_id, last_update FROM city WHERE city_id=:city_id',
-            [':city_id' => [1, PDO::PARAM_INT]]);
-        $row = $statement->fetch();
-        $this->assertCount(4, $row);
-
-        //query with bind and has not related records
-        $statement = $this->db->query('SELECT city_id, city, country_id, last_update FROM city WHERE city_id=:city_id',
-            [':city_id' => -1]);
-        $row = $statement->fetch();
-        $this->assertFalse($row);
 
         //query with bind and has not related records
         $statement = $this->db->query('SELECT city_id, city, country_id, last_update FROM city WHERE city_id=:city_id',
@@ -137,18 +125,6 @@ class DbTest extends TestCase
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
-        //recommended method with bind value type completely
-        $this->db->execute('TRUNCATE TABLE _student');
-        $affectedRows = $this->db->insert('_student',
-            ['id' => [1, \PDO::PARAM_INT], 'age' => [21, \PDO::PARAM_INT], 'name' => ['mana1', \PDO::PARAM_STR]]);
-        $this->assertEquals(1, $affectedRows);
-        $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
-        $this->assertEquals([1, 21, 'mana1'], array_values($row));
-
-        //recommended method with bind value type partly
-        $this->db->execute('TRUNCATE TABLE _student');
-        $affectedRows = $this->db->insert('_student',
-            ['id' => 1, 'age' => [21], 'name' => ['mana1', \PDO::PARAM_STR]]);
         $this->assertEquals(1, $affectedRows);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
@@ -185,18 +161,6 @@ class DbTest extends TestCase
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 22, 'mana2'], array_values($row));
 
-        //recommended method with bind value type completely
-        $affectedRows = $this->db->update('_student', ['age' => [23, \PDO::PARAM_INT], 'name' => ['mana3', \PDO::PARAM_STR]], 'id=1');
-        $this->assertEquals(1, $affectedRows);
-        $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
-        $this->assertEquals([1, 23, 'mana3'], array_values($row));
-
-        //recommended method with bind value type partly
-        $affectedRows = $this->db->update('_student', ['age' => [24], 'name' => ['mana4', \PDO::PARAM_STR]], 'id=1');
-        $this->assertEquals(1, $affectedRows);
-        $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
-        $this->assertEquals([1, 24, 'mana4'], array_values($row));
-
         //compatible method
         $affectedRows = $this->db->update('_student', ['age' => 25, 'name' => 'mana5'], 'id=1');
         $this->assertEquals(1, $affectedRows);
@@ -216,5 +180,10 @@ class DbTest extends TestCase
         $this->assertEquals(1, $affectedRows);
         $this->db->delete('_student', 'id=1');
         $this->assertFalse($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
+    }
+
+    public function test_escapeIdentifier(){
+        $this->assertEquals('`city`',$this->db->escapeIdentifier('city'));
+        $this->assertEquals('`app`.`city`',$this->db->escapeIdentifier('app.city'));
     }
 }

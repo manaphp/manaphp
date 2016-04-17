@@ -24,28 +24,28 @@ class DbConditionParserTest extends TestCase
     {
         $conditionParser = new \ManaPHP\Db\ConditionParser();
 
-        $conditions = $conditionParser->parse('id=1', $binds);
+        $conditions = $conditionParser->parse('id=1', $bind);
         $this->assertEquals('id=1', $conditions);
-        $this->assertEquals([], $binds);
+        $this->assertEquals([], $bind);
 
-        $conditions = $conditionParser->parse(['id=1', 'city_id' => 2], $binds);
+        $conditions = $conditionParser->parse(['id=1', 'city_id' => 2], $bind);
         $this->assertEquals('id=1 AND `city_id`=:city_id', $conditions);
-        $this->assertEquals(['city_id' => 2], $binds);
+        $this->assertEquals(['city_id' => 2], $bind);
 
-        $conditions = $conditionParser->parse(['id' => 2], $binds);
+        $conditions = $conditionParser->parse(['id' => 2], $bind);
         $this->assertEquals('`id`=:id', $conditions);
-        $this->assertEquals(['id' => 2], $binds);
+        $this->assertEquals(['id' => 2], $bind);
 
-        $conditions = $conditionParser->parse(['id' => [2]], $binds);
+        $conditions = $conditionParser->parse(['id' => [2]], $bind);
         $this->assertEquals('`id`=:id', $conditions);
-        $this->assertEquals(['id' => 2], $binds);
+        $this->assertEquals(['id' => 2], $bind);
 
-        $conditions = $conditionParser->parse(['id' => [2, 'city_id']], $binds);
+        $conditions = $conditionParser->parse(['id' => [2, 'city_id']], $bind);
         $this->assertEquals('`id`=:city_id', $conditions);
-        $this->assertEquals(['city_id' => 2], $binds);
+        $this->assertEquals(['city_id' => 2], $bind);
 
-        $conditions = $conditionParser->parse(['age' => 21, 'name' => 'mana'], $binds);
+        $conditions = $conditionParser->parse(['age' => 21, 'name' => 'mana'], $bind);
         $this->assertEquals('`age`=:age AND `name`=:name', $conditions);
-        $this->assertEquals(['age' => 21, 'name' => 'mana'], $binds);
+        $this->assertEquals(['age' => 21, 'name' => 'mana'], $bind);
     }
 }

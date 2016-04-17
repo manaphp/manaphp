@@ -6,15 +6,15 @@ namespace ManaPHP\Caching\Store\Adapter {
 
     class Redis implements AdapterInterface
     {
-
         /**
          * @var array
          */
         protected $_options;
+
         /**
          * @var \Redis
          */
-        protected $_redis = null;
+        protected $_redis;
 
         /**
          * @var string

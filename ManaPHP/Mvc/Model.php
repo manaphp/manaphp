@@ -36,6 +36,22 @@ namespace ManaPHP\Mvc {
      * </code>
      *
      * @method initialize()
+     * @method onConstruct()
+     *
+     * @method beforeCreate()
+     * @method afterCreate()
+     *
+     * @method beforeSave()
+     * @method afterSave()
+     *
+     * @method afterFetch()
+     *
+     * @method beforeUpdate()
+     * @method afterUpdate()
+     *
+     * @method beforeDelete()
+     * @method afterDelete()
+     *
      */
     class Model extends Component implements ModelInterface
     {
@@ -80,6 +96,10 @@ namespace ManaPHP\Mvc {
                 $this->_snapshot = $data;
                 foreach ($data as $attribute => $value) {
                     $this->{$attribute} = $value;
+                }
+
+                if (method_exists($this, 'afterFetch')) {
+                    $this->afterFetch();
                 }
             }
         }
@@ -282,7 +302,7 @@ namespace ManaPHP\Mvc {
             $query = $builder->getQuery();
 
             if (isset($params['bind'])) {
-                $query->setBinds($params['bind'], true);
+                $query->setBind($params['bind'], true);
             }
 
             $query->cache($cacheOptions);
@@ -351,7 +371,7 @@ namespace ManaPHP\Mvc {
             $query = $builder->getQuery();
 
             if (isset($parameters['bind'])) {
-                $query->setBinds($parameters['bind'], true);
+                $query->setBind($parameters['bind'], true);
             }
 
             $query->cache($cacheOptions);
@@ -396,17 +416,17 @@ namespace ManaPHP\Mvc {
             }
 
             $conditions = [];
-            $binds = [];
+            $bind = [];
 
             foreach ($primaryKeys as $attributeField) {
                 if (!isset($this->{$attributeField})) {
                     return false;
                 }
 
-                $bindKey = ':' . $attributeField;
+                $bindKey = $attributeField;
 
                 $conditions[] = $attributeField . ' =' . $bindKey;
-                $binds[$bindKey] = $this->{$attributeField};
+                $bind[$bindKey] = $this->{$attributeField};
             }
 
             if (is_array($this->_snapshot)) {
@@ -424,7 +444,7 @@ namespace ManaPHP\Mvc {
 
             $sql = 'SELECT COUNT(*) as row_count' . ' FROM `' . $this->getSource() . '` WHERE ' . implode(' AND ',
                     $conditions);
-            $num = $connection->fetchOne($sql, $binds, \PDO::FETCH_ASSOC);
+            $num = $connection->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
 
             return $num['row_count'] > 0;
         }
@@ -451,7 +471,11 @@ namespace ManaPHP\Mvc {
                 $parameters = [$parameters];
             }
 
-            $columns = $function . '(' . $column . ') AS ' . $alias;
+            if (isset($parameters['group'])) {
+                $columns = "$parameters[group], $function($column) AS $alias";
+            } else {
+                $columns = "$function($column) AS $alias";
+            }
 
             $builder = $modelsManager->createBuilder($parameters);
             $builder->columns($columns);
@@ -465,6 +489,10 @@ namespace ManaPHP\Mvc {
                 $resultset = $query->execute([$parameters['bind']]);
             } else {
                 $resultset = $query->execute();
+            }
+
+            if (isset($parameters['group'])) {
+                return $resultset;
             }
 
             return $resultset[0][$alias];
@@ -489,17 +517,17 @@ namespace ManaPHP\Mvc {
          * @param string $column
          * @param array  $cacheOptions
          *
-         * @return int
+         * @return int|array
          * @throws \ManaPHP\Di\Exception
          */
         public static function count($parameters = null, $column = '*', $cacheOptions = null)
         {
             $result = self::_groupResult('COUNT', 'row_count', $column, $parameters, $cacheOptions);
             if (is_string($result)) {
-                return (int)$result;
-            } else {
-                return $result;
+                $result = (int)$result;
             }
+
+            return $result;
         }
 
         /**
@@ -622,6 +650,8 @@ namespace ManaPHP\Mvc {
             if (method_exists($this, $eventName)) {
                 $this->{$eventName}();
             }
+
+            $this->fireEvent('model:' . $eventName);
         }
 
         /**
@@ -633,11 +663,15 @@ namespace ManaPHP\Mvc {
          */
         protected function _fireEventCancel($eventName)
         {
-            if (method_exists($this, $eventName)) {
-                return $this->{$eventName}();
-            } else {
-                return null;
+            if (method_exists($this, $eventName) && $this->{$eventName}() === false) {
+                return false;
             }
+
+            if ($this->fireEvent('model:' . $eventName) === false) {
+                return false;
+            }
+
+            return null;
         }
 
         /**
@@ -653,14 +687,8 @@ namespace ManaPHP\Mvc {
                 return false;
             }
 
-            if ($exists) {
-                if ($this->_fireEventCancel('beforeUpdate') === false) {
-                    return false;
-                }
-            } else {
-                if ($this->_fireEventCancel('beforeCreate') === false) {
-                    return false;
-                }
+            if ($this->_fireEventCancel($exists ? 'beforeUpdate' : 'beforeCreate') === false) {
+                return false;
             }
 
             return true;
@@ -673,12 +701,7 @@ namespace ManaPHP\Mvc {
          */
         protected function _postSave($exists)
         {
-            if ($exists) {
-                $this->_fireEvent('afterUpdate');
-            } else {
-                $this->_fireEvent('afterCreate');
-            }
-
+            $this->_fireEvent($exists ? 'afterUpdate' : 'afterCreate');
             $this->_fireEvent('afterSave');
         }
 
@@ -958,6 +981,70 @@ namespace ManaPHP\Mvc {
             }
 
             return $data;
+        }
+
+        /**
+         * Returns the internal snapshot data
+         *
+         * @return array
+         */
+        public function getSnapshotData()
+        {
+            return $this->_snapshot;
+        }
+
+        /**
+         * Returns a list of changed values
+         *
+         * @return array
+         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+         */
+        public function getChangedFields()
+        {
+            $changed = [];
+
+            if (!is_array($this->_snapshot)) {
+                throw new Exception("The record doesn't have a valid data snapshot");
+            }
+
+            foreach ($this->_getModelsMetaData()->getAttributes($this) as $field) {
+                if (!isset($this->_snapshot[$field])) {
+                    $changed[] = $field;
+                    continue;
+                }
+
+                if ($this->{$field} !== $this->_snapshot[$field]) {
+                    $changed[] = $field;
+                    continue;
+                }
+            }
+
+            return $changed;
+        }
+
+        /**
+         * Check if a specific attribute has changed
+         * This only works if the model is keeping data snapshots
+         *
+         * @param string|array $fields
+         *
+         * @return bool
+         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+         */
+        public function hasChanged($fields)
+        {
+            if (is_string($fields)) {
+                $fields = [$fields];
+            }
+
+            $changedFields = $this->getChangedFields();
+            foreach ($fields as $field) {
+                if (in_array($field, $changedFields, true)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

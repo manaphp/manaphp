@@ -31,7 +31,7 @@ namespace Application {
             $this->_dependencyInjector->set('db', function () use ($self) {
                 $mysql = new Mysql((array)$this->configure->database);
                 $mysql->attachEvent('db:beforeQuery', function ($event, DbInterface $source, $data) use ($self) {
-                    $self->logger->debug('SQL: ' . $source->getSQLStatement());
+                    $self->logger->debug('SQL: ' . $source->getSQL());
                 });
 
                 return $mysql;

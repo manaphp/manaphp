@@ -10,21 +10,21 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Executes the sql query statement
          *
-         * @param array $binds
+         * @param array $bind
          *
          * @return array
          */
-        public function execute($binds = null);
+        public function execute($bind = null);
 
         /**
          * Set default bind parameters
          *
-         * @param array   $binds
+         * @param array   $bind
          * @param boolean $merge
          *
          * @return static
          */
-        public function setBinds($binds, $merge = false);
+        public function setBind($bind, $merge = false);
 
         /**
          * Sets the cache parameters of the query

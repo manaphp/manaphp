@@ -30,7 +30,7 @@ namespace ManaPHP {
      * @property \ManaPHP\Mvc\Model\MetadataInterface    $modelsMetadata
     //     * @property \ManaPHP\Assets\Manager $assets
      * @property \ManaPHP\Di|\ManaPHP\DiInterface        $di
-    //     * @property \ManaPHP\Session\BagInterface $persistent
+     * @property \ManaPHP\Http\Session\BagInterface      $persistent
      * @property \ManaPHP\Mvc\ViewInterface              $view
      * @property \ManaPHP\Mvc\View\Tag                   $tag
      * @property \ManaPHP\Loader                         $loader
@@ -44,15 +44,17 @@ namespace ManaPHP {
         /**
          * @var \ManaPHP\Event\Manager
          */
-        protected $_eventsManager = null;
+        protected $_eventsManager;
+
+        /**
+         * @var array
+         */
         protected static $_eventPeeks;
 
         /**
-         * Dependency Injector
-         *
          * @var \ManaPHP\DiInterface
          */
-        protected $_dependencyInjector = null;
+        protected $_dependencyInjector;
 
         /**
          * Sets the dependency injector
@@ -101,6 +103,10 @@ namespace ManaPHP {
 
             if ($propertyName === 'di') {
                 return $this->{'di'} = $this->_dependencyInjector;
+            }
+
+            if ($propertyName === 'persistent') {
+                return $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', [get_class($this)]);
             }
 
             trigger_error('Access to undefined property ' . $propertyName);

@@ -31,7 +31,7 @@ namespace ManaPHP\Http {
         /**
          * @var array
          */
-        protected $_putCache = null;
+        protected $_putCache;
 
         /**
          * @var string

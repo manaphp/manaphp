@@ -14,16 +14,15 @@ namespace ManaPHP {
          * <code>
          *  $db->fetchOne('SELECT * FROM city');
          *  $db->fetchOne('SELECT * FROM city WHERE city_id =:city_id',['city_id'=>5]);
-         *  $db->fetchOne('SELECT * FROM city WHERE city_id =:city_id',['city_id'=>[5,\PDO::PARAM_INT]]);
          * </code>
          *
          * @param string $sql
-         * @param array  $binds
+         * @param array  $bind
          * @param int    $fetchMode
          *
          * @return array|false
          */
-        public function fetchOne($sql, $binds = null, $fetchMode = \PDO::FETCH_ASSOC);
+        public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
 
         /**
          * Dumps the complete result of a query into an array
@@ -31,16 +30,15 @@ namespace ManaPHP {
          *  <code>
          *  $db->fetchAll('SELECT * FROM city');
          *  $db->fetchAll('SELECT * FROM city WHERE city_id <:city_id',['city_id'=>5]);
-         *  $db->fetchAll('SELECT * FROM city WHERE city_id <:city_id',['city_id'=>[5,\PDO::PARAM_INT]]);
          * </code>
          *
          * @param string $sql
-         * @param array  $binds
+         * @param array  $bind
          * @param int    $fetchMode
          *
          * @return array
          */
-        public function fetchAll($sql, $binds = null, $fetchMode = \PDO::FETCH_ASSOC);
+        public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
 
         /**
          * Inserts data into a table using custom SQL syntax
@@ -64,17 +62,16 @@ namespace ManaPHP {
          *  $db->update('_student',['name'=>'mark'],'id=2');
          *  $db->update('_student',['name'=>'mark'],['id'=>2]);
          *  $db->update('_student',['name'=>'mark'],'id=:id',['id'=>2]);
-         *  $db->update('_student',['name'=>['mark',\PDO::PARAM_STR]],'id=:id',['id'=>2]);
          * </code>
          *
          * @param    string       $table
          * @param    array        $columnValues
          * @param    string|array $conditions
-         * @param   array         $binds
+         * @param   array         $bind
          *
          * @return    int|false
          */
-        public function update($table, $columnValues, $conditions, $binds = null);
+        public function update($table, $columnValues, $conditions, $bind = []);
 
         /**
          * Deletes data from a table using custom SQL syntax
@@ -88,11 +85,11 @@ namespace ManaPHP {
          *
          * @param  string       $table
          * @param  string|array $conditions
-         * @param  array        $binds
+         * @param  array        $bind
          *
          * @return boolean
          */
-        public function delete($table, $conditions, $binds = null);
+        public function delete($table, $conditions, $bind = []);
 
         /**
          * Appends a LIMIT clause to $sql argument
@@ -115,7 +112,7 @@ namespace ManaPHP {
          *
          * @return string
          */
-        public function getSQLStatement();
+        public function getSQL();
 
         /**
          * Active SQL statement in the object with replace the bind with value
@@ -125,37 +122,37 @@ namespace ManaPHP {
          * @return string
          * @throws \ManaPHP\Db\Exception
          */
-        public function getEmulatePrepareSQLStatement($preservedStrLength = -1);
+        public function getEmulatedSQL($preservedStrLength = -1);
 
         /**
          * Active SQL statement in the object
          *
          * @return array
          */
-        public function getSQLBindParams();
+        public function getBind();
 
         /**
          * Sends SQL statements to the database server returning the success state.
          * Use this method only when the SQL statement sent to the server return rows
          *
          * @param  string $sql
-         * @param  array  $binds
+         * @param  array  $bind
          * @param int     $fetchMode
          *
          * @return \PDOStatement
          */
-        public function query($sql, $binds = null, $fetchMode = \PDO::FETCH_ASSOC);
+        public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
 
         /**
          * Sends SQL statements to the database server returning the success state.
          * Use this method only when the SQL statement sent to the server don't return any row
          *
          * @param  string $sql
-         * @param  array  $binds
+         * @param  array  $bind
          *
          * @return int
          */
-        public function execute($sql, $binds = null);
+        public function execute($sql, $bind = []);
 
         /**
          * Returns the number of affected rows by the last INSERT/UPDATE/DELETE reported by the database system
@@ -167,7 +164,7 @@ namespace ManaPHP {
         /**
          * Escapes a column/table/schema name
          *
-         * @param string $identifier
+         * @param string|array $identifier
          *
          * @return string
          */

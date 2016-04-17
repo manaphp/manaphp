@@ -34,7 +34,7 @@ namespace ManaPHP\Mvc\Model {
 
         protected $_cacheOptions;
 
-        protected $_binds;
+        protected $_bind;
         protected $_models = [];
 
         /**
@@ -72,17 +72,17 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Executes a parsed SQL statement
          *
-         * @param array $binds
+         * @param array $bind
          *
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception
          */
-        public function execute($binds = null)
+        public function execute($bind = null)
         {
-            if ($binds !== null) {
-                $mergedBinds = array_merge($this->_binds, $binds);
+            if ($bind !== null) {
+                $mergedBind = array_merge($this->_bind, $bind);
             } else {
-                $mergedBinds = $this->_binds;
+                $mergedBind = $this->_bind;
             }
 
             $sql = $this->_sql;
@@ -102,9 +102,9 @@ namespace ManaPHP\Mvc\Model {
             }
 
             //compatible with other SQL syntax
-            if (is_array($mergedBinds)) {
+            if (is_array($mergedBind)) {
                 $replaces = [];
-                foreach ($mergedBinds as $key => $value) {
+                foreach ($mergedBind as $key => $value) {
                     $replaces[':' . $key . ':'] = ':' . $key;
                 }
 
@@ -112,7 +112,7 @@ namespace ManaPHP\Mvc\Model {
             }
 
             try {
-                $result = $readConnection->fetchAll($sql, $mergedBinds);
+                $result = $readConnection->fetchAll($sql, $mergedBind);
             } catch (\Exception $e) {
                 throw new Exception($e->getMessage() . ':' . $sql);
             }
@@ -123,14 +123,14 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Set default bind parameters
          *
-         * @param array   $binds
+         * @param array   $bind
          * @param boolean $merge
          *
          * @return static
          */
-        public function setBinds($binds, $merge = false)
+        public function setBind($bind, $merge = false)
         {
-            $this->_binds = $merge ? array_merge($this->_binds, $binds) : $binds;
+            $this->_bind = $merge ? array_merge($this->_bind, $bind) : $bind;
 
             return $this;
         }

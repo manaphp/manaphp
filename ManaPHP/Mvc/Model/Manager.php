@@ -126,11 +126,16 @@ namespace ManaPHP\Mvc\Model {
         {
             $modelName = is_string($model) ? $model : get_class($model);
 
-            if (isset($this->_sources[$modelName])) {
-                return $this->_sources[$modelName];
-            } else {
-                throw new Exception('The source is not provided: ' . $modelName);
+            if (!isset($this->_sources[$modelName])) {
+                $this->_sources[$modelName] = ltrim(
+                    preg_replace_callback('#[A-Z]#',
+                        function ($match) {
+                            return '_' . strtolower($match[0]);
+                        },
+                        basename($modelName)), '_');
             }
+
+            return $this->_sources[$modelName];
         }
 
         /**

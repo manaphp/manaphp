@@ -31,7 +31,7 @@ namespace ManaPHP\Mvc {
         /**
          * @var string
          */
-        protected $_content = null;
+        protected $_content;
 
         /**
          * @var array
@@ -41,17 +41,17 @@ namespace ManaPHP\Mvc {
         /**
          * @var string
          */
-        protected $_AppDir = null;
+        protected $_AppDir;
 
         /**
          * @var string
          */
-        protected $_rootNamespace = null;
+        protected $_rootNamespace;
 
         /**
          * @var false|string|null
          */
-        protected $_layout = null;
+        protected $_layout;
 
         /**
          * @var string

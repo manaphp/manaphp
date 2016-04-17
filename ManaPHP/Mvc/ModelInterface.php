@@ -140,7 +140,7 @@ namespace ManaPHP\Mvc {
          * @param string $column
          * @param array  $cacheOptions
          *
-         * @return int
+         * @return int|array
          */
         public static function count($parameters = null, $column = '*', $cacheOptions = null);
 
@@ -237,5 +237,29 @@ namespace ManaPHP\Mvc {
          * @return array
          */
         public function toArray();
+
+        /**
+         * Returns the internal snapshot data
+         *
+         * @return array
+         */
+        public function getSnapshotData();
+
+        /**
+         * Returns a list of changed values
+         *
+         * @return array
+         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+         */
+        public function getChangedFields();
+
+        /**
+         * Check if a specific attribute has changed
+         * This only works if the model is keeping data snapshots
+         *
+         * @param string|array $fields
+         * @return bool
+         */
+        public function hasChanged($fields);
     }
 }

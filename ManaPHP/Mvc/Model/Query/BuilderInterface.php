@@ -95,21 +95,21 @@ namespace ManaPHP\Mvc\Model\Query {
          * Sets conditions for the query
          *
          * @param string $conditions
-         * @param array  $binds
+         * @param array  $bind
          *
          * @return static
          */
-        public function where($conditions, $binds = null);
+        public function where($conditions, $bind = null);
 
         /**
          * Appends a condition to the current conditions using a AND operator
          *
          * @param string $conditions
-         * @param array  $binds
+         * @param array  $bind
          *
          * @return static
          */
-        public function andWhere($conditions, $binds = null);
+        public function andWhere($conditions, $bind = null);
 
         /**
          * Appends a BETWEEN condition to the current conditions
@@ -170,11 +170,11 @@ namespace ManaPHP\Mvc\Model\Query {
          * Sets a HAVING condition clause
          *
          * @param string $having
-         * @param array  $binds
+         * @param array  $bind
          *
          * @return static
          */
-        public function having($having, $binds = null);
+        public function having($having, $bind = null);
 
         /**
          * Sets a LIMIT clause
@@ -224,12 +224,12 @@ namespace ManaPHP\Mvc\Model\Query {
 
         /**build the query and execute it.
          *
-         * @param array $binds
+         * @param array $bind
          * @param array $cache
          *
          * @return array
          */
-        public function execute($binds = null, $cache = null);
+        public function execute($bind = null, $cache = null);
 
     }
 }

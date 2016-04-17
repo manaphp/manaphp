@@ -38,7 +38,7 @@ namespace ManaPHP\Di {
                 'flashSession' => new Service('flashSession', 'ManaPHP\Flash\Session', true),
                 'tag' => new Service('tag', 'ManaPHP\Mvc\View\Tag', true),
                 'session' => new Service('session', 'ManaPHP\Http\Session\Adapter\File', true),
-                'sessionBag' => new Service('sessionBag', 'ManaPHP\Session\Bag', true),
+                'sessionBag' => new Service('sessionBag', 'ManaPHP\Http\Session\Bag', false),
                 'eventsManager' => new Service('eventsManager', 'ManaPHP\Events\Manager', true),
                 'transactionManager' => new Service('transactionManager', 'ManaPHP\Mvc\Model\Transaction\Manager',
                     true),

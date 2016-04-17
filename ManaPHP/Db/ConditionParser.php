@@ -13,14 +13,14 @@ namespace ManaPHP\Db {
     {
         /**
          * @param array|string $conditions
-         * @param array|null   $binds
+         * @param array|null   $bind
          *
          * @return string
          * @throws \ManaPHP\Db\ConditionParser\Exception
          */
-        public function parse($conditions, &$binds)
+        public function parse($conditions, &$bind)
         {
-            $binds = [];
+            $bind = [];
 
             if ($conditions === null) {
                 return '';
@@ -62,7 +62,7 @@ namespace ManaPHP\Db {
                 }
 
                 $list[] = "`$k`=:$column";
-                $binds[$column] = $data;
+                $bind[$column] = $data;
             }
 
             return implode(' AND ', $list);

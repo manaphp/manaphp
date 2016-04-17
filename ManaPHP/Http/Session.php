@@ -14,7 +14,6 @@ namespace ManaPHP\Http {
      */
     class Session implements SessionInterface, \ArrayAccess
     {
-
         public function __construct($options = null)
         {
             if (PHP_SAPI === 'cli') {
@@ -55,7 +54,7 @@ namespace ManaPHP\Http {
          * Sets a session variable in an application context
          *
          * @param string $name
-         * @param string $value
+         * @param mixed  $value
          */
         public function set($name, $value)
         {
@@ -119,6 +118,11 @@ namespace ManaPHP\Http {
         public function offsetUnset($offset)
         {
             $this->remove($offset);
+        }
+
+        public function __debugInfo()
+        {
+            return $_SESSION ?: [];
         }
     }
 }

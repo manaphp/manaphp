@@ -31,7 +31,7 @@ namespace ManaPHP\Http {
         /**
          * @var string
          */
-        protected $_content = null;
+        protected $_content;
 
         /**
          * @var \ManaPHP\Http\Response\HeadersInterface

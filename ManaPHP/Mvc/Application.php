@@ -71,7 +71,7 @@ namespace ManaPHP\Mvc {
         /**
          * @var array
          */
-        protected $_modules = null;
+        protected $_modules = [];
 
         /**
          * @var boolean
@@ -197,7 +197,7 @@ namespace ManaPHP\Mvc {
          */
         public function handle($uri = null, $notFoundHandler = null)
         {
-            if ($this->_modules === null) {
+            if (count($this->_modules) === 0) {
                 throw new Exception('modules is empty. please register it first.');
             }
 

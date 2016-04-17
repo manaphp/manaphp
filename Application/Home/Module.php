@@ -7,9 +7,6 @@
  */
 namespace Application\Home;
 
-use ManaPHP\Db\Adapter\Mysql;
-use ManaPHP\DbInterface;
-use ManaPHP\Loader;
 use ManaPHP\Mvc\ModuleInterface;
 
 class Module implements ModuleInterface

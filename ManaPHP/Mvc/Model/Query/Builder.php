@@ -68,7 +68,7 @@ namespace ManaPHP\Mvc\Model\Query {
         /**
          * @var array
          */
-        protected $_binds = [];
+        protected $_bind = [];
 
         /**
          * @var bool
@@ -134,7 +134,7 @@ namespace ManaPHP\Mvc\Model\Query {
             }
 
             if (isset($params['bind'])) {
-                $this->_binds = array_merge($this->_binds, $params['bind']);
+                $this->_bind = array_merge($this->_bind, $params['bind']);
             }
 
             if (isset($params['distinct'])) {
@@ -355,16 +355,16 @@ namespace ManaPHP\Mvc\Model\Query {
          *</code>
          *
          * @param string $conditions
-         * @param array  $binds
+         * @param array  $bind
          *
          * @return static
          */
-        public function where($conditions, $binds = null)
+        public function where($conditions, $bind = null)
         {
             $this->_conditions = [$conditions];
 
-            if ($binds !== null) {
-                $this->_binds = array_merge($this->_binds, $binds);
+            if ($bind !== null) {
+                $this->_bind = array_merge($this->_bind, $bind);
             }
 
             return $this;
@@ -379,16 +379,16 @@ namespace ManaPHP\Mvc\Model\Query {
          *</code>
          *
          * @param string $conditions
-         * @param array  $binds
+         * @param array  $bind
          *
          * @return static
          */
-        public function andWhere($conditions, $binds = null)
+        public function andWhere($conditions, $bind = null)
         {
             $this->_conditions[] = $conditions;
 
-            if ($binds !== null) {
-                $this->_binds = array_merge($this->_binds, $binds);
+            if ($bind !== null) {
+                $this->_bind = array_merge($this->_bind, $bind);
             }
 
             return $this;
@@ -460,16 +460,16 @@ namespace ManaPHP\Mvc\Model\Query {
                 return $this;
             }
 
-            $binds = [];
+            $bind = [];
             $bindKeys = [];
 
             foreach ($values as $value) {
                 $key = 'ABP' . $this->_hiddenParamNumber++;
                 $bindKeys[] = ":$key";
-                $binds[$key] = $value;
+                $bind[$key] = $value;
             }
 
-            $this->andWhere($expr . ' IN (' . implode(', ', $bindKeys) . ')', $binds);
+            $this->andWhere($expr . ' IN (' . implode(', ', $bindKeys) . ')', $bind);
 
             return $this;
         }
@@ -492,15 +492,15 @@ namespace ManaPHP\Mvc\Model\Query {
                 return $this;
             }
 
-            $binds = [];
+            $bind = [];
             $bindKeys = [];
 
             foreach ($values as $value) {
                 $key = 'ABP' . $this->_hiddenParamNumber++;
                 $bindKeys[] = ':' . $key;
-                $binds[$key] = $value;
+                $bind[$key] = $value;
             }
-            $this->andWhere($expr . ' NOT IN (' . implode(', ', $bindKeys) . ')', $binds);
+            $this->andWhere($expr . ' NOT IN (' . implode(', ', $bindKeys) . ')', $bind);
 
             return $this;
         }
@@ -532,11 +532,11 @@ namespace ManaPHP\Mvc\Model\Query {
          *</code>
          *
          * @param string $having
-         * @param array  $binds
+         * @param array  $bind
          *
          * @return static
          */
-        public function having($having, $binds = null)
+        public function having($having, $bind = null)
         {
             if ($this->_having === null) {
                 $this->_having = [$having];
@@ -544,8 +544,8 @@ namespace ManaPHP\Mvc\Model\Query {
                 $this->_having[] = $having;
             }
 
-            if ($binds !== null) {
-                $this->_binds = array_merge($this->_binds, $binds);
+            if ($bind !== null) {
+                $this->_bind = array_merge($this->_bind, $bind);
             }
 
             return $this;
@@ -567,7 +567,7 @@ namespace ManaPHP\Mvc\Model\Query {
         public function limit($limit, $offset = null)
         {
             $this->_limit = $limit;
-            if (isset($offset)) {
+            if ($offset !==null) {
                 $this->_offset = $offset;
             }
 
@@ -699,12 +699,12 @@ namespace ManaPHP\Mvc\Model\Query {
                 }
             }
 
-            $conditions = (new ConditionParser())->parse($this->_conditions, $conditionBinds);
+            $conditions = (new ConditionParser())->parse($this->_conditions, $conditionBind);
             if ($conditions !== '') {
                 $sql .= ' WHERE ' . $conditions;
             }
 
-            $this->_binds = array_merge($this->_binds, $conditionBinds);
+            $this->_bind = array_merge($this->_bind, $conditionBind);
 
             /**
              * Process group parameters
@@ -771,21 +771,21 @@ namespace ManaPHP\Mvc\Model\Query {
 
             $query = $this->_dependencyInjector->get('ManaPHP\Mvc\Model\Query',
                 [$this->_lastSQL, $this->_models, $this->_dependencyInjector]);
-            $query->setBinds($this->_binds);
+            $query->setBind($this->_bind);
 
             return $query;
         }
 
         /**
-         * @param array $binds
+         * @param array $bind
          * @param array $cache
          *
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
-        public function execute($binds = null, $cache = null)
+        public function execute($bind = null, $cache = null)
         {
-            return $this->getQuery()->cache($cache)->execute($binds);
+            return $this->getQuery()->cache($cache)->execute($bind);
         }
     }
 }

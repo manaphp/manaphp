@@ -53,7 +53,7 @@ namespace ManaPHP {
         /**
          * Latest DI build
          */
-        protected static $_default = null;
+        protected static $_default;
 
         /**
          * \ManaPHP\Di constructor

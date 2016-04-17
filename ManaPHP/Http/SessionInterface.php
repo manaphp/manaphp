@@ -22,7 +22,7 @@ namespace ManaPHP\Http {
          * Sets a session variable in an application context
          *
          * @param string $name
-         * @param string $value
+         * @param mixed $value
          */
         public function set($name, $value);
 

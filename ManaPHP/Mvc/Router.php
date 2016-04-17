@@ -37,17 +37,17 @@ namespace ManaPHP\Mvc {
         /**
          * @var string
          */
-        protected $_module = null;
+        protected $_module;
 
         /**
          * @var string
          */
-        protected $_controller = null;
+        protected $_controller;
 
         /**
          * @var string
          */
-        protected $_action = null;
+        protected $_action;
 
         /**
          * @var array
