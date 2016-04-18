@@ -9,6 +9,7 @@ namespace Configure\Db\Adapter {
         public $password;
         public $dbname;
         public $port;
+        public $options;
     }
 }
 

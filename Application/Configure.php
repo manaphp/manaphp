@@ -31,9 +31,10 @@ namespace Application {
             $this->database->username = 'root';
             $this->database->password = '';
             $this->database->dbname = 'manaphp_unit_test';
+            $this->database->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
             $this->log = new \stdClass();
-            $this->log->file = $this->resolvePath('@data/Logs') . date('Ymd') . '.log';
+            $this->log->file = $this->resolvePath('@data/Logs/' . date('Ymd') . '.log');
         }
     }
 }

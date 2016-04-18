@@ -115,7 +115,6 @@ namespace ManaPHP\Log {
          */
         protected function _log($level, $message, $context)
         {
-
             if ($level > $this->_level) {
                 return $this;
             }

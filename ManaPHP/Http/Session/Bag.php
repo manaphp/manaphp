@@ -30,11 +30,6 @@ namespace ManaPHP\Http\Session {
         protected $_data;
 
         /**
-         * @var bool
-         */
-        protected $_initialized = false;
-
-        /**
          * @var \ManaPHP\Http\SessionInterface
          */
         protected $_session;
@@ -42,28 +37,19 @@ namespace ManaPHP\Http\Session {
         /**
          * \ManaPHP\Session\Bag constructor
          *
-         * @param string $name
-         */
-        public function __construct($name)
-        {
-            $this->_name = $name;
-        }
-
-        /**
-         * Initializes the session bag.
+         * @param string               $name
+         * @param \ManaPHP\DiInterface $dependencyInjector
+         *
          * @throws \ManaPHP\Di\Exception
          */
-        protected function _initialize()
+        public function __construct($name, $dependencyInjector = null)
         {
-            if ($this->_session === null) {
-                $this->_dependencyInjector = $this->_dependencyInjector ?: Di::getDefault();
+            $this->_name = $name;
 
-                $this->_session = $this->_dependencyInjector->getShared('session');
-            }
+            $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
+            $this->_session = $this->_dependencyInjector->getShared('session');
             $this->_data = $this->_session->get($this->_name, []);
-
-            $this->_initialized = true;
         }
 
         /**
@@ -77,8 +63,6 @@ namespace ManaPHP\Http\Session {
          */
         public function destroy()
         {
-            $this->_initialized or $this->_initialize();
-
             $this->_session->remove($this->_name);
         }
 
@@ -90,14 +74,12 @@ namespace ManaPHP\Http\Session {
          *</code>
          *
          * @param string $property
-         * @param string $value
+         * @param mixed  $value
          *
          * @throws \ManaPHP\Di\Exception
          */
         public function set($property, $value)
         {
-            $this->_initialized or $this->_initialize();
-
             $this->_data[$property] = $value;
             $this->_session->set($this->_name, $this->_data);
         }
@@ -116,11 +98,13 @@ namespace ManaPHP\Http\Session {
          *
          * @throws \ManaPHP\Di\Exception
          */
-        public function get($property, $defaultValue = null)
+        public function get($property = null, $defaultValue = null)
         {
-            $this->_initialized or $this->_initialize();
-
-            return isset($this->_data[$property]) ? $this->_data[$property] : $defaultValue;
+            if ($property === null) {
+                return $this->_data;
+            } else {
+                return isset($this->_data[$property]) ? $this->_data[$property] : $defaultValue;
+            }
         }
 
         /**
@@ -137,8 +121,6 @@ namespace ManaPHP\Http\Session {
          */
         public function has($property)
         {
-            $this->_initialized or $this->_initialize();
-
             return isset($this->_data[$property]);
         }
 
@@ -151,15 +133,11 @@ namespace ManaPHP\Http\Session {
          *
          * @param string $property
          *
-         * @return boolean
          * @throws \ManaPHP\Di\Exception
          */
         public function remove($property)
         {
-            $this->_initialized or $this->_initialize();
-
             unset($this->_data[$property]);
-
             $this->_session->set($this->_name, $this->_data);
         }
     }

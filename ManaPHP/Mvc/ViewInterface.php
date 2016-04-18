@@ -57,12 +57,7 @@ namespace ManaPHP\Mvc {
          *
          * @return mixed
          */
-        public function getVar($name);
-
-        /**
-         * @return array
-         */
-        public function getVars();
+        public function getVar($name = null);
 
         /**
          * Gets the name of the controller rendered

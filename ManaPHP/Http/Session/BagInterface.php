@@ -16,7 +16,7 @@ namespace ManaPHP\Http\Session {
          * Setter of values
          *
          * @param string $property
-         * @param string $value
+         * @param mixed  $value
          */
         public function set($property, $value);
 
@@ -28,7 +28,7 @@ namespace ManaPHP\Http\Session {
          *
          * @return mixed
          */
-        public function get($property, $defaultValue = null);
+        public function get($property = null, $defaultValue = null);
 
         /**
          * Isset property

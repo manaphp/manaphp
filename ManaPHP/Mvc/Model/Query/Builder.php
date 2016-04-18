@@ -567,7 +567,7 @@ namespace ManaPHP\Mvc\Model\Query {
         public function limit($limit, $offset = null)
         {
             $this->_limit = $limit;
-            if ($offset !==null) {
+            if ($offset !== null) {
                 $this->_offset = $offset;
             }
 

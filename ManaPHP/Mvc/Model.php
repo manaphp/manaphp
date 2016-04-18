@@ -396,7 +396,7 @@ namespace ManaPHP\Mvc {
         {
             $dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
-            return $dependencyInjector->getShared('modelsManager')->createBuilder();
+            return $dependencyInjector->getShared('modelsManager')->createBuilder()->addFrom(get_called_class());
         }
 
         /**

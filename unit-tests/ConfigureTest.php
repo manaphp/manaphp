@@ -11,9 +11,6 @@ class ConfigureTest extends TestCase
         $configure->setAlias('@app', '\data\www\app');
         $this->assertEquals('/data/www/app', $configure->getAlias('@app'));
 
-        $configure->setAlias('@app', '\data\www\app2\\');
-        $this->assertEquals('/data/www/app2', $configure->getAlias('@app'));
-
         $configure->setAlias('@data', '/app/data');
         $configure->setAlias('@log', '@data/log');
         $this->assertEquals('/app/data/log', $configure->getAlias('@log'));

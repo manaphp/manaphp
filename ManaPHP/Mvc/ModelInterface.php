@@ -258,6 +258,7 @@ namespace ManaPHP\Mvc {
          * This only works if the model is keeping data snapshots
          *
          * @param string|array $fields
+         *
          * @return bool
          */
         public function hasChanged($fields);

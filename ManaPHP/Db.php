@@ -4,7 +4,6 @@ namespace ManaPHP {
 
     use ManaPHP\Db\ConditionParser;
     use ManaPHP\Db\Exception;
-    use ManaPHP\Db\PrepareEmulation;
 
     class Db extends Component implements DbInterface
     {
@@ -66,9 +65,8 @@ namespace ManaPHP {
                 $descriptor['options'] = [];
             }
 
-            $descriptor['options'] = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION];
+            $descriptor['options'][\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
 
-            $this->_type = 'mysql';
             $this->_descriptor = $descriptor;
 
             $this->_connect();
@@ -521,7 +519,7 @@ namespace ManaPHP {
                 }
             } elseif (is_int($value)) {
                 return $value;
-            } elseif ($value===null) {
+            } elseif ($value === null) {
                 return 'NULL';
             } elseif (is_bool($value)) {
                 return (int)$value;
@@ -544,7 +542,7 @@ namespace ManaPHP {
                 return $this->_sql;
             }
 
-            $bind=$this->_bind;
+            $bind = $this->_bind;
             if (isset($bind[0])) {
                 $pos = 0;
 
@@ -555,7 +553,7 @@ namespace ManaPHP {
             } else {
                 $replaces = [];
                 foreach ($bind as $key => $value) {
-                    $replaces[':'.$key] = $this->_parseBindValue($value,  $preservedStrLength);
+                    $replaces[':' . $key] = $this->_parseBindValue($value, $preservedStrLength);
                 }
 
                 return strtr($this->_sql, $replaces);

@@ -88,7 +88,11 @@ namespace ManaPHP\Configure {
          */
         public function resolvePath($path)
         {
-            $path = str_replace('\\', '/', rtrim($path, '\\/'));
+            if (rtrim($path, '\\/') !== $path) {
+                throw new Exception("Path can not end with '/' or '\\': " . $path);
+            }
+
+            $path = str_replace('\\', '/', $path);
 
             if ($path[0] !== '@') {
                 return $path;

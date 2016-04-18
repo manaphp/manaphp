@@ -144,17 +144,13 @@ namespace ManaPHP\Mvc {
          *
          * @return mixed
          */
-        public function getVar($name)
+        public function getVar($name = null)
         {
-            return isset($this->_viewVars[$name]) ? $this->_viewVars[$name] : null;
-        }
-
-        /**
-         * @return array
-         */
-        public function getVars()
-        {
-            return $this->_viewVars;
+            if ($name === null) {
+                return $this->_viewVars;
+            } else {
+                return isset($this->_viewVars[$name]) ? $this->_viewVars[$name] : null;
+            }
         }
 
         /**

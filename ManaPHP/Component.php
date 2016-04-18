@@ -106,7 +106,7 @@ namespace ManaPHP {
             }
 
             if ($propertyName === 'persistent') {
-                return $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', [get_class($this)]);
+                return $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', [get_class($this), $this->_dependencyInjector]);
             }
 
             trigger_error('Access to undefined property ' . $propertyName);

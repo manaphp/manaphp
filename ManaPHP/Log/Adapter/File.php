@@ -60,7 +60,7 @@ namespace ManaPHP\Log\Adapter {
                 $this->_firstLog = false;
             }
 
-            $context['date'] = date($this->_options['dateFormat'], isset($context['date']) ?: time());
+            $context['date'] = date($this->_options['dateFormat'], $context['date'] ?: time());
 
             $replaced = [];
             foreach ($context as $k => $v) {
