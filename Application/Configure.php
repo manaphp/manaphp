@@ -14,6 +14,11 @@ namespace Application {
          */
         public $log;
 
+        /**
+         * @var \Configure\Security\Crypt
+         */
+        public $crypt;
+
         public function __construct($dependencyInjector = null)
         {
             parent::__construct($dependencyInjector);
@@ -35,6 +40,9 @@ namespace Application {
 
             $this->log = new \stdClass();
             $this->log->file = $this->resolvePath('@data/Logs/' . date('Ymd') . '.log');
+
+            $this->crypt=new \stdClass();
+            $this->crypt->key='test';
         }
     }
 }

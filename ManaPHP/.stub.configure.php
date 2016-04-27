@@ -20,3 +20,9 @@ namespace Configure\Log\Adapter {
         public $file;
     }
 }
+
+namespace Configure\Security{
+    class Crypt{
+        public $key;
+    }
+}

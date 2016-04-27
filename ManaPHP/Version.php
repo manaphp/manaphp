@@ -21,7 +21,7 @@ namespace ManaPHP {
          */
         public static function get()
         {
-            return '0.5.3';
+            return '0.5.4';
         }
     }
 }

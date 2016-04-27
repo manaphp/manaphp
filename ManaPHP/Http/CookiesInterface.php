@@ -1,29 +1,12 @@
 <?php
 
-namespace ManaPHP\Http\Response {
+namespace ManaPHP\Http {
 
     /**
      * ManaPHP\Http\Response\CookiesInterface initializer
      */
     interface CookiesInterface
     {
-
-        /**
-         * Set if cookies in the bag must be automatically encrypted/decrypted
-         *
-         * @param boolean $useEncryption
-         *
-         * @return static
-         */
-        public function useEncryption($useEncryption);
-
-        /**
-         * Returns if the bag is automatically encrypting/decrypting cookies
-         *
-         * @return boolean
-         */
-        public function isUsingEncryption();
-
         /**
          * Sets a cookie to be sent at the end of the request
          *
@@ -31,20 +14,20 @@ namespace ManaPHP\Http\Response {
          * @param mixed   $value
          * @param int     $expire
          * @param string  $path
-         * @param boolean $secure
          * @param string  $domain
+         * @param boolean $secure
          * @param boolean $httpOnly
          *
          * @return static
          */
         public function set(
             $name,
-            $value = null,
-            $expire = null,
+            $value,
+            $expire = 0,
             $path = null,
-            $secure = null,
             $domain = null,
-            $httpOnly = null
+            $secure = false,
+            $httpOnly = true
         );
 
         /**
@@ -52,7 +35,7 @@ namespace ManaPHP\Http\Response {
          *
          * @param string $name
          *
-         * @return \ManaPHP\Http\Cookie
+         * @return $mixed
          */
         public function get($name);
 
@@ -77,17 +60,7 @@ namespace ManaPHP\Http\Response {
 
         /**
          * Sends the cookies to the client
-         *
-         * @return boolean
          */
         public function send();
-
-        /**
-         * Reset set cookies
-         *
-         * @return static
-         */
-        public function reset();
-
     }
 }

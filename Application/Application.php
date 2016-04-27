@@ -7,6 +7,7 @@ namespace Application {
     use ManaPHP\Log\Logger;
     use ManaPHP\Mvc\Router;
     use ManaPHP\Mvc\Router\Group;
+    use ManaPHP\Security\Crypt;
 
     class Application extends \ManaPHP\Mvc\Application
     {
@@ -26,6 +27,10 @@ namespace Application {
 
             $this->_dependencyInjector->setShared('logger', function () use ($self) {
                 return (new Logger())->addAdapter(new File($self->configure->log->file));
+            });
+
+            $this->_dependencyInjector->setShared('crypt', function()use($self){
+                return new Crypt($self->configure->crypt->key);
             });
 
             $this->_dependencyInjector->set('db', function () use ($self) {

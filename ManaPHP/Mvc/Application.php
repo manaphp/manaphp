@@ -275,10 +275,8 @@ namespace ManaPHP\Mvc {
                 $dispatcher->getControllerName(), $dispatcher->getActionName());
 
             $this->fireEvent('application:beforeSendResponse', $response);
-
+            
             $response->sendHeaders();
-            $response->sendCookies();
-
             return $response;
         }
 

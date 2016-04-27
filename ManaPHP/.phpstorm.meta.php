@@ -9,7 +9,7 @@ namespace PHPSTORM_META {                                // we want to avoid the
             'router' instanceof \ManaPHP\Mvc\RouterInterface,
             'request' instanceof \ManaPHP\Http\RequestInterface,
             'response' instanceof \ManaPHP\Http\ResponseInterface,
-            'cookies' instanceof \ManaPHP\Http\Response\CookiesInterface,
+            'cookies' instanceof \ManaPHP\Http\CookiesInterface,
             'session' instanceof \ManaPHP\Http\SessionInterface,
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
             'db' instanceof \ManaPHP\DbInterface,
@@ -17,7 +17,7 @@ namespace PHPSTORM_META {                                // we want to avoid the
             'modelsMetadata' instanceof \ManaPHP\Mvc\Model\MetadataInterface,
             'di' instanceof \ManaPHP\Di | \ManaPHP\DiInterface,
             'view' instanceof \ManaPHP\Mvc\ViewInterface,
-            'authorization' instanceof \ManaPHP\Auth\AuthorizationInterface,
+            'authorization' instanceof \ManaPHP\Security\AuthorizationInterface,
             'application' instanceof \ManaPHP\ApplicationInterface,
         ],
         \ManaPHP\DiInterface::get('') => [           // STATIC call key to make static (1) & dynamic (2) calls work

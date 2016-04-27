@@ -121,22 +121,6 @@ namespace ManaPHP\Http {
         public function sendHeaders();
 
         /**
-         * Sets a cookies bag for the response externally
-         *
-         * @param \ManaPHP\Http\Response\CookiesInterface $cookies
-         *
-         * @return static
-         */
-        public function setCookies($cookies);
-
-        /**
-         * Sends cookies to the client
-         *
-         * @return static
-         */
-        public function sendCookies();
-
-        /**
          * Prints out HTTP response to the client
          *
          * @return static

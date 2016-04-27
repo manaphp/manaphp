@@ -38,11 +38,6 @@ namespace ManaPHP\Http {
          */
         protected $_headers;
 
-        /**
-         * @var \ManaPHP\Http\Response\CookiesInterface
-         */
-        protected $_cookies;
-
         protected $_file;
 
         public function __construct()
@@ -68,30 +63,6 @@ namespace ManaPHP\Http {
             $this->setHeader('Status', $code . ' ' . $message);
 
             return $this;
-        }
-
-        /**
-         * Sets a cookies bag for the response externally
-         *
-         * @param \ManaPHP\Http\Response\CookiesInterface $cookies
-         *
-         * @return static
-         */
-        public function setCookies($cookies)
-        {
-            $this->_cookies = $cookies;
-
-            return $this;
-        }
-
-        /**
-         * Returns cookies set by the user
-         *
-         * @return \ManaPHP\Http\Response\CookiesInterface
-         */
-        public function getCookies()
-        {
-            return $this->_cookies;
         }
 
         /**
@@ -349,18 +320,8 @@ namespace ManaPHP\Http {
                 $this->_headers->send();
             }
 
-            return $this;
-        }
-
-        /**
-         * Sends cookies to the client
-         *
-         * @return static
-         */
-        public function sendCookies()
-        {
-            if (is_object($this->_cookies)) {
-                $this->_cookies->send();
+            if ($this->_dependencyInjector->has('cookies')) {
+                $this->cookies->send();
             }
 
             return $this;
@@ -378,12 +339,8 @@ namespace ManaPHP\Http {
                 throw new Exception('Response was already sent');
             }
 
-            if (is_object($this->_headers)) {
-                $this->_headers->send();
-            }
-
-            if (is_object($this->_cookies)) {
-                $this->_cookies->send();
+            if(!headers_sent()){
+                $this->sendHeaders();
             }
 
             if ($this->_content !== null) {

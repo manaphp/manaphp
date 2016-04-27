@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Auth {
+namespace ManaPHP\Security {
 
     interface AuthorizationInterface
     {
