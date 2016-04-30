@@ -18,10 +18,6 @@ namespace Application {
             $this->_dependencyInjector->setShared('configure', new Configure());
 
             $this->_dependencyInjector->setShared('router', function () {
-                if ($_SERVER['SCRIPT_NAME'] !== '/index.php') {
-                    throw new Exception("Current DocumentRoot is $_SERVER[SCRIPT_NAME], please change the DocumentRoot to /index.php or change the path parameter of Route Group mount.");
-                }
-
                 return (new Router())->mount(new Group(), 'Home', '/');
             });
 
@@ -29,7 +25,7 @@ namespace Application {
                 return (new Logger())->addAdapter(new File($self->configure->log->file));
             });
 
-            $this->_dependencyInjector->setShared('crypt', function()use($self){
+            $this->_dependencyInjector->setShared('crypt', function () use ($self) {
                 return new Crypt($self->configure->crypt->key);
             });
 
@@ -51,7 +47,7 @@ namespace Application {
 
             $this->registerServices();
 
-            $this->logger->debug('start');
+            // $this->logger->debug('start');
 
             //   $this->useImplicitView(false);
 

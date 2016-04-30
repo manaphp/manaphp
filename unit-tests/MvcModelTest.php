@@ -12,30 +12,37 @@ use Models\City;
 use Models\Payment;
 use Models\Student;
 
-class TestCity1 extends \ManaPHP\Mvc\Model{
+class TestCity1 extends \ManaPHP\Mvc\Model
+{
 
 }
 
-class TestCity2 extends \ManaPHP\Mvc\Model{
+class TestCity2 extends \ManaPHP\Mvc\Model
+{
     public function getSource()
     {
         return 'city';
     }
 }
 
-class TestCity3 extends \ManaPHP\Mvc\Model{
-    public function initialize(){
+class TestCity3 extends \ManaPHP\Mvc\Model
+{
+    public function initialize()
+    {
         $this->setSource('the_city');
     }
 }
 
-class TestCity4 extends \ManaPHP\Mvc\Model{
+class TestCity4 extends \ManaPHP\Mvc\Model
+{
     public $time;
 
-    public function onConstruct(){
-        $this->time=time();
+    public function onConstruct()
+    {
+        $this->time = time();
     }
 }
+
 class MvcModelTest extends TestCase
 {
     /**
@@ -48,14 +55,14 @@ class MvcModelTest extends TestCase
         $this->di = new \ManaPHP\Di\FactoryDefault();
 
         $this->di->set('db', function () {
-            $config = require __DIR__.'/config.database.php';
+            $config = require __DIR__ . '/config.database.php';
             return new ManaPHP\Db\Adapter\Mysql($config['mysql']);
         });
 
         $this->di->getShared('db')
             ->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
-               // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
-                      var_dump($source->getEmulatedSQL());
+                // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
+                var_dump($source->getEmulatedSQL());
             });
     }
 
@@ -71,10 +78,10 @@ class MvcModelTest extends TestCase
         $this->assertEquals(1, Actor::count(['conditions' => 'actor_id=1']));
         $this->assertEquals(0, Actor::count(['actor_id=0']));
 
-        $this->assertEquals(128, Actor::count([''],' DISTINCT first_name'));
+        $this->assertEquals(128, Actor::count([''], ' DISTINCT first_name'));
 
-        $groups=Actor::count(['','group'=>'first_name','order'=>'row_count']);
-        $this->assertCount(128,$groups);
+        $groups = Actor::count(['', 'group' => 'first_name', 'order' => 'row_count']);
+        $this->assertCount(128, $groups);
     }
 
     public function test_sum()
@@ -83,13 +90,13 @@ class MvcModelTest extends TestCase
         $this->assertEquals('string', gettype($sum));
         $this->assertEquals(67417.0, round($sum, 0));
 
-        $sum=Payment::sum('amount',['customer_id'=>1]);
-        $this->assertEquals('118.68',$sum);
+        $sum = Payment::sum('amount', ['customer_id' => 1]);
+        $this->assertEquals('118.68', $sum);
 
-        $sum=Payment::sum('amount',['','group'=>'customer_id']);
-        $this->assertCount(599,$sum);
-        $this->assertEquals('1',$sum[0]['customer_id']);
-        $this->assertEquals('118.68',$sum[0]['summary']);
+        $sum = Payment::sum('amount', ['', 'group' => 'customer_id']);
+        $this->assertCount(599, $sum);
+        $this->assertEquals('1', $sum[0]['customer_id']);
+        $this->assertEquals('118.68', $sum[0]['summary']);
     }
 
     public function test_max()
@@ -189,9 +196,9 @@ class MvcModelTest extends TestCase
 
         //   $this->assertCount(1,Actor::find(['first_name'=>'BEN']));
 
-        $cities=City::find([['country_id'=>2],'order'=>'city desc']);
-        $this->assertCount(3,$cities);
-        $this->assertEquals(483,$cities[0]->city_id);
+        $cities = City::find([['country_id' => 2], 'order' => 'city desc']);
+        $this->assertCount(3, $cities);
+        $this->assertEquals(483, $cities[0]->city_id);
     }
 
     public function test_find_usage()
@@ -273,9 +280,9 @@ class MvcModelTest extends TestCase
 
         $student->delete();
 
-        $student=new Student();
-        $student->create(['id'=>1,'age'=>32,'name'=>'beijing']);
-        $student=Student::findFirst(1);
+        $student = new Student();
+        $student->create(['id' => 1, 'age' => 32, 'name' => 'beijing']);
+        $student = Student::findFirst(1);
         $this->assertTrue($student instanceof Student);
         $this->assertEquals('1', $student->id);
         $this->assertEquals('32', $student->age);
@@ -311,44 +318,49 @@ class MvcModelTest extends TestCase
         $this->assertNull($city->city);
     }
 
-    public function test_getSource(){
+    public function test_getSource()
+    {
         //infer the table name from table name
-        $city=new TestCity1();
-        $this->assertEquals('test_city1',$city->getSource());
+        $city = new TestCity1();
+        $this->assertEquals('test_city1', $city->getSource());
 
         //use getSource
-        $city=new TestCity2();
-        $this->assertEquals('city',$city->getSource());
+        $city = new TestCity2();
+        $this->assertEquals('city', $city->getSource());
 
         //use setSource
-        $city=new TestCity3();
-        $this->assertEquals('the_city',$city->getSource());
+        $city = new TestCity3();
+        $this->assertEquals('the_city', $city->getSource());
     }
 
-    public function test_onConstruct(){
-        $city=new TestCity4();
+    public function test_onConstruct()
+    {
+        $city = new TestCity4();
         $this->assertNotNull($city->time);
     }
 
-    public function test_getSnapshotData(){
+    public function test_getSnapshotData()
+    {
         $actor = Actor::findFirst(1);
-        $snapshot=$actor->getSnapshotData();
+        $snapshot = $actor->getSnapshotData();
 
-        $this->assertEquals($snapshot,$actor->toArray());
+        $this->assertEquals($snapshot, $actor->toArray());
     }
 
-    public function test_getChangedFields(){
+    public function test_getChangedFields()
+    {
         $actor = Actor::findFirst(1);
 
-        $actor->first_name='abc';
-        $actor->last_name='mark';
-        $this->assertEquals(['first_name','last_name'],$actor->getChangedFields());
+        $actor->first_name = 'abc';
+        $actor->last_name = 'mark';
+        $this->assertEquals(['first_name', 'last_name'], $actor->getChangedFields());
     }
 
-    public function test_hasChanged(){
+    public function test_hasChanged()
+    {
         $actor = Actor::findFirst(1);
 
-        $actor->first_name='abc';
+        $actor->first_name = 'abc';
         $this->assertTrue($actor->hasChanged('first_name'));
         $this->assertTrue($actor->hasChanged(['first_name']));
     }

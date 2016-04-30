@@ -41,8 +41,8 @@ namespace Application {
             $this->log = new \stdClass();
             $this->log->file = $this->resolvePath('@data/Logs/' . date('Ymd') . '.log');
 
-            $this->crypt=new \stdClass();
-            $this->crypt->key='test';
+            $this->crypt = new \stdClass();
+            $this->crypt->key = 'test';
         }
     }
 }

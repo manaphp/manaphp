@@ -16,11 +16,11 @@ class DbTest extends TestCase
 
     public function setUp()
     {
-        $config = require __DIR__.'/config.database.php';
+        $config = require __DIR__ . '/config.database.php';
         $this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
         $this->db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
-          //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
-                  var_dump($source->getSQL(), $source->getEmulatedSQL(2));
+            //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
+            var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
         });
         $this->db->query('SET GLOBAL innodb_flush_log_at_trx_commit=2');
@@ -182,8 +182,9 @@ class DbTest extends TestCase
         $this->assertFalse($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
     }
 
-    public function test_escapeIdentifier(){
-        $this->assertEquals('`city`',$this->db->escapeIdentifier('city'));
-        $this->assertEquals('`app`.`city`',$this->db->escapeIdentifier('app.city'));
+    public function test_escapeIdentifier()
+    {
+        $this->assertEquals('`city`', $this->db->escapeIdentifier('city'));
+        $this->assertEquals('`app`.`city`', $this->db->escapeIdentifier('app.city'));
     }
 }

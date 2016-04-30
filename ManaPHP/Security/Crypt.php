@@ -30,13 +30,13 @@ namespace ManaPHP\Security {
          */
         protected $_mcrypt;
 
-        public function __construct($key=null)
+        public function __construct($key = null)
         {
             if (!extension_loaded('mcrypt')) {
                 throw new Exception('mcrypt extension is required');
             }
 
-            $this->_key=$key;
+            $this->_key = $key;
 
             $this->_mcrypt = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
         }
@@ -71,7 +71,7 @@ namespace ManaPHP\Security {
 
             mcrypt_generic_init($this->_mcrypt, $encryptKey, $iv);
 
-            return $iv . mcrypt_generic($this->_mcrypt, $data = pack('N', strlen($text) + 16) . $text . md5($text, true));
+            return $iv . mcrypt_generic($this->_mcrypt, pack('N', strlen($text) + 16) . $text . md5($text, true));
         }
 
         /**
@@ -99,7 +99,7 @@ namespace ManaPHP\Security {
 
             $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
 
-            if (strlen($text) < $ivSize * 2) {
+            if (strlen($text) < $ivSize * 3) {
                 throw new Exception('Encrypted data is too short.');
             }
 

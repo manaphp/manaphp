@@ -113,6 +113,7 @@ namespace ManaPHP\Mvc {
                     }
                 }
             }
+
         }
 
         /**
@@ -275,7 +276,7 @@ namespace ManaPHP\Mvc {
                 $dispatcher->getControllerName(), $dispatcher->getActionName());
 
             $this->fireEvent('application:beforeSendResponse', $response);
-            
+
             $response->sendHeaders();
             return $response;
         }

@@ -33,11 +33,11 @@ class MvcModelQueryBuilderTest extends TestCase
         });
 
         $this->di->setShared('db', function () {
-            $config = require __DIR__.'/config.database.php';
+            $config = require __DIR__ . '/config.database.php';
             $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
             $db->attachEvent('db:beforeQuery', function ($event, ManaPHP\DbInterface $source) {
-                       var_dump($source->getSQL());
-                      var_dump($source->getEmulatedSQL());
+                var_dump($source->getSQL());
+                var_dump($source->getEmulatedSQL());
             });
             return $db;
         });

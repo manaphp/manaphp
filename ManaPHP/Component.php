@@ -11,33 +11,33 @@ namespace ManaPHP {
     /**
      * ManaPHP\Component
      *
-     * @property \ManaPHP\Mvc\DispatcherInterface        $dispatcher;
-     * @property \ManaPHP\Mvc\RouterInterface            $router
-    //* @property \ManaPHP\Mvc\UrlInterface $url
-     * @property \ManaPHP\Http\RequestInterface          $request
-     * @property \ManaPHP\Http\ResponseInterface         $response
-     * @property \ManaPHP\Http\CookiesInterface          $cookies
+     * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher;
+     * @property \ManaPHP\Mvc\RouterInterface         $router
+     * @property \ManaPHP\Mvc\UrlInterface            $url
+     * @property \ManaPHP\Http\RequestInterface       $request
+     * @property \ManaPHP\Http\ResponseInterface      $response
+     * @property \ManaPHP\Http\CookiesInterface       $cookies
     //* @property \ManaPHP\FilterInterface $filter
-     * @property \ManaPHP\Flash\Direct                   $flash
+     * @property \ManaPHP\Flash\Direct                $flash
     //* @property \ManaPHP\Flash\Session $flashSession
-     * @property \ManaPHP\Http\SessionInterface          $session
-     * @property \ManaPHP\Event\ManagerInterface         $eventsManager
-     * @property \ManaPHP\DbInterface                    $db
+     * @property \ManaPHP\Http\SessionInterface       $session
+     * @property \ManaPHP\Event\ManagerInterface      $eventsManager
+     * @property \ManaPHP\DbInterface                 $db
     //* @property \ManaPHP\Security $security
-     * @property \ManaPHP\Security\CryptInterface        $crypt
+     * @property \ManaPHP\Security\CryptInterface     $crypt
      * // * @property \ManaPHP\EscaperInterface $escaper
-     * @property \ManaPHP\Mvc\Model\ManagerInterface     $modelsManager
-     * @property \ManaPHP\Mvc\Model\MetadataInterface    $modelsMetadata
+     * @property \ManaPHP\Mvc\Model\ManagerInterface  $modelsManager
+     * @property \ManaPHP\Mvc\Model\MetadataInterface $modelsMetadata
     //     * @property \ManaPHP\Assets\Manager $assets
-     * @property \ManaPHP\Di|\ManaPHP\DiInterface        $di
-     * @property \ManaPHP\Http\Session\BagInterface      $persistent
-     * @property \ManaPHP\Mvc\ViewInterface              $view
-     * @property \ManaPHP\Mvc\View\Tag                   $tag
-     * @property \ManaPHP\Loader                         $loader
-     * @property \ManaPHP\Log\Logger                     $logger
-     * @property \ManaPHP\Mvc\View\Renderer              $renderer
-     * @property \Application\Configure                  $configure
-     * @property \ManaPHP\ApplicationInterface           $application
+     * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
+     * @property \ManaPHP\Http\Session\BagInterface   $persistent
+     * @property \ManaPHP\Mvc\ViewInterface           $view
+     * @property \ManaPHP\Mvc\View\Tag                $tag
+     * @property \ManaPHP\Loader                      $loader
+     * @property \ManaPHP\Log\Logger                  $logger
+     * @property \ManaPHP\Mvc\View\Renderer           $renderer
+     * @property \Application\Configure               $configure
+     * @property \ManaPHP\ApplicationInterface        $application
      */
     class Component implements ComponentInterface
     {

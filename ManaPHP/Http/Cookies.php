@@ -15,12 +15,12 @@ namespace ManaPHP\Http {
         /**
          * @var array
          */
-        protected $_cookies=[];
+        protected $_cookies = [];
 
         /**
          * @var array
          */
-        protected $_deletedCookies=[];
+        protected $_deletedCookies = [];
 
         /**
          * Sets a cookie to be sent at the end of the request
@@ -54,7 +54,7 @@ namespace ManaPHP\Http {
 
             if ($name[0] === '!') {
                 $name = substr($name, 1);
-                $value=$this->_encrypt($value);
+                $value = $this->_encrypt($value);
             }
 
             $cookie['name'] = $name;
@@ -74,7 +74,7 @@ namespace ManaPHP\Http {
          */
         protected function _decrypt($value)
         {
-            return base64_decode($this->crypt->decrypt($value));
+            return $this->crypt->decrypt(base64_decode($value));
         }
 
         /**
@@ -98,12 +98,12 @@ namespace ManaPHP\Http {
         {
             if ($name[0] === '!') {
                 $name = substr($name, 1);
-                if(isset($_COOKIE[$name])){
+                if (isset($_COOKIE[$name])) {
                     return $this->_decrypt($_COOKIE[$name]);
                 }
 
             } else {
-                if(isset($_COOKIE[$name])){
+                if (isset($_COOKIE[$name])) {
                     return $_COOKIE[$name];
                 }
             }
@@ -154,8 +154,8 @@ namespace ManaPHP\Http {
          */
         public function send()
         {
-            if(headers_sent($file,$line)){
-                throw new Exception("Headers has been sent in $file:$line");
+            if (headers_sent($file, $line)) {
+                trigger_error("Headers has been sent in $file:$line", E_USER_WARNING);
             }
 
             foreach ($this->_cookies as $cookie) {

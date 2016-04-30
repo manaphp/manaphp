@@ -9,34 +9,14 @@ namespace ManaPHP {
          */
         protected static $_rootPath;
 
-        /**
-         * @var bool
-         */
-        protected static $_optimizeMode;
-
-        protected static $_loadedClasses = [];
-
         public static function ___autoload($className)
         {
             if (strpos($className, 'ManaPHP') !== 0) {
                 return false;
             }
 
-            if (!self::$_optimizeMode) {
-                self::$_loadedClasses[] = $className;
-            }
-
             if (self::$_rootPath === null) {
                 self::$_rootPath = str_replace('\\', '/', dirname(__DIR__));
-            }
-
-            if (self::$_optimizeMode && substr_compare($className, 'Interface', strlen($className) - 9) === 0) {
-                $namespaceName = str_replace('/', '\\', dirname(str_replace('\\', DIRECTORY_SEPARATOR, $className)));
-                $interfaceName = basename(str_replace('\\', DIRECTORY_SEPARATOR, $className));
-
-                eval("namespace $namespaceName {interface $interfaceName  {}}");
-
-                return true;
             }
 
             $file = self::$_rootPath . '/' . str_replace('\\', '/', $className) . '.php';
@@ -55,23 +35,11 @@ namespace ManaPHP {
         }
 
         /**
-         * @param bool $optimizeMode
-         *
          * @return bool
          */
-        public static function register($optimizeMode = true)
+        public static function register()
         {
-            self::$_optimizeMode = $optimizeMode;
-
             return spl_autoload_register([__CLASS__, '___autoload']);
-        }
-
-        /**
-         * @return array
-         */
-        public static function getLoadedClasses()
-        {
-            return self::$_loadedClasses;
         }
     }
 }

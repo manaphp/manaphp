@@ -94,10 +94,10 @@ namespace ManaPHP\Mvc {
         {
             if (isset($_GET['_url'])) {
                 $url = $_GET['_url'];
-            } elseif (isset($_SERVER['REQUEST_URI'])) {
-                $url = explode('?', $_SERVER['REQUEST_URI'])[0];
+            } elseif (isset($_SERVER['PATH_INFO'])) {
+                $url = $_SERVER['PATH_INFO'];
             } else {
-                throw new Exception('Get rewrite info failed');
+                $url = '/';
             }
 
             return $url;

@@ -339,7 +339,7 @@ namespace ManaPHP\Http {
                 throw new Exception('Response was already sent');
             }
 
-            if(!headers_sent()){
+            if (!headers_sent()) {
                 $this->sendHeaders();
             }
 

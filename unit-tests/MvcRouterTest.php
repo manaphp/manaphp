@@ -577,7 +577,7 @@ class MvcRouterTest extends TestCase
     public function test_getRewriteUri()
     {
         $_GET['_url'] = '/some/route';
-        $_SERVER['REQUEST_URI'] = '/another/route?x=1';
+        $_SERVER['PATH_INFO'] = '/another/route';
 
         $router = new ManaPHP\Mvc\Router(false);
 
@@ -590,7 +590,7 @@ class MvcRouterTest extends TestCase
 
         //second try getting form request_uri
         unset($_GET['_url']);
-        $_SERVER['REQUEST_URI'] = '/another/route2';
+        $_SERVER['PATH_INFO'] = '/another/route2';
         $this->assertEquals('/another/route2', $router->getRewriteUri());
     }
 }
