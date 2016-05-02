@@ -82,7 +82,7 @@ namespace ManaPHP\Mvc\View {
                     $engine = $this->_resolvedEngines[$extension];
 
                     $eventArguments = ['file' => $file, 'vars' => $vars];
-                    $this->fireEvent('renderer:beforeRenderView', $eventArguments);
+                    $this->fireEvent('renderer:beforeRender', $eventArguments);
 
                     if (isset($vars['view'])) {
                         throw new Exception('variable \'view\' is reserved for PHP renderer engine.');
@@ -112,7 +112,7 @@ namespace ManaPHP\Mvc\View {
                     }
 
                     $notExists = false;
-                    $this->fireEvent('renderer:afterRenderView', $eventArguments);
+                    $this->fireEvent('renderer:afterRender', $eventArguments);
                     break;
                 }
             }

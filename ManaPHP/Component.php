@@ -38,6 +38,7 @@ namespace ManaPHP {
      * @property \ManaPHP\Mvc\View\Renderer           $renderer
      * @property \Application\Configure               $configure
      * @property \ManaPHP\ApplicationInterface        $application
+     * @property \ManaPHP\DebuggerInterface           $debugger
      */
     class Component implements ComponentInterface
     {

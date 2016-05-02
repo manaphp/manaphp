@@ -3,7 +3,6 @@
 namespace ManaPHP\Http {
 
     use ManaPHP\Component;
-    use ManaPHP\Http\Cookies\Exception;
 
     /**
      * ManaPHP\Http\Cookies

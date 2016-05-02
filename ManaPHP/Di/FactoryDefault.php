@@ -47,6 +47,7 @@ namespace ManaPHP\Di {
                 'view' => new Service('view', 'ManaPHP\Mvc\View', true),
                 'logger' => new Service('logger', 'ManaPHP\Log\Logger', true),
                 'renderer' => new Service('renderer', 'ManaPHP\Mvc\View\Renderer', true),
+                'debugger' => new Service('debug', 'ManaPHP\Debugger', true),
             ];
         }
 

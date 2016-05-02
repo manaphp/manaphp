@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc {
 
     use ManaPHP\Component;
-    use ManaPHP\Mvc\Router\Exception;
     use ManaPHP\Mvc\Router\NotFoundRouteException;
 
     /**

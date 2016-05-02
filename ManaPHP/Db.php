@@ -179,6 +179,7 @@ namespace ManaPHP {
         {
             $this->_sql = $sql;
             $this->_bind = $bind;
+            $this->_affectedRows = 0;
 
             if ($this->fireEvent('db:beforeQuery') === false) {
                 return false;
@@ -192,6 +193,7 @@ namespace ManaPHP {
                     $statement = $this->_pdo->query($sql);
                 }
 
+                $this->_affectedRows = $statement->rowCount();
                 $statement->setFetchMode($fetchMode);
             } catch (\PDOException $e) {
                 throw new Exception($e->getMessage());

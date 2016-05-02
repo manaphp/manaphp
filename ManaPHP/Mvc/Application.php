@@ -170,9 +170,7 @@ namespace ManaPHP\Mvc {
          */
         public function registerModules($modules)
         {
-            //region DEBUG
             assert(is_array($modules));
-            //endregion
 
             foreach ($modules as $module) {
                 $moduleName = ucfirst($module);

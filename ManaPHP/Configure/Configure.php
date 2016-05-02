@@ -105,5 +105,17 @@ namespace ManaPHP\Configure {
 
             return str_replace($alias, $this->_aliases[$alias], $path);
         }
+
+        public function __debugInfo()
+        {
+            $data = [];
+
+            foreach (get_object_vars($this) as $k => $v) {
+                if (is_scalar($v) || is_array($v) || $v instanceof \stdClass) {
+                    $data[$k] = $v;
+                }
+            }
+            return $data;
+        }
     }
 }

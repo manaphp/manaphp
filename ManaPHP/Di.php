@@ -116,9 +116,7 @@ namespace ManaPHP {
          */
         public function get($name, $parameters = null)
         {
-            //region DEBUG
             assert(is_string($name), 'service name is not a string:' . json_encode($name, JSON_UNESCAPED_SLASHES));
-            //endregion
 
             if (isset($this->_services[$name])) {
                 $instance = $this->_services[$name]->resolve($parameters, $this);

@@ -6,7 +6,9 @@
  */
 namespace ManaPHP\Log {
 
-    class Logger
+    use ManaPHP\Component;
+
+    class Logger extends Component
     {
         const LEVEL_OFF = 0;
 
@@ -81,6 +83,14 @@ namespace ManaPHP\Log {
         }
 
         /**
+         * @return array
+         */
+        public function getLevels()
+        {
+            return array_flip($this->_level_i2s);
+        }
+
+        /**
          * @param int $level
          *
          * @return string
@@ -115,12 +125,22 @@ namespace ManaPHP\Log {
          */
         protected function _log($level, $message, $context)
         {
+            $context['level'] = $this->_level_i2s[$level];
+            $context['date'] = time();
+
+            if (strpos($message, '{') !== false) {
+                $replaces = [];
+                foreach ($context as $k => $v) {
+                    $replaces['{' . $k . '}'] = $v;
+                }
+                $message = strtr($message, $replaces);
+            }
+
+            $this->fireEvent('logger:log', ['level' => $level, 'message' => $message, 'context' => $context]);
+
             if ($level > $this->_level) {
                 return $this;
             }
-
-            $context['level'] = $this->_level_i2s[$level];
-            $context['date'] = time();
 
             foreach ($this->_adapters as $adapter) {
                 try {
