@@ -20,6 +20,10 @@ namespace ManaPHP {
         protected $_sql_count = 0;
         protected $_sql_beforeQueryTime;
 
+        protected $_exception;
+
+        protected $_defaultTab = 'tab_basic';
+
         public function __construct($dependencyInjector = null)
         {
             $this->_dependencyInjector = $dependencyInjector;
@@ -75,10 +79,93 @@ namespace ManaPHP {
             });
         }
 
+        protected function _getExceptionTraceArgs($args)
+        {
+            $data = [];
+
+            foreach ($args as $arg) {
+                if (is_scalar($arg)) {
+                    return json_encode($arg);
+                } else {
+                    if (null) {
+                        return 'null';
+                    } else {
+                        if (is_array($arg)) {
+                            return 'arrays';
+                        } else {
+                            return '?';
+                        }
+                    }
+                }
+            }
+
+            return $data;
+        }
+
+        /**
+         * @return static
+         */
+        public function listenException()
+        {
+            $self = $this;
+            ini_set('html_error', 'off');
+            set_exception_handler(function (\Exception $exception) use ($self) {
+                for ($i = ob_get_level(); $i > 0; $i--) {
+                    ob_end_clean();
+                }
+
+                $callers = [];
+                foreach ($exception->getTrace() as $trace) {
+                    $caller = [];
+
+                    if (isset($trace['class'])) {
+                        $revoke = $trace['class'] . '->' . $trace['function'] . '(' . json_encode($this->_getExceptionTraceArgs($trace['args'])) . ')';
+                    } else {
+                        $revoke = $trace['function'] . '(' . json_encode($this->_getExceptionTraceArgs($trace['args'])) . ')';
+                    }
+                    $caller['file'] = isset($trace['file']) ? $trace['file'] : $exception->getFile();
+                    $caller['line'] = isset($trace['line']) ? $trace['line'] : $exception->getLine();
+                    $caller['revoke'] = $revoke;
+                    $callers[] = $caller;
+                }
+                $this->_exception = [
+                    'message' => $exception->getMessage(),
+                    'code' => $exception->getCode(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'callers' => $callers
+                ];
+
+                $this->_defaultTab = 'tab_exception';
+
+                echo $self->output();
+
+                return true;
+            });
+
+            return $this;
+        }
+
         public function dump($value, $name = null)
         {
-            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-            $this->_dump[] = ['name' => $name, 'value' => $value, 'file' => $backtrace[0]['file'], 'line' => $backtrace[0]['line']];
+            $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+            $caller = isset($traces[1]) && $traces[1]['object'] instanceof $this ? $traces[1] : $traces[0];
+
+            if ($name === null) {
+                $lines = file($caller['file']);
+                $str = $lines[$caller['line'] - 1];
+                if (preg_match('#->dump\((.*)\)\s*;#', $str, $match) === 1) {
+                    $name = $match[1];
+                }
+            }
+
+            $this->_dump[] = [
+                'name' => $name,
+                'value' => $value,
+                'file' => str_replace('\\', '/', $caller['file']),
+                'line' => $caller['line'],
+                'base_name' => basename($caller['file'])
+            ];
             return $this;
         }
 
@@ -121,6 +208,8 @@ namespace ManaPHP {
             /** @noinspection ImplicitMagicMethodCallInspection */
             $data['configure'] = $this->configure->__debugInfo();
             $data['view'] = $this->_view;
+            $data['exception'] = $this->_exception;
+            $data['default_tab'] = $this->_defaultTab;
             if ($template === null) {
                 return $data;
             }

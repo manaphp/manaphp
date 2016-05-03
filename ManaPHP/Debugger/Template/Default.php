@@ -37,7 +37,7 @@
 <body>
 <div class="container" id="app">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#tab_basic" data-toggle="tab">Basic</a></li>
+        <li><a href="#tab_basic" data-toggle="tab">Basic</a></li>
         <li><a href="#tab_dump" data-toggle="tab">Dump</a></li>
         <li><a href="#tab_view" data-toggle="tab">View</a></li>
         <li><a href="#tab_exception" data-toggle="tab">Exception</a></li>
@@ -81,7 +81,8 @@
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
                 <tr>
-                    <td>#</td>
+                    <td width="5%">#</td>
+                    <td width="15%">location</td>
                     <td>name</td>
                     <td>value</td>
                 </tr>
@@ -89,7 +90,8 @@
                 <tbody>
                 <tr v-for="item in dump">
                     <td>{{$index}}</td>
-                    <td title="{{item.file}}:{{item.line}}">{{item.name}}</td>
+                    <td title="{{item.file}}:{{item.line}}">{{item.base_name}}:{{item.line}}</td>
+                    <td>{{item.name}}</td>
                     <td title="{{item.value|json 4}}">
                         <pre>{{item.value|json 4}}</pre>
                     </td>
@@ -120,7 +122,44 @@
         </div>
         <div class="tab-pane" id="tab_exception">
             <h4>Exception</h4>
-            <code lang="json">{{ exception }}</code>
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <td>name</td>
+                    <td>value</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>message</td>
+                    <td>{{exception.message}}</td>
+                </tr>
+                <tr>
+                    <td>code</td>
+                    <td>{{exception.code}}</td>
+                </tr>
+                <tr>
+                    <td>location</td>
+                    <td>{{exception.file}}:{{exception.line}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <td>#</td>
+                    <td>location</td>
+                    <td>revoke</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in exception.callers">
+                    <td>{{$index}}</td>
+                    <td>{{item.file}}:{{item.line}}</td>
+                    <td>{{item.revoke}}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div class="tab-pane" id="tab_configure">
             <h4>Configure</h4>
@@ -271,6 +310,8 @@ unset($data['server']['PATH']);
     data['included_files_application_only'] = true;
     data['log_checked_executed'] = true;
     data['global_type'] = 'request';
+
+    $("a[href='#<?=$data['default_tab']?>']").tab('show');
 
     new Vue({
         el: '#app',

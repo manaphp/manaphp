@@ -88,15 +88,11 @@ namespace ManaPHP\Mvc {
             $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
             $this->_dependencyInjector->setShared('application', $this);
 
-            $appClass = null;
-            foreach (debug_backtrace() as $bt) {
-                if (isset($bt['class']) && $bt['class'] === __CLASS__) {
-                    $appClass = get_class($bt['object']);
-                    break;
-                }
-            }
+            $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+            $caller = $traces[0];
+            $appClass = get_class($caller['object']);
 
-            if ($appClass !== null) {
+            if (strpos($appClass, 'ManaPHP\\') !== 0) {
                 $appFile = '/' . str_replace('\\', '/', $appClass) . '.php';
                 foreach (get_included_files() as $file) {
                     $file = str_replace('\\', '/', $file);
@@ -113,7 +109,6 @@ namespace ManaPHP\Mvc {
                     }
                 }
             }
-
         }
 
         /**

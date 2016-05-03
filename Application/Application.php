@@ -47,6 +47,8 @@ namespace Application {
         {
             date_default_timezone_set('PRC');
 
+            $this->debugger->listenException();
+
             $this->registerServices();
 
             $this->debuggerFile = $this->configure->resolvePath('@data/Debugger/' . date('Ymd') . '/' . md5('!@#31' . mt_rand() . microtime(true)) . '.html');

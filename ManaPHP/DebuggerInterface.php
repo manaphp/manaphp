@@ -3,6 +3,10 @@ namespace ManaPHP {
 
     interface DebuggerInterface
     {
+        /**
+         * @return static
+         */
+        public function listenException();
 
         /**
          * @param mixed  $value
