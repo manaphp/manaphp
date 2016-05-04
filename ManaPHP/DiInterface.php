@@ -30,6 +30,14 @@ namespace ManaPHP {
         public function setShared($name, $definition);
 
         /**
+         * @param string $name
+         *
+         * @return \ManaPHP\Di\ServiceInterface
+         * @throws \ManaPHP\Exception
+         */
+        public function getService($name);
+
+        /**
          * Removes a service from the service container
          *
          * @param string $name

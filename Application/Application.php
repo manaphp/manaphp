@@ -47,7 +47,9 @@ namespace Application {
         {
             date_default_timezone_set('PRC');
 
-            $this->debugger->listenException();
+            $this->debugger->start();
+
+         //   $this->debugger->listenException();
 
             $this->registerServices();
 

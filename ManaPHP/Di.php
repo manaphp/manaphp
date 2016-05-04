@@ -184,6 +184,20 @@ namespace ManaPHP {
         }
 
         /**
+         * @param string $name
+         *
+         * @return \ManaPHP\Di\ServiceInterface
+         * @throws \ManaPHP\Exception
+         */
+        public function getService($name){
+            if(isset($this->_services[$name])){
+                return $this->_services[$name];
+            }
+
+            throw new \ManaPHP\Exception("Service '$name' wasn't found in the dependency injection container");
+        }
+
+        /**
          * Magic method to get or set services using setters/getters
          *
          * @param string $method
