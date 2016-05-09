@@ -125,7 +125,7 @@ namespace ManaPHP\Mvc {
          *
          * @param \ManaPHP\DiInterface $dependencyInjector
          *
-         * @return \ManaPHP\Mvc\Model\Query\BuilderInterface
+         * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
          */
         public static function query($dependencyInjector = null);
 

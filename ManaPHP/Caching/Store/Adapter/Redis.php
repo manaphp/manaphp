@@ -26,7 +26,7 @@ namespace ManaPHP\Caching\Store\Adapter {
          *
          * @param array
          *
-         * @throws \ManaPHP\Caching\Store\Exception
+         * @throws \ManaPHP\Caching\Store\Adapter\Exception
          */
         public function __construct($options)
         {
@@ -62,7 +62,7 @@ namespace ManaPHP\Caching\Store\Adapter {
         }
 
         /**
-         * @throws \ManaPHP\Caching\Store\Exception
+         * @throws \ManaPHP\Caching\Store\Adapter\Exception
          */
         protected function _connect()
         {
@@ -101,7 +101,7 @@ namespace ManaPHP\Caching\Store\Adapter {
          * @param string $id
          *
          * @return string|false
-         * @throws \ManaPHP\Caching\Store\Exception
+         * @throws \ManaPHP\Caching\Store\Adapter\Exception
          */
         public function get($id)
         {
@@ -128,7 +128,7 @@ namespace ManaPHP\Caching\Store\Adapter {
          * @param string $value
          *
          * @return void
-         * @throws \ManaPHP\Caching\Store\Exception
+         * @throws \ManaPHP\Caching\Store\Adapter\Exception
          */
         public function set($id, $value)
         {
@@ -154,7 +154,7 @@ namespace ManaPHP\Caching\Store\Adapter {
          * @param string $id
          *
          * @void
-         * @throws \ManaPHP\Caching\Store\Exception
+         * @throws \ManaPHP\Caching\Store\Adapter\Exception
          */
         public function delete($id)
         {
@@ -171,7 +171,7 @@ namespace ManaPHP\Caching\Store\Adapter {
          * @param string $id
          *
          * @return bool
-         * @throws \ManaPHP\Caching\Store\Exception
+         * @throws \ManaPHP\Caching\Store\Adapter\Exception
          */
         public function exists($id)
         {

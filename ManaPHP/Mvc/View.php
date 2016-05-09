@@ -196,7 +196,7 @@ namespace ManaPHP\Mvc {
          * @param string $action
          *
          * @return static
-         * @throws \ManaPHP\Mvc\View\Exception
+         * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
          */
         public function render($module, $controller, $action)
         {
@@ -279,7 +279,7 @@ namespace ManaPHP\Mvc {
          * @param string $path
          * @param array  $vars
          *
-         * @throws \ManaPHP\Mvc\View\Exception
+         * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
          */
         public function partial($path, $vars = [])
         {

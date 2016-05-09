@@ -214,7 +214,7 @@ namespace ManaPHP {
             $data['sql']['executed'] = $this->_sql_executed;
             $data['sql']['count'] = $this->_sql_count;
             /** @noinspection ImplicitMagicMethodCallInspection */
-            $data['configure'] = $this->_dependencyInjector->has('configure')?$this->configure->__debugInfo():[];
+            $data['configure'] = $this->_dependencyInjector->has('configure') ? $this->configure->__debugInfo() : [];
             $data['view'] = $this->_view;
             $data['exception'] = $this->_exception;
             $data['default_tab'] = $this->_defaultTab;

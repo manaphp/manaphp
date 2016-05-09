@@ -45,7 +45,7 @@ namespace ManaPHP\Mvc\Model {
         protected $_sources = [];
 
         /**
-         * @var \ManaPHP\Mvc\Model\Query\BuilderInterface
+         * @var \ManaPHP\Mvc\Model\QueryBuilderInterface
          */
         protected $_builder;
 
@@ -248,12 +248,12 @@ namespace ManaPHP\Mvc\Model {
          *
          * @param string $params
          *
-         * @return \ManaPHP\Mvc\Model\Query\BuilderInterface
+         * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception
          */
         public function createBuilder($params = null)
         {
-            $this->_builder = $this->_dependencyInjector->get('ManaPHP\Mvc\Model\Query\Builder',
+            $this->_builder = $this->_dependencyInjector->get('ManaPHP\Mvc\Model\QueryBuilder',
                 [$params, $this->_dependencyInjector]);
 
             return $this->_builder;
@@ -262,7 +262,7 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Returns the latest query created or executed in the models manager
          *
-         * @return \ManaPHP\Mvc\Model\QueryInterface
+         * @return string
          */
         public function getLastQuery()
         {

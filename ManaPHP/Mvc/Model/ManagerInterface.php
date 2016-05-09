@@ -108,14 +108,14 @@ namespace ManaPHP\Mvc\Model {
          *
          * @param string $params
          *
-         * @return \ManaPHP\Mvc\Model\Query\BuilderInterface
+         * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
          */
         public function createBuilder($params = null);
 
         /**
          * Returns the last query created or executed in the
          *
-         * @return \ManaPHP\Mvc\Model\QueryInterface
+         * @return string
          */
         public function getLastQuery();
     }

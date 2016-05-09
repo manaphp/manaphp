@@ -170,7 +170,7 @@ namespace ManaPHP\Mvc {
          * @param bool   $silent
          *
          * @return boolean
-         * @throws \ManaPHP\Mvc\Router\Exception
+         * @throws \ManaPHP\Mvc\Router\Exception|\ManaPHP\Mvc\Router\NotFoundRouteException
          */
         public function handle($uri = null, $host = null, $silent = true)
         {

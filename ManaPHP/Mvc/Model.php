@@ -296,18 +296,10 @@ namespace ManaPHP\Mvc {
             $dependencyInjector = Di::getDefault();
             $modelsManager = $dependencyInjector->getShared('modelsManager');
 
-            $builder = $modelsManager->createBuilder($parameters);
-            $builder->from(get_called_class());
-
-            $query = $builder->getQuery();
-
-            if (isset($params['bind'])) {
-                $query->setBind($params['bind'], true);
-            }
-
-            $query->cache($cacheOptions);
-
-            $resultset = $query->execute();
+            $resultset = $modelsManager->createBuilder($parameters)
+                ->from(get_called_class())
+                ->setCacheOptions($cacheOptions)
+                ->execute();
 
             if (is_array($resultset)) {
                 $modelInstances = [];
@@ -341,7 +333,7 @@ namespace ManaPHP\Mvc {
          * </code>
          *
          * @param string|array $parameters
-         * @param              $cacheOptions
+         * @param array        $cacheOptions
          *
          * @return static
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
@@ -364,21 +356,14 @@ namespace ManaPHP\Mvc {
                 $parameters = [$parameters];
             }
 
-            $builder = $modelsManager->createBuilder($parameters);
-            $builder->from(get_called_class());
-            $builder->limit(1);
+            $resultset = $modelsManager->createBuilder($parameters)
+                ->from(get_called_class())
+                ->limit(1)
+                ->setCacheOptions($cacheOptions)
+                ->execute();
 
-            $query = $builder->getQuery();
-
-            if (isset($parameters['bind'])) {
-                $query->setBind($parameters['bind'], true);
-            }
-
-            $query->cache($cacheOptions);
-            $result = $query->execute();
-
-            if (is_array($result) && isset($result[0])) {
-                return new static($result[0], $dependencyInjector);
+            if (is_array($resultset) && isset($resultset[0])) {
+                return new static($resultset[0], $dependencyInjector);
             } else {
                 return false;
             }
@@ -389,7 +374,7 @@ namespace ManaPHP\Mvc {
          *
          * @param \ManaPHP\DiInterface $dependencyInjector
          *
-         * @return \ManaPHP\Mvc\Model\Query\BuilderInterface
+         * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
          * @throws \ManaPHP\Di\Exception
          */
         public static function query($dependencyInjector = null)
@@ -477,19 +462,11 @@ namespace ManaPHP\Mvc {
                 $columns = "$function($column) AS $alias";
             }
 
-            $builder = $modelsManager->createBuilder($parameters);
-            $builder->columns($columns);
-            $builder->from(get_called_class());
-
-            $query = $builder->getQuery();
-
-            $query->cache($cacheOptions);
-
-            if (isset($parameters['bind'])) {
-                $resultset = $query->execute([$parameters['bind']]);
-            } else {
-                $resultset = $query->execute();
-            }
+            $resultset = $modelsManager->createBuilder($parameters)
+                ->columns($columns)
+                ->from(get_called_class())
+                ->setCacheOptions($cacheOptions)
+                ->execute();
 
             if (isset($parameters['group'])) {
                 return $resultset;

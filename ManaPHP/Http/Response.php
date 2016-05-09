@@ -266,8 +266,14 @@ namespace ManaPHP\Http {
          */
         public function setJsonContent($content, $jsonOptions = null)
         {
+            $this->setContentType('application/json', 'utf-8');
+
             if ($jsonOptions === null) {
                 $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+            }
+
+            if (isset($this->_dependencyInjector) && $this->configure->debugger) {
+                $jsonOptions |= JSON_PRETTY_PRINT;
             }
 
             $this->_content = json_encode($content, $jsonOptions, 512);

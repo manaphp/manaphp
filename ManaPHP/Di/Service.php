@@ -62,7 +62,7 @@ namespace ManaPHP\Di {
          * @param \ManaPHP\DiInterface $dependencyInjector
          *
          * @return object
-         * @throws \ManaPHP\Exception
+         * @throws \ManaPHP\Di\Exception
          */
         public function resolve($parameters = null, $dependencyInjector = null)
         {

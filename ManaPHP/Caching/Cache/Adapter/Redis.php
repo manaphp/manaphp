@@ -21,7 +21,7 @@ namespace ManaPHP\Caching\Cache\Adapter {
          *
          * @param array $options
          *
-         * @throws \ManaPHP\Caching\Cache\Exception
+         * @throws \ManaPHP\Caching\Cache\Adapter\Exception
          */
         public function __construct($options)
         {
@@ -57,7 +57,7 @@ namespace ManaPHP\Caching\Cache\Adapter {
         }
 
         /**
-         * @throws \ManaPHP\Caching\Cache\Exception
+         * @throws \ManaPHP\Caching\Cache\Adapter\Exception
          */
         protected function _connect()
         {
@@ -96,7 +96,7 @@ namespace ManaPHP\Caching\Cache\Adapter {
          * @param string $key
          *
          * @return string|false
-         * @throws \ManaPHP\Caching\Cache\Exception
+         * @throws \ManaPHP\Caching\Cache\Adapter\Exception
          */
         public function get($key)
         {
@@ -115,7 +115,7 @@ namespace ManaPHP\Caching\Cache\Adapter {
          * @param int    $ttl
          *
          * @return void
-         * @throws \ManaPHP\Caching\Cache\Exception
+         * @throws \ManaPHP\Caching\Cache\Adapter\Exception
          */
         public function set($key, $value, $ttl)
         {
@@ -132,7 +132,7 @@ namespace ManaPHP\Caching\Cache\Adapter {
          * @param string $key
          *
          * @void
-         * @throws \ManaPHP\Caching\Cache\Exception
+         * @throws \ManaPHP\Caching\Cache\Adapter\Exception
          */
         public function delete($key)
         {
@@ -149,7 +149,7 @@ namespace ManaPHP\Caching\Cache\Adapter {
          * @param string $key
          *
          * @return bool
-         * @throws \ManaPHP\Caching\Cache\Exception
+         * @throws \ManaPHP\Caching\Cache\Adapter\Exception
          */
         public function exists($key)
         {

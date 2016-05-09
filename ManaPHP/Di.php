@@ -189,8 +189,9 @@ namespace ManaPHP {
          * @return \ManaPHP\Di\ServiceInterface
          * @throws \ManaPHP\Exception
          */
-        public function getService($name){
-            if(isset($this->_services[$name])){
+        public function getService($name)
+        {
+            if (isset($this->_services[$name])) {
                 return $this->_services[$name];
             }
 

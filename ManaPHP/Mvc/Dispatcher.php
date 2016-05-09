@@ -207,7 +207,7 @@ namespace ManaPHP\Mvc {
          * @param array  $params
          *
          * @return false|\ManaPHP\Mvc\ControllerInterface
-         * @throws \ManaPHP\Mvc\Dispatcher\Exception
+         * @throws \ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException
          */
         public function dispatch($module, $controller, $action, $params = null)
         {
