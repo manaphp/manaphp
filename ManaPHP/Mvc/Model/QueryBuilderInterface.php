@@ -247,5 +247,14 @@ namespace ManaPHP\Mvc\Model {
          * @return array
          */
         public function execute($cache = null);
+
+        /**build the query and execute it.
+         *
+         * @param int $totalRows
+         * @param array $cache
+         *
+         * @return array
+         */
+        public function executeEx(&$totalRows,$cache = null);
     }
 }
