@@ -497,4 +497,33 @@ class MvcModelQueryBuilderTest extends TestCase
             ->addFrom(get_class(new Address()));
         $this->assertCount(601, $builder->execute());
     }
+
+    public function test_executeEx(){
+        $rows=$this->modelsManager->createBuilder()
+                    ->addFrom(City::class)
+                    ->executeEx($totalRows);
+        $this->assertCount(600,$rows);
+        $this->assertEquals(600,$totalRows);
+
+        $rows=$this->modelsManager->createBuilder()
+                ->addFrom(City::class)
+                ->limit(100)
+                ->executeEx($totalRows);
+        $this->assertCount(100,$rows);
+        $this->assertEquals(600,$totalRows);
+
+        $rows=$this->modelsManager->createBuilder()
+            ->addFrom(City::class)
+            ->limit(200,100)
+            ->executeEx($totalRows);
+        $this->assertCount(200,$rows);
+        $this->assertEquals(600,$totalRows);
+
+        $rows=$this->modelsManager->createBuilder()
+            ->addFrom(City::class)
+            ->limit(300,1000)
+            ->executeEx($totalRows);
+        $this->assertCount(0,$rows);
+        $this->assertEquals(600,$totalRows);
+    }
 }

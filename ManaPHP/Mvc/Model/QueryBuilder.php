@@ -884,5 +884,29 @@ namespace ManaPHP\Mvc\Model {
 
             return $this;
         }
+
+        /**build the query and execute it.
+         *
+         * @param int $totalRows
+         * @param array $cache
+         *
+         * @return array
+         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
+         */
+        public function executeEx(&$totalRows,$cache = null){
+            $results=$this->execute($cache);
+
+            if(!$this->_limit){
+                $totalRows=count($results);
+            }else{
+                if(count($results)===$this->_limit ||count($results)===0){
+                    $this->getTotalRows($totalRows);
+                }else{
+                    $totalRows=$this->_offset+$this->_limit;
+                }
+            }
+
+            return $results;
+        }
     }
 }
