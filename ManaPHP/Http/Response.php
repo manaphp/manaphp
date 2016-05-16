@@ -188,25 +188,17 @@ namespace ManaPHP\Http {
          *<code>
          *  //Using a string redirect (internal/external)
          *    $response->redirect("posts/index");
-         *    $response->redirect("http://www.google.com", true);
-         *    $response->redirect("http://www.example.com/new-location", true, 301);
-         *
-         *    //Making a redirection based on a named route
-         *    $response->redirect(array(
-         *        "for" => "index-lang",
-         *        "lang" => "jp",
-         *        "controller" => "index"
-         *    ));
+         *    $response->redirect("http://www.google.com");
+         *    $response->redirect("http://www.example.com/new-location", 301);
          *</code>
          *
          * @param string|array $location
-         * @param boolean      $externalRedirect
          * @param int|string   $statusCode
          *
          * @return static
          * @throws \ManaPHP\Http\Response\Exception
          */
-        public function redirect($location, $externalRedirect = false, $statusCode = 302)
+        public function redirect($location, $statusCode = 302)
         {
             if (is_string($statusCode)) {
                 $statusCode = (int)$statusCode;
