@@ -838,20 +838,13 @@ namespace ManaPHP\Mvc\Model {
          * @return static
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
-        public function getTotalRows(&$rowCount)
+        protected function _getTotalRows(&$rowCount)
         {
-            $columns = $this->_columns;
-            $limit = $this->_limit;
-            $offset = $this->_offset;
-
             $this->_columns = 'COUNT(*) as row_count';
             $this->_limit = null;
             $this->_offset = null;
 
             $sql = $this->getSql();
-            $this->_columns = $columns;
-            $this->_limit = $limit;
-            $this->_offset = $offset;
 
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $modelsManager = $this->_dependencyInjector->getShared('modelsManager');
@@ -895,13 +888,15 @@ namespace ManaPHP\Mvc\Model {
          */
         public function executeEx(&$totalRows, $cache = null)
         {
+            $copy= clone $this;
+
             $results = $this->execute($cache);
 
             if (!$this->_limit) {
                 $totalRows = count($results);
             } else {
                 if (count($results) % $this->_limit === 0) {
-                    $this->getTotalRows($totalRows);
+                    $copy->_getTotalRows($totalRows);
                 } else {
                     $totalRows = $this->_offset + count($results);
                 }
