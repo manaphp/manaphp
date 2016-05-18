@@ -364,13 +364,9 @@ namespace ManaPHP\Mvc\Model {
          */
         public function where($conditions, $bind = null)
         {
-            $this->_conditions = [$conditions];
+            $this->_conditions = [];
 
-            if ($bind !== null) {
-                $this->_bind = array_merge($this->_bind, $bind);
-            }
-
-            return $this;
+            return $this->andWhere($conditions, $bind);
         }
 
         /**
@@ -388,6 +384,22 @@ namespace ManaPHP\Mvc\Model {
          */
         public function andWhere($conditions, $bind = null)
         {
+            if (is_scalar($bind)) {
+                $conditions = trim($conditions);
+
+                if (strpos($conditions, ' ') === false) {
+                    $conditions .= ' =';
+                }
+
+                list($column) = explode(' ', $conditions);
+                $column = str_replace('.', '_', $column);
+                /** @noinspection CascadeStringReplacementInspection */
+                $column = str_replace(['`', '[', ']'], '', $column);
+
+                $conditions = $conditions . ' :' . $column;
+                $bind = [$column => $bind];
+            }
+
             $this->_conditions[] = $conditions;
 
             if ($bind !== null) {
@@ -888,7 +900,7 @@ namespace ManaPHP\Mvc\Model {
          */
         public function executeEx(&$totalRows, $cache = null)
         {
-            $copy= clone $this;
+            $copy = clone $this;
 
             $results = $this->execute($cache);
 

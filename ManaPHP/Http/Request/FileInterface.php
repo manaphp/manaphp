@@ -45,20 +45,20 @@ namespace ManaPHP\Http\Request {
         public function getType();
 
         /**
-         * Gets the real mime type of the upload file
-         *
-         * @return string
-         */
-        public function getRealType();
-
-        /**
          * Move the temporary file to a destination
          *
-         * @param string $destination
+         * @param string       $destination
+         * @param string|false $allowedExtensions
          *
          * @throws \ManaPHP\Http\Request\File\Exception
          */
-        public function moveTo($destination);
+        public function moveTo($destination, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip');
 
+        /**
+         * Returns the file extension
+         *
+         * @return string
+         */
+        public function getExtension();
     }
 }

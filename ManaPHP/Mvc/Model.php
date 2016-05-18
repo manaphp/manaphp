@@ -410,7 +410,7 @@ namespace ManaPHP\Mvc {
 
                 $bindKey = $attributeField;
 
-                $conditions[] = $attributeField . ' =' . $bindKey;
+                $conditions[] = $attributeField . ' =:' . $bindKey;
                 $bind[$bindKey] = $this->{$attributeField};
             }
 
