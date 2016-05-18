@@ -238,6 +238,13 @@ class MvcModelTest extends TestCase
         $this->assertEquals(1, $student->id);
         $this->assertEquals(21, $student->age);
         $this->assertEquals('mana', $student->name);
+
+        //fixed bug: if record is existed already
+        $student = new Student();
+        $student->id=2;
+        $student->age = 21;
+        $student->name = 'mana';
+        $student->create();
     }
 
     public function test_update()

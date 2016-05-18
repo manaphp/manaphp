@@ -106,7 +106,7 @@ class HttpResponseTest extends TestCase
         $response = new tResponse();
         $response->setDependencyInjector(new ManaPHP\Di());
 
-        $response->redirect('http://www.manaphp.com', true);
+        $response->redirect('http://www.manaphp.com');
         $this->assertEquals([
             'Status' => '302 Temporarily Moved',
             'Location' => 'http://www.manaphp.com'
@@ -115,7 +115,7 @@ class HttpResponseTest extends TestCase
         $response = new tResponse();
         $response->setDependencyInjector(new ManaPHP\Di());
 
-        $response->redirect('http://www.manaphp.com', true, 301);
+        $response->redirect('http://www.manaphp.com', 301);
         $this->assertEquals([
             'Status' => '301 Permanently Moved',
             'Location' => 'http://www.manaphp.com'
@@ -124,7 +124,7 @@ class HttpResponseTest extends TestCase
         $response = new tResponse();
         $response->setDependencyInjector(new ManaPHP\Di());
 
-        $response->redirect('http://www.manaphp.com', false, 301);
+        $response->redirect('http://www.manaphp.com', 301);
         $this->assertEquals([
             'Status' => '301 Permanently Moved',
             'Location' => 'http://www.manaphp.com'

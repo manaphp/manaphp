@@ -66,13 +66,12 @@ namespace ManaPHP\Http {
         /**
          * Redirect by HTTP to another action or URL
          *
-         * @param string  $location
-         * @param boolean $externalRedirect
-         * @param int     $statusCode
+         * @param string $location
+         * @param int    $statusCode
          *
          * @return static
          */
-        public function redirect($location, $externalRedirect = false, $statusCode = 302);
+        public function redirect($location, $statusCode = 302);
 
         /**
          * Sets HTTP response body

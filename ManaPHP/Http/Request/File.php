@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Http\Request {
 
-    use ManaPHP\Http\Request\File\Exception as FileException;
-
     /**
      * ManaPHP\Http\Request\File
      *
@@ -18,7 +16,7 @@ namespace ManaPHP\Http\Request {
      *            //Check if the user has uploaded files
      *            if ($this->request->hasFiles() == true) {
      *                //Print the real file names and their sizes
-     *                foreach ($this->request->getUploadedFiles() as $file){
+     *                foreach ($this->request->getFiles() as $file){
      *                    echo $file->getName(), " ", $file->getSize(), "\n";
      *                }
      *            }
@@ -38,6 +36,11 @@ namespace ManaPHP\Http\Request {
          * @var array
          */
         protected $_file;
+
+        /**
+         * @var string
+         */
+        protected static $_alwaysRejectedExtensions = 'php,pl,py,cgi,asp,jsp,sh,cgi';
 
         /**
          * \ManaPHP\Http\Request\File constructor
@@ -93,24 +96,6 @@ namespace ManaPHP\Http\Request {
         }
 
         /**
-         * Gets the real mime type of the upload file
-         *
-         * @return string
-         */
-        public function getRealType()
-        {
-            $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-            if (!is_resource($fileInfo)) {
-                return '';
-            }
-
-            $mime = finfo_file($fileInfo, $this->_file['tmp_name']);
-            finfo_close($fileInfo);
-
-            return $mime;
-        }
-
-        /**
          * Returns the error code
          *
          * @return string
@@ -143,29 +128,54 @@ namespace ManaPHP\Http\Request {
         /**
          * Moves the temporary file to a destination within the application
          *
-         * @param string $destination
+         * @param string       $destination
+         * @param string|false $allowedExtensions
          *
-         * @throws \ManaPHP\Http\Request\File\Exception
+         * @throws \ManaPHP\Http\Request\Exception
          */
-        public function moveTo($destination)
+        public function moveTo($destination, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip')
         {
+            $extension = pathinfo($destination, PATHINFO_EXTENSION);
+            if ($extension) {
+                $extension = ',' . $extension . ',';
+
+                if (is_string($allowedExtensions)) {
+                    $allowedExtensions = ',' . str_replace(' ', '', $allowedExtensions) . ',';
+                    $allowedExtensions = str_replace(',.', ',', $allowedExtensions);
+
+                    if (stripos($allowedExtensions, $extension) === false) {
+                        throw new Exception('This file type is not allowed upload: ' . $extension);
+                    }
+                }
+
+                if (is_string(self::$_alwaysRejectedExtensions)) {
+                    $alwaysRejectedExtensions = ',' . str_replace(' ', '', self::$_alwaysRejectedExtensions) . ',';
+                    $alwaysRejectedExtensions = str_replace(',.', ',', $alwaysRejectedExtensions);
+                    if (stripos($alwaysRejectedExtensions, $extension) !== false) {
+                        throw new Exception('These file types is not allowed upload always: ' . self::$_alwaysRejectedExtensions);
+                    }
+                }
+            }
 
             if ($this->_file['error'] !== UPLOAD_ERR_OK) {
-                throw new FileException('Error code of upload file is not UPLOAD_ERR_OK: ' . $this->_file['error']);
+                throw new Exception('Error code of upload file is not UPLOAD_ERR_OK: ' . $this->_file['error']);
             }
 
             if (is_file($destination)) {
-                throw new FileException('File already exists: \'' . $destination . '\'');
+                throw new Exception('File already exists: \'' . $destination . '\'');
             }
 
             $dir = dirname($destination);
             if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                throw new FileException('Unable to create \'' . $dir . '\' directory: ' . error_get_last()['message']);
+                throw new Exception('Unable to create \'' . $dir . '\' directory: ' . error_get_last()['message']);
             }
 
-            $r = move_uploaded_file($this->_file['tmp_name'], $destination);
-            if ($r !== true) {
-                throw new FileException(error_get_last()['message']);
+            if (!move_uploaded_file($this->_file['tmp_name'], $destination)) {
+                throw new Exception(error_get_last()['message']);
+            }
+
+            if (!chmod($destination, 0644)) {
+                throw new Exception(error_get_last()['message']);
             }
         }
 

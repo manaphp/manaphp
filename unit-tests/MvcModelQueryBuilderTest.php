@@ -291,6 +291,46 @@ class MvcModelQueryBuilderTest extends TestCase
             ->andWhere('address_id <=:max_address_id', ['max_address_id' => 100])
             ->addFrom(get_class(new Address()));
         $this->assertCount(50, $builder->execute());
+
+        $builder=$this->modelsManager->createBuilder()
+                ->addFrom(get_class(new Address()))
+                ->andWhere('address_id',1);
+        $this->assertCount(1,$builder->execute());
+
+        $builder=$this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()))
+            ->andWhere(' address_id ',1);
+        $this->assertCount(1,$builder->execute());
+
+        $builder=$this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()))
+            ->andWhere('`address_id`',1);
+        $this->assertCount(1,$builder->execute());
+
+        $builder=$this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()))
+            ->andWhere('address_id =',1);
+        $this->assertCount(1,$builder->execute());
+
+        $builder=$this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()))
+            ->andWhere('address_id <',2);
+        $this->assertCount(1,$builder->execute());
+
+        $builder=$this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()))
+            ->andWhere('address_id LIKE','2%');
+        $this->assertCount(110,$builder->execute());
+
+        $builder=$this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()),'a')
+            ->andWhere('a.address_id',1);
+        $this->assertCount(1,$builder->execute());
+
+        $builder=$this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()),'a')
+            ->andWhere('a.address_id',1);
+        $this->assertCount(1,$builder->execute());
     }
 
     public function test_betweenWhere()

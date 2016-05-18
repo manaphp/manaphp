@@ -268,8 +268,6 @@ namespace ManaPHP\Mvc {
             $response = $this->_getResponse($dispatcher->getReturnedValue(), $moduleName,
                 $dispatcher->getControllerName(), $dispatcher->getActionName());
 
-            $this->fireEvent('application:beforeSendResponse', $response);
-
             $response->sendHeaders();
             return $response;
         }

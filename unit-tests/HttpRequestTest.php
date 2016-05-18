@@ -414,7 +414,6 @@ class HttpRequestTest extends TestCase
 
     public function test_getFiles()
     {
-
         $request = new \ManaPHP\Http\Request();
 
         $_FILES = array(
@@ -463,5 +462,6 @@ class HttpRequestTest extends TestCase
         $this->assertEquals($successful[0]->getName(), 'f0');
 
         $this->assertEquals($successful[0]->getTempName(), 't0');
+        $this->assertEquals($successful[0]->getExtension(),'');
     }
 }

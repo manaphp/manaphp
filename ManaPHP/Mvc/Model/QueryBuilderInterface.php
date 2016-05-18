@@ -232,14 +232,6 @@ namespace ManaPHP\Mvc\Model {
          */
         public function setCacheOptions($options);
 
-        /**
-         * @param int $rowCount
-         *
-         * @return static
-         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
-         */
-        public function getTotalRows(&$rowCount);
-
         /**build the query and execute it.
          *
          * @param array $cache
@@ -250,11 +242,11 @@ namespace ManaPHP\Mvc\Model {
 
         /**build the query and execute it.
          *
-         * @param int $totalRows
+         * @param int   $totalRows
          * @param array $cache
          *
          * @return array
          */
-        public function executeEx(&$totalRows,$cache = null);
+        public function executeEx(&$totalRows, $cache = null);
     }
 }

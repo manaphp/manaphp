@@ -364,13 +364,9 @@ namespace ManaPHP\Mvc\Model {
          */
         public function where($conditions, $bind = null)
         {
-            $this->_conditions = [$conditions];
+            $this->_conditions = [];
 
-            if ($bind !== null) {
-                $this->_bind = array_merge($this->_bind, $bind);
-            }
-
-            return $this;
+            return $this->andWhere($conditions, $bind);
         }
 
         /**
@@ -388,6 +384,22 @@ namespace ManaPHP\Mvc\Model {
          */
         public function andWhere($conditions, $bind = null)
         {
+            if (is_scalar($bind)) {
+                $conditions = trim($conditions);
+
+                if (strpos($conditions, ' ') === false) {
+                    $conditions .= ' =';
+                }
+
+                list($column) = explode(' ', $conditions);
+                $column = str_replace('.', '_', $column);
+                /** @noinspection CascadeStringReplacementInspection */
+                $column = str_replace(['`', '[', ']'], '', $column);
+
+                $conditions = $conditions . ' :' . $column;
+                $bind = [$column => $bind];
+            }
+
             $this->_conditions[] = $conditions;
 
             if ($bind !== null) {
@@ -838,20 +850,13 @@ namespace ManaPHP\Mvc\Model {
          * @return static
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
-        public function getTotalRows(&$rowCount)
+        protected function _getTotalRows(&$rowCount)
         {
-            $columns = $this->_columns;
-            $limit = $this->_limit;
-            $offset = $this->_offset;
-
             $this->_columns = 'COUNT(*) as row_count';
             $this->_limit = null;
             $this->_offset = null;
 
             $sql = $this->getSql();
-            $this->_columns = $columns;
-            $this->_limit = $limit;
-            $this->_offset = $offset;
 
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $modelsManager = $this->_dependencyInjector->getShared('modelsManager');
@@ -895,13 +900,15 @@ namespace ManaPHP\Mvc\Model {
          */
         public function executeEx(&$totalRows, $cache = null)
         {
+            $copy = clone $this;
+
             $results = $this->execute($cache);
 
             if (!$this->_limit) {
                 $totalRows = count($results);
             } else {
                 if (count($results) % $this->_limit === 0) {
-                    $this->getTotalRows($totalRows);
+                    $copy->_getTotalRows($totalRows);
                 } else {
                     $totalRows = $this->_offset + count($results);
                 }
