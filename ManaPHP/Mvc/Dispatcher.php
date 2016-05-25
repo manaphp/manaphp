@@ -240,10 +240,10 @@ namespace ManaPHP\Mvc {
                 }
 
                 $controllerClassName = '';
-                if ($this->_rootNamespace !== null && $this->_rootNamespace !== '') {
+                if ($this->_rootNamespace) {
                     $controllerClassName .= $this->_rootNamespace . '\\';
                 }
-                if ($this->_rootNamespace !== null && $this->_moduleName !== '') {
+                if ($this->_moduleName) {
                     $controllerClassName .= $this->_moduleName . '\\Controllers\\';
                 }
                 $controllerClassName .= $this->_controllerName . $this->_controllerSuffix;
