@@ -57,7 +57,7 @@
         <li><a href="#tab_included_files" data-toggle="tab">IncludedFiles</a></li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane active" id="tab_basic">
+        <div class="tab-pane" id="tab_basic">
             <h4>Basic Information</h4>
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
@@ -311,7 +311,7 @@ unset($data['server']['PATH']);
     data['log_checked_executed'] = true;
     data['global_type'] = 'request';
 
-    $("a[href='#<?=$data['default_tab']?>']").tab('show');
+    $("a[href='#<?=count($data['exception'])===0?'tab_basic':'tab_exception'?>']").tab('show');
 
     new Vue({
         el: '#app',

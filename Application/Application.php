@@ -11,8 +11,6 @@ namespace Application {
 
     class Application extends \ManaPHP\Mvc\Application
     {
-        public $debuggerFile;
-
         protected function registerServices()
         {
             $self = $this;
@@ -49,23 +47,7 @@ namespace Application {
 
             $this->debugger->start();
 
-         //   $this->debugger->listenException();
-
             $this->registerServices();
-
-            $this->debuggerFile = $this->configure->resolvePath('@data/Debugger/' . date('Ymd') . '/' . md5('!@#31' . mt_rand() . microtime(true)) . '.html');
-            if (isset($_GET['_debugger_file'])) {
-                $file = base64_decode($_GET['_debugger_file']);
-                if (is_file($file)) {
-                    exit(file_get_contents($file));
-                } else {
-                    if (strpos($file, $this->configure->resolvePath('@data/Debugs')) === false) {
-                        throw new Exception('Are you a hacker? please stop!');
-                    } else {
-                        throw new Exception('Debugger File is not exists: ' . $file);
-                    }
-                }
-            }
 
             // $this->logger->debug('start');
 

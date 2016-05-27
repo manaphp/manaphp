@@ -1,15 +1,5 @@
-<?php
-$debuggerFile = $view->application->debuggerFile;
-if ($debuggerFile) {
-    $dir = dirname($debuggerFile);
-    if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-        throw new \Application\Exception("Create directory $dir failed: ", error_get_last()['message']);
-    }
-}
-file_put_contents($debuggerFile, $view->debugger->output());
-?>
 <div style="position: fixed;right: 10px; top: 10px; background-color: red"><a target="_blank"
-                                                                              href="<?= $view->url->get('/', ['_debugger_file' => base64_encode($debuggerFile)]) ?>">Debug Info</a>
+href="<?=$view->debugger->save();?>">Debug Info</a>
 </div>
 </body>
 </html>
