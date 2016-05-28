@@ -233,30 +233,24 @@ namespace ManaPHP\Mvc {
                     throw new Exception('Dispatcher has detected a cyclic routing causing stability problems');
                 }
 
-                $this->fireEvent('dispatcher:beforeDispatch');
+                if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
+                    return false;
+                }
 
                 if ($this->_finished === false) {
                     continue;
                 }
 
                 $controllerClassName = '';
-                if ($this->_rootNamespace !== null && $this->_rootNamespace !== '') {
+                if ($this->_rootNamespace) {
                     $controllerClassName .= $this->_rootNamespace . '\\';
                 }
-                if ($this->_rootNamespace !== null && $this->_moduleName !== '') {
+                if ($this->_moduleName) {
                     $controllerClassName .= $this->_moduleName . '\\Controllers\\';
                 }
                 $controllerClassName .= $this->_controllerName . $this->_controllerSuffix;
 
                 if (!$this->_dependencyInjector->has($controllerClassName) && !class_exists($controllerClassName)) {
-                    if ($this->fireEvent('dispatcher:beforeNotFoundController') === false) {
-                        return false;
-                    }
-
-                    if ($this->_finished === false) {
-                        continue;
-                    }
-
                     throw new NotFoundControllerException($controllerClassName . ' handler class cannot be loaded');
                 }
 
@@ -286,15 +280,15 @@ namespace ManaPHP\Mvc {
                 }
 
                 if (!$hasAction) {
-                    if ($this->fireEvent('dispatcher:beforeNotFoundAction') === false) {
-                        continue;
-                    }
-
-                    if ($this->_finished === false) {
-                        continue;
-                    }
-
                     throw new NotFoundActionException('Action \'' . $this->_actionName . '\' was not found on handler \'' . $controllerClassName . '\'');
+                }
+
+                if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
+                    return false;
+                }
+
+                if ($this->_finished === false) {
+                    continue;
                 }
 
                 // Calling beforeExecuteRoute as callback
@@ -321,6 +315,14 @@ namespace ManaPHP\Mvc {
 
                 // Call afterDispatch
                 $this->fireEvent('dispatcher:afterDispatch');
+
+                if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
+                    return false;
+                }
+
+                if ($this->_finished === false) {
+                    continue;
+                }
 
                 if (method_exists($controllerInstance, 'afterExecuteRoute')) {
                     if ($controllerInstance->afterExecuteRoute($this, $value) === false) {

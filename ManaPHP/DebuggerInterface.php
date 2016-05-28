@@ -31,5 +31,12 @@ namespace ManaPHP {
          * @return string|array
          */
         public function output($template = 'Default');
+
+        /**
+         * @param string $template
+         *
+         * @return string
+         */
+        public function save($template = 'Default');
     }
 }

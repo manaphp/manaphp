@@ -167,7 +167,7 @@ class MvcDispatcherTest extends TestCase
             $dispatcher->dispatch('app', 'Index', 'index');
             $this->fail('why not?');
         } catch (\Manaphp\Exception $e) {
-            $this->assertEquals('IndexController handler class cannot be loaded', $e->getMessage());
+            $this->assertEquals('App\Controllers\IndexController handler class cannot be loaded', $e->getMessage());
             $this->assertInstanceOf('ManaPHP\Mvc\Dispatcher\Exception', $e);
         }
 

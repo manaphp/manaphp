@@ -5,19 +5,24 @@ namespace Application {
     {
 
         /**
-         * @var \Configure\Db\Adapter\Mysql $database
+         * @var \ManaConfigure\Db\Adapter\Mysql $database
          */
         public $database;
 
         /**
-         * @var \Configure\Log\Adapter\File
+         * @var \ManaConfigure\Log\Adapter\File
          */
         public $log;
 
         /**
-         * @var \Configure\Security\Crypt
+         * @var \ManaConfigure\Security\Crypt
          */
         public $crypt;
+
+        /**
+         * @var \ManaConfigure\Debugger
+         */
+        public $debugger;
 
         public function __construct($dependencyInjector = null)
         {
@@ -43,6 +48,9 @@ namespace Application {
 
             $this->crypt = new \stdClass();
             $this->crypt->key = 'test';
+
+            $this->debugger = new \stdClass();
+            $this->debugger->disableAutoResponse = (strpos('127.0.0.', $_SERVER['REMOTE_ADDR']) !== 0 && strpos('192.168.', $_SERVER['REMOTE_ADDR']) !== 0);
         }
     }
 }

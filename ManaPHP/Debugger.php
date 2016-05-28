@@ -20,9 +20,7 @@ namespace ManaPHP {
         protected $_sql_count = 0;
         protected $_sql_beforeQueryTime;
 
-        protected $_exception;
-
-        protected $_defaultTab = 'tab_basic';
+        protected $_exception = [];
 
         /**
          * @param bool $listenException
@@ -32,6 +30,13 @@ namespace ManaPHP {
          */
         public function start($listenException = true)
         {
+            if (isset($_GET['_debugger'])) {
+                $file = $this->application->getDataPath() . '/Debugger/' . substr($_GET['_debugger'], 0, 6) . '/' . $_GET['_debugger'] . '.html';
+                if (is_file($file)) {
+                    exit(file_get_contents($file));
+                }
+            }
+
             $self = $this;
             parent::peekEvents(function ($event, $source, $data) use ($self) {
                 if ($event === 'logger:log') {
@@ -146,8 +151,6 @@ namespace ManaPHP {
                 'callers' => $callers
             ];
 
-            $this->_defaultTab = 'tab_exception';
-
             echo $this->output();
 
             return true;
@@ -217,8 +220,8 @@ namespace ManaPHP {
             $data['configure'] = $this->_dependencyInjector->has('configure') ? $this->configure->__debugInfo() : [];
             $data['view'] = $this->_view;
             $data['exception'] = $this->_exception;
-            $data['default_tab'] = $this->_defaultTab;
-            if ($template === null) {
+
+            if (!$template) {
                 return $data;
             }
 
@@ -237,6 +240,34 @@ namespace ManaPHP {
             /** @noinspection PhpIncludeInspection */
             require $template;
             return ob_get_clean();
+        }
+
+        /**
+         * @param string $template
+         *
+         * @return string
+         * @throws \ManaPHP\Debugger\Exception
+         */
+        public function save($template = 'Default')
+        {
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'ApacheBench') !== false) {
+                return '';
+            }
+
+            list($micro_seconds, $seconds) = explode(' ', microtime());
+            $id = date('ymd_His', $seconds) . '_' . substr($micro_seconds, 2, 6);
+            $file = $this->application->getDataPath() . '/Debugger/' . substr($id, 0, 6) . '/' . $id . '.html';
+
+            $dir = dirname($file);
+            if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+                throw new Exception("Create directory $dir failed: ", error_get_last()['message']);
+            }
+
+            if (!file_put_contents($file, $this->output($template))) {
+                error_log('save debug file failed: ' . $file);
+            }
+
+            return $this->url->get('/?_debugger=' . $id);
         }
     }
 }

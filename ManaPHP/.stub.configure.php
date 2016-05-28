@@ -1,6 +1,6 @@
 <?php
 
-namespace Configure\Db\Adapter {
+namespace ManaConfigure\Db\Adapter {
 
     class Mysql
     {
@@ -13,7 +13,7 @@ namespace Configure\Db\Adapter {
     }
 }
 
-namespace Configure\Log\Adapter {
+namespace ManaConfigure\Log\Adapter {
 
     class File
     {
@@ -21,10 +21,18 @@ namespace Configure\Log\Adapter {
     }
 }
 
-namespace Configure\Security {
+namespace ManaConfigure\Security {
 
     class Crypt
     {
         public $key;
+    }
+}
+
+namespace ManaConfigure {
+
+    class Debugger
+    {
+        public $disableAutoResponse;
     }
 }

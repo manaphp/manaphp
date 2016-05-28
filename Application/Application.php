@@ -11,13 +11,9 @@ namespace Application {
 
     class Application extends \ManaPHP\Mvc\Application
     {
-        public $debuggerFile;
-
         protected function registerServices()
         {
             $self = $this;
-
-            $this->_dependencyInjector->setShared('configure', new Configure());
 
             $this->_dependencyInjector->setShared('router', function () {
                 return (new Router())->mount(new Group(), 'Home', '/');
@@ -47,25 +43,15 @@ namespace Application {
         {
             date_default_timezone_set('PRC');
 
+            $this->_dependencyInjector->setShared('configure', new Configure());
+
+            if ($this->configure->debugger->disableAutoResponse) {
+                unset($_GET['_debugger']);//disable auto response to debugger data fetching request
+            }
+
             $this->debugger->start();
 
-         //   $this->debugger->listenException();
-
             $this->registerServices();
-
-            $this->debuggerFile = $this->configure->resolvePath('@data/Debugger/' . date('Ymd') . '/' . md5('!@#31' . mt_rand() . microtime(true)) . '.html');
-            if (isset($_GET['_debugger_file'])) {
-                $file = base64_decode($_GET['_debugger_file']);
-                if (is_file($file)) {
-                    exit(file_get_contents($file));
-                } else {
-                    if (strpos($file, $this->configure->resolvePath('@data/Debugs')) === false) {
-                        throw new Exception('Are you a hacker? please stop!');
-                    } else {
-                        throw new Exception('Debugger File is not exists: ' . $file);
-                    }
-                }
-            }
 
             // $this->logger->debug('start');
 
