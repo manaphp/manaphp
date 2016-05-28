@@ -8,22 +8,6 @@ namespace ManaPHP\Mvc {
     interface ViewInterface
     {
         /**
-         * Sets app directory
-         *
-         * @param string $appDir
-         *
-         * @return static
-         */
-        public function setAppDir($appDir);
-
-        /**
-         * Gets app directory
-         *
-         * @return string
-         */
-        public function getAppDir();
-
-        /**
          * @param false|string $layout
          *
          * @return static

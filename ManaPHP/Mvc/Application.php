@@ -114,7 +114,7 @@ namespace ManaPHP\Mvc {
         /**
          * @return string
          */
-        public function getAppPath()
+        public function getAppDir()
         {
             return $this->_appPath;
         }
@@ -130,7 +130,7 @@ namespace ManaPHP\Mvc {
         /**
          *
          */
-        public function getDataPath()
+        public function getDataDir()
         {
             return $this->_dataPath;
         }
@@ -300,7 +300,6 @@ namespace ManaPHP\Mvc {
 
                 if ($this->_implicitView === true) {
                     $view = $this->_dependencyInjector->getShared('view');
-                    $view->setAppDir($this->getAppPath());
 
                     $view->setContent($content);
                     $view->render($module, $controller, $action);

@@ -9,7 +9,7 @@ class MvcApplicationTest extends TestCase
     {
         $application = new \TApplication\Application();
 
-        $this->assertEquals(str_replace('\\', '/', __DIR__) . '/TApplication', $application->getAppPath());
+        $this->assertEquals(str_replace('\\', '/', __DIR__) . '/TApplication', $application->getAppDir());
         $this->assertEquals('TApplication', $application->getAppNamespace());
     }
 

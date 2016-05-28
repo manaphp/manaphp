@@ -27,8 +27,8 @@ namespace ManaPHP\Configure {
             $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
             if ($this->_dependencyInjector !== null && $this->_dependencyInjector->has('application')) {
-                $this->setAlias('@app', $this->application->getAppPath());
-                $this->setAlias('@data', $this->application->getDataPath());
+                $this->setAlias('@app', $this->application->getAppDir());
+                $this->setAlias('@data', $this->application->getDataDir());
             }
         }
 

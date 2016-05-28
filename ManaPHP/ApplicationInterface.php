@@ -6,10 +6,10 @@ namespace ManaPHP {
         /**
          * @return string
          */
-        public function getAppPath();
+        public function getAppDir();
 
         public function getAppNamespace();
 
-        public function getDataPath();
+        public function getDataDir();
     }
 }

@@ -8,7 +8,7 @@ namespace ManaPHP {
          *
          * @return static
          */
-        public function start($listenException = true);
+        public function start($listenException = false);
 
         /**
          * @param \Exception $exception

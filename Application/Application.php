@@ -61,6 +61,5 @@ namespace Application {
 
             return $this->handle()->getContent();
         }
-
     }
 }
