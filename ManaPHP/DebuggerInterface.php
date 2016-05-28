@@ -37,6 +37,6 @@ namespace ManaPHP {
          *
          * @return string
          */
-        public function save($template='Default');
+        public function save($template = 'Default');
     }
 }

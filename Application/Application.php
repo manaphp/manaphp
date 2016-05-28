@@ -15,8 +15,6 @@ namespace Application {
         {
             $self = $this;
 
-            $this->_dependencyInjector->setShared('configure', new Configure());
-
             $this->_dependencyInjector->setShared('router', function () {
                 return (new Router())->mount(new Group(), 'Home', '/');
             });
@@ -44,6 +42,12 @@ namespace Application {
         public function main()
         {
             date_default_timezone_set('PRC');
+
+            $this->_dependencyInjector->setShared('configure', new Configure());
+
+            if ($this->configure->debugger->disableAutoResponse) {
+                unset($_GET['_debugger']);//disable auto response to debugger data fetching request
+            }
 
             $this->debugger->start();
 

@@ -242,6 +242,12 @@ namespace ManaPHP {
             return ob_get_clean();
         }
 
+        /**
+         * @param string $template
+         *
+         * @return string
+         * @throws \ManaPHP\Debugger\Exception
+         */
         public function save($template = 'Default')
         {
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'ApacheBench') !== false) {
@@ -254,7 +260,7 @@ namespace ManaPHP {
 
             $dir = dirname($file);
             if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                throw new \Application\Exception("Create directory $dir failed: ", error_get_last()['message']);
+                throw new Exception("Create directory $dir failed: ", error_get_last()['message']);
             }
 
             if (!file_put_contents($file, $this->output($template))) {

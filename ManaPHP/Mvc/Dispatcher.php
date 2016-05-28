@@ -283,7 +283,7 @@ namespace ManaPHP\Mvc {
                     throw new NotFoundActionException('Action \'' . $this->_actionName . '\' was not found on handler \'' . $controllerClassName . '\'');
                 }
 
-                if($this->fireEvent('dispatcher:beforeExecuteRoute') ===false){
+                if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
                     return false;
                 }
 
@@ -316,11 +316,11 @@ namespace ManaPHP\Mvc {
                 // Call afterDispatch
                 $this->fireEvent('dispatcher:afterDispatch');
 
-                if($this->fireEvent('dispatcher:afterExecuteRoute') ===false){
+                if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
                     return false;
                 }
 
-                if($this->_finished ===false){
+                if ($this->_finished === false) {
                     continue;
                 }
 
