@@ -1,12 +1,12 @@
 <?php
 namespace Application\Home\Controllers;
 
+use Application\Api\Controllers\ControllerBase;
 use Application\Home\Models\City;
 use ManaPHP\Configure;
-use ManaPHP\Mvc\Controller;
 use ManaPHP\Version;
 
-class IndexController extends Controller
+class IndexController extends ControllerBase
 {
     public function indexAction()
     {
@@ -19,5 +19,4 @@ class IndexController extends Controller
         $this->view->setVar('version', Version::get());
         $this->view->setVar('current_time', date('Y-m-d H:i:s'));
     }
-
 }

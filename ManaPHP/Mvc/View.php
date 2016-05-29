@@ -73,15 +73,16 @@ namespace ManaPHP\Mvc {
          * View constructor.
          *
          * @param \ManaPHP\DiInterface $dependencyInjector
+         *
          * @throws \ManaPHP\Di\Exception
          */
-        public function __construct($dependencyInjector =null)
+        public function __construct($dependencyInjector = null)
         {
-            $dependencyInjector=$dependencyInjector?:Di::getDefault();
-            $application=$dependencyInjector->getShared('application');
+            $dependencyInjector = $dependencyInjector ?: Di::getDefault();
+            $application = $dependencyInjector->getShared('application');
 
-            $this->_appDir=$application->getAppDir();
-            $this->_appNamespace=$application->getAppNamespace();
+            $this->_appDir = $application->getAppDir();
+            $this->_appNamespace = $application->getAppNamespace();
         }
 
         /**

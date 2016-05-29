@@ -882,6 +882,7 @@ namespace ManaPHP\Mvc\Model {
 
             try {
                 $result = $readConnection->fetchOne($sql, $this->_bind);
+                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                 $rowCount = $result['row_count'];
             } catch (\Exception $e) {
                 throw new Exception($e->getMessage() . ':' . $sql);

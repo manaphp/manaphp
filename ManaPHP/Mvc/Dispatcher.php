@@ -280,7 +280,7 @@ namespace ManaPHP\Mvc {
                 }
 
                 if (!$hasAction) {
-                    throw new NotFoundActionException('Action \'' . $this->_actionName . '\' was not found on handler \'' . $controllerClassName . '\'');
+                    throw new NotFoundActionException('Action \'' . $this->_actionName . $this->_actionSuffix . '\' was not found on handler \'' . $controllerClassName . '\'');
                 }
 
                 if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {

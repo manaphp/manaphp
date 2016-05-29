@@ -6,7 +6,6 @@ namespace Application {
     use ManaPHP\Log\Adapter\File;
     use ManaPHP\Log\Logger;
     use ManaPHP\Mvc\Router;
-    use ManaPHP\Mvc\Router\Group;
     use ManaPHP\Security\Crypt;
 
     class Application extends \ManaPHP\Mvc\Application
@@ -16,7 +15,9 @@ namespace Application {
             $self = $this;
 
             $this->_dependencyInjector->setShared('router', function () {
-                return (new Router())->mount(new Group(), 'Home', '/');
+                return (new Router())
+                    ->mount(new Home\RouteGroup(), '/')
+                    ->mount(Api\RouteGroup::class, '/api', 'Api');
             });
 
             $this->_dependencyInjector->setShared('logger', function () use ($self) {
@@ -56,8 +57,6 @@ namespace Application {
             // $this->logger->debug('start');
 
             //   $this->useImplicitView(false);
-
-            $this->registerModules(['Home']);
 
             return $this->handle()->getContent();
         }

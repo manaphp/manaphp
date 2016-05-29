@@ -195,7 +195,7 @@ class MvcDispatcherTest extends TestCase
             $dispatcher->dispatch(null, 'test1', 'index');
             $this->fail('why not?');
         } catch (\Manaphp\Exception $e) {
-            $this->assertEquals("Action 'index' was not found on handler 'Test1Controller'", $e->getMessage());
+            $this->assertEquals("Action 'indexAction' was not found on handler 'Test1Controller'", $e->getMessage());
         }
 
         //normal usage without return value

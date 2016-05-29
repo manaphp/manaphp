@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc {
 
     use ManaPHP\Component;
+    use ManaPHP\Di;
     use ManaPHP\Mvc\Router\NotFoundRouteException;
 
     /**
@@ -12,23 +13,6 @@ namespace ManaPHP\Mvc {
      * process of taking a URI endpoint (that part of the URI which comes after the base URL) and
      * decomposing it into parameters to determine which module, controller, and
      * action of that controller should receive the request</p>
-     *
-     *<code>
-     *
-     *    $router = new ManaPHP\Mvc\Router();
-     *
-     *  $router->add(
-     *        "/documentation/{chapter}/{name}.{type:[a-z]+}",
-     *        array(
-     *            "controller" => "documentation",
-     *            "action"     => "show"
-     *        )
-     *    );
-     *
-     *    $router->handle();
-     *
-     *    echo $router->getControllerName();
-     *</code>
      *
      */
     class Router extends Component implements RouterInterface
@@ -54,7 +38,7 @@ namespace ManaPHP\Mvc {
         protected $_params = [];
 
         /**
-         * @var \ManaPHP\Mvc\Router\GroupInterface[]
+         * @var array
          */
         protected $_groups = [];
 
@@ -188,10 +172,10 @@ namespace ManaPHP\Mvc {
             $module = null;
             $routeFound = false;
             for ($i = count($this->_groups) - 1; $i >= 0; $i--) {
-                /**
-                 * @var \ManaPHP\Mvc\Router\Group $group
-                 */
-                list($path, $module, $group) = $this->_groups[$i];
+                $group = $this->_groups[$i];
+
+                $path = $group['path'];
+                $module = $group['module'];
 
                 if ($path === '' || $path[0] === '/') {
                     $checkedUri = $refinedUri;
@@ -211,7 +195,15 @@ namespace ManaPHP\Mvc {
                  */
                 $handledUri = strlen($checkedUri) === strlen($path) ? '/' : substr($checkedUri, strlen($path));
 
-                $routeFound = $this->_findMatchedRoute($handledUri, $group->getRoutes(), $parts);
+                /**
+                 * @var \ManaPHP\Mvc\Router\Group $groupInstance
+                 */
+                if ($group['groupInstance'] === null) {
+                    $group['groupInstance'] = new $group['groupClassName'];
+                }
+                $groupInstance = $group['groupInstance'];
+
+                $routeFound = $this->_findMatchedRoute($handledUri, $groupInstance->getRoutes(), $parts);
                 if ($routeFound) {
                     break;
                 }
@@ -220,7 +212,6 @@ namespace ManaPHP\Mvc {
             $this->_wasMatched = $routeFound;
 
             if ($routeFound) {
-
                 $this->_module = $module;
                 $this->_controller = $this->_defaultController;
                 $this->_action = $this->_defaultAction;
@@ -232,12 +223,12 @@ namespace ManaPHP\Mvc {
                 }
 
                 if (isset($parts['controller'])) {
-                    $this->_controller = $parts['controller'];
+                    $this->_controller = basename($parts['controller'], 'Controller');
                     unset($parts['controller']);
                 }
 
                 if (isset($parts['action'])) {
-                    $this->_action = $parts['action'];
+                    $this->_action = basename($parts['action'], 'Action');
                     unset($parts['action']);
                 }
 
@@ -268,21 +259,41 @@ namespace ManaPHP\Mvc {
         /**
          * Mounts a group of routes in the router
          *
-         * @param \ManaPHP\Mvc\Router\GroupInterface $group
-         * @param string                             $module
-         * @param string                             $path
+         * @param string|\ManaPHP\Mvc\Router\GroupInterface $group
+         * @param string                                    $path
+         * @param string                                    $module
          *
          * @return static
          */
-        public function mount($group, $module, $path = null)
+        public function mount($group, $path = null, $module = null)
         {
+            if (is_object($group)) {
+                $groupClassName = get_class($group);
+                $groupInstance = $group;
+            } else {
+                $groupClassName = $group;
+                $groupInstance = null;
+            }
+
+            if (!$module) {
+                $parts = explode('\\', $groupClassName);
+                unset($parts[0]);
+                array_pop($parts);
+                $module = implode('\\', $parts);
+            }
+
             if ($path === null) {
                 $path = '/' . $module;
             }
 
             $path = rtrim($path, '/');
 
-            $this->_groups[] = [$path, $module, $group];
+            $this->_groups[] = [
+                'path' => $path,
+                'module' => $module,
+                'groupClassName' => $groupClassName,
+                'groupInstance' => $groupInstance
+            ];
 
             return $this;
         }
