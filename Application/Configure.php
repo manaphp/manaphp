@@ -50,7 +50,7 @@ namespace Application {
             $this->crypt->key = 'test';
 
             $this->debugger = new \stdClass();
-            $this->debugger->disableAutoResponse = (strpos('127.0.0.', $_SERVER['REMOTE_ADDR']) !== 0 && strpos('192.168.', $_SERVER['REMOTE_ADDR']) !== 0);
+            $this->debugger->disableAutoResponse = (strpos($_SERVER['REMOTE_ADDR'], '127.0.0.') !== 0 && strpos($_SERVER['REMOTE_ADDR'], '192.168.') !== 0);
         }
     }
 }

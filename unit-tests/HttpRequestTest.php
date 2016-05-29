@@ -462,6 +462,6 @@ class HttpRequestTest extends TestCase
         $this->assertEquals($successful[0]->getName(), 'f0');
 
         $this->assertEquals($successful[0]->getTempName(), 't0');
-        $this->assertEquals($successful[0]->getExtension(),'');
+        $this->assertEquals($successful[0]->getExtension(), '');
     }
 }

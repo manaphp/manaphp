@@ -414,7 +414,7 @@ namespace ManaPHP {
          * @param    array        $bind
          *
          * @return    int|false
-         * @throws \ManaPHP\Db\Exception
+         * @throws \ManaPHP\Db\Exception|\ManaPHP\Db\ConditionParser\Exception
          */
         public function update($table, $columnValues, $conditions, $bind = [])
         {
@@ -459,7 +459,7 @@ namespace ManaPHP {
          * @param  array        $bind
          *
          * @return boolean
-         * @throws \ManaPHP\Db\Exception
+         * @throws \ManaPHP\Db\Exception|\ManaPHP\Db\ConditionParser\Exception
          */
         public function delete($table, $conditions, $bind = [])
         {

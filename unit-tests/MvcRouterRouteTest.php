@@ -39,7 +39,7 @@ class MvcRouterRouteTest extends TestCase
 
     public function test_params()
     {
-        $router = new ManaPHP\Mvc\Router(false);
+        $router = new ManaPHP\Mvc\Router();
 
         $tests = array(
             array(
@@ -69,7 +69,7 @@ class MvcRouterRouteTest extends TestCase
         $group->add('/some/{name}/{id:[0-9]+}', ['controller' => 'c', 'action' => 'a']);
         $group->add('/some/{name}/{id:[0-9]+}/{date}', ['controller' => 'c', 'action' => 'a']);
 
-        $router->mount($group, 'app', '/');
+        $router->mount($group, '/','app');
 
         foreach ($tests as $n => $test) {
             $_SERVER['REQUEST_METHOD'] = $test['method'];

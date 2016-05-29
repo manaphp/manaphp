@@ -41,7 +41,7 @@ namespace ManaPHP\Db {
             $list = [];
             foreach ($conditions as $k => $v) {
                 if (is_int($k)) {
-                    $list[] = $v;
+                    $list[] = stripos($v, ' or ') === false ? $v : "($v)";
                     continue;
                 }
 

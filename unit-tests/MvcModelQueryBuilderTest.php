@@ -292,45 +292,45 @@ class MvcModelQueryBuilderTest extends TestCase
             ->addFrom(get_class(new Address()));
         $this->assertCount(50, $builder->execute());
 
-        $builder=$this->modelsManager->createBuilder()
-                ->addFrom(get_class(new Address()))
-                ->andWhere('address_id',1);
-        $this->assertCount(1,$builder->execute());
-
-        $builder=$this->modelsManager->createBuilder()
+        $builder = $this->modelsManager->createBuilder()
             ->addFrom(get_class(new Address()))
-            ->andWhere(' address_id ',1);
-        $this->assertCount(1,$builder->execute());
+            ->andWhere('address_id', 1);
+        $this->assertCount(1, $builder->execute());
 
-        $builder=$this->modelsManager->createBuilder()
+        $builder = $this->modelsManager->createBuilder()
             ->addFrom(get_class(new Address()))
-            ->andWhere('`address_id`',1);
-        $this->assertCount(1,$builder->execute());
+            ->andWhere(' address_id ', 1);
+        $this->assertCount(1, $builder->execute());
 
-        $builder=$this->modelsManager->createBuilder()
+        $builder = $this->modelsManager->createBuilder()
             ->addFrom(get_class(new Address()))
-            ->andWhere('address_id =',1);
-        $this->assertCount(1,$builder->execute());
+            ->andWhere('`address_id`', 1);
+        $this->assertCount(1, $builder->execute());
 
-        $builder=$this->modelsManager->createBuilder()
+        $builder = $this->modelsManager->createBuilder()
             ->addFrom(get_class(new Address()))
-            ->andWhere('address_id <',2);
-        $this->assertCount(1,$builder->execute());
+            ->andWhere('address_id =', 1);
+        $this->assertCount(1, $builder->execute());
 
-        $builder=$this->modelsManager->createBuilder()
+        $builder = $this->modelsManager->createBuilder()
             ->addFrom(get_class(new Address()))
-            ->andWhere('address_id LIKE','2%');
-        $this->assertCount(110,$builder->execute());
+            ->andWhere('address_id <', 2);
+        $this->assertCount(1, $builder->execute());
 
-        $builder=$this->modelsManager->createBuilder()
-            ->addFrom(get_class(new Address()),'a')
-            ->andWhere('a.address_id',1);
-        $this->assertCount(1,$builder->execute());
+        $builder = $this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()))
+            ->andWhere('address_id LIKE', '2%');
+        $this->assertCount(110, $builder->execute());
 
-        $builder=$this->modelsManager->createBuilder()
-            ->addFrom(get_class(new Address()),'a')
-            ->andWhere('a.address_id',1);
-        $this->assertCount(1,$builder->execute());
+        $builder = $this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()), 'a')
+            ->andWhere('a.address_id', 1);
+        $this->assertCount(1, $builder->execute());
+
+        $builder = $this->modelsManager->createBuilder()
+            ->addFrom(get_class(new Address()), 'a')
+            ->andWhere('a.address_id', 1);
+        $this->assertCount(1, $builder->execute());
     }
 
     public function test_betweenWhere()
@@ -538,41 +538,41 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(601, $builder->execute());
     }
 
-    public function test_executeEx(){
-        $rows=$this->modelsManager->createBuilder()
-                    ->addFrom(City::class)
-                    ->executeEx($totalRows);
-        $this->assertCount(600,$rows);
-        $this->assertEquals(600,$totalRows);
+    public function test_executeEx()
+    {
+        $rows = $this->modelsManager->createBuilder()
+            ->addFrom(City::class)
+            ->executeEx($totalRows);
+        $this->assertCount(600, $rows);
+        $this->assertEquals(600, $totalRows);
 
-        $rows=$this->modelsManager->createBuilder()
-                ->addFrom(City::class)
-                ->limit(100)
-                ->executeEx($totalRows);
-        $this->assertCount(100,$rows);
-        $this->assertEquals(600,$totalRows);
+        $rows = $this->modelsManager->createBuilder()
+            ->addFrom(City::class)
+            ->limit(100)
+            ->executeEx($totalRows);
+        $this->assertCount(100, $rows);
+        $this->assertEquals(600, $totalRows);
 
-        $rows=$this->modelsManager->createBuilder()
+        $rows = $this->modelsManager->createBuilder()
             ->addFrom(City::class)
             ->limit(1000)
             ->executeEx($totalRows);
-        $this->assertCount(600,$rows);
-        $this->assertEquals(600,$totalRows);
+        $this->assertCount(600, $rows);
+        $this->assertEquals(600, $totalRows);
 
-        $rows=$this->modelsManager->createBuilder()
+        $rows = $this->modelsManager->createBuilder()
             ->addFrom(City::class)
-            ->limit(200,100)
+            ->limit(200, 100)
             ->executeEx($totalRows);
-        $this->assertCount(200,$rows);
-        $this->assertEquals(600,$totalRows);
+        $this->assertCount(200, $rows);
+        $this->assertEquals(600, $totalRows);
 
-        $rows=$this->modelsManager->createBuilder()
+        $rows = $this->modelsManager->createBuilder()
             ->addFrom(City::class)
-            ->limit(300,1000)
+            ->limit(300, 1000)
             ->executeEx($totalRows);
-        $this->assertCount(0,$rows);
-        $this->assertEquals(600,$totalRows);
-
+        $this->assertCount(0, $rows);
+        $this->assertEquals(600, $totalRows);
 
     }
 }

@@ -156,6 +156,9 @@ class MvcModelTest extends TestCase
 
         $actor = Actor::findFirst(['actor_id' => 5, 'first_name' => 'JOHNNY']);
         $this->assertEquals(5, $actor->actor_id);
+
+        $actor =Actor::findFirst([['actor_id'=>5, 'first_name =:first_name OR actor_id =:actor_id2'],'bind'=>['first_name'=>'JOHNNY','actor_id2'=>5]]);
+        $this->assertEquals(5,$actor->actor_id);
     }
 
     public function test_findFirst_usage()
@@ -241,7 +244,7 @@ class MvcModelTest extends TestCase
 
         //fixed bug: if record is existed already
         $student = new Student();
-        $student->id=2;
+        $student->id = 2;
         $student->age = 21;
         $student->name = 'mana';
         $student->create();

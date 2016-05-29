@@ -7,7 +7,6 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Di\FactoryDefault;
     use ManaPHP\Http\ResponseInterface;
     use ManaPHP\Mvc\Application\Exception;
-    use ManaPHP\Mvc\Application\NotFoundModuleException;
     use ManaPHP\Mvc\Dispatcher\NotFoundActionException;
     use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
     use ManaPHP\Mvc\Router\NotFoundRouteException;
@@ -17,34 +16,6 @@ namespace ManaPHP\Mvc {
      *
      * This component encapsulates all the complex operations behind instantiating every component
      * needed and integrating it with the rest to allow the MVC pattern to operate as desired.
-     *
-     *<code>
-     *
-     * class Application extends \ManaPHP\Mvc\Application
-     * {
-     *
-     *        /\**
-     *         * Register the services here to make them general or register
-     *         * in the ModuleDefinition to make them module-specific
-     *         *\/
-     *        protected function _registerServices()
-     *        {
-     *
-     *        }
-     *
-     *        /\**
-     *         * This method registers all the modules in the application
-     *         *\/
-     *        public function main()
-     *        {
-     *            $this->registerModules(['frontend' ,'backend']);
-     *        }
-     *    }
-     *
-     *    $application = new Application();
-     *    $application->main();
-     *
-     *</code>
      */
     class Application extends Component implements ApplicationInterface
     {
@@ -62,16 +33,6 @@ namespace ManaPHP\Mvc {
          * @var string
          */
         protected $_dataPath;
-
-        /**
-         * @var string
-         */
-        protected $_defaultModule;
-
-        /**
-         * @var array
-         */
-        protected $_modules = [];
 
         /**
          * @var boolean
@@ -114,7 +75,7 @@ namespace ManaPHP\Mvc {
         /**
          * @return string
          */
-        public function getAppPath()
+        public function getAppDir()
         {
             return $this->_appPath;
         }
@@ -130,7 +91,7 @@ namespace ManaPHP\Mvc {
         /**
          *
          */
-        public function getDataPath()
+        public function getDataDir()
         {
             return $this->_dataPath;
         }
@@ -151,36 +112,6 @@ namespace ManaPHP\Mvc {
         }
 
         /**
-         * Register an array of modules present in the application
-         *
-         *<code>
-         *    $this->registerModules(array(
-         *        'frontend','backend'));
-         *</code>
-         *
-         * @param array $modules
-         *
-         * @return static
-         * @throws \ManaPHP\Mvc\Application\Exception
-         */
-        public function registerModules($modules)
-        {
-            assert(is_array($modules));
-
-            foreach ($modules as $module) {
-                $moduleName = ucfirst($module);
-
-                $this->_modules[$moduleName] = $this->getAppNamespace() . "\\$moduleName\\Module";
-
-                if ($this->_defaultModule === null) {
-                    $this->_defaultModule = $moduleName;
-                }
-            }
-
-            return $this;
-        }
-
-        /**
          * Handles a MVC request
          *
          * @param string                                            $uri
@@ -191,10 +122,6 @@ namespace ManaPHP\Mvc {
          */
         public function handle($uri = null, $notFoundHandler = null)
         {
-            if (count($this->_modules) === 0) {
-                throw new Exception('modules is empty. please register it first.');
-            }
-
             if ($this->fireEvent('application:boot') === false) {
                 return false;
             }
@@ -211,29 +138,17 @@ namespace ManaPHP\Mvc {
                 }
             }
 
-            $moduleName = $router->getModuleName();
+            $moduleName = ucfirst($router->getModuleName());
             $controllerName = $router->getControllerName();
             $actionName = $router->getActionName();
             $params = $router->getParams();
 
-            if ($moduleName === null) {
-                $moduleName = $this->_defaultModule;
-            }
-
-            if (!isset($this->_modules[$moduleName])) {
-                $notFoundModuleException = new NotFoundModuleException('Module does not exists: \'' . $moduleName . '\'');
-
-                if ($notFoundHandler === null) {
-                    throw $notFoundModuleException;
-                } else {
-                    return $notFoundHandler->notFoundModule($notFoundModuleException);
-                }
-            }
+            $moduleClassName = $this->getAppNamespace() . "\\$moduleName\\Module";
 
             $moduleObject = null;
 
             $this->fireEvent('application:beforeStartModule', $moduleName);
-            $moduleObject = $this->_dependencyInjector->getShared($this->_modules[$moduleName]);
+            $moduleObject = $this->_dependencyInjector->getShared($moduleClassName);
             $moduleObject->registerAutoloaders($this->_dependencyInjector);
             $moduleObject->registerServices($this->_dependencyInjector);
             $this->fireEvent('application:afterStartModule', $moduleObject);
@@ -300,7 +215,6 @@ namespace ManaPHP\Mvc {
 
                 if ($this->_implicitView === true) {
                     $view = $this->_dependencyInjector->getShared('view');
-                    $view->setAppDir($this->getAppPath());
 
                     $view->setContent($content);
                     $view->render($module, $controller, $action);

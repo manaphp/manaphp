@@ -37,7 +37,7 @@ namespace ManaPHP\Mvc\Router {
          * \ManaPHP\Mvc\Router\Route constructor
          *
          * @param string       $pattern
-         * @param array        $paths
+         * @param string|array $paths
          * @param array|string $httpMethods
          *
          * @throws \ManaPHP\Mvc\Router\Exception
@@ -136,6 +136,10 @@ namespace ManaPHP\Mvc\Router {
         public static function getRoutePaths($paths = null)
         {
             if ($paths !== null) {
+                if (is_array($paths) && isset($paths[0])) {
+                    $paths = implode('::', $paths);
+                }
+
                 if (is_string($paths)) {
                     $parts = explode('::', $paths);
 
@@ -163,6 +167,11 @@ namespace ManaPHP\Mvc\Router {
                     $routePaths = $paths;
                 } else {
                     throw new Exception('--paths must be a string or array.');
+                }
+
+                if (isset($routePaths['controller']) && is_string($routePaths['controller'])) {
+                    $parts = explode('\\', $routePaths['controller']);
+                    $routePaths['controller'] = basename(end($parts), 'Controller');
                 }
             } else {
                 $routePaths = [];
