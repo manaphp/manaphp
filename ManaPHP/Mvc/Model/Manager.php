@@ -132,7 +132,8 @@ namespace ManaPHP\Mvc\Model {
                         function ($match) {
                             return '_' . strtolower($match[0]);
                         },
-                        basename($modelName)), '_');
+                        strpos($modelName, '\\') !== false ? substr($modelName, strrpos($modelName, '\\') + 1) : $modelName),
+                        '_');
             }
 
             return $this->_sources[$modelName];

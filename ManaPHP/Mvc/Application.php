@@ -7,9 +7,6 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Di\FactoryDefault;
     use ManaPHP\Http\ResponseInterface;
     use ManaPHP\Mvc\Application\Exception;
-    use ManaPHP\Mvc\Dispatcher\NotFoundActionException;
-    use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
-    use ManaPHP\Mvc\Router\NotFoundRouteException;
 
     /**
      * ManaPHP\Mvc\Application
@@ -114,13 +111,12 @@ namespace ManaPHP\Mvc {
         /**
          * Handles a MVC request
          *
-         * @param string                                            $uri
-         * @param \ManaPHP\Mvc\Application\NotFoundHandlerInterface $notFoundHandler
+         * @param string $uri
          *
          * @return \ManaPHP\Http\ResponseInterface|boolean
          * @throws \ManaPHP\Mvc\Application\Exception|\ManaPHP\Event\Exception|\ManaPHP\Di\Exception|\ManaPHP\Mvc\Application\NotFoundModuleException|\ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException
          */
-        public function handle($uri = null, $notFoundHandler = null)
+        public function handle($uri = null)
         {
             if ($this->fireEvent('application:boot') === false) {
                 return false;
@@ -128,15 +124,7 @@ namespace ManaPHP\Mvc {
 
             $router = $this->_dependencyInjector->getShared('router');
 
-            if ($notFoundHandler === null) {
-                $router->handle($uri, null, false);
-            } else {
-                try {
-                    $router->handle($uri, null, false);
-                } catch (NotFoundRouteException $e) {
-                    return $notFoundHandler->notFoundRoute($e);
-                }
-            }
+            $router->handle($uri, null, false);
 
             $moduleName = ucfirst($router->getModuleName());
             $controllerName = $router->getControllerName();
@@ -164,17 +152,7 @@ namespace ManaPHP\Mvc {
                 });
             }
 
-            if ($notFoundHandler === null) {
-                $controller = $dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-            } else {
-                try {
-                    $controller = $dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-                } catch (NotFoundControllerException $e) {
-                    return $notFoundHandler->notFoundController($e);
-                } catch (NotFoundActionException $e) {
-                    return $notFoundHandler->notFoundAction($e);
-                }
-            }
+            $controller = $dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
 
             if ($controller === false) {
                 return false;
@@ -183,7 +161,6 @@ namespace ManaPHP\Mvc {
             $response = $this->_getResponse($dispatcher->getReturnedValue(), $moduleName,
                 $dispatcher->getControllerName(), $dispatcher->getActionName());
 
-            $response->sendHeaders();
             return $response;
         }
 

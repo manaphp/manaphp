@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP\Mvc\Dispatcher {
 
-    class NotFoundActionException extends Exception
+    use ManaPHP\Mvc\NotFoundException;
+
+    class NotFoundActionException extends NotFoundException
     {
 
     }

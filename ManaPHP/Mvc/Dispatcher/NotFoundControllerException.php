@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP\Mvc\Dispatcher {
 
-    class NotFoundControllerException extends Exception
+    use ManaPHP\Mvc\NotFoundException;
+
+    class NotFoundControllerException extends NotFoundException
     {
 
     }
