@@ -5,6 +5,7 @@ namespace ManaPHP\Mvc\Model {
     use ManaPHP\Component;
     use ManaPHP\Db\ConditionParser;
     use ManaPHP\Di;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\Model\Query\Builder
@@ -387,7 +388,7 @@ namespace ManaPHP\Mvc\Model {
             if (is_scalar($bind)) {
                 $conditions = trim($conditions);
 
-                if (strpos($conditions, ' ') === false) {
+                if (!Text::contains($conditions, ' ')) {
                     $conditions .= ' =';
                 }
 

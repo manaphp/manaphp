@@ -6,6 +6,7 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Mvc\Dispatcher\Exception;
     use ManaPHP\Mvc\Dispatcher\NotFoundActionException;
     use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\Dispatcher
@@ -211,9 +212,9 @@ namespace ManaPHP\Mvc {
          */
         public function dispatch($module, $controller, $action, $params = null)
         {
-            $this->_moduleName = $this->_camelize($module);
-            $this->_controllerName = $this->_camelize($controller);
-            $this->_actionName = lcfirst($this->_camelize($action));
+            $this->_moduleName = Text::camelize($module);
+            $this->_controllerName = Text::camelize($controller);
+            $this->_actionName = lcfirst(Text::camelize($action));
 
             $this->_params = $params === null ? [] : $params;
 
@@ -365,17 +366,17 @@ namespace ManaPHP\Mvc {
             }
 
             if (isset($forward['module'])) {
-                $this->_moduleName = $this->_camelize($forward['module']);
+                $this->_moduleName = Text::camelize($forward['module']);
             }
 
             if (isset($forward['controller'])) {
                 $this->_previousControllerName = $this->_controllerName;
-                $this->_controllerName = $this->_camelize($forward['controller']);
+                $this->_controllerName = Text::camelize($forward['controller']);
             }
 
             if (isset($forward['action'])) {
                 $this->_previousActionName = $this->_actionName;
-                $this->_actionName = lcfirst($this->_camelize($forward['action']));
+                $this->_actionName = lcfirst(Text::camelize($forward['action']));
             }
 
             if (isset($forward['params'])) {
@@ -394,25 +395,6 @@ namespace ManaPHP\Mvc {
         public function wasForwarded()
         {
             return $this->_forwarded;
-        }
-
-        /**
-         * @param string $str
-         *
-         * @return string
-         */
-        protected function _camelize($str)
-        {
-            if (strpos($str, '_') !== false) {
-                $parts = explode('_', $str);
-                foreach ($parts as &$v) {
-                    $v = ucfirst($v);
-                }
-
-                return implode('', $parts);
-            } else {
-                return ucfirst($str);
-            }
         }
 
         /**

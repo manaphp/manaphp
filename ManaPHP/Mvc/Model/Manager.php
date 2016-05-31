@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc\Model {
 
     use ManaPHP\Component;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\Model\Manager
@@ -127,13 +128,8 @@ namespace ManaPHP\Mvc\Model {
             $modelName = is_string($model) ? $model : get_class($model);
 
             if (!isset($this->_sources[$modelName])) {
-                $this->_sources[$modelName] = ltrim(
-                    preg_replace_callback('#[A-Z]#',
-                        function ($match) {
-                            return '_' . strtolower($match[0]);
-                        },
-                        strpos($modelName, '\\') !== false ? substr($modelName, strrpos($modelName, '\\') + 1) : $modelName),
-                        '_');
+                $this->_sources[$modelName] = Text::underscore(
+                    Text::contains($modelName, '\\') ? substr($modelName, strrpos($modelName, '\\') + 1) : $modelName);
             }
 
             return $this->_sources[$modelName];

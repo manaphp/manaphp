@@ -5,6 +5,7 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Component;
     use ManaPHP\Di;
     use ManaPHP\Mvc\View\Exception;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\View
@@ -276,7 +277,7 @@ namespace ManaPHP\Mvc {
          */
         public function partial($path, $vars = [])
         {
-            if (strpos($path, '/') === false) {
+            if (!Text::contains($path, '/')) {
                 $path = $this->_controllerName . '/' . $path;
             }
 

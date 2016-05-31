@@ -8,6 +8,7 @@
 namespace ManaPHP\Http {
 
     use ManaPHP\Http\Session\Exception;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Http\Session\AdapterInterface initializer
@@ -23,7 +24,7 @@ namespace ManaPHP\Http {
             session_start();
 
             $message = error_get_last()['message'];
-            if (strpos($message, 'session_start():') === 0) {
+            if (Text::startsWith($message, 'session_start():')) {
                 throw new Exception($message);
             }
         }

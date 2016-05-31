@@ -7,6 +7,7 @@
 namespace ManaPHP\Log {
 
     use ManaPHP\Component;
+    use ManaPHP\Utility\Text;
 
     class Logger extends Component
     {
@@ -128,7 +129,7 @@ namespace ManaPHP\Log {
             $context['level'] = $this->_level_i2s[$level];
             $context['date'] = time();
 
-            if (strpos($message, '{') !== false) {
+            if (Text::contains($message, '{')) {
                 $replaces = [];
                 foreach ($context as $k => $v) {
                     $replaces['{' . $k . '}'] = $v;

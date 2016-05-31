@@ -3,6 +3,7 @@ namespace ManaPHP {
 
     use ManaPHP\Debugger\Exception;
     use ManaPHP\Log\Logger;
+    use ManaPHP\Utility\Text;
 
     class Debugger extends Component implements DebuggerInterface
     {
@@ -227,7 +228,7 @@ namespace ManaPHP {
 
             $template = str_replace('\\', '/', $template);
 
-            if (strpos($template, '/') === false) {
+            if (!Text::contains($template, '/')) {
                 $template = __DIR__ . '/Debugger/Template/' . $template . '.php';
             }
 
@@ -250,7 +251,7 @@ namespace ManaPHP {
          */
         public function save($template = 'Default')
         {
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'ApacheBench') !== false) {
+            if (Text::contains($_SERVER['HTTP_USER_AGENT'], 'ApacheBench')) {
                 return '';
             }
 

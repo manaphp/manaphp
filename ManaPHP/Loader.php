@@ -2,6 +2,8 @@
 
 namespace ManaPHP {
 
+    use ManaPHP\Utility\Text;
+
     /**
      * ManaPHP\Loader
      *
@@ -235,7 +237,7 @@ namespace ManaPHP {
             if (is_array($this->_namespaces)) {
                 /** @noinspection LoopWhichDoesNotLoopInspection */
                 foreach ($this->_namespaces as $namespace => $directory) {
-                    if (strpos($className, $namespace) !== 0) {
+                    if (!Text::startsWith($className, $namespace)) {
                         continue;
                     }
                     $len = strlen($namespace);

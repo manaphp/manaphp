@@ -7,6 +7,7 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Di\FactoryDefault;
     use ManaPHP\Http\ResponseInterface;
     use ManaPHP\Mvc\Application\Exception;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\Application
@@ -50,12 +51,12 @@ namespace ManaPHP\Mvc {
             $caller = $traces[0];
             $appClass = get_class($caller['object']);
 
-            if (strpos($appClass, 'ManaPHP\\') !== 0) {
+            if (!Text::startsWith($appClass, 'ManaPHP\\')) {
                 $appFile = '/' . str_replace('\\', '/', $appClass) . '.php';
                 foreach (get_included_files() as $file) {
                     $file = str_replace('\\', '/', $file);
 
-                    if (strpos($file, $appFile) !== false) {
+                    if (Text::contains($file, $appFile)) {
                         $root = str_replace($appFile, '', $file);
                         list($this->_appNamespace) = explode('\\', $appClass, 2);
                         $this->_appPath = $root . '/' . $this->_appNamespace;

@@ -3,6 +3,7 @@ namespace ManaPHP\Mvc {
 
     use ManaPHP\Component;
     use ManaPHP\Mvc\Url\Exception;
+    use ManaPHP\Utility\Text;
 
     class Url extends Component implements UrlInterface
     {
@@ -55,7 +56,7 @@ namespace ManaPHP\Mvc {
             }
 
             if (is_array($args)) {
-                if (strpos($strUri, '{') !== false) {
+                if (Text::contains($strUri, '{')) {
                     foreach ($args as $k => $v) {
                         $strUri = str_replace('{' . $k . '}', $v, $strUri, $count);
                         if ($count !== 0) {
@@ -65,7 +66,7 @@ namespace ManaPHP\Mvc {
                 }
 
                 if (count($args) !== 0) {
-                    $strUri = $strUri . (strpos($strUri, '?') !== false ? '&' : '?') . http_build_query($args);
+                    $strUri = $strUri . (Text::contains($strUri, '?') ? '&' : '?') . http_build_query($args);
                 }
             }
 

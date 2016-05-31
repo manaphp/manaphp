@@ -1,5 +1,6 @@
 <?php
 namespace Application {
+use ManaPHP\Utility\Text;
 
     class Configure extends \ManaPHP\Configure\Configure
     {
@@ -50,7 +51,7 @@ namespace Application {
             $this->crypt->key = 'test';
 
             $this->debugger = new \stdClass();
-            $this->debugger->disableAutoResponse = (strpos($_SERVER['REMOTE_ADDR'], '127.0.0.') !== 0 && strpos($_SERVER['REMOTE_ADDR'], '192.168.') !== 0);
+            $this->debugger->disableAutoResponse = (!Text::startsWith($_SERVER['REMOTE_ADDR'], '127.0.0.') && !Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.'));
         }
     }
 }

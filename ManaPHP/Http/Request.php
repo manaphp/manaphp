@@ -5,6 +5,7 @@ namespace ManaPHP\Http {
     use ManaPHP\Component;
     use ManaPHP\Http\Request\Exception;
     use ManaPHP\Http\Request\File;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Http\Request
@@ -315,8 +316,8 @@ namespace ManaPHP\Http {
                     $this->_client_address = $_SERVER['REMOTE_ADDR'];
                 } else {
                     $client_address = $_SERVER['REMOTE_ADDR'];
-                    if (strpos($client_address, '127.0.') === 0 || strpos($client_address,
-                            '192.168.') === 0 || strpos($client_address, '10.') === 0
+                    if (Text::startsWith($client_address, '127.0.') || Text::startsWith($client_address,
+                            '192.168.') || Text::startsWith($client_address, '10.')
                     ) {
                         $this->_client_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
                     } else {
@@ -431,7 +432,6 @@ namespace ManaPHP\Http {
          */
         public function hasFiles($onlySuccessful = false)
         {
-
             foreach ($_FILES as $file) {
                 if (is_int($file['error'])) {
                     $error = $file['error'];
@@ -492,19 +492,6 @@ namespace ManaPHP\Http {
             }
 
             return $files;
-        }
-
-        /**
-         * Gets attached files as \ManaPHP\Http\Request\File instances
-         *
-         * @param boolean $onlySuccessful
-         *
-         * @return \ManaPHP\Http\Request\File[]
-         * @deprecated
-         */
-        public function getUploadedFiles($onlySuccessful = false)
-        {
-            return $this->getFiles($onlySuccessful);
         }
 
         /**
