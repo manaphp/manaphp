@@ -39,6 +39,7 @@ namespace ManaPHP {
      * @property \Application\Configure               $configure
      * @property \ManaPHP\ApplicationInterface        $application
      * @property \ManaPHP\DebuggerInterface           $debugger
+     * @property \ManaPHP\Security\PasswordInterface  $password
      */
     class Component implements ComponentInterface
     {
