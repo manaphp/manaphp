@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP {
+namespace ManaPHP\Utility {
 
     class Paginator
     {
@@ -11,7 +11,7 @@ namespace ManaPHP {
         public $total_pages;
         public $total_items;
         public $limit;
-
+        
         /**
          * @param int $total_items
          * @param int $limit
