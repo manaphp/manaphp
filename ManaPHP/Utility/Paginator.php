@@ -8,28 +8,28 @@ namespace ManaPHP\Utility {
         public $current;
         public $last;
         public $next;
-        public $total_pages;
-        public $total_items;
+        public $totalPages;
+        public $totalItems;
         public $limit;
-        
+
         /**
-         * @param int $total_items
+         * @param int $totalItems
          * @param int $limit
          * @param int $current
          *
          * @return static
          */
-        public function calc($total_items, $limit, $current)
+        public function calc($totalItems, $limit, $current)
         {
-            $totalPages = ceil($total_items / $limit);
+            $totalPages = ceil($totalItems / $limit);
 
             $this->first = 1;
             $this->before = max(1, $current - 1);
             $this->current = $current;
             $this->last = $totalPages;
             $this->next = min($current + 1, $totalPages);
-            $this->total_pages = $totalPages;
-            $this->total_items = $total_items;
+            $this->totalPages = $totalPages;
+            $this->totalItems = $totalItems;
             $this->limit = $limit;
 
             return $this;
