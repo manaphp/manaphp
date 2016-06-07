@@ -302,6 +302,7 @@ $data['session'] = isset($_SESSION) ? $_SESSION : [];
 $data['server'] = $_SERVER;
 unset($data['server']['PATH']);
 ?>
+<!--suppress JSUnresolvedFunction -->
 <script>
     data =<?=json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)?>;
     included_files_application = [];

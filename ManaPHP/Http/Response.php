@@ -251,7 +251,7 @@ namespace ManaPHP\Http {
          *    $response->setJsonContent(array("status" => "OK"), JSON_NUMERIC_CHECK);
          *</code>
          *
-         * @param string $content
+         * @param mixed $content
          * @param int    $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
          *
          * @return static

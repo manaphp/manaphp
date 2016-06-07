@@ -2,7 +2,6 @@
 namespace ManaPHP\Security;
 
 use ManaPHP\Component;
-use ManaPHP\Image\Adapter\Imagick;
 use ManaPHP\Security\Captcha\Exception;
 
 class Captcha extends Component implements CaptchaInterface

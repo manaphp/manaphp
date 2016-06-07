@@ -89,7 +89,7 @@ namespace ManaPHP\Http {
          *    $response->setJsonContent(array("status" => "OK"));
          *</code>
          *
-         * @param string $content
+         * @param mixed $content
          * @param int    $jsonOptions
          *
          * @return static

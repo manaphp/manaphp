@@ -253,23 +253,21 @@ namespace ManaPHP {
          *
          * <code>
          * echo $connection->escapeIdentifier('my_table'); // `my_table`
-         * echo $connection->escapeIdentifier('companies.name']); // `companies`.`name`
+         * echo $connection->escapeIdentifier('companies.name'); // `companies`.`name`
          * <code>
          *
-         * @param string|array $identifier
+         * @param string $identifier
          *
          * @return string
          */
         public function escapeIdentifier($identifier)
         {
-            $identifiers = explode('.', $identifier);
-
             $list = [];
-            foreach ($identifiers as $identifier) {
+            foreach (explode('.', $identifier) as $id) {
                 if ($identifier[0] === '`') {
-                    $list[] = $identifier;
+                    $list[] = $id;
                 } else {
-                    $list[] = "`$identifier`";
+                    $list[] = "`$id`";
                 }
             }
 

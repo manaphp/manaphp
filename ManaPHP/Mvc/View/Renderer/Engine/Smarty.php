@@ -8,6 +8,7 @@ namespace ManaPHP\Mvc\View\Renderer\Engine {
 
     class Smarty extends Component implements EngineInterface
     {
+        /** @noinspection PhpUndefinedClassInspection */
         /**
          * @var \Smarty
          */
@@ -18,6 +19,8 @@ namespace ManaPHP\Mvc\View\Renderer\Engine {
             $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
             if (class_exists('\Smarty')) {
+                /** @noinspection PhpUndefinedClassInspection */
+                /** @noinspection PhpUndefinedMethodInspection */
                 $this->_smarty = (new \Smarty())
                     ->setCompileDir($this->configure->resolvePath('@data/smarty/templates_c'))
                     ->setCacheDir($this->configure->resolvePath('@data/smarty/caches'))
@@ -31,15 +34,19 @@ namespace ManaPHP\Mvc\View\Renderer\Engine {
         public function render($file, $vars = null, $directOutput = true)
         {
             $smarty = $this->_dependencyInjector->getShared('smarty');
+            /** @noinspection PhpUndefinedMethodInspection */
             $smarty->assign($vars);
             if ($directOutput) {
+                /** @noinspection PhpUndefinedMethodInspection */
                 $smarty->display($file);
                 return null;
             } else {
+                /** @noinspection PhpUndefinedMethodInspection */
                 return $smarty->fetch($file);
             }
         }
 
+        /** @noinspection PhpUndefinedClassInspection */
         /**
          * @return \Smarty
          */

@@ -80,7 +80,7 @@ namespace ManaPHP\Mvc {
                 $url = $_GET['_url'];
             } elseif (isset($_SERVER['PATH_INFO'])) {
                 $url = $_SERVER['PATH_INFO'];
-            } else {
+            } /** @noinspection DefaultValueInElseBranchInspection */ else {
                 $url = '/';
             }
 

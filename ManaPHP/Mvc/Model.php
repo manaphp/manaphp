@@ -458,7 +458,7 @@ namespace ManaPHP\Mvc {
 
             if (isset($parameters['group'])) {
                 $columns = "$parameters[group], $function($column) AS $alias";
-            } else {
+            } /** @noinspection DefaultValueInElseBranchInspection */ else {
                 $columns = "$function($column) AS $alias";
             }
 

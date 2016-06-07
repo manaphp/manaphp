@@ -365,8 +365,6 @@ namespace ManaPHP\Mvc\Model {
          */
         public function where($conditions, $bind = null)
         {
-            $this->_conditions = [];
-
             return $this->andWhere($conditions, $bind);
         }
 

@@ -68,7 +68,7 @@ namespace ManaPHP\Mvc\View {
             foreach ($this->_registeredEngines as $extension => $engine) {
                 $file = $template . $extension;
                 if (file_exists($file)) {
-                    if (DIRECTORY_SEPARATOR === '\\') {
+                    if (PHP_EOL !== "\n") {
                         $realPath = str_replace('\\', '/', realpath($file));
                         if ($file !== $realPath) {
                             trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
@@ -132,7 +132,14 @@ namespace ManaPHP\Mvc\View {
         public function exists($template)
         {
             foreach ($this->_registeredEngines as $extension => $engine) {
-                if (is_file($template . $extension)) {
+                $file = $template . $extension;
+                if (is_file($file)) {
+                    if (PHP_EOL !== "\n") {
+                        $realPath = str_replace('\\', '/', realpath($file));
+                        if ($file !== $realPath) {
+                            trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
+                        }
+                    }
                     return true;
                 }
             }
