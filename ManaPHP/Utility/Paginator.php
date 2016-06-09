@@ -3,36 +3,46 @@ namespace ManaPHP\Utility {
 
     class Paginator
     {
-        public $first;
-        public $before;
-        public $current;
-        public $last;
-        public $next;
-        public $totalPages;
-        public $totalItems;
-        public $limit;
+        /**
+         * @var int
+         */
+        public $size;
 
         /**
-         * @param int $totalItems
-         * @param int $limit
-         * @param int $current
-         *
-         * @return static
+         * @var int
          */
-        public function calc($totalItems, $limit, $current)
+        public $page;
+
+        /**
+         * @var array
+         */
+        public $items;
+
+        /**
+         * @var int
+         */
+        public $count;
+
+        /**
+         * @var int
+         */
+        public $pages;
+
+        public function getPaginate()
         {
-            $totalPages = ceil($totalItems / $limit);
+            $paginate = new \stdClass();
 
-            $this->first = 1;
-            $this->before = max(1, $current - 1);
-            $this->current = $current;
-            $this->last = $totalPages;
-            $this->next = min($current + 1, $totalPages);
-            $this->totalPages = $totalPages;
-            $this->totalItems = $totalItems;
-            $this->limit = $limit;
+            $paginate->items = $this->items;
+            $paginate->first = 1;
+            $paginate->before = max(1, $this->page - 1);
+            $paginate->current = $this->page;
+            $paginate->last = $this->pages;
+            $paginate->next = min($this->page + 1, $this->pages);
+            $paginate->pages = $this->pages;
+            $paginate->count = $this->count;
+            $paginate->size = $this->size;
 
-            return $this;
+            return $paginate;
         }
     }
 }
