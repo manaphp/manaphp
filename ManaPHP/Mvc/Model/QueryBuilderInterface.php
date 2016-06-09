@@ -187,6 +187,14 @@ namespace ManaPHP\Mvc\Model {
         public function limit($limit, $offset = null);
 
         /**
+         * @param int $size
+         * @param int $current
+         *
+         * @return static
+         */
+        public function page($size, $current=null);
+
+        /**
          * Sets a LIMIT clause
          *
          * @param string $group

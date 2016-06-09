@@ -589,6 +589,22 @@ namespace ManaPHP\Mvc\Model {
         }
 
         /**
+         * @param int $size
+         * @param int $current
+         *
+         * @return static
+         */
+        public function page($size, $current = null)
+        {
+            $current = $current ? max(1, $current) : 1;
+
+            $this->_limit = $size;
+            $this->_offset = ($current - 1) * $size;
+
+            return $this;
+        }
+
+        /**
          * Sets a GROUP BY clause
          *
          *<code>
