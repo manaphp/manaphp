@@ -589,24 +589,6 @@ namespace ManaPHP\Mvc\Model {
         }
 
         /**
-         * Sets an OFFSET clause
-         *
-         *<code>
-         *    $builder->offset(30);
-         *</code>
-         *
-         * @param int $offset
-         *
-         * @return static
-         */
-        public function offset($offset)
-        {
-            $this->_offset = $offset;
-
-            return $this;
-        }
-
-        /**
          * Sets a GROUP BY clause
          *
          *<code>

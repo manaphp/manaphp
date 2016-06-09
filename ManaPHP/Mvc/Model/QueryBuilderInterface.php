@@ -187,19 +187,6 @@ namespace ManaPHP\Mvc\Model {
         public function limit($limit, $offset = null);
 
         /**
-         * Sets an OFFSET clause
-         *
-         *<code>
-         *    $builder->offset(30);
-         *</code>
-         *
-         * @param int $offset
-         *
-         * @return static
-         */
-        public function offset($offset);
-
-        /**
          * Sets a LIMIT clause
          *
          * @param string $group

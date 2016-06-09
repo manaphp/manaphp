@@ -481,20 +481,6 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(0, $builder->execute());
     }
 
-    public function test_offset()
-    {
-        $builder = $this->modelsManager->createBuilder()
-            ->columns('city_id')
-            ->addFrom(get_class(new City()))
-            ->andWhere('city_id <:city_id', ['city_id' => 10])
-            ->limit(2)
-            ->offset(5);
-
-        $rows = $builder->execute();
-        $this->assertCount(2, $rows);
-        $this->assertEquals(6, $rows[0]['city_id']);
-    }
-
     public function test_groupBy()
     {
         $builder = $this->modelsManager->createBuilder()
