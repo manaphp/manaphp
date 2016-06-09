@@ -36,6 +36,14 @@ namespace ManaPHP\Mvc {
         public function getActionName();
 
         /**
+         * @param array $params
+         * @param bool  $merge
+         *
+         * @return static
+         */
+        public function setParams($params, $merge = true);
+
+        /**
          * Gets action params
          *
          * @return array

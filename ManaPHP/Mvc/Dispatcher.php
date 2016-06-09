@@ -139,6 +139,19 @@ namespace ManaPHP\Mvc {
         }
 
         /**
+         * @param array $params
+         * @param bool  $merge
+         *
+         * @return static
+         */
+        public function setParams($params, $merge = true)
+        {
+            $this->_params = $merge ? array_merge($this->_params, $params) : $params;
+
+            return $this;
+        }
+
+        /**
          * Gets action params
          *
          * @return array
