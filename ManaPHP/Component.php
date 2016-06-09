@@ -50,7 +50,7 @@ namespace ManaPHP {
         /**
          * @var array
          */
-        protected static $_eventPeeks;
+        private static $_eventPeeks;
 
         /**
          * @var \ManaPHP\DiInterface
