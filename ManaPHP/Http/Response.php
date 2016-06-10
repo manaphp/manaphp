@@ -252,7 +252,7 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param mixed $content
-         * @param int    $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
+         * @param int   $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
          *
          * @return static
          */

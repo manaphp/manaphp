@@ -192,7 +192,7 @@ namespace ManaPHP\Mvc\Model {
          *
          * @return static
          */
-        public function page($size, $current=null);
+        public function page($size, $current = null);
 
         /**
          * Sets a LIMIT clause

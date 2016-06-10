@@ -90,7 +90,7 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param mixed $content
-         * @param int    $jsonOptions
+         * @param int   $jsonOptions
          *
          * @return static
          */
