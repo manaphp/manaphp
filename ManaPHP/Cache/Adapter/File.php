@@ -5,7 +5,6 @@ namespace ManaPHP\Cache\Adapter {
 
     class File implements AdapterInterface
     {
-
         /**
          * @var string
          */
