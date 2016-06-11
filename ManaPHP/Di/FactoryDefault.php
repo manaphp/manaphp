@@ -47,9 +47,11 @@ namespace ManaPHP\Di {
                 'logger' => 'ManaPHP\Log\Logger',
                 'renderer' => 'ManaPHP\Mvc\View\Renderer',
                 'debugger' => 'ManaPHP\Debugger',
-                'password' => 'ManaPHP\Security\Password'
+                'password' => 'ManaPHP\Security\Password',
+                'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
+                'cache' => 'ManaPHP\Cache\Adapter\File',
+                'store' => 'ManaPHP\Store\Adapter\File',
             ];
         }
-
     }
 }

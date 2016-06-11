@@ -40,6 +40,9 @@ namespace ManaPHP {
      * @property \ManaPHP\DebuggerInterface           $debugger
      * @property \ManaPHP\Security\PasswordInterface  $password
      * @property \Redis                               $redis
+     * @property \ManaPHP\Serializer\AdapterInterface $serializer
+     * @property \ManaPHP\CacheInterface              $cache
+     * @property \ManaPHP\StoreInterface              $store
      */
     class Component implements ComponentInterface
     {

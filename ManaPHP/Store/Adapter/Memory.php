@@ -1,21 +1,21 @@
 <?php
 namespace ManaPHP\Store\Adapter {
 
-    use ManaPHP\Store\AdapterInterface;
+    use ManaPHP\Store;
 
-    class Memory implements AdapterInterface
+    class Memory extends Store
     {
         /**
          * @var array
          */
         protected $_data = [];
 
-        public function get($id)
+        public function _get($id)
         {
             return isset($this->_data[$id]) ? $this->_data[$id] : false;
         }
 
-        public function mGet($ids)
+        public function _mGet($ids)
         {
             $idValues = [];
             foreach ($ids as $id) {
@@ -25,24 +25,24 @@ namespace ManaPHP\Store\Adapter {
             return $idValues;
         }
 
-        public function set($id, $value)
+        public function _set($id, $value)
         {
             $this->_data[$id] = $value;
         }
 
-        public function mSet($idValues)
+        public function _mSet($idValues)
         {
             foreach ($idValues as $id => $value) {
                 $this->_data[$id] = $value;
             }
         }
 
-        public function delete($id)
+        public function _delete($id)
         {
             unset($this->_data[$id]);
         }
 
-        public function exists($id)
+        public function _exists($id)
         {
             return isset($this->_data[$id]);
         }

@@ -1,16 +1,16 @@
 <?php
 namespace ManaPHP\Cache\Adapter {
 
-    use ManaPHP\Cache\AdapterInterface;
+    use ManaPHP\Cache;
 
-    class Memory implements AdapterInterface
+    class Memory extends Cache
     {
         /**
          * @var array
          */
         protected $_data = [];
 
-        public function get($key)
+        public function _get($key)
         {
             if (isset($this->_data[$key])) {
                 if ($this->_data[$key]['deadline'] >= time()) {
@@ -25,17 +25,17 @@ namespace ManaPHP\Cache\Adapter {
             }
         }
 
-        public function set($key, $value, $ttl)
+        public function _set($key, $value, $ttl)
         {
             $this->_data[$key] = ['deadline' => time() + $ttl, 'data' => $value];
         }
 
-        public function delete($key)
+        public function _delete($key)
         {
             unset($this->_data[$key]);
         }
 
-        public function exists($key)
+        public function _exists($key)
         {
             return isset($this->_data[$key]) && $this->_data[$key]['deadline'] >= time();
         }

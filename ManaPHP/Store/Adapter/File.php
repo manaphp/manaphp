@@ -1,24 +1,25 @@
 <?php
 namespace ManaPHP\Store\Adapter {
 
-    use ManaPHP\Store\AdapterInterface;
+    use ManaPHP\Store;
+    use ManaPHP\Utility\Text;
 
-    class File implements AdapterInterface
+    class File extends Store
     {
         /**
          * @var string
          */
-        protected $_storeDir;
-
-        /**
-         * @var string
-         */
-        protected $_shardMode;
+        protected $_storeDir = '@data/Stores';
 
         /**
          * @var string
          */
         protected $_extension = '.store';
+
+        /**
+         * @var int
+         */
+        protected $_dirLevel = 1;
 
         /**
          * @var array
@@ -28,32 +29,50 @@ namespace ManaPHP\Store\Adapter {
          * File constructor.
          *
          * @param string $storeDir
-         * @param string $shardMode
+         *
+         * @throws \ManaPHP\Configure\Exception
          */
-        public function __construct($storeDir, $shardMode = null)
+        public function __construct($storeDir = null)
         {
-            $this->_storeDir = $storeDir;
-            $this->_shardMode = $shardMode;
+            $this->_storeDir = $this->configure->resolvePath($storeDir ? rtrim($storeDir, '\\/') : $this->_storeDir);
         }
 
         /**
-         * @param string $id
+         * @param string $key
          *
          * @return string
          */
-        protected function _getFileName($id)
+        protected function _getFileName($key)
         {
-            return $this->_storeDir . '/' . $id . $this->_extension;
+            if ($key[0] === '!') {
+                return $this->_storeDir . '/' . substr($key, 1) . $this->_extension;
+            }
+
+            if (Text::contains($key, '/')) {
+                list($prefix, $key) = explode('/', $key, 2);
+                $dir = $this->_storeDir . '/' . $prefix;
+            } else {
+                $dir = $this->_storeDir;
+            }
+            $md5 = md5($key);
+
+            for ($i = 0; $i < $this->_dirLevel; $i++) {
+                $dir .= '/' . substr($md5, $i + $i, 2);
+            }
+
+            $dir .= '/' . $md5 . $this->_extension;
+
+            return $dir;
         }
 
-        public function exists($id)
+        public function _exists($id)
         {
             $storeFile = $this->_getFileName($id);
 
             return is_file($storeFile);
         }
 
-        public function get($id)
+        public function _get($id)
         {
             $storeFile = $this->_getFileName($id);
 
@@ -64,18 +83,18 @@ namespace ManaPHP\Store\Adapter {
             }
         }
 
-        public function mGet($ids)
+        public function _mGet($ids)
         {
             $idValues = [];
 
             foreach ($ids as $id) {
-                $idValues[$id] = $this->get($id);
+                $idValues[$id] = $this->_get($id);
             }
 
             return $idValues;
         }
 
-        public function set($id, $value)
+        public function _set($id, $value)
         {
             $storeFile = $this->_getFileName($id);
 
@@ -91,14 +110,14 @@ namespace ManaPHP\Store\Adapter {
             clearstatcache(true, $storeFile);
         }
 
-        public function mSet($idValues)
+        public function _mSet($idValues)
         {
             foreach ($idValues as $id => $value) {
-                $this->set($id, $value);
+                $this->_set($id, $value);
             }
         }
 
-        public function delete($id)
+        public function _delete($id)
         {
             $storeFile = $this->_getFileName($id);
 

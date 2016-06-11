@@ -1,46 +1,11 @@
 <?php
 namespace ManaPHP {
 
-    use ManaPHP\Serializer\Adapter\JsonPhp;
     use ManaPHP\Di;
+    use ManaPHP\Store\AdapterInterface;
 
-    class Store implements StoreInterface
+    abstract class Store extends Component implements StoreInterface, AdapterInterface
     {
-        /**
-         * @var \ManaPHP\Store\AdapterInterface
-         */
-        protected $_adapter;
-
-        /**
-         * @var string
-         */
-        protected $_prefix;
-
-        /**
-         * @var \ManaPHP\Serializer\AdapterInterface $_serializer
-         */
-        protected $_serializer;
-
-        /**
-         * Store constructor.
-         *
-         * @param string                                 $prefix
-         * @param string|\ManaPHP\Store\AdapterInterface $adapter
-         *
-         * @throws \ManaPHP\Di\Exception
-         */
-        public function __construct($prefix = '', $adapter = null)
-        {
-            $this->_prefix = $prefix;
-
-            if ($adapter === null) {
-                $adapter = 'defaultStoreCache';
-            }
-
-            $this->_adapter = is_string($adapter) ? Di::getDefault()->getShared($adapter) : $adapter;
-            $this->_serializer = new JsonPhp();
-        }
-
         /**
          * Fetch content
          *
@@ -51,12 +16,12 @@ namespace ManaPHP {
          */
         public function get($id)
         {
-            $content = $this->_adapter->get($this->_prefix . $id);
+            $content = $this->_get($id);
             if ($content === false) {
                 return false;
             }
 
-            return $this->_serializer->deserialize($content);
+            return $this->serializer->deserialize($content);
         }
 
         /**
@@ -69,19 +34,13 @@ namespace ManaPHP {
          */
         public function mGet($ids)
         {
-            $completeIds = [];
-            foreach ($ids as $id) {
-                $completeIds[] = $this->_prefix . $id;
-            }
-
-            $completeIdValues = $this->_adapter->mGet($completeIds);
             $idValues = [];
-            foreach ($completeIdValues as $completeId => $value) {
-                $id = substr($completeId, strlen($this->_prefix));
+            foreach ($ids as $id) {
+                $value = $this->_get($id);
                 if ($value === false) {
                     $idValues[$id] = $value;
                 } else {
-                    $idValues[$id] = $this->_serializer->deserialize($value);
+                    $idValues[$id] = $this->serializer->deserialize($value);
                 }
             }
 
@@ -99,7 +58,7 @@ namespace ManaPHP {
          */
         public function set($id, $value)
         {
-            $this->_adapter->set($this->_prefix . $id, $this->_serializer->serialize($value));
+            $this->_set($id, $this->serializer->serialize($value));
         }
 
         /**
@@ -113,10 +72,10 @@ namespace ManaPHP {
         {
             $completeIdValues = [];
             foreach ($idValues as $id => $value) {
-                $completeIdValues[$this->_prefix . $id] = $this->_serializer->serialize($value);
+                $completeIdValues[$id] = $this->serializer->serialize($value);
             }
 
-            $this->_adapter->mSet($completeIdValues);
+            $this->_mSet($completeIdValues);
         }
 
         /**
@@ -128,7 +87,7 @@ namespace ManaPHP {
          */
         public function delete($id)
         {
-            $this->_adapter->delete($this->_prefix . $id);
+            $this->_delete($id);
         }
 
         /**
@@ -141,7 +100,7 @@ namespace ManaPHP {
         public function mDelete($ids)
         {
             foreach ($ids as $id) {
-                $this->_adapter->delete($this->_prefix . $id);
+                $this->_delete($id);
             }
         }
 
@@ -154,7 +113,7 @@ namespace ManaPHP {
          */
         public function exists($id)
         {
-            return $this->_adapter->exists($this->_prefix . $id);
+            return $this->_exists($id);
         }
 
         /**

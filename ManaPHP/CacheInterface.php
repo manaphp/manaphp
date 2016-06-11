@@ -39,7 +39,7 @@ namespace ManaPHP {
          *
          * @return void
          */
-        public function set($key, $value, $ttl = null);
+        public function set($key, $value, $ttl);
 
         /**
          * Stores  values identified by  keys into cache.

@@ -10,7 +10,7 @@ namespace ManaPHP\Cache {
          *
          * @return bool
          */
-        public function exists($key);
+        public function _exists($key);
 
         /**
          * Retrieves a value from cache with a specified key.
@@ -19,7 +19,7 @@ namespace ManaPHP\Cache {
          *
          * @return string|false
          */
-        public function get($key);
+        public function _get($key);
 
         /**
          * Stores a value identified by a key into cache.
@@ -30,7 +30,7 @@ namespace ManaPHP\Cache {
          *
          * @return void
          */
-        public function set($key, $value, $ttl);
+        public function _set($key, $value, $ttl);
 
         /**
          * Deletes a value with the specified key from cache
@@ -39,7 +39,7 @@ namespace ManaPHP\Cache {
          *
          * @void
          */
-        public function delete($key);
+        public function _delete($key);
 
     }
 }

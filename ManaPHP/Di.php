@@ -3,7 +3,6 @@
 namespace ManaPHP {
 
     use ManaPHP\Di\Exception;
-    use ManaPHP\Di\Service;
 
     /**
      * ManaPHP\Di

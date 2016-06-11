@@ -2,11 +2,9 @@
 
 namespace ManaPHP\Store\Adapter {
 
-    use ManaPHP\Component;
-    use ManaPHP\Di;
-    use ManaPHP\Store\AdapterInterface;
+    use ManaPHP\Store;
 
-    class Redis extends Component implements AdapterInterface
+    class Redis extends Store
     {
         /**
          * @var array
@@ -18,11 +16,6 @@ namespace ManaPHP\Store\Adapter {
          */
         protected $key = 'store:';
 
-        public function __construct($dependencyInjector = null)
-        {
-            $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
-        }
-
         /**
          * Fetch content
          *
@@ -31,12 +24,12 @@ namespace ManaPHP\Store\Adapter {
          * @return string|false
          * @throws \ManaPHP\Store\Adapter\Exception
          */
-        public function get($id)
+        public function _get($id)
         {
             return $this->redis->hGet($this->key, $id);
         }
 
-        public function mGet($ids)
+        public function _mGet($ids)
         {
             return $this->redis->hMGet($this->key, $ids);
         }
@@ -50,12 +43,12 @@ namespace ManaPHP\Store\Adapter {
          * @return void
          * @throws \ManaPHP\Store\Adapter\Exception
          */
-        public function set($id, $value)
+        public function _set($id, $value)
         {
             $this->redis->hSet($this->key, $id, $value);
         }
 
-        public function mSet($idValues)
+        public function _mSet($idValues)
         {
             $this->redis->hMset($this->key, $idValues);
         }
@@ -68,7 +61,7 @@ namespace ManaPHP\Store\Adapter {
          * @void
          * @throws \ManaPHP\Store\Adapter\Exception
          */
-        public function delete($id)
+        public function _delete($id)
         {
             $this->redis->hDel($this->key, $id);
         }
@@ -81,7 +74,7 @@ namespace ManaPHP\Store\Adapter {
          * @return bool
          * @throws \ManaPHP\Store\Adapter\Exception
          */
-        public function exists($id)
+        public function _exists($id)
         {
             return $this->redis->hExists($this->key, $id);
         }

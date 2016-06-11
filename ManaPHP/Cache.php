@@ -1,53 +1,11 @@
 <?php
 namespace ManaPHP {
 
-    use ManaPHP\Serializer\Adapter\JsonPhp;
+    use ManaPHP\Cache\AdapterInterface;
     use ManaPHP\Di;
 
-    class Cache implements CacheInterface
+    abstract class Cache extends Component implements CacheInterface, AdapterInterface
     {
-        /**
-         * @var \ManaPHP\Cache\AdapterInterface
-         */
-        protected $_adapter;
-
-        /**
-         * @var string
-         */
-        protected $_prefix;
-
-        /**
-         * @var int
-         */
-        protected $_ttl;
-
-        /**
-         * @var \ManaPHP\Serializer\AdapterInterface;
-         */
-        protected $_serializer;
-
-        /**
-         * Cache constructor.
-         *
-         * @param string                                 $prefix
-         * @param int                                    $ttl
-         * @param string|\ManaPHP\Cache\AdapterInterface $adapter
-         *
-         * @throws \ManaPHP\Cache\Exception|\ManaPHP\Di\Exception
-         */
-        public function __construct($prefix = '', $ttl = -1, $adapter = null)
-        {
-            $this->_prefix = $prefix;
-            $this->_ttl = $ttl;
-
-            if ($adapter === null) {
-                $adapter = 'defaultCacheAdapter';
-            }
-
-            $this->_adapter = is_string($adapter) ? Di::getDefault()->getShared($adapter) : $adapter;
-            $this->_serializer = new JsonPhp();
-        }
-
         /**
          * Fetch content
          *
@@ -58,11 +16,11 @@ namespace ManaPHP {
          */
         public function get($key)
         {
-            $data = $this->_adapter->get($this->_prefix . $key);
+            $data = $this->_get($key);
             if ($data === false) {
                 return false;
             } else {
-                return $this->_serializer->deserialize($data);
+                return $this->serializer->deserialize($data);
             }
         }
 
@@ -70,9 +28,9 @@ namespace ManaPHP {
         {
             $keyValues = [];
             foreach ($keys as $key) {
-                $data = $this->_adapter->get($this->_prefix . $key);
+                $data = $this->_get($key);
                 if ($data !== false) {
-                    $data = $this->_serializer->deserialize($data);
+                    $data = $this->serializer->deserialize($data);
                 }
                 $keyValues[$key] = $data;
             }
@@ -90,9 +48,9 @@ namespace ManaPHP {
          * @return void
          * @throws \ManaPHP\Cache\Exception
          */
-        public function set($key, $value, $ttl = null)
+        public function set($key, $value, $ttl)
         {
-            $this->_adapter->set($this->_prefix . $key, $this->_serializer->serialize($value), $ttl);
+            $this->_set($key, $this->serializer->serialize($value), $ttl);
         }
 
         /**
@@ -106,7 +64,7 @@ namespace ManaPHP {
         public function mSet($keyValues, $ttl = null)
         {
             foreach ($keyValues as $key => $value) {
-                $this->_adapter->set($this->_prefix . $key, $this->_serializer->serialize($value), $ttl);
+                $this->_set($key, $this->serializer->serialize($value), $ttl);
             }
         }
 
@@ -119,7 +77,7 @@ namespace ManaPHP {
          */
         public function delete($key)
         {
-            $this->_adapter->delete($this->_prefix . $key);
+            $this->_delete($key);
         }
 
         /**
@@ -132,7 +90,7 @@ namespace ManaPHP {
         public function mDelete($keys)
         {
             foreach ($keys as $key) {
-                $this->_adapter->delete($this->_prefix . $key);
+                $this->_delete($key);
             }
         }
 
@@ -145,7 +103,7 @@ namespace ManaPHP {
          */
         public function exists($key)
         {
-            return $this->_adapter->exists($this->_prefix . $key);
+            return $this->_exists($key);
         }
 
         /**

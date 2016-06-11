@@ -1,24 +1,25 @@
 <?php
 namespace ManaPHP\Cache\Adapter {
 
-    use ManaPHP\Cache\AdapterInterface;
+    use ManaPHP\Cache;
+    use ManaPHP\Utility\Text;
 
-    class File implements AdapterInterface
+    class File extends Cache
     {
         /**
          * @var string
          */
-        protected $_cacheDir;
-
-        /**
-         * @var string
-         */
-        protected $_shardMode;
+        protected $_cacheDir = '@data/Caches';
 
         /**
          * @var string
          */
         protected $_extension = '.cache';
+
+        /**
+         * @var int
+         */
+        protected $_dirLevel = 1;
 
         /**
          * @var array
@@ -28,14 +29,12 @@ namespace ManaPHP\Cache\Adapter {
          * File constructor.
          *
          * @param string $cacheDir
-         * @param string $shardMode
          *
-         * @throws \ManaPHP\Cache\Exception
+         * @throws \ManaPHP\Cache\Exception|\ManaPHP\Configure\Exception
          */
-        public function __construct($cacheDir, $shardMode = null)
+        public function __construct($cacheDir = null)
         {
-            $this->_cacheDir = $cacheDir;
-            $this->_shardMode = $shardMode;
+            $this->_cacheDir = $this->configure->resolvePath($cacheDir ? rtrim($cacheDir, '\\/') : $this->_cacheDir);
         }
 
         /**
@@ -45,17 +44,35 @@ namespace ManaPHP\Cache\Adapter {
          */
         protected function _getFileName($key)
         {
-            return $this->_cacheDir . '/' . $key . $this->_extension;
+            if ($key[0] === '!') {
+                return $this->_cacheDir . '/' . substr($key, 1) . $this->_extension;
+            }
+
+            if (Text::contains($key, '/')) {
+                list($prefix, $key) = explode('/', $key, 2);
+                $dir = $this->_cacheDir . '/' . $prefix;
+            } else {
+                $dir = $this->_cacheDir;
+            }
+            $md5 = md5($key);
+
+            for ($i = 0; $i < $this->_dirLevel; $i++) {
+                $dir .= '/' . substr($md5, $i + $i, 2);
+            }
+
+            $dir .= '/' . $md5 . $this->_extension;
+
+            return $dir;
         }
 
-        public function exists($key)
+        public function _exists($key)
         {
             $cacheFile = $this->_getFileName($key);
 
             return (@filemtime($cacheFile) >= time());
         }
 
-        public function get($key)
+        public function _get($key)
         {
             $cacheFile = $this->_getFileName($key);
 
@@ -66,7 +83,7 @@ namespace ManaPHP\Cache\Adapter {
             }
         }
 
-        public function set($key, $value, $ttl)
+        public function _set($key, $value, $ttl)
         {
             $cacheFile = $this->_getFileName($key);
 
@@ -83,7 +100,7 @@ namespace ManaPHP\Cache\Adapter {
             clearstatcache(true, $cacheFile);
         }
 
-        public function delete($key)
+        public function _delete($key)
         {
             $cacheFile = $this->_getFileName($key);
 

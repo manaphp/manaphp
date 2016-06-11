@@ -2,17 +2,11 @@
 
 namespace ManaPHP\Cache\Adapter {
 
-    use ManaPHP\Cache\AdapterInterface;
-    use ManaPHP\Component;
+    use ManaPHP\Cache;
     use ManaPHP\Di;
 
-    class Redis extends Component implements AdapterInterface
+    class Redis extends Cache
     {
-        public function __construct($dependencyInjector = null)
-        {
-            $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
-        }
-
         /**
          * Fetch content
          *
@@ -21,7 +15,7 @@ namespace ManaPHP\Cache\Adapter {
          * @return string|false
          * @throws \ManaPHP\Cache\Adapter\Exception
          */
-        public function get($key)
+        public function _get($key)
         {
             return $this->redis->get($key);
         }
@@ -36,7 +30,7 @@ namespace ManaPHP\Cache\Adapter {
          * @return void
          * @throws \ManaPHP\Cache\Adapter\Exception
          */
-        public function set($key, $value, $ttl)
+        public function _set($key, $value, $ttl)
         {
             $this->redis->set($key, $value, $ttl);
         }
@@ -49,7 +43,7 @@ namespace ManaPHP\Cache\Adapter {
          * @void
          * @throws \ManaPHP\Cache\Adapter\Exception
          */
-        public function delete($key)
+        public function _delete($key)
         {
             $this->redis->delete($key);
         }
@@ -62,7 +56,7 @@ namespace ManaPHP\Cache\Adapter {
          * @return bool
          * @throws \ManaPHP\Cache\Adapter\Exception
          */
-        public function exists($key)
+        public function _exists($key)
         {
             return $this->redis->exists($key);
         }

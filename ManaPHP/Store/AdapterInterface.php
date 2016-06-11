@@ -11,7 +11,7 @@ namespace ManaPHP\Store {
          *
          * @return bool
          */
-        public function exists($id);
+        public function _exists($id);
 
         /**
          * Retrieves a value from store with a specified id.
@@ -20,7 +20,7 @@ namespace ManaPHP\Store {
          *
          * @return string|false
          */
-        public function get($id);
+        public function _get($id);
 
         /**
          * Retrieves a value from store with a specified id.
@@ -29,7 +29,7 @@ namespace ManaPHP\Store {
          *
          * @return array
          */
-        public function mGet($ids);
+        public function _mGet($ids);
 
         /**
          * Stores a value identified by a id into store.
@@ -39,7 +39,7 @@ namespace ManaPHP\Store {
          *
          * @return void
          */
-        public function set($id, $value);
+        public function _set($id, $value);
 
         /**
          * Stores a value identified by a id into store.
@@ -48,7 +48,7 @@ namespace ManaPHP\Store {
          *
          * @return void
          */
-        public function mSet($idValues);
+        public function _mSet($idValues);
 
         /**
          * Deletes a value with the specified id from store
@@ -57,6 +57,6 @@ namespace ManaPHP\Store {
          *
          * @void
          */
-        public function delete($id);
+        public function _delete($id);
     }
 }
