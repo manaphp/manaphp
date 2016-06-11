@@ -98,7 +98,11 @@ namespace ManaPHP {
                 $this->_aliases[$alias] = $name;
             }
 
-            $this->_services[$name] = [$definition, $shared];
+            if ($shared && is_string($definition)) {
+                $this->_services[$name] = $definition;
+            } else {
+                $this->_services[$name] = [$definition, $shared];
+            }
         }
 
         /**
@@ -182,7 +186,12 @@ namespace ManaPHP {
             }
 
             if (isset($this->_services[$name])) {
-                list($definition, $shared) = $this->_services[$name];
+                if (is_string($this->_services[$name])) {
+                    $definition = $this->_services[$name];
+                    $shared = true;
+                } else {
+                    list($definition, $shared) = $this->_services[$name];
+                }
 
                 if ($shared && isset($this->_sharedInstances[$name])) {
                     $instance = $this->_sharedInstances[$name];
