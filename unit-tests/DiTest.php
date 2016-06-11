@@ -38,14 +38,43 @@ class DiTest extends TestCase
     public function test_set()
     {
         //class name string
-        $this->_di->set('set_request1', 'ManaPHP\Http\Request');
-        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('set_request1'));
+        $this->_di->set('request1', 'ManaPHP\Http\Request');
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request1'));
 
         //anonymous function
-        $this->_di->set('set_request2', function () {
+        $this->_di->set('request2', function () {
             return new ManaPHP\Http\Request();
         });
-        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('set_request2'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request2'));
+
+        //anonymous function
+        $this->_di->set('request3', function () {
+            return new ManaPHP\Http\Request();
+        },false,['request31','request32']);
+
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request2'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request31'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request32'));
+    }
+
+    public function test_setShared()
+    {
+        //class name string
+        $this->_di->setShared('request1', 'ManaPHP\Http\Request');
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request1'));
+
+        //anonymous function
+        $this->_di->setShared('request2', function () {
+            return new ManaPHP\Http\Request();
+        });
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request2'));
+
+        //anonymous function
+        $this->_di->setShared('set_request3', function () {
+            return new ManaPHP\Http\Request();
+        },['request31','request32']);
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request31'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request32'));
     }
 
     public function test_has()

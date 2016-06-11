@@ -41,9 +41,14 @@ namespace ManaPHP {
     {
 
         /**
-         * @var \ManaPHP\Di\ServiceInterface[]
+         * @var array
          */
         protected $_services = [];
+
+        /**
+         * @var array
+         */
+        protected $_aliases = [];
 
         /**
          * @var array
@@ -83,12 +88,17 @@ namespace ManaPHP {
          * @param string  $name
          * @param mixed   $definition
          * @param boolean $shared
+         * @param array   $aliases
          *
-         * @return \ManaPHP\Di\ServiceInterface
+         * @return void
          */
-        public function set($name, $definition, $shared = false)
+        public function set($name, $definition, $shared = false, $aliases = [])
         {
-            return $this->_services[$name] = new Service($name, $definition, $shared);
+            foreach ($aliases as $alias) {
+                $this->_aliases[$alias] = $name;
+            }
+
+            $this->_services[$name] = [$definition, $shared];
         }
 
         /**
@@ -97,12 +107,61 @@ namespace ManaPHP {
          * @param string $name
          *
          * @return static
+         * @throws \ManaPHP\Di\Exception
          */
         public function remove($name)
         {
-            unset($this->_services[$name], $this->_sharedInstances[$name]);
+            if (in_array($name, $this->_aliases, true)) {
+                throw new Exception("Service($name) is being used by alias, please remove alias first.");
+            }
+
+            if (isset($this->_aliases[$name])) {
+                unset($this->_aliases[$name]);
+            } else {
+                unset($this->_services[$name], $this->_sharedInstances[$name]);
+            }
 
             return $this;
+        }
+
+        /**
+         * Resolves the service
+         *
+         * @param string $name
+         * @param mixed  $definition
+         * @param array  $parameters
+         *
+         * @return object
+         * @throws \ManaPHP\Di\Exception
+         */
+        protected function _resolve($name, $definition, $parameters = null)
+        {
+            $instance = null;
+
+            if (is_string($definition)) {
+                if (class_exists($definition)) {
+                    if (is_array($parameters)) {
+                        $reflection = new \ReflectionClass($definition);
+                        $instance = $reflection->newInstanceArgs($parameters);
+                    } else {
+                        $instance = new $definition();
+                    }
+                } else {
+                    throw new Exception("Service '$name' cannot be resolved: class is not exists.");
+                }
+            } elseif ($definition instanceof \Closure) {
+                if (is_array($parameters)) {
+                    $instance = call_user_func_array($definition, $parameters);
+                } else {
+                    $instance = call_user_func($definition);
+                }
+            } elseif (is_object($definition)) {
+                $instance = $definition;
+            } else {
+                throw new Exception("Service '$name' cannot be resolved: service type is unknown.");
+            }
+
+            return $instance;
         }
 
         /**
@@ -118,11 +177,25 @@ namespace ManaPHP {
         {
             assert(is_string($name), 'service name is not a string:' . json_encode($name, JSON_UNESCAPED_SLASHES));
 
+            if (isset($this->_aliases[$name])) {
+                $name = $this->_aliases[$name];
+            }
+
             if (isset($this->_services[$name])) {
-                $instance = $this->_services[$name]->resolve($parameters, $this);
+                list($definition, $shared) = $this->_services[$name];
+
+                if ($shared && isset($this->_sharedInstances[$name])) {
+                    $instance = $this->_sharedInstances[$name];
+                } else {
+                    $instance = $this->_resolve($name, $definition, $parameters);
+
+                    if ($shared) {
+                        $this->_sharedInstances[$name] = $instance;
+                    }
+                }
             } else {
                 if (!class_exists($name)) {
-                    throw new Exception("Service '$name' wasn't found in the dependency injection container");
+                    throw new Exception("Service '$name' cannot be resolved: class is not exists.");
                 }
 
                 if (is_array($parameters)) {
@@ -151,6 +224,10 @@ namespace ManaPHP {
          */
         public function getShared($name, $parameters = null)
         {
+            if (isset($this->_aliases[$name])) {
+                $name = $this->_aliases[$name];
+            }
+
             if (!isset($this->_sharedInstances[$name])) {
                 $this->_sharedInstances[$name] = $this->get($name, $parameters);
             }
@@ -167,7 +244,7 @@ namespace ManaPHP {
          */
         public function has($name)
         {
-            return isset($this->_services[$name]);
+            return isset($this->_services[$name]) || isset($this->_aliases[$name]);
         }
 
         /**
@@ -175,27 +252,13 @@ namespace ManaPHP {
          *
          * @param string $name
          * @param mixed  $definition
+         * @param array  $aliases
          *
-         * @return \ManaPHP\Di\ServiceInterface
+         * @return void
          */
-        public function setShared($name, $definition)
+        public function setShared($name, $definition, $aliases = [])
         {
-            return $this->_services[$name] = new Service($name, $definition, true);
-        }
-
-        /**
-         * @param string $name
-         *
-         * @return \ManaPHP\Di\ServiceInterface
-         * @throws \ManaPHP\Exception
-         */
-        public function getService($name)
-        {
-            if (isset($this->_services[$name])) {
-                return $this->_services[$name];
-            }
-
-            throw new \ManaPHP\Exception("Service '$name' wasn't found in the dependency injection container");
+            $this->set($name, $definition, true, $aliases);
         }
 
         /**

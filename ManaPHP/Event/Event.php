@@ -9,7 +9,6 @@ namespace ManaPHP\Event {
      */
     class Event
     {
-
         /**
          * Event type
          *
