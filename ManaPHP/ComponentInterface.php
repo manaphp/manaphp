@@ -55,5 +55,32 @@ namespace ManaPHP {
          * @return mixed
          */
         public function fireEvent($event, $data = null);
+
+        /**
+         * @param string $property
+         *
+         * @return bool
+         */
+        public function hasProperty($property);
+
+        /**
+         * @param string $property
+         * @param mixed  $value
+         *
+         * @return mixed
+         */
+        public function setProperty($property, $value);
+
+        /**
+         * @param string $property
+         *
+         * @return mixed
+         */
+        public function getProperty($property);
+
+        /**
+         * @return array
+         */
+        public function getProperties();
     }
 }

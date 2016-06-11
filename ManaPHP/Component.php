@@ -174,6 +174,57 @@ namespace ManaPHP {
             }
         }
 
+        /**
+         * @param string $property
+         *
+         * @return bool
+         */
+        public function hasProperty($property)
+        {
+            return array_key_exists($property, get_object_vars($this));
+        }
+
+        /**
+         * @param string $property
+         * @param mixed  $value
+         *
+         * @return mixed
+         * @throws \ManaPHP\Exception
+         */
+        public function setProperty($property, $value)
+        {
+            if (array_key_exists($property, get_object_vars($this))) {
+                $old = $this->{$property};
+                $this->{$property} = $value;
+                return $old;
+            } else {
+                throw new Exception("property '$property' is not exists in " . get_class($this));
+            }
+        }
+
+        /**
+         * @param string $property
+         *
+         * @return mixed
+         * @throws \ManaPHP\Exception
+         */
+        public function getProperty($property)
+        {
+            if (array_key_exists($property, get_object_vars($this))) {
+                return $this->{$property};
+            } else {
+                throw new Exception("property '$property' is not exists in " . get_class($this));
+            }
+        }
+
+        /**
+         * @return array
+         */
+        public function getProperties()
+        {
+            return get_object_vars($this);
+        }
+
         public function __debugInfo()
         {
             $defaultDi = Di::getDefault();
