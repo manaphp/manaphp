@@ -43,6 +43,7 @@ namespace ManaPHP {
      * @property \ManaPHP\Serializer\AdapterInterface $serializer
      * @property \ManaPHP\CacheInterface              $cache
      * @property \ManaPHP\StoreInterface              $store
+     * @property \ManaPHP\CounterInterface            $counter
      */
     class Component implements ComponentInterface
     {

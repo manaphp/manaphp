@@ -1,6 +1,7 @@
 <?php
 namespace Application {
 
+    use ManaPHP\Counter\Adapter\Db;
     use ManaPHP\Db\Adapter\Mysql;
     use ManaPHP\DbInterface;
     use ManaPHP\Log\Adapter\File;
@@ -38,6 +39,11 @@ namespace Application {
                 return $mysql;
             });
 
+            $this->_dependencyInjector->set('redis',function(){
+                $redis=new \Redis();
+                $redis->connect('localhost');
+                return $redis;
+            });
             $this->_dependencyInjector->setShared('authorization', new Authorization());
         }
 

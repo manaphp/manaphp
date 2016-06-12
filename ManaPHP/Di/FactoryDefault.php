@@ -51,6 +51,7 @@ namespace ManaPHP\Di {
                 'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
                 'cache' => 'ManaPHP\Cache\Adapter\File',
                 'store' => 'ManaPHP\Store\Adapter\File',
+                'counter' => 'ManaPHP\Counter\Adapter\Redis',
             ];
         }
     }
