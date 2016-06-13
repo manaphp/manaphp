@@ -5,10 +5,18 @@ namespace ManaPHP {
     interface CounterInterface
     {
         /**
+         * Get the value of key
+         *
+         * @param string|array $key
+         * @return int
+         */
+        public function get($key);
+
+        /**
          * Increments the value of key by a given step.
          *
-         * @param string $key
-         * @param int    $step
+         * @param string|array $key
+         * @param int $step
          *
          * @return int the new value
          */
@@ -17,8 +25,8 @@ namespace ManaPHP {
         /**
          * Decrements the value of key by a given step.
          *
-         * @param  string $key
-         * @param int     $step
+         * @param  string|array $key
+         * @param int $step
          *
          * @return int the new value
          */
@@ -27,7 +35,7 @@ namespace ManaPHP {
         /**
          * Deletes the key
          *
-         * @param string $key
+         * @param string|array $key
          *
          * @return void
          */

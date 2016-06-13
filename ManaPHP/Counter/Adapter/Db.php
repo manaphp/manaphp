@@ -2,8 +2,19 @@
 namespace ManaPHP\Counter\Adapter {
 
     use ManaPHP\Counter;
-    use ManaPHP\Counter\Exception;
 
+    /**
+     * Class Db
+     * @package ManaPHP\Counter\Adapter
+     *
+     * CREATE TABLE `manaphp_counter` (
+     *  `name` char(128) CHARACTER SET latin1 NOT NULL,
+     *  `counter` bigint(20) NOT NULL,
+     *  `created_time` int(11) NOT NULL,
+     *  `updated_time` int(11) NOT NULL,
+     *   PRIMARY KEY (`name`)
+     *   ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+     */
     class Db extends Counter
     {
         protected $_table;
@@ -18,15 +29,40 @@ namespace ManaPHP\Counter\Adapter {
             $this->_table = $table;
         }
 
+        protected function _getKey($key)
+        {
+            if (is_string($key)) {
+                return $key;
+            } else {
+                return implode('/', $key);
+            }
+        }
+
+
+        public function _get($key)
+        {
+            $key = $this->_getKey($key);
+            /** @noinspection SqlNoDataSourceInspection */
+            /** @noinspection SqlDialectInspection */
+            $r = $this->db->fetchOne('SELECT counter FROM ' . $this->_table . ' WHERE name=:name', ['name' => $key]);
+            if (!$r) {
+                return 0;
+            } else {
+                return $r['counter'];
+            }
+        }
+
         /**
          * @param string $key
-         * @param int    $step
+         * @param int $step
          *
          * @return int
-         * @throws \ManaPHP\Counter\Exception
+         * @throws \ManaPHP\Counter\Adapter\Exception
          */
         public function _increment($key, $step)
         {
+            $key = $this->_getKey($key);
+
             $time = time();
             /** @noinspection SqlNoDataSourceInspection */
             /** @noinspection SqlDialectInspection */
@@ -60,6 +96,8 @@ namespace ManaPHP\Counter\Adapter {
 
         public function _delete($key)
         {
+            $key = $this->_getKey($key);
+
             $this->db->delete($this->_table, ['name' => $key]);
         }
     }

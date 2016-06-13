@@ -23,6 +23,22 @@ class CounterAdapterDbTest extends TestCase
         });
     }
 
+    public function test_get()
+    {
+        $counter = new ManaPHP\Counter\Adapter\Db();
+        $counter->delete('c1');
+
+        $this->assertEquals(0, $counter->_get('c1'));
+        $counter->increment('c1');
+        $this->assertEquals(1, $counter->_get('c1'));
+
+        $counter->delete(['c', 1]);
+        $this->assertEquals(0, $counter->get(['c', 1]));
+
+        $counter->increment(['c', 1]);
+        $this->assertEquals(1, $counter->get(['c', 1]));
+    }
+
     public function test_increment()
     {
         $counter = new ManaPHP\Counter\Adapter\Db();

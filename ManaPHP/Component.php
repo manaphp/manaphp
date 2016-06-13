@@ -95,7 +95,7 @@ namespace ManaPHP {
          *
          * @param string $propertyName
          *
-         * @return object
+         * @return mixed
          */
         public function __get($propertyName)
         {

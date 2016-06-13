@@ -17,6 +17,16 @@ class CounterAdapterRedisTest extends TestCase
         });
     }
 
+    public function test_get()
+    {
+        $counter = new ManaPHP\Counter\Adapter\Redis();
+        $counter->delete('c1');
+
+        $this->assertEquals(0, $counter->_get('c1'));
+        $counter->increment('c1');
+        $this->assertEquals(1, $counter->_get('c1'));
+    }
+
     public function test_increment()
     {
         $counter = new ManaPHP\Counter\Adapter\Redis();

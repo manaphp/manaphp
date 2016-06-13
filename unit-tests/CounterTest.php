@@ -15,6 +15,16 @@ class CounterTest extends TestCase
         });
     }
 
+    public function test_get()
+    {
+        $counter = new ManaPHP\Counter\Adapter\Redis();
+        $counter->delete('c1');
+
+        $this->assertEquals(0, $counter->get('c1'));
+        $counter->increment('c1');
+        $this->assertEquals(1, $counter->get('c1'));
+    }
+
     public function test_increment()
     {
         $counter = new ManaPHP\Counter\Adapter\Redis();
@@ -23,6 +33,9 @@ class CounterTest extends TestCase
         $this->assertEquals(2, $counter->increment('c1', 1));
         $this->assertEquals(22, $counter->increment('c1', 20));
         $this->assertEquals(2, $counter->increment('c1', -20));
+
+        $counter->delete(['c', 1]);
+        $this->assertEquals(0, $counter->get(['c', 1]));
     }
 
     public function test_decrement()

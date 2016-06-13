@@ -170,7 +170,7 @@ class Captcha extends Component implements CaptchaInterface
 
         $this->response->setContentType('image/jpeg');
         $image->setImageFormat('jpeg');
-        $this->response->setContent($image->__tostring());
+        $this->response->setContent($image->__toString());
         $image->destroy();
         $fgPixel->destroy();
         $draw->destroy();

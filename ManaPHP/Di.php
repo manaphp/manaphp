@@ -134,7 +134,7 @@ namespace ManaPHP {
          * @param mixed  $definition
          * @param array  $parameters
          *
-         * @return object
+         * @return mixed
          * @throws \ManaPHP\Di\Exception
          */
         protected function _resolve($name, $definition, $parameters = null)

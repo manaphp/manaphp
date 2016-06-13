@@ -5,6 +5,10 @@ namespace ManaPHP {
 
     abstract class Counter extends Component implements CounterInterface, AdapterInterface
     {
+        public function get($key)
+        {
+            return $this->_get($key);
+        }
 
         public function increment($key, $step = 1)
         {
@@ -18,7 +22,7 @@ namespace ManaPHP {
 
         public function delete($key)
         {
-            return $this->_delete($key);
+            $this->_delete($key);
         }
     }
 }
