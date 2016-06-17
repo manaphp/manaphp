@@ -793,7 +793,7 @@ namespace ManaPHP\Mvc\Model {
         }
 
         /**
-         * @param int|array $cacheOptions
+         * @param array $cacheOptions
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
@@ -864,7 +864,7 @@ namespace ManaPHP\Mvc\Model {
         /**build the query and execute it.
          *
          * @param int $totalRows
-         * @param int|array $cacheOptions
+         * @param array $cacheOptions
          *
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception

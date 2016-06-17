@@ -17,7 +17,7 @@ namespace ManaPHP {
          *
          * @param string $key
          *
-         * @return mixed|false
+         * @return mixed|false|array
          */
         public function get($key);
 

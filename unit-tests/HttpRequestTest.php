@@ -471,7 +471,7 @@ class HttpRequestTest extends TestCase
         $base=[
             'REQUEST_SCHEME'=>'http',
             'HTTP_HOST'=>'www.manaphp.com',
-            'SERVER_PORT'=>80,
+            'SERVER_PORT'=>'80',
             'REQUEST_URI'=>'/index.php'
         ];
 
@@ -479,17 +479,17 @@ class HttpRequestTest extends TestCase
         $this->assertEquals('http://www.manaphp.com/index.php',$request->getUrl());
 
         $_SERVER=$base;
-        $_SERVER['SERVER_PORT']=81;
+        $_SERVER['SERVER_PORT']='81';
         $this->assertEquals('http://www.manaphp.com:81/index.php',$request->getUrl());
 
         $_SERVER=$base;
         $_SERVER['REQUEST_SCHEME']='https';
-        $_SERVER['SERVER_PORT']=443;
+        $_SERVER['SERVER_PORT']='443';
         $this->assertEquals('https://www.manaphp.com/index.php',$request->getUrl());
 
         $_SERVER=$base;
         $_SERVER['REQUEST_SCHEME']='https';
-        $_SERVER['SERVER_PORT']=8080;
+        $_SERVER['SERVER_PORT']='8080';
         $this->assertEquals('https://www.manaphp.com:8080/index.php',$request->getUrl());
 
         $_SERVER=$base;
