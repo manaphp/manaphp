@@ -514,5 +514,40 @@ namespace ManaPHP\Http {
         {
             return $this->getReferer();
         }
+
+        /**
+         * @param bool $withQuery
+         * @return string
+         */
+        public function getUrl($withQuery = false)
+        {
+            $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+
+            if (($_SERVER['REQUEST_SCHEME'] === 'http' && $_SERVER['SERVER_PORT'] !== 80)
+                || ($_SERVER['REQUEST_SCHEME'] === 'https' && $_SERVER['SERVER_PORT'] !== 443)
+            ) {
+                $url .= ':' . $_SERVER['SERVER_PORT'];
+            }
+            $url .= $_SERVER['REQUEST_URI'];
+
+            if ($withQuery) {
+                $get = $_GET;
+                unset($get['_url']);
+
+                $query = http_build_query($get);
+                if ($query) {
+                    $url .= '?' . $query;
+                }
+            }
+            return $url;
+        }
+
+        /**
+         * @return string
+         */
+        public function getUri()
+        {
+            return $_SERVER['REQUEST_URI'];
+        }
     }
 }

@@ -220,28 +220,21 @@ namespace ManaPHP\Mvc\Model {
          */
         public function setBind($bind, $merge = true);
 
-        /**
-         * @param array $options
-         *
-         * @return static
-         */
-        public function setCacheOptions($options);
 
         /**build the query and execute it.
          *
-         * @param array $cache
-         *
+         * @param int|array $cacheOptions
          * @return array
          */
-        public function execute($cache = null);
+        public function execute($cacheOptions = null);
 
         /**build the query and execute it.
          *
-         * @param int   $totalRows
-         * @param array $cache
+         * @param int $totalRows
+         * @param int|array $cacheOptions
          *
          * @return array
          */
-        public function executeEx(&$totalRows, $cache = null);
+        public function executeEx(&$totalRows, $cacheOptions = null);
     }
 }

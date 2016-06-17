@@ -39,7 +39,7 @@ namespace Application {
                 return $mysql;
             });
 
-            $this->_dependencyInjector->set('redis',function(){
+            $this->_dependencyInjector->setShared('redis',function(){
                 $redis=new \Redis();
                 $redis->connect('localhost');
                 return $redis;

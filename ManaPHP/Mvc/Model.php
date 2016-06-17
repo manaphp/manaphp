@@ -298,8 +298,7 @@ namespace ManaPHP\Mvc {
 
             $resultset = $modelsManager->createBuilder($parameters)
                 ->from(get_called_class())
-                ->setCacheOptions($cacheOptions)
-                ->execute();
+                ->execute($cacheOptions);
 
             if (is_array($resultset)) {
                 $modelInstances = [];
@@ -359,8 +358,7 @@ namespace ManaPHP\Mvc {
             $resultset = $modelsManager->createBuilder($parameters)
                 ->from(get_called_class())
                 ->limit(1)
-                ->setCacheOptions($cacheOptions)
-                ->execute();
+                ->execute($cacheOptions);
 
             if (is_array($resultset) && isset($resultset[0])) {
                 return new static($resultset[0], $dependencyInjector);
@@ -465,8 +463,7 @@ namespace ManaPHP\Mvc {
             $resultset = $modelsManager->createBuilder($parameters)
                 ->columns($columns)
                 ->from(get_called_class())
-                ->setCacheOptions($cacheOptions)
-                ->execute();
+                ->execute($cacheOptions);
 
             if (isset($parameters['group'])) {
                 return $resultset;
@@ -654,7 +651,7 @@ namespace ManaPHP\Mvc {
         /**
          * Executes internal hooks before save a record
          *
-         * @param boolean $exists
+         * @param boolean $exists   
          *
          * @return boolean
          */

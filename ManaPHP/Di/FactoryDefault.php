@@ -33,14 +33,11 @@ namespace ManaPHP\Di {
                 'escaper' => 'ManaPHP\Escaper',
                 'security' => 'ManaPHP\Security',
                 'crypt' => 'ManaPHP\Security\Crypt',
-                'annotations' => 'ManaPHP\Annotations\Adapter\Memory',
                 'flash' => 'ManaPHP\Flash\Direct',
                 'flashSession' => 'ManaPHP\Flash\Session',
                 'tag' => 'ManaPHP\Mvc\View\Tag',
                 'session' => 'ManaPHP\Http\Session\Adapter\File',
                 'sessionBag' => ['ManaPHP\Http\Session\Bag', false],
-                'eventsManager' => 'ManaPHP\Events\Manager',
-                'transactionManager' => 'ManaPHP\Mvc\Model\Transaction\Manager',
                 'assets' => 'ManaPHP\Assets\Manager',
                 'loader' => 'ManaPHP\Loader',
                 'view' => 'ManaPHP\Mvc\View',
@@ -52,6 +49,11 @@ namespace ManaPHP\Di {
                 'cache' => 'ManaPHP\Cache\Adapter\File',
                 'store' => 'ManaPHP\Store\Adapter\File',
                 'counter' => 'ManaPHP\Counter\Adapter\Redis',
+            ];
+
+            $this->_aliases=[
+                'modelsCache'=>'cache',
+                'viewsCache'=>'cache'
             ];
         }
     }

@@ -21,6 +21,8 @@ namespace ManaPHP\Mvc\Model {
      *   ->getQuery()
      *   ->execute();
      *</code>
+     *
+     * @property \ManaPHP\CacheInterface $modelsCache
      */
     class QueryBuilder extends Component implements QueryBuilderInterface
     {
@@ -75,18 +77,6 @@ namespace ManaPHP\Mvc\Model {
         protected $_distinct;
 
         protected $_hiddenParamNumber;
-
-        protected $_lastSQL;
-
-        /**
-         * @var boolean
-         */
-        protected $_uniqueRow;
-
-        /**
-         * @var array
-         */
-        protected $_cacheOptions;
 
         /**
          * \ManaPHP\Mvc\Model\Query\Builder constructor
@@ -768,13 +758,29 @@ namespace ManaPHP\Mvc\Model {
                 }
             }
 
+            //compatible with other SQL syntax
+            $replaces = [];
+            foreach ($this->_bind as $key => $value) {
+                $replaces[':' . $key . ':'] = ':' . $key;
+            }
+
+            $sql = strtr($sql, $replaces);
+
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $modelsManager = $this->_dependencyInjector->getShared('modelsManager');
+
+            foreach ($this->_models as $model) {
+                $modelInstance = $modelsManager->getModelInstance($model, false);
+                $sql = str_replace('[' . $model . ']', '`' . $modelInstance->getSource() . '`', $sql);
+            }
+
             return $sql;
         }
 
         /**
          * Set default bind parameters
          *
-         * @param array   $bind
+         * @param array $bind
          * @param boolean $merge
          *
          * @return static
@@ -787,55 +793,40 @@ namespace ManaPHP\Mvc\Model {
         }
 
         /**
-         * @param array $options
-         *
-         * @return static
-         */
-        public function setCacheOptions($options)
-        {
-            $this->_cacheOptions = $options;
-
-            return $this;
-        }
-
-        /**
-         * @param array $cache
-         *
+         * @param int|array $cacheOptions
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
-        public function execute($cache = null)
+        public function execute($cacheOptions = null)
         {
             $sql = $this->getSql();
 
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $modelsManager = $this->_dependencyInjector->getShared('modelsManager');
-
-            $readConnection = null;
-            foreach ($this->_models as $model) {
-                $modelInstance = $modelsManager->getModelInstance($model, false);
-
-                if ($readConnection === null) {
-                    $readConnection = $modelInstance->getReadConnection();
+            if ($cacheOptions !== null) {
+                if (!is_array($cacheOptions)) {
+                    $cacheOptions = ['ttl' => $cacheOptions];
                 }
 
-                $sql = str_replace('[' . $model . ']', '`' . $modelInstance->getSource() . '`', $sql);
+                if (!isset($cacheOptions['key'])) {
+                    $cacheOptions['key'] = 'Models/' . md5($sql . serialize($this->_bind));
+                }
+				
+                $result = $this->modelsCache->get($cacheOptions['key']);
+                if ($result !== false) {
+                    return $result;
+                }
             }
-
-            //compatible with other SQL syntax
-            $replaces = [];
-            foreach ($this->_bind as $key => $value) {
-                $replaces[':' . $key . ':'] = ':' . $key;
-            }
-
-            $sql = strtr($sql, $replaces);
-
-            $this->_lastSQL = $sql;
 
             try {
-                $result = $readConnection->fetchAll($sql, $this->_bind);
+                $result = $this->modelsManager
+                    ->getModelInstance(end($this->_models), false)
+                    ->getReadConnection()
+                    ->fetchAll($sql, $this->_bind);
             } catch (\Exception $e) {
                 throw new Exception($e->getMessage() . ':' . $sql);
+            }
+
+            if ($cacheOptions !== null) {
+                $this->modelsCache->set($cacheOptions['key'], $result, $cacheOptions['ttl']);
             }
 
             return $result;
@@ -855,30 +846,12 @@ namespace ManaPHP\Mvc\Model {
 
             $sql = $this->getSql();
 
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $modelsManager = $this->_dependencyInjector->getShared('modelsManager');
-
-            $readConnection = null;
-            foreach ($this->_models as $model) {
-                $modelInstance = $modelsManager->getModelInstance($model, false);
-
-                if ($readConnection === null) {
-                    $readConnection = $modelInstance->getReadConnection();
-                }
-
-                $sql = str_replace('[' . $model . ']', '`' . $modelInstance->getSource() . '`', $sql);
-            }
-
-            //compatible with other SQL syntax
-            $replaces = [];
-            foreach ($this->_bind as $key => $value) {
-                $replaces[':' . $key . ':'] = ':' . $key;
-            }
-
-            $sql = strtr($sql, $replaces);
-
             try {
-                $result = $readConnection->fetchOne($sql, $this->_bind);
+                $result = $this->modelsManager
+                    ->getModelInstance(end($this->_models), false)
+                    ->getReadConnection()
+                    ->fetchOne($sql, $this->_bind);
+
                 /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                 $rowCount = $result['row_count'];
             } catch (\Exception $e) {
@@ -890,29 +863,59 @@ namespace ManaPHP\Mvc\Model {
 
         /**build the query and execute it.
          *
-         * @param int   $totalRows
-         * @param array $cache
+         * @param int $totalRows
+         * @param int|array $cacheOptions
          *
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
-        public function executeEx(&$totalRows, $cache = null)
+        public function executeEx(&$totalRows, $cacheOptions = null)
         {
             $copy = clone $this;
 
-            $results = $this->execute($cache);
+            $sql = $this->getSql();
 
-            if (!$this->_limit) {
-                $totalRows = count($results);
-            } else {
-                if (count($results) % $this->_limit === 0) {
-                    $copy->_getTotalRows($totalRows);
-                } else {
-                    $totalRows = $this->_offset + count($results);
+            if ($cacheOptions !== null) {
+                if (!is_array($cacheOptions)) {
+                    $cacheOptions = ['ttl' => $cacheOptions];
+                }
+
+                if (!isset($cacheOptions['key'])) {
+                    $cacheOptions['key'] = 'Models/' . md5($sql . serialize($this->_bind));
+                }
+
+                $result = $this->modelsCache->get($cacheOptions['key']);
+				
+                if ($result !== false) {
+                    $totalRows = $result['totalRows'];
+                    return $result['data'];
                 }
             }
 
-            return $results;
+            try {
+                $result = $this->modelsManager
+                    ->getModelInstance(end($this->_models), false)
+                    ->getReadConnection()
+                    ->fetchAll($sql, $this->_bind);
+            } catch (\Exception $e) {
+                throw new Exception($e->getMessage() . ':' . $sql);
+            }
+
+            if (!$this->_limit) {
+                $totalRows = count($result);
+            } else {
+                if (count($result) % $this->_limit === 0) {
+                    $copy->_getTotalRows($totalRows);
+                } else {
+                    $totalRows = $this->_offset + count($result, $cacheOptions);
+                }
+            }
+
+            if ($cacheOptions !== null) {
+                $this->modelsCache->set($cacheOptions['key'], ['data' => $result, 'totalRows' => $totalRows], $cacheOptions['ttl']);
+            }
+
+            return $result;
         }
     }
 }

@@ -57,7 +57,7 @@ namespace ManaPHP\Mvc\View {
          * @param boolean $directOutput
          * @param array   $vars
          *
-         * @return static
+         * @return string
          * @throws \ManaPHP\Mvc\View\Renderer\Exception
          */
         public function render($template, $vars, $directOutput = true)

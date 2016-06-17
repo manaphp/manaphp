@@ -229,5 +229,21 @@ namespace ManaPHP\Http {
          * @return string
          */
         public function getReferer();
+
+        /**
+         * http://localhost:8080/test/test.jsp
+         *
+         * @param bool $withQuery
+         * @return string
+         */
+        public function getUrl($withQuery = false);
+
+        /**
+         *  /test/test.jsp
+         *
+         *
+         * @return string
+         */
+        public function getUri();
     }
 }

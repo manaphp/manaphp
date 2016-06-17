@@ -188,7 +188,7 @@ namespace ManaPHP {
             return [
                 'mvc' => $this->router->getModuleName() . '::' . $this->router->getControllerName() . '::' . $this->router->getActionName(),
                 'request_method' => $_SERVER['REQUEST_METHOD'],
-                'request_uri' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],
+                'request_url' => $this->request->getUrl(),
                 'query_count' => $this->_sql_count,
                 'execute_time' => round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 4),
                 'memory_usage' => (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k',
