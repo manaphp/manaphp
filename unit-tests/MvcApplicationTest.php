@@ -5,14 +5,7 @@ require __DIR__ . '/TApplication/Application.php';
 
 class MvcApplicationTest extends TestCase
 {
-    public function test_construct()
-    {
-        $application = new \TApplication\Application();
-
-        $this->assertEquals(str_replace('\\', '/', __DIR__) . '/TApplication', $application->getAppDir());
-        $this->assertEquals('TApplication', $application->getAppNamespace());
-    }
-
+    
     public function test_useImplicitView()
     {
         $application = new \TApplication\Application();

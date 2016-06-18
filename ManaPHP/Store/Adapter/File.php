@@ -28,13 +28,19 @@ namespace ManaPHP\Store\Adapter {
         /**
          * File constructor.
          *
-         * @param string $storeDir
+         * @param string|array $options
          *
          * @throws \ManaPHP\Configure\Exception
          */
-        public function __construct($storeDir = null)
+        public function __construct($options = [])
         {
-            $this->_storeDir = $this->configure->resolvePath($storeDir ? rtrim($storeDir, '\\/') : $this->_storeDir);
+            if (is_string($options)) {
+                $options = ['storeDir' => $options];
+            }
+
+            if (isset($options['storeDir'])) {
+                $this->_storeDir = rtrim($options['storeDir']);
+            }
         }
 
         /**
@@ -45,7 +51,7 @@ namespace ManaPHP\Store\Adapter {
         protected function _getFileName($key)
         {
             if ($key[0] === '!') {
-                return $this->_storeDir . '/' . substr($key, 1) . $this->_extension;
+                return $this->alias->resolve($this->_storeDir . '/' . substr($key, 1) . $this->_extension);
             }
 
             if (Text::contains($key, '/')) {
@@ -62,7 +68,7 @@ namespace ManaPHP\Store\Adapter {
 
             $dir .= '/' . $md5 . $this->_extension;
 
-            return $dir;
+            return $this->alias->resolve($dir);
         }
 
         public function _exists($id)

@@ -229,6 +229,7 @@ namespace ManaPHP\Mvc {
             $this->fireEvent('view:afterRender');
 
             if ($this->_cacheOptions !== null) {
+                /** @noinspection PhpParamsInspection */
                 $this->viewsCache->set($this->_cacheOptions['key'], $this->_content, $this->_cacheOptions['ttl']);
             }
 
@@ -297,7 +298,7 @@ namespace ManaPHP\Mvc {
                 }
 
                 if (!isset($cacheOptions['key'])) {
-                    $cacheOptions['key'] = 'Views/' . md5($this->_appDir . $view);
+                    $cacheOptions['key'] = 'Views/' . md5($view);
                 }
 
                 $content = $this->viewsCache->get($cacheOptions['key']);
@@ -328,12 +329,14 @@ namespace ManaPHP\Mvc {
             $view = "/$this->_moduleName/Views/Widgets/" . $widget;
 
             if ($cacheOptions !== null) {
+                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                 if (!is_array($cacheOptions)) {
+                    /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                     $cacheOptions = ['ttl' => $cacheOptions];
                 }
 
                 if (!isset($cacheOptions['key'])) {
-                    $cacheOptions['key'] = 'Views/' . md5($this->_appDir . $view);
+                    $cacheOptions['key'] = 'Views/' . md5($view);
                 }
 
                 $content = $this->viewsCache->get($cacheOptions['key']);

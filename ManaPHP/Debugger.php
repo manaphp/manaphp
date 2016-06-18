@@ -64,7 +64,7 @@ namespace ManaPHP {
                         if (!isset($this->_sql_prepared[$preparedSQL])) {
                             $this->_sql_prepared[$preparedSQL] = 1;
                         } else {
-                            $this->_sql_prepared[$preparedSQL] += 1;
+                            $this->_sql_prepared[$preparedSQL]++;
                         }
                     }
 

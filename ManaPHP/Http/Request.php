@@ -521,14 +521,7 @@ namespace ManaPHP\Http {
          */
         public function getUrl($withQuery = false)
         {
-            $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
-
-            if (($_SERVER['REQUEST_SCHEME'] === 'http' && $_SERVER['SERVER_PORT'] !== '80')
-                || ($_SERVER['REQUEST_SCHEME'] === 'https' && $_SERVER['SERVER_PORT'] !== '443')
-            ) {
-                $url .= ':' . $_SERVER['SERVER_PORT'];
-            }
-            $url .= $_SERVER['REQUEST_URI'];
+            $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
             if ($withQuery) {
                 $get = $_GET;

@@ -28,13 +28,19 @@ namespace ManaPHP\Cache\Adapter {
         /**
          * File constructor.
          *
-         * @param string $cacheDir
+         * @param string|array $options
          *
          * @throws \ManaPHP\Cache\Exception|\ManaPHP\Configure\Exception
          */
-        public function __construct($cacheDir = null)
+        public function __construct($options = [])
         {
-            $this->_cacheDir = $this->configure->resolvePath($cacheDir ? rtrim($cacheDir, '\\/') : $this->_cacheDir);
+            if (is_string($options)) {
+                $options = ['cacheDir' => $options];
+            }
+
+            if (isset($options['cacheDir'])) {
+                $this->_cacheDir = rtrim($options['cacheDir'], '\\/');
+            }
         }
 
         /**
@@ -45,7 +51,7 @@ namespace ManaPHP\Cache\Adapter {
         protected function _getFileName($key)
         {
             if ($key[0] === '!') {
-                return $this->_cacheDir . '/' . substr($key, 1) . $this->_extension;
+                return $this->alias->resolve($this->_cacheDir . '/' . substr($key, 1) . $this->_extension);
             }
 
             if (Text::contains($key, '/')) {
@@ -62,7 +68,7 @@ namespace ManaPHP\Cache\Adapter {
 
             $dir .= '/' . $md5 . $this->_extension;
 
-            return $dir;
+            return $this->alias->resolve($dir);
         }
 
         public function _exists($key)

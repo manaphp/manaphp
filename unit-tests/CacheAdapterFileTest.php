@@ -4,6 +4,13 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class CacheAdapterFileTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $di=new ManaPHP\Di\FactoryDefault();
+    }
+
     public function test_exists()
     {
         $cache = new \ManaPHP\Cache\Adapter\File('/d/cache/test');

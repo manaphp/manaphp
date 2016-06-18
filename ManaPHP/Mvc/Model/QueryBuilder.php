@@ -887,6 +887,7 @@ namespace ManaPHP\Mvc\Model {
                 $result = $this->modelsCache->get($cacheOptions['key']);
 				
                 if ($result !== false) {
+                    /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                     $totalRows = $result['totalRows'];
                     return $result['data'];
                 }
