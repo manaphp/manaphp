@@ -11,6 +11,7 @@ namespace ManaPHP {
     /**
      * ManaPHP\Component
      *
+     * @property \ManaPHP\AliasInterface              $alias;
      * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher;
      * @property \ManaPHP\Mvc\RouterInterface         $router
      * @property \ManaPHP\Mvc\UrlInterface            $url

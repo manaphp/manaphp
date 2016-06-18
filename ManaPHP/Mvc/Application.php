@@ -18,21 +18,6 @@ namespace ManaPHP\Mvc {
     class Application extends Component implements ApplicationInterface
     {
         /**
-         * @var string
-         */
-        protected $_appPath;
-
-        /**
-         * @var string
-         */
-        protected $_appNamespace;
-
-        /**
-         * @var string
-         */
-        protected $_dataPath;
-
-        /**
          * @var boolean
          */
         protected $_implicitView = true;
@@ -46,52 +31,6 @@ namespace ManaPHP\Mvc {
         {
             $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
             $this->_dependencyInjector->setShared('application', $this);
-
-            $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-            $caller = $traces[0];
-            $appClass = get_class($caller['object']);
-
-            if (!Text::startsWith($appClass, 'ManaPHP\\')) {
-                $appFile = '/' . str_replace('\\', '/', $appClass) . '.php';
-                foreach (get_included_files() as $file) {
-                    $file = str_replace('\\', '/', $file);
-
-                    if (Text::contains($file, $appFile)) {
-                        $root = str_replace($appFile, '', $file);
-                        list($this->_appNamespace) = explode('\\', $appClass, 2);
-                        $this->_appPath = $root . '/' . $this->_appNamespace;
-                        $this->_dataPath = $root . '/Data';
-
-                        $this->loader->registerNamespaces([$this->_appNamespace => $this->_appPath]);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        /**
-         * @return string
-         */
-        public function getAppDir()
-        {
-            return $this->_appPath;
-        }
-
-        /**
-         * @return string
-         */
-        public function getAppNamespace()
-        {
-            return $this->_appNamespace;
-        }
-
-        /**
-         *
-         */
-        public function getDataDir()
-        {
-            return $this->_dataPath;
         }
 
         /**
@@ -132,7 +71,7 @@ namespace ManaPHP\Mvc {
             $actionName = $router->getActionName();
             $params = $router->getParams();
 
-            $moduleClassName = $this->getAppNamespace() . "\\$moduleName\\Module";
+            $moduleClassName = basename($this->alias->get('@app')) . "\\$moduleName\\Module";
 
             $moduleObject = null;
 
@@ -144,7 +83,7 @@ namespace ManaPHP\Mvc {
 
             $dispatcher = $this->_dependencyInjector->getShared('dispatcher');
             if ($dispatcher->getRootNamespace() === null) {
-                $dispatcher->setRootNamespace($this->getAppNamespace());
+                $dispatcher->setRootNamespace(basename($this->alias->get('@app')));
             }
 
             if ($this->_dependencyInjector->has('authorization')) {

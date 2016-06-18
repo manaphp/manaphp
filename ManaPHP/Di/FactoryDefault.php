@@ -21,6 +21,7 @@ namespace ManaPHP\Di {
             parent::__construct();
 
             $this->_services = [
+                'alias'=>'ManaPHP\Alias',
                 'router' => 'ManaPHP\Mvc\Router',
                 'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
                 'url' => 'ManaPHP\Mvc\Url',

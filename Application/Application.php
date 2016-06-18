@@ -16,6 +16,8 @@ namespace Application {
         {
             $self = $this;
 
+            $this->_dependencyInjector->setShared('configure', new Configure());
+
             $this->_dependencyInjector->setShared('router', function () {
                 return (new Router())
                     ->mount(new Home\RouteGroup(), '/')
@@ -39,8 +41,8 @@ namespace Application {
                 return $mysql;
             });
 
-            $this->_dependencyInjector->setShared('redis',function(){
-                $redis=new \Redis();
+            $this->_dependencyInjector->setShared('redis', function () {
+                $redis = new \Redis();
                 $redis->connect('localhost');
                 return $redis;
             });
@@ -76,15 +78,15 @@ namespace Application {
         {
             date_default_timezone_set('PRC');
 
-            $this->_dependencyInjector->setShared('configure', new Configure());
+            $this->loader->registerNamespaces([basename($this->alias->get('@app')) => $this->alias->get('@app')]);
+
+            $this->registerServices();
 
             if ($this->configure->debugger->disableAutoResponse) {
                 unset($_GET['_debugger']);//disable auto response to debugger data fetching request
             }
 
             $this->debugger->start();
-
-            $this->registerServices();
 
             // $this->logger->debug('start');
 

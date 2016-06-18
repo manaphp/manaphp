@@ -32,7 +32,7 @@ namespace ManaPHP {
         public function start($listenException = false)
         {
             if (isset($_GET['_debugger'])) {
-                $file = $this->application->getDataDir() . '/Debugger/' . substr($_GET['_debugger'], 0, 6) . '/' . $_GET['_debugger'] . '.html';
+                $file = $this->alias->resolve('@data') . '/Debugger/' . substr($_GET['_debugger'], 0, 6) . '/' . $_GET['_debugger'] . '.html';
                 if (is_file($file)) {
                     exit(file_get_contents($file));
                 }
@@ -257,7 +257,7 @@ namespace ManaPHP {
 
             list($micro_seconds, $seconds) = explode(' ', microtime());
             $id = date('ymd_His', $seconds) . '_' . substr($micro_seconds, 2, 6);
-            $file = $this->application->getDataDir() . '/Debugger/' . substr($id, 0, 6) . '/' . $id . '.html';
+            $file = $this->alias->resolve('@data') . '/Debugger/' . substr($id, 0, 6) . '/' . $id . '.html';
 
             $dir = dirname($file);
             if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {

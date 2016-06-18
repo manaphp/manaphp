@@ -66,7 +66,7 @@ namespace ManaPHP\Mvc\View {
             $content = null;
 
             foreach ($this->_registeredEngines as $extension => $engine) {
-                $file = $template . $extension;
+                $file = @$this->alias->resolve($template . $extension);
                 if (file_exists($file)) {
                     if (PHP_EOL !== "\n") {
                         $realPath = str_replace('\\', '/', realpath($file));

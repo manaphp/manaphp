@@ -27,8 +27,6 @@ use ManaPHP\Utility\Text;
 
         public function __construct($dependencyInjector = null)
         {
-            parent::__construct($dependencyInjector);
-
             $this->config();
         }
 
@@ -45,7 +43,7 @@ use ManaPHP\Utility\Text;
             $this->database->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
             $this->log = new \stdClass();
-            $this->log->file = $this->resolvePath('@data/Logs/' . date('Ymd') . '.log');
+            $this->log->file = $this->alias->resolve('@data/Logs/' . date('Ymd') . '.log');
 
             $this->crypt = new \stdClass();
             $this->crypt->key = 'test';

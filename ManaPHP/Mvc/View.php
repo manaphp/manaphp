@@ -42,16 +42,6 @@ namespace ManaPHP\Mvc {
         protected $_viewVars = [];
 
         /**
-         * @var string
-         */
-        protected $_appDir;
-
-        /**
-         * @var string
-         */
-        protected $_appNamespace;
-
-        /**
          * @var false|string|null
          */
         protected $_layout;
@@ -72,25 +62,9 @@ namespace ManaPHP\Mvc {
         protected $_actionName;
 
         /**
-         * @var int|array
+         * @var array
          */
         protected $_cacheOptions;
-
-        /**
-         * View constructor.
-         *
-         * @param \ManaPHP\DiInterface $dependencyInjector
-         *
-         * @throws \ManaPHP\Di\Exception
-         */
-        public function __construct($dependencyInjector = null)
-        {
-            $dependencyInjector = $dependencyInjector ?: Di::getDefault();
-            $application = $dependencyInjector->getShared('application');
-
-            $this->_appDir = $application->getAppDir();
-            $this->_appNamespace = $application->getAppNamespace();
-        }
 
         /**
          * @param false|string $layout
@@ -239,7 +213,7 @@ namespace ManaPHP\Mvc {
 
             $view = "/{$this->_moduleName}/Views/{$this->_controllerName}/" . ucfirst($this->_actionName);
 
-            $this->_content = $this->renderer->render($this->_appDir . $view, $this->_viewVars, false);
+            $this->_content = $this->renderer->render("@app{$view}", $this->_viewVars, false);
 
             if ($this->_layout !== false) {
                 if (is_string($this->_layout)) {
@@ -249,7 +223,7 @@ namespace ManaPHP\Mvc {
                 }
 
                 $view = "/$this->_moduleName/Views/Layouts/" . ucfirst($layout);
-                $this->_content = $this->renderer->render($this->_appDir . $view, $this->_viewVars, false);
+                $this->_content = $this->renderer->render("@app{$view}", $this->_viewVars, false);
             }
 
             $this->fireEvent('view:afterRender');
@@ -305,7 +279,7 @@ namespace ManaPHP\Mvc {
          *
          * @param string $path
          * @param array $vars
-         * @param int|array $cacheOptions
+         * @param array $cacheOptions
          *
          * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
          */
@@ -328,18 +302,18 @@ namespace ManaPHP\Mvc {
 
                 $content = $this->viewsCache->get($cacheOptions['key']);
                 if ($content === false) {
-                    $content = $this->renderer->render($this->_appDir . $view, $vars, false);
+                    $content = $this->renderer->render("@app{$view}", $vars, false);
                     $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
                 }
                 echo $content;
             } else {
-                $this->renderer->render($this->_appDir . $view, $vars, true);
+                $this->renderer->render("@app{$view}", $vars, true);
             }
         }
 
         public function widget($widget, $options = [], $cacheOptions = null)
         {
-            $widgetClassName = "{$this->_appNamespace}\\{$this->_moduleName}\\Widgets\\{$widget}Widget";
+            $widgetClassName = basename($this->alias->get('@app'))."\\{$this->_moduleName}\\Widgets\\{$widget}Widget";
 
             if (!class_exists($widgetClassName)) {
                 throw new Exception("widget '$widget' is not exist: " . $widgetClassName);
@@ -367,7 +341,7 @@ namespace ManaPHP\Mvc {
                     if (is_string($vars)) {
                         $content = $vars;
                     } else {
-                        $content = $this->renderer->render($this->_appDir . $view, $vars, false);
+                        $content = $this->renderer->render("@app{$view}", $vars, false);
                     }
 
                     $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
@@ -378,7 +352,7 @@ namespace ManaPHP\Mvc {
                 if (is_string($vars)) {
                     echo $vars;
                 } else {
-                    $this->renderer->render($this->_appDir . $view, $vars, true);
+                    $this->renderer->render("@app{$view}", $vars, true);
                 }
             }
         }
