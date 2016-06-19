@@ -11,8 +11,7 @@ namespace ManaPHP\Mvc {
 
         public function __construct()
         {
-            $this->_baseUri = rtrim(dirname($_SERVER['PHP_SELF']), '/');
-        }
+            $this->_baseUri = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');        }
 
         public function setBaseUri($baseUri)
         {
@@ -69,7 +68,7 @@ namespace ManaPHP\Mvc {
 
             return $strUri;
         }
-        
+
         public function getJs($uri, $correspondingMin = true)
         {
             if ($this->configure->debug) {
