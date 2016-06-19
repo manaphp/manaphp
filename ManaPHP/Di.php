@@ -180,7 +180,7 @@ namespace ManaPHP {
         {
             assert(is_string($name), 'service name is not a string:' . json_encode($name, JSON_UNESCAPED_SLASHES));
 
-            if (isset($this->_aliases[$name])) {
+            if (!isset($this->_services[$name]) && isset($this->_aliases[$name])) {
                 $name = $this->_aliases[$name];
             }
 
@@ -232,7 +232,7 @@ namespace ManaPHP {
          */
         public function getShared($name, $parameters = null)
         {
-            if (isset($this->_aliases[$name])) {
+            if (!isset($this->_services[$name]) && isset($this->_aliases[$name])) {
                 $name = $this->_aliases[$name];
             }
 

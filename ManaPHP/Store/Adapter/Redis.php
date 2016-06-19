@@ -7,14 +7,25 @@ namespace ManaPHP\Store\Adapter {
     class Redis extends Store
     {
         /**
-         * @var array
-         */
-        protected $_options;
-
-        /**
          * @var string
          */
-        protected $key = 'store:';
+        protected $key = '_manaphp_:store';
+
+        /**
+         * Redis constructor.
+         *
+         * @param string|array $options
+         */
+        public function __construct($options = [])
+        {
+            if (is_string($options)) {
+                $options = ['key' => $options];
+            }
+
+            if (isset($options['key'])) {
+                $this->key .= $options['key'];
+            }
+        }
 
         /**
          * Fetch content

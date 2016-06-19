@@ -36,7 +36,7 @@ class DummyListener
     }
 }
 
-class EventsTest extends TestCase
+class EventTest extends TestCase
 {
     public function test_attachEvent()
     {

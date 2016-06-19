@@ -9,7 +9,7 @@ namespace ManaPHP\Cache\Adapter {
         /**
          * @var string
          */
-        protected $_prefix = '_MANA_CACHE_';
+        protected $_prefix = '_manaphp_:cache:';
 
         /**
          * Apc constructor.

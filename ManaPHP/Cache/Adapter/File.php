@@ -9,7 +9,7 @@ namespace ManaPHP\Cache\Adapter {
         /**
          * @var string
          */
-        protected $_cacheDir = '@data/Caches';
+        protected $_cacheDir = '@data/Cache';
 
         /**
          * @var string
@@ -40,6 +40,10 @@ namespace ManaPHP\Cache\Adapter {
 
             if (isset($options['cacheDir'])) {
                 $this->_cacheDir = rtrim($options['cacheDir'], '\\/');
+            }
+
+            if (isset($options['dirLevel'])) {
+                $this->_dirLevel = $options['dirLevel'];
             }
         }
 

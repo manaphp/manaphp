@@ -9,7 +9,7 @@ namespace ManaPHP\Store\Adapter {
         /**
          * @var string
          */
-        protected $_storeDir = '@data/Stores';
+        protected $_storeDir = '@data/Store';
 
         /**
          * @var string
