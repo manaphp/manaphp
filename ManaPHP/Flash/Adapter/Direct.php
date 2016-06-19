@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Flash {
+namespace ManaPHP\Flash\Adapter {
 
     use ManaPHP\Flash;
 
@@ -36,7 +36,7 @@ namespace ManaPHP\Flash {
          *
          * @param $remove bool
          */
-        public function output($remove = true)
+        public function _output($remove = true)
         {
             foreach ($this->_messages as $message) {
                 echo $message;

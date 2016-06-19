@@ -2,6 +2,8 @@
 
 namespace ManaPHP {
 
+    use ManaPHP\Flash\AdapterInterface;
+
     /**
      * ManaPHP\Flash
      *
@@ -12,7 +14,7 @@ namespace ManaPHP {
      * $flash->error("Cannot open the file");
      *</code>
      */
-    abstract class Flash extends Component implements FlashInterface
+    abstract class Flash extends Component implements FlashInterface, AdapterInterface
     {
         protected $_cssClasses;
 
@@ -24,10 +26,10 @@ namespace ManaPHP {
         public function __construct($cssClasses = null)
         {
             $this->_cssClasses = $cssClasses ?: [
-                'error' => 'flash_error_message',
-                'notice' => 'flash_notice_message',
-                'success' => 'flash_success_message',
-                'warning' => 'flash_warning_message'
+                'error' => 'flash-error-message',
+                'notice' => 'flash-notice-message',
+                'success' => 'flash-success-message',
+                'warning' => 'flash-warning-message'
             ];
         }
 
@@ -96,11 +98,13 @@ namespace ManaPHP {
         }
 
         /**
-         * @param string $type
-         * @param string $message
+         * Prints the messages in the session flasher
          *
-         * @return string
+         * @param $remove bool
          */
-        abstract protected function _message($type, $message);
+        public function output($remove = true)
+        {
+            return $this->_output($remove);
+        }
     }
 }

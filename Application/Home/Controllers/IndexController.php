@@ -18,5 +18,7 @@ class IndexController extends ControllerBase
     {
         $this->view->setVar('version', Version::get());
         $this->view->setVar('current_time', date('Y-m-d H:i:s'));
+
+        $this->flashSession->error(date('Y-m-d H:i:s'));
     }
 }

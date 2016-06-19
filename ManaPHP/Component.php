@@ -11,16 +11,16 @@ namespace ManaPHP {
     /**
      * ManaPHP\Component
      *
-     * @property \ManaPHP\AliasInterface              $alias;
-     * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher;
+     * @property \ManaPHP\AliasInterface              $alias
+     * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher
      * @property \ManaPHP\Mvc\RouterInterface         $router
      * @property \ManaPHP\Mvc\UrlInterface            $url
      * @property \ManaPHP\Http\RequestInterface       $request
      * @property \ManaPHP\Http\ResponseInterface      $response
      * @property \ManaPHP\Http\CookiesInterface       $cookies
     //* @property \ManaPHP\FilterInterface $filter
-     * @property \ManaPHP\Flash\Direct                $flash
-    //* @property \ManaPHP\Flash\Session $flashSession
+     * @property \ManaPHP\FlashInterface              $flash
+     * @property \ManaPHP\FlashInterface              $flashSession
      * @property \ManaPHP\Http\SessionInterface       $session
      * @property \ManaPHP\Event\ManagerInterface      $eventsManager
      * @property \ManaPHP\DbInterface                 $db
