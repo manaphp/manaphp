@@ -9,7 +9,7 @@ namespace ManaPHP\Store\Adapter {
         /**
          * @var string
          */
-        protected $key = '_manaphp_:store';
+        protected $key = 'manaphp:store';
 
         /**
          * Redis constructor.

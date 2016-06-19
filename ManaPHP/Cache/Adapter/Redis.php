@@ -7,7 +7,7 @@ namespace ManaPHP\Cache\Adapter {
 
     class Redis extends Cache
     {
-        protected $_prefix = '_manaphp_:cache:';
+        protected $_prefix = 'manaphp:cache:';
 
         /**
          * Redis constructor.
