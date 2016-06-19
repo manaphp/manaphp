@@ -7,51 +7,31 @@ namespace ManaPHP\Mvc {
 
     class Url extends Component implements UrlInterface
     {
-        protected $_prefix = '';
+        protected $_baseUri = '';
 
         public function __construct()
         {
-            $this->_prefix = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
+            $this->_baseUri = rtrim(dirname($_SERVER['PHP_SELF']), '/');
         }
 
-        /**
-         * Sets a prefix to all the urls generated
-         *
-         * @param string $prefix
-         *
-         * @return static
-         * @throws \ManaPHP\Mvc\Url\Exception
-         */
-        public function setPrefix($prefix)
+        public function setBaseUri($baseUri)
         {
-            if ($prefix !== '' && $prefix[0] !== '/') {
-                throw new Exception('Url Prefix must star with \'/\'');
-            }
+            $this->_baseUri = rtrim($baseUri, '/');
 
-            $this->_prefix = rtrim($prefix, '/');
             return $this;
         }
 
-        /**
-         * Returns the prefix for all the generated urls.
-         */
-        public function getPrefix()
+        public function getBaseUri()
         {
-            return $this->_prefix;
+            return $this->_baseUri;
         }
 
-        /**
-         * @param string $uri
-         * @param array  $args
-         *
-         * @return mixed
-         */
         public function get($uri = null, $args = null)
         {
             $strUri = $uri;
             if ($uri[0] === '/') {
                 if ($uri === '/' || $uri[1] !== '/') {
-                    $strUri = $this->_prefix . $uri;
+                    $strUri = $this->_baseUri . $uri;
                 }
             }
 
@@ -73,12 +53,6 @@ namespace ManaPHP\Mvc {
             return $strUri;
         }
 
-        /**
-         * @param string      $uri
-         * @param bool|string $correspondingMin
-         *
-         * @return string
-         */
         public function getCss($uri, $correspondingMin = true)
         {
             if ($this->configure->debug) {
@@ -95,13 +69,7 @@ namespace ManaPHP\Mvc {
 
             return $strUri;
         }
-
-        /**
-         * @param string      $uri
-         * @param bool|string $correspondingMin
-         *
-         * @return string
-         */
+        
         public function getJs($uri, $correspondingMin = true)
         {
             if ($this->configure->debug) {

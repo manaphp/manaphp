@@ -5,20 +5,19 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 class MvcUrlTest extends TestCase
 {
 
-    public function test_setPrefix()
+    public function test_setBaseUri()
     {
         $url = new \ManaPHP\Mvc\Url();
-        $this->assertEquals('', $url->setPrefix('')->getPrefix());
-        $this->assertEquals('', $url->setPrefix('/')->getPrefix());
-        $this->assertEquals('/manaphp', $url->setPrefix('/manaphp')->getPrefix());
-        $this->assertEquals('/manaphp', $url->setPrefix('/manaphp/')->getPrefix());
+        $this->assertEquals('', $url->setBaseUri('/')->getBaseUri());
+        $this->assertEquals('/manaphp', $url->setBaseUri('/manaphp')->getBaseUri());
+        $this->assertEquals('/manaphp', $url->setBaseUri('/manaphp/')->getBaseUri());
     }
 
     public function test_get()
     {
         $url = new \ManaPHP\Mvc\Url();
 
-        $url->setPrefix('/');
+        $url->setBaseUri('/');
 
         $this->assertEquals('/', $url->get('/'));
         $this->assertEquals('/home', $url->get('/home'));
@@ -31,7 +30,7 @@ class MvcUrlTest extends TestCase
         $this->assertEquals('/article/10', $url->get('/article/{article_id}', ['article_id' => 10]));
         $this->assertEquals('/article/10?from=google', $url->get('/article/{article_id}', ['article_id' => 10, 'from' => 'google']));
 
-        $url->setPrefix('/manaphp');
+        $url->setBaseUri('/manaphp');
 
         $this->assertEquals('/manaphp/', $url->get('/'));
         $this->assertEquals('/manaphp/home', $url->get('/home'));
@@ -50,7 +49,7 @@ class MvcUrlTest extends TestCase
         $url = new \ManaPHP\Mvc\Url();
         $url->configure = new \ManaPHP\Configure\Configure();
 
-        $url->setPrefix('/manaphp');
+        $url->setBaseUri('/manaphp');
 
         $url->configure->debug = true;
         $this->assertEquals('/manaphp/app.js', $url->getJs('/app.js'));
@@ -68,7 +67,7 @@ class MvcUrlTest extends TestCase
         $url = new \ManaPHP\Mvc\Url();
         $url->configure = new \ManaPHP\Configure\Configure();
 
-        $url->setPrefix('/manaphp');
+        $url->setBaseUri('/manaphp');
 
         $url->configure->debug = true;
         $this->assertEquals('/manaphp/app.css', $url->getCss('/app.css'));
