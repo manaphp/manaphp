@@ -46,7 +46,7 @@ namespace ManaPHP {
      * @property \ManaPHP\StoreInterface              $store
      * @property \ManaPHP\CounterInterface            $counter
      * @property \ManaPHP\CacheInterface              $viewsCache
-     * @property \ManaPHP\Http\ClientInterface        $httpClient
+     * @property \ManaPHP\Http\Client                 $httpClient
      */
     class Component implements ComponentInterface
     {

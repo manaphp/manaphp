@@ -49,5 +49,7 @@ class AliasTest extends TestCase
 
         $alias->set('@app', '/www/app');
         $this->assertEquals('/www/app/data', $alias->resolve('@app/data'));
+		
+        $this->assertEquals('/www/app',$alias->resolve('@app'));
     }
 }

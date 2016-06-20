@@ -139,6 +139,18 @@ namespace ManaPHP\Mvc {
         }
 
         /**
+         * @param string $actionName
+         *
+         * @return static
+         */
+        public function setActionName($actionName)
+        {
+            $this->_actionName = lcfirst(Text::camelize($actionName));
+
+            return $this;
+        }
+
+        /**
          * @param array $params
          * @param bool  $merge
          *
@@ -418,6 +430,18 @@ namespace ManaPHP\Mvc {
         public function getControllerName()
         {
             return $this->_controllerName;
+        }
+
+        /**
+         * @param string $controllerName
+         *
+         * @return static
+         */
+        public function setControllerName($controllerName)
+        {
+            $this->_controllerName = Text::camelize($controllerName);
+
+            return $this;
         }
 
         /**

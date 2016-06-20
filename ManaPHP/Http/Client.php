@@ -28,6 +28,7 @@ namespace ManaPHP\Http {
 
         /**
          * Client constructor.
+         *
          * @param array $options
          * - `timeout`: How long should we wait for a response?
          *    (integer, seconds, default: 10)
@@ -41,7 +42,7 @@ namespace ManaPHP\Http {
          *    certificate file as a string. (Using true uses the system-wide root
          *    certificate store instead, but this may have different behaviour
          *    across transports.)
-         *    (string|true, default: true)
+         *    (string, default: 'xxx/ca.pem')
          * - `verify_host`: Should we verify the common name in the SSL certificate?
          *    (boolean: default, true)
          *
@@ -76,11 +77,11 @@ namespace ManaPHP\Http {
             $headers = array_merge($this->_headers, $headers);
             $options = array_merge($this->_options, $options);
 
-            $this->fireEvent('httpClient:beforeRequest', ['type' => $type, 'url' => &$url, 'headers' => &$headers, 'data' => &$data, &$options]);
+            $this->fireEvent('httpClient:beforeRequest', ['type' => $type, 'url' => &$url, 'headers' => &$headers, 'data' => &$data, 'options' => &$options]);
             $httpCode = $this->_request($type, $url, $data, $headers, $options);
-            $this->fireEvent('httpClient:afterRequest', ['httpCode' => &$httpCode, 'responseBody' => $this->_responseBody]);
+            $this->fireEvent('httpClient:afterRequest', ['httpCode' => &$httpCode, 'responseBody' => &$this->_responseBody]);
 
-            return $;httpCode;
+            return $httpCode;
         }
 
         protected function _buildUrl($url)
