@@ -7,15 +7,11 @@ use ManaPHP\Security\Captcha\Exception;
 class Captcha extends Component implements CaptchaInterface
 {
     protected /** @noinspection SpellCheckingInspection */
-        $_charSet = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
+        $_charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
     /**
      * @var array
      */
-    protected $_fontFiles = [
-        __DIR__ . '/Captcha/Fonts/AirbusSpecial.ttf',
-        __DIR__ . '/Captcha/Fonts/StencilFour.ttf',
-        __DIR__ . '/Captcha/Fonts/SpicyRice.ttf'
-    ];
+    protected $_fontFiles = [];
     protected $_sessionVar = 'captcha';
 
     protected $_angleAmplitude = 30;
@@ -30,6 +26,15 @@ class Captcha extends Component implements CaptchaInterface
      * @var int
      */
     protected $_minInterval = 1;
+
+    public function __construct()
+    {
+        $this->_fontFiles=[
+            __DIR__ . '/Captcha/Fonts/AirbusSpecial.ttf',
+            __DIR__ . '/Captcha/Fonts/StencilFour.ttf',
+            __DIR__ . '/Captcha/Fonts/SpicyRice.ttf'
+        ];
+    }
 
     /**
      * @param string $rgb
@@ -106,7 +111,7 @@ class Captcha extends Component implements CaptchaInterface
             $points = imagettftext($image, $fontSize, $angle, $x, $y, $fgColor, $fontFile, $code[$i]);
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
-                $letter = $this->_charSet[mt_rand() % strlen($this->_charSet)];
+                $letter = $this->_charset[mt_rand() % strlen($this->_charset)];
                 $fgColor = imagecolorallocate($image, mt_rand(0, 240), mt_rand(0, 240), mt_rand(0, 240));
                 imagettftext($image,
                     $fontSize * 0.4 * $this->_rand_amplitude(0.1),
@@ -159,7 +164,7 @@ class Captcha extends Component implements CaptchaInterface
             $x += $fontSize * mt_rand(600, 800) / 1000;
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
-                $letter = $this->_charSet[mt_rand() % strlen($this->_charSet)];
+                $letter = $this->_charset[mt_rand() % strlen($this->_charset)];
                 $fgPixel->setColor('rgb(' . mt_rand(0, 240) . ',' . mt_rand(0, 240) . ',' . mt_rand(0, 240) . ')');
                 $draw->setFillColor($fgPixel);
                 $draw->setFontSize($fontSize * 0.4 * $this->_rand_amplitude(0.1));
@@ -189,9 +194,9 @@ class Captcha extends Component implements CaptchaInterface
     public function generate($width = 100, $height = 30, $ttl = 300)
     {
         $code = '';
-        $charsetCount = strlen($this->_charSet);
+        $charsetCount = strlen($this->_charset);
         for ($i = 0; $i < $this->_codeLength; $i++) {
-            $code .= $this->_charSet[mt_rand() % $charsetCount];
+            $code .= $this->_charset[mt_rand() % $charsetCount];
         }
 
         if (class_exists('Imagick')) {

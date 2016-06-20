@@ -2,7 +2,6 @@
 namespace ManaPHP\Mvc {
 
     use ManaPHP\Component;
-    use ManaPHP\Mvc\Url\Exception;
     use ManaPHP\Utility\Text;
 
     class Url extends Component implements UrlInterface

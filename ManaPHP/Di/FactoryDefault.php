@@ -50,6 +50,7 @@ namespace ManaPHP\Di {
                 'cache' => 'ManaPHP\Cache\Adapter\File',
                 'store' => 'ManaPHP\Store\Adapter\File',
                 'counter' => 'ManaPHP\Counter\Adapter\Redis',
+                'httpClient'=>'ManaPHP\Http\Client\Adapter\Curl',
             ];
 
             $this->_aliases=[
