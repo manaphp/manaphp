@@ -4,7 +4,7 @@ namespace ManaPHP {
     use \ManaPHP\Alias\Exception;
     use ManaPHP\Utility\Text;
 
-    class Alias implements AliasInterface
+    class Alias extends Component implements AliasInterface
     {
         protected $_aliases = [];
 
@@ -17,9 +17,9 @@ namespace ManaPHP {
             $found = false;
             foreach ($traces as $trace) {
                 if (isset($trace['class']) && !Text::startsWith($trace['class'], 'ManaPHP\\')) {
-                    $class=str_replace('\\','/',$trace['class']);
+                    $class = str_replace('\\', '/', $trace['class']);
                     foreach (get_included_files() as $file) {
-                        $file=str_replace('\\','/',$file);
+                        $file = str_replace('\\', '/', $file);
 
                         if (Text::contains($file, $class . '.php')) {
                             $dir = dirname($file);
@@ -85,15 +85,17 @@ namespace ManaPHP {
             return isset($this->_aliases[$name]);
         }
 
+        /** @noinspection PhpDocMissingThrowsInspection */
         /**
          * @param $path
          *
          * @return mixed
-         * @throws \ManaPHP\Alias\Exception
          */
         public function resolve($path)
         {
             if (rtrim($path, '\\/') !== $path) {
+
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new Exception("Path can not end with '/' or '\\': " . $path);
             }
 
@@ -105,6 +107,8 @@ namespace ManaPHP {
 
             list($alias) = explode('/', $path, 2);
             if (!isset($this->_aliases[$alias])) {
+
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new Exception("alias $alias is not exists: " . $path);
             }
 

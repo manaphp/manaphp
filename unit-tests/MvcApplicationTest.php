@@ -5,7 +5,7 @@ require __DIR__ . '/TApplication/Application.php';
 
 class MvcApplicationTest extends TestCase
 {
-    
+
     public function test_useImplicitView()
     {
         $application = new \TApplication\Application();

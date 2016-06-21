@@ -1,10 +1,10 @@
 <?php
 namespace Application {
-use ManaPHP\Utility\Text;
+
+    use ManaPHP\Utility\Text;
 
     class Configure extends \ManaPHP\Configure\Configure
     {
-
         /**
          * @var \ManaConfigure\Db\Adapter\Mysql $database
          */
@@ -25,7 +25,7 @@ use ManaPHP\Utility\Text;
          */
         public $debugger;
 
-        public function __construct($dependencyInjector = null)
+        public function __construct()
         {
             $this->config();
         }
@@ -43,7 +43,7 @@ use ManaPHP\Utility\Text;
             $this->database->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
             $this->log = new \stdClass();
-            $this->log->file = $this->alias->resolve('@data/Logs/' . date('Ymd') . '.log');
+            $this->log->file = '@data/Logger/' . date('Ymd') . '.log';
 
             $this->crypt = new \stdClass();
             $this->crypt->key = 'test';

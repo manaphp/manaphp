@@ -1,20 +1,25 @@
 <?php
 namespace ManaPHP\Log\Adapter {
 
+    use ManaPHP\Component;
     use ManaPHP\Log\AdapterInterface;
 
-    class File implements AdapterInterface
+    class File extends Component implements AdapterInterface
     {
-
         /**
          * @var string
          */
         protected $_file;
 
         /**
-         * @var array
+         * @var string
          */
-        protected $_options = [];
+        protected $_dateFormat = 'D, d M y H:i:s O';
+
+        /**
+         * @var string
+         */
+        protected $_format = '[%date%][%level%] %message%';
 
         /**
          * @var bool
@@ -24,23 +29,27 @@ namespace ManaPHP\Log\Adapter {
         /**
          * \ManaPHP\Log\Adapter\File constructor.
          *
-         * @param string $file
-         * @param array  $options
+         * @param string|array $options
          */
-        public function __construct($file, $options = [])
+        public function __construct($options = [])
         {
-            $this->_file = $file;
-
-            if (!isset($options['dateFormat'])) {
-                $options['dateFormat'] = 'D, d M y H:i:s O';
+            if (is_string($options)) {
+                $options = ['file' => $options];
             }
 
-            if (!isset($options['format'])) {
-                $options['format'] = '[%date%][%level%] %message%';
+            if (!isset($options['file'])) {
+                $options['file'] = '@data/Logger/' . date('Ymd') . '.log';
             }
 
-            $this->_options = $options;
+            $this->_file = $this->alias->resolve($options['file']);
 
+            if (isset($options['dateFormat'])) {
+                $this->_dateFormat = $options['dateFormat'];
+            }
+
+            if (isset($options['format'])) {
+                $this->_format = $options['format'];
+            }
         }
 
         /**
@@ -60,7 +69,7 @@ namespace ManaPHP\Log\Adapter {
                 $this->_firstLog = false;
             }
 
-            $context['date'] = date($this->_options['dateFormat'], $context['date'] ?: time());
+            $context['date'] = date($this->_dateFormat, $context['date'] ?: time());
 
             $replaced = [];
             foreach ($context as $k => $v) {
@@ -69,7 +78,7 @@ namespace ManaPHP\Log\Adapter {
 
             $replaced['%message%'] = $message . PHP_EOL;
 
-            $log = strtr($this->_options['format'], $replaced);
+            $log = strtr($this->_format, $replaced);
 
             if (file_put_contents($this->_file, $log, FILE_APPEND | LOCK_EX) === false) {
                 error_log('Write log to file failed: ' . $this->_file);

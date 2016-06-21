@@ -11,42 +11,43 @@ namespace ManaPHP {
     /**
      * ManaPHP\Component
      *
-     * @property \ManaPHP\AliasInterface              $alias
-     * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher
-     * @property \ManaPHP\Mvc\RouterInterface         $router
-     * @property \ManaPHP\Mvc\UrlInterface            $url
-     * @property \ManaPHP\Http\RequestInterface       $request
-     * @property \ManaPHP\Http\ResponseInterface      $response
-     * @property \ManaPHP\Http\CookiesInterface       $cookies
+     * @property \ManaPHP\Alias                           $alias
+     * @property \ManaPHP\Mvc\Dispatcher                  $dispatcher
+     * @property \ManaPHP\Mvc\Router                      $router
+     * @property \ManaPHP\Mvc\Url                         $url
+     * @property \ManaPHP\Http\Request                    $request
+     * @property \ManaPHP\Http\Response                   $response
+     * @property \ManaPHP\Http\Cookies                    $cookies
     //* @property \ManaPHP\FilterInterface $filter
-     * @property \ManaPHP\FlashInterface              $flash
-     * @property \ManaPHP\FlashInterface              $flashSession
-     * @property \ManaPHP\Http\SessionInterface       $session
-     * @property \ManaPHP\Event\ManagerInterface      $eventsManager
-     * @property \ManaPHP\DbInterface                 $db
+     * @property \ManaPHP\Flash                           $flash
+     * @property \ManaPHP\Flash                           $flashSession
+     * @property \ManaPHP\Http\SessionInterface           $session
+     * @property \ManaPHP\Event\ManagerInterface          $eventsManager
+     * @property \ManaPHP\Db                              $db
     //* @property \ManaPHP\Security $security
-     * @property \ManaPHP\Security\CryptInterface     $crypt
-     * @property \ManaPHP\Mvc\Model\ManagerInterface  $modelsManager
-     * @property \ManaPHP\Mvc\Model\MetadataInterface $modelsMetadata
+     * @property \ManaPHP\Security\Crypt                  $crypt
+     * @property \ManaPHP\Mvc\Model\Manager               $modelsManager
+     * @property \ManaPHP\Mvc\Model\Metadata              $modelsMetadata
     //     * @property \ManaPHP\Assets\Manager $assets
-     * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
-     * @property \ManaPHP\Http\Session\BagInterface   $persistent
-     * @property \ManaPHP\Mvc\ViewInterface           $view
-     * @property \ManaPHP\Mvc\View\Tag                $tag
-     * @property \ManaPHP\Loader                      $loader
-     * @property \ManaPHP\Log\Logger                  $logger
-     * @property \ManaPHP\Mvc\View\Renderer           $renderer
-     * @property \Application\Configure               $configure
-     * @property \ManaPHP\ApplicationInterface        $application
-     * @property \ManaPHP\DebuggerInterface           $debugger
-     * @property \ManaPHP\Security\PasswordInterface  $password
-     * @property \Redis                               $redis
-     * @property \ManaPHP\Serializer\AdapterInterface $serializer
-     * @property \ManaPHP\CacheInterface              $cache
-     * @property \ManaPHP\StoreInterface              $store
-     * @property \ManaPHP\CounterInterface            $counter
-     * @property \ManaPHP\CacheInterface              $viewsCache
-     * @property \ManaPHP\Http\Client                 $httpClient
+     * @property \ManaPHP\Di|\ManaPHP\DiInterface         $di
+     * @property \ManaPHP\Http\Session\Bag                $persistent
+     * @property \ManaPHP\Mvc\View                        $view
+     * @property \ManaPHP\Mvc\View\Tag                    $tag
+     * @property \ManaPHP\Loader                          $loader
+     * @property \ManaPHP\Log\Logger                      $logger
+     * @property \ManaPHP\Mvc\View\Renderer               $renderer
+     * @property \Application\Configure                   $configure
+     * @property \ManaPHP\ApplicationInterface            $application
+     * @property \ManaPHP\Debugger                        $debugger
+     * @property \ManaPHP\Security\Password               $password
+     * @property \Redis                                   $redis
+     * @property \ManaPHP\Serializer\AdapterInterface     $serializer
+     * @property \ManaPHP\Cache                           $cache
+     * @property \ManaPHP\Store                           $store
+     * @property \ManaPHP\Counter                         $counter
+     * @property \ManaPHP\CacheInterface                  $viewsCache
+     * @property \ManaPHP\Http\Client                     $httpClient
+     * @property \ManaPHP\Security\AuthorizationInterface $authorization
      */
     class Component implements ComponentInterface
     {
@@ -61,7 +62,7 @@ namespace ManaPHP {
         private static $_eventPeeks;
 
         /**
-         * @var \ManaPHP\DiInterface
+         * @var \ManaPHP\Di
          */
         protected $_dependencyInjector;
 
@@ -102,7 +103,7 @@ namespace ManaPHP {
          */
         public function __get($propertyName)
         {
-            if (!is_object($this->_dependencyInjector)) {
+            if ($this->_dependencyInjector === null) {
                 $this->_dependencyInjector = Di::getDefault();
             }
 
@@ -244,6 +245,36 @@ namespace ManaPHP {
                 }
 
                 $data[$k] = $v;
+            }
+
+            return $data;
+        }
+
+        public function dump()
+        {
+            $data = [];
+
+            foreach (get_object_vars($this) as $k => $v) {
+                if ($k === '_eventsManager') {
+                    continue;
+                }
+
+                if (is_scalar($v) || $v === null) {
+                    $data[$k] = $v;
+                } elseif (is_array($v)) {
+                    $isPlain = true;
+
+                    foreach ($v as $vv) {
+                        if (!is_scalar($vv) && $vv !== null) {
+                            $isPlain = false;
+                            break;
+                        }
+                    }
+
+                    if ($isPlain) {
+                        $data[$k] = $v;
+                    }
+                }
             }
 
             return $data;

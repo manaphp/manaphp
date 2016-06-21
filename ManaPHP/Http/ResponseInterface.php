@@ -129,12 +129,11 @@ namespace ManaPHP\Http {
         /**
          * Sets an attached file to be sent at the end of the request
          *
-         * @param string $filePath
+         * @param string $file
          * @param string $attachmentName
          *
          * @return static
          */
-        public function setFileToSend($filePath, $attachmentName = null);
-
+        public function setFileToSend($file, $attachmentName = null);
     }
 }

@@ -6,20 +6,39 @@ use ManaPHP\Security\Captcha\Exception;
 
 class Captcha extends Component implements CaptchaInterface
 {
+    /**
+     * @var string
+     */
     protected /** @noinspection SpellCheckingInspection */
         $_charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
     /**
      * @var array
      */
-    protected $_fontFiles = [];
+    protected $_fonts = [];
+
+    /**
+     * @var string
+     */
     protected $_sessionVar = 'captcha';
 
+    /**
+     * @var int
+     */
     protected $_angleAmplitude = 30;
 
+    /**
+     * @var int
+     */
     protected $_noiseCharCount = 1;
 
+    /**
+     * @var string
+     */
     protected $_bgRGB = '255,255,255';
 
+    /**
+     * @var int
+     */
     protected $_codeLength = 4;
 
     /**
@@ -27,25 +46,33 @@ class Captcha extends Component implements CaptchaInterface
      */
     protected $_minInterval = 1;
 
-    public function __construct()
-    {
-        $this->_fontFiles=[
-            __DIR__ . '/Captcha/Fonts/AirbusSpecial.ttf',
-            __DIR__ . '/Captcha/Fonts/StencilFour.ttf',
-            __DIR__ . '/Captcha/Fonts/SpicyRice.ttf'
-        ];
-    }
-
     /**
-     * @param string $rgb
+     * Captcha constructor.
      *
-     * @return static
+     * @param array $options
      */
-    public function setBackground($rgb)
+    public function __construct($options = [])
     {
-        $this->_bgRGB = $rgb;
+        if (isset($options['charset'])) {
+            $this->_charset = $options['charset'];
+        }
 
-        return $this;
+        if (!isset($options['fonts'])) {
+            $options['fonts'] = [
+                __DIR__ . '/Captcha/Fonts/AirbusSpecial.ttf',
+                __DIR__ . '/Captcha/Fonts/StencilFour.ttf',
+                __DIR__ . '/Captcha/Fonts/SpicyRice.ttf'
+            ];
+        }
+        $this->_fonts = $options['fonts'];
+
+        if (isset($options['codeLength'])) {
+            $this->_codeLength = $options['codeLength'];
+        }
+
+        if (isset($options['bgRGB'])) {
+            $this->_bgRGB = $options['bgRGB'];
+        }
     }
 
     /**
@@ -66,18 +93,6 @@ class Captcha extends Component implements CaptchaInterface
     }
 
     /**
-     * @param array $fontFiles
-     *
-     * @return static
-     */
-    public function setFontFiles($fontFiles)
-    {
-        $this->_fontFiles = $fontFiles;
-
-        return $this;
-    }
-
-    /**
      * @param string $code
      * @param int    $width
      * @param int    $height
@@ -93,7 +108,7 @@ class Captcha extends Component implements CaptchaInterface
 
         imagefilledrectangle($image, 0, 0, $width, $height, $bgColor);
 
-        $fontFile = $this->_fontFiles[mt_rand() % count($this->_fontFiles)];
+        $fontFile = $this->_fonts[mt_rand() % count($this->_fonts)];
 
         $referenceFontSize = min($height, $width / $this->_codeLength);
 
@@ -144,7 +159,7 @@ class Captcha extends Component implements CaptchaInterface
         $image = new \Imagick();
         $draw = new \ImagickDraw();
         $image->newImage($width, $height, new \ImagickPixel('rgb(' . $this->_bgRGB . ')'));
-        $draw->setFont($this->_fontFiles[mt_rand() % count($this->_fontFiles)]);
+        $draw->setFont($this->_fonts[mt_rand() % count($this->_fonts)]);
         $draw->setGravity(\Imagick::GRAVITY_NORTHWEST);
 
         $referenceFontSize = min($height, $width / $this->_codeLength);

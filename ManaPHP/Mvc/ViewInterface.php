@@ -68,6 +68,7 @@ namespace ManaPHP\Mvc {
 
         /**
          * @param int|array $cacheOptions
+         *
          * @return static
          */
         public function cache($cacheOptions);
@@ -94,8 +95,8 @@ namespace ManaPHP\Mvc {
          *    $this->partial('shared/footer', array('content' => $html));
          * </code>
          *
-         * @param string $path
-         * @param array  $vars
+         * @param string    $path
+         * @param array     $vars
          * @param int|array $cacheOptions
          *
          * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
@@ -105,8 +106,8 @@ namespace ManaPHP\Mvc {
         /**
          * Renders a widget
          *
-         * @param string $widget
-         * @param array  $vars
+         * @param string    $widget
+         * @param array     $vars
          * @param int|array $cacheOptions
          */
         public function widget($widget, $vars = [], $cacheOptions = null);

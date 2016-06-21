@@ -93,9 +93,7 @@ namespace Application {
             //   $this->useImplicitView(false);
 
             try {
-                return $this->handle()
-                    ->sendHeaders()
-                    ->getContent();
+                $this->handle()->send();
             } catch (NotFoundException $e) {
                 return $this->notFoundException($e);
             }

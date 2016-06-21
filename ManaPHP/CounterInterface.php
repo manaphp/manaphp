@@ -8,6 +8,7 @@ namespace ManaPHP {
          * Get the value of key
          *
          * @param string|array $key
+         *
          * @return int
          */
         public function get($key);
@@ -16,7 +17,7 @@ namespace ManaPHP {
          * Increments the value of key by a given step.
          *
          * @param string|array $key
-         * @param int $step
+         * @param int          $step
          *
          * @return int the new value
          */
@@ -26,7 +27,7 @@ namespace ManaPHP {
          * Decrements the value of key by a given step.
          *
          * @param  string|array $key
-         * @param int $step
+         * @param int           $step
          *
          * @return int the new value
          */

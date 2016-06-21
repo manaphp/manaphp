@@ -13,6 +13,7 @@ namespace ManaPHP\Cache\Adapter {
 
         /**
          * Apc constructor.
+         *
          * @param array $options
          *
          * @throws \ManaPHP\Cache\Adapter\Exception

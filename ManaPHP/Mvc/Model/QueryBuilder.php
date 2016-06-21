@@ -766,11 +766,8 @@ namespace ManaPHP\Mvc\Model {
 
             $sql = strtr($sql, $replaces);
 
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $modelsManager = $this->_dependencyInjector->getShared('modelsManager');
-
             foreach ($this->_models as $model) {
-                $modelInstance = $modelsManager->getModelInstance($model, false);
+                $modelInstance = $this->modelsManager->getModelInstance($model, false);
                 $sql = str_replace('[' . $model . ']', '`' . $modelInstance->getSource() . '`', $sql);
             }
 
@@ -780,7 +777,7 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Set default bind parameters
          *
-         * @param array $bind
+         * @param array   $bind
          * @param boolean $merge
          *
          * @return static
@@ -794,6 +791,7 @@ namespace ManaPHP\Mvc\Model {
 
         /**
          * @param array $cacheOptions
+         *
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
@@ -809,7 +807,7 @@ namespace ManaPHP\Mvc\Model {
                 if (!isset($cacheOptions['key'])) {
                     $cacheOptions['key'] = 'Models/' . md5($sql . serialize($this->_bind));
                 }
-				
+
                 $result = $this->modelsCache->get($cacheOptions['key']);
                 if ($result !== false) {
                     return $result;
@@ -863,7 +861,7 @@ namespace ManaPHP\Mvc\Model {
 
         /**build the query and execute it.
          *
-         * @param int $totalRows
+         * @param int   $totalRows
          * @param array $cacheOptions
          *
          * @return array
@@ -885,7 +883,7 @@ namespace ManaPHP\Mvc\Model {
                 }
 
                 $result = $this->modelsCache->get($cacheOptions['key']);
-				
+
                 if ($result !== false) {
                     /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                     $totalRows = $result['totalRows'];

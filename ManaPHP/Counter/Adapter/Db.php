@@ -17,16 +17,22 @@ namespace ManaPHP\Counter\Adapter {
      */
     class Db extends Counter
     {
-        protected $_table;
+        protected $_table = 'manaphp_counter';
 
         /**
          * Db constructor.
          *
-         * @param string $table
+         * @param string|array $options
          */
-        public function __construct($table = 'manaphp_counter')
+        public function __construct($options = [])
         {
-            $this->_table = $table;
+            if (is_string($options)) {
+                $options['table'] = $options;
+            }
+
+            if (isset($options['table'])) {
+                $this->_table = $options['table'];
+            }
         }
 
         protected function _getKey($key)
@@ -37,7 +43,6 @@ namespace ManaPHP\Counter\Adapter {
                 return implode('/', $key);
             }
         }
-
 
         public function _get($key)
         {
@@ -54,10 +59,10 @@ namespace ManaPHP\Counter\Adapter {
 
         /**
          * @param string $key
-         * @param int $step
+         * @param int    $step
          *
          * @return int
-         * @throws \ManaPHP\Counter\Adapter\Exception
+         * @throws \ManaPHP\Counter\Adapter\Exception|\ManaPHP\Db\Exception
          */
         public function _increment($key, $step)
         {

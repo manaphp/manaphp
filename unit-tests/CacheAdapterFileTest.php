@@ -8,7 +8,7 @@ class CacheAdapterFileTest extends TestCase
     {
         parent::setUp();
 
-        $di=new ManaPHP\Di\FactoryDefault();
+        $di = new ManaPHP\Di\FactoryDefault();
     }
 
     public function test_exists()

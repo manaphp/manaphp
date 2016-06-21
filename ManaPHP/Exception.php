@@ -9,5 +9,11 @@ namespace ManaPHP {
      */
     class Exception extends \Exception
     {
+        public function dump()
+        {
+            $data = get_object_vars($this);
+            $data['trace'] = explode("\n", $this->getTraceAsString());
+            return $data;
+        }
     }
 }

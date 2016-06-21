@@ -220,17 +220,17 @@ namespace ManaPHP\Mvc\Model {
          */
         public function setBind($bind, $merge = true);
 
-
         /**build the query and execute it.
          *
          * @param int|array $cacheOptions
+         *
          * @return array
          */
         public function execute($cacheOptions = null);
 
         /**build the query and execute it.
          *
-         * @param int $totalRows
+         * @param int       $totalRows
          * @param int|array $cacheOptions
          *
          * @return array

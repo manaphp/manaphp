@@ -22,9 +22,9 @@ namespace ManaPHP\Mvc\View\Renderer\Engine {
                 /** @noinspection PhpUndefinedClassInspection */
                 /** @noinspection PhpUndefinedMethodInspection */
                 $this->_smarty = (new \Smarty())
-                    ->setCompileDir($this->configure->resolvePath('@data/smarty/templates_c'))
-                    ->setCacheDir($this->configure->resolvePath('@data/smarty/caches'))
-                    ->setConfigDir($this->configure->resolvePath('@data/smarty/configs'))
+                    ->setCompileDir($this->alias->resolve('@data/smarty/templates_c'))
+                    ->setCacheDir($this->alias->resolve('@data/smarty/caches'))
+                    ->setConfigDir($this->alias->resolve('@data/smarty/configs'))
                     ->setDebugging($this->configure->debug);
             } else {
                 throw new Exception('\smarty class is not exists, please install it first.');

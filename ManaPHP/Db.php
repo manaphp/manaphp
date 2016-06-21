@@ -8,11 +8,9 @@ namespace ManaPHP {
     class Db extends Component implements DbInterface
     {
         /**
-         * Descriptor used to connect to a database
-         *
          * @var array
          */
-        protected $_descriptor;
+        protected $_options;
 
         /**
          * Type of database system driver is used for
@@ -20,6 +18,21 @@ namespace ManaPHP {
          * @var string
          */
         protected $_type;
+
+        /**
+         * @var string
+         */
+        protected $_dsn;
+
+        /**
+         * @var string
+         */
+        protected $_username;
+
+        /**
+         * @var string
+         */
+        protected $_password;
 
         /**
          * Active SQL Statement
@@ -57,60 +70,32 @@ namespace ManaPHP {
         /**
          * \ManaPHP\Db\Adapter constructor
          *
-         * @param array $descriptor
+         * @param array $options
          */
-        public function __construct($descriptor)
+        public function __construct($options)
         {
-            if (!isset($descriptor['options'])) {
-                $descriptor['options'] = [];
+            if (!isset($options['options'])) {
+                $options['options'] = [];
             }
+            $this->_options = $options['options'];
 
-            $descriptor['options'][\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
+            $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
 
-            $this->_descriptor = $descriptor;
+            $this->_username = isset($options['username']) ? $options['username'] : null;
+            $this->_password = isset($options['password']) ? $options['password'] : null;
+            unset($options['username'], $options['password'], $options['options']);
 
-            $this->_connect();
-        }
-
-        /**
-         * This method is automatically called in ManaPHP\Db\Adapter\Pdo constructor.
-         * Call it when you need to restore a database connection
-         *
-         *<code>
-         * //Make a connection
-         * $connection = new \ManaPHP\Db\Adapter\Pdo\Mysql(array(
-         *  'host' => '192.168.0.11',
-         *  'username' => 'sigma',
-         *  'password' => 'secret',
-         *  'dbname' => 'blog',
-         * ));
-         *
-         * //Reconnect
-         * $connection->connect();
-         * </code>
-         *
-         * @return    boolean
-         */
-        protected function _connect()
-        {
-            $descriptor = $this->_descriptor;
-
-            $username = isset($descriptor['username']) ? $descriptor['username'] : null;
-            $password = isset($descriptor['password']) ? $descriptor['password'] : null;
-            $options = $descriptor['options'];
-            unset($descriptor['username'], $descriptor['password'], $descriptor['options']);
-
-            if (isset($descriptor['dsn'])) {
-                $dsn = $descriptor['dsn'];
+            if (isset($options['dsn'])) {
+                $this->_dsn = $options['dsn'];
             } else {
                 $dsn_parts = [];
-                foreach ($descriptor as $k => $v) {
+                foreach ($options as $k => $v) {
                     $dsn_parts[] = $k . '=' . $v;
                 }
-                $dsn = implode(';', $dsn_parts);
+                $this->_dsn = implode(';', $dsn_parts);
             }
 
-            $this->_pdo = new \PDO($this->_type . ':' . $dsn, $username, $password, $options);
+            $this->_pdo = new \PDO($this->_type . ':' . $this->_dsn, $this->_username, $this->_password, $this->_options);
         }
 
         /**

@@ -279,8 +279,8 @@ namespace ManaPHP\Mvc {
          * </code>
          *
          * @param string $path
-         * @param array $vars
-         * @param array $cacheOptions
+         * @param array  $vars
+         * @param array  $cacheOptions
          *
          * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
          */
@@ -314,7 +314,7 @@ namespace ManaPHP\Mvc {
 
         public function widget($widget, $options = [], $cacheOptions = null)
         {
-            $widgetClassName = basename($this->alias->get('@app'))."\\{$this->_moduleName}\\Widgets\\{$widget}Widget";
+            $widgetClassName = basename($this->alias->get('@app')) . "\\{$this->_moduleName}\\Widgets\\{$widget}Widget";
 
             if (!class_exists($widgetClassName)) {
                 throw new Exception("widget '$widget' is not exist: " . $widgetClassName);
@@ -349,7 +349,7 @@ namespace ManaPHP\Mvc {
 
                     $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
                 }
-				
+
                 echo $content;
             } else {
                 if (is_string($vars)) {
@@ -386,6 +386,16 @@ namespace ManaPHP\Mvc {
         public function getContent()
         {
             return $this->_content;
+        }
+
+        public function dump()
+        {
+            $data = parent::dump();
+            if (is_string($data['_content'])) {
+                $data['_content'] = 'content length: ' . strlen($data['_content']);
+            }
+
+            return $data;
         }
     }
 }

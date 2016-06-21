@@ -30,11 +30,6 @@ namespace ManaPHP\Http\Session {
         protected $_data;
 
         /**
-         * @var \ManaPHP\Http\SessionInterface
-         */
-        protected $_session;
-
-        /**
          * \ManaPHP\Session\Bag constructor
          *
          * @param string               $name
@@ -48,8 +43,7 @@ namespace ManaPHP\Http\Session {
 
             $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
-            $this->_session = $this->_dependencyInjector->getShared('session');
-            $this->_data = $this->_session->get($this->_name, []);
+            $this->_data = $this->session->get($this->_name, []);
         }
 
         /**
@@ -63,7 +57,7 @@ namespace ManaPHP\Http\Session {
          */
         public function destroy()
         {
-            $this->_session->remove($this->_name);
+            $this->session->remove($this->_name);
         }
 
         /**
@@ -81,7 +75,7 @@ namespace ManaPHP\Http\Session {
         public function set($property, $value)
         {
             $this->_data[$property] = $value;
-            $this->_session->set($this->_name, $this->_data);
+            $this->session->set($this->_name, $this->_data);
         }
 
         /**
@@ -138,7 +132,7 @@ namespace ManaPHP\Http\Session {
         public function remove($property)
         {
             unset($this->_data[$property]);
-            $this->_session->set($this->_name, $this->_data);
+            $this->session->set($this->_name, $this->_data);
         }
     }
 }

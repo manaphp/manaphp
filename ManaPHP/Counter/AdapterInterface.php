@@ -5,13 +5,14 @@ namespace ManaPHP\Counter {
     {
         /**
          * @param string|array $key
+         *
          * @return int
          */
         public function _get($key);
 
         /**
          * @param string|array $key
-         * @param int $step
+         * @param int          $step
          *
          * @return int
          */

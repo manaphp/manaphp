@@ -465,18 +465,19 @@ class HttpRequestTest extends TestCase
         $this->assertEquals($successful[0]->getExtension(), '');
     }
 
-    public function test_getUrl(){
-        $request=new \ManaPHP\Http\Request();
+    public function test_getUrl()
+    {
+        $request = new \ManaPHP\Http\Request();
 
-        $base=[
-            'REQUEST_SCHEME'=>'http',
-            'HTTP_HOST'=>'www.manaphp.com',
-            'SERVER_PORT'=>'80',
-            'REQUEST_URI'=>'/index.php'
+        $base = [
+            'REQUEST_SCHEME' => 'http',
+            'HTTP_HOST' => 'www.manaphp.com',
+            'SERVER_PORT' => '80',
+            'REQUEST_URI' => '/index.php'
         ];
 
-        $_SERVER=$base;
-        $this->assertEquals('http://www.manaphp.com/index.php',$request->getUrl());
+        $_SERVER = $base;
+        $this->assertEquals('http://www.manaphp.com/index.php', $request->getUrl());
 
 //        $_SERVER=$base;
 //        $_SERVER['SERVER_PORT']='81';
@@ -492,12 +493,12 @@ class HttpRequestTest extends TestCase
 //        $_SERVER['SERVER_PORT']='8080';
 //        $this->assertEquals('https://www.manaphp.com:8080/index.php',$request->getUrl());
 //
-        $_SERVER=$base;
-        $this->assertEquals('http://www.manaphp.com/index.php',$request->getUrl(true));
+        $_SERVER = $base;
+        $this->assertEquals('http://www.manaphp.com/index.php', $request->getUrl(true));
 
-        $_SERVER=$base;
-        $_GET['_url']='abc';
-        $_GET['page']=1;
-        $this->assertEquals('http://www.manaphp.com/index.php?page=1',$request->getUrl(true));
+        $_SERVER = $base;
+        $_GET['_url'] = 'abc';
+        $_GET['page'] = 1;
+        $this->assertEquals('http://www.manaphp.com/index.php?page=1', $request->getUrl(true));
     }
 }

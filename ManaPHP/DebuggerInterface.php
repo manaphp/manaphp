@@ -23,7 +23,7 @@ namespace ManaPHP {
          *
          * @return static
          */
-        public function dump($value, $name = null);
+        public function var_dump($value, $name = null);
 
         /**
          * @param null|string $template

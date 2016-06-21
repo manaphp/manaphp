@@ -13,11 +13,8 @@ namespace ManaPHP {
          * ImageInterface constructor.
          *
          * @param string $file
-         * @param string $adapter
-         *
-         * @throws \ManaPHP\Image\Exception
          */
-        public function __construct($file, $adapter = null);
+        public function __construct($file);
 
         /**
          * @return \ManaPHP\Image\AdapterInterface

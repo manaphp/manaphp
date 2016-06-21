@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Security {
 
+    use ManaPHP\Component;
     use ManaPHP\Security\Crypt\Exception;
 
     /**
@@ -20,9 +21,8 @@ namespace ManaPHP\Security {
      *    echo $crypt->decrypt($encrypted, $key);
      *</code>
      */
-    class Crypt implements CryptInterface
+    class Crypt extends Component implements CryptInterface
     {
-
         protected $_key;
 
         /**

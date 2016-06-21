@@ -7,57 +7,49 @@
  */
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
-class tResponse extends \ManaPHP\Http\Response
-{
-    public function getHeaders()
-    {
-        return $this->_headers;
-    }
-}
-
 class HttpResponseTest extends TestCase
 {
     public function test_setStatusCode()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         //set only time
         $response->setStatusCode(404, 'Not Found');
-        $this->assertEquals(['Status' => '404 Not Found'], $response->getHeaders()->toArray());
+        $this->assertEquals(['Status' => '404 Not Found'], $response->getHeaders());
 
         //set multiple times
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
         $response->setStatusCode(200, 'OK');
         $response->setStatusCode(404, 'Not Found');
         $response->setStatusCode(409, 'Conflict');
-        $this->assertEquals(['Status' => '409 Conflict'], $response->getHeaders()->toArray());
+        $this->assertEquals(['Status' => '409 Conflict'], $response->getHeaders());
     }
 
     public function test_setHeader()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $response->setHeader('Content-Type', 'text/html');
-        $this->assertEquals(['Content-Type' => 'text/html'], $response->getHeaders()->toArray());
+        $this->assertEquals(['Content-Type' => 'text/html'], $response->getHeaders());
 
         $response->setHeader('Content-Length', '1234');
         $this->assertEquals([
             'Content-Type' => 'text/html',
             'Content-Length' => '1234'
-        ], $response->getHeaders()->toArray());
+        ], $response->getHeaders());
     }
 
     public function test_setRawHeader()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $response->setRawHeader('Server: Apache');
-        $this->assertEquals(['Server: Apache' => ''], $response->getHeaders()->toArray());
+        $this->assertEquals(['Server: Apache' => ''], $response->getHeaders());
     }
 
     public function test_setExpires()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         date_default_timezone_set('PRC');
 
@@ -66,74 +58,74 @@ class HttpResponseTest extends TestCase
         $datetime = new DateTime();
         $datetime->setTimestamp($time);
         $response->setExpires($datetime);
-        $this->assertEquals(['Expires' => 'Thu, 17 Dec 2015 16:12:41 GMT'], $response->getHeaders()->toArray());
+        $this->assertEquals(['Expires' => 'Thu, 17 Dec 2015 16:12:41 GMT'], $response->getHeaders());
 
         $response->setExpires(strtotime('2015-12-18 00:12:42'));
-        $this->assertEquals(['Expires' => 'Thu, 17 Dec 2015 16:12:42 GMT'], $response->getHeaders()->toArray());
+        $this->assertEquals(['Expires' => 'Thu, 17 Dec 2015 16:12:42 GMT'], $response->getHeaders());
     }
 
     public function test_setNotModified()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $response->setNotModified();
 
-        $this->assertEquals(['Status' => '304 Not modified'], $response->getHeaders()->toArray());
+        $this->assertEquals(['Status' => '304 Not modified'], $response->getHeaders());
     }
 
     public function test_setContentType()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $response->setContentType('application/json');
-        $this->assertEquals(['Content-Type' => 'application/json'], $response->getHeaders()->toArray());
+        $this->assertEquals(['Content-Type' => 'application/json'], $response->getHeaders());
 
         $response->setContentType('application/json', 'utf-8');
-        $this->assertEquals(['Content-Type' => 'application/json; charset=utf-8'], $response->getHeaders()->toArray());
+        $this->assertEquals(['Content-Type' => 'application/json; charset=utf-8'], $response->getHeaders());
     }
 
     public function test_redirect()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
         $response->setDependencyInjector(new ManaPHP\Di());
 
         $response->redirect('some/local/url');
         $this->assertEquals([
             'Status' => '302 Temporarily Moved',
             'Location' => 'some/local/url'
-        ], $response->getHeaders()->toArray());
+        ], $response->getHeaders());
 
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
         $response->setDependencyInjector(new ManaPHP\Di());
 
         $response->redirect('http://www.manaphp.com');
         $this->assertEquals([
             'Status' => '302 Temporarily Moved',
             'Location' => 'http://www.manaphp.com'
-        ], $response->getHeaders()->toArray());
+        ], $response->getHeaders());
 
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
         $response->setDependencyInjector(new ManaPHP\Di());
 
         $response->redirect('http://www.manaphp.com', 301);
         $this->assertEquals([
             'Status' => '301 Permanently Moved',
             'Location' => 'http://www.manaphp.com'
-        ], $response->getHeaders()->toArray());
+        ], $response->getHeaders());
 
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
         $response->setDependencyInjector(new ManaPHP\Di());
 
         $response->redirect('http://www.manaphp.com', 301);
         $this->assertEquals([
             'Status' => '301 Permanently Moved',
             'Location' => 'http://www.manaphp.com'
-        ], $response->getHeaders()->toArray());
+        ], $response->getHeaders());
     }
 
     public function test_setContent()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $response->setContent('<h1>Hello');
         $this->assertEquals('<h1>Hello', $response->getContent());
@@ -144,7 +136,7 @@ class HttpResponseTest extends TestCase
 
     public function test_setJsonContent()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $response->setJsonContent(['code' => 0, 'message' => 'OK']);
         $this->assertEquals(['code' => 0, 'message' => 'OK'], json_decode($response->getContent(), true));
@@ -157,7 +149,7 @@ class HttpResponseTest extends TestCase
 
     public function test_appendContent()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $this->assertEquals('', $response->getContent());
 
@@ -170,7 +162,7 @@ class HttpResponseTest extends TestCase
 
     public function test_getContent()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $response->setContent('Hello');
         $this->assertEquals('Hello', $response->getContent());
@@ -181,7 +173,7 @@ class HttpResponseTest extends TestCase
      */
     public function test_setFileToSend()
     {
-        $response = new tResponse();
+        $response = new \ManaPHP\Http\Response();
 
         $response->setFileToSend(__FILE__);
         ob_start();

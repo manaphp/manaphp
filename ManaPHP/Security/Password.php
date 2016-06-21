@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP\Security {
 
-    class Password implements PasswordInterface
+    use ManaPHP\Component;
+
+    class Password extends Component implements PasswordInterface
     {
         /**
          * generate a salt

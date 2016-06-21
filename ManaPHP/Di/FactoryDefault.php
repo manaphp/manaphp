@@ -21,7 +21,7 @@ namespace ManaPHP\Di {
             parent::__construct();
 
             $this->_services = [
-                'alias'=>'ManaPHP\Alias',
+                'alias' => 'ManaPHP\Alias',
                 'router' => 'ManaPHP\Mvc\Router',
                 'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
                 'url' => 'ManaPHP\Mvc\Url',
@@ -50,12 +50,12 @@ namespace ManaPHP\Di {
                 'cache' => 'ManaPHP\Cache\Adapter\File',
                 'store' => 'ManaPHP\Store\Adapter\File',
                 'counter' => 'ManaPHP\Counter\Adapter\Redis',
-                'httpClient'=>'ManaPHP\Http\Client\Adapter\Curl',
+                'httpClient' => 'ManaPHP\Http\Client\Adapter\Curl',
             ];
 
-            $this->_aliases=[
-                'modelsCache'=>'cache',
-                'viewsCache'=>'cache'
+            $this->_aliases = [
+                'modelsCache' => 'cache',
+                'viewsCache' => 'cache'
             ];
         }
     }

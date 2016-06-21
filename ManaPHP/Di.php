@@ -166,7 +166,8 @@ namespace ManaPHP {
 
             return $instance;
         }
-
+        
+        /** @noinspection PhpDocMissingThrowsInspection */
         /**
          * Resolves the service based on its configuration
          *
@@ -174,7 +175,6 @@ namespace ManaPHP {
          * @param array  $parameters
          *
          * @return mixed
-         * @throws \ManaPHP\Di\Exception
          */
         public function get($name, $parameters = null)
         {
@@ -195,6 +195,7 @@ namespace ManaPHP {
                 if ($shared && isset($this->_sharedInstances[$name])) {
                     $instance = $this->_sharedInstances[$name];
                 } else {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     $instance = $this->_resolve($name, $definition, $parameters);
 
                     if ($shared) {
@@ -203,6 +204,7 @@ namespace ManaPHP {
                 }
             } else {
                 if (!class_exists($name)) {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     throw new Exception("Service '$name' cannot be resolved: class is not exists.");
                 }
 
@@ -228,7 +230,6 @@ namespace ManaPHP {
          * @param array  $parameters
          *
          * @return mixed
-         * @throws \ManaPHP\Di\Exception
          */
         public function getShared($name, $parameters = null)
         {
@@ -237,6 +238,7 @@ namespace ManaPHP {
             }
 
             if (!isset($this->_sharedInstances[$name])) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $this->_sharedInstances[$name] = $this->get($name, $parameters);
             }
 

@@ -1,6 +1,8 @@
 <?php
-namespace ManaPHP\Flash{
-    interface AdapterInterface{
+namespace ManaPHP\Flash {
+
+    interface AdapterInterface
+    {
         /**
          * @param string $type
          * @param string $message
