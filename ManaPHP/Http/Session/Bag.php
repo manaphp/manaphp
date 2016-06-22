@@ -25,25 +25,17 @@ namespace ManaPHP\Http\Session {
         protected $_name;
 
         /**
-         * @var array
-         */
-        protected $_data;
-
-        /**
          * \ManaPHP\Session\Bag constructor
          *
-         * @param string               $name
-         * @param \ManaPHP\DiInterface $dependencyInjector
+         * @param string $name
          *
          * @throws \ManaPHP\Di\Exception
          */
-        public function __construct($name, $dependencyInjector = null)
+        public function __construct($name)
         {
+            parent::__construct();
+
             $this->_name = $name;
-
-            $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
-
-            $this->_data = $this->session->get($this->_name, []);
         }
 
         /**
@@ -74,8 +66,10 @@ namespace ManaPHP\Http\Session {
          */
         public function set($property, $value)
         {
-            $this->_data[$property] = $value;
-            $this->session->set($this->_name, $this->_data);
+            $data = $this->session->get($this->_name, []);
+            $data[$property] = $value;
+
+            $this->session->set($this->_name, $data);
         }
 
         /**
@@ -94,10 +88,12 @@ namespace ManaPHP\Http\Session {
          */
         public function get($property = null, $defaultValue = null)
         {
+            $data = $this->session->get($this->_name, []);
+
             if ($property === null) {
-                return $this->_data;
+                return $data;
             } else {
-                return isset($this->_data[$property]) ? $this->_data[$property] : $defaultValue;
+                return isset($data[$property]) ? $data[$property] : $defaultValue;
             }
         }
 
@@ -115,7 +111,9 @@ namespace ManaPHP\Http\Session {
          */
         public function has($property)
         {
-            return isset($this->_data[$property]);
+            $data = $this->session->get($this->_name, []);
+
+            return isset($data[$property]);
         }
 
         /**
@@ -131,8 +129,17 @@ namespace ManaPHP\Http\Session {
          */
         public function remove($property)
         {
-            unset($this->_data[$property]);
-            $this->session->set($this->_name, $this->_data);
+            $data = $this->session->get($this->_name, []);
+            unset($data[$property]);
+
+            $this->session->set($this->_name, $data);
+        }
+
+        public function dump()
+        {
+            $data = parent::dump();
+            $data['_data'] = $this->session->get($this->_name, []);
+            return $data;
         }
     }
 }

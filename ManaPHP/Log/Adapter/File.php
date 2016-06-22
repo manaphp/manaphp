@@ -33,6 +33,8 @@ namespace ManaPHP\Log\Adapter {
          */
         public function __construct($options = [])
         {
+            parent::__construct();
+
             if (is_string($options)) {
                 $options = ['file' => $options];
             }

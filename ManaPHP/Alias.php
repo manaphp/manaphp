@@ -10,6 +10,8 @@ namespace ManaPHP {
 
         public function __construct()
         {
+            parent::__construct();
+
             $this->set('@manaphp', str_replace('\\', '/', __DIR__));
 
             $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);

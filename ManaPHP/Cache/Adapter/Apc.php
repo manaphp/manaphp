@@ -20,6 +20,8 @@ namespace ManaPHP\Cache\Adapter {
          */
         public function __construct($options = [])
         {
+            parent::__construct();
+
             if (!function_exists('apc_exists')) {
                 throw new Exception('apc extension is not loaded: http://pecl.php.net/package/APCu');
             }

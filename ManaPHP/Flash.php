@@ -25,6 +25,8 @@ namespace ManaPHP {
          */
         public function __construct($cssClasses = null)
         {
+            parent::__construct();
+
             $this->_cssClasses = $cssClasses ?: [
                 'error' => 'flash-error-message',
                 'notice' => 'flash-notice-message',

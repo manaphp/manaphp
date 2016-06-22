@@ -10,6 +10,8 @@ namespace ManaPHP\Mvc {
 
         public function __construct()
         {
+            parent::__construct();
+
             $this->_baseUri = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
         }
 

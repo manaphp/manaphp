@@ -16,7 +16,7 @@ namespace ManaPHP\Mvc\View\Renderer\Engine {
 
         public function __construct($dependencyInjector = null)
         {
-            $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
+            parent::__construct($dependencyInjector);
 
             if (class_exists('\Smarty')) {
                 /** @noinspection PhpUndefinedClassInspection */

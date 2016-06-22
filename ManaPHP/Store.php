@@ -115,13 +115,5 @@ namespace ManaPHP {
         {
             return $this->_exists($id);
         }
-
-        /**
-         * @return array
-         */
-        public function __debugInfo()
-        {
-            return get_object_vars($this) ?: [];
-        }
     }
 }

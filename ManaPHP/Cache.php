@@ -58,10 +58,5 @@ namespace ManaPHP {
         {
             return $this->_exists($key);
         }
-
-        public function __debugInfo()
-        {
-            return get_object_vars($this) ?: [];
-        }
     }
 }

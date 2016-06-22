@@ -39,10 +39,6 @@ namespace ManaPHP\Http {
          */
         protected $_client_address;
 
-        public function __construct()
-        {
-        }
-
         /**
          *
          * @param array  $source

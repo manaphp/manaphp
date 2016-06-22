@@ -53,6 +53,8 @@ class Captcha extends Component implements CaptchaInterface
      */
     public function __construct($options = [])
     {
+        parent::__construct();
+
         if (isset($options['charset'])) {
             $this->_charset = $options['charset'];
         }

@@ -9,6 +9,8 @@ namespace ManaPHP\Counter\Adapter {
 
         public function __construct($prefix = 'manaphp:counter:')
         {
+            parent::__construct();
+
             $this->_prefix = $prefix;
         }
 

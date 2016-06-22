@@ -104,15 +104,12 @@ namespace ManaPHP\Mvc\Model {
          *</code>
          *
          * @param array|string $params
-         * @param \ManaPHP\Di  $dependencyInjector
          *
          * @throws \ManaPHP\Mvc\Model\Exception
          */
-        public function __construct($params = null, $dependencyInjector = null)
+        public function __construct($params = null)
         {
-            if ($dependencyInjector !== null) {
-                $this->_dependencyInjector = $dependencyInjector;
-            }
+            parent::__construct();
 
             if (is_string($params)) {
                 $params = [$params];
@@ -767,8 +764,7 @@ namespace ManaPHP\Mvc\Model {
             $sql = strtr($sql, $replaces);
 
             foreach ($this->_models as $model) {
-                $modelInstance = $this->modelsManager->getModelInstance($model, false);
-                $sql = str_replace('[' . $model . ']', '`' . $modelInstance->getSource() . '`', $sql);
+                $sql = str_replace('[' . $model . ']', '`' . $this->modelsManager->getModelSource($model) . '`', $sql);
             }
 
             return $sql;
@@ -816,8 +812,7 @@ namespace ManaPHP\Mvc\Model {
 
             try {
                 $result = $this->modelsManager
-                    ->getModelInstance(end($this->_models), false)
-                    ->getReadConnection()
+                    ->getReadConnection(end($this->_models))
                     ->fetchAll($sql, $this->_bind);
             } catch (\Exception $e) {
                 throw new Exception($e->getMessage() . ':' . $sql);
@@ -846,8 +841,7 @@ namespace ManaPHP\Mvc\Model {
 
             try {
                 $result = $this->modelsManager
-                    ->getModelInstance(end($this->_models), false)
-                    ->getReadConnection()
+                    ->getReadConnection(end($this->_models))
                     ->fetchOne($sql, $this->_bind);
 
                 /** @noinspection CallableParameterUseCaseInTypeContextInspection */
@@ -893,8 +887,7 @@ namespace ManaPHP\Mvc\Model {
 
             try {
                 $result = $this->modelsManager
-                    ->getModelInstance(end($this->_models), false)
-                    ->getReadConnection()
+                    ->getReadConnection(end($this->_models))
                     ->fetchAll($sql, $this->_bind);
             } catch (\Exception $e) {
                 throw new Exception($e->getMessage() . ':' . $sql);

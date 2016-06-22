@@ -15,14 +15,12 @@ namespace ManaPHP\Mvc\View {
         /**
          * @var array
          */
-        protected $_registeredEngines = [];
-
-        public function __construct()
-        {
-            $this->_registeredEngines['.phtml'] = 'ManaPHP\Mvc\View\Renderer\Engine\Php';
-            $this->_registeredEngines['.tpl'] = 'ManaPHP\Mvc\View\Renderer\Engine\Smarty';
-            $this->_registeredEngines['.html'] = 'ManaPHP\Mvc\View\Renderer\Engine\Html';
-        }
+        protected /** @noinspection PropertyCanBeStaticInspection */
+            $_registeredEngines = [
+            '.phtml' => 'ManaPHP\Mvc\View\Renderer\Engine\Php',
+            '.tpl' => 'ManaPHP\Mvc\View\Renderer\Engine\Smarty',
+            '.html' => 'ManaPHP\Mvc\View\Renderer\Engine\Html'
+        ];
 
         /**
          * @param string $extension

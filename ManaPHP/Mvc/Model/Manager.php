@@ -36,11 +36,6 @@ namespace ManaPHP\Mvc\Model {
         protected $_writeConnectionServices = [];
 
         /**
-         * @var \ManaPHP\Mvc\ModelInterface[]
-         */
-        protected $_initialized = [];
-
-        /**
          * @var array
          */
         protected $_sources = [];
@@ -64,38 +59,16 @@ namespace ManaPHP\Mvc\Model {
             /**
              * Models are just initialized once per request
              */
-            if (!isset($this->_initialized[$modelName])) {
-                $this->_initialized[$modelName] = $model;
+            if (!isset($this->_sources[$modelName])) {
 
                 if (method_exists($model, 'initialize')) {
                     $model->initialize();
                 }
-            }
-        }
 
-        /**
-         * Loads a model throwing an exception if it does't exist
-         *
-         * @param  string  $modelName
-         * @param  boolean $newInstance
-         *
-         * @return \ManaPHP\Mvc\ModelInterface
-         * @throws \ManaPHP\Mvc\Model\Exception
-         */
-        public function getModelInstance($modelName, $newInstance)
-        {
-            if (isset($this->_initialized[$modelName])) {
-                if ($newInstance) {
-                    return new $modelName(null, $this->_dependencyInjector);
+                /** @noinspection NotOptimalIfConditionsInspection */
+                if (!isset($this->_sources[$modelName])) {
+                    $this->_sources[$modelName] = $model->getSource();
                 }
-
-                return $this->_initialized[$modelName];
-            } else {
-                if (class_exists($modelName)) {
-                    return new $modelName(null, $this->_dependencyInjector);
-                }
-
-                throw new Exception("Model '" . $modelName . "' could not be loaded");
             }
         }
 
@@ -110,6 +83,7 @@ namespace ManaPHP\Mvc\Model {
         public function setModelSource($model, $source)
         {
             $modelName = is_string($model) ? $model : get_class($model);
+
             $this->_sources[$modelName] = $source;
 
             return $this;
@@ -146,6 +120,7 @@ namespace ManaPHP\Mvc\Model {
         public function setConnectionService($model, $connectionService)
         {
             $modelName = is_string($model) ? $model : get_class($model);
+
             $this->_readConnectionServices[$modelName] = $connectionService;
             $this->_writeConnectionServices[$modelName] = $connectionService;
 
@@ -163,6 +138,7 @@ namespace ManaPHP\Mvc\Model {
         public function setWriteConnectionService($model, $connectionService)
         {
             $modelName = is_string($model) ? $model : get_class($model);
+
             $this->_writeConnectionServices[$modelName] = $connectionService;
 
             return $this;
@@ -179,6 +155,7 @@ namespace ManaPHP\Mvc\Model {
         public function setReadConnectionService($model, $connectionService)
         {
             $modelName = is_string($model) ? $model : get_class($model);
+
             $this->_readConnectionServices[$modelName] = $connectionService;
 
             return $this;
@@ -251,7 +228,7 @@ namespace ManaPHP\Mvc\Model {
         public function createBuilder($params = null)
         {
             $this->_builder = $this->_dependencyInjector->get('ManaPHP\Mvc\Model\QueryBuilder',
-                [$params, $this->_dependencyInjector]);
+                [$params]);
 
             return $this->_builder;
         }

@@ -7,7 +7,6 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Di\FactoryDefault;
     use ManaPHP\Http\ResponseInterface;
     use ManaPHP\Mvc\Application\Exception;
-    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\Application
@@ -29,7 +28,8 @@ namespace ManaPHP\Mvc {
          */
         public function __construct($dependencyInjector = null)
         {
-            $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
+            parent::__construct($dependencyInjector ?: new FactoryDefault());
+
             $this->_dependencyInjector->setShared('application', $this);
         }
 

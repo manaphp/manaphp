@@ -166,7 +166,7 @@ namespace ManaPHP {
 
             return $instance;
         }
-        
+
         /** @noinspection PhpDocMissingThrowsInspection */
         /**
          * Resolves the service based on its configuration

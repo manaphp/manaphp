@@ -200,7 +200,7 @@ namespace ManaPHP\Mvc {
                  * @var \ManaPHP\Mvc\Router\Group $groupInstance
                  */
                 if ($group['groupInstance'] === null) {
-                    $group['groupInstance'] = new $group['groupClassName'];
+                    $group['groupInstance'] = $this->_dependencyInjector->get($group['groupClassName']);
                 }
                 $groupInstance = $group['groupInstance'];
 

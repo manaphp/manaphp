@@ -13,16 +13,6 @@ namespace ManaPHP\Mvc\View\Renderer\Engine {
     class Php extends Component implements EngineInterface
     {
         /**
-         * Php constructor.
-         *
-         * @param \ManaPHP\DiInterface $dependencyInjector
-         */
-        public function __construct($dependencyInjector = null)
-        {
-            $this->_dependencyInjector = $dependencyInjector;
-        }
-
-        /**
          * Renders a view using the template engine
          *
          * @param string $file

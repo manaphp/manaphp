@@ -16,6 +16,8 @@ namespace ManaPHP\Cache\Adapter {
          */
         public function __construct($options = [])
         {
+            parent::__construct();
+
             if (is_string($options)) {
                 $options['prefix'] = $options;
             }

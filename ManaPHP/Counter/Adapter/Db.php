@@ -26,6 +26,8 @@ namespace ManaPHP\Counter\Adapter {
          */
         public function __construct($options = [])
         {
+            parent::__construct();
+
             if (is_string($options)) {
                 $options['table'] = $options;
             }

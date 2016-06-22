@@ -18,6 +18,8 @@ namespace ManaPHP\Store\Adapter {
          */
         public function __construct($options = [])
         {
+            parent::__construct();
+
             if (is_string($options)) {
                 $options = ['key' => $options];
             }

@@ -53,6 +53,8 @@ namespace ManaPHP\Http {
          */
         public function __construct($options = [], $headers = [])
         {
+            parent::__construct();
+
             $this->_options = array_merge([
                 'timeout' => 10,
                 'max_redirects' => 10,

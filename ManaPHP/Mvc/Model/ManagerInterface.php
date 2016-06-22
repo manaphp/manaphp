@@ -34,16 +34,6 @@ namespace ManaPHP\Mvc\Model {
         public function getModelSource($model);
 
         /**
-         * Loads a model throwing an exception if it does't exist
-         *
-         * @param string  $modelName
-         * @param boolean $newInstance
-         *
-         * @return \ManaPHP\Mvc\ModelInterface
-         */
-        public function getModelInstance($modelName, $newInstance);
-
-        /**
          * Sets both write and read connection service for a model
          *
          * @param \ManaPHP\Mvc\ModelInterface|string $model

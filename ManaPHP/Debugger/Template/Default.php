@@ -1,4 +1,5 @@
 <!doctype html>
+<!--suppress ALL -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">

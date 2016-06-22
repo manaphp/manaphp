@@ -66,6 +66,11 @@ namespace ManaPHP {
          */
         protected $_dependencyInjector;
 
+        public function __construct($dependencyInjector = null)
+        {
+            $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
+        }
+
         /**
          * Sets the dependency injector
          *
@@ -87,13 +92,10 @@ namespace ManaPHP {
          */
         public function getDependencyInjector()
         {
-            if ($this->_dependencyInjector === null) {
-                $this->_dependencyInjector = Di::getDefault();
-            }
-
             return $this->_dependencyInjector;
         }
 
+        /** @noinspection MagicMethodsValidityInspection */
         /**
          * Magic method __get
          *
@@ -103,10 +105,6 @@ namespace ManaPHP {
          */
         public function __get($propertyName)
         {
-            if ($this->_dependencyInjector === null) {
-                $this->_dependencyInjector = Di::getDefault();
-            }
-
             if ($this->_dependencyInjector->has($propertyName)) {
                 return $this->{$propertyName} = $this->_dependencyInjector->getShared($propertyName);
             }

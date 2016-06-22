@@ -193,10 +193,6 @@ namespace ManaPHP\Mvc {
                 return $this->_params[$param];
             }
 
-            if (!is_object($this->_dependencyInjector)) {
-                throw new Exception("A dependency injection object is required to access the 'filter' service");
-            }
-
             return null;
         }
 

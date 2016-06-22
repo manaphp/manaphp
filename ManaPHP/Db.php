@@ -74,6 +74,8 @@ namespace ManaPHP {
          */
         public function __construct($options)
         {
+            parent::__construct();
+
             if (!isset($options['options'])) {
                 $options['options'] = [];
             }
@@ -216,9 +218,8 @@ namespace ManaPHP {
 
             try {
                 if (count($bind) !== 0) {
-                    $statement = $this->_pdo->prepare($sql);
-                    $newStatement = $this->_executePrepared($statement, $bind);
-                    $this->_affectedRows = $newStatement->rowCount();
+                    $statement = $this->_executePrepared($this->_pdo->prepare($sql), $bind);
+                    $this->_affectedRows = $statement->rowCount();
                 } else {
                     $this->_affectedRows = $this->_pdo->exec($sql);
                 }

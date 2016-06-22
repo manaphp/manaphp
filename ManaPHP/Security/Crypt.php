@@ -32,6 +32,8 @@ namespace ManaPHP\Security {
 
         public function __construct($key = null)
         {
+            parent::__construct();
+
             if (!extension_loaded('mcrypt')) {
                 throw new Exception('mcrypt extension is required');
             }

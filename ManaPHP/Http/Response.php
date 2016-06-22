@@ -258,11 +258,7 @@ namespace ManaPHP\Http {
             $this->setContentType('application/json', 'utf-8');
 
             if ($jsonOptions === null) {
-                $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
-            }
-
-            if (isset($this->_dependencyInjector) && $this->configure->debugger) {
-                $jsonOptions |= JSON_PRETTY_PRINT;
+                $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
             }
 
             $this->_content = json_encode($content, $jsonOptions, 512);
@@ -324,9 +320,7 @@ namespace ManaPHP\Http {
                 }
             }
 
-            if ($this->_dependencyInjector->has('cookies')) {
-                $this->cookies->send();
-            }
+            $this->cookies->send();
 
             return $this;
         }
