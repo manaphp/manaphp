@@ -14,7 +14,7 @@ namespace ManaPHP\Db\Adapter {
         /**
          * \ManaPHP\Db\Adapter constructor
          *
-         * @param array $options
+         * @param array|\ConfManaPHP\Db\Adapter\Mysql $options
          */
         public function __construct($options)
         {

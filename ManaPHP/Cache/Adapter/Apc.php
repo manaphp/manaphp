@@ -14,7 +14,7 @@ namespace ManaPHP\Cache\Adapter {
         /**
          * Apc constructor.
          *
-         * @param array $options
+         * @param array|\ConfManaPHP\Cache\Adapter\Apc $options
          *
          * @throws \ManaPHP\Cache\Adapter\Exception
          */
@@ -28,6 +28,10 @@ namespace ManaPHP\Cache\Adapter {
 
             if (!ini_get('apc.enable_cli')) {
                 throw new Exception('apc.enable_cli=0, please enable it.');
+            }
+
+            if (is_object($options)) {
+                $options = (array)$options;
             }
 
             if (isset($options['prefix'])) {

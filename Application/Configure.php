@@ -6,22 +6,22 @@ namespace Application {
     class Configure extends \ManaPHP\Configure\Configure
     {
         /**
-         * @var \ManaConfigure\Db\Adapter\Mysql $database
+         * @var \ConfManaPHP\Db\Adapter\Mysql $database
          */
         public $database;
 
         /**
-         * @var \ManaConfigure\Log\Adapter\File
+         * @var \ConfManaPHP\Log\Adapter\File
          */
         public $log;
 
         /**
-         * @var \ManaConfigure\Security\Crypt
+         * @var \ConfManaPHP\Security\Crypt
          */
         public $crypt;
 
         /**
-         * @var \ManaConfigure\Debugger
+         * @var \ConfManaPHP\Debugger
          */
         public $debugger;
 

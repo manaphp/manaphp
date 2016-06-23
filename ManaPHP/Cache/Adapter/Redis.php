@@ -12,11 +12,15 @@ namespace ManaPHP\Cache\Adapter {
         /**
          * Redis constructor.
          *
-         * @param string|array $options
+         * @param string|array|\ConfManaPHP\Cache\Adapter\Redis $options
          */
         public function __construct($options = [])
         {
             parent::__construct();
+
+            if (is_object($options)) {
+                $options = (array)$options;
+            }
 
             if (is_string($options)) {
                 $options['prefix'] = $options;

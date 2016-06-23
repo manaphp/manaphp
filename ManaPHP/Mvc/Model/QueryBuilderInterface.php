@@ -39,8 +39,8 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Add a model to take part of the query
          *
-         * @param string $model
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -49,10 +49,10 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Adds a INNER join to the query
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
-         * @param string $type
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
+         * @param string                                          $type
          *
          * @return static
          */
@@ -61,9 +61,9 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Adds a INNER join to the query
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -72,9 +72,9 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Adds a LEFT join to the query
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -83,9 +83,9 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Adds a RIGHT join to the query
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -140,8 +140,8 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Appends an IN condition to the current conditions
          *
-         * @param string $expr
-         * @param array  $values
+         * @param string                                         $expr
+         * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
          *
          * @return static
          */
@@ -150,8 +150,8 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Appends a NOT IN condition to the current conditions
          *
-         * @param string $expr
-         * @param array  $values
+         * @param string                                         $expr
+         * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
          *
          * @return static
          */
@@ -211,6 +211,11 @@ namespace ManaPHP\Mvc\Model {
         public function getSql();
 
         /**
+         * @return array
+         */
+        public function getBind();
+
+        /**
          * Set default bind parameters
          *
          * @param array   $bind
@@ -236,5 +241,19 @@ namespace ManaPHP\Mvc\Model {
          * @return array
          */
         public function executeEx(&$totalRows, $cacheOptions = null);
+
+        /**
+         * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders
+         *
+         * @return static
+         */
+        public function unionAll($builders);
+
+        /**
+         * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders
+         *
+         * @return static
+         */
+        public function unionDistinct($builders);
     }
 }

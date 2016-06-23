@@ -78,6 +78,8 @@ namespace ManaPHP\Mvc\Model {
 
         protected $_hiddenParamNumber;
 
+        protected $_union = [];
+
         /**
          * \ManaPHP\Mvc\Model\Query\Builder constructor
          *
@@ -235,8 +237,8 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->addFrom('Robots', 'r');
          *</code>
          *
-         * @param string $model
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -261,10 +263,10 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->join('Robots', 'r.id = RobotsParts.robots_id', 'r', 'LEFT');
          *</code>
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
-         * @param string $type
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
+         * @param string                                          $type
          *
          * @return static
          */
@@ -284,9 +286,9 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->innerJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
          *</code>
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -304,9 +306,9 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->leftJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
          *</code>
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -324,9 +326,9 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->rightJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
          *</code>
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -448,29 +450,35 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->inWhere('id', [1, 2, 3]);
          *</code>
          *
-         * @param string $expr
-         * @param array  $values
+         * @param string                                         $expr
+         * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
          *
          * @return static
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function inWhere($expr, $values)
         {
-            if (count($values) === 0) {
-                $this->andWhere('FALSE');
+            if ($values instanceof QueryBuilderInterface) {
+                $this->andWhere($expr . ' IN (' . $values->getSql() . ')');
+                $this->_bind = array_merge($this->_bind, $values->getBind());
+            } else {
+                if (count($values) === 0) {
+                    $this->andWhere('FALSE');
 
-                return $this;
+                    return $this;
+                }
+
+                $bind = [];
+                $bindKeys = [];
+
+                foreach ($values as $value) {
+                    $key = 'ABP' . $this->_hiddenParamNumber++;
+                    $bindKeys[] = ":$key";
+                    $bind[$key] = $value;
+                }
+
+                $this->andWhere($expr . ' IN (' . implode(', ', $bindKeys) . ')', $bind);
             }
-
-            $bind = [];
-            $bindKeys = [];
-
-            foreach ($values as $value) {
-                $key = 'ABP' . $this->_hiddenParamNumber++;
-                $bindKeys[] = ":$key";
-                $bind[$key] = $value;
-            }
-
-            $this->andWhere($expr . ' IN (' . implode(', ', $bindKeys) . ')', $bind);
 
             return $this;
         }
@@ -482,27 +490,32 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->notInWhere('id', [1, 2, 3]);
          *</code>
          *
-         * @param string $expr
-         * @param array  $values
+         * @param string                                         $expr
+         * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
          *
          * @return static
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function notInWhere($expr, $values)
         {
-            if (count($values) === 0) {
-                return $this;
+            if ($values instanceof QueryBuilderInterface) {
+                $this->andWhere($expr . ' NOT IN (' . $values->getSql() . ')');
+                $this->_bind = array_merge($this->_bind, $values->getBind());
+            } else {
+                if (count($values) === 0) {
+                    return $this;
+                }
+
+                $bind = [];
+                $bindKeys = [];
+
+                foreach ($values as $value) {
+                    $key = 'ABP' . $this->_hiddenParamNumber++;
+                    $bindKeys[] = ':' . $key;
+                    $bind[$key] = $value;
+                }
+                $this->andWhere($expr . ' NOT IN (' . implode(', ', $bindKeys) . ')', $bind);
             }
-
-            $bind = [];
-            $bindKeys = [];
-
-            foreach ($values as $value) {
-                $key = 'ABP' . $this->_hiddenParamNumber++;
-                $bindKeys[] = ':' . $key;
-                $bind[$key] = $value;
-            }
-            $this->andWhere($expr . ' NOT IN (' . implode(', ', $bindKeys) . ')', $bind);
-
             return $this;
         }
 
@@ -609,6 +622,50 @@ namespace ManaPHP\Mvc\Model {
             return $this;
         }
 
+        protected function _getUnionSql()
+        {
+            $unions = [];
+
+            /**
+             * @var \ManaPHP\Mvc\Model\QueryBuilder $builder
+             */
+            foreach ($this->_union['builders'] as $builder) {
+                $unions[] = '(' . $builder->getSql() . ')';
+
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $this->_bind = array_merge($this->_bind, $builder->getBind());
+            }
+
+            $sql = implode(' ' . $this->_union['type'] . ' ', $unions);
+
+            /**
+             * Process order clause
+             */
+            if ($this->_order !== null) {
+                if (is_array($this->_order)) {
+                    $sql .= ' ORDER BY ' . implode(', ', $this->_order);
+                } else {
+                    $sql .= ' ORDER BY ' . $this->_order;
+                }
+            }
+
+            /**
+             * Process limit parameters
+             */
+            if ($this->_limit !== null) {
+                $limit = $this->_limit;
+                if (is_int($limit) || (is_string($limit) && ((string)((int)$limit))) === $limit) {
+                    $sql .= ' LIMIT ' . $limit;
+                } else {
+                    throw new Exception('limit is invalid: ' . $limit);
+                }
+            }
+
+            $this->_models[] = $builder->getModels()[0];
+
+            return $sql;
+        }
+
         /**
          * Returns a SQL statement built based on the builder parameters
          *
@@ -617,6 +674,10 @@ namespace ManaPHP\Mvc\Model {
          */
         public function getSql()
         {
+            if (count($this->_union) !== 0) {
+                return $this->_getUnionSql();
+            }
+
             if (count($this->_models) === 0) {
                 throw new Exception('At least one model is required to build the query');
             }
@@ -663,10 +724,20 @@ namespace ManaPHP\Mvc\Model {
              */
             $selectedModels = [];
             foreach ($this->_models as $alias => $model) {
-                if (is_string($alias)) {
-                    $selectedModels[] = '[' . $model . '] AS `' . $alias . '`';
+                if ($model instanceof QueryBuilderInterface) {
+                    if (is_int($alias)) {
+                        throw new Exception('When using SubQuery, you must assign an alias to it.');
+                    }
+
+                    $selectedModels[] = '(' . $model->getSql() . ') AS `' . $alias . '`';
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
+                    $this->_bind = array_merge($this->_bind, $model->getBind());
                 } else {
-                    $selectedModels[] = '[' . $model . ']';
+                    if (is_string($alias)) {
+                        $selectedModels[] = '[' . $model . '] AS `' . $alias . '`';
+                    } else {
+                        $selectedModels[] = '[' . $model . ']';
+                    }
                 }
             }
             $sql .= ' FROM ' . implode(', ', $selectedModels);
@@ -687,7 +758,16 @@ namespace ManaPHP\Mvc\Model {
                     $sql .= ' ' . $joinType;
                 }
 
-                $sql .= ' JOIN [' . $joinModel . ']';
+                if ($joinModel instanceof QueryBuilderInterface) {
+                    $sql .= ' JOIN (' . $joinModel->getSql() . ')';
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
+                    $this->_bind = array_merge($this->_bind, $joinModel->getBind());
+                    if ($joinAlias === null) {
+                        throw new Exception('When using SubQuery, you must assign an alias to it.');
+                    }
+                } else {
+                    $sql .= ' JOIN [' . $joinModel . ']';
+                }
 
                 if ($joinAlias !== null) {
                     $sql .= ' AS `' . $joinAlias . '`';
@@ -764,10 +844,17 @@ namespace ManaPHP\Mvc\Model {
             $sql = strtr($sql, $replaces);
 
             foreach ($this->_models as $model) {
-                $sql = str_replace('[' . $model . ']', '`' . $this->modelsManager->getModelSource($model) . '`', $sql);
+                if (!$model instanceof QueryBuilderInterface) {
+                    $sql = str_replace('[' . $model . ']', '`' . $this->modelsManager->getModelSource($model) . '`', $sql);
+                }
             }
 
             return $sql;
+        }
+
+        public function getBind()
+        {
+            return $this->_bind;
         }
 
         /**
@@ -786,6 +873,14 @@ namespace ManaPHP\Mvc\Model {
         }
 
         /**
+         * @return array
+         */
+        public function getModels()
+        {
+            return $this->_models;
+        }
+
+        /**
          * @param array $cacheOptions
          *
          * @return array
@@ -801,7 +896,7 @@ namespace ManaPHP\Mvc\Model {
                 }
 
                 if (!isset($cacheOptions['key'])) {
-                    $cacheOptions['key'] = 'Models/' . md5($sql . serialize($this->_bind));
+                    $cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind);
                 }
 
                 $result = $this->modelsCache->get($cacheOptions['key']);
@@ -833,6 +928,10 @@ namespace ManaPHP\Mvc\Model {
          */
         protected function _getTotalRows(&$rowCount)
         {
+            if (count($this->_union) !== 0) {
+                throw new Exception('Union query is not support to get total rows');
+            }
+
             $this->_columns = 'COUNT(*) as row_count';
             $this->_limit = null;
             $this->_offset = null;
@@ -873,7 +972,7 @@ namespace ManaPHP\Mvc\Model {
                 }
 
                 if (!isset($cacheOptions['key'])) {
-                    $cacheOptions['key'] = 'Models/' . md5($sql . serialize($this->_bind));
+                    $cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind);
                 }
 
                 $result = $this->modelsCache->get($cacheOptions['key']);
@@ -908,6 +1007,30 @@ namespace ManaPHP\Mvc\Model {
             }
 
             return $result;
+        }
+
+        /**
+         * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders
+         *
+         * @return static
+         */
+        public function unionAll($builders)
+        {
+            $this->_union = ['type' => 'UNION ALL', 'builders' => $builders];
+
+            return $this;
+        }
+
+        /**
+         * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders
+         *
+         * @return static
+         */
+        public function unionDistinct($builders)
+        {
+            $this->_union = ['type' => 'UNION DISTINCT', 'builders' => $builders];
+
+            return $this;
         }
     }
 }

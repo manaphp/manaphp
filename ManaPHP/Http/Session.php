@@ -15,7 +15,7 @@ namespace ManaPHP\Http {
      */
     class Session implements SessionInterface, \ArrayAccess
     {
-        public function __construct($options = null)
+        public function __construct()
         {
             if (PHP_SAPI === 'cli') {
                 return;

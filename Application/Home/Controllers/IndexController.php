@@ -10,7 +10,13 @@ class IndexController extends ControllerBase
 {
     public function indexAction()
     {
-        //$city = City::findFirst(1);
+      //  $city = City::findFirst(1);
+
+//        $content=$this->view->cache(5);
+//        if($content !==false){
+//            return $this->response->setContent($content);
+//        }
+
         $this->dispatcher->forward('about');
     }
 

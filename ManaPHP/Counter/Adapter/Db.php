@@ -22,11 +22,15 @@ namespace ManaPHP\Counter\Adapter {
         /**
          * Db constructor.
          *
-         * @param string|array $options
+         * @param string|array|\ConfManaPHP\Counter\Adapter\Db $options
          */
         public function __construct($options = [])
         {
             parent::__construct();
+
+            if (is_object($options)) {
+                $options = (array)$options;
+            }
 
             if (is_string($options)) {
                 $options['table'] = $options;

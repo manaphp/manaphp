@@ -159,9 +159,17 @@ namespace ManaPHP\Mvc {
 
         public function cache($cacheOptions)
         {
+            if (!is_array($cacheOptions)) {
+                $cacheOptions = ['ttl' => $cacheOptions];
+            }
+
+            if (!isset($cacheOptions['key'])) {
+                $cacheOptions['key'] = 'Views/' . $this->request->getUrl();
+            }
+
             $this->_cacheOptions = $cacheOptions;
 
-            return $this;
+            return $this->viewsCache->get($this->_cacheOptions['key']);
         }
 
         /**
@@ -194,14 +202,6 @@ namespace ManaPHP\Mvc {
             }
 
             if ($this->_cacheOptions !== null) {
-                if (!is_array($this->_cacheOptions)) {
-                    $this->_cacheOptions = ['ttl' => $this->_cacheOptions];
-                }
-
-                if (!isset($this->_cacheOptions['key'])) {
-                    $this->_cacheOptions['key'] = 'Views/' . md5($this->request->getUrl());
-                }
-
                 $content = $this->viewsCache->get($this->_cacheOptions['key']);
                 if ($content !== false) {
                     $this->_content = $content;

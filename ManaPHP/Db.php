@@ -76,6 +76,10 @@ namespace ManaPHP {
         {
             parent::__construct();
 
+            if (is_object($options)) {
+                $options = (array)$options;
+            }
+
             if (!isset($options['options'])) {
                 $options['options'] = [];
             }

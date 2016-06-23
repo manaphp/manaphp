@@ -67,9 +67,9 @@ namespace ManaPHP\Mvc {
         public function render($module, $controller, $action);
 
         /**
-         * @param int|array $cacheOptions
+         * @param array $cacheOptions
          *
-         * @return static
+         * @return string|false
          */
         public function cache($cacheOptions);
 

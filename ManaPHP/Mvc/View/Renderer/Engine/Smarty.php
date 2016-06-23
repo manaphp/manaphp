@@ -8,51 +8,25 @@ namespace ManaPHP\Mvc\View\Renderer\Engine {
 
     class Smarty extends Component implements EngineInterface
     {
-        /** @noinspection PhpUndefinedClassInspection */
-        /**
-         * @var \Smarty
-         */
-        protected $_smarty;
-
-        public function __construct($dependencyInjector = null)
-        {
-            parent::__construct($dependencyInjector);
-
-            if (class_exists('\Smarty')) {
-                /** @noinspection PhpUndefinedClassInspection */
-                /** @noinspection PhpUndefinedMethodInspection */
-                $this->_smarty = (new \Smarty())
-                    ->setCompileDir($this->alias->resolve('@data/smarty/templates_c'))
-                    ->setCacheDir($this->alias->resolve('@data/smarty/caches'))
-                    ->setConfigDir($this->alias->resolve('@data/smarty/configs'))
-                    ->setDebugging($this->configure->debug);
-            } else {
-                throw new Exception('\smarty class is not exists, please install it first.');
-            }
-        }
-
         public function render($file, $vars = null, $directOutput = true)
         {
-            $smarty = $this->_dependencyInjector->getShared('smarty');
-            /** @noinspection PhpUndefinedMethodInspection */
-            $smarty->assign($vars);
+            if (!isset($this->smarty) && !$this->_dependencyInjector->has('smarty')) {
+                $this->_dependencyInjector->setShared('smarty', 'Smarty');
+                /** @noinspection PhpUndefinedFieldInspection */
+                $this->smarty->setCompileDir($this->alias->resolve('@data/Smarty/templates_c'))
+                    ->setCacheDir($this->alias->resolve('@data/Smarty/caches'))
+                    ->setConfigDir($this->alias->resolve('@data/Smarty/configs'))
+                    ->setDebugging($this->configure->debug);
+            }
+
             if ($directOutput) {
                 /** @noinspection PhpUndefinedMethodInspection */
-                $smarty->display($file);
+                $this->assign($vars)->display($file);
                 return null;
             } else {
                 /** @noinspection PhpUndefinedMethodInspection */
-                return $smarty->fetch($file);
+                return $this->assign($vars)->fetch($file);
             }
-        }
-
-        /** @noinspection PhpUndefinedClassInspection */
-        /**
-         * @return \Smarty
-         */
-        public function getSmarty()
-        {
-            return $this->_smarty;
         }
     }
 }

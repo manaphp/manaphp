@@ -3,117 +3,132 @@ namespace ManaPHP {
 
     use ManaPHP\Di;
     use ManaPHP\Store\AdapterInterface;
+    use ManaPHP\Utility\Text;
 
     abstract class Store extends Component implements StoreInterface, AdapterInterface
     {
+        protected function _formatKey($key)
+        {
+            if ($key[0] === '!') {
+                return $key;
+            }
+
+            if (Text::contains($key, '/')) {
+                $parts = explode('/', $key, 2);
+                return $parts[0] . '/' . md5($parts[1]);
+            } else {
+                return $key;
+            }
+        }
+
         /**
          * Fetch content
          *
-         * @param string $id
+         * @param string $key
          *
          * @return mixed
          * @throws \ManaPHP\Store\Exception
          */
-        public function get($id)
+        public function get($key)
         {
-            $content = $this->_get($id);
+            $content = $this->_get($this->_formatKey($key));
             if ($content === false) {
                 return false;
+            } else {
+                return $this->serializer->deserialize($content);
             }
-
-            return $this->serializer->deserialize($content);
         }
 
         /**
-         * Retrieves a value from store with a specified id.
+         * Retrieves a value from store with a specified keys.
          *
-         * @param array $ids
+         * @param array $keys
          *
          * @return array
          * @throws \ManaPHP\Store\Exception
          */
-        public function mGet($ids)
+        public function mGet($keys)
         {
-            $idValues = [];
-            foreach ($ids as $id) {
-                $value = $this->_get($id);
+            $keyValues = [];
+            foreach ($keys as $key) {
+                $value = $this->_get($this->_formatKey($key));
                 if ($value === false) {
-                    $idValues[$id] = $value;
+                    $keyValues[$key] = $value;
                 } else {
-                    $idValues[$id] = $this->serializer->deserialize($value);
+                    $keyValues[$key] = $this->serializer->deserialize($value);
                 }
             }
 
-            return $idValues;
+            return $keyValues;
         }
 
         /**
          * Stores content
          *
-         * @param string $id
+         * @param string $key
          * @param mixed  $value
          *
          * @return void
          * @throws \ManaPHP\Cache\Exception
          */
-        public function set($id, $value)
+        public function set($key, $value)
         {
-            $this->_set($id, $this->serializer->serialize($value));
+            $this->_set($this->_formatKey($key), $this->serializer->serialize($value));
         }
 
         /**
          * Stores a value identified by a id into store.
          *
-         * @param array $idValues
+         * @param array $keyValues
          *
          * @return void
          */
-        public function mSet($idValues)
+        public function mSet($keyValues)
         {
-            $completeIdValues = [];
-            foreach ($idValues as $id => $value) {
-                $completeIdValues[$id] = $this->serializer->serialize($value);
+            $completeKeyValues = [];
+            foreach ($keyValues as $key => $value) {
+                $completeKeyValues[$this->_formatKey($key)] = $this->serializer->serialize($value);
             }
 
-            $this->_mSet($completeIdValues);
+            $this->_mSet($completeKeyValues);
         }
 
         /**
          * Delete content
          *
-         * @param string $id
+         * @param string $key
          *
          * @void
          */
-        public function delete($id)
+        public function delete($key)
         {
-            $this->_delete($id);
+            $this->_delete($this->_formatKey($key));
         }
 
         /**
          * Deletes values with the specified ids from store
          *
-         * @param array $ids
+         * @param array $keys
          *
          * @void
          */
-        public function mDelete($ids)
+        public function mDelete($keys)
         {
-            foreach ($ids as $id) {
-                $this->_delete($id);
+            foreach ($keys as $key) {
+                $this->_delete($this->_formatKey($key));
             }
         }
 
         /**
          * Check if id exists
          *
-         * @param string $id
+         * @param string $key
          *
          * @return bool
          */
-        public function exists($id)
+        public function exists($key)
         {
-            return $this->_exists($id);
+            return $this->_exists($this->_formatKey($key));
         }
     }
 }

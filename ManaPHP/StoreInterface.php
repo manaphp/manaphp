@@ -4,67 +4,67 @@ namespace ManaPHP {
     interface StoreInterface
     {
         /**
-         * Checks whether a specified id exists in the store.
+         * Checks whether a specified key exists in the store.
          *
-         * @param string $id
+         * @param string $key
          *
          * @return bool
          */
-        public function exists($id);
+        public function exists($key);
 
         /**
-         * Retrieves a value from store with a specified id.
+         * Retrieves a value from store with a specified key.
          *
-         * @param string $id
+         * @param string $key
          *
          * @return mixed|false
          */
-        public function get($id);
+        public function get($key);
 
         /**
-         * Retrieves multiple values from store with corresponding ids.
+         * Retrieves multiple values from store with corresponding keys.
          *
-         * @param array $ids
+         * @param array $keys
          *
          * @return array
          */
-        public function mGet($ids);
+        public function mGet($keys);
 
         /**
-         * Stores a value identified by a id into store.
+         * Stores a value identified by a key into store.
          *
-         * @param string $id
+         * @param string $key
          * @param mixed  $value
          *
          * @return void
          */
-        public function set($id, $value);
+        public function set($key, $value);
 
         /**
-         * Stores multiple values corresponding with ids into store.
+         * Stores multiple values corresponding with keys into store.
          *
-         * @param array $idValues
+         * @param array $keyValues
          *
          * @return void
          */
-        public function mSet($idValues);
+        public function mSet($keyValues);
 
         /**
          * Deletes a value with the specified id from store
          *
-         * @param string $id
+         * @param string $key
          *
          * @void
          */
-        public function delete($id);
+        public function delete($key);
 
         /**
          * Deletes values with the specified ids from store
          *
-         * @param array $ids
+         * @param array $keys
          *
          * @void
          */
-        public function mDelete($ids);
+        public function mDelete($keys);
     }
 }

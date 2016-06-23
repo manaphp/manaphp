@@ -49,11 +49,15 @@ class Captcha extends Component implements CaptchaInterface
     /**
      * Captcha constructor.
      *
-     * @param array $options
+     * @param array|\ConfManaPHP\Security\Captcha $options
      */
     public function __construct($options = [])
     {
         parent::__construct();
+
+        if (is_object($options)) {
+            $options = (array)$options;
+        }
 
         if (isset($options['charset'])) {
             $this->_charset = $options['charset'];

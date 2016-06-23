@@ -26,7 +26,7 @@ namespace ManaPHP\Di {
                 'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
                 'url' => 'ManaPHP\Mvc\Url',
                 'modelsManager' => 'ManaPHP\Mvc\Model\Manager',
-                'modelsMetadata' => 'ManaPHP\Mvc\Model\MetaData\Memory',
+                'modelsMetadata' => 'ManaPHP\Mvc\Model\MetaData\Adapter\Memory',
                 'response' => 'ManaPHP\Http\Response',
                 'cookies' => 'ManaPHP\Http\Cookies',
                 'request' => 'ManaPHP\Http\Request',

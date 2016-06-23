@@ -28,13 +28,17 @@ namespace ManaPHP\Cache\Adapter {
         /**
          * File constructor.
          *
-         * @param string|array $options
+         * @param string|array|\ConfManaPHP\Cache\Adapter\File $options
          *
          * @throws \ManaPHP\Cache\Exception|\ManaPHP\Configure\Exception
          */
         public function __construct($options = [])
         {
             parent::__construct();
+
+            if (is_object($options)) {
+                $options = (array)$options;
+            }
 
             if (is_string($options)) {
                 $options = ['cacheDir' => $options];
@@ -47,6 +51,10 @@ namespace ManaPHP\Cache\Adapter {
             if (isset($options['dirLevel'])) {
                 $this->_dirLevel = $options['dirLevel'];
             }
+
+            if (isset($options['extension'])) {
+                $this->_extension = $options['extension'];
+            }
         }
 
         /**
@@ -57,24 +65,23 @@ namespace ManaPHP\Cache\Adapter {
         protected function _getFileName($key)
         {
             if ($key[0] === '!') {
-                return $this->alias->resolve($this->_cacheDir . '/' . substr($key, 1) . $this->_extension);
+                return $this->alias->resolve($this->_cacheDir . '/' . str_replace([':'], '/', substr($key, 1)) . $this->_extension);
             }
 
             if (Text::contains($key, '/')) {
-                list($prefix, $key) = explode('/', $key, 2);
-                $dir = $this->_cacheDir . '/' . $prefix;
+                $parts = explode('/', $key, 2);
+                $md5 = $parts[1];
+                $file = $this->_cacheDir . '/' . $parts[0] . '/';
+
+                for ($i = 0; $i < $this->_dirLevel; $i++) {
+                    $file .= substr($md5, $i + $i, 2) . '/';
+                }
+                $file .= $md5;
             } else {
-                $dir = $this->_cacheDir;
-            }
-            $md5 = md5($key);
-
-            for ($i = 0; $i < $this->_dirLevel; $i++) {
-                $dir .= '/' . substr($md5, $i + $i, 2);
+                $file = $this->_cacheDir . '/' . $key;
             }
 
-            $dir .= '/' . $md5 . $this->_extension;
-
-            return $this->alias->resolve($dir);
+            return $this->alias->resolve(str_replace([':'], '/', $file . $this->_extension));
         }
 
         public function _exists($key)

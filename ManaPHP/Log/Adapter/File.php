@@ -29,11 +29,15 @@ namespace ManaPHP\Log\Adapter {
         /**
          * \ManaPHP\Log\Adapter\File constructor.
          *
-         * @param string|array $options
+         * @param string|array|\ConfManaPHP\Log\Adapter\File $options
          */
         public function __construct($options = [])
         {
             parent::__construct();
+
+            if (is_object($options)) {
+                $options = (array)$options;
+            }
 
             if (is_string($options)) {
                 $options = ['file' => $options];
