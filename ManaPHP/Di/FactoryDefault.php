@@ -34,7 +34,7 @@ namespace ManaPHP\Di {
                 'escaper' => 'ManaPHP\Escaper',
                 'security' => 'ManaPHP\Security',
                 'crypt' => 'ManaPHP\Security\Crypt',
-                'flash' => 'ManaPHP\Flash\Adapter\Direct',
+                'flash' => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
                 'flashSession' => 'ManaPHP\Flash\Adapter\Session',
                 'tag' => 'ManaPHP\Mvc\View\Tag',
                 'session' => 'ManaPHP\Http\Session\Adapter\File',

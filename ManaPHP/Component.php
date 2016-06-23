@@ -19,8 +19,8 @@ namespace ManaPHP {
      * @property \ManaPHP\Http\Response                   $response
      * @property \ManaPHP\Http\Cookies                    $cookies
     //* @property \ManaPHP\FilterInterface $filter
-     * @property \ManaPHP\Flash                           $flash
-     * @property \ManaPHP\Flash                           $flashSession
+     * @property \ManaPHP\Mvc\View\Flash                  $flash
+     * @property \ManaPHP\Mvc\View\Flash                  $flashSession
      * @property \ManaPHP\Http\SessionInterface           $session
      * @property \ManaPHP\Event\ManagerInterface          $eventsManager
      * @property \ManaPHP\Db                              $db

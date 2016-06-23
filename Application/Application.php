@@ -1,7 +1,6 @@
 <?php
 namespace Application {
 
-    use ManaPHP\Counter\Adapter\Db;
     use ManaPHP\Db\Adapter\Mysql;
     use ManaPHP\DbInterface;
     use ManaPHP\Log\Adapter\File;

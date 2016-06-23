@@ -1,7 +1,7 @@
 <?php
-namespace ManaPHP\Flash\Adapter {
+namespace ManaPHP\Mvc\View\Flash\Adapter {
 
-    use ManaPHP\Flash;
+    use ManaPHP\Mvc\View\Flash;
 
     class Session extends Flash
     {

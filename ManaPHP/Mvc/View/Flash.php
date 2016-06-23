@@ -1,8 +1,9 @@
 <?php
 
-namespace ManaPHP {
+namespace ManaPHP\Mvc\View {
 
-    use ManaPHP\Flash\AdapterInterface;
+    use ManaPHP\Component;
+    use ManaPHP\Mvc\View\Flash\AdapterInterface;
 
     /**
      * ManaPHP\Flash

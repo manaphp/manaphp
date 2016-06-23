@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Flash {
+namespace ManaPHP\Mvc\View\Flash {
 
     interface AdapterInterface
     {
