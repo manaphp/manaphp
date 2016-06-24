@@ -76,7 +76,7 @@ namespace ManaPHP\Mvc\Model {
          */
         protected $_distinct;
 
-        protected $_hiddenParamNumber;
+        protected static $_hiddenParamNumber = 0;
 
         protected $_union = [];
 
@@ -412,8 +412,10 @@ namespace ManaPHP\Mvc\Model {
          */
         public function betweenWhere($expr, $min, $max)
         {
-            $minKey = 'ABP' . $this->_hiddenParamNumber++;
-            $maxKey = 'ABP' . $this->_hiddenParamNumber++;
+            $minKey = '_between_min_' . self::$_hiddenParamNumber;
+            $maxKey = '_between_max_' . self::$_hiddenParamNumber;
+
+            self::$_hiddenParamNumber++;
 
             $this->andWhere("$expr BETWEEN :$minKey AND :$maxKey", [$minKey => $min, $maxKey => $max]);
 
@@ -435,8 +437,10 @@ namespace ManaPHP\Mvc\Model {
          */
         public function notBetweenWhere($expr, $min, $max)
         {
-            $minKey = 'ABP' . $this->_hiddenParamNumber++;
-            $maxKey = 'ABP' . $this->_hiddenParamNumber++;
+            $minKey = '_not_between_min_' . self::$_hiddenParamNumber;
+            $maxKey = '_not_between_max_' . self::$_hiddenParamNumber;
+
+            self::$_hiddenParamNumber++;
 
             $this->andWhere("$expr NOT BETWEEN :$minKey AND :$maxKey", [$minKey => $min, $maxKey => $max]);
 
@@ -471,11 +475,13 @@ namespace ManaPHP\Mvc\Model {
                 $bind = [];
                 $bindKeys = [];
 
-                foreach ($values as $value) {
-                    $key = 'ABP' . $this->_hiddenParamNumber++;
+                foreach ($values as $k => $value) {
+                    $key = '_in_' . self::$_hiddenParamNumber.'_' . $k;
                     $bindKeys[] = ":$key";
                     $bind[$key] = $value;
                 }
+
+                self::$_hiddenParamNumber++;
 
                 $this->andWhere($expr . ' IN (' . implode(', ', $bindKeys) . ')', $bind);
             }
@@ -509,11 +515,14 @@ namespace ManaPHP\Mvc\Model {
                 $bind = [];
                 $bindKeys = [];
 
-                foreach ($values as $value) {
-                    $key = 'ABP' . $this->_hiddenParamNumber++;
+                foreach ($values as $k => $value) {
+                    $key = '_not_in_' . self::$_hiddenParamNumber. '_' . $k;
                     $bindKeys[] = ':' . $key;
                     $bind[$key] = $value;
                 }
+
+                self::$_hiddenParamNumber++;
+
                 $this->andWhere($expr . ' NOT IN (' . implode(', ', $bindKeys) . ')', $bind);
             }
             return $this;
@@ -888,6 +897,8 @@ namespace ManaPHP\Mvc\Model {
          */
         public function execute($cacheOptions = null)
         {
+            self::$_hiddenParamNumber = 0;
+
             $sql = $this->getSql();
 
             if ($cacheOptions !== null) {
@@ -962,6 +973,8 @@ namespace ManaPHP\Mvc\Model {
          */
         public function executeEx(&$totalRows, $cacheOptions = null)
         {
+            self::$_hiddenParamNumber = 0;
+
             $copy = clone $this;
 
             $sql = $this->getSql();
