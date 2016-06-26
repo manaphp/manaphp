@@ -16,9 +16,9 @@ namespace ManaPHP {
      * @property \ManaPHP\Mvc\Router                      $router
      * @property \ManaPHP\Mvc\Url                         $url
      * @property \ManaPHP\Http\Request                    $request
+     * @property \ManaPHP\Http\Filter                     $filter
      * @property \ManaPHP\Http\Response                   $response
      * @property \ManaPHP\Http\Cookies                    $cookies
-    //* @property \ManaPHP\FilterInterface $filter
      * @property \ManaPHP\Mvc\View\Flash                  $flash
      * @property \ManaPHP\Mvc\View\Flash                  $flashSession
      * @property \ManaPHP\Http\SessionInterface           $session
@@ -48,6 +48,7 @@ namespace ManaPHP {
      * @property \ManaPHP\CacheInterface                  $viewsCache
      * @property \ManaPHP\Http\Client                     $httpClient
      * @property \ManaPHP\Security\AuthorizationInterface $authorization
+     * @property \ManaPHP\Security\Captcha                $captcha
      */
     class Component implements ComponentInterface
     {

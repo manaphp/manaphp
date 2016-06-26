@@ -40,30 +40,60 @@ namespace ManaPHP\Http {
         protected $_client_address;
 
         /**
+         * @var array
+         */
+        protected $_rules = [];
+
+        /**
+         * @param array $rules
+         *
+         * @return static
+         */
+        public function setRules($rules)
+        {
+            $this->_rules = array_merge($this->_rules, $rules);
+            return $this;
+        }
+
+        /**
          *
          * @param array  $source
          * @param string $name
-         * @param mixed  $filters
+         * @param string $rule
          * @param mixed  $defaultValue
          *
          * @return string
          * @throws \ManaPHP\Http\Request\Exception
          */
-        protected function _getHelper($source, $name = null, $filters = null, $defaultValue = null)
+        protected function _getHelper($source, $name = null, $rule = null, $defaultValue = null)
         {
-            if ($filters !== null) {
-                throw new Exception('filter not supported');
-            }
-
             if ($name === null) {
                 return $source;
             }
 
-            if (!isset($source[$name])) {
-                return $defaultValue;
+            if (isset($source[$name])) {
+                $value = $source[$name];
+            } else {
+                if ($defaultValue !== null) {
+                    $value = $defaultValue;
+                } else {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                    return $this->filter->sanitize($name, 'required', null);
+                }
             }
 
-            return $source[$name];
+            if ($rule === null) {
+                if (isset($this->_rules[$name])) {
+                    $rule = $this->_rules[$name];
+                }
+            }
+
+            if ($rule !== null) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                return $this->filter->sanitize($name, $rule, $value);
+            } else {
+                return $value;
+            }
         }
 
         /**
@@ -78,16 +108,16 @@ namespace ManaPHP\Http {
          *    $userEmail = $request->get("user_email", "email");
          *</code>
          *
-         * @param string       $name
-         * @param string|array $filters
-         * @param mixed        $defaultValue
+         * @param string $name
+         * @param string $rule
+         * @param mixed  $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function get($name = null, $filters = null, $defaultValue = null)
+        public function get($name = null, $rule = null, $defaultValue = null)
         {
-            return $this->_getHelper($_REQUEST, $name, $filters, $defaultValue);
+            return $this->_getHelper($_REQUEST, $name, $rule, $defaultValue);
         }
 
         /**
@@ -105,16 +135,16 @@ namespace ManaPHP\Http {
          *    $id = $request->getGet("id", null, 150);
          *</code>
          *
-         * @param string       $name
-         * @param string|array $filters
-         * @param mixed        $defaultValue
+         * @param string $name
+         * @param string $rule
+         * @param mixed  $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getGet($name = null, $filters = null, $defaultValue = null)
+        public function getGet($name = null, $rule = null, $defaultValue = null)
         {
-            return $this->_getHelper($_GET, $name, $filters, $defaultValue);
+            return $this->_getHelper($_GET, $name, $rule, $defaultValue);
         }
 
         /**
@@ -129,16 +159,16 @@ namespace ManaPHP\Http {
          *    $userEmail = $request->getPost("user_email", "email");
          *</code>
          *
-         * @param string       $name
-         * @param string|array $filters
-         * @param mixed        $defaultValue
+         * @param string $name
+         * @param string $rule
+         * @param mixed  $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getPost($name = null, $filters = null, $defaultValue = null)
+        public function getPost($name = null, $rule = null, $defaultValue = null)
         {
-            return $this->_getHelper($_POST, $name, $filters, $defaultValue);
+            return $this->_getHelper($_POST, $name, $rule, $defaultValue);
         }
 
         /**
@@ -151,19 +181,19 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string       $name
-         * @param string|array $filters
+         * @param string|array $rule
          * @param mixed        $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getPut($name = null, $filters = null, $defaultValue = null)
+        public function getPut($name = null, $rule = null, $defaultValue = null)
         {
             if ($this->_putCache === null && $this->isPut()) {
                 parse_str($this->getRawBody(), $this->_putCache);
             }
 
-            return $this->_getHelper($this->_putCache, $name, $filters, $defaultValue);
+            return $this->_getHelper($this->_putCache, $name, $rule, $defaultValue);
         }
 
         /**
@@ -182,15 +212,15 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string       $name
-         * @param string|array $filters
+         * @param string|array $rule
          * @param mixed        $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getQuery($name = null, $filters = null, $defaultValue = null)
+        public function getQuery($name = null, $rule = null, $defaultValue = null)
         {
-            return $this->_getHelper($_GET, $name, $filters, $defaultValue);
+            return $this->_getHelper($_GET, $name, $rule, $defaultValue);
         }
 
         /**

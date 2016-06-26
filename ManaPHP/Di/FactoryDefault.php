@@ -30,7 +30,7 @@ namespace ManaPHP\Di {
                 'response' => 'ManaPHP\Http\Response',
                 'cookies' => 'ManaPHP\Http\Cookies',
                 'request' => 'ManaPHP\Http\Request',
-                'filter' => 'ManaPHP\Filter',
+                'filter' => 'ManaPHP\Http\Filter',
                 'escaper' => 'ManaPHP\Escaper',
                 'security' => 'ManaPHP\Security',
                 'crypt' => 'ManaPHP\Security\Crypt',
@@ -51,6 +51,7 @@ namespace ManaPHP\Di {
                 'store' => 'ManaPHP\Store\Adapter\File',
                 'counter' => 'ManaPHP\Counter\Adapter\Redis',
                 'httpClient' => 'ManaPHP\Http\Client\Adapter\Curl',
+                'captcha' => 'ManPHP\Security\Captcha',
             ];
 
             $this->_aliases = [
