@@ -57,43 +57,47 @@ namespace ManaPHP\Http {
 
         /**
          *
-         * @param array  $source
-         * @param string $name
-         * @param string $rule
-         * @param mixed  $defaultValue
+         * @param array        $source
+         * @param string       $name
+         * @param string|array $rules
+         * @param mixed        $defaultValue
          *
          * @return string
          * @throws \ManaPHP\Http\Request\Exception
          */
-        protected function _getHelper($source, $name = null, $rule = null, $defaultValue = null)
+        protected function _getHelper($source, $name = null, $rules = null, $defaultValue = null)
         {
             if ($name === null) {
-                return $source;
-            }
 
-            if (isset($source[$name])) {
-                $value = $source[$name];
-            } else {
-                if ($defaultValue !== null) {
-                    $value = $defaultValue;
+                $data = [];
+
+                if ($rules === null) {
+                    $rules = [];
+                }
+
+                if (is_string($rules)) {
+                    /** @noinspection SuspiciousLoopInspection */
+                    foreach ($source as $name => $_) {
+                        $data[$name] = $this->_getHelper($source, $name, $rules);
+                    }
                 } else {
-                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    return $this->filter->sanitize($name, 'required', null);
+                    /** @noinspection SuspiciousLoopInspection */
+                    foreach ($source as $name => $_) {
+                        $data[$name] = $this->_getHelper($source, $name, isset($rules[$name]) ? $rules[$name] : null);
+                    }
                 }
+
+                return $data;
             }
 
-            if ($rule === null) {
-                if (isset($this->_rules[$name])) {
-                    $rule = $this->_rules[$name];
-                }
+            $value = isset($source[$name]) ? $source[$name] : $defaultValue;
+
+            if ($rules === null) {
+                $rules = isset($this->_rules[$name]) ? $this->_rules[$name] : '';
             }
 
-            if ($rule !== null) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                return $this->filter->sanitize($name, $rule, $value);
-            } else {
-                return $value;
-            }
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            return $this->filter->sanitize($name, $rules, $value);
         }
 
         /**
@@ -109,15 +113,15 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string $name
-         * @param string $rule
+         * @param string $rules
          * @param mixed  $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function get($name = null, $rule = null, $defaultValue = null)
+        public function get($name = null, $rules = null, $defaultValue = null)
         {
-            return $this->_getHelper($_REQUEST, $name, $rule, $defaultValue);
+            return $this->_getHelper($_REQUEST, $name, $rules, $defaultValue);
         }
 
         /**
@@ -136,15 +140,15 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string $name
-         * @param string $rule
+         * @param string $rules
          * @param mixed  $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getGet($name = null, $rule = null, $defaultValue = null)
+        public function getGet($name = null, $rules = null, $defaultValue = null)
         {
-            return $this->_getHelper($_GET, $name, $rule, $defaultValue);
+            return $this->_getHelper($_GET, $name, $rules, $defaultValue);
         }
 
         /**
@@ -160,15 +164,30 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string $name
-         * @param string $rule
+         * @param string $rules
          * @param mixed  $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getPost($name = null, $rule = null, $defaultValue = null)
+        public function getPost($name = null, $rules = null, $defaultValue = null)
         {
-            return $this->_getHelper($_POST, $name, $rule, $defaultValue);
+            return $this->_getHelper($_POST, $name, $rules, $defaultValue);
+        }
+
+        /**
+         * Gets variable from $_SERVER applying filters if needed
+         *
+         * @param string       $name
+         * @param string|array $rules
+         * @param mixed        $defaultValue
+         *
+         * @return mixed
+         * @throws \ManaPHP\Http\Request\Exception
+         */
+        public function getServer($name = null, $rules = null, $defaultValue = null)
+        {
+            return $this->_getHelper($_SERVER, $name, $rules, $defaultValue);
         }
 
         /**
@@ -181,19 +200,19 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string       $name
-         * @param string|array $rule
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getPut($name = null, $rule = null, $defaultValue = null)
+        public function getPut($name = null, $rules = null, $defaultValue = null)
         {
             if ($this->_putCache === null && $this->isPut()) {
                 parse_str($this->getRawBody(), $this->_putCache);
             }
 
-            return $this->_getHelper($this->_putCache, $name, $rule, $defaultValue);
+            return $this->_getHelper($this->_putCache, $name, $rules, $defaultValue);
         }
 
         /**
@@ -212,15 +231,15 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string       $name
-         * @param string|array $rule
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getQuery($name = null, $rule = null, $defaultValue = null)
+        public function getQuery($name = null, $rules = null, $defaultValue = null)
         {
-            return $this->_getHelper($_GET, $name, $rule, $defaultValue);
+            return $this->_getHelper($_GET, $name, $rules, $defaultValue);
         }
 
         /**
@@ -285,6 +304,26 @@ namespace ManaPHP\Http {
         public function hasQuery($name)
         {
             return isset($_GET[$name]);
+        }
+
+        /**
+         * Checks whether $_GET has certain index
+         *
+         * @param string $name
+         *
+         * @return boolean
+         */
+        public function hasServer($name)
+        {
+            return isset($_SERVER[$name]);
+        }
+
+        /**
+         * @return string
+         */
+        public function getMethod()
+        {
+            return $_SERVER['REQUEST_METHOD'];
         }
 
         /**
@@ -375,7 +414,7 @@ namespace ManaPHP\Http {
          */
         public function getUserAgent()
         {
-            return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+            return strip_tags(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
         }
 
         /**
@@ -527,18 +566,7 @@ namespace ManaPHP\Http {
          */
         public function getReferer()
         {
-            return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-        }
-
-        /**
-         * Gets web page that refers active request. ie: http://www.google.com
-         *
-         * @return string
-         * @deprecated
-         */
-        public function getHTTPReferer()
-        {
-            return $this->getReferer();
+            return strip_tags(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
         }
 
         /**
@@ -559,7 +587,8 @@ namespace ManaPHP\Http {
                     $url .= '?' . $query;
                 }
             }
-            return $url;
+
+            return strip_tags($url);
         }
 
         /**
@@ -567,7 +596,7 @@ namespace ManaPHP\Http {
          */
         public function getUri()
         {
-            return $_SERVER['REQUEST_URI'];
+            return strip_tags($_SERVER['REQUEST_URI']);
         }
     }
 }

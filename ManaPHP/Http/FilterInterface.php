@@ -8,17 +8,24 @@ namespace ManaPHP\Http {
          * @param string   $name
          * @param callable $method
          *
-         * @return mixed
+         * @return static
          */
-        public function add($name, $method);
+        public function addRule($name, $method);
+
+        /**
+         * @param array $attributes
+         *
+         * @return static
+         */
+        public function addAttributes($attributes);
 
         /**
          * @param string $attribute
-         * @param string $rule
+         * @param string $rules
          * @param string $value
          *
          * @return mixed
          */
-        public function sanitize($attribute, $rule, $value);
+        public function sanitize($attribute, $rules, $value);
     }
 }

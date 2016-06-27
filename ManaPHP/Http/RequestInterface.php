@@ -19,34 +19,34 @@ namespace ManaPHP\Http {
          * Gets a variable from the $_REQUEST applying filters if needed
          *
          * @param string       $name
-         * @param string|array $rule
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          */
-        public function get($name = null, $rule = null, $defaultValue = null);
+        public function get($name = null, $rules = null, $defaultValue = null);
 
         /**
          * Gets variable from $_GET applying filters if needed
          *
          * @param string       $name
-         * @param string|array $rule
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          */
-        public function getGet($name = null, $rule = null, $defaultValue = null);
+        public function getGet($name = null, $rules = null, $defaultValue = null);
 
         /**
          * Gets a variable from the $_POST applying filters if needed
          *
          * @param string       $name
-         * @param string|array $rule
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          */
-        public function getPost($name = null, $rule = null, $defaultValue = null);
+        public function getPost($name = null, $rules = null, $defaultValue = null);
 
         /**
          * Gets a variable from put request
@@ -58,23 +58,34 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string       $name
-         * @param string|array $rule
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          */
-        public function getPut($name = null, $rule = null, $defaultValue = null);
+        public function getPut($name = null, $rules = null, $defaultValue = null);
 
         /**
          * Gets variable from $_GET applying filters if needed
          *
          * @param string       $name
-         * @param string|array $rule
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          */
-        public function getQuery($name = null, $rule = null, $defaultValue = null);
+        public function getQuery($name = null, $rules = null, $defaultValue = null);
+
+        /**
+         * Gets variable from $_SERVER applying filters if needed
+         *
+         * @param string       $name
+         * @param string|array $rules
+         * @param mixed        $defaultValue
+         *
+         * @return mixed
+         */
+        public function getServer($name = null, $rules = null, $defaultValue = null);
 
         /**
          * Checks whether $_SERVER has certain index
@@ -120,6 +131,20 @@ namespace ManaPHP\Http {
          * @return boolean
          */
         public function hasQuery($name);
+
+        /**
+         * @return string
+         */
+        public function getMethod();
+
+        /**
+         * Checks whether $_GET has certain index
+         *
+         * @param string $name
+         *
+         * @return boolean
+         */
+        public function hasServer($name);
 
         /**
          * Gets HTTP schema (http/https)

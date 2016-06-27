@@ -10,76 +10,108 @@ namespace ManaPHP\Http {
         /**
          * @var array
          */
-        protected $_methods = [];
+        protected $_rules = [];
 
         /**
          * @var array
          */
         protected $_messages = [];
 
-        protected $_defaultMessage ='The value of :attribute is invalid.';
+        /**
+         * @var array
+         */
+        protected $_attributes = [];
+
+        /**
+         * @var string
+         */
+        protected $_defaultMessage = 'The :attribute format is invalid.';
+
+        /**
+         * @var bool
+         */
+        protected $_xssByReplace = true;
+
         /**
          * Filter constructor.
          *
          * @param array $options
+         *
+         * @throws \ManaPHP\Http\Exception
          */
-        public function __construct($options=[])
+        public function __construct($options = [])
         {
             parent::__construct();
 
             foreach (get_class_methods($this) as $method) {
-                if (Text::startsWith($method, '_method_')) {
-                    $this->_methods[substr($method, 8)] = [$this, $method];
+                if (Text::startsWith($method, '_rule_')) {
+                    $this->_rules[substr($method, 6)] = [$this, $method];
                 }
             }
 
-            $this->_messages=$this->_defaultMessages();
-
-            if(is_object($options)){
-                $options=(array)$options;
+            if (is_object($options)) {
+                $options = (array)$options;
             }
 
-            if(isset($options['messages'])){
-                $this->_messages=array_merge($this->_messages,$options['messages']);
+            if (!isset($options['messages'])) {
+                $options['messages'] = 'en';
             }
 
-            if(isset($options['defaultMessage'])){
-                $this->_defaultMessage=$options['defaultMessage'];
-            }
-        }
+            if (is_string($options['messages'])) {
+                if (Text::contains($options['messages'], '.')) {
+                    $file = $options['messages'];
+                } else {
+                    $file = __DIR__ . '/Filter/Messages/' . $options['messages'] . '.php';
+                }
 
-        protected function _defaultMessages(){
-            return [
-                'required'=>':attribute is required.',
-                'email'=>'Please enter a valid email address.',
-                'url'=>'Please enter a valid URL',
-                'date'=>'Please enter a valid date.',
-                'number'=>'Please enter a valid number.',
-                'digit'=>'Please enter only digits.',
-                'equal'=>'Please enter a valid value.',
-                'maxLength'=>'Please enter no more than :parameter[0], characters.'
-            ];
+                $file = $this->alias->resolve($file);
+
+                if (!is_file($file)) {
+                    throw new \ManaPHP\Http\Exception('filter message template file is not exists: ' . $file);
+                }
+
+                /** @noinspection PhpIncludeInspection */
+                $options['messages'] = require($file);
+            }
+            $this->_messages = $options['messages'];
+
+            if (isset($options['defaultMessage'])) {
+                $this->_defaultMessage = $options['defaultMessage'];
+            }
+
+            if (isset($options['xssByReplace'])) {
+                $this->_xssByReplace = $options['xssByReplace'];
+            }
         }
 
         /**
          * @param string   $name
          * @param callable $method
          *
-         * @return mixed
+         * @return static
          */
-        public function add($name, $method)
+        public function addRule($name, $method)
         {
-            $this->_methods[$name] = $method;
+            $this->_rules[$name] = $method;
+
+            return $this;
+        }
+
+        public function addAttributes($attributes)
+        {
+            $this->_attributes = array_merge($this->_attributes, $attributes);
+
+            return $this;
         }
 
         /**
-         * @param string $rule
+         * @param string $rules
          *
          * @return array
          */
-        protected function _parseRule($rule)
+        protected function _parseRules($rules)
         {
-            $parts = explode('|', $rule);
+            $parts = explode('|', $rules);
 
             $items = [];
             foreach ($parts as $part) {
@@ -91,6 +123,11 @@ namespace ManaPHP\Http {
                     $parameters = [];
                 }
 
+                $name = trim($name);
+                if ($name === '') {
+                    continue;
+                }
+
                 $items[$name] = $parameters;
             }
 
@@ -99,65 +136,128 @@ namespace ManaPHP\Http {
 
         protected function _getError($attribute, $value, $rule, $parameters)
         {
-            $replaces=[];
+            $replaces = [];
 
-            $replaces[':attribute']=$attribute;
-            $replaces[':value']=$value;
-            foreach ($parameters as $k=>$parameter){
-                $replaces[':parameter['.$k.']']=$parameter;
+            $replaces[':attribute'] = isset($this->_attributes[$attribute]) ? $this->_attributes[$attribute] : $attribute;
+            $replaces[':value'] = $value;
+            foreach ($parameters as $k => $parameter) {
+                $replaces[':parameter[' . $k . ']'] = $parameter;
             }
 
-            if(isset($this->_messages[$rule])){
-                $message=$this->_messages[$rule];
-            }else{
-                $message =$this->_defaultMessage;
+            if (isset($this->_messages[$rule])) {
+                $message = $this->_messages[$rule];
+            } else {
+                $message = $this->_defaultMessage;
             }
 
-            return strtr($message,$replaces);
+            return strtr($message, $replaces);
         }
 
         /**
          * @param string                   $attribute
-         * @param string|int|boolean       $rule
+         * @param string                   $rules
          * @param string|int|boolean|array $value
          *
          * @return mixed
          * @throws \ManaPHP\Http\Exception
          */
-        public function sanitize($attribute, $rule, $value)
+        public function sanitize($attribute, $rules, $value)
         {
             if (is_int($value)) {
                 $value = (string)$value;
             } elseif (is_bool($value)) {
                 $value = (string)(int)$value;
+            } elseif ($value === null) {
+                $value = '';
             }
 
-            foreach ($this->_parseRule($rule) as $name => $parameters) {
-                if (isset($this->_methods[$name])) {
-                    $method = $this->_methods[$name];
-                } elseif (function_exists($name)) {
-                    $method = $name;
-                } else {
-                    throw new \ManaPHP\Http\Exception('filter `' . $name . '` is not be recognized.');
-                }
+            $ruleItems = $this->_parseRules($rules);
+            foreach ($ruleItems as $name => $parameters) {
+                $value = $this->_sanitize($attribute, $name, $parameters, $value);
+            }
 
-                $value = call_user_func_array($method, [$value, $parameters]);
-                if ($value === null) {
-                    $error = $this->_getError($attribute, $value, $name, $parameters);
-
-                    throw new Exception($error);
-                }
+            if (is_string($value) && !isset($ruleItems['ignore']) && !isset($ruleItems['xss'])) {
+                $value = $this->_sanitize($attribute, 'xss', [], $value);
             }
 
             return $value;
         }
 
-        protected function _method_required($value){
-            if($value===null){
+        protected function _sanitize($attribute, $name, $parameters, $value)
+        {
+            if (isset($this->_rules[$name])) {
+                $method = $this->_rules[$name];
+            } elseif (function_exists($name)) {
+                $method = $name;
+            } else {
+                throw new \ManaPHP\Http\Exception('filter `' . $name . '` is not be recognized.');
+            }
+
+            $value = call_user_func_array($method, [$value, $parameters]);
+            if ($value === null) {
+                $error = $this->_getError($attribute, $value, $name, $parameters);
+
+                throw new Exception($error);
+            }
+
+            return $value;
+        }
+
+        /**
+         * @param string $value
+         *
+         * @return string|null
+         */
+        protected function _rule_required($value)
+        {
+            if ($value === '') {
                 return null;
-            }else{
+            } else {
                 return $value;
             }
+        }
+
+        protected function _rule_default($value, $parameters)
+        {
+            if ($value === '' || $value === null) {
+                return $parameters[0];
+            } else {
+                return $value;
+            }
+        }
+
+        protected function _rule_ignore($value)
+        {
+            return $value;
+        }
+
+        /**
+         * @param string $value
+         * @param array  $parameters
+         *
+         * @return string
+         */
+        protected function _rule_xss($value, $parameters)
+        {
+            if ($value === '') {
+                return $value;
+            }
+
+            if (count($parameters) === 0) {
+                $xssReplace = $this->_xssByReplace;
+            } else {
+                $xssReplace = $parameters[0];
+            }
+
+            if ($xssReplace) {
+                $value = strtr($value, ['<' => '＜', '>' => '＞', '\'' => '‘', '"' => '“', '&' => '＆', '\\' => '＼', '#' => '＃']);
+            } else {
+                $value = str_replace('<>\'"&\\#', ' ', $value);
+            }
+
+            $value = str_replace(['\u', '\U'], ' ', $value);//http://zone.wooyun.org/content/1253
+
+            return $value;
         }
 
         /**
@@ -165,7 +265,7 @@ namespace ManaPHP\Http {
          *
          * @return boolean|null
          */
-        protected function _method_boolean($value)
+        protected function _rule_boolean($value)
         {
             if (in_array($value, ['1', 'true'], true)) {
                 return true;
@@ -181,7 +281,7 @@ namespace ManaPHP\Http {
          *
          * @return int|null
          */
-        protected function _method_int($value)
+        protected function _rule_int($value)
         {
             if (preg_match('#^[+-]?\d+$#', $value) === 1) {
                 return (int)$value;
@@ -195,9 +295,11 @@ namespace ManaPHP\Http {
          *
          * @return float|null
          */
-        protected function _method_float($value)
+        protected function _rule_float($value)
         {
-            if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
+            if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false
+                && preg_match('#^[+-]?[\d\.]+$#', $value) === 1
+            ) {
                 return (float)$value;
             } else {
                 return null;
@@ -209,7 +311,7 @@ namespace ManaPHP\Http {
          *
          * @return int|null
          */
-        protected function _method_date($value)
+        protected function _rule_date($value)
         {
             $timestamp = strtotime($value);
             if ($timestamp !== false) {
@@ -225,9 +327,10 @@ namespace ManaPHP\Http {
          *
          * @return int|null
          */
-        protected function _method_range($value, $parameters)
+        protected function _rule_range($value, $parameters)
         {
-            $value = $this->_method_float($value);
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+            $value = $this->_rule_float($value);
             if ($value === null || $value < $parameters[0] || $value > $parameters[1]) {
                 return null;
             } else {
@@ -241,9 +344,10 @@ namespace ManaPHP\Http {
          *
          * @return float|null
          */
-        protected function _method_minValue($value, $parameters)
+        protected function _rule_min($value, $parameters)
         {
-            $value = $this->_method_float($value);
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+            $value = $this->_rule_float($value);
             if ($value === null || $value < $parameters[0]) {
                 return null;
             } else {
@@ -257,9 +361,10 @@ namespace ManaPHP\Http {
          *
          * @return float|null
          */
-        protected function _method_maxValue($value, $parameters)
+        protected function _rule_max($value, $parameters)
         {
-            $value = $this->_method_float($value);
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+            $value = $this->_rule_float($value);
             if ($value === null || $value > $parameters[0]) {
                 return null;
             } else {
@@ -273,22 +378,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_maxLength($value, $parameters)
-        {
-            if (strlen($value) <= $parameters[0]) {
-                return $value;
-            } else {
-                return null;
-            }
-        }
-
-        /**
-         * @param string $value
-         * @param array  $parameters
-         *
-         * @return string|null
-         */
-        protected function _method_minLength($value, $parameters)
+        protected function _rule_minLength($value, $parameters)
         {
             if (strlen($value) >= $parameters[0]) {
                 return $value;
@@ -303,7 +393,22 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_length($value, $parameters)
+        protected function _rule_maxLength($value, $parameters)
+        {
+            if (strlen($value) <= $parameters[0]) {
+                return $value;
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * @param string $value
+         * @param array  $parameters
+         *
+         * @return string|null
+         */
+        protected function _rule_length($value, $parameters)
         {
             $strLength = strlen($value);
             if ($strLength >= $parameters[0] && $strLength <= $parameters[1]) {
@@ -319,7 +424,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_equal($value, $parameters)
+        protected function _rule_equal($value, $parameters)
         {
             if ($value === $parameters[0]) {
                 return $value;
@@ -334,7 +439,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_regex($value, $parameters)
+        protected function _rule_regex($value, $parameters)
         {
             if (preg_match($parameters[0], $value) === 1) {
                 return $value;
@@ -348,7 +453,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_alpha($value)
+        protected function _rule_alpha($value)
         {
             /** @noinspection NotOptimalRegularExpressionsInspection */
             if (preg_match('#^[a-zA-Z]+$#', $value) === 1) {
@@ -363,7 +468,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_digit($value)
+        protected function _rule_digit($value)
         {
             /** @noinspection NotOptimalRegularExpressionsInspection */
             if (preg_match('#^\d+$#', $value) === 1) {
@@ -378,7 +483,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_alnum($value)
+        protected function _rule_alnum($value)
         {
             /** @noinspection NotOptimalRegularExpressionsInspection */
             if (preg_match('#^[a-zA-Z0-9]+$#', $value) === 1) {
@@ -393,7 +498,7 @@ namespace ManaPHP\Http {
          *
          * @return string
          */
-        protected function _method_lower($value)
+        protected function _rule_lower($value)
         {
             return strtolower($value);
         }
@@ -403,7 +508,7 @@ namespace ManaPHP\Http {
          *
          * @return string
          */
-        protected function _method_upper($value)
+        protected function _rule_upper($value)
         {
             return strtoupper($value);
         }
@@ -413,7 +518,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_account($value)
+        protected function _rule_account($value)
         {
             if (preg_match('#^[a-z][a-z_\d]{1,14}[a-z\d]$#', $value) === 1) {
                 return $value;
@@ -427,7 +532,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_password($value)
+        protected function _rule_password($value)
         {
             if ($value !== '') {
                 return $value;
@@ -441,8 +546,9 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_email($value)
+        protected function _rule_email($value)
         {
+            $value = trim($value);
             if (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) {
                 return $value;
             } else {
@@ -455,10 +561,18 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_url($value)
+        protected function _rule_url($value)
         {
+            $value = trim($value);
+
             if (filter_var($value, FILTER_VALIDATE_URL) !== false) {
-                return $value;
+                list($scheme, $path) = explode('://', $value, 2);
+                $scheme = strtolower($scheme);
+                if ($scheme !== 'http' && $scheme !== 'https') {
+                    return null;
+                } else {
+                    return $scheme . '://' . $path;
+                }
             } else {
                 return null;
             }
@@ -470,7 +584,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_in($value, $parameters)
+        protected function _rule_in($value, $parameters)
         {
             if (in_array($value, $parameters, true)) {
                 return $value;
@@ -485,7 +599,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_not_in($value, $parameters)
+        protected function _rule_not_in($value, $parameters)
         {
             if (!in_array($value, $parameters, true)) {
                 return $value;
@@ -499,7 +613,7 @@ namespace ManaPHP\Http {
          *
          * @return mixed|null
          */
-        protected function _method_json($value)
+        protected function _rule_json($value)
         {
             if (is_scalar($value)) {
                 $a = json_decode($value, true);
@@ -516,7 +630,7 @@ namespace ManaPHP\Http {
          *
          * @return string|null
          */
-        protected function _method_mobile($value)
+        protected function _rule_mobile($value)
         {
             $value = trim($value);
 
@@ -530,24 +644,12 @@ namespace ManaPHP\Http {
         /**
          * @param string $value
          *
-         * @return false
-         */
-        protected function _method_captcha($value)
-        {
-            if ($this->captcha->verify($value)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /**
-         * @param string $value
-         *
          * @return string|null
          */
-        protected function _method_ip($value)
+        protected function _rule_ip($value)
         {
+            $value = trim($value);
+
             if (filter_var($value, FILTER_VALIDATE_IP) !== false) {
                 return $value;
             } else {
@@ -555,20 +657,9 @@ namespace ManaPHP\Http {
             }
         }
 
-        /**
-         * @param string $value
-         *
-         * @return string|null
-         */
-        protected function _method_accepted($value)
+        public function dump()
         {
-            if (in_array($value, ['yes', 'on', '1', 'true'], true)) {
-                return true;
-            } elseif (in_array($value, ['no', 'off', '0', 'false'], true)) {
-                return false;
-            } else {
-                return null;
-            }
+            return array_merge(parent::dump(), ['_rules' => array_keys($this->_rules)]);
         }
     }
 }
