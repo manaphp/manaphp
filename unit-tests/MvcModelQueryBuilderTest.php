@@ -615,6 +615,14 @@ class MvcModelQueryBuilderTest extends TestCase
             ->executeEx($totalRows);
         $this->assertCount(0, $rows);
         $this->assertEquals(600, $totalRows);
+
+        $rows = $this->modelsManager->createBuilder()
+            ->addFrom(City::class)
+            ->limit(10, 10)
+            ->groupBy('country_id')
+            ->executeEx($totalRows);
+        $this->assertCount(10, $rows);
+        $this->assertEquals(109, $totalRows);
     }
 
     public function test_unionAll()

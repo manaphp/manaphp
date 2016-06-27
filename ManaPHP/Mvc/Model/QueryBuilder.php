@@ -950,12 +950,19 @@ namespace ManaPHP\Mvc\Model {
             $sql = $this->getSql();
 
             try {
-                $result = $this->modelsManager
-                    ->getReadConnection(end($this->_models))
-                    ->fetchOne($sql, $this->_bind);
+                if ($this->_group === null) {
+                    $result = $this->modelsManager
+                        ->getReadConnection(end($this->_models))
+                        ->fetchOne($sql, $this->_bind);
 
-                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-                $rowCount = $result['row_count'];
+                    /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+                    $rowCount = $result['row_count'];
+                } else {
+                    $result = $this->modelsManager
+                        ->getReadConnection(end($this->_models))
+                        ->fetchAll($sql, $this->_bind);
+                    $rowCount = count($result);
+                }
             } catch (\Exception $e) {
                 throw new Exception($e->getMessage() . ':' . $sql);
             }
@@ -965,7 +972,7 @@ namespace ManaPHP\Mvc\Model {
 
         /**build the query and execute it.
          *
-         * @param int   $totalRows
+         * @param int $totalRows
          * @param array $cacheOptions
          *
          * @return array
@@ -985,7 +992,7 @@ namespace ManaPHP\Mvc\Model {
                 }
 
                 if (!isset($cacheOptions['key'])) {
-                    $cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind);
+                    $cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind) . ':executeEx';
                 }
 
                 $result = $this->modelsCache->get($cacheOptions['key']);
@@ -993,7 +1000,7 @@ namespace ManaPHP\Mvc\Model {
                 if ($result !== false) {
                     /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                     $totalRows = $result['totalRows'];
-                    return $result['data'];
+                    return $result['rows'];
                 }
             }
 
@@ -1016,7 +1023,7 @@ namespace ManaPHP\Mvc\Model {
             }
 
             if ($cacheOptions !== null) {
-                $this->modelsCache->set($cacheOptions['key'], ['data' => $result, 'totalRows' => $totalRows], $cacheOptions['ttl']);
+                $this->modelsCache->set($cacheOptions['key'], ['rows' => $result, 'totalRows' => $totalRows], $cacheOptions['ttl']);
             }
 
             return $result;
