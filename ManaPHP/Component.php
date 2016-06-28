@@ -49,6 +49,7 @@ namespace ManaPHP {
      * @property \ManaPHP\Http\Client                     $httpClient
      * @property \ManaPHP\Security\AuthorizationInterface $authorization
      * @property \ManaPHP\Security\Captcha                $captcha
+     * @property \ManaPHP\Security\CsrfToken              $csrfToken
      */
     class Component implements ComponentInterface
     {

@@ -305,14 +305,6 @@ namespace ManaPHP\Mvc {
                     throw new NotFoundActionException('Action \'' . $this->_actionName . $this->_actionSuffix . '\' was not found on handler \'' . $controllerClassName . '\'');
                 }
 
-                if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
-                    return false;
-                }
-
-                if ($this->_finished === false) {
-                    continue;
-                }
-
                 // Calling beforeExecuteRoute as callback
                 if (method_exists($controllerInstance, 'beforeExecuteRoute')) {
                     if ($controllerInstance->beforeExecuteRoute($this) === false) {
@@ -322,6 +314,14 @@ namespace ManaPHP\Mvc {
                     if ($this->_finished === false) {
                         continue;
                     }
+                }
+
+                if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
+                    return false;
+                }
+
+                if ($this->_finished === false) {
+                    continue;
                 }
 
                 if (!in_array($controllerClassName, $this->_initializedControllers,

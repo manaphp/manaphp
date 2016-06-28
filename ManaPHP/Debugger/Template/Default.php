@@ -332,7 +332,7 @@ unset($data['server']['PATH']);
 ?>
 <!--suppress JSUnresolvedFunction -->
 <script>
-    data =<?=json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)?>;
+    data =<?=json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_HEX_TAG)?>;
     included_files_application = [];
 
     data['included_files_application'] = included_files_application;

@@ -14,6 +14,11 @@ class HttpFilterTest extends TestCase
         $this->filter = new ManaPHP\Http\Filter();
     }
 
+    public function test_default()
+    {
+        $this->assertEquals(1, $this->filter->sanitize('open', 'default:1|int', null));
+    }
+
     public function test_boolean()
     {
         $this->assertTrue($this->filter->sanitize('open', 'boolean', '1'));
@@ -73,47 +78,50 @@ class HttpFilterTest extends TestCase
         }
     }
 
-    public function test_range(){
-        $this->assertEquals(18,$this->filter->sanitize('age','range:0,100',18));
-        $this->assertEquals(18,$this->filter->sanitize('age','range:0,100','18'));
+    public function test_range()
+    {
+        $this->assertEquals(18, $this->filter->sanitize('age', 'range:0,100', 18));
+        $this->assertEquals(18, $this->filter->sanitize('age', 'range:0,100', '18'));
 
         try {
-            $this->filter->sanitize('age','range:0,100','A18');
+            $this->filter->sanitize('age', 'range:0,100', 'A18');
             $this->assertFalse('why not?');
         } catch (\Exception $e) {
 
         }
 
         try {
-            $this->filter->sanitize('age','range:0,100','-1');
-            $this->assertFalse('why not?');
-        } catch (\Exception $e) {
-
-        }
-    }
-
-    public function test_minValue(){
-        $this->assertEquals(18,$this->filter->sanitize('age','minValue:14',18));
-
-        try {
-            $this->filter->sanitize('age','minValue:14',13);
+            $this->filter->sanitize('age', 'range:0,100', '-1');
             $this->assertFalse('why not?');
         } catch (\Exception $e) {
 
         }
     }
 
-    public function test_maxValue(){
-        $this->assertEquals(18,$this->filter->sanitize('age','maxValue:24',18));
+    public function test_min()
+    {
+        $this->assertEquals(18, $this->filter->sanitize('age', 'min:14', 18));
 
         try {
-            $this->filter->sanitize('age','maxValue:24',18);
+            $this->filter->sanitize('age', 'min:14', 13);
             $this->assertFalse('why not?');
         } catch (\Exception $e) {
 
         }
     }
-    
+
+    public function test_max()
+    {
+        $this->assertEquals(18, $this->filter->sanitize('age', 'max:24', 18));
+
+        try {
+            $this->filter->sanitize('age', 'max:24', 18);
+            $this->assertFalse('why not?');
+        } catch (\Exception $e) {
+
+        }
+    }
+
     public function test_minLength()
     {
         $this->assertEquals('mana', $this->filter->sanitize('', 'minLength:4', 'mana'));
@@ -137,9 +145,10 @@ class HttpFilterTest extends TestCase
         }
     }
 
-    public function test_length(){
+    public function test_length()
+    {
         $this->assertEquals('mana', $this->filter->sanitize('', 'length:0,4', 'mana'));
-        
+
         try {
             $this->filter->sanitize('', 'length:0,2', 'mana');
             $this->assertFalse('why not?');
@@ -195,7 +204,8 @@ class HttpFilterTest extends TestCase
         }
     }
 
-    public function test_alnum(){
+    public function test_alnum()
+    {
         $this->assertEquals('mana', $this->filter->sanitize('nickname', 'alnum', 'mana'));
         $this->assertEquals('123', $this->filter->sanitize('id', 'alnum', '123'));
 
@@ -206,7 +216,7 @@ class HttpFilterTest extends TestCase
 
         }
     }
-    
+
     public function test_upper()
     {
         $this->assertEquals('MANA', $this->filter->sanitize('', 'upper', 'mana'));
@@ -262,7 +272,7 @@ class HttpFilterTest extends TestCase
 
         }
     }
-    
+
     public function test_json()
     {
         $this->assertEquals('1', $this->filter->sanitize('ids', 'json', '1'));
@@ -297,27 +307,6 @@ class HttpFilterTest extends TestCase
             $this->filter->sanitize('mobile', 'mobile', '1334567');
             $this->fail('why not?');
         } catch (ManaPHP\Http\Filter\Exception $e) {
-
-        }
-    }
-
-    public function test_accepted()
-    {
-        $this->assertTrue($this->filter->sanitize('licence', 'accepted', 'yes'));
-        $this->assertTrue($this->filter->sanitize('licence', 'accepted', 'on'));
-        $this->assertTrue($this->filter->sanitize('licence', 'accepted', '1'));
-        $this->assertTrue($this->filter->sanitize('licence', 'accepted', 'true'));
-
-        $this->assertFalse($this->filter->sanitize('licence', 'accepted', 'no'));
-        $this->assertFalse($this->filter->sanitize('licence', 'accepted', 'off'));
-        $this->assertFalse($this->filter->sanitize('licence', 'accepted', '0'));
-        $this->assertFalse($this->filter->sanitize('licence', 'accepted', 'false'));
-        $this->assertFalse($this->filter->sanitize('licence', 'accepted', 'false'));
-
-        try {
-            $this->filter->sanitize('licence', 'accepted', 'd');
-            $this->assertFalse('why not?');
-        } catch (\Exception $e) {
 
         }
     }

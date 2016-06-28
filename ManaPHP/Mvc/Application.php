@@ -83,12 +83,18 @@ namespace ManaPHP\Mvc {
                 $this->dispatcher->setRootNamespace(basename($this->alias->get('@app')));
             }
 
-            if ($this->_dependencyInjector->has('authorization')) {
-                $self = $this;
-                $this->dispatcher->attachEvent('dispatcher:beforeDispatch', function () use ($self) {
+            $self = $this;
+            $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', function () use ($self) {
+                if ($this->_dependencyInjector->has('authorization')) {
                     $self->authorization->authorize($self->dispatcher);
-                });
-            }
+                }
+
+                if ($this->_dependencyInjector->has('csrfToken')
+                    && !in_array($this->request->getMethod(), ['GET', 'HEAD', 'OPTIONS'], true)
+                ) {
+                    $this->csrfToken->verify();
+                }
+            });
 
             $controller = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
 
