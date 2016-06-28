@@ -93,7 +93,11 @@ namespace ManaPHP\Http {
             $value = isset($source[$name]) ? $source[$name] : $defaultValue;
 
             if ($rules === null) {
-                $rules = isset($this->_rules[$name]) ? $this->_rules[$name] : '';
+                if ($value === null) {
+                    return null;
+                } else {
+                    $rules = isset($this->_rules[$name]) ? $this->_rules[$name] : '';
+                }
             }
 
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -334,14 +338,16 @@ namespace ManaPHP\Http {
          */
         public function getScheme()
         {
-            if (!isset($_SERVER['HTTPS'])) {
-                throw new Exception('HTTPS field not exists in $_SERVER');
-            }
-
-            if ($_SERVER['HTTPS'] === 'on') {
-                return 'https';
+            if (isset($_SERVER['REQUEST_SCHEME'])) {
+                return $_SERVER['REQUEST_SCHEME'];
+            } elseif (isset($_SERVER['HTTPS'])) {
+                if ($_SERVER['HTTPS'] === 'on') {
+                    return 'https';
+                } else {
+                    return 'http';
+                }
             } else {
-                return 'http';
+                throw new Exception('HTTPS field not exists in $_SERVER');
             }
         }
 
