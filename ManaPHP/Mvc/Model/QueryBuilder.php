@@ -476,7 +476,7 @@ namespace ManaPHP\Mvc\Model {
                 $bindKeys = [];
 
                 foreach ($values as $k => $value) {
-                    $key = '_in_' . self::$_hiddenParamNumber.'_' . $k;
+                    $key = '_in_' . self::$_hiddenParamNumber . '_' . $k;
                     $bindKeys[] = ":$key";
                     $bind[$key] = $value;
                 }
@@ -516,7 +516,7 @@ namespace ManaPHP\Mvc\Model {
                 $bindKeys = [];
 
                 foreach ($values as $k => $value) {
-                    $key = '_not_in_' . self::$_hiddenParamNumber. '_' . $k;
+                    $key = '_not_in_' . self::$_hiddenParamNumber . '_' . $k;
                     $bindKeys[] = ':' . $key;
                     $bind[$key] = $value;
                 }
@@ -972,7 +972,7 @@ namespace ManaPHP\Mvc\Model {
 
         /**build the query and execute it.
          *
-         * @param int $totalRows
+         * @param int   $totalRows
          * @param array $cacheOptions
          *
          * @return array

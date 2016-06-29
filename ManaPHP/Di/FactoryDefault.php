@@ -52,7 +52,7 @@ namespace ManaPHP\Di {
                 'counter' => 'ManaPHP\Counter\Adapter\Db',
                 'httpClient' => 'ManaPHP\Http\Client\Adapter\Curl',
                 'captcha' => 'ManPHP\Security\Captcha',
-                'csrfToken'=>'ManaPHP\Security\CsrfToken'
+                'csrfToken' => 'ManaPHP\Security\CsrfToken'
             ];
 
             $this->_aliases = [

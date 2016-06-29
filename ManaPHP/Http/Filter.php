@@ -380,7 +380,13 @@ namespace ManaPHP\Http {
          */
         protected function _rule_minLength($value, $parameters)
         {
-            if (strlen($value) >= $parameters[0]) {
+            if (function_exists('mb_strlen')) {
+                $length = mb_strlen($value);
+            } else {
+                $length = strlen($value);
+            }
+
+            if ($length >= $parameters[0]) {
                 return $value;
             } else {
                 return null;
@@ -395,7 +401,13 @@ namespace ManaPHP\Http {
          */
         protected function _rule_maxLength($value, $parameters)
         {
-            if (strlen($value) <= $parameters[0]) {
+            if (function_exists('mb_strlen')) {
+                $length = mb_strlen($value);
+            } else {
+                $length = strlen($value);
+            }
+
+            if ($length <= $parameters[0]) {
                 return $value;
             } else {
                 return null;
@@ -410,8 +422,13 @@ namespace ManaPHP\Http {
          */
         protected function _rule_length($value, $parameters)
         {
-            $strLength = strlen($value);
-            if ($strLength >= $parameters[0] && $strLength <= $parameters[1]) {
+            if (function_exists('mb_strlen')) {
+                $length = mb_strlen($value);
+            } else {
+                $length = strlen($value);
+            }
+
+            if ($length >= $parameters[0] && $length <= $parameters[1]) {
                 return $value;
             } else {
                 return null;
