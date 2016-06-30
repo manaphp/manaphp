@@ -5,6 +5,7 @@ namespace ManaPHP\Http {
     use ManaPHP\Component;
     use ManaPHP\Di;
     use ManaPHP\Http\Response\Exception;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Http\Response
@@ -373,14 +374,87 @@ namespace ManaPHP\Http {
                 throw new Exception('Sent file is not exists: ' . $file);
             }
 
+            $this->_file = $file;
+
+            $this->setHeader('Content-Length', filesize($file));
+            $this->setAttachmentFileName($attachmentName);
+
+            return $this;
+        }
+
+        public function setAttachmentFileName($attachmentName)
+        {
+
+            if (isset($_SERVER['HTTP_USER_AGENT'])) {
+                $userAgent = $_SERVER['HTTP_USER_AGENT'];
+                if (Text::contains($userAgent, 'Trident') || Text::contains($userAgent, 'MSIE')) {
+                    $attachmentName = urlencode($attachmentName);
+                }
+            }
+
             $this->setHeader('Content-Description', 'File Transfer');
             $this->setHeader('Content-Type', 'application/octet-stream');
             $this->setHeader('Content-Disposition', 'attachment; filename=' . $attachmentName);
             $this->setHeader('Content-Transfer-Encoding', 'binary');
             $this->setHeader('Cache-Control', 'must-revalidate');
-            $this->setHeader('Content-Length', filesize($file));
 
-            $this->_file = $file;
+            return $this;
+        }
+
+        /**
+         * @param array        $rows
+         * @param string       $attachmentName
+         * @param array|string $header
+         *
+         * @return static
+         */
+        public function setCsvContent($rows, $attachmentName, $header = null)
+        {
+            if (is_string($header)) {
+                $header = explode(',', $header);
+            }
+
+            if (pathinfo($attachmentName, PATHINFO_EXTENSION) !== 'csv') {
+                $attachmentName .= '.csv';
+            }
+
+            $this->setAttachmentFileName($attachmentName);
+
+            $file = fopen('php://temp', 'r+');
+			
+            fprintf($file, "\xEF\xBB\xBF");
+			
+            if ($header !== null) {
+                if (Text::startsWith($header[0], 'ID')) {
+                    $header[0] = strtolower($header[0]);
+                }
+
+                fputcsv($file, $header);
+            }
+
+            foreach ($rows as $row) {
+                if (is_object($row)) {
+                    if (method_exists($row, 'toArray')) {
+                        $data = $row->toArray();
+                    } else {
+                        $data = (array)$row;
+                    }
+                } elseif (!is_array($row)) {
+                    $data = [$row];
+                } else {
+                    $data = $row;
+                }
+
+                fputcsv($file, $data);
+            }
+
+            rewind($file);
+            $content = stream_get_contents($file);
+            fclose($file);
+
+            $this->setContentType('text/csv');
+            $this->setHeader('Content-Length', strlen($content));
+            $this->setContent($content);
 
             return $this;
         }

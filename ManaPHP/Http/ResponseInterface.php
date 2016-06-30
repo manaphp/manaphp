@@ -135,5 +135,21 @@ namespace ManaPHP\Http {
          * @return static
          */
         public function setFileToSend($file, $attachmentName = null);
+
+        /**
+         * @param string $attachmentName
+         *
+         * @return static
+         */
+        public function setAttachmentFileName($attachmentName);
+
+        /**
+         * @param array        $rows
+         * @param string       $attachmentName
+         * @param array|string $header
+         *
+         * @return mixed
+         */
+        public function setCsvContent($rows, $attachmentName, $header = null);
     }
 }
