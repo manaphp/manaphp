@@ -23,3 +23,5 @@ dropdown
 strpos
 substr
 csrf
+revalidate
+MSIE
