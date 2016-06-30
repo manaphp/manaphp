@@ -377,12 +377,12 @@ namespace ManaPHP\Http {
             $this->_file = $file;
 
             $this->setHeader('Content-Length', filesize($file));
-            $this->setAttachmentFileName($attachmentName);
+            $this->setAttachment($attachmentName);
 
             return $this;
         }
 
-        public function setAttachmentFileName($attachmentName)
+        public function setAttachment($attachmentName)
         {
 
             if (isset($_SERVER['HTTP_USER_AGENT'])) {
@@ -418,7 +418,7 @@ namespace ManaPHP\Http {
                 $attachmentName .= '.csv';
             }
 
-            $this->setAttachmentFileName($attachmentName);
+            $this->setAttachment($attachmentName);
 
             $file = fopen('php://temp', 'r+');
 			

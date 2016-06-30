@@ -141,7 +141,7 @@ namespace ManaPHP\Http {
          *
          * @return static
          */
-        public function setAttachmentFileName($attachmentName);
+        public function setAttachment($attachmentName);
 
         /**
          * @param array        $rows
