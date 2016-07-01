@@ -5,6 +5,11 @@ namespace ManaPHP\Http\Client\Adapter {
 
     class Curl extends Client
     {
+        /**
+         * @var array
+         */
+        protected $_curlResponseHeader = [];
+
         public function __construct($options = [], $headers = [])
         {
             parent::__construct($options, $headers);
@@ -16,6 +21,8 @@ namespace ManaPHP\Http\Client\Adapter {
 
         public function _request($type, $url, $data, $headers, $options)
         {
+            $this->_curlResponseHeader = [];
+
             $curl = curl_init();
 
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -102,6 +109,9 @@ namespace ManaPHP\Http\Client\Adapter {
             }
 
             $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+            $this->_curlResponseHeader = curl_getinfo($curl);
+
             curl_close($curl);
 
             return $httpCode;
