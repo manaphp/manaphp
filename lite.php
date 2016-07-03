@@ -1,4 +1,6 @@
 <?php
+namespace ManaPHP\Utility\Text;
+
 date_default_timezone_set('PRC');
 
 if ($argc === 1) {
@@ -46,7 +48,7 @@ $loadedClasses = [];
 
 $class_parents = [];
 foreach ($classes as $class) {
-    if (strpos($class, 'Interface') !== false) {
+    if (Text::contains($class, 'Interface')) {
         $loadedClasses[] = $class;
     } else {
         $classReflection = new ReflectionClass($class);

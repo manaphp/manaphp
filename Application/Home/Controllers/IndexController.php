@@ -10,7 +10,13 @@ class IndexController extends ControllerBase
 {
     public function indexAction()
     {
-        //$city = City::findFirst(1);
+      //  $city = City::findFirst(1);
+
+//        $content=$this->view->cache(5);
+//        if($content !==false){
+//            return $this->response->setContent($content);
+//        }
+
         $this->dispatcher->forward('about');
     }
 
@@ -18,5 +24,7 @@ class IndexController extends ControllerBase
     {
         $this->view->setVar('version', Version::get());
         $this->view->setVar('current_time', date('Y-m-d H:i:s'));
+
+        $this->flash->error(date('Y-m-d H:i:s'));
     }
 }

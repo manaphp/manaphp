@@ -2,6 +2,8 @@
 
 namespace ManaPHP {
 
+    use ManaPHP\Image\Adapter\Gd;
+    use ManaPHP\Image\Adapter\Imagick;
     use ManaPHP\Image\Exception;
 
     class Image implements ImageInterface
@@ -15,23 +17,18 @@ namespace ManaPHP {
          * ImageInterface constructor.
          *
          * @param string $file
-         * @param string $adapter
          *
-         * @throws \ManaPHP\Image\Exception|\ManaPHP\Di\Exception
+         * @throws \ManaPHP\Image\Exception|\ManaPHP\Di\Exception|\ManaPHP\Image\Adapter\Exception
          */
-        public function __construct($file, $adapter = null)
+        public function __construct($file)
         {
-            if ($adapter === null) {
-                if (extension_loaded('imagick')) {
-                    $adapter = 'ManaPHP\Image\Adapter\Imagick';
-                } elseif (extension_loaded('gd')) {
-                    $adapter = 'ManaPHP\Image\Adapter\Gd';
-                } else {
-                    throw new Exception('No valid Image Adapter exists.');
-                }
+            if (extension_loaded('imagick')) {
+                $this->_adapter = new Imagick($file);
+            } elseif (extension_loaded('gd')) {
+                $this->_adapter = new Gd($file);
+            } else {
+                throw new Exception('No valid Image Adapter exists.');
             }
-
-            $this->_adapter = is_string($adapter) ? new $adapter($file) : $adapter;
         }
 
         /**

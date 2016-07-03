@@ -9,16 +9,6 @@ namespace ManaPHP {
 
     interface ComponentInterface
     {
-
-        /**
-         * Magic method __get
-         *
-         * @param string $propertyName
-         *
-         * @return object
-         */
-        public function __get($propertyName);
-
         /**
          * Sets the dependency injector
          *
@@ -55,5 +45,32 @@ namespace ManaPHP {
          * @return mixed
          */
         public function fireEvent($event, $data = null);
+
+        /**
+         * @param string $property
+         *
+         * @return bool
+         */
+        public function hasProperty($property);
+
+        /**
+         * @param string $property
+         * @param mixed  $value
+         *
+         * @return mixed
+         */
+        public function setProperty($property, $value);
+
+        /**
+         * @param string $property
+         *
+         * @return mixed
+         */
+        public function getProperty($property);
+
+        /**
+         * @return array
+         */
+        public function getProperties();
     }
 }

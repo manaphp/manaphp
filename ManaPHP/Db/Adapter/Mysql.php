@@ -14,24 +14,24 @@ namespace ManaPHP\Db\Adapter {
         /**
          * \ManaPHP\Db\Adapter constructor
          *
-         * @param array $descriptor
+         * @param array|\ConfManaPHP\Db\Adapter\Mysql $options
          */
-        public function __construct($descriptor)
+        public function __construct($options)
         {
             $this->_type = 'mysql';
 
-            if (is_object($descriptor)) {
-                $descriptor = (array)$descriptor;
+            if (is_object($options)) {
+                $options = (array)$options;
             }
 
             /** @noinspection AdditionOperationOnArraysInspection */
-            $descriptor += ['host' => 'localhost', 'port' => 3306, 'username' => 'root', 'password' => '', 'options' => []];
+            $options += ['host' => 'localhost', 'port' => 3306, 'username' => 'root', 'password' => '', 'options' => []];
 
-            if (!isset($descriptor['options'][\PDO::MYSQL_ATTR_INIT_COMMAND])) {
-                $descriptor['options'][\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES 'UTF8'";
+            if (!isset($options['options'][\PDO::MYSQL_ATTR_INIT_COMMAND])) {
+                $options['options'][\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES 'UTF8'";
             }
 
-            parent::__construct($descriptor);
+            parent::__construct($options);
         }
     }
 }

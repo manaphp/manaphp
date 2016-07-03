@@ -67,6 +67,13 @@ namespace ManaPHP\Mvc {
         public function render($module, $controller, $action);
 
         /**
+         * @param array $cacheOptions
+         *
+         * @return string|false
+         */
+        public function cache($cacheOptions);
+
+        /**
          * Choose a view different to render than last-controller/last-action
          *
          * @param string $view
@@ -78,18 +85,32 @@ namespace ManaPHP\Mvc {
         /**
          * Renders a partial view
          *
-         * @param string $path
-         * @param array  $vars
+         * <code>
+         *    //Show a partial inside another view
+         *    $this->partial('shared/footer');
+         * </code>
+         *
+         * <code>
+         *    //Show a partial inside another view with parameters
+         *    $this->partial('shared/footer', array('content' => $html));
+         * </code>
+         *
+         * @param string    $path
+         * @param array     $vars
+         * @param int|array $cacheOptions
+         *
+         * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
          */
-        public function partial($path, $vars = []);
+        public function partial($path, $vars = [], $cacheOptions = null);
 
         /**
          * Renders a widget
          *
-         * @param string $widget
-         * @param array  $vars
+         * @param string    $widget
+         * @param array     $vars
+         * @param int|array $cacheOptions
          */
-        public function widget($widget, $vars = []);
+        public function widget($widget, $vars = [], $cacheOptions = null);
 
         /**
          * Externally sets the view content

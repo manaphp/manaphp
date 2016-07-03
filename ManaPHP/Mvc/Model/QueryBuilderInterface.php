@@ -39,8 +39,8 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Add a model to take part of the query
          *
-         * @param string $model
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -49,10 +49,10 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Adds a INNER join to the query
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
-         * @param string $type
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
+         * @param string                                          $type
          *
          * @return static
          */
@@ -61,9 +61,9 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Adds a INNER join to the query
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -72,9 +72,9 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Adds a LEFT join to the query
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -83,9 +83,9 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Adds a RIGHT join to the query
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -140,8 +140,8 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Appends an IN condition to the current conditions
          *
-         * @param string $expr
-         * @param array  $values
+         * @param string                                         $expr
+         * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
          *
          * @return static
          */
@@ -150,8 +150,8 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Appends a NOT IN condition to the current conditions
          *
-         * @param string $expr
-         * @param array  $values
+         * @param string                                         $expr
+         * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
          *
          * @return static
          */
@@ -187,17 +187,12 @@ namespace ManaPHP\Mvc\Model {
         public function limit($limit, $offset = null);
 
         /**
-         * Sets an OFFSET clause
-         *
-         *<code>
-         *    $builder->offset(30);
-         *</code>
-         *
-         * @param int $offset
+         * @param int $size
+         * @param int $current
          *
          * @return static
          */
-        public function offset($offset);
+        public function page($size, $current = null);
 
         /**
          * Sets a LIMIT clause
@@ -216,6 +211,11 @@ namespace ManaPHP\Mvc\Model {
         public function getSql();
 
         /**
+         * @return array
+         */
+        public function getBind();
+
+        /**
          * Set default bind parameters
          *
          * @param array   $bind
@@ -225,28 +225,35 @@ namespace ManaPHP\Mvc\Model {
          */
         public function setBind($bind, $merge = true);
 
+        /**build the query and execute it.
+         *
+         * @param int|array $cacheOptions
+         *
+         * @return array
+         */
+        public function execute($cacheOptions = null);
+
+        /**build the query and execute it.
+         *
+         * @param int       $totalRows
+         * @param int|array $cacheOptions
+         *
+         * @return array
+         */
+        public function executeEx(&$totalRows, $cacheOptions = null);
+
         /**
-         * @param array $options
+         * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders
          *
          * @return static
          */
-        public function setCacheOptions($options);
+        public function unionAll($builders);
 
-        /**build the query and execute it.
+        /**
+         * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders
          *
-         * @param array $cache
-         *
-         * @return array
+         * @return static
          */
-        public function execute($cache = null);
-
-        /**build the query and execute it.
-         *
-         * @param int   $totalRows
-         * @param array $cache
-         *
-         * @return array
-         */
-        public function executeEx(&$totalRows, $cache = null);
+        public function unionDistinct($builders);
     }
 }

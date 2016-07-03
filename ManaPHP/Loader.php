@@ -2,6 +2,8 @@
 
 namespace ManaPHP {
 
+    use ManaPHP\Utility\Text;
+
     /**
      * ManaPHP\Loader
      *
@@ -206,7 +208,7 @@ namespace ManaPHP {
         protected function ___requireFile($file)
         {
             if (is_file($file)) {
-                if (DIRECTORY_SEPARATOR === '\\') {
+                if (PHP_EOL !== "\n") {
                     $realPath = str_replace('\\', '/', realpath($file));
                     if ($realPath !== $file) {
                         trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
@@ -235,7 +237,7 @@ namespace ManaPHP {
             if (is_array($this->_namespaces)) {
                 /** @noinspection LoopWhichDoesNotLoopInspection */
                 foreach ($this->_namespaces as $namespace => $directory) {
-                    if (strpos($className, $namespace) !== 0) {
+                    if (!Text::startsWith($className, $namespace)) {
                         continue;
                     }
                     $len = strlen($namespace);

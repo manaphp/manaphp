@@ -1,33 +1,32 @@
 <?php
 namespace Application {
 
+    use ManaPHP\Utility\Text;
+
     class Configure extends \ManaPHP\Configure\Configure
     {
-
         /**
-         * @var \ManaConfigure\Db\Adapter\Mysql $database
+         * @var \ConfManaPHP\Db\Adapter\Mysql $database
          */
         public $database;
 
         /**
-         * @var \ManaConfigure\Log\Adapter\File
+         * @var \ConfManaPHP\Log\Adapter\File
          */
         public $log;
 
         /**
-         * @var \ManaConfigure\Security\Crypt
+         * @var \ConfManaPHP\Security\Crypt
          */
         public $crypt;
 
         /**
-         * @var \ManaConfigure\Debugger
+         * @var \ConfManaPHP\Debugger
          */
         public $debugger;
 
-        public function __construct($dependencyInjector = null)
+        public function __construct()
         {
-            parent::__construct($dependencyInjector);
-
             $this->config();
         }
 
@@ -44,13 +43,13 @@ namespace Application {
             $this->database->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
             $this->log = new \stdClass();
-            $this->log->file = $this->resolvePath('@data/Logs/' . date('Ymd') . '.log');
+            $this->log->file = '@data/Logger/' . date('Ymd') . '.log';
 
             $this->crypt = new \stdClass();
             $this->crypt->key = 'test';
 
             $this->debugger = new \stdClass();
-            $this->debugger->disableAutoResponse = (strpos($_SERVER['REMOTE_ADDR'], '127.0.0.') !== 0 && strpos($_SERVER['REMOTE_ADDR'], '192.168.') !== 0);
+            $this->debugger->disableAutoResponse = (!Text::startsWith($_SERVER['REMOTE_ADDR'], '127.0.0.') && !Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.'));
         }
     }
 }

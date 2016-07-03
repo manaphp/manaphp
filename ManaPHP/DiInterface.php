@@ -14,28 +14,22 @@ namespace ManaPHP {
          * @param string  $name
          * @param mixed   $definition
          * @param boolean $shared
+         * @param array   $aliases
          *
-         * @return \ManaPHP\Di\ServiceInterface
+         * @return void
          */
-        public function set($name, $definition, $shared = false);
+        public function set($name, $definition, $shared = false, $aliases = []);
 
         /**
          * Registers an "always shared" service in the services container
          *
          * @param string $name
          * @param mixed  $definition
+         * @param array  $aliases
          *
-         * @return \ManaPHP\Di\ServiceInterface
+         * @return void
          */
-        public function setShared($name, $definition);
-
-        /**
-         * @param string $name
-         *
-         * @return \ManaPHP\Di\ServiceInterface
-         * @throws \ManaPHP\Exception
-         */
-        public function getService($name);
+        public function setShared($name, $definition, $aliases = []);
 
         /**
          * Removes a service from the service container

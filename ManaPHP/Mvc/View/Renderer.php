@@ -15,14 +15,12 @@ namespace ManaPHP\Mvc\View {
         /**
          * @var array
          */
-        protected $_registeredEngines = [];
-
-        public function __construct()
-        {
-            $this->_registeredEngines['.phtml'] = 'ManaPHP\Mvc\View\Renderer\Engine\Php';
-            $this->_registeredEngines['.tpl'] = 'ManaPHP\Mvc\View\Renderer\Engine\Smarty';
-            $this->_registeredEngines['.html'] = 'ManaPHP\Mvc\View\Renderer\Engine\Html';
-        }
+        protected /** @noinspection PropertyCanBeStaticInspection */
+            $_registeredEngines = [
+            '.phtml' => 'ManaPHP\Mvc\View\Renderer\Engine\Php',
+            '.tpl' => 'ManaPHP\Mvc\View\Renderer\Engine\Smarty',
+            '.html' => 'ManaPHP\Mvc\View\Renderer\Engine\Html'
+        ];
 
         /**
          * @param string $extension
@@ -57,7 +55,7 @@ namespace ManaPHP\Mvc\View {
          * @param boolean $directOutput
          * @param array   $vars
          *
-         * @return static
+         * @return string
          * @throws \ManaPHP\Mvc\View\Renderer\Exception
          */
         public function render($template, $vars, $directOutput = true)
@@ -66,9 +64,9 @@ namespace ManaPHP\Mvc\View {
             $content = null;
 
             foreach ($this->_registeredEngines as $extension => $engine) {
-                $file = $template . $extension;
+                $file = @$this->alias->resolve($template . $extension);
                 if (file_exists($file)) {
-                    if (DIRECTORY_SEPARATOR === '\\') {
+                    if (PHP_EOL !== "\n") {
                         $realPath = str_replace('\\', '/', realpath($file));
                         if ($file !== $realPath) {
                             trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
@@ -132,7 +130,14 @@ namespace ManaPHP\Mvc\View {
         public function exists($template)
         {
             foreach ($this->_registeredEngines as $extension => $engine) {
-                if (is_file($template . $extension)) {
+                $file = $template . $extension;
+                if (is_file($file)) {
+                    if (PHP_EOL !== "\n") {
+                        $realPath = str_replace('\\', '/', realpath($file));
+                        if ($file !== $realPath) {
+                            trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
+                        }
+                    }
                     return true;
                 }
             }

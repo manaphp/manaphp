@@ -7,6 +7,7 @@
 namespace ManaPHP\Log {
 
     use ManaPHP\Component;
+    use ManaPHP\Utility\Text;
 
     class Logger extends Component
     {
@@ -28,25 +29,20 @@ namespace ManaPHP\Log {
         /**
          * @var array
          */
-        protected $_level_i2s;
+        protected static $_level_i2s = [
+            self::LEVEL_OFF => 'OFF',
+            self::LEVEL_FATAL => 'FATAL',
+            self::LEVEL_ERROR => 'ERROR',
+            self::LEVEL_WARNING => 'WARNING',
+            self::LEVEL_INFO => 'INFO',
+            self::LEVEL_DEBUG => 'DEBUG',
+            self::LEVEL_ALL => 'ALL',
+        ];
 
         /**
          * @var \ManaPHP\Log\AdapterInterface[]
          */
         protected $_adapters = [];
-
-        public function __construct()
-        {
-            $this->_level_i2s = [
-                self::LEVEL_OFF => 'OFF',
-                self::LEVEL_FATAL => 'FATAL',
-                self::LEVEL_ERROR => 'ERROR',
-                self::LEVEL_WARNING => 'WARNING',
-                self::LEVEL_INFO => 'INFO',
-                self::LEVEL_DEBUG => 'DEBUG',
-                self::LEVEL_ALL => 'ALL',
-            ];
-        }
 
         /**
          * Filters the logs sent to the handlers to be greater or equals than a specific level
@@ -61,7 +57,7 @@ namespace ManaPHP\Log {
             if (is_int($level)) {
                 $this->_level = $level;
             } else {
-                $s2i = array_flip($this->_level_i2s);
+                $s2i = array_flip(self::$_level_i2s);
                 if (isset($s2i[$level])) {
                     $this->_level = $s2i[$level];
                 } else {
@@ -87,7 +83,7 @@ namespace ManaPHP\Log {
          */
         public function getLevels()
         {
-            return array_flip($this->_level_i2s);
+            return array_flip(self::$_level_i2s);
         }
 
         /**
@@ -97,8 +93,8 @@ namespace ManaPHP\Log {
          */
         public function mapLevelToString($level)
         {
-            if (isset($this->_level_i2s[$level])) {
-                return $this->_level_i2s[$level];
+            if (isset(self::$_level_i2s[$level])) {
+                return self::$_level_i2s[$level];
             } else {
                 return 'UNKNOWN';
             }
@@ -125,10 +121,10 @@ namespace ManaPHP\Log {
          */
         protected function _log($level, $message, $context)
         {
-            $context['level'] = $this->_level_i2s[$level];
+            $context['level'] = self::$_level_i2s[$level];
             $context['date'] = time();
 
-            if (strpos($message, '{') !== false) {
+            if (Text::contains($message, '{')) {
                 $replaces = [];
                 foreach ($context as $k => $v) {
                     $replaces['{' . $k . '}'] = $v;

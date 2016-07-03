@@ -4,18 +4,18 @@ namespace ManaPHP\Mvc {
     interface UrlInterface
     {
         /**
-         * Sets a prefix to all the urls generated
+         * Sets a base uri to all the urls generated
          *
-         * @param string $prefix
+         * @param string $baseUri
          *
          * @return static
          */
-        public function setPrefix($prefix);
+        public function setBaseUri($baseUri);
 
         /**
-         * Returns the prefix for all the generated urls.
+         * Returns the base uri for all the generated urls.
          */
-        public function getPrefix();
+        public function getBaseUri();
 
         /**
          * @param string $uri

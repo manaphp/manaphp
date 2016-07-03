@@ -33,6 +33,7 @@ namespace ManaPHP\Http {
          * @param boolean $httpOnly
          *
          * @return static
+         * @throws \ManaPHP\Security\Crypt\Exception
          */
         public function set(
             $name,
@@ -70,6 +71,7 @@ namespace ManaPHP\Http {
          * @param $value
          *
          * @return mixed
+         * @throws \ManaPHP\Security\Crypt\Exception
          */
         protected function _decrypt($value)
         {
@@ -80,6 +82,7 @@ namespace ManaPHP\Http {
          * @param $value
          *
          * @return mixed
+         * @throws \ManaPHP\Security\Crypt\Exception
          */
         protected function _encrypt($value)
         {
@@ -92,6 +95,7 @@ namespace ManaPHP\Http {
          * @param string $name
          *
          * @return mixed|null
+         * @throws \ManaPHP\Security\Crypt\Exception
          */
         public function get($name)
         {

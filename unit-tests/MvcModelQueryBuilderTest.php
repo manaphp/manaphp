@@ -29,7 +29,7 @@ class MvcModelQueryBuilderTest extends TestCase
         });
 
         $this->di->set('modelsMetadata', function () {
-            return new ManaPHP\Mvc\Model\MetaData\Memory();
+            return new ManaPHP\Mvc\Model\MetaData\Adapter\Memory();
         });
 
         $this->di->setShared('db', function () {
@@ -172,6 +172,15 @@ class MvcModelQueryBuilderTest extends TestCase
         $rows = $builder->execute();
         $this->assertCount(2, $rows);
         $this->assertCount(10, $rows[0]);
+
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('*')
+            ->addFrom($this->modelsManager->createBuilder()
+                ->columns('*')
+                ->addFrom(get_class(new City()))
+                ->where('city_id<=5'), 'cc');
+        $rows = $builder->execute();
+        $this->assertCount(5, $rows);
     }
 
     public function test_join()
@@ -210,6 +219,16 @@ class MvcModelQueryBuilderTest extends TestCase
             ->join(get_class(new City()), 'c.city_id =a.city_id', 'c', 'LEFT');
         $rows = $builder->execute();
         $this->assertCount(603, $rows);
+
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('a.address_id, a.address, a.city_id, c.city')
+            ->addFrom(get_class(new Address()), 'a')
+            ->join($this->modelsManager->createBuilder()
+                ->columns('*')
+                ->addFrom(get_class(new City()))
+                ->where('city_id <:city_id', ['city_id' => 50]), 'c.city_id =a.city_id', 'c', 'RIGHT');
+        $rows = $builder->execute();
+        $this->assertCount(50, $rows);
     }
 
     public function test_innerJoin()
@@ -378,6 +397,15 @@ class MvcModelQueryBuilderTest extends TestCase
             ->inWhere('address_id', [-3, -2, -1, 0, 1, 2])
             ->addFrom(get_class(new Address()));
         $this->assertCount(2, $builder->execute());
+
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('*')
+            ->addFrom(get_class(new Address()))
+            ->inWhere('city_id', $this->modelsManager->createBuilder()
+                ->columns('city_id')
+                ->addFrom(get_class(new Address()))
+                ->inWhere('city_id', [1, 2, 3, 4]));
+        $this->assertCount(4, $builder->execute());
     }
 
     public function test_orderBy()
@@ -481,18 +509,23 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(0, $builder->execute());
     }
 
-    public function test_offset()
+    public function test_page()
     {
+        //limit without offset
+        $builder = $this->modelsManager->createBuilder()->columns('city_id')->addFrom(get_class(new City()))->limit(1);
+        $this->assertCount(1, $builder->execute());
+
+        //limit with offset
         $builder = $this->modelsManager->createBuilder()
             ->columns('city_id')
             ->addFrom(get_class(new City()))
-            ->andWhere('city_id <:city_id', ['city_id' => 10])
-            ->limit(2)
-            ->offset(5);
+            ->orderBy('city_id')
+            ->page(10, 3);
 
         $rows = $builder->execute();
-        $this->assertCount(2, $rows);
-        $this->assertEquals(6, $rows[0]['city_id']);
+        $this->assertCount(10, $rows);
+        $this->assertEquals(21, $rows[0]['city_id']);
+        $this->assertEquals(30, $rows[9]['city_id']);
     }
 
     public function test_groupBy()
@@ -536,6 +569,15 @@ class MvcModelQueryBuilderTest extends TestCase
             ->notInWhere('address_id', [-3, -2, -1, 0, 1, 2])
             ->addFrom(get_class(new Address()));
         $this->assertCount(601, $builder->execute());
+
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('*')
+            ->addFrom(get_class(new Address()))
+            ->notInWhere('city_id', $this->modelsManager->createBuilder()
+                ->columns('city_id')
+                ->addFrom(get_class(new Address()))
+                ->inWhere('city_id', [1, 2, 3, 4]));
+        $this->assertCount(599, $builder->execute());
     }
 
     public function test_executeEx()
@@ -574,5 +616,92 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(0, $rows);
         $this->assertEquals(600, $totalRows);
 
+        $rows = $this->modelsManager->createBuilder()
+            ->addFrom(City::class)
+            ->limit(10, 10)
+            ->groupBy('country_id')
+            ->executeEx($totalRows);
+        $this->assertCount(10, $rows);
+        $this->assertEquals(109, $totalRows);
+    }
+
+    public function test_unionAll()
+    {
+        $builder = $this->modelsManager->createBuilder()
+            ->unionAll([
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+            ]);
+        $this->assertCount(5, $builder->execute());
+
+        $builder = $this->modelsManager->createBuilder()
+            ->unionAll([
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+            ])
+            ->orderBy('city_id DESC');
+
+        $rows = $builder->execute();
+        $this->assertCount(10, $rows);
+        $this->assertEquals('5', $rows[0]['city_id']);
+        $this->assertEquals('5', $rows[1]['city_id']);
+
+        $builder = $this->modelsManager->createBuilder()
+            ->unionAll([
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+            ])
+            ->orderBy('city_id ASC');
+
+        $rows = $builder->execute();
+        $this->assertCount(10, $rows);
+        $this->assertEquals('1', $rows[0]['city_id']);
+        $this->assertEquals('1', $rows[1]['city_id']);
+
+        $builder = $this->modelsManager->createBuilder()
+            ->unionAll([
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+            ])
+            ->orderBy('city_id ASC')
+            ->limit(5);
+
+        $rows = $builder->execute();
+        $this->assertCount(5, $rows);
+
+        $builder = $this->modelsManager->createBuilder()
+            ->unionDistinct([
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
+                $this->modelsManager->createBuilder()
+                    ->columns('*')
+                    ->from(City::class)
+                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+            ]);
+
+        $rows = $builder->execute();
+        $this->assertCount(5, $rows);
     }
 }

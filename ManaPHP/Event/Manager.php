@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Event {
 
+    use ManaPHP\Utility\Text;
+
     /**
      * ManaPHP\Event\Manager
      *
@@ -33,7 +35,7 @@ namespace ManaPHP\Event {
                 throw new Exception('Event handler must be an Object');
             }
 
-            if (strpos($event, ':') !== false) {
+            if (Text::contains($event, ':')) {
                 list($type, $name) = explode(':', $event);
             } else {
                 $type = $event;
@@ -69,7 +71,7 @@ namespace ManaPHP\Event {
          */
         public function fireEvent($event, $source, $data = null)
         {
-            if (strpos($event, ':') === false) {
+            if (!Text::contains($event, ':')) {
                 throw new Exception('Invalid event type ' . $event);
             }
 

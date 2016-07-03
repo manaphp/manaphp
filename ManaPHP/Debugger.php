@@ -3,6 +3,7 @@ namespace ManaPHP {
 
     use ManaPHP\Debugger\Exception;
     use ManaPHP\Log\Logger;
+    use ManaPHP\Utility\Text;
 
     class Debugger extends Component implements DebuggerInterface
     {
@@ -31,7 +32,7 @@ namespace ManaPHP {
         public function start($listenException = false)
         {
             if (isset($_GET['_debugger'])) {
-                $file = $this->application->getDataDir() . '/Debugger/' . substr($_GET['_debugger'], 0, 6) . '/' . $_GET['_debugger'] . '.html';
+                $file = $this->alias->resolve('@data/Debugger/' . substr($_GET['_debugger'], 0, 6) . '/' . $_GET['_debugger'] . '.html');
                 if (is_file($file)) {
                     exit(file_get_contents($file));
                 }
@@ -63,7 +64,7 @@ namespace ManaPHP {
                         if (!isset($this->_sql_prepared[$preparedSQL])) {
                             $this->_sql_prepared[$preparedSQL] = 1;
                         } else {
-                            $this->_sql_prepared[$preparedSQL] += 1;
+                            $this->_sql_prepared[$preparedSQL]++;
                         }
                     }
 
@@ -95,29 +96,6 @@ namespace ManaPHP {
             return $this;
         }
 
-        protected function _getExceptionTraceArgs($args)
-        {
-            $data = [];
-
-            foreach ($args as $arg) {
-                if (is_scalar($arg)) {
-                    return json_encode($arg);
-                } else {
-                    if (null) {
-                        return 'null';
-                    } else {
-                        if (is_array($arg)) {
-                            return 'arrays';
-                        } else {
-                            return '?';
-                        }
-                    }
-                }
-            }
-
-            return $data;
-        }
-
         /**
          * @param \Exception $exception
          *
@@ -130,25 +108,20 @@ namespace ManaPHP {
             }
 
             $callers = [];
-            foreach ($exception->getTrace() as $trace) {
-                $caller = [];
-
-                if (isset($trace['class'])) {
-                    $revoke = $trace['class'] . '->' . $trace['function'] . '(' . json_encode($this->_getExceptionTraceArgs($trace['args'])) . ')';
-                } else {
-                    $revoke = $trace['function'] . '(' . json_encode($this->_getExceptionTraceArgs($trace['args'])) . ')';
+            foreach (explode("\n", $exception->getTraceAsString()) as $v) {
+                list(, $call) = explode(' ', $v, 2);
+                if (!Text::contains($call, ':')) {
+                    $call .= ': ';
                 }
-                $caller['file'] = isset($trace['file']) ? $trace['file'] : $exception->getFile();
-                $caller['line'] = isset($trace['line']) ? $trace['line'] : $exception->getLine();
-                $caller['revoke'] = $revoke;
-                $callers[] = $caller;
+                list($location, $revoke) = explode(': ', $call, 2);
+                $callers[] = ['location' => $location, 'revoke' => $revoke];
             }
             $this->_exception = [
                 'message' => $exception->getMessage(),
                 'code' => $exception->getCode(),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
-                'callers' => $callers
+                'callers' => $callers,
             ];
 
             echo $this->output();
@@ -156,7 +129,7 @@ namespace ManaPHP {
             return true;
         }
 
-        public function dump($value, $name = null)
+        public function var_dump($value, $name = null)
         {
             $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
             $caller = isset($traces[1]) && $traces[1]['object'] instanceof $this ? $traces[1] : $traces[0];
@@ -187,7 +160,7 @@ namespace ManaPHP {
             return [
                 'mvc' => $this->router->getModuleName() . '::' . $this->router->getControllerName() . '::' . $this->router->getActionName(),
                 'request_method' => $_SERVER['REQUEST_METHOD'],
-                'request_uri' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],
+                'request_url' => $this->request->getUrl(),
                 'query_count' => $this->_sql_count,
                 'execute_time' => round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 4),
                 'memory_usage' => (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k',
@@ -221,13 +194,23 @@ namespace ManaPHP {
             $data['view'] = $this->_view;
             $data['exception'] = $this->_exception;
 
+            $data['components'] = [];
+            /** @noinspection ImplicitMagicMethodCallInspection */
+            foreach ($this->_dependencyInjector->__debugInfo()['_sharedInstances'] as $k => $v) {
+                if (method_exists($v, 'dump')) {
+                    $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $v->dump()];
+                } else {
+                    $data['components'][] = ['name' => '', 'class' => get_class($v)];
+                }
+            }
+
             if (!$template) {
                 return $data;
             }
 
             $template = str_replace('\\', '/', $template);
 
-            if (strpos($template, '/') === false) {
+            if (!Text::contains($template, '/')) {
                 $template = __DIR__ . '/Debugger/Template/' . $template . '.php';
             }
 
@@ -250,13 +233,13 @@ namespace ManaPHP {
          */
         public function save($template = 'Default')
         {
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'ApacheBench') !== false) {
+            if (Text::contains($_SERVER['HTTP_USER_AGENT'], 'ApacheBench')) {
                 return '';
             }
 
             list($micro_seconds, $seconds) = explode(' ', microtime());
             $id = date('ymd_His', $seconds) . '_' . substr($micro_seconds, 2, 6);
-            $file = $this->application->getDataDir() . '/Debugger/' . substr($id, 0, 6) . '/' . $id . '.html';
+            $file = $this->alias->resolve('@data/Debugger/' . substr($id, 0, 6) . '/' . $id . '.html');
 
             $dir = dirname($file);
             if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {

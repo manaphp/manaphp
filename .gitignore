@@ -7,3 +7,5 @@
 
 /vendor/
 /Data/Debugger
+*.cache
+*.store

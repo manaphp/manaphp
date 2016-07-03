@@ -36,6 +36,21 @@ namespace ManaPHP\Mvc {
         public function getActionName();
 
         /**
+         * @param string $actionName
+         *
+         * @return static
+         */
+        public function setActionName($actionName);
+
+        /**
+         * @param array $params
+         * @param bool  $merge
+         *
+         * @return static
+         */
+        public function setParams($params, $merge = true);
+
+        /**
          * Gets action params
          *
          * @return array
@@ -92,6 +107,13 @@ namespace ManaPHP\Mvc {
          * @return string
          */
         public function getControllerName();
+
+        /**
+         * @param string $controllerName
+         *
+         * @return static
+         */
+        public function setControllerName($controllerName);
 
         /**
          * Returns the previous controller in the dispatcher

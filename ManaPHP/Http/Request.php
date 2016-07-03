@@ -5,6 +5,7 @@ namespace ManaPHP\Http {
     use ManaPHP\Component;
     use ManaPHP\Http\Request\Exception;
     use ManaPHP\Http\Request\File;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Http\Request
@@ -38,35 +39,69 @@ namespace ManaPHP\Http {
          */
         protected $_client_address;
 
-        public function __construct()
+        /**
+         * @var array
+         */
+        protected $_rules = [];
+
+        /**
+         * @param array $rules
+         *
+         * @return static
+         */
+        public function setRules($rules)
         {
+            $this->_rules = array_merge($this->_rules, $rules);
+            return $this;
         }
 
         /**
          *
-         * @param array  $source
-         * @param string $name
-         * @param mixed  $filters
-         * @param mixed  $defaultValue
+         * @param array        $source
+         * @param string       $name
+         * @param string|array $rules
+         * @param mixed        $defaultValue
          *
          * @return string
          * @throws \ManaPHP\Http\Request\Exception
          */
-        protected function _getHelper($source, $name = null, $filters = null, $defaultValue = null)
+        protected function _getHelper($source, $name = null, $rules = null, $defaultValue = null)
         {
-            if ($filters !== null) {
-                throw new Exception('filter not supported');
-            }
-
             if ($name === null) {
-                return $source;
+
+                $data = [];
+
+                if ($rules === null) {
+                    $rules = [];
+                }
+
+                if (is_string($rules)) {
+                    /** @noinspection SuspiciousLoopInspection */
+                    foreach ($source as $name => $_) {
+                        $data[$name] = $this->_getHelper($source, $name, $rules);
+                    }
+                } else {
+                    /** @noinspection SuspiciousLoopInspection */
+                    foreach ($source as $name => $_) {
+                        $data[$name] = $this->_getHelper($source, $name, isset($rules[$name]) ? $rules[$name] : null);
+                    }
+                }
+
+                return $data;
             }
 
-            if (!isset($source[$name])) {
-                return $defaultValue;
+            $value = isset($source[$name]) ? $source[$name] : $defaultValue;
+
+            if ($rules === null) {
+                if ($value === null) {
+                    return null;
+                } else {
+                    $rules = isset($this->_rules[$name]) ? $this->_rules[$name] : '';
+                }
             }
 
-            return $source[$name];
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            return $this->filter->sanitize($name, $rules, $value);
         }
 
         /**
@@ -81,16 +116,16 @@ namespace ManaPHP\Http {
          *    $userEmail = $request->get("user_email", "email");
          *</code>
          *
-         * @param string       $name
-         * @param string|array $filters
-         * @param mixed        $defaultValue
+         * @param string $name
+         * @param string $rules
+         * @param mixed  $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function get($name = null, $filters = null, $defaultValue = null)
+        public function get($name = null, $rules = null, $defaultValue = null)
         {
-            return $this->_getHelper($_REQUEST, $name, $filters, $defaultValue);
+            return $this->_getHelper($_REQUEST, $name, $rules, $defaultValue);
         }
 
         /**
@@ -108,16 +143,16 @@ namespace ManaPHP\Http {
          *    $id = $request->getGet("id", null, 150);
          *</code>
          *
-         * @param string       $name
-         * @param string|array $filters
-         * @param mixed        $defaultValue
+         * @param string $name
+         * @param string $rules
+         * @param mixed  $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getGet($name = null, $filters = null, $defaultValue = null)
+        public function getGet($name = null, $rules = null, $defaultValue = null)
         {
-            return $this->_getHelper($_GET, $name, $filters, $defaultValue);
+            return $this->_getHelper($_GET, $name, $rules, $defaultValue);
         }
 
         /**
@@ -132,16 +167,31 @@ namespace ManaPHP\Http {
          *    $userEmail = $request->getPost("user_email", "email");
          *</code>
          *
+         * @param string $name
+         * @param string $rules
+         * @param mixed  $defaultValue
+         *
+         * @return mixed
+         * @throws \ManaPHP\Http\Request\Exception
+         */
+        public function getPost($name = null, $rules = null, $defaultValue = null)
+        {
+            return $this->_getHelper($_POST, $name, $rules, $defaultValue);
+        }
+
+        /**
+         * Gets variable from $_SERVER applying filters if needed
+         *
          * @param string       $name
-         * @param string|array $filters
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getPost($name = null, $filters = null, $defaultValue = null)
+        public function getServer($name = null, $rules = null, $defaultValue = null)
         {
-            return $this->_getHelper($_POST, $name, $filters, $defaultValue);
+            return $this->_getHelper($_SERVER, $name, $rules, $defaultValue);
         }
 
         /**
@@ -154,19 +204,19 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string       $name
-         * @param string|array $filters
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getPut($name = null, $filters = null, $defaultValue = null)
+        public function getPut($name = null, $rules = null, $defaultValue = null)
         {
             if ($this->_putCache === null && $this->isPut()) {
                 parse_str($this->getRawBody(), $this->_putCache);
             }
 
-            return $this->_getHelper($this->_putCache, $name, $filters, $defaultValue);
+            return $this->_getHelper($this->_putCache, $name, $rules, $defaultValue);
         }
 
         /**
@@ -185,15 +235,15 @@ namespace ManaPHP\Http {
          *</code>
          *
          * @param string       $name
-         * @param string|array $filters
+         * @param string|array $rules
          * @param mixed        $defaultValue
          *
          * @return mixed
          * @throws \ManaPHP\Http\Request\Exception
          */
-        public function getQuery($name = null, $filters = null, $defaultValue = null)
+        public function getQuery($name = null, $rules = null, $defaultValue = null)
         {
-            return $this->_getHelper($_GET, $name, $filters, $defaultValue);
+            return $this->_getHelper($_GET, $name, $rules, $defaultValue);
         }
 
         /**
@@ -261,6 +311,26 @@ namespace ManaPHP\Http {
         }
 
         /**
+         * Checks whether $_GET has certain index
+         *
+         * @param string $name
+         *
+         * @return boolean
+         */
+        public function hasServer($name)
+        {
+            return isset($_SERVER[$name]);
+        }
+
+        /**
+         * @return string
+         */
+        public function getMethod()
+        {
+            return $_SERVER['REQUEST_METHOD'];
+        }
+
+        /**
          * Gets HTTP schema (http/https)
          *
          * @return string
@@ -268,14 +338,16 @@ namespace ManaPHP\Http {
          */
         public function getScheme()
         {
-            if (!isset($_SERVER['HTTPS'])) {
-                throw new Exception('HTTPS field not exists in $_SERVER');
-            }
-
-            if ($_SERVER['HTTPS'] === 'on') {
-                return 'https';
+            if (isset($_SERVER['REQUEST_SCHEME'])) {
+                return $_SERVER['REQUEST_SCHEME'];
+            } elseif (isset($_SERVER['HTTPS'])) {
+                if ($_SERVER['HTTPS'] === 'on') {
+                    return 'https';
+                } else {
+                    return 'http';
+                }
             } else {
-                return 'http';
+                throw new Exception('HTTPS field not exists in $_SERVER');
             }
         }
 
@@ -315,8 +387,8 @@ namespace ManaPHP\Http {
                     $this->_client_address = $_SERVER['REMOTE_ADDR'];
                 } else {
                     $client_address = $_SERVER['REMOTE_ADDR'];
-                    if (strpos($client_address, '127.0.') === 0 || strpos($client_address,
-                            '192.168.') === 0 || strpos($client_address, '10.') === 0
+                    if (Text::startsWith($client_address, '127.0.') || Text::startsWith($client_address,
+                            '192.168.') || Text::startsWith($client_address, '10.')
                     ) {
                         $this->_client_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
                     } else {
@@ -348,7 +420,7 @@ namespace ManaPHP\Http {
          */
         public function getUserAgent()
         {
-            return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+            return strip_tags(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
         }
 
         /**
@@ -431,7 +503,6 @@ namespace ManaPHP\Http {
          */
         public function hasFiles($onlySuccessful = false)
         {
-
             foreach ($_FILES as $file) {
                 if (is_int($file['error'])) {
                     $error = $file['error'];
@@ -495,37 +566,43 @@ namespace ManaPHP\Http {
         }
 
         /**
-         * Gets attached files as \ManaPHP\Http\Request\File instances
-         *
-         * @param boolean $onlySuccessful
-         *
-         * @return \ManaPHP\Http\Request\File[]
-         * @deprecated
-         */
-        public function getUploadedFiles($onlySuccessful = false)
-        {
-            return $this->getFiles($onlySuccessful);
-        }
-
-        /**
          * Gets web page that refers active request. ie: http://www.google.com
          *
          * @return string
          */
         public function getReferer()
         {
-            return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+            return strip_tags(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
         }
 
         /**
-         * Gets web page that refers active request. ie: http://www.google.com
+         * @param bool $withQuery
          *
          * @return string
-         * @deprecated
          */
-        public function getHTTPReferer()
+        public function getUrl($withQuery = false)
         {
-            return $this->getReferer();
+            $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+            if ($withQuery) {
+                $get = $_GET;
+                unset($get['_url']);
+
+                $query = http_build_query($get);
+                if ($query) {
+                    $url .= '?' . $query;
+                }
+            }
+
+            return strip_tags($url);
+        }
+
+        /**
+         * @return string
+         */
+        public function getUri()
+        {
+            return strip_tags($_SERVER['REQUEST_URI']);
         }
     }
 }

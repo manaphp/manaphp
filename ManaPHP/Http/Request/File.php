@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Http\Request {
 
+    use ManaPHP\Utility\Text;
+
     /**
      * ManaPHP\Http\Request\File
      *
@@ -143,7 +145,7 @@ namespace ManaPHP\Http\Request {
                     $allowedExtensions = ',' . str_replace(' ', '', $allowedExtensions) . ',';
                     $allowedExtensions = str_replace(',.', ',', $allowedExtensions);
 
-                    if (stripos($allowedExtensions, $extension) === false) {
+                    if (!Text::contains($allowedExtensions, $extension, true)) {
                         throw new Exception('This file type is not allowed upload: ' . $extension);
                     }
                 }
@@ -151,7 +153,7 @@ namespace ManaPHP\Http\Request {
                 if (is_string(self::$_alwaysRejectedExtensions)) {
                     $alwaysRejectedExtensions = ',' . str_replace(' ', '', self::$_alwaysRejectedExtensions) . ',';
                     $alwaysRejectedExtensions = str_replace(',.', ',', $alwaysRejectedExtensions);
-                    if (stripos($alwaysRejectedExtensions, $extension) !== false) {
+                    if (Text::contains($alwaysRejectedExtensions, $extension, true)) {
                         throw new Exception('These file types is not allowed upload always: ' . self::$_alwaysRejectedExtensions);
                     }
                 }

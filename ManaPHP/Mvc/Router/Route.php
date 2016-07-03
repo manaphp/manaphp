@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Mvc\Router {
 
+    use ManaPHP\Utility\Text;
+
     /**
      * ManaPHP\Mvc\Router\Route
      *
@@ -60,7 +62,7 @@ namespace ManaPHP\Mvc\Router {
         protected function _compilePattern($pattern)
         {
             // If a pattern contains ':', maybe there are placeholders to replace
-            if (strpos($pattern, ':') !== false) {
+            if (Text::contains($pattern, ':')) {
                 $pattern = strtr($pattern, [
                     '/:module' => '/{module:[a-z\d_-]+}',
                     '/:controller' => '/{controller:[a-z\d_-]+}',
@@ -70,11 +72,11 @@ namespace ManaPHP\Mvc\Router {
                 ]);
             }
 
-            if (strpos($pattern, '{') !== false) {
+            if (Text::contains($pattern, '{')) {
                 $pattern = $this->_extractNamedParams($pattern);
             }
 
-            if (strpos($pattern, '(') !== false || strpos($pattern, '[') !== false) {
+            if (Text::contains($pattern, '(') || Text::contains($pattern, '[')) {
                 return '#^' . $pattern . '$#i';
             } else {
                 return $pattern;
@@ -90,7 +92,7 @@ namespace ManaPHP\Mvc\Router {
          */
         protected function _extractNamedParams($pattern)
         {
-            if (strpos($pattern, '{') === false) {
+            if (!Text::contains($pattern, '{')) {
                 return $pattern;
             }
 
@@ -99,8 +101,8 @@ namespace ManaPHP\Mvc\Router {
             $need_restore_token = false;
 
             if (preg_match('#{\d#', $pattern) === 1
-                && strpos($pattern, $left_token) === false
-                && strpos($pattern, $right_token) === false
+                && !Text::contains($pattern, $left_token)
+                && !Text::contains($pattern, $right_token)
             ) {
                 $need_restore_token = true;
                 $pattern = preg_replace('#{(\d+,?\d*)}#', $left_token . '\1' . $right_token, $pattern);
@@ -109,7 +111,7 @@ namespace ManaPHP\Mvc\Router {
             if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
                 foreach ($matches as $match) {
 
-                    if (strpos($match[0], ':') === false) {
+                    if (!Text::contains($match[0], ':')) {
                         $pattern = str_replace($match[0], '(?<' . $match[1] . '>[\w-]+)', $pattern);
                     } else {
                         $parts = explode(':', $match[1]);
@@ -211,7 +213,7 @@ namespace ManaPHP\Mvc\Router {
                 }
             }
 
-            if (strpos($this->_compiledPattern, '^') !== false) {
+            if (Text::contains($this->_compiledPattern, '^')) {
                 $r = preg_match($this->_compiledPattern, $handle_uri, $matches);
                 if ($r === false) {
                     throw new Exception('--invalid PCRE: ' . $this->_compiledPattern . ' for ' . $this->_pattern);

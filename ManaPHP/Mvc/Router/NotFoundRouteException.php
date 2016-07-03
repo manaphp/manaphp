@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP\Mvc\Router {
 
-    class NotFoundRouteException extends Exception
+    use ManaPHP\Mvc\NotFoundException;
+
+    class NotFoundRouteException extends NotFoundException
     {
 
     }

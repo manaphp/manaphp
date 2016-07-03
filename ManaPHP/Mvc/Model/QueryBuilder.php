@@ -5,6 +5,7 @@ namespace ManaPHP\Mvc\Model {
     use ManaPHP\Component;
     use ManaPHP\Db\ConditionParser;
     use ManaPHP\Di;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\Model\Query\Builder
@@ -20,6 +21,8 @@ namespace ManaPHP\Mvc\Model {
      *   ->getQuery()
      *   ->execute();
      *</code>
+     *
+     * @property \ManaPHP\CacheInterface $modelsCache
      */
     class QueryBuilder extends Component implements QueryBuilderInterface
     {
@@ -73,19 +76,9 @@ namespace ManaPHP\Mvc\Model {
          */
         protected $_distinct;
 
-        protected $_hiddenParamNumber;
+        protected static $_hiddenParamNumber = 0;
 
-        protected $_lastSQL;
-
-        /**
-         * @var boolean
-         */
-        protected $_uniqueRow;
-
-        /**
-         * @var array
-         */
-        protected $_cacheOptions;
+        protected $_union = [];
 
         /**
          * \ManaPHP\Mvc\Model\Query\Builder constructor
@@ -113,15 +106,12 @@ namespace ManaPHP\Mvc\Model {
          *</code>
          *
          * @param array|string $params
-         * @param \ManaPHP\Di  $dependencyInjector
          *
          * @throws \ManaPHP\Mvc\Model\Exception
          */
-        public function __construct($params = null, $dependencyInjector = null)
+        public function __construct($params = null)
         {
-            if ($dependencyInjector !== null) {
-                $this->_dependencyInjector = $dependencyInjector;
-            }
+            parent::__construct();
 
             if (is_string($params)) {
                 $params = [$params];
@@ -247,8 +237,8 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->addFrom('Robots', 'r');
          *</code>
          *
-         * @param string $model
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -273,10 +263,10 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->join('Robots', 'r.id = RobotsParts.robots_id', 'r', 'LEFT');
          *</code>
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
-         * @param string $type
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
+         * @param string                                          $type
          *
          * @return static
          */
@@ -296,9 +286,9 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->innerJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
          *</code>
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -316,9 +306,9 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->leftJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
          *</code>
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -336,9 +326,9 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->rightJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
          *</code>
          *
-         * @param string $model
-         * @param string $conditions
-         * @param string $alias
+         * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
+         * @param string                                          $conditions
+         * @param string                                          $alias
          *
          * @return static
          */
@@ -364,8 +354,6 @@ namespace ManaPHP\Mvc\Model {
          */
         public function where($conditions, $bind = null)
         {
-            $this->_conditions = [];
-
             return $this->andWhere($conditions, $bind);
         }
 
@@ -387,7 +375,7 @@ namespace ManaPHP\Mvc\Model {
             if (is_scalar($bind)) {
                 $conditions = trim($conditions);
 
-                if (strpos($conditions, ' ') === false) {
+                if (!Text::contains($conditions, ' ')) {
                     $conditions .= ' =';
                 }
 
@@ -424,8 +412,10 @@ namespace ManaPHP\Mvc\Model {
          */
         public function betweenWhere($expr, $min, $max)
         {
-            $minKey = 'ABP' . $this->_hiddenParamNumber++;
-            $maxKey = 'ABP' . $this->_hiddenParamNumber++;
+            $minKey = '_between_min_' . self::$_hiddenParamNumber;
+            $maxKey = '_between_max_' . self::$_hiddenParamNumber;
+
+            self::$_hiddenParamNumber++;
 
             $this->andWhere("$expr BETWEEN :$minKey AND :$maxKey", [$minKey => $min, $maxKey => $max]);
 
@@ -447,8 +437,10 @@ namespace ManaPHP\Mvc\Model {
          */
         public function notBetweenWhere($expr, $min, $max)
         {
-            $minKey = 'ABP' . $this->_hiddenParamNumber++;
-            $maxKey = 'ABP' . $this->_hiddenParamNumber++;
+            $minKey = '_not_between_min_' . self::$_hiddenParamNumber;
+            $maxKey = '_not_between_max_' . self::$_hiddenParamNumber;
+
+            self::$_hiddenParamNumber++;
 
             $this->andWhere("$expr NOT BETWEEN :$minKey AND :$maxKey", [$minKey => $min, $maxKey => $max]);
 
@@ -462,29 +454,37 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->inWhere('id', [1, 2, 3]);
          *</code>
          *
-         * @param string $expr
-         * @param array  $values
+         * @param string                                         $expr
+         * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
          *
          * @return static
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function inWhere($expr, $values)
         {
-            if (count($values) === 0) {
-                $this->andWhere('FALSE');
+            if ($values instanceof QueryBuilderInterface) {
+                $this->andWhere($expr . ' IN (' . $values->getSql() . ')');
+                $this->_bind = array_merge($this->_bind, $values->getBind());
+            } else {
+                if (count($values) === 0) {
+                    $this->andWhere('FALSE');
 
-                return $this;
+                    return $this;
+                }
+
+                $bind = [];
+                $bindKeys = [];
+
+                foreach ($values as $k => $value) {
+                    $key = '_in_' . self::$_hiddenParamNumber . '_' . $k;
+                    $bindKeys[] = ":$key";
+                    $bind[$key] = $value;
+                }
+
+                self::$_hiddenParamNumber++;
+
+                $this->andWhere($expr . ' IN (' . implode(', ', $bindKeys) . ')', $bind);
             }
-
-            $bind = [];
-            $bindKeys = [];
-
-            foreach ($values as $value) {
-                $key = 'ABP' . $this->_hiddenParamNumber++;
-                $bindKeys[] = ":$key";
-                $bind[$key] = $value;
-            }
-
-            $this->andWhere($expr . ' IN (' . implode(', ', $bindKeys) . ')', $bind);
 
             return $this;
         }
@@ -496,27 +496,35 @@ namespace ManaPHP\Mvc\Model {
          *    $builder->notInWhere('id', [1, 2, 3]);
          *</code>
          *
-         * @param string $expr
-         * @param array  $values
+         * @param string                                         $expr
+         * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
          *
          * @return static
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function notInWhere($expr, $values)
         {
-            if (count($values) === 0) {
-                return $this;
+            if ($values instanceof QueryBuilderInterface) {
+                $this->andWhere($expr . ' NOT IN (' . $values->getSql() . ')');
+                $this->_bind = array_merge($this->_bind, $values->getBind());
+            } else {
+                if (count($values) === 0) {
+                    return $this;
+                }
+
+                $bind = [];
+                $bindKeys = [];
+
+                foreach ($values as $k => $value) {
+                    $key = '_not_in_' . self::$_hiddenParamNumber . '_' . $k;
+                    $bindKeys[] = ':' . $key;
+                    $bind[$key] = $value;
+                }
+
+                self::$_hiddenParamNumber++;
+
+                $this->andWhere($expr . ' NOT IN (' . implode(', ', $bindKeys) . ')', $bind);
             }
-
-            $bind = [];
-            $bindKeys = [];
-
-            foreach ($values as $value) {
-                $key = 'ABP' . $this->_hiddenParamNumber++;
-                $bindKeys[] = ':' . $key;
-                $bind[$key] = $value;
-            }
-            $this->andWhere($expr . ' NOT IN (' . implode(', ', $bindKeys) . ')', $bind);
-
             return $this;
         }
 
@@ -590,19 +598,17 @@ namespace ManaPHP\Mvc\Model {
         }
 
         /**
-         * Sets an OFFSET clause
-         *
-         *<code>
-         *    $builder->offset(30);
-         *</code>
-         *
-         * @param int $offset
+         * @param int $size
+         * @param int $current
          *
          * @return static
          */
-        public function offset($offset)
+        public function page($size, $current = null)
         {
-            $this->_offset = $offset;
+            $current = $current ? max(1, $current) : 1;
+
+            $this->_limit = $size;
+            $this->_offset = ($current - 1) * $size;
 
             return $this;
         }
@@ -625,6 +631,50 @@ namespace ManaPHP\Mvc\Model {
             return $this;
         }
 
+        protected function _getUnionSql()
+        {
+            $unions = [];
+
+            /**
+             * @var \ManaPHP\Mvc\Model\QueryBuilder $builder
+             */
+            foreach ($this->_union['builders'] as $builder) {
+                $unions[] = '(' . $builder->getSql() . ')';
+
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $this->_bind = array_merge($this->_bind, $builder->getBind());
+            }
+
+            $sql = implode(' ' . $this->_union['type'] . ' ', $unions);
+
+            /**
+             * Process order clause
+             */
+            if ($this->_order !== null) {
+                if (is_array($this->_order)) {
+                    $sql .= ' ORDER BY ' . implode(', ', $this->_order);
+                } else {
+                    $sql .= ' ORDER BY ' . $this->_order;
+                }
+            }
+
+            /**
+             * Process limit parameters
+             */
+            if ($this->_limit !== null) {
+                $limit = $this->_limit;
+                if (is_int($limit) || (is_string($limit) && ((string)((int)$limit))) === $limit) {
+                    $sql .= ' LIMIT ' . $limit;
+                } else {
+                    throw new Exception('limit is invalid: ' . $limit);
+                }
+            }
+
+            $this->_models[] = $builder->getModels()[0];
+
+            return $sql;
+        }
+
         /**
          * Returns a SQL statement built based on the builder parameters
          *
@@ -633,6 +683,10 @@ namespace ManaPHP\Mvc\Model {
          */
         public function getSql()
         {
+            if (count($this->_union) !== 0) {
+                return $this->_getUnionSql();
+            }
+
             if (count($this->_models) === 0) {
                 throw new Exception('At least one model is required to build the query');
             }
@@ -679,10 +733,20 @@ namespace ManaPHP\Mvc\Model {
              */
             $selectedModels = [];
             foreach ($this->_models as $alias => $model) {
-                if (is_string($alias)) {
-                    $selectedModels[] = '[' . $model . '] AS `' . $alias . '`';
+                if ($model instanceof QueryBuilderInterface) {
+                    if (is_int($alias)) {
+                        throw new Exception('When using SubQuery, you must assign an alias to it.');
+                    }
+
+                    $selectedModels[] = '(' . $model->getSql() . ') AS `' . $alias . '`';
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
+                    $this->_bind = array_merge($this->_bind, $model->getBind());
                 } else {
-                    $selectedModels[] = '[' . $model . ']';
+                    if (is_string($alias)) {
+                        $selectedModels[] = '[' . $model . '] AS `' . $alias . '`';
+                    } else {
+                        $selectedModels[] = '[' . $model . ']';
+                    }
                 }
             }
             $sql .= ' FROM ' . implode(', ', $selectedModels);
@@ -703,7 +767,16 @@ namespace ManaPHP\Mvc\Model {
                     $sql .= ' ' . $joinType;
                 }
 
-                $sql .= ' JOIN [' . $joinModel . ']';
+                if ($joinModel instanceof QueryBuilderInterface) {
+                    $sql .= ' JOIN (' . $joinModel->getSql() . ')';
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
+                    $this->_bind = array_merge($this->_bind, $joinModel->getBind());
+                    if ($joinAlias === null) {
+                        throw new Exception('When using SubQuery, you must assign an alias to it.');
+                    }
+                } else {
+                    $sql .= ' JOIN [' . $joinModel . ']';
+                }
 
                 if ($joinAlias !== null) {
                     $sql .= ' AS `' . $joinAlias . '`';
@@ -771,7 +844,26 @@ namespace ManaPHP\Mvc\Model {
                 }
             }
 
+            //compatible with other SQL syntax
+            $replaces = [];
+            foreach ($this->_bind as $key => $value) {
+                $replaces[':' . $key . ':'] = ':' . $key;
+            }
+
+            $sql = strtr($sql, $replaces);
+
+            foreach ($this->_models as $model) {
+                if (!$model instanceof QueryBuilderInterface) {
+                    $sql = str_replace('[' . $model . ']', '`' . $this->modelsManager->getModelSource($model) . '`', $sql);
+                }
+            }
+
             return $sql;
+        }
+
+        public function getBind()
+        {
+            return $this->_bind;
         }
 
         /**
@@ -790,55 +882,50 @@ namespace ManaPHP\Mvc\Model {
         }
 
         /**
-         * @param array $options
-         *
-         * @return static
+         * @return array
          */
-        public function setCacheOptions($options)
+        public function getModels()
         {
-            $this->_cacheOptions = $options;
-
-            return $this;
+            return $this->_models;
         }
 
         /**
-         * @param array $cache
+         * @param array $cacheOptions
          *
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
-        public function execute($cache = null)
+        public function execute($cacheOptions = null)
         {
+            self::$_hiddenParamNumber = 0;
+
             $sql = $this->getSql();
 
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $modelsManager = $this->_dependencyInjector->getShared('modelsManager');
-
-            $readConnection = null;
-            foreach ($this->_models as $model) {
-                $modelInstance = $modelsManager->getModelInstance($model, false);
-
-                if ($readConnection === null) {
-                    $readConnection = $modelInstance->getReadConnection();
+            if ($cacheOptions !== null) {
+                if (!is_array($cacheOptions)) {
+                    $cacheOptions = ['ttl' => $cacheOptions];
                 }
 
-                $sql = str_replace('[' . $model . ']', '`' . $modelInstance->getSource() . '`', $sql);
+                if (!isset($cacheOptions['key'])) {
+                    $cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind);
+                }
+
+                $result = $this->modelsCache->get($cacheOptions['key']);
+                if ($result !== false) {
+                    return $result;
+                }
             }
-
-            //compatible with other SQL syntax
-            $replaces = [];
-            foreach ($this->_bind as $key => $value) {
-                $replaces[':' . $key . ':'] = ':' . $key;
-            }
-
-            $sql = strtr($sql, $replaces);
-
-            $this->_lastSQL = $sql;
 
             try {
-                $result = $readConnection->fetchAll($sql, $this->_bind);
+                $result = $this->modelsManager
+                    ->getReadConnection(end($this->_models))
+                    ->fetchAll($sql, $this->_bind);
             } catch (\Exception $e) {
                 throw new Exception($e->getMessage() . ':' . $sql);
+            }
+
+            if ($cacheOptions !== null) {
+                $this->modelsCache->set($cacheOptions['key'], $result, $cacheOptions['ttl']);
             }
 
             return $result;
@@ -852,38 +939,30 @@ namespace ManaPHP\Mvc\Model {
          */
         protected function _getTotalRows(&$rowCount)
         {
+            if (count($this->_union) !== 0) {
+                throw new Exception('Union query is not support to get total rows');
+            }
+
             $this->_columns = 'COUNT(*) as row_count';
             $this->_limit = null;
             $this->_offset = null;
 
             $sql = $this->getSql();
 
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $modelsManager = $this->_dependencyInjector->getShared('modelsManager');
-
-            $readConnection = null;
-            foreach ($this->_models as $model) {
-                $modelInstance = $modelsManager->getModelInstance($model, false);
-
-                if ($readConnection === null) {
-                    $readConnection = $modelInstance->getReadConnection();
-                }
-
-                $sql = str_replace('[' . $model . ']', '`' . $modelInstance->getSource() . '`', $sql);
-            }
-
-            //compatible with other SQL syntax
-            $replaces = [];
-            foreach ($this->_bind as $key => $value) {
-                $replaces[':' . $key . ':'] = ':' . $key;
-            }
-
-            $sql = strtr($sql, $replaces);
-
             try {
-                $result = $readConnection->fetchOne($sql, $this->_bind);
-                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-                $rowCount = $result['row_count'];
+                if ($this->_group === null) {
+                    $result = $this->modelsManager
+                        ->getReadConnection(end($this->_models))
+                        ->fetchOne($sql, $this->_bind);
+
+                    /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+                    $rowCount = $result['row_count'];
+                } else {
+                    $result = $this->modelsManager
+                        ->getReadConnection(end($this->_models))
+                        ->fetchAll($sql, $this->_bind);
+                    $rowCount = count($result);
+                }
             } catch (\Exception $e) {
                 throw new Exception($e->getMessage() . ':' . $sql);
             }
@@ -894,28 +973,84 @@ namespace ManaPHP\Mvc\Model {
         /**build the query and execute it.
          *
          * @param int   $totalRows
-         * @param array $cache
+         * @param array $cacheOptions
          *
          * @return array
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
          */
-        public function executeEx(&$totalRows, $cache = null)
+        public function executeEx(&$totalRows, $cacheOptions = null)
         {
+            self::$_hiddenParamNumber = 0;
+
             $copy = clone $this;
 
-            $results = $this->execute($cache);
+            $sql = $this->getSql();
 
-            if (!$this->_limit) {
-                $totalRows = count($results);
-            } else {
-                if (count($results) % $this->_limit === 0) {
-                    $copy->_getTotalRows($totalRows);
-                } else {
-                    $totalRows = $this->_offset + count($results);
+            if ($cacheOptions !== null) {
+                if (!is_array($cacheOptions)) {
+                    $cacheOptions = ['ttl' => $cacheOptions];
+                }
+
+                if (!isset($cacheOptions['key'])) {
+                    $cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind) . ':executeEx';
+                }
+
+                $result = $this->modelsCache->get($cacheOptions['key']);
+
+                if ($result !== false) {
+                    /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+                    $totalRows = $result['totalRows'];
+                    return $result['rows'];
                 }
             }
 
-            return $results;
+            try {
+                $result = $this->modelsManager
+                    ->getReadConnection(end($this->_models))
+                    ->fetchAll($sql, $this->_bind);
+            } catch (\Exception $e) {
+                throw new Exception($e->getMessage() . ':' . $sql);
+            }
+
+            if (!$this->_limit) {
+                $totalRows = count($result);
+            } else {
+                if (count($result) % $this->_limit === 0) {
+                    $copy->_getTotalRows($totalRows);
+                } else {
+                    $totalRows = $this->_offset + count($result, $cacheOptions);
+                }
+            }
+
+            if ($cacheOptions !== null) {
+                $this->modelsCache->set($cacheOptions['key'], ['rows' => $result, 'totalRows' => $totalRows], $cacheOptions['ttl']);
+            }
+
+            return $result;
+        }
+
+        /**
+         * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders
+         *
+         * @return static
+         */
+        public function unionAll($builders)
+        {
+            $this->_union = ['type' => 'UNION ALL', 'builders' => $builders];
+
+            return $this;
+        }
+
+        /**
+         * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders
+         *
+         * @return static
+         */
+        public function unionDistinct($builders)
+        {
+            $this->_union = ['type' => 'UNION DISTINCT', 'builders' => $builders];
+
+            return $this;
         }
     }
 }

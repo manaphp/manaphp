@@ -8,6 +8,7 @@
 namespace ManaPHP\Db {
 
     use ManaPHP\Db\ConditionParser\Exception as ParserException;
+    use ManaPHP\Utility\Text;
 
     class ConditionParser
     {
@@ -41,7 +42,7 @@ namespace ManaPHP\Db {
             $list = [];
             foreach ($conditions as $k => $v) {
                 if (is_int($k)) {
-                    $list[] = stripos($v, ' or ') === false ? $v : "($v)";
+                    $list[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
                     continue;
                 }
 

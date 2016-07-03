@@ -5,7 +5,7 @@ namespace ManaPHP\Http {
     use ManaPHP\Component;
     use ManaPHP\Di;
     use ManaPHP\Http\Response\Exception;
-    use ManaPHP\Http\Response\Headers;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Http\Response
@@ -34,16 +34,14 @@ namespace ManaPHP\Http {
         protected $_content;
 
         /**
-         * @var \ManaPHP\Http\Response\HeadersInterface
+         * @var array
          */
-        protected $_headers;
+        protected $_headers = [];
 
+        /**
+         * @var string
+         */
         protected $_file;
-
-        public function __construct()
-        {
-            $this->_headers = new Headers();
-        }
 
         /**
          * Sets the HTTP response code
@@ -79,7 +77,7 @@ namespace ManaPHP\Http {
          */
         public function setHeader($name, $value)
         {
-            $this->_headers->set($name, $value);
+            $this->_headers[$name] = $value;
 
             return $this;
         }
@@ -97,7 +95,7 @@ namespace ManaPHP\Http {
          */
         public function setRawHeader($header)
         {
-            $this->_headers->setRaw($header);
+            $this->_headers[$header] = null;
 
             return $this;
         }
@@ -156,9 +154,9 @@ namespace ManaPHP\Http {
         public function setContentType($contentType, $charset = null)
         {
             if ($charset === null) {
-                $this->_headers->set('Content-Type', $contentType);
+                $this->setHeader('Content-Type', $contentType);
             } else {
-                $this->_headers->set('Content-Type', $contentType . '; charset=' . $charset);
+                $this->setHeader('Content-Type', $contentType . '; charset=' . $charset);
             }
 
             return $this;
@@ -177,7 +175,7 @@ namespace ManaPHP\Http {
          */
         public function setEtag($etag)
         {
-            $this->_headers->set('Etag', $etag);
+            $this->setHeader('Etag', $etag);
 
             return $this;
         }
@@ -251,8 +249,8 @@ namespace ManaPHP\Http {
          *    $response->setJsonContent(array("status" => "OK"), JSON_NUMERIC_CHECK);
          *</code>
          *
-         * @param string $content
-         * @param int    $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
+         * @param mixed $content
+         * @param int   $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
          *
          * @return static
          */
@@ -261,11 +259,7 @@ namespace ManaPHP\Http {
             $this->setContentType('application/json', 'utf-8');
 
             if ($jsonOptions === null) {
-                $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
-            }
-
-            if (isset($this->_dependencyInjector) && $this->configure->debugger) {
-                $jsonOptions |= JSON_PRETTY_PRINT;
+                $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
             }
 
             $this->_content = json_encode($content, $jsonOptions, 512);
@@ -311,16 +305,23 @@ namespace ManaPHP\Http {
          * Sends headers to the client
          *
          * @return static
+         * @throws \ManaPHP\Http\Cookies\Exception
          */
         public function sendHeaders()
         {
-            if (is_object($this->_headers)) {
-                $this->_headers->send();
+            if (isset($this->_headers['Status'])) {
+                header('HTTP/1.1 ' . $this->_headers['Status']);
             }
 
-            if ($this->_dependencyInjector->has('cookies')) {
-                $this->cookies->send();
+            foreach ($this->_headers as $header => $value) {
+                if ($value !== null) {
+                    header($header . ': ' . $value, true);
+                } else {
+                    header($header, true);
+                }
             }
+
+            $this->cookies->send();
 
             return $this;
         }
@@ -329,7 +330,7 @@ namespace ManaPHP\Http {
          * Prints out HTTP response to the client
          *
          * @return static
-         * @throws \ManaPHP\Http\Response\Exception
+         * @throws \ManaPHP\Http\Response\Exception|\ManaPHP\Http\Cookies\Exception
          */
         public function send()
         {
@@ -357,24 +358,117 @@ namespace ManaPHP\Http {
         /**
          * Sets an attached file to be sent at the end of the request
          *
-         * @param string $filePath
+         * @param string $file
          * @param string $attachmentName
          *
          * @return static
+         * @throws \ManaPHP\Http\Response\Exception
          */
-        public function setFileToSend($filePath, $attachmentName = null)
+        public function setFileToSend($file, $attachmentName = null)
         {
             if ($attachmentName === null) {
-                $attachmentName = basename($filePath);
+                $attachmentName = basename($file);
             }
 
-            $this->_headers->setRaw('Content-Description: File Transfer');
-            $this->_headers->setRaw('Content-Type: application/octet-stream');
-            $this->_headers->setRaw('Content-Disposition: attachment; filename=' . $attachmentName);
-            $this->_headers->setRaw('Content-Transfer-Encoding: binary');
-            $this->_file = $filePath;
+            if (!file_exists($file)) {
+                throw new Exception('Sent file is not exists: ' . $file);
+            }
+
+            $this->_file = $file;
+
+            $this->setHeader('Content-Length', filesize($file));
+            $this->setAttachment($attachmentName);
 
             return $this;
+        }
+
+        public function setAttachment($attachmentName)
+        {
+
+            if (isset($_SERVER['HTTP_USER_AGENT'])) {
+                $userAgent = $_SERVER['HTTP_USER_AGENT'];
+                if (Text::contains($userAgent, 'Trident') || Text::contains($userAgent, 'MSIE')) {
+                    $attachmentName = urlencode($attachmentName);
+                }
+            }
+
+            $this->setHeader('Content-Description', 'File Transfer');
+            $this->setHeader('Content-Type', 'application/octet-stream');
+            $this->setHeader('Content-Disposition', 'attachment; filename=' . $attachmentName);
+            $this->setHeader('Content-Transfer-Encoding', 'binary');
+            $this->setHeader('Cache-Control', 'must-revalidate');
+
+            return $this;
+        }
+
+        /**
+         * @param array        $rows
+         * @param string       $attachmentName
+         * @param array|string $header
+         *
+         * @return static
+         */
+        public function setCsvContent($rows, $attachmentName, $header = null)
+        {
+            if (is_string($header)) {
+                $header = explode(',', $header);
+            }
+
+            if (pathinfo($attachmentName, PATHINFO_EXTENSION) !== 'csv') {
+                $attachmentName .= '.csv';
+            }
+
+            $this->setAttachment($attachmentName);
+
+            $file = fopen('php://temp', 'r+');
+
+            fprintf($file, "\xEF\xBB\xBF");
+
+            if ($header !== null) {
+                if (Text::startsWith($header[0], 'ID')) {
+                    $header[0] = strtolower($header[0]);
+                }
+
+                fputcsv($file, $header);
+            }
+
+            foreach ($rows as $row) {
+                if (is_object($row)) {
+                    if (method_exists($row, 'toArray')) {
+                        $data = $row->toArray();
+                    } else {
+                        $data = (array)$row;
+                    }
+                } elseif (!is_array($row)) {
+                    $data = [$row];
+                } else {
+                    $data = $row;
+                }
+
+                foreach ($data as &$v) {
+                    /** @noinspection ReferenceMismatchInspection */
+                    if (is_numeric($v)) {
+                        $v = "\t" . $v . "\t";
+                    }
+                }
+                unset($v);
+
+                fputcsv($file, $data);
+            }
+
+            rewind($file);
+            $content = stream_get_contents($file);
+            fclose($file);
+
+            $this->setContentType('text/csv');
+            $this->setContent($content);
+
+            return $this;
+        }
+
+        public function getHeaders()
+        {
+            return $this->_headers;
         }
     }
 }

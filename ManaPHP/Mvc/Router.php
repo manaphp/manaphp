@@ -5,6 +5,7 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Component;
     use ManaPHP\Di;
     use ManaPHP\Mvc\Router\NotFoundRouteException;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\Router
@@ -79,7 +80,7 @@ namespace ManaPHP\Mvc {
                 $url = $_GET['_url'];
             } elseif (isset($_SERVER['PATH_INFO'])) {
                 $url = $_SERVER['PATH_INFO'];
-            } else {
+            } /** @noinspection DefaultValueInElseBranchInspection */ else {
                 $url = '/';
             }
 
@@ -186,7 +187,7 @@ namespace ManaPHP\Mvc {
                 /**
                  * strpos('/','')===false NOT true
                  */
-                if ($path !== '' && stripos($checkedUri, $path) !== 0) {
+                if ($path !== '' && !Text::startsWith($checkedUri, $path)) {
                     continue;
                 }
 
@@ -199,7 +200,7 @@ namespace ManaPHP\Mvc {
                  * @var \ManaPHP\Mvc\Router\Group $groupInstance
                  */
                 if ($group['groupInstance'] === null) {
-                    $group['groupInstance'] = new $group['groupClassName'];
+                    $group['groupInstance'] = $this->_dependencyInjector->get($group['groupClassName']);
                 }
                 $groupInstance = $group['groupInstance'];
 

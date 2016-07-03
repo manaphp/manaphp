@@ -11,34 +11,46 @@ namespace ManaPHP {
     /**
      * ManaPHP\Component
      *
-     * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher;
-     * @property \ManaPHP\Mvc\RouterInterface         $router
-     * @property \ManaPHP\Mvc\UrlInterface            $url
-     * @property \ManaPHP\Http\RequestInterface       $request
-     * @property \ManaPHP\Http\ResponseInterface      $response
-     * @property \ManaPHP\Http\CookiesInterface       $cookies
-    //* @property \ManaPHP\FilterInterface $filter
-     * @property \ManaPHP\Flash\Direct                $flash
-    //* @property \ManaPHP\Flash\Session $flashSession
-     * @property \ManaPHP\Http\SessionInterface       $session
-     * @property \ManaPHP\Event\ManagerInterface      $eventsManager
-     * @property \ManaPHP\DbInterface                 $db
+     * @property \ManaPHP\Alias                         $alias
+     * @property \ManaPHP\Mvc\Dispatcher                $dispatcher
+     * @property \ManaPHP\Mvc\Router                    $router
+     * @property \ManaPHP\Mvc\Url                       $url
+     * @property \ManaPHP\Http\Request                  $request
+     * @property \ManaPHP\Http\Filter                   $filter
+     * @property \ManaPHP\Http\Response                 $response
+     * @property \ManaPHP\Http\Cookies                  $cookies
+     * @property \ManaPHP\Mvc\View\Flash                $flash
+     * @property \ManaPHP\Mvc\View\Flash                $flashSession
+     * @property \ManaPHP\Http\SessionInterface         $session
+     * @property \ManaPHP\Event\ManagerInterface        $eventsManager
+     * @property \ManaPHP\Db                            $db
     //* @property \ManaPHP\Security $security
-     * @property \ManaPHP\Security\CryptInterface     $crypt
-     * // * @property \ManaPHP\EscaperInterface $escaper
-     * @property \ManaPHP\Mvc\Model\ManagerInterface  $modelsManager
-     * @property \ManaPHP\Mvc\Model\MetadataInterface $modelsMetadata
+     * @property \ManaPHP\Security\Crypt                $crypt
+     * @property \ManaPHP\Mvc\Model\Manager             $modelsManager
+     * @property \ManaPHP\Mvc\Model\Metadata            $modelsMetadata
     //     * @property \ManaPHP\Assets\Manager $assets
-     * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
-     * @property \ManaPHP\Http\Session\BagInterface   $persistent
-     * @property \ManaPHP\Mvc\ViewInterface           $view
-     * @property \ManaPHP\Mvc\View\Tag                $tag
-     * @property \ManaPHP\Loader                      $loader
-     * @property \ManaPHP\Log\Logger                  $logger
-     * @property \ManaPHP\Mvc\View\Renderer           $renderer
-     * @property \Application\Configure               $configure
-     * @property \ManaPHP\ApplicationInterface        $application
-     * @property \ManaPHP\DebuggerInterface           $debugger
+     * @property \ManaPHP\Di|\ManaPHP\DiInterface       $di
+     * @property \ManaPHP\Http\Session\Bag              $persistent
+     * @property \ManaPHP\Mvc\View                      $view
+     * @property \ManaPHP\Mvc\View\Tag                  $tag
+     * @property \ManaPHP\Loader                        $loader
+     * @property \ManaPHP\Log\Logger                    $logger
+     * @property \ManaPHP\Mvc\View\Renderer             $renderer
+     * @property \Application\Configure                 $configure
+     * @property \ManaPHP\ApplicationInterface          $application
+     * @property \ManaPHP\Debugger                      $debugger
+     * @property \ManaPHP\Authentication\Password       $password
+     * @property \Redis                                 $redis
+     * @property \ManaPHP\Serializer\AdapterInterface   $serializer
+     * @property \ManaPHP\Cache                         $cache
+     * @property \ManaPHP\Store                         $store
+     * @property \ManaPHP\Counter                       $counter
+     * @property \ManaPHP\CacheInterface                $viewsCache
+     * @property \ManaPHP\Http\Client                   $httpClient
+     * @property \ManaPHP\AuthorizationInterface        $authorization
+     * @property \ManaPHP\Security\Captcha              $captcha
+     * @property \ManaPHP\Security\CsrfToken            $csrfToken
+     * @property \ManaPHP\Authentication\UserIdentifier $userIdentifier
      */
     class Component implements ComponentInterface
     {
@@ -50,12 +62,17 @@ namespace ManaPHP {
         /**
          * @var array
          */
-        protected static $_eventPeeks;
+        private static $_eventPeeks;
 
         /**
-         * @var \ManaPHP\DiInterface
+         * @var \ManaPHP\Di
          */
         protected $_dependencyInjector;
+
+        public function __construct($dependencyInjector = null)
+        {
+            $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
+        }
 
         /**
          * Sets the dependency injector
@@ -78,26 +95,19 @@ namespace ManaPHP {
          */
         public function getDependencyInjector()
         {
-            if ($this->_dependencyInjector === null) {
-                $this->_dependencyInjector = Di::getDefault();
-            }
-
             return $this->_dependencyInjector;
         }
 
+        /** @noinspection MagicMethodsValidityInspection */
         /**
          * Magic method __get
          *
          * @param string $propertyName
          *
-         * @return object
+         * @return mixed
          */
         public function __get($propertyName)
         {
-            if (!is_object($this->_dependencyInjector)) {
-                $this->_dependencyInjector = Di::getDefault();
-            }
-
             if ($this->_dependencyInjector->has($propertyName)) {
                 return $this->{$propertyName} = $this->_dependencyInjector->getShared($propertyName);
             }
@@ -173,6 +183,57 @@ namespace ManaPHP {
             }
         }
 
+        /**
+         * @param string $property
+         *
+         * @return bool
+         */
+        public function hasProperty($property)
+        {
+            return array_key_exists($property, get_object_vars($this));
+        }
+
+        /**
+         * @param string $property
+         * @param mixed  $value
+         *
+         * @return mixed
+         * @throws \ManaPHP\Exception
+         */
+        public function setProperty($property, $value)
+        {
+            if (array_key_exists($property, get_object_vars($this))) {
+                $old = $this->{$property};
+                $this->{$property} = $value;
+                return $old;
+            } else {
+                throw new Exception("property '$property' is not exists in " . get_class($this));
+            }
+        }
+
+        /**
+         * @param string $property
+         *
+         * @return mixed
+         * @throws \ManaPHP\Exception
+         */
+        public function getProperty($property)
+        {
+            if (array_key_exists($property, get_object_vars($this))) {
+                return $this->{$property};
+            } else {
+                throw new Exception("property '$property' is not exists in " . get_class($this));
+            }
+        }
+
+        /**
+         * @return array
+         */
+        public function getProperties()
+        {
+            return get_object_vars($this);
+        }
+
         public function __debugInfo()
         {
             $defaultDi = Di::getDefault();
@@ -185,6 +246,36 @@ namespace ManaPHP {
                 }
 
                 $data[$k] = $v;
+            }
+
+            return $data;
+        }
+
+        public function dump()
+        {
+            $data = [];
+
+            foreach (get_object_vars($this) as $k => $v) {
+                if ($k === '_eventsManager') {
+                    continue;
+                }
+
+                if (is_scalar($v) || $v === null) {
+                    $data[$k] = $v;
+                } elseif (is_array($v)) {
+                    $isPlain = true;
+
+                    foreach ($v as $vv) {
+                        if (!is_scalar($vv) && $vv !== null) {
+                            $isPlain = false;
+                            break;
+                        }
+                    }
+
+                    if ($isPlain) {
+                        $data[$k] = $v;
+                    }
+                }
             }
 
             return $data;

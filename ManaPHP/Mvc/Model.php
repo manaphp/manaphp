@@ -56,34 +56,24 @@ namespace ManaPHP\Mvc {
     class Model extends Component implements ModelInterface
     {
         /**
-         * @var \ManaPHP\Mvc\Model\ManagerInterface
-         */
-        protected $_modelsManager;
-
-        protected $_modelsMetaData;
-
-        /**
          * @var array
          */
-        protected $_snapshot;
+        protected $_snapshot = [];
 
         /**
          * \ManaPHP\Mvc\Model constructor
          *
          * @param array                $data
          * @param \ManaPHP\DiInterface $dependencyInjector
-         *
-         * @throws \ManaPHP\Di\Exception
          */
         final public function __construct($data = null, $dependencyInjector = null)
         {
-            $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
-            $this->_modelsManager = $this->_dependencyInjector->getShared('modelsManager');
+            parent::__construct($dependencyInjector);
 
             /**
              * The manager always initializes the object
              */
-            $this->_modelsManager->initModel($this);
+            $this->modelsManager->initModel($this);
 
             /**
              * This allows the developer to execute initialization stuff every time an instance is created
@@ -105,21 +95,6 @@ namespace ManaPHP\Mvc {
         }
 
         /**
-         * Returns the models meta-data service related to the entity instance
-         *
-         * @return \ManaPHP\Mvc\Model\MetaDataInterface
-         * @throws \ManaPHP\Di\Exception
-         */
-        protected function _getModelsMetaData()
-        {
-            if (!is_object($this->_modelsMetaData)) {
-                $this->_modelsMetaData = $this->_dependencyInjector->getShared('modelsMetadata');
-            }
-
-            return $this->_modelsMetaData;
-        }
-
-        /**
          * Sets table name which model should be mapped
          *
          * @param $source
@@ -128,7 +103,7 @@ namespace ManaPHP\Mvc {
          */
         protected function setSource($source)
         {
-            $this->_modelsManager->setModelSource($this, $source);
+            $this->modelsManager->setModelSource($this, $source);
 
             return $this;
         }
@@ -137,10 +112,11 @@ namespace ManaPHP\Mvc {
          * Returns table name mapped in the model
          *
          * @return string
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function getSource()
         {
-            return $this->_modelsManager->getModelSource($this);
+            return $this->modelsManager->getModelSource($this);
         }
 
         /**
@@ -152,7 +128,7 @@ namespace ManaPHP\Mvc {
          */
         public function setConnectionService($connectionService)
         {
-            $this->_modelsManager->setConnectionService($this, $connectionService);
+            $this->modelsManager->setConnectionService($this, $connectionService);
 
             return $this;
         }
@@ -166,7 +142,7 @@ namespace ManaPHP\Mvc {
          */
         public function setReadConnectionService($connectionService)
         {
-            $this->_modelsManager->setReadConnectionService($this, $connectionService);
+            $this->modelsManager->setReadConnectionService($this, $connectionService);
 
             return $this;
         }
@@ -180,7 +156,7 @@ namespace ManaPHP\Mvc {
          */
         public function setWriteConnectionService($connectionService)
         {
-            $this->_modelsManager->setWriteConnectionService($this, $connectionService);
+            $this->modelsManager->setWriteConnectionService($this, $connectionService);
 
             return $this;
         }
@@ -192,7 +168,7 @@ namespace ManaPHP\Mvc {
          */
         public function getReadConnectionService()
         {
-            return $this->_modelsManager->getReadConnectionService($this);
+            return $this->modelsManager->getReadConnectionService($this);
         }
 
         /**
@@ -202,7 +178,7 @@ namespace ManaPHP\Mvc {
          */
         public function getWriteConnectionService()
         {
-            return $this->_modelsManager->getWriteConnectionService($this);
+            return $this->modelsManager->getWriteConnectionService($this);
         }
 
         /**
@@ -212,7 +188,7 @@ namespace ManaPHP\Mvc {
          */
         public function getReadConnection()
         {
-            return $this->_modelsManager->getReadConnection($this);
+            return $this->modelsManager->getReadConnection($this);
         }
 
         /**
@@ -222,7 +198,7 @@ namespace ManaPHP\Mvc {
          */
         public function getWriteConnection()
         {
-            return $this->_modelsManager->getWriteConnection($this);
+            return $this->modelsManager->getWriteConnection($this);
         }
 
         /**
@@ -240,11 +216,11 @@ namespace ManaPHP\Mvc {
          * @param array $whiteList
          *
          * @return static
-         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function assign($data, $whiteList = null)
         {
-            foreach ($this->_getModelsMetaData()->getAttributes($this) as $attribute) {
+            foreach ($this->modelsMetadata->getAttributes($this) as $attribute) {
                 if (!isset($data[$attribute])) {
                     continue;
                 }
@@ -289,7 +265,6 @@ namespace ManaPHP\Mvc {
          * @param  array   $cacheOptions
          *
          * @return  static[]|false
-         * @throws \ManaPHP\Di\Exception
          */
         public static function find($parameters = null, $cacheOptions = null)
         {
@@ -298,8 +273,7 @@ namespace ManaPHP\Mvc {
 
             $resultset = $modelsManager->createBuilder($parameters)
                 ->from(get_called_class())
-                ->setCacheOptions($cacheOptions)
-                ->execute();
+                ->execute($cacheOptions);
 
             if (is_array($resultset)) {
                 $modelInstances = [];
@@ -335,8 +309,8 @@ namespace ManaPHP\Mvc {
          * @param string|array $parameters
          * @param array        $cacheOptions
          *
-         * @return static
-         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+         * @return static|false
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public static function findFirst($parameters = null, $cacheOptions = null)
         {
@@ -359,8 +333,7 @@ namespace ManaPHP\Mvc {
             $resultset = $modelsManager->createBuilder($parameters)
                 ->from(get_called_class())
                 ->limit(1)
-                ->setCacheOptions($cacheOptions)
-                ->execute();
+                ->execute($cacheOptions);
 
             if (is_array($resultset) && isset($resultset[0])) {
                 return new static($resultset[0], $dependencyInjector);
@@ -387,15 +360,12 @@ namespace ManaPHP\Mvc {
         /**
          * Checks if the current record already exists or not
          *
-         * @param \ManaPHP\Mvc\Model\MetadataInterface $metaData
-         * @param \ManaPHP\DbInterface                 $connection
-         *
          * @return boolean
          * @throws \ManaPHP\Mvc\Model\Exception
          */
-        protected function _exists($metaData, $connection)
+        protected function _exists()
         {
-            $primaryKeys = $metaData->getPrimaryKeyAttributes($this);
+            $primaryKeys = $this->modelsMetadata->getPrimaryKeyAttributes($this);
             if (count($primaryKeys) === 0) {
                 return false;
             }
@@ -429,7 +399,7 @@ namespace ManaPHP\Mvc {
 
             $sql = 'SELECT COUNT(*) as row_count' . ' FROM `' . $this->getSource() . '` WHERE ' . implode(' AND ',
                     $conditions);
-            $num = $connection->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
+            $num = $this->getWriteConnection()->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
 
             return $num['row_count'] > 0;
         }
@@ -458,15 +428,14 @@ namespace ManaPHP\Mvc {
 
             if (isset($parameters['group'])) {
                 $columns = "$parameters[group], $function($column) AS $alias";
-            } else {
+            } /** @noinspection DefaultValueInElseBranchInspection */ else {
                 $columns = "$function($column) AS $alias";
             }
 
             $resultset = $modelsManager->createBuilder($parameters)
                 ->columns($columns)
                 ->from(get_called_class())
-                ->setCacheOptions($cacheOptions)
-                ->execute();
+                ->execute($cacheOptions);
 
             if (isset($parameters['group'])) {
                 return $resultset;
@@ -652,49 +621,15 @@ namespace ManaPHP\Mvc {
         }
 
         /**
-         * Executes internal hooks before save a record
-         *
-         * @param boolean $exists
-         *
-         * @return boolean
-         */
-        protected function _preSave($exists)
-        {
-            if ($this->_fireEventCancel('beforeSave') === false) {
-                return false;
-            }
-
-            if ($this->_fireEventCancel($exists ? 'beforeUpdate' : 'beforeCreate') === false) {
-                return false;
-            }
-
-            return true;
-        }
-
-        /**
-         * Executes internal events after save a record
-         *
-         * @param boolean $exists
-         */
-        protected function _postSave($exists)
-        {
-            $this->_fireEvent($exists ? 'afterUpdate' : 'afterCreate');
-            $this->_fireEvent('afterSave');
-        }
-
-        /**
          * Sends a pre-build INSERT SQL statement to the relational database system
-         *
-         * @param \ManaPHP\Mvc\Model\MetadataInterface $metaData
-         * @param \ManaPHP\DbInterface                 $connection
          *
          * @return boolean
          * @throws \ManaPHP\Mvc\Model\Exception
          */
-        protected function _doLowInsert($metaData, $connection)
+        protected function _doLowInsert()
         {
             $columnValues = [];
-            foreach ($metaData->getAttributes($this) as $attributeField) {
+            foreach ($this->modelsMetadata->getAttributes($this) as $attributeField) {
                 if ($this->{$attributeField} !== null) {
                     $columnValues[$attributeField] = $this->{$attributeField};
                 }
@@ -704,12 +639,16 @@ namespace ManaPHP\Mvc {
                 throw new Exception('Unable to insert into ' . $this->getSource() . ' without data');
             }
 
+            $connection = $this->getWriteConnection();
+
             $success = $connection->insert($this->getSource(), $columnValues);
             if ($success) {
-                $autoIncrementAttribute = $metaData->getAutoIncrementAttribute($this);
+                $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
                 if ($autoIncrementAttribute !== null) {
                     $this->{$autoIncrementAttribute} = $connection->lastInsertId();
                 }
+
+                $this->_snapshot = $this->toArray();
             }
 
             return $success;
@@ -718,16 +657,13 @@ namespace ManaPHP\Mvc {
         /**
          * Sends a pre-build UPDATE SQL statement to the relational database system
          *
-         * @param \ManaPHP\Mvc\Model\MetadataInterface $metaData
-         * @param \ManaPHP\DbInterface                 $connection
-         *
          * @return boolean
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
-        protected function _doLowUpdate($metaData, $connection)
+        protected function _doLowUpdate()
         {
             $conditions = [];
-            foreach ($metaData->getPrimaryKeyAttributes($this) as $attributeField) {
+            foreach ($this->modelsMetadata->getPrimaryKeyAttributes($this) as $attributeField) {
                 if (!isset($this->{$attributeField})) {
                     throw new Exception('Record cannot be updated because it\'s some primary key has invalid value.');
                 }
@@ -736,10 +672,10 @@ namespace ManaPHP\Mvc {
             }
 
             $columnValues = [];
-            foreach ($metaData->getAttributes($this) as $attributeField) {
+            foreach ($this->modelsMetadata->getAttributes($this) as $attributeField) {
                 if (isset($this->{$attributeField})) {
                     /** @noinspection NestedPositiveIfStatementsInspection */
-                    if (!is_array($this->_snapshot) || !isset($this->_snapshot[$attributeField]) || $this->{$attributeField} !== $this->_snapshot[$attributeField]) {
+                    if (!isset($this->_snapshot[$attributeField]) || $this->{$attributeField} !== $this->_snapshot[$attributeField]) {
                         $columnValues[$attributeField] = $this->{$attributeField};
                     }
                 }
@@ -749,7 +685,7 @@ namespace ManaPHP\Mvc {
                 return true;
             }
 
-            $success = $connection->update($this->getSource(), $columnValues, $conditions);
+            $success = $this->getWriteConnection()->update($this->getSource(), $columnValues, $conditions);
 
             if ($success) {
                 $this->_snapshot = $this->toArray();
@@ -783,29 +719,11 @@ namespace ManaPHP\Mvc {
          */
         public function save($data = null, $whiteList = null)
         {
-            if (is_array($data) && count($data) > 0) {
-                $this->assign($data, $whiteList);
-            }
-
-            $metaData = $this->_getModelsMetaData();
-            $writeConnection = $this->getWriteConnection();
-
-            $exists = $this->_exists($metaData, $writeConnection);
-            if ($this->_preSave($exists) === false) {
-                throw new Exception('Record cannot be saved because it has been cancel.');
-            }
-
-            if ($exists) {
-                $success = $this->_doLowUpdate($metaData, $writeConnection);
+            if ($this->_exists()) {
+                return $this->update($data, $whiteList);
             } else {
-                $success = $this->_doLowInsert($metaData, $writeConnection);
+                return $this->create($data, $whiteList);
             }
-
-            if ($success) {
-                $this->_fireEvent('afterSave');
-            }
-
-            return $success;
         }
 
         /**
@@ -837,11 +755,21 @@ namespace ManaPHP\Mvc {
          */
         public function create($data = null, $whiteList = null)
         {
-            if ($this->_exists($this->_getModelsMetaData(), $this->getReadConnection())) {
-                throw new Exception('Record cannot be created because it already exists');
+            if (is_array($data)) {
+                $this->assign($data, $whiteList);
             }
 
-            return $this->save($data, $whiteList);
+            if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
+                throw new Exception('Record cannot be created because it has been cancel.');
+            }
+
+            $success = $this->_doLowInsert();
+            if ($success) {
+                $this->_fireEvent('afterCreate');
+                $this->_fireEvent('afterSave');
+            }
+
+            return $success;
         }
 
         /**
@@ -863,11 +791,21 @@ namespace ManaPHP\Mvc {
          */
         public function update($data = null, $whiteList = null)
         {
-            if (!$this->_exists($this->_getModelsMetaData(), $this->getReadConnection())) {
-                throw new Exception('Record cannot be updated because it does not exist');
+            if (is_array($data)) {
+                $this->assign($data, $whiteList);
             }
 
-            return $this->save($data, $whiteList);
+            if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
+                throw new Exception('Record cannot be updated because it has been cancel.');
+            }
+
+            $success = $this->_doLowUpdate();
+            if ($success) {
+                $this->_fireEvent('afterUpdate');
+                $this->_fireEvent('afterSave');
+            }
+
+            return $success;
         }
 
         /**
@@ -887,9 +825,8 @@ namespace ManaPHP\Mvc {
          */
         public function delete()
         {
-            $metaData = $this->_getModelsMetaData();
             $writeConnection = $this->getWriteConnection();
-            $primaryKeys = $metaData->getPrimaryKeyAttributes($this);
+            $primaryKeys = $this->modelsMetadata->getPrimaryKeyAttributes($this);
 
             if (count($primaryKeys) === 0) {
                 throw new Exception('A primary key must be defined in the model in order to perform the operation');
@@ -901,10 +838,6 @@ namespace ManaPHP\Mvc {
 
             $conditions = [];
             foreach ($primaryKeys as $attributeField) {
-
-                /**
-                 * If the attribute is currently set in the object add it to the conditions
-                 */
                 if (!isset($this->{$attributeField})) {
                     throw new Exception("Cannot delete the record because the primary key attribute: '" . $attributeField . "' wasn't set");
                 }
@@ -914,7 +847,7 @@ namespace ManaPHP\Mvc {
 
             $success = $writeConnection->delete($this->getSource(), $conditions);
 
-            if ($success === true) {
+            if ($success) {
                 $this->_fireEvent('afterDelete');
             }
 
@@ -929,32 +862,14 @@ namespace ManaPHP\Mvc {
          *</code>
          *
          * @return array
-         * @throws \ManaPHP\Di\Exception
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function toArray()
         {
             $data = [];
 
-            foreach ($this->_getModelsMetaData()->getAttributes($this) as $attributeField) {
+            foreach ($this->modelsMetadata->getAttributes($this) as $attributeField) {
                 $data[$attributeField] = isset($this->{$attributeField}) ? $this->{$attributeField} : null;
-            }
-
-            return $data;
-        }
-
-        /**
-         * @return array
-         */
-        public function __debugInfo()
-        {
-            $data = [];
-
-            foreach (parent::__debugInfo() as $k => $v) {
-                if ($k === '_modelsManager') {
-                    continue;
-                }
-
-                $data[$k] = $v;
             }
 
             return $data;
@@ -980,19 +895,9 @@ namespace ManaPHP\Mvc {
         {
             $changed = [];
 
-            if (!is_array($this->_snapshot)) {
-                throw new Exception("The record doesn't have a valid data snapshot");
-            }
-
-            foreach ($this->_getModelsMetaData()->getAttributes($this) as $field) {
-                if (!isset($this->_snapshot[$field])) {
+            foreach ($this->modelsMetadata->getAttributes($this) as $field) {
+                if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
                     $changed[] = $field;
-                    continue;
-                }
-
-                if ($this->{$field} !== $this->_snapshot[$field]) {
-                    $changed[] = $field;
-                    continue;
                 }
             }
 
@@ -1014,9 +919,8 @@ namespace ManaPHP\Mvc {
                 $fields = [$fields];
             }
 
-            $changedFields = $this->getChangedFields();
             foreach ($fields as $field) {
-                if (in_array($field, $changedFields, true)) {
+                if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
                     return true;
                 }
             }

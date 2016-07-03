@@ -6,6 +6,7 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Mvc\Dispatcher\Exception;
     use ManaPHP\Mvc\Dispatcher\NotFoundActionException;
     use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\Dispatcher
@@ -138,6 +139,31 @@ namespace ManaPHP\Mvc {
         }
 
         /**
+         * @param string $actionName
+         *
+         * @return static
+         */
+        public function setActionName($actionName)
+        {
+            $this->_actionName = lcfirst(Text::camelize($actionName));
+
+            return $this;
+        }
+
+        /**
+         * @param array $params
+         * @param bool  $merge
+         *
+         * @return static
+         */
+        public function setParams($params, $merge = true)
+        {
+            $this->_params = $merge ? array_merge($this->_params, $params) : $params;
+
+            return $this;
+        }
+
+        /**
          * Gets action params
          *
          * @return array
@@ -165,10 +191,6 @@ namespace ManaPHP\Mvc {
 
             if ($filters === null) {
                 return $this->_params[$param];
-            }
-
-            if (!is_object($this->_dependencyInjector)) {
-                throw new Exception("A dependency injection object is required to access the 'filter' service");
             }
 
             return null;
@@ -211,9 +233,9 @@ namespace ManaPHP\Mvc {
          */
         public function dispatch($module, $controller, $action, $params = null)
         {
-            $this->_moduleName = $this->_camelize($module);
-            $this->_controllerName = $this->_camelize($controller);
-            $this->_actionName = lcfirst($this->_camelize($action));
+            $this->_moduleName = Text::camelize($module);
+            $this->_controllerName = Text::camelize($controller);
+            $this->_actionName = lcfirst(Text::camelize($action));
 
             $this->_params = $params === null ? [] : $params;
 
@@ -283,14 +305,6 @@ namespace ManaPHP\Mvc {
                     throw new NotFoundActionException('Action \'' . $this->_actionName . $this->_actionSuffix . '\' was not found on handler \'' . $controllerClassName . '\'');
                 }
 
-                if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
-                    return false;
-                }
-
-                if ($this->_finished === false) {
-                    continue;
-                }
-
                 // Calling beforeExecuteRoute as callback
                 if (method_exists($controllerInstance, 'beforeExecuteRoute')) {
                     if ($controllerInstance->beforeExecuteRoute($this) === false) {
@@ -300,6 +314,14 @@ namespace ManaPHP\Mvc {
                     if ($this->_finished === false) {
                         continue;
                     }
+                }
+
+                if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
+                    return false;
+                }
+
+                if ($this->_finished === false) {
+                    continue;
                 }
 
                 if (!in_array($controllerClassName, $this->_initializedControllers,
@@ -365,17 +387,17 @@ namespace ManaPHP\Mvc {
             }
 
             if (isset($forward['module'])) {
-                $this->_moduleName = $this->_camelize($forward['module']);
+                $this->_moduleName = Text::camelize($forward['module']);
             }
 
             if (isset($forward['controller'])) {
                 $this->_previousControllerName = $this->_controllerName;
-                $this->_controllerName = $this->_camelize($forward['controller']);
+                $this->_controllerName = Text::camelize($forward['controller']);
             }
 
             if (isset($forward['action'])) {
                 $this->_previousActionName = $this->_actionName;
-                $this->_actionName = lcfirst($this->_camelize($forward['action']));
+                $this->_actionName = lcfirst(Text::camelize($forward['action']));
             }
 
             if (isset($forward['params'])) {
@@ -397,25 +419,6 @@ namespace ManaPHP\Mvc {
         }
 
         /**
-         * @param string $str
-         *
-         * @return string
-         */
-        protected function _camelize($str)
-        {
-            if (strpos($str, '_') !== false) {
-                $parts = explode('_', $str);
-                foreach ($parts as &$v) {
-                    $v = ucfirst($v);
-                }
-
-                return implode('', $parts);
-            } else {
-                return ucfirst($str);
-            }
-        }
-
-        /**
          * Gets last dispatched controller name
          *
          * @return string
@@ -423,6 +426,18 @@ namespace ManaPHP\Mvc {
         public function getControllerName()
         {
             return $this->_controllerName;
+        }
+
+        /**
+         * @param string $controllerName
+         *
+         * @return static
+         */
+        public function setControllerName($controllerName)
+        {
+            $this->_controllerName = Text::camelize($controllerName);
+
+            return $this;
         }
 
         /**

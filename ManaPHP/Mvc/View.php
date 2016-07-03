@@ -5,6 +5,7 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Component;
     use ManaPHP\Di;
     use ManaPHP\Mvc\View\Exception;
+    use ManaPHP\Utility\Text;
 
     /**
      * ManaPHP\Mvc\View
@@ -26,6 +27,7 @@ namespace ManaPHP\Mvc {
      * //Printing views output
      * echo $view->getContent();
      * </code>
+     *
      */
     class View extends Component implements ViewInterface
     {
@@ -38,16 +40,6 @@ namespace ManaPHP\Mvc {
          * @var array
          */
         protected $_viewVars = [];
-
-        /**
-         * @var string
-         */
-        protected $_appDir;
-
-        /**
-         * @var string
-         */
-        protected $_appNamespace;
 
         /**
          * @var false|string|null
@@ -70,20 +62,9 @@ namespace ManaPHP\Mvc {
         protected $_actionName;
 
         /**
-         * View constructor.
-         *
-         * @param \ManaPHP\DiInterface $dependencyInjector
-         *
-         * @throws \ManaPHP\Di\Exception
+         * @var array
          */
-        public function __construct($dependencyInjector = null)
-        {
-            $dependencyInjector = $dependencyInjector ?: Di::getDefault();
-            $application = $dependencyInjector->getShared('application');
-
-            $this->_appDir = $application->getAppDir();
-            $this->_appNamespace = $application->getAppNamespace();
-        }
+        protected $_cacheOptions;
 
         /**
          * @param false|string $layout
@@ -176,6 +157,21 @@ namespace ManaPHP\Mvc {
             return $this->_actionName;
         }
 
+        public function cache($cacheOptions)
+        {
+            if (!is_array($cacheOptions)) {
+                $cacheOptions = ['ttl' => $cacheOptions];
+            }
+
+            if (!isset($cacheOptions['key'])) {
+                $cacheOptions['key'] = 'Views/' . $this->request->getUrl();
+            }
+
+            $this->_cacheOptions = $cacheOptions;
+
+            return $this->viewsCache->get($this->_cacheOptions['key']);
+        }
+
         /**
          * Executes render process from dispatching data
          *
@@ -205,11 +201,19 @@ namespace ManaPHP\Mvc {
                 $this->_actionName = $action;
             }
 
+            if ($this->_cacheOptions !== null) {
+                $content = $this->viewsCache->get($this->_cacheOptions['key']);
+                if ($content !== false) {
+                    $this->_content = $content;
+                    return $this;
+                }
+            }
+
             $this->fireEvent('view:beforeRender');
 
             $view = "/{$this->_moduleName}/Views/{$this->_controllerName}/" . ucfirst($this->_actionName);
 
-            $this->_content = $this->renderer->render($this->_appDir . $view, $this->_viewVars, false);
+            $this->_content = $this->renderer->render("@app{$view}", $this->_viewVars, false);
 
             if ($this->_layout !== false) {
                 if (is_string($this->_layout)) {
@@ -219,10 +223,15 @@ namespace ManaPHP\Mvc {
                 }
 
                 $view = "/$this->_moduleName/Views/Layouts/" . ucfirst($layout);
-                $this->_content = $this->renderer->render($this->_appDir . $view, $this->_viewVars, false);
+                $this->_content = $this->renderer->render("@app{$view}", $this->_viewVars, false);
             }
 
             $this->fireEvent('view:afterRender');
+
+            if ($this->_cacheOptions !== null) {
+                /** @noinspection PhpParamsInspection */
+                $this->viewsCache->set($this->_cacheOptions['key'], $this->_content, $this->_cacheOptions['ttl']);
+            }
 
             return $this;
         }
@@ -271,23 +280,41 @@ namespace ManaPHP\Mvc {
          *
          * @param string $path
          * @param array  $vars
+         * @param array  $cacheOptions
          *
          * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
          */
-        public function partial($path, $vars = [])
+        public function partial($path, $vars = [], $cacheOptions = null)
         {
-            if (strpos($path, '/') === false) {
+            if (!Text::contains($path, '/')) {
                 $path = $this->_controllerName . '/' . $path;
             }
 
             $view = "/$this->_moduleName/Views/$path";
 
-            $this->renderer->render($this->_appDir . $view, array_merge($this->_viewVars, $vars), true);
+            if ($cacheOptions !== null) {
+                if (!is_array($cacheOptions)) {
+                    $cacheOptions = ['ttl' => $cacheOptions];
+                }
+
+                if (!isset($cacheOptions['key'])) {
+                    $cacheOptions['key'] = 'Views/' . md5($view);
+                }
+
+                $content = $this->viewsCache->get($cacheOptions['key']);
+                if ($content === false) {
+                    $content = $this->renderer->render("@app{$view}", $vars, false);
+                    $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
+                }
+                echo $content;
+            } else {
+                $this->renderer->render("@app{$view}", $vars, true);
+            }
         }
 
-        public function widget($widget, $options = [])
+        public function widget($widget, $options = [], $cacheOptions = null)
         {
-            $widgetClassName = "{$this->_appNamespace}\\{$this->_moduleName}\\Widgets\\{$widget}Widget";
+            $widgetClassName = basename($this->alias->get('@app')) . "\\{$this->_moduleName}\\Widgets\\{$widget}Widget";
 
             if (!class_exists($widgetClassName)) {
                 throw new Exception("widget '$widget' is not exist: " . $widgetClassName);
@@ -298,11 +325,38 @@ namespace ManaPHP\Mvc {
              */
             $widgetInstance = $this->_dependencyInjector->get($widgetClassName);
             $vars = $widgetInstance->run($options);
-            if (is_string($vars)) {
-                echo $vars;
+
+            $view = "/$this->_moduleName/Views/Widgets/" . $widget;
+
+            if ($cacheOptions !== null) {
+                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+                if (!is_array($cacheOptions)) {
+                    /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+                    $cacheOptions = ['ttl' => $cacheOptions];
+                }
+
+                if (!isset($cacheOptions['key'])) {
+                    $cacheOptions['key'] = 'Views/' . md5($view);
+                }
+
+                $content = $this->viewsCache->get($cacheOptions['key']);
+                if ($content === false) {
+                    if (is_string($vars)) {
+                        $content = $vars;
+                    } else {
+                        $content = $this->renderer->render("@app{$view}", $vars, false);
+                    }
+
+                    $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
+                }
+
+                echo $content;
             } else {
-                $view = "/$this->_moduleName/Views/Widgets/" . $widget;
-                $this->renderer->render($this->_appDir . $view, $vars, true);
+                if (is_string($vars)) {
+                    echo $vars;
+                } else {
+                    $this->renderer->render("@app{$view}", $vars, true);
+                }
             }
         }
 
@@ -332,6 +386,16 @@ namespace ManaPHP\Mvc {
         public function getContent()
         {
             return $this->_content;
+        }
+
+        public function dump()
+        {
+            $data = parent::dump();
+            if (is_string($data['_content'])) {
+                $data['_content'] = 'content length: ' . strlen($data['_content']);
+            }
+
+            return $data;
         }
     }
 }

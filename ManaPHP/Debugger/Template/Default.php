@@ -1,4 +1,5 @@
 <!doctype html>
+<!--suppress ALL -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,6 +33,9 @@
             max-height: 80px;
         }
 
+        #tab_components pre {
+            max-height: 200px;
+        }
     </style>
 </head>
 <body>
@@ -39,6 +43,7 @@
     <ul class="nav nav-tabs">
         <li><a href="#tab_basic" data-toggle="tab">Basic</a></li>
         <li><a href="#tab_dump" data-toggle="tab">Dump</a></li>
+        <li><a href="#tab_components" data-toggle="tab">Components</a></li>
         <li><a href="#tab_view" data-toggle="tab">View</a></li>
         <li><a href="#tab_exception" data-toggle="tab">Exception</a></li>
         <li><a href="#tab_configure" data-toggle="tab">Configure</a></li>
@@ -94,6 +99,29 @@
                     <td>{{item.name}}</td>
                     <td title="{{item.value|json 4}}">
                         <pre>{{item.value|json 4}}</pre>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_components">
+            <h4>Dump Data({{dump.length}})</h4>
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <td width="5%">#</td>
+                    <td width="10%">name</td>
+                    <td width="20%">type</td>
+                    <td>value</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in components">
+                    <td>{{$index}}</td>
+                    <td title="{{item.name}}">{{item.name}}</td>
+                    <td>{{item.class}}</td>
+                    <td title="{{item.properties|json 4}}">
+                        <pre>{{item.properties|json 4}}</pre>
                     </td>
                 </tr>
                 </tbody>
@@ -155,7 +183,7 @@
                 <tbody>
                 <tr v-for="item in exception.callers">
                     <td>{{$index}}</td>
-                    <td>{{item.file}}:{{item.line}}</td>
+                    <td>{{item.location}}</td>
                     <td>{{item.revoke}}</td>
                 </tr>
                 </tbody>
@@ -302,8 +330,9 @@ $data['session'] = isset($_SESSION) ? $_SESSION : [];
 $data['server'] = $_SERVER;
 unset($data['server']['PATH']);
 ?>
+<!--suppress JSUnresolvedFunction -->
 <script>
-    data =<?=json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)?>;
+    data =<?=json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_HEX_TAG)?>;
     included_files_application = [];
 
     data['included_files_application'] = included_files_application;

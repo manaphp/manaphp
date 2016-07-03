@@ -7,9 +7,6 @@ namespace ManaPHP\Mvc {
     use ManaPHP\Di\FactoryDefault;
     use ManaPHP\Http\ResponseInterface;
     use ManaPHP\Mvc\Application\Exception;
-    use ManaPHP\Mvc\Dispatcher\NotFoundActionException;
-    use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
-    use ManaPHP\Mvc\Router\NotFoundRouteException;
 
     /**
      * ManaPHP\Mvc\Application
@@ -19,21 +16,6 @@ namespace ManaPHP\Mvc {
      */
     class Application extends Component implements ApplicationInterface
     {
-        /**
-         * @var string
-         */
-        protected $_appPath;
-
-        /**
-         * @var string
-         */
-        protected $_appNamespace;
-
-        /**
-         * @var string
-         */
-        protected $_dataPath;
-
         /**
          * @var boolean
          */
@@ -46,54 +28,9 @@ namespace ManaPHP\Mvc {
          */
         public function __construct($dependencyInjector = null)
         {
-            $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
+            parent::__construct($dependencyInjector ?: new FactoryDefault());
+
             $this->_dependencyInjector->setShared('application', $this);
-
-            $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-            $caller = $traces[0];
-            $appClass = get_class($caller['object']);
-
-            if (strpos($appClass, 'ManaPHP\\') !== 0) {
-                $appFile = '/' . str_replace('\\', '/', $appClass) . '.php';
-                foreach (get_included_files() as $file) {
-                    $file = str_replace('\\', '/', $file);
-
-                    if (strpos($file, $appFile) !== false) {
-                        $root = str_replace($appFile, '', $file);
-                        list($this->_appNamespace) = explode('\\', $appClass, 2);
-                        $this->_appPath = $root . '/' . $this->_appNamespace;
-                        $this->_dataPath = $root . '/Data';
-
-                        $this->loader->registerNamespaces([$this->_appNamespace => $this->_appPath]);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        /**
-         * @return string
-         */
-        public function getAppDir()
-        {
-            return $this->_appPath;
-        }
-
-        /**
-         * @return string
-         */
-        public function getAppNamespace()
-        {
-            return $this->_appNamespace;
-        }
-
-        /**
-         *
-         */
-        public function getDataDir()
-        {
-            return $this->_dataPath;
         }
 
         /**
@@ -114,36 +51,25 @@ namespace ManaPHP\Mvc {
         /**
          * Handles a MVC request
          *
-         * @param string                                            $uri
-         * @param \ManaPHP\Mvc\Application\NotFoundHandlerInterface $notFoundHandler
+         * @param string $uri
          *
          * @return \ManaPHP\Http\ResponseInterface|boolean
-         * @throws \ManaPHP\Mvc\Application\Exception|\ManaPHP\Event\Exception|\ManaPHP\Di\Exception|\ManaPHP\Mvc\Application\NotFoundModuleException|\ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException
+         * @throws \ManaPHP\Mvc\Application\Exception|\ManaPHP\Event\Exception|\ManaPHP\Mvc\Application\NotFoundModuleException|\ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException|\ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception|\ManaPHP\Alias\Exception|\ManaPHP\Mvc\Router\Exception|\ManaPHP\Mvc\Router\NotFoundRouteException
          */
-        public function handle($uri = null, $notFoundHandler = null)
+        public function handle($uri = null)
         {
             if ($this->fireEvent('application:boot') === false) {
                 return false;
             }
 
-            $router = $this->_dependencyInjector->getShared('router');
+            $this->router->handle($uri, null, false);
 
-            if ($notFoundHandler === null) {
-                $router->handle($uri, null, false);
-            } else {
-                try {
-                    $router->handle($uri, null, false);
-                } catch (NotFoundRouteException $e) {
-                    return $notFoundHandler->notFoundRoute($e);
-                }
-            }
+            $moduleName = ucfirst($this->router->getModuleName());
+            $controllerName = $this->router->getControllerName();
+            $actionName = $this->router->getActionName();
+            $params = $this->router->getParams();
 
-            $moduleName = ucfirst($router->getModuleName());
-            $controllerName = $router->getControllerName();
-            $actionName = $router->getActionName();
-            $params = $router->getParams();
-
-            $moduleClassName = $this->getAppNamespace() . "\\$moduleName\\Module";
+            $moduleClassName = basename($this->alias->get('@app')) . "\\$moduleName\\Module";
 
             $moduleObject = null;
 
@@ -153,37 +79,32 @@ namespace ManaPHP\Mvc {
             $moduleObject->registerServices($this->_dependencyInjector);
             $this->fireEvent('application:afterStartModule', $moduleObject);
 
-            $dispatcher = $this->_dependencyInjector->getShared('dispatcher');
-            if ($dispatcher->getRootNamespace() === null) {
-                $dispatcher->setRootNamespace($this->getAppNamespace());
+            if ($this->dispatcher->getRootNamespace() === null) {
+                $this->dispatcher->setRootNamespace(basename($this->alias->get('@app')));
             }
 
-            if ($this->_dependencyInjector->has('authorization')) {
-                $dispatcher->attachEvent('dispatcher:beforeDispatch', function () use ($dispatcher) {
-                    $dispatcher->getDependencyInjector()->getShared('authorization')->authorize($dispatcher);
-                });
-            }
-
-            if ($notFoundHandler === null) {
-                $controller = $dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-            } else {
-                try {
-                    $controller = $dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-                } catch (NotFoundControllerException $e) {
-                    return $notFoundHandler->notFoundController($e);
-                } catch (NotFoundActionException $e) {
-                    return $notFoundHandler->notFoundAction($e);
+            $self = $this;
+            $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', function () use ($self) {
+                if ($this->_dependencyInjector->has('authorization')) {
+                    $self->authorization->authorize($self->dispatcher);
                 }
-            }
+
+                if ($this->_dependencyInjector->has('csrfToken')
+                    && !in_array($this->request->getMethod(), ['GET', 'HEAD', 'OPTIONS'], true)
+                ) {
+                    $this->csrfToken->verify();
+                }
+            });
+
+            $controller = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
 
             if ($controller === false) {
                 return false;
             }
 
-            $response = $this->_getResponse($dispatcher->getReturnedValue(), $moduleName,
-                $dispatcher->getControllerName(), $dispatcher->getActionName());
+            $response = $this->_getResponse($this->dispatcher->getReturnedValue(), $moduleName,
+                $this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
 
-            $response->sendHeaders();
             return $response;
         }
 
@@ -194,12 +115,12 @@ namespace ManaPHP\Mvc {
          * @param string $action
          *
          * @return \ManaPHP\Http\ResponseInterface
-         * @throws \ManaPHP\Mvc\Application\Exception|\ManaPHP\Di\Exception
+         * @throws \ManaPHP\Mvc\Application\Exception|\ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
          */
         protected function _getResponse($actionReturnValue, $module, $controller, $action)
         {
             if ($actionReturnValue === false) {
-                return $this->_dependencyInjector->getShared('response');
+                return $this->response;
             } elseif ($actionReturnValue instanceof ResponseInterface) {
                 return $actionReturnValue;
             } else {
@@ -211,19 +132,16 @@ namespace ManaPHP\Mvc {
                     throw new Exception('the return value of Action is invalid: ' . $actionReturnValue);
                 }
 
-                $response = $this->_dependencyInjector->getShared('response');
-
                 if ($this->_implicitView === true) {
-                    $view = $this->_dependencyInjector->getShared('view');
 
-                    $view->setContent($content);
-                    $view->render($module, $controller, $action);
-                    $response->setContent($view->getContent());
+                    $this->view->setContent($content);
+                    $this->view->render($module, $controller, $action);
+                    $this->response->setContent($this->view->getContent());
                 } else {
-                    $response->setContent($content);
+                    $this->response->setContent($content);
                 }
 
-                return $response;
+                return $this->response;
             }
         }
     }

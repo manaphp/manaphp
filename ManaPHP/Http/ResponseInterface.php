@@ -89,8 +89,8 @@ namespace ManaPHP\Http {
          *    $response->setJsonContent(array("status" => "OK"));
          *</code>
          *
-         * @param string $content
-         * @param int    $jsonOptions
+         * @param mixed $content
+         * @param int   $jsonOptions
          *
          * @return static
          */
@@ -129,12 +129,27 @@ namespace ManaPHP\Http {
         /**
          * Sets an attached file to be sent at the end of the request
          *
-         * @param string $filePath
+         * @param string $file
          * @param string $attachmentName
          *
          * @return static
          */
-        public function setFileToSend($filePath, $attachmentName = null);
+        public function setFileToSend($file, $attachmentName = null);
 
+        /**
+         * @param string $attachmentName
+         *
+         * @return static
+         */
+        public function setAttachment($attachmentName);
+
+        /**
+         * @param array        $rows
+         * @param string       $attachmentName
+         * @param array|string $header
+         *
+         * @return mixed
+         */
+        public function setCsvContent($rows, $attachmentName, $header = null);
     }
 }

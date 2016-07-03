@@ -7,14 +7,6 @@ namespace ManaPHP\Mvc\View\Renderer {
      */
     interface EngineInterface
     {
-
-        /**
-         * Php constructor.
-         *
-         * @param \ManaPHP\DiInterface $dependencyInjector
-         */
-        public function __construct($dependencyInjector = null);
-
         /**
          * Renders a view using the template engine
          *

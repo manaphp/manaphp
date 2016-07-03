@@ -5,12 +5,6 @@ namespace ManaPHP\Mvc\View\Renderer\Engine {
 
     class Html implements EngineInterface
     {
-
-        public function __construct($dependencyInjector = null)
-        {
-
-        }
-
         public function render($file, $vars = null)
         {
             $str = file_get_contents($file);

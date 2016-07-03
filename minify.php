@@ -1,6 +1,10 @@
 <?php
 date_default_timezone_set('PRC');
 
+use ManaPHP\Utility\Text;
+
+require __DIR__.'/ManaPHP/Autoloader.php';
+\ManaPHP\Autoloader::register();
 class SourceCodeMinify
 {
 
@@ -34,7 +38,7 @@ class Application
     {
         $dh = opendir($dir);
         while ($file = readdir($dh)) {
-            if (strpos($file, '.') === 0) {
+            if (Text::startsWith($file, '.')) {
                 continue;
             }
 
@@ -97,8 +101,8 @@ foreach ($app->getSourceFiles() as $file) {
     $content = $app->removeComments($content);
     $content = $app->removeBlankLine($content);
     $content = $app->repositionClose($content);
-    $line = strpos($content, "\r") !== false ? substr_count($content, "\r") : substr_count($content, "\n");
-    if (strpos($file, 'Interface.php') !== false) {
+    $line = Text::contains($content, "\r") ? substr_count($content, "\r") : substr_count($content, "\n");
+    if (Text::contains($file, 'Interface.php')) {
         $interface_file_lines += $line;
     } else {
         $class_file_lines += $line;

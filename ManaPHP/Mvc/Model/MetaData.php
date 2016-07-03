@@ -21,7 +21,7 @@ namespace ManaPHP\Mvc\Model {
      * </code>
      *
      */
-    abstract class MetaData extends Component implements MetaDataInterface
+    abstract class MetaData extends Component implements MetaDataInterface, Model\MetaData\AdapterInterface
     {
         const MODELS_ATTRIBUTES = 0;
 
@@ -29,7 +29,7 @@ namespace ManaPHP\Mvc\Model {
 
         const MODELS_NON_PRIMARY_KEY = 2;
 
-        const MODELS_IDENTITY_COLUMN = 8;
+        const MODELS_IDENTITY_COLUMN = 3;
 
         protected $_metaData;
 
@@ -98,9 +98,10 @@ namespace ManaPHP\Mvc\Model {
         protected function _readMetaData($model)
         {
             $modelName = is_string($model) ? $model : get_class($model);
+
             if (!isset($this->_metaData[$modelName])) {
                 $data = $this->read($modelName);
-                if ($data !== null) {
+                if ($data !== false) {
                     $this->_metaData[$modelName] = $data;
                 } else {
                     $data = $this->_fetchMetaDataFromRDBMS($model);

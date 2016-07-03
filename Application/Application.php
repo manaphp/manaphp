@@ -5,6 +5,7 @@ namespace Application {
     use ManaPHP\DbInterface;
     use ManaPHP\Log\Adapter\File;
     use ManaPHP\Log\Logger;
+    use ManaPHP\Mvc\NotFoundException;
     use ManaPHP\Mvc\Router;
     use ManaPHP\Security\Crypt;
 
@@ -13,6 +14,8 @@ namespace Application {
         protected function registerServices()
         {
             $self = $this;
+
+            $this->_dependencyInjector->setShared('configure', new Configure());
 
             $this->_dependencyInjector->setShared('router', function () {
                 return (new Router())
@@ -37,14 +40,46 @@ namespace Application {
                 return $mysql;
             });
 
+            $this->_dependencyInjector->setShared('redis', function () {
+                $redis = new \Redis();
+                $redis->connect('localhost');
+                return $redis;
+            });
             $this->_dependencyInjector->setShared('authorization', new Authorization());
+        }
+
+        /**
+         * @param \ManaPHP\Mvc\NotFoundException $e
+         *
+         * @return static
+         * @throws \ManaPHP\Mvc\NotFoundException
+         */
+        protected function notFoundException($e)
+        {
+//            if ($this->request->isAjax()) {
+//                return $this->response->setJsonContent([
+//                    'code' => -1,
+//                    'error' => $e->getMessage(),
+//                    'data' => [
+//                        'exception_trace' => explode('#', $e->getTraceAsString()),
+//                        'exception_class' => get_class($e)
+//                    ]
+//                ]);
+//            } else {
+//                return $this->response->redirect('http://www.manaphp.com/?exception_message=' . $e->getMessage())->sendHeaders();
+//            }
+
+            /** @noinspection PhpUnreachableStatementInspection */
+            throw $e;
         }
 
         public function main()
         {
             date_default_timezone_set('PRC');
 
-            $this->_dependencyInjector->setShared('configure', new Configure());
+            $this->loader->registerNamespaces([basename($this->alias->get('@app')) => $this->alias->get('@app')]);
+
+            $this->registerServices();
 
             if ($this->configure->debugger->disableAutoResponse) {
                 unset($_GET['_debugger']);//disable auto response to debugger data fetching request
@@ -52,13 +87,15 @@ namespace Application {
 
             $this->debugger->start();
 
-            $this->registerServices();
-
             // $this->logger->debug('start');
 
             //   $this->useImplicitView(false);
 
-            return $this->handle()->getContent();
+            try {
+                $this->handle()->send();
+            } catch (NotFoundException $e) {
+                return $this->notFoundException($e);
+            }
         }
     }
 }
