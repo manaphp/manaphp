@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Security {
+namespace ManaPHP\Authentication {
 
     interface PasswordInterface
     {

@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Security {
+namespace ManaPHP\Authentication {
 
     use ManaPHP\Component;
 

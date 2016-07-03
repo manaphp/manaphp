@@ -1,7 +1,7 @@
 <?php
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
-class UserToken extends ManaPHP\Security\Token\Adapter\Mwt
+class UserToken extends ManaPHP\Authentication\Token\Adapter\Mwt
 {
     public $id;
     public $name;
@@ -12,7 +12,7 @@ class UserToken extends ManaPHP\Security\Token\Adapter\Mwt
     }
 }
 
-class  SecurityTokenAdapterMwtTest extends TestCase
+class  AuthenticationTokenAdapterMwtTest extends TestCase
 {
     public function test_encode()
     {

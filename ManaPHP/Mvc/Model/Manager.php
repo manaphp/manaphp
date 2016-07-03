@@ -223,7 +223,7 @@ namespace ManaPHP\Mvc\Model {
          * @param string $params
          *
          * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
-         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function createBuilder($params = null)
         {

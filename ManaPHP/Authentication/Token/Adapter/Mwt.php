@@ -1,9 +1,9 @@
 <?php
-namespace ManaPHP\Security\Token\Adapter {
+namespace ManaPHP\Authentication\Token\Adapter {
 
     use ManaPHP\Component;
-    use ManaPHP\Security\Token;
-    use ManaPHP\Security\TokenInterface;
+    use ManaPHP\Authentication\Token;
+    use ManaPHP\Authentication\TokenInterface;
     use ManaPHP\Utility\Text;
 
     class Mwt extends Component implements TokenInterface
@@ -36,7 +36,7 @@ namespace ManaPHP\Security\Token\Adapter {
         /**
          * Mwt constructor.
          *
-         * @param int          $type
+         * @param string       $type
          * @param string|array $keys
          */
         public function __construct($type, $keys)
@@ -96,6 +96,7 @@ namespace ManaPHP\Security\Token\Adapter {
                 throw new Exception('hash is not corrected: ' . $hash);
             }
 
+            /** @noinspection TypeUnsafeComparisonInspection */
             if ($type != $this->_type) {
                 throw new Exception('type is not correct: ' . $type);
             }
