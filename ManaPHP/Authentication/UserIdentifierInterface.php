@@ -4,7 +4,7 @@ namespace ManaPHP\Authentication {
     interface   UserIdentifierInterface
     {
         /**
-         * @return int|string
+         * @return string|int
          */
         public function getId();
 
