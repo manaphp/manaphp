@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Authentication {
 
-    interface   UserIdentifierInterface
+    interface   UserIdentityInterface
     {
         /**
          * @return string|int

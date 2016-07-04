@@ -54,7 +54,7 @@ namespace ManaPHP\Di {
                 'captcha' => 'ManPHP\Security\Captcha',
                 'csrfToken' => 'ManaPHP\Security\CsrfToken',
                 'authorization' => 'ManaPHP\Authorization\Bypass',
-                'userIdentifier' => 'ManaPHP\Authentication\UserIdentifier',
+                'userIdentity' => 'ManaPHP\Authentication\UserIdentity',
             ];
 
             $this->_aliases = [

@@ -152,7 +152,7 @@ namespace ManaPHP\Authorization\Rbac {
             $permissionName = $this->_getStandardPermissionName($permissionName);
 
             if ($userId === null) {
-                $userId = $this->userIdentifier->getId();
+                $userId = $this->userIdentity->getId();
             }
 
             $permission = $this->_getPermission($permissionName);

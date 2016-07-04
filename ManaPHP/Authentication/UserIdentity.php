@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Authentication {
 
-    class UserIdentifier implements UserIdentifierInterface
+    class UserIdentity implements UserIdentityInterface
     {
         /**
          * @var int

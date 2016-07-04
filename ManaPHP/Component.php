@@ -11,46 +11,46 @@ namespace ManaPHP {
     /**
      * ManaPHP\Component
      *
-     * @property \ManaPHP\Alias                         $alias
-     * @property \ManaPHP\Mvc\Dispatcher                $dispatcher
-     * @property \ManaPHP\Mvc\Router                    $router
-     * @property \ManaPHP\Mvc\Url                       $url
-     * @property \ManaPHP\Http\Request                  $request
-     * @property \ManaPHP\Http\Filter                   $filter
-     * @property \ManaPHP\Http\Response                 $response
-     * @property \ManaPHP\Http\Cookies                  $cookies
-     * @property \ManaPHP\Mvc\View\Flash                $flash
-     * @property \ManaPHP\Mvc\View\Flash                $flashSession
-     * @property \ManaPHP\Http\SessionInterface         $session
-     * @property \ManaPHP\Event\ManagerInterface        $eventsManager
-     * @property \ManaPHP\Db                            $db
+     * @property \ManaPHP\Alias                       $alias
+     * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
+     * @property \ManaPHP\Mvc\Router                  $router
+     * @property \ManaPHP\Mvc\Url                     $url
+     * @property \ManaPHP\Http\Request                $request
+     * @property \ManaPHP\Http\Filter                 $filter
+     * @property \ManaPHP\Http\Response               $response
+     * @property \ManaPHP\Http\Cookies                $cookies
+     * @property \ManaPHP\Mvc\View\Flash              $flash
+     * @property \ManaPHP\Mvc\View\Flash              $flashSession
+     * @property \ManaPHP\Http\SessionInterface       $session
+     * @property \ManaPHP\Event\ManagerInterface      $eventsManager
+     * @property \ManaPHP\Db                          $db
     //* @property \ManaPHP\Security $security
-     * @property \ManaPHP\Security\Crypt                $crypt
-     * @property \ManaPHP\Mvc\Model\Manager             $modelsManager
-     * @property \ManaPHP\Mvc\Model\Metadata            $modelsMetadata
+     * @property \ManaPHP\Security\Crypt              $crypt
+     * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
+     * @property \ManaPHP\Mvc\Model\Metadata          $modelsMetadata
     //     * @property \ManaPHP\Assets\Manager $assets
-     * @property \ManaPHP\Di|\ManaPHP\DiInterface       $di
-     * @property \ManaPHP\Http\Session\Bag              $persistent
-     * @property \ManaPHP\Mvc\View                      $view
-     * @property \ManaPHP\Mvc\View\Tag                  $tag
-     * @property \ManaPHP\Loader                        $loader
-     * @property \ManaPHP\Log\Logger                    $logger
-     * @property \ManaPHP\Mvc\View\Renderer             $renderer
-     * @property \Application\Configure                 $configure
-     * @property \ManaPHP\ApplicationInterface          $application
-     * @property \ManaPHP\Debugger                      $debugger
-     * @property \ManaPHP\Authentication\Password       $password
-     * @property \Redis                                 $redis
-     * @property \ManaPHP\Serializer\AdapterInterface   $serializer
-     * @property \ManaPHP\Cache                         $cache
-     * @property \ManaPHP\Store                         $store
-     * @property \ManaPHP\Counter                       $counter
-     * @property \ManaPHP\CacheInterface                $viewsCache
-     * @property \ManaPHP\Http\Client                   $httpClient
-     * @property \ManaPHP\AuthorizationInterface        $authorization
-     * @property \ManaPHP\Security\Captcha              $captcha
-     * @property \ManaPHP\Security\CsrfToken            $csrfToken
-     * @property \ManaPHP\Authentication\UserIdentifier $userIdentifier
+     * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
+     * @property \ManaPHP\Http\Session\Bag            $persistent
+     * @property \ManaPHP\Mvc\View                    $view
+     * @property \ManaPHP\Mvc\View\Tag                $tag
+     * @property \ManaPHP\Loader                      $loader
+     * @property \ManaPHP\Log\Logger                  $logger
+     * @property \ManaPHP\Mvc\View\Renderer           $renderer
+     * @property \Application\Configure               $configure
+     * @property \ManaPHP\ApplicationInterface        $application
+     * @property \ManaPHP\Debugger                    $debugger
+     * @property \ManaPHP\Authentication\Password     $password
+     * @property \Redis                               $redis
+     * @property \ManaPHP\Serializer\AdapterInterface $serializer
+     * @property \ManaPHP\Cache                       $cache
+     * @property \ManaPHP\Store                       $store
+     * @property \ManaPHP\Counter                     $counter
+     * @property \ManaPHP\CacheInterface              $viewsCache
+     * @property \ManaPHP\Http\Client                 $httpClient
+     * @property \ManaPHP\AuthorizationInterface      $authorization
+     * @property \ManaPHP\Security\Captcha            $captcha
+     * @property \ManaPHP\Security\CsrfToken          $csrfToken
+     * @property \ManaPHP\Authentication\UserIdentity $userIdentity
      */
     class Component implements ComponentInterface
     {
