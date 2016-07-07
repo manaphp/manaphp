@@ -43,7 +43,6 @@ namespace ManaPHP {
      * @property \Redis                               $redis
      * @property \ManaPHP\Serializer\AdapterInterface $serializer
      * @property \ManaPHP\Cache                       $cache
-     * @property \ManaPHP\Store                       $store
      * @property \ManaPHP\Counter                     $counter
      * @property \ManaPHP\CacheInterface              $viewsCache
      * @property \ManaPHP\Http\Client                 $httpClient

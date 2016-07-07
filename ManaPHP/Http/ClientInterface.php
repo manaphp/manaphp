@@ -4,6 +4,13 @@ namespace ManaPHP\Http {
     interface ClientInterface
     {
         /**
+         * @param string $proxy
+         *
+         * @return static
+         */
+        public function setProxy($proxy);
+
+        /**
          * @param string|array $url
          * @param array        $headers
          * @param array        $options

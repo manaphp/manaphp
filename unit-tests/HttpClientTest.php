@@ -51,7 +51,7 @@ class HttpClientTest extends TestCase
 
     public function test_get()
     {
-        $httpClient = new \ManaPHP\Http\Client\Adapter\Curl();
+        $httpClient = new \ManaPHP\Http\Client();
 
         $statusCode = $httpClient->get(['http://apis.juhe.cn/ip/ip2addr', ['ip' => 'www.baidu.com', 'key' => 'appkey']]);
         $this->assertEquals(200, $statusCode);
@@ -61,7 +61,7 @@ class HttpClientTest extends TestCase
 
     public function test_post()
     {
-        $httpClient = new \ManaPHP\Http\Client\Adapter\Curl();
+        $httpClient = new \ManaPHP\Http\Client();
 
         $statusCode = $httpClient->post(['http://lxb.baidu.com/', ['uid' => 0, 'f' => 4]], ['r' => 'www.xxx.com']);
         $this->assertEquals(200, $statusCode);
@@ -69,19 +69,19 @@ class HttpClientTest extends TestCase
 
     public function test_delete()
     {
-        $httpClient = new \ManaPHP\Http\Client\Adapter\Curl();
+        $httpClient = new \ManaPHP\Http\Client();
         $httpClient->delete('http://www.baidu.com/', []);
     }
 
     public function test_put()
     {
-        $httpClient = new \ManaPHP\Http\Client\Adapter\Curl();
+        $httpClient = new \ManaPHP\Http\Client();
         $httpClient->put('http://www.baidu.com/', [], []/*,['proxy'=>'127.0.0.1:8888']*/);
     }
 
     public function test_patch()
     {
-        $httpClient = new \ManaPHP\Http\Client\Adapter\Curl();
-        $httpClient->patch('http://www.baidu.com/', [], []/*,['proxy'=>'127.0.0.1:8888']*/);
+        $httpClient = new \ManaPHP\Http\Client();
+        $httpClient->patch('http://www.baidu.com', [], []/*,['proxy'=>'127.0.0.1:8888']*/);
     }
 }
