@@ -15,6 +15,7 @@ interface CaptchaInterface
     /**
      * @param string $code
      *
+     * @return void
      * @throws \ManaPHP\Security\Captcha\Exception
      */
     public function verify($code);
@@ -22,6 +23,7 @@ interface CaptchaInterface
     /**
      * @param string $code
      *
+     * @return void
      * @throws \ManaPHP\Security\Captcha\Exception
      */
     public function tryVerify($code);

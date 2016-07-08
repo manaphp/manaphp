@@ -14,6 +14,8 @@ namespace ManaPHP\Security {
         public function get();
 
         /**
+         * @return void
+         * @throws \ManaPHP\Security\CsrfToken\Exception
          */
         public function verify();
     }
