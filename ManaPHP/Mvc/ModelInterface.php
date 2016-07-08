@@ -194,7 +194,7 @@ namespace ManaPHP\Mvc {
          * @param  array $data
          * @param  array $whiteList
          *
-         * @return boolean
+         * @return void
          */
         public function save($data = null, $whiteList = null);
 
@@ -205,7 +205,7 @@ namespace ManaPHP\Mvc {
          * @param  array $data
          * @param  array $whiteList
          *
-         * @return boolean
+         * @return void
          */
         public function create($data = null, $whiteList = null);
 
@@ -216,14 +216,14 @@ namespace ManaPHP\Mvc {
          * @param  array $data
          * @param  array $whiteList
          *
-         * @return boolean
+         * @return void
          */
         public function update($data = null, $whiteList = null);
 
         /**
          * Deletes a model instance. Returning true on success or false otherwise.
          *
-         * @return boolean
+         * @return void
          */
         public function delete();
 

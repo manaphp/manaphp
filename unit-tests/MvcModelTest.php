@@ -268,6 +268,8 @@ class MvcModelTest extends TestCase
         $this->assertEquals(1, $student->id);
         $this->assertEquals(22, $student->age);
         $this->assertEquals('mana2', $student->name);
+
+        $student->update();
     }
 
     public function test_save()
@@ -279,7 +281,7 @@ class MvcModelTest extends TestCase
         $student->id = 1;
         $student->age = 30;
         $student->name = 'manaphp';
-        $this->assertTrue($student->save());
+        $student->save();
 
         $student = Student::findFirst(1);
         $this->assertNotEquals(false, $student);

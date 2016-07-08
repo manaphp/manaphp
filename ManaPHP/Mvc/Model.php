@@ -623,7 +623,7 @@ namespace ManaPHP\Mvc {
         /**
          * Sends a pre-build INSERT SQL statement to the relational database system
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Mvc\Model\Exception
          */
         protected function _doLowInsert()
@@ -641,23 +641,19 @@ namespace ManaPHP\Mvc {
 
             $connection = $this->getWriteConnection();
 
-            $success = $connection->insert($this->getSource(), $columnValues);
-            if ($success) {
-                $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
-                if ($autoIncrementAttribute !== null) {
-                    $this->{$autoIncrementAttribute} = $connection->lastInsertId();
-                }
-
-                $this->_snapshot = $this->toArray();
+            $connection->insert($this->getSource(), $columnValues);
+            $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
+            if ($autoIncrementAttribute !== null) {
+                $this->{$autoIncrementAttribute} = $connection->lastInsertId();
             }
 
-            return $success;
+            $this->_snapshot = $this->toArray();
         }
 
         /**
          * Sends a pre-build UPDATE SQL statement to the relational database system
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
         protected function _doLowUpdate()
@@ -682,16 +678,12 @@ namespace ManaPHP\Mvc {
             }
 
             if (count($columnValues) === 0) {
-                return true;
+                return;
             }
 
-            $success = $this->getWriteConnection()->update($this->getSource(), $columnValues, $conditions);
+            $this->getWriteConnection()->update($this->getSource(), $columnValues, $conditions);
 
-            if ($success) {
-                $this->_snapshot = $this->toArray();
-            }
-
-            return $success;
+            $this->_snapshot = $this->toArray();
         }
 
         /**
@@ -714,15 +706,15 @@ namespace ManaPHP\Mvc {
          * @param array $data
          * @param array $whiteList
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
         public function save($data = null, $whiteList = null)
         {
             if ($this->_exists()) {
-                return $this->update($data, $whiteList);
+                $this->update($data, $whiteList);
             } else {
-                return $this->create($data, $whiteList);
+                $this->create($data, $whiteList);
             }
         }
 
@@ -750,7 +742,7 @@ namespace ManaPHP\Mvc {
          * @param array $data
          * @param array $whiteList
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
         public function create($data = null, $whiteList = null)
@@ -763,13 +755,9 @@ namespace ManaPHP\Mvc {
                 throw new Exception('Record cannot be created because it has been cancel.');
             }
 
-            $success = $this->_doLowInsert();
-            if ($success) {
-                $this->_fireEvent('afterCreate');
-                $this->_fireEvent('afterSave');
-            }
-
-            return $success;
+            $this->_doLowInsert();
+            $this->_fireEvent('afterCreate');
+            $this->_fireEvent('afterSave');
         }
 
         /**
@@ -786,7 +774,7 @@ namespace ManaPHP\Mvc {
          * @param array $data
          * @param array $whiteList
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
         public function update($data = null, $whiteList = null)
@@ -799,13 +787,10 @@ namespace ManaPHP\Mvc {
                 throw new Exception('Record cannot be updated because it has been cancel.');
             }
 
-            $success = $this->_doLowUpdate();
-            if ($success) {
-                $this->_fireEvent('afterUpdate');
-                $this->_fireEvent('afterSave');
-            }
+            $this->_doLowUpdate();
 
-            return $success;
+            $this->_fireEvent('afterUpdate');
+            $this->_fireEvent('afterSave');
         }
 
         /**
@@ -820,7 +805,7 @@ namespace ManaPHP\Mvc {
          *}
          * </code>
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
         public function delete()
@@ -833,7 +818,7 @@ namespace ManaPHP\Mvc {
             }
 
             if ($this->_fireEventCancel('beforeDelete') === false) {
-                return false;
+                throw new Exception('Record cannot be deleted because it has been cancel.');
             }
 
             $conditions = [];
@@ -845,13 +830,8 @@ namespace ManaPHP\Mvc {
                 $conditions[$attributeField] = $this->{$attributeField};
             }
 
-            $success = $writeConnection->delete($this->getSource(), $conditions);
-
-            if ($success) {
-                $this->_fireEvent('afterDelete');
-            }
-
-            return $success;
+            $writeConnection->delete($this->getSource(), $conditions);
+            $this->_fireEvent('afterDelete');
         }
 
         /**

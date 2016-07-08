@@ -53,7 +53,8 @@ namespace ManaPHP\Security {
 
         protected function _generateToken()
         {
-            return substr(base64_encode(md5(microtime(true) . mt_rand(), true)), 0, $this->_length);
+            $str = strtr(base64_encode(md5(microtime(true) . mt_rand(), true)), '+/=', '357');
+            return substr($str, 0, $this->_length);
         }
 
         public function get()

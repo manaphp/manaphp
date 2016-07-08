@@ -69,7 +69,7 @@ namespace ManaPHP\Http {
                 'timeout' => 10,
                 'max_redirects' => 10,
                 'proxy' => '',
-                'ssl_certificates' => __DIR__ . '\Client\ca.pem',
+                'ssl_certificates' => __DIR__ . '/Client/ca.pem',
                 'verify_host' => true,
             ], $options);
 

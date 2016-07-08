@@ -51,7 +51,7 @@ namespace ManaPHP\Di {
                 'store' => 'ManaPHP\Store\Adapter\File',
                 'counter' => 'ManaPHP\Counter\Adapter\Db',
                 'httpClient' => 'ManaPHP\Http\Client',
-                'captcha' => 'ManPHP\Security\Captcha',
+                'captcha' => 'ManaPHP\Security\Captcha',
                 'csrfToken' => 'ManaPHP\Security\CsrfToken',
                 'authorization' => 'ManaPHP\Authorization\Bypass',
                 'userIdentity' => 'ManaPHP\Authentication\UserIdentity',

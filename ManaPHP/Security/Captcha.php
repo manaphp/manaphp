@@ -229,7 +229,6 @@ class Captcha extends Component implements CaptchaInterface
         }
 
         $this->session->set($this->_sessionVar, ['code' => $code, 'created_time' => time(), 'ttl' => $ttl]);
-
         return $response;
     }
 
@@ -264,8 +263,6 @@ class Captcha extends Component implements CaptchaInterface
         if (strtolower($sessionVar['code']) !== strtolower($code)) {
             throw new Exception('captcha is not match.');
         }
-
-        return true;
     }
 
     public function verify($code)

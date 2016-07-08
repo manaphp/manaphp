@@ -197,6 +197,16 @@ namespace ManaPHP\Mvc {
         }
 
         /**
+         * @param string $param
+         *
+         * @return bool
+         */
+        public function hasParam($param)
+        {
+            return isset($this->_params[$param]);
+        }
+
+        /**
          * Sets the latest returned value by an action manually
          *
          * @param mixed $value

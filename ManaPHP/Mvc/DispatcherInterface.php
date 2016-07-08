@@ -69,6 +69,13 @@ namespace ManaPHP\Mvc {
         public function getParam($param, $filters = null, $defaultValue = null);
 
         /**
+         * @param string $param
+         *
+         * @return bool
+         */
+        public function hasParam($param);
+
+        /**
          * Returns value returned by the latest dispatched action
          *
          * @return mixed

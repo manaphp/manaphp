@@ -51,7 +51,7 @@ namespace ManaPHP {
          * @param    string $table
          * @param    array  $columnValues
          *
-         * @return    boolean
+         * @return void
          */
         public function insert($table, $columnValues);
 
@@ -69,7 +69,7 @@ namespace ManaPHP {
          * @param    string|array $conditions
          * @param   array         $bind
          *
-         * @return    int|false
+         * @return    int
          */
         public function update($table, $columnValues, $conditions, $bind = []);
 
@@ -87,7 +87,7 @@ namespace ManaPHP {
          * @param  string|array $conditions
          * @param  array        $bind
          *
-         * @return boolean
+         * @return int
          */
         public function delete($table, $conditions, $bind = []);
 

@@ -353,7 +353,7 @@ namespace ManaPHP {
          * @param    string $table
          * @param    array  $columnValues
          *
-         * @return    boolean
+         * @return void
          * @throws \ManaPHP\Db\Exception
          */
         public function insert($table, $columnValues)
@@ -377,7 +377,7 @@ namespace ManaPHP {
                     "INSERT INTO $escapedTable ($insertedColumns) VALUES ($insertedValues)";
             }
 
-            return $this->execute($sql, $columnValues) === 1;
+            $this->execute($sql, $columnValues);
         }
 
         /**
@@ -401,7 +401,7 @@ namespace ManaPHP {
          * @param    string|array $conditions
          * @param    array        $bind
          *
-         * @return    int|false
+         * @return    int
          * @throws \ManaPHP\Db\Exception|\ManaPHP\Db\ConditionParser\Exception
          */
         public function update($table, $columnValues, $conditions, $bind = [])
@@ -446,7 +446,7 @@ namespace ManaPHP {
          * @param  string|array $conditions
          * @param  array        $bind
          *
-         * @return boolean
+         * @return int
          * @throws \ManaPHP\Db\Exception|\ManaPHP\Db\ConditionParser\Exception
          */
         public function delete($table, $conditions, $bind = [])
