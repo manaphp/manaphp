@@ -80,9 +80,31 @@ namespace ManaPHP {
                     /**
                      * @var \ManaPHP\DbInterface $source
                      */
-                    if ($this->_sql_count <= count($this->_sql_executed)) {
-                        $this->_sql_executed[$this->_sql_count - 1]['time'] = round(microtime(true) - $this->_sql_beforeQueryTime, 3);
+                    if (count($this->_sql_executed) <= $this->_sql_executed_max) {
+                        $this->_sql_executed[$this->_sql_count - 1]['time'] = round(microtime(true) - $this->_sql_beforeQueryTime, 4);
                         $this->_sql_executed[$this->_sql_count - 1]['row_count'] = $source->affectedRows();
+                    }
+                } elseif ($event === 'db:beginTransaction' || $event === 'db:rollbackTransaction' || $event === 'db:commitTransaction') {
+                    $this->_sql_count++;
+
+                    list(, $name) = explode(':', $event);
+                    if (count($this->_sql_executed) <= $this->_sql_executed_max) {
+                        $this->_sql_executed[] = [
+                            'prepared' => $name,
+                            'bind' => [],
+                            'emulated' => $name,
+                            'time' => 0,
+                            'row_count' => 0
+                        ];
+                    }
+
+                    if (count($this->_sql_prepared) <= $this->_sql_prepared_max) {
+                        $preparedSQL = $name;
+                        if (!isset($this->_sql_prepared[$preparedSQL])) {
+                            $this->_sql_prepared[$preparedSQL] = 1;
+                        } else {
+                            $this->_sql_prepared[$preparedSQL]++;
+                        }
                     }
                 } elseif ($event === 'renderer:beforeRender') {
                     $this->_view[] = ['file' => $data['file'], 'vars' => $data['vars'], 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];

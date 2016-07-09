@@ -180,7 +180,7 @@ namespace ManaPHP {
         /**
          * Starts a transaction in the connection
          *
-         * @return boolean
+         * @return void
          */
         public function begin();
 
@@ -191,28 +191,23 @@ namespace ManaPHP {
          *    $connection->begin();
          *    var_dump($connection->isUnderTransaction()); //true
          *</code>
+         *
+         * @return bool
          */
         public function isUnderTransaction();
 
         /**
          * Rollbacks the active transaction in the connection
          *
-         * @return boolean
+         * @return void
          */
         public function rollback();
 
         /**
          * Commits the active transaction in the connection
          *
-         * @return boolean
+         * @return void
          */
         public function commit();
-
-        /**
-         * Return internal PDO handler
-         *
-         * @return \PDO
-         */
-        public function getInternalHandler();
     }
 }

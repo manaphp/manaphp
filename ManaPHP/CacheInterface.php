@@ -26,7 +26,7 @@ namespace ManaPHP {
          *
          * @param array $keys
          *
-         * @return mixed|false
+         * @return array
          */
         public function mGet($keys);
 
@@ -59,14 +59,5 @@ namespace ManaPHP {
          * @void
          */
         public function delete($key);
-
-        /**
-         * Deletes values with the specified keys from cache
-         *
-         * @param array $keys
-         *
-         * @void
-         */
-        public function mDelete($keys);
     }
 }

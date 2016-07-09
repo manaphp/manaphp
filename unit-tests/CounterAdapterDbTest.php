@@ -18,7 +18,7 @@ class CounterAdapterDbTest extends TestCase
                 var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
             });
-            $db->query('SET GLOBAL innodb_flush_log_at_trx_commit=2');
+            $db->execute('SET GLOBAL innodb_flush_log_at_trx_commit=2');
             return $db;
         });
     }

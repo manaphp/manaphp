@@ -42,9 +42,21 @@ namespace ManaPHP {
          * @param string $event
          * @param mixed  $data
          *
-         * @return mixed
+         * @return bool
          */
         public function fireEvent($event, $data = null);
+
+        /**
+         * @param \Closure $peek
+         *
+         * @return void
+         */
+        public static function peekEvents($peek);
+
+        /**
+         * @return array
+         */
+        public function dump();
 
         /**
          * @param string $property

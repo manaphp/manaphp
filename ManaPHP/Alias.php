@@ -6,6 +6,9 @@ namespace ManaPHP {
 
     class Alias extends Component implements AliasInterface
     {
+        /**
+         * @var array
+         */
         protected $_aliases = [];
 
         public function __construct()
@@ -54,13 +57,13 @@ namespace ManaPHP {
                 throw new Exception('alias must start with @ character');
             }
 
-            $this->_aliases[$name] = $this->resolve($path);
+            return $this->_aliases[$name] = $this->resolve($path);
         }
 
         /**
          * @param string $name
          *
-         * @return string|false
+         * @return bool|string
          * @throws \ManaPHP\Alias\Exception
          */
         public function get($name)
@@ -87,11 +90,11 @@ namespace ManaPHP {
             return isset($this->_aliases[$name]);
         }
 
-        /** @noinspection PhpDocMissingThrowsInspection */
         /**
-         * @param $path
+         * @param string $path
          *
-         * @return mixed
+         * @return string
+         * @throws \ManaPHP\Alias\Exception
          */
         public function resolve($path)
         {

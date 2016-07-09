@@ -61,7 +61,7 @@ namespace ManaPHP {
         /**
          * @var array
          */
-        private static $_eventPeeks;
+        private static $_eventPeeks = [];
 
         /**
          * @var \ManaPHP\Di
@@ -150,14 +150,12 @@ namespace ManaPHP {
          * @param string $event
          * @param mixed  $data
          *
-         * @return mixed
+         * @return bool|null
          */
         public function fireEvent($event, $data = null)
         {
-            if (self::$_eventPeeks !== null) {
-                foreach (self::$_eventPeeks as $peek) {
-                    $peek($event, $this, $data);
-                }
+            foreach (self::$_eventPeeks as $peek) {
+                $peek($event, $this, $data);
             }
 
             if ($this->_eventsManager !== null) {
@@ -171,15 +169,12 @@ namespace ManaPHP {
         /**
          * @param \Closure $peek
          *
+         * @return void
          * @throws Exception
          */
         public static function peekEvents($peek)
         {
-            if (self::$_eventPeeks === null) {
-                self::$_eventPeeks = [$peek];
-            } else {
-                self::$_eventPeeks[] = $peek;
-            }
+            self::$_eventPeeks[] = $peek;
         }
 
         /**
@@ -250,6 +245,9 @@ namespace ManaPHP {
             return $data;
         }
 
+        /**
+         * @return array
+         */
         public function dump()
         {
             $data = [];

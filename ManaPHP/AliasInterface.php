@@ -8,7 +8,6 @@ namespace ManaPHP {
          * @param string $path
          *
          * @return string
-         *
          */
         public function set($name, $path);
 
@@ -27,9 +26,9 @@ namespace ManaPHP {
         public function has($name);
 
         /**
-         * @param $path
+         * @param string $path
          *
-         * @return mixed
+         * @return string
          */
         public function resolve($path);
     }

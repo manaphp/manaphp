@@ -101,17 +101,4 @@ class CacheTest extends TestCase
         $cache->delete('country');
         $this->assertFalse($cache->exists('country'));
     }
-
-    public function test_mDelete()
-    {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
-        $cache->mSet(['k1' => 'value1', 'k2' => 'value2'], 100);
-        $this->assertTrue($cache->exists('k1'));
-        $this->assertTrue($cache->exists('k2'));
-
-        $cache->mDelete(['k1', 'k2']);
-
-        $this->assertFalse($cache->exists('k1'));
-        $this->assertFalse($cache->exists('k2'));
-    }
 }

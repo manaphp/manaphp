@@ -46,7 +46,7 @@ namespace ManaPHP {
          *
          * @var array
          */
-        protected $_bind;
+        protected $_bind = [];
 
         /**
          * Current transaction level
@@ -106,7 +106,6 @@ namespace ManaPHP {
 
         /**
          * Executes a prepared statement binding. This function uses integer indexes starting from zero
-         *
          *<code>
          * $statement = $db->prepare('SELECT * FROM robots WHERE name = :name');
          * $result = $connection->executePrepared($statement, array('name' => 'mana'));
@@ -152,7 +151,6 @@ namespace ManaPHP {
         /**
          * Sends SQL statements to the database server returning the success state.
          * Use this method only when the SQL statement sent to the server is returning rows
-         *
          *<code>
          *    //Querying data
          *    $resultset = $connection->query("SELECT * FROM robots WHERE type='mechanical'");
@@ -198,7 +196,6 @@ namespace ManaPHP {
         /**
          * Sends SQL statements to the database server returning the success state.
          * Use this method only when the SQL statement sent to the server does n't return any rows
-         *
          *<code>
          *    //Inserting data
          *    $success = $connection->execute("INSERT INTO robots VALUES (1, 'Boy')");
@@ -240,7 +237,6 @@ namespace ManaPHP {
 
         /**
          * Escapes a column/table/schema name
-         *
          * <code>
          * echo $connection->escapeIdentifier('my_table'); // `my_table`
          * echo $connection->escapeIdentifier('companies.name'); // `companies`.`name`
@@ -276,12 +272,10 @@ namespace ManaPHP {
 
         /**
          * Returns the first row in a SQL query result
-         *
          *<code>
          *    //Getting first robot
          *    $robot = $connection->fetchOne("SELECT * FROM robots");
          *    print_r($robot);
-         *
          *    //Getting first robot with associative indexes only
          *    $robot = $connection->fetchOne("SELECT * FROM robots", \ManaPHP\Db::FETCH_ASSOC);
          *    print_r($robot);
@@ -303,14 +297,12 @@ namespace ManaPHP {
 
         /**
          * Dumps the complete result of a query into an array
-         *
          *<code>
          *    //Getting all robots with associative indexes only
          *    $robots = $connection->fetchAll("SELECT * FROM robots", \ManaPHP\Db::FETCH_ASSOC);
          *    foreach ($robots as $robot) {
          *        print_r($robot);
          *    }
-         *
          *  //Getting all robots that contains word "robot" withing the name
          *  $robots = $connection->fetchAll("SELECT * FROM robots WHERE name LIKE :name",
          *        ManaPHP\Db::FETCH_ASSOC,
@@ -337,7 +329,6 @@ namespace ManaPHP {
 
         /**
          * Inserts data into a table using custom SQL syntax
-         *
          * <code>
          * //Inserting a new robot
          * $success = $connection->insert(
@@ -345,7 +336,6 @@ namespace ManaPHP {
          *     array("Boy", 1952),
          *     array("name", "year")
          * );
-         *
          * //Next SQL sentence is sent to the database system
          * INSERT INTO `robots` (`name`, `year`) VALUES ("boy", 1952);
          * </code>
@@ -382,7 +372,6 @@ namespace ManaPHP {
 
         /**
          * Updates data on a table using custom SQL syntax
-         *
          * <code>
          * //Updating existing robot
          * $success = $connection->update(
@@ -391,7 +380,6 @@ namespace ManaPHP {
          *     array("New Boy"),
          *     "id = 101"
          * );
-         *
          * //Next SQL sentence is sent to the database system
          * UPDATE `robots` SET `name` = "boy" WHERE id = 101
          * </code>
@@ -430,14 +418,12 @@ namespace ManaPHP {
 
         /**
          * Deletes data from a table using custom SQL syntax
-         *
          * <code>
          * //Deleting existing robot
          * $success = $connection->delete(
          *     "robots",
          *     "id = 101"
          * );
-         *
          * //Next SQL sentence is generated
          * DELETE FROM `robots` WHERE `id` = 101
          * </code>
@@ -456,18 +442,11 @@ namespace ManaPHP {
             $sql = /**@lang Text */
                 "DELETE FROM `$table` WHERE " . $where;
 
-            if ($bind === null) {
-                $bind = $conditionBind;
-            } else {
-                $bind = array_merge($conditionBind, $bind);
-            }
-
-            return $this->execute($sql, $bind);
+            return $this->execute($sql, array_merge($conditionBind, $bind));
         }
 
         /**
          * Appends a LIMIT clause to $sqlQuery argument
-         *
          * <code>
          *    echo $connection->limit("SELECT * FROM robots", 5);
          * </code>
@@ -528,7 +507,7 @@ namespace ManaPHP {
          */
         public function getEmulatedSQL($preservedStrLength = -1)
         {
-            if ($this->_bind === null || count($this->_bind) === 0) {
+            if (count($this->_bind) === 0) {
                 return $this->_sql;
             }
 
@@ -563,7 +542,7 @@ namespace ManaPHP {
         /**
          * Starts a transaction in the connection
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Db\Exception
          */
         public function begin()
@@ -576,12 +555,13 @@ namespace ManaPHP {
 
             $this->_transactionLevel++;
 
-            return $this->_pdo->beginTransaction();
+            if (!$this->_pdo->beginTransaction()) {
+                throw new Exception('beginTransaction failed.');
+            }
         }
 
         /**
          * Checks whether the connection is under a transaction
-         *
          *<code>
          *    $connection->begin();
          *    var_dump($connection->isUnderTransaction()); //true
@@ -597,7 +577,7 @@ namespace ManaPHP {
         /**
          * Rollbacks the active transaction in the connection
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Db\Exception
          */
         public function rollback()
@@ -610,13 +590,15 @@ namespace ManaPHP {
 
             $this->_transactionLevel--;
 
-            return $this->_pdo->rollBack();
+            if (!$this->_pdo->rollBack()) {
+                throw new Exception('rollBack failed.');
+            }
         }
 
         /**
          * Commits the active transaction in the connection
          *
-         * @return boolean
+         * @return void
          * @throws \ManaPHP\Db\Exception
          */
         public function commit()
@@ -629,7 +611,9 @@ namespace ManaPHP {
 
             $this->_transactionLevel--;
 
-            return $this->_pdo->commit();
+            if (!$this->_pdo->commit()) {
+                throw new Exception('commit failed.');
+            }
         }
 
         /**
@@ -640,16 +624,6 @@ namespace ManaPHP {
         public function lastInsertId()
         {
             return (int)$this->_pdo->lastInsertId();
-        }
-
-        /**
-         * Return internal PDO handler
-         *
-         * @return \PDO
-         */
-        public function getInternalHandler()
-        {
-            return $this->_pdo;
         }
     }
 }

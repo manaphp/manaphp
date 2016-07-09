@@ -14,8 +14,8 @@ namespace ManaPHP {
         /**
          * Check whether a user is allowed to access a permission
          *
-         * @param string     $permission
-         * @param string|int $userId
+         * @param string $permission
+         * @param string $userId
          *
          * @return boolean
          */
