@@ -106,16 +106,4 @@ class StoreTest extends TestCase
         $store->delete('country');
         $this->assertFalse($store->exists('country'));
     }
-
-    public function test_mDelete()
-    {
-        $store = new \ManaPHP\Store\Adapter\Memory();
-
-        $store->mSet(['k1' => 'value1', 'k2' => 'value2']);
-        $this->assertTrue($store->exists('k1'));
-        $this->assertTrue($store->exists('k2'));
-        $store->mDelete(['k1', 'k2']);
-        $this->assertFalse($store->exists('k1'));
-        $this->assertFalse($store->exists('k2'));
-    }
 }

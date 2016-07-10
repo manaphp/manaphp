@@ -19,7 +19,7 @@ namespace ManaPHP\Http {
         public function setStatusCode($code, $message);
 
         /**
-         * Overwrites a header in the response
+         * send a header in the response
          *
          * @param string $name
          * @param string $value
@@ -29,7 +29,7 @@ namespace ManaPHP\Http {
         public function setHeader($name, $value);
 
         /**
-         * Send a raw header to the response
+         * Send a raw header in the response
          *
          * @param string $header
          *
@@ -84,7 +84,6 @@ namespace ManaPHP\Http {
 
         /**
          * Sets HTTP response body. The parameter is automatically converted to JSON
-         *
          *<code>
          *    $response->setJsonContent(array("status" => "OK"));
          *</code>
@@ -146,10 +145,10 @@ namespace ManaPHP\Http {
         /**
          * @param array        $rows
          * @param string       $attachmentName
-         * @param array|string $header
+         * @param array|string $columns
          *
-         * @return mixed
+         * @return static
          */
-        public function setCsvContent($rows, $attachmentName, $header = null);
+        public function setCsvContent($rows, $attachmentName, $columns = null);
     }
 }

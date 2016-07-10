@@ -57,14 +57,5 @@ namespace ManaPHP {
          * @void
          */
         public function delete($key);
-
-        /**
-         * Deletes values with the specified ids from store
-         *
-         * @param array $keys
-         *
-         * @void
-         */
-        public function mDelete($keys);
     }
 }

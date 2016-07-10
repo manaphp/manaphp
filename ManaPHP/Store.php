@@ -104,21 +104,7 @@ namespace ManaPHP {
         {
             $this->_delete($this->_formatKey($key));
         }
-
-        /**
-         * Deletes values with the specified ids from store
-         *
-         * @param array $keys
-         *
-         * @void
-         */
-        public function mDelete($keys)
-        {
-            foreach ($keys as $key) {
-                $this->_delete($this->_formatKey($key));
-            }
-        }
-
+        
         /**
          * Check if id exists
          *

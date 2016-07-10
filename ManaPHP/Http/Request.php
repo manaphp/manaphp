@@ -27,6 +27,9 @@ namespace ManaPHP\Http {
      */
     class Request extends Component implements RequestInterface
     {
+        /**
+         * @var string
+         */
         protected $_rawBody;
 
         /**
@@ -37,7 +40,7 @@ namespace ManaPHP\Http {
         /**
          * @var string
          */
-        protected $_client_address;
+        protected $_clientAddress;
 
         /**
          * @var array
@@ -382,22 +385,22 @@ namespace ManaPHP\Http {
          */
         public function getClientAddress()
         {
-            if ($this->_client_address === null) {
+            if ($this->_clientAddress === null) {
                 if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                    $this->_client_address = $_SERVER['REMOTE_ADDR'];
+                    $this->_clientAddress = $_SERVER['REMOTE_ADDR'];
                 } else {
                     $client_address = $_SERVER['REMOTE_ADDR'];
                     if (Text::startsWith($client_address, '127.0.') || Text::startsWith($client_address,
                             '192.168.') || Text::startsWith($client_address, '10.')
                     ) {
-                        $this->_client_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                        $this->_clientAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
                     } else {
-                        $this->_client_address = $_SERVER['REMOTE_ADDR'];
+                        $this->_clientAddress = $_SERVER['REMOTE_ADDR'];
                     }
                 }
             }
 
-            return $this->_client_address;
+            return $this->_clientAddress;
         }
 
         /**set the client address for getClientAddress method
@@ -407,9 +410,9 @@ namespace ManaPHP\Http {
         public function setClientAddress($address)
         {
             if (is_string($address)) {
-                $this->_client_address = $address;
+                $this->_clientAddress = $address;
             } else {
-                $this->_client_address = $address();
+                $this->_clientAddress = $address();
             }
         }
 

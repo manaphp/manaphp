@@ -9,11 +9,9 @@ namespace ManaPHP\Http {
 
     /**
      * ManaPHP\Http\Response
-     *
      * Part of the HTTP cycle is return responses to the clients.
      * ManaPHP\HTTP\Response is the ManaPHP component responsible to achieve this task.
      * HTTP responses are usually composed by headers and body.
-     *
      *<code>
      *    $response = new ManaPHP\Http\Response();
      *    $response->setStatusCode(200, "OK");
@@ -45,7 +43,6 @@ namespace ManaPHP\Http {
 
         /**
          * Sets the HTTP response code
-         *
          *<code>
          *    $response->setStatusCode(404, "Not Found");
          *</code>
@@ -65,7 +62,6 @@ namespace ManaPHP\Http {
 
         /**
          * Overwrites a header in the response
-         *
          *<code>
          *    $response->setHeader("Content-Type", "text/plain");
          *</code>
@@ -84,7 +80,6 @@ namespace ManaPHP\Http {
 
         /**
          * Send a raw header to the response
-         *
          *<code>
          *    $response->setRawHeader("HTTP/1.1 404 Not Found");
          *</code>
@@ -102,7 +97,6 @@ namespace ManaPHP\Http {
 
         /**
          * Sets a Expires header to use HTTP cache
-         *
          *<code>
          *    $this->response->setExpires(new DateTime());
          *</code>
@@ -140,7 +134,6 @@ namespace ManaPHP\Http {
 
         /**
          * Sets the response content-type mime, optionally the charset
-         *
          *<code>
          *    $response->setContentType('application/pdf');
          *    $response->setContentType('text/plain', 'UTF-8');
@@ -164,7 +157,6 @@ namespace ManaPHP\Http {
 
         /**
          * Set a custom ETag
-         *
          *<code>
          *    $response->setEtag(md5(time()));
          *</code>
@@ -182,7 +174,6 @@ namespace ManaPHP\Http {
 
         /**
          * Redirect by HTTP to another action or URL
-         *
          *<code>
          *  //Using a string redirect (internal/external)
          *    $response->redirect("posts/index");
@@ -225,7 +216,6 @@ namespace ManaPHP\Http {
 
         /**
          * Sets HTTP response body
-         *
          *<code>
          *    $response->setContent("<h1>Hello!</h1>");
          *</code>
@@ -243,7 +233,6 @@ namespace ManaPHP\Http {
 
         /**
          * Sets HTTP response body. The parameter is automatically converted to JSON
-         *
          *<code>
          *    $response->setJsonContent(array("status" => "OK"));
          *    $response->setJsonContent(array("status" => "OK"), JSON_NUMERIC_CHECK);
@@ -384,7 +373,6 @@ namespace ManaPHP\Http {
 
         public function setAttachment($attachmentName)
         {
-
             if (isset($_SERVER['HTTP_USER_AGENT'])) {
                 $userAgent = $_SERVER['HTTP_USER_AGENT'];
                 if (Text::contains($userAgent, 'Trident') || Text::contains($userAgent, 'MSIE')) {
@@ -404,14 +392,14 @@ namespace ManaPHP\Http {
         /**
          * @param array        $rows
          * @param string       $attachmentName
-         * @param array|string $header
+         * @param array|string $columns
          *
          * @return static
          */
-        public function setCsvContent($rows, $attachmentName, $header = null)
+        public function setCsvContent($rows, $attachmentName, $columns = null)
         {
-            if (is_string($header)) {
-                $header = explode(',', $header);
+            if (is_string($columns)) {
+                $columns = explode(',', $columns);
             }
 
             if (pathinfo($attachmentName, PATHINFO_EXTENSION) !== 'csv') {
@@ -424,12 +412,12 @@ namespace ManaPHP\Http {
 
             fprintf($file, "\xEF\xBB\xBF");
 
-            if ($header !== null) {
-                if (Text::startsWith($header[0], 'ID')) {
-                    $header[0] = strtolower($header[0]);
+            if ($columns !== null) {
+                if (Text::startsWith($columns[0], 'ID')) {
+                    $columns[0] = strtolower($columns[0]);
                 }
 
-                fputcsv($file, $header);
+                fputcsv($file, $columns);
             }
 
             foreach ($rows as $row) {

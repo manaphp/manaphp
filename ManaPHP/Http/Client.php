@@ -7,6 +7,7 @@ namespace ManaPHP\Http {
 
     /**
      * Class Client
+     *
      * @package ManaPHP\Http
      */
     class Client extends Component implements ClientInterface
@@ -35,19 +36,19 @@ namespace ManaPHP\Http {
          * Client constructor.
          *
          * @param array $options
-         * - `timeout`: How long should we wait for a response?
+         *    - `timeout`: How long should we wait for a response?
          *    (integer, seconds, default: 10)
-         * - `max_redirects`: How many times should we redirect 3xx before error?
+         *    - `max_redirects`: How many times should we redirect 3xx before error?
          *    (integer, default: 10)
          *    (string, default: '')
-         * - `proxy`: Proxy details to use for proxy by-passing and authentication
+         *    - `proxy`: Proxy details to use for proxy by-passing and authentication
          *    (string, default: '')
-         * - `ssl_certificates`: Should we verify SSL certificates? Allows passing in a custom
+         *    - `ssl_certificates`: Should we verify SSL certificates? Allows passing in a custom
          *    certificate file as a string. (Using true uses the system-wide root
          *    certificate store instead, but this may have different behaviour
          *    across transports.)
          *    (string, default: 'xxx/ca.pem')
-         * - `verify_host`: Should we verify the common name in the SSL certificate?
+         *    - `verify_host`: Should we verify the common name in the SSL certificate?
          *    (boolean: default, true)
          *
          * @param array $headers

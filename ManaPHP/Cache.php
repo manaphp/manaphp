@@ -89,7 +89,7 @@ namespace ManaPHP {
         {
             $this->_delete($this->_formatKey($key));
         }
-        
+
         /**
          * @param string $key
          *
