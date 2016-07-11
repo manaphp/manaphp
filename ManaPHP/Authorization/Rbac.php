@@ -112,28 +112,18 @@ namespace ManaPHP\Authorization\Rbac {
         }
 
         /**
-         * @param \ManaPHP\Mvc\DispatcherInterface|string|array $permissionName
+         * @param string $permissionName
          *
          * @return string
          * @throws \ManaPHP\Authorization\Exception
          */
         protected function _getStandardPermissionName($permissionName)
         {
-            if ($permissionName instanceof Dispatcher) {
-                $parts = [
-                    $permissionName->getModuleName(),
-                    $permissionName->getControllerName(),
-                    $permissionName->getActionName()
-                ];
-            } elseif (is_string($permissionName)) {
-                $parts = explode('::', $permissionName);
-            } else {
-                throw new Exception('Permission name format is not supported');
-            }
+            $parts = explode('::', $permissionName);
 
             switch (count($parts)) {
                 case 1:
-                    $parts = [$this->dispatcher->getModuleName(), $parts[0], 'index'];
+                    $parts = [$this->dispatcher->getModuleName(), $this->dispatcher->getControllerName(), $parts[0]];
                     break;
                 case 2:
                     $parts = array_merge([$this->dispatcher->getModuleName()], $parts);
@@ -177,18 +167,6 @@ namespace ManaPHP\Authorization\Rbac {
                 return true;
             } else {
                 return false;
-            }
-        }
-
-        /**
-         * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
-         *
-         * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
-         */
-        public function authorize($dispatcher)
-        {
-            if (!$this->isAllowed($dispatcher)) {
-                throw new Exception('access denied.');
             }
         }
     }

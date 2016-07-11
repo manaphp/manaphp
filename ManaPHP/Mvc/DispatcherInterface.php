@@ -97,9 +97,10 @@ namespace ManaPHP\Mvc {
         /**
          * Forwards the execution flow to another controller/action
          *
-         * @param string|array $forward
+         * @param string $forward
+         * @param array $params
          */
-        public function forward($forward);
+        public function forward($forward, $params = []);
 
         /**
          * Check if the current executed action was forwarded by another one

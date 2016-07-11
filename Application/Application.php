@@ -45,7 +45,6 @@ namespace Application {
                 $redis->connect('localhost');
                 return $redis;
             });
-            $this->_dependencyInjector->setShared('authorization', new Authorization());
         }
 
         /**

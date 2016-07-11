@@ -3,14 +3,6 @@ namespace ManaPHP {
 
     interface AuthorizationInterface
     {
-
-        /**
-         * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
-         *
-         * @return void
-         */
-        public function authorize($dispatcher);
-
         /**
          * Check whether a user is allowed to access a permission
          *

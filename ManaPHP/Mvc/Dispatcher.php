@@ -241,13 +241,13 @@ namespace ManaPHP\Mvc {
          * @return false|\ManaPHP\Mvc\ControllerInterface
          * @throws \ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException
          */
-        public function dispatch($module, $controller, $action, $params = null)
+        public function dispatch($module, $controller, $action, $params = [])
         {
             $this->_moduleName = Text::camelize($module);
             $this->_controllerName = Text::camelize($controller);
             $this->_actionName = lcfirst(Text::camelize($action));
 
-            $this->_params = $params === null ? [] : $params;
+            $this->_params = $params;
 
             if ($this->fireEvent('dispatcher:beforeDispatchLoop') === false) {
                 return false;
@@ -273,14 +273,7 @@ namespace ManaPHP\Mvc {
                     continue;
                 }
 
-                $controllerClassName = '';
-                if ($this->_rootNamespace) {
-                    $controllerClassName .= $this->_rootNamespace . '\\';
-                }
-                if ($this->_moduleName) {
-                    $controllerClassName .= $this->_moduleName . '\\Controllers\\';
-                }
-                $controllerClassName .= $this->_controllerName . $this->_controllerSuffix;
+                $controllerClassName = $this->_rootNamespace . '\\' . $this->_moduleName . '\\Controllers\\' . $this->_controllerName . $this->_controllerSuffix;
 
                 if (!$this->_dependencyInjector->has($controllerClassName) && !class_exists($controllerClassName)) {
                     throw new NotFoundControllerException($controllerClassName . ' handler class cannot be loaded');
@@ -300,7 +293,7 @@ namespace ManaPHP\Mvc {
                             throw new Exception("The action '$method' of {$this->_controllerName}{$this->_controllerSuffix}  does not suffix with '{$this->_actionSuffix}' case sensitively, please amend it first.");
                         }
 
-                        if (strtolower($method['0']) !== $method['0']) {
+                        if (strtolower($method[0]) !== $method[0]) {
                             throw new Exception("The action '$method' of {$this->_controllerName}{$this->_controllerSuffix}  does not prefix with lowercase character, please amend it first.");
                         }
 
@@ -343,8 +336,6 @@ namespace ManaPHP\Mvc {
 
                 $this->_returnedValue = call_user_func_array([$controllerInstance, $actionMethod], $this->_params);
 
-                $value = null;
-
                 // Call afterDispatch
                 $this->fireEvent('dispatcher:afterDispatch');
 
@@ -357,7 +348,7 @@ namespace ManaPHP\Mvc {
                 }
 
                 if (method_exists($controllerInstance, 'afterExecuteRoute')) {
-                    if ($controllerInstance->afterExecuteRoute($this, $value) === false) {
+                    if ($controllerInstance->afterExecuteRoute($this) === false) {
                         continue;
                     }
 
@@ -377,42 +368,33 @@ namespace ManaPHP\Mvc {
          * Dispatchers are unique per module. Forwarding between modules is not allowed
          *
          *<code>
-         *  $this->dispatcher->forward(array('controller' => 'posts', 'action' => 'index'));
+         *  $this->dispatcher->forward('posts/index'));
          *</code>
          *
-         * @param string|array $forward
+         * @param string $forward
+         * @param array $params
          *
          * @throws \ManaPHP\Mvc\Dispatcher\Exception
          */
-        public function forward($forward)
+        public function forward($forward, $params = [])
         {
-            if (is_string($forward)) {
-                if ($forward[0] === '/') {
-                    throw new Exception('Forward path starts with / character is confused, please remove it');
-                }
-
-                $_forward = [];
-                list($_forward['module'], $_forward['controller'], $_forward['action']) = array_pad(explode('/', $forward), -3, null);
-                $forward = $_forward;
+            $parts = explode('/', $forward);
+            switch (count($parts)) {
+                case 1:
+                    $this->_previousActionName = $this->_actionName;
+                    $this->_actionName = lcfirst(Text::camelize($parts[0]));
+                    break;
+                case 2:
+                    $this->_previousControllerName = $this->_controllerName;
+                    $this->_controllerName = Text::camelize($parts[0]);
+                    $this->_previousActionName = $this->_actionName;
+                    $this->_actionName = lcfirst(Text::camelize($parts[1]));
+                    break;
+                default:
+                    throw new Exception('forward format is invalid: ' . $forward);
             }
 
-            if (isset($forward['module'])) {
-                $this->_moduleName = Text::camelize($forward['module']);
-            }
-
-            if (isset($forward['controller'])) {
-                $this->_previousControllerName = $this->_controllerName;
-                $this->_controllerName = Text::camelize($forward['controller']);
-            }
-
-            if (isset($forward['action'])) {
-                $this->_previousActionName = $this->_actionName;
-                $this->_actionName = lcfirst(Text::camelize($forward['action']));
-            }
-
-            if (isset($forward['params'])) {
-                $this->_params = $forward['params'];
-            }
+            $this->_params = array_merge($this->_params, $params);
 
             $this->_finished = false;
             $this->_forwarded = true;

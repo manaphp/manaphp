@@ -22,5 +22,11 @@ namespace ManaPHP\Mvc {
          */
         public function registerServices($dependencyInjector);
 
+        /**
+         * @param string $controller
+         * @param string $action
+         * @return bool
+         */
+        public function authorize($controller, $action);
     }
 }

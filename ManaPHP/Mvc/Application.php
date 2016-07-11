@@ -53,13 +53,13 @@ namespace ManaPHP\Mvc {
          *
          * @param string $uri
          *
-         * @return \ManaPHP\Http\ResponseInterface|boolean
+         * @return \ManaPHP\Http\ResponseInterface
          * @throws \ManaPHP\Mvc\Application\Exception|\ManaPHP\Event\Exception|\ManaPHP\Mvc\Application\NotFoundModuleException|\ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException|\ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception|\ManaPHP\Alias\Exception|\ManaPHP\Mvc\Router\Exception|\ManaPHP\Mvc\Router\NotFoundRouteException
          */
         public function handle($uri = null)
         {
             if ($this->fireEvent('application:boot') === false) {
-                return false;
+                return $this->response;
             }
 
             $this->router->handle($uri, null, false);
@@ -71,12 +71,16 @@ namespace ManaPHP\Mvc {
 
             $moduleClassName = basename($this->alias->get('@app')) . "\\$moduleName\\Module";
 
+            /**
+             * @var \ManaPHP\Mvc\ModuleInterface $moduleObject
+             */
             $moduleObject = null;
 
             $this->fireEvent('application:beforeStartModule', $moduleName);
             $moduleObject = $this->_dependencyInjector->getShared($moduleClassName);
             $moduleObject->registerAutoloaders($this->_dependencyInjector);
             $moduleObject->registerServices($this->_dependencyInjector);
+
             $this->fireEvent('application:afterStartModule', $moduleObject);
 
             if ($this->dispatcher->getRootNamespace() === null) {
@@ -84,22 +88,23 @@ namespace ManaPHP\Mvc {
             }
 
             $self = $this;
-            $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', function () use ($self) {
-                if ($this->_dependencyInjector->has('authorization')) {
-                    $self->authorization->authorize($self->dispatcher);
-                }
+            $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', function () use ($self, $moduleObject) {
 
                 if ($this->_dependencyInjector->has('csrfToken')
                     && !in_array($this->request->getMethod(), ['GET', 'HEAD', 'OPTIONS'], true)
                 ) {
                     $this->csrfToken->verify();
                 }
+
+                if ($moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName()) === false) {
+                    return false;
+                }
             });
 
             $controller = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
 
             if ($controller === false) {
-                return false;
+                return $this->response;
             }
 
             $response = $this->_getResponse($this->dispatcher->getReturnedValue(), $moduleName,
