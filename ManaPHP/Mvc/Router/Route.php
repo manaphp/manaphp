@@ -193,13 +193,12 @@ namespace ManaPHP\Mvc\Router {
         }
 
         /**
-         * @param string     $handle_uri
-         * @param array|null $matches
+         * @param string     $uri
          *
-         * @return bool
+         * @return bool|array
          * @throws \ManaPHP\Mvc\Router\Exception
          */
-        public function isMatched($handle_uri, &$matches)
+        public function match($uri)
         {
             if ($this->_httpMethods !== null) {
                 if (is_string($this->_httpMethods)) {
@@ -214,19 +213,17 @@ namespace ManaPHP\Mvc\Router {
             }
 
             if (Text::contains($this->_compiledPattern, '^')) {
-                $r = preg_match($this->_compiledPattern, $handle_uri, $matches);
+                $r = preg_match($this->_compiledPattern, $uri, $matches);
                 if ($r === false) {
                     throw new Exception('--invalid PCRE: ' . $this->_compiledPattern . ' for ' . $this->_pattern);
                 } elseif ($r === 1) {
-                    return true;
+                    return $matches;
                 } else {
                     return false;
                 }
             } else {
-                if ($this->_compiledPattern === $handle_uri) {
-                    $matches = [];
-
-                    return true;
+                if ($this->_compiledPattern === $uri) {
+                    return [];
                 } else {
                     return false;
                 }

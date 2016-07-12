@@ -78,7 +78,6 @@ namespace ManaPHP\Mvc {
 
             $this->fireEvent('application:beforeStartModule', $moduleName);
             $moduleObject = $this->_dependencyInjector->getShared($moduleClassName);
-            $moduleObject->registerAutoloaders($this->_dependencyInjector);
             $moduleObject->registerServices($this->_dependencyInjector);
 
             $this->fireEvent('application:afterStartModule', $moduleObject);
@@ -99,6 +98,8 @@ namespace ManaPHP\Mvc {
                 if ($moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName()) === false) {
                     return false;
                 }
+                
+                return null;
             });
 
             $controller = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);

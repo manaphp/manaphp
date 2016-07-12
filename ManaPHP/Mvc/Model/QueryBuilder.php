@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc\Model {
 
     use ManaPHP\Component;
-    use ManaPHP\Db\ConditionParser;
     use ManaPHP\Di;
     use ManaPHP\Utility\Text;
 
@@ -112,6 +111,10 @@ namespace ManaPHP\Mvc\Model {
         public function __construct($params = null)
         {
             parent::__construct();
+
+            if ($params === null) {
+                $params = [];
+            }
 
             if (is_string($params)) {
                 $params = [$params];
@@ -679,7 +682,7 @@ namespace ManaPHP\Mvc\Model {
          * Returns a SQL statement built based on the builder parameters
          *
          * @return string
-         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception
+         * @throws \ManaPHP\Mvc\Model\Exception
          */
         public function getSql()
         {
@@ -787,12 +790,24 @@ namespace ManaPHP\Mvc\Model {
                 }
             }
 
-            $conditions = (new ConditionParser())->parse($this->_conditions, $conditionBind);
-            if ($conditions !== '') {
-                $sql .= ' WHERE ' . $conditions;
+            $wheres = [];
+
+            if (is_string($this->_conditions)) {
+                $this->_conditions = $this->_conditions === '' ? [] : [$this->_conditions];
             }
 
-            $this->_bind = array_merge($this->_bind, $conditionBind);
+            foreach ($this->_conditions as $k => $v) {
+                if (is_int($k)) {
+                    $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
+                } else {
+                    $wheres[] = "`$k`=:$k";
+                    $this->_bind[$k] = $v;
+                }
+            }
+
+            if (count($wheres) !== 0) {
+                $sql .= ' WHERE ' . implode(' AND ', $wheres);
+            }
 
             /**
              * Process group parameters
@@ -893,7 +908,7 @@ namespace ManaPHP\Mvc\Model {
          * @param array $cacheOptions
          *
          * @return array
-         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
+         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
         public function execute($cacheOptions = null)
         {
@@ -935,7 +950,7 @@ namespace ManaPHP\Mvc\Model {
          * @param int $rowCount
          *
          * @return static
-         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
+         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
         protected function _getTotalRows(&$rowCount)
         {
@@ -976,7 +991,7 @@ namespace ManaPHP\Mvc\Model {
          * @param array $cacheOptions
          *
          * @return array
-         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Db\ConditionParser\Exception|\ManaPHP\Di\Exception
+         * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
          */
         public function executeEx(&$totalRows, $cacheOptions = null)
         {

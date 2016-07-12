@@ -102,44 +102,6 @@ namespace ManaPHP\Mvc {
         }
 
         /**
-         * @param string                               $uri
-         * @param \ManaPHP\Mvc\Router\RouteInterface[] $routes
-         * @param array                                $parts
-         *
-         * @return bool
-         */
-        protected function _findMatchedRoute($uri, $routes, &$parts)
-        {
-            $parts = [];
-
-            for ($i = count($routes) - 1; $i >= 0; $i--) {
-                $route = $routes[$i];
-
-                if ($route->isMatched($uri, $matches)) {
-                    foreach ($matches as $k => $v) {
-                        if (is_string($k)) {
-                            $parts[$k] = $v;
-                        }
-                    }
-
-                    foreach ($route->getPaths() as $k => $v) {
-                        if (is_int($v)) {
-                            if (isset($matches[$v])) {
-                                $parts[$k] = $matches[$v];
-                            }
-                        } else {
-                            $parts[$k] = $v;
-                        }
-                    }
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /**
          * Handles routing information received from the rewrite engine
          *
          *<code>
@@ -204,7 +166,8 @@ namespace ManaPHP\Mvc {
                 }
                 $groupInstance = $group['groupInstance'];
 
-                $routeFound = $this->_findMatchedRoute($handledUri, $groupInstance->getRoutes(), $parts);
+                $parts = $groupInstance->match($handledUri);
+                $routeFound = $parts !== false;
                 if ($routeFound) {
                     break;
                 }

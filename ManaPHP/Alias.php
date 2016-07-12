@@ -89,12 +89,12 @@ namespace ManaPHP {
 
             return isset($this->_aliases[$name]);
         }
-
+        
+        /** @noinspection PhpDocMissingThrowsInspection */
         /**
          * @param string $path
          *
          * @return string
-         * @throws \ManaPHP\Alias\Exception
          */
         public function resolve($path)
         {

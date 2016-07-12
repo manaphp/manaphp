@@ -51,13 +51,6 @@ namespace ManaPHP\Mvc\Router {
     interface GroupInterface
     {
         /**
-         * Returns the routes added to the group
-         *
-         * @return \ManaPHP\Mvc\Router\RouteInterface[]
-         */
-        public function getRoutes();
-
-        /**
          * Adds a route to the router on any HTTP method
          *
          *<code>
@@ -141,5 +134,12 @@ namespace ManaPHP\Mvc\Router {
          * @return \ManaPHP\Mvc\Router\RouteInterface
          */
         public function addHead($pattern, $paths = null);
+
+        /**
+         * @param string $uri
+         *
+         * @return false|array
+         */
+        public function match($uri);
     }
 }

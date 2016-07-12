@@ -62,16 +62,6 @@ namespace ManaPHP\Mvc\Router {
         }
 
         /**
-         * Returns the routes added to the group
-         *
-         * @return \ManaPHP\Mvc\Router\RouteInterface[]
-         */
-        public function getRoutes()
-        {
-            return $this->_routes;
-        }
-
-        /**
          * Adds a route applying the common attributes
          *
          * @param string       $pattern
@@ -204,6 +194,43 @@ namespace ManaPHP\Mvc\Router {
         public function addHead($pattern, $paths = null)
         {
             return $this->_addRoute($pattern, $paths, 'HEAD');
+        }
+
+        /**
+         * @param string $uri
+         *
+         * @return array|false
+         */
+        public function match($uri)
+        {
+            for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
+                $route = $this->_routes[$i];
+
+                $matches = $route->match($uri);
+                if ($matches !== false) {
+                    $parts = [];
+
+                    foreach ($matches as $k => $v) {
+                        if (is_string($k)) {
+                            $parts[$k] = $v;
+                        }
+                    }
+
+                    foreach ($route->getPaths() as $k => $v) {
+                        if (is_int($v)) {
+                            if (isset($matches[$v])) {
+                                $parts[$k] = $matches[$v];
+                            }
+                        } else {
+                            $parts[$k] = $v;
+                        }
+                    }
+
+                    return $parts;
+                }
+            }
+
+            return false;
         }
     }
 }

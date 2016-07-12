@@ -96,7 +96,7 @@ namespace ManaPHP\Mvc\Model {
         /**
          * Creates a \ManaPHP\Mvc\Model\Query\Builder
          *
-         * @param string $params
+         * @param string|array $params
          *
          * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
          */

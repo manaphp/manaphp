@@ -14,26 +14,27 @@ class MvcRouterRouteTest extends TestCase
 
         //  literal route test
         $route = new \ManaPHP\Mvc\Router\Route('/blog/edit');
-        $this->assertTrue($route->isMatched('/blog/edit', $matches));
-        $this->assertEquals([], $matches);
+        $parts = $route->match('/blog/edit');
+        $this->assertEquals([], $parts);
 
         // :module, :controller, :action, :params
         $route = new \ManaPHP\Mvc\Router\Route('/:module/:controller/:action/:params');
-        $this->assertTrue($route->isMatched('/admin/blog/edit/a/b/c', $matches));
-        $this->assertEquals('admin', $matches['module']);
-        $this->assertEquals('blog', $matches['controller']);
-        $this->assertEquals('edit', $matches['action']);
-        $this->assertEquals('a/b/c', $matches['params']);
+        $parts = $route->match('/admin/blog/edit/a/b/c');
+        $this->assertNotFalse($parts);
+        $this->assertEquals('admin', $parts['module']);
+        $this->assertEquals('blog', $parts['controller']);
+        $this->assertEquals('edit', $parts['action']);
+        $this->assertEquals('a/b/c', $parts['params']);
 
         //  normal pcre
         $route = new \ManaPHP\Mvc\Router\Route('/blog/{user:[a-z0-9]{4,}}/view-{id:\d+}.html');
-        $this->assertTrue($route->isMatched('/blog/mana/view-1234.html', $matches));
-        $this->assertEquals('1234', $matches['id']);
-        $this->assertEquals('mana', $matches['user']);
+        $parts = $route->match('/blog/mana/view-1234.html');
+        $this->assertEquals('1234', $parts['id']);
+        $this->assertEquals('mana', $parts['user']);
 
         $route = new \ManaPHP\Mvc\Router\Route('/blog/{id:\d+}');
-        $this->assertTrue($route->isMatched('/blog/1234', $matches));
-        $this->assertEquals('1234', $matches['id']);
+        $parts = $route->match('/blog/1234');
+        $this->assertEquals('1234', $parts['id']);
 
     }
 

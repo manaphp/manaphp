@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc {
 
     use ManaPHP\Component;
-    use ManaPHP\Db\ConditionParser;
     use ManaPHP\Di;
     use ManaPHP\Mvc\Model\Exception;
 

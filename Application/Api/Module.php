@@ -6,10 +6,6 @@ use ManaPHP\Mvc\ModuleInterface;
 
 class Module extends Component implements ModuleInterface
 {
-    public function registerAutoloaders($di)
-    {
-    }
-
     public function registerServices($di)
     {
 

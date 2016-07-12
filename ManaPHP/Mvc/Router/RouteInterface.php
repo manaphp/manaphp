@@ -15,11 +15,10 @@ namespace ManaPHP\Mvc\Router {
         public function getPaths();
 
         /**
-         * @param string $handle_uri
-         * @param array  $matches
+         * @param string $uri
          *
-         * @return bool
+         * @return false|array
          */
-        public function isMatched($handle_uri, &$matches);
+        public function match($uri);
     }
 }

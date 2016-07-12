@@ -2,8 +2,8 @@
 
 namespace ManaPHP {
 
-    use ManaPHP\Db\ConditionParser;
     use ManaPHP\Db\Exception;
+    use ManaPHP\Utility\Text;
 
     class Db extends Component implements DbInterface
     {
@@ -390,7 +390,7 @@ namespace ManaPHP {
          * @param    array        $bind
          *
          * @return    int
-         * @throws \ManaPHP\Db\Exception|\ManaPHP\Db\ConditionParser\Exception
+         * @throws \ManaPHP\Db\Exception
          */
         public function update($table, $columnValues, $conditions, $bind = [])
         {
@@ -400,8 +400,20 @@ namespace ManaPHP {
                 throw new Exception('Unable to update ' . $table . ' without data');
             }
 
-            $where = (new ConditionParser())->parse($conditions, $conditionBind);
-            $bind = $bind ? array_merge($conditionBind, $bind) : $conditionBind;
+            if(is_string($conditions)){
+                $conditions = [$conditions];
+            }
+
+            $wheres=[];
+
+            foreach ($conditions as $k=>$v){
+                if (is_int($k)) {
+                    $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
+                }else{
+                    $wheres[] = "`$k`=:$k";
+                    $bind[$k] = $v;
+                }
+            }
 
             $setColumns = [];
             foreach ($columnValues as $k => $v) {
@@ -411,7 +423,7 @@ namespace ManaPHP {
 
             $updateColumns = implode(',', $setColumns);
             $updateSql = /** @lang Text */
-                "UPDATE $escapedTable SET $updateColumns WHERE  $where";
+                "UPDATE $escapedTable SET $updateColumns WHERE ". implode(' AND ', $wheres);
 
             return $this->execute($updateSql, $bind);
         }
@@ -433,16 +445,28 @@ namespace ManaPHP {
          * @param  array        $bind
          *
          * @return int
-         * @throws \ManaPHP\Db\Exception|\ManaPHP\Db\ConditionParser\Exception
+         * @throws \ManaPHP\Db\Exception
          */
         public function delete($table, $conditions, $bind = [])
         {
-            $where = (new ConditionParser())->parse($conditions, $conditionBind);
+            if(is_string($conditions)){
+                $conditions = [$conditions];
+            }
+
+            $wheres=[];
+            foreach ($conditions as $k=>$v){
+                if (is_int($k)) {
+                    $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
+                }else{
+                    $wheres[] = "`$k`=:$k";
+                    $bind[$k] = $v;
+                }
+            }
 
             $sql = /**@lang Text */
-                "DELETE FROM `$table` WHERE " . $where;
+                "DELETE FROM `$table` WHERE " . implode(' AND ', $wheres);
 
-            return $this->execute($sql, array_merge($conditionBind, $bind));
+            return $this->execute($sql, $bind);
         }
 
         /**

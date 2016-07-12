@@ -7,14 +7,6 @@ namespace ManaPHP\Mvc {
      */
     interface ModuleInterface
     {
-
-        /**
-         * Registers an autoloader related to the module
-         *
-         * * @param \ManaPHP\DiInterface $dependencyInjector
-         */
-        public function registerAutoloaders($dependencyInjector);
-
         /**
          * Registers services related to the module
          *
@@ -25,7 +17,8 @@ namespace ManaPHP\Mvc {
         /**
          * @param string $controller
          * @param string $action
-         * @return bool
+         *
+         * @return false|void
          */
         public function authorize($controller, $action);
     }
