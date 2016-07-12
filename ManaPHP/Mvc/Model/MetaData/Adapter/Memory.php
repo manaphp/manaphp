@@ -1,19 +1,18 @@
 <?php
 
-namespace ManaPHP\Mvc\Model\MetaData\Adapter {
+namespace ManaPHP\Mvc\Model\MetaData\Adapter;
 
-    use ManaPHP\Mvc\Model\MetaData;
+use ManaPHP\Mvc\Model\MetaData;
 
-    class Memory extends MetaData
+class Memory extends MetaData
+{
+    public function read($key)
     {
-        public function read($key)
-        {
-            return false;
-        }
+        return false;
+    }
 
-        public function write($key, $data)
-        {
+    public function write($key, $data)
+    {
 
-        }
     }
 }

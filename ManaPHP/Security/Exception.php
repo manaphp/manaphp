@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Security {
+namespace ManaPHP\Security;
 
-    class Exception extends \ManaPHP\Exception
-    {
+class Exception extends \ManaPHP\Exception
+{
 
-    }
 }

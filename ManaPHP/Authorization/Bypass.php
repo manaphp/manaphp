@@ -1,18 +1,17 @@
 <?php
-namespace ManaPHP\Authorization {
+namespace ManaPHP\Authorization;
 
-    use ManaPHP\AuthorizationInterface;
+use ManaPHP\AuthorizationInterface;
 
-    class Bypass implements AuthorizationInterface
+class Bypass implements AuthorizationInterface
+{
+    public function authorize($dispatcher)
     {
-        public function authorize($dispatcher)
-        {
-            return true;
-        }
+        return true;
+    }
 
-        public function isAllowed($permission, $userId = null)
-        {
-            return true;
-        }
+    public function isAllowed($permission, $userId = null)
+    {
+        return true;
     }
 }

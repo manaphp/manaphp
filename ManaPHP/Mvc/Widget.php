@@ -1,10 +1,9 @@
 <?php
-namespace ManaPHP\Mvc {
+namespace ManaPHP\Mvc;
 
-    use ManaPHP\Component;
+use ManaPHP\Component;
 
-    abstract class Widget extends Component implements WidgetInterface
-    {
+abstract class Widget extends Component implements WidgetInterface
+{
 
-    }
 }

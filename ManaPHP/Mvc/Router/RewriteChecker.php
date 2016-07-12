@@ -1,17 +1,16 @@
 <?php
-namespace ManaPHP\Mvc\Router {
+namespace ManaPHP\Mvc\Router;
 
-    use ManaPHP\Mvc\Router\RewriteChecker\Exception;
+use ManaPHP\Mvc\Router\RewriteChecker\Exception;
 
-    class RewriteChecker
+class RewriteChecker
+{
+    public function __construct()
     {
-        public function __construct()
-        {
-            if (!isset($_SERVER['MANAPHP_REWRITE_ON'])) {
-                if (PHP_SAPI === 'apache2handler') {
-                    if (!in_array('mod_rewrite', apache_get_modules(), true)) {
-                        throw new Exception('please install Apache mod_rewrite module.');
-                    }
+        if (!isset($_SERVER['MANAPHP_REWRITE_ON'])) {
+            if (PHP_SAPI === 'apache2handler') {
+                if (!in_array('mod_rewrite', apache_get_modules(), true)) {
+                    throw new Exception('please install Apache mod_rewrite module.');
                 }
             }
         }

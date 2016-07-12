@@ -1,65 +1,64 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter {
+namespace ManaPHP\Cache\Adapter;
 
-    use ManaPHP\Cache;
+use ManaPHP\Cache;
 
-    class Apc extends Cache
+class Apc extends Cache
+{
+    /**
+     * @var string
+     */
+    protected $_prefix = 'manaphp:cache:';
+
+    /**
+     * Apc constructor.
+     *
+     * @param array|\ConfManaPHP\Cache\Adapter\Apc $options
+     *
+     * @throws \ManaPHP\Cache\Adapter\Exception
+     */
+    public function __construct($options = [])
     {
-        /**
-         * @var string
-         */
-        protected $_prefix = 'manaphp:cache:';
+        parent::__construct();
 
-        /**
-         * Apc constructor.
-         *
-         * @param array|\ConfManaPHP\Cache\Adapter\Apc $options
-         *
-         * @throws \ManaPHP\Cache\Adapter\Exception
-         */
-        public function __construct($options = [])
-        {
-            parent::__construct();
-
-            if (!function_exists('apc_exists')) {
-                throw new Exception('apc extension is not loaded: http://pecl.php.net/package/APCu');
-            }
-
-            if (!ini_get('apc.enable_cli')) {
-                throw new Exception('apc.enable_cli=0, please enable it.');
-            }
-
-            if (is_object($options)) {
-                $options = (array)$options;
-            }
-
-            if (isset($options['prefix'])) {
-                $this->_prefix .= $options['prefix'];
-            }
+        if (!function_exists('apc_exists')) {
+            throw new Exception('apc extension is not loaded: http://pecl.php.net/package/APCu');
         }
 
-        public function _exists($key)
-        {
-            return apc_exists($this->_prefix . $key);
+        if (!ini_get('apc.enable_cli')) {
+            throw new Exception('apc.enable_cli=0, please enable it.');
         }
 
-        public function _get($key)
-        {
-            return apc_fetch($this->_prefix . $key);
+        if (is_object($options)) {
+            $options = (array)$options;
         }
 
-        public function _set($key, $value, $ttl)
-        {
-            $r = apc_store($this->_prefix . $key, $value, $ttl);
-            if (!$r) {
-                throw new Exception('apc store failed: ' . $key);
-            }
+        if (isset($options['prefix'])) {
+            $this->_prefix .= $options['prefix'];
         }
+    }
 
-        public function _delete($key)
-        {
-            apc_delete($this->_prefix . $key);
+    public function _exists($key)
+    {
+        return apc_exists($this->_prefix . $key);
+    }
+
+    public function _get($key)
+    {
+        return apc_fetch($this->_prefix . $key);
+    }
+
+    public function _set($key, $value, $ttl)
+    {
+        $r = apc_store($this->_prefix . $key, $value, $ttl);
+        if (!$r) {
+            throw new Exception('apc store failed: ' . $key);
         }
+    }
+
+    public function _delete($key)
+    {
+        apc_delete($this->_prefix . $key);
     }
 }

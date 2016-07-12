@@ -1,7 +1,6 @@
 <?php
-namespace ManaPHP\Configure {
+namespace ManaPHP\Configure;
 
-    interface ConfigureInterface
-    {
-    }
+interface ConfigureInterface
+{
 }

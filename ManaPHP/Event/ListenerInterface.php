@@ -4,10 +4,9 @@
  * User: Mark
  * Date: 2016/1/16
  */
-namespace ManaPHP\Event {
+namespace ManaPHP\Event;
 
-    interface ListenerInterface
-    {
+interface ListenerInterface
+{
 
-    }
 }

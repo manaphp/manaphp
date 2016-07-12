@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Mvc\Application {
+namespace ManaPHP\Mvc\Application;
 
-    class NotFoundModuleException extends Exception
-    {
+class NotFoundModuleException extends Exception
+{
 
-    }
 }

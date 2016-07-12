@@ -1,50 +1,49 @@
 <?php
 
-namespace ManaPHP\Mvc\View\Flash\Adapter {
+namespace ManaPHP\Mvc\View\Flash\Adapter;
 
-    use ManaPHP\Mvc\View\Flash;
+use ManaPHP\Mvc\View\Flash;
+
+/**
+ * ManaPHP\Flash\Direct
+ *
+ * This is a variant of the ManaPHP\Flash that immediately outputs any message passed to it
+ */
+class Direct extends Flash
+{
+    /**
+     * @var string[]
+     */
+    protected $_messages = [];
 
     /**
-     * ManaPHP\Flash\Direct
+     * Outputs a message
      *
-     * This is a variant of the ManaPHP\Flash that immediately outputs any message passed to it
+     * @param  string $type
+     * @param  string $message
+     *
+     * @return void
      */
-    class Direct extends Flash
+    public function _message($type, $message)
     {
-        /**
-         * @var string[]
-         */
-        protected $_messages = [];
+        $cssClasses = isset($this->_cssClasses[$type]) ? $this->_cssClasses[$type] : '';
 
-        /**
-         * Outputs a message
-         *
-         * @param  string $type
-         * @param  string $message
-         *
-         * @return void
-         */
-        public function _message($type, $message)
-        {
-            $cssClasses = isset($this->_cssClasses[$type]) ? $this->_cssClasses[$type] : '';
+        $this->_messages[] = '<div class="' . $cssClasses . '">' . $message . '</div>' . PHP_EOL;
+    }
 
-            $this->_messages[] = '<div class="' . $cssClasses . '">' . $message . '</div>' . PHP_EOL;
+    /**
+     * Prints the messages in the session flasher
+     *
+     * @param $remove bool
+     */
+    public function _output($remove = true)
+    {
+        foreach ($this->_messages as $message) {
+            echo $message;
         }
 
-        /**
-         * Prints the messages in the session flasher
-         *
-         * @param $remove bool
-         */
-        public function _output($remove = true)
-        {
-            foreach ($this->_messages as $message) {
-                echo $message;
-            }
-
-            if ($remove) {
-                $this->_messages = [];
-            }
+        if ($remove) {
+            $this->_messages = [];
         }
     }
 }

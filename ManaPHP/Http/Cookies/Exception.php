@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Http\Cookies {
+namespace ManaPHP\Http\Cookies;
 
-    class  Exception extends \ManaPHP\Http\Exception
-    {
+class  Exception extends \ManaPHP\Http\Exception
+{
 
-    }
 }

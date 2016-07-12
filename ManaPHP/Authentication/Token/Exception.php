@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Authentication\Token {
+namespace ManaPHP\Authentication\Token;
 
-    class Exception extends \ManaPHP\Security\Exception
-    {
+class Exception extends \ManaPHP\Security\Exception
+{
 
-    }
 }

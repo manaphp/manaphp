@@ -1,18 +1,17 @@
 <?php
 
-namespace ManaPHP\Mvc\View\Renderer {
+namespace ManaPHP\Mvc\View\Renderer;
 
+/**
+ * ManaPHP\Mvc\View\EngineInterface initializer
+ */
+interface EngineInterface
+{
     /**
-     * ManaPHP\Mvc\View\EngineInterface initializer
+     * Renders a view using the template engine
+     *
+     * @param string $file
+     * @param array  $vars
      */
-    interface EngineInterface
-    {
-        /**
-         * Renders a view using the template engine
-         *
-         * @param string $file
-         * @param array  $vars
-         */
-        public function render($file, $vars = null);
-    }
+    public function render($file, $vars = null);
 }

@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP {
+namespace ManaPHP;
 
-    interface ApplicationInterface
-    {
+interface ApplicationInterface
+{
 
-    }
 }

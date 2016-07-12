@@ -1,24 +1,23 @@
 <?php
 
-namespace ManaPHP\Mvc\Router {
+namespace ManaPHP\Mvc\Router;
+
+/**
+ * ManaPHP\Mvc\Router\RouteInterface initializer
+ */
+interface RouteInterface
+{
+    /**
+     * Returns the paths
+     *
+     * @return array
+     */
+    public function getPaths();
 
     /**
-     * ManaPHP\Mvc\Router\RouteInterface initializer
+     * @param string $uri
+     *
+     * @return false|array
      */
-    interface RouteInterface
-    {
-        /**
-         * Returns the paths
-         *
-         * @return array
-         */
-        public function getPaths();
-
-        /**
-         * @param string $uri
-         *
-         * @return false|array
-         */
-        public function match($uri);
-    }
+    public function match($uri);
 }

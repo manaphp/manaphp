@@ -1,123 +1,122 @@
 <?php
-namespace ManaPHP {
+namespace ManaPHP;
 
-    use \ManaPHP\Alias\Exception;
-    use ManaPHP\Utility\Text;
+use ManaPHP\Alias\Exception;
+use ManaPHP\Utility\Text;
 
-    class Alias extends Component implements AliasInterface
+class Alias extends Component implements AliasInterface
+{
+    /**
+     * @var array
+     */
+    protected $_aliases = [];
+
+    public function __construct()
     {
-        /**
-         * @var array
-         */
-        protected $_aliases = [];
+        parent::__construct();
 
-        public function __construct()
-        {
-            parent::__construct();
+        $this->set('@manaphp', str_replace('\\', '/', __DIR__));
 
-            $this->set('@manaphp', str_replace('\\', '/', __DIR__));
+        $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
 
-            $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        $found = false;
+        foreach ($traces as $trace) {
+            if (isset($trace['class']) && !Text::startsWith($trace['class'], 'ManaPHP\\')) {
+                $class = str_replace('\\', '/', $trace['class']);
+                foreach (get_included_files() as $file) {
+                    $file = str_replace('\\', '/', $file);
 
-            $found = false;
-            foreach ($traces as $trace) {
-                if (isset($trace['class']) && !Text::startsWith($trace['class'], 'ManaPHP\\')) {
-                    $class = str_replace('\\', '/', $trace['class']);
-                    foreach (get_included_files() as $file) {
-                        $file = str_replace('\\', '/', $file);
+                    if (Text::contains($file, $class . '.php')) {
+                        $dir = dirname($file);
 
-                        if (Text::contains($file, $class . '.php')) {
-                            $dir = dirname($file);
+                        $this->set('@app', str_replace('\\', '/', $dir));
+                        $this->set('@data', dirname($dir) . '/Data');
 
-                            $this->set('@app', str_replace('\\', '/', $dir));
-                            $this->set('@data', dirname($dir) . '/Data');
-
-                            $found = true;
-                            break;
-                        }
+                        $found = true;
+                        break;
                     }
                 }
+            }
 
-                if ($found) {
-                    break;
-                }
+            if ($found) {
+                break;
             }
         }
+    }
 
-        /**
-         * @param string $name
-         * @param string $path
-         *
-         * @return string
-         * @throws \ManaPHP\Alias\Exception
-         */
-        public function set($name, $path)
-        {
-            if ($name[0] !== '@') {
-                throw new Exception('alias must start with @ character');
-            }
-
-            return $this->_aliases[$name] = $this->resolve($path);
+    /**
+     * @param string $name
+     * @param string $path
+     *
+     * @return string
+     * @throws \ManaPHP\Alias\Exception
+     */
+    public function set($name, $path)
+    {
+        if ($name[0] !== '@') {
+            throw new Exception('alias must start with @ character');
         }
 
-        /**
-         * @param string $name
-         *
-         * @return bool|string
-         * @throws \ManaPHP\Alias\Exception
-         */
-        public function get($name)
-        {
-            if ($name[0] !== '@') {
-                throw new Exception('alias must start with @ character');
-            }
+        return $this->_aliases[$name] = $this->resolve($path);
+    }
 
-            return isset($this->_aliases[$name]) ? $this->_aliases[$name] : false;
+    /**
+     * @param string $name
+     *
+     * @return bool|string
+     * @throws \ManaPHP\Alias\Exception
+     */
+    public function get($name)
+    {
+        if ($name[0] !== '@') {
+            throw new Exception('alias must start with @ character');
         }
 
-        /**
-         * @param string $name
-         *
-         * @return bool
-         * @throws \ManaPHP\Alias\Exception
-         */
-        public function has($name)
-        {
-            if ($name[0] !== '@') {
-                throw new Exception('alias must start with @ character');
-            }
+        return isset($this->_aliases[$name]) ? $this->_aliases[$name] : false;
+    }
 
-            return isset($this->_aliases[$name]);
+    /**
+     * @param string $name
+     *
+     * @return bool
+     * @throws \ManaPHP\Alias\Exception
+     */
+    public function has($name)
+    {
+        if ($name[0] !== '@') {
+            throw new Exception('alias must start with @ character');
         }
-        
-        /** @noinspection PhpDocMissingThrowsInspection */
-        /**
-         * @param string $path
-         *
-         * @return string
-         */
-        public function resolve($path)
-        {
-            if (rtrim($path, '\\/') !== $path) {
 
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new Exception("Path can not end with '/' or '\\': " . $path);
-            }
+        return isset($this->_aliases[$name]);
+    }
 
-            $path = str_replace('\\', '/', $path);
+    /** @noinspection PhpDocMissingThrowsInspection */
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    public function resolve($path)
+    {
+        if (rtrim($path, '\\/') !== $path) {
 
-            if ($path[0] !== '@') {
-                return $path;
-            }
-
-            list($alias) = explode('/', $path, 2);
-            if (!isset($this->_aliases[$alias])) {
-
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new Exception("alias $alias is not exists: " . $path);
-            }
-
-            return str_replace($alias, $this->_aliases[$alias], $path);
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new Exception("Path can not end with '/' or '\\': " . $path);
         }
+
+        $path = str_replace('\\', '/', $path);
+
+        if ($path[0] !== '@') {
+            return $path;
+        }
+
+        list($alias) = explode('/', $path, 2);
+        if (!isset($this->_aliases[$alias])) {
+
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new Exception("alias $alias is not exists: " . $path);
+        }
+
+        return str_replace($alias, $this->_aliases[$alias], $path);
     }
 }

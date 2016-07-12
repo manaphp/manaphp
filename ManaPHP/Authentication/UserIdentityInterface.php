@@ -1,16 +1,15 @@
 <?php
-namespace ManaPHP\Authentication {
+namespace ManaPHP\Authentication;
 
-    interface   UserIdentityInterface
-    {
-        /**
-         * @return string|int
-         */
-        public function getId();
+interface   UserIdentityInterface
+{
+    /**
+     * @return string|int
+     */
+    public function getId();
 
-        /**
-         * @return string
-         */
-        public function getName();
-    }
+    /**
+     * @return string
+     */
+    public function getName();
 }

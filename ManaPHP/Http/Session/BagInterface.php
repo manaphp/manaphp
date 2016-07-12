@@ -1,50 +1,48 @@
 <?php
 
-namespace ManaPHP\Http\Session {
+namespace ManaPHP\Http\Session;
+
+/**
+ * ManaPHP\Http\Session\BagInterface initializer
+ */
+interface BagInterface
+{
+    /**
+     * Destroy the session bag
+     */
+    public function destroy();
 
     /**
-     * ManaPHP\Http\Session\BagInterface initializer
+     * Setter of values
+     *
+     * @param string $property
+     * @param mixed  $value
      */
-    interface BagInterface
-    {
-        /**
-         * Destroy the session bag
-         */
-        public function destroy();
+    public function set($property, $value);
 
-        /**
-         * Setter of values
-         *
-         * @param string $property
-         * @param mixed  $value
-         */
-        public function set($property, $value);
+    /**
+     * Getter of values
+     *
+     * @param string $property
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
+     */
+    public function get($property = null, $defaultValue = null);
 
-        /**
-         * Getter of values
-         *
-         * @param string $property
-         * @param mixed  $defaultValue
-         *
-         * @return mixed
-         */
-        public function get($property = null, $defaultValue = null);
+    /**
+     * Isset property
+     *
+     * @param string $property
+     *
+     * @return boolean
+     */
+    public function has($property);
 
-        /**
-         * Isset property
-         *
-         * @param string $property
-         *
-         * @return boolean
-         */
-        public function has($property);
-
-        /**
-         * Unset property
-         *
-         * @param string $property
-         */
-        public function remove($property);
-
-    }
+    /**
+     * Unset property
+     *
+     * @param string $property
+     */
+    public function remove($property);
 }

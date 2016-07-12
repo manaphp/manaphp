@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Security\CsrfToken {
+namespace ManaPHP\Security\CsrfToken;
 
-    class Exception extends \ManaPHP\Security\Exception
-    {
+class Exception extends \ManaPHP\Security\Exception
+{
 
-    }
 }

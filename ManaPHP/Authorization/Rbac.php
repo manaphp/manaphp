@@ -1,173 +1,172 @@
 <?php
-namespace ManaPHP\Authorization\Rbac {
+namespace ManaPHP\Authorization\Rbac;
 
-    use ManaPHP\Authorization\Exception;
-    use ManaPHP\Authorization\Rbac\Models\Permission;
-    use ManaPHP\AuthorizationInterface;
-    use ManaPHP\Component;
-    use ManaPHP\Mvc\Dispatcher;
-    use ManaPHP\Utility\Text;
+use ManaPHP\Authorization\Exception;
+use ManaPHP\Authorization\Rbac\Models\Permission;
+use ManaPHP\AuthorizationInterface;
+use ManaPHP\Component;
+use ManaPHP\Mvc\Dispatcher;
+use ManaPHP\Utility\Text;
 
-    class Rbac extends Component implements AuthorizationInterface
+class Rbac extends Component implements AuthorizationInterface
+{
+    /**
+     * @var string
+     */
+    protected $_userRoleModel = 'ManaPHP\Authorization\Rbac\Models\UserRole';
+
+    /**
+     * @var string
+     */
+    protected $_rolePermissionModel = 'ManaPHP\Authorization\Rbac\Models\RolePermission';
+
+    /**
+     * @var string
+     */
+    protected $_permissionModel = 'ManaPHP\Authorization\Rbac\Models\Permission';
+
+    /**
+     * Rbac constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
     {
-        /**
-         * @var string
-         */
-        protected $_userRoleModel = 'ManaPHP\Authorization\Rbac\Models\UserRole';
+        parent::__construct();
 
-        /**
-         * @var string
-         */
-        protected $_rolePermissionModel = 'ManaPHP\Authorization\Rbac\Models\RolePermission';
-
-        /**
-         * @var string
-         */
-        protected $_permissionModel = 'ManaPHP\Authorization\Rbac\Models\Permission';
-
-        /**
-         * Rbac constructor.
-         *
-         * @param array $options
-         */
-        public function __construct($options = [])
-        {
-            parent::__construct();
-
-            if (isset($options['userRoleMode'])) {
-                $this->_userRoleModel = $options['userRoleMode'];
-            }
-
-            if (isset($options['rolePermissionModel'])) {
-                $this->_rolePermissionModel = $options['rolePermissionModel'];
-            }
-
-            if (isset($options['permissionModel'])) {
-                $this->_permissionModel = $options['permissionModel'];
-            }
+        if (isset($options['userRoleMode'])) {
+            $this->_userRoleModel = $options['userRoleMode'];
         }
 
-        /**
-         * @param string $permissionName
-         *
-         * @return array
-         * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
-         */
-        protected function _getPermission($permissionName)
-        {
-            $rows = $this->modelsManager->createBuilder()
-                ->columns('permission_id, permission_type')
-                ->addFrom($this->_permissionModel)
-                ->where('permission_name', $permissionName)
-                ->execute();
-
-            if (count($rows) === 0) {
-                throw new Exception('Permission is not exists: ' . $permissionName);
-            }
-
-            return $rows[0];
+        if (isset($options['rolePermissionModel'])) {
+            $this->_rolePermissionModel = $options['rolePermissionModel'];
         }
 
-        /**
-         * @param int $permissionId
-         *
-         * @return array
-         * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
-         */
-        protected function _getRolesByPermission($permissionId)
-        {
-            $rows = $this->modelsManager->createBuilder()
-                ->columns('role_id')
-                ->addFrom($this->_rolePermissionModel)
-                ->where('permission_id', $permissionId)
-                ->execute();
+        if (isset($options['permissionModel'])) {
+            $this->_permissionModel = $options['permissionModel'];
+        }
+    }
 
-            $roleIds = [];
-            foreach ($rows as $row) {
-                $roleIds[] = $row['role_id'];
-            }
+    /**
+     * @param string $permissionName
+     *
+     * @return array
+     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
+     */
+    protected function _getPermission($permissionName)
+    {
+        $rows = $this->modelsManager->createBuilder()
+            ->columns('permission_id, permission_type')
+            ->addFrom($this->_permissionModel)
+            ->where('permission_name', $permissionName)
+            ->execute();
 
-            return $roleIds;
+        if (count($rows) === 0) {
+            throw new Exception('Permission is not exists: ' . $permissionName);
         }
 
-        /**
-         * @param int|string $userId
-         *
-         * @return array
-         * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
-         */
-        protected function _getRolesByUser($userId)
-        {
-            $rows = $this->modelsManager->createBuilder()
-                ->columns('role_id')
-                ->addFrom($this->_rolePermissionModel)
-                ->where('user_id', $userId)
-                ->execute();
-            $roleIds = [];
-            foreach ($rows as $row) {
-                $roleIds[] = $row['role_id'];
-            }
+        return $rows[0];
+    }
 
-            return $roleIds;
+    /**
+     * @param int $permissionId
+     *
+     * @return array
+     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
+     */
+    protected function _getRolesByPermission($permissionId)
+    {
+        $rows = $this->modelsManager->createBuilder()
+            ->columns('role_id')
+            ->addFrom($this->_rolePermissionModel)
+            ->where('permission_id', $permissionId)
+            ->execute();
+
+        $roleIds = [];
+        foreach ($rows as $row) {
+            $roleIds[] = $row['role_id'];
         }
 
-        /**
-         * @param string $permissionName
-         *
-         * @return string
-         * @throws \ManaPHP\Authorization\Exception
-         */
-        protected function _getStandardPermissionName($permissionName)
-        {
-            $parts = explode('::', $permissionName);
+        return $roleIds;
+    }
 
-            switch (count($parts)) {
-                case 1:
-                    $parts = [$this->dispatcher->getModuleName(), $this->dispatcher->getControllerName(), $parts[0]];
-                    break;
-                case 2:
-                    $parts = array_merge([$this->dispatcher->getModuleName()], $parts);
-                    break;
-                case 3:
-                    break;
-                default:
-                    throw new Exception('Permission name format is invalid: ' . $permissionName);
-            }
-
-            return implode('::', $parts);
+    /**
+     * @param int|string $userId
+     *
+     * @return array
+     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
+     */
+    protected function _getRolesByUser($userId)
+    {
+        $rows = $this->modelsManager->createBuilder()
+            ->columns('role_id')
+            ->addFrom($this->_rolePermissionModel)
+            ->where('user_id', $userId)
+            ->execute();
+        $roleIds = [];
+        foreach ($rows as $row) {
+            $roleIds[] = $row['role_id'];
         }
 
-        public function isAllowed($permissionName, $userId = null)
-        {
-            $permissionName = $this->_getStandardPermissionName($permissionName);
+        return $roleIds;
+    }
 
-            if ($userId === null) {
-                $userId = $this->userIdentity->getId();
-            }
+    /**
+     * @param string $permissionName
+     *
+     * @return string
+     * @throws \ManaPHP\Authorization\Exception
+     */
+    protected function _getStandardPermissionName($permissionName)
+    {
+        $parts = explode('::', $permissionName);
 
-            $permission = $this->_getPermission($permissionName);
+        switch (count($parts)) {
+            case 1:
+                $parts = [$this->dispatcher->getModuleName(), $this->dispatcher->getControllerName(), $parts[0]];
+                break;
+            case 2:
+                $parts = array_merge([$this->dispatcher->getModuleName()], $parts);
+                break;
+            case 3:
+                break;
+            default:
+                throw new Exception('Permission name format is invalid: ' . $permissionName);
+        }
 
-            $permissionId = (int)$permission['permission_id'];
-            $permissionType = (int)$permission['permission_type'];
+        return implode('::', $parts);
+    }
 
-            if ($permissionType === Permission::TYPE_PUBLIC) {
-                return true;
-            } elseif ($permissionType === Permission::TYPE_INTERNAL) {
-                /** @noinspection IsEmptyFunctionUsageInspection */
-                return (!empty($userId));
-            } elseif ($permissionType === Permission::TYPE_PENDING) {
-                throw new Exception('Permission type is not configured: ' . $permissionName);
-            }
+    public function isAllowed($permissionName, $userId = null)
+    {
+        $permissionName = $this->_getStandardPermissionName($permissionName);
 
-            $rolesByPermission = $this->_getRolesByPermission($permissionId);
+        if ($userId === null) {
+            $userId = $this->userIdentity->getId();
+        }
 
-            $rolesByUser = $this->_getRolesByUser($userId);
+        $permission = $this->_getPermission($permissionName);
 
-            if (array_intersect($rolesByUser, $rolesByPermission)) {
-                return true;
-            } else {
-                return false;
-            }
+        $permissionId = (int)$permission['permission_id'];
+        $permissionType = (int)$permission['permission_type'];
+
+        if ($permissionType === Permission::TYPE_PUBLIC) {
+            return true;
+        } elseif ($permissionType === Permission::TYPE_INTERNAL) {
+            /** @noinspection IsEmptyFunctionUsageInspection */
+            return (!empty($userId));
+        } elseif ($permissionType === Permission::TYPE_PENDING) {
+            throw new Exception('Permission type is not configured: ' . $permissionName);
+        }
+
+        $rolesByPermission = $this->_getRolesByPermission($permissionId);
+
+        $rolesByUser = $this->_getRolesByUser($userId);
+
+        if (array_intersect($rolesByUser, $rolesByPermission)) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

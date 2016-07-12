@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Http\Client {
+namespace ManaPHP\Http\Client;
 
-    class Exception extends \ManaPHP\Exception
-    {
+class Exception extends \ManaPHP\Exception
+{
 
-    }
 }

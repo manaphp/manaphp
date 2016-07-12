@@ -1,282 +1,281 @@
 <?php
 
-namespace ManaPHP\Http {
+namespace ManaPHP\Http;
+
+/**
+ * ManaPHP\Http\RequestInterface initializer
+ */
+interface RequestInterface
+{
 
     /**
-     * ManaPHP\Http\RequestInterface initializer
+     * @param array $rules
+     *
+     * @return static
      */
-    interface RequestInterface
-    {
+    public function setRules($rules);
 
-        /**
-         * @param array $rules
-         *
-         * @return static
-         */
-        public function setRules($rules);
+    /**
+     * Gets a variable from the $_REQUEST applying filters if needed
+     *
+     * @param string       $name
+     * @param string|array $rules
+     * @param mixed        $defaultValue
+     *
+     * @return mixed
+     */
+    public function get($name = null, $rules = null, $defaultValue = null);
 
-        /**
-         * Gets a variable from the $_REQUEST applying filters if needed
-         *
-         * @param string       $name
-         * @param string|array $rules
-         * @param mixed        $defaultValue
-         *
-         * @return mixed
-         */
-        public function get($name = null, $rules = null, $defaultValue = null);
+    /**
+     * Gets variable from $_GET applying filters if needed
+     *
+     * @param string       $name
+     * @param string|array $rules
+     * @param mixed        $defaultValue
+     *
+     * @return mixed
+     */
+    public function getGet($name = null, $rules = null, $defaultValue = null);
 
-        /**
-         * Gets variable from $_GET applying filters if needed
-         *
-         * @param string       $name
-         * @param string|array $rules
-         * @param mixed        $defaultValue
-         *
-         * @return mixed
-         */
-        public function getGet($name = null, $rules = null, $defaultValue = null);
+    /**
+     * Gets a variable from the $_POST applying filters if needed
+     *
+     * @param string       $name
+     * @param string|array $rules
+     * @param mixed        $defaultValue
+     *
+     * @return mixed
+     */
+    public function getPost($name = null, $rules = null, $defaultValue = null);
 
-        /**
-         * Gets a variable from the $_POST applying filters if needed
-         *
-         * @param string       $name
-         * @param string|array $rules
-         * @param mixed        $defaultValue
-         *
-         * @return mixed
-         */
-        public function getPost($name = null, $rules = null, $defaultValue = null);
+    /**
+     * Gets a variable from put request
+     *
+     *<code>
+     *    $userEmail = $request->getPut("user_email");
+     *
+     *    $userEmail = $request->getPut("user_email", "email");
+     *</code>
+     *
+     * @param string       $name
+     * @param string|array $rules
+     * @param mixed        $defaultValue
+     *
+     * @return mixed
+     */
+    public function getPut($name = null, $rules = null, $defaultValue = null);
 
-        /**
-         * Gets a variable from put request
-         *
-         *<code>
-         *    $userEmail = $request->getPut("user_email");
-         *
-         *    $userEmail = $request->getPut("user_email", "email");
-         *</code>
-         *
-         * @param string       $name
-         * @param string|array $rules
-         * @param mixed        $defaultValue
-         *
-         * @return mixed
-         */
-        public function getPut($name = null, $rules = null, $defaultValue = null);
+    /**
+     * Gets variable from $_GET applying filters if needed
+     *
+     * @param string       $name
+     * @param string|array $rules
+     * @param mixed        $defaultValue
+     *
+     * @return mixed
+     */
+    public function getQuery($name = null, $rules = null, $defaultValue = null);
 
-        /**
-         * Gets variable from $_GET applying filters if needed
-         *
-         * @param string       $name
-         * @param string|array $rules
-         * @param mixed        $defaultValue
-         *
-         * @return mixed
-         */
-        public function getQuery($name = null, $rules = null, $defaultValue = null);
+    /**
+     * Gets variable from $_SERVER applying filters if needed
+     *
+     * @param string       $name
+     * @param string|array $rules
+     * @param mixed        $defaultValue
+     *
+     * @return mixed
+     */
+    public function getServer($name = null, $rules = null, $defaultValue = null);
 
-        /**
-         * Gets variable from $_SERVER applying filters if needed
-         *
-         * @param string       $name
-         * @param string|array $rules
-         * @param mixed        $defaultValue
-         *
-         * @return mixed
-         */
-        public function getServer($name = null, $rules = null, $defaultValue = null);
+    /**
+     * Checks whether $_SERVER has certain index
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function has($name);
 
-        /**
-         * Checks whether $_SERVER has certain index
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function has($name);
+    /**
+     * Checks whether $_GET has certain index
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function hasGet($name);
 
-        /**
-         * Checks whether $_GET has certain index
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function hasGet($name);
+    /**
+     * Checks whether $_POST has certain index
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function hasPost($name);
 
-        /**
-         * Checks whether $_POST has certain index
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function hasPost($name);
+    /**
+     * Checks whether has certain index
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function hasPut($name);
 
-        /**
-         * Checks whether has certain index
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function hasPut($name);
+    /**
+     * Checks whether $_GET has certain index
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function hasQuery($name);
 
-        /**
-         * Checks whether $_GET has certain index
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function hasQuery($name);
+    /**
+     * @return string
+     */
+    public function getMethod();
 
-        /**
-         * @return string
-         */
-        public function getMethod();
+    /**
+     * Checks whether $_GET has certain index
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function hasServer($name);
 
-        /**
-         * Checks whether $_GET has certain index
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function hasServer($name);
+    /**
+     * Gets HTTP schema (http/https)
+     *
+     * @return string
+     */
+    public function getScheme();
 
-        /**
-         * Gets HTTP schema (http/https)
-         *
-         * @return string
-         */
-        public function getScheme();
+    /**
+     * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
+     *
+     * @return boolean
+     */
+    public function isAjax();
 
-        /**
-         * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
-         *
-         * @return boolean
-         */
-        public function isAjax();
+    /**
+     * Gets HTTP raw request body
+     *
+     * @return string
+     */
+    public function getRawBody();
 
-        /**
-         * Gets HTTP raw request body
-         *
-         * @return string
-         */
-        public function getRawBody();
+    /**
+     * Gets most possibly client IPv4 Address. This methods search in $_SERVER['REMOTE_ADDR'] and optionally in $_SERVER['HTTP_X_FORWARDED_FOR']
+     *
+     * @return string
+     */
+    public function getClientAddress();
 
-        /**
-         * Gets most possibly client IPv4 Address. This methods search in $_SERVER['REMOTE_ADDR'] and optionally in $_SERVER['HTTP_X_FORWARDED_FOR']
-         *
-         * @return string
-         */
-        public function getClientAddress();
+    /**set the client address for getClientAddress method
+     *
+     * @param string|callable
+     */
+    public function setClientAddress($address);
 
-        /**set the client address for getClientAddress method
-         *
-         * @param string|callable
-         */
-        public function setClientAddress($address);
+    /**
+     * Gets HTTP user agent used to made the request
+     *
+     * @return string
+     */
+    public function getUserAgent();
 
-        /**
-         * Gets HTTP user agent used to made the request
-         *
-         * @return string
-         */
-        public function getUserAgent();
+    /**
+     * Checks whether HTTP method is POST. if $_SERVER['REQUEST_METHOD']=='POST'
+     *
+     * @return boolean
+     */
+    public function isPost();
 
-        /**
-         * Checks whether HTTP method is POST. if $_SERVER['REQUEST_METHOD']=='POST'
-         *
-         * @return boolean
-         */
-        public function isPost();
+    /**
+     *
+     * Checks whether HTTP method is GET. if $_SERVER['REQUEST_METHOD']=='GET'
+     *
+     * @return boolean
+     */
+    public function isGet();
 
-        /**
-         *
-         * Checks whether HTTP method is GET. if $_SERVER['REQUEST_METHOD']=='GET'
-         *
-         * @return boolean
-         */
-        public function isGet();
+    /**
+     * Checks whether HTTP method is PUT. if $_SERVER['REQUEST_METHOD']=='PUT'
+     *
+     * @return boolean
+     */
+    public function isPut();
 
-        /**
-         * Checks whether HTTP method is PUT. if $_SERVER['REQUEST_METHOD']=='PUT'
-         *
-         * @return boolean
-         */
-        public function isPut();
+    /**
+     * Checks whether HTTP method is HEAD. if $_SERVER['REQUEST_METHOD']=='HEAD'
+     *
+     * @return boolean
+     */
+    public function isHead();
 
-        /**
-         * Checks whether HTTP method is HEAD. if $_SERVER['REQUEST_METHOD']=='HEAD'
-         *
-         * @return boolean
-         */
-        public function isHead();
+    /**
+     * Checks whether HTTP method is DELETE. if $_SERVER['REQUEST_METHOD']=='DELETE'
+     *
+     * @return boolean
+     */
+    public function isDelete();
 
-        /**
-         * Checks whether HTTP method is DELETE. if $_SERVER['REQUEST_METHOD']=='DELETE'
-         *
-         * @return boolean
-         */
-        public function isDelete();
+    /**
+     * Checks whether HTTP method is OPTIONS. if $_SERVER['REQUEST_METHOD']=='OPTIONS'
+     *
+     * @return boolean
+     */
+    public function isOptions();
 
-        /**
-         * Checks whether HTTP method is OPTIONS. if $_SERVER['REQUEST_METHOD']=='OPTIONS'
-         *
-         * @return boolean
-         */
-        public function isOptions();
+    /**
+     * Checks whether HTTP method is PATCH. if $_SERVER['REQUEST_METHOD']=='PATCH'
+     *
+     * @return boolean
+     */
+    public function isPatch();
 
-        /**
-         * Checks whether HTTP method is PATCH. if $_SERVER['REQUEST_METHOD']=='PATCH'
-         *
-         * @return boolean
-         */
-        public function isPatch();
+    /**
+     * Checks whether request include attached files
+     *
+     * @param boolean $onlySuccessful
+     *
+     * @return boolean
+     */
+    public function hasFiles($onlySuccessful = false);
 
-        /**
-         * Checks whether request include attached files
-         *
-         * @param boolean $onlySuccessful
-         *
-         * @return boolean
-         */
-        public function hasFiles($onlySuccessful = false);
+    /**
+     * Gets attached files as \ManaPHP\Http\Request\FileInterface compatible instances
+     *
+     * @param boolean $onlySuccessful
+     *
+     * @return \ManaPHP\Http\Request\FileInterface[]
+     */
+    public function getFiles($onlySuccessful = false);
 
-        /**
-         * Gets attached files as \ManaPHP\Http\Request\FileInterface compatible instances
-         *
-         * @param boolean $onlySuccessful
-         *
-         * @return \ManaPHP\Http\Request\FileInterface[]
-         */
-        public function getFiles($onlySuccessful = false);
+    /**
+     * Gets web page that refers active request. ie: http://www.google.com
+     *
+     * @return string
+     */
+    public function getReferer();
 
-        /**
-         * Gets web page that refers active request. ie: http://www.google.com
-         *
-         * @return string
-         */
-        public function getReferer();
+    /**
+     * http://localhost:8080/test/test.jsp
+     *
+     * @param bool $withQuery
+     *
+     * @return string
+     */
+    public function getUrl($withQuery = false);
 
-        /**
-         * http://localhost:8080/test/test.jsp
-         *
-         * @param bool $withQuery
-         *
-         * @return string
-         */
-        public function getUrl($withQuery = false);
-
-        /**
-         *  /test/test.jsp
-         *
-         *
-         * @return string
-         */
-        public function getUri();
-    }
+    /**
+     *  /test/test.jsp
+     *
+     *
+     * @return string
+     */
+    public function getUri();
 }
