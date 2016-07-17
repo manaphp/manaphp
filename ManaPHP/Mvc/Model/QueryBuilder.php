@@ -593,7 +593,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     public function limit($limit, $offset = 0)
     {
         $this->_limit = (int)$limit;
-		$this->_offset = (int)$offset;
+        $this->_offset = (int)$offset;
 
         return $this;
     }

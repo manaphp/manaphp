@@ -14,8 +14,12 @@ class Alias extends Component implements AliasInterface
     public function __construct()
     {
         parent::__construct();
-
-        $this->set('@manaphp', str_replace('\\', '/', __DIR__));
+        if (isset($_SERVER['DOCUMENT_ROOT'])) {
+            $dir = dirname($_SERVER['DOCUMENT_ROOT']) . '/ManaPHP';
+            if (is_dir($dir)) {
+                $this->set('@manaphp', $dir);
+            }
+        }
 
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
 
