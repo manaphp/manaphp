@@ -35,6 +35,8 @@ class Direct extends Flash
      * Prints the messages in the session flasher
      *
      * @param $remove bool
+     *
+     * @return void
      */
     public function _output($remove = true)
     {

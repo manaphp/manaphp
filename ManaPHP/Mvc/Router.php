@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
-use ManaPHP\Di;
 use ManaPHP\Mvc\Router\NotFoundRouteException;
 use ManaPHP\Utility\Text;
 
@@ -112,9 +111,9 @@ class Router extends Component implements RouterInterface
      * $router->handle('/posts/edit/1');
      *</code>
      *
-     * @param string $uri
-     * @param string $host
-     * @param bool   $silent
+     * @param string|null $uri
+     * @param string      $host
+     * @param bool        $silent
      *
      * @return boolean
      * @throws \ManaPHP\Mvc\Router\Exception|\ManaPHP\Mvc\Router\NotFoundRouteException

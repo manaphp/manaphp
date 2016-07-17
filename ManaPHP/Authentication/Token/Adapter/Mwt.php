@@ -58,25 +58,43 @@ class Mwt extends Component implements TokenInterface
         }
     }
 
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     */
     protected function _encode($data)
     {
         $r = $this->_type . '.' . base64_encode(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $hash = base64_encode(md5($r . $this->_keys[0], true));
         $r .= '.' . $hash;
 
-        return str_replace(['+', '/', '='], ['-', '_', ''], $r);
+        $from = ['+', '/', '='];
+        $to = ['-', '_', ''];
+        return str_replace($from, $to, $r);
     }
 
+    /**
+     * @param string $str
+     *
+     * @return mixed
+     * @throws \ManaPHP\Authentication\Token\Exception
+     */
     protected function _decode($str)
     {
-        $t = str_replace(['-', '_'], ['+', '/'], $str);
+        $from = ['-', '_'];
+        $to = ['+', '/'];
+        $t = str_replace($from, $to, $str);
 
         $parts = explode('.', $t);
         if (count($parts) !== 3) {
             throw new Exception('token format is invalid: ' . $str);
         }
 
-        list($type, $payload, $hash) = $parts;
+        $type = $parts[0];
+        $payload = $parts[1];
+        $hash = $parts[2];
+
         $mod4 = strlen($payload) % 4;
         $payload .= str_repeat('=', $mod4 ? 4 - $mod4 : 0);
         $mod4 = strlen($hash) % 4;
@@ -109,12 +127,18 @@ class Mwt extends Component implements TokenInterface
         return $r;
     }
 
-    public function encode($ttl = null)
+    /**
+     * @param int $ttl
+     *
+     * @return string
+     * @throws \ManaPHP\Authentication\Token\Exception
+     */
+    public function encode($ttl = 0)
     {
         $data = [];
 
         $data['SALT'] = mt_rand();
-        $data['EXP'] = (($ttl !== null) ? $ttl : $this->_ttl) + time();
+        $data['EXP'] = (($ttl !== 0) ? $ttl : $this->_ttl) + time();
         foreach ($this->_fields as $k => $v) {
             $valueField = is_int($k) ? $v : $k;
 
@@ -127,6 +151,12 @@ class Mwt extends Component implements TokenInterface
         return $this->_encode($data);
     }
 
+    /**
+     * @param string $str
+     *
+     * @return static
+     * @throws \ManaPHP\Authentication\Token\Exception
+     */
     public function decode($str)
     {
         $data = $this->_decode($str);
@@ -148,6 +178,9 @@ class Mwt extends Component implements TokenInterface
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getExpireAt()
     {
         return $this->_expireAt;

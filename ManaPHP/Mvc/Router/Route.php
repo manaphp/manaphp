@@ -63,13 +63,14 @@ class Route implements RouteInterface
     {
         // If a pattern contains ':', maybe there are placeholders to replace
         if (Text::contains($pattern, ':')) {
-            $pattern = strtr($pattern, [
+            $tr = [
                 '/:module' => '/{module:[a-z\d_-]+}',
                 '/:controller' => '/{controller:[a-z\d_-]+}',
                 '/:action' => '/{action:[a-z\d_-]+}',
                 '/:params' => '/{params:.+}',
                 '/:int' => '/(\d+)',
-            ]);
+            ];
+            $pattern = strtr($pattern, $tr);
         }
 
         if (Text::contains($pattern, '{')) {
@@ -108,20 +109,25 @@ class Route implements RouteInterface
             $pattern = preg_replace('#{(\d+,?\d*)}#', $left_token . '\1' . $right_token, $pattern);
         }
 
+        $matches = null;
         if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
             foreach ($matches as $match) {
 
                 if (!Text::contains($match[0], ':')) {
-                    $pattern = str_replace($match[0], '(?<' . $match[1] . '>[\w-]+)', $pattern);
+                    $to = '(?<' . $match[1] . '>[\w-]+)';
+                    $pattern = str_replace($match[0], $to, $pattern);
                 } else {
                     $parts = explode(':', $match[1]);
-                    $pattern = str_replace($match[0], '(?<' . $parts[0] . '>' . $parts[1] . ')', $pattern);
+                    $to = '(?<' . $parts[0] . '>' . $parts[1] . ')';
+                    $pattern = str_replace($match[0], $to, $pattern);
                 }
             }
         }
 
         if ($need_restore_token) {
-            $pattern = str_replace([$left_token, $right_token], ['{', '}'], $pattern);
+            $from = [$left_token, $right_token];
+            $to = ['{', '}'];
+            $pattern = str_replace($from, $to, $pattern);
         }
 
         return $pattern;
@@ -145,24 +151,30 @@ class Route implements RouteInterface
             if (is_string($paths)) {
                 $parts = explode('::', $paths);
 
+                $moduleName = '';
+                $actionName = '';
+
                 if (count($parts) === 3) {
-                    list($moduleName, $controllerName, $actionName) = $parts;
+                    $moduleName = $parts[0];
+                    $controllerName = $parts[1];
+                    $actionName = $parts[2];
                 } elseif (count($parts) === 2) {
-                    list($controllerName, $actionName) = $parts;
+                    $controllerName = $parts[0];
+                    $actionName = $parts[1];
                 } else {
                     $controllerName = $parts[0];
                 }
 
                 $routePaths = [];
-                if (isset($moduleName)) {
+                if ($moduleName !== '') {
                     $routePaths['module'] = $moduleName;
                 }
 
-                if (isset($controllerName)) {
+                if ($controllerName !== '') {
                     $routePaths['controller'] = $controllerName;
                 }
 
-                if (isset($actionName)) {
+                if ($actionName !== '') {
                     $routePaths['action'] = $actionName;
                 }
             } elseif (is_array($paths)) {
@@ -213,6 +225,7 @@ class Route implements RouteInterface
         }
 
         if (Text::contains($this->_compiledPattern, '^')) {
+            $matches = null;
             $r = preg_match($this->_compiledPattern, $uri, $matches);
             if ($r === false) {
                 throw new Exception('--invalid PCRE: ' . $this->_compiledPattern . ' for ' . $this->_pattern);

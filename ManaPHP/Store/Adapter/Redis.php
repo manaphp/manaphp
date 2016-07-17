@@ -46,6 +46,11 @@ class Redis extends Store
         return $this->redis->hGet($this->key, $id);
     }
 
+    /**
+     * @param array $ids
+     *
+     * @return array
+     */
     public function _mGet($ids)
     {
         return $this->redis->hMGet($this->key, $ids);
@@ -65,6 +70,11 @@ class Redis extends Store
         $this->redis->hSet($this->key, $id, $value);
     }
 
+    /**
+     * @param array $idValues
+     *
+     * @return void
+     */
     public function _mSet($idValues)
     {
         $this->redis->hMset($this->key, $idValues);

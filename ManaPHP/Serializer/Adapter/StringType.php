@@ -5,7 +5,13 @@ use ManaPHP\Serializer\AdapterInterface;
 
 class StringType implements AdapterInterface
 {
-    public function serialize($data, $context = null)
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     * @throws \ManaPHP\Serializer\Adapter\Exception
+     */
+    public function serialize($data)
     {
         if (is_string($data)) {
             return $data;
@@ -16,7 +22,12 @@ class StringType implements AdapterInterface
         }
     }
 
-    public function deserialize($serialized, $content = null)
+    /**
+     * @param string $serialized
+     *
+     * @return mixed
+     */
+    public function deserialize($serialized)
     {
         return $serialized;
     }

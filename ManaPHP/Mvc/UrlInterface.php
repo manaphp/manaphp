@@ -23,7 +23,7 @@ interface UrlInterface
      *
      * @return mixed
      */
-    public function get($uri = null, $args = null);
+    public function get($uri = null, $args = []);
 
     /**
      * @param string      $uri

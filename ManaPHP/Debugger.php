@@ -23,7 +23,8 @@ class Debugger extends Component implements DebuggerInterface
 
     protected $_exception = [];
 
-    public function _eventHandlerPeek($event,$source, $data){
+    public function _eventHandlerPeek($event, $source, $data)
+    {
         if ($event === 'logger:log') {
             if (count($this->_log) <= $this->_log_max) {
                 $format = '[%time%][%level%] %message%';
@@ -71,7 +72,9 @@ class Debugger extends Component implements DebuggerInterface
         } elseif ($event === 'db:beginTransaction' || $event === 'db:rollbackTransaction' || $event === 'db:commitTransaction') {
             $this->_sql_count++;
 
-            list(, $name) = explode(':', $event);
+            $parts = explode(':', $event);
+            $name = $parts[1];
+
             if (count($this->_sql_executed) <= $this->_sql_executed_max) {
                 $this->_sql_executed[] = [
                     'prepared' => $name,
@@ -94,6 +97,7 @@ class Debugger extends Component implements DebuggerInterface
             $this->_view[] = ['file' => $data['file'], 'vars' => $data['vars'], 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
         }
     }
+
     /**
      * @param bool $listenException
      *
@@ -109,10 +113,12 @@ class Debugger extends Component implements DebuggerInterface
             }
         }
 
-        parent::peekEvents([$this, '_eventHandlerPeek']);
+        $handler = [$this, '_eventHandlerPeek'];
+        parent::peekEvents($handler);
 
         if ($listenException) {
-            set_exception_handler([$this, 'onUncaughtException']);
+            $handler = [$this, 'onUncaughtException'];
+            set_exception_handler($handler);
         }
 
         return $this;
@@ -123,7 +129,7 @@ class Debugger extends Component implements DebuggerInterface
      *
      * @return bool
      */
-    public function onUncaughtException(\Exception $exception)
+    public function onUncaughtException($exception)
     {
         for ($i = ob_get_level(); $i > 0; $i--) {
             ob_end_clean();
@@ -131,12 +137,14 @@ class Debugger extends Component implements DebuggerInterface
 
         $callers = [];
         foreach (explode("\n", $exception->getTraceAsString()) as $v) {
-            list(, $call) = explode(' ', $v, 2);
+
+            $parts = explode(' ', $v, 2);
+            $call = $parts[1];
             if (!Text::contains($call, ':')) {
                 $call .= ': ';
             }
-            list($location, $revoke) = explode(': ', $call, 2);
-            $callers[] = ['location' => $location, 'revoke' => $revoke];
+            $parts = explode(': ', $call, 2);
+            $callers[] = ['location' => $parts[0], 'revoke' => $parts[1]];
         }
         $this->_exception = [
             'message' => $exception->getMessage(),
@@ -159,6 +167,7 @@ class Debugger extends Component implements DebuggerInterface
         if ($name === null) {
             $lines = file($caller['file']);
             $str = $lines[$caller['line'] - 1];
+            $match = null;
             if (preg_match('#->var_dump\((.*)\)\s*;#', $str, $match) === 1) {
                 $name = $match[1];
             }
@@ -179,7 +188,7 @@ class Debugger extends Component implements DebuggerInterface
     {
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
-        return [
+        $r = [
             'mvc' => $this->router->getModuleName() . '::' . $this->router->getControllerName() . '::' . $this->router->getActionName(),
             'request_method' => $_SERVER['REQUEST_METHOD'],
             'request_url' => $this->request->getUrl(),
@@ -196,6 +205,8 @@ class Debugger extends Component implements DebuggerInterface
             'loaded_ini' => php_ini_loaded_file(),
             'loaded_extensions' => implode(', ', $loaded_extensions)
         ];
+
+        return $r;
     }
 
     public function output($template = 'Default')
@@ -233,7 +244,7 @@ class Debugger extends Component implements DebuggerInterface
         $template = str_replace('\\', '/', $template);
 
         if (!Text::contains($template, '/')) {
-            $template = __DIR__ . '/Debugger/Template/' . $template . '.php';
+            $template = $this->alias->resolve('@manaphp/Debugger/Template/' . $template . '.php');
         }
 
         if (!is_file($template)) {
@@ -259,8 +270,8 @@ class Debugger extends Component implements DebuggerInterface
             return '';
         }
 
-        list($micro_seconds, $seconds) = explode(' ', microtime());
-        $id = date('ymd_His', $seconds) . '_' . substr($micro_seconds, 2, 6);
+        $parts = explode(' ', microtime());
+        $id = date('ymd_His', $parts[1]) . '_' . substr($parts[0], 2, 6);
         $file = $this->alias->resolve('@data/Debugger/' . substr($id, 0, 6) . '/' . $id . '.html');
 
         $dir = dirname($file);

@@ -22,10 +22,6 @@ class File extends Store
     protected $_dirLevel = 1;
 
     /**
-     * @var array
-     */
-
-    /**
      * File constructor.
      *
      * @param string|array|\ConfManaPHP\Store\Adapter\File $options
@@ -61,7 +57,7 @@ class File extends Store
     protected function _getFileName($key)
     {
         if ($key[0] === '!') {
-            return $this->alias->resolve($this->_storeDir . '/' . str_replace([':'], '/', substr($key, 1)) . $this->_extension);
+            return $this->alias->resolve($this->_storeDir . '/' . str_replace(':', '/', substr($key, 1)) . $this->_extension);
         }
 
         if (Text::contains($key, '/')) {
@@ -77,9 +73,14 @@ class File extends Store
             $file = $this->_storeDir . '/' . $key;
         }
 
-        return $this->alias->resolve(str_replace([':'], '/', $file . $this->_extension));
+        return $this->alias->resolve(str_replace(':', '/', $file . $this->_extension));
     }
 
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
     public function _exists($id)
     {
         $storeFile = $this->_getFileName($id);
@@ -87,6 +88,11 @@ class File extends Store
         return is_file($storeFile);
     }
 
+    /**
+     * @param string $id
+     *
+     * @return false|string
+     */
     public function _get($id)
     {
         $storeFile = $this->_getFileName($id);
@@ -98,6 +104,11 @@ class File extends Store
         }
     }
 
+    /**
+     * @param array $ids
+     *
+     * @return array
+     */
     public function _mGet($ids)
     {
         $idValues = [];
@@ -109,6 +120,13 @@ class File extends Store
         return $idValues;
     }
 
+    /**
+     * @param string $id
+     * @param string $value
+     *
+     * @return void
+     * @throws \ManaPHP\Store\Adapter\Exception
+     */
     public function _set($id, $value)
     {
         $storeFile = $this->_getFileName($id);
@@ -125,6 +143,12 @@ class File extends Store
         clearstatcache(true, $storeFile);
     }
 
+    /**
+     * @param array $idValues
+     *
+     * @return void
+     * @throws \ManaPHP\Store\Adapter\Exception
+     */
     public function _mSet($idValues)
     {
         foreach ($idValues as $id => $value) {
@@ -132,6 +156,11 @@ class File extends Store
         }
     }
 
+    /**
+     * @param string $id
+     *
+     * @return void
+     */
     public function _delete($id)
     {
         $storeFile = $this->_getFileName($id);

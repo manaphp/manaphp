@@ -5,8 +5,6 @@ use ManaPHP\Authorization\Exception;
 use ManaPHP\Authorization\Rbac\Models\Permission;
 use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
-use ManaPHP\Mvc\Dispatcher;
-use ManaPHP\Utility\Text;
 
 class Rbac extends Component implements AuthorizationInterface
 {
@@ -126,7 +124,7 @@ class Rbac extends Component implements AuthorizationInterface
                 $parts = [$this->dispatcher->getModuleName(), $this->dispatcher->getControllerName(), $parts[0]];
                 break;
             case 2:
-                $parts = array_merge([$this->dispatcher->getModuleName()], $parts);
+                $parts = [$this->dispatcher->getModuleName(), $parts[0], $parts[1]];
                 break;
             case 3:
                 break;
@@ -137,6 +135,13 @@ class Rbac extends Component implements AuthorizationInterface
         return implode('::', $parts);
     }
 
+    /**
+     * @param string      $permissionName
+     * @param string|null $userId
+     *
+     * @return bool
+     * @throws \ManaPHP\Authorization\Exception
+     */
     public function isAllowed($permissionName, $userId = null)
     {
         $permissionName = $this->_getStandardPermissionName($permissionName);

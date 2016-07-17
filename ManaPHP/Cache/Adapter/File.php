@@ -22,10 +22,6 @@ class File extends Cache
     protected $_dirLevel = 1;
 
     /**
-     * @var array
-     */
-
-    /**
      * File constructor.
      *
      * @param string|array|\ConfManaPHP\Cache\Adapter\File $options
@@ -65,7 +61,7 @@ class File extends Cache
     protected function _getFileName($key)
     {
         if ($key[0] === '!') {
-            return $this->alias->resolve($this->_cacheDir . '/' . str_replace([':'], '/', substr($key, 1)) . $this->_extension);
+            return $this->alias->resolve($this->_cacheDir . '/' . str_replace(':', '/', substr($key, 1)) . $this->_extension);
         }
 
         if (Text::contains($key, '/')) {
@@ -81,9 +77,14 @@ class File extends Cache
             $file = $this->_cacheDir . '/' . $key;
         }
 
-        return $this->alias->resolve(str_replace([':'], '/', $file . $this->_extension));
+        return $this->alias->resolve(str_replace(':', '/', $file . $this->_extension));
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     public function _exists($key)
     {
         $cacheFile = $this->_getFileName($key);
@@ -91,6 +92,11 @@ class File extends Cache
         return (@filemtime($cacheFile) >= time());
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string|false
+     */
     public function _get($key)
     {
         $cacheFile = $this->_getFileName($key);
@@ -102,6 +108,14 @@ class File extends Cache
         }
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     * @param int    $ttl
+     *
+     * @return void
+     * @throws \ManaPHP\Cache\Adapter\Exception
+     */
     public function _set($key, $value, $ttl)
     {
         $cacheFile = $this->_getFileName($key);
@@ -119,6 +133,11 @@ class File extends Cache
         clearstatcache(true, $cacheFile);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return void
+     */
     public function _delete($key)
     {
         $cacheFile = $this->_getFileName($key);

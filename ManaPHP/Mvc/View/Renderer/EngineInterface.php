@@ -13,5 +13,5 @@ interface EngineInterface
      * @param string $file
      * @param array  $vars
      */
-    public function render($file, $vars = null);
+    public function render($file, $vars = []);
 }

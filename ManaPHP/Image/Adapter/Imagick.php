@@ -213,8 +213,8 @@ class Imagick implements AdapterInterface
     }
 
     /**
-     * @param string $file
-     * @param int    $quality
+     * @param string|null $file
+     * @param int         $quality
      *
      * @throws \ManaPHP\Image\Adapter\Exception
      */

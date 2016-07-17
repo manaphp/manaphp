@@ -20,12 +20,12 @@ class Gd implements AdapterInterface
     protected $_image;
 
     /**
-     * @var
+     * @var int
      */
     protected $_width;
 
     /**
-     * @var
+     * @var int
      */
     protected $_height;
 
@@ -44,7 +44,9 @@ class Gd implements AdapterInterface
             $this->_file = $file;
             $this->_real_path = realpath($this->_file);
             $imageInfo = getimagesize($this->_real_path);
-            list($this->_width, $this->_height, $type) = $imageInfo;
+            $this->_width = $imageInfo[0];
+            $this->_height = $imageInfo[1];
+            $type = $imageInfo[2];
 
             if ($type === IMAGETYPE_GIF) {
                 $this->_image = imagecreatefromgif($this->_real_path);
@@ -153,8 +155,8 @@ class Gd implements AdapterInterface
             imagesavealpha($image, true);
             imagecopy($image, $this->_image, 0, 0, $offsetX, $offsetY, $width, $height);
         } else {
-            $image = imagecrop($this->_image,
-                ['x' => $offsetX, 'y' => $offsetY, 'width' => $width, 'height' => $height]);
+            $rect = ['x' => $offsetX, 'y' => $offsetY, 'width' => $width, 'height' => $height];
+            $image = imagecrop($this->_image, $rect);
         }
 
         imagedestroy($this->_image);
@@ -210,7 +212,9 @@ class Gd implements AdapterInterface
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
         $maskImageInfo = getimagesize($file);
-        list($maskWidth, $maskHeight, $maskType) = $maskImageInfo;
+        $maskWidth = $maskImageInfo[0];
+        $maskHeight = $maskImageInfo[1];
+        $maskType = $maskImageInfo[2];
 
         if ($maskType === IMAGETYPE_GIF) {
             $maskImage = imagecreatefromgif($file);

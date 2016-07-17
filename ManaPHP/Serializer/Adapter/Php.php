@@ -5,7 +5,12 @@ use ManaPHP\Serializer\AdapterInterface;
 
 class Php implements AdapterInterface
 {
-    public function serialize($data, $context = null)
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     */
+    public function serialize($data)
     {
         if (!is_array($data)) {
             $data = ['__wrapper__' => $data];
@@ -14,7 +19,13 @@ class Php implements AdapterInterface
         return serialize($data);
     }
 
-    public function deserialize($serialized, $content = null)
+    /**
+     * @param string $serialized
+     *
+     * @return mixed
+     * @throws \ManaPHP\Serializer\Adapter\Exception
+     */
+    public function deserialize($serialized)
     {
         $data = unserialize($serialized);
         if ($data === false) {

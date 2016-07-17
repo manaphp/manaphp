@@ -68,7 +68,7 @@ class Cookies extends Component implements CookiesInterface
     }
 
     /**
-     * @param $value
+     * @param string $value
      *
      * @return mixed
      * @throws \ManaPHP\Security\Crypt\Exception
@@ -79,9 +79,9 @@ class Cookies extends Component implements CookiesInterface
     }
 
     /**
-     * @param $value
+     * @param string $value
      *
-     * @return mixed
+     * @return string
      * @throws \ManaPHP\Security\Crypt\Exception
      */
     protected function _encrypt($value)
@@ -153,10 +153,14 @@ class Cookies extends Component implements CookiesInterface
      * Sends the cookies to the client
      * Cookies are not sent if headers are sent in the current request
      *
+     * @return void
      * @throws \ManaPHP\Http\Cookies\Exception
      */
     public function send()
     {
+        $file = null;
+        $line = null;
+
         if (headers_sent($file, $line)) {
             trigger_error("Headers has been sent in $file:$line", E_USER_WARNING);
         }

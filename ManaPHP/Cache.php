@@ -2,11 +2,15 @@
 namespace ManaPHP;
 
 use ManaPHP\Cache\AdapterInterface;
-use ManaPHP\Di;
 use ManaPHP\Utility\Text;
 
 abstract class Cache extends Component implements CacheInterface, AdapterInterface
 {
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
     protected function _formatKey($key)
     {
         if ($key[0] === '!') {

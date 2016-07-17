@@ -25,7 +25,8 @@ class Mysql extends Db
         }
 
         /** @noinspection AdditionOperationOnArraysInspection */
-        $options += ['host' => 'localhost', 'port' => 3306, 'username' => 'root', 'password' => '', 'options' => []];
+        $defaultOptions = ['host' => 'localhost', 'port' => 3306, 'username' => 'root', 'password' => '', 'options' => []];
+        $options = array_merge($defaultOptions, $options);
 
         if (!isset($options['options'][\PDO::MYSQL_ATTR_INIT_COMMAND])) {
             $options['options'][\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES 'UTF8'";

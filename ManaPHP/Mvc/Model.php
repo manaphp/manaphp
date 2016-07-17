@@ -260,8 +260,8 @@ class Model extends Component implements ModelInterface
      * }
      * </code>
      *
-     * @param    array $parameters
-     * @param  array   $cacheOptions
+     * @param    string|array $parameters
+     * @param  int|array      $cacheOptions
      *
      * @return  static[]|false
      */
@@ -306,7 +306,7 @@ class Model extends Component implements ModelInterface
      * </code>
      *
      * @param string|array $parameters
-     * @param array        $cacheOptions
+     * @param int|array    $cacheOptions
      *
      * @return static|false
      * @throws \ManaPHP\Mvc\Model\Exception
@@ -410,7 +410,7 @@ class Model extends Component implements ModelInterface
      * @param string       $alias
      * @param string       $column
      * @param string|array $parameters
-     * @param array        $cacheOptions
+     * @param int|array    $cacheOptions
      *
      * @return mixed
      * @throws \ManaPHP\Di\Exception
@@ -458,9 +458,9 @@ class Model extends Component implements ModelInterface
      *
      * </code>
      *
-     * @param array  $parameters
-     * @param string $column
-     * @param array  $cacheOptions
+     * @param string|array $parameters
+     * @param string       $column
+     * @param int|array    $cacheOptions
      *
      * @return int|array
      * @throws \ManaPHP\Di\Exception
@@ -490,9 +490,9 @@ class Model extends Component implements ModelInterface
      *
      * </code>
      *
-     * @param string $column
-     * @param array  $parameters
-     * @param array  $cacheOptions
+     * @param string       $column
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return mixed
      * @throws \ManaPHP\Di\Exception|\ManaPHP\Mvc\Model\Exception
@@ -517,9 +517,9 @@ class Model extends Component implements ModelInterface
      *
      * </code>
      *
-     * @param string $column
-     * @param array  $parameters
-     * @param array  $cacheOptions
+     * @param string       $column
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return mixed
      * @throws \ManaPHP\Di\Exception
@@ -544,9 +544,9 @@ class Model extends Component implements ModelInterface
      *
      * </code>
      *
-     * @param string $column
-     * @param array  $parameters
-     * @param array  $cacheOptions
+     * @param string       $column
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return mixed
      * @throws \ManaPHP\Di\Exception
@@ -571,9 +571,9 @@ class Model extends Component implements ModelInterface
      *
      * </code>
      *
-     * @param string $column
-     * @param array  $parameters
-     * @param        $cacheOptions
+     * @param string       $column
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return double
      * @throws \ManaPHP\Di\Exception
@@ -588,7 +588,7 @@ class Model extends Component implements ModelInterface
      *
      * @param string $eventName
      *
-     * @return boolean
+     * @return void
      */
     protected function _fireEvent($eventName)
     {
@@ -616,7 +616,7 @@ class Model extends Component implements ModelInterface
             return false;
         }
 
-        return null;
+        return true;
     }
 
     /**

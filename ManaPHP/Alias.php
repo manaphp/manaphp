@@ -57,7 +57,9 @@ class Alias extends Component implements AliasInterface
             throw new Exception('alias must start with @ character');
         }
 
-        return $this->_aliases[$name] = $this->resolve($path);
+        $this->_aliases[$name] = $this->resolve($path);
+
+        return $this->_aliases[$name];
     }
 
     /**
@@ -110,13 +112,13 @@ class Alias extends Component implements AliasInterface
             return $path;
         }
 
-        list($alias) = explode('/', $path, 2);
+        $parts = explode('/', $path, 2);
+        $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
 
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new Exception("alias $alias is not exists: " . $path);
         }
-
-        return str_replace($alias, $this->_aliases[$alias], $path);
+        return $this->_aliases[$alias] . '/' . $parts[1];
     }
 }

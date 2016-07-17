@@ -503,10 +503,6 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(10, $rows);
         $this->assertEquals(21, $rows[0]['city_id']);
         $this->assertEquals(30, $rows[9]['city_id']);
-
-        //there is no error during limiting equal to 0
-        $builder = $this->modelsManager->createBuilder()->columns('city_id')->addFrom(get_class(new City()))->limit(0);
-        $this->assertCount(0, $builder->execute());
     }
 
     public function test_page()

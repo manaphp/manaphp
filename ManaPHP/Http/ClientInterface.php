@@ -21,7 +21,7 @@ interface ClientInterface
 
     /**
      * @param string|array $url
-     * @param array        $data
+     * @param string|array $data
      * @param array        $headers
      * @param array        $options
      *
@@ -40,7 +40,7 @@ interface ClientInterface
 
     /**
      * @param string|array $url
-     * @param array        $data
+     * @param string|array $data
      * @param array        $headers
      * @param array        $options
      *
@@ -50,7 +50,7 @@ interface ClientInterface
 
     /**
      * @param string|array $url
-     * @param array        $data
+     * @param string|array $data
      * @param array        $headers
      * @param array        $options
      *

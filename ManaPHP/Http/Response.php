@@ -3,7 +3,6 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Di;
 use ManaPHP\Http\Response\Exception;
 use ManaPHP\Utility\Text;
 
@@ -181,8 +180,8 @@ class Response extends Component implements ResponseInterface
      *    $response->redirect("http://www.example.com/new-location", 301);
      *</code>
      *
-     * @param string|array $location
-     * @param int|string   $statusCode
+     * @param string     $location
+     * @param int|string $statusCode
      *
      * @return static
      * @throws \ManaPHP\Http\Response\Exception
@@ -238,8 +237,8 @@ class Response extends Component implements ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"), JSON_NUMERIC_CHECK);
      *</code>
      *
-     * @param mixed $content
-     * @param int   $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
+     * @param mixed    $content
+     * @param int|null $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
      *
      * @return static
      */
@@ -454,6 +453,9 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getHeaders()
     {
         return $this->_headers;

@@ -87,7 +87,7 @@ class Session implements SessionInterface, \ArrayAccess
     /**
      * Destroys the active session
      *
-     * @return boolean
+     * @return void
      * @throws \ManaPHP\Http\Session\Exception
      */
     public function destroy()
@@ -101,28 +101,54 @@ class Session implements SessionInterface, \ArrayAccess
         }
     }
 
+    /**
+     * @param mixed $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return $this->has($offset);
     }
 
+    /**
+     * @param mixed $offset
+     *
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         return $this->get($offset);
     }
 
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value)
     {
         $this->set($offset, $value);
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         $this->remove($offset);
     }
 
+    /**
+     * @return array
+     */
     public function __debugInfo()
     {
-        return $_SESSION ?: [];
+        if (is_array($_SESSION)) {
+            $data = $_SESSION;
+        } else {
+            $data = [];
+        }
+
+        return $data;
     }
 }

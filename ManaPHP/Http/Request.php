@@ -61,11 +61,11 @@ class Request extends Component implements RequestInterface
     /**
      *
      * @param array        $source
-     * @param string       $name
+     * @param string|null  $name
      * @param string|array $rules
      * @param mixed        $defaultValue
      *
-     * @return string
+     * @return string|null
      * @throws \ManaPHP\Http\Request\Exception
      */
     protected function _getHelper($source, $name = null, $rules = null, $defaultValue = null)
@@ -540,26 +540,28 @@ class Request extends Component implements RequestInterface
         foreach ($_FILES as $key => $file) {
             if (is_int($file['error'])) {
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
-                    $files[] = new File($key, [
+                    $fileInfo = [
                         'name' => $file['name'],
                         'type' => $file['type'],
                         'tmp_name' => $file['tmp_name'],
                         'error' => $file['error'],
                         'size' => $file['size'],
-                    ]);
+                    ];
+                    $files[] = new File($key, $fileInfo);
                 }
             } else {
                 $countFiles = count($file['error']);
                 /** @noinspection ForeachInvariantsInspection */
                 for ($i = 0; $i < $countFiles; $i++) {
                     if (!$onlySuccessful || $file['error'][$i] === UPLOAD_ERR_OK) {
-                        $files[] = new File($key, [
+                        $fileInfo = [
                             'name' => $file['name'][$i],
                             'type' => $file['type'][$i],
                             'tmp_name' => $file['tmp_name'][$i],
                             'error' => $file['error'][$i],
                             'size' => $file['size'][$i],
-                        ]);
+                        ];
+                        $files[] = new File($key, $fileInfo);
                     }
                 }
             }

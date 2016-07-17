@@ -66,15 +66,17 @@ class Client extends Component implements ClientInterface
             throw new Exception('curl extension is not loaded: http://php.net/curl');
         }
 
-        $this->_options = array_merge([
+        $defaultOptions = [
             'timeout' => 10,
             'max_redirects' => 10,
             'proxy' => '',
-            'ssl_certificates' => __DIR__ . '/Client/ca.pem',
+            'ssl_certificates' => $this->alias->resolve('@manaphp/Http/Client/ca.pem'),
             'verify_host' => true,
-        ], $options);
+        ];
+        $this->_options = array_merge($defaultOptions, $options);
 
-        $this->_headers = array_merge(['User-Agent' => 'ManaPHP/httpClient'], $headers);
+        $defaultHeaders = ['User-Agent' => 'ManaPHP/httpClient'];
+        $this->_headers = array_merge($defaultHeaders, $headers);
     }
 
     public function setProxy($proxy)
@@ -84,6 +86,16 @@ class Client extends Component implements ClientInterface
         return $this;
     }
 
+    /**
+     * @param string       $type
+     * @param string|array $url
+     * @param string|array $data
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return int
+     * @throws \ManaPHP\Http\Client\Exception
+     */
     protected function request($type, $url, $data, $headers, $options)
     {
         $this->_responseBody = false;
@@ -96,9 +108,10 @@ class Client extends Component implements ClientInterface
         $headers = array_merge($this->_headers, $headers);
         $options = array_merge($this->_options, $options);
 
-        $this->fireEvent('httpClient:beforeRequest', ['type' => $type, 'url' => &$url, 'headers' => &$headers, 'data' => &$data, 'options' => &$options]);
+        $eventData = ['type' => $type, 'url' => &$url, 'headers' => &$headers, 'data' => &$data, 'options' => &$options];
+        $this->fireEvent('httpClient:beforeRequest', $eventData);
         $httpCode = $this->_request($type, $url, $data, $headers, $options);
-        $this->fireEvent('httpClient:afterResponse', [
+        $eventData = [
             'type' => $type,
             'url' => $url,
             'headers' => $headers,
@@ -106,10 +119,21 @@ class Client extends Component implements ClientInterface
             'options' => $options,
             'httpCode' => &$httpCode,
             'responseBody' => &$this->_responseBody
-        ]);
+        ];
+        $this->fireEvent('httpClient:afterResponse', $eventData);
         return $httpCode;
     }
 
+    /**
+     * @param string       $type
+     * @param string       $url
+     * @param string|array $data
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return int
+     * @throws \ManaPHP\Http\Client\Exception
+     */
     public function _request($type, $url, $data, $headers, $options)
     {
         $this->_curlResponseHeader = [];
@@ -229,41 +253,91 @@ class Client extends Component implements ClientInterface
         return $httpCode;
     }
 
+    /**
+     * @param string|array $url
+     *
+     * @return string
+     */
     protected function _buildUrl($url)
     {
         if (is_string($url)) {
             return $url;
         }
 
-        list($url, $data) = $url;
-        return $url . (Text::contains($url, '?') ? '&' : '?') . http_build_query($data);
+        return $url[0] . (Text::contains($url[0], '?') ? '&' : '?') . http_build_query($url[1]);
     }
 
+    /**
+     * @param array|string $url
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return int
+     * @throws \ManaPHP\Http\Client\Exception
+     */
     public function get($url, $headers = [], $options = [])
     {
         return $this->request('GET', $url, null, $headers, $options);
     }
 
+    /**
+     * @param array|string $url
+     * @param string|array $data
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return mixed
+     * @throws \ManaPHP\Http\Client\Exception
+     */
     public function post($url, $data = [], $headers = [], $options = [])
     {
         return $this->request('POST', $url, $data, $headers, $options);
     }
 
+    /**
+     * @param array|string $url
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return int
+     * @throws \ManaPHP\Http\Client\Exception
+     */
     public function delete($url, $headers = [], $options = [])
     {
         return $this->request('DELETE', $url, null, $headers, $options);
     }
 
+    /**
+     * @param array|string $url
+     * @param string|array $data
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return int
+     * @throws \ManaPHP\Http\Client\Exception
+     */
     public function put($url, $data = [], $headers = [], $options = [])
     {
         return $this->request('PUT', $url, $data, $headers, $options);
     }
 
+    /**
+     * @param array|string $url
+     * @param string|array $data
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return int
+     * @throws \ManaPHP\Http\Client\Exception
+     */
     public function patch($url, $data = [], $headers = [], $options = [])
     {
         return $this->request('PATCH', $url, $data, $headers, $options);
     }
 
+    /**
+     * @return string
+     */
     public function getResponseBody()
     {
         return $this->_responseBody;

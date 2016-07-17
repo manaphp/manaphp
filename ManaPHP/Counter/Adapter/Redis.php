@@ -7,6 +7,11 @@ class Redis extends Counter
 {
     protected $_prefix;
 
+    /**
+     * Redis constructor.
+     *
+     * @param string $prefix
+     */
     public function __construct($prefix = 'manaphp:counter:')
     {
         parent::__construct();
@@ -22,31 +27,48 @@ class Redis extends Counter
     protected function _getKey($key)
     {
         if (is_string($key)) {
-            return [$this->_prefix . 'mixed', $key];
+            $r = [$this->_prefix . 'mixed', $key];
         } else {
-            list($key, $hashKey) = $key;
-            return [$this->_prefix . $key, $hashKey];
+            $r = [$this->_prefix . $key[0], $key[1]];
         }
+
+        return $r;
     }
 
+    /**
+     * @param array|string $key
+     *
+     * @return int
+     */
     public function _get($key)
     {
-        list($key, $hashKey) = $this->_getKey($key);
+        $key = $this->_getKey($key);
 
-        return $this->redis->hGet($key, $hashKey);
+        return (int)$this->redis->hGet($key[0], $key[1]);
     }
 
+    /**
+     * @param array|string $key
+     * @param int          $step
+     *
+     * @return int
+     */
     public function _increment($key, $step)
     {
-        list($key, $hashKey) = $this->_getKey($key);
+        $key = $this->_getKey($key);
 
-        return $this->redis->hIncrBy($key, $hashKey, $step);
+        return $this->redis->hIncrBy($key[0], $key[1], $step);
     }
 
+    /**
+     * @param array|string $key
+     *
+     * @return void
+     */
     public function _delete($key)
     {
-        list($key, $hashKey) = $this->_getKey($key);
+        $key = $this->_getKey($key);
 
-        $this->redis->hDel($key, $hashKey, $key);
+        $this->redis->hDel($key[0], $key[1]);
     }
 }

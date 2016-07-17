@@ -30,6 +30,11 @@ class CsrfToken extends Component implements CsrfTokenInterface
      */
     protected $_name = 'csrf_token';
 
+    /**
+     * CsrfToken constructor.
+     *
+     * @param array $options
+     */
     public function __construct($options = [])
     {
         parent::__construct();
@@ -51,12 +56,19 @@ class CsrfToken extends Component implements CsrfTokenInterface
         }
     }
 
+    /**
+     * @return string
+     */
     protected function _generateToken()
     {
         $str = strtr(base64_encode(md5(microtime(true) . mt_rand(), true)), '+/=', '357');
         return substr($str, 0, $this->_length);
     }
 
+    /**
+     * @return string
+     * @throws \ManaPHP\Security\Crypt\Exception
+     */
     public function get()
     {
         if ($this->_useCookie) {
@@ -64,16 +76,20 @@ class CsrfToken extends Component implements CsrfTokenInterface
                 $this->cookies->set($this->_name, $this->_generateToken(), 0, '/', null);
             }
 
-            return $this->cookies->get($this->_name);
+            return (string)$this->cookies->get($this->_name);
         } else {
             if (!$this->session->has($this->_name)) {
                 $this->session->set($this->_name, $this->_generateToken());
             }
 
-            return $this->session->get($this->_name);
+            return (string)$this->session->get($this->_name);
         }
     }
 
+    /**
+     * @return void
+     * @throws \ManaPHP\Security\CsrfToken\Exception|\ManaPHP\Security\Crypt\Exception|\ManaPHP\Http\Request\Exception
+     */
     public function verify()
     {
         if (!$this->_enabled) {
@@ -106,6 +122,9 @@ class CsrfToken extends Component implements CsrfTokenInterface
         }
     }
 
+    /**
+     * @return static
+     */
     public function disable()
     {
         $this->_enabled = false;
@@ -113,6 +132,9 @@ class CsrfToken extends Component implements CsrfTokenInterface
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         /** @noinspection MagicMethodsValidityInspection */

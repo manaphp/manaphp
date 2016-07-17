@@ -3,7 +3,6 @@
 namespace ManaPHP\Cache\Adapter;
 
 use ManaPHP\Cache;
-use ManaPHP\Di;
 
 class Redis extends Cache
 {
@@ -31,21 +30,43 @@ class Redis extends Cache
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string|false
+     */
     public function _get($key)
     {
         return $this->redis->get($this->_prefix . $key);
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     * @param int    $ttl
+     *
+     * @return void
+     */
     public function _set($key, $value, $ttl)
     {
         $this->redis->set($this->_prefix . $key, $value, $ttl);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return void
+     */
     public function _delete($key)
     {
         $this->redis->delete($this->_prefix . $key);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     public function _exists($key)
     {
         return $this->redis->exists($this->_prefix . $key);

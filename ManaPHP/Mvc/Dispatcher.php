@@ -334,7 +334,8 @@ class Dispatcher extends Component implements DispatcherInterface
                 $this->_initializedControllers[] = $controllerClassName;
             }
 
-            $this->_returnedValue = call_user_func_array([$controllerInstance, $actionMethod], $this->_params);
+            $handler = [$controllerInstance, $actionMethod];
+            $this->_returnedValue = call_user_func_array($handler, $this->_params);
 
             // Call afterDispatch
             $this->fireEvent('dispatcher:afterDispatch');

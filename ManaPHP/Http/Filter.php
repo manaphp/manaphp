@@ -61,7 +61,7 @@ class Filter extends Component implements FilterInterface
             if (Text::contains($options['messages'], '.')) {
                 $file = $options['messages'];
             } else {
-                $file = __DIR__ . '/Filter/Messages/' . $options['messages'] . '.php';
+                $file = $this->alias->resolve('@manaphp/Http/Filter/Messages/' . $options['messages'] . '.php');
             }
 
             $file = $this->alias->resolve($file);
@@ -97,6 +97,11 @@ class Filter extends Component implements FilterInterface
         return $this;
     }
 
+    /**
+     * @param array $attributes
+     *
+     * @return static
+     */
     public function addAttributes($attributes)
     {
         $this->_attributes = array_merge($this->_attributes, $attributes);
@@ -116,8 +121,9 @@ class Filter extends Component implements FilterInterface
         $items = [];
         foreach ($parts as $part) {
             if (Text::contains($part, ':')) {
-                list($name, $parameter) = explode(':', $part);
-                $parameters = explode(',', $parameter);
+                $parts2 = explode(':', $part);
+                $name = $parts2[0];
+                $parameters = explode(',', $parts2[1]);
             } else {
                 $name = $part;
                 $parameters = [];
@@ -166,7 +172,7 @@ class Filter extends Component implements FilterInterface
         if (is_int($value)) {
             $value = (string)$value;
         } elseif (is_bool($value)) {
-            $value = (string)(int)$value;
+            $value = $value ? '1' : '0';
         } elseif ($value === null) {
             $value = '';
         }
@@ -177,7 +183,8 @@ class Filter extends Component implements FilterInterface
         }
 
         if (is_string($value) && !isset($ruleItems['ignore']) && !isset($ruleItems['xss'])) {
-            $value = $this->_sanitize($attribute, 'xss', [], $value);
+            $parameters = [];
+            $value = $this->_sanitize($attribute, 'xss', $parameters, $value);
         }
 
         return $value;
@@ -193,7 +200,8 @@ class Filter extends Component implements FilterInterface
             throw new \ManaPHP\Http\Exception('filter `' . $name . '` is not be recognized.');
         }
 
-        $value = call_user_func_array($method, [$value, $parameters]);
+        $callParameter = [$value, $parameters];
+        $value = call_user_func_array($method, $callParameter);
         if ($value === null) {
             $error = $this->_getError($attribute, $value, $name, $parameters);
 
@@ -250,12 +258,15 @@ class Filter extends Component implements FilterInterface
         }
 
         if ($xssReplace) {
-            $value = strtr($value, ['<' => '＜', '>' => '＞', '\'' => '‘', '"' => '“', '&' => '＆', '\\' => '＼', '#' => '＃']);
+            $tr = ['<' => '＜', '>' => '＞', '\'' => '‘', '"' => '“', '&' => '＆', '\\' => '＼', '#' => '＃'];
+            $value = strtr($value, $tr);
         } else {
             $value = str_replace('<>\'"&\\#', ' ', $value);
         }
 
-        $value = str_replace(['\u', '\U'], ' ', $value);//http://zone.wooyun.org/content/1253
+        $from = ['\u', '\U'];
+        $to = ' ';
+        $value = str_replace($from, $to, $value);//http://zone.wooyun.org/content/1253
 
         return $value;
     }
@@ -267,9 +278,12 @@ class Filter extends Component implements FilterInterface
      */
     protected function _rule_boolean($value)
     {
-        if (in_array($value, ['1', 'true'], true)) {
+        $trueValues = ['1', 'true'];
+        $falseValues = ['0', 'false'];
+
+        if (in_array($value, $trueValues, true)) {
             return true;
-        } elseif (in_array($value, ['0', 'false'], true)) {
+        } elseif (in_array($value, $falseValues, true)) {
             return false;
         } else {
             return null;
@@ -583,8 +597,9 @@ class Filter extends Component implements FilterInterface
         $value = trim($value);
 
         if (filter_var($value, FILTER_VALIDATE_URL) !== false) {
-            list($scheme, $path) = explode('://', $value, 2);
-            $scheme = strtolower($scheme);
+            $parts = explode('://', $value, 2);
+            $scheme = strtolower($parts[0]);
+            $path = $parts[1];
             if ($scheme !== 'http' && $scheme !== 'https') {
                 return null;
             } else {
@@ -674,8 +689,14 @@ class Filter extends Component implements FilterInterface
         }
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
-        return array_merge(parent::dump(), ['_rules' => array_keys($this->_rules)]);
+        $data = parent::dump();
+        $data['_rules'] = array_keys($this->_rules);
+
+        return $data;
     }
 }

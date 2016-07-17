@@ -3,7 +3,6 @@
 namespace ManaPHP\Http\Session;
 
 use ManaPHP\Component;
-use ManaPHP\Di;
 
 /**
  * ManaPHP\Http\Session\Bag
@@ -66,7 +65,8 @@ class Bag extends Component implements BagInterface
      */
     public function set($property, $value)
     {
-        $data = $this->session->get($this->_name, []);
+        $defaultCurrentValue = [];
+        $data = $this->session->get($this->_name, $defaultCurrentValue);
         $data[$property] = $value;
 
         $this->session->set($this->_name, $data);
@@ -88,7 +88,8 @@ class Bag extends Component implements BagInterface
      */
     public function get($property = null, $defaultValue = null)
     {
-        $data = $this->session->get($this->_name, []);
+        $defaultCurrentValue = [];
+        $data = $this->session->get($this->_name, $defaultCurrentValue);
 
         if ($property === null) {
             return $data;
@@ -111,7 +112,8 @@ class Bag extends Component implements BagInterface
      */
     public function has($property)
     {
-        $data = $this->session->get($this->_name, []);
+        $defaultCurrentValue = [];
+        $data = $this->session->get($this->_name, $defaultCurrentValue);
 
         return isset($data[$property]);
     }
@@ -125,20 +127,28 @@ class Bag extends Component implements BagInterface
      *
      * @param string $property
      *
+     * @return void
      * @throws \ManaPHP\Di\Exception
      */
     public function remove($property)
     {
-        $data = $this->session->get($this->_name, []);
+        $defaultCurrentValue = [];
+        $data = $this->session->get($this->_name, $defaultCurrentValue);
         unset($data[$property]);
 
         $this->session->set($this->_name, $data);
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
+        $defaultCurrentValue = [];
+
         $data = parent::dump();
-        $data['_data'] = $this->session->get($this->_name, []);
+        $data['_data'] = $this->session->get($this->_name, $defaultCurrentValue);
+
         return $data;
     }
 }

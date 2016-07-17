@@ -59,8 +59,8 @@ class Db extends Counter
     public function _get($key)
     {
         $key = $this->_formatKey($key);
-
-        $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', ['name' => $key]);
+        $bind = ['name' => $key];
+        $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', $bind);
         if (!$r) {
             return 0;
         } else {
@@ -81,22 +81,25 @@ class Db extends Counter
         $time = time();
 
         for ($i = 0; $i < 100; $i++) {
-            $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', ['name' => $key]);
+            $bind = ['name' => $key];
+            $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', $bind);
             if (!$r) {
                 try {
-                    $this->db->insert($this->_table, ['name' => $key, 'counter' => $step, 'created_time' => $time, 'updated_time' => $time]);
+                    $columnValues = ['name' => $key, 'counter' => $step, 'created_time' => $time, 'updated_time' => $time];
+                    $this->db->insert($this->_table, $columnValues);
                     return $step;
                 } catch (\Exception $e) {
                     //maybe this record has been inserted by other request.
                 }
-
-                $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', ['name' => $key]);
+                $bind = ['name' => $key];
+                $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', $bind);
             }
 
             $old_counter = $r['counter'];
 
             $sql = 'UPDATE ' . $this->_table . ' SET counter =counter+:step, updated_time =:updated_time WHERE name =:name AND counter =:old_counter';
-            $r = $this->db->execute($sql, ['name' => $key, 'step' => $step, 'old_counter' => $old_counter, 'updated_time' => $time]);
+            $bind = ['name' => $key, 'step' => $step, 'old_counter' => $old_counter, 'updated_time' => $time];
+            $r = $this->db->execute($sql, $bind);
             if ($r === 1) {
                 return $old_counter + $step;
             }
@@ -115,6 +118,7 @@ class Db extends Counter
     {
         $key = $this->_formatKey($key);
 
-        $this->db->delete($this->_table, ['name' => $key]);
+        $bind = ['name' => $key];
+        $this->db->delete($this->_table, $bind);
     }
 }

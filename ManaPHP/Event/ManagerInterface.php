@@ -25,7 +25,7 @@ interface ManagerInterface
      *
      * @param string                      $event
      * @param \ManaPHP\ComponentInterface $source
-     * @param mixed                       $data
+     * @param array                       $data
      */
-    public function fireEvent($event, $source, $data = null);
+    public function fireEvent($event, $source, $data = []);
 }

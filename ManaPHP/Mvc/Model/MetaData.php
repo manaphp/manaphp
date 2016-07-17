@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\Model;
 
 /**
  * ManaPHP\Mvc\Model\MetaData
@@ -75,12 +74,14 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
             }
         }
 
-        return [
+        $r = [
             self::MODELS_ATTRIBUTES => $attributes,
             self::MODELS_PRIMARY_KEY => $primaryKeys,
             self::MODELS_NON_PRIMARY_KEY => $nonPrimaryKeys,
             self::MODELS_IDENTITY_COLUMN => $autoIncrementAttribute,
         ];
+
+        return $r;
     }
 
     /**

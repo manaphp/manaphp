@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
-use ManaPHP\Di;
 use ManaPHP\Mvc\View\Exception;
 use ManaPHP\Utility\Text;
 
@@ -157,6 +156,11 @@ class View extends Component implements ViewInterface
         return $this->_actionName;
     }
 
+    /**
+     * @param int|array $cacheOptions
+     *
+     * @return string|false
+     */
     public function cache($cacheOptions)
     {
         if (!is_array($cacheOptions)) {
@@ -260,7 +264,11 @@ class View extends Component implements ViewInterface
      */
     public function pick($view)
     {
-        list($this->_moduleName, $this->_controllerName, $this->_actionName) = array_pad(explode('/', $view), -3, null);
+        $parts = array_pad(explode('/', $view), -3, null);
+
+        $this->_moduleName = $parts[0];
+        $this->_controllerName = $parts[1];
+        $this->_actionName = $parts[2];
 
         return $this;
     }
@@ -278,9 +286,9 @@ class View extends Component implements ViewInterface
      *    $this->partial('shared/footer', array('content' => $html));
      * </code>
      *
-     * @param string $path
-     * @param array  $vars
-     * @param array  $cacheOptions
+     * @param string    $path
+     * @param array     $vars
+     * @param int|array $cacheOptions
      *
      * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
      */
@@ -312,6 +320,13 @@ class View extends Component implements ViewInterface
         }
     }
 
+    /**
+     * @param string    $widget
+     * @param array     $options
+     * @param int|array $cacheOptions
+     *
+     * @throws \ManaPHP\Mvc\View\Exception
+     */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
         $widgetClassName = basename($this->alias->get('@app')) . "\\{$this->_moduleName}\\Widgets\\{$widget}Widget";

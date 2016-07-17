@@ -26,7 +26,7 @@ class Password extends Component implements PasswordInterface
      * @param string $pwd
      * @param string $salt
      *
-     * @return mixed
+     * @return string
      */
     public function hash($pwd, $salt = null)
     {

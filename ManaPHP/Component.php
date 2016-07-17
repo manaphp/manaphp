@@ -68,6 +68,11 @@ class Component implements ComponentInterface
      */
     protected $_dependencyInjector;
 
+    /**
+     * Component constructor.
+     *
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     */
     public function __construct($dependencyInjector = null)
     {
         $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
@@ -108,15 +113,19 @@ class Component implements ComponentInterface
     public function __get($propertyName)
     {
         if ($this->_dependencyInjector->has($propertyName)) {
-            return $this->{$propertyName} = $this->_dependencyInjector->getShared($propertyName);
+            $this->{$propertyName} = $this->_dependencyInjector->getShared($propertyName);
+            return $this->{$propertyName};
         }
 
         if ($propertyName === 'di') {
-            return $this->{'di'} = $this->_dependencyInjector;
+            $this->{'di'} = $this->_dependencyInjector;
+            return $this->{'di'};
         }
 
         if ($propertyName === 'persistent') {
-            return $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', [get_class($this), $this->_dependencyInjector]);
+            $getParameter = [get_class($this), $this->_dependencyInjector];
+            $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', $getParameter);
+            return $this->{'persistent'};
         }
 
         trigger_error('Access to undefined property ' . $propertyName);
@@ -148,11 +157,11 @@ class Component implements ComponentInterface
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event
-     * @param mixed  $data
+     * @param array  $data
      *
-     * @return bool|null
+     * @return bool
      */
-    public function fireEvent($event, $data = null)
+    public function fireEvent($event, $data = [])
     {
         foreach (self::$_eventPeeks as $peek) {
             $peek($event, $this, $data);
@@ -163,7 +172,7 @@ class Component implements ComponentInterface
             return $this->_eventsManager->fireEvent($event, $this, $data);
         }
 
-        return null;
+        return true;
     }
 
     /**

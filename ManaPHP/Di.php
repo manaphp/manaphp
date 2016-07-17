@@ -137,7 +137,7 @@ class Di implements DiInterface
      * @return mixed
      * @throws \ManaPHP\Di\Exception
      */
-    protected function _resolve($name, $definition, $parameters = null)
+    protected function _resolve($name, $definition, $parameters = [])
     {
         $instance = null;
 
@@ -171,25 +171,24 @@ class Di implements DiInterface
     /**
      * Resolves the service based on its configuration
      *
-     * @param string $name
+     * @param string $_name
      * @param array  $parameters
      *
      * @return mixed
      */
-    public function get($name, $parameters = null)
+    public function get($_name, $parameters = [])
     {
-        assert(is_string($name), 'service name is not a string:' . json_encode($name, JSON_UNESCAPED_SLASHES));
-
-        if (!isset($this->_services[$name]) && isset($this->_aliases[$name])) {
-            $name = $this->_aliases[$name];
-        }
+        $name = (!isset($this->_services[$_name]) && isset($this->_aliases[$_name])) ? $this->_aliases[$_name] : $_name;
 
         if (isset($this->_services[$name])) {
             if (is_string($this->_services[$name])) {
                 $definition = $this->_services[$name];
                 $shared = true;
             } else {
-                list($definition, $shared) = $this->_services[$name];
+
+                $parts = $this->_services[$name];
+                $definition = $parts[0];
+                $shared = $parts[1];
             }
 
             if ($shared && isset($this->_sharedInstances[$name])) {
@@ -231,7 +230,7 @@ class Di implements DiInterface
      *
      * @return mixed
      */
-    public function getShared($name, $parameters = null)
+    public function getShared($name, $parameters = [])
     {
         if (!isset($this->_services[$name]) && isset($this->_aliases[$name])) {
             $name = $this->_aliases[$name];
@@ -280,7 +279,7 @@ class Di implements DiInterface
      * @return void
      * @throws \ManaPHP\Di\Exception
      */
-    public function __call($method, $arguments = null)
+    public function __call($method, $arguments = [])
     {
         throw new Exception("Call to undefined method or service '$method'");
     }
@@ -290,6 +289,6 @@ class Di implements DiInterface
      */
     public function __debugInfo()
     {
-        return get_object_vars($this) ?: [];
+        return get_object_vars($this);
     }
 }

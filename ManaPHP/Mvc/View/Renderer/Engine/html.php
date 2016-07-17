@@ -5,7 +5,13 @@ use ManaPHP\Mvc\View\Renderer\EngineInterface;
 
 class Html implements EngineInterface
 {
-    public function render($file, $vars = null)
+    /**
+     * @param string $file
+     * @param array  $vars
+     *
+     * @throws \ManaPHP\Mvc\View\Renderer\Engine\Exception
+     */
+    public function render($file, $vars = [])
     {
         $str = file_get_contents($file);
         if ($str === false) {

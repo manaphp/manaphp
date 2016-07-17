@@ -22,6 +22,11 @@ class Application extends Component implements ApplicationInterface
     protected $_implicitView = true;
 
     /**
+     * @var \ManaPHP\Mvc\ModuleInterface
+     */
+    protected $_moduleObject;
+
+    /**
      * \ManaPHP\Mvc\Application
      *
      * @param \ManaPHP\DiInterface $dependencyInjector
@@ -46,6 +51,22 @@ class Application extends Component implements ApplicationInterface
         $this->_implicitView = $implicitView;
 
         return $this;
+    }
+
+    public function _eventHandlerBeforeExecuteRoute()
+    {
+        $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
+        if ($this->_dependencyInjector->has('csrfToken')
+            && !in_array($this->request->getMethod(), $ignoreMethods, true)
+        ) {
+            $this->csrfToken->verify();
+        }
+
+        if ($this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName()) === false) {
+            return false;
+        }
+
+        return null;
     }
 
     /**
@@ -76,31 +97,20 @@ class Application extends Component implements ApplicationInterface
          */
         $moduleObject = null;
 
-        $this->fireEvent('application:beforeStartModule', $moduleName);
+        $eventData = ['module' => $moduleName];
+        $this->fireEvent('application:beforeStartModule', $eventData);
         $moduleObject = $this->_dependencyInjector->getShared($moduleClassName);
         $moduleObject->registerServices($this->_dependencyInjector);
 
-        $this->fireEvent('application:afterStartModule', $moduleObject);
+        $eventData = ['module' => $moduleName];
+        $this->fireEvent('application:afterStartModule', $eventData);
 
         if ($this->dispatcher->getRootNamespace() === null) {
             $this->dispatcher->setRootNamespace(basename($this->alias->get('@app')));
         }
 
-        $self = $this;
-        $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', function () use ($self, $moduleObject) {
-
-            if ($this->_dependencyInjector->has('csrfToken')
-                && !in_array($this->request->getMethod(), ['GET', 'HEAD', 'OPTIONS'], true)
-            ) {
-                $this->csrfToken->verify();
-            }
-
-            if ($moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName()) === false) {
-                return false;
-            }
-
-            return null;
-        });
+        $handler = [$this, '_eventHandlerBeforeExecuteRoute'];
+        $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', $handler);
 
         $controller = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
 

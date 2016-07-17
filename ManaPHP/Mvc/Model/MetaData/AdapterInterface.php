@@ -17,6 +17,8 @@ interface AdapterInterface
      *
      * @param string $key
      * @param array  $data
+     *
+     * @return void
      */
     public function write($key, $data);
 }

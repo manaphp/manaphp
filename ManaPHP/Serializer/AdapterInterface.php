@@ -5,18 +5,16 @@ interface AdapterInterface
 {
 
     /**
-     * @param       $data
-     * @param array $context
+     * @param mixed $data
      *
      * @return string
      */
-    public function serialize($data, $context = null);
+    public function serialize($data);
 
     /**
      * @param string $serialized
-     * @param array  $content
      *
      * @return mixed
      */
-    public function deserialize($serialized, $content = null);
+    public function deserialize($serialized);
 }

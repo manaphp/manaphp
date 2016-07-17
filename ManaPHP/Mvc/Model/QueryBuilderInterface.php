@@ -95,21 +95,21 @@ interface QueryBuilderInterface
      * Sets conditions for the query
      *
      * @param string $conditions
-     * @param array  $bind
+     * @param mixed  $bind
      *
      * @return static
      */
-    public function where($conditions, $bind = null);
+    public function where($conditions, $bind = []);
 
     /**
      * Appends a condition to the current conditions using a AND operator
      *
      * @param string $conditions
-     * @param array  $bind
+     * @param mixed  $bind
      *
      * @return static
      */
-    public function andWhere($conditions, $bind = null);
+    public function andWhere($conditions, $bind = []);
 
     /**
      * Appends a BETWEEN condition to the current conditions
@@ -184,7 +184,7 @@ interface QueryBuilderInterface
      *
      * @return static
      */
-    public function limit($limit, $offset = null);
+    public function limit($limit, $offset = 0);
 
     /**
      * @param int $size
@@ -192,7 +192,7 @@ interface QueryBuilderInterface
      *
      * @return static
      */
-    public function page($size, $current = null);
+    public function page($size, $current = 1);
 
     /**
      * Sets a LIMIT clause
@@ -235,8 +235,8 @@ interface QueryBuilderInterface
 
     /**build the query and execute it.
      *
-     * @param int       $totalRows
-     * @param int|array $cacheOptions
+     * @param int|string $totalRows
+     * @param int|array  $cacheOptions
      *
      * @return array
      */

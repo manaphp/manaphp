@@ -42,11 +42,22 @@ class Apc extends MetaData
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return array|false
+     */
     public function read($key)
     {
         return apc_fetch($this->_prefix . $key);
     }
 
+    /**
+     * @param string $key
+     * @param array  $data
+     *
+     * @return void
+     */
     public function write($key, $data)
     {
         apc_store($this->_prefix . $key, $data, $this->_ttl);

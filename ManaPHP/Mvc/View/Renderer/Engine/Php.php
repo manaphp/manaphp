@@ -20,11 +20,9 @@ class Php extends Component implements EngineInterface
      *
      * @throws \ManaPHP\Mvc\View\Renderer\Engine\Exception
      */
-    public function render($file, $vars = null)
+    public function render($file, $vars = [])
     {
-        if (is_array($vars)) {
-            extract($vars, EXTR_SKIP);
-        }
+        extract($vars, EXTR_SKIP);
 
         /** @noinspection PhpIncludeInspection */
         require($file);

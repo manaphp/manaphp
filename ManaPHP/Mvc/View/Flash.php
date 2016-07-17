@@ -17,6 +17,9 @@ use ManaPHP\Mvc\View\Flash\AdapterInterface;
  */
 abstract class Flash extends Component implements FlashInterface, AdapterInterface
 {
+    /**
+     * @var array
+     */
     protected $_cssClasses;
 
     /**
@@ -24,16 +27,19 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
      *
      * @param array $cssClasses
      */
-    public function __construct($cssClasses = null)
+    public function __construct($cssClasses = [])
     {
         parent::__construct();
-
-        $this->_cssClasses = $cssClasses ?: [
-            'error' => 'flash-error-message',
-            'notice' => 'flash-notice-message',
-            'success' => 'flash-success-message',
-            'warning' => 'flash-warning-message'
-        ];
+        if (count($cssClasses) === 0) {
+            $this->_cssClasses = [
+                'error' => 'flash-error-message',
+                'notice' => 'flash-notice-message',
+                'success' => 'flash-success-message',
+                'warning' => 'flash-warning-message'
+            ];
+        } else {
+            $this->_cssClasses = $cssClasses;
+        }
     }
 
     /**

@@ -45,7 +45,7 @@ interface RouterInterface
      * @param string                                    $path
      * @param string                                    $module
      *
-     * @return  static
+     * @return static
      */
     public function mount($group, $path = null, $module = null);
 

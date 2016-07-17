@@ -65,9 +65,9 @@ class Captcha extends Component implements CaptchaInterface
 
         if (!isset($options['fonts'])) {
             $options['fonts'] = [
-                __DIR__ . '/Captcha/Fonts/AirbusSpecial.ttf',
-                __DIR__ . '/Captcha/Fonts/StencilFour.ttf',
-                __DIR__ . '/Captcha/Fonts/SpicyRice.ttf'
+                '@manaphp/Security/Captcha/Fonts/AirbusSpecial.ttf',
+                '@manaphp/Security/Captcha/Fonts/StencilFour.ttf',
+                '@manaphp/Security/Captcha/Fonts/SpicyRice.ttf'
             ];
         }
         $this->_fonts = $options['fonts'];
@@ -109,12 +109,12 @@ class Captcha extends Component implements CaptchaInterface
     {
         $image = imagecreatetruecolor($width, $height);
 
-        list($r, $g, $b) = explode(',', $this->_bgRGB);
-        $bgColor = imagecolorallocate($image, $r, $g, $b);
+        $parts = explode(',', $this->_bgRGB);
+        $bgColor = imagecolorallocate($image, $parts[0], $parts[1], $parts[2]);
 
         imagefilledrectangle($image, 0, 0, $width, $height, $bgColor);
 
-        $fontFile = $this->_fonts[mt_rand() % count($this->_fonts)];
+        $fontFile = $this->alias->resolve($this->_fonts[(int)(mt_rand() % count($this->_fonts))]);
 
         $referenceFontSize = min($height, $width / $this->_codeLength);
 
@@ -132,7 +132,7 @@ class Captcha extends Component implements CaptchaInterface
             $points = imagettftext($image, $fontSize, $angle, $x, $y, $fgColor, $fontFile, $code[$i]);
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
-                $letter = $this->_charset[mt_rand() % strlen($this->_charset)];
+                $letter = $this->_charset[(int)(mt_rand() % strlen($this->_charset))];
                 $fgColor = imagecolorallocate($image, mt_rand(0, 240), mt_rand(0, 240), mt_rand(0, 240));
                 imagettftext($image,
                     $fontSize * 0.4 * $this->_rand_amplitude(0.1),
@@ -165,7 +165,7 @@ class Captcha extends Component implements CaptchaInterface
         $image = new \Imagick();
         $draw = new \ImagickDraw();
         $image->newImage($width, $height, new \ImagickPixel('rgb(' . $this->_bgRGB . ')'));
-        $draw->setFont($this->_fonts[mt_rand() % count($this->_fonts)]);
+        $draw->setFont($this->alias->resolve($this->_fonts[(int)(mt_rand() % count($this->_fonts))]));
         $draw->setGravity(\Imagick::GRAVITY_NORTHWEST);
 
         $referenceFontSize = min($height, $width / $this->_codeLength);
@@ -185,7 +185,7 @@ class Captcha extends Component implements CaptchaInterface
             $x += $fontSize * mt_rand(600, 800) / 1000;
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
-                $letter = $this->_charset[mt_rand() % strlen($this->_charset)];
+                $letter = $this->_charset[(int)(mt_rand() % strlen($this->_charset))];
                 $fgPixel->setColor('rgb(' . mt_rand(0, 240) . ',' . mt_rand(0, 240) . ',' . mt_rand(0, 240) . ')');
                 $draw->setFillColor($fgPixel);
                 $draw->setFontSize($fontSize * 0.4 * $this->_rand_amplitude(0.1));
@@ -228,10 +228,18 @@ class Captcha extends Component implements CaptchaInterface
             throw new Exception('captcha is not support, please install gd module first.');
         }
 
-        $this->session->set($this->_sessionVar, ['code' => $code, 'created_time' => time(), 'ttl' => $ttl]);
+        $captchaData = ['code' => $code, 'created_time' => time(), 'ttl' => $ttl];
+        $this->session->set($this->_sessionVar, $captchaData);
         return $response;
     }
 
+    /**
+     * @param string  $code
+     * @param boolean $isTry
+     *
+     * @return void
+     * @throws \ManaPHP\Security\Captcha\Exception
+     */
     protected function _verify($code, $isTry)
     {
         if (!$this->session->has($this->_sessionVar)) {
@@ -265,13 +273,25 @@ class Captcha extends Component implements CaptchaInterface
         }
     }
 
+    /**
+     * @param string $code
+     *
+     * @return void
+     * @throws \ManaPHP\Security\Captcha\Exception
+     */
     public function verify($code)
     {
-        return $this->_verify($code, false);
+        $this->_verify($code, false);
     }
 
+    /**
+     * @param string $code
+     *
+     * @return void
+     * @throws \ManaPHP\Security\Captcha\Exception
+     */
     public function tryVerify($code)
     {
-        return $this->_verify($code, true);
+        $this->_verify($code, true);
     }
 }

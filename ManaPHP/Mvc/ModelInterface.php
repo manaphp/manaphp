@@ -96,8 +96,8 @@ interface ModelInterface
      *  $cities=City::find(['conditions'=>'country_id =:country_id','bind'=>['country_id'=>2]]);
      *
      * </code>
-     * @param    array $parameters
-     * @param   array  $cacheOptions
+     * @param    string|array $parameters
+     * @param   int|array     $cacheOptions
      *
      * @return  static[]|false
      */
@@ -114,7 +114,7 @@ interface ModelInterface
      * </code>
      *
      * @param string|array $parameters
-     * @param array        $cacheOptions
+     * @param int|array    $cacheOptions
      *
      * @return static|false
      */
@@ -136,9 +136,9 @@ interface ModelInterface
      * City::count(['country_id'=>2]);
      * </code>
      *
-     * @param array  $parameters
-     * @param string $column
-     * @param array  $cacheOptions
+     * @param string|array $parameters
+     * @param string       $column
+     * @param int|array    $cacheOptions
      *
      * @return int|array
      */
@@ -147,9 +147,9 @@ interface ModelInterface
     /**
      * Allows to calculate a summary on a column that match the specified conditions
      *
-     * @param string $column
-     * @param array  $parameters
-     * @param array  $cacheOptions
+     * @param string       $column
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return mixed
      */
@@ -158,9 +158,9 @@ interface ModelInterface
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
-     * @param string $column
-     * @param array  $parameters
-     * @param array  $cacheOptions
+     * @param string       $column
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return mixed
      */
@@ -169,9 +169,9 @@ interface ModelInterface
     /**
      * Allows to get the min value of a column that match the specified conditions
      *
-     * @param string $column
-     * @param array  $parameters
-     * @param array  $cacheOptions =null
+     * @param string       $column
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return mixed
      */
@@ -180,9 +180,9 @@ interface ModelInterface
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
-     * @param string $column
-     * @param array  $parameters
-     * @param array  $cacheOptions
+     * @param string       $column
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return double
      */

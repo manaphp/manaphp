@@ -88,8 +88,8 @@ interface ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"));
      *</code>
      *
-     * @param mixed $content
-     * @param int   $jsonOptions
+     * @param mixed    $content
+     * @param int|null $jsonOptions
      *
      * @return static
      */

@@ -170,9 +170,7 @@ class Db extends Component implements DbInterface
         $this->_bind = $bind;
         $this->_affectedRows = 0;
 
-        if ($this->fireEvent('db:beforeQuery') === false) {
-            return false;
-        }
+        $this->fireEvent('db:beforeQuery');
 
         try {
             if (count($bind) !== 0) {
@@ -481,9 +479,9 @@ class Db extends Component implements DbInterface
      *
      * @return    string
      */
-    public function limit($sql, $number, $offset = null)
+    public function limit($sql, $number, $offset = 0)
     {
-        return $sql . ' LIMIT ' . $number . ($offset === null ? '' : (' OFFSET ' . $offset));
+        return $sql . ' LIMIT ' . $number . ($offset === 0 ? '' : (' OFFSET ' . $offset));
     }
 
     /**
@@ -532,24 +530,19 @@ class Db extends Component implements DbInterface
     public function getEmulatedSQL($preservedStrLength = -1)
     {
         if (count($this->_bind) === 0) {
-            return $this->_sql;
+            return (string)$this->_sql;
         }
 
         $bind = $this->_bind;
         if (isset($bind[0])) {
-            $pos = 0;
-
-            return preg_replace_callback('/(\?)/',
-                function () use ($bind, &$pos, $preservedStrLength) {
-                    return $this->_parseBindValue($bind[$pos++], $preservedStrLength);
-                }, $this->_sql);
+            return (string)$this->_sql;
         } else {
             $replaces = [];
             foreach ($bind as $key => $value) {
                 $replaces[':' . $key] = $this->_parseBindValue($value, $preservedStrLength);
             }
 
-            return strtr($this->_sql, $replaces);
+            return (string)strtr($this->_sql, $replaces);
         }
     }
 

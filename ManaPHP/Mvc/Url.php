@@ -8,6 +8,9 @@ class Url extends Component implements UrlInterface
 {
     protected $_baseUri = '';
 
+    /**
+     * Url constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -15,6 +18,11 @@ class Url extends Component implements UrlInterface
         $this->_baseUri = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
     }
 
+    /**
+     * @param string $baseUri
+     *
+     * @return static
+     */
     public function setBaseUri($baseUri)
     {
         $this->_baseUri = rtrim($baseUri, '/');
@@ -22,12 +30,21 @@ class Url extends Component implements UrlInterface
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getBaseUri()
     {
         return $this->_baseUri;
     }
 
-    public function get($uri = null, $args = null)
+    /**
+     * @param string $uri
+     * @param array  $args
+     *
+     * @return string
+     */
+    public function get($uri = null, $args = [])
     {
         $strUri = $uri;
         if ($uri[0] === '/') {
@@ -39,6 +56,7 @@ class Url extends Component implements UrlInterface
         if (is_array($args)) {
             if (Text::contains($strUri, '{')) {
                 foreach ($args as $k => $v) {
+                    $count = 0;
                     $strUri = str_replace('{' . $k . '}', $v, $strUri, $count);
                     if ($count !== 0) {
                         unset($args[$k]);
@@ -54,6 +72,12 @@ class Url extends Component implements UrlInterface
         return $strUri;
     }
 
+    /**
+     * @param string $uri
+     * @param bool   $correspondingMin
+     *
+     * @return string
+     */
     public function getCss($uri, $correspondingMin = true)
     {
         if ($this->configure->debug) {
@@ -71,6 +95,12 @@ class Url extends Component implements UrlInterface
         return $strUri;
     }
 
+    /**
+     * @param string $uri
+     * @param bool   $correspondingMin
+     *
+     * @return string
+     */
     public function getJs($uri, $correspondingMin = true)
     {
         if ($this->configure->debug) {

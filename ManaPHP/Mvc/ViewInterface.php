@@ -67,7 +67,7 @@ interface ViewInterface
     public function render($module, $controller, $action);
 
     /**
-     * @param array $cacheOptions
+     * @param int|array $cacheOptions
      *
      * @return string|false
      */

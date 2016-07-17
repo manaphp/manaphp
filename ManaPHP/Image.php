@@ -129,8 +129,8 @@ class Image implements ImageInterface
      */
     public function scale($ratio)
     {
-        $_width = $this->_adapter->getWidth();
-        $_height = $this->_adapter->getHeight();
+        $_width = (int)$this->_adapter->getWidth();
+        $_height = (int)$this->_adapter->getHeight();
 
         if ($ratio === 1) {
             return $this;
@@ -147,7 +147,7 @@ class Image implements ImageInterface
     /**
      * Scale the image by a given width
      *
-     * @param $width
+     * @param int $width
      *
      * @return static
      */
@@ -165,7 +165,7 @@ class Image implements ImageInterface
     /**
      * Scale the image by a given height
      *
-     * @param $height
+     * @param int $height
      *
      * @return static
      */

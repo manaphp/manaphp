@@ -59,7 +59,7 @@ interface GroupInterface
      *
      * @param string       $pattern
      * @param string|array $paths
-     * @param array        $httpMethods
+     * @param string|array $httpMethods
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
      */

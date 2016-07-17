@@ -9,6 +9,9 @@ namespace ManaPHP;
  */
 class Exception extends \Exception
 {
+    /**
+     * @return array
+     */
     public function dump()
     {
         $data = get_object_vars($this);

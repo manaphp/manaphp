@@ -39,6 +39,7 @@ class Autoloader
      */
     public static function register()
     {
-        return spl_autoload_register([__CLASS__, '___autoload']);
+        $al_function = [__CLASS__, '___autoload'];
+        return spl_autoload_register($al_function);
     }
 }

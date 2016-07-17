@@ -31,12 +31,15 @@ class Manager implements ManagerInterface
      */
     public function attachEvent($event, $handler)
     {
-        if (!is_object($handler)) {
-            throw new Exception('Event handler must be an Object');
+        if (!is_callable($handler) && !is_object($handler)) {
+            throw new Exception('Event handler must be callable or object');
         }
 
         if (Text::contains($event, ':')) {
-            list($type, $name) = explode(':', $event);
+            $parts = explode(':', $event);
+
+            $type = $parts[0];
+            $name = $parts[1];
         } else {
             $type = $event;
             $name = '';
@@ -64,18 +67,20 @@ class Manager implements ManagerInterface
      *
      * @param string                      $event
      * @param \ManaPHP\ComponentInterface $source
-     * @param mixed                       $data
+     * @param array                       $data
      *
      * @return boolean|null
      * @throws \ManaPHP\Event\Exception
      */
-    public function fireEvent($event, $source, $data = null)
+    public function fireEvent($event, $source, $data = [])
     {
         if (!Text::contains($event, ':')) {
             throw new Exception('Invalid event type ' . $event);
         }
 
-        list($fire_type, $fire_name) = explode(':', $event, 2);
+        $parts = explode(':', $event, 2);
+        $fire_type = $parts[0];
+        $fire_name = $parts[1];
 
         if (!isset($this->_events[$fire_type])) {
             return null;

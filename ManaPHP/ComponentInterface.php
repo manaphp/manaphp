@@ -40,14 +40,14 @@ interface ComponentInterface
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event
-     * @param mixed  $data
+     * @param array  $data
      *
      * @return bool
      */
-    public function fireEvent($event, $data = null);
+    public function fireEvent($event, $data = []);
 
     /**
-     * @param \Closure $peek
+     * @param \Closure|callable $peek
      *
      * @return void
      */

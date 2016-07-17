@@ -15,7 +15,7 @@ interface DebuggerInterface
      *
      * @return bool
      */
-    public function onUncaughtException(\Exception $exception);
+    public function onUncaughtException($exception);
 
     /**
      * @param mixed  $value

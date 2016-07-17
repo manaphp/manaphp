@@ -67,7 +67,7 @@ interface ImageInterface
     /**
      * Scale the image by a given width
      *
-     * @param $width
+     * @param int $width
      *
      * @return static
      */
@@ -76,7 +76,7 @@ interface ImageInterface
     /**
      * Scale the image by a given height
      *
-     * @param $height
+     * @param int $height
      *
      * @return static
      */

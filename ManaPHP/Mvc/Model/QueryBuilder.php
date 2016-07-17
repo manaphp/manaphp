@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Di;
 use ManaPHP\Utility\Text;
 
 /**
@@ -54,12 +53,12 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     /**
      * @var int
      */
-    protected $_limit;
+    protected $_limit = 0;
 
     /**
      * @var int
      */
-    protected $_offset;
+    protected $_offset = 0;
 
     protected $_forUpdate;
 
@@ -351,11 +350,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *</code>
      *
      * @param string $conditions
-     * @param array  $bind
+     * @param mixed  $bind
      *
      * @return static
      */
-    public function where($conditions, $bind = null)
+    public function where($conditions, $bind = [])
     {
         return $this->andWhere($conditions, $bind);
     }
@@ -369,11 +368,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *</code>
      *
      * @param string $conditions
-     * @param array  $bind
+     * @param mixed  $bind
      *
      * @return static
      */
-    public function andWhere($conditions, $bind = null)
+    public function andWhere($conditions, $bind = [])
     {
         if (is_scalar($bind)) {
             $conditions = trim($conditions);
@@ -382,10 +381,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 $conditions .= ' =';
             }
 
-            list($column) = explode(' ', $conditions);
-            $column = str_replace('.', '_', $column);
+            $parts = explode(' ', $conditions);
+            $column = str_replace('.', '_', $parts[0]);
             /** @noinspection CascadeStringReplacementInspection */
-            $column = str_replace(['`', '[', ']'], '', $column);
+            $from = ['`', '[', ']'];
+            $column = str_replace($from, '', $column);
 
             $conditions = $conditions . ' :' . $column;
             $bind = [$column => $bind];
@@ -393,9 +393,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $this->_conditions[] = $conditions;
 
-        if ($bind !== null) {
-            $this->_bind = array_merge($this->_bind, $bind);
-        }
+        $this->_bind = array_merge($this->_bind, $bind);
 
         return $this;
     }
@@ -420,7 +418,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         self::$_hiddenParamNumber++;
 
-        $this->andWhere("$expr BETWEEN :$minKey AND :$maxKey", [$minKey => $min, $maxKey => $max]);
+        $bind = [$minKey => $min, $maxKey => $max];
+        $this->andWhere("$expr BETWEEN :$minKey AND :$maxKey", $bind);
 
         return $this;
     }
@@ -445,7 +444,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         self::$_hiddenParamNumber++;
 
-        $this->andWhere("$expr NOT BETWEEN :$minKey AND :$maxKey", [$minKey => $min, $maxKey => $max]);
+        $bind = [$minKey => $min, $maxKey => $max];
+        $this->andWhere("$expr NOT BETWEEN :$minKey AND :$maxKey", $bind);
 
         return $this;
     }
@@ -590,12 +590,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *
      * @return static
      */
-    public function limit($limit, $offset = null)
+    public function limit($limit, $offset = 0)
     {
-        $this->_limit = $limit;
-        if ($offset !== null) {
-            $this->_offset = $offset;
-        }
+        $this->_limit = (int)$limit;
+		$this->_offset = (int)$offset;
 
         return $this;
     }
@@ -606,12 +604,12 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *
      * @return static
      */
-    public function page($size, $current = null)
+    public function page($size, $current = 1)
     {
-        $current = $current ? max(1, $current) : 1;
+        $current = (int)max(1, $current);
 
-        $this->_limit = $size;
-        $this->_offset = ($current - 1) * $size;
+        $this->_limit = (int)$size;
+        $this->_offset = (int)($current - 1) * $size;
 
         return $this;
     }
@@ -664,13 +662,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         /**
          * Process limit parameters
          */
-        if ($this->_limit !== null) {
-            $limit = $this->_limit;
-            if (is_int($limit) || (is_string($limit) && ((string)((int)$limit))) === $limit) {
-                $sql .= ' LIMIT ' . $limit;
-            } else {
-                throw new Exception('limit is invalid: ' . $limit);
-            }
+        if ($this->_limit !== 0) {
+            $sql .= ' LIMIT ' . $this->_limit;
         }
 
         $this->_models[] = $builder->getModels()[0];
@@ -759,7 +752,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
          */
 
         foreach ($this->_joins as $join) {
-            list($joinModel, $joinCondition, $joinAlias, $joinType) = $join;
+            $joinModel = $join[0];
+            $joinCondition = $join[1];
+            $joinAlias = $join[2];
+            $joinType = $join[3];
+
             if ($joinAlias !== null) {
                 $this->_models[$joinAlias] = $joinModel;
             } else {
@@ -841,22 +838,12 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         /**
          * Process limit parameters
          */
-        if ($this->_limit !== null) {
-            $limit = $this->_limit;
-            if (is_int($limit) || (is_string($limit) && ((string)((int)$limit))) === $limit) {
-                $sql .= ' LIMIT ' . $limit;
-            } else {
-                throw new Exception('limit is invalid: ' . $limit);
-            }
+        if ($this->_limit !== 0) {
+            $sql .= ' LIMIT ' . $this->_limit;
         }
 
-        if ($this->_offset !== null) {
-            $offset = $this->_offset;
-            if (is_int($offset) || (is_string($offset) && ((string)((int)$offset))) === $offset) {
-                $sql .= ' OFFSET ' . $offset;
-            } else {
-                throw new Exception('offset is invalid: ' . $offset);
-            }
+        if ($this->_offset !== 0) {
+            $sql .= ' OFFSET ' . $this->_offset;
         }
 
         //compatible with other SQL syntax
@@ -905,7 +892,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
-     * @param array $cacheOptions
+     * @param int|array $cacheOptions
      *
      * @return array
      * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
@@ -947,7 +934,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
-     * @param int $rowCount
+     * @param int|string $rowCount
      *
      * @return static
      * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
@@ -959,8 +946,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         $this->_columns = 'COUNT(*) as row_count';
-        $this->_limit = null;
-        $this->_offset = null;
+        $this->_limit = 0;
+        $this->_offset = 0;
 
         $sql = $this->getSql();
 
@@ -987,8 +974,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
     /**build the query and execute it.
      *
-     * @param int   $totalRows
-     * @param array $cacheOptions
+     * @param int|string $totalRows
+     * @param int|array  $cacheOptions
      *
      * @return array
      * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
@@ -1038,7 +1025,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         if ($cacheOptions !== null) {
-            $this->modelsCache->set($cacheOptions['key'], ['rows' => $result, 'totalRows' => $totalRows], $cacheOptions['ttl']);
+            $cacheData = ['rows' => $result, 'totalRows' => $totalRows];
+            $this->modelsCache->set($cacheOptions['key'], $cacheData, $cacheOptions['ttl']);
         }
 
         return $result;

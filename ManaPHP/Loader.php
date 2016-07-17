@@ -178,7 +178,8 @@ class Loader
     public function register()
     {
         if (!$this->_registered) {
-            spl_autoload_register([$this, '___autoload']);
+            $al_function = [$this, '___autoload'];
+            spl_autoload_register($al_function);
             $this->_registered = true;
         }
 
@@ -193,7 +194,8 @@ class Loader
     public function unregister()
     {
         if ($this->_registered) {
-            spl_autoload_unregister([$this, '___autoload']);
+            $al_function = [$this, '___autoload'];
+            spl_autoload_unregister($al_function);
             $this->_registered = false;
         }
 
@@ -226,7 +228,7 @@ class Loader
      *
      * @return bool
      */
-    protected function ___autoload($className)
+    public function ___autoload($className)
     {
         if (is_array($this->_classes) && isset($this->_classes[$className])) {
             $this->___requireFile($this->_classes[$className]);

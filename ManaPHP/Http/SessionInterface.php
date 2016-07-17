@@ -45,7 +45,7 @@ interface SessionInterface
     /**
      * Destroys the active session
      *
-     * @return boolean
+     * @return void
      */
     public function destroy();
 }

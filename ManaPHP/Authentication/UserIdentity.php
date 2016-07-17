@@ -4,26 +4,38 @@ namespace ManaPHP\Authentication;
 class UserIdentity implements UserIdentityInterface
 {
     /**
-     * @var int
+     * @var string
      */
-    protected $_userId = 0;
+    protected $_userId = '0';
 
     /**
      * @var string
      */
     protected $_userName = '';
 
-    public function __construct($id, $name = null)
+    /**
+     * UserIdentity constructor.
+     *
+     * @param int|string $id
+     * @param string     $name
+     */
+    public function __construct($id, $name = '')
     {
-        $this->_userId = $id;
-        $this->_userName = $name !== null ? $name : $id;
+        $this->_userId = (string)$id;
+        $this->_userName = $name ?: $id;
     }
 
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->_userId;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->_userName;

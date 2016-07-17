@@ -4,9 +4,9 @@ namespace ManaPHP\Mvc;
 interface WidgetInterface
 {
     /**
-     * @param $vars
+     * @param array $vars
      *
      * @return string|array
      */
-    public function run($vars);
+    public function run($vars = []);
 }

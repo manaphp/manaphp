@@ -5,7 +5,13 @@ use ManaPHP\Serializer\AdapterInterface;
 
 class Json implements AdapterInterface
 {
-    public function serialize($data, $context = null)
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     * @throws \ManaPHP\Serializer\Adapter\Exception
+     */
+    public function serialize($data)
     {
         if (!is_array($data)) {
             $data = ['__wrapper__' => $data];
@@ -19,7 +25,13 @@ class Json implements AdapterInterface
         return $serialized;
     }
 
-    public function deserialize($serialized, $content = null)
+    /**
+     * @param string $serialized
+     *
+     * @return mixed
+     * @throws \ManaPHP\Serializer\Adapter\Exception
+     */
+    public function deserialize($serialized)
     {
         $data = json_decode($serialized, true);
         if ($data === null) {

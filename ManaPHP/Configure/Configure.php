@@ -2,7 +2,6 @@
 namespace ManaPHP\Configure;
 
 use ManaPHP\Component;
-use ManaPHP\Di;
 
 /**
  * Class Configure
@@ -11,8 +10,14 @@ use ManaPHP\Di;
  */
 class Configure extends Component implements ConfigureInterface
 {
+    /**
+     * @var bool
+     */
     public $debug = true;
 
+    /**
+     * @return array
+     */
     public function __debugInfo()
     {
         $data = [];

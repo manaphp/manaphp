@@ -1,12 +1,16 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Di;
 use ManaPHP\Store\AdapterInterface;
 use ManaPHP\Utility\Text;
 
 abstract class Store extends Component implements StoreInterface, AdapterInterface
 {
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
     protected function _formatKey($key)
     {
         if ($key[0] === '!') {
@@ -87,7 +91,8 @@ abstract class Store extends Component implements StoreInterface, AdapterInterfa
     {
         $completeKeyValues = [];
         foreach ($keyValues as $key => $value) {
-            $completeKeyValues[$this->_formatKey($key)] = $this->serializer->serialize($value);
+            $completeKey = $this->_formatKey($key);
+            $completeKeyValues[$completeKey] = $this->serializer->serialize($value);
         }
 
         $this->_mSet($completeKeyValues);

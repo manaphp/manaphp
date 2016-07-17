@@ -5,6 +5,11 @@ use ManaPHP\Serializer\AdapterInterface;
 
 class JsonPhp implements AdapterInterface
 {
+    /**
+     * @param mixed $data
+     *
+     * @return bool
+     */
     public function _isCanJsonSafely($data)
     {
         if (is_scalar($data) || $data === null) {
@@ -22,10 +27,17 @@ class JsonPhp implements AdapterInterface
         return true;
     }
 
-    public function serialize($data, $context = null)
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     * @throws \ManaPHP\Serializer\Adapter\Exception
+     */
+    public function serialize($data)
     {
         if (is_scalar($data) || $data === null) {
-            $serialized = json_encode(['__wrapper__' => $data], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $wrappedData = ['__wrapper__' => $data];
+            $serialized = json_encode($wrappedData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         } elseif ($this->_isCanJsonSafely($data)) {
             $serialized = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             if ($serialized === false) {
@@ -38,7 +50,13 @@ class JsonPhp implements AdapterInterface
         return $serialized;
     }
 
-    public function deserialize($serialized, $content = null)
+    /**
+     * @param string $serialized
+     *
+     * @return mixed
+     * @throws \ManaPHP\Serializer\Adapter\Exception
+     */
+    public function deserialize($serialized)
     {
         if ($serialized[0] === '{' || $serialized[0] === '[') {
             $data = json_decode($serialized, true);
