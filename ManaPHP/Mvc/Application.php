@@ -92,15 +92,10 @@ class Application extends Component implements ApplicationInterface
 
         $moduleClassName = basename($this->alias->get('@app')) . "\\$moduleName\\Module";
 
-        /**
-         * @var \ManaPHP\Mvc\ModuleInterface $moduleObject
-         */
-        $moduleObject = null;
-
         $eventData = ['module' => $moduleName];
         $this->fireEvent('application:beforeStartModule', $eventData);
-        $moduleObject = $this->_dependencyInjector->getShared($moduleClassName);
-        $moduleObject->registerServices($this->_dependencyInjector);
+        $this->_moduleObject = $this->_dependencyInjector->getShared($moduleClassName);
+        $this->_moduleObject->registerServices($this->_dependencyInjector);
 
         $eventData = ['module' => $moduleName];
         $this->fireEvent('application:afterStartModule', $eventData);

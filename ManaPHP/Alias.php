@@ -14,11 +14,13 @@ class Alias extends Component implements AliasInterface
     public function __construct()
     {
         parent::__construct();
-        if (isset($_SERVER['DOCUMENT_ROOT'])) {
+        if (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] !== '') {
             $dir = dirname($_SERVER['DOCUMENT_ROOT']) . '/ManaPHP';
             if (is_dir($dir)) {
                 $this->set('@manaphp', $dir);
             }
+        } else {
+            $this->set('@manaphp', str_replace('\\', '/', __DIR__));
         }
 
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
@@ -123,6 +125,7 @@ class Alias extends Component implements AliasInterface
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new Exception("alias $alias is not exists: " . $path);
         }
-        return $this->_aliases[$alias] . '/' . $parts[1];
+
+        return str_replace($alias, $this->_aliases[$alias], $path);
     }
 }

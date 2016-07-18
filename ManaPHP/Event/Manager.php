@@ -98,18 +98,15 @@ class Manager implements ManagerInterface
 
             $handler = $event_handler['handler'];
 
-            $callback = null;
-            if ($handler instanceof \Closure) {
-                $callback = $handler;
-            } else {
+            if (is_object($handler) && !$handler instanceof \Closure) {
                 if (!method_exists($handler, $fire_name)) {
                     continue;
+                } else {
+                    $handler = [$handler, $fire_name];
                 }
-
-                $callback = [$handler, $fire_name];
             }
 
-            $ret = call_user_func_array($callback, $callback_params);
+            $ret = call_user_func_array($handler, $callback_params);
         }
 
         return $ret;
