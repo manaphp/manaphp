@@ -72,14 +72,13 @@ class Loader
      */
     public function registerNamespaces($namespaces, $merge = false)
     {
-        foreach ($namespaces as &$path) {
+        foreach ($namespaces as $key => $path) {
             $path = rtrim($path, '\\/');
             if (DIRECTORY_SEPARATOR === '\\') {
-                /** @noinspection ReferenceMismatchInspection */
-                $path = str_replace('\\', '/', $path);
+                /** @noinspection AlterInForeachInspection */
+                $namespaces[$key] = str_replace('\\', '/', $path);
             }
         }
-        unset($path);
 
         $this->_namespaces = $merge ? array_merge($this->_namespaces, $namespaces) : $namespaces;
 
@@ -113,14 +112,14 @@ class Loader
      */
     public function registerDirs($directories, $merge = false)
     {
-        foreach ($directories as &$directory) {
+        foreach ($directories as $key => $directory) {
             $directory = rtrim($directory, '\\/');
             if (DIRECTORY_SEPARATOR === '\\') {
-                /** @noinspection ReferenceMismatchInspection */
                 $directory = str_replace('\\', '/', $directory);
             }
+            /** @noinspection AlterInForeachInspection */
+            $directories[$key] = $directory;
         }
-        unset($directory);
 
         $this->_directories = $merge ? array_merge($this->_directories, $directories) : $directories;
 
@@ -148,11 +147,10 @@ class Loader
     public function registerClasses($classes, $merge = false)
     {
         if (DIRECTORY_SEPARATOR === '\\') {
-            foreach ($classes as &$path) {
-                /** @noinspection ReferenceMismatchInspection */
-                $path = str_replace('\\', '/', $path);
+            foreach ($classes as $key => $path) {
+                /** @noinspection AlterInForeachInspection */
+                $classes[$key] = str_replace('\\', '/', $path);
             }
-            unset($path);
         }
 
         $this->_classes = $merge ? array_merge($this->_classes, $classes) : $classes;

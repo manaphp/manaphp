@@ -129,7 +129,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function exists($template)
     {
-        foreach ($this->_registeredEngines as $extension => $engine) {
+        foreach ($this->_registeredEngines as $extension => $_) {
             $file = $template . $extension;
             if (is_file($file)) {
                 if (PHP_EOL !== "\n") {

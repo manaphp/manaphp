@@ -1,7 +1,6 @@
 <?php
-namespace ManaPHP\Authorization\Rbac;
+namespace ManaPHP\Authorization;
 
-use ManaPHP\Authorization\Exception;
 use ManaPHP\Authorization\Rbac\Models\Permission;
 use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
