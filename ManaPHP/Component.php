@@ -230,11 +230,17 @@ class Component implements ComponentInterface
     }
 
     /**
+     * @param bool $ignoreValue
+     *
      * @return array
      */
-    public function getProperties()
+    public function getProperties($ignoreValue = true)
     {
-        return get_object_vars($this);
+        if ($ignoreValue) {
+            return array_keys(get_object_vars($this));
+        } else {
+            return get_object_vars($this);
+        }
     }
 
     public function __debugInfo()

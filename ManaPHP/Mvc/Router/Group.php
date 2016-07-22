@@ -66,14 +66,14 @@ class Group implements GroupInterface
      *
      * @param string       $pattern
      * @param string|array $paths
-     * @param string|array $httpMethods
+     * @param string       $httpMethod
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
      * @throws \ManaPHP\Mvc\Router\Exception
      */
-    protected function _addRoute($pattern, $paths = null, $httpMethods = null)
+    protected function _addRoute($pattern, $paths = null, $httpMethod = null)
     {
-        $route = new Route($pattern, $paths, $httpMethods);
+        $route = new Route($pattern, $paths, $httpMethod);
         $this->_routes[] = $route;
 
         return $route;
@@ -88,14 +88,14 @@ class Group implements GroupInterface
      *
      * @param string       $pattern
      * @param string|array $paths
-     * @param string|array $httpMethods
+     * @param string|array $httpMethod
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
      * @throws \ManaPHP\Mvc\Router\Exception
      */
-    public function add($pattern, $paths = null, $httpMethods = null)
+    public function add($pattern, $paths = null, $httpMethod = null)
     {
-        return $this->_addRoute($pattern, $paths, $httpMethods);
+        return $this->_addRoute($pattern, $paths, $httpMethod);
     }
 
     /**

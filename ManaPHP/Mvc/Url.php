@@ -73,8 +73,8 @@ class Url extends Component implements UrlInterface
     }
 
     /**
-     * @param string $uri
-     * @param bool   $correspondingMin
+     * @param string      $uri
+     * @param bool|string $correspondingMin
      *
      * @return string
      */
@@ -96,8 +96,8 @@ class Url extends Component implements UrlInterface
     }
 
     /**
-     * @param string $uri
-     * @param bool   $correspondingMin
+     * @param string      $uri
+     * @param bool|string $correspondingMin
      *
      * @return string
      */

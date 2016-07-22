@@ -293,7 +293,9 @@ class Dispatcher extends Component implements DispatcherInterface
                         throw new Exception("The action '$method' of {$this->_controllerName}{$this->_controllerSuffix}  does not suffix with '{$this->_actionSuffix}' case sensitively, please amend it first.");
                     }
 
-                    if (strtolower($method[0]) !== $method[0]) {
+                    /** @noinspection SubStrUsedAsArrayAccessInspection */
+                    $firstChar = substr($method, 0, 1);
+                    if (strtolower($firstChar) !== $firstChar) {
                         throw new Exception("The action '$method' of {$this->_controllerName}{$this->_controllerSuffix}  does not prefix with lowercase character, please amend it first.");
                     }
 

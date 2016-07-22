@@ -81,7 +81,9 @@ interface ComponentInterface
     public function getProperty($property);
 
     /**
+     * @param bool $ignoreValue
+     *
      * @return array
      */
-    public function getProperties();
+    public function getProperties($ignoreValue = true);
 }

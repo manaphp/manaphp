@@ -37,14 +37,12 @@ class File extends Component implements AdapterInterface
 
         if (is_object($options)) {
             $options = (array)$options;
-        }
-
-        if (is_string($options)) {
+        } elseif (is_string($options)) {
             $options = ['file' => $options];
         }
 
         if (!isset($options['file'])) {
-            $options['file'] = '@data/Logger/' . date('Ymd') . '.log';
+            $options['file'] = '@data/Logger/' . date('ymd') . '.log';
         }
 
         $this->_file = $this->alias->resolve($options['file']);
@@ -68,7 +66,8 @@ class File extends Component implements AdapterInterface
         if ($this->_firstLog) {
             $dir = dirname($this->_file);
 
-            if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+            /** @noinspection NotOptimalIfConditionsInspection */
+            if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
                 error_log('Unable to create \'' . $dir . '\' directory: ' . error_get_last()['message']);
             }
 

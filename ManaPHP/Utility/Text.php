@@ -67,8 +67,8 @@ class Text
     {
         if (Text::contains($str, '_')) {
             $parts = explode('_', $str);
-            foreach ($parts as &$v) {
-                $v = ucfirst($v);
+            foreach ($parts as $k => $v) {
+                $parts[$k] = ucfirst($v);
             }
 
             return implode('', $parts);

@@ -59,11 +59,11 @@ interface GroupInterface
      *
      * @param string       $pattern
      * @param string|array $paths
-     * @param string|array $httpMethods
+     * @param string       $httpMethod
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
      */
-    public function add($pattern, $paths = null, $httpMethods = null);
+    public function add($pattern, $paths = null, $httpMethod = null);
 
     /**
      * Adds a route to the router that only match if the HTTP method is GET

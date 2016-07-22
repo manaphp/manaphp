@@ -31,25 +31,25 @@ class Route implements RouteInterface
     protected $_paths;
 
     /**
-     * @var array|null|string
+     * @var string
      */
-    protected $_httpMethods;
+    protected $_httpMethod;
 
     /**
      * \ManaPHP\Mvc\Router\Route constructor
      *
      * @param string       $pattern
      * @param string|array $paths
-     * @param array|string $httpMethods
+     * @param string       $httpMethod
      *
      * @throws \ManaPHP\Mvc\Router\Exception
      */
-    public function __construct($pattern, $paths = null, $httpMethods = null)
+    public function __construct($pattern, $paths = null, $httpMethod = null)
     {
         $this->_pattern = $pattern;
         $this->_compiledPattern = $this->_compilePattern($pattern);
         $this->_paths = self::getRoutePaths($paths);
-        $this->_httpMethods = $httpMethods;
+        $this->_httpMethod = $httpMethod;
     }
 
     /**
@@ -212,20 +212,13 @@ class Route implements RouteInterface
      */
     public function match($uri)
     {
-        if ($this->_httpMethods !== null) {
-            if (is_string($this->_httpMethods)) {
-                if ($this->_httpMethods !== $_SERVER['REQUEST_METHOD']) {
-                    return false;
-                }
-            } else {
-                if (!in_array($_SERVER['REQUEST_METHOD'], $this->_httpMethods, true)) {
-                    return false;
-                }
-            }
+        $matches = [];
+
+        if ($this->_httpMethod !== null && $this->_httpMethod !== $_SERVER['REQUEST_METHOD']) {
+            return false;
         }
 
         if (Text::contains($this->_compiledPattern, '^')) {
-            $matches = null;
             $r = preg_match($this->_compiledPattern, $uri, $matches);
             if ($r === false) {
                 throw new Exception('--invalid PCRE: ' . $this->_compiledPattern . ' for ' . $this->_pattern);
@@ -236,7 +229,7 @@ class Route implements RouteInterface
             }
         } else {
             if ($this->_compiledPattern === $uri) {
-                return [];
+                return $matches;
             } else {
                 return false;
             }

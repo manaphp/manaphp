@@ -848,7 +848,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         //compatible with other SQL syntax
         $replaces = [];
-        foreach ($this->_bind as $key => $value) {
+        foreach ($this->_bind as $key => $_) {
             $replaces[':' . $key . ':'] = ':' . $key;
         }
 
