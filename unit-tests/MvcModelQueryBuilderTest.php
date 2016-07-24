@@ -28,6 +28,8 @@ class MvcModelQueryBuilderTest extends TestCase
             return new ManaPHP\Mvc\Model\Manager();
         });
 
+        $this->di->set('eventsManager',new \ManaPHP\Event\Manager());
+        
         $this->di->set('modelsMetadata', function () {
             return new ManaPHP\Mvc\Model\MetaData\Adapter\Memory();
         });

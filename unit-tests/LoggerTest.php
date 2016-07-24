@@ -4,6 +4,9 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class LoggerTest extends TestCase
 {
+    public function setUp(){
+        $di =new \ManaPHP\Di\FactoryDefault();
+    }
     public function test_setLevel()
     {
         $logger = new ManaPHP\Log\Logger();

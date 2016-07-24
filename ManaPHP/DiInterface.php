@@ -48,7 +48,7 @@ interface DiInterface
      *
      * @return mixed
      */
-    public function get($name, $parameters = null);
+    public function get($name, $parameters = []);
 
     /**
      * Resolves a shared service based on their configuration
@@ -58,7 +58,7 @@ interface DiInterface
      *
      * @return mixed
      */
-    public function getShared($name, $parameters = null);
+    public function getShared($name, $parameters = []);
 
     /**
      * Check whether the DI contains a service by a name

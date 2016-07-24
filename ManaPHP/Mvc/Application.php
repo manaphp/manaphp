@@ -33,7 +33,7 @@ class Application extends Component implements ApplicationInterface
      */
     public function __construct($dependencyInjector = null)
     {
-        parent::__construct($dependencyInjector ?: new FactoryDefault());
+        $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
 
         $this->_dependencyInjector->setShared('application', $this);
     }
@@ -53,6 +53,10 @@ class Application extends Component implements ApplicationInterface
         return $this;
     }
 
+    /**
+     * @return bool
+     * @throws \ManaPHP\Security\CsrfToken\Exception|\ManaPHP\Http\Request\Exception|\ManaPHP\Security\Crypt\Exception
+     */
     public function _eventHandlerBeforeExecuteRoute()
     {
         $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
@@ -62,11 +66,12 @@ class Application extends Component implements ApplicationInterface
             $this->csrfToken->verify();
         }
 
+        /** @noinspection IfReturnReturnSimplificationInspection */
         if ($this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName()) === false) {
             return false;
         }
 
-        return null;
+        return true;
     }
 
     /**
@@ -113,23 +118,8 @@ class Application extends Component implements ApplicationInterface
             return $this->response;
         }
 
-        $response = $this->_getResponse($this->dispatcher->getReturnedValue(), $moduleName,
-            $this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+        $actionReturnValue = $this->dispatcher->getReturnedValue();
 
-        return $response;
-    }
-
-    /**
-     * @param mixed  $actionReturnValue
-     * @param        $module
-     * @param string $controller
-     * @param string $action
-     *
-     * @return \ManaPHP\Http\ResponseInterface
-     * @throws \ManaPHP\Mvc\Application\Exception|\ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
-     */
-    protected function _getResponse($actionReturnValue, $module, $controller, $action)
-    {
         if ($actionReturnValue === false) {
             return $this->response;
         } elseif ($actionReturnValue instanceof ResponseInterface) {
@@ -146,7 +136,7 @@ class Application extends Component implements ApplicationInterface
             if ($this->_implicitView === true) {
 
                 $this->view->setContent($content);
-                $this->view->render($module, $controller, $action);
+                $this->view->render($moduleName, $this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
                 $this->response->setContent($this->view->getContent());
             } else {
                 $this->response->setContent($content);

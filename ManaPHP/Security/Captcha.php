@@ -53,8 +53,6 @@ class Captcha extends Component implements CaptchaInterface
      */
     public function __construct($options = [])
     {
-        parent::__construct();
-
         if (is_object($options)) {
             $options = (array)$options;
         }

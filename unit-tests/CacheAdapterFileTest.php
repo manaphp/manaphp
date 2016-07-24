@@ -4,16 +4,18 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class CacheAdapterFileTest extends TestCase
 {
+    protected $_di;
     public function setUp()
     {
         parent::setUp();
 
-        $di = new ManaPHP\Di\FactoryDefault();
+        $this->_di = new ManaPHP\Di\FactoryDefault();
     }
 
     public function test_exists()
     {
         $cache = new \ManaPHP\Cache\Adapter\File('/d/cache/test');
+
         $cache->_delete('var');
         $this->assertFalse($cache->_exists('var'));
         $cache->_set('var', 'value', 1000);
@@ -23,6 +25,7 @@ class CacheAdapterFileTest extends TestCase
     public function test_get()
     {
         $cache = new \ManaPHP\Cache\Adapter\File('/d/cache/test');
+
         $cache->_delete('var');
 
         $this->assertFalse($cache->_get('var'));

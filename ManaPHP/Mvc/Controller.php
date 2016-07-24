@@ -54,8 +54,6 @@ abstract class Controller extends Component implements ControllerInterface
      */
     final public function __construct()
     {
-        parent::__construct();
-
         if (method_exists($this, 'onConstruct')) {
             $this->{'onConstruct'}();
         }

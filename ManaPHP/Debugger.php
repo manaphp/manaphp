@@ -114,7 +114,7 @@ class Debugger extends Component implements DebuggerInterface
         }
 
         $handler = [$this, '_eventHandlerPeek'];
-        parent::peekEvents($handler);
+        $this->eventsManager->peekEvents($handler);
 
         if ($listenException) {
             $handler = [$this, 'onUncaughtException'];

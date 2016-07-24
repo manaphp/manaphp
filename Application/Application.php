@@ -23,9 +23,7 @@ namespace Application {
                     ->mount(Api\RouteGroup::class, '/api', 'Api');
             });
 
-            $this->_dependencyInjector->setShared('logger', function () use ($self) {
-                return (new Logger())->addAdapter(new File($self->configure->log->file));
-            });
+            $this->logger->addAdapter(new File($this->configure->log->file));
 
             $this->_dependencyInjector->setShared('crypt', function () use ($self) {
                 return new Crypt($self->configure->crypt->key);

@@ -9,6 +9,9 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class MvcRouterRouteTest extends TestCase
 {
+    public function setUp(){
+        new \ManaPHP\Di\FactoryDefault();
+    }
     public function test_construct()
     {
 

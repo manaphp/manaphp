@@ -59,16 +59,9 @@ class Di implements DiInterface
      */
     protected static $_default;
 
-    /**
-     * \ManaPHP\Di constructor
-     *
-     * @var self
-     */
     public function __construct()
     {
-        if (self::$_default === null) {
-            self::$_default = $this;
-        }
+        self::$_default = $this;
     }
 
     /**
@@ -127,46 +120,6 @@ class Di implements DiInterface
         return $this;
     }
 
-    /**
-     * Resolves the service
-     *
-     * @param string $name
-     * @param mixed  $definition
-     * @param array  $parameters
-     *
-     * @return mixed
-     * @throws \ManaPHP\Di\Exception
-     */
-    protected function _resolve($name, $definition, $parameters = [])
-    {
-        $instance = null;
-
-        if (is_string($definition)) {
-            if (class_exists($definition)) {
-                if (is_array($parameters)) {
-                    $reflection = new \ReflectionClass($definition);
-                    $instance = $reflection->newInstanceArgs($parameters);
-                } else {
-                    $instance = new $definition();
-                }
-            } else {
-                throw new Exception("Service '$name' cannot be resolved: class is not exists.");
-            }
-        } elseif ($definition instanceof \Closure) {
-            if (is_array($parameters)) {
-                $instance = call_user_func_array($definition, $parameters);
-            } else {
-                $instance = call_user_func($definition);
-            }
-        } elseif (is_object($definition)) {
-            $instance = $definition;
-        } else {
-            throw new Exception("Service '$name' cannot be resolved: service type is unknown.");
-        }
-
-        return $instance;
-    }
-
     /** @noinspection PhpDocMissingThrowsInspection */
     /**
      * Resolves the service based on its configuration
@@ -185,37 +138,53 @@ class Di implements DiInterface
                 $definition = $this->_services[$name];
                 $shared = true;
             } else {
-
                 $parts = $this->_services[$name];
                 $definition = $parts[0];
                 $shared = $parts[1];
             }
-
-            if ($shared && isset($this->_sharedInstances[$name])) {
-                $instance = $this->_sharedInstances[$name];
-            } else {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                $instance = $this->_resolve($name, $definition, $parameters);
-
-                if ($shared) {
-                    $this->_sharedInstances[$name] = $instance;
-                }
-            }
         } else {
-            if (!class_exists($name)) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new Exception("Service '$name' cannot be resolved: class is not exists.");
-            }
-
-            if (is_array($parameters)) {
-                $reflection = new \ReflectionClass($name);
-                $instance = $reflection->newInstanceArgs($parameters);
-            } else {
-                $instance = new $name();
-            }
+            $definition = $name;
+            $shared = false;
         }
 
-        if ($instance instanceof ComponentInterface) {
+        if (isset($this->_sharedInstances[$name])) {
+            return $this->_sharedInstances[$name];
+        }
+
+        if (is_string($definition)) {
+            if (!class_exists($definition)) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                throw new Exception("Service '$_name' cannot be resolved: class is not exists.");
+            }
+            $count = count($parameters);
+
+            if ($count === 0) {
+                $instance = new $definition();
+            } elseif ($count === 1) {
+                $instance = new $definition($parameters[0]);
+            } elseif ($count === 2) {
+                $instance = new $definition($parameters[0], $parameters[1]);
+            } elseif ($count === 3) {
+                $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
+            } else {
+                $reflection = new \ReflectionClass($definition);
+                $instance = $reflection->newInstanceArgs($parameters);
+            }
+
+        } elseif ($definition instanceof \Closure) {
+            $instance = call_user_func_array($definition, $parameters);
+        } elseif (is_object($definition)) {
+            $instance = $definition;
+        } else {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new Exception("Service '$_name' cannot be resolved: service type is unknown.");
+        }
+
+        if ($shared) {
+            $this->_sharedInstances[$name] = $instance;
+        }
+
+        if ($instance instanceof Component) {
             $instance->setDependencyInjector($this);
         }
 
@@ -232,10 +201,6 @@ class Di implements DiInterface
      */
     public function getShared($name, $parameters = [])
     {
-        if (!isset($this->_services[$name]) && isset($this->_aliases[$name])) {
-            $name = $this->_aliases[$name];
-        }
-
         if (!isset($this->_sharedInstances[$name])) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_sharedInstances[$name] = $this->get($name, $parameters);

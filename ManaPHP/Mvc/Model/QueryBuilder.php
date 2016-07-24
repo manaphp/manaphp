@@ -109,8 +109,6 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     public function __construct($params = null)
     {
-        parent::__construct();
-
         if ($params === null) {
             $params = [];
         }

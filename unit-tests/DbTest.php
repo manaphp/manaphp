@@ -16,6 +16,8 @@ class DbTest extends TestCase
 
     public function setUp()
     {
+        $di=new \ManaPHP\Di\FactoryDefault();
+        
         $config = require __DIR__ . '/config.database.php';
         $this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
         $this->db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {

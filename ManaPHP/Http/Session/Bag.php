@@ -32,8 +32,6 @@ class Bag extends Component implements BagInterface
      */
     public function __construct($name)
     {
-        parent::__construct();
-
         $this->_name = $name;
     }
 

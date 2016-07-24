@@ -33,6 +33,11 @@ class Filter extends Component implements FilterInterface
     protected $_xssByReplace = true;
 
     /**
+     * @var string
+     */
+    protected $_messagesFile;
+
+    /**
      * Filter constructor.
      *
      * @param array $options
@@ -41,8 +46,6 @@ class Filter extends Component implements FilterInterface
      */
     public function __construct($options = [])
     {
-        parent::__construct();
-
         foreach (get_class_methods($this) as $method) {
             if (Text::startsWith($method, '_rule_')) {
                 $this->_rules[substr($method, 6)] = [$this, $method];
@@ -59,19 +62,10 @@ class Filter extends Component implements FilterInterface
 
         if (is_string($options['messages'])) {
             if (Text::contains($options['messages'], '.')) {
-                $file = $options['messages'];
+                $this->_messagesFile = $options['messages'];
             } else {
-                $file = $this->alias->resolve('@manaphp/Http/Filter/Messages/' . $options['messages'] . '.php');
+                $this->_messagesFile = '@manaphp/Http/Filter/Messages/' . $options['messages'] . '.php';
             }
-
-            $file = $this->alias->resolve($file);
-
-            if (!is_file($file)) {
-                throw new \ManaPHP\Http\Exception('filter message template file is not exists: ' . $file);
-            }
-
-            /** @noinspection PhpIncludeInspection */
-            $options['messages'] = require($file);
         }
         $this->_messages = $options['messages'];
 
@@ -142,6 +136,17 @@ class Filter extends Component implements FilterInterface
 
     protected function _getError($attribute, $value, $rule, $parameters)
     {
+        if (count($this->_messages) === 0) {
+            $file = $this->alias->resolve($this->_messagesFile);
+
+            if (!is_file($file)) {
+                throw new \ManaPHP\Http\Exception('filter message template file is not exists: ' . $file);
+            }
+
+            /** @noinspection PhpIncludeInspection */
+            $options['messages'] = require($file);
+        }
+
         $replaces = [];
 
         $replaces[':attribute'] = isset($this->_attributes[$attribute]) ? $this->_attributes[$attribute] : $attribute;

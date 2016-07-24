@@ -64,7 +64,7 @@ class Renderer extends Component implements RendererInterface
         $content = null;
 
         foreach ($this->_registeredEngines as $extension => $engine) {
-            $file = @$this->alias->resolve($template . $extension);
+            $file = $this->alias->resolve($template . $extension);
             if (file_exists($file)) {
                 if (PHP_EOL !== "\n") {
                     $realPath = str_replace('\\', '/', realpath($file));

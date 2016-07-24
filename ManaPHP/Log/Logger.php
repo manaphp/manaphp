@@ -38,7 +38,6 @@ class Logger extends Component
 
     public function __construct()
     {
-        parent::__construct();
         $this->_level_i2s = [
             self::LEVEL_OFF => 'OFF',
             self::LEVEL_FATAL => 'FATAL',

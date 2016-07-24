@@ -6,7 +6,7 @@
  */
 namespace ManaPHP;
 
-use ManaPHP\Event\Manager;
+use ManaPHP\Component\Exception;
 
 /**
  * ManaPHP\Component
@@ -54,29 +54,9 @@ use ManaPHP\Event\Manager;
 class Component implements ComponentInterface
 {
     /**
-     * @var \ManaPHP\Event\Manager
-     */
-    protected $_eventsManager;
-
-    /**
-     * @var array
-     */
-    private static $_eventPeeks = [];
-
-    /**
      * @var \ManaPHP\Di
      */
     protected $_dependencyInjector;
-
-    /**
-     * Component constructor.
-     *
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     */
-    public function __construct($dependencyInjector = null)
-    {
-        $this->_dependencyInjector = $dependencyInjector ?: Di::getDefault();
-    }
 
     /**
      * Sets the dependency injector
@@ -109,9 +89,14 @@ class Component implements ComponentInterface
      * @param string $propertyName
      *
      * @return mixed
+     * @throws \ManaPHP\Component\Exception
      */
     public function __get($propertyName)
     {
+        if ($this->_dependencyInjector === null) {
+            $this->_dependencyInjector = Di::getDefault();
+        }
+
         if ($this->_dependencyInjector->has($propertyName)) {
             $this->{$propertyName} = $this->_dependencyInjector->getShared($propertyName);
             return $this->{$propertyName};
@@ -128,7 +113,7 @@ class Component implements ComponentInterface
             return $this->{'persistent'};
         }
 
-        trigger_error('Access to undefined property ' . $propertyName);
+        trigger_error('Access to undefined property `' . $propertyName . '` of `' . get_called_class() . '`.');
 
         return null;
     }
@@ -136,19 +121,15 @@ class Component implements ComponentInterface
     /**
      * Attach a listener to the events manager
      *
-     * @param string                                    $event
-     * @param callable|\ManaPHP\Event\ListenerInterface $handler
+     * @param string   $event
+     * @param callable $handler
      *
      * @return static
      * @throws \ManaPHP\Event\Exception
      */
     public function attachEvent($event, $handler)
     {
-        if ($this->_eventsManager === null) {
-            $this->_eventsManager = new Manager();
-        }
-
-        $this->_eventsManager->attachEvent($event, $handler);
+        $this->eventsManager->attachEvent($event, $handler);
 
         return $this;
     }
@@ -163,27 +144,7 @@ class Component implements ComponentInterface
      */
     public function fireEvent($event, $data = [])
     {
-        foreach (self::$_eventPeeks as $peek) {
-            $peek($event, $this, $data);
-        }
-
-        if ($this->_eventsManager !== null) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            return $this->_eventsManager->fireEvent($event, $this, $data);
-        }
-
-        return true;
-    }
-
-    /**
-     * @param \Closure|callable $peek
-     *
-     * @return void
-     * @throws Exception
-     */
-    public static function peekEvents($peek)
-    {
-        self::$_eventPeeks[] = $peek;
+        return $this->eventsManager->fireEvent($event, $this, $data);
     }
 
     /**
@@ -243,6 +204,9 @@ class Component implements ComponentInterface
         }
     }
 
+    /**
+     * @return array
+     */
     public function __debugInfo()
     {
         $defaultDi = Di::getDefault();
@@ -268,9 +232,6 @@ class Component implements ComponentInterface
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_eventsManager') {
-                continue;
-            }
 
             if (is_scalar($v) || $v === null) {
                 $data[$k] = $v;

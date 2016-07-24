@@ -15,8 +15,10 @@ interface ManagerInterface
     /**
      * Attach a listener to the events manager
      *
-     * @param string                                    $event
-     * @param callable|\ManaPHP\Event\ListenerInterface $handler
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return void
      */
     public function attachEvent($event, $handler);
 
@@ -26,6 +28,15 @@ interface ManagerInterface
      * @param string                      $event
      * @param \ManaPHP\ComponentInterface $source
      * @param array                       $data
+     *
+     * @return boolean|null
      */
     public function fireEvent($event, $source, $data = []);
+
+    /**
+     * @param callable $handler
+     *
+     * @return void
+     */
+    public function peekEvents($handler);
 }

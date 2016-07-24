@@ -15,8 +15,6 @@ class Redis extends Cache
      */
     public function __construct($options = [])
     {
-        parent::__construct();
-
         if (is_object($options)) {
             $options = (array)$options;
         }

@@ -28,7 +28,6 @@ class AliasTest extends TestCase
     public function test_get()
     {
         $alias = new \ManaPHP\Alias();
-        $this->assertTrue($alias->has('@app'));
 
         $alias->set('@app', '\app');
         $this->assertSame('/app', $alias->get('@app'));

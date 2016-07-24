@@ -25,6 +25,8 @@ interface DispatcherInterface
 
     /**
      * Gets the module where the controller class is
+     *
+     * @return string
      */
     public function getModuleName();
 

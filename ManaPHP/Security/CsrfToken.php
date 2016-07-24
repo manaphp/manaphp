@@ -37,8 +37,6 @@ class CsrfToken extends Component implements CsrfTokenInterface
      */
     public function __construct($options = [])
     {
-        parent::__construct();
-
         if (is_object($options)) {
             $options = (array)$options;
         }

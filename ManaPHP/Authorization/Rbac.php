@@ -29,8 +29,6 @@ class Rbac extends Component implements AuthorizationInterface
      */
     public function __construct($options = [])
     {
-        parent::__construct();
-
         if (isset($options['userRoleMode'])) {
             $this->_userRoleModel = $options['userRoleMode'];
         }

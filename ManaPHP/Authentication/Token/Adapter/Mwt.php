@@ -41,8 +41,6 @@ class Mwt extends Component implements TokenInterface
      */
     public function __construct($type, $keys)
     {
-        parent::__construct();
-
         $this->_type = $type;
 
         if (is_string($keys)) {

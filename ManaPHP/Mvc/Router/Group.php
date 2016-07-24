@@ -51,14 +51,14 @@ class Group implements GroupInterface
      */
     protected $_routes = [];
 
+    /**
+     * @var boolean
+     */
+    protected $_useDefaultRoutes;
+
     public function __construct($useDefaultRoutes = true)
     {
-        if ($useDefaultRoutes) {
-            $this->add('/');
-            $this->add('/:controller/?');
-            $this->add('/:controller/:action/?');
-            $this->add('/:controller/:action/:params');
-        }
+        $this->_useDefaultRoutes = $useDefaultRoutes;
     }
 
     /**
@@ -230,6 +230,38 @@ class Group implements GroupInterface
             }
         }
 
-        return false;
+        if ($this->_useDefaultRoutes) {
+
+            $paths = [];
+
+            if ($uri === '/') {
+                return $paths;
+            }
+
+            $parts = explode('/', trim($uri, '/'), 3);
+            $count = count($parts);
+            if ($count === 1) {
+                $paths['controller'] = $parts[0];
+            } elseif ($count === 2) {
+                $paths['controller'] = $parts[0];
+                $paths['action'] = $parts[1];
+            } elseif ($count === 3) {
+                $paths['controller'] = $parts[0];
+                $paths['action'] = $parts[1];
+                $paths['params'] = $parts[2];
+            }
+
+            if (isset($paths['controller']) && preg_match('#^[a-zA-Z0-9_-]+$#', $paths['controller']) !== 1) {
+                return false;
+            }
+
+            if (isset($paths['action']) && preg_match('#^[a-zA-Z0-9_-]+$#', $paths['action']) !== 1) {
+                return false;
+            }
+
+            return $paths;
+        } else {
+            return false;
+        }
     }
 }

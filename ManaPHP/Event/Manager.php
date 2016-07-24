@@ -20,18 +20,20 @@ class Manager implements ManagerInterface
      */
     protected $_events = [];
 
+    protected $_peekHandlers = [];
+
     /**
      * Attach a listener to the events manager
      *
-     * @param string                                    $event
-     * @param callable|\ManaPHP\Event\ListenerInterface $handler
+     * @param string   $event
+     * @param callable $handler
      *
-     * @return static
+     * @return void
      * @throws \ManaPHP\Event\Exception
      */
     public function attachEvent($event, $handler)
     {
-        if (!is_callable($handler) && !is_object($handler)) {
+        if (!is_object($handler) && !is_callable($handler)) {
             throw new Exception('Event handler must be callable or object');
         }
 
@@ -54,8 +56,6 @@ class Manager implements ManagerInterface
             'name' => $name,
             'handler' => $handler,
         ];
-
-        return $this;
     }
 
     /**
@@ -74,6 +74,10 @@ class Manager implements ManagerInterface
      */
     public function fireEvent($event, $source, $data = [])
     {
+        foreach ($this->_peekHandlers as $peekHandler) {
+            $peekHandler($event, $source, $data);
+        }
+
         if (!Text::contains($event, ':')) {
             throw new Exception('Invalid event type ' . $event);
         }
@@ -110,5 +114,15 @@ class Manager implements ManagerInterface
         }
 
         return $ret;
+    }
+
+    /**
+     * @param callable $handler
+     *
+     * @return void
+     */
+    public function peekEvents($handler)
+    {
+        $this->_peekHandlers[] = $handler;
     }
 }

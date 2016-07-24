@@ -7,19 +7,37 @@ class Autoloader
     /**
      * @var string
      */
-    protected static $_rootPath;
+    protected $_dir;
 
-    public static function ___autoload($className)
+    /**
+     * Autoloader constructor.
+     *
+     * @param string $dir
+     */
+    public function __construct($dir = null)
+    {
+        $this->_dir = $dir ?: dirname(__DIR__);
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->_dir = str_replace('\\', '/', $this->_dir);
+        }
+
+        $al_function = [$this, '___autoload'];
+        spl_autoload_register($al_function);
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return bool
+     */
+    public function ___autoload($className)
     {
         if (strpos($className, 'ManaPHP') !== 0) {
             return false;
         }
 
-        if (self::$_rootPath === null) {
-            self::$_rootPath = str_replace('\\', '/', dirname(__DIR__));
-        }
-
-        $file = self::$_rootPath . '/' . str_replace('\\', '/', $className) . '.php';
+        $file = $this->_dir . '/' . str_replace('\\', '/', $className) . '.php';
         if (is_file($file)) {
             if (PHP_EOL !== "\n" && str_replace('\\', '/', realpath($file)) !== $file) {
                 trigger_error('File name case mismatch for ' . $file, E_USER_ERROR);
@@ -32,14 +50,5 @@ class Autoloader
         }
 
         return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public static function register()
-    {
-        $al_function = [__CLASS__, '___autoload'];
-        return spl_autoload_register($al_function);
     }
 }

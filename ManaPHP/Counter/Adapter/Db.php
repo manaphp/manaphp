@@ -26,8 +26,6 @@ class Db extends Counter
      */
     public function __construct($options = [])
     {
-        parent::__construct();
-
         if (is_object($options)) {
             $options = (array)$options;
         }

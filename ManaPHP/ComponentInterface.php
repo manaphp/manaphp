@@ -28,8 +28,8 @@ interface ComponentInterface
     /**
      * Attach a listener to the events manager
      *
-     * @param string                                    $event
-     * @param callable|\ManaPHP\Event\ListenerInterface $handler
+     * @param string   $event
+     * @param callable $handler
      *
      * @return static
      * @throws \ManaPHP\Event\Exception
@@ -45,13 +45,6 @@ interface ComponentInterface
      * @return bool
      */
     public function fireEvent($event, $data = []);
-
-    /**
-     * @param \Closure|callable $peek
-     *
-     * @return void
-     */
-    public static function peekEvents($peek);
 
     /**
      * @return array

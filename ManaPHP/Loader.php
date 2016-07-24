@@ -44,14 +44,10 @@ class Loader
      */
     protected $_directories = [];
 
-    /**
-     * @var boolean
-     */
-    protected $_registered = false;
-
     public function __construct()
     {
-        $this->register();
+        $al_function = [$this, '___autoload'];
+        spl_autoload_register($al_function);
     }
 
     /**
@@ -169,38 +165,6 @@ class Loader
     }
 
     /**
-     * Register the autoload method
-     *
-     * @return static
-     */
-    public function register()
-    {
-        if (!$this->_registered) {
-            $al_function = [$this, '___autoload'];
-            spl_autoload_register($al_function);
-            $this->_registered = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Unregister the autoload method
-     *
-     * @return static
-     */
-    public function unregister()
-    {
-        if ($this->_registered) {
-            $al_function = [$this, '___autoload'];
-            spl_autoload_unregister($al_function);
-            $this->_registered = false;
-        }
-
-        return $this;
-    }
-
-    /**
      * If a file exists, require it from the file system.
      *
      * @param string $file The file to require.
@@ -228,38 +192,34 @@ class Loader
      */
     public function ___autoload($className)
     {
-        if (is_array($this->_classes) && isset($this->_classes[$className])) {
+        if (isset($this->_classes[$className])) {
             $this->___requireFile($this->_classes[$className]);
 
             return true;
         }
 
-        if (is_array($this->_namespaces)) {
-            /** @noinspection LoopWhichDoesNotLoopInspection */
-            foreach ($this->_namespaces as $namespace => $directory) {
-                if (!Text::startsWith($className, $namespace)) {
-                    continue;
-                }
-                $len = strlen($namespace);
-                $file = $directory . str_replace('\\', '/', substr($className, $len)) . '.php';
+        /** @noinspection LoopWhichDoesNotLoopInspection */
+        foreach ($this->_namespaces as $namespace => $directory) {
+            if (strpos($className, $namespace) !== 0) {
+                continue;
+            }
+            $len = strlen($namespace);
+            $file = $directory . str_replace('\\', '/', substr($className, $len)) . '.php';
+            $this->___requireFile($file);
+
+            return true;
+        }
+
+        foreach ($this->_directories as $directory) {
+            $file = $directory . basename($className) . '.php';
+            $file = str_replace('\\', '/', $file);
+            if (file_exists($file)) {
                 $this->___requireFile($file);
 
                 return true;
             }
         }
-
-        if (is_array($this->_directories)) {
-            foreach ($this->_directories as $directory) {
-                $file = $directory . basename($className) . '.php';
-                $file = str_replace('\\', '/', $file);
-                if (file_exists($file)) {
-                    $this->___requireFile($file);
-
-                    return true;
-                }
-            }
-        }
-
+        
         return false;
     }
 }

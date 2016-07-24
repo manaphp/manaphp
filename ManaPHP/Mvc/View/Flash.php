@@ -29,7 +29,6 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
      */
     public function __construct($cssClasses = [])
     {
-        parent::__construct();
         if (count($cssClasses) === 0) {
             $this->_cssClasses = [
                 'error' => 'flash-error-message',
@@ -110,9 +109,11 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
      * Prints the messages in the session flasher
      *
      * @param $remove bool
+     *
+     * @return void
      */
     public function output($remove = true)
     {
-        return $this->_output($remove);
+        $this->_output($remove);
     }
 }

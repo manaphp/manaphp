@@ -60,8 +60,6 @@ class Client extends Component implements ClientInterface
      */
     public function __construct($options = [], $headers = [])
     {
-        parent::__construct();
-
         if (!function_exists('curl_init')) {
             throw new Exception('curl extension is not loaded: http://php.net/curl');
         }
@@ -70,7 +68,7 @@ class Client extends Component implements ClientInterface
             'timeout' => 10,
             'max_redirects' => 10,
             'proxy' => '',
-            'ssl_certificates' => $this->alias->resolve('@manaphp/Http/Client/ca.pem'),
+            'ssl_certificates' => '@manaphp/Http/Client/ca.pem',
             'verify_host' => true,
         ];
         $this->_options = array_merge($defaultOptions, $options);
@@ -224,7 +222,7 @@ class Client extends Component implements ClientInterface
         }
 
         if ($options['ssl_certificates']) {
-            curl_setopt($curl, CURLOPT_CAINFO, $options['ssl_certificates']);
+            curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($options['ssl_certificates']));
         } else {
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);

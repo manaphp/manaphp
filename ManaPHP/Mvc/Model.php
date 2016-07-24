@@ -4,6 +4,7 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
+use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Model\Exception;
 
 /**
@@ -67,7 +68,7 @@ class Model extends Component implements ModelInterface
      */
     final public function __construct($data = null, $dependencyInjector = null)
     {
-        parent::__construct($dependencyInjector);
+        $this->_dependencyInjector = $dependencyInjector ?: FactoryDefault::getDefault();
 
         /**
          * The manager always initializes the object

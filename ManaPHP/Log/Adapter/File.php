@@ -33,8 +33,6 @@ class File extends Component implements AdapterInterface
      */
     public function __construct($options = [])
     {
-        parent::__construct();
-
         if (is_object($options)) {
             $options = (array)$options;
         } elseif (is_string($options)) {
@@ -45,7 +43,7 @@ class File extends Component implements AdapterInterface
             $options['file'] = '@data/Logger/' . date('ymd') . '.log';
         }
 
-        $this->_file = $this->alias->resolve($options['file']);
+        $this->_file = $options['file'];
 
         if (isset($options['dateFormat'])) {
             $this->_dateFormat = $options['dateFormat'];
@@ -64,6 +62,8 @@ class File extends Component implements AdapterInterface
     public function log($level, $message, $context = [])
     {
         if ($this->_firstLog) {
+            $this->_file = $this->alias->resolve($this->_file);
+
             $dir = dirname($this->_file);
 
             /** @noinspection NotOptimalIfConditionsInspection */

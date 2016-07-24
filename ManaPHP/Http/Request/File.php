@@ -168,7 +168,8 @@ class File implements FileInterface
         }
 
         $dir = dirname($destination);
-        if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+        /** @noinspection NotOptimalIfConditionsInspection */
+        if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new Exception('Unable to create \'' . $dir . '\' directory: ' . error_get_last()['message']);
         }
 

@@ -14,8 +14,6 @@ class Redis extends Counter
      */
     public function __construct($prefix = 'manaphp:counter:')
     {
-        parent::__construct();
-
         $this->_prefix = $prefix;
     }
 
