@@ -3,8 +3,11 @@ date_default_timezone_set('PRC');
 
 use ManaPHP\Utility\Text;
 
-require __DIR__ . '/ManaPHP/Autoloader.php';
-\ManaPHP\Autoloader::register();
+if (!class_exists('ManaPHP\Autoloader')) {
+    require __DIR__ . '/ManaPHP/Autoloader.php';
+}
+
+new \ManaPHP\Autoloader(__DIR__);
 
 class SourceCodeMinify
 {

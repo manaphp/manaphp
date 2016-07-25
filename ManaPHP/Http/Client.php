@@ -33,6 +33,11 @@ class Client extends Component implements ClientInterface
     protected $_curlResponseHeader = [];
 
     /**
+     * @var boolean
+     */
+    protected $_peek = false;
+
+    /**
      * Client constructor.
      *
      * @param array $options
@@ -77,9 +82,11 @@ class Client extends Component implements ClientInterface
         $this->_headers = array_merge($defaultHeaders, $headers);
     }
 
-    public function setProxy($proxy)
+    public function setProxy($proxy = '127.0.0.1:8888', $peek = true)
     {
         $this->_options['proxy'] = $proxy;
+
+        $this->_peek = $peek;
 
         return $this;
     }
@@ -214,7 +221,15 @@ class Client extends Component implements ClientInterface
 
         unset($headers['Referer'], $headers['User-Agent'], $headers['Cookie']);
 
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $formatted_headers = [];
+        foreach ($headers as $k => $v) {
+            if (is_int($k)) {
+                $formatted_headers[] = $v;
+            } else {
+                $formatted_headers[] = $k . ': ' . $v;
+            }
+        }
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $formatted_headers);
 
         if ($options['proxy']) {
             curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
@@ -222,7 +237,11 @@ class Client extends Component implements ClientInterface
         }
 
         if ($options['ssl_certificates']) {
-            curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($options['ssl_certificates']));
+            if ($this->_peek && $this->_options['proxy'] !== '') {
+                curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve('@manaphp/Http/Client/fiddler.cer'));
+            } else {
+                curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($options['ssl_certificates']));
+            }
         } else {
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);

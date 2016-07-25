@@ -4,11 +4,12 @@ namespace ManaPHP\Http;
 interface ClientInterface
 {
     /**
-     * @param string $proxy
+     * @param string  $proxy
+     * @param boolean $peek
      *
      * @return static
      */
-    public function setProxy($proxy);
+    public function setProxy($proxy = '127.0.0.1:8888', $peek = true);
 
     /**
      * @param string|array $url
