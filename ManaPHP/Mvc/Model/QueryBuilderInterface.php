@@ -195,6 +195,15 @@ interface QueryBuilderInterface
     public function page($size, $current = 1);
 
     /**
+     * @param int $size
+     * @param int $page
+     * @param int|array $cacheOptions
+     *
+     * @return static
+     */
+    public function paginate($size, $page, $cacheOptions = null);
+
+    /**
      * Sets a LIMIT clause
      *
      * @param string $group

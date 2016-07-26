@@ -56,6 +56,7 @@ class FactoryDefault extends Di
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
             'authorization' => 'ManaPHP\Authorization\Bypass',
             'userIdentity' => 'ManaPHP\Authentication\UserIdentity',
+            'paginator' => 'ManaPHP\Paginator',
         ];
 
         $this->_aliases = [

@@ -956,7 +956,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                     ->fetchOne($sql, $this->_bind);
 
                 /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-                $rowCount = $result['row_count'];
+                $rowCount = (int)$result['row_count'];
             } else {
                 $result = $this->modelsManager
                     ->getReadConnection(end($this->_models))
@@ -966,6 +966,23 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         } catch (\Exception $e) {
             throw new Exception($e->getMessage() . ':' . $sql);
         }
+
+        return $this;
+    }
+
+    /**
+     * @param int $size
+     * @param int $page
+     * @param int|array $cacheOptions
+     *
+     * @return static
+     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception|\ManaPHP\Paginator\Exception
+     */
+    public function paginate($size, $page, $cacheOptions = null)
+    {
+        $this->paginator->items = $this->limit($size, ($page - 1) * $size)
+            ->executeEx($totalRows, $cacheOptions);
+        $this->paginator->paginate($totalRows, $size, $page);
 
         return $this;
     }

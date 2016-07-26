@@ -50,6 +50,7 @@ use ManaPHP\Component\Exception;
  * @property \ManaPHP\Security\Captcha            $captcha
  * @property \ManaPHP\Security\CsrfToken          $csrfToken
  * @property \ManaPHP\Authentication\UserIdentity $userIdentity
+ * @property \ManaPHP\Paginator                   $paginator
  */
 class Component implements ComponentInterface
 {
