@@ -1,5 +1,7 @@
 <?php
 namespace ManaPHP\Paginator;
-class Exception extends \ManaPHP\Exception{
-    
+
+class Exception extends \ManaPHP\Exception
+{
+
 }

@@ -5,8 +5,13 @@ namespace ManaPHP;
 use ManaPHP\Db\Exception;
 use ManaPHP\Utility\Text;
 
-class Db extends Component implements DbInterface
+abstract class Db extends Component implements DbInterface
 {
+    const METADATA_ATTRIBUTES = 0;
+    const METADATA_PRIMARY_KEY = 1;
+    const METADATA_NON_PRIMARY_KEY = 2;
+    const METADATA_IDENTITY_COLUMN = 3;
+
     /**
      * @var array
      */
@@ -229,31 +234,6 @@ class Db extends Component implements DbInterface
         }
 
         return $this->_affectedRows;
-    }
-
-    /**
-     * Escapes a column/table/schema name
-     * <code>
-     * echo $connection->escapeIdentifier('my_table'); // `my_table`
-     * echo $connection->escapeIdentifier('companies.name'); // `companies`.`name`
-     * <code>
-     *
-     * @param string $identifier
-     *
-     * @return string
-     */
-    public function escapeIdentifier($identifier)
-    {
-        $list = [];
-        foreach (explode('.', $identifier) as $id) {
-            if ($identifier[0] === '`') {
-                $list[] = $id;
-            } else {
-                $list[] = "`$id`";
-            }
-        }
-
-        return implode('.', $list);
     }
 
     /**

@@ -56,14 +56,17 @@ class MvcModelTest extends TestCase
 
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            return new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-        });
+            $db= new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+           // $db= new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
-        $this->di->getShared('db')
-            ->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
+            echo get_class($db), PHP_EOL;
+            $db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getEmulatedSQL());
             });
+
+            return $db;
+        });
     }
 
     public function test_count()
@@ -223,7 +226,7 @@ class MvcModelTest extends TestCase
          * @var \ManaPHP\Db $db
          */
         $db = $this->di->getShared('db');
-        $db->execute('TRUNCATE TABLE ' . $model->getSource());
+        $db->truncateTable($model->getSource());
     }
 
     public function test_create()

@@ -5,5 +5,9 @@ return [
         'username' => 'root',
         'password' => '',
         'dbname' => 'manaphp_unit_test',
+    ],
+	
+    'sqlite'=>[
+        'file'=>'d:/wamp/manaphp_unit_test.sqlite'
     ]
 ];

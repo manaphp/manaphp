@@ -14,14 +14,14 @@ interface PaginatorInterface
 
     /**
      * @param  false|string $itemsName
-	 *
+     *
      * @return array
      */
     public function renderAsArray($itemsName = 'items');
 
     /**
      * @param string $urlTemplate
-	 *
+     *
      * @return string
      */
     public function renderAsHtml($urlTemplate = null);

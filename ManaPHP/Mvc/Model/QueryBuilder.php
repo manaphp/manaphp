@@ -468,7 +468,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } else {
             if (count($values) === 0) {
-                $this->andWhere('FALSE');
+                $this->andWhere('1=2');
 
                 return $this;
             }
@@ -971,8 +971,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
-     * @param int $size
-     * @param int $page
+     * @param int       $size
+     * @param int       $page
      * @param int|array $cacheOptions
      *
      * @return static

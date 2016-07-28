@@ -209,4 +209,19 @@ interface DbInterface
      * @return void
      */
     public function commit();
+
+    /**
+     * @param string
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function getMetadata($source);
+
+    /**
+     * @param string $source
+     *
+     * @return static
+     */
+    public function truncateTable($source);
 }
