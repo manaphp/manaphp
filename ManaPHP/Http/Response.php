@@ -432,14 +432,6 @@ class Response extends Component implements ResponseInterface
                 $data = $row;
             }
 
-            foreach ($data as &$v) {
-                /** @noinspection ReferenceMismatchInspection */
-                if (is_numeric($v)) {
-                    $v = "\t" . $v . "\t";
-                }
-            }
-            unset($v);
-
             fputcsv($file, $data);
         }
 
