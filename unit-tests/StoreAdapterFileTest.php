@@ -4,44 +4,45 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class StoreAdapterFileTest extends TestCase
 {
+    protected $_di;
     public function setUp()
     {
         parent::setUp();
 
-        $di = new ManaPHP\Di\FactoryDefault();
+        $this->_di = new ManaPHP\Di\FactoryDefault();
     }
 
     public function test_exists()
     {
-        $cache = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
-        $cache->_delete('var');
+        $store->_delete('var');
 
-        $this->assertFalse($cache->_exists('var'));
-        $cache->_set('var', 'value');
-        $this->assertTrue($cache->_exists('var'));
+        $this->assertFalse($store->_exists('var'));
+        $store->_set('var', 'value');
+        $this->assertTrue($store->_exists('var'));
     }
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
-        $cache->_delete('var');
+        $store->_delete('var');
 
-        $this->assertFalse($cache->_get('var'));
-        $cache->_set('var', 'value');
-        $this->assertSame('value', $cache->_get('var'));
+        $this->assertFalse($store->_get('var'));
+        $store->_set('var', 'value');
+        $this->assertSame('value', $store->_get('var'));
     }
 
     public function test_mGet()
     {
-        $cache = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
-        $cache->_delete('1');
-        $cache->_delete(2);
+        $store->_delete('1');
+        $store->_delete(2);
 
-        $cache->_set('1', '1');
-        $idValues = $cache->_mGet(['1', '2']);
+        $store->_set('1', '1');
+        $idValues = $store->_mGet(['1', '2']);
 
         $this->assertEquals('1', $idValues['1']);
         $this->assertFalse($idValues[2]);
@@ -49,27 +50,27 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
-        $cache->_set('var', '');
-        $this->assertSame('', $cache->_get('var'));
+        $store->_set('var', '');
+        $this->assertSame('', $store->_get('var'));
 
-        $cache->_set('var', 'value');
-        $this->assertSame('value', $cache->_get('var'));
+        $store->_set('var', 'value');
+        $this->assertSame('value', $store->_get('var'));
 
-        $cache->_set('var', '{}');
-        $this->assertSame('{}', $cache->_get('var'));
+        $store->_set('var', '{}');
+        $this->assertSame('{}', $store->_get('var'));
     }
 
     public function test_mSet()
     {
-        $cache = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
-        $cache->_delete(1);
-        $cache->_delete('2');
+        $store->_delete(1);
+        $store->_delete('2');
 
-        $cache->_set('1', '1');
-        $idValues = $cache->_mGet(['1', '2']);
+        $store->_set('1', '1');
+        $idValues = $store->_mGet(['1', '2']);
 
         $this->assertEquals('1', $idValues['1']);
         $this->assertFalse($idValues[2]);
@@ -77,13 +78,13 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
         //exists and delete
-        $cache->_set('var', 'value');
-        $cache->_delete('var');
+        $store->_set('var', 'value');
+        $store->_delete('var');
 
         // missing and delete
-        $cache->_delete('var');
+        $store->_delete('var');
     }
 }

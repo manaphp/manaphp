@@ -1,24 +1,34 @@
 <?php
-namespace ManaPHP\Serializer\Adapter {
+namespace ManaPHP\Serializer\Adapter;
 
-    use ManaPHP\Serializer\AdapterInterface;
+use ManaPHP\Serializer\AdapterInterface;
 
-    class StringType implements AdapterInterface
+class StringType implements AdapterInterface
+{
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     * @throws \ManaPHP\Serializer\Adapter\Exception
+     */
+    public function serialize($data)
     {
-        public function serialize($data, $context = null)
-        {
-            if (is_string($data)) {
-                return $data;
-            } elseif ($data === false || $data === null) {
-                return '';
-            } else {
-                throw new Exception('data is not string: ' . gettype($data));
-            }
+        if (is_string($data)) {
+            return $data;
+        } elseif ($data === false || $data === null) {
+            return '';
+        } else {
+            throw new Exception('data is not string: ' . gettype($data));
         }
+    }
 
-        public function deserialize($serialized, $content = null)
-        {
-            return $serialized;
-        }
+    /**
+     * @param string $serialized
+     *
+     * @return mixed
+     */
+    public function deserialize($serialized)
+    {
+        return $serialized;
     }
 }

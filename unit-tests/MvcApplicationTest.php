@@ -9,11 +9,9 @@ class MvcApplicationTest extends TestCase
     public function test_useImplicitView()
     {
         $application = new \TApplication\Application();
-        $properties = $application->__debugInfo();
-        $this->assertEquals(true, $properties['_implicitView']);
+        $this->assertEquals(true, $application->getProperty('_implicitView'));
 
         $this->assertInstanceOf('ManaPHP\Mvc\Application', $application->useImplicitView(false));
-        $properties = $application->__debugInfo();
-        $this->assertEquals(false, $properties['_implicitView']);
+        $this->assertEquals(false, $application->getProperty('_implicitView'));
     }
 }

@@ -1,26 +1,24 @@
 <?php
 
-namespace ManaPHP\Mvc {
+namespace ManaPHP\Mvc;
+
+/**
+ * ManaPHP\Mvc\ModuleInterface initializer
+ */
+interface ModuleInterface
+{
+    /**
+     * Registers services related to the module
+     *
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     */
+    public function registerServices($dependencyInjector);
 
     /**
-     * ManaPHP\Mvc\ModuleInterface initializer
+     * @param string $controller
+     * @param string $action
+     *
+     * @return false|void
      */
-    interface ModuleInterface
-    {
-
-        /**
-         * Registers an autoloader related to the module
-         *
-         * * @param \ManaPHP\DiInterface $dependencyInjector
-         */
-        public function registerAutoloaders($dependencyInjector);
-
-        /**
-         * Registers services related to the module
-         *
-         * @param \ManaPHP\DiInterface $dependencyInjector
-         */
-        public function registerServices($dependencyInjector);
-
-    }
+    public function authorize($controller, $action);
 }

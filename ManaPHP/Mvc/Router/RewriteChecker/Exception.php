@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Mvc\Router\RewriteChecker {
+namespace ManaPHP\Mvc\Router\RewriteChecker;
 
-    class Exception extends \ManaPHP\Mvc\Router\Exception
-    {
+class Exception extends \ManaPHP\Mvc\Router\Exception
+{
 
-    }
 }

@@ -1,14 +1,13 @@
 <?php
-namespace ManaPHP\Configure\Engine {
+namespace ManaPHP\Configure\Engine;
 
-    use ManaPHP\Configure\EngineInterface;
+use ManaPHP\Configure\EngineInterface;
 
-    class Php implements EngineInterface
+class Php implements EngineInterface
+{
+    public function load($file)
     {
-        public function load($file)
-        {
-            /** @noinspection PhpIncludeInspection */
-            return require $file;
-        }
+        /** @noinspection PhpIncludeInspection */
+        return require $file;
     }
 }

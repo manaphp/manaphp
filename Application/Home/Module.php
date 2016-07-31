@@ -7,16 +7,23 @@
  */
 namespace Application\Home;
 
+use ManaPHP\Component;
 use ManaPHP\Mvc\ModuleInterface;
 
-class Module implements ModuleInterface
+class Module extends Component implements ModuleInterface
 {
-    public function registerAutoloaders($di)
-    {
-    }
-
     public function registerServices($di)
     {
 
+    }
+
+    public function authorize($controller, $action)
+    {
+//      $this->response->redirect('http://www.baidu.com/');
+//      return false;
+
+//      $this->dispatcher->forward('index/about');
+
+        return true;
     }
 }

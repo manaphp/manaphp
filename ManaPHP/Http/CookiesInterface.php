@@ -1,66 +1,65 @@
 <?php
 
-namespace ManaPHP\Http {
+namespace ManaPHP\Http;
+
+/**
+ * ManaPHP\Http\Response\CookiesInterface initializer
+ */
+interface CookiesInterface
+{
+    /**
+     * Sets a cookie to be sent at the end of the request
+     *
+     * @param string  $name
+     * @param mixed   $value
+     * @param int     $expire
+     * @param string  $path
+     * @param string  $domain
+     * @param boolean $secure
+     * @param boolean $httpOnly
+     *
+     * @return static
+     */
+    public function set(
+        $name,
+        $value,
+        $expire = 0,
+        $path = null,
+        $domain = null,
+        $secure = false,
+        $httpOnly = true
+    );
 
     /**
-     * ManaPHP\Http\Response\CookiesInterface initializer
+     * Gets a cookie from the bag
+     *
+     * @param string $name
+     *
+     * @return $mixed
      */
-    interface CookiesInterface
-    {
-        /**
-         * Sets a cookie to be sent at the end of the request
-         *
-         * @param string  $name
-         * @param mixed   $value
-         * @param int     $expire
-         * @param string  $path
-         * @param string  $domain
-         * @param boolean $secure
-         * @param boolean $httpOnly
-         *
-         * @return static
-         */
-        public function set(
-            $name,
-            $value,
-            $expire = 0,
-            $path = null,
-            $domain = null,
-            $secure = false,
-            $httpOnly = true
-        );
+    public function get($name);
 
-        /**
-         * Gets a cookie from the bag
-         *
-         * @param string $name
-         *
-         * @return $mixed
-         */
-        public function get($name);
+    /**
+     * Check if a cookie is defined in the bag or exists in the $_COOKIE
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function has($name);
 
-        /**
-         * Check if a cookie is defined in the bag or exists in the $_COOKIE
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function has($name);
+    /**
+     * Deletes a cookie by its name
+     * This method does not removes cookies from the $_COOKIE
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function delete($name);
 
-        /**
-         * Deletes a cookie by its name
-         * This method does not removes cookies from the $_COOKIE
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function delete($name);
-
-        /**
-         * Sends the cookies to the client
-         */
-        public function send();
-    }
+    /**
+     * Sends the cookies to the client
+     */
+    public function send();
 }

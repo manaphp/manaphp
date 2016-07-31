@@ -1,18 +1,23 @@
 <?php
-namespace ManaPHP\Mvc\View\Renderer\Engine {
+namespace ManaPHP\Mvc\View\Renderer\Engine;
 
-    use ManaPHP\Mvc\View\Renderer\EngineInterface;
+use ManaPHP\Mvc\View\Renderer\EngineInterface;
 
-    class Html implements EngineInterface
+class Html implements EngineInterface
+{
+    /**
+     * @param string $file
+     * @param array  $vars
+     *
+     * @throws \ManaPHP\Mvc\View\Renderer\Engine\Exception
+     */
+    public function render($file, $vars = [])
     {
-        public function render($file, $vars = null)
-        {
-            $str = file_get_contents($file);
-            if ($str === false) {
-                throw new Exception('Read template file failed: ', $file);
-            }
-
-            echo $str;
+        $str = file_get_contents($file);
+        if ($str === false) {
+            throw new Exception('Read template file failed: ', $file);
         }
+
+        echo $str;
     }
 }

@@ -13,8 +13,11 @@ use Models\Payment;
 
 class MvcModelQueryBuilderTest extends TestCase
 {
-
+    /**
+     * @var \ManaPHP\DiInterface
+     */
     protected $di;
+	
     /**
      * @var \ManaPHP\Mvc\Model\Manager
      */
@@ -28,6 +31,8 @@ class MvcModelQueryBuilderTest extends TestCase
             return new ManaPHP\Mvc\Model\Manager();
         });
 
+        $this->di->set('eventsManager',new \ManaPHP\Event\Manager());
+        
         $this->di->set('modelsMetadata', function () {
             return new ManaPHP\Mvc\Model\MetaData\Adapter\Memory();
         });
@@ -35,10 +40,14 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+         //   $db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
+
             $db->attachEvent('db:beforeQuery', function ($event, ManaPHP\DbInterface $source) {
                 var_dump($source->getSQL());
                 var_dump($source->getEmulatedSQL());
             });
+			
+            echo get_class($db),PHP_EOL;
             return $db;
         });
         $this->modelsManager = $this->di->get('modelsManager');
@@ -185,6 +194,10 @@ class MvcModelQueryBuilderTest extends TestCase
 
     public function test_join()
     {
+        if($this->di->getShared('db') instanceof ManaPHP\Db\Adapter\Sqlite){
+            return;
+        }
+        
         //with model
         $builder = $this->modelsManager->createBuilder()
             ->columns('count(address_id) as address_count')
@@ -263,6 +276,10 @@ class MvcModelQueryBuilderTest extends TestCase
 
     public function test_rightJoin()
     {
+        if($this->di->getShared('db') instanceof ManaPHP\Db\Adapter\Sqlite){
+            return;
+        }
+
         $countCity = City::count();
         $this->assertEquals(600, $countCity);
 
@@ -503,10 +520,6 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(10, $rows);
         $this->assertEquals(21, $rows[0]['city_id']);
         $this->assertEquals(30, $rows[9]['city_id']);
-
-        //there is no error during limiting equal to 0
-        $builder = $this->modelsManager->createBuilder()->columns('city_id')->addFrom(get_class(new City()))->limit(0);
-        $this->assertCount(0, $builder->execute());
     }
 
     public function test_page()
@@ -627,6 +640,10 @@ class MvcModelQueryBuilderTest extends TestCase
 
     public function test_unionAll()
     {
+        if($this->di->getShared('db') instanceof \ManaPHP\Db\Adapter\Sqlite){
+            return;
+        }
+
         $builder = $this->modelsManager->createBuilder()
             ->unionAll([
                 $this->modelsManager->createBuilder()

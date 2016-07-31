@@ -1,52 +1,51 @@
 <?php
 
-namespace ManaPHP\Http {
+namespace ManaPHP\Http;
+
+/**
+ * ManaPHP\Http\Session\AdapterInterface initializer
+ */
+interface SessionInterface
+{
 
     /**
-     * ManaPHP\Http\Session\AdapterInterface initializer
+     * Gets a session variable from an application context
+     *
+     * @param string $name
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
      */
-    interface SessionInterface
-    {
+    public function get($name, $defaultValue = null);
 
-        /**
-         * Gets a session variable from an application context
-         *
-         * @param string $name
-         * @param mixed  $defaultValue
-         *
-         * @return mixed
-         */
-        public function get($name, $defaultValue = null);
+    /**
+     * Sets a session variable in an application context
+     *
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function set($name, $value);
 
-        /**
-         * Sets a session variable in an application context
-         *
-         * @param string $name
-         * @param mixed  $value
-         */
-        public function set($name, $value);
+    /**
+     * Check whether a session variable is set in an application context
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function has($name);
 
-        /**
-         * Check whether a session variable is set in an application context
-         *
-         * @param string $name
-         *
-         * @return boolean
-         */
-        public function has($name);
+    /**
+     * Removes a session variable from an application context
+     *
+     * @param string $name
+     */
+    public function remove($name);
 
-        /**
-         * Removes a session variable from an application context
-         *
-         * @param string $name
-         */
-        public function remove($name);
-
-        /**
-         * Destroys the active session
-         *
-         * @return boolean
-         */
-        public function destroy();
-    }
+    /**
+     * Destroys the active session
+     *
+     * @return void
+     */
+    public function destroy();
 }

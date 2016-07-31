@@ -1,179 +1,178 @@
 <?php
-namespace ManaPHP\Mvc\View {
+namespace ManaPHP\Mvc\View;
 
-    use ManaPHP\Component;
-    use ManaPHP\Mvc\View\Renderer\EngineInterface;
-    use ManaPHP\Mvc\View\Renderer\Exception;
+use ManaPHP\Component;
+use ManaPHP\Mvc\View\Renderer\EngineInterface;
+use ManaPHP\Mvc\View\Renderer\Exception;
 
-    class Renderer extends Component implements RendererInterface
+class Renderer extends Component implements RendererInterface
+{
+    /**
+     * @var \ManaPHP\Mvc\View\Renderer\EngineInterface[]
+     */
+    protected $_resolvedEngines = [];
+
+    /**
+     * @var array
+     */
+    protected /** @noinspection PropertyCanBeStaticInspection */
+        $_registeredEngines = [
+        '.phtml' => 'ManaPHP\Mvc\View\Renderer\Engine\Php',
+        '.tpl' => 'ManaPHP\Mvc\View\Renderer\Engine\Smarty',
+        '.html' => 'ManaPHP\Mvc\View\Renderer\Engine\Html'
+    ];
+
+    /**
+     * @param string $extension
+     *
+     * @return \ManaPHP\Mvc\View\Renderer\EngineInterface
+     * @throws \ManaPHP\Mvc\View\Renderer\Exception
+     */
+    protected function _loadEngine($extension)
     {
-        /**
-         * @var \ManaPHP\Mvc\View\Renderer\EngineInterface[]
-         */
-        protected $_resolvedEngines = [];
-
-        /**
-         * @var array
-         */
-        protected /** @noinspection PropertyCanBeStaticInspection */
-            $_registeredEngines = [
-            '.phtml' => 'ManaPHP\Mvc\View\Renderer\Engine\Php',
-            '.tpl' => 'ManaPHP\Mvc\View\Renderer\Engine\Smarty',
-            '.html' => 'ManaPHP\Mvc\View\Renderer\Engine\Html'
-        ];
-
-        /**
-         * @param string $extension
-         *
-         * @return \ManaPHP\Mvc\View\Renderer\EngineInterface
-         * @throws \ManaPHP\Mvc\View\Renderer\Exception
-         */
-        protected function _loadEngine($extension)
-        {
-            $arguments = [$this->_dependencyInjector];
-            $engine = $this->_registeredEngines[$extension];
-            if ($engine instanceof \Closure) {
-                $engine = call_user_func_array($engine, $arguments);
-            } elseif (is_string($engine)) {
-                $engine = $this->_dependencyInjector->getShared($engine, $arguments);
-            }
-
-            if (!$engine instanceof EngineInterface) {
-                throw new Exception('Invalid template engine: it is not implements \ManaPHP\Mvc\Renderer\EngineInterface');
-            }
-
-            return $engine;
+        $arguments = [$this->_dependencyInjector];
+        $engine = $this->_registeredEngines[$extension];
+        if ($engine instanceof \Closure) {
+            $engine = call_user_func_array($engine, $arguments);
+        } elseif (is_string($engine)) {
+            $engine = $this->_dependencyInjector->getShared($engine, $arguments);
         }
 
-        /** @noinspection PhpDocMissingThrowsInspection */
-        /**
-         * Checks whether $template exists on registered extensions and render it
-         *
-         * @noinspection PhpDocMissingThrowsInspection
-         *
-         * @param string  $template
-         * @param boolean $directOutput
-         * @param array   $vars
-         *
-         * @return string
-         * @throws \ManaPHP\Mvc\View\Renderer\Exception
-         */
-        public function render($template, $vars, $directOutput = true)
-        {
-            $notExists = true;
-            $content = null;
+        if (!$engine instanceof EngineInterface) {
+            throw new Exception('Invalid template engine: it is not implements \ManaPHP\Mvc\Renderer\EngineInterface');
+        }
 
-            foreach ($this->_registeredEngines as $extension => $engine) {
-                $file = @$this->alias->resolve($template . $extension);
-                if (file_exists($file)) {
-                    if (PHP_EOL !== "\n") {
-                        $realPath = str_replace('\\', '/', realpath($file));
-                        if ($file !== $realPath) {
-                            trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
-                        }
+        return $engine;
+    }
+
+    /** @noinspection PhpDocMissingThrowsInspection */
+    /**
+     * Checks whether $template exists on registered extensions and render it
+     *
+     * @noinspection PhpDocMissingThrowsInspection
+     *
+     * @param string  $template
+     * @param boolean $directOutput
+     * @param array   $vars
+     *
+     * @return string
+     * @throws \ManaPHP\Mvc\View\Renderer\Exception
+     */
+    public function render($template, $vars, $directOutput = true)
+    {
+        $notExists = true;
+        $content = null;
+
+        foreach ($this->_registeredEngines as $extension => $engine) {
+            $file = $this->alias->resolve($template . $extension);
+            if (file_exists($file)) {
+                if (PHP_EOL !== "\n") {
+                    $realPath = str_replace('\\', '/', realpath($file));
+                    if ($file !== $realPath) {
+                        trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
                     }
+                }
 
-                    if (!isset($this->_resolvedEngines[$extension])) {
-                        $this->_resolvedEngines[$extension] = $this->_loadEngine($extension);
-                    }
+                if (!isset($this->_resolvedEngines[$extension])) {
+                    $this->_resolvedEngines[$extension] = $this->_loadEngine($extension);
+                }
 
-                    $engine = $this->_resolvedEngines[$extension];
+                $engine = $this->_resolvedEngines[$extension];
 
-                    $eventArguments = ['file' => $file, 'vars' => $vars];
-                    $this->fireEvent('renderer:beforeRender', $eventArguments);
+                $eventArguments = ['file' => $file, 'vars' => $vars];
+                $this->fireEvent('renderer:beforeRender', $eventArguments);
 
-                    if (isset($vars['view'])) {
-                        throw new Exception('variable \'view\' is reserved for PHP renderer engine.');
-                    }
-                    $vars['view'] = $this->_dependencyInjector->has('view') ? $this->_dependencyInjector->getShared('view') : null;
+                if (isset($vars['view'])) {
+                    throw new Exception('variable \'view\' is reserved for PHP renderer engine.');
+                }
+                $vars['view'] = $this->_dependencyInjector->has('view') ? $this->_dependencyInjector->getShared('view') : null;
 
-                    if (isset($vars['renderer'])) {
-                        throw new Exception('variable \'render\' is reserved for PHP renderer engine.');
-                    }
-                    $vars['renderer'] = $this;
+                if (isset($vars['renderer'])) {
+                    throw new Exception('variable \'render\' is reserved for PHP renderer engine.');
+                }
+                $vars['renderer'] = $this;
 
-                    if ($directOutput) {
+                if ($directOutput) {
+                    $engine->render($file, $vars);
+                    $content = null;
+                } else {
+                    ob_start();
+                    try {
                         $engine->render($file, $vars);
-                        $content = null;
-                    } else {
-                        ob_start();
-                        try {
-                            $engine->render($file, $vars);
-                        } catch (\Exception $e) {
-                            ob_end_clean();
+                    } catch (\Exception $e) {
+                        ob_end_clean();
 
-                            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                            throw $e;
-                        }
-
-                        $content = ob_get_clean();
+                        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                        throw $e;
                     }
 
-                    $notExists = false;
-                    $this->fireEvent('renderer:afterRender', $eventArguments);
-                    break;
+                    $content = ob_get_clean();
                 }
-            }
 
-            if ($notExists) {
-                throw new Exception("View '$template' was not found in the views directory");
+                $notExists = false;
+                $this->fireEvent('renderer:afterRender', $eventArguments);
+                break;
             }
-
-            return $content;
         }
 
-        /**
-         * @param string $template
-         *
-         * @return bool
-         */
-        public function exists($template)
-        {
-            foreach ($this->_registeredEngines as $extension => $engine) {
-                $file = $template . $extension;
-                if (is_file($file)) {
-                    if (PHP_EOL !== "\n") {
-                        $realPath = str_replace('\\', '/', realpath($file));
-                        if ($file !== $realPath) {
-                            trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
-                        }
+        if ($notExists) {
+            throw new Exception("View '$template' was not found in the views directory");
+        }
+
+        return $content;
+    }
+
+    /**
+     * @param string $template
+     *
+     * @return bool
+     */
+    public function exists($template)
+    {
+        foreach ($this->_registeredEngines as $extension => $_) {
+            $file = $template . $extension;
+            if (is_file($file)) {
+                if (PHP_EOL !== "\n") {
+                    $realPath = str_replace('\\', '/', realpath($file));
+                    if ($file !== $realPath) {
+                        trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
                     }
-                    return true;
                 }
+                return true;
             }
-
-            return false;
         }
 
-        /**
-         * Register template engines
-         *
-         *<code>
-         *$renderer->registerEngines(array(
-         *  ".phtml" => "ManaPHP\Mvc\View\Renderer\Engine\Php",
-         *  ".html" => "ManaPHP\Mvc\View\Renderer\Engine\Html",
-         *));
-         *</code>
-         *
-         * @param array $engines
-         *
-         * @return static
-         */
-        public function registerEngines($engines)
-        {
-            $this->_registeredEngines = $engines;
+        return false;
+    }
 
-            return $this;
-        }
+    /**
+     * Register template engines
+     *
+     *<code>
+     *$renderer->registerEngines(array(
+     *  ".phtml" => "ManaPHP\Mvc\View\Renderer\Engine\Php",
+     *  ".html" => "ManaPHP\Mvc\View\Renderer\Engine\Html",
+     *));
+     *</code>
+     *
+     * @param array $engines
+     *
+     * @return static
+     */
+    public function registerEngines($engines)
+    {
+        $this->_registeredEngines = $engines;
 
-        /**
-         * Returns the registered template engines
-         *
-         * @brief array \ManaPHP\Mvc\View::getRegisteredEngines()
-         */
-        public function getRegisteredEngines()
-        {
-            return $this->_registeredEngines;
-        }
+        return $this;
+    }
+
+    /**
+     * Returns the registered template engines
+     *
+     * @brief array \ManaPHP\Mvc\View::getRegisteredEngines()
+     */
+    public function getRegisteredEngines()
+    {
+        return $this->_registeredEngines;
     }
 }

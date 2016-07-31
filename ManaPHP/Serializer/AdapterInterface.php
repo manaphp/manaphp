@@ -1,23 +1,20 @@
 <?php
-namespace ManaPHP\Serializer {
+namespace ManaPHP\Serializer;
 
-    interface AdapterInterface
-    {
+interface AdapterInterface
+{
 
-        /**
-         * @param       $data
-         * @param array $context
-         *
-         * @return string
-         */
-        public function serialize($data, $context = null);
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     */
+    public function serialize($data);
 
-        /**
-         * @param string $serialized
-         * @param array  $content
-         *
-         * @return mixed
-         */
-        public function deserialize($serialized, $content = null);
-    }
+    /**
+     * @param string $serialized
+     *
+     * @return mixed
+     */
+    public function deserialize($serialized);
 }

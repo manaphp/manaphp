@@ -1,53 +1,72 @@
 <?php
-namespace ManaPHP\Counter\Adapter {
+namespace ManaPHP\Counter\Adapter;
 
-    use ManaPHP\Counter;
+use ManaPHP\Counter;
 
-    class Redis extends Counter
+class Redis extends Counter
+{
+    protected $_prefix;
+
+    /**
+     * Redis constructor.
+     *
+     * @param string $prefix
+     */
+    public function __construct($prefix = 'manaphp:counter:')
     {
-        protected $_prefix;
+        $this->_prefix = $prefix;
+    }
 
-        public function __construct($prefix = 'manaphp:counter:')
-        {
-            parent::__construct();
-
-            $this->_prefix = $prefix;
+    /**
+     * @param string|array $key
+     *
+     * @return array
+     */
+    protected function _getKey($key)
+    {
+        if (is_string($key)) {
+            $r = [$this->_prefix . 'mixed', $key];
+        } else {
+            $r = [$this->_prefix . $key[0], $key[1]];
         }
 
-        /**
-         * @param string|array $key
-         *
-         * @return array
-         */
-        protected function _getKey($key)
-        {
-            if (is_string($key)) {
-                return [$this->_prefix . 'mixed', $key];
-            } else {
-                list($key, $hashKey) = $key;
-                return [$this->_prefix . $key, $hashKey];
-            }
-        }
+        return $r;
+    }
 
-        public function _get($key)
-        {
-            list($key, $hashKey) = $this->_getKey($key);
+    /**
+     * @param array|string $key
+     *
+     * @return int
+     */
+    public function _get($key)
+    {
+        $key = $this->_getKey($key);
 
-            return $this->redis->hGet($key, $hashKey);
-        }
+        return (int)$this->redis->hGet($key[0], $key[1]);
+    }
 
-        public function _increment($key, $step)
-        {
-            list($key, $hashKey) = $this->_getKey($key);
+    /**
+     * @param array|string $key
+     * @param int          $step
+     *
+     * @return int
+     */
+    public function _increment($key, $step)
+    {
+        $key = $this->_getKey($key);
 
-            return $this->redis->hIncrBy($key, $hashKey, $step);
-        }
+        return $this->redis->hIncrBy($key[0], $key[1], $step);
+    }
 
-        public function _delete($key)
-        {
-            list($key, $hashKey) = $this->_getKey($key);
+    /**
+     * @param array|string $key
+     *
+     * @return void
+     */
+    public function _delete($key)
+    {
+        $key = $this->_getKey($key);
 
-            $this->redis->hDel($key, $hashKey, $key);
-        }
+        $this->redis->hDel($key[0], $key[1]);
     }
 }

@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Mvc {
+namespace ManaPHP\Mvc;
 
-    class Exception extends \ManaPHP\Exception
-    {
+class Exception extends \ManaPHP\Exception
+{
 
-    }
 }

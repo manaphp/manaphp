@@ -56,14 +56,17 @@ class MvcModelTest extends TestCase
 
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            return new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-        });
+            $db= new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+           // $db= new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
-        $this->di->getShared('db')
-            ->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
+            echo get_class($db), PHP_EOL;
+            $db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getEmulatedSQL());
             });
+
+            return $db;
+        });
     }
 
     public function test_count()
@@ -223,7 +226,7 @@ class MvcModelTest extends TestCase
          * @var \ManaPHP\Db $db
          */
         $db = $this->di->getShared('db');
-        $db->execute('TRUNCATE TABLE ' . $model->getSource());
+        $db->truncateTable($model->getSource());
     }
 
     public function test_create()
@@ -268,6 +271,8 @@ class MvcModelTest extends TestCase
         $this->assertEquals(1, $student->id);
         $this->assertEquals(22, $student->age);
         $this->assertEquals('mana2', $student->name);
+
+        $student->update();
     }
 
     public function test_save()
@@ -279,7 +284,7 @@ class MvcModelTest extends TestCase
         $student->id = 1;
         $student->age = 30;
         $student->name = 'manaphp';
-        $this->assertTrue($student->save());
+        $student->save();
 
         $student = Student::findFirst(1);
         $this->assertNotEquals(false, $student);

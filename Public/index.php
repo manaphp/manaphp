@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 ini_set('html_errors', 'on');
 
 require dirname(__DIR__) . '/ManaPHP/Autoloader.php';
-\ManaPHP\Autoloader::register();
+new \ManaPHP\Autoloader(dirname(__DIR__));
 new \ManaPHP\Mvc\Router\RewriteChecker();
 
 @include dirname(__DIR__) . '/vendor/autoload.php';

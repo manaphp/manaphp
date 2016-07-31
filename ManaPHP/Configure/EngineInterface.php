@@ -1,13 +1,12 @@
 <?php
-namespace ManaPHP\Configure {
+namespace ManaPHP\Configure;
 
-    interface EngineInterface
-    {
-        /**
-         * @param string $file
-         *
-         * @return mixed
-         */
-        public function load($file);
-    }
+interface EngineInterface
+{
+    /**
+     * @param string $file
+     *
+     * @return mixed
+     */
+    public function load($file);
 }

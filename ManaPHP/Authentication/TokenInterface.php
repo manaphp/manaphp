@@ -1,25 +1,24 @@
 <?php
-namespace ManaPHP\Authentication {
+namespace ManaPHP\Authentication;
 
-    interface TokenInterface
-    {
-        /**
-         * @param int $ttl
-         *
-         * @return string
-         */
-        public function encode($ttl = null);
+interface TokenInterface
+{
+    /**
+     * @param int $ttl
+     *
+     * @return string
+     */
+    public function encode($ttl = null);
 
-        /**
-         * @param string $str
-         *
-         * @return static
-         */
-        public function decode($str);
+    /**
+     * @param string $str
+     *
+     * @return static
+     */
+    public function decode($str);
 
-        /**
-         * @return int
-         */
-        public function getExpireAt();
-    }
+    /**
+     * @return int
+     */
+    public function getExpireAt();
 }

@@ -1,33 +1,30 @@
 <?php
 
-namespace ManaPHP\Mvc\View\Renderer\Engine {
+namespace ManaPHP\Mvc\View\Renderer\Engine;
 
-    use ManaPHP\Component;
-    use ManaPHP\Mvc\View\Renderer\EngineInterface;
+use ManaPHP\Component;
+use ManaPHP\Mvc\View\Renderer\EngineInterface;
 
+/**
+ * ManaPHP\Mvc\View\Engine\Php
+ *
+ * Adapter to use PHP itself as template engine
+ */
+class Php extends Component implements EngineInterface
+{
     /**
-     * ManaPHP\Mvc\View\Engine\Php
+     * Renders a view using the template engine
      *
-     * Adapter to use PHP itself as template engine
+     * @param string $file
+     * @param array  $vars
+     *
+     * @throws \ManaPHP\Mvc\View\Renderer\Engine\Exception
      */
-    class Php extends Component implements EngineInterface
+    public function render($file, $vars = [])
     {
-        /**
-         * Renders a view using the template engine
-         *
-         * @param string $file
-         * @param array  $vars
-         *
-         * @throws \ManaPHP\Mvc\View\Renderer\Engine\Exception
-         */
-        public function render($file, $vars = null)
-        {
-            if (is_array($vars)) {
-                extract($vars, EXTR_SKIP);
-            }
+        extract($vars, EXTR_SKIP);
 
-            /** @noinspection PhpIncludeInspection */
-            require($file);
-        }
+        /** @noinspection PhpIncludeInspection */
+        require($file);
     }
 }

@@ -1,36 +1,34 @@
 <?php
-namespace ManaPHP {
+namespace ManaPHP;
 
-    interface AliasInterface
-    {
-        /**
-         * @param string $name
-         * @param string $path
-         *
-         * @return string
-         *
-         */
-        public function set($name, $path);
+interface AliasInterface
+{
+    /**
+     * @param string $name
+     * @param string $path
+     *
+     * @return string
+     */
+    public function set($name, $path);
 
-        /**
-         * @param string $name
-         *
-         * @return string|false
-         */
-        public function get($name);
+    /**
+     * @param string $name
+     *
+     * @return string|false
+     */
+    public function get($name);
 
-        /**
-         * @param string $name
-         *
-         * @return bool
-         */
-        public function has($name);
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function has($name);
 
-        /**
-         * @param $path
-         *
-         * @return mixed
-         */
-        public function resolve($path);
-    }
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    public function resolve($path);
 }

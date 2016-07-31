@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Cache\Adapter {
+namespace ManaPHP\Cache\Adapter;
 
-    class Exception extends \ManaPHP\Cache\Exception
-    {
+class Exception extends \ManaPHP\Cache\Exception
+{
 
-    }
 }

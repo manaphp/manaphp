@@ -1,19 +1,17 @@
 <?php
-namespace ManaPHP\Configure\Engine {
+namespace ManaPHP\Configure\Engine;
 
-    use ManaPHP\Configure\EngineInterface;
+use ManaPHP\Configure\EngineInterface;
 
-    class Json implements EngineInterface
+class Json implements EngineInterface
+{
+    public function load($file)
     {
-
-        public function load($file)
-        {
-            $data = file_get_contents($file, true);
-            if ($data === false) {
-                throw new Exception("Configure file '$file' can't be loaded");
-            } else {
-                return $data;
-            }
+        $data = file_get_contents($file, true);
+        if ($data === false) {
+            throw new Exception("Configure file '$file' can't be loaded");
+        } else {
+            return $data;
         }
     }
 }

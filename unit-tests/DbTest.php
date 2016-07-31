@@ -16,14 +16,18 @@ class DbTest extends TestCase
 
     public function setUp()
     {
+        $di=new \ManaPHP\Di\FactoryDefault();
+        
         $config = require __DIR__ . '/config.database.php';
         $this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+       // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
         $this->db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
         });
-        $this->db->query('SET GLOBAL innodb_flush_log_at_trx_commit=2');
+
+        echo get_class($this->db),PHP_EOL;
     }
 
     public function test_query()
@@ -87,10 +91,7 @@ class DbTest extends TestCase
 
     public function test_execute()
     {
-        $affectedRows = $this->db->execute('TRUNCATE TABLE _student');
-        $this->assertTrue(is_int($affectedRows));
-        //affected rows always are 0
-        $this->assertEquals(0, $affectedRows);
+        $this->db->truncateTable('_student');
 
         $affectedRows = $this->db->execute('INSERT INTO _student(id,age,name) VALUES(?,?,?)', [1, 20, 'mana']);
         $this->assertEquals(1, $affectedRows);
@@ -101,7 +102,7 @@ class DbTest extends TestCase
         $affectedRows = $this->db->execute('DELETE FROM _student WHERE id=?', [1]);
         $this->assertEquals(1, $affectedRows);
 
-        $this->db->execute('TRUNCATE TABLE _student');
+        $this->db->truncateTable('_student');
 
         $affectedRows = $this->db->execute('INSERT INTO _student(id,age,name) VALUES(:id,:age,:name)',
             ['id' => 11, 'age' => 220, 'name' => 'mana2']);
@@ -119,41 +120,35 @@ class DbTest extends TestCase
     {
 
         //recommended method without bind value type
-        $this->db->execute('TRUNCATE TABLE _student');
-        $affectedRows = $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
-        $this->assertEquals(1, $affectedRows);
+        $this->db->truncateTable('_student');
+         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
-        $this->assertEquals(1, $affectedRows);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
         //value only method
-        $this->db->execute('TRUNCATE TABLE _student');
-        $affectedRows = $this->db->insert('_student', [null, 21, 'mana1']);
-        $this->assertEquals(1, $affectedRows);
+        $this->db->truncateTable('_student');
+        $this->db->insert('_student', [null, 21, 'mana1']);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
         //compatible method
-        $this->db->execute('TRUNCATE TABLE _student');
-        $affectedRows = $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
-        $this->assertEquals(1, $affectedRows);
+        $this->db->truncateTable('_student');
+        $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
         for ($i = 0; $i < 10; $i++) {
-            $affectedRows = $this->db->insert('_student', ['age' => $i, 'name' => 'mana' . $i]);
-            $this->assertEquals(1, $affectedRows);
+            $this->db->insert('_student', ['age' => $i, 'name' => 'mana' . $i]);
         }
     }
 
     public function test_update()
     {
-        $this->db->execute('TRUNCATE TABLE _student');
-        $affectedRows = $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
-        $this->assertEquals(1, $affectedRows);
+        $this->db->truncateTable('_student');
+        $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
 
         //recommended method without bind value type
         $affectedRows = $this->db->update('_student', ['age' => 22, 'name' => 'mana2'], 'id=1');
@@ -170,21 +165,23 @@ class DbTest extends TestCase
 
     public function test_delete()
     {
-        $this->db->execute('TRUNCATE TABLE _student');
-        $affectedRows = $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
-        $this->assertEquals(1, $affectedRows);
+        $this->db->truncateTable('_student');
+        $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $this->db->delete('_student', 'id=:id', ['id' => 1]);
         $this->assertFalse($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
 
-        $affectedRows = $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
-        $this->assertEquals(1, $affectedRows);
+        $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $this->db->delete('_student', 'id=1');
         $this->assertFalse($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
     }
 
     public function test_escapeIdentifier()
     {
-        $this->assertEquals('`city`', $this->db->escapeIdentifier('city'));
-        $this->assertEquals('`app`.`city`', $this->db->escapeIdentifier('app.city'));
+        if($this->db instanceof ManaPHP\Db\Adapter\Mysql){
+            $this->assertEquals('`city`', $this->db->escapeIdentifier('city'));
+            $this->assertEquals('`app`.`city`', $this->db->escapeIdentifier('app.city'));
+        }else{
+            $this->assertEquals("'city'", $this->db->escapeIdentifier('city'));
+        }
     }
 }

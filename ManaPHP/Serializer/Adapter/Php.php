@@ -1,35 +1,45 @@
 <?php
-namespace ManaPHP\Serializer\Adapter {
+namespace ManaPHP\Serializer\Adapter;
 
-    use ManaPHP\Serializer\AdapterInterface;
+use ManaPHP\Serializer\AdapterInterface;
 
-    class Php implements AdapterInterface
+class Php implements AdapterInterface
+{
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     */
+    public function serialize($data)
     {
-        public function serialize($data, $context = null)
-        {
-            if (!is_array($data)) {
-                $data = ['__wrapper__' => $data];
-            }
-
-            return serialize($data);
+        if (!is_array($data)) {
+            $data = ['__wrapper__' => $data];
         }
 
-        public function deserialize($serialized, $content = null)
-        {
-            $data = unserialize($serialized);
-            if ($data === false) {
-                throw new Exception('unserialize failed: ' . error_get_last()['message']);
-            }
+        return serialize($data);
+    }
 
-            if (!is_array($data)) {
-                throw new Exception('serialize serialized data has been corrupted.');
-            }
+    /**
+     * @param string $serialized
+     *
+     * @return mixed
+     * @throws \ManaPHP\Serializer\Adapter\Exception
+     */
+    public function deserialize($serialized)
+    {
+        $data = unserialize($serialized);
+        if ($data === false) {
+            throw new Exception('unserialize failed: ' . error_get_last()['message']);
+        }
 
-            if (isset($data['__wrapper__']) && count($data) === 1) {
-                return $data['__wrapper__'];
-            } else {
-                return $data;
-            }
+        if (!is_array($data)) {
+            throw new Exception('serialize serialized data has been corrupted.');
+        }
+
+        if (isset($data['__wrapper__']) && count($data) === 1) {
+            return $data['__wrapper__'];
+        } else {
+            return $data;
         }
     }
 }

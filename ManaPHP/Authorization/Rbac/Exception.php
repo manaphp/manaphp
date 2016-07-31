@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Authorization\Rbac {
+namespace ManaPHP\Authorization\Rbac;
 
-    class Exception extends \ManaPHP\Authorization\Exception
-    {
+class Exception extends \ManaPHP\Authorization\Exception
+{
 
-    }
 }

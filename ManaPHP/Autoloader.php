@@ -1,45 +1,54 @@
 <?php
 
-namespace ManaPHP {
+namespace ManaPHP;
 
-    class Autoloader
+class Autoloader
+{
+    /**
+     * @var string
+     */
+    protected $_dir;
+
+    /**
+     * Autoloader constructor.
+     *
+     * @param string $dir
+     */
+    public function __construct($dir = null)
     {
-        /**
-         * @var string
-         */
-        protected static $_rootPath;
+        $this->_dir = $dir ?: dirname(__DIR__);
 
-        public static function ___autoload($className)
-        {
-            if (strpos($className, 'ManaPHP') !== 0) {
-                return false;
-            }
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->_dir = str_replace('\\', '/', $this->_dir);
+        }
 
-            if (self::$_rootPath === null) {
-                self::$_rootPath = str_replace('\\', '/', dirname(__DIR__));
-            }
+        $al_function = [$this, '___autoload'];
+        spl_autoload_register($al_function);
+    }
 
-            $file = self::$_rootPath . '/' . str_replace('\\', '/', $className) . '.php';
-            if (is_file($file)) {
-                if (PHP_EOL !== "\n" && str_replace('\\', '/', realpath($file)) !== $file) {
-                    trigger_error('File name case mismatch for ' . $file, E_USER_ERROR);
-                }
-
-                /** @noinspection PhpIncludeInspection */
-                require $file;
-
-                return true;
-            }
-
+    /**
+     * @param string $className
+     *
+     * @return bool
+     */
+    public function ___autoload($className)
+    {
+        if (strpos($className, 'ManaPHP') !== 0) {
             return false;
         }
 
-        /**
-         * @return bool
-         */
-        public static function register()
-        {
-            return spl_autoload_register([__CLASS__, '___autoload']);
+        $file = $this->_dir . '/' . str_replace('\\', '/', $className) . '.php';
+        if (is_file($file)) {
+            if (PHP_EOL !== "\n" && str_replace('\\', '/', realpath($file)) !== $file) {
+                trigger_error('File name case mismatch for ' . $file, E_USER_ERROR);
+            }
+
+            /** @noinspection PhpIncludeInspection */
+            require $file;
+
+            return true;
         }
+
+        return false;
     }
 }

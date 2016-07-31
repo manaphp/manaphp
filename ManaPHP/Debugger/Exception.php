@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Debugger {
+namespace ManaPHP\Debugger;
 
-    class Exception extends \ManaPHP\Exception
-    {
+class Exception extends \ManaPHP\Exception
+{
 
-    }
 }

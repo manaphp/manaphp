@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Serializer\Adapter {
+namespace ManaPHP\Serializer\Adapter;
 
-    class Exception extends \ManaPHP\Serializer\Exception
-    {
+class Exception extends \ManaPHP\Serializer\Exception
+{
 
-    }
 }

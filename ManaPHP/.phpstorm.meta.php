@@ -19,6 +19,7 @@ namespace PHPSTORM_META {                                // we want to avoid the
             'view' instanceof \ManaPHP\Mvc\ViewInterface,
             'authorization' instanceof \ManaPHP\Security\AuthorizationInterface,
             'application' instanceof \ManaPHP\ApplicationInterface,
+            'alias' instanceof \ManaPHP\AliasInterface,
         ],
         \ManaPHP\DiInterface::get('') => [           // STATIC call key to make static (1) & dynamic (2) calls work
             '' == '@',

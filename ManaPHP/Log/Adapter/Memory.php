@@ -1,30 +1,29 @@
 <?php
-namespace ManaPHP\Log\Adapter {
+namespace ManaPHP\Log\Adapter;
 
-    use ManaPHP\Log\AdapterInterface;
+use ManaPHP\Log\AdapterInterface;
 
-    class Memory implements AdapterInterface
+class Memory implements AdapterInterface
+{
+    protected $_logs = [];
+
+    /**
+     * @param string $level
+     * @param string $message
+     * @param array  $context
+     *
+     * @return void
+     */
+    public function log($level, $message, $context = null)
     {
-        protected $_logs = [];
+        $this->_logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
+    }
 
-        /**
-         * @param string $level
-         * @param string $message
-         * @param array  $context
-         *
-         * @return void
-         */
-        public function log($level, $message, $context = null)
-        {
-            $this->_logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
-        }
-
-        /**
-         * @return array
-         */
-        public function getLogs()
-        {
-            return $this->_logs;
-        }
+    /**
+     * @return array
+     */
+    public function getLogs()
+    {
+        return $this->_logs;
     }
 }

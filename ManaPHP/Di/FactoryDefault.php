@@ -1,66 +1,67 @@
 <?php
 
-namespace ManaPHP\Di {
+namespace ManaPHP\Di;
 
-    use ManaPHP\Di;
+use ManaPHP\Di;
 
+/**
+ * ManaPHP\Di\FactoryDefault
+ *
+ * This is a variant of the standard ManaPHP\Di. By default it automatically
+ * registers all the services provided by the framework. Thanks to this, the developer does not need
+ * to register each service individually providing a full stack framework
+ */
+class FactoryDefault extends Di
+{
     /**
-     * ManaPHP\Di\FactoryDefault
-     *
-     * This is a variant of the standard ManaPHP\Di. By default it automatically
-     * registers all the services provided by the framework. Thanks to this, the developer does not need
-     * to register each service individually providing a full stack framework
+     * \ManaPHP\Di\FactoryDefault constructor
      */
-    class FactoryDefault extends Di
+    public function __construct()
     {
-        /**
-         * \ManaPHP\Di\FactoryDefault constructor
-         */
-        public function __construct()
-        {
-            parent::__construct();
+        parent::__construct();
 
-            $this->_services = [
-                'alias' => 'ManaPHP\Alias',
-                'router' => 'ManaPHP\Mvc\Router',
-                'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
-                'url' => 'ManaPHP\Mvc\Url',
-                'modelsManager' => 'ManaPHP\Mvc\Model\Manager',
-                'modelsMetadata' => 'ManaPHP\Mvc\Model\MetaData\Adapter\Memory',
-                'response' => 'ManaPHP\Http\Response',
-                'cookies' => 'ManaPHP\Http\Cookies',
-                'request' => 'ManaPHP\Http\Request',
-                'filter' => 'ManaPHP\Http\Filter',
-                'escaper' => 'ManaPHP\Escaper',
-                'security' => 'ManaPHP\Security',
-                'crypt' => 'ManaPHP\Security\Crypt',
-                'flash' => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
-                'flashSession' => 'ManaPHP\Flash\Adapter\Session',
-                'tag' => 'ManaPHP\Mvc\View\Tag',
-                'session' => 'ManaPHP\Http\Session\Adapter\File',
-                'sessionBag' => ['ManaPHP\Http\Session\Bag', false],
-                'assets' => 'ManaPHP\Assets\Manager',
-                'loader' => 'ManaPHP\Loader',
-                'view' => 'ManaPHP\Mvc\View',
-                'logger' => 'ManaPHP\Log\Logger',
-                'renderer' => 'ManaPHP\Mvc\View\Renderer',
-                'debugger' => 'ManaPHP\Debugger',
-                'password' => 'ManaPHP\Security\Password',
-                'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
-                'cache' => 'ManaPHP\Cache\Adapter\File',
-                'store' => 'ManaPHP\Store\Adapter\File',
-                'counter' => 'ManaPHP\Counter\Adapter\Db',
-                'httpClient' => 'ManaPHP\Http\Client\Adapter\Curl',
-                'captcha' => 'ManPHP\Security\Captcha',
-                'csrfToken' => 'ManaPHP\Security\CsrfToken',
-                'authorization' => 'ManaPHP\Authorization\Bypass',
-                'userIdentifier' => 'ManaPHP\Authentication\UserIdentifier',
-            ];
+        $this->_services = [
+            'eventsManager' => 'ManaPHP\Event\Manager',
+            'alias' => 'ManaPHP\Alias',
+            'router' => 'ManaPHP\Mvc\Router',
+            'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
+            'url' => 'ManaPHP\Mvc\Url',
+            'modelsManager' => 'ManaPHP\Mvc\Model\Manager',
+            'modelsMetadata' => 'ManaPHP\Mvc\Model\MetaData\Adapter\Memory',
+            'response' => 'ManaPHP\Http\Response',
+            'cookies' => 'ManaPHP\Http\Cookies',
+            'request' => 'ManaPHP\Http\Request',
+            'filter' => 'ManaPHP\Http\Filter',
+            'escaper' => 'ManaPHP\Escaper',
+            'security' => 'ManaPHP\Security',
+            'crypt' => 'ManaPHP\Security\Crypt',
+            'flash' => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
+            'flashSession' => 'ManaPHP\Flash\Adapter\Session',
+            'tag' => 'ManaPHP\Mvc\View\Tag',
+            'session' => 'ManaPHP\Http\Session\Adapter\File',
+            'sessionBag' => ['ManaPHP\Http\Session\Bag', false],
+            'assets' => 'ManaPHP\Assets\Manager',
+            'loader' => 'ManaPHP\Loader',
+            'view' => 'ManaPHP\Mvc\View',
+            'logger' => 'ManaPHP\Log\Logger',
+            'renderer' => 'ManaPHP\Mvc\View\Renderer',
+            'debugger' => 'ManaPHP\Debugger',
+            'password' => 'ManaPHP\Authentication\Password',
+            'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
+            'cache' => 'ManaPHP\Cache\Adapter\File',
+            'store' => 'ManaPHP\Store\Adapter\File',
+            'counter' => 'ManaPHP\Counter\Adapter\Db',
+            'httpClient' => 'ManaPHP\Http\Client',
+            'captcha' => 'ManaPHP\Security\Captcha',
+            'csrfToken' => 'ManaPHP\Security\CsrfToken',
+            'authorization' => 'ManaPHP\Authorization\Bypass',
+            'userIdentity' => 'ManaPHP\Authentication\UserIdentity',
+            'paginator' => 'ManaPHP\Paginator',
+        ];
 
-            $this->_aliases = [
-                'modelsCache' => 'cache',
-                'viewsCache' => 'cache'
-            ];
-        }
+        $this->_aliases = [
+            'modelsCache' => 'cache',
+            'viewsCache' => 'cache'
+        ];
     }
 }

@@ -1,7 +1,6 @@
 <?php
-namespace ManaPHP\Counter {
+namespace ManaPHP\Counter;
 
-    class Exception extends \ManaPHP\Exception
-    {
-    }
+class Exception extends \ManaPHP\Exception
+{
 }

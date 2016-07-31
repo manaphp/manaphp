@@ -1,10 +1,9 @@
 <?php
 
-namespace ManaPHP\Image {
+namespace ManaPHP\Image;
 
-    class Exception extends \Exception
-    {
+class Exception extends \ManaPHP\Exception
+{
 
-    }
 }
 

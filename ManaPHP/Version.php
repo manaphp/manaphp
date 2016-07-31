@@ -1,27 +1,25 @@
 <?php
 
-namespace ManaPHP {
+namespace ManaPHP;
 
+/**
+ * ManaPHP\Version
+ *
+ * This class allows to get the installed version of the framework
+ */
+class Version
+{
     /**
-     * ManaPHP\Version
+     * Returns the active version (string)
      *
-     * This class allows to get the installed version of the framework
+     * <code>
+     * echo \ManaPHP\Version::get();
+     * </code>
+     *
+     * @return string
      */
-    class Version
+    public static function get()
     {
-
-        /**
-         * Returns the active version (string)
-         *
-         * <code>
-         * echo \ManaPHP\Version::get();
-         * </code>
-         *
-         * @return string
-         */
-        public static function get()
-        {
-            return '0.6.3';
-        }
+        return '0.7.2';
     }
 }

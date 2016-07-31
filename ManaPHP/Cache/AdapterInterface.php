@@ -1,45 +1,44 @@
 <?php
-namespace ManaPHP\Cache {
+namespace ManaPHP\Cache;
 
-    interface AdapterInterface
-    {
-        /**
-         * Checks whether a specified key exists in the cache.
-         *
-         * @param string $key
-         *
-         * @return bool
-         */
-        public function _exists($key);
+interface AdapterInterface
+{
+    /**
+     * Checks whether a specified key exists in the cache.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function _exists($key);
 
-        /**
-         * Retrieves a value from cache with a specified key.
-         *
-         * @param string $key
-         *
-         * @return string|false
-         */
-        public function _get($key);
+    /**
+     * Retrieves a value from cache with a specified key.
+     *
+     * @param string $key
+     *
+     * @return string|false
+     */
+    public function _get($key);
 
-        /**
-         * Stores a value identified by a key into cache.
-         *
-         * @param string $key
-         * @param string $value
-         * @param int    $ttl
-         *
-         * @return void
-         */
-        public function _set($key, $value, $ttl);
+    /**
+     * Stores a value identified by a key into cache.
+     *
+     * @param string $key
+     * @param string $value
+     * @param int    $ttl
+     *
+     * @return void
+     */
+    public function _set($key, $value, $ttl);
 
-        /**
-         * Deletes a value with the specified key from cache
-         *
-         * @param string $key
-         *
-         * @void
-         */
-        public function _delete($key);
+    /**
+     * Deletes a value with the specified key from cache
+     *
+     * @param string $key
+     *
+     * @void
+     */
+    public function _delete($key);
 
-    }
 }

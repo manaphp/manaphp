@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Store\Adapter {
+namespace ManaPHP\Store\Adapter;
 
-    class Exception extends \ManaPHP\Store\Exception
-    {
+class Exception extends \ManaPHP\Store\Exception
+{
 
-    }
 }

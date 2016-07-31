@@ -62,7 +62,7 @@ class ComponentTest extends TestCase
     public function test_getProperties()
     {
         $o = new TClass1();
-        $properties = array_keys($o->getProperties());
+        $properties = $o->getProperties();
 
         $this->assertContains('publicP', $properties);
         $this->assertContains('protectedP', $properties);

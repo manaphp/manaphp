@@ -1,31 +1,30 @@
 <?php
 
-namespace ManaPHP\Security {
+namespace ManaPHP\Security;
+
+/**
+ * ManaPHP\CryptInterface initializer
+ */
+interface CryptInterface
+{
 
     /**
-     * ManaPHP\CryptInterface initializer
+     * Encrypts a text
+     *
+     * @param string $text
+     * @param string $key
+     *
+     * @return string
      */
-    interface CryptInterface
-    {
+    public function encrypt($text, $key = null);
 
-        /**
-         * Encrypts a text
-         *
-         * @param string $text
-         * @param string $key
-         *
-         * @return string
-         */
-        public function encrypt($text, $key = null);
-
-        /**
-         * Decrypts a text
-         *
-         * @param string $text
-         * @param string $key
-         *
-         * @return string
-         */
-        public function decrypt($text, $key = null);
-    }
+    /**
+     * Decrypts a text
+     *
+     * @param string $text
+     * @param string $key
+     *
+     * @return string
+     */
+    public function decrypt($text, $key = null);
 }

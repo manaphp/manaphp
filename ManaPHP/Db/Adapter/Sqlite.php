@@ -1,0 +1,96 @@
+<?php
+namespace ManaPHP\Db\Adapter;
+
+use ManaPHP\Db;
+
+class Sqlite extends Db
+{
+    public function __construct($options)
+    {
+        $this->_type = 'sqlite';
+
+        if (is_object($options)) {
+            $options = (array)$options;
+        } elseif (is_string($options)) {
+            $options = ['file' => $options];
+        }
+
+        if (!isset($options['file'])) {
+            throw new Exception('file is not provide to sqlite adapter.');
+        }
+        $options['dsn'] = $options['file'];
+        unset($options['file']);
+
+        parent::__construct($options);
+    }
+
+    /**
+     * @param string
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function getMetadata($source)
+    {
+        $columns = $this->fetchAll('PRAGMA table_info(' . $this->escapeIdentifier($source) . ')', null, \PDO::FETCH_ASSOC);
+
+        $attributes = [];
+        $primaryKeys = [];
+        $nonPrimaryKeys = [];
+        $autoIncrementAttribute = null;
+
+        foreach ($columns as $column) {
+            $columnName = $column['name'];
+
+            $attributes[] = $columnName;
+
+            if ($column['pk'] === '1') {
+                $primaryKeys[] = $columnName;
+            } else {
+                $nonPrimaryKeys = $columnName;
+            }
+
+            if ($column['pk'] === '1' && $column['type'] === 'INTEGER') {
+                $autoIncrementAttribute = $columnName;
+            }
+        }
+
+        $r = [
+            self::METADATA_ATTRIBUTES => $attributes,
+            self::METADATA_PRIMARY_KEY => $primaryKeys,
+            self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
+            self::METADATA_IDENTITY_COLUMN => $autoIncrementAttribute,
+        ];
+
+        return $r;
+    }
+
+    /**
+     * Escapes a column/table/schema name
+     * <code>
+     * echo $connection->escapeIdentifier('my_table'); // `my_table`
+     * echo $connection->escapeIdentifier('companies.name'); // `companies`.`name`
+     * <code>
+     *
+     * @param string $identifier
+     *
+     * @return string
+     */
+    public function escapeIdentifier($identifier)
+    {
+        return "'" . $identifier . "'";
+    }
+
+    /**
+     * @param string $source
+     *
+     * @return static
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function truncateTable($source)
+    {
+        $escapedTable = $this->escapeIdentifier($source);
+        $this->execute('DELETE ' . 'FROM ' . $escapedTable);
+        $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=' . $escapedTable);
+    }
+}

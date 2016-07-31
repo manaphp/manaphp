@@ -3,8 +3,12 @@ date_default_timezone_set('PRC');
 
 use ManaPHP\Utility\Text;
 
-require __DIR__.'/ManaPHP/Autoloader.php';
-\ManaPHP\Autoloader::register();
+if (!class_exists('ManaPHP\Autoloader')) {
+    require __DIR__ . '/ManaPHP/Autoloader.php';
+}
+
+new \ManaPHP\Autoloader(__DIR__);
+
 class SourceCodeMinify
 {
 
@@ -89,8 +93,10 @@ $app = new Application();
 var_dump($app->getSourceFiles());
 $rootPath = $app->getRootPath();
 $dstRootPath = $rootPath . '_' . date('ymd');
-$class_file_lines = 0;
-$interface_file_lines = 0;
+$totalClassLines = 0;
+$totalInterfaceLines = 0;
+$totalLines = 0;
+$fileLines = [];
 foreach ($app->getSourceFiles() as $file) {
     $dst = str_replace($rootPath, $dstRootPath, $file);
     $dir = dirname($dst);
@@ -103,14 +109,25 @@ foreach ($app->getSourceFiles() as $file) {
     $content = $app->repositionClose($content);
     $line = Text::contains($content, "\r") ? substr_count($content, "\r") : substr_count($content, "\n");
     if (Text::contains($file, 'Interface.php')) {
-        $interface_file_lines += $line;
+        $totalInterfaceLines += $line;
+        $totalLines += $line;
     } else {
-        $class_file_lines += $line;
+        $totalClassLines += $line;
+        $totalLines += $line;
     }
     echo $content;
     file_put_contents($dst, $content);
+    $fileLines[$file] = $line;
 }
 
-echo "total     lines: ", $class_file_lines + $interface_file_lines, PHP_EOL;
-echo 'class     lines: ', $class_file_lines, PHP_EOL;
-echo 'interface lines: ', $interface_file_lines, PHP_EOL;
+asort($fileLines);
+$i = 1;
+echo '------------------------------------------------------', PHP_EOL;
+foreach ($fileLines as $file => $line) {
+    echo sprintf('%3d %3d %.3f', $i++, $line, $line / ($totalLines) * 100), ' ', substr($file, strpos($file, 'ManaPHP')), PHP_EOL;
+}
+
+echo '------------------------------------------------------', PHP_EOL;
+echo 'total     lines: ', $totalLines, PHP_EOL;
+echo 'class     lines: ', $totalClassLines, PHP_EOL;
+echo 'interface lines:  ', $totalInterfaceLines, PHP_EOL;
