@@ -8,6 +8,6 @@ namespace ManaPHP\Http\Request;
  * Exceptions thrown in ManaPHP\Http\Request will use this class
  *
  */
-class Exception extends \ManaPHP\Exception
+class Exception extends \ManaPHP\Http\Exception
 {
 }

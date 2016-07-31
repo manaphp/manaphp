@@ -1,7 +1,7 @@
 <?php
 namespace Application {
 
-    class Exception extends \Exception
+    class Exception extends \ManaPHP\Exception
     {
 
     }

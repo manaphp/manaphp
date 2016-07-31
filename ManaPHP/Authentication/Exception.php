@@ -1,9 +1,7 @@
 <?php
-
-namespace ManaPHP\Image;
+namespace ManaPHP\Authentication;
 
 class Exception extends \ManaPHP\Exception
 {
 
 }
-

@@ -9,7 +9,7 @@ class CsrfToken extends Component implements CsrfTokenInterface
     /**
      * @var string
      */
-    protected $_header = 'X-CSRF-Token';
+    protected $_header = 'HTTP_X_CSRF_TOKEN';
 
     /**
      * @var int

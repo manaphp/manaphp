@@ -19,7 +19,7 @@ class UserIdentity implements UserIdentityInterface
      * @param int|string $id
      * @param string     $name
      */
-    public function __construct($id, $name = '')
+    public function __construct($id = 0, $name = '')
     {
         $this->_userId = (string)$id;
         $this->_userName = $name ?: $id;

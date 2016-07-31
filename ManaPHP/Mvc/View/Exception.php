@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Mvc\View;
 
-class Exception extends \ManaPHP\Exception
+class Exception extends \ManaPHP\Mvc\Exception
 {
 
 }
