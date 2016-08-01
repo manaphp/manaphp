@@ -23,6 +23,9 @@ use ManaPHP\Security\Crypt\Exception;
  */
 class Crypt extends Component implements CryptInterface
 {
+    /**
+     * @var string
+     */
     protected $_key;
 
     /**
@@ -30,6 +33,13 @@ class Crypt extends Component implements CryptInterface
      */
     protected $_mcrypt;
 
+    /**
+     * Crypt constructor.
+     *
+     * @param string $key
+     *
+     * @throws \ManaPHP\Security\Crypt\Exception
+     */
     public function __construct($key = null)
     {
         if (!extension_loaded('mcrypt')) {

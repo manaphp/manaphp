@@ -56,6 +56,8 @@ class Di implements DiInterface
 
     /**
      * Latest DI build
+     *
+     * @var \ManaPHP\Di
      */
     protected static $_default;
 

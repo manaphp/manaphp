@@ -39,6 +39,11 @@ class Db extends Counter
         }
     }
 
+    /**
+     * @param string|array $key
+     *
+     * @return string
+     */
     protected function _formatKey($key)
     {
         if (is_string($key)) {

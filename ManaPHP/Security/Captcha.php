@@ -11,6 +11,7 @@ class Captcha extends Component implements CaptchaInterface
      */
     protected /** @noinspection SpellCheckingInspection */
         $_charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
+
     /**
      * @var array
      */

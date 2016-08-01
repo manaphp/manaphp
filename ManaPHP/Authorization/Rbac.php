@@ -137,7 +137,7 @@ class Rbac extends Component implements AuthorizationInterface
      * @param string|null $userId
      *
      * @return bool
-     * @throws \ManaPHP\Authorization\Exception
+     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
      */
     public function isAllowed($permissionName, $userId = null)
     {

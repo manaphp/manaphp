@@ -20,6 +20,9 @@ class Manager implements ManagerInterface
      */
     protected $_events = [];
 
+    /**
+     * @var array
+     */
     protected $_peekHandlers = [];
 
     /**

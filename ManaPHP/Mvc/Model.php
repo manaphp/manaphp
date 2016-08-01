@@ -66,7 +66,7 @@ class Model extends Component implements ModelInterface
      * @param array                $data
      * @param \ManaPHP\DiInterface $dependencyInjector
      */
-    final public function __construct($data = null, $dependencyInjector = null)
+    final public function __construct($data = [], $dependencyInjector = null)
     {
         $this->_dependencyInjector = $dependencyInjector ?: FactoryDefault::getDefault();
 
@@ -82,7 +82,7 @@ class Model extends Component implements ModelInterface
             $this->onConstruct();
         }
 
-        if ($data !== null) {
+        if (count($data) !== 0) {
             $this->_snapshot = $data;
             foreach ($data as $attribute => $value) {
                 $this->{$attribute} = $value;

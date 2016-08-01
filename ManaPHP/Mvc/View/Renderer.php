@@ -10,17 +10,22 @@ class Renderer extends Component implements RendererInterface
     /**
      * @var \ManaPHP\Mvc\View\Renderer\EngineInterface[]
      */
-    protected $_resolvedEngines = [];
+    protected $_resolved = [];
 
     /**
      * @var array
      */
-    protected /** @noinspection PropertyCanBeStaticInspection */
-        $_registeredEngines = [
-        '.phtml' => 'ManaPHP\Mvc\View\Renderer\Engine\Php',
-        '.tpl' => 'ManaPHP\Mvc\View\Renderer\Engine\Smarty',
-        '.html' => 'ManaPHP\Mvc\View\Renderer\Engine\Html'
-    ];
+    protected $_engines = [];
+
+    public function __construct(
+        $engines = [
+            '.phtml' => 'ManaPHP\Mvc\View\Renderer\Engine\Php',
+            '.tpl' => 'ManaPHP\Mvc\View\Renderer\Engine\Smarty',
+            '.html' => 'ManaPHP\Mvc\View\Renderer\Engine\Html'
+        ]
+    ) {
+        $this->_engines = $engines;
+    }
 
     /**
      * @param string $extension
@@ -31,7 +36,7 @@ class Renderer extends Component implements RendererInterface
     protected function _loadEngine($extension)
     {
         $arguments = [$this->_dependencyInjector];
-        $engine = $this->_registeredEngines[$extension];
+        $engine = $this->_engines[$extension];
         if ($engine instanceof \Closure) {
             $engine = call_user_func_array($engine, $arguments);
         } elseif (is_string($engine)) {
@@ -63,7 +68,7 @@ class Renderer extends Component implements RendererInterface
         $notExists = true;
         $content = null;
 
-        foreach ($this->_registeredEngines as $extension => $engine) {
+        foreach ($this->_engines as $extension => $engine) {
             $file = $this->alias->resolve($template . $extension);
             if (file_exists($file)) {
                 if (PHP_EOL !== "\n") {
@@ -73,11 +78,11 @@ class Renderer extends Component implements RendererInterface
                     }
                 }
 
-                if (!isset($this->_resolvedEngines[$extension])) {
-                    $this->_resolvedEngines[$extension] = $this->_loadEngine($extension);
+                if (!isset($this->_resolved[$extension])) {
+                    $this->_resolved[$extension] = $this->_loadEngine($extension);
                 }
 
-                $engine = $this->_resolvedEngines[$extension];
+                $engine = $this->_resolved[$extension];
 
                 $eventArguments = ['file' => $file, 'vars' => $vars];
                 $this->fireEvent('renderer:beforeRender', $eventArguments);
@@ -129,7 +134,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function exists($template)
     {
-        foreach ($this->_registeredEngines as $extension => $_) {
+        foreach ($this->_engines as $extension => $_) {
             $file = $template . $extension;
             if (is_file($file)) {
                 if (PHP_EOL !== "\n") {
@@ -143,36 +148,5 @@ class Renderer extends Component implements RendererInterface
         }
 
         return false;
-    }
-
-    /**
-     * Register template engines
-     *
-     *<code>
-     *$renderer->registerEngines(array(
-     *  ".phtml" => "ManaPHP\Mvc\View\Renderer\Engine\Php",
-     *  ".html" => "ManaPHP\Mvc\View\Renderer\Engine\Html",
-     *));
-     *</code>
-     *
-     * @param array $engines
-     *
-     * @return static
-     */
-    public function registerEngines($engines)
-    {
-        $this->_registeredEngines = $engines;
-
-        return $this;
-    }
-
-    /**
-     * Returns the registered template engines
-     *
-     * @brief array \ManaPHP\Mvc\View::getRegisteredEngines()
-     */
-    public function getRegisteredEngines()
-    {
-        return $this->_registeredEngines;
     }
 }

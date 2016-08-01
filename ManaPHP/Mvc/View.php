@@ -325,7 +325,7 @@ class View extends Component implements ViewInterface
      * @param array     $options
      * @param int|array $cacheOptions
      *
-     * @throws \ManaPHP\Mvc\View\Exception
+     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Alias\Exception|\ManaPHP\Mvc\View\Renderer\Exception
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {

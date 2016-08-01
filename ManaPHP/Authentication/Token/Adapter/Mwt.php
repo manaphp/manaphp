@@ -21,7 +21,7 @@ class Mwt extends Component implements TokenInterface
     /**
      * @var array
      */
-    protected $_keys;
+    protected $_keys = [];
 
     /**
      * @var int
@@ -47,7 +47,7 @@ class Mwt extends Component implements TokenInterface
             $keys = [$keys];
         }
 
-        $this->_keys = $keys;
+        $this->_keys = (array)$keys;
 
         foreach (get_object_vars($this) as $field => $_) {
             if (!Text::startsWith($field, '_')) {

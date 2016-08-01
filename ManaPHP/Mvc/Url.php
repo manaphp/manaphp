@@ -6,6 +6,9 @@ use ManaPHP\Utility\Text;
 
 class Url extends Component implements UrlInterface
 {
+    /**
+     * @var string
+     */
     protected $_baseUri = '';
 
     /**

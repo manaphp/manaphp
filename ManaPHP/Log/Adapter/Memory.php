@@ -5,6 +5,9 @@ use ManaPHP\Log\AdapterInterface;
 
 class Memory implements AdapterInterface
 {
+    /**
+     * @var array
+     */
     protected $_logs = [];
 
     /**

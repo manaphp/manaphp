@@ -3,23 +3,6 @@ namespace ManaPHP\Mvc\View;
 
 interface RendererInterface
 {
-
-    /**
-     * Register template engines
-     *
-     * @param array $engines
-     *
-     * @return static
-     */
-    public function registerEngines($engines);
-
-    /**
-     * Returns the registered template engines
-     *
-     * @brief array \ManaPHP\Mvc\View::getRegisteredEngines()
-     */
-    public function getRegisteredEngines();
-
     /**
      * Checks whether view exists on registered extensions and render it
      *

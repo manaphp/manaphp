@@ -6,6 +6,9 @@ use ManaPHP\Cache;
 
 class Redis extends Cache
 {
+    /**
+     * @var string
+     */
     protected $_prefix = 'manaphp:cache:';
 
     /**

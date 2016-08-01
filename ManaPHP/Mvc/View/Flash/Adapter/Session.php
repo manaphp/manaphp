@@ -5,8 +5,14 @@ use ManaPHP\Mvc\View\Flash;
 
 class Session extends Flash
 {
+    /**
+     * @var string
+     */
     protected $_sessionKey = 'manaphp_flash';
 
+    /**
+     * @var array
+     */
     protected $_messages = [];
 
     /**
@@ -18,8 +24,8 @@ class Session extends Flash
     {
         parent::__construct($cssClasses);
 
-        $defaultMessage = [];
-        $this->_messages = $this->session->get($this->_sessionKey, $defaultMessage);
+        $defaultMessages = [];
+        $this->_messages = (array)$this->session->get($this->_sessionKey, $defaultMessages);
         $this->session->remove($this->_sessionKey);
     }
 

@@ -22,6 +22,9 @@ class Alias extends Component implements AliasInterface
             $this->set('@manaphp', str_replace('\\', '/', __DIR__));
         }
 
+        /**
+         * @var $traces array
+         */
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
 
         $found = false;
