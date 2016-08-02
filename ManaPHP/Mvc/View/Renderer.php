@@ -92,10 +92,10 @@ class Renderer extends Component implements RendererInterface
                 }
                 $vars['view'] = $this->_dependencyInjector->has('view') ? $this->_dependencyInjector->getShared('view') : null;
 
-                if (isset($vars['renderer'])) {
-                    throw new Exception('variable \'render\' is reserved for PHP renderer engine.');
+                if (isset($vars['di'])) {
+                    throw new Exception('variable \'di\' is reserved for PHP renderer engine.');
                 }
-                $vars['renderer'] = $this;
+                $vars['di'] = $this->_dependencyInjector;
 
                 if ($directOutput) {
                     $engine->render($file, $vars);

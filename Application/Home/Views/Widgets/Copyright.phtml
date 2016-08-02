@@ -19,7 +19,7 @@
     &copy; <?= $year ?> <a href="https://github.com/manaphp">ManaPHP</a>
 </div>
 
-<?php if ($view->configure->debug) { ?>
+<?php if ($di->configure->debug) { ?>
     <div class="manaphp_included_files">
         <?php print_r(get_included_files()); ?>
     </div>

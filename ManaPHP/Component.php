@@ -98,11 +98,6 @@ class Component implements ComponentInterface
             $this->_dependencyInjector = Di::getDefault();
         }
 
-        if ($this->_dependencyInjector->has($propertyName)) {
-            $this->{$propertyName} = $this->_dependencyInjector->getShared($propertyName);
-            return $this->{$propertyName};
-        }
-
         if ($propertyName === 'di') {
             $this->{'di'} = $this->_dependencyInjector;
             return $this->{'di'};
@@ -114,9 +109,11 @@ class Component implements ComponentInterface
             return $this->{'persistent'};
         }
 
-        trigger_error('Access to undefined property `' . $propertyName . '` of `' . get_called_class() . '`.');
-
-        return null;
+        $this->{$propertyName} = $this->_dependencyInjector->{$propertyName};
+        if ($this->{$propertyName} === null) {
+            trigger_error('Access to undefined property `' . $propertyName . '` of `' . get_called_class() . '`.');
+        }
+        return $this->{$propertyName};
     }
 
     /**

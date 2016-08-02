@@ -23,7 +23,7 @@
 <div class="mana_container">
     <h1>ManaPHP <sub>v<?= $version ?></sub></h1>
     <?= $current_time ?>
-    <?= $view->router->getModuleName(), ':', $view->router->getControllerName(), ':', $view->router->getActionName() ?>
+    <?= $di->router->getModuleName(), ':', $di->router->getControllerName(), ':', $di->router->getActionName() ?>
     <p>
         <?= round(memory_get_usage() / 1024) . ' k/' . round(memory_get_peak_usage() / 1024) . ' k' ?>
         <?= round(memory_get_usage(true) / 1024) . ' k/' . round(memory_get_peak_usage(true) / 1024) . ' k' ?>
