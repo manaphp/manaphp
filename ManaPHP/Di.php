@@ -194,8 +194,8 @@ class Di implements DiInterface
             return $this->_sharedInstances[$name];
         }
 
-        if(isset($this->eventsManager)){
-            $this->eventsManager->fireEvent('di:beforeResolve',$this,['name'=>$_name,'parameters'=>$parameters]);
+        if (isset($this->eventsManager)) {
+            $this->eventsManager->fireEvent('di:beforeResolve', $this, ['name' => $_name, 'parameters' => $parameters]);
         }
 
         if (is_string($definition)) {
@@ -209,7 +209,7 @@ class Di implements DiInterface
                 $instance = new $definition();
             } elseif ($count === 1) {
                 $instance = new $definition($parameters[0]);
-            } elseif ($count === 2) { 
+            } elseif ($count === 2) {
                 $instance = new $definition($parameters[0], $parameters[1]);
             } elseif ($count === 3) {
                 $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
@@ -235,8 +235,8 @@ class Di implements DiInterface
             $instance->setDependencyInjector($this);
         }
 
-        if(isset($this->eventsManager)){
-            $this->eventsManager->fireEvent('di:afterResolve',$this,['name'=>$_name,'parameters'=>$parameters]);
+        if (isset($this->eventsManager)) {
+            $this->eventsManager->fireEvent('di:afterResolve', $this, ['name' => $_name, 'parameters' => $parameters, 'instance' => $instance]);
         }
 
         return $instance;
