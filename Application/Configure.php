@@ -49,7 +49,8 @@ namespace Application {
             $this->crypt->key = 'test';
 
             $this->debugger = new \stdClass();
-            $this->debugger->disableAutoResponse = (!Text::startsWith($_SERVER['REMOTE_ADDR'], '127.0.0.') && !Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.'));
+            $this->debugger->autoResponse = Text::startsWith($_SERVER['REMOTE_ADDR'], '127.0.0.') || Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.');
         }
+
     }
 }

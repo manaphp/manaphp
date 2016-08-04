@@ -53,7 +53,7 @@ namespace ConfManaPHP {
 
     class Debugger
     {
-        public $disableAutoResponse;
+        public $autoResponse;
     }
 }
 namespace ConfManaPHP\Cache\Adapter {
