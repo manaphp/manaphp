@@ -1,6 +1,8 @@
 {
   "name": "manaphp/manaphp",
-  "description": "a component-based PHP MVC framework",
+  "description": "The ManaPHP Framework",
+  "keywords": ["manaphp","framework","di"],
+  "homepage": "https://github.com/manaphp/manaphp",
   "require": {
     "smarty/smarty": "^3.1"
   },
@@ -10,5 +12,10 @@
       "email": "manaphp@qq.com"
     }
   ],
-  "minimum-stability": "stable"
+  "autoload": {
+    "psr-4": {
+      "ManaPHP\\":"ManaPHP/"
+    }
+  },
+  "minimum-stability": "dev"
 }
