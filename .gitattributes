@@ -1,0 +1,12 @@
+# Autodetect text files
+* text=auto
+
+# Ignore all test and documentation for archive
+/.gitattributes export-ignore
+.gitignore export-ignore
+.gitkeep export-ignore
+/unit-tests export-ignore
+/composer.lock export-ignore
+/lite.php export-ignore
+/minify.php export-ignore
+/phpunit.xml export-ignore
