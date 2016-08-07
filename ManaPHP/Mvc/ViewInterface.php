@@ -127,4 +127,38 @@ interface ViewInterface
      * @return string
      */
     public function getContent();
+
+    /**
+     * Get the string contents of a section.
+     *
+     * @param  string $section
+     * @param  string $default
+     *
+     * @return string
+     */
+    public function getSection($section, $default = '');
+
+    /**
+     * Start injecting content into a section.
+     *
+     * @param  string $section
+     *
+     * @return void
+     */
+    public function startSection($section);
+
+    /**
+     * Stop injecting content into a section.
+     *
+     * @param  bool $overwrite
+     *
+     * @return string
+     * @throws \ManaPHP\Mvc\View\Exception
+     */
+    public function stopSection($overwrite = false);
+
+    /**
+     * @return void
+     */
+    public function appendSection();
 }

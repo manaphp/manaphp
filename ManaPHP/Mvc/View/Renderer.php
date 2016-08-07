@@ -19,9 +19,8 @@ class Renderer extends Component implements RendererInterface
 
     public function __construct(
         $engines = [
+            '.sword' => 'ManaPHP\Mvc\View\Renderer\Engine\Sword',
             '.phtml' => 'ManaPHP\Mvc\View\Renderer\Engine\Php',
-            '.tpl' => 'ManaPHP\Mvc\View\Renderer\Engine\Smarty',
-            '.html' => 'ManaPHP\Mvc\View\Renderer\Engine\Html'
         ]
     ) {
         $this->_engines = $engines;

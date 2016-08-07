@@ -16,11 +16,11 @@
 </style>
 
 <div class="manaphp_copyright">
-    &copy; <?= $year ?> <a href="https://github.com/manaphp">ManaPHP</a>
+    &copy; {{ $year }} <a href="https://github.com/manaphp">ManaPHP</a>
 </div>
 
-<?php if ($di->configure->debug) { ?>
+@if($di->configure->debug)
     <div class="manaphp_included_files">
-        <?php print_r(get_included_files()); ?>
+        {!! print_r(get_included_files()) !!}
     </div>
-<?php } ?>
+@endif
