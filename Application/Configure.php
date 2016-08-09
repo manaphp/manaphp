@@ -49,8 +49,8 @@ namespace Application {
             $this->crypt->key = 'test';
 
             $this->debugger = new \stdClass();
-            $this->debugger->autoResponse = Text::startsWith($_SERVER['REMOTE_ADDR'], '127.0.0.') || Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.');
-        }
 
+            $this->debugger->autoResponse = $_SERVER['REMOTE_ADDR'] === $_SERVER['SERVER_ADDR'] || Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.');
+        }
     }
 }

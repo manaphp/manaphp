@@ -331,7 +331,7 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileForeach($expression)
     {
-        return "<?php foreach{$expression}: ?>";
+        return "<?php \$index = -1; foreach{$expression}: \$index++; ?>";
     }
 
     /**
@@ -544,11 +544,9 @@ class Sword extends Component implements EngineInterface
      *
      * @return string
      */
-    protected function _compileBreak(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        return '<?php break;?>';
+    protected function _compileBreak($expression)
+    {
+        return $expression ? "<?php if{$expression} break; ?>" : '<?php break; ?>';
     }
 
     /**
@@ -558,11 +556,9 @@ class Sword extends Component implements EngineInterface
      *
      * @return string
      */
-    protected function _compileContinue(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        return '<?php continue;?>';
+    protected function _compileContinue($expression)
+    {
+        return $expression ? "<?php if{$expression} continue; ?>" : '<?php continue; ?>';
     }
 
     /**
@@ -598,11 +594,13 @@ class Sword extends Component implements EngineInterface
      *
      * @return string
      */
-    protected function _compilePhp(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        return '<?php ';
+    protected function _compilePhp($expression)
+    {
+        if ($expression[0] === '(') {
+            $expression = substr($expression, 1, -1);
+        }
+
+        return $expression ? "<?php {$expression}; ?>" : '<?php ';
     }
 
     /**
@@ -660,7 +658,7 @@ class Sword extends Component implements EngineInterface
     {
         $_compiledFile = $this->alias->resolve('@data/Sword/' . str_replace($this->alias->get('@app'), '', $file));
 
-        if ($this->configure->debug || !file_exists($_compiledFile) || filemtime($file) > filemtime($_compiledFile)) {
+        if (!file_exists($_compiledFile) || filemtime($file) > filemtime($_compiledFile)) {
             File::setContent($_compiledFile, $this->compileString(File::getContent($file)));
         }
 

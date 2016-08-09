@@ -32,7 +32,15 @@ EOT;
 @break
 EOT;
         $compiled = <<<'EOT'
-<?php break;?>
+<?php break; ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+
+        $source = <<<'EOT'
+@break(false)
+EOT;
+        $compiled = <<<'EOT'
+<?php if(false) break; ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -54,7 +62,15 @@ EOT;
 @continue
 EOT;
         $compiled = <<<'EOT'
-<?php continue;?>
+<?php continue; ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+
+        $source = <<<'EOT'
+@continue(false)
+EOT;
+        $compiled = <<<'EOT'
+<?php if(false) continue; ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -209,7 +225,7 @@ EOT;
 @foreach ($users as $user)
 EOT;
         $compiled = <<<'EOT'
-<?php foreach($users as $user): ?>
+<?php $index = -1; foreach($users as $user): $index++; ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -406,6 +422,14 @@ EOT;
 <?php 
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
+
+        $source = <<<'EOT'
+@php($di->router->getActionName())
+EOT;
+        $compiled = <<<'EOT'
+<?php $di->router->getActionName(); ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
     public function test_EndPhp()
@@ -418,7 +442,6 @@ EOT;
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
-
 
     public function test_Widget()
     {

@@ -16,7 +16,7 @@ class Url extends Component implements UrlInterface
      */
     public function __construct()
     {
-        $this->_baseUri = rtrim(dirname($_SERVER['PHP_SELF']), '/');
+        $this->_baseUri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
     }
 
     /**
