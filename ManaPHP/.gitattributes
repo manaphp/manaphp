@@ -1,0 +1,6 @@
+# Autodetect text files
+* text=auto
+
+# Ignore all test and documentation for archive
+/.gitattributes export-ignore
+/composer.lock export-ignore
