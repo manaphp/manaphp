@@ -16,6 +16,11 @@ class Role extends Model
     public $role_name;
 
     /**
+     * @var string
+     */
+    public $description;
+
+    /**
      * @var int
      */
     public $created_time;

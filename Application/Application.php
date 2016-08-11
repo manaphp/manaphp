@@ -20,6 +20,7 @@ namespace Application {
             $this->_dependencyInjector->setShared('router', function () {
                 return (new Router())
                     ->mount(new Home\RouteGroup(), '/')
+                    ->mount(Admin\RouteGroup::class,'/admin')
                     ->mount(Api\RouteGroup::class, '/api', 'Api');
             });
 

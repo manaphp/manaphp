@@ -8,6 +8,11 @@ class RolePermission extends Model
     /**
      * @var int
      */
+    public $id;
+
+    /**
+     * @var int
+     */
     public $role_id;
 
     /**
