@@ -46,31 +46,9 @@ class Manager extends Component implements ManagerInterface
     protected $_builder;
 
     /**
-     * Initializes a model in the model manager
-     *
-     * @param \ManaPHP\Mvc\ModelInterface $model
-     *
-     * @return boolean
+     * @var bool
      */
-    public function initModel($model)
-    {
-        $modelName = get_class($model);
-
-        /**
-         * Models are just initialized once per request
-         */
-        if (!isset($this->_sources[$modelName])) {
-
-            if (method_exists($model, 'initialize')) {
-                $model->initialize();
-            }
-
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (!isset($this->_sources[$modelName])) {
-                $this->_sources[$modelName] = $model->getSource();
-            }
-        }
-    }
+    protected $_recallGetModelSource = false;
 
     /**
      * Sets the mapped source for a model
@@ -102,8 +80,17 @@ class Manager extends Component implements ManagerInterface
         $modelName = is_string($model) ? $model : get_class($model);
 
         if (!isset($this->_sources[$modelName])) {
-            $this->_sources[$modelName] = Text::underscore(
-                Text::contains($modelName, '\\') ? substr($modelName, strrpos($modelName, '\\') + 1) : $modelName);
+            if ($this->_recallGetModelSource) {
+                return Text::underscore(Text::contains($modelName, '\\') ? substr($modelName, strrpos($modelName, '\\') + 1) : $modelName);
+            }
+
+            $modelInstance = is_string($model) ? new $model : $model;
+            /** @noinspection NotOptimalIfConditionsInspection */
+            if (!isset($this->_sources[$modelName])) {
+                $this->_recallGetModelSource = true;
+                $this->_sources[$modelName] = $modelInstance->getSource();
+                $this->_recallGetModelSource = false;
+            }
         }
 
         return $this->_sources[$modelName];

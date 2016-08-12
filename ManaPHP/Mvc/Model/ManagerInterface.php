@@ -8,13 +8,6 @@ namespace ManaPHP\Mvc\Model;
 interface ManagerInterface
 {
     /**
-     * Initializes a model in the model manager
-     *
-     * @param \ManaPHP\Mvc\ModelInterface $model
-     */
-    public function initModel($model);
-
-    /**
      * Sets the mapped source for a model
      *
      * @param \ManaPHP\Mvc\ModelInterface|string $model

@@ -13,28 +13,26 @@ class Alias extends Component implements AliasInterface
 
     public function __construct()
     {
-        if (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] !== '') {
-            $dir = dirname($_SERVER['DOCUMENT_ROOT']) . '/ManaPHP';
-            if (is_dir($dir)) {
-                $this->set('@manaphp', $dir);
-            }
-        } else {
-            $this->set('@manaphp', str_replace('\\', '/', __DIR__));
-        }
+        $this->set('@manaphp', str_replace('\\', '/', __DIR__));
 
-        $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        /**
+         * @var $traces array
+         */
+        $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
         $found = false;
         foreach ($traces as $trace) {
             if (isset($trace['class']) && !Text::startsWith($trace['class'], 'ManaPHP\\')) {
                 $class = str_replace('\\', '/', $trace['class']);
                 foreach (get_included_files() as $file) {
-                    $file = str_replace('\\', '/', $file);
+                    if (DIRECTORY_SEPARATOR === '\\') {
+                        $file = str_replace('\\', '/', $file);
+                    }
 
                     if (Text::contains($file, $class . '.php')) {
                         $dir = dirname($file);
 
-                        $this->set('@app', str_replace('\\', '/', $dir));
+                        $this->set('@app', $dir);
                         $this->set('@data', dirname($dir) . '/Data');
 
                         $found = true;

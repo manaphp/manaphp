@@ -10,18 +10,22 @@ class Imagick implements AdapterInterface
      * @var string
      */
     protected $_file;
+
     /**
      * @var string
      */
     protected $_real_path;
+
     /**
      * @var \Imagick
      */
     protected $_image;
+
     /**
      * @var int
      */
     protected $_width;
+
     /**
      * @var int
      */

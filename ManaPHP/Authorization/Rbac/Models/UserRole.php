@@ -8,6 +8,11 @@ class UserRole extends Model
     /**
      * @var int
      */
+    public $id;
+
+    /**
+     * @var int
+     */
     public $user_id;
 
     /**

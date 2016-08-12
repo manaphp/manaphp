@@ -1,0 +1,3 @@
+@partial('Shared/Header')
+@content()
+@partial('Shared/Footer')

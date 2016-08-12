@@ -16,17 +16,37 @@ class Permission extends Model
     public $permission_id;
 
     /**
-     * @var string
-     */
-    public $permission_name;
-
-    /**
      * @var int
      */
     public $permission_type;
 
     /**
+     * @var string
+     */
+    public $module;
+
+    /**
+     * @var string
+     */
+    public $controller;
+
+    /**
+     * @var string
+     */
+    public $action;
+
+    /**
+     * @var string
+     */
+    public $description;
+
+    /**
      * @var int
      */
     public $created_time;
+
+    public function getSource()
+    {
+        return 'rbac_permission';
+    }
 }

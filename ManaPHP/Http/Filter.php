@@ -110,7 +110,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _parseRules($rules)
     {
-        $parts = explode('|', $rules);
+        $parts = (array)explode('|', $rules);
 
         $items = [];
         foreach ($parts as $part) {
@@ -144,7 +144,7 @@ class Filter extends Component implements FilterInterface
             }
 
             /** @noinspection PhpIncludeInspection */
-            $options['messages'] = require($file);
+            $options['messages'] = require $file;
         }
 
         $replaces = [];

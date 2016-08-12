@@ -5,6 +5,9 @@ use ManaPHP\Counter;
 
 class Redis extends Counter
 {
+    /**
+     * @var string
+     */
     protected $_prefix;
 
     /**

@@ -109,7 +109,7 @@ class Route implements RouteInterface
             $pattern = preg_replace('#{(\d+,?\d*)}#', $left_token . '\1' . $right_token, $pattern);
         }
 
-        $matches = null;
+        $matches = [];
         if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
             foreach ($matches as $match) {
 

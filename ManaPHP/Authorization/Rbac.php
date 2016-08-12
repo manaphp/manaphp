@@ -5,6 +5,45 @@ use ManaPHP\Authorization\Rbac\Models\Permission;
 use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
 
+/**
+CREATE TABLE `rbac_role` (
+  `role_id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_name` char(64) CHARACTER SET latin1 NOT NULL,
+  `description` char(128) CHARACTER SET latin1 NOT NULL,
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`role_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
+
+CREATE TABLE `rbac_permission` (
+  `permission_id` int(11) NOT NULL AUTO_INCREMENT,
+  `permission_type` tinyint(4) NOT NULL,
+  `module` char(32) NOT NULL,
+  `controller` char(32) NOT NULL,
+  `action` char(32) NOT NULL,
+  `description` char(128) NOT NULL,
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`permission_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
+
+CREATE TABLE `rbac_role_permission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
+CREATE TABLE `rbac_user_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
+*/
 class Rbac extends Component implements AuthorizationInterface
 {
     /**
@@ -42,6 +81,33 @@ class Rbac extends Component implements AuthorizationInterface
         }
     }
 
+    protected function _parsePermissionName($permissionName)
+    {
+        $parts = explode('::', $permissionName);
+
+        switch (count($parts)) {
+            case 1:
+                $module = $this->dispatcher->getModuleName();
+                $controller = $this->dispatcher->getControllerName();
+                $action = $parts[0];
+                break;
+            case 2:
+                $module = $this->dispatcher->getModuleName();
+                $controller = $parts[0];
+                $action = $parts[1];
+                break;
+            case 3:
+                $module = $parts[0];
+                $controller = $parts[1];
+                $action = $parts[2];
+                break;
+            default:
+                throw new Exception('Permission name format is invalid: ' . $permissionName);
+        }
+
+        return [$module, $controller, $action];
+    }
+
     /**
      * @param string $permissionName
      *
@@ -50,10 +116,14 @@ class Rbac extends Component implements AuthorizationInterface
      */
     protected function _getPermission($permissionName)
     {
+        list($module, $controller, $action) = $this->_parsePermissionName($permissionName);
+
         $rows = $this->modelsManager->createBuilder()
             ->columns('permission_id, permission_type')
             ->addFrom($this->_permissionModel)
-            ->where('permission_name', $permissionName)
+            ->where('module', $module)
+            ->where('controller', $controller)
+            ->where('action', $action)
             ->execute();
 
         if (count($rows) === 0) {
@@ -108,41 +178,13 @@ class Rbac extends Component implements AuthorizationInterface
 
     /**
      * @param string $permissionName
-     *
-     * @return string
-     * @throws \ManaPHP\Authorization\Exception
-     */
-    protected function _getStandardPermissionName($permissionName)
-    {
-        $parts = explode('::', $permissionName);
-
-        switch (count($parts)) {
-            case 1:
-                $parts = [$this->dispatcher->getModuleName(), $this->dispatcher->getControllerName(), $parts[0]];
-                break;
-            case 2:
-                $parts = [$this->dispatcher->getModuleName(), $parts[0], $parts[1]];
-                break;
-            case 3:
-                break;
-            default:
-                throw new Exception('Permission name format is invalid: ' . $permissionName);
-        }
-
-        return implode('::', $parts);
-    }
-
-    /**
-     * @param string      $permissionName
      * @param string|null $userId
      *
      * @return bool
-     * @throws \ManaPHP\Authorization\Exception
+     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
      */
     public function isAllowed($permissionName, $userId = null)
     {
-        $permissionName = $this->_getStandardPermissionName($permissionName);
-
         if ($userId === null) {
             $userId = $this->userIdentity->getId();
         }

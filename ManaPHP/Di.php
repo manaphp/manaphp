@@ -35,6 +35,47 @@ use ManaPHP\Di\Exception;
  * $request = $di->getRequest();
  *
  *</code>
+ *
+ * * @property \ManaPHP\Alias $alias
+ * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
+ * @property \ManaPHP\Mvc\Router                  $router
+ * @property \ManaPHP\Mvc\Url                     $url
+ * @property \ManaPHP\Http\Request                $request
+ * @property \ManaPHP\Http\Filter                 $filter
+ * @property \ManaPHP\Http\Response               $response
+ * @property \ManaPHP\Http\Cookies                $cookies
+ * @property \ManaPHP\Mvc\View\Flash              $flash
+ * @property \ManaPHP\Mvc\View\Flash              $flashSession
+ * @property \ManaPHP\Http\SessionInterface       $session
+ * @property \ManaPHP\Event\ManagerInterface      $eventsManager
+ * @property \ManaPHP\Db                          $db
+//* @property \ManaPHP\Security $security
+ * @property \ManaPHP\Security\Crypt              $crypt
+ * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
+ * @property \ManaPHP\Mvc\Model\Metadata          $modelsMetadata
+//     * @property \ManaPHP\Assets\Manager $assets
+ * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
+ * @property \ManaPHP\Http\Session\Bag            $persistent
+ * @property \ManaPHP\Mvc\View                    $view
+ * @property \ManaPHP\Mvc\View\Tag                $tag
+ * @property \ManaPHP\Loader                      $loader
+ * @property \ManaPHP\Log\Logger                  $logger
+ * @property \ManaPHP\Mvc\View\Renderer           $renderer
+ * @property \Application\Configure               $configure
+ * @property \ManaPHP\ApplicationInterface        $application
+ * @property \ManaPHP\Debugger                    $debugger
+ * @property \ManaPHP\Authentication\Password     $password
+ * @property \Redis                               $redis
+ * @property \ManaPHP\Serializer\AdapterInterface $serializer
+ * @property \ManaPHP\Cache                       $cache
+ * @property \ManaPHP\Counter                     $counter
+ * @property \ManaPHP\CacheInterface              $viewsCache
+ * @property \ManaPHP\Http\Client                 $httpClient
+ * @property \ManaPHP\AuthorizationInterface      $authorization
+ * @property \ManaPHP\Security\Captcha            $captcha
+ * @property \ManaPHP\Security\CsrfToken          $csrfToken
+ * @property \ManaPHP\Authentication\UserIdentity $userIdentity
+ * @property \ManaPHP\Paginator                   $paginator
  */
 class Di implements DiInterface
 {
@@ -56,6 +97,8 @@ class Di implements DiInterface
 
     /**
      * Latest DI build
+     *
+     * @var \ManaPHP\Di
      */
     protected static $_default;
 
@@ -114,7 +157,7 @@ class Di implements DiInterface
         if (isset($this->_aliases[$name])) {
             unset($this->_aliases[$name]);
         } else {
-            unset($this->_services[$name], $this->_sharedInstances[$name]);
+            unset($this->_services[$name], $this->_sharedInstances[$name], $this->{$name});
         }
 
         return $this;
@@ -149,6 +192,10 @@ class Di implements DiInterface
 
         if (isset($this->_sharedInstances[$name])) {
             return $this->_sharedInstances[$name];
+        }
+
+        if (isset($this->eventsManager)) {
+            $this->eventsManager->fireEvent('di:beforeResolve', $this, ['name' => $_name, 'parameters' => $parameters]);
         }
 
         if (is_string($definition)) {
@@ -188,6 +235,10 @@ class Di implements DiInterface
             $instance->setDependencyInjector($this);
         }
 
+        if (isset($this->eventsManager)) {
+            $this->eventsManager->fireEvent('di:afterResolve', $this, ['name' => $_name, 'parameters' => $parameters, 'instance' => $instance]);
+        }
+
         return $instance;
     }
 
@@ -207,6 +258,25 @@ class Di implements DiInterface
         }
 
         return $this->_sharedInstances[$name];
+    }
+
+    /** @noinspection MagicMethodsValidityInspection */
+    /**
+     * Magic method __get
+     *
+     * @param string $propertyName
+     *
+     * @return mixed
+     * @throws \ManaPHP\Di\Exception
+     */
+    public function __get($propertyName)
+    {
+        if ($this->has($propertyName)) {
+            $this->{$propertyName} = $this->getShared($propertyName);
+            return $this->{$propertyName};
+        }
+
+        return null;
     }
 
     /**

@@ -24,6 +24,9 @@ use ManaPHP\Utility\Text;
  */
 class QueryBuilder extends Component implements QueryBuilderInterface
 {
+    /**
+     * @var string|array
+     */
     protected $_columns;
 
     /**
@@ -41,6 +44,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     protected $_conditions = [];
 
+    /**
+     * @var string
+     */
     protected $_group;
 
     /**
@@ -48,6 +54,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     protected $_having;
 
+    /**
+     * @var string
+     */
     protected $_order;
 
     /**
@@ -60,8 +69,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     protected $_offset = 0;
 
+    /**
+     * @var boolean
+     */
     protected $_forUpdate;
 
+    /**
+     * @var boolean
+     */
     protected $_sharedLock;
 
     /**
@@ -74,8 +89,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     protected $_distinct;
 
+    /**
+     * @var int
+     */
     protected static $_hiddenParamNumber = 0;
 
+    /**
+     * @var array
+     */
     protected $_union = [];
 
     /**

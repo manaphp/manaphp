@@ -20,6 +20,7 @@ namespace Application {
             $this->_dependencyInjector->setShared('router', function () {
                 return (new Router())
                     ->mount(new Home\RouteGroup(), '/')
+                    ->mount(Admin\RouteGroup::class,'/admin')
                     ->mount(Api\RouteGroup::class, '/api', 'Api');
             });
 
@@ -48,7 +49,7 @@ namespace Application {
         /**
          * @param \ManaPHP\Mvc\NotFoundException $e
          *
-         * @return static
+         * @return void
          * @throws \ManaPHP\Mvc\NotFoundException
          */
         protected function notFoundException($e)
@@ -63,13 +64,19 @@ namespace Application {
 //                    ]
 //                ]);
 //            } else {
-//                return $this->response->redirect('http://www.manaphp.com/?exception_message=' . $e->getMessage())->sendHeaders();
+//                $this->response->redirect('http://www.manaphp.com/?exception_message=' . $e->getMessage())->sendHeaders();
 //            }
 
             /** @noinspection PhpUnreachableStatementInspection */
             throw $e;
         }
 
+        /**
+         * @return void
+         * @throws \ManaPHP\Alias\Exception
+         * @throws \ManaPHP\Mvc\Application\Exception
+         * @throws \ManaPHP\Mvc\NotFoundException
+         */
         public function main()
         {
             date_default_timezone_set('PRC');
@@ -78,8 +85,9 @@ namespace Application {
 
             $this->registerServices();
 
-            if ($this->configure->debugger->disableAutoResponse) {
+            if (!$this->configure->debugger->autoResponse && isset($_GET['_debugger'])) {
                 unset($_GET['_debugger']);//disable auto response to debugger data fetching request
+                exit('<h1>Access denied<h1>');
             }
 
             $this->debugger->start();
@@ -91,7 +99,7 @@ namespace Application {
             try {
                 $this->handle()->send();
             } catch (NotFoundException $e) {
-                return $this->notFoundException($e);
+                $this->notFoundException($e);
             }
         }
     }

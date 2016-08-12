@@ -1,0 +1,21 @@
+{
+  "name": "manaphp/framework",
+  "description": "The ManaPHP Framework",
+  "keywords": ["manaphp","framework","di"],
+  "homepage": "https://github.com/manaphp/framework",
+  "require": {
+    "smarty/smarty": "^3.1"
+  },
+  "authors": [
+    {
+      "name": "ManaPHP Mark",
+      "email": "manaphp@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ManaPHP\\":""
+    }
+  },
+  "minimum-stability": "dev"
+}

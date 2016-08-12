@@ -6,6 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Model\Exception;
+use ManaPHP\Utility\Text;
 
 /**
  * ManaPHP\Mvc\Model
@@ -61,19 +62,29 @@ class Model extends Component implements ModelInterface
     protected $_snapshot = [];
 
     /**
+     * @var array
+     */
+    protected static $_initialized = [];
+
+    /**
      * \ManaPHP\Mvc\Model constructor
      *
      * @param array                $data
      * @param \ManaPHP\DiInterface $dependencyInjector
      */
-    final public function __construct($data = null, $dependencyInjector = null)
+    final public function __construct($data = [], $dependencyInjector = null)
     {
         $this->_dependencyInjector = $dependencyInjector ?: FactoryDefault::getDefault();
 
-        /**
-         * The manager always initializes the object
-         */
-        $this->modelsManager->initModel($this);
+        $modelName = get_class($this);
+
+        if (!isset(self::$_initialized[$modelName])) {
+            if (method_exists($this, 'initialize')) {
+                $this->initialize();
+            }
+
+            self::$_initialized[$modelName] = true;
+        }
 
         /**
          * This allows the developer to execute initialization stuff every time an instance is created
@@ -82,7 +93,7 @@ class Model extends Component implements ModelInterface
             $this->onConstruct();
         }
 
-        if ($data !== null) {
+        if (count($data) !== 0) {
             $this->_snapshot = $data;
             foreach ($data as $attribute => $value) {
                 $this->{$attribute} = $value;
@@ -101,7 +112,7 @@ class Model extends Component implements ModelInterface
      *
      * @return static
      */
-    protected function setSource($source)
+    public function setSource($source)
     {
         $this->modelsManager->setModelSource($this, $source);
 

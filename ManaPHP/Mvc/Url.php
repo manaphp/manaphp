@@ -6,6 +6,9 @@ use ManaPHP\Utility\Text;
 
 class Url extends Component implements UrlInterface
 {
+    /**
+     * @var string
+     */
     protected $_baseUri = '';
 
     /**
@@ -13,7 +16,7 @@ class Url extends Component implements UrlInterface
      */
     public function __construct()
     {
-        $this->_baseUri = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
+        $this->_baseUri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
     }
 
     /**
