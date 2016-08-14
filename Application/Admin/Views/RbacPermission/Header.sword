@@ -1,0 +1,13 @@
+@section('header')
+    <div>
+        <ol class="breadcrumb">
+            <li><a href="@url('/admin/rbac')"><i class="fa fa-dashboard"></i>Right Manager</a></li>
+            <li class="active">Permission</li>
+        </ol>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-2"><a href="@url('/admin/rbac_permission/rebuild')">Rebuild</a></div>
+    </div>
+@endsection
