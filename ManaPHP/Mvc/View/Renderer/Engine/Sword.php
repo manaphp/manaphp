@@ -135,8 +135,6 @@ class Sword extends Component implements EngineInterface
             if ($method2 === '_compileEscapedEchos') {
                 return 1;
             }
-
-            return 0;
         });
 
         return $methods;
@@ -155,7 +153,7 @@ class Sword extends Component implements EngineInterface
             if (method_exists($this, $method = '_compile' . ucfirst($match[1]))) {
                 $match[0] = $this->$method(isset($match[3]) ? $match[3] : null);
             } elseif (isset($this->_directives[$match[1]])) {
-                $match[0] = call_user_func($this->_directives[$match[1]], $match[3]);
+                $match[0] = call_user_func($this->_directives[$match[1]], isset($match[3]) ? $match[3] : null);
             }
 
             return isset($match[3]) ? $match[0] : $match[0] . $match[2];
@@ -198,7 +196,7 @@ class Sword extends Component implements EngineInterface
         $callback = function ($matches) {
             $whitespace = empty($matches[3]) ? '' : $matches[3];
 
-            return $matches[1] ? $matches[0] : '<?php echo $view->escape(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . $whitespace;
+            return $matches[1] ? substr($matches[0], 1) : '<?php echo $view->escape(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . $whitespace;
         };
 
         return preg_replace_callback($pattern, $callback, $value);

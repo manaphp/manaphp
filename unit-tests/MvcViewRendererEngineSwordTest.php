@@ -480,4 +480,14 @@ EOT;
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
+
+    public function test_literal(){
+        $source = <<<'EOT'
+@{{abc}}
+EOT;
+        $compiled = <<<'EOT'
+{{abc}}
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
 }
