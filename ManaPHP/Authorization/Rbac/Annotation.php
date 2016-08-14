@@ -36,7 +36,9 @@ class Annotation
             }
 
             $permissions[] = [
-                'permission_name' => $match[1] . '::' . $match[2] . '::' . $action,
+                'module' => $match[1],
+                'controller' => $match[2],
+                'action' => $action,
                 'description' => $match[1] . '::' . $match[2] . '::' . $action
             ];
         }
