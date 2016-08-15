@@ -481,7 +481,8 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_literal(){
+    public function test_literal()
+    {
         $source = <<<'EOT'
 @{{abc}}
 EOT;

@@ -372,7 +372,7 @@
 <script src="http://cdn.bootcss.com/vue/1.0.26/vue.min.js"></script>
 
 <script>
-@yield('script')
+    @yield('script')
 </script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

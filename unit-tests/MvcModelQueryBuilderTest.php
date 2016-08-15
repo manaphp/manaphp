@@ -17,7 +17,7 @@ class MvcModelQueryBuilderTest extends TestCase
      * @var \ManaPHP\DiInterface
      */
     protected $di;
-	
+
     /**
      * @var \ManaPHP\Mvc\Model\Manager
      */
@@ -31,8 +31,8 @@ class MvcModelQueryBuilderTest extends TestCase
             return new ManaPHP\Mvc\Model\Manager();
         });
 
-        $this->di->set('eventsManager',new \ManaPHP\Event\Manager());
-        
+        $this->di->set('eventsManager', new \ManaPHP\Event\Manager());
+
         $this->di->set('modelsMetadata', function () {
             return new ManaPHP\Mvc\Model\MetaData\Adapter\Memory();
         });
@@ -40,14 +40,14 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-         //   $db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
+            //   $db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
             $db->attachEvent('db:beforeQuery', function ($event, ManaPHP\DbInterface $source) {
                 var_dump($source->getSQL());
                 var_dump($source->getEmulatedSQL());
             });
-			
-            echo get_class($db),PHP_EOL;
+
+            echo get_class($db), PHP_EOL;
             return $db;
         });
         $this->modelsManager = $this->di->get('modelsManager');
@@ -194,10 +194,10 @@ class MvcModelQueryBuilderTest extends TestCase
 
     public function test_join()
     {
-        if($this->di->getShared('db') instanceof ManaPHP\Db\Adapter\Sqlite){
+        if ($this->di->getShared('db') instanceof ManaPHP\Db\Adapter\Sqlite) {
             return;
         }
-        
+
         //with model
         $builder = $this->modelsManager->createBuilder()
             ->columns('count(address_id) as address_count')
@@ -276,7 +276,7 @@ class MvcModelQueryBuilderTest extends TestCase
 
     public function test_rightJoin()
     {
-        if($this->di->getShared('db') instanceof ManaPHP\Db\Adapter\Sqlite){
+        if ($this->di->getShared('db') instanceof ManaPHP\Db\Adapter\Sqlite) {
             return;
         }
 
@@ -640,7 +640,7 @@ class MvcModelQueryBuilderTest extends TestCase
 
     public function test_unionAll()
     {
-        if($this->di->getShared('db') instanceof \ManaPHP\Db\Adapter\Sqlite){
+        if ($this->di->getShared('db') instanceof \ManaPHP\Db\Adapter\Sqlite) {
             return;
         }
 

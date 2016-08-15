@@ -16,18 +16,18 @@ class DbTest extends TestCase
 
     public function setUp()
     {
-        $di=new \ManaPHP\Di\FactoryDefault();
-        
+        $di = new \ManaPHP\Di\FactoryDefault();
+
         $config = require __DIR__ . '/config.database.php';
         $this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-       // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
+        // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
         $this->db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
         });
 
-        echo get_class($this->db),PHP_EOL;
+        echo get_class($this->db), PHP_EOL;
     }
 
     public function test_query()
@@ -121,7 +121,7 @@ class DbTest extends TestCase
 
         //recommended method without bind value type
         $this->db->truncateTable('_student');
-         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
+        $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
@@ -177,10 +177,10 @@ class DbTest extends TestCase
 
     public function test_escapeIdentifier()
     {
-        if($this->db instanceof ManaPHP\Db\Adapter\Mysql){
+        if ($this->db instanceof ManaPHP\Db\Adapter\Mysql) {
             $this->assertEquals('`city`', $this->db->escapeIdentifier('city'));
             $this->assertEquals('`app`.`city`', $this->db->escapeIdentifier('app.city'));
-        }else{
+        } else {
             $this->assertEquals("'city'", $this->db->escapeIdentifier('city'));
         }
     }

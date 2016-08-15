@@ -54,7 +54,7 @@ class CounterAdapterDbTest extends TestCase
     public function test_delete()
     {
         $counter = new ManaPHP\Counter\Adapter\Db();
-        
+
         $counter->_delete('c1');
 
         $counter->_increment('c1', 1);

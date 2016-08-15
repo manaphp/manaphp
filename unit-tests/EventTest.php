@@ -38,10 +38,11 @@ class DummyListener
 
 class EventTest extends TestCase
 {
-    public function setUp(){
-        $di=new \ManaPHP\Di\FactoryDefault();
+    public function setUp()
+    {
+        $di = new \ManaPHP\Di\FactoryDefault();
     }
-	
+
     public function test_attachEvent()
     {
         //use class

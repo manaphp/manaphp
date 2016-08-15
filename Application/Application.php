@@ -4,7 +4,6 @@ namespace Application {
     use ManaPHP\Db\Adapter\Mysql;
     use ManaPHP\DbInterface;
     use ManaPHP\Log\Adapter\File;
-    use ManaPHP\Log\Logger;
     use ManaPHP\Mvc\NotFoundException;
     use ManaPHP\Mvc\Router;
     use ManaPHP\Security\Crypt;
@@ -20,7 +19,7 @@ namespace Application {
             $this->_dependencyInjector->setShared('router', function () {
                 return (new Router())
                     ->mount(new Home\RouteGroup(), '/')
-                    ->mount(Admin\RouteGroup::class,'/admin')
+                    ->mount(Admin\RouteGroup::class, '/admin')
                     ->mount(Api\RouteGroup::class, '/api', 'Api');
             });
 

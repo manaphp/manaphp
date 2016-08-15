@@ -6,8 +6,8 @@ return [
         'password' => '',
         'dbname' => 'manaphp_unit_test',
     ],
-	
-    'sqlite'=>[
-        'file'=>'d:/wamp/manaphp_unit_test.sqlite'
+
+    'sqlite' => [
+        'file' => 'd:/wamp/manaphp_unit_test.sqlite'
     ]
 ];

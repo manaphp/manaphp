@@ -9,9 +9,11 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class MvcRouterTest extends TestCase
 {
-    public function setUp(){
+    public function setUp()
+    {
         new \ManaPHP\Di\FactoryDefault();
     }
+
     public function test_router()
     {
         $_GET['_url'] = '';
@@ -249,7 +251,7 @@ class MvcRouterTest extends TestCase
         $di->set('request', function () {
             return new ManaPHP\Http\Request();
         });
-        $di->set('eventsManager',new \ManaPHP\Event\Manager());
+        $di->set('eventsManager', new \ManaPHP\Event\Manager());
         $router = new ManaPHP\Mvc\Router();
         $router->setDependencyInjector($di);
         $group = new \ManaPHP\Mvc\Router\Group();

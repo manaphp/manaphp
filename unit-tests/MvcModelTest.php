@@ -56,8 +56,8 @@ class MvcModelTest extends TestCase
 
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            $db= new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-           // $db= new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
+            $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+            // $db= new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
             echo get_class($db), PHP_EOL;
             $db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {

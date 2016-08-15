@@ -5,6 +5,7 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 class StoreAdapterFileTest extends TestCase
 {
     protected $_di;
+
     public function setUp()
     {
         parent::setUp();

@@ -6,7 +6,7 @@
  * Time: 21:57
  */
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
-require __DIR__.'/Dispatcher/Controllers.php';
+require __DIR__ . '/Dispatcher/Controllers.php';
 
 class tDispatcher extends \ManaPHP\Mvc\Dispatcher
 {
@@ -59,8 +59,8 @@ class MvcDispatcherTest extends TestCase
     {
         $di = new ManaPHP\Di();
         $di->set('response', new ManaPHP\Http\Response());
-        $di->set('eventsManager',new \ManaPHP\Event\Manager());
-        
+        $di->set('eventsManager', new \ManaPHP\Event\Manager());
+
         $dispatcher = new ManaPHP\Mvc\Dispatcher();
         $dispatcher->setDependencyInjector($di);
         $dispatcher->setRootNamespace('App');
@@ -139,7 +139,7 @@ class MvcDispatcherTest extends TestCase
     {
         $di = new ManaPHP\Di();
         $di->set('response', new ManaPHP\Http\Response());
-        $di->set('eventsManager',new \ManaPHP\Event\Manager());
+        $di->set('eventsManager', new \ManaPHP\Event\Manager());
 
         $dispatcher = new ManaPHP\Mvc\Dispatcher();
         $dispatcher->setRootNamespace('App');
@@ -156,7 +156,7 @@ class MvcDispatcherTest extends TestCase
     {
         $di = new ManaPHP\Di();
         $di->set('response', new ManaPHP\Http\Response());
-        $di->set('eventsManager',new \ManaPHP\Event\Manager());
+        $di->set('eventsManager', new \ManaPHP\Event\Manager());
 
         $dispatcher = new ManaPHP\Mvc\Dispatcher();
         $dispatcher->setDependencyInjector($di);
@@ -184,7 +184,7 @@ class MvcDispatcherTest extends TestCase
     {
         $di = new ManaPHP\Di();
         $di->set('response', new ManaPHP\Http\Response());
-        $di->set('eventsManager',new \ManaPHP\Event\Manager());
+        $di->set('eventsManager', new \ManaPHP\Event\Manager());
 
         $dispatcher = new ManaPHP\Mvc\Dispatcher();
         $dispatcher->setDependencyInjector($di);

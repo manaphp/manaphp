@@ -1,5 +1,6 @@
 <?php
-namespace App\Test\Controllers{
+namespace App\Test\Controllers {
+
     class Test1Controller extends \ManaPHP\Mvc\Controller
     {
 
