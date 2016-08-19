@@ -17,7 +17,7 @@ class Memory implements AdapterInterface
      *
      * @return void
      */
-    public function log($level, $message, $context = null)
+    public function log($level, $message, $context = [])
     {
         $this->_logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
     }
