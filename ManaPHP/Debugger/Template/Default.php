@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ManaPHP Debug</title>
-    <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <!--[if lt IE 9]>
-    <script src="http://ajax.aspnetcdn.com/ajax/respond/1.4.2/respond.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
         #tab_global tr td:nth-child(1) {
@@ -316,9 +316,9 @@
         </div>
     </div>
 </div>
-<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"></script>
-<script src='http://vuejs.org.cn/js/vue.js'></script>
+<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src='http://cdn.bootcss.com/vue/1.0.26/vue.min.js'></script>
 
 <?php
 $data['included_files'] = get_included_files();
@@ -362,7 +362,8 @@ unset($data['server']['PATH']);
                     var computed = [];
                     for (var i = 0; i < data['included_files'].length; i++) {
                         var file = data['included_files'][i];
-                        if (file.indexOf('/ManaPHP/') < 0 && file.indexOf('\\ManaPHP\\') < 0) {
+                        if (file.indexOf('/ManaPHP/') < 0 && file.indexOf('\\ManaPHP\\') < 0
+                            && file.indexOf('manaphp\\framework') < 0 && file.indexOf('manaphp/framework') < 0) {
                             computed.push(file);
                         }
                     }

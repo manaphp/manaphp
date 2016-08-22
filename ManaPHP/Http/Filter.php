@@ -134,6 +134,15 @@ class Filter extends Component implements FilterInterface
         return $items;
     }
 
+    /**
+     * @param string $attribute
+     * @param mixed $value
+     * @param string $rule
+     * @param array $parameters
+     *
+     * @return string
+     * @throws \ManaPHP\Alias\Exception|\ManaPHP\Http\Exception
+     */
     protected function _getError($attribute, $value, $rule, $parameters)
     {
         if (count($this->_messages) === 0) {

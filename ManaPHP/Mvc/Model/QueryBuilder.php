@@ -813,6 +813,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         foreach ($this->_conditions as $k => $v) {
+            if ($v === '') {
+                continue;
+            }
+
             if (is_int($k)) {
                 $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
             } else {

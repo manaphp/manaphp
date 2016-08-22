@@ -304,6 +304,11 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(100, $builder->execute());
 
         $builder = $this->modelsManager->createBuilder()
+            ->where('', ['max_address_id' => 100])
+            ->addFrom(get_class(new Address()));
+        $this->assertCount(603, $builder->execute());
+
+        $builder = $this->modelsManager->createBuilder()
             ->where('address_id >=:min_address_id AND address_id <=:max_address_id',
                 ['min_address_id' => 51, 'max_address_id' => 100])
             ->addFrom(get_class(new Address()));
