@@ -99,9 +99,19 @@ interface ModelInterface
      * @param    string|array $parameters
      * @param   int|array     $cacheOptions
      *
-     * @return  static[]|false
+     * @return  static[]
      */
     public static function find($parameters = null, $cacheOptions = null);
+
+    /**
+     * alias of find
+     *
+     * @param    string|array $parameters
+     * @param   int|array     $cacheOptions
+     *
+     * @return  static[]
+     */
+    public static function findAll($parameters = null, $cacheOptions = null);
 
     /**
      * Allows to query the first record that match the specified conditions
@@ -221,11 +231,29 @@ interface ModelInterface
     public function update($data = null, $whiteList = null);
 
     /**
+     * @param array $columnValues
+     * @param string|array $conditions
+     * @param array $bind
+     *
+     * @return int
+     */
+    public static function updateAll($columnValues, $conditions, $bind = []);
+
+    /**
      * Deletes a model instance. Returning true on success or false otherwise.
      *
      * @return void
      */
     public function delete();
+
+    /**
+     * @param string|array $conditions
+     * @param array $bind
+     *
+     * @return int
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function deleteAll($conditions, $bind = []);
 
     /**
      * Returns the instance as an array representation

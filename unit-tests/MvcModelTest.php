@@ -275,6 +275,25 @@ class MvcModelTest extends TestCase
         $student->update();
     }
 
+    public function test_updateAll()
+    {
+        $this->_truncateTable(new Student());
+
+        $student = new Student();
+        $student->age = 21;
+        $student->name = 'mana';
+        $student->create();
+
+        $student = new Student();
+        $student->age = 22;
+        $student->name = 'mana2';
+        $student->create();
+
+        $this->assertEquals(2,Student::updateAll(['name'=>'m'],'1=1'));
+
+        $student->update();
+    }
+
     public function test_save()
     {
         $this->_truncateTable(new Student());
@@ -315,6 +334,21 @@ class MvcModelTest extends TestCase
 
         $this->assertTrue(Student::findFirst(1) !== false);
         $student->delete();
+        $this->assertTrue(Student::findFirst(1) === false);
+    }
+
+    public function test_deleteAll()
+    {
+        $this->_truncateTable(new Student());
+
+        $student = new Student();
+        $student->age = 21;
+        $student->name = 'mana';
+        $student->create();
+
+        $this->assertTrue(Student::findFirst(1) !== false);
+
+        Student::deleteAll('1=1');
         $this->assertTrue(Student::findFirst(1) === false);
     }
 

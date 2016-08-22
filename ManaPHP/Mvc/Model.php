@@ -275,7 +275,7 @@ class Model extends Component implements ModelInterface
      * @param    string|array $parameters
      * @param  int|array      $cacheOptions
      *
-     * @return  static[]|false
+     * @return  static[]
      */
     public static function find($parameters = null, $cacheOptions = null)
     {
@@ -286,16 +286,24 @@ class Model extends Component implements ModelInterface
             ->from(get_called_class())
             ->execute($cacheOptions);
 
-        if (is_array($resultset)) {
-            $modelInstances = [];
-            foreach ($resultset as $result) {
-                $modelInstances[] = new static($result, $dependencyInjector);
-            }
-
-            return $modelInstances;
-        } else {
-            return false;
+        $modelInstances = [];
+        foreach ($resultset as $result) {
+            $modelInstances[] = new static($result, $dependencyInjector);
         }
+
+        return $modelInstances;
+    }
+
+    /**
+     * alias of find
+     *
+     * @param    string|array $parameters
+     * @param   int|array     $cacheOptions
+     *
+     * @return  static[]
+     */
+    final public static function findAll($parameters = null, $cacheOptions = null){
+        return self::find($parameters, $cacheOptions);
     }
 
     /**
@@ -802,6 +810,35 @@ class Model extends Component implements ModelInterface
 
         $this->_fireEvent('afterUpdate');
         $this->_fireEvent('afterSave');
+    }
+
+    /**
+     * @param array $columnValues
+     * @param string|array $conditions
+     * @param array $bind
+     *
+     * @return int
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function updateAll($columnValues, $conditions, $bind = [])
+    {
+        $instance = new static();
+
+        return $instance->getWriteConnection()->update($instance->getSource(), $columnValues, $conditions, $bind);
+    }
+
+    /**
+     * @param string|array $conditions
+     * @param array $bind
+     *
+     * @return int
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function deleteAll($conditions, $bind = [])
+    {
+        $instance = new static();
+
+        return $instance->getWriteConnection()->delete($instance->getSource(), $conditions, $bind);
     }
 
     /**
