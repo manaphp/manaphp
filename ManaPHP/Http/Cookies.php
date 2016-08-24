@@ -44,6 +44,13 @@ class Cookies extends Component implements CookiesInterface
         $secure = false,
         $httpOnly = true
     ) {
+        if ($expire) {
+            $current = time();
+            if ($expire < $current) {
+                $expire += $current;
+            }
+        }
+
         $cookie = [
             'expire' => $expire,
             'path' => $path,
