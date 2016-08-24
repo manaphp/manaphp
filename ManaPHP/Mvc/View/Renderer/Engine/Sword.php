@@ -135,6 +135,8 @@ class Sword extends Component implements EngineInterface
             if ($method2 === '_compileEscapedEchos') {
                 return 1;
             }
+
+            return 0;
         });
 
         return $methods;

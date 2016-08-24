@@ -305,13 +305,13 @@ class MvcRouterTest extends TestCase
     {
         $group = new \ManaPHP\Mvc\Router\Group();
 
-        $group->add("/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params", array(
-            "controller" => "posts",
-            "action" => "show",
-            "year" => 1, // ([0-9]{4})
-            "month" => 2, // ([0-9]{2})
-            "day" => 3, // ([0-9]{2})
-            "params" => 4  // :params
+        $group->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params', array(
+            'controller' => 'posts',
+            'action' => 'show',
+            'year' => 1, // ([0-9]{4})
+            'month' => 2, // ([0-9]{2})
+            'day' => 3, // ([0-9]{2})
+            'params' => 4  // :params
         ));
 
         $router = new \ManaPHP\Mvc\Router();
@@ -455,7 +455,7 @@ class MvcRouterTest extends TestCase
     public function test_mount_for_usage()
     {
         $group = new \ManaPHP\Mvc\Router\Group();
-        $group->add('/article/{id:\\d+}', "article::detail");
+        $group->add('/article/{id:\\d+}', 'article::detail');
 
         //single module usage
         $router = (new \ManaPHP\Mvc\Router())->mount($group, '/', 'app');

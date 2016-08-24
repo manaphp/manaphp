@@ -124,7 +124,7 @@ asort($fileLines);
 $i = 1;
 echo '------------------------------------------------------', PHP_EOL;
 foreach ($fileLines as $file => $line) {
-    echo sprintf('%3d %3d %.3f', $i++, $line, $line / ($totalLines) * 100), ' ', substr($file, strpos($file, 'ManaPHP')), PHP_EOL;
+    echo sprintf('%3d %3d %.3f', $i++, $line, $line / $totalLines * 100), ' ', substr($file, strpos($file, 'ManaPHP')), PHP_EOL;
 }
 
 echo '------------------------------------------------------', PHP_EOL;

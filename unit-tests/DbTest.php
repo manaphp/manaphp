@@ -16,7 +16,7 @@ class DbTest extends TestCase
 
     public function setUp()
     {
-        $di = new \ManaPHP\Di\FactoryDefault();
+        new \ManaPHP\Di\FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
         $this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);

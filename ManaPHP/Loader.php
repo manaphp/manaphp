@@ -2,8 +2,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Utility\Text;
-
 /**
  * ManaPHP\Loader
  *

@@ -1,5 +1,6 @@
 <?php
-namespace ManaPHP\Utility\Text;
+use ManaPHP\Utility\Text;
+use ManaPHP\Autoloader;
 
 date_default_timezone_set('PRC');
 
@@ -42,7 +43,7 @@ $classes = array(
 
 $classes = array_reverse($classes);
 require $rootPath . '/Autoloader.php';
-\ManaPHP\Autoloader::register();
+new Autoloader();
 
 $loadedClasses = [];
 
@@ -51,7 +52,7 @@ foreach ($classes as $class) {
     if (Text::contains($class, 'Interface')) {
         $loadedClasses[] = $class;
     } else {
-        $classReflection = new ReflectionClass($class);
+        $classReflection = new \ReflectionClass($class);
         $class_parents[$class] = [];
 
         while ($parent = $classReflection->getParentClass()) {

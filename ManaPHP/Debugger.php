@@ -102,7 +102,7 @@ class Debugger extends Component implements DebuggerInterface
      * @param bool $listenException
      *
      * @return static
-     * @throws \ManaPHP\Di\Exception|\ManaPHP\Db\Exception|\ManaPHP\Exception
+     * @throws \ManaPHP\Di\Exception|\ManaPHP\Db\Exception
      */
     public function start($listenException = false)
     {

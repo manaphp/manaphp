@@ -24,11 +24,9 @@ use ManaPHP\Component\Exception;
  * @property \ManaPHP\Http\SessionInterface       $session
  * @property \ManaPHP\Event\ManagerInterface      $eventsManager
  * @property \ManaPHP\Db                          $db
-//* @property \ManaPHP\Security $security
  * @property \ManaPHP\Security\Crypt              $crypt
  * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
  * @property \ManaPHP\Mvc\Model\Metadata          $modelsMetadata
-//     * @property \ManaPHP\Assets\Manager $assets
  * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
  * @property \ManaPHP\Http\Session\Bag            $persistent
  * @property \ManaPHP\Mvc\View                    $view

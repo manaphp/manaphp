@@ -1,12 +1,17 @@
 <?php
-namespace App\Test\Controllers {
 
-    class Test1Controller extends \ManaPHP\Mvc\Controller
+
+namespace App\Test\Controllers {
+    use ManaPHP\Mvc\Controller;
+    use ManaPHP\Exception;
+
+
+    class Test1Controller extends Controller
     {
 
     }
 
-    class Test2Controller extends \ManaPHP\Mvc\Controller
+    class Test2Controller extends Controller
     {
         public function indexAction()
         {
@@ -44,7 +49,7 @@ namespace App\Test\Controllers {
 
     }
 
-    class Test4Controller extends \ManaPHp\Mvc\Controller
+    class Test4Controller extends Controller
     {
         public function requestAction()
         {
@@ -57,7 +62,7 @@ namespace App\Test\Controllers {
         }
     }
 
-    class ControllerBase extends \ManaPHP\Mvc\Controller
+    class ControllerBase extends Controller
     {
         public function serviceAction()
         {
@@ -66,7 +71,7 @@ namespace App\Test\Controllers {
 
     }
 
-    class Test5Controller extends \ManaPHP\Mvc\Controller
+    class Test5Controller extends Controller
     {
         public function notFoundAction()
         {
@@ -75,7 +80,7 @@ namespace App\Test\Controllers {
 
     }
 
-    class Test6Controller extends \ManaPHP\Mvc\Controller
+    class Test6Controller extends Controller
     {
 
     }
@@ -86,11 +91,11 @@ namespace App\Test\Controllers {
 
     }
 
-    class Test8Controller extends \ManaPHP\Mvc\Controller
+    class Test8Controller extends Controller
     {
         public function buggyAction()
         {
-            throw new \ManaPHP\Exception('This is an uncaught exception');
+            throw new Exception('This is an uncaught exception');
         }
 
     }

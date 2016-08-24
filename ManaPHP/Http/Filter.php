@@ -136,9 +136,9 @@ class Filter extends Component implements FilterInterface
 
     /**
      * @param string $attribute
-     * @param mixed $value
+     * @param mixed  $value
      * @param string $rule
-     * @param array $parameters
+     * @param array  $parameters
      *
      * @return string
      * @throws \ManaPHP\Alias\Exception|\ManaPHP\Http\Exception

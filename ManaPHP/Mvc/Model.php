@@ -6,7 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Model\Exception;
-use ManaPHP\Utility\Text;
 
 /**
  * ManaPHP\Mvc\Model
@@ -302,7 +301,8 @@ class Model extends Component implements ModelInterface
      *
      * @return  static[]
      */
-    final public static function findAll($parameters = null, $cacheOptions = null){
+    final public static function findAll($parameters = null, $cacheOptions = null)
+    {
         return self::find($parameters, $cacheOptions);
     }
 
@@ -813,9 +813,9 @@ class Model extends Component implements ModelInterface
     }
 
     /**
-     * @param array $columnValues
+     * @param array        $columnValues
      * @param string|array $conditions
-     * @param array $bind
+     * @param array        $bind
      *
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
@@ -829,7 +829,7 @@ class Model extends Component implements ModelInterface
 
     /**
      * @param string|array $conditions
-     * @param array $bind
+     * @param array        $bind
      *
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception

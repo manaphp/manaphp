@@ -231,9 +231,9 @@ interface ModelInterface
     public function update($data = null, $whiteList = null);
 
     /**
-     * @param array $columnValues
+     * @param array        $columnValues
      * @param string|array $conditions
-     * @param array $bind
+     * @param array        $bind
      *
      * @return int
      */
@@ -248,7 +248,7 @@ interface ModelInterface
 
     /**
      * @param string|array $conditions
-     * @param array $bind
+     * @param array        $bind
      *
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception

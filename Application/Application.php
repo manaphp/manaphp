@@ -86,7 +86,7 @@ namespace Application {
 
             if (!$this->configure->debugger->autoResponse && isset($_GET['_debugger'])) {
                 unset($_GET['_debugger']);//disable auto response to debugger data fetching request
-                exit('<h1>Access denied<h1>');
+                exit('<h1>Access denied</h1>');
             }
 
             $this->debugger->start();
