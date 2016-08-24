@@ -66,16 +66,6 @@ class View extends Component implements ViewInterface
     protected $_cacheOptions;
 
     /**
-     * @var array
-     */
-    protected $_sections = [];
-
-    /**
-     * @var array
-     */
-    protected $_sectionStack = [];
-
-    /**
      * @param false|string $layout
      *
      * @return static
@@ -199,7 +189,7 @@ class View extends Component implements ViewInterface
      * @param string $action
      *
      * @return static
-     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
+     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Renderer\Exception
      */
     public function render($module, $controller, $action)
     {
@@ -300,7 +290,7 @@ class View extends Component implements ViewInterface
      * @param array     $vars
      * @param int|array $cacheOptions
      *
-     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Mvc\View\Renderer\Exception
+     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Renderer\Exception
      */
     public function partial($path, $vars = [], $cacheOptions = null)
     {
@@ -335,7 +325,7 @@ class View extends Component implements ViewInterface
      * @param array     $options
      * @param int|array $cacheOptions
      *
-     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Alias\Exception|\ManaPHP\Mvc\View\Renderer\Exception
+     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Alias\Exception|\ManaPHP\Renderer\Exception
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
@@ -411,86 +401,6 @@ class View extends Component implements ViewInterface
     public function getContent()
     {
         return $this->_content;
-    }
-
-    /**
-     * Get the string contents of a section.
-     *
-     * @param  string $section
-     * @param  string $default
-     *
-     * @return string
-     */
-    public function getSection($section, $default = '')
-    {
-        if (isset($this->_sections[$section])) {
-            return $this->_sections[$section];
-        } else {
-            return $default;
-        }
-    }
-
-    /**
-     * Start injecting content into a section.
-     *
-     * @param  string $section
-     *
-     * @return void
-     */
-    public function startSection($section)
-    {
-        ob_start();
-        $this->_sectionStack[] = $section;
-    }
-
-    /**
-     * Stop injecting content into a section.
-     *
-     * @param  bool $overwrite
-     *
-     * @return string
-     * @throws \ManaPHP\Mvc\View\Exception
-     */
-    public function stopSection($overwrite = false)
-    {
-        if (count($this->_sectionStack) === 0) {
-            throw new Exception('Cannot stop a section without first starting one:');
-        }
-
-        $last = array_pop($this->_sectionStack);
-        if ($overwrite || !isset($this->_sections[$last])) {
-            $this->_sections[$last] = ob_get_clean();
-        } else {
-            $this->_sections[$last] .= ob_get_clean();
-        }
-    }
-
-    /**
-     * @return void
-     * @throws \ManaPHP\Mvc\View\Exception
-     */
-    public function appendSection()
-    {
-        if (count($this->_sectionStack) === 0) {
-            throw new Exception('Cannot append a section without first starting one:');
-        }
-
-        $last = array_pop($this->_sectionStack);
-        if (isset($this->_sections[$last])) {
-            $this->_sections[$last] .= ob_get_clean();
-        } else {
-            $this->_sections[$last] = ob_get_clean();
-        }
-    }
-
-    /**
-     * @param string $v
-     *
-     * @return string
-     */
-    public function escape($v)
-    {
-        return htmlentities($v, ENT_QUOTES, 'UTF-8', false);
     }
 
     public function dump()

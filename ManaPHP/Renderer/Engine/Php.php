@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Mvc\View\Renderer\Engine;
+namespace ManaPHP\Renderer\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\View\Renderer\EngineInterface;
+use ManaPHP\Renderer\EngineInterface;
 
 /**
  * ManaPHP\Mvc\View\Engine\Php
@@ -18,7 +18,7 @@ class Php extends Component implements EngineInterface
      * @param string $file
      * @param array  $vars
      *
-     * @throws \ManaPHP\Mvc\View\Renderer\Engine\Exception
+     * @throws \ManaPHP\Renderer\Engine\Exception
      */
     public function render($file, $vars = [])
     {

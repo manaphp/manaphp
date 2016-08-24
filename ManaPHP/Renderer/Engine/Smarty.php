@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Mvc\View\Renderer\Engine;
+namespace ManaPHP\Renderer\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\View\Renderer\EngineInterface;
+use ManaPHP\Renderer\EngineInterface;
 
 class Smarty extends Component implements EngineInterface
 {

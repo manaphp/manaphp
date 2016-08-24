@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Mvc\View\Renderer\Engine;
+namespace ManaPHP\Renderer\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\View\Renderer\EngineInterface;
+use ManaPHP\Renderer\EngineInterface;
 use ManaPHP\Utility\File;
 use ManaPHP\Utility\Text;
 
@@ -198,7 +198,7 @@ class Sword extends Component implements EngineInterface
         $callback = function ($matches) {
             $whitespace = empty($matches[3]) ? '' : $matches[3];
 
-            return $matches[1] ? substr($matches[0], 1) : '<?php echo $view->escape(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . $whitespace;
+            return $matches[1] ? substr($matches[0], 1) : '<?php echo $renderer->escape(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . $whitespace;
         };
 
         return preg_replace_callback($pattern, $callback, $value);
@@ -225,7 +225,7 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileYield($expression)
     {
-        return "<?php echo \$view->getSection{$expression}; ?>";
+        return "<?php echo \$renderer->getSection{$expression}; ?>";
     }
 
     /**
@@ -237,7 +237,7 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileSection($expression)
     {
-        return "<?php \$view->startSection{$expression}; ?>";
+        return "<?php \$renderer->startSection{$expression}; ?>";
     }
 
     /**
@@ -251,7 +251,7 @@ class Sword extends Component implements EngineInterface
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php $view->appendSection(); ?>';
+        return '<?php $renderer->appendSection(); ?>';
     }
 
     /**
@@ -265,7 +265,7 @@ class Sword extends Component implements EngineInterface
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php $view->stopSection(); ?>';
+        return '<?php $renderer->stopSection(); ?>';
     }
 
     /**
@@ -279,7 +279,7 @@ class Sword extends Component implements EngineInterface
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php $view->stopSection(); ?>';
+        return '<?php $renderer->stopSection(); ?>';
     }
 
     /**
@@ -293,7 +293,7 @@ class Sword extends Component implements EngineInterface
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php $view->stopSection(true); ?>';
+        return '<?php $renderer->stopSection(true); ?>';
     }
 
     /**
@@ -508,7 +508,7 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileStack($expression)
     {
-        return "<?php echo \$view->getSection{$expression}; ?>";
+        return "<?php echo \$renderer->getSection{$expression}; ?>";
     }
 
     /**
@@ -520,7 +520,7 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compilePush($expression)
     {
-        return "<?php \$view->startSection{$expression}; ?>";
+        return "<?php \$renderer->startSection{$expression}; ?>";
     }
 
     /**
@@ -534,7 +534,7 @@ class Sword extends Component implements EngineInterface
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php $view->appendSection(); ?>';
+        return '<?php $renderer->appendSection(); ?>';
     }
 
     /**

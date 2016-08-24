@@ -1,10 +1,7 @@
 <?php
 
-namespace ManaPHP\Mvc\View\Renderer;
+namespace ManaPHP\Renderer;
 
-/**
- * ManaPHP\Mvc\View\EngineInterface initializer
- */
 interface EngineInterface
 {
     /**

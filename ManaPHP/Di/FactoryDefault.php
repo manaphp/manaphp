@@ -42,7 +42,7 @@ class FactoryDefault extends Di
             'loader' => 'ManaPHP\Loader',
             'view' => 'ManaPHP\Mvc\View',
             'logger' => 'ManaPHP\Log\Logger',
-            'renderer' => 'ManaPHP\Mvc\View\Renderer',
+            'renderer' => 'ManaPHP\Renderer',
             'debugger' => 'ManaPHP\Debugger',
             'password' => 'ManaPHP\Authentication\Password',
             'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',

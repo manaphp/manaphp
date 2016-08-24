@@ -1,14 +1,14 @@
 <?php
-namespace ManaPHP\Mvc\View;
+namespace ManaPHP;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\View\Renderer\EngineInterface;
-use ManaPHP\Mvc\View\Renderer\Exception;
+use ManaPHP\Renderer\EngineInterface;
+use ManaPHP\Renderer\Exception;
 
 class Renderer extends Component implements RendererInterface
 {
     /**
-     * @var \ManaPHP\Mvc\View\Renderer\EngineInterface[]
+     * @var \ManaPHP\Renderer\EngineInterface[]
      */
     protected $_resolved = [];
 
@@ -17,10 +17,20 @@ class Renderer extends Component implements RendererInterface
      */
     protected $_engines = [];
 
+    /**
+     * @var array
+     */
+    protected $_sections = [];
+
+    /**
+     * @var array
+     */
+    protected $_sectionStack = [];
+
     public function __construct(
         $engines = [
-            '.sword' => 'ManaPHP\Mvc\View\Renderer\Engine\Sword',
-            '.phtml' => 'ManaPHP\Mvc\View\Renderer\Engine\Php',
+            '.sword' => 'ManaPHP\Renderer\Engine\Sword',
+            '.phtml' => 'ManaPHP\Renderer\Engine\Php',
         ]
     ) {
         $this->_engines = $engines;
@@ -29,8 +39,8 @@ class Renderer extends Component implements RendererInterface
     /**
      * @param string $extension
      *
-     * @return \ManaPHP\Mvc\View\Renderer\EngineInterface
-     * @throws \ManaPHP\Mvc\View\Renderer\Exception
+     * @return \ManaPHP\Renderer\EngineInterface
+     * @throws \ManaPHP\Renderer\Exception
      */
     protected function _loadEngine($extension)
     {
@@ -43,7 +53,7 @@ class Renderer extends Component implements RendererInterface
         }
 
         if (!$engine instanceof EngineInterface) {
-            throw new Exception('Invalid template engine: it is not implements \ManaPHP\Mvc\Renderer\EngineInterface');
+            throw new Exception('Invalid template engine: it is not implements \ManaPHP\Renderer\EngineInterface');
         }
 
         return $engine;
@@ -60,7 +70,7 @@ class Renderer extends Component implements RendererInterface
      * @param array   $vars
      *
      * @return string
-     * @throws \ManaPHP\Mvc\View\Renderer\Exception
+     * @throws \ManaPHP\Renderer\Exception
      */
     public function render($template, $vars, $directOutput = true)
     {
@@ -91,6 +101,11 @@ class Renderer extends Component implements RendererInterface
                 }
                 $vars['view'] = $this->_dependencyInjector->has('view') ? $this->_dependencyInjector->getShared('view') : null;
 
+                if (isset($vars['renderer'])) {
+                    throw new Exception('variable \'renderer\' is reserved for PHP renderer engine.');
+                }
+                $vars['renderer'] = $this;
+                
                 if (isset($vars['di'])) {
                     throw new Exception('variable \'di\' is reserved for PHP renderer engine.');
                 }
@@ -147,5 +162,85 @@ class Renderer extends Component implements RendererInterface
         }
 
         return false;
+    }
+
+    /**
+     * Get the string contents of a section.
+     *
+     * @param  string $section
+     * @param  string $default
+     *
+     * @return string
+     */
+    public function getSection($section, $default = '')
+    {
+        if (isset($this->_sections[$section])) {
+            return $this->_sections[$section];
+        } else {
+            return $default;
+        }
+    }
+
+    /**
+     * Start injecting content into a section.
+     *
+     * @param  string $section
+     *
+     * @return void
+     */
+    public function startSection($section)
+    {
+        ob_start();
+        $this->_sectionStack[] = $section;
+    }
+
+    /**
+     * Stop injecting content into a section.
+     *
+     * @param  bool $overwrite
+     *
+     * @return string
+     * @throws \ManaPHP\Renderer\Exception
+     */
+    public function stopSection($overwrite = false)
+    {
+        if (count($this->_sectionStack) === 0) {
+            throw new Exception('Cannot stop a section without first starting one:');
+        }
+
+        $last = array_pop($this->_sectionStack);
+        if ($overwrite || !isset($this->_sections[$last])) {
+            $this->_sections[$last] = ob_get_clean();
+        } else {
+            $this->_sections[$last] .= ob_get_clean();
+        }
+    }
+
+    /**
+     * @return void
+     * @throws \ManaPHP\Renderer\Exception
+     */
+    public function appendSection()
+    {
+        if (count($this->_sectionStack) === 0) {
+            throw new Exception('Cannot append a section without first starting one:');
+        }
+
+        $last = array_pop($this->_sectionStack);
+        if (isset($this->_sections[$last])) {
+            $this->_sections[$last] .= ob_get_clean();
+        } else {
+            $this->_sections[$last] = ob_get_clean();
+        }
+    }
+
+    /**
+     * @param string $v
+     *
+     * @return string
+     */
+    public function escape($v)
+    {
+        return htmlentities($v, ENT_QUOTES, 'UTF-8', false);
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace ManaPHP\Mvc\View\Renderer\Engine;
+namespace ManaPHP\Renderer\Engine;
 
-use ManaPHP\Mvc\View\Renderer\EngineInterface;
+use ManaPHP\Renderer\EngineInterface;
 
 class Html implements EngineInterface
 {
@@ -9,7 +9,7 @@ class Html implements EngineInterface
      * @param string $file
      * @param array  $vars
      *
-     * @throws \ManaPHP\Mvc\View\Renderer\Engine\Exception
+     * @throws \ManaPHP\Renderer\Engine\Exception
      */
     public function render($file, $vars = [])
     {

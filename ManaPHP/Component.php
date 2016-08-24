@@ -33,7 +33,7 @@ use ManaPHP\Component\Exception;
  * @property \ManaPHP\Mvc\View\Tag                $tag
  * @property \ManaPHP\Loader                      $loader
  * @property \ManaPHP\Log\Logger                  $logger
- * @property \ManaPHP\Mvc\View\Renderer           $renderer
+ * @property \ManaPHP\Renderer                    $renderer
  * @property \Application\Configure               $configure
  * @property \ManaPHP\ApplicationInterface        $application
  * @property \ManaPHP\Debugger                    $debugger
