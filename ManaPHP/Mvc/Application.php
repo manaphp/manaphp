@@ -15,14 +15,17 @@ use ManaPHP\Mvc\Application\Exception;
  * needed and integrating it with the rest to allow the MVC pattern to operate as desired.
  *
  *
- * @property \ManaPHP\Loader         $loader
- * @property \ManaPHP\Mvc\View       $view
- * @property \ManaPHP\Mvc\Dispatcher $dispatcher
- * @property \ManaPHP\Mvc\Router     $router
- * @property \ManaPHP\Http\Request   $request
- * @property \ManaPHP\Http\Response  $response
- * @property \ManaPHP\Http\Session   $session
- * @property \ManaPHP\Debugger       $debugger
+ * @property \ManaPHP\Loader             $loader
+ * @property \ManaPHP\Mvc\View           $view
+ * @property \ManaPHP\Mvc\Dispatcher     $dispatcher
+ * @property \ManaPHP\Mvc\Router         $router
+ * @property \ManaPHP\Http\Request       $request
+ * @property \ManaPHP\Http\Response      $response
+ * @property \ManaPHP\Http\Session       $session
+ * @property \ManaPHP\Debugger           $debugger
+ * @property \Application\Configure      $configure
+ * @property \ManaPHP\Log\Logger         $logger
+ * @property \ManaPHP\Security\CsrfToken $csrfToken
  */
 class Application extends Component implements ApplicationInterface
 {

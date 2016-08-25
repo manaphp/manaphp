@@ -13,6 +13,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Mvc\Router   $router
  * @property \ManaPHP\Mvc\Url      $url
  * @property \ManaPHP\Http\Request $request
+ * @property \ManaPHP\Log\Logger   $logger
  */
 class Debugger extends Component implements DebuggerInterface
 {

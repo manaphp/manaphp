@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Component;
 use ManaPHP\Renderer\EngineInterface;
 use ManaPHP\Renderer\Exception;
 

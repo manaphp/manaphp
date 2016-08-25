@@ -60,6 +60,14 @@ use ManaPHP\Component;
  * @property \ManaPHP\Http\Request                $request
  * @property \ManaPHP\Http\Response               $response
  * @property \ManaPHP\Security\Crypt              $crypt
+ * @property \ManaPHP\Http\Session\Bag            $persistent
+ * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
+ * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
+ * @property \ManaPHP\Log\Logger                  $logger
+ * @property \Application\Configure               $configure
+ * @property \ManaPHP\Http\Session                $session
+ * @property \ManaPHP\Security\CsrfToken          $csrfToken
+ * @property \ManaPHP\Paginator                   $paginator
  */
 abstract class Controller extends Component implements ControllerInterface
 {

@@ -9,12 +9,8 @@ namespace ManaPHP;
 /**
  * ManaPHP\Component
  *
- * @property \ManaPHP\Alias                   $alias
- * @property \ManaPHP\Event\ManagerInterface  $eventsManager
- * @property \ManaPHP\Di|\ManaPHP\DiInterface $di
- * @property \ManaPHP\Http\Session\Bag        $persistent
- * @property \ManaPHP\Log\Logger              $logger
- * @property \Application\Configure           $configure
+ * @property \ManaPHP\Alias                  $alias
+ * @property \ManaPHP\Event\ManagerInterface $eventsManager
  */
 class Component implements ComponentInterface
 {
@@ -35,16 +31,6 @@ class Component implements ComponentInterface
         $this->_dependencyInjector = $dependencyInjector;
 
         return $this;
-    }
-
-    /**
-     * Returns the internal dependency injector
-     *
-     * @return \ManaPHP\DiInterface
-     */
-    public function getDependencyInjector()
-    {
-        return $this->_dependencyInjector;
     }
 
     /**

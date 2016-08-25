@@ -4,6 +4,12 @@ namespace ManaPHP\Mvc;
 use ManaPHP\Component;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class Url
+ * @package ManaPHP\Mvc
+ *
+ * @property \Application\Configure $configure
+ */
 class Url extends Component implements UrlInterface
 {
     /**

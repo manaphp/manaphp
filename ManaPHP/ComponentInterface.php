@@ -19,13 +19,6 @@ interface ComponentInterface
     public function setDependencyInjector($dependencyInjector);
 
     /**
-     * Returns the internal dependency injector
-     *
-     * @return \ManaPHP\DiInterface
-     */
-    public function getDependencyInjector();
-
-    /**
      * Attach a listener to the events manager
      *
      * @param string   $event

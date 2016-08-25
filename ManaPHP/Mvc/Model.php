@@ -38,19 +38,19 @@ use ManaPHP\Mvc\Model\Exception;
  * @method initialize()
  * @method onConstruct()
  *
- * @method beforeCreate()
- * @method afterCreate()
+ * method beforeCreate()
+ * method afterCreate()
  *
- * @method beforeSave()
- * @method afterSave()
+ * method beforeSave()
+ * method afterSave()
  *
- * @method afterFetch()
+ * method afterFetch()
  *
- * @method beforeUpdate()
- * @method afterUpdate()
+ * method beforeUpdate()
+ * method afterUpdate()
  *
- * @method beforeDelete()
- * @method afterDelete()
+ * method beforeDelete()
+ * method afterDelete()
  *
  * @property \ManaPHP\Mvc\Model\Metadata $modelsMetadata
  * @property \ManaPHP\Mvc\Model\Manager  $modelsManager
