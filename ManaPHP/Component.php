@@ -6,49 +6,15 @@
  */
 namespace ManaPHP;
 
-use ManaPHP\Component\Exception;
-
 /**
  * ManaPHP\Component
  *
- * @property \ManaPHP\Alias                       $alias
- * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
- * @property \ManaPHP\Mvc\Router                  $router
- * @property \ManaPHP\Mvc\Url                     $url
- * @property \ManaPHP\Http\Request                $request
- * @property \ManaPHP\Http\Filter                 $filter
- * @property \ManaPHP\Http\Response               $response
- * @property \ManaPHP\Http\Cookies                $cookies
- * @property \ManaPHP\Mvc\View\Flash              $flash
- * @property \ManaPHP\Mvc\View\Flash              $flashSession
- * @property \ManaPHP\Http\SessionInterface       $session
- * @property \ManaPHP\Event\ManagerInterface      $eventsManager
- * @property \ManaPHP\Db                          $db
- * @property \ManaPHP\Security\Crypt              $crypt
- * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
- * @property \ManaPHP\Mvc\Model\Metadata          $modelsMetadata
- * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
- * @property \ManaPHP\Http\Session\Bag            $persistent
- * @property \ManaPHP\Mvc\View                    $view
- * @property \ManaPHP\Mvc\View\Tag                $tag
- * @property \ManaPHP\Loader                      $loader
- * @property \ManaPHP\Log\Logger                  $logger
- * @property \ManaPHP\Renderer                    $renderer
- * @property \Application\Configure               $configure
- * @property \ManaPHP\ApplicationInterface        $application
- * @property \ManaPHP\Debugger                    $debugger
- * @property \ManaPHP\Authentication\Password     $password
- * @property \Redis                               $redis
- * @property \ManaPHP\Serializer\AdapterInterface $serializer
- * @property \ManaPHP\Cache                       $cache
- * @property \ManaPHP\Counter                     $counter
- * @property \ManaPHP\CacheInterface              $viewsCache
- * @property \ManaPHP\Http\Client                 $httpClient
- * @property \ManaPHP\AuthorizationInterface      $authorization
- * @property \ManaPHP\Security\Captcha            $captcha
- * @property \ManaPHP\Security\CsrfToken          $csrfToken
- * @property \ManaPHP\Authentication\UserIdentity $userIdentity
- * @property \ManaPHP\Paginator                   $paginator
+ * @property \ManaPHP\Alias                   $alias
+ * @property \ManaPHP\Event\ManagerInterface  $eventsManager
+ * @property \ManaPHP\Di|\ManaPHP\DiInterface $di
+ * @property \ManaPHP\Http\Session\Bag        $persistent
+ * @property \ManaPHP\Log\Logger              $logger
+ * @property \Application\Configure           $configure
  */
 class Component implements ComponentInterface
 {
@@ -81,37 +47,66 @@ class Component implements ComponentInterface
         return $this->_dependencyInjector;
     }
 
-    /** @noinspection MagicMethodsValidityInspection */
     /**
      * Magic method __get
      *
-     * @param string $propertyName
+     * @param string $name
      *
      * @return mixed
      * @throws \ManaPHP\Component\Exception
      */
-    public function __get($propertyName)
+    public function __get($name)
     {
         if ($this->_dependencyInjector === null) {
             $this->_dependencyInjector = Di::getDefault();
         }
 
-        if ($propertyName === 'di') {
+        if ($name === 'di') {
             $this->{'di'} = $this->_dependencyInjector;
-            return $this->{'di'};
-        }
-
-        if ($propertyName === 'persistent') {
+        } elseif ($name === 'persistent') {
             $getParameter = [get_class($this), $this->_dependencyInjector];
             $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', $getParameter);
-            return $this->{'persistent'};
+        } else {
+            $this->{$name} = $this->_dependencyInjector->{$name};
+            if ($this->{$name} === null) {
+                trigger_error('Access to undefined property `' . $name . '` of `' . get_called_class() . '`.');
+            }
         }
 
-        $this->{$propertyName} = $this->_dependencyInjector->{$propertyName};
-        if ($this->{$propertyName} === null) {
-            trigger_error('Access to undefined property `' . $propertyName . '` of `' . get_called_class() . '`.');
+        return $this->{$name};
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    public function __set($name, $value)
+    {
+        if (is_scalar($value)) {
+            trigger_error('Set to undefined property `' . $name . '` of `' . get_called_class() . '`.');
         }
-        return $this->{$propertyName};
+
+        $this->$name = $value;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        if ($name === 'di' || $name === 'persistent') {
+            return true;
+        }
+
+        if ($this->_dependencyInjector === null) {
+            $this->_dependencyInjector = Di::getDefault();
+        }
+
+        return $this->_dependencyInjector->has($name);
     }
 
     /**
@@ -141,63 +136,6 @@ class Component implements ComponentInterface
     public function fireEvent($event, $data = [])
     {
         return $this->eventsManager->fireEvent($event, $this, $data);
-    }
-
-    /**
-     * @param string $property
-     *
-     * @return bool
-     */
-    public function hasProperty($property)
-    {
-        return array_key_exists($property, get_object_vars($this));
-    }
-
-    /**
-     * @param string $property
-     * @param mixed  $value
-     *
-     * @return mixed
-     * @throws \ManaPHP\Exception
-     */
-    public function setProperty($property, $value)
-    {
-        if (array_key_exists($property, get_object_vars($this))) {
-            $old = $this->{$property};
-            $this->{$property} = $value;
-            return $old;
-        } else {
-            throw new Exception("property '$property' is not exists in " . get_class($this));
-        }
-    }
-
-    /**
-     * @param string $property
-     *
-     * @return mixed
-     * @throws \ManaPHP\Exception
-     */
-    public function getProperty($property)
-    {
-        if (array_key_exists($property, get_object_vars($this))) {
-            return $this->{$property};
-        } else {
-            throw new Exception("property '$property' is not exists in " . get_class($this));
-        }
-    }
-
-    /**
-     * @param bool $ignoreValue
-     *
-     * @return array
-     */
-    public function getProperties($ignoreValue = true)
-    {
-        if ($ignoreValue) {
-            return array_keys(get_object_vars($this));
-        } else {
-            return get_object_vars($this);
-        }
     }
 
     /**

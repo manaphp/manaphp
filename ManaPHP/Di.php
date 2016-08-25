@@ -57,7 +57,6 @@ use ManaPHP\Di\Exception;
  * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
  * @property \ManaPHP\Http\Session\Bag            $persistent
  * @property \ManaPHP\Mvc\View                    $view
- * @property \ManaPHP\Mvc\View\Tag                $tag
  * @property \ManaPHP\Loader                      $loader
  * @property \ManaPHP\Log\Logger                  $logger
  * @property \ManaPHP\Renderer                    $renderer

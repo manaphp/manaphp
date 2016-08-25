@@ -4,6 +4,13 @@ namespace ManaPHP;
 use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class Cache
+ *
+ * @package ManaPHP
+ *
+ * @property \ManaPHP\Serializer\AdapterInterface $serializer
+ */
 abstract class Cache extends Component implements CacheInterface, AdapterInterface
 {
     /**

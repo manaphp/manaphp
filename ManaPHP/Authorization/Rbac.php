@@ -42,6 +42,11 @@ use ManaPHP\Component;
  * `created_time` int(11) NOT NULL,
  * PRIMARY KEY (`id`)
  * ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+ *
+ *
+ * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
+ * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
+ * @property \ManaPHP\Authentication\UserIdentity $userIdentity
  */
 class Rbac extends Component implements AuthorizationInterface
 {

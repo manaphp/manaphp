@@ -27,6 +27,10 @@ use ManaPHP\Utility\Text;
  * echo $view->getContent();
  * </code>
  *
+ *
+ * @property \ManaPHP\Renderer       $renderer
+ * @property \ManaPHP\CacheInterface $viewsCache
+ * @property \ManaPHP\Http\Request   $request
  */
 class View extends Component implements ViewInterface
 {

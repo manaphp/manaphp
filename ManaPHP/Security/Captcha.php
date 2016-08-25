@@ -4,6 +4,14 @@ namespace ManaPHP\Security;
 use ManaPHP\Component;
 use ManaPHP\Security\Captcha\Exception;
 
+/**
+ * Class Captcha
+ *
+ * @package ManaPHP\Security
+ *
+ * @property \ManaPHP\Http\Response $response
+ * @property \ManaPHP\Http\Session  $session
+ */
 class Captcha extends Component implements CaptchaInterface
 {
     /**

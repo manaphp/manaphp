@@ -3,6 +3,13 @@ namespace ManaPHP\Mvc\View\Flash\Adapter;
 
 use ManaPHP\Mvc\View\Flash;
 
+/**
+ * Class Session
+ *
+ * @package ManaPHP\Mvc\View\Flash\Adapter
+ *
+ * @property \ManaPHP\Http\Session $session
+ */
 class Session extends Flash
 {
     /**

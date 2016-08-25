@@ -8,6 +8,8 @@ use ManaPHP\Component;
  * ManaPHP\Http\Cookies
  *
  * This class is a bag to manage the cookies
+ *
+ * @property \ManaPHP\Security\Crypt $crypt
  */
 class Cookies extends Component implements CookiesInterface
 {

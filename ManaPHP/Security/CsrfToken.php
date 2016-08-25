@@ -4,6 +4,16 @@ namespace ManaPHP\Security;
 use ManaPHP\Component;
 use ManaPHP\Security\CsrfToken\Exception;
 
+/**
+ * Class CsrfToken
+ *
+ * @package ManaPHP\Security
+ *
+ * @property \ManaPHP\Http\Cookies  $cookies
+ * @property \ManaPHP\Http\Response $response
+ * @property \ManaPHP\Http\Request  $request
+ * @property \ManaPHP\Http\Session  $session
+ */
 class CsrfToken extends Component implements CsrfTokenInterface
 {
     /**

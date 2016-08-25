@@ -11,6 +11,9 @@ use ManaPHP\Counter;
  *      `updated_time` int(11) NOT NULL,
  *       PRIMARY KEY (`name`)
  *      ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+ *
+ *
+ * @property \ManaPHP\Db $db
  */
 class Db extends Counter
 {

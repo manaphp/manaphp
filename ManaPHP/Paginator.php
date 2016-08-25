@@ -3,6 +3,13 @@ namespace ManaPHP;
 
 use ManaPHP\Paginator\Exception;
 
+/**
+ * Class Paginator
+ *
+ * @package ManaPHP
+ *
+ * @property \ManaPHP\Http\Request $request
+ */
 class Paginator extends Component implements PaginatorInterface
 {
     public $numberOfPages = 9;

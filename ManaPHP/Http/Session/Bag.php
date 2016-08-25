@@ -15,6 +15,8 @@ use ManaPHP\Component;
  *    $user->set('name',"Kimbra Johnson");
  *    $user->set('age', 22);
  *</code>
+ *
+ * @property \ManaPHP\Http\Session $session
  */
 class Bag extends Component implements BagInterface
 {

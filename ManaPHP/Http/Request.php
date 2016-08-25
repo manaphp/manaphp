@@ -24,6 +24,7 @@ use ManaPHP\Utility\Text;
  *    }
  *</code>
  *
+ * @property \ManaPHP\Http\Filter $filter
  */
 class Request extends Component implements RequestInterface
 {

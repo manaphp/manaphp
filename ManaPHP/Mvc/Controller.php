@@ -44,6 +44,22 @@ use ManaPHP\Component;
  * @method bool afterExecuteRoute(DispatcherInterface $dispatcher);
  * @method onConstruct();
  *
+ *
+ * @property \ManaPHP\Mvc\View                    $view
+ * @property \ManaPHP\Mvc\View\Flash              $flash
+ * @property \ManaPHP\Mvc\View\Flash              $flashSession
+ * @property \ManaPHP\Security\Captcha            $captcha
+ * @property \ManaPHP\Http\Client                 $httpClient
+ * @property \ManaPHP\Authentication\Password     $password
+ * @property \ManaPHP\Http\Cookies                $cookies
+ * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
+ * @property \ManaPHP\Counter                     $counter
+ * @property \ManaPHP\Cache                       $cache
+ * @property \ManaPHP\Db                          $db
+ * @property \ManaPHP\Authentication\UserIdentity $userIdentity
+ * @property \ManaPHP\Http\Request                $request
+ * @property \ManaPHP\Http\Response               $response
+ * @property \ManaPHP\Security\Crypt              $crypt
  */
 abstract class Controller extends Component implements ControllerInterface
 {

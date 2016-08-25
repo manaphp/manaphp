@@ -17,6 +17,8 @@ use ManaPHP\Utility\Text;
  *    $response->setContent("<html><body>Hello</body></html>");
  *    $response->send();
  *</code>
+ *
+ * @property \ManaPHP\Http\Cookies $cookies
  */
 class Response extends Component implements ResponseInterface
 {

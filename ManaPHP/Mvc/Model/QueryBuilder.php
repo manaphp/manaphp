@@ -20,7 +20,9 @@ use ManaPHP\Utility\Text;
  *   ->execute();
  *</code>
  *
- * @property \ManaPHP\CacheInterface $modelsCache
+ * @property \ManaPHP\CacheInterface    $modelsCache
+ * @property \ManaPHP\Paginator         $paginator
+ * @property \ManaPHP\Mvc\Model\Manager $modelsManager
  */
 class QueryBuilder extends Component implements QueryBuilderInterface
 {

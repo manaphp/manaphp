@@ -52,6 +52,8 @@ use ManaPHP\Mvc\Model\Exception;
  * @method beforeDelete()
  * @method afterDelete()
  *
+ * @property \ManaPHP\Mvc\Model\Metadata $modelsMetadata
+ * @property \ManaPHP\Mvc\Model\Manager  $modelsManager
  */
 class Model extends Component implements ModelInterface
 {

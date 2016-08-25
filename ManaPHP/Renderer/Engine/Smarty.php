@@ -13,7 +13,7 @@ class Smarty extends Component implements EngineInterface
      */
     public function render($file, $vars = [])
     {
-        if (!isset($this->smarty) && !$this->_dependencyInjector->has('smarty')) {
+        if (!isset($this->smarty)) {
             $this->_dependencyInjector->setShared('smarty', 'Smarty');
             /** @noinspection PhpUndefinedFieldInspection */
             $this->smarty->setCompileDir($this->alias->resolve('@data/Smarty/templates_c'))

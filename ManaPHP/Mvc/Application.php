@@ -13,6 +13,16 @@ use ManaPHP\Mvc\Application\Exception;
  *
  * This component encapsulates all the complex operations behind instantiating every component
  * needed and integrating it with the rest to allow the MVC pattern to operate as desired.
+ *
+ *
+ * @property \ManaPHP\Loader         $loader
+ * @property \ManaPHP\Mvc\View       $view
+ * @property \ManaPHP\Mvc\Dispatcher $dispatcher
+ * @property \ManaPHP\Mvc\Router     $router
+ * @property \ManaPHP\Http\Request   $request
+ * @property \ManaPHP\Http\Response  $response
+ * @property \ManaPHP\Http\Session   $session
+ * @property \ManaPHP\Debugger       $debugger
  */
 class Application extends Component implements ApplicationInterface
 {
@@ -60,7 +70,7 @@ class Application extends Component implements ApplicationInterface
     public function _eventHandlerBeforeExecuteRoute()
     {
         $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
-        if ($this->_dependencyInjector->has('csrfToken')
+        if (isset($this->csrfToken)
             && !in_array($this->request->getMethod(), $ignoreMethods, true)
         ) {
             $this->csrfToken->verify();

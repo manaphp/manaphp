@@ -79,7 +79,7 @@ namespace Application {
          * @throws \ManaPHP\Db\Exception
          * @throws \ManaPHP\Mvc\Application\NotFoundModuleException
          * @throws \ManaPHP\Mvc\View\Exception
-         * @throws \ManaPHP\Mvc\View\Renderer\Exception
+         * @throws \ManaPHP\Renderer\Exception
          * @throws \ManaPHP\Mvc\Dispatcher\Exception
          * @throws \ManaPHP\Mvc\Router\Exception
          * @throws \ManaPHP\Event\Exception

@@ -4,6 +4,13 @@ namespace ManaPHP;
 use ManaPHP\Store\AdapterInterface;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class Store
+ *
+ * @package ManaPHP
+ *
+ * @property \ManaPHP\Serializer\AdapterInterface $serializer
+ */
 abstract class Store extends Component implements StoreInterface, AdapterInterface
 {
     /**

@@ -4,6 +4,13 @@ namespace ManaPHP\Store\Adapter;
 
 use ManaPHP\Store;
 
+/**
+ * Class Redis
+ *
+ * @package ManaPHP\Store\Adapter
+ *
+ * @property \Redis $redis
+ */
 class Redis extends Store
 {
     /**

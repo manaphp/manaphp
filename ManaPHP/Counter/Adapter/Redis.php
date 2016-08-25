@@ -3,6 +3,13 @@ namespace ManaPHP\Counter\Adapter;
 
 use ManaPHP\Counter;
 
+/**
+ * Class Redis
+ *
+ * @package ManaPHP\Counter\Adapter
+ *
+ * @property \Redis $redis
+ */
 class Redis extends Counter
 {
     /**
