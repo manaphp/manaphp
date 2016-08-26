@@ -23,6 +23,12 @@ use ManaPHP\Db;
  */
 abstract class MetaData extends Component implements MetaDataInterface, MetaData\AdapterInterface
 {
+    const MODEL_ATTRIBUTES = 0;
+    const MODEL_PRIMARY_KEY = 1;
+    const MODEL_NON_PRIMARY_KEY = 2;
+    const MODEL_IDENTITY_COLUMN = 3;
+    const MODEL_COLUMN_PROPERTIES = 4;
+
     /**
      * @var array
      */
@@ -55,6 +61,22 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
 
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $data = $model->getReadConnection()->getMetadata($model->getSource());
+
+                $properties = [];
+                foreach ((new \ReflectionClass($model))->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+                    if (!$property->isStatic()) {
+                        $properties[] = $property->getName();
+                    }
+                }
+
+                $diff = array_diff($properties, $data[self::MODEL_ATTRIBUTES]);
+
+                if (count($diff) !== 0) {
+                    throw new Exception($modelName . 'is not contians these columns: ' . implode(',', $diff));
+                }
+
+                $data[self::MODEL_COLUMN_PROPERTIES] = $properties;
+
                 $this->_metaData[$modelName] = $data;
                 $this->write($modelName, $data);
             }
@@ -77,7 +99,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      */
     public function getAttributes($model)
     {
-        return $this->_readMetaData($model)[Db::METADATA_ATTRIBUTES];
+        return $this->_readMetaData($model)[self::MODEL_ATTRIBUTES];
     }
 
     /**
@@ -94,7 +116,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      */
     public function getPrimaryKeyAttributes($model)
     {
-        return $this->_readMetaData($model)[Db::METADATA_PRIMARY_KEY];
+        return $this->_readMetaData($model)[self::MODEL_PRIMARY_KEY];
     }
 
     /**
@@ -107,7 +129,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      */
     public function getAutoIncrementAttribute($model)
     {
-        return $this->_readMetaData($model)[Db::METADATA_IDENTITY_COLUMN];
+        return $this->_readMetaData($model)[self::MODEL_IDENTITY_COLUMN];
     }
 
     /**
@@ -120,7 +142,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      */
     public function getNonPrimaryKeyAttributes($model)
     {
-        return $this->_readMetaData($model)[Db::METADATA_NON_PRIMARY_KEY];
+        return $this->_readMetaData($model)[self::MODEL_NON_PRIMARY_KEY];
     }
 
     /**
@@ -138,6 +160,16 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      */
     public function hasAttribute($model, $attribute)
     {
-        return isset($this->_readMetaData($model)[Db::METADATA_ATTRIBUTES][$attribute]);
+        return isset($this->_readMetaData($model)[self::MODEL_ATTRIBUTES][$attribute]);
+    }
+
+    /**
+     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     *
+     * @return array
+     */
+    public function getColumnProperties($model)
+    {
+        return $this->_readMetaData($model)[self::MODEL_COLUMN_PROPERTIES];
     }
 }

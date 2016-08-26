@@ -68,9 +68,9 @@ class Manager implements ManagerInterface
      *    $eventsManager->fire('db', $connection);
      *</code>
      *
-     * @param string                      $event
-     * @param \ManaPHP\ComponentInterface $source
-     * @param array                       $data
+     * @param string                         $event
+     * @param \ManaPHP\Component|\ManaPHP\Di $source
+     * @param array                          $data
      *
      * @return boolean|null
      * @throws \ManaPHP\Event\Exception

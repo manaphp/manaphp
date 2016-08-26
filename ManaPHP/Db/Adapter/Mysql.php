@@ -8,6 +8,7 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
+use ManaPHP\Mvc\Model\MetaData;
 
 class Mysql extends Db
 {
@@ -67,10 +68,10 @@ class Mysql extends Db
         }
 
         $r = [
-            self::METADATA_ATTRIBUTES => $attributes,
-            self::METADATA_PRIMARY_KEY => $primaryKeys,
-            self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
-            self::METADATA_IDENTITY_COLUMN => $autoIncrementAttribute,
+            MetaData::MODEL_ATTRIBUTES => $attributes,
+            MetaData::MODEL_PRIMARY_KEY => $primaryKeys,
+            MetaData::MODEL_NON_PRIMARY_KEY => $nonPrimaryKeys,
+            MetaData::MODEL_IDENTITY_COLUMN => $autoIncrementAttribute,
         ];
 
         return $r;

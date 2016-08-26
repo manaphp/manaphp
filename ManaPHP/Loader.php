@@ -7,23 +7,6 @@ namespace ManaPHP;
  *
  * This component helps to load your project classes automatically based on some conventions
  *
- *<code>
- * //Creates the autoloader
- * $loader = new ManaPHP\Loader();
- *
- * //Register some namespaces
- * $loader->registerNamespaces(array(
- *   'Example\Base' => 'vendor/example/base/',
- *   'Example\Adapter' => 'vendor/example/adapter/',
- *   'Example' => 'vendor/example/'
- * ));
- *
- * //register autoloader
- * $loader->register();
- *
- * //Requiring this class will automatically include file vendor/example/adapter/Some.php
- * $adapter = Example\Adapter\Some();
- *</code>
  */
 class Loader
 {
@@ -36,11 +19,6 @@ class Loader
      * @var array
      */
     protected $_namespaces = [];
-
-    /**
-     * @var array
-     */
-    protected $_directories = [];
 
     public function __construct()
     {
@@ -64,70 +42,25 @@ class Loader
      *
      * @return static
      */
-    public function registerNamespaces($namespaces, $merge = false)
+    public function registerNamespaces($namespaces, $merge = true)
     {
-        foreach ($namespaces as $key => $path) {
+        foreach ($namespaces as $namespace => $path) {
             $path = rtrim($path, '\\/');
             if (DIRECTORY_SEPARATOR === '\\') {
                 /** @noinspection AlterInForeachInspection */
-                $namespaces[$key] = str_replace('\\', '/', $path);
+                $namespaces[$namespace] = str_replace('\\', '/', $path);
             }
         }
 
         $this->_namespaces = $merge ? array_merge($this->_namespaces, $namespaces) : $namespaces;
 
-        return $this;
-    }
+        $cmp_function = function ($a, $b) {
+            return strlen($b) - strlen($a);
+        };
 
-    /**
-     * Return current namespaces registered in the autoloader
-     *
-     * @return array
-     */
-    public function getNamespaces()
-    {
-        return $this->_namespaces;
-    }
-
-    /**
-     * Register directories on which "not found" classes could be found
-     *
-     * <code>
-     * $loader->registerDirs(
-     *            array(
-     *                __DIR__ . ’/models/’,
-     *                ));
-     * </code>
-     *
-     * @param array   $directories
-     * @param boolean $merge
-     *
-     * @return static
-     */
-    public function registerDirs($directories, $merge = false)
-    {
-        foreach ($directories as $key => $directory) {
-            $directory = rtrim($directory, '\\/');
-            if (DIRECTORY_SEPARATOR === '\\') {
-                $directory = str_replace('\\', '/', $directory);
-            }
-            /** @noinspection AlterInForeachInspection */
-            $directories[$key] = $directory;
-        }
-
-        $this->_directories = $merge ? array_merge($this->_directories, $directories) : $directories;
+        uksort($this->_namespaces, $cmp_function);
 
         return $this;
-    }
-
-    /**
-     * Return current directories registered in the autoloader
-     *
-     * @return array
-     */
-    public function getDirs()
-    {
-        return $this->_directories;
     }
 
     /**
@@ -138,7 +71,7 @@ class Loader
      *
      * @return static
      */
-    public function registerClasses($classes, $merge = false)
+    public function registerClasses($classes, $merge = true)
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             foreach ($classes as $key => $path) {
@@ -153,32 +86,24 @@ class Loader
     }
 
     /**
-     * Return the current class-map registered in the autoloader
-     *
-     * @return array
-     */
-    public function getClasses()
-    {
-        return $this->_classes;
-    }
-
-    /**
      * If a file exists, require it from the file system.
      *
      * @param string $file The file to require.
+     *
+     * @return true
      */
     protected function ___requireFile($file)
     {
-        if (is_file($file)) {
-            if (PHP_EOL !== "\n") {
-                $realPath = str_replace('\\', '/', realpath($file));
-                if ($realPath !== $file) {
-                    trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
-                }
+        if (PHP_EOL !== "\n") {
+            $realPath = str_replace('\\', '/', realpath($file));
+            if ($realPath !== $file) {
+                trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
             }
-            /** @noinspection PhpIncludeInspection */
-            require $file;
         }
+        /** @noinspection PhpIncludeInspection */
+        require $file;
+
+        return true;
     }
 
     /**
@@ -191,31 +116,18 @@ class Loader
     public function ___autoload($className)
     {
         if (isset($this->_classes[$className])) {
-            $this->___requireFile($this->_classes[$className]);
-
-            return true;
+            return $this->___requireFile($this->_classes[$className]);
         }
 
         /** @noinspection LoopWhichDoesNotLoopInspection */
-        foreach ($this->_namespaces as $namespace => $directory) {
+        foreach ($this->_namespaces as $namespace => $path) {
             if (strpos($className, $namespace) !== 0) {
                 continue;
             }
-            $len = strlen($namespace);
-            $file = $directory . str_replace('\\', '/', substr($className, $len)) . '.php';
-            $this->___requireFile($file);
 
-            return true;
-        }
+            $file = $path . str_replace('\\', '/', substr($className, strlen($namespace))) . '.php';
 
-        foreach ($this->_directories as $directory) {
-            $file = $directory . basename($className) . '.php';
-            $file = str_replace('\\', '/', $file);
-            if (file_exists($file)) {
-                $this->___requireFile($file);
-
-                return true;
-            }
+            return $this->___requireFile($file);
         }
 
         return false;

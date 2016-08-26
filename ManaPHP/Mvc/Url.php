@@ -6,6 +6,7 @@ use ManaPHP\Utility\Text;
 
 /**
  * Class Url
+ *
  * @package ManaPHP\Mvc
  *
  * @property \Application\Configure $configure

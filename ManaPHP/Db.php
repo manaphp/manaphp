@@ -7,11 +7,6 @@ use ManaPHP\Utility\Text;
 
 abstract class Db extends Component implements DbInterface
 {
-    const METADATA_ATTRIBUTES = 0;
-    const METADATA_PRIMARY_KEY = 1;
-    const METADATA_NON_PRIMARY_KEY = 2;
-    const METADATA_IDENTITY_COLUMN = 3;
-
     /**
      * @var array
      */

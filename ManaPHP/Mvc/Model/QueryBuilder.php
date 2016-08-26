@@ -725,7 +725,15 @@ class QueryBuilder extends Component implements QueryBuilderInterface
          */
         if ($this->_columns !== null) {
             if (is_array($this->_columns)) {
-                $sql .= implode(', ', $this->_columns);
+                $columns = '';
+                foreach ($this->_columns as $column) {
+                    if (strpos($column, '.') === false) {
+                        $columns .= ', `' . $column . '`';
+                    } else {
+                        $columns .= ', ' . $column;
+                    }
+                }
+                $sql .= ltrim($columns, ', ');
             } else {
                 $sql .= preg_replace('/(\s+)/', ' ', $this->_columns);
             }

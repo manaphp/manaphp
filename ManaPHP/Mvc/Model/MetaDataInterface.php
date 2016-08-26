@@ -55,6 +55,13 @@ interface MetaDataInterface
     public function hasAttribute($model, $attribute);
 
     /**
+     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     *
+     * @return array
+     */
+    public function getColumnProperties($model);
+
+    /**
      * Reads meta-data from the adapter
      *
      * @param string $key

@@ -65,7 +65,7 @@ class MvcDispatcherTest extends TestCase
         $dispatcher->setDependencyInjector($di);
         $dispatcher->setRootNamespace('App');
 
-        $this->assertInstanceOf('\ManaPHP\Di', $dispatcher->getDependencyInjector());
+        $this->assertInstanceOf('\ManaPHP\Di', $dispatcher->di);
         $di->set('dispatcher', $dispatcher);
 
         //camelize the handler class:not require
@@ -145,7 +145,7 @@ class MvcDispatcherTest extends TestCase
         $dispatcher->setRootNamespace('App');
 
         $dispatcher->setDependencyInjector($di);
-        $this->assertInstanceOf('\ManaPHP\Di', $dispatcher->getDependencyInjector());
+        $this->assertInstanceOf('\ManaPHP\Di', $dispatcher->di);
         $di->set('dispatcher', $dispatcher);
 
         $dispatcher->dispatch('Test', 'test2', 'another5', ['param1' => 2, 'param2' => 3]);
@@ -162,7 +162,7 @@ class MvcDispatcherTest extends TestCase
         $dispatcher->setDependencyInjector($di);
         $dispatcher->setRootNamespace('App');
 
-        $this->assertInstanceOf('\ManaPHP\Di', $dispatcher->getDependencyInjector());
+        $this->assertInstanceOf('\ManaPHP\Di', $dispatcher->di);
         $di->set('dispatcher', $dispatcher);
 
         $dispatcher->dispatch('Test', 'test2', 'another3');
@@ -190,7 +190,7 @@ class MvcDispatcherTest extends TestCase
         $dispatcher->setDependencyInjector($di);
         $dispatcher->setRootNamespace('App');
 
-        $this->assertInstanceOf('\ManaPHP\Di', $dispatcher->getDependencyInjector());
+        $this->assertInstanceOf('\ManaPHP\Di', $dispatcher->di);
         $di->set('dispatcher', $dispatcher);
 
         $dispatcher->dispatch('Test', 'test2', 'another3');

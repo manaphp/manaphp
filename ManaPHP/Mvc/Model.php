@@ -283,8 +283,11 @@ class Model extends Component implements ModelInterface
         $dependencyInjector = Di::getDefault();
         $modelsManager = $dependencyInjector->getShared('modelsManager');
 
+        $modelName = get_called_class();
+
         $resultset = $modelsManager->createBuilder($parameters)
-            ->from(get_called_class())
+            ->columns($dependencyInjector->modelsMetadata->getColumnProperties($modelName))
+            ->from($modelName)
             ->execute($cacheOptions);
 
         $modelInstances = [];
@@ -351,8 +354,11 @@ class Model extends Component implements ModelInterface
             $parameters = [$parameters];
         }
 
+        $modelName = get_called_class();
+
         $resultset = $modelsManager->createBuilder($parameters)
-            ->from(get_called_class())
+            ->columns($dependencyInjector->modelsMetadata->getColumnProperties($modelName))
+            ->from($modelName)
             ->limit(1)
             ->execute($cacheOptions);
 
@@ -824,6 +830,9 @@ class Model extends Component implements ModelInterface
      */
     public static function updateAll($columnValues, $conditions, $bind = [])
     {
+        /**
+         * @var $instance \ManaPHP\Mvc\Model
+         */
         $instance = new static();
 
         return $instance->getWriteConnection()->update($instance->getSource(), $columnValues, $conditions, $bind);
@@ -838,6 +847,9 @@ class Model extends Component implements ModelInterface
      */
     public static function deleteAll($conditions, $bind = [])
     {
+        /**
+         * @var $instance \ManaPHP\Mvc\Model
+         */
         $instance = new static();
 
         return $instance->getWriteConnection()->delete($instance->getSource(), $conditions, $bind);
