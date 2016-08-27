@@ -2,7 +2,6 @@
 namespace Application\Home\Controllers;
 
 use Application\Home\Models\City;
-use ManaPHP\Configure;
 use ManaPHP\Version;
 
 class IndexController extends ControllerBase

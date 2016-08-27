@@ -210,6 +210,7 @@ class Group implements GroupInterface
             if ($matches !== false) {
                 $parts = [];
 
+                /** @noinspection ForeachSourceInspection */
                 foreach ($matches as $k => $v) {
                     if (is_string($k)) {
                         $parts[$k] = $v;

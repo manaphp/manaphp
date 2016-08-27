@@ -277,10 +277,15 @@ class Model extends Component implements ModelInterface
      * @param  int|array      $cacheOptions
      *
      * @return  static[]
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function find($parameters = null, $cacheOptions = null)
     {
         $dependencyInjector = Di::getDefault();
+
+        /**
+         * @var $modelsManager \ManaPHP\Mvc\Model\Manager
+         */
         $modelsManager = $dependencyInjector->getShared('modelsManager');
 
         $modelName = get_called_class();
@@ -305,6 +310,7 @@ class Model extends Component implements ModelInterface
      * @param   int|array     $cacheOptions
      *
      * @return  static[]
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     final public static function findAll($parameters = null, $cacheOptions = null)
     {
@@ -356,6 +362,9 @@ class Model extends Component implements ModelInterface
 
         $modelName = get_called_class();
 
+        /**
+         * @var $modelsManager \ManaPHP\Mvc\Model\Manager
+         */
         $resultset = $modelsManager->createBuilder($parameters)
             ->columns($dependencyInjector->modelsMetadata->getColumnProperties($modelName))
             ->from($modelName)
@@ -365,6 +374,7 @@ class Model extends Component implements ModelInterface
         if (is_array($resultset) && isset($resultset[0])) {
             return new static($resultset[0], $dependencyInjector);
         } else {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
             return false;
         }
     }
@@ -441,7 +451,7 @@ class Model extends Component implements ModelInterface
      * @param int|array    $cacheOptions
      *
      * @return mixed
-     * @throws \ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     protected static function _groupResult($function, $alias, $column, $parameters, $cacheOptions)
     {
@@ -459,6 +469,9 @@ class Model extends Component implements ModelInterface
             $columns = "$function($column) AS $alias";
         }
 
+        /**
+         * @var $modelsManager \ManaPHP\Mvc\Model\Manager
+         */
         $resultset = $modelsManager->createBuilder($parameters)
             ->columns($columns)
             ->from(get_called_class())
@@ -491,7 +504,7 @@ class Model extends Component implements ModelInterface
      * @param int|array    $cacheOptions
      *
      * @return int|array
-     * @throws \ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function count($parameters = null, $column = '*', $cacheOptions = null)
     {
@@ -550,7 +563,7 @@ class Model extends Component implements ModelInterface
      * @param int|array    $cacheOptions
      *
      * @return mixed
-     * @throws \ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function max($column, $parameters = null, $cacheOptions = null)
     {
@@ -577,6 +590,7 @@ class Model extends Component implements ModelInterface
      * @param int|array    $cacheOptions
      *
      * @return mixed
+     * @throws \ManaPHP\Mvc\Model\Exception
      * @throws \ManaPHP\Di\Exception
      */
     public static function min($column, $parameters = null, $cacheOptions = null)
@@ -604,7 +618,7 @@ class Model extends Component implements ModelInterface
      * @param int|array    $cacheOptions
      *
      * @return double
-     * @throws \ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function average($column, $parameters = null, $cacheOptions = null)
     {
@@ -961,6 +975,7 @@ class Model extends Component implements ModelInterface
             $fields = [$fields];
         }
 
+        /** @noinspection ForeachSourceInspection */
         foreach ($fields as $field) {
             if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
                 return true;

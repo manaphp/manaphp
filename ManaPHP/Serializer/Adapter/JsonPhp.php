@@ -15,6 +15,7 @@ class JsonPhp implements AdapterInterface
         if (is_scalar($data) || $data === null) {
             return true;
         } elseif (is_array($data)) {
+            /** @noinspection ForeachSourceInspection */
             foreach ($data as $v) {
                 if (!$this->_isCanJsonSafely($v)) {
                     return false;

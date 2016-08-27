@@ -507,6 +507,9 @@ class Request extends Component implements RequestInterface
      */
     public function hasFiles($onlySuccessful = false)
     {
+        /**
+         * @var $_FILES array
+         */
         foreach ($_FILES as $file) {
             if (is_int($file['error'])) {
                 $error = $file['error'];
@@ -515,7 +518,7 @@ class Request extends Component implements RequestInterface
                     return true;
                 }
             } else {
-                /** @noinspection PhpWrongForeachArgumentTypeInspection */
+                /** @noinspection ForeachSourceInspection */
                 foreach ($file['error'] as $error) {
                     if (!$onlySuccessful || $error === UPLOAD_ERR_OK) {
                         return true;
@@ -538,6 +541,9 @@ class Request extends Component implements RequestInterface
     {
         $files = [];
 
+        /**
+         * @var $_FILES array
+         */
         foreach ($_FILES as $key => $file) {
             if (is_int($file['error'])) {
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {

@@ -377,6 +377,7 @@ abstract class Db extends Component implements DbInterface
 
         $wheres = [];
 
+        /** @noinspection ForeachSourceInspection */
         foreach ($conditions as $k => $v) {
             if (is_int($k)) {
                 $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
@@ -425,6 +426,7 @@ abstract class Db extends Component implements DbInterface
         }
 
         $wheres = [];
+        /** @noinspection ForeachSourceInspection */
         foreach ($conditions as $k => $v) {
             if (is_int($k)) {
                 $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;

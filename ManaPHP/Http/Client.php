@@ -161,6 +161,7 @@ class Client extends Component implements ClientInterface
 
         if (is_array($data)) {
             $hasFiles = false;
+            /** @noinspection ForeachSourceInspection */
             foreach ($data as $k => $v) {
                 if (is_string($v) && $v[0] === '@') {
                     $hasFiles = true;

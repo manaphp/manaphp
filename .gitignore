@@ -6,7 +6,4 @@
 /unit-tests/Image/Adapter
 
 /vendor/
-/Data/Debugger
-*.cache
-*.store
-/Data/Sword
+/Data/

@@ -96,6 +96,7 @@ class Manager implements ManagerInterface
         $callback_params = [new Event($fire_name), $source, $data];
 
         $ret = null;
+        /** @noinspection ForeachSourceInspection */
         foreach ($this->_events[$fire_type] as $event_handler) {
             $name = $event_handler['name'];
 

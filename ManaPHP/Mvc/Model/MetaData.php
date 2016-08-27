@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Db;
 
 /**
  * ManaPHP\Mvc\Model\MetaData
@@ -72,7 +71,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
                 $diff = array_diff($properties, $data[self::MODEL_ATTRIBUTES]);
 
                 if (count($diff) !== 0) {
-                    throw new Exception($modelName . 'is not contians these columns: ' . implode(',', $diff));
+                    throw new Exception($modelName . 'is not contains these columns: ' . implode(',', $diff));
                 }
 
                 $data[self::MODEL_COLUMN_PROPERTIES] = $properties;
@@ -167,6 +166,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      * @param string|\ManaPHP\Mvc\ModelInterface $model
      *
      * @return array
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function getColumnProperties($model)
     {
