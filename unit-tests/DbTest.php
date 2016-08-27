@@ -21,7 +21,7 @@ class DbTest extends TestCase
         $config = require __DIR__ . '/config.database.php';
         $this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
         // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
-        $this->db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
+        $this->db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 

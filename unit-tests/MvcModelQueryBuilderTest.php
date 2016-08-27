@@ -42,7 +42,7 @@ class MvcModelQueryBuilderTest extends TestCase
             $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
             //   $db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
-            $db->attachEvent('db:beforeQuery', function ($event, ManaPHP\DbInterface $source) {
+            $db->attachEvent('db:beforeQuery', function (ManaPHP\DbInterface $source) {
                 var_dump($source->getSQL());
                 var_dump($source->getEmulatedSQL());
             });

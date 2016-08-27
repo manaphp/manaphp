@@ -105,8 +105,8 @@ class MvcDispatcherTest extends TestCase
         }
 
         //normal usage without return value
-        $controller = $dispatcher->dispatch('Test', 'test2', 'other');
-        $this->assertInstanceOf('App\\Test\\Controllers\\Test2Controller', $controller);
+        $dispatcher->dispatch('Test', 'test2', 'other');
+        $this->assertInstanceOf('App\\Test\\Controllers\\Test2Controller', $dispatcher->getController());
         $this->assertEquals('other', $dispatcher->getActionName());
         $this->assertNull($dispatcher->getReturnedValue());
 

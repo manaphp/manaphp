@@ -60,7 +60,7 @@ class MvcModelTest extends TestCase
             // $db= new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
             echo get_class($db), PHP_EOL;
-            $db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
+            $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source) {
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getEmulatedSQL());
             });
@@ -289,7 +289,7 @@ class MvcModelTest extends TestCase
         $student->name = 'mana2';
         $student->create();
 
-        $this->assertEquals(2,Student::updateAll(['name'=>'m'],'1=1'));
+        $this->assertEquals(2, Student::updateAll(['name' => 'm'], '1=1'));
 
         $student->update();
     }

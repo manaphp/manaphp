@@ -78,7 +78,7 @@ class Manager implements ManagerInterface
     public function fireEvent($event, $source, $data = [])
     {
         foreach ($this->_peekHandlers as $peekHandler) {
-            $peekHandler($event, $source, $data);
+            $peekHandler($source, $data, $event);
         }
 
         if (!Text::contains($event, ':')) {
@@ -93,7 +93,7 @@ class Manager implements ManagerInterface
             return null;
         }
 
-        $callback_params = [new Event($fire_name), $source, $data];
+        $callback_params = [$source, $data, new Event($fire_name)];
 
         $ret = null;
         /** @noinspection ForeachSourceInspection */

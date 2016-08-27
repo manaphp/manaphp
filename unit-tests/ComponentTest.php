@@ -17,8 +17,9 @@ class TClass1 extends \ManaPHP\Component
 
 class ComponentTest extends TestCase
 {
-    public function test_xx(){
-        
+    public function test_xx()
+    {
+
     }
 //    public function test_hasProperty()
 //    {

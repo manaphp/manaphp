@@ -33,7 +33,7 @@ class Debugger extends Component implements DebuggerInterface
 
     protected $_exception = [];
 
-    public function _eventHandlerPeek($event, $source, $data)
+    public function _eventHandlerPeek($source, $data, $event)
     {
         if ($event === 'logger:log') {
             if (count($this->_log) <= $this->_log_max) {

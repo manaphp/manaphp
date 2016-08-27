@@ -1,10 +1,9 @@
 <?php
 
-
 namespace App\Test\Controllers {
-    use ManaPHP\Mvc\Controller;
-    use ManaPHP\Exception;
 
+    use ManaPHP\Exception;
+    use ManaPHP\Mvc\Controller;
 
     class Test1Controller extends Controller
     {

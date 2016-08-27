@@ -70,13 +70,12 @@ class Application extends Component implements ApplicationInterface
     }
 
     /**
-     * @param mixed                   $event
      * @param \ManaPHP\Mvc\Dispatcher $dispatcher
      *
      * @return bool
      * @throws \ManaPHP\Security\CsrfToken\Exception|\ManaPHP\Http\Request\Exception|\ManaPHP\Security\Crypt\Exception
      */
-    public function _eventHandlerBeforeExecuteRoute($event, $dispatcher)
+    public function _eventHandlerBeforeExecuteRoute($dispatcher)
     {
         $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
         if (isset($this->csrfToken)

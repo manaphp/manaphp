@@ -14,7 +14,7 @@ class CounterAdapterDbTest extends TestCase
         $this->_di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-            $db->attachEvent('db:beforeQuery', function ($event, \ManaPHP\DbInterface $source, $data) {
+            $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
                 //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
