@@ -176,9 +176,19 @@ class Di implements DiInterface
         $name = (!isset($this->_services[$_name]) && isset($this->_aliases[$_name])) ? $this->_aliases[$_name] : $_name;
 
         if (isset($this->_services[$name])) {
-            if (is_string($this->_services[$name])) {
-                $definition = $this->_services[$name];
+            $service = $this->_services[$name];
+
+            if (is_string($service)) {
+                $definition = $service;
                 $shared = true;
+            } elseif (isset($service['class'])) {
+                $definition = $service['class'];
+
+                if (isset($service['parameters'])) {
+                    $parameters = $service['parameters'];
+                }
+
+                $shared = isset($service['shared']) ? $service['shared'] : true;
             } else {
                 $parts = $this->_services[$name];
                 $definition = $parts[0];

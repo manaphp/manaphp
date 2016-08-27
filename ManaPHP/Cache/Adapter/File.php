@@ -2,7 +2,7 @@
 namespace ManaPHP\Cache\Adapter;
 
 use ManaPHP\Cache;
-use ManaPHP\Utility\Text;
+use ManaPHP\Di;
 
 class File extends Cache
 {
@@ -49,6 +49,10 @@ class File extends Cache
         if (isset($options['extension'])) {
             $this->_extension = $options['extension'];
         }
+
+        if (isset($options['serializer'])) {
+            $this->serializer = Di::getDefault()->getShared($options['serializer']);
+        }
     }
 
     /**
@@ -58,24 +62,24 @@ class File extends Cache
      */
     protected function _getFileName($key)
     {
-        if ($key[0] === '!') {
-            return $this->alias->resolve($this->_cacheDir . '/' . str_replace(':', '/', substr($key, 1)) . $this->_extension);
-        }
+        $pos = strrpos($key, '/');
 
-        if (Text::contains($key, '/')) {
-            $parts = explode('/', $key, 2);
-            $md5 = $parts[1];
-            $file = $this->_cacheDir . '/' . $parts[0] . '/';
+        if ($pos !== false && strlen($key) - $pos - 1 === 32) {
+            $prefix = substr($key, 0, $pos);
+            $md5 = substr($key, $pos + 1);
+            $shard = '';
 
             for ($i = 0; $i < $this->_dirLevel; $i++) {
-                $file .= substr($md5, $i + $i, 2) . '/';
+                $shard .= '/' . substr($md5, $i + $i, 2);
             }
-            $file .= $md5;
-        } else {
-            $file = $this->_cacheDir . '/' . $key;
+            $key = $prefix . $shard . '/' . $md5;
         }
 
-        return $this->alias->resolve(str_replace(':', '/', $file . $this->_extension));
+        if ($key[0] !== '/') {
+            $key = '/' . $key;
+        }
+
+        return $this->alias->resolve($this->_cacheDir . $key . $this->_extension);
     }
 
     /**

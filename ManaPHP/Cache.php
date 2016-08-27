@@ -2,7 +2,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Cache\AdapterInterface;
-use ManaPHP\Utility\Text;
 
 /**
  * Class Cache
@@ -16,30 +15,11 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
     /**
      * @param string $key
      *
-     * @return string
-     */
-    protected function _formatKey($key)
-    {
-        if ($key[0] === '!') {
-            return $key;
-        }
-
-        if (Text::contains($key, '/')) {
-            $parts = explode('/', $key, 2);
-            return $parts[0] . '/' . md5($parts[1]);
-        } else {
-            return $key;
-        }
-    }
-
-    /**
-     * @param string $key
-     *
      * @return mixed|false
      */
     public function get($key)
     {
-        $data = $this->_get($this->_formatKey($key));
+        $data = $this->_get($key);
         if ($data === false) {
             return false;
         } else {
@@ -56,7 +36,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
     {
         $keyValues = [];
         foreach ($keys as $key) {
-            $data = $this->_get($this->_formatKey($key));
+            $data = $this->_get($key);
             if ($data !== false) {
                 $data = $this->serializer->deserialize($data);
             }
@@ -75,7 +55,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
      */
     public function set($key, $value, $ttl)
     {
-        $this->_set($this->_formatKey($key), $this->serializer->serialize($value), $ttl);
+        $this->_set($key, $this->serializer->serialize($value), $ttl);
     }
 
     /**
@@ -87,7 +67,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
     public function mSet($keyValues, $ttl = null)
     {
         foreach ($keyValues as $key => $value) {
-            $this->_set($this->_formatKey($key), $this->serializer->serialize($value), $ttl);
+            $this->_set($key, $this->serializer->serialize($value), $ttl);
         }
     }
 
@@ -98,7 +78,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
      */
     public function delete($key)
     {
-        $this->_delete($this->_formatKey($key));
+        $this->_delete($key);
     }
 
     /**
@@ -108,6 +88,6 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
      */
     public function exists($key)
     {
-        return $this->_exists($this->_formatKey($key));
+        return $this->_exists($key);
     }
 }

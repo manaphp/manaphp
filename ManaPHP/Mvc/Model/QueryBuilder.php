@@ -499,6 +499,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $bind = [];
             $bindKeys = [];
 
+            /** @noinspection ForeachSourceInspection */
             foreach ($values as $k => $value) {
                 $key = '_in_' . self::$_hiddenParamNumber . '_' . $k;
                 $bindKeys[] = ":$key";
@@ -539,6 +540,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $bind = [];
             $bindKeys = [];
 
+            /** @noinspection ForeachSourceInspection */
             foreach ($values as $k => $value) {
                 $key = '_not_in_' . self::$_hiddenParamNumber . '_' . $k;
                 $bindKeys[] = ':' . $key;
@@ -660,6 +662,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         /**
          * @var \ManaPHP\Mvc\Model\QueryBuilder $builder
          */
+        /** @noinspection ForeachSourceInspection */
         foreach ($this->_union['builders'] as $builder) {
             $unions[] = '(' . $builder->getSql() . ')';
 
@@ -726,6 +729,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         if ($this->_columns !== null) {
             if (is_array($this->_columns)) {
                 $columns = '';
+                /** @noinspection ForeachSourceInspection */
                 foreach ($this->_columns as $column) {
                     if (strpos($column, '.') === false) {
                         $columns .= ', `' . $column . '`';
@@ -742,6 +746,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 $sql .= '*';
             } else {
                 $selectedColumns = [];
+                /** @noinspection ForeachSourceInspection */
                 foreach ($this->_models as $alias => $model) {
                     if (is_int($alias)) {
                         $selectedColumns[] = '[' . $model . '].*';
@@ -757,6 +762,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
          *  generate for FROM
          */
         $selectedModels = [];
+        /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $alias => $model) {
             if ($model instanceof QueryBuilderInterface) {
                 if (is_int($alias)) {
@@ -780,6 +786,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
          *  Join multiple models
          */
 
+        /** @noinspection ForeachSourceInspection */
         foreach ($this->_joins as $join) {
             $joinModel = $join[0];
             $joinCondition = $join[1];
@@ -822,6 +829,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $this->_conditions = $this->_conditions === '' ? [] : [$this->_conditions];
         }
 
+        /** @noinspection ForeachSourceInspection */
         foreach ($this->_conditions as $k => $v) {
             if ($v === '') {
                 continue;
@@ -887,6 +895,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $sql = strtr($sql, $replaces);
 
+        /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $model) {
             if (!$model instanceof QueryBuilderInterface) {
                 $sql = str_replace('[' . $model . ']', '`' . $this->modelsManager->getModelSource($model) . '`', $sql);
@@ -937,15 +946,19 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         $sql = $this->getSql();
 
         if ($cacheOptions !== null) {
-            if (!is_array($cacheOptions)) {
-                $cacheOptions = ['ttl' => $cacheOptions];
+            if (is_array($cacheOptions)) {
+                $_cacheOptions = (array)$cacheOptions;
+            } else {
+                $_cacheOptions = ['ttl' => $cacheOptions];
             }
 
-            if (!isset($cacheOptions['key'])) {
-                $cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind);
+            if (!isset($_cacheOptions['key'])) {
+                $_cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind);
             }
+        }
 
-            $result = $this->modelsCache->get($cacheOptions['key']);
+        if (isset($_cacheOptions)) {
+            $result = $this->modelsCache->get($_cacheOptions['key']);
             if ($result !== false) {
                 return $result;
             }
@@ -959,8 +972,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             throw new Exception($e->getMessage() . ':' . $sql);
         }
 
-        if ($cacheOptions !== null) {
-            $this->modelsCache->set($cacheOptions['key'], $result, $cacheOptions['ttl']);
+        if (isset($_cacheOptions)) {
+            $this->modelsCache->set($_cacheOptions['key'], $result, $_cacheOptions['ttl']);
         }
 
         return $result;
@@ -1039,15 +1052,19 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         $sql = $this->getSql();
 
         if ($cacheOptions !== null) {
-            if (!is_array($cacheOptions)) {
-                $cacheOptions = ['ttl' => $cacheOptions];
+            if (is_array($cacheOptions)) {
+                $_cacheOptions = (array)$cacheOptions;
+            } else {
+                $_cacheOptions = ['ttl' => $cacheOptions];
             }
 
-            if (!isset($cacheOptions['key'])) {
-                $cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind) . ':executeEx';
+            if (!isset($_cacheOptions['key'])) {
+                $_cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind) . ':executeEx';
             }
+        }
 
-            $result = $this->modelsCache->get($cacheOptions['key']);
+        if (isset($_cacheOptions)) {
+            $result = $this->modelsCache->get($_cacheOptions['key']);
 
             if ($result !== false) {
                 /** @noinspection CallableParameterUseCaseInTypeContextInspection */
@@ -1074,9 +1091,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             }
         }
 
-        if ($cacheOptions !== null) {
+        if (isset($_cacheOptions)) {
             $cacheData = ['rows' => $result, 'totalRows' => $totalRows];
-            $this->modelsCache->set($cacheOptions['key'], $cacheData, $cacheOptions['ttl']);
+            $this->modelsCache->set($_cacheOptions['key'], $cacheData, $_cacheOptions['ttl']);
         }
 
         return $result;
