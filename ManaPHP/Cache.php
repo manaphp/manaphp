@@ -1,16 +1,15 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Cache\AdapterInterface;
-
 /**
  * Class Cache
  *
  * @package ManaPHP
  *
  * @property \ManaPHP\Serializer\AdapterInterface $serializer
+ * @property \ManaPHP\Cache\EngineInterface       $cacheEngine
  */
-abstract class Cache extends Component implements CacheInterface, AdapterInterface
+class Cache extends Component implements CacheInterface
 {
     /**
      * @param string $key
@@ -19,7 +18,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
      */
     public function get($key)
     {
-        $data = $this->_get($key);
+        $data = $this->cacheEngine->get($key);
         if ($data === false) {
             return false;
         } else {
@@ -36,7 +35,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
     {
         $keyValues = [];
         foreach ($keys as $key) {
-            $data = $this->_get($key);
+            $data = $this->cacheEngine->get($key);
             if ($data !== false) {
                 $data = $this->serializer->deserialize($data);
             }
@@ -55,7 +54,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
      */
     public function set($key, $value, $ttl)
     {
-        $this->_set($key, $this->serializer->serialize($value), $ttl);
+        $this->cacheEngine->set($key, $this->serializer->serialize($value), $ttl);
     }
 
     /**
@@ -67,7 +66,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
     public function mSet($keyValues, $ttl = null)
     {
         foreach ($keyValues as $key => $value) {
-            $this->_set($key, $this->serializer->serialize($value), $ttl);
+            $this->cacheEngine->set($key, $this->serializer->serialize($value), $ttl);
         }
     }
 
@@ -78,7 +77,7 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
      */
     public function delete($key)
     {
-        $this->_delete($key);
+        $this->cacheEngine->delete($key);
     }
 
     /**
@@ -88,6 +87,6 @@ abstract class Cache extends Component implements CacheInterface, AdapterInterfa
      */
     public function exists($key)
     {
-        return $this->_exists($key);
+        return $this->cacheEngine->exists($key);
     }
 }

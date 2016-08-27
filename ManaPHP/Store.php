@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Store\AdapterInterface;
 use ManaPHP\Utility\Text;
 
 /**
@@ -10,8 +9,9 @@ use ManaPHP\Utility\Text;
  * @package ManaPHP
  *
  * @property \ManaPHP\Serializer\AdapterInterface $serializer
+ * @property \ManaPHP\Store\EngineInterface       $storeEngine
  */
-abstract class Store extends Component implements StoreInterface, AdapterInterface
+class Store extends Component implements StoreInterface
 {
     /**
      * @param string $key
@@ -42,7 +42,7 @@ abstract class Store extends Component implements StoreInterface, AdapterInterfa
      */
     public function get($key)
     {
-        $content = $this->_get($this->_formatKey($key));
+        $content = $this->storeEngine->get($this->_formatKey($key));
         if ($content === false) {
             return false;
         } else {
@@ -62,7 +62,7 @@ abstract class Store extends Component implements StoreInterface, AdapterInterfa
     {
         $keyValues = [];
         foreach ($keys as $key) {
-            $value = $this->_get($this->_formatKey($key));
+            $value = $this->storeEngine->get($this->_formatKey($key));
             if ($value === false) {
                 $keyValues[$key] = $value;
             } else {
@@ -84,7 +84,7 @@ abstract class Store extends Component implements StoreInterface, AdapterInterfa
      */
     public function set($key, $value)
     {
-        $this->_set($this->_formatKey($key), $this->serializer->serialize($value));
+        $this->storeEngine->set($this->_formatKey($key), $this->serializer->serialize($value));
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class Store extends Component implements StoreInterface, AdapterInterfa
             $completeKeyValues[$completeKey] = $this->serializer->serialize($value);
         }
 
-        $this->_mSet($completeKeyValues);
+        $this->storeEngine->mSet($completeKeyValues);
     }
 
     /**
@@ -114,7 +114,7 @@ abstract class Store extends Component implements StoreInterface, AdapterInterfa
      */
     public function delete($key)
     {
-        $this->_delete($this->_formatKey($key));
+        $this->storeEngine->delete($this->_formatKey($key));
     }
 
     /**
@@ -126,6 +126,6 @@ abstract class Store extends Component implements StoreInterface, AdapterInterfa
      */
     public function exists($key)
     {
-        return $this->_exists($this->_formatKey($key));
+        return $this->storeEngine->exists($this->_formatKey($key));
     }
 }

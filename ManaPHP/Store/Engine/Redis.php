@@ -1,8 +1,9 @@
 <?php
 
-namespace ManaPHP\Store\Adapter;
+namespace ManaPHP\Store\Engine;
 
-use ManaPHP\Store;
+use ManaPHP\Component;
+use ManaPHP\Store\EngineInterface;
 
 /**
  * Class Redis
@@ -11,7 +12,7 @@ use ManaPHP\Store;
  *
  * @property \Redis $redis
  */
-class Redis extends Store
+class Redis extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -21,7 +22,7 @@ class Redis extends Store
     /**
      * Redis constructor.
      *
-     * @param string|array|\ConfManaPHP\Store\Adapter\Redis $options
+     * @param string|array|\ConfManaPHP\Store\Engine\Redis $options
      */
     public function __construct($options = [])
     {
@@ -44,9 +45,9 @@ class Redis extends Store
      * @param string $id
      *
      * @return string|false
-     * @throws \ManaPHP\Store\Adapter\Exception
+     * @throws \ManaPHP\Store\Engine\Exception
      */
-    public function _get($id)
+    public function get($id)
     {
         return $this->redis->hGet($this->key, $id);
     }
@@ -56,7 +57,7 @@ class Redis extends Store
      *
      * @return array
      */
-    public function _mGet($ids)
+    public function mGet($ids)
     {
         return $this->redis->hMGet($this->key, $ids);
     }
@@ -68,9 +69,9 @@ class Redis extends Store
      * @param string $value
      *
      * @return void
-     * @throws \ManaPHP\Store\Adapter\Exception
+     * @throws \ManaPHP\Store\Engine\Exception
      */
-    public function _set($id, $value)
+    public function set($id, $value)
     {
         $this->redis->hSet($this->key, $id, $value);
     }
@@ -80,7 +81,7 @@ class Redis extends Store
      *
      * @return void
      */
-    public function _mSet($idValues)
+    public function mSet($idValues)
     {
         $this->redis->hMset($this->key, $idValues);
     }
@@ -91,9 +92,9 @@ class Redis extends Store
      * @param string $id
      *
      * @void
-     * @throws \ManaPHP\Store\Adapter\Exception
+     * @throws \ManaPHP\Store\Engine\Exception
      */
-    public function _delete($id)
+    public function delete($id)
     {
         $this->redis->hDel($this->key, $id);
     }
@@ -104,9 +105,9 @@ class Redis extends Store
      * @param string $id
      *
      * @return bool
-     * @throws \ManaPHP\Store\Adapter\Exception
+     * @throws \ManaPHP\Store\Engine\Exception
      */
-    public function _exists($id)
+    public function exists($id)
     {
         return $this->redis->hExists($this->key, $id);
     }

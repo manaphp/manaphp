@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Cache;
 
-interface AdapterInterface
+interface EngineInterface
 {
     /**
      * Checks whether a specified key exists in the cache.
@@ -10,7 +10,7 @@ interface AdapterInterface
      *
      * @return bool
      */
-    public function _exists($key);
+    public function exists($key);
 
     /**
      * Retrieves a value from cache with a specified key.
@@ -19,7 +19,7 @@ interface AdapterInterface
      *
      * @return string|false
      */
-    public function _get($key);
+    public function get($key);
 
     /**
      * Stores a value identified by a key into cache.
@@ -30,7 +30,7 @@ interface AdapterInterface
      *
      * @return void
      */
-    public function _set($key, $value, $ttl);
+    public function set($key, $value, $ttl);
 
     /**
      * Deletes a value with the specified key from cache
@@ -39,6 +39,6 @@ interface AdapterInterface
      *
      * @void
      */
-    public function _delete($key);
+    public function delete($key);
 
 }

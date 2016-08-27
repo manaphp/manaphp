@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Cache\Engine;
 
-use ManaPHP\Cache;
-use ManaPHP\Di;
+use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Component;
 
-class File extends Cache
+class File extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -24,7 +24,7 @@ class File extends Cache
     /**
      * File constructor.
      *
-     * @param string|array|\ConfManaPHP\Cache\Adapter\File $options
+     * @param string|array|\ConfManaPHP\Cache\Engine\File $options
      *
      * @throws \ManaPHP\Cache\Exception|\ManaPHP\Configure\Exception
      */
@@ -48,10 +48,6 @@ class File extends Cache
 
         if (isset($options['extension'])) {
             $this->_extension = $options['extension'];
-        }
-
-        if (isset($options['serializer'])) {
-            $this->serializer = Di::getDefault()->getShared($options['serializer']);
         }
     }
 
@@ -87,7 +83,7 @@ class File extends Cache
      *
      * @return bool
      */
-    public function _exists($key)
+    public function exists($key)
     {
         $cacheFile = $this->_getFileName($key);
 
@@ -99,7 +95,7 @@ class File extends Cache
      *
      * @return string|false
      */
-    public function _get($key)
+    public function get($key)
     {
         $cacheFile = $this->_getFileName($key);
 
@@ -116,9 +112,9 @@ class File extends Cache
      * @param int    $ttl
      *
      * @return void
-     * @throws \ManaPHP\Cache\Adapter\Exception
+     * @throws \ManaPHP\Cache\Engine\Exception
      */
-    public function _set($key, $value, $ttl)
+    public function set($key, $value, $ttl)
     {
         $cacheFile = $this->_getFileName($key);
 
@@ -140,7 +136,7 @@ class File extends Cache
      *
      * @return void
      */
-    public function _delete($key)
+    public function delete($key)
     {
         $cacheFile = $this->_getFileName($key);
 

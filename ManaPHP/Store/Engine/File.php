@@ -1,10 +1,11 @@
 <?php
-namespace ManaPHP\Store\Adapter;
+namespace ManaPHP\Store\Engine;
 
-use ManaPHP\Store;
+use ManaPHP\Component;
+use ManaPHP\Store\EngineInterface;
 use ManaPHP\Utility\Text;
 
-class File extends Store
+class File extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -24,7 +25,7 @@ class File extends Store
     /**
      * File constructor.
      *
-     * @param string|array|\ConfManaPHP\Store\Adapter\File $options
+     * @param string|array|\ConfManaPHP\Store\Engine\File $options
      *
      * @throws \ManaPHP\Configure\Exception
      */
@@ -79,7 +80,7 @@ class File extends Store
      *
      * @return bool
      */
-    public function _exists($id)
+    public function exists($id)
     {
         $storeFile = $this->_getFileName($id);
 
@@ -91,7 +92,7 @@ class File extends Store
      *
      * @return false|string
      */
-    public function _get($id)
+    public function get($id)
     {
         $storeFile = $this->_getFileName($id);
 
@@ -107,12 +108,12 @@ class File extends Store
      *
      * @return array
      */
-    public function _mGet($ids)
+    public function mGet($ids)
     {
         $idValues = [];
 
         foreach ($ids as $id) {
-            $idValues[$id] = $this->_get($id);
+            $idValues[$id] = $this->get($id);
         }
 
         return $idValues;
@@ -123,9 +124,9 @@ class File extends Store
      * @param string $value
      *
      * @return void
-     * @throws \ManaPHP\Store\Adapter\Exception
+     * @throws \ManaPHP\Store\Engine\Exception
      */
-    public function _set($id, $value)
+    public function set($id, $value)
     {
         $storeFile = $this->_getFileName($id);
 
@@ -145,12 +146,12 @@ class File extends Store
      * @param array $idValues
      *
      * @return void
-     * @throws \ManaPHP\Store\Adapter\Exception
+     * @throws \ManaPHP\Store\Engine\Exception
      */
-    public function _mSet($idValues)
+    public function mSet($idValues)
     {
         foreach ($idValues as $id => $value) {
-            $this->_set($id, $value);
+            $this->set($id, $value);
         }
     }
 
@@ -159,7 +160,7 @@ class File extends Store
      *
      * @return void
      */
-    public function _delete($id)
+    public function delete($id)
     {
         $storeFile = $this->_getFileName($id);
 

@@ -14,6 +14,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Mvc\Url      $url
  * @property \ManaPHP\Http\Request $request
  * @property \ManaPHP\Log\Logger   $logger
+ * @property \ManaPHP\Renderer     $renderer
  */
 class Debugger extends Component implements DebuggerInterface
 {
@@ -252,21 +253,13 @@ class Debugger extends Component implements DebuggerInterface
             return $data;
         }
 
-        $template = str_replace('\\', '/', $template);
-
         if (!Text::contains($template, '/')) {
-            $template = $this->alias->resolve('@manaphp/Debugger/Template/' . $template . '.php');
+            $file = $this->alias->resolve('@manaphp/Debugger/Template/' . $template);
+        } else {
+            $file = $template;
         }
 
-        if (!is_file($template)) {
-            throw new Exception('Template file is not existed: ' . $template);
-        }
-
-        ob_start();
-
-        /** @noinspection PhpIncludeInspection */
-        require $template;
-        return ob_get_clean();
+        return $this->renderer->render($file, ['data' => $data], false);
     }
 
     /**

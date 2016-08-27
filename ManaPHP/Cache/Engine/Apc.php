@@ -1,10 +1,11 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Cache\Engine;
 
-use ManaPHP\Cache;
+use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Component;
 
-class Apc extends Cache
+class Apc extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -14,9 +15,9 @@ class Apc extends Cache
     /**
      * Apc constructor.
      *
-     * @param array|\ConfManaPHP\Cache\Adapter\Apc $options
+     * @param array|\ConfManaPHP\Cache\Engine\Apc $options
      *
-     * @throws \ManaPHP\Cache\Adapter\Exception
+     * @throws \ManaPHP\Cache\Engine\Exception
      */
     public function __construct($options = [])
     {
@@ -37,17 +38,17 @@ class Apc extends Cache
         }
     }
 
-    public function _exists($key)
+    public function exists($key)
     {
         return apc_exists($this->_prefix . $key);
     }
 
-    public function _get($key)
+    public function get($key)
     {
         return apc_fetch($this->_prefix . $key);
     }
 
-    public function _set($key, $value, $ttl)
+    public function set($key, $value, $ttl)
     {
         $r = apc_store($this->_prefix . $key, $value, $ttl);
         if (!$r) {
@@ -55,7 +56,7 @@ class Apc extends Cache
         }
     }
 
-    public function _delete($key)
+    public function delete($key)
     {
         apc_delete($this->_prefix . $key);
     }

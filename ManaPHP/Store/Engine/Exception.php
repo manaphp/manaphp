@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Store\Adapter;
+namespace ManaPHP\Store\Engine;
 
 class Exception extends \ManaPHP\Store\Exception
 {

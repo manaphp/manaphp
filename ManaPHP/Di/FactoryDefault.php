@@ -46,8 +46,10 @@ class FactoryDefault extends Di
             'debugger' => 'ManaPHP\Debugger',
             'password' => 'ManaPHP\Authentication\Password',
             'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
-            'cache' => 'ManaPHP\Cache\Adapter\File',
+            'cache' => 'ManaPHP\Cache',
+            'cacheEngine' => 'ManaPHP\Cache\Engine\File',
             'store' => 'ManaPHP\Store\Adapter\File',
+            'storeEngine' => 'ManaPHP\Store\Engine\File',
             'counter' => 'ManaPHP\Counter\Adapter\Db',
             'httpClient' => 'ManaPHP\Http\Client',
             'captcha' => 'ManaPHP\Security\Captcha',
@@ -56,13 +58,13 @@ class FactoryDefault extends Di
             'userIdentity' => 'ManaPHP\Authentication\UserIdentity',
             'paginator' => 'ManaPHP\Paginator',
             'viewsCache' => [
-                'class' => 'ManaPHP\Cache\Adapter\File',
-                'parameters' => [['cacheDir' => '@data/viewsCache', 'extension' => '.html', 'serializer' => 'ManaPHP\Serializer\Adapter\StringType']]
+                'class' => 'ManaPHP\Cache\Engine\File',
+                'parameters' => [['cacheDir' => '@data/viewsCache', 'extension' => '.html']]
             ],
-        ];
-
-        $this->_aliases = [
-            'modelsCache' => 'cache',
+            'modelsCache' => [
+                'class' => 'ManaPHP\Cache\Engine\File',
+                'parameters' => [['cacheDir' => '@data/modelsCache', 'extension' => '.json']]
+            ],
         ];
     }
 }

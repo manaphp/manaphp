@@ -290,10 +290,11 @@ class Model extends Component implements ModelInterface
 
         $modelName = get_called_class();
 
-        $resultset = $modelsManager->createBuilder($parameters)
+        $builder = $modelsManager->createBuilder($parameters)
             ->columns($dependencyInjector->modelsMetadata->getColumnProperties($modelName))
-            ->from($modelName)
-            ->execute($cacheOptions);
+            ->from($modelName);
+
+        $resultset = $builder->execute($cacheOptions);
 
         $modelInstances = [];
         foreach ($resultset as $result) {
@@ -365,11 +366,12 @@ class Model extends Component implements ModelInterface
         /**
          * @var $modelsManager \ManaPHP\Mvc\Model\Manager
          */
-        $resultset = $modelsManager->createBuilder($parameters)
+        $builder = $modelsManager->createBuilder($parameters)
             ->columns($dependencyInjector->modelsMetadata->getColumnProperties($modelName))
             ->from($modelName)
-            ->limit(1)
-            ->execute($cacheOptions);
+            ->limit(1);
+
+        $resultset = $builder->execute($cacheOptions);
 
         if (is_array($resultset) && isset($resultset[0])) {
             return new static($resultset[0], $dependencyInjector);
@@ -472,10 +474,11 @@ class Model extends Component implements ModelInterface
         /**
          * @var $modelsManager \ManaPHP\Mvc\Model\Manager
          */
-        $resultset = $modelsManager->createBuilder($parameters)
+        $builder = $modelsManager->createBuilder($parameters)
             ->columns($columns)
-            ->from(get_called_class())
-            ->execute($cacheOptions);
+            ->from(get_called_class());
+
+        $resultset = $builder->execute($cacheOptions);
 
         if (isset($parameters['group'])) {
             return $resultset;

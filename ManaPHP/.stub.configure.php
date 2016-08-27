@@ -56,7 +56,7 @@ namespace ConfManaPHP {
         public $autoResponse;
     }
 }
-namespace ConfManaPHP\Cache\Adapter {
+namespace ConfManaPHP\Cache\Engine {
 
     class Apc
     {
@@ -93,7 +93,7 @@ namespace ConfManaPHP\Cache\Adapter {
     }
 }
 
-namespace ConfManaPHP\Store\Adapter {
+namespace ConfManaPHP\Store\Engine {
 
     class Redis
     {

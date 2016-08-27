@@ -28,10 +28,10 @@ use ManaPHP\Utility\Text;
  * </code>
  *
  *
- * @property \ManaPHP\Renderer       $renderer
- * @property \ManaPHP\CacheInterface $viewsCache
- * @property \ManaPHP\Http\Request   $request
- * @property \ManaPHP\Mvc\Dispatcher $dispatcher
+ * @property \ManaPHP\Renderer              $renderer
+ * @property \ManaPHP\Cache\EngineInterface $viewsCache
+ * @property \ManaPHP\Http\Request          $request
+ * @property \ManaPHP\Mvc\Dispatcher        $dispatcher
  */
 class View extends Component implements ViewInterface
 {

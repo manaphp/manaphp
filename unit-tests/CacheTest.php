@@ -14,7 +14,8 @@ class CacheTest extends TestCase
 
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new \ManaPHP\Cache();
+        $cache->delete('country');
 
         $this->assertFalse($cache->exists('country'));
 
@@ -24,8 +25,9 @@ class CacheTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new \ManaPHP\Cache();
 
+        $cache->delete('country');
         $this->assertFalse($cache->get('country'));
 
         $cache->set('country', 'china', 100);
@@ -34,7 +36,7 @@ class CacheTest extends TestCase
 
     public function test_mGet()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new \ManaPHP\Cache();
         $cache->mSet(['k1' => 'value1', 'k2' => 'value2']);
 
         $data = $cache->mGet(['k1', 'k2']);
@@ -44,7 +46,9 @@ class CacheTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new \ManaPHP\Cache();
+        $cache->delete('var');
+
         $this->assertFalse($cache->get('var'));
 
         // false
@@ -84,7 +88,7 @@ class CacheTest extends TestCase
 
     public function test_mSet()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new \ManaPHP\Cache();
         $cache->mSet(['k1' => 'value1', 'k2' => 'value2']);
         $this->assertEquals('value1', $cache->get('k1'));
         $this->assertEquals('value2', $cache->get('k2'));
@@ -92,7 +96,9 @@ class CacheTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new ManaPHP\Cache\Adapter\Memory();
+        $cache = new \ManaPHP\Cache();
+        $cache->delete('val');
+
         // delete a not existed
         $this->assertFalse($cache->exists('val'));
         $cache->delete('val');

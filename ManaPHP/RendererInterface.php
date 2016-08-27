@@ -13,7 +13,7 @@ interface RendererInterface
      * @return string
      * @throws \ManaPHP\Renderer\Exception
      */
-    public function render($template, $vars, $directOutput = true);
+    public function render($template, $vars, $directOutput = false);
 
     /**
      * @param string $template

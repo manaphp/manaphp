@@ -20,79 +20,79 @@ class StoreAdapterRedisTest extends TestCase
 
     public function test_exists()
     {
-        $store = new \ManaPHP\Store\Adapter\Redis();
+        $store = new \ManaPHP\Store\Engine\Redis();
 
-        $store->_delete('var');
+        $store->delete('var');
 
-        $this->assertFalse($store->_exists('var'));
-        $store->_set('var', 'value');
-        $this->assertTrue($store->_exists('var'));
+        $this->assertFalse($store->exists('var'));
+        $store->set('var', 'value');
+        $this->assertTrue($store->exists('var'));
     }
 
     public function test_get()
     {
-        $store = new \ManaPHP\Store\Adapter\Redis();
+        $store = new \ManaPHP\Store\Engine\Redis();
 
-        $store->_delete('var');
+        $store->delete('var');
 
-        $this->assertFalse($store->_get('var'));
-        $store->_set('var', 'value');
-        $this->assertSame('value', $store->_get('var'));
+        $this->assertFalse($store->get('var'));
+        $store->set('var', 'value');
+        $this->assertSame('value', $store->get('var'));
     }
 
     public function test_mGet()
     {
-        $store = new \ManaPHP\Store\Adapter\Redis();
+        $store = new \ManaPHP\Store\Engine\Redis();
 
-        $store->_delete('1');
-        $store->_delete('2');
+        $store->delete('1');
+        $store->delete('2');
 
-        $store->_set('1', '1');
+        $store->set('1', '1');
 
-        $idValues = $store->_mGet(['1', '2']);
+        $idValues = $store->mGet(['1', '2']);
         $this->assertEquals('1', $idValues['1']);
         $this->assertFalse($idValues[2]);
     }
 
     public function test_set()
     {
-        $store = new \ManaPHP\Store\Adapter\Redis();
+        $store = new \ManaPHP\Store\Engine\Redis();
 
-        $store->_set('var', '');
-        $this->assertSame('', $store->_get('var'));
+        $store->set('var', '');
+        $this->assertSame('', $store->get('var'));
 
-        $store->_set('var', 'value');
-        $this->assertSame('value', $store->_get('var'));
+        $store->set('var', 'value');
+        $this->assertSame('value', $store->get('var'));
 
-        $store->_set('var', '{}');
-        $this->assertSame('{}', $store->_get('var'));
+        $store->set('var', '{}');
+        $this->assertSame('{}', $store->get('var'));
     }
 
     public function test_mSet()
     {
-        $store = new \ManaPHP\Store\Adapter\Redis();
+        $store = new \ManaPHP\Store\Engine\Redis();
 
-        $store->_delete(1);
-        $store->_delete(2);
-        $store->_delete(3);
+        $store->delete(1);
+        $store->delete(2);
+        $store->delete(3);
 
-        $store->_mSet([]);
+        $store->mSet([]);
 
-        $store->_mSet(['1' => '1', '2' => '2']);
-        $this->assertSame('1', $store->_get(1));
-        $this->assertSame('2', $store->_get(2));
-        $this->assertFalse($store->_get(3));
+        $store->mSet(['1' => '1', '2' => '2']);
+        $this->assertSame('1', $store->get(1));
+        $this->assertSame('2', $store->get(2));
+        $this->assertFalse($store->get(3));
     }
 
     public function test_delete()
     {
-        $store = new \ManaPHP\Store\Adapter\Redis();
+        $store = new \ManaPHP\Store\Engine\Redis();
 
         //exists and delete
-        $store->_set('var', 'value');
-        $store->_delete('var');
+        $store->set('var', 'value');
+        $store->delete('var');
 
         // missing and delete
-        $store->_delete('var');
+        $store->delete('var');
     }
 }

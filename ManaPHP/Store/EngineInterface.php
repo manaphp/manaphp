@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Store;
 
-interface AdapterInterface
+interface EngineInterface
 {
 
     /**
@@ -11,7 +11,7 @@ interface AdapterInterface
      *
      * @return bool
      */
-    public function _exists($id);
+    public function exists($id);
 
     /**
      * Retrieves a value from store with a specified id.
@@ -20,7 +20,7 @@ interface AdapterInterface
      *
      * @return string|false
      */
-    public function _get($id);
+    public function get($id);
 
     /**
      * Retrieves a value from store with a specified id.
@@ -29,7 +29,7 @@ interface AdapterInterface
      *
      * @return array
      */
-    public function _mGet($ids);
+    public function mGet($ids);
 
     /**
      * Stores a value identified by a id into store.
@@ -39,7 +39,7 @@ interface AdapterInterface
      *
      * @return void
      */
-    public function _set($id, $value);
+    public function set($id, $value);
 
     /**
      * Stores a value identified by a id into store.
@@ -48,7 +48,7 @@ interface AdapterInterface
      *
      * @return void
      */
-    public function _mSet($idValues);
+    public function mSet($idValues);
 
     /**
      * Deletes a value with the specified id from store
@@ -57,5 +57,5 @@ interface AdapterInterface
      *
      * @void
      */
-    public function _delete($id);
+    public function delete($id);
 }

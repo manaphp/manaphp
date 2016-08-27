@@ -1,17 +1,18 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Cache\Engine;
 
-use ManaPHP\Cache;
+use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Component;
 
 /**
  * Class Redis
  *
- * @package ManaPHP\Cache\Adapter
+ * @package ManaPHP\Cache\Engine
  *
  * @property \Redis $redis
  */
-class Redis extends Cache
+class Redis extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -21,7 +22,7 @@ class Redis extends Cache
     /**
      * Redis constructor.
      *
-     * @param string|array|\ConfManaPHP\Cache\Adapter\Redis $options
+     * @param string|array|\ConfManaPHP\Cache\Engine\Redis $options
      */
     public function __construct($options = [])
     {
@@ -43,7 +44,7 @@ class Redis extends Cache
      *
      * @return string|false
      */
-    public function _get($key)
+    public function get($key)
     {
         return $this->redis->get($this->_prefix . $key);
     }
@@ -55,7 +56,7 @@ class Redis extends Cache
      *
      * @return void
      */
-    public function _set($key, $value, $ttl)
+    public function set($key, $value, $ttl)
     {
         $this->redis->set($this->_prefix . $key, $value, $ttl);
     }
@@ -65,7 +66,7 @@ class Redis extends Cache
      *
      * @return void
      */
-    public function _delete($key)
+    public function delete($key)
     {
         $this->redis->delete($this->_prefix . $key);
     }
@@ -75,7 +76,7 @@ class Redis extends Cache
      *
      * @return bool
      */
-    public function _exists($key)
+    public function exists($key)
     {
         return $this->redis->exists($this->_prefix . $key);
     }

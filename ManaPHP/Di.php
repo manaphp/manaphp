@@ -36,7 +36,7 @@ use ManaPHP\Di\Exception;
  *
  *</code>
  *
- * * @property \ManaPHP\Alias $alias
+ * @property \ManaPHP\Alias                       $alias
  * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
  * @property \ManaPHP\Mvc\Router                  $router
  * @property \ManaPHP\Mvc\Url                     $url
@@ -49,11 +49,10 @@ use ManaPHP\Di\Exception;
  * @property \ManaPHP\Http\SessionInterface       $session
  * @property \ManaPHP\Event\ManagerInterface      $eventsManager
  * @property \ManaPHP\Db                          $db
-//* @property \ManaPHP\Security $security
  * @property \ManaPHP\Security\Crypt              $crypt
  * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
  * @property \ManaPHP\Mvc\Model\Metadata          $modelsMetadata
-//     * @property \ManaPHP\Assets\Manager $assets
+ * @property \ManaPHP\Cache\EngineInterface       $modelsCache
  * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
  * @property \ManaPHP\Http\Session\Bag            $persistent
  * @property \ManaPHP\Mvc\View                    $view
@@ -67,8 +66,9 @@ use ManaPHP\Di\Exception;
  * @property \Redis                               $redis
  * @property \ManaPHP\Serializer\AdapterInterface $serializer
  * @property \ManaPHP\Cache                       $cache
+ * @property \ManaPHP\Cache\EngineInterface       $cacheEngine
  * @property \ManaPHP\Counter                     $counter
- * @property \ManaPHP\CacheInterface              $viewsCache
+ * @property \ManaPHP\Cache\EngineInterface       $viewsCache
  * @property \ManaPHP\Http\Client                 $httpClient
  * @property \ManaPHP\AuthorizationInterface      $authorization
  * @property \ManaPHP\Security\Captcha            $captcha

@@ -1,9 +1,10 @@
 <?php
-namespace ManaPHP\Store\Adapter;
+namespace ManaPHP\Store\Engine;
 
-use ManaPHP\Store;
+use ManaPHP\Component;
+use ManaPHP\Store\EngineInterface;
 
-class Memory extends Store
+class Memory extends Component implements EngineInterface
 {
     /**
      * @var array
@@ -15,7 +16,7 @@ class Memory extends Store
      *
      * @return string|false
      */
-    public function _get($id)
+    public function get($id)
     {
         return isset($this->_data[$id]) ? $this->_data[$id] : false;
     }
@@ -25,7 +26,7 @@ class Memory extends Store
      *
      * @return array
      */
-    public function _mGet($ids)
+    public function mGet($ids)
     {
         $idValues = [];
         foreach ($ids as $id) {
@@ -41,7 +42,7 @@ class Memory extends Store
      *
      * @return void
      */
-    public function _set($id, $value)
+    public function set($id, $value)
     {
         $this->_data[$id] = $value;
     }
@@ -51,7 +52,7 @@ class Memory extends Store
      *
      * @return void
      */
-    public function _mSet($idValues)
+    public function mSet($idValues)
     {
         foreach ($idValues as $id => $value) {
             $this->_data[$id] = $value;
@@ -63,7 +64,7 @@ class Memory extends Store
      *
      * @return void
      */
-    public function _delete($id)
+    public function delete($id)
     {
         unset($this->_data[$id]);
     }
@@ -73,7 +74,7 @@ class Memory extends Store
      *
      * @return bool
      */
-    public function _exists($id)
+    public function exists($id)
     {
         return isset($this->_data[$id]);
     }

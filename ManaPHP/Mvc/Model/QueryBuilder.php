@@ -20,9 +20,10 @@ use ManaPHP\Utility\Text;
  *   ->execute();
  *</code>
  *
- * @property \ManaPHP\CacheInterface    $modelsCache
- * @property \ManaPHP\Paginator         $paginator
- * @property \ManaPHP\Mvc\Model\Manager $modelsManager
+ * @property \ManaPHP\Cache\EngineInterface $modelsCache
+ * @property \ManaPHP\Paginator             $paginator
+ * @property \ManaPHP\Mvc\Model\Manager     $modelsManager
+ * @property \ManaPHP\Mvc\Dispatcher        $dispatcher
  */
 class QueryBuilder extends Component implements QueryBuilderInterface
 {
@@ -100,6 +101,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @var array
      */
     protected $_union = [];
+
+    /**
+     * @var string
+     */
+    protected $_sql;
 
     /**
      * \ManaPHP\Mvc\Model\Query\Builder constructor
@@ -655,6 +661,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         return $this;
     }
 
+    /**
+     * @return string
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
     protected function _getUnionSql()
     {
         $unions = [];
@@ -696,12 +706,25 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
+     * @return string
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public function getSql()
+    {
+        if ($this->_sql === null) {
+            $this->_sql = $this->_buildSql();
+        }
+
+        return $this->_sql;
+    }
+
+    /**
      * Returns a SQL statement built based on the builder parameters
      *
      * @return string
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function getSql()
+    protected function _buildSql()
     {
         if (count($this->_union) !== 0) {
             return $this->_getUnionSql();
@@ -937,43 +960,79 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param int|array $cacheOptions
      *
      * @return array
+     */
+    protected function _getCacheOptions($cacheOptions)
+    {
+        if (is_array($cacheOptions)) {
+            $_cacheOptions = (array)$cacheOptions;
+        } else {
+            $_cacheOptions = ['ttl' => $cacheOptions];
+        }
+
+        if (isset($this->_models[0]) && count($this->_models) === 1) {
+            $modelName = $this->_models[0];
+            $prefix = '/' . $this->dispatcher->getModuleName() . '/Models/' . substr($modelName, strrpos($modelName, '\\') + 1);
+        } else {
+            $prefix = '/' . $this->dispatcher->getModuleName() . '/Queries';
+        }
+
+        if (!isset($_cacheOptions['key'])) {
+            $_cacheOptions['key'] = $prefix . '/' . md5($this->_sql . serialize($this->_bind));
+        } else {
+            $_cacheOptions['key'] = $prefix . '/' . $_cacheOptions['key'];
+        }
+
+        return $_cacheOptions;
+    }
+
+    /**
+     * @param array $rows
+     * @param int   $total
+     *
+     * @return array
+     */
+    protected function _buildCacheData($rows, $total)
+    {
+        $from = $this->dispatcher->getModuleName() . ':' . $this->dispatcher->getControllerName() . ':' . $this->dispatcher->getActionName();
+
+        $data = ['time' => date('Y-m-d H:i:s'), 'from' => $from, 'sql' => $this->_sql, 'bind' => $this->_bind, 'total' => $total, 'rows' => $rows];
+
+        return $data;
+    }
+
+    /**
+     * @param int|array $cacheOptions
+     *
+     * @return array
      * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
      */
     public function execute($cacheOptions = null)
     {
         self::$_hiddenParamNumber = 0;
 
-        $sql = $this->getSql();
+        $this->_sql = $this->_buildSql();
 
         if ($cacheOptions !== null) {
-            if (is_array($cacheOptions)) {
-                $_cacheOptions = (array)$cacheOptions;
-            } else {
-                $_cacheOptions = ['ttl' => $cacheOptions];
-            }
+            $_cacheOptions = $this->_getCacheOptions($cacheOptions);
 
-            if (!isset($_cacheOptions['key'])) {
-                $_cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind);
-            }
-        }
-
-        if (isset($_cacheOptions)) {
-            $result = $this->modelsCache->get($_cacheOptions['key']);
-            if ($result !== false) {
-                return $result;
+            $data = $this->modelsCache->get($_cacheOptions['key']);
+            if ($data !== false) {
+                return json_decode($data, true)['rows'];
             }
         }
 
         try {
             $result = $this->modelsManager
                 ->getReadConnection(end($this->_models))
-                ->fetchAll($sql, $this->_bind);
+                ->fetchAll($this->_sql, $this->_bind);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage() . ':' . $sql);
+            throw new Exception($e->getMessage() . ':' . $this->_sql);
         }
 
         if (isset($_cacheOptions)) {
-            $this->modelsCache->set($_cacheOptions['key'], $result, $_cacheOptions['ttl']);
+            $this->modelsCache->set($_cacheOptions['key'],
+                json_encode($this->_buildCacheData($result, -1), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+                $_cacheOptions['ttl']);
         }
 
         return $result;
@@ -995,24 +1054,24 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         $this->_limit = 0;
         $this->_offset = 0;
 
-        $sql = $this->getSql();
+        $this->_sql = $this->_buildSql();
 
         try {
             if ($this->_group === null) {
                 $result = $this->modelsManager
                     ->getReadConnection(end($this->_models))
-                    ->fetchOne($sql, $this->_bind);
+                    ->fetchOne($this->_sql, $this->_bind);
 
                 /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                 $rowCount = (int)$result['row_count'];
             } else {
                 $result = $this->modelsManager
                     ->getReadConnection(end($this->_models))
-                    ->fetchAll($sql, $this->_bind);
+                    ->fetchAll($this->_sql, $this->_bind);
                 $rowCount = count($result);
             }
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage() . ':' . $sql);
+            throw new Exception($e->getMessage() . ':' . $this->_sql);
         }
 
         return $this;
@@ -1049,26 +1108,16 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $copy = clone $this;
 
-        $sql = $this->getSql();
+        $this->_sql = $this->_buildSql();
 
         if ($cacheOptions !== null) {
-            if (is_array($cacheOptions)) {
-                $_cacheOptions = (array)$cacheOptions;
-            } else {
-                $_cacheOptions = ['ttl' => $cacheOptions];
-            }
+            $_cacheOptions = $this->_getCacheOptions($cacheOptions);
 
-            if (!isset($_cacheOptions['key'])) {
-                $_cacheOptions['key'] = 'Models/' . $sql . serialize($this->_bind) . ':executeEx';
-            }
-        }
-
-        if (isset($_cacheOptions)) {
             $result = $this->modelsCache->get($_cacheOptions['key']);
 
             if ($result !== false) {
-                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-                $totalRows = $result['totalRows'];
+                $result = json_decode($result, true);
+                $totalRows = $result['total'];
                 return $result['rows'];
             }
         }
@@ -1076,9 +1125,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         try {
             $result = $this->modelsManager
                 ->getReadConnection(end($this->_models))
-                ->fetchAll($sql, $this->_bind);
+                ->fetchAll($this->_sql, $this->_bind);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage() . ':' . $sql);
+            throw new Exception($e->getMessage() . ':' . $this->_sql);
         }
 
         if (!$this->_limit) {
@@ -1087,13 +1136,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             if (count($result) % $this->_limit === 0) {
                 $copy->_getTotalRows($totalRows);
             } else {
-                $totalRows = $this->_offset + count($result, $cacheOptions);
+                $totalRows = $this->_offset + count($result);
             }
         }
 
         if (isset($_cacheOptions)) {
-            $cacheData = ['rows' => $result, 'totalRows' => $totalRows];
-            $this->modelsCache->set($_cacheOptions['key'], $cacheData, $_cacheOptions['ttl']);
+            $this->modelsCache->set($_cacheOptions['key'],
+                json_encode($this->_buildCacheData($result, $totalRows), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+                $_cacheOptions['ttl']);
         }
 
         return $result;

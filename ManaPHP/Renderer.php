@@ -71,7 +71,7 @@ class Renderer extends Component implements RendererInterface
      * @return string
      * @throws \ManaPHP\Renderer\Exception
      */
-    public function render($template, $vars, $directOutput = true)
+    public function render($template, $vars, $directOutput = false)
     {
         $notExists = true;
         $content = null;

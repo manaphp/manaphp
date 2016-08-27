@@ -14,8 +14,9 @@ class StoreTest extends TestCase
 
     public function test_exists()
     {
-        $store = new \ManaPHP\Store\Adapter\Memory();
+        $store = new \ManaPHP\Store();
 
+        $store->delete('country');
         $this->assertFalse($store->exists('country'));
 
         $store->set('country', 'china');
@@ -24,8 +25,9 @@ class StoreTest extends TestCase
 
     public function test_get()
     {
-        $store = new \ManaPHP\Store\Adapter\Memory();
+        $store = new \ManaPHP\Store();
 
+        $store->delete('country');
         $this->assertFalse($store->get('country'));
 
         $store->set('country', 'china');
@@ -34,7 +36,10 @@ class StoreTest extends TestCase
 
     public function test_set()
     {
-        $store = new \ManaPHP\Store\Adapter\Memory();
+        $store = new \ManaPHP\Store();
+
+        $store->delete('var');
+        $store->delete('val');
 
         $this->assertFalse($store->get('var'));
 
@@ -75,7 +80,10 @@ class StoreTest extends TestCase
 
     public function test_mGet()
     {
-        $store = new \ManaPHP\Store\Adapter\Memory();
+        $store = new \ManaPHP\Store();
+
+        $store->delete('1');
+        $store->delete('2');
 
         $store->set('1', '1');
         $idValues = $store->mGet(['1', '2']);
@@ -86,7 +94,7 @@ class StoreTest extends TestCase
 
     public function test_mSet()
     {
-        $store = new \ManaPHP\Store\Adapter\Memory();
+        $store = new \ManaPHP\Store();
 
         $store->mSet([]);
 
@@ -98,7 +106,9 @@ class StoreTest extends TestCase
 
     public function test_delete()
     {
-        $store = new \ManaPHP\Store\Adapter\Memory();
+        $store = new \ManaPHP\Store();
+
+        $store->delete('val');
 
         // delete a not existed
         $this->assertFalse($store->exists('val'));

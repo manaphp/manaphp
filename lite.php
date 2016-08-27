@@ -1,6 +1,6 @@
 <?php
-use ManaPHP\Utility\Text;
 use ManaPHP\Autoloader;
+use ManaPHP\Utility\Text;
 
 date_default_timezone_set('PRC');
 
