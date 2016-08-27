@@ -55,11 +55,14 @@ class FactoryDefault extends Di
             'authorization' => 'ManaPHP\Authorization\Bypass',
             'userIdentity' => 'ManaPHP\Authentication\UserIdentity',
             'paginator' => 'ManaPHP\Paginator',
+            'viewsCache' => [
+                'class' => 'ManaPHP\Cache\Adapter\File',
+                'parameters' => [['cacheDir' => '@data/viewsCache', 'extension' => '.html', 'serializer' => 'ManaPHP\Serializer\Adapter\StringType']]
+            ],
         ];
 
         $this->_aliases = [
             'modelsCache' => 'cache',
-            'viewsCache' => 'cache'
         ];
     }
 }

@@ -5,8 +5,6 @@ namespace ManaPHP\Mvc;
 use ManaPHP\ApplicationInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Http\ResponseInterface;
-use ManaPHP\Mvc\Application\Exception;
 
 /**
  * ManaPHP\Mvc\Application
@@ -40,6 +38,11 @@ class Application extends Component implements ApplicationInterface
     protected $_moduleObject;
 
     /**
+     * @var bool
+     */
+    protected $_useCachedResponse;
+
+    /**
      * \ManaPHP\Mvc\Application
      *
      * @param \ManaPHP\DiInterface $dependencyInjector
@@ -67,10 +70,13 @@ class Application extends Component implements ApplicationInterface
     }
 
     /**
+     * @param mixed                   $event
+     * @param \ManaPHP\Mvc\Dispatcher $dispatcher
+     *
      * @return bool
      * @throws \ManaPHP\Security\CsrfToken\Exception|\ManaPHP\Http\Request\Exception|\ManaPHP\Security\Crypt\Exception
      */
-    public function _eventHandlerBeforeExecuteRoute()
+    public function _eventHandlerBeforeExecuteRoute($event, $dispatcher)
     {
         $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
         if (isset($this->csrfToken)
@@ -82,6 +88,14 @@ class Application extends Component implements ApplicationInterface
         /** @noinspection IfReturnReturnSimplificationInspection */
         if ($this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName()) === false) {
             return false;
+        }
+
+        if ($content = $dispatcher->getController()->getCachedResponse($dispatcher->getActionName())) {
+            $this->_useCachedResponse = true;
+            $dispatcher->setReturnedValue($dispatcher->getController()->response->setContent($content));
+            return false;
+        } else {
+            $this->_useCachedResponse = false;
         }
 
         return true;
@@ -125,37 +139,24 @@ class Application extends Component implements ApplicationInterface
         $handler = [$this, '_eventHandlerBeforeExecuteRoute'];
         $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', $handler);
 
-        $controller = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-
-        if ($controller === false) {
-            return $this->response;
-        }
+        $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
 
         $actionReturnValue = $this->dispatcher->getReturnedValue();
-
-        if ($actionReturnValue === false) {
-            return $this->response;
-        } elseif ($actionReturnValue instanceof ResponseInterface) {
-            return $actionReturnValue;
-        } else {
-            if ($actionReturnValue === null) {
-                $content = '';
-            } elseif (is_string($actionReturnValue)) {
-                $content = $actionReturnValue;
-            } else {
-                throw new Exception('the return value of Action is invalid: ' . $actionReturnValue);
-            }
-
+        if ($actionReturnValue === null || is_string($actionReturnValue)) {
             if ($this->_implicitView === true) {
 
-                $this->view->setContent($content);
-                $this->view->render($moduleName, $this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+                $this->view->setContent($actionReturnValue);
+                $this->view->render($this->dispatcher->getModuleName(), $this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
                 $this->response->setContent($this->view->getContent());
             } else {
-                $this->response->setContent($content);
+                $this->response->setContent($actionReturnValue);
             }
-
-            return $this->response;
         }
+
+        if (!$this->_useCachedResponse) {
+            $this->dispatcher->getController()->setCachedResponse($this->dispatcher->getActionName(), $this->response->getContent());
+        }
+
+        return $this->response;
     }
 }

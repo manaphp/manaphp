@@ -65,6 +65,11 @@ class Dispatcher extends Component implements DispatcherInterface
     protected $_params = [];
 
     /**
+     * @var \ManaPHP\Mvc\Controller
+     */
+    protected $_controller;
+
+    /**
      * @var mixed
      */
     protected $_returnedValue;
@@ -238,7 +243,7 @@ class Dispatcher extends Component implements DispatcherInterface
      * @param string $action
      * @param array  $params
      *
-     * @return false|\ManaPHP\Mvc\ControllerInterface
+     * @return void
      * @throws \ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException
      */
     public function dispatch($module, $controller, $action, $params = [])
@@ -250,7 +255,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->_params = $params;
 
         if ($this->fireEvent('dispatcher:beforeDispatchLoop') === false) {
-            return false;
+            return;
         }
 
         $controllerInstance = null;
@@ -266,7 +271,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
 
             if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
-                return false;
+                return;
             }
 
             if ($this->_finished === false) {
@@ -280,10 +285,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
 
             $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
-
-            if (!is_object($controllerInstance)) {
-                throw new Exception('Invalid handler type returned from the services container: ' . gettype($controllerInstance));
-            }
+            $this->_controller = $controllerInstance;
 
             $hasAction = false;
             $actionMethod = strtolower($this->_actionName . $this->_actionSuffix);
@@ -322,7 +324,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
 
             if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
-                return false;
+                return;
             }
 
             if ($this->_finished === false) {
@@ -346,7 +348,7 @@ class Dispatcher extends Component implements DispatcherInterface
             $this->fireEvent('dispatcher:afterDispatch');
 
             if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
-                return false;
+                return;
             }
 
             if ($this->_finished === false) {
@@ -365,8 +367,6 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         $this->fireEvent('dispatcher:afterDispatchLoop');
-
-        return $controllerInstance;
     }
 
     /**
@@ -414,6 +414,14 @@ class Dispatcher extends Component implements DispatcherInterface
     public function wasForwarded()
     {
         return $this->_forwarded;
+    }
+
+    /**
+     * @return \ManaPHP\Mvc\Controller
+     */
+    public function getController()
+    {
+        return $this->_controller;
     }
 
     /**

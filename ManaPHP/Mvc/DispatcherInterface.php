@@ -78,6 +78,11 @@ interface DispatcherInterface
     public function hasParam($param);
 
     /**
+     * @return \ManaPHP\Mvc\Controller
+     */
+    public function getController();
+
+    /**
      * Returns value returned by the latest dispatched action
      *
      * @return mixed

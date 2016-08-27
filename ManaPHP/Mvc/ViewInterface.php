@@ -67,13 +67,6 @@ interface ViewInterface
     public function render($module, $controller, $action);
 
     /**
-     * @param int|array $cacheOptions
-     *
-     * @return string|false
-     */
-    public function cache($cacheOptions);
-
-    /**
      * Choose a view different to render than last-controller/last-action
      *
      * @param string $view

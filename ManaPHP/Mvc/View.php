@@ -31,6 +31,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Renderer       $renderer
  * @property \ManaPHP\CacheInterface $viewsCache
  * @property \ManaPHP\Http\Request   $request
+ * @property \ManaPHP\Mvc\Dispatcher $dispatcher
  */
 class View extends Component implements ViewInterface
 {
@@ -63,11 +64,6 @@ class View extends Component implements ViewInterface
      * @var string
      */
     protected $_actionName;
-
-    /**
-     * @var array
-     */
-    protected $_cacheOptions;
 
     /**
      * @param false|string $layout
@@ -161,26 +157,6 @@ class View extends Component implements ViewInterface
     }
 
     /**
-     * @param int|array $cacheOptions
-     *
-     * @return string|false
-     */
-    public function cache($cacheOptions)
-    {
-        if (!is_array($cacheOptions)) {
-            $cacheOptions = ['ttl' => $cacheOptions];
-        }
-
-        if (!isset($cacheOptions['key'])) {
-            $cacheOptions['key'] = 'Views/' . $this->request->getUrl();
-        }
-
-        $this->_cacheOptions = $cacheOptions;
-
-        return $this->viewsCache->get($this->_cacheOptions['key']);
-    }
-
-    /**
      * Executes render process from dispatching data
      *
      *<code>
@@ -209,14 +185,6 @@ class View extends Component implements ViewInterface
             $this->_actionName = $action;
         }
 
-        if ($this->_cacheOptions !== null) {
-            $content = $this->viewsCache->get($this->_cacheOptions['key']);
-            if ($content !== false) {
-                $this->_content = $content;
-                return $this;
-            }
-        }
-
         $this->fireEvent('view:beforeRender');
 
         $view = "/{$this->_moduleName}/Views/{$this->_controllerName}/" . ucfirst($this->_actionName);
@@ -235,11 +203,6 @@ class View extends Component implements ViewInterface
         }
 
         $this->fireEvent('view:afterRender');
-
-        if ($this->_cacheOptions !== null) {
-            /** @noinspection PhpParamsInspection */
-            $this->viewsCache->set($this->_cacheOptions['key'], $this->_content, $this->_cacheOptions['ttl']);
-        }
 
         return $this;
     }
@@ -305,18 +268,21 @@ class View extends Component implements ViewInterface
         $view = "/$this->_moduleName/Views/$path";
 
         if ($cacheOptions !== null) {
-            if (!is_array($cacheOptions)) {
-                $cacheOptions = ['ttl' => $cacheOptions];
+
+            if (is_array($cacheOptions)) {
+                $_cacheOptions = (array)$cacheOptions;
+            } else {
+                $_cacheOptions = ['ttl' => $cacheOptions];
             }
 
-            if (!isset($cacheOptions['key'])) {
-                $cacheOptions['key'] = 'Views/' . md5($view);
+            if (!isset($_cacheOptions['key'])) {
+                $_cacheOptions['key'] = $view;
             }
 
-            $content = $this->viewsCache->get($cacheOptions['key']);
+            $content = $this->viewsCache->get($_cacheOptions['key']);
             if ($content === false) {
                 $content = $this->renderer->render("@app{$view}", $vars, false);
-                $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
+                $this->viewsCache->set($_cacheOptions['key'], $content, $_cacheOptions['ttl']);
             }
             echo $content;
         } else {
@@ -349,16 +315,18 @@ class View extends Component implements ViewInterface
 
         if ($cacheOptions !== null) {
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-            if (!is_array($cacheOptions)) {
+            if (is_array($cacheOptions)) {
                 /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-                $cacheOptions = ['ttl' => $cacheOptions];
+                $_cacheOptions = (array)$cacheOptions;
+            } else {
+                $_cacheOptions = ['ttl' => $cacheOptions];
             }
 
-            if (!isset($cacheOptions['key'])) {
-                $cacheOptions['key'] = 'Views/' . md5($view);
+            if (!isset($_cacheOptions['key'])) {
+                $_cacheOptions['key'] = $view;
             }
 
-            $content = $this->viewsCache->get($cacheOptions['key']);
+            $content = $this->viewsCache->get($_cacheOptions['key']);
             if ($content === false) {
                 if (is_string($vars)) {
                     $content = $vars;
@@ -366,7 +334,7 @@ class View extends Component implements ViewInterface
                     $content = $this->renderer->render("@app{$view}", $vars, false);
                 }
 
-                $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
+                $this->viewsCache->set($_cacheOptions['key'], $content, $_cacheOptions['ttl']);
             }
 
             echo $content;
