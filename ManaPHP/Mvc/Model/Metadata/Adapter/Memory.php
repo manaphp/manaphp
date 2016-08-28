@@ -1,10 +1,10 @@
 <?php
 
-namespace ManaPHP\Mvc\Model\MetaData\Adapter;
+namespace ManaPHP\Mvc\Model\Metadata\Adapter;
 
-use ManaPHP\Mvc\Model\MetaData;
+use ManaPHP\Mvc\Model\Metadata;
 
-class Memory extends MetaData
+class Memory extends Metadata
 {
     /**
      * @param string $key

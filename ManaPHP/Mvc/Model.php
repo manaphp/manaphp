@@ -52,7 +52,7 @@ use ManaPHP\Mvc\Model\Exception;
  * method beforeDelete()
  * method afterDelete()
  *
- * @property \ManaPHP\Mvc\Model\MetaDataInterface $modelsMetadata
+ * @property \ManaPHP\Mvc\Model\MetadataInterface $modelsMetadata
  * @property \ManaPHP\Mvc\Model\ManagerInterface  $modelsManager
  */
 class Model extends Component implements ModelInterface

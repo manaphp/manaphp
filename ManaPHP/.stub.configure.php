@@ -132,7 +132,7 @@ namespace ConfManaPHP\Counter\Adapter {
     }
 }
 
-namespace ConfManaPHP\Log\Adapter {
+namespace ConfManaPHP\Logger\Adapter {
 
     class File
     {

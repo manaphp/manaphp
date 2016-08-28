@@ -1,10 +1,9 @@
 <?php
-namespace ManaPHP\Log\Adapter;
+namespace ManaPHP\Logger\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Log\AdapterInterface;
+use ManaPHP\Logger;
 
-class File extends Component implements AdapterInterface
+class File extends Logger
 {
     /**
      * @var string
@@ -14,12 +13,7 @@ class File extends Component implements AdapterInterface
     /**
      * @var string
      */
-    protected $_dateFormat = 'D, d M y H:i:s O';
-
-    /**
-     * @var string
-     */
-    protected $_format = '[%date%][%level%] %message%';
+    protected $_format = '[%date%][%level%][%location%] %message%';
 
     /**
      * @var bool
@@ -27,12 +21,14 @@ class File extends Component implements AdapterInterface
     protected $_firstLog = true;
 
     /**
-     * \ManaPHP\Log\Adapter\File constructor.
+     * \ManaPHP\Logger\Adapter\File constructor.
      *
-     * @param string|array|\ConfManaPHP\Log\Adapter\File $options
+     * @param string|array|\ConfManaPHP\Logger\Adapter\File $options
      */
     public function __construct($options = [])
     {
+        parent::__construct();
+
         if (is_object($options)) {
             $options = (array)$options;
         } elseif (is_string($options)) {
@@ -44,10 +40,6 @@ class File extends Component implements AdapterInterface
         }
 
         $this->_file = $options['file'];
-
-        if (isset($options['dateFormat'])) {
-            $this->_dateFormat = $options['dateFormat'];
-        }
 
         if (isset($options['format'])) {
             $this->_format = $options['format'];
@@ -74,7 +66,7 @@ class File extends Component implements AdapterInterface
             $this->_firstLog = false;
         }
 
-        $context['date'] = date($this->_dateFormat, $context['date'] ?: time());
+        $context['date'] = date('Y-m-d H:i:s', $context['date']);
 
         $replaced = [];
         foreach ($context as $k => $v) {

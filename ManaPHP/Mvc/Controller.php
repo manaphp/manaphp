@@ -63,7 +63,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Http\Session\BagInterface            $persistent
  * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
- * @property \ManaPHP\Log\Logger                           $logger
+ * @property \ManaPHP\LoggerInterface                      $logger
  * @property \Application\Configure                        $configure
  * @property \ManaPHP\Http\SessionInterface                $session
  * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken

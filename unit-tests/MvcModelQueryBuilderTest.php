@@ -34,7 +34,7 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->di->set('eventsManager', new \ManaPHP\Event\Manager());
 
         $this->di->set('modelsMetadata', function () {
-            return new ManaPHP\Mvc\Model\MetaData\Adapter\Memory();
+            return new ManaPHP\Mvc\Model\Metadata\Adapter\Memory();
         });
 
         $this->di->setShared('db', function () {

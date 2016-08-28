@@ -90,20 +90,23 @@ class Loader
      *
      * @param string $file The file to require.
      *
-     * @return true
+     * @return bool
      */
     protected function ___requireFile($file)
     {
-        if (PHP_EOL !== "\n") {
-            $realPath = str_replace('\\', '/', realpath($file));
-            if ($realPath !== $file) {
-                trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
+        if (is_file($file)) {
+            if (PHP_EOL !== "\n") {
+                $realPath = str_replace('\\', '/', realpath($file));
+                if ($realPath !== $file) {
+                    trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
+                }
             }
+            /** @noinspection PhpIncludeInspection */
+            require $file;
+            return true;
+        } else {
+            return false;
         }
-        /** @noinspection PhpIncludeInspection */
-        require $file;
-
-        return true;
     }
 
     /**

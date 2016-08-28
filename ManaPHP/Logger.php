@@ -4,72 +4,51 @@
  * User: Mark
  * Date: 2016/3/20
  */
-namespace ManaPHP\Log;
+namespace ManaPHP;
 
-use ManaPHP\Component;
-use ManaPHP\Log\Logger\Exception;
+use ManaPHP\Logger\Exception;
 use ManaPHP\Utility\Text;
 
-class Logger extends Component
+abstract class Logger extends Component implements LoggerInterface, Logger\AdapterInterface
 {
-    const LEVEL_OFF = 0;
-
-    const LEVEL_FATAL = 10;
-    const LEVEL_ERROR = 20;
-    const LEVEL_WARNING = 30;
-    const LEVEL_INFO = 40;
-    const LEVEL_DEBUG = 50;
-
-    const LEVEL_ALL = 100;
-
-    /**
-     * @var int
-     */
-    protected $_level = self::LEVEL_ALL;
+    const LEVEL_OFF = 'OFF';
+    const LEVEL_FATAL = 'FATAL';
+    const LEVEL_ERROR = 'ERROR';
+    const LEVEL_WARNING = 'WARNING';
+    const LEVEL_INFO = 'INFO';
+    const LEVEL_DEBUG = 'DEBUG';
+    const LEVEL_ALL = 'ALL';
 
     /**
      * @var array
      */
-    protected $_level_i2s = [];
+    protected $_s2i;
 
     /**
-     * @var \ManaPHP\Log\AdapterInterface[]
+     * @var string
      */
-    protected $_adapters = [];
+    protected $_level = self::LEVEL_ALL;
 
     public function __construct()
     {
-        $this->_level_i2s = [
-            self::LEVEL_OFF => 'OFF',
-            self::LEVEL_FATAL => 'FATAL',
-            self::LEVEL_ERROR => 'ERROR',
-            self::LEVEL_WARNING => 'WARNING',
-            self::LEVEL_INFO => 'INFO',
-            self::LEVEL_DEBUG => 'DEBUG',
-            self::LEVEL_ALL => 'ALL',
-        ];
+        $this->_s2i = array_flip([self::LEVEL_OFF, self::LEVEL_FATAL, self::LEVEL_ERROR, self::LEVEL_WARNING, self::LEVEL_INFO, self::LEVEL_DEBUG, self::LEVEL_ALL]);
     }
 
     /**
      * Filters the logs sent to the handlers to be greater or equals than a specific level
      *
-     * @param int|string $level
+     * @param string $level
      *
      * @return static
-     * @throws \ManaPHP\Log\Logger\Exception
+     * @throws \ManaPHP\Logger\Exception
      */
     public function setLevel($level)
     {
-        if (is_int($level)) {
-            $this->_level = $level;
-        } else {
-            $s2i = array_flip($this->_level_i2s);
-            if (isset($s2i[$level])) {
-                $this->_level = $s2i[$level];
-            } else {
-                throw new Exception('Log Level is invalid: ' . $level);
-            }
+        if (!isset($this->_s2i[$level])) {
+            throw new Exception('Logger Level is invalid: ' . $level);
         }
+
+        $this->_level = $level;
 
         return $this;
     }
@@ -77,7 +56,7 @@ class Logger extends Component
     /**
      * Returns the current log level
      *
-     * @return int
+     * @return string
      */
     public function getLevel()
     {
@@ -89,37 +68,11 @@ class Logger extends Component
      */
     public function getLevels()
     {
-        return array_flip($this->_level_i2s);
+        return $this->_s2i;
     }
 
     /**
-     * @param int $level
-     *
-     * @return string
-     */
-    public function mapLevelToString($level)
-    {
-        if (isset($this->_level_i2s[$level])) {
-            return $this->_level_i2s[$level];
-        } else {
-            return 'UNKNOWN';
-        }
-    }
-
-    /**
-     * @param \ManaPHP\Log\AdapterInterface $adapter
-     *
-     * @return static
-     */
-    public function addAdapter($adapter)
-    {
-        $this->_adapters[] = $adapter;
-
-        return $this;
-    }
-
-    /**
-     * @param int    $level
+     * @param string $level
      * @param string $message
      * @param array  $context
      *
@@ -127,31 +80,36 @@ class Logger extends Component
      */
     protected function _log($level, $message, $context)
     {
-        $context['level'] = $this->_level_i2s[$level];
-        $context['date'] = time();
+        $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
 
-        if (Text::contains($message, '{')) {
+        $location = '';
+        if (isset($traces[1])) {
+            $trace = $traces[1];
+            if (isset($trace['file'], $trace['line'])) {
+                $location = str_replace($this->alias->get('@app'), '', str_replace('\\', '/', $trace['file'])) . ':' . $trace['line'];
+            }
+        }
+
+        if (Text::contains($message, '%')) {
             $replaces = [];
             foreach ($context as $k => $v) {
-                $replaces['{' . $k . '}'] = $v;
+                $replaces['%' . $k . '%'] = $v;
             }
             $message = strtr($message, $replaces);
         }
 
+        $context['level'] = $level;
+        $context['date'] = time();
+        $context['location'] = $location;
+
         $eventData = ['level' => $level, 'message' => $message, 'context' => $context];
         $this->fireEvent('logger:log', $eventData);
 
-        if ($level > $this->_level) {
+        if ($this->_s2i[$level] > $this->_s2i[$this->_level]) {
             return $this;
         }
 
-        foreach ($this->_adapters as $adapter) {
-            try {
-                $adapter->log($level, $message, $context);
-            } catch (\Exception $e) {
-                error_log('Log Failed: ' . $e->getMessage(), 0);
-            }
-        }
+        $this->log($level, $message, $context);
 
         return $this;
     }
@@ -169,7 +127,7 @@ class Logger extends Component
         return $this->_log(self::LEVEL_DEBUG, $message, $context);
     }
 
-    /**
+    /**-
      * Sends/Writes an info message to the log
      *
      * @param string $message

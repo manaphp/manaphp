@@ -5,7 +5,7 @@ namespace ManaPHP\Mvc\Model;
 /**
  * ManaPHP\Mvc\Model\MetaDataInterface initializer
  */
-interface MetaDataInterface
+interface MetadataInterface
 {
 
     /**

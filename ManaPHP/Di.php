@@ -51,13 +51,13 @@ use ManaPHP\Di\Exception;
  * @property \ManaPHP\DbInterface                          $db
  * @property \ManaPHP\Security\CryptInterface              $crypt
  * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
- * @property \ManaPHP\Mvc\Model\MetaDataInterface          $modelsMetadata
+ * @property \ManaPHP\Mvc\Model\MetadataInterface          $modelsMetadata
  * @property \ManaPHP\Cache\EngineInterface                $modelsCache
  * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
  * @property \ManaPHP\Http\Session\Bag                     $persistent
  * @property \ManaPHP\Mvc\ViewInterface                    $view
  * @property \ManaPHP\Loader                               $loader
- * @property \ManaPHP\Log\Logger                           $logger
+ * @property \ManaPHP\LoggerInterface                      $logger
  * @property \ManaPHP\RendererInterface                    $renderer
  * @property \Application\Configure                        $configure
  * @property \ManaPHP\ApplicationInterface                 $application

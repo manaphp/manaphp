@@ -41,7 +41,7 @@ class FactoryDefault extends Di
             'sessionBag' => ['ManaPHP\Http\Session\Bag', false],
             'loader' => 'ManaPHP\Loader',
             'view' => 'ManaPHP\Mvc\View',
-            'logger' => 'ManaPHP\Log\Logger',
+            'logger' => 'ManaPHP\Logger\Adapter\File',
             'renderer' => 'ManaPHP\Renderer',
             'debugger' => 'ManaPHP\Debugger',
             'password' => 'ManaPHP\Authentication\Password',
@@ -57,6 +57,7 @@ class FactoryDefault extends Di
             'authorization' => 'ManaPHP\Authorization\Bypass',
             'userIdentity' => 'ManaPHP\Authentication\UserIdentity',
             'paginator' => 'ManaPHP\Paginator',
+            'tasksMetadata' => 'ManaPHP\Task\Metadata',
             'viewsCache' => [
                 'class' => 'ManaPHP\Cache\Engine\File',
                 'parameters' => [['cacheDir' => '@data/viewsCache', 'extension' => '.html']]

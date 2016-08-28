@@ -231,8 +231,8 @@
         </div>
         <div class="tab-pane" id="tab_log">
             <h4>Log Messages
-                <small><select v-model="log_level" title="">
-                        <option v-for="(strLevel,intLevel) in log_levels" value="{{intLevel}}">{{strLevel}}</option>
+                <small><select v-model="logger.level" title="">
+                        <option v-for="(strLevel,intLevel) in logger.levels" value="{{intLevel}}">{{strLevel}}</option>
                     </select></small>
             </h4>
             <table class="table table-striped table-bordered table-condensed">
@@ -348,9 +348,11 @@ unset($data['server']['PATH']);
         computed: {
             log_computed: function () {
                 var computed = [];
-                var log = data['log'];
+                var log = data.logger.log;
+                var levels = data.logger.levels;
+                var level = data.logger.level;
                 for (var i = 0; i < log.length; i++) {
-                    if (log[i].level <= data['log_level']) {
+                    if (levels[log[i].level] <= level) {
                         computed.push(log[i]);
                     }
                 }

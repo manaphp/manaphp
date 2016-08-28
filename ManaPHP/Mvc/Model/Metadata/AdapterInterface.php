@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Mvc\Model\MetaData;
+namespace ManaPHP\Mvc\Model\Metadata;
 
 interface AdapterInterface
 {

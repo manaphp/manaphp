@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Mvc\Model\MetaData;
+namespace ManaPHP\Mvc\Model\Metadata;
 
 class Exception extends \ManaPHP\Mvc\Model\Exception
 {

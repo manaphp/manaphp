@@ -22,7 +22,7 @@ use ManaPHP\Di\FactoryDefault;
  * @property \ManaPHP\Http\SessionInterface       $session
  * @property \ManaPHP\DebuggerInterface           $debugger
  * @property \Application\Configure               $configure
- * @property \ManaPHP\Log\Logger                  $logger
+ * @property \ManaPHP\LoggerInterface             $logger
  * @property \ManaPHP\Security\CsrfTokenInterface $csrfToken
  */
 class Application extends Component implements ApplicationInterface

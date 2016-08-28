@@ -1,9 +1,9 @@
 <?php
-namespace ManaPHP\Mvc\Model\MetaData\Adapter;
+namespace ManaPHP\Mvc\Model\Metadata\Adapter;
 
-use ManaPHP\Mvc\Model\MetaData;
+use ManaPHP\Mvc\Model\Metadata;
 
-class Apc extends MetaData
+class Apc extends Metadata
 {
 
     /**

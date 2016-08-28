@@ -2,7 +2,7 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
-use ManaPHP\Mvc\Model\MetaData;
+use ManaPHP\Mvc\Model\Metadata;
 
 class Sqlite extends Db
 {
@@ -57,10 +57,10 @@ class Sqlite extends Db
         }
 
         $r = [
-            MetaData::MODEL_ATTRIBUTES => $attributes,
-            MetaData::MODEL_PRIMARY_KEY => $primaryKeys,
-            MetaData::MODEL_NON_PRIMARY_KEY => $nonPrimaryKeys,
-            MetaData::MODEL_IDENTITY_COLUMN => $autoIncrementAttribute,
+            Metadata::MODEL_ATTRIBUTES => $attributes,
+            Metadata::MODEL_PRIMARY_KEY => $primaryKeys,
+            Metadata::MODEL_NON_PRIMARY_KEY => $nonPrimaryKeys,
+            Metadata::MODEL_IDENTITY_COLUMN => $autoIncrementAttribute,
         ];
 
         return $r;

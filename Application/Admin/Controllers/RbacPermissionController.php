@@ -22,15 +22,7 @@ class RbacPermissionController extends Controller
     public function rebuildAction()
     {
         $annotation = new Annotation();
-        foreach (glob($this->alias->get('@app') . '/*') as $entry) {
-            if (!is_dir($entry)) {
-                continue;
-            }
-
-            if ($entry === '.' || $entry === '..') {
-                continue;
-            }
-
+        foreach (glob($this->alias->get('@app') . '/*', GLOB_ONLYDIR) as $entry) {
             $files = glob($entry . '/Controllers/*Controller.php');
             foreach ($files as $file) {
                 $file = str_replace('\\', '/', $file);

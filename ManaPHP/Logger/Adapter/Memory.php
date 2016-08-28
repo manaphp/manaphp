@@ -1,9 +1,9 @@
 <?php
-namespace ManaPHP\Log\Adapter;
+namespace ManaPHP\Logger\Adapter;
 
-use ManaPHP\Log\AdapterInterface;
+use ManaPHP\Logger;
 
-class Memory implements AdapterInterface
+class Memory extends Logger
 {
     /**
      * @var array

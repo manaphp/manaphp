@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Log;
+namespace ManaPHP\Task;
 
 class Exception extends \ManaPHP\Exception
 {

@@ -2,7 +2,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Debugger\Exception;
-use ManaPHP\Log\Logger;
 use ManaPHP\Utility\Text;
 
 /**
@@ -13,7 +12,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Mvc\RouterInterface   $router
  * @property \ManaPHP\Mvc\UrlInterface      $url
  * @property \ManaPHP\Http\RequestInterface $request
- * @property \ManaPHP\Log\Logger            $logger
+ * @property \ManaPHP\LoggerInterface       $logger
  * @property \ManaPHP\RendererInterface     $renderer
  */
 class Debugger extends Component implements DebuggerInterface
@@ -225,10 +224,8 @@ class Debugger extends Component implements DebuggerInterface
         $data['basic'] = $this->_getBasic();
 
         $data['dump'] = $this->_dump;
-        $data['log'] = $this->_log;
-        $data['log_levels'] = array_reverse($this->logger->getLevels());
-        unset($data['log_levels']['ALL'], $data['log_levels']['OFF']);
-        $data['log_level'] = Logger::LEVEL_DEBUG;
+        $data['logger'] = ['log' => $this->_log, 'levels' => $this->logger->getLevels(), 'level' => 5];
+
         $data['sql']['prepared'] = $this->_sql_prepared;
         $data['sql']['executed'] = $this->_sql_executed;
         $data['sql']['count'] = $this->_sql_count;

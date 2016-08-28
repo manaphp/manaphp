@@ -3,7 +3,6 @@ namespace Application {
 
     use ManaPHP\Db\Adapter\Mysql;
     use ManaPHP\DbInterface;
-    use ManaPHP\Log\Adapter\File;
     use ManaPHP\Mvc\NotFoundException;
     use ManaPHP\Mvc\Router;
     use ManaPHP\Security\Crypt;
@@ -22,8 +21,6 @@ namespace Application {
                     ->mount(Admin\RouteGroup::class, '/admin')
                     ->mount(Api\RouteGroup::class, '/api', 'Api');
             });
-
-            $this->logger->addAdapter(new File($this->configure->log->file));
 
             $this->_dependencyInjector->setShared('crypt', function () use ($self) {
                 return new Crypt($self->configure->crypt->key);

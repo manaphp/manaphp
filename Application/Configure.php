@@ -11,9 +11,9 @@ namespace Application {
         public $database;
 
         /**
-         * @var \ConfManaPHP\Log\Adapter\File
+         * @var \ConfManaPHP\Logger\Adapter\File
          */
-        public $log;
+        public $logger;
 
         /**
          * @var \ConfManaPHP\Security\Crypt
@@ -42,8 +42,8 @@ namespace Application {
             $this->database->dbname = 'manaphp_unit_test';
             $this->database->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
-            $this->log = new \stdClass();
-            $this->log->file = '@data/logger/' . date('Ymd') . '.log';
+            $this->logger = new \stdClass();
+            $this->logger->file = '@data/logger/' . date('Ymd') . '.log';
 
             $this->crypt = new \stdClass();
             $this->crypt->key = 'test';
