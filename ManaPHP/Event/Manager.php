@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Event;
 
+use ManaPHP\Event\Manager\Exception;
 use ManaPHP\Utility\Text;
 
 /**
@@ -32,7 +33,7 @@ class Manager implements ManagerInterface
      * @param callable $handler
      *
      * @return void
-     * @throws \ManaPHP\Event\Exception
+     * @throws \ManaPHP\Event\Manager\Exception
      */
     public function attachEvent($event, $handler)
     {
@@ -44,6 +45,7 @@ class Manager implements ManagerInterface
             $parts = explode(':', $event);
 
             $type = $parts[0];
+            /** @noinspection MultiAssignmentUsageInspection */
             $name = $parts[1];
         } else {
             $type = $event;
@@ -73,7 +75,7 @@ class Manager implements ManagerInterface
      * @param array                          $data
      *
      * @return boolean|null
-     * @throws \ManaPHP\Event\Exception
+     * @throws \ManaPHP\Event\Manager\Exception
      */
     public function fireEvent($event, $source, $data = [])
     {
@@ -87,6 +89,7 @@ class Manager implements ManagerInterface
 
         $parts = explode(':', $event, 2);
         $fire_type = $parts[0];
+        /** @noinspection MultiAssignmentUsageInspection */
         $fire_name = $parts[1];
 
         if (!isset($this->_events[$fire_type])) {

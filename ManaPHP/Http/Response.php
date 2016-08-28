@@ -18,7 +18,7 @@ use ManaPHP\Utility\Text;
  *    $response->send();
  *</code>
  *
- * @property \ManaPHP\Http\Cookies $cookies
+ * @property \ManaPHP\Http\CookiesInterface $cookies
  */
 class Response extends Component implements ResponseInterface
 {
@@ -295,7 +295,6 @@ class Response extends Component implements ResponseInterface
      * Sends headers to the client
      *
      * @return static
-     * @throws \ManaPHP\Http\Cookies\Exception
      */
     public function sendHeaders()
     {
@@ -320,7 +319,7 @@ class Response extends Component implements ResponseInterface
      * Prints out HTTP response to the client
      *
      * @return static
-     * @throws \ManaPHP\Http\Response\Exception|\ManaPHP\Http\Cookies\Exception
+     * @throws \ManaPHP\Http\Response\Exception
      */
     public function send()
     {

@@ -28,10 +28,10 @@ use ManaPHP\Utility\Text;
  * </code>
  *
  *
- * @property \ManaPHP\Renderer              $renderer
- * @property \ManaPHP\Cache\EngineInterface $viewsCache
- * @property \ManaPHP\Http\Request          $request
- * @property \ManaPHP\Mvc\Dispatcher        $dispatcher
+ * @property \ManaPHP\RendererInterface       $renderer
+ * @property \ManaPHP\Cache\EngineInterface   $viewsCache
+ * @property \ManaPHP\Http\RequestInterface   $request
+ * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class View extends Component implements ViewInterface
 {
@@ -169,7 +169,7 @@ class View extends Component implements ViewInterface
      * @param string $action
      *
      * @return static
-     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Renderer\Exception
+     * @throws \ManaPHP\Mvc\View\Exception
      */
     public function render($module, $controller, $action)
     {
@@ -234,7 +234,9 @@ class View extends Component implements ViewInterface
         $parts = array_pad(explode('/', $view), -3, null);
 
         $this->_moduleName = $parts[0];
+        /** @noinspection MultiAssignmentUsageInspection */
         $this->_controllerName = $parts[1];
+        /** @noinspection MultiAssignmentUsageInspection */
         $this->_actionName = $parts[2];
 
         return $this;
@@ -257,7 +259,8 @@ class View extends Component implements ViewInterface
      * @param array     $vars
      * @param int|array $cacheOptions
      *
-     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Renderer\Exception
+     * @throws \ManaPHP\Mvc\View\Exception
+     * @throws \ManaPHP\Renderer\Exception
      */
     public function partial($path, $vars = [], $cacheOptions = null)
     {
@@ -295,7 +298,7 @@ class View extends Component implements ViewInterface
      * @param array     $options
      * @param int|array $cacheOptions
      *
-     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Alias\Exception|\ManaPHP\Renderer\Exception
+     * @throws \ManaPHP\Mvc\View\Exception
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {

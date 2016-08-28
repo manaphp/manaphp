@@ -120,7 +120,6 @@ interface DbInterface
      * @param int $preservedStrLength
      *
      * @return string
-     * @throws \ManaPHP\Db\Exception
      */
     public function getEmulatedSQL($preservedStrLength = -1);
 
@@ -214,7 +213,6 @@ interface DbInterface
      * @param string
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function getMetadata($source);
 

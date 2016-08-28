@@ -11,7 +11,6 @@ interface RendererInterface
      * @param array   $vars
      *
      * @return string
-     * @throws \ManaPHP\Renderer\Exception
      */
     public function render($template, $vars, $directOutput = false);
 
@@ -47,7 +46,6 @@ interface RendererInterface
      * @param  bool $overwrite
      *
      * @return string
-     * @throws \ManaPHP\Mvc\View\Exception
      */
     public function stopSection($overwrite = false);
 

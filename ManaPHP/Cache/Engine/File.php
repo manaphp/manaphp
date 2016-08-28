@@ -9,7 +9,7 @@ class File extends Component implements EngineInterface
     /**
      * @var string
      */
-    protected $_cacheDir = '@data/Cache';
+    protected $_cacheDir = '@data/cache';
 
     /**
      * @var string
@@ -26,7 +26,6 @@ class File extends Component implements EngineInterface
      *
      * @param string|array|\ConfManaPHP\Cache\Engine\File $options
      *
-     * @throws \ManaPHP\Cache\Exception|\ManaPHP\Configure\Exception
      */
     public function __construct($options = [])
     {

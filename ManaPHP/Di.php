@@ -36,45 +36,45 @@ use ManaPHP\Di\Exception;
  *
  *</code>
  *
- * @property \ManaPHP\Alias                       $alias
- * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
- * @property \ManaPHP\Mvc\Router                  $router
- * @property \ManaPHP\Mvc\Url                     $url
- * @property \ManaPHP\Http\Request                $request
- * @property \ManaPHP\Http\Filter                 $filter
- * @property \ManaPHP\Http\Response               $response
- * @property \ManaPHP\Http\Cookies                $cookies
- * @property \ManaPHP\Mvc\View\Flash              $flash
- * @property \ManaPHP\Mvc\View\Flash              $flashSession
- * @property \ManaPHP\Http\SessionInterface       $session
- * @property \ManaPHP\Event\ManagerInterface      $eventsManager
- * @property \ManaPHP\Db                          $db
- * @property \ManaPHP\Security\Crypt              $crypt
- * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
- * @property \ManaPHP\Mvc\Model\Metadata          $modelsMetadata
- * @property \ManaPHP\Cache\EngineInterface       $modelsCache
- * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
- * @property \ManaPHP\Http\Session\Bag            $persistent
- * @property \ManaPHP\Mvc\View                    $view
- * @property \ManaPHP\Loader                      $loader
- * @property \ManaPHP\Log\Logger                  $logger
- * @property \ManaPHP\Renderer                    $renderer
- * @property \Application\Configure               $configure
- * @property \ManaPHP\ApplicationInterface        $application
- * @property \ManaPHP\Debugger                    $debugger
- * @property \ManaPHP\Authentication\Password     $password
- * @property \Redis                               $redis
- * @property \ManaPHP\Serializer\AdapterInterface $serializer
- * @property \ManaPHP\Cache                       $cache
- * @property \ManaPHP\Cache\EngineInterface       $cacheEngine
- * @property \ManaPHP\Counter                     $counter
- * @property \ManaPHP\Cache\EngineInterface       $viewsCache
- * @property \ManaPHP\Http\Client                 $httpClient
- * @property \ManaPHP\AuthorizationInterface      $authorization
- * @property \ManaPHP\Security\Captcha            $captcha
- * @property \ManaPHP\Security\CsrfToken          $csrfToken
- * @property \ManaPHP\Authentication\UserIdentity $userIdentity
- * @property \ManaPHP\Paginator                   $paginator
+ * @property \ManaPHP\AliasInterface                       $alias
+ * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
+ * @property \ManaPHP\Mvc\RouterInterface                  $router
+ * @property \ManaPHP\Mvc\UrlInterface                     $url
+ * @property \ManaPHP\Http\RequestInterface                $request
+ * @property \ManaPHP\Http\FilterInterface                 $filter
+ * @property \ManaPHP\Http\ResponseInterface               $response
+ * @property \ManaPHP\Http\CookiesInterface                $cookies
+ * @property \ManaPHP\Mvc\View\FlashInterface              $flash
+ * @property \ManaPHP\Mvc\View\FlashInterface              $flashSession
+ * @property \ManaPHP\Http\SessionInterface                $session
+ * @property \ManaPHP\Event\ManagerInterface               $eventsManager
+ * @property \ManaPHP\DbInterface                          $db
+ * @property \ManaPHP\Security\CryptInterface              $crypt
+ * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
+ * @property \ManaPHP\Mvc\Model\MetaDataInterface          $modelsMetadata
+ * @property \ManaPHP\Cache\EngineInterface                $modelsCache
+ * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
+ * @property \ManaPHP\Http\Session\Bag                     $persistent
+ * @property \ManaPHP\Mvc\ViewInterface                    $view
+ * @property \ManaPHP\Loader                               $loader
+ * @property \ManaPHP\Log\Logger                           $logger
+ * @property \ManaPHP\RendererInterface                    $renderer
+ * @property \Application\Configure                        $configure
+ * @property \ManaPHP\ApplicationInterface                 $application
+ * @property \ManaPHP\DebuggerInterface                    $debugger
+ * @property \ManaPHP\Authentication\PasswordInterface     $password
+ * @property \Redis                                        $redis
+ * @property \ManaPHP\Serializer\AdapterInterface          $serializer
+ * @property \ManaPHP\CacheInterface                       $cache
+ * @property \ManaPHP\Cache\EngineInterface                $cacheEngine
+ * @property \ManaPHP\CounterInterface                     $counter
+ * @property \ManaPHP\Cache\EngineInterface                $viewsCache
+ * @property \ManaPHP\Http\ClientInterface                 $httpClient
+ * @property \ManaPHP\AuthorizationInterface               $authorization
+ * @property \ManaPHP\Security\CaptchaInterface            $captcha
+ * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken
+ * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
+ * @property \ManaPHP\Paginator                            $paginator
  */
 class Di implements DiInterface
 {
@@ -192,6 +192,7 @@ class Di implements DiInterface
             } else {
                 $parts = $this->_services[$name];
                 $definition = $parts[0];
+                /** @noinspection MultiAssignmentUsageInspection */
                 $shared = $parts[1];
             }
         } else {

@@ -7,6 +7,7 @@
 namespace ManaPHP\Log;
 
 use ManaPHP\Component;
+use ManaPHP\Log\Logger\Exception;
 use ManaPHP\Utility\Text;
 
 class Logger extends Component
@@ -55,7 +56,7 @@ class Logger extends Component
      * @param int|string $level
      *
      * @return static
-     * @throws \ManaPHP\Log\Exception
+     * @throws \ManaPHP\Log\Logger\Exception
      */
     public function setLevel($level)
     {

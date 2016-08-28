@@ -45,7 +45,9 @@ class Gd implements AdapterInterface
             $this->_real_path = realpath($this->_file);
             $imageInfo = getimagesize($this->_real_path);
             $this->_width = $imageInfo[0];
+            /** @noinspection MultiAssignmentUsageInspection */
             $this->_height = $imageInfo[1];
+            /** @noinspection MultiAssignmentUsageInspection */
             $type = $imageInfo[2];
 
             if ($type === IMAGETYPE_GIF) {
@@ -213,7 +215,9 @@ class Gd implements AdapterInterface
     {
         $maskImageInfo = getimagesize($file);
         $maskWidth = $maskImageInfo[0];
+        /** @noinspection MultiAssignmentUsageInspection */
         $maskHeight = $maskImageInfo[1];
+        /** @noinspection MultiAssignmentUsageInspection */
         $maskType = $maskImageInfo[2];
 
         if ($maskType === IMAGETYPE_GIF) {

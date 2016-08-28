@@ -43,7 +43,7 @@ namespace Application {
             $this->database->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
             $this->log = new \stdClass();
-            $this->log->file = '@data/Logger/' . date('Ymd') . '.log';
+            $this->log->file = '@data/logger/' . date('Ymd') . '.log';
 
             $this->crypt = new \stdClass();
             $this->crypt->key = 'test';

@@ -91,8 +91,6 @@ interface ViewInterface
      * @param string    $path
      * @param array     $vars
      * @param int|array $cacheOptions
-     *
-     * @throws \ManaPHP\Mvc\View\Exception|\ManaPHP\Renderer\Exception
      */
     public function partial($path, $vars = [], $cacheOptions = null);
 

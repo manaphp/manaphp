@@ -8,7 +8,7 @@ use ManaPHP\Mvc\View\Flash;
  *
  * @package ManaPHP\Mvc\View\Flash\Adapter
  *
- * @property \ManaPHP\Http\Session $session
+ * @property \ManaPHP\Http\SessionInterface $session
  */
 class Session extends Flash
 {

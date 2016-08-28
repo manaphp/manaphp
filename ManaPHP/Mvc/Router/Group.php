@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Mvc\Router;
 
+use ManaPHP\Component;
+
 /**
  * ManaPHP\Mvc\Router\Group
  *
@@ -44,7 +46,7 @@ namespace ManaPHP\Mvc\Router;
  *</code>
  *
  */
-class Group implements GroupInterface
+class Group extends Component implements GroupInterface
 {
     /**
      * @var \ManaPHP\Mvc\Router\RouteInterface[]
@@ -69,7 +71,7 @@ class Group implements GroupInterface
      * @param string       $httpMethod
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     protected function _addRoute($pattern, $paths = null, $httpMethod = null)
     {
@@ -91,7 +93,7 @@ class Group implements GroupInterface
      * @param string|array $httpMethod
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function add($pattern, $paths = null, $httpMethod = null)
     {
@@ -105,7 +107,7 @@ class Group implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addGet($pattern, $paths = null)
     {
@@ -119,7 +121,7 @@ class Group implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addPost($pattern, $paths = null)
     {
@@ -133,7 +135,7 @@ class Group implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addPut($pattern, $paths = null)
     {
@@ -147,7 +149,7 @@ class Group implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addPatch($pattern, $paths = null)
     {
@@ -161,7 +163,7 @@ class Group implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addDelete($pattern, $paths = null)
     {
@@ -175,7 +177,7 @@ class Group implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addOptions($pattern, $paths = null)
     {
@@ -189,7 +191,7 @@ class Group implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addHead($pattern, $paths = null)
     {
@@ -245,10 +247,12 @@ class Group implements GroupInterface
                 $paths['controller'] = $parts[0];
             } elseif ($count === 2) {
                 $paths['controller'] = $parts[0];
+                /** @noinspection MultiAssignmentUsageInspection */
                 $paths['action'] = $parts[1];
             } elseif ($count === 3) {
                 $paths['controller'] = $parts[0];
                 $paths['action'] = $parts[1];
+                /** @noinspection MultiAssignmentUsageInspection */
                 $paths['params'] = $parts[2];
             }
 

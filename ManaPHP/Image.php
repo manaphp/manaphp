@@ -18,7 +18,7 @@ class Image implements ImageInterface
      *
      * @param string $file
      *
-     * @throws \ManaPHP\Image\Exception|\ManaPHP\Di\Exception|\ManaPHP\Image\Adapter\Exception
+     * @throws \ManaPHP\Image\Exception
      */
     public function __construct($file)
     {

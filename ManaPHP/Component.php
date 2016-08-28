@@ -9,7 +9,7 @@ namespace ManaPHP;
 /**
  * ManaPHP\Component
  *
- * @property \ManaPHP\Alias                  $alias
+ * @property \ManaPHP\AliasInterface         $alias
  * @property \ManaPHP\Event\ManagerInterface $eventsManager
  */
 class Component implements ComponentInterface
@@ -102,7 +102,6 @@ class Component implements ComponentInterface
      * @param callable $handler
      *
      * @return static
-     * @throws \ManaPHP\Event\Exception
      */
     public function attachEvent($event, $handler)
     {

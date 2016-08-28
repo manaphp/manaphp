@@ -9,7 +9,7 @@ use ManaPHP\Component;
  *
  * This class is a bag to manage the cookies
  *
- * @property \ManaPHP\Security\Crypt $crypt
+ * @property \ManaPHP\Security\CryptInterface $crypt
  */
 class Cookies extends Component implements CookiesInterface
 {
@@ -35,7 +35,6 @@ class Cookies extends Component implements CookiesInterface
      * @param boolean $httpOnly
      *
      * @return static
-     * @throws \ManaPHP\Security\Crypt\Exception
      */
     public function set(
         $name,
@@ -80,7 +79,6 @@ class Cookies extends Component implements CookiesInterface
      * @param string $value
      *
      * @return mixed
-     * @throws \ManaPHP\Security\Crypt\Exception
      */
     protected function _decrypt($value)
     {
@@ -91,7 +89,6 @@ class Cookies extends Component implements CookiesInterface
      * @param string $value
      *
      * @return string
-     * @throws \ManaPHP\Security\Crypt\Exception
      */
     protected function _encrypt($value)
     {
@@ -104,7 +101,6 @@ class Cookies extends Component implements CookiesInterface
      * @param string $name
      *
      * @return mixed|null
-     * @throws \ManaPHP\Security\Crypt\Exception
      */
     public function get($name)
     {
@@ -163,7 +159,6 @@ class Cookies extends Component implements CookiesInterface
      * Cookies are not sent if headers are sent in the current request
      *
      * @return void
-     * @throws \ManaPHP\Http\Cookies\Exception
      */
     public function send()
     {

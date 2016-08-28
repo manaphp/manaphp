@@ -52,8 +52,8 @@ use ManaPHP\Mvc\Model\Exception;
  * method beforeDelete()
  * method afterDelete()
  *
- * @property \ManaPHP\Mvc\Model\Metadata $modelsMetadata
- * @property \ManaPHP\Mvc\Model\Manager  $modelsManager
+ * @property \ManaPHP\Mvc\Model\MetaDataInterface $modelsMetadata
+ * @property \ManaPHP\Mvc\Model\ManagerInterface  $modelsManager
  */
 class Model extends Component implements ModelInterface
 {
@@ -387,7 +387,6 @@ class Model extends Component implements ModelInterface
      * @param \ManaPHP\DiInterface $dependencyInjector
      *
      * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
-     * @throws \ManaPHP\Di\Exception
      */
     public static function query($dependencyInjector = null)
     {
@@ -539,7 +538,7 @@ class Model extends Component implements ModelInterface
      * @param int|array    $cacheOptions
      *
      * @return mixed
-     * @throws \ManaPHP\Di\Exception|\ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function sum($column, $parameters = null, $cacheOptions = null)
     {
@@ -594,7 +593,6 @@ class Model extends Component implements ModelInterface
      *
      * @return mixed
      * @throws \ManaPHP\Mvc\Model\Exception
-     * @throws \ManaPHP\Di\Exception
      */
     public static function min($column, $parameters = null, $cacheOptions = null)
     {
@@ -698,7 +696,7 @@ class Model extends Component implements ModelInterface
      * Sends a pre-build UPDATE SQL statement to the relational database system
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     protected function _doLowUpdate()
     {
@@ -751,7 +749,7 @@ class Model extends Component implements ModelInterface
      * @param array $whiteList
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function save($data = null, $whiteList = null)
     {
@@ -787,7 +785,7 @@ class Model extends Component implements ModelInterface
      * @param array $whiteList
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function create($data = null, $whiteList = null)
     {
@@ -819,7 +817,7 @@ class Model extends Component implements ModelInterface
      * @param array $whiteList
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function update($data = null, $whiteList = null)
     {
@@ -885,7 +883,7 @@ class Model extends Component implements ModelInterface
      * </code>
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function delete()
     {
@@ -948,7 +946,7 @@ class Model extends Component implements ModelInterface
      * Returns a list of changed values
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function getChangedFields()
     {
@@ -970,7 +968,7 @@ class Model extends Component implements ModelInterface
      * @param string|array $fields
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function hasChanged($fields)
     {

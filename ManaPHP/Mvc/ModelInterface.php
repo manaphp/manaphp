@@ -251,7 +251,6 @@ interface ModelInterface
      * @param array        $bind
      *
      * @return int
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function deleteAll($conditions, $bind = []);
 
@@ -277,7 +276,6 @@ interface ModelInterface
      * Returns a list of changed values
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
      */
     public function getChangedFields();
 

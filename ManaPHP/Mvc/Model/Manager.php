@@ -73,7 +73,6 @@ class Manager extends Component implements ManagerInterface
      * @param \ManaPHP\Mvc\ModelInterface|string $model
      *
      * @return string
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function getModelSource($model)
     {
@@ -210,7 +209,6 @@ class Manager extends Component implements ManagerInterface
      * @param string|array $params
      *
      * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function createBuilder($params = null)
     {

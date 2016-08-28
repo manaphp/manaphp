@@ -5,12 +5,12 @@ namespace ManaPHP\Mvc;
 /**
  * ManaPHP\Mvc\ModuleInterface initializer
  *
- * @property \ManaPHP\Http\Session   $session
- * @property \ManaPHP\Http\Request   $request
- * @property \ManaPHP\Http\Response  $response
- * @property \ManaPHP\Mvc\Dispatcher $dispatcher
- * @property \Application\Configure  $configure
- * @property \ManaPHP\Http\Client    $httpClient
+ * @property \ManaPHP\Http\SessionInterface   $session
+ * @property \ManaPHP\Http\RequestInterface   $request
+ * @property \ManaPHP\Http\ResponseInterface  $response
+ * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property \Application\Configure           $configure
+ * @property \ManaPHP\Http\ClientInterface    $httpClient
  */
 interface ModuleInterface
 {

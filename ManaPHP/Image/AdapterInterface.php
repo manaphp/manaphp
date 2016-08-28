@@ -77,15 +77,12 @@ interface AdapterInterface
      * @param float  $opacity
      *
      * @return static
-     * @throws \ManaPHP\Image\Exception
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0);
 
     /**
      * @param string $file
      * @param int    $quality
-     *
-     * @throws \ManaPHP\Image\Exception
      */
     public function save($file = null, $quality = 80);
 }

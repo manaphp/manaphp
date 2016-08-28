@@ -40,7 +40,7 @@ class File extends Component implements AdapterInterface
         }
 
         if (!isset($options['file'])) {
-            $options['file'] = '@data/Logger/' . date('ymd') . '.log';
+            $options['file'] = '@data/logger/' . date('ymd') . '.log';
         }
 
         $this->_file = $options['file'];

@@ -8,6 +8,6 @@ namespace ManaPHP\Mvc\Model;
  * Exceptions thrown in ManaPHP\Mvc\Model\* classes will use this class
  *
  */
-class Exception extends \ManaPHP\Exception
+class Exception extends \ManaPHP\Mvc\Exception
 {
 }

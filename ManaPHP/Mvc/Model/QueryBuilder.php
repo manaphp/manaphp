@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Mvc\Model\QueryBuilder\Exception;
 use ManaPHP\Utility\Text;
 
 /**
@@ -20,10 +21,10 @@ use ManaPHP\Utility\Text;
  *   ->execute();
  *</code>
  *
- * @property \ManaPHP\Cache\EngineInterface $modelsCache
- * @property \ManaPHP\Paginator             $paginator
- * @property \ManaPHP\Mvc\Model\Manager     $modelsManager
- * @property \ManaPHP\Mvc\Dispatcher        $dispatcher
+ * @property \ManaPHP\Cache\EngineInterface      $modelsCache
+ * @property \ManaPHP\Paginator                  $paginator
+ * @property \ManaPHP\Mvc\Model\ManagerInterface $modelsManager
+ * @property \ManaPHP\Mvc\DispatcherInterface    $dispatcher
  */
 class QueryBuilder extends Component implements QueryBuilderInterface
 {
@@ -134,7 +135,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *
      * @param array|string $params
      *
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     public function __construct($params = null)
     {
@@ -488,7 +489,6 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
      *
      * @return static
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function inWhere($expr, $values)
     {
@@ -531,7 +531,6 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param array|\ManaPHP\Mvc\Model\QueryBuilderInterface $values
      *
      * @return static
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function notInWhere($expr, $values)
     {
@@ -663,7 +662,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     protected function _getUnionSql()
     {
@@ -707,7 +706,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     public function getSql()
     {
@@ -722,7 +721,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * Returns a SQL statement built based on the builder parameters
      *
      * @return string
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     protected function _buildSql()
     {
@@ -812,8 +811,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_joins as $join) {
             $joinModel = $join[0];
+            /** @noinspection MultiAssignmentUsageInspection */
             $joinCondition = $join[1];
+            /** @noinspection MultiAssignmentUsageInspection */
             $joinAlias = $join[2];
+            /** @noinspection MultiAssignmentUsageInspection */
             $joinType = $join[3];
 
             if ($joinAlias !== null) {
@@ -960,6 +962,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param int|array $cacheOptions
      *
      * @return array
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     protected function _getCacheOptions($cacheOptions)
     {
@@ -973,13 +976,17 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $modelName = $this->_models[0];
             $prefix = '/' . $this->dispatcher->getModuleName() . '/Models/' . substr($modelName, strrpos($modelName, '\\') + 1);
         } else {
-            $prefix = '/' . $this->dispatcher->getModuleName() . '/Queries';
+            $prefix = '/' . $this->dispatcher->getModuleName() . '/Queries/' . $this->dispatcher->getControllerName();
         }
 
-        if (!isset($_cacheOptions['key'])) {
-            $_cacheOptions['key'] = $prefix . '/' . md5($this->_sql . serialize($this->_bind));
-        } else {
+        if (isset($_cacheOptions['key'])) {
+            if ($_cacheOptions['key'][0] === '/') {
+                throw new Exception('modelsCache key can not be start with `/`: ' . $_cacheOptions['key']);
+            }
+
             $_cacheOptions['key'] = $prefix . '/' . $_cacheOptions['key'];
+        } else {
+            $_cacheOptions['key'] = $prefix . '/' . md5($this->_sql . serialize($this->_bind));
         }
 
         return $_cacheOptions;
@@ -1004,7 +1011,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param int|array $cacheOptions
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     public function execute($cacheOptions = null)
     {
@@ -1042,7 +1049,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param int|string $rowCount
      *
      * @return static
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     protected function _getTotalRows(&$rowCount)
     {
@@ -1083,7 +1090,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param int|array $cacheOptions
      *
      * @return static
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception|\ManaPHP\Paginator\Exception
+     * @throws \ManaPHP\Paginator\Exception
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     public function paginate($size, $page, $cacheOptions = null)
     {
@@ -1100,7 +1108,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param int|array  $cacheOptions
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception|\ManaPHP\Di\Exception
+     * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     public function executeEx(&$totalRows, $cacheOptions = null)
     {

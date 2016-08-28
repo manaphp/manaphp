@@ -8,7 +8,7 @@ use ManaPHP\Paginator\Exception;
  *
  * @package ManaPHP
  *
- * @property \ManaPHP\Http\Request $request
+ * @property \ManaPHP\Http\RequestInterface $request
  */
 class Paginator extends Component implements PaginatorInterface
 {
@@ -93,7 +93,7 @@ class Paginator extends Component implements PaginatorInterface
      * @param string $urlTemplate
      *
      * @return string
-     * @throws \ManaPHP\Paginator\Exception|\ManaPHP\Http\Request\Exception
+     * @throws \ManaPHP\Paginator\Exception
      */
     public function renderAsHtml($urlTemplate = null)
     {

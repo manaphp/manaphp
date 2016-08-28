@@ -656,7 +656,7 @@ class Sword extends Component implements EngineInterface
 
     public function render($file, $vars = [])
     {
-        $_compiledFile = $this->alias->resolve('@data/Sword' . str_replace($this->alias->get('@app'), '', $file));
+        $_compiledFile = $this->alias->resolve('@data/sword' . str_replace($this->alias->get('@app'), '', $file));
 
         if (!file_exists($_compiledFile) || filemtime($file) > filemtime($_compiledFile)) {
             File::setContent($_compiledFile, $this->compileString(File::getContent($file)));

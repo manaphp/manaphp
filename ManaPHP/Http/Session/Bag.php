@@ -16,7 +16,7 @@ use ManaPHP\Component;
  *    $user->set('age', 22);
  *</code>
  *
- * @property \ManaPHP\Http\Session $session
+ * @property \ManaPHP\Http\SessionInterface $session
  */
 class Bag extends Component implements BagInterface
 {
@@ -30,7 +30,6 @@ class Bag extends Component implements BagInterface
      *
      * @param string $name
      *
-     * @throws \ManaPHP\Di\Exception
      */
     public function __construct($name)
     {
@@ -44,7 +43,6 @@ class Bag extends Component implements BagInterface
      * $user->destroy();
      *</code>
      *
-     * @throws \ManaPHP\Di\Exception
      */
     public function destroy()
     {
@@ -61,7 +59,6 @@ class Bag extends Component implements BagInterface
      * @param string $property
      * @param mixed  $value
      *
-     * @throws \ManaPHP\Di\Exception
      */
     public function set($property, $value)
     {
@@ -83,8 +80,6 @@ class Bag extends Component implements BagInterface
      * @param string $defaultValue
      *
      * @return mixed
-     *
-     * @throws \ManaPHP\Di\Exception
      */
     public function get($property = null, $defaultValue = null)
     {
@@ -108,7 +103,6 @@ class Bag extends Component implements BagInterface
      * @param string $property
      *
      * @return boolean
-     * @throws \ManaPHP\Di\Exception
      */
     public function has($property)
     {
@@ -128,7 +122,6 @@ class Bag extends Component implements BagInterface
      * @param string $property
      *
      * @return void
-     * @throws \ManaPHP\Di\Exception
      */
     public function remove($property)
     {

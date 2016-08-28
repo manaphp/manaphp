@@ -80,7 +80,6 @@ class Store extends Component implements StoreInterface
      * @param mixed  $value
      *
      * @return void
-     * @throws \ManaPHP\Cache\Exception
      */
     public function set($key, $value)
     {

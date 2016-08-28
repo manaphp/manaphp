@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Mvc\Model\MetaData\Exception;
 
 /**
  * ManaPHP\Mvc\Model\MetaData
@@ -43,7 +44,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      * @param string|\ManaPHP\Mvc\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\MetaData\Exception
      */
     protected function _readMetaData($model)
     {
@@ -94,7 +95,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      * @param string|\ManaPHP\Mvc\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\MetaData\Exception
      */
     public function getAttributes($model)
     {
@@ -111,7 +112,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      * @param string|\ManaPHP\Mvc\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\MetaData\Exception
      */
     public function getPrimaryKeyAttributes($model)
     {
@@ -124,7 +125,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      * @param string|\ManaPHP\Mvc\ModelInterface $model
      *
      * @return string |null
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\MetaData\Exception
      */
     public function getAutoIncrementAttribute($model)
     {
@@ -137,7 +138,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      * @param string|\ManaPHP\Mvc\ModelInterface $model
      *
      * @return    array
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\MetaData\Exception
      */
     public function getNonPrimaryKeyAttributes($model)
     {
@@ -155,7 +156,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      * @param string                             $attribute
      *
      * @return boolean
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\MetaData\Exception
      */
     public function hasAttribute($model, $attribute)
     {
@@ -166,7 +167,7 @@ abstract class MetaData extends Component implements MetaDataInterface, MetaData
      * @param string|\ManaPHP\Mvc\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Mvc\Model\MetaData\Exception
      */
     public function getColumnProperties($model)
     {

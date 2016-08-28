@@ -45,30 +45,30 @@ use ManaPHP\Component;
  * @method onConstruct();
  *
  *
- * @property \ManaPHP\Mvc\View                    $view
- * @property \ManaPHP\Mvc\View\Flash              $flash
- * @property \ManaPHP\Mvc\View\Flash              $flashSession
- * @property \ManaPHP\Security\Captcha            $captcha
- * @property \ManaPHP\Http\Client                 $httpClient
- * @property \ManaPHP\Authentication\Password     $password
- * @property \ManaPHP\Http\Cookies                $cookies
- * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
- * @property \ManaPHP\Counter                     $counter
- * @property \ManaPHP\Cache                       $cache
- * @property \ManaPHP\Db                          $db
- * @property \ManaPHP\Authentication\UserIdentity $userIdentity
- * @property \ManaPHP\Http\Request                $request
- * @property \ManaPHP\Http\Response               $response
- * @property \ManaPHP\Security\Crypt              $crypt
- * @property \ManaPHP\Http\Session\Bag            $persistent
- * @property \ManaPHP\Di|\ManaPHP\DiInterface     $di
- * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
- * @property \ManaPHP\Log\Logger                  $logger
- * @property \Application\Configure               $configure
- * @property \ManaPHP\Http\Session                $session
- * @property \ManaPHP\Security\CsrfToken          $csrfToken
- * @property \ManaPHP\Paginator                   $paginator
- * @property \ManaPHP\Cache\EngineInterface       $viewsCache
+ * @property \ManaPHP\Mvc\ViewInterface                    $view
+ * @property \ManaPHP\Mvc\View\FlashInterface              $flash
+ * @property \ManaPHP\Mvc\View\FlashInterface              $flashSession
+ * @property \ManaPHP\Security\CaptchaInterface            $captcha
+ * @property \ManaPHP\Http\ClientInterface                 $httpClient
+ * @property \ManaPHP\Authentication\PasswordInterface     $password
+ * @property \ManaPHP\Http\CookiesInterface                $cookies
+ * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
+ * @property \ManaPHP\CounterInterface                     $counter
+ * @property \ManaPHP\CacheInterface                       $cache
+ * @property \ManaPHP\DbInterface                          $db
+ * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
+ * @property \ManaPHP\Http\RequestInterface                $request
+ * @property \ManaPHP\Http\ResponseInterface               $response
+ * @property \ManaPHP\Security\CryptInterface              $crypt
+ * @property \ManaPHP\Http\Session\BagInterface            $persistent
+ * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
+ * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
+ * @property \ManaPHP\Log\Logger                           $logger
+ * @property \Application\Configure                        $configure
+ * @property \ManaPHP\Http\SessionInterface                $session
+ * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken
+ * @property \ManaPHP\Paginator                            $paginator
+ * @property \ManaPHP\Cache\EngineInterface                $viewsCache
  */
 abstract class Controller extends Component implements ControllerInterface
 {

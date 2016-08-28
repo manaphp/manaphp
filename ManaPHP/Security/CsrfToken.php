@@ -9,10 +9,10 @@ use ManaPHP\Security\CsrfToken\Exception;
  *
  * @package ManaPHP\Security
  *
- * @property \ManaPHP\Http\Cookies  $cookies
- * @property \ManaPHP\Http\Response $response
- * @property \ManaPHP\Http\Request  $request
- * @property \ManaPHP\Http\Session  $session
+ * @property \ManaPHP\Http\CookiesInterface  $cookies
+ * @property \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\Http\RequestInterface  $request
+ * @property \ManaPHP\Http\SessionInterface  $session
  */
 class CsrfToken extends Component implements CsrfTokenInterface
 {
@@ -75,7 +75,6 @@ class CsrfToken extends Component implements CsrfTokenInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Security\Crypt\Exception
      */
     public function get()
     {
@@ -96,7 +95,7 @@ class CsrfToken extends Component implements CsrfTokenInterface
 
     /**
      * @return void
-     * @throws \ManaPHP\Security\CsrfToken\Exception|\ManaPHP\Security\Crypt\Exception|\ManaPHP\Http\Request\Exception
+     * @throws \ManaPHP\Security\CsrfToken\Exception
      */
     public function verify()
     {

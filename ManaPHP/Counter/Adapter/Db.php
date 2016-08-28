@@ -13,7 +13,7 @@ use ManaPHP\Counter;
  *      ) ENGINE=MyISAM DEFAULT CHARSET=utf8
  *
  *
- * @property \ManaPHP\Db $db
+ * @property \ManaPHP\DbInterface $db
  */
 class Db extends Counter
 {
@@ -60,7 +60,6 @@ class Db extends Counter
      * @param array|string $key
      *
      * @return int
-     * @throws \ManaPHP\Db\Exception
      */
     public function _get($key)
     {
@@ -79,7 +78,7 @@ class Db extends Counter
      * @param int    $step
      *
      * @return int
-     * @throws \ManaPHP\Counter\Adapter\Exception|\ManaPHP\Db\Exception
+     * @throws \ManaPHP\Counter\Adapter\Exception
      */
     public function _increment($key, $step)
     {
@@ -118,7 +117,6 @@ class Db extends Counter
      * @param array|string $key
      *
      * @return void
-     * @throws \ManaPHP\Db\Exception
      */
     public function _delete($key)
     {

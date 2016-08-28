@@ -1,13 +1,15 @@
 <?php
 namespace ManaPHP\Authorization\Rbac;
 
+use ManaPHP\Authorization\Rbac\Annotation\Exception;
+
 class Annotation
 {
     /**
      * @param string $className
      *
      * @return array
-     * @throws \ManaPHP\Authorization\Rbac\Exception
+     * @throws \ManaPHP\Authorization\Rbac\Annotation\Exception
      */
     public function getPermissions($className)
     {

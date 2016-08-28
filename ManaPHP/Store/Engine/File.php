@@ -10,7 +10,7 @@ class File extends Component implements EngineInterface
     /**
      * @var string
      */
-    protected $_storeDir = '@data/Store';
+    protected $_storeDir = '@data/store';
 
     /**
      * @var string
@@ -26,8 +26,6 @@ class File extends Component implements EngineInterface
      * File constructor.
      *
      * @param string|array|\ConfManaPHP\Store\Engine\File $options
-     *
-     * @throws \ManaPHP\Configure\Exception
      */
     public function __construct($options = [])
     {

@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Authorization;
 
+use ManaPHP\Authorization\Rbac\Exception;
 use ManaPHP\Authorization\Rbac\Models\Permission;
 use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
@@ -44,9 +45,9 @@ use ManaPHP\Component;
  * ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
  *
  *
- * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
- * @property \ManaPHP\Mvc\Model\Manager           $modelsManager
- * @property \ManaPHP\Authentication\UserIdentity $userIdentity
+ * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
+ * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
+ * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  */
 class Rbac extends Component implements AuthorizationInterface
 {
@@ -98,11 +99,14 @@ class Rbac extends Component implements AuthorizationInterface
             case 2:
                 $module = $this->dispatcher->getModuleName();
                 $controller = $parts[0];
+                /** @noinspection MultiAssignmentUsageInspection */
                 $action = $parts[1];
                 break;
             case 3:
                 $module = $parts[0];
+                /** @noinspection MultiAssignmentUsageInspection */
                 $controller = $parts[1];
+                /** @noinspection MultiAssignmentUsageInspection */
                 $action = $parts[2];
                 break;
             default:
@@ -116,7 +120,7 @@ class Rbac extends Component implements AuthorizationInterface
      * @param string $permissionName
      *
      * @return array
-     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Authorization\Rbac\Exception
      */
     protected function _getPermission($permissionName)
     {
@@ -141,7 +145,6 @@ class Rbac extends Component implements AuthorizationInterface
      * @param int $permissionId
      *
      * @return array
-     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
      */
     protected function _getRolesByPermission($permissionId)
     {
@@ -163,7 +166,6 @@ class Rbac extends Component implements AuthorizationInterface
      * @param int|string $userId
      *
      * @return array
-     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
      */
     protected function _getRolesByUser($userId)
     {
@@ -185,7 +187,7 @@ class Rbac extends Component implements AuthorizationInterface
      * @param string|null $userId
      *
      * @return bool
-     * @throws \ManaPHP\Authorization\Exception|\ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Authorization\Rbac\Exception
      */
     public function isAllowed($permissionName, $userId = null)
     {

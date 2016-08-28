@@ -41,8 +41,6 @@ class Filter extends Component implements FilterInterface
      * Filter constructor.
      *
      * @param array $options
-     *
-     * @throws \ManaPHP\Http\Exception
      */
     public function __construct($options = [])
     {
@@ -141,7 +139,7 @@ class Filter extends Component implements FilterInterface
      * @param array  $parameters
      *
      * @return string
-     * @throws \ManaPHP\Alias\Exception|\ManaPHP\Http\Exception
+     * @throws \ManaPHP\Http\Filter\Exception
      */
     protected function _getError($attribute, $value, $rule, $parameters)
     {
@@ -149,7 +147,7 @@ class Filter extends Component implements FilterInterface
             $file = $this->alias->resolve($this->_messagesFile);
 
             if (!is_file($file)) {
-                throw new \ManaPHP\Http\Exception('filter message template file is not exists: ' . $file);
+                throw new Exception('filter message template file is not exists: ' . $file);
             }
 
             /** @noinspection PhpIncludeInspection */
@@ -179,7 +177,7 @@ class Filter extends Component implements FilterInterface
      * @param string|int|boolean|array $value
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Exception
+     * @throws \ManaPHP\Http\Filter\Exception
      */
     public function sanitize($attribute, $rules, $value)
     {
@@ -204,6 +202,15 @@ class Filter extends Component implements FilterInterface
         return $value;
     }
 
+    /**
+     * @param string $attribute
+     * @param string $name
+     * @param array  $parameters
+     * @param mixed  $value
+     *
+     * @return mixed
+     * @throws \ManaPHP\Http\Filter\Exception
+     */
     protected function _sanitize($attribute, $name, $parameters, $value)
     {
         if (isset($this->_rules[$name])) {
@@ -211,7 +218,7 @@ class Filter extends Component implements FilterInterface
         } elseif (function_exists($name)) {
             $method = $name;
         } else {
-            throw new \ManaPHP\Http\Exception('filter `' . $name . '` is not be recognized.');
+            throw new Exception('filter `' . $name . '` is not be recognized.');
         }
 
         $callParameter = [$value, $parameters];
@@ -239,6 +246,12 @@ class Filter extends Component implements FilterInterface
         }
     }
 
+    /**
+     * @param mixed $value
+     * @param array $parameters
+     *
+     * @return mixed
+     */
     protected function _rule_default($value, $parameters)
     {
         if ($value === '' || $value === null) {
@@ -248,6 +261,11 @@ class Filter extends Component implements FilterInterface
         }
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return mixed
+     */
     protected function _rule_ignore($value)
     {
         return $value;

@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Mvc\Router;
 
+use ManaPHP\Mvc\Router\Route\Exception;
 use ManaPHP\Utility\Text;
 
 /**
@@ -42,7 +43,7 @@ class Route implements RouteInterface
      * @param string|array $paths
      * @param string       $httpMethod
      *
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function __construct($pattern, $paths = null, $httpMethod = null)
     {
@@ -139,7 +140,7 @@ class Route implements RouteInterface
      * @param string|array $paths
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public static function getRoutePaths($paths = null)
     {
@@ -156,10 +157,13 @@ class Route implements RouteInterface
 
                 if (count($parts) === 3) {
                     $moduleName = $parts[0];
+                    /** @noinspection MultiAssignmentUsageInspection */
                     $controllerName = $parts[1];
+                    /** @noinspection MultiAssignmentUsageInspection */
                     $actionName = $parts[2];
                 } elseif (count($parts) === 2) {
                     $controllerName = $parts[0];
+                    /** @noinspection MultiAssignmentUsageInspection */
                     $actionName = $parts[1];
                 } else {
                     $controllerName = $parts[0];
@@ -208,7 +212,7 @@ class Route implements RouteInterface
      * @param string $uri
      *
      * @return bool|array
-     * @throws \ManaPHP\Mvc\Router\Exception
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function match($uri)
     {

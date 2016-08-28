@@ -49,8 +49,6 @@ interface FileInterface
      *
      * @param string       $destination
      * @param string|false $allowedExtensions
-     *
-     * @throws \ManaPHP\Http\Request\File\Exception
      */
     public function moveTo($destination, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip');
 

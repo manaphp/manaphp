@@ -76,7 +76,7 @@ class Mwt extends Component implements TokenInterface
      * @param string $str
      *
      * @return mixed
-     * @throws \ManaPHP\Authentication\Token\Exception
+     * @throws \ManaPHP\Authentication\Token\Adapter\Exception
      */
     protected function _decode($str)
     {
@@ -91,6 +91,7 @@ class Mwt extends Component implements TokenInterface
 
         $type = $parts[0];
         $payload = $parts[1];
+        /** @noinspection MultiAssignmentUsageInspection */
         $hash = $parts[2];
 
         $mod4 = strlen($payload) % 4;
@@ -129,7 +130,7 @@ class Mwt extends Component implements TokenInterface
      * @param int $ttl
      *
      * @return string
-     * @throws \ManaPHP\Authentication\Token\Exception
+     * @throws \ManaPHP\Authentication\Token\Adapter\Exception
      */
     public function encode($ttl = 0)
     {
@@ -153,7 +154,7 @@ class Mwt extends Component implements TokenInterface
      * @param string $str
      *
      * @return static
-     * @throws \ManaPHP\Authentication\Token\Exception
+     * @throws \ManaPHP\Authentication\Token\Adapter\Exception
      */
     public function decode($str)
     {

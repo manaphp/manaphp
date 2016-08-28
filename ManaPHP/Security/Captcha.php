@@ -9,8 +9,8 @@ use ManaPHP\Security\Captcha\Exception;
  *
  * @package ManaPHP\Security
  *
- * @property \ManaPHP\Http\Response $response
- * @property \ManaPHP\Http\Session  $session
+ * @property \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\Http\SessionInterface  $session
  */
 class Captcha extends Component implements CaptchaInterface
 {

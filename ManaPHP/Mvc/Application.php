@@ -13,17 +13,17 @@ use ManaPHP\Di\FactoryDefault;
  * needed and integrating it with the rest to allow the MVC pattern to operate as desired.
  *
  *
- * @property \ManaPHP\Loader             $loader
- * @property \ManaPHP\Mvc\View           $view
- * @property \ManaPHP\Mvc\Dispatcher     $dispatcher
- * @property \ManaPHP\Mvc\Router         $router
- * @property \ManaPHP\Http\Request       $request
- * @property \ManaPHP\Http\Response      $response
- * @property \ManaPHP\Http\Session       $session
- * @property \ManaPHP\Debugger           $debugger
- * @property \Application\Configure      $configure
- * @property \ManaPHP\Log\Logger         $logger
- * @property \ManaPHP\Security\CsrfToken $csrfToken
+ * @property \ManaPHP\Loader                      $loader
+ * @property \ManaPHP\Mvc\ViewInterface           $view
+ * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
+ * @property \ManaPHP\Mvc\RouterInterface         $router
+ * @property \ManaPHP\Http\RequestInterface       $request
+ * @property \ManaPHP\Http\ResponseInterface      $response
+ * @property \ManaPHP\Http\SessionInterface       $session
+ * @property \ManaPHP\DebuggerInterface           $debugger
+ * @property \Application\Configure               $configure
+ * @property \ManaPHP\Log\Logger                  $logger
+ * @property \ManaPHP\Security\CsrfTokenInterface $csrfToken
  */
 class Application extends Component implements ApplicationInterface
 {
@@ -73,7 +73,9 @@ class Application extends Component implements ApplicationInterface
      * @param \ManaPHP\Mvc\Dispatcher $dispatcher
      *
      * @return bool
-     * @throws \ManaPHP\Security\CsrfToken\Exception|\ManaPHP\Http\Request\Exception|\ManaPHP\Security\Crypt\Exception
+     * @throws \ManaPHP\Security\CsrfToken\Exception
+     * @throws \ManaPHP\Http\Request\Exception
+     * @throws \ManaPHP\Security\Crypt\Exception
      */
     public function _eventHandlerBeforeExecuteRoute($dispatcher)
     {
@@ -106,7 +108,17 @@ class Application extends Component implements ApplicationInterface
      * @param string $uri
      *
      * @return \ManaPHP\Http\ResponseInterface
-     * @throws \ManaPHP\Mvc\Application\Exception|\ManaPHP\Event\Exception|\ManaPHP\Mvc\Application\NotFoundModuleException|\ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException|\ManaPHP\Mvc\View\Exception|\ManaPHP\Renderer\Exception|\ManaPHP\Alias\Exception|\ManaPHP\Mvc\Router\Exception|\ManaPHP\Mvc\Router\NotFoundRouteException
+     * @throws \ManaPHP\Mvc\Application\Exception
+     * @throws \ManaPHP\Event\Exception
+     * @throws \ManaPHP\Mvc\Application\NotFoundModuleException
+     * @throws \ManaPHP\Mvc\Dispatcher\Exception
+     * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
+     * @throws \ManaPHP\Mvc\Dispatcher\NotFoundActionException
+     * @throws \ManaPHP\Mvc\View\Exception
+     * @throws \ManaPHP\Renderer\Exception
+     * @throws \ManaPHP\Alias\Exception
+     * @throws \ManaPHP\Mvc\Router\Exception|
+     * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
      */
     public function handle($uri = null)
     {

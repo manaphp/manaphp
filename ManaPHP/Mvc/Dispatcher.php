@@ -244,7 +244,9 @@ class Dispatcher extends Component implements DispatcherInterface
      * @param array  $params
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Dispatcher\Exception|\ManaPHP\Mvc\Dispatcher\NotFoundControllerException|\ManaPHP\Mvc\Dispatcher\NotFoundActionException
+     * @throws \ManaPHP\Mvc\Dispatcher\Exception
+     * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
+     * @throws \ManaPHP\Mvc\Dispatcher\NotFoundActionException
      */
     public function dispatch($module, $controller, $action, $params = [])
     {

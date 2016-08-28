@@ -10,11 +10,11 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP
  *
- * @property \ManaPHP\Mvc\Router   $router
- * @property \ManaPHP\Mvc\Url      $url
- * @property \ManaPHP\Http\Request $request
- * @property \ManaPHP\Log\Logger   $logger
- * @property \ManaPHP\Renderer     $renderer
+ * @property \ManaPHP\Mvc\RouterInterface   $router
+ * @property \ManaPHP\Mvc\UrlInterface      $url
+ * @property \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\Log\Logger            $logger
+ * @property \ManaPHP\RendererInterface     $renderer
  */
 class Debugger extends Component implements DebuggerInterface
 {
@@ -113,7 +113,6 @@ class Debugger extends Component implements DebuggerInterface
      * @param bool $listenException
      *
      * @return static
-     * @throws \ManaPHP\Di\Exception|\ManaPHP\Db\Exception
      */
     public function start($listenException = false)
     {
@@ -276,7 +275,7 @@ class Debugger extends Component implements DebuggerInterface
 
         $parts = explode(' ', microtime());
         $id = date('ymd_His', $parts[1]) . '_' . substr($parts[0], 2, 6);
-        $file = $this->alias->resolve('@data/Debugger/' . substr($id, 0, 6) . '/' . $id . '.html');
+        $file = $this->alias->resolve('@data/debugger/' . substr($id, 0, 6) . '/' . $id . '.html');
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
