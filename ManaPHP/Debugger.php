@@ -116,7 +116,7 @@ class Debugger extends Component implements DebuggerInterface
     public function start($listenException = false)
     {
         if (isset($_GET['_debugger'])) {
-            $file = $this->alias->resolve('@data/Debugger/' . substr($_GET['_debugger'], 0, 6) . '/' . $_GET['_debugger'] . '.html');
+            $file = $this->alias->resolve('@data/debugger/' . substr($_GET['_debugger'], 0, 6) . '/' . $_GET['_debugger'] . '.html');
             if (is_file($file)) {
                 exit(file_get_contents($file));
             }
@@ -226,9 +226,8 @@ class Debugger extends Component implements DebuggerInterface
         $data['dump'] = $this->_dump;
         $data['logger'] = ['log' => $this->_log, 'levels' => $this->logger->getLevels(), 'level' => 5];
 
-        $data['sql']['prepared'] = $this->_sql_prepared;
-        $data['sql']['executed'] = $this->_sql_executed;
-        $data['sql']['count'] = $this->_sql_count;
+        $data['sql'] = ['prepared' => $this->_sql_prepared, 'executed' => $this->_sql_executed, 'count' => $this->_sql_count];
+
         /** @noinspection ImplicitMagicMethodCallInspection */
         $data['configure'] = isset($this->configure) ? $this->configure->__debugInfo() : [];
         $data['view'] = $this->_view;
