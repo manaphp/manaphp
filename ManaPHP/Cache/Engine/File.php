@@ -31,9 +31,7 @@ class File extends Component implements EngineInterface
     {
         if (is_object($options)) {
             $options = (array)$options;
-        }
-
-        if (is_string($options)) {
+        } elseif (is_string($options)) {
             $options = ['cacheDir' => $options];
         }
 
@@ -57,6 +55,7 @@ class File extends Component implements EngineInterface
      */
     protected function _getFileName($key)
     {
+        $key = str_replace(':', '/', $key);
         $pos = strrpos($key, '/');
 
         if ($pos !== false && strlen($key) - $pos - 1 === 32) {

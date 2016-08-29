@@ -28,14 +28,12 @@ class Redis extends Component implements EngineInterface
     {
         if (is_object($options)) {
             $options = (array)$options;
-        }
-
-        if (is_string($options)) {
+        } elseif (is_string($options)) {
             $options['prefix'] = $options;
         }
 
         if (isset($options['prefix'])) {
-            $this->_prefix .= $options['prefix'];
+            $this->_prefix = $options['prefix'];
         }
     }
 

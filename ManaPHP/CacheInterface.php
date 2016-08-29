@@ -22,15 +22,6 @@ interface CacheInterface
     public function get($key);
 
     /**
-     * Retrieves values from cache with a specified keys.
-     *
-     * @param array $keys
-     *
-     * @return array
-     */
-    public function mGet($keys);
-
-    /**
      * Stores a value identified by a key into cache.
      *
      * @param string $key
@@ -40,16 +31,6 @@ interface CacheInterface
      * @return void
      */
     public function set($key, $value, $ttl);
-
-    /**
-     * Stores  values identified by  keys into cache.
-     *
-     * @param array $keyValues
-     * @param int   $ttl
-     *
-     * @return void
-     */
-    public function mSet($keyValues, $ttl = null);
 
     /**
      * Deletes a value with the specified key from cache

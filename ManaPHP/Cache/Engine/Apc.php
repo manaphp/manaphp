@@ -15,7 +15,7 @@ class Apc extends Component implements EngineInterface
     /**
      * Apc constructor.
      *
-     * @param array|\ConfManaPHP\Cache\Engine\Apc $options
+     * @param string|array $options
      *
      * @throws \ManaPHP\Cache\Engine\Exception
      */
@@ -31,10 +31,12 @@ class Apc extends Component implements EngineInterface
 
         if (is_object($options)) {
             $options = (array)$options;
+        } elseif (is_string($options)) {
+            $options = ['prefix' => $options];
         }
 
         if (isset($options['prefix'])) {
-            $this->_prefix .= $options['prefix'];
+            $this->_prefix = $options['prefix'];
         }
     }
 

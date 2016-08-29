@@ -34,16 +34,6 @@ class CacheTest extends TestCase
         $this->assertEquals('china', $cache->get('country'));
     }
 
-    public function test_mGet()
-    {
-        $cache = new \ManaPHP\Cache();
-        $cache->mSet(['k1' => 'value1', 'k2' => 'value2']);
-
-        $data = $cache->mGet(['k1', 'k2']);
-        $this->assertEquals('value1', $data['k1']);
-        $this->assertEquals('value2', $data['k2']);
-    }
-
     public function test_set()
     {
         $cache = new \ManaPHP\Cache();
@@ -84,14 +74,6 @@ class CacheTest extends TestCase
         $cache->set('val', (array)$value, 100);
         $this->assertEquals((array)$value, $cache->get('val'));
         $this->assertTrue(is_array($cache->get('val')));
-    }
-
-    public function test_mSet()
-    {
-        $cache = new \ManaPHP\Cache();
-        $cache->mSet(['k1' => 'value1', 'k2' => 'value2']);
-        $this->assertEquals('value1', $cache->get('k1'));
-        $this->assertEquals('value2', $cache->get('k2'));
     }
 
     public function test_delete()
