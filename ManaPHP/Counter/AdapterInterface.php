@@ -4,24 +4,27 @@ namespace ManaPHP\Counter;
 interface AdapterInterface
 {
     /**
-     * @param string|array $key
+     * @param string $type
+     * @param string $id
      *
      * @return int
      */
-    public function _get($key);
+    public function _get($type, $id);
 
     /**
-     * @param string|array $key
-     * @param int          $step
+     * @param string $type
+     * @param string $id
+     * @param int    $step
      *
      * @return int
      */
-    public function _increment($key, $step);
+    public function _increment($type, $id, $step = 1);
 
     /**
-     * @param string|array $key
+     * @param string $type
+     * @param string $id
      *
      * @return void
      */
-    public function _delete($key);
+    public function _delete($type, $id);
 }

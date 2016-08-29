@@ -6,44 +6,78 @@ use ManaPHP\Counter\AdapterInterface;
 abstract class Counter extends Component implements CounterInterface, AdapterInterface
 {
     /**
-     * @param array|string $key
-     *
-     * @return int
+     * @var string
      */
-    public function get($key)
+    protected $_prefix = '';
+
+    /**
+     * Counter constructor.
+     *
+     * @param string|array $options
+     */
+    public function __construct($options = [])
     {
-        return $this->_get($key);
+        if (is_object($options)) {
+            $options = (array)$options;
+        } elseif (is_string($options)) {
+            $options = ['prefix' => $options];
+        }
+
+        if (isset($options['prefix'])) {
+            $this->_prefix = $options['prefix'];
+        }
     }
 
     /**
-     * @param array|string $key
-     * @param int          $step
+     *
+     * @param string $type
+     * @param string $id
      *
      * @return int
      */
-    public function increment($key, $step = 1)
+    public function get($type, $id)
     {
-        return $this->_increment($key, $step);
+        return $this->_get($this->_prefix . $type, $id);
     }
 
     /**
-     * @param array|string $key
-     * @param int          $step
+     * Increments the value of key by a given step.
      *
-     * @return int
+     * @param string $type
+     * @param string $id
+     * @param int    $step
+     *
+     * @return int the new value
      */
-    public function decrement($key, $step = 1)
+    public function increment($type, $id, $step = 1)
     {
-        return $this->_increment($key, -$step);
+        return $this->_increment($this->_prefix . $type, $id, $step);
     }
 
     /**
-     * @param array|string $key
+     * Decrements the value of key by a given step.
+     *
+     * @param string $type
+     * @param string $id
+     * @param int    $step
+     *
+     * @return int the new value
+     */
+    public function decrement($type, $id, $step = 1)
+    {
+        return $this->_increment($this->_prefix . $type, $id, -$step);
+    }
+
+    /**
+     * Deletes the key
+     *
+     * @param string $type
+     * @param string $id
      *
      * @return void
      */
-    public function delete($key)
+    public function delete($type, $id)
     {
-        $this->_delete($key);
+        $this->_delete($this->_prefix . $type, $id);
     }
 }

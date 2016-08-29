@@ -13,70 +13,48 @@ use ManaPHP\Counter;
 class Redis extends Counter
 {
     /**
-     * @var string
-     */
-    protected $_prefix;
-
-    /**
      * Redis constructor.
      *
-     * @param string $prefix
+     * @param array|string $options
      */
-    public function __construct($prefix = 'manaphp:counter:')
+    public function __construct($options)
     {
-        $this->_prefix = $prefix;
+        $this->_prefix = 'manaphp:counter:';
+
+        parent::__construct($options);
     }
 
     /**
-     * @param string|array $key
-     *
-     * @return array
-     */
-    protected function _getKey($key)
-    {
-        if (is_string($key)) {
-            $r = [$this->_prefix . 'mixed', $key];
-        } else {
-            $r = [$this->_prefix . $key[0], $key[1]];
-        }
-
-        return $r;
-    }
-
-    /**
-     * @param array|string $key
+     * @param string $type
+     * @param string $id
      *
      * @return int
      */
-    public function _get($key)
+    public function _get($type, $id)
     {
-        $key = $this->_getKey($key);
-
-        return (int)$this->redis->hGet($key[0], $key[1]);
+        return (int)$this->redis->hGet($type, $id);
     }
 
     /**
-     * @param array|string $key
-     * @param int          $step
+     * @param string $type
+     * @param string $id
+     * @param int    $step
      *
      * @return int
      */
-    public function _increment($key, $step)
+    public function _increment($type, $id, $step = 1)
     {
-        $key = $this->_getKey($key);
-
-        return $this->redis->hIncrBy($key[0], $key[1], $step);
+        return $this->redis->hIncrBy($type, $id, $step);
     }
 
     /**
-     * @param array|string $key
+     * @param string $type
+     * @param string $id
      *
      * @return void
      */
-    public function _delete($key)
+    public function _delete($type, $id)
     {
-        $key = $this->_getKey($key);
-
-        $this->redis->hDel($key[0], $key[1]);
+        $this->redis->hDel($type, $id);
     }
 }

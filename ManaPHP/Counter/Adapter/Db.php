@@ -4,15 +4,6 @@ namespace ManaPHP\Counter\Adapter;
 use ManaPHP\Counter;
 
 /**
- *  CREATE TABLE `manaphp_counter` (
- *      `name` char(128) CHARACTER SET latin1 NOT NULL,
- *      `counter` bigint(20) NOT NULL,
- *      `created_time` int(11) NOT NULL,
- *      `updated_time` int(11) NOT NULL,
- *       PRIMARY KEY (`name`)
- *      ) ENGINE=MyISAM DEFAULT CHARSET=utf8
- *
- *
  * @property \ManaPHP\DbInterface $db
  */
 class Db extends Counter
@@ -20,7 +11,7 @@ class Db extends Counter
     /**
      * @var string
      */
-    protected $_table = 'manaphp_counter';
+    protected $_model = '\ManaPHP\Counter\Adapter\Db\Model';
 
     /**
      * Db constructor.
@@ -31,98 +22,101 @@ class Db extends Counter
     {
         if (is_object($options)) {
             $options = (array)$options;
+        } elseif (is_string($options)) {
+            $options['model'] = $options;
         }
 
-        if (is_string($options)) {
-            $options['table'] = $options;
+        if (isset($options['model'])) {
+            $this->_model = $options['model'];
         }
 
-        if (isset($options['table'])) {
-            $this->_table = $options['table'];
-        }
+        parent::__construct($options);
     }
 
     /**
-     * @param string|array $key
-     *
-     * @return string
-     */
-    protected function _formatKey($key)
-    {
-        if (is_string($key)) {
-            return $key;
-        } else {
-            return implode('/', $key);
-        }
-    }
-
-    /**
-     * @param array|string $key
+     * @param string $type
+     * @param string $id
      *
      * @return int
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _get($key)
+    public function _get($type, $id)
     {
-        $key = $this->_formatKey($key);
-        $bind = ['name' => $key];
-        $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', $bind);
-        if (!$r) {
-            return 0;
-        } else {
-            return (int)$r['counter'];
-        }
+        /**
+         * @var \ManaPHP\Counter\Adapter\Db\Model $counter
+         */
+        $counter = new $this->_model;
+        $counter = $counter::findFirst(['hash' => md5($type . ':' . $id)]);
+
+        return $counter === false ? 0 : (int)$counter->value;
     }
 
     /**
-     * @param string $key
+     * @param string $type
+     * @param string $id
      * @param int    $step
      *
      * @return int
      * @throws \ManaPHP\Counter\Adapter\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _increment($key, $step)
+    public function _increment($type, $id, $step = 1)
     {
-        $key = $this->_formatKey($key);
-        $time = time();
+        $hash = md5($type . ':' . $id);
 
-        for ($i = 0; $i < 100; $i++) {
-            $bind = ['name' => $key];
-            $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', $bind);
-            if (!$r) {
-                try {
-                    $columnValues = ['name' => $key, 'counter' => $step, 'created_time' => $time, 'updated_time' => $time];
-                    $this->db->insert($this->_table, $columnValues);
-                    return $step;
-                } catch (\Exception $e) {
-                    //maybe this record has been inserted by other request.
-                }
-                $bind = ['name' => $key];
-                $r = $this->db->fetchOne('SELECT counter' . ' FROM ' . $this->_table . ' WHERE name=:name', $bind);
-            }
+        /**
+         * @var \ManaPHP\Counter\Adapter\Db\Model $counter
+         */
+        $counter = new $this->_model;
 
-            $old_counter = $r['counter'];
+        $counter = $counter::findFirst(['hash' => $hash]);
+        if (!$counter) {
+            try {
+                $counter = new $this->_model;
 
-            $sql = 'UPDATE ' . $this->_table . ' SET counter =counter+:step, updated_time =:updated_time WHERE name =:name AND counter =:old_counter';
-            $bind = ['name' => $key, 'step' => $step, 'old_counter' => $old_counter, 'updated_time' => $time];
-            $r = $this->db->execute($sql, $bind);
-            if ($r === 1) {
-                return $old_counter + $step;
+                $counter->hash = $hash;
+                $counter->type = $type;
+                $counter->id = $id;
+                $counter->value = $step;
+
+                $counter->create();
+
+                return (int)$step;
+            } catch (\Exception $e) {
+                //maybe this record has been inserted by other request.
             }
         }
 
-        throw new Exception('update counter failed: ' . $key);
+        for ($i = 0; $i < 100; $i++) {
+            $counter = $counter::findFirst(['hash' => $hash]);
+            if ($counter === false) {
+                return 0;
+            }
+
+            $old_value = $counter->value;
+            $r = $counter::updateAll(['value =value + :step'], ['hash' => $hash, 'value' => $old_value], ['step' => $step]);
+            if ($r === 1) {
+                return $old_value + $step;
+            }
+        }
+
+        throw new Exception('update counter failed: ' . $type);
     }
 
     /**
-     * @param array|string $key
+     * @param string $type
+     * @param string $id
      *
      * @return void
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _delete($key)
+    public function _delete($type, $id)
     {
-        $key = $this->_formatKey($key);
+        /**
+         * @var \ManaPHP\Counter\Adapter\Db\Model $counter
+         */
+        $counter = new $this->_model;
 
-        $bind = ['name' => $key];
-        $this->db->delete($this->_table, $bind);
+        $counter::deleteAll(['hash' => md5($type . ':' . $id)]);
     }
 }

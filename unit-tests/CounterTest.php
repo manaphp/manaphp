@@ -21,43 +21,43 @@ class CounterTest extends TestCase
     {
         $counter = new ManaPHP\Counter\Adapter\Redis();
 
-        $counter->delete('c1');
+        $counter->delete('c', '1');
 
-        $this->assertEquals(0, $counter->get('c1'));
-        $counter->increment('c1');
-        $this->assertEquals(1, $counter->get('c1'));
+        $this->assertEquals(0, $counter->get('c', '1'));
+        $counter->increment('c', '1');
+        $this->assertEquals(1, $counter->get('c', '1'));
     }
 
     public function test_increment()
     {
         $counter = new ManaPHP\Counter\Adapter\Redis();
-        $counter->delete('c1');
-        $this->assertEquals(1, $counter->increment('c1'));
-        $this->assertEquals(2, $counter->increment('c1', 1));
-        $this->assertEquals(22, $counter->increment('c1', 20));
-        $this->assertEquals(2, $counter->increment('c1', -20));
+        $counter->delete('c', '1');
+        $this->assertEquals(1, $counter->increment('c', '1'));
+        $this->assertEquals(2, $counter->increment('c', '1', 1));
+        $this->assertEquals(22, $counter->increment('c', '1', 20));
+        $this->assertEquals(2, $counter->increment('c', '1', -20));
 
-        $counter->delete(['c', 1]);
-        $this->assertEquals(0, $counter->get(['c', 1]));
+        $counter->delete('c', 1);
+        $this->assertEquals(0, $counter->get('c', 1));
     }
 
     public function test_decrement()
     {
         $counter = new ManaPHP\Counter\Adapter\Redis();
-        $counter->delete('c1');
-        $this->assertEquals(-1, $counter->decrement('c1'));
-        $this->assertEquals(-2, $counter->decrement('c1', 1));
-        $this->assertEquals(-22, $counter->decrement('c1', 20));
-        $this->assertEquals(-2, $counter->decrement('c1', -20));
+        $counter->delete('c', '1');
+        $this->assertEquals(-1, $counter->decrement('c', '1'));
+        $this->assertEquals(-2, $counter->decrement('c', '1', 1));
+        $this->assertEquals(-22, $counter->decrement('c', '1', 20));
+        $this->assertEquals(-2, $counter->decrement('c', '1', -20));
     }
 
     public function test_delete()
     {
         $counter = new ManaPHP\Counter\Adapter\Redis();
-        $counter->delete('c1');
+        $counter->delete('c', '1');
 
-        $counter->increment('c1');
-        $counter->delete('c1');
+        $counter->increment('c', '1');
+        $counter->delete('c', '1');
     }
 
 }
