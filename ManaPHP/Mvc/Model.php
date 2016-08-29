@@ -373,12 +373,52 @@ class Model extends Component implements ModelInterface
 
         $resultset = $builder->execute($cacheOptions);
 
-        if (is_array($resultset) && isset($resultset[0])) {
+        if (isset($resultset[0])) {
             return new static($resultset[0], $dependencyInjector);
         } else {
             /** @noinspection PhpIncompatibleReturnTypeInspection */
             return false;
         }
+    }
+
+    /**
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
+     *
+     * @return bool
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function exists($parameters = null, $cacheOptions = null)
+    {
+        $dependencyInjector = Di::getDefault();
+        $modelsManager = $dependencyInjector->getShared('modelsManager');
+
+        if (is_numeric($parameters)) {
+            $modelsMetadata = $dependencyInjector->getShared('modelsMetadata');
+            $primaryKeys = $modelsMetadata->getPrimaryKeyAttributes(get_called_class());
+
+            if (count($primaryKeys) !== 1) {
+                throw new Exception('parameter is integer, but the model\'s primary key has more than one column');
+            }
+
+            $parameters = [$primaryKeys[0] => $parameters];
+        } elseif (is_string($parameters)) {
+            $parameters = [$parameters];
+        }
+
+        $modelName = get_called_class();
+
+        /**
+         * @var $modelsManager \ManaPHP\Mvc\Model\Manager
+         */
+        $builder = $modelsManager->createBuilder($parameters)
+            ->columns('1 as stub')
+            ->from($modelName)
+            ->limit(1);
+
+        $resultset = $builder->execute($cacheOptions);
+
+        return isset($resultset[0]);
     }
 
     /**

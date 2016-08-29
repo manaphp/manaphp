@@ -164,6 +164,12 @@ class MvcModelTest extends TestCase
         $this->assertEquals(5, $actor->actor_id);
     }
 
+    public function test_exists()
+    {
+        $this->assertFalse(Actor::exists(-1));
+        $this->assertTrue(Actor::exists(1));
+    }
+
     public function test_findFirst_usage()
     {
         $this->assertEquals(10, City::findFirst(10)->city_id);

@@ -389,8 +389,12 @@ abstract class Db extends Component implements DbInterface
 
         $setColumns = [];
         foreach ($columnValues as $k => $v) {
-            $setColumns[] = "`$k`=:$k";
-            $bind[$k] = $v;
+            if (is_int($k)) {
+                $setColumns[] = $v;
+            } else {
+                $setColumns[] = "`$k`=:$k";
+                $bind[$k] = $v;
+            }
         }
 
         $updateColumns = implode(',', $setColumns);

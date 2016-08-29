@@ -72,7 +72,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                 $diff = array_diff($properties, $data[self::MODEL_ATTRIBUTES]);
 
                 if (count($diff) !== 0) {
-                    throw new Exception($modelName . 'is not contains these columns: ' . implode(',', $diff));
+                    throw new Exception($modelName . ' is not contains these columns: ' . implode(',', $diff));
                 }
 
                 $data[self::MODEL_COLUMN_PROPERTIES] = $properties;

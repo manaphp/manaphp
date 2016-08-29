@@ -20,9 +20,15 @@ class Apc extends Metadata
      * Apc constructor.
      *
      * @param string|array $options
+     *
+     * @throws \ManaPHP\Mvc\Model\Metadata\Adapter\Exception
      */
     public function __construct($options = [])
     {
+        if (!extension_loaded('apc')) {
+            throw new Exception('`apc` is not installed, or the extension is not loaded.');
+        }
+
         if (is_object($options)) {
             $options = (array)$options;
         }

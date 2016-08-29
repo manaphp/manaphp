@@ -131,6 +131,14 @@ interface ModelInterface
     public static function findFirst($parameters = null, $cacheOptions = null);
 
     /**
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
+     *
+     * @return bool
+     */
+    public static function exists($parameters = null, $cacheOptions = null);
+
+    /**
      * Create a criteria for a special model
      *
      * @param \ManaPHP\DiInterface $dependencyInjector
