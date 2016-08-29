@@ -78,7 +78,7 @@ abstract class Logger extends Component implements LoggerInterface, Logger\Adapt
      *
      * @return static
      */
-    protected function _log($level, $message, $context)
+    public function log($level, $message, $context)
     {
         $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
 
@@ -109,7 +109,7 @@ abstract class Logger extends Component implements LoggerInterface, Logger\Adapt
             return $this;
         }
 
-        $this->log($level, $message, $context);
+        $this->_log($level, $message, $context);
 
         return $this;
     }
@@ -124,7 +124,7 @@ abstract class Logger extends Component implements LoggerInterface, Logger\Adapt
      */
     public function debug($message, $context = [])
     {
-        return $this->_log(self::LEVEL_DEBUG, $message, $context);
+        return $this->log(self::LEVEL_DEBUG, $message, $context);
     }
 
     /**-
@@ -137,7 +137,7 @@ abstract class Logger extends Component implements LoggerInterface, Logger\Adapt
      */
     public function info($message, $context = [])
     {
-        return $this->_log(self::LEVEL_INFO, $message, $context);
+        return $this->log(self::LEVEL_INFO, $message, $context);
     }
 
     /**
@@ -150,7 +150,7 @@ abstract class Logger extends Component implements LoggerInterface, Logger\Adapt
      */
     public function warning($message, $context = [])
     {
-        return $this->_log(self::LEVEL_WARNING, $message, $context);
+        return $this->log(self::LEVEL_WARNING, $message, $context);
     }
 
     /**
@@ -163,7 +163,7 @@ abstract class Logger extends Component implements LoggerInterface, Logger\Adapt
      */
     public function error($message, $context = [])
     {
-        return $this->_log(self::LEVEL_ERROR, $message, $context);
+        return $this->log(self::LEVEL_ERROR, $message, $context);
     }
 
     /**
@@ -176,6 +176,6 @@ abstract class Logger extends Component implements LoggerInterface, Logger\Adapt
      */
     public function fatal($message, $context = [])
     {
-        return $this->_log(self::LEVEL_FATAL, $message, $context);
+        return $this->log(self::LEVEL_FATAL, $message, $context);
     }
 }

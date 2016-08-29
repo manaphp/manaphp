@@ -17,7 +17,7 @@ class Memory extends Logger
      *
      * @return void
      */
-    public function log($level, $message, $context = [])
+    public function _log($level, $message, $context = [])
     {
         $this->_logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
     }

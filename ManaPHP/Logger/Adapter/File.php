@@ -51,7 +51,7 @@ class File extends Logger
      * @param string $message
      * @param array  $context
      */
-    public function log($level, $message, $context = [])
+    public function _log($level, $message, $context = [])
     {
         if ($this->_firstLog) {
             $this->_file = $this->alias->resolve($this->_file);
