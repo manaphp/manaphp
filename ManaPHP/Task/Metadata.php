@@ -5,14 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Task;
 use ManaPHP\Utility\Text;
 
-/**
- * Class Metadata
- *
- * @package ManaPHP\Task
- *
- * @property \redis $redis
- */
-class Metadata extends Component implements MetadataInterface
+abstract class Metadata extends Component implements MetadataInterface, Task\Metadata\AdapterInterface
 {
     const FIELD_CLASS = 'class';
     const FIELD_START_TIME = 'start_time';
@@ -29,12 +22,30 @@ class Metadata extends Component implements MetadataInterface
     /**
      * @var string
      */
-    protected $_prefix = 'manaphp:task:';
+    protected $_prefix = '';
 
     /**
      * @var array
      */
     protected $_taskIds = [];
+
+    /**
+     * Metadata constructor.
+     *
+     * @param string|array $options
+     */
+    public function __construct($options = [])
+    {
+        if (is_object($options)) {
+            $options = (array)$options;
+        } elseif (is_string($options)) {
+            $options = ['prefix' => $options];
+        }
+
+        if (isset($options['prefix'])) {
+            $this->_prefix = $options['prefix'];
+        }
+    }
 
     /**
      * @param string|\ManaPHP\TaskInterface $task
@@ -64,7 +75,7 @@ class Metadata extends Component implements MetadataInterface
      */
     public function get($task, $field)
     {
-        return $this->redis->get($this->_formatKey($task, $field));
+        return $this->_get($this->_formatKey($task, $field));
     }
 
     /**
@@ -83,7 +94,7 @@ class Metadata extends Component implements MetadataInterface
                 continue;
             }
 
-            $value = $this->redis->get($this->_formatKey($task, $field));
+            $value = $this->_get($this->_formatKey($task, $field));
             if ($value !== false) {
                 $data[(string)$field] = $value;
             }
@@ -133,7 +144,7 @@ class Metadata extends Component implements MetadataInterface
      */
     public function set($task, $field, $value)
     {
-        $this->redis->set($this->_formatKey($task, $field), $value);
+        $this->_set($this->_formatKey($task, $field), $value);
     }
 
     /**
@@ -144,7 +155,7 @@ class Metadata extends Component implements MetadataInterface
      */
     public function delete($task, $field)
     {
-        $this->redis->delete($this->_formatKey($task, $field));
+        $this->_delete($this->_formatKey($task, $field));
     }
 
     /**
@@ -155,7 +166,7 @@ class Metadata extends Component implements MetadataInterface
      */
     public function exists($task, $field)
     {
-        return $this->redis->exists($this->_formatKey($task, $field));
+        return $this->_exists($this->_formatKey($task, $field));
     }
 
     /**
@@ -172,7 +183,7 @@ class Metadata extends Component implements MetadataInterface
                 continue;
             }
 
-            $this->redis->delete($this->_formatKey($task, $field));
+            $this->_delete($this->_formatKey($task, $field));
         }
     }
 }
