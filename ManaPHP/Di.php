@@ -150,7 +150,7 @@ class Di implements DiInterface
     public function remove($name)
     {
         if (in_array($name, $this->_aliases, true)) {
-            throw new Exception("Service($name) is being used by alias, please remove alias first.");
+            throw new Exception('`:name` service is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, ['name' => $name]);
         }
 
         if (isset($this->_aliases[$name])) {
@@ -211,7 +211,7 @@ class Di implements DiInterface
         if (is_string($definition)) {
             if (!class_exists($definition)) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new Exception("Service '$_name' cannot be resolved: class is not exists.");
+                throw new Exception('`:name` service cannot be resolved: class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $_name]);
             }
             $count = count($parameters);
 
@@ -234,7 +234,7 @@ class Di implements DiInterface
             $instance = $definition;
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new Exception("Service '$_name' cannot be resolved: service type is unknown.");
+            throw new Exception('`:name` service cannot be resolved: service implement type is not supported'/**m072d42756355fb069*/, ['name' => $_name]);
         }
 
         if ($shared) {
@@ -326,7 +326,7 @@ class Di implements DiInterface
      */
     public function __call($method, $arguments = [])
     {
-        throw new Exception("Call to undefined method or service '$method'");
+        throw new Exception('Call to undefined method `:method`'/**m06946faf1ec42dea1*/, ['method' => $method]);
     }
 
     /**

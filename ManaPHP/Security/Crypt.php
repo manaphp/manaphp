@@ -43,7 +43,7 @@ class Crypt extends Component implements CryptInterface
     public function __construct($key = null)
     {
         if (!extension_loaded('mcrypt')) {
-            throw new Exception('mcrypt extension is required');
+            throw new Exception('`mcrypt` extension is required'/**m0aa1a20cbe4572ac7*/);
         }
 
         $this->_key = $key;
@@ -71,7 +71,7 @@ class Crypt extends Component implements CryptInterface
         }
 
         if ($key === null) {
-            throw new Exception('Encryption key cannot be empty');
+            throw new Exception('encryption key cannot be empty'/**m03ba6c4b40a99a319*/);
         }
 
         $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
@@ -104,13 +104,13 @@ class Crypt extends Component implements CryptInterface
         }
 
         if ($key === null) {
-            throw new Exception('Encryption key cannot be empty');
+            throw new Exception('encryption key cannot be empty'/**m0f10f822ab9ce1c9b*/);
         }
 
         $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
 
         if (strlen($text) < $ivSize * 3) {
-            throw new Exception('Encrypted data is too short.');
+            throw new Exception('encrypted data is too short.'/**m0d865273c74d547bd*/);
         }
 
         $encryptKey = md5($key, true);
@@ -121,14 +121,14 @@ class Crypt extends Component implements CryptInterface
         $length = unpack('N', $decrypted)[1];
 
         if ($length < 16 || 4 + $length > strlen($decrypted)) {
-            throw new Exception('Decrypted data length is too short.');
+            throw new Exception('decrypted data length is too short.'/**m02504a81c0e9ef2c9*/);
         }
 
         $decrypted = substr($decrypted, 4, $length);
         $plainText = substr($decrypted, 0, -16);
 
         if (md5($plainText, true) !== substr($decrypted, -16)) {
-            throw new Exception('decrypted md5 is not valid.');
+            throw new Exception('decrypted md5 is not valid.'/**m0847f0b0d688c6457*/);
         }
 
         return $plainText;

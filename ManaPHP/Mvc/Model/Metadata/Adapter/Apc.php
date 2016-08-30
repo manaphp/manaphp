@@ -26,7 +26,7 @@ class Apc extends Metadata
     public function __construct($options = [])
     {
         if (!extension_loaded('apc')) {
-            throw new Exception('`apc` is not installed, or the extension is not loaded.');
+            throw new Exception('`apc` is not installed, or the extension is not loaded'/**m0763710a465cf1bb2*/);
         }
 
         if (is_object($options)) {

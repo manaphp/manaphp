@@ -10,6 +10,29 @@ namespace ManaPHP;
 class Exception extends \Exception
 {
     /**
+     * Exception constructor.
+     *
+     * @param string          $message
+     * @param int|array       $code
+     * @param \Exception|null $previous
+     */
+    public function __construct($message = '', $code = 0, \Exception $previous = null)
+    {
+        if (is_array($code)) {
+            $tr = [];
+
+            /** @noinspection ForeachSourceInspection */
+            foreach ($code as $k => $v) {
+                $tr[':' . $k] = $v;
+            }
+            $message = strtr($message, $tr);
+            $code = 0;
+        }
+
+        parent::__construct($message, $code, $previous);
+    }
+
+    /**
      * @return array
      */
     public function dump()
@@ -26,5 +49,15 @@ class Exception extends \Exception
         $data['POST'] = $_POST;
 
         return $data;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getLastErrorMessage()
+    {
+        $error = error_get_last();
+
+        return $error['message'];
     }
 }

@@ -40,6 +40,7 @@ class Db extends Metadata
      * @param string $key
      *
      * @return mixed|false
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function _get($key)
     {
@@ -61,6 +62,7 @@ class Db extends Metadata
      * @param mixed  $value
      *
      * @return void
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function _set($key, $value)
     {
@@ -80,6 +82,7 @@ class Db extends Metadata
      * @param string $key
      *
      * @return void
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function _delete($key)
     {
@@ -94,6 +97,7 @@ class Db extends Metadata
      * @param string $key
      *
      * @return bool
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function _exists($key)
     {

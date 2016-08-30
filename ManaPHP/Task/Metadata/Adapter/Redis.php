@@ -21,7 +21,7 @@ class Redis extends Metadata
     public function __construct($options = [])
     {
         if (!isset($this->redis)) {
-            throw new Exception('`redis` service is not registered in `di`.');
+            throw new Exception('`redis` service is not registered in `di`'/**m04efa4cd78ac71427*/);
         }
 
         $this->_prefix = 'manaphp:task:';

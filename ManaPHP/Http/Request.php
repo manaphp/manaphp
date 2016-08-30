@@ -351,7 +351,7 @@ class Request extends Component implements RequestInterface
                 return 'http';
             }
         } else {
-            throw new Exception('HTTPS field not exists in $_SERVER');
+            throw new Exception('`HTTPS` field not exists in $_SERVER'/**m0b994a4143d072cff*/);
         }
     }
 

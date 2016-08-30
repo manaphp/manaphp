@@ -290,8 +290,15 @@ class Model extends Component implements ModelInterface
 
         $modelName = get_called_class();
 
+        if (is_string($parameters)) {
+            $parameters = [$parameters];
+        }
+
+        if (!isset($parameters['columns']) && (isset($parameters[0]) || isset($parameters['conditions']))) {
+            $parameters['columns'] = $dependencyInjector->modelsMetadata->getColumnProperties($modelName);
+        }
+
         $builder = $modelsManager->createBuilder($parameters)
-            ->columns($dependencyInjector->modelsMetadata->getColumnProperties($modelName))
             ->from($modelName);
 
         $resultset = $builder->execute($cacheOptions);
@@ -353,21 +360,26 @@ class Model extends Component implements ModelInterface
             $primaryKeys = $modelsMetadata->getPrimaryKeyAttributes(get_called_class());
 
             if (count($primaryKeys) !== 1) {
-                throw new Exception('parameter is integer, but the model\'s primary key has more than one column');
+                throw new Exception('parameter is integer, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/, ['model' => get_called_class()]);
             }
 
-            $parameters = [$primaryKeys[0] => $parameters];
+            $parameters = [$primaryKeys[0] . '= :' . $primaryKeys[0], 'bind' => [$primaryKeys[0] => $parameters]];
         } elseif (is_string($parameters)) {
             $parameters = [$parameters];
         }
 
         $modelName = get_called_class();
 
+        /** @noinspection OffsetOperationsInspection */
+        if (!isset($parameters['columns']) && (isset($parameters[0]) || isset($parameters['conditions']))) {
+            /** @noinspection OffsetOperationsInspection */
+            $parameters['columns'] = $dependencyInjector->modelsMetadata->getColumnProperties($modelName);
+        }
+
         /**
          * @var $modelsManager \ManaPHP\Mvc\Model\Manager
          */
         $builder = $modelsManager->createBuilder($parameters)
-            ->columns($dependencyInjector->modelsMetadata->getColumnProperties($modelName))
             ->from($modelName)
             ->limit(1);
 
@@ -398,7 +410,7 @@ class Model extends Component implements ModelInterface
             $primaryKeys = $modelsMetadata->getPrimaryKeyAttributes(get_called_class());
 
             if (count($primaryKeys) !== 1) {
-                throw new Exception('parameter is integer, but the model\'s primary key has more than one column');
+                throw new Exception('parameter is integer, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/, ['model' => get_called_class()]);
             }
 
             $parameters = [$primaryKeys[0] => $parameters];
@@ -718,7 +730,7 @@ class Model extends Component implements ModelInterface
         }
 
         if (count($columnValues) === 0) {
-            throw new Exception('Unable to insert into ' . $this->getSource() . ' without data');
+            throw new Exception('`:model` model is unable to insert without data'/**m020f0d8415e5f94d7*/, ['model' => get_class($this)]);
         }
 
         $connection = $this->getWriteConnection();
@@ -743,7 +755,7 @@ class Model extends Component implements ModelInterface
         $conditions = [];
         foreach ($this->modelsMetadata->getPrimaryKeyAttributes($this) as $attributeField) {
             if (!isset($this->{$attributeField})) {
-                throw new Exception('Record cannot be updated because it\'s some primary key has invalid value.');
+                throw new Exception('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/, ['model' => get_class($this)]);
             }
 
             $conditions[$attributeField] = $this->{$attributeField};
@@ -834,7 +846,7 @@ class Model extends Component implements ModelInterface
         }
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
-            throw new Exception('Record cannot be created because it has been cancel.');
+            throw new Exception('`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, ['model' => get_class($this)]);
         }
 
         $this->_doLowInsert();
@@ -866,7 +878,7 @@ class Model extends Component implements ModelInterface
         }
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
-            throw new Exception('Record cannot be updated because it has been cancel.');
+            throw new Exception('`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, ['model' => get_class($this)]);
         }
 
         $this->_doLowUpdate();
@@ -931,17 +943,18 @@ class Model extends Component implements ModelInterface
         $primaryKeys = $this->modelsMetadata->getPrimaryKeyAttributes($this);
 
         if (count($primaryKeys) === 0) {
-            throw new Exception('A primary key must be defined in the model in order to perform the operation');
+            throw new Exception('`:model` model must define a primary key in order to perform delete operation'/**m0d826d10544f3a078*/, ['model' => get_class($this)]);
         }
 
         if ($this->_fireEventCancel('beforeDelete') === false) {
-            throw new Exception('Record cannot be deleted because it has been cancel.');
+            throw new Exception('`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, ['model' => get_class($this)]);
         }
 
         $conditions = [];
         foreach ($primaryKeys as $attributeField) {
             if (!isset($this->{$attributeField})) {
-                throw new Exception("Cannot delete the record because the primary key attribute: '" . $attributeField . "' wasn't set");
+                throw new Exception('`:model` model cannot be deleted because the primary key attribute: `:column` was not set'/**m01dec9cd3b69742a5*/,
+                    ['model' => get_class($this), 'column' => $attributeField]);
             }
 
             $conditions[$attributeField] = $this->{$attributeField};

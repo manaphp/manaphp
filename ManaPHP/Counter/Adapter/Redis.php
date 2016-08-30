@@ -17,7 +17,7 @@ class Redis extends Counter
      *
      * @param array|string $options
      */
-    public function __construct($options=[])
+    public function __construct($options = [])
     {
         $this->_prefix = 'manaphp:counter:';
 

@@ -305,7 +305,7 @@ class View extends Component implements ViewInterface
         $widgetClassName = basename($this->alias->get('@app')) . "\\{$this->_moduleName}\\Widgets\\{$widget}Widget";
 
         if (!class_exists($widgetClassName)) {
-            throw new Exception("widget '$widget' is not exist: " . $widgetClassName);
+            throw new Exception('`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, ['widget' => $widget, 'class' => $widgetClassName]);
         }
 
         /**

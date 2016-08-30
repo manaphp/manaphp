@@ -22,11 +22,11 @@ class Apc extends Component implements EngineInterface
     public function __construct($options = [])
     {
         if (!function_exists('apc_exists')) {
-            throw new Exception('apc extension is not loaded: http://pecl.php.net/package/APCu');
+            throw new Exception('apc extension is not loaded: http://pecl.php.net/package/APCu'/**m097f29c9069e20c50*/);
         }
 
         if (!ini_get('apc.enable_cli')) {
-            throw new Exception('apc.enable_cli=0, please enable it.');
+            throw new Exception('apc.enable_cli=0, please enable it.'/**m03cb046c90f464b79*/);
         }
 
         if (is_object($options)) {
@@ -54,7 +54,7 @@ class Apc extends Component implements EngineInterface
     {
         $r = apc_store($this->_prefix . $key, $value, $ttl);
         if (!$r) {
-            throw new Exception('apc store failed: ' . $key);
+            throw new Exception('apc_store failed for `:key` key'/**m044d8697223644728*/, ['key' => $key]);
         }
     }
 

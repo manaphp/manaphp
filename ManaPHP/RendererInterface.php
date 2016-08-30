@@ -7,8 +7,8 @@ interface RendererInterface
      * Checks whether view exists on registered extensions and render it
      *
      * @param string  $template
-     * @param boolean $directOutput
      * @param array   $vars
+     * @param boolean $directOutput
      *
      * @return string
      */

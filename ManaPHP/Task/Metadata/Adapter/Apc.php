@@ -15,7 +15,7 @@ class Apc extends Metadata
     public function __construct($options = [])
     {
         if (!extension_loaded('apc')) {
-            throw new Exception('`apc` is not installed, or the extension is not loaded.');
+            throw new Exception('`apc` is not installed, or the extension is not loaded'/**m06424012cd041dd33*/);
         }
 
         $this->_prefix = 'manaphp:task:';

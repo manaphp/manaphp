@@ -14,6 +14,11 @@ class Db extends Counter
     protected $_model = '\ManaPHP\Counter\Adapter\Db\Model';
 
     /**
+     * @var int
+     */
+    protected $_maxTries = 100;
+
+    /**
      * Db constructor.
      *
      * @param string|array|\ConfManaPHP\Counter\Adapter\Db $options
@@ -87,7 +92,7 @@ class Db extends Counter
             }
         }
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < $this->_maxTries; $i++) {
             $counter = $counter::findFirst(['hash' => $hash]);
             if ($counter === false) {
                 return 0;
@@ -100,7 +105,8 @@ class Db extends Counter
             }
         }
 
-        throw new Exception('update counter failed: ' . $type);
+        throw new Exception('update `:type`:`:id` counter failed: has been tried :times times.'/**m0a877d4eed799613c*/,
+            ['type' => $type, 'id' => $id, 'times' => $this->_maxTries]);
     }
 
     /**

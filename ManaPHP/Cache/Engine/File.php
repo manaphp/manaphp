@@ -118,11 +118,11 @@ class File extends Component implements EngineInterface
 
         $cacheDir = dirname($cacheFile);
         if (!@mkdir($cacheDir, 0755, true) && !is_dir($cacheDir)) {
-            throw new Exception('Create cache directory "' . $cacheDir . '" failed: ' . error_get_last()['message']);
+            throw new Exception('create `:dir` cache directory failed: :message'/**m0842502d4c2904242*/, ['dir' => $cacheDir, 'message' => Exception::getLastErrorMessage()]);
         }
 
         if (file_put_contents($cacheFile, $value, LOCK_EX) === false) {
-            throw new Exception('Write cache file"' . $cacheFile . '" failed: ' . error_get_last()['message']);
+            throw new Exception('write `:file` cache file failed: :message'/**m0f7ee56f71e1ec344*/, ['file' => $cacheFile, 'message' => Exception::getLastErrorMessage()]);
         }
 
         @touch($cacheFile, time() + $ttl);

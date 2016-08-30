@@ -97,7 +97,7 @@ class Session implements SessionInterface, \ArrayAccess
         }
 
         if (!session_destroy()) {
-            throw new Exception(error_get_last()['message']);
+            throw new Exception('destroy session failed: :message'/**m08409465b2b90d8a8*/, ['message' => Exception::getLastErrorMessage()]);
         }
     }
 

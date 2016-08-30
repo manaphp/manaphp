@@ -26,15 +26,17 @@ class Annotation
             $action = $match[1];
 
             if ($match[2] !== 'Action') {
-                throw new Exception('action is case sensitive: ' . $rc->getName() . '::' . $methodName);
+                throw new Exception('action `:action` of `:controller` is not suffix with `Action`'/**m05bcf1d580ad9945f*/,
+                    ['controller' => $rc->getName(), 'action' => $methodName]);
             }
 
             if (!$method->isPublic()) {
-                throw new Exception('action is not public: ', $rc->getName() . '::' . $methodName);
+                throw new Exception('action `:action` of `:controller` does not have public visibility.'/**m096584b24a62a55aa*/,
+                    ['controller' => $rc->getName(), 'action' => $methodName]);
             }
 
             if (preg_match('#^[^/]*/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $className), $match) !== 1) {
-                throw new Exception('class name is not bad: ' . $rc->getName());
+                throw new Exception('class name is not good: :controller'/**m0356156d8fc74b80f*/, ['controller' => $rc->getName()]);
             }
 
             $permissions[] = [

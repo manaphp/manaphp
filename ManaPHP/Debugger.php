@@ -275,7 +275,7 @@ class Debugger extends Component implements DebuggerInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new Exception("Create directory $dir failed: ", error_get_last()['message']);
+            throw new Exception('create `:dir` debugger directory failed: :message'/**m0a030185047c651e6*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
         }
 
         if (!file_put_contents($file, $this->output($template))) {

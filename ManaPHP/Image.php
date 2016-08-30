@@ -27,7 +27,7 @@ class Image implements ImageInterface
         } elseif (extension_loaded('gd')) {
             $this->_adapter = new Gd($file);
         } else {
-            throw new Exception('No valid Image Adapter exists.');
+            throw new Exception('No valid Image Adapter exists.'/**m0e2528a66b81cf976*/);
         }
     }
 

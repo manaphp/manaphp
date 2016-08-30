@@ -66,7 +66,7 @@ class Client extends Component implements ClientInterface
     public function __construct($options = [], $headers = [])
     {
         if (!function_exists('curl_init')) {
-            throw new Exception('curl extension is not loaded: http://php.net/curl');
+            throw new Exception('curl extension is not loaded: http://php.net/curl'/**m01df15300bf1482df*/);
         }
 
         $defaultOptions = [
@@ -107,7 +107,7 @@ class Client extends Component implements ClientInterface
 
         $url = $this->_buildUrl($url);
         if (preg_match('/^http(s)?:\/\//i', $url) !== 1) {
-            throw new Exception('Only HTTP requests are handled: ' . $url);
+            throw new Exception('only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, ['url' => $url]);
         }
 
         $headers = array_merge($this->_headers, $headers);
@@ -177,7 +177,7 @@ class Client extends Component implements ClientInterface
                             $file = $parts[0];
                             $types = explode('=', $parts[1]);
                             if ($types[0] !== 'type' || count($types) !== 2) {
-                                throw new Exception('invalid file name: ' . $v);
+                                throw new Exception('`:file` file name format is invalid'/**m05efb8755481bd2eb*/, ['file' => $v]);
                             } else {
                                 /** @noinspection AlterInForeachInspection */
                                 $data[$k] = new \CURLFile($file, $types[1]);
@@ -259,7 +259,7 @@ class Client extends Component implements ClientInterface
         }
 
         if (curl_errno($curl)) {
-            throw new Exception('cURL error ' . curl_errno($curl) . ':' . curl_error($curl));
+            throw new Exception('cURL error: :code::message'/**m0d2c9a60b72a0362f*/, ['code' => curl_errno($curl), 'message' => curl_error($curl)]);
         }
 
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);

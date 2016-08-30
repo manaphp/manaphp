@@ -86,7 +86,7 @@ class Mwt extends Component implements TokenInterface
 
         $parts = explode('.', $t);
         if (count($parts) !== 3) {
-            throw new Exception('token format is invalid: ' . $str);
+            throw new Exception('`:token` is not contain 3 parts'/**m0b5ce4741348c3747*/, ['token' => $str]);
         }
 
         $type = $parts[0];
@@ -110,17 +110,17 @@ class Mwt extends Component implements TokenInterface
         }
 
         if (!$success) {
-            throw new Exception('hash is not corrected: ' . $hash);
+            throw new Exception('hash is not corrected: :hash'/**m0f1ae3ea6eeb35939*/, ['hash' => $hash]);
         }
 
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($type != $this->_type) {
-            throw new Exception('type is not correct: ' . $type);
+            throw new Exception('type is not correct: :type'/**m09537eea529cf24a6*/, ['type' => $type]);
         }
 
         $r = json_decode(base64_decode($payload), true);
         if (!is_array($r)) {
-            throw new Exception('payload is invalid.');
+            throw new Exception('payload is not array.'/**m02e36efb31ed0db24*/);
         }
 
         return $r;
@@ -142,7 +142,7 @@ class Mwt extends Component implements TokenInterface
             $valueField = is_int($k) ? $v : $k;
 
             if (!isset($this->{$valueField})) {
-                throw new Exception('encode failed: ' . $valueField . ' field value is NULL');
+                throw new Exception('`:field` field value is NULL', ['field' => $valueField]);
             }
             $data[$v] = $this->{$valueField};
         }
@@ -161,14 +161,14 @@ class Mwt extends Component implements TokenInterface
         $data = $this->_decode($str);
 
         if (!isset($data['EXP']) && $data['EXP'] < time()) {
-            throw new Exception('token is expired: ' . Exception::CODE_EXPIRE);
+            throw new Exception('token is expired.'/**m0b57c4265f54099b0*/, Exception::CODE_EXPIRE);
         }
 
         foreach ($this->_fields as $k => $v) {
             $keyField = is_int($k) ? $v : $k;
 
             if (!isset($data[$v])) {
-                throw new Exception('decode failed: ' . $v . 'field value is not exists');
+                throw new Exception('`:field` field value is not exists in payload'/**m059345500bb0de141*/, ['field' => $v]);
             }
 
             $this->{$keyField} = $data[$v];

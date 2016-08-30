@@ -73,7 +73,7 @@ class MvcDispatcherTest extends TestCase
             $dispatcher->dispatch('Test', 'Index', 'index');
             $this->fail('why not?');
         } catch (\Manaphp\Exception $e) {
-            $this->assertEquals('App\\Test\Controllers\\IndexController handler class cannot be loaded', $e->getMessage());
+            $this->assertEquals('`App\Test\Controllers\IndexController` class cannot be loaded', $e->getMessage());
             $this->assertInstanceOf('ManaPHP\Mvc\Dispatcher\NotFoundControllerException', $e);
         }
 
@@ -82,7 +82,7 @@ class MvcDispatcherTest extends TestCase
             $dispatcher->dispatch('Test', 'missing', 'index');
             $this->fail('why not?');
         } catch (\Manaphp\Exception $e) {
-            $this->assertEquals('App\\Test\\Controllers\\MissingController handler class cannot be loaded', $e->getMessage());
+            $this->assertEquals('`App\Test\Controllers\MissingController` class cannot be loaded', $e->getMessage());
             $this->assertInstanceOf('ManaPHP\Mvc\Dispatcher\NotFoundControllerException', $e);
         }
 
@@ -91,7 +91,7 @@ class MvcDispatcherTest extends TestCase
             $dispatcher->dispatch('Test', 'test_home', 'index');
             $this->fail('why not?');
         } catch (\Manaphp\Exception $e) {
-            $this->assertEquals('App\\Test\\Controllers\\TestHomeController handler class cannot be loaded', $e->getMessage());
+            $this->assertEquals('`App\Test\Controllers\TestHomeController` class cannot be loaded', $e->getMessage());
             $this->assertInstanceOf('ManaPHP\Mvc\Dispatcher\NotFoundControllerException', $e);
         }
 
@@ -101,7 +101,7 @@ class MvcDispatcherTest extends TestCase
             $dispatcher->dispatch('Test', 'test1', 'index');
             $this->fail('why not?');
         } catch (\Manaphp\Exception $e) {
-            $this->assertEquals("Action 'indexAction' was not found on handler 'App\\Test\\Controllers\\Test1Controller'", $e->getMessage());
+            $this->assertEquals('`indexAction` action was not found on `App\Test\Controllers\Test1Controller`', $e->getMessage());
         }
 
         //normal usage without return value

@@ -38,7 +38,7 @@ class Manager implements ManagerInterface
     public function attachEvent($event, $handler)
     {
         if (!is_object($handler) && !is_callable($handler)) {
-            throw new Exception('Event handler must be callable or object');
+            throw new Exception('Event handler must be callable or object'/**m0d76daa4bcd2ee5b6*/);
         }
 
         if (Text::contains($event, ':')) {
@@ -84,7 +84,7 @@ class Manager implements ManagerInterface
         }
 
         if (!Text::contains($event, ':')) {
-            throw new Exception('Invalid event type ' . $event);
+            throw new Exception('`:event` event must contains `:`'/**m01def78f0cd339c76*/, ['event' => $event]);
         }
 
         $parts = explode(':', $event, 2);

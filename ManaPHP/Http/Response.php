@@ -19,6 +19,7 @@ use ManaPHP\Utility\Text;
  *</code>
  *
  * @property \ManaPHP\Http\CookiesInterface $cookies
+ * @property \ManaPHP\Mvc\UrlInterface      $url
  */
 class Response extends Component implements ResponseInterface
 {
@@ -179,30 +180,23 @@ class Response extends Component implements ResponseInterface
      *  //Using a string redirect (internal/external)
      *    $response->redirect("posts/index");
      *    $response->redirect("http://www.google.com");
-     *    $response->redirect("http://www.example.com/new-location", 301);
+     *    $response->redirect("http://www.example.com/new-location", false);
      *</code>
      *
-     * @param string     $location
-     * @param int|string $statusCode
+     * @param string $location
+     * @param bool   $temporarily
      *
      * @return static
-     * @throws \ManaPHP\Http\Response\Exception
      */
-    public function redirect($location, $statusCode = 302)
+    public function redirect($location, $temporarily = true)
     {
-        if (is_string($statusCode)) {
-            $statusCode = (int)$statusCode;
-        }
-
-        /**
-         * The HTTP status is 302 by default, a temporary redirection
-         */
-        if ($statusCode === 301) {
-            $message = 'Permanently Moved';
-        } elseif ($statusCode === 302) {
+        if ($temporarily) {
             $message = 'Temporarily Moved';
+            $statusCode = '302';
+
         } else {
-            throw new Exception('invalid status code: ' . $statusCode);
+            $message = 'Permanently Moved';
+            $statusCode = '301';
         }
 
         $this->setStatusCode($statusCode, $message);
@@ -210,7 +204,7 @@ class Response extends Component implements ResponseInterface
         /**
          * Change the current location using 'Location'
          */
-        $this->setHeader('Location', $location);
+        $this->setHeader('Location', $this->url->get($location));
 
         return $this;
     }
@@ -324,7 +318,7 @@ class Response extends Component implements ResponseInterface
     public function send()
     {
         if ($this->_sent === true) {
-            throw new Exception('Response was already sent');
+            throw new Exception('Response was already sent'/**m0b202f9440b7adc49*/);
         }
 
         if (!headers_sent()) {
@@ -360,7 +354,7 @@ class Response extends Component implements ResponseInterface
         }
 
         if (!file_exists($file)) {
-            throw new Exception('Sent file is not exists: ' . $file);
+            throw new Exception('Sent file is not exists: `:file`'/**m0ff2d0759014d7170*/, ['file' => $file]);
         }
 
         $this->_file = $file;

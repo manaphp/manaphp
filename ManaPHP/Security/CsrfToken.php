@@ -109,7 +109,7 @@ class CsrfToken extends Component implements CsrfTokenInterface
             $token_server = $this->session->get($this->_name);
         }
         if ($token_server === null) {
-            throw new Exception('The CSRF token could not be verified: missing in server.');
+            throw new Exception('The CSRF token could not be verified: missing in server'/**m0fb6f987d721f83f3*/);
         } else {
             if ($this->request->get($this->_name)) {
                 $token_client = $this->request->get($this->_name);
@@ -120,11 +120,11 @@ class CsrfToken extends Component implements CsrfTokenInterface
             }
 
             if (!isset($token_client)) {
-                throw new Exception('The CSRF token could not be verified: missing in client.');
+                throw new Exception('The CSRF token could not be verified: missing in client'/**m00a880e13ca498056*/);
             }
 
             if ($token_client !== $token_server) {
-                throw new Exception('The CSRF token could not be verified: not match.');
+                throw new Exception('The CSRF token could not be verified: not match'/**m0c252a17d2a9ed47d*/);
             }
         }
     }

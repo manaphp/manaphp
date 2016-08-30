@@ -269,7 +269,7 @@ class Dispatcher extends Component implements DispatcherInterface
             $this->_finished = true;
 
             if ($numberDispatches++ === 32) {
-                throw new Exception('Dispatcher has detected a cyclic routing causing stability problems');
+                throw new Exception('dispatcher has detected a cyclic routing causing stability problems'/**m016bfe7f4f190e087*/);
             }
 
             if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
@@ -283,7 +283,7 @@ class Dispatcher extends Component implements DispatcherInterface
             $controllerClassName = $this->_rootNamespace . '\\' . $this->_moduleName . '\\Controllers\\' . $this->_controllerName . $this->_controllerSuffix;
 
             if (!$this->_dependencyInjector->has($controllerClassName) && !class_exists($controllerClassName)) {
-                throw new NotFoundControllerException($controllerClassName . ' handler class cannot be loaded');
+                throw new NotFoundControllerException('`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, ['controller' => $controllerClassName]);
             }
 
             $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
@@ -294,24 +294,33 @@ class Dispatcher extends Component implements DispatcherInterface
             foreach (get_class_methods($controllerInstance) as $method) {
                 if ($actionMethod === strtolower($method)) {
                     if (substr($method, -strlen($this->_actionSuffix)) !== $this->_actionSuffix) {
-                        throw new Exception("The action '$method' of {$this->_controllerName}{$this->_controllerSuffix}  does not suffix with '{$this->_actionSuffix}' case sensitively, please amend it first.");
+                        throw new Exception('`:method` action of `:controller`  does not suffix with `:suffix`'/**m02be64d9c0cc78392*/,
+                            ['method' => $method, 'controller' => $controllerClassName, 'suffix' => $this->_actionSuffix]);
                     }
 
                     /** @noinspection SubStrUsedAsArrayAccessInspection */
                     $firstChar = substr($method, 0, 1);
                     if (strtolower($firstChar) !== $firstChar) {
-                        throw new Exception("The action '$method' of {$this->_controllerName}{$this->_controllerSuffix}  does not prefix with lowercase character, please amend it first.");
+                        throw new Exception('`:method` action of `:controller` does not prefix with lowercase character'/**m05039932d378d3ede*/,
+                            ['method' => $method, 'controller' => $controllerClassName]);
+                    }
+
+                    if ($this->_actionName . $this->_actionSuffix !== $method) {
+                        throw new Exception('`:method` of `:controller` is not equal to `:action` '/**m05039932d378d3ede*/,
+                            ['method' => $method, 'action' => $this->_actionName . $this->_actionSuffix, 'controller' => $controllerClassName]);
                     }
 
                     $hasAction = true;
                     $this->_actionName = substr($method, 0, -strlen($this->_actionSuffix));
                     $actionMethod = $method;
                     break;
+
                 }
             }
 
             if (!$hasAction) {
-                throw new NotFoundActionException('Action \'' . $this->_actionName . $this->_actionSuffix . '\' was not found on handler \'' . $controllerClassName . '\'');
+                throw new NotFoundActionException('`:action` action was not found on `:controller`'/**m061a35fc1c0cd0b6f*/,
+                    ['action' => $this->_actionName . $this->_actionSuffix, 'controller' => $controllerClassName]);
             }
 
             // Calling beforeExecuteRoute as callback
@@ -399,7 +408,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 $this->_actionName = lcfirst(Text::camelize($parts[1]));
                 break;
             default:
-                throw new Exception('forward format is invalid: ' . $forward);
+                throw new Exception('`:forward` forward format is invalid'/**m03a65d2ea494b97ba*/, ['forward' => $forward]);
         }
 
         $this->_params = array_merge($this->_params, $params);

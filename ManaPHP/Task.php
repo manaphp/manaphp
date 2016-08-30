@@ -40,7 +40,7 @@ abstract class Task extends Component implements TaskInterface
 
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($this->tasksMetadata->get($this, Metadata::FIELD_STATUS) == Task::STATUS_RUNNING) {
-            throw new Exception('Task is existed.');
+            throw new Exception('Task is exists already'/**m094686781957e77e4*/);
         }
 
         $start_time = time();

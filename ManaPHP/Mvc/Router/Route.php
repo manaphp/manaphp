@@ -184,7 +184,7 @@ class Route implements RouteInterface
             } elseif (is_array($paths)) {
                 $routePaths = $paths;
             } else {
-                throw new Exception('--paths must be a string or array.');
+                throw new Exception('route paths must be a string or array.'/**m03f7b85074aa7a9b6*/);
             }
 
             if (isset($routePaths['controller']) && is_string($routePaths['controller'])) {
@@ -225,7 +225,8 @@ class Route implements RouteInterface
         if (Text::contains($this->_compiledPattern, '^')) {
             $r = preg_match($this->_compiledPattern, $uri, $matches);
             if ($r === false) {
-                throw new Exception('--invalid PCRE: ' . $this->_compiledPattern . ' for ' . $this->_pattern);
+                throw new Exception('`:compiled` pcre pattern is invalid for `:pattern`'/**m0d6fa1de6a93475dd*/,
+                    ['compiled' => $this->_compiledPattern, 'pattern' => $this->_pattern]);
             } elseif ($r === 1) {
                 return $matches;
             } else {

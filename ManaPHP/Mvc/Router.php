@@ -214,7 +214,7 @@ class Router extends Component implements RouterInterface
         $this->fireEvent('router:afterCheckRoutes');
 
         if (!$routeFound && !$silent) {
-            throw new NotFoundRouteException('not found matched route: ' . $uri);
+            throw new NotFoundRouteException('router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, ['uri' => $uri]);
         }
 
         return $routeFound;

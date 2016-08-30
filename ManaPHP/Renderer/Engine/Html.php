@@ -15,7 +15,7 @@ class Html implements EngineInterface
     {
         $str = file_get_contents($file);
         if ($str === false) {
-            throw new Exception('Read template file failed: ', $file);
+            throw new Exception('read `:file` template file failed', ['file' => $file]);
         }
 
         echo $str;

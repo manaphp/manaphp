@@ -67,11 +67,11 @@ interface ResponseInterface
      * Redirect by HTTP to another action or URL
      *
      * @param string $location
-     * @param int    $statusCode
+     * @param bool   $temporarily
      *
      * @return static
      */
-    public function redirect($location, $statusCode = 302);
+    public function redirect($location, $temporarily = true);
 
     /**
      * Sets HTTP response body

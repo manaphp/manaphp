@@ -17,7 +17,7 @@ class Sqlite extends Db
         }
 
         if (!isset($options['file'])) {
-            throw new Exception('file is not provide to sqlite adapter.');
+            throw new Exception('file is not provide to sqlite adapter.'/**m0c03cc731dd915d96*/);
         }
         $options['dsn'] = $options['file'];
         unset($options['file']);

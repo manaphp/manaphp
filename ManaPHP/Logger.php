@@ -45,7 +45,7 @@ abstract class Logger extends Component implements LoggerInterface, Logger\Adapt
     public function setLevel($level)
     {
         if (!isset($this->_s2i[$level])) {
-            throw new Exception('Logger Level is invalid: ' . $level);
+            throw new Exception('`:level` level is not one of `:levels`'/**m0511c3e8c2bcd64c8*/, ['level' => $level, 'levels' => implode(',', array_keys($this->getLevels()))]);
         }
 
         $this->_level = $level;

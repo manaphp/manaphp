@@ -57,7 +57,7 @@ class Alias extends Component implements AliasInterface
     public function set($name, $path)
     {
         if ($name[0] !== '@') {
-            throw new Exception('alias must start with @ character');
+            throw new Exception('`:name` must start with `@`'/**m02b52e71dba71561a*/, ['name' => $name]);
         }
 
         $this->_aliases[$name] = $this->resolve($path);
@@ -74,7 +74,7 @@ class Alias extends Component implements AliasInterface
     public function get($name)
     {
         if ($name[0] !== '@') {
-            throw new Exception('alias must start with @ character');
+            throw new Exception('`:name` must start with `@`'/**m0f809631289d02f8e*/, ['name' => $name]);
         }
 
         return isset($this->_aliases[$name]) ? $this->_aliases[$name] : false;
@@ -89,7 +89,7 @@ class Alias extends Component implements AliasInterface
     public function has($name)
     {
         if ($name[0] !== '@') {
-            throw new Exception('alias must start with @ character');
+            throw new Exception('`:name` must start with `@`'/**m0f7f21386c79f1518*/, ['name' => $name]);
         }
 
         return isset($this->_aliases[$name]);
@@ -106,7 +106,7 @@ class Alias extends Component implements AliasInterface
         if (rtrim($path, '\\/') !== $path) {
 
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new Exception("Path can not end with '/' or '\\': " . $path);
+            throw new Exception('`:path` can not end with `/` or `\`'/**m02677305f62c5336e*/, ['path' => $path]);
         }
 
         $path = str_replace('\\', '/', $path);
@@ -120,7 +120,7 @@ class Alias extends Component implements AliasInterface
         if (!isset($this->_aliases[$alias])) {
 
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new Exception("alias $alias is not exists: " . $path);
+            throw new Exception('`:alias` is not exists for `:path`'/**m0aac421937afe5850*/, ['alias' => $alias, 'path' => $path]);
         }
 
         return str_replace($alias, $this->_aliases[$alias], $path);

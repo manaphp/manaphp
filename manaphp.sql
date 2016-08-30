@@ -16,7 +16,7 @@ CREATE TABLE `manaphp_counter` (
   PRIMARY KEY (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
-#ManaPHP\Cache\Engine\Db\Model'
+#ManaPHP\Cache\Engine\Db\Model
 CREATE TABLE `manaphp_cache` (
   `hash` char(32) CHARACTER SET ascii NOT NULL,
   `key` varchar(255) NOT NULL,
@@ -24,3 +24,11 @@ CREATE TABLE `manaphp_cache` (
   `expired_time` int(11) NOT NULL,
   PRIMARY KEY (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+#ManaPHP\Store\Engine\Db\Model
+CREATE TABLE `manaphp_store` (
+  `hash` CHAR(32) CHARACTER SET ASCII NOT NULL,
+  `key` VARCHAR(255) NOT NULL,
+  `value` TEXT NOT NULL,
+  PRIMARY KEY (`hash`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8

@@ -9,7 +9,7 @@ class Ini implements EngineInterface
     {
         $data = parse_ini_file($file, true);
         if ($data === false) {
-            throw new Exception("Configure file '$file' can't be loaded");
+            throw new Exception('`:file` configure file can not be loaded'/**m0a0e54c0c2a796b88*/, ['file' => $file]);
         }
 
         return $data;
