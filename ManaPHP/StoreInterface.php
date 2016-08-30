@@ -22,15 +22,6 @@ interface StoreInterface
     public function get($key);
 
     /**
-     * Retrieves multiple values from store with corresponding keys.
-     *
-     * @param array $keys
-     *
-     * @return array
-     */
-    public function mGet($keys);
-
-    /**
      * Stores a value identified by a key into store.
      *
      * @param string $key
@@ -39,15 +30,6 @@ interface StoreInterface
      * @return void
      */
     public function set($key, $value);
-
-    /**
-     * Stores multiple values corresponding with keys into store.
-     *
-     * @param array $keyValues
-     *
-     * @return void
-     */
-    public function mSet($keyValues);
 
     /**
      * Deletes a value with the specified id from store

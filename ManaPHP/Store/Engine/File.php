@@ -102,22 +102,6 @@ class File extends Component implements EngineInterface
     }
 
     /**
-     * @param array $ids
-     *
-     * @return array
-     */
-    public function mGet($ids)
-    {
-        $idValues = [];
-
-        foreach ($ids as $id) {
-            $idValues[$id] = $this->get($id);
-        }
-
-        return $idValues;
-    }
-
-    /**
      * @param string $id
      * @param string $value
      *
@@ -130,27 +114,14 @@ class File extends Component implements EngineInterface
 
         $storeDir = dirname($storeFile);
         if (!@mkdir($storeDir, 0755, true) && !is_dir($storeDir)) {
-            throw new Exception('Create store directory "' . $storeDir . '" failed: ' . error_get_last()['message']);
+            throw new Exception('Create `dir` store directory failed: :message'/**m0152cd058643d24d6*/, ['dir' => $storeDir, 'message' => Exception::getLastErrorMessage()]);
         }
 
         if (file_put_contents($storeFile, $value, LOCK_EX) === false) {
-            throw new Exception('Write store file"' . $storeFile . '" failed: ' . error_get_last()['message']);
+            throw new Exception('write store `:file` file failed: :message'/**m0d7c8cf410b1e3a68*/, ['file' => $storeFile, 'message' => Exception::getLastErrorMessage()]);
         }
 
         clearstatcache(true, $storeFile);
-    }
-
-    /**
-     * @param array $idValues
-     *
-     * @return void
-     * @throws \ManaPHP\Store\Engine\Exception
-     */
-    public function mSet($idValues)
-    {
-        foreach ($idValues as $id => $value) {
-            $this->set($id, $value);
-        }
     }
 
     /**

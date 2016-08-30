@@ -23,17 +23,6 @@ class StoreAdapterMemoryTest extends TestCase
         $this->assertSame('value', $cache->get('var'));
     }
 
-    public function test_mGet()
-    {
-        $cache = new \ManaPHP\Store\Engine\Memory();
-
-        $cache->set('1', '1');
-        $idValues = $cache->mGet(['1', '2']);
-
-        $this->assertEquals('1', $idValues['1']);
-        $this->assertFalse($idValues[2]);
-    }
-
     public function test_set()
     {
         $cache = new \ManaPHP\Store\Engine\Memory();
@@ -46,18 +35,6 @@ class StoreAdapterMemoryTest extends TestCase
 
         $cache->set('var', '{}');
         $this->assertSame('{}', $cache->get('var'));
-    }
-
-    public function test_mSet()
-    {
-        $cache = new \ManaPHP\Store\Engine\Memory();
-
-        $cache->mSet([]);
-
-        $cache->mSet(['1' => 1, '2' => 2]);
-        $this->assertSame(1, $cache->get(1));
-        $this->assertSame(2, $cache->get(2));
-        $this->assertFalse($cache->get(3));
     }
 
     public function test_delete()

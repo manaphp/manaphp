@@ -17,7 +17,7 @@ class Redis extends Component implements EngineInterface
     /**
      * @var string
      */
-    protected $key = 'manaphp:store';
+    protected $_key = 'manaphp:store:';
 
     /**
      * Redis constructor.
@@ -28,14 +28,12 @@ class Redis extends Component implements EngineInterface
     {
         if (is_object($options)) {
             $options = (array)$options;
-        }
-
-        if (is_string($options)) {
+        } elseif (is_string($options)) {
             $options = ['key' => $options];
         }
 
         if (isset($options['key'])) {
-            $this->key .= $options['key'];
+            $this->_key .= $options['key'];
         }
     }
 
@@ -49,17 +47,7 @@ class Redis extends Component implements EngineInterface
      */
     public function get($id)
     {
-        return $this->redis->hGet($this->key, $id);
-    }
-
-    /**
-     * @param array $ids
-     *
-     * @return array
-     */
-    public function mGet($ids)
-    {
-        return $this->redis->hMGet($this->key, $ids);
+        return $this->redis->hGet($this->_key, $id);
     }
 
     /**
@@ -73,17 +61,7 @@ class Redis extends Component implements EngineInterface
      */
     public function set($id, $value)
     {
-        $this->redis->hSet($this->key, $id, $value);
-    }
-
-    /**
-     * @param array $idValues
-     *
-     * @return void
-     */
-    public function mSet($idValues)
-    {
-        $this->redis->hMset($this->key, $idValues);
+        $this->redis->hSet($this->_key, $id, $value);
     }
 
     /**
@@ -96,7 +74,7 @@ class Redis extends Component implements EngineInterface
      */
     public function delete($id)
     {
-        $this->redis->hDel($this->key, $id);
+        $this->redis->hDel($this->_key, $id);
     }
 
     /**
@@ -109,6 +87,6 @@ class Redis extends Component implements EngineInterface
      */
     public function exists($id)
     {
-        return $this->redis->hExists($this->key, $id);
+        return $this->redis->hExists($this->_key, $id);
     }
 }

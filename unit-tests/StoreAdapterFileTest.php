@@ -35,20 +35,6 @@ class StoreAdapterFileTest extends TestCase
         $this->assertSame('value', $store->get('var'));
     }
 
-    public function test_mGet()
-    {
-        $store = new \ManaPHP\Store\Engine\File('/d/store/test');
-
-        $store->delete('1');
-        $store->delete(2);
-
-        $store->set('1', '1');
-        $idValues = $store->mGet(['1', '2']);
-
-        $this->assertEquals('1', $idValues['1']);
-        $this->assertFalse($idValues[2]);
-    }
-
     public function test_set()
     {
         $store = new \ManaPHP\Store\Engine\File('/d/store/test');
@@ -61,20 +47,6 @@ class StoreAdapterFileTest extends TestCase
 
         $store->set('var', '{}');
         $this->assertSame('{}', $store->get('var'));
-    }
-
-    public function test_mSet()
-    {
-        $store = new \ManaPHP\Store\Engine\File('/d/store/test');
-
-        $store->delete(1);
-        $store->delete('2');
-
-        $store->set('1', '1');
-        $idValues = $store->mGet(['1', '2']);
-
-        $this->assertEquals('1', $idValues['1']);
-        $this->assertFalse($idValues[2]);
     }
 
     public function test_delete()

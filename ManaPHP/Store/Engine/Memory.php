@@ -22,21 +22,6 @@ class Memory extends Component implements EngineInterface
     }
 
     /**
-     * @param array $ids
-     *
-     * @return array
-     */
-    public function mGet($ids)
-    {
-        $idValues = [];
-        foreach ($ids as $id) {
-            $idValues[$id] = isset($this->_data[$id]) ? $this->_data[$id] : false;
-        }
-
-        return $idValues;
-    }
-
-    /**
      * @param string $id
      * @param string $value
      *
@@ -45,18 +30,6 @@ class Memory extends Component implements EngineInterface
     public function set($id, $value)
     {
         $this->_data[$id] = $value;
-    }
-
-    /**
-     * @param array $idValues
-     *
-     * @return void
-     */
-    public function mSet($idValues)
-    {
-        foreach ($idValues as $id => $value) {
-            $this->_data[$id] = $value;
-        }
     }
 
     /**

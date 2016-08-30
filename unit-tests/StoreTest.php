@@ -78,32 +78,6 @@ class StoreTest extends TestCase
         $this->assertTrue(is_array($store->get('val')));
     }
 
-    public function test_mGet()
-    {
-        $store = new \ManaPHP\Store();
-
-        $store->delete('1');
-        $store->delete('2');
-
-        $store->set('1', '1');
-        $idValues = $store->mGet(['1', '2']);
-
-        $this->assertEquals('1', $idValues['1']);
-        $this->assertFalse($idValues[2]);
-    }
-
-    public function test_mSet()
-    {
-        $store = new \ManaPHP\Store();
-
-        $store->mSet([]);
-
-        $store->mSet(['1' => 1, '2' => 2]);
-        $this->assertSame(1, $store->get(1));
-        $this->assertSame(2, $store->get(2));
-        $this->assertFalse($store->get(3));
-    }
-
     public function test_delete()
     {
         $store = new \ManaPHP\Store();
