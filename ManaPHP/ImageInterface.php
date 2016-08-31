@@ -17,11 +17,6 @@ interface ImageInterface
     public function __construct($file);
 
     /**
-     * @return \ManaPHP\Image\AdapterInterface
-     */
-    public function getAdapter();
-
-    /**
      * Image width
      *
      * @return int

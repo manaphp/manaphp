@@ -15,12 +15,6 @@ class ImageTest extends TestCase
         $this->_resultDirectory = __DIR__ . '/Image/Result';
     }
 
-    public function test_getAdapter()
-    {
-        $image = new ManaPHP\Image($this->_originalImage, '\ManaPHP\Image\Adapter\Imagick');
-        $this->assertInstanceOf('\ManaPHP\Image\Adapter\Imagick', $image->getAdapter());
-    }
-
     public function test_getWidth()
     {
         $image = new ManaPHP\Image($this->_originalImage, '\ManaPHP\Image\Adapter\Imagick');
