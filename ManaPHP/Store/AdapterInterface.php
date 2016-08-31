@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Store;
 
-interface EngineInterface
+interface AdapterInterface
 {
 
     /**

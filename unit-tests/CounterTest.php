@@ -19,7 +19,7 @@ class CounterTest extends TestCase
 
     public function test_get()
     {
-        $counter = new ManaPHP\Counter\Adapter\Redis();
+        $counter = new ManaPHP\Counter(new \ManaPHP\Counter\Adapter\Redis());
 
         $counter->delete('c', '1');
 
@@ -30,7 +30,7 @@ class CounterTest extends TestCase
 
     public function test_increment()
     {
-        $counter = new ManaPHP\Counter\Adapter\Redis();
+        $counter = new ManaPHP\Counter(new \ManaPHP\Counter\Adapter\Redis());
         $counter->delete('c', '1');
         $this->assertEquals(1, $counter->increment('c', '1'));
         $this->assertEquals(2, $counter->increment('c', '1', 1));
@@ -43,7 +43,7 @@ class CounterTest extends TestCase
 
     public function test_decrement()
     {
-        $counter = new ManaPHP\Counter\Adapter\Redis();
+        $counter = new ManaPHP\Counter(new \ManaPHP\Counter\Adapter\Redis());
         $counter->delete('c', '1');
         $this->assertEquals(-1, $counter->decrement('c', '1'));
         $this->assertEquals(-2, $counter->decrement('c', '1', 1));
@@ -53,7 +53,7 @@ class CounterTest extends TestCase
 
     public function test_delete()
     {
-        $counter = new ManaPHP\Counter\Adapter\Redis();
+        $counter = new ManaPHP\Counter(new \ManaPHP\Counter\Adapter\Redis());
         $counter->delete('c', '1');
 
         $counter->increment('c', '1');

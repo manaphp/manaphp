@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Store\Engine;
+namespace ManaPHP\Store\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Store\EngineInterface;
+use ManaPHP\Store\AdapterInterface;
 
 /**
  * Class Redis
@@ -12,7 +12,7 @@ use ManaPHP\Store\EngineInterface;
  *
  * @property \Redis $redis
  */
-class Redis extends Component implements EngineInterface
+class Redis extends Component implements AdapterInterface
 {
     /**
      * @var string
@@ -22,7 +22,7 @@ class Redis extends Component implements EngineInterface
     /**
      * Redis constructor.
      *
-     * @param string|array|\ConfManaPHP\Store\Engine\Redis $options
+     * @param string|array|\ConfManaPHP\Store\Adapter\Redis $options
      */
     public function __construct($options = [])
     {
@@ -43,7 +43,7 @@ class Redis extends Component implements EngineInterface
      * @param string $id
      *
      * @return string|false
-     * @throws \ManaPHP\Store\Engine\Exception
+     * @throws \ManaPHP\Store\Adapter\Exception
      */
     public function get($id)
     {
@@ -57,7 +57,7 @@ class Redis extends Component implements EngineInterface
      * @param string $value
      *
      * @return void
-     * @throws \ManaPHP\Store\Engine\Exception
+     * @throws \ManaPHP\Store\Adapter\Exception
      */
     public function set($id, $value)
     {
@@ -70,7 +70,7 @@ class Redis extends Component implements EngineInterface
      * @param string $id
      *
      * @void
-     * @throws \ManaPHP\Store\Engine\Exception
+     * @throws \ManaPHP\Store\Adapter\Exception
      */
     public function delete($id)
     {
@@ -83,7 +83,7 @@ class Redis extends Component implements EngineInterface
      * @param string $id
      *
      * @return bool
-     * @throws \ManaPHP\Store\Engine\Exception
+     * @throws \ManaPHP\Store\Adapter\Exception
      */
     public function exists($id)
     {

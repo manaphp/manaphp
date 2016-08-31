@@ -3,6 +3,9 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class CacheTest extends TestCase
 {
+    /**
+     * @var \ManaPHP\DiInterface
+     */
     protected $_di;
 
     public function setUp()
@@ -14,7 +17,7 @@ class CacheTest extends TestCase
 
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache();
+        $cache = new \ManaPHP\Cache(new \ManaPHP\Cache\Adapter\File());
         $cache->delete('country');
 
         $this->assertFalse($cache->exists('country'));
@@ -25,7 +28,7 @@ class CacheTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache();
+        $cache = new \ManaPHP\Cache(new \ManaPHP\Cache\Adapter\File());
 
         $cache->delete('country');
         $this->assertFalse($cache->get('country'));
@@ -36,7 +39,7 @@ class CacheTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache();
+        $cache = new \ManaPHP\Cache(new \ManaPHP\Cache\Adapter\File());
         $cache->delete('var');
 
         $this->assertFalse($cache->get('var'));
@@ -78,7 +81,7 @@ class CacheTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Cache();
+        $cache = new \ManaPHP\Cache(new \ManaPHP\Cache\Adapter\File());
         $cache->delete('val');
 
         // delete a not existed

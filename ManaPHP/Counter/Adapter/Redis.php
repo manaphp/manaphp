@@ -1,7 +1,8 @@
 <?php
 namespace ManaPHP\Counter\Adapter;
 
-use ManaPHP\Counter;
+use ManaPHP\Component;
+use ManaPHP\Counter\AdapterInterface;
 
 /**
  * Class Redis
@@ -10,18 +11,29 @@ use ManaPHP\Counter;
  *
  * @property \Redis $redis
  */
-class Redis extends Counter
+class Redis extends Component implements AdapterInterface
 {
+    /**
+     * @var string
+     */
+    protected $_prefix = 'manaphp:counter:';
+
     /**
      * Redis constructor.
      *
-     * @param array|string $options
+     * @param string|array $options
      */
     public function __construct($options = [])
     {
-        $this->_prefix = 'manaphp:counter:';
+        if (is_object($options)) {
+            $options = (array)$options;
+        } elseif (is_string($options)) {
+            $options = ['prefix' => $options];
+        }
 
-        parent::__construct($options);
+        if (isset($options['prefix'])) {
+            $this->_prefix = $options['prefix'];
+        }
     }
 
     /**
@@ -30,9 +42,9 @@ class Redis extends Counter
      *
      * @return int
      */
-    public function _get($type, $id)
+    public function get($type, $id)
     {
-        return (int)$this->redis->hGet($type, $id);
+        return (int)$this->redis->hGet($this->_prefix . $type, $id);
     }
 
     /**
@@ -42,9 +54,9 @@ class Redis extends Counter
      *
      * @return int
      */
-    public function _increment($type, $id, $step = 1)
+    public function increment($type, $id, $step = 1)
     {
-        return $this->redis->hIncrBy($type, $id, $step);
+        return $this->redis->hIncrBy($this->_prefix . $type, $id, $step);
     }
 
     /**
@@ -53,8 +65,8 @@ class Redis extends Counter
      *
      * @return void
      */
-    public function _delete($type, $id)
+    public function delete($type, $id)
     {
-        $this->redis->hDel($type, $id);
+        $this->redis->hDel($this->_prefix . $type, $id);
     }
 }

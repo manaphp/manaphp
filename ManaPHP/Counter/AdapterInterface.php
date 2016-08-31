@@ -9,7 +9,7 @@ interface AdapterInterface
      *
      * @return int
      */
-    public function _get($type, $id);
+    public function get($type, $id);
 
     /**
      * @param string $type
@@ -18,7 +18,7 @@ interface AdapterInterface
      *
      * @return int
      */
-    public function _increment($type, $id, $step = 1);
+    public function increment($type, $id, $step = 1);
 
     /**
      * @param string $type
@@ -26,5 +26,5 @@ interface AdapterInterface
      *
      * @return void
      */
-    public function _delete($type, $id);
+    public function delete($type, $id);
 }

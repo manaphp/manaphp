@@ -1,13 +1,14 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Cache\AdapterInterface;
+
 /**
  * Class Cache
  *
  * @package ManaPHP
  *
  * @property \ManaPHP\Serializer\AdapterInterface $serializer
- * @property \ManaPHP\Cache\EngineInterface       $cacheEngine
  */
 class Cache extends Component implements CacheInterface
 {
@@ -17,21 +18,39 @@ class Cache extends Component implements CacheInterface
     protected $_prefix = '';
 
     /**
+     * @var \ManaPHP\Cache\AdapterInterface
+     */
+    public $adapter;
+
+    /**
      * Cache constructor.
      *
-     * @param string|array $options
+     * @param string|array|\ManaPHP\Cache\AdapterInterface $options
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
+        if ($options instanceof AdapterInterface || is_string($options)) {
+            $options = ['adapter' => $options];
+        } elseif (is_object($options)) {
             $options = (array)$options;
-        } elseif (is_string($options)) {
-            $options = ['prefix' => $options];
         }
+
+        $this->adapter = $options['adapter'];
 
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
         }
+    }
+
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+
+        if (!is_object($this->adapter)) {
+            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+        }
+
+        return $this;
     }
 
     /**
@@ -41,7 +60,7 @@ class Cache extends Component implements CacheInterface
      */
     public function get($key)
     {
-        $data = $this->cacheEngine->get($this->_prefix . $key);
+        $data = $this->adapter->get($this->_prefix . $key);
         if ($data === false) {
             return false;
         } else {
@@ -58,7 +77,7 @@ class Cache extends Component implements CacheInterface
      */
     public function set($key, $value, $ttl)
     {
-        $this->cacheEngine->set($this->_prefix . $key, $this->serializer->serialize($value), $ttl);
+        $this->adapter->set($this->_prefix . $key, $this->serializer->serialize($value), $ttl);
     }
 
     /**
@@ -68,7 +87,7 @@ class Cache extends Component implements CacheInterface
      */
     public function delete($key)
     {
-        $this->cacheEngine->delete($this->_prefix . $key);
+        $this->adapter->delete($this->_prefix . $key);
     }
 
     /**
@@ -78,6 +97,6 @@ class Cache extends Component implements CacheInterface
      */
     public function exists($key)
     {
-        return $this->cacheEngine->exists($this->_prefix . $key);
+        return $this->adapter->exists($this->_prefix . $key);
     }
 }

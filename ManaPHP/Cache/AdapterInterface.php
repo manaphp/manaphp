@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Cache;
 
-interface EngineInterface
+interface AdapterInterface
 {
     /**
      * Checks whether a specified key exists in the cache.

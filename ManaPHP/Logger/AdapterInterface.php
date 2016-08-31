@@ -10,5 +10,5 @@ interface AdapterInterface
      *
      * @return void
      */
-    public function _log($level, $message, $context = []);
+    public function log($level, $message, $context = []);
 }

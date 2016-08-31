@@ -1,9 +1,10 @@
 <?php
 namespace ManaPHP\Logger\Adapter;
 
-use ManaPHP\Logger;
+use ManaPHP\Component;
+use ManaPHP\Logger\AdapterInterface;
 
-class Memory extends Logger
+class Memory extends Component implements AdapterInterface
 {
     /**
      * @var array
@@ -17,7 +18,7 @@ class Memory extends Logger
      *
      * @return void
      */
-    public function _log($level, $message, $context = [])
+    public function log($level, $message, $context = [])
     {
         $this->_logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
     }

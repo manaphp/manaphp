@@ -16,7 +16,7 @@ class Mwt extends Component implements TokenInterface
     /**
      * @var int
      */
-    protected $_expireAt;
+    protected $_expired_time;
 
     /**
      * @var array
@@ -180,8 +180,8 @@ class Mwt extends Component implements TokenInterface
     /**
      * @return int
      */
-    public function getExpireAt()
+    public function getExpiredTime()
     {
-        return $this->_expireAt;
+        return $this->_expired_time;
     }
 }

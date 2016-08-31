@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Store\Engine;
+namespace ManaPHP\Store\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Store\EngineInterface;
+use ManaPHP\Store\AdapterInterface;
 
-class Memory extends Component implements EngineInterface
+class Memory extends Component implements AdapterInterface
 {
     /**
      * @var array

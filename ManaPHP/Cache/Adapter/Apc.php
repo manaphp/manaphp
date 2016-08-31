@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
 
-class Apc extends Component implements EngineInterface
+class Apc extends Component implements AdapterInterface
 {
     /**
      * @var string
@@ -17,7 +17,7 @@ class Apc extends Component implements EngineInterface
      *
      * @param string|array $options
      *
-     * @throws \ManaPHP\Cache\Engine\Exception
+     * @throws \ManaPHP\Cache\Adapter\Exception
      */
     public function __construct($options = [])
     {

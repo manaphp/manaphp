@@ -48,7 +48,7 @@ class Captcha extends Component implements CaptchaInterface
     /**
      * @var int
      */
-    protected $_codeLength = 4;
+    protected $_length = 4;
 
     /**
      * @var int
@@ -79,8 +79,8 @@ class Captcha extends Component implements CaptchaInterface
         }
         $this->_fonts = $options['fonts'];
 
-        if (isset($options['codeLength'])) {
-            $this->_codeLength = $options['codeLength'];
+        if (isset($options['length'])) {
+            $this->_length = $options['length'];
         }
 
         if (isset($options['bgRGB'])) {
@@ -123,7 +123,7 @@ class Captcha extends Component implements CaptchaInterface
 
         $fontFile = $this->alias->resolve($this->_fonts[(int)(mt_rand() % count($this->_fonts))]);
 
-        $referenceFontSize = min($height, $width / $this->_codeLength);
+        $referenceFontSize = min($height, $width / $this->_length);
 
         $x = 0;
         $points[2] = mt_rand($referenceFontSize * 0.1, $referenceFontSize * 0.3);
@@ -175,7 +175,7 @@ class Captcha extends Component implements CaptchaInterface
         $draw->setFont($this->alias->resolve($this->_fonts[(int)(mt_rand() % count($this->_fonts))]));
         $draw->setGravity(\Imagick::GRAVITY_NORTHWEST);
 
-        $referenceFontSize = min($height, $width / $this->_codeLength);
+        $referenceFontSize = min($height, $width / $this->_length);
 
         $x = mt_rand($referenceFontSize * 0.1, $referenceFontSize * 0.3);
         $length = strlen($code);
@@ -223,7 +223,7 @@ class Captcha extends Component implements CaptchaInterface
     {
         $code = '';
         $charsetCount = strlen($this->_charset);
-        for ($i = 0; $i < $this->_codeLength; $i++) {
+        for ($i = 0; $i < $this->_length; $i++) {
             $code .= $this->_charset[mt_rand() % $charsetCount];
         }
 

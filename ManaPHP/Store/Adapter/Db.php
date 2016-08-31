@@ -1,15 +1,15 @@
 <?php
-namespace ManaPHP\Store\Engine;
+namespace ManaPHP\Store\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Store\EngineInterface;
+use ManaPHP\Store\AdapterInterface;
 
-class Db extends Component implements EngineInterface
+class Db extends Component implements AdapterInterface
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Store\Engine\Db\Model';
+    protected $_model = 'ManaPHP\Store\Adapter\Db\Model';
 
     /**
      * Db constructor.
@@ -38,11 +38,11 @@ class Db extends Component implements EngineInterface
     public function exists($key)
     {
         /**
-         * @var \ManaPHP\Store\Engine\Db\Model $store
+         * @var \ManaPHP\Store\Adapter\Db\Model $model
          */
-        $store = new $this->_model;
+        $model = new $this->_model;
 
-        return $store::exists(['hash' => md5($key)]);
+        return $model::exists(['hash' => md5($key)]);
     }
 
     /**
@@ -54,12 +54,12 @@ class Db extends Component implements EngineInterface
     public function get($key)
     {
         /**
-         * @var \ManaPHP\Store\Engine\Db\Model $store
+         * @var \ManaPHP\Store\Adapter\Db\Model $model
          */
-        $store = new $this->_model;
-        $store = $store::findFirst(['hash' => md5($key)]);
+        $model = new $this->_model;
+        $model = $model::findFirst(['hash' => md5($key)]);
 
-        return $store === false ? false : $store->value;
+        return $model === false ? false : $model->value;
     }
 
     /**
@@ -68,20 +68,20 @@ class Db extends Component implements EngineInterface
      *
      * @return void
      * @throws \ManaPHP\Mvc\Model\Exception
-     * @throws \ManaPHP\Store\Engine\Exception
+     * @throws \ManaPHP\Store\Adapter\Exception
      */
     public function set($key, $value)
     {
         /**
-         * @var \ManaPHP\Store\Engine\Db\Model $store
+         * @var \ManaPHP\Store\Adapter\Db\Model $model
          */
-        $store = new $this->_model;
+        $model = new $this->_model;
 
-        $store->hash = md5($key);
-        $store->key = $key;
-        $store->value = $value;
+        $model->hash = md5($key);
+        $model->key = $key;
+        $model->value = $value;
 
-        $store->save();
+        $model->save();
     }
 
     /**
@@ -93,10 +93,10 @@ class Db extends Component implements EngineInterface
     public function delete($key)
     {
         /**
-         * @var \ManaPHP\Store\Engine\Db\Model $store
+         * @var \ManaPHP\Store\Adapter\Db\Model $model
          */
-        $store = new $this->_model;
+        $model = new $this->_model;
 
-        $store::deleteAll(['hash' => md5($key)]);
+        $model::deleteAll(['hash' => md5($key)]);
     }
 }

@@ -2,7 +2,7 @@
 
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
-class CacheEngineDbTest extends TestCase
+class CacheAdapterDbTest extends TestCase
 {
     protected $_di;
 
@@ -26,7 +26,7 @@ class CacheEngineDbTest extends TestCase
 
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache\Engine\Db();
+        $cache = new \ManaPHP\Cache\Adapter\Db();
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -36,7 +36,7 @@ class CacheEngineDbTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache\Engine\Db();
+        $cache = new \ManaPHP\Cache\Adapter\Db();
 
         $cache->delete('var');
 
@@ -47,7 +47,7 @@ class CacheEngineDbTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache\Engine\Db();
+        $cache = new \ManaPHP\Cache\Adapter\Db();
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -67,7 +67,7 @@ class CacheEngineDbTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Cache\Engine\Db();
+        $cache = new \ManaPHP\Cache\Adapter\Db();
 
         //exists and delete
         $cache->set('var', 'value', 100);

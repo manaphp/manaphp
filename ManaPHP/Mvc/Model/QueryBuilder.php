@@ -21,7 +21,7 @@ use ManaPHP\Utility\Text;
  *   ->execute();
  *</code>
  *
- * @property \ManaPHP\Cache\EngineInterface      $modelsCache
+ * @property \ManaPHP\Cache\AdapterInterface     $modelsCache
  * @property \ManaPHP\Paginator                  $paginator
  * @property \ManaPHP\Mvc\Model\ManagerInterface $modelsManager
  * @property \ManaPHP\Mvc\DispatcherInterface    $dispatcher

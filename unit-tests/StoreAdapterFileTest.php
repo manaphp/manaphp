@@ -15,7 +15,7 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_exists()
     {
-        $store = new \ManaPHP\Store\Engine\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
         $store->delete('var');
 
@@ -26,7 +26,7 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_get()
     {
-        $store = new \ManaPHP\Store\Engine\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
         $store->delete('var');
 
@@ -37,7 +37,7 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_set()
     {
-        $store = new \ManaPHP\Store\Engine\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
         $store->set('var', '');
         $this->assertSame('', $store->get('var'));
@@ -51,7 +51,7 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_delete()
     {
-        $store = new \ManaPHP\Store\Engine\File('/d/store/test');
+        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
 
         //exists and delete
         $store->set('var', 'value');

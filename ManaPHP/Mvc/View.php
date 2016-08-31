@@ -29,7 +29,7 @@ use ManaPHP\Utility\Text;
  *
  *
  * @property \ManaPHP\RendererInterface       $renderer
- * @property \ManaPHP\Cache\EngineInterface   $viewsCache
+ * @property \ManaPHP\Cache\AdapterInterface  $viewsCache
  * @property \ManaPHP\Http\RequestInterface   $request
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */

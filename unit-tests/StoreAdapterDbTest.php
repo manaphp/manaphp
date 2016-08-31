@@ -2,7 +2,7 @@
 
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
-class StoreEngineDbTest extends TestCase
+class StoreAdapterDbTest extends TestCase
 {
     protected $_di;
 
@@ -26,7 +26,7 @@ class StoreEngineDbTest extends TestCase
 
     public function test_exists()
     {
-        $store = new \ManaPHP\Store\Engine\Db();
+        $store = new \ManaPHP\Store\Adapter\Db();
 
         $store->delete('var');
         $this->assertFalse($store->exists('var'));
@@ -36,7 +36,7 @@ class StoreEngineDbTest extends TestCase
 
     public function test_get()
     {
-        $store = new \ManaPHP\Store\Engine\Db();
+        $store = new \ManaPHP\Store\Adapter\Db();
 
         $store->delete('var');
 
@@ -47,7 +47,7 @@ class StoreEngineDbTest extends TestCase
 
     public function test_set()
     {
-        $store = new \ManaPHP\Store\Engine\Db();
+        $store = new \ManaPHP\Store\Adapter\Db();
 
         $store->set('var', '');
         $this->assertSame('', $store->get('var'));
@@ -61,7 +61,7 @@ class StoreEngineDbTest extends TestCase
 
     public function test_delete()
     {
-        $store = new \ManaPHP\Store\Engine\Db();
+        $store = new \ManaPHP\Store\Adapter\Db();
 
         //exists and delete
         $store->set('var', 'value');

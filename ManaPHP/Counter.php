@@ -3,7 +3,7 @@ namespace ManaPHP;
 
 use ManaPHP\Counter\AdapterInterface;
 
-abstract class Counter extends Component implements CounterInterface, AdapterInterface
+class Counter extends Component implements CounterInterface
 {
     /**
      * @var string
@@ -11,21 +11,41 @@ abstract class Counter extends Component implements CounterInterface, AdapterInt
     protected $_prefix = '';
 
     /**
+     * @var \ManaPHP\Counter\AdapterInterface
+     */
+    public $adapter;
+
+    /**
      * Counter constructor.
      *
-     * @param string|array $options
+     * @param string|array|AdapterInterface $options
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
+        if ($options instanceof AdapterInterface || is_string($options)) {
+            $options = ['adapter' => $options];
+        } elseif (is_object($options)) {
             $options = (array)$options;
-        } elseif (is_string($options)) {
-            $options = ['prefix' => $options];
+        }
+
+        if (isset($options['adapter'])) {
+            $this->adapter = $options['adapter'];
         }
 
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
         }
+    }
+
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+
+        if (!is_object($this->adapter)) {
+            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+        }
+
+        return $this;
     }
 
     /**
@@ -37,7 +57,7 @@ abstract class Counter extends Component implements CounterInterface, AdapterInt
      */
     public function get($type, $id)
     {
-        return $this->_get($this->_prefix . $type, $id);
+        return $this->adapter->get($this->_prefix . $type, $id);
     }
 
     /**
@@ -51,7 +71,7 @@ abstract class Counter extends Component implements CounterInterface, AdapterInt
      */
     public function increment($type, $id, $step = 1)
     {
-        return $this->_increment($this->_prefix . $type, $id, $step);
+        return $this->adapter->increment($this->_prefix . $type, $id, $step);
     }
 
     /**
@@ -65,7 +85,7 @@ abstract class Counter extends Component implements CounterInterface, AdapterInt
      */
     public function decrement($type, $id, $step = 1)
     {
-        return $this->_increment($this->_prefix . $type, $id, -$step);
+        return $this->adapter->increment($this->_prefix . $type, $id, -$step);
     }
 
     /**
@@ -78,6 +98,6 @@ abstract class Counter extends Component implements CounterInterface, AdapterInt
      */
     public function delete($type, $id)
     {
-        $this->_delete($this->_prefix . $type, $id);
+        $this->adapter->delete($this->_prefix . $type, $id);
     }
 }

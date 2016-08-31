@@ -1,18 +1,18 @@
 <?php
 
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
 
 /**
  * Class Redis
  *
- * @package ManaPHP\Cache\Engine
+ * @package ManaPHP\Cache\Adapter
  *
  * @property \Redis $redis
  */
-class Redis extends Component implements EngineInterface
+class Redis extends Component implements AdapterInterface
 {
     /**
      * @var string
@@ -22,7 +22,7 @@ class Redis extends Component implements EngineInterface
     /**
      * Redis constructor.
      *
-     * @param string|array|\ConfManaPHP\Cache\Engine\Redis $options
+     * @param string|array|\ConfManaPHP\Cache\Adapter\Redis $options
      */
     public function __construct($options = [])
     {

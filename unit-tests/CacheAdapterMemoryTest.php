@@ -2,21 +2,11 @@
 
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
-class CacheEngineFileTest extends TestCase
+class CacheAdapterMemoryTest extends TestCase
 {
-    protected $_di;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->_di = new ManaPHP\Di\FactoryDefault();
-    }
-
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache\Engine\File('/d/cache/test');
-
+        $cache = new \ManaPHP\Cache\Adapter\Memory();
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
         $cache->set('var', 'value', 1000);
@@ -25,8 +15,7 @@ class CacheEngineFileTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache\Engine\File('/d/cache/test');
-
+        $cache = new \ManaPHP\Cache\Adapter\Memory();
         $cache->delete('var');
 
         $this->assertFalse($cache->get('var'));
@@ -36,7 +25,7 @@ class CacheEngineFileTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache\Engine\File('/d/cache/test');
+        $cache = new \ManaPHP\Cache\Adapter\Memory();
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -56,7 +45,7 @@ class CacheEngineFileTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Cache\Engine\File('/d/cache/test');
+        $cache = new \ManaPHP\Cache\Adapter\Memory();
 
         //exists and delete
         $cache->set('var', 'value', 100);

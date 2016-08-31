@@ -2,7 +2,7 @@
 
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
-class CacheEngineRedisTest extends TestCase
+class CacheAdapterRedisTest extends TestCase
 {
     protected $_di;
 
@@ -20,7 +20,7 @@ class CacheEngineRedisTest extends TestCase
 
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache\Engine\Redis();
+        $cache = new \ManaPHP\Cache\Adapter\Redis();
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -30,7 +30,7 @@ class CacheEngineRedisTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache\Engine\Redis();
+        $cache = new \ManaPHP\Cache\Adapter\Redis();
 
         $cache->delete('var');
 
@@ -41,7 +41,7 @@ class CacheEngineRedisTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache\Engine\Redis();
+        $cache = new \ManaPHP\Cache\Adapter\Redis();
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -61,7 +61,7 @@ class CacheEngineRedisTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Cache\Engine\Redis();
+        $cache = new \ManaPHP\Cache\Adapter\Redis();
 
         //exists and delete
         $cache->set('var', 'value', 100);

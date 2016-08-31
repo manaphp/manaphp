@@ -14,7 +14,7 @@ class StoreTest extends TestCase
 
     public function test_exists()
     {
-        $store = new \ManaPHP\Store();
+        $store = new \ManaPHP\Store(new \ManaPHP\Store\Adapter\File());
 
         $store->delete('country');
         $this->assertFalse($store->exists('country'));
@@ -25,7 +25,7 @@ class StoreTest extends TestCase
 
     public function test_get()
     {
-        $store = new \ManaPHP\Store();
+        $store = new \ManaPHP\Store(new \ManaPHP\Store\Adapter\File());
 
         $store->delete('country');
         $this->assertFalse($store->get('country'));
@@ -36,7 +36,7 @@ class StoreTest extends TestCase
 
     public function test_set()
     {
-        $store = new \ManaPHP\Store();
+        $store = new \ManaPHP\Store(new \ManaPHP\Store\Adapter\File());
 
         $store->delete('var');
         $store->delete('val');
@@ -80,7 +80,7 @@ class StoreTest extends TestCase
 
     public function test_delete()
     {
-        $store = new \ManaPHP\Store();
+        $store = new \ManaPHP\Store(new \ManaPHP\Store\Adapter\File());
 
         $store->delete('val');
 

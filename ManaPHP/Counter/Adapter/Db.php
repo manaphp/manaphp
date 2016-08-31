@@ -1,12 +1,12 @@
 <?php
 namespace ManaPHP\Counter\Adapter;
 
-use ManaPHP\Counter;
+use ManaPHP\Counter\AdapterInterface;
 
 /**
  * @property \ManaPHP\DbInterface $db
  */
-class Db extends Counter
+class Db implements AdapterInterface
 {
     /**
      * @var string
@@ -34,8 +34,6 @@ class Db extends Counter
         if (isset($options['model'])) {
             $this->_model = $options['model'];
         }
-
-        parent::__construct($options);
     }
 
     /**
@@ -45,7 +43,7 @@ class Db extends Counter
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _get($type, $id)
+    public function get($type, $id)
     {
         /**
          * @var \ManaPHP\Counter\Adapter\Db\Model $counter
@@ -65,7 +63,7 @@ class Db extends Counter
      * @throws \ManaPHP\Counter\Adapter\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _increment($type, $id, $step = 1)
+    public function increment($type, $id, $step = 1)
     {
         $hash = md5($type . ':' . $id);
 
@@ -116,7 +114,7 @@ class Db extends Counter
      * @return void
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _delete($type, $id)
+    public function delete($type, $id)
     {
         /**
          * @var \ManaPHP\Counter\Adapter\Db\Model $counter

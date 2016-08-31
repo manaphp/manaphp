@@ -201,10 +201,7 @@ class Response extends Component implements ResponseInterface
 
         $this->setStatusCode($statusCode, $message);
 
-        /**
-         * Change the current location using 'Location'
-         */
-        $this->setHeader('Location', $this->url->get($location));
+        $this->setHeader('Location', isset($this->url) ? $this->url->get($location) : $location);
 
         return $this;
     }

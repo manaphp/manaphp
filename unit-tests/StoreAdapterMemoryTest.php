@@ -6,7 +6,7 @@ class StoreAdapterMemoryTest extends TestCase
 {
     public function test_exists()
     {
-        $cache = new \ManaPHP\Store\Engine\Memory();
+        $cache = new \ManaPHP\Store\Adapter\Memory();
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
         $cache->set('var', 'value');
@@ -15,7 +15,7 @@ class StoreAdapterMemoryTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Store\Engine\Memory();
+        $cache = new \ManaPHP\Store\Adapter\Memory();
         $cache->delete('var');
 
         $this->assertFalse($cache->get('var'));
@@ -25,7 +25,7 @@ class StoreAdapterMemoryTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Store\Engine\Memory();
+        $cache = new \ManaPHP\Store\Adapter\Memory();
 
         $cache->set('var', '');
         $this->assertSame('', $cache->get('var'));
@@ -39,7 +39,7 @@ class StoreAdapterMemoryTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Store\Engine\Memory();
+        $cache = new \ManaPHP\Store\Adapter\Memory();
 
         //exists and delete
         $cache->set('var', 'value');

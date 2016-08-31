@@ -52,7 +52,7 @@ use ManaPHP\Di\Exception;
  * @property \ManaPHP\Security\CryptInterface              $crypt
  * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
  * @property \ManaPHP\Mvc\Model\MetadataInterface          $modelsMetadata
- * @property \ManaPHP\Cache\EngineInterface                $modelsCache
+ * @property \ManaPHP\Cache\AdapterInterface               $modelsCache
  * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
  * @property \ManaPHP\Http\Session\Bag                     $persistent
  * @property \ManaPHP\Mvc\ViewInterface                    $view
@@ -66,9 +66,8 @@ use ManaPHP\Di\Exception;
  * @property \Redis                                        $redis
  * @property \ManaPHP\Serializer\AdapterInterface          $serializer
  * @property \ManaPHP\CacheInterface                       $cache
- * @property \ManaPHP\Cache\EngineInterface                $cacheEngine
  * @property \ManaPHP\CounterInterface                     $counter
- * @property \ManaPHP\Cache\EngineInterface                $viewsCache
+ * @property \ManaPHP\Cache\AdapterInterface               $viewsCache
  * @property \ManaPHP\Http\ClientInterface                 $httpClient
  * @property \ManaPHP\AuthorizationInterface               $authorization
  * @property \ManaPHP\Security\CaptchaInterface            $captcha
@@ -211,7 +210,7 @@ class Di implements DiInterface
         if (is_string($definition)) {
             if (!class_exists($definition)) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new Exception('`:name` service cannot be resolved: class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $_name]);
+                throw new Exception('`:name` service cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $_name, 'class' => $definition]);
             }
             $count = count($parameters);
 

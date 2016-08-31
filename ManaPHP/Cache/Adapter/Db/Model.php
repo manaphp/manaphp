@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Cache\Engine\Db;
+namespace ManaPHP\Cache\Adapter\Db;
 
 class Model extends \ManaPHP\Mvc\Model
 {

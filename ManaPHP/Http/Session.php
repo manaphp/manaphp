@@ -7,26 +7,62 @@
  */
 namespace ManaPHP\Http;
 
+use ManaPHP\Component;
+use ManaPHP\Http\Session\AdapterInterface;
 use ManaPHP\Http\Session\Exception;
-use ManaPHP\Utility\Text;
 
 /**
  * ManaPHP\Http\Session\AdapterInterface initializer
  */
-class Session implements SessionInterface, \ArrayAccess
+class Session extends Component implements SessionInterface, \ArrayAccess
 {
-    public function __construct()
+    /**
+     * @var \ManaPHP\Http\Session\AdapterInterface
+     */
+    public $adapter;
+
+    /**
+     * Session constructor.
+     *
+     * @param string|array|\ManaPHP\Http\Session\AdapterInterface $options
+     *
+     * @throws \ManaPHP\Http\Session\Exception
+     */
+    public function __construct($options = [])
     {
         if (PHP_SAPI === 'cli') {
             return;
         }
 
-        session_start();
-
-        $message = error_get_last()['message'];
-        if (Text::startsWith($message, 'session_start():')) {
-            throw new Exception($message);
+        if ($options instanceof AdapterInterface || is_string($options)) {
+            $options = ['adapter' => $options];
+        } elseif (is_object($options)) {
+            $options = (array)$options;
         }
+
+        $this->adapter = $options['adapter'];
+    }
+
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+
+        if (!is_object($this->adapter)) {
+            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+        }
+
+        session_set_save_handler([$this->adapter, 'open'],
+            [$this->adapter, 'close'],
+            [$this->adapter, 'read'],
+            [$this->adapter, 'write'],
+            [$this->adapter, 'destroy'],
+            [$this->adapter, 'gc']);
+
+        if (!session_start()) {
+            throw new Exception('session start failed: ' . Exception::getLastErrorMessage());
+        }
+
+        return $this;
     }
 
     public function __destruct()
@@ -143,7 +179,7 @@ class Session implements SessionInterface, \ArrayAccess
      */
     public function __debugInfo()
     {
-        if (is_array($_SESSION)) {
+        if (isset($_SESSION) && is_array($_SESSION)) {
             $data = $_SESSION;
         } else {
             $data = [];

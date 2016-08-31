@@ -20,5 +20,5 @@ interface TokenInterface
     /**
      * @return int
      */
-    public function getExpireAt();
+    public function getExpiredTime();
 }

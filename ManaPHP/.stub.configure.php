@@ -56,7 +56,7 @@ namespace ConfManaPHP {
         public $autoResponse;
     }
 }
-namespace ConfManaPHP\Cache\Engine {
+namespace ConfManaPHP\Cache\Adapter {
 
     class Apc
     {
@@ -71,12 +71,12 @@ namespace ConfManaPHP\Cache\Engine {
         /**
          * @var string
          */
-        public $cacheDir;
+        public $dir;
 
         /**
          * @var int
          */
-        public $dirLevel;
+        public $level;
 
         /**
          * @var string
@@ -93,7 +93,7 @@ namespace ConfManaPHP\Cache\Engine {
     }
 }
 
-namespace ConfManaPHP\Store\Engine {
+namespace ConfManaPHP\Store\Adapter {
 
     class Redis
     {
@@ -108,12 +108,12 @@ namespace ConfManaPHP\Store\Engine {
         /**
          * @var string
          */
-        public $storeDir;
+        public $dir;
 
         /**
          * @var int
          */
-        public $dirLevel;
+        public $level;
 
         /**
          * @var string
@@ -144,11 +144,6 @@ namespace ConfManaPHP\Logger\Adapter {
         /**
          * @var string
          */
-        public $dateFormat;
-
-        /**
-         * @var string
-         */
         public $format;
     }
 }
@@ -170,7 +165,7 @@ namespace ConfManaPHP\Security {
         /**
          * @var int
          */
-        public $codeLength;
+        public $length;
 
         /**
          * @var string

@@ -1,9 +1,10 @@
 <?php
 namespace ManaPHP\Logger\Adapter;
 
-use ManaPHP\Logger;
+use ManaPHP\Component;
+use ManaPHP\Logger\AdapterInterface;
 
-class File extends Logger
+class File extends Component implements AdapterInterface
 {
     /**
      * @var string
@@ -27,8 +28,6 @@ class File extends Logger
      */
     public function __construct($options = [])
     {
-        parent::__construct();
-
         if (is_object($options)) {
             $options = (array)$options;
         } elseif (is_string($options)) {
@@ -51,7 +50,7 @@ class File extends Logger
      * @param string $message
      * @param array  $context
      */
-    public function _log($level, $message, $context = [])
+    public function log($level, $message, $context = [])
     {
         if ($this->_firstLog) {
             $this->_file = $this->alias->resolve($this->_file);

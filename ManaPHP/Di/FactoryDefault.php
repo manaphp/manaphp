@@ -37,20 +37,18 @@ class FactoryDefault extends Di
             'flash' => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
             'flashSession' => 'ManaPHP\Flash\Adapter\Session',
             'tag' => 'ManaPHP\Mvc\View\Tag',
-            'session' => 'ManaPHP\Http\Session\Adapter\File',
+            'session' => ['class' => 'ManaPHP\Http\Session', 'parameters' => ['ManaPHP\Http\Session\Adapter\File']],
             'sessionBag' => ['ManaPHP\Http\Session\Bag', false],
             'loader' => 'ManaPHP\Loader',
             'view' => 'ManaPHP\Mvc\View',
-            'logger' => 'ManaPHP\Logger\Adapter\File',
+            'logger' => ['class' => 'ManaPHP\Logger', 'parameters' => ['ManaPHP\Logger\Adapter\File']],
             'renderer' => 'ManaPHP\Renderer',
             'debugger' => 'ManaPHP\Debugger',
             'password' => 'ManaPHP\Authentication\Password',
             'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
-            'cache' => 'ManaPHP\Cache',
-            'cacheEngine' => 'ManaPHP\Cache\Engine\File',
-            'store' => 'ManaPHP\Store\Adapter\File',
-            'storeEngine' => 'ManaPHP\Store\Engine\File',
-            'counter' => 'ManaPHP\Counter\Adapter\Db',
+            'cache' => ['class' => 'ManaPHP\Cache', 'parameters' => ['ManaPHP\Cache\Adapter\File']],
+            'store' => ['class' => 'ManaPHP\Store', 'parameters' => ['ManaPHP\Store\Adapter\File']],
+            'counter' => ['class' => 'ManaPHP\Counter', 'parameters' => ['ManaPHP\Counter\Adapter\Db']],
             'httpClient' => 'ManaPHP\Http\Client',
             'captcha' => 'ManaPHP\Security\Captcha',
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
@@ -59,12 +57,12 @@ class FactoryDefault extends Di
             'paginator' => 'ManaPHP\Paginator',
             'tasksMetadata' => 'ManaPHP\Task\Metadata\Adapter\Redis',
             'viewsCache' => [
-                'class' => 'ManaPHP\Cache\Engine\File',
-                'parameters' => [['cacheDir' => '@data/viewsCache', 'extension' => '.html']]
+                'class' => 'ManaPHP\Cache\Adapter\File',
+                'parameters' => [['dir' => '@data/viewsCache', 'extension' => '.html']]
             ],
             'modelsCache' => [
-                'class' => 'ManaPHP\Cache\Engine\File',
-                'parameters' => [['cacheDir' => '@data/modelsCache', 'extension' => '.json']]
+                'class' => 'ManaPHP\Cache\Adapter\File',
+                'parameters' => [['dir' => '@data/modelsCache', 'extension' => '.json']]
             ],
         ];
     }

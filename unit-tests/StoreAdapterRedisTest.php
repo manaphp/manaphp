@@ -20,7 +20,7 @@ class StoreAdapterRedisTest extends TestCase
 
     public function test_exists()
     {
-        $store = new \ManaPHP\Store\Engine\Redis();
+        $store = new \ManaPHP\Store\Adapter\Redis();
 
         $store->delete('var');
 
@@ -31,7 +31,7 @@ class StoreAdapterRedisTest extends TestCase
 
     public function test_get()
     {
-        $store = new \ManaPHP\Store\Engine\Redis();
+        $store = new \ManaPHP\Store\Adapter\Redis();
 
         $store->delete('var');
 
@@ -42,7 +42,7 @@ class StoreAdapterRedisTest extends TestCase
 
     public function test_set()
     {
-        $store = new \ManaPHP\Store\Engine\Redis();
+        $store = new \ManaPHP\Store\Adapter\Redis();
 
         $store->set('var', '');
         $this->assertSame('', $store->get('var'));
@@ -56,7 +56,7 @@ class StoreAdapterRedisTest extends TestCase
 
     public function test_delete()
     {
-        $store = new \ManaPHP\Store\Engine\Redis();
+        $store = new \ManaPHP\Store\Adapter\Redis();
 
         //exists and delete
         $store->set('var', 'value');

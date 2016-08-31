@@ -6,7 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Renderer\EngineInterface;
 
 /**
- * ManaPHP\Mvc\View\Engine\Php
+ * ManaPHP\Mvc\View\Adapter\Php
  *
  * Adapter to use PHP itself as template engine
  */

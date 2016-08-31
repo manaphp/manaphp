@@ -1,9 +1,9 @@
 <?php
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Cache\AdapterInterface;
 
-class Memory implements EngineInterface
+class Memory implements AdapterInterface
 {
     /**
      * @var array

@@ -1,15 +1,15 @@
 <?php
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
 
-class File extends Component implements EngineInterface
+class File extends Component implements AdapterInterface
 {
     /**
      * @var string
      */
-    protected $_cacheDir = '@data/cache';
+    protected $_dir = '@data/cache';
 
     /**
      * @var string
@@ -19,12 +19,12 @@ class File extends Component implements EngineInterface
     /**
      * @var int
      */
-    protected $_dirLevel = 1;
+    protected $_level = 1;
 
     /**
      * File constructor.
      *
-     * @param string|array|\ConfManaPHP\Cache\Engine\File $options
+     * @param string|array|\ConfManaPHP\Cache\Adapter\File $options
      *
      */
     public function __construct($options = [])
@@ -32,15 +32,15 @@ class File extends Component implements EngineInterface
         if (is_object($options)) {
             $options = (array)$options;
         } elseif (is_string($options)) {
-            $options = ['cacheDir' => $options];
+            $options = ['dir' => $options];
         }
 
-        if (isset($options['cacheDir'])) {
-            $this->_cacheDir = rtrim($options['cacheDir'], '\\/');
+        if (isset($options['dir'])) {
+            $this->_dir = rtrim($options['dir'], '\\/');
         }
 
-        if (isset($options['dirLevel'])) {
-            $this->_dirLevel = $options['dirLevel'];
+        if (isset($options['level'])) {
+            $this->_level = $options['level'];
         }
 
         if (isset($options['extension'])) {
@@ -63,7 +63,7 @@ class File extends Component implements EngineInterface
             $md5 = substr($key, $pos + 1);
             $shard = '';
 
-            for ($i = 0; $i < $this->_dirLevel; $i++) {
+            for ($i = 0; $i < $this->_level; $i++) {
                 $shard .= '/' . substr($md5, $i + $i, 2);
             }
             $key = $prefix . $shard . '/' . $md5;
@@ -73,7 +73,7 @@ class File extends Component implements EngineInterface
             $key = '/' . $key;
         }
 
-        return $this->alias->resolve($this->_cacheDir . $key . $this->_extension);
+        return $this->alias->resolve($this->_dir . $key . $this->_extension);
     }
 
     /**
@@ -83,9 +83,9 @@ class File extends Component implements EngineInterface
      */
     public function exists($key)
     {
-        $cacheFile = $this->_getFileName($key);
+        $file = $this->_getFileName($key);
 
-        return (@filemtime($cacheFile) >= time());
+        return (@filemtime($file) >= time());
     }
 
     /**
@@ -95,10 +95,10 @@ class File extends Component implements EngineInterface
      */
     public function get($key)
     {
-        $cacheFile = $this->_getFileName($key);
+        $file = $this->_getFileName($key);
 
-        if (@filemtime($cacheFile) >= time()) {
-            return file_get_contents($cacheFile);
+        if (@filemtime($file) >= time()) {
+            return file_get_contents($file);
         } else {
             return false;
         }
@@ -110,23 +110,23 @@ class File extends Component implements EngineInterface
      * @param int    $ttl
      *
      * @return void
-     * @throws \ManaPHP\Cache\Engine\Exception
+     * @throws \ManaPHP\Cache\Adapter\Exception
      */
     public function set($key, $value, $ttl)
     {
-        $cacheFile = $this->_getFileName($key);
+        $file = $this->_getFileName($key);
 
-        $cacheDir = dirname($cacheFile);
-        if (!@mkdir($cacheDir, 0755, true) && !is_dir($cacheDir)) {
-            throw new Exception('create `:dir` cache directory failed: :message'/**m0842502d4c2904242*/, ['dir' => $cacheDir, 'message' => Exception::getLastErrorMessage()]);
+        $dir = dirname($file);
+        if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+            throw new Exception('create `:dir` cache directory failed: :message'/**m0842502d4c2904242*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
         }
 
-        if (file_put_contents($cacheFile, $value, LOCK_EX) === false) {
-            throw new Exception('write `:file` cache file failed: :message'/**m0f7ee56f71e1ec344*/, ['file' => $cacheFile, 'message' => Exception::getLastErrorMessage()]);
+        if (file_put_contents($file, $value, LOCK_EX) === false) {
+            throw new Exception('write `:file` cache file failed: :message'/**m0f7ee56f71e1ec344*/, ['file' => $file, 'message' => Exception::getLastErrorMessage()]);
         }
 
-        @touch($cacheFile, time() + $ttl);
-        clearstatcache(true, $cacheFile);
+        @touch($file, time() + $ttl);
+        clearstatcache(true, $file);
     }
 
     /**
@@ -136,8 +136,8 @@ class File extends Component implements EngineInterface
      */
     public function delete($key)
     {
-        $cacheFile = $this->_getFileName($key);
+        $file = $this->_getFileName($key);
 
-        @unlink($cacheFile);
+        @unlink($file);
     }
 }

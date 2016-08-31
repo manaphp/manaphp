@@ -1,15 +1,15 @@
 <?php
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
 
-class Db extends Component implements EngineInterface
+class Db extends Component implements AdapterInterface
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Cache\Engine\Db\Model';
+    protected $_model = 'ManaPHP\Cache\Adapter\Db\Model';
 
     /**
      * Db constructor.
@@ -38,12 +38,12 @@ class Db extends Component implements EngineInterface
     public function exists($key)
     {
         /**
-         * @var \ManaPHP\Cache\Engine\Db\Model $cache
+         * @var \ManaPHP\Cache\Adapter\Db\Model $model
          */
-        $cache = new $this->_model;
-        $cache = $cache::findFirst(['hash' => md5($key)]);
+        $model = new $this->_model;
+        $model = $model::findFirst(['hash' => md5($key)]);
 
-        return $cache !== false && $cache->expired_time >= time();
+        return $model !== false && $model->expired_time >= time();
     }
 
     /**
@@ -55,13 +55,13 @@ class Db extends Component implements EngineInterface
     public function get($key)
     {
         /**
-         * @var \ManaPHP\Cache\Engine\Db\Model $cache
+         * @var \ManaPHP\Cache\Adapter\Db\Model $model
          */
-        $cache = new $this->_model;
-        $cache = $cache::findFirst(['hash' => md5($key)]);
+        $model = new $this->_model;
+        $model = $model::findFirst(['hash' => md5($key)]);
 
-        if ($cache !== false && $cache->expired_time > time()) {
-            return $cache->value;
+        if ($model !== false && $model->expired_time > time()) {
+            return $model->value;
         } else {
             return false;
         }
@@ -74,21 +74,21 @@ class Db extends Component implements EngineInterface
      *
      * @return void
      * @throws \ManaPHP\Mvc\Model\Exception
-     * @throws \ManaPHP\Cache\Engine\Exception
+     * @throws \ManaPHP\Cache\Adapter\Exception
      */
     public function set($key, $value, $ttl)
     {
         /**
-         * @var \ManaPHP\Cache\Engine\Db\Model $cache
+         * @var \ManaPHP\Cache\Adapter\Db\Model $model
          */
-        $cache = new $this->_model;
+        $model = new $this->_model;
 
-        $cache->hash = md5($key);
-        $cache->key = $key;
-        $cache->value = $value;
-        $cache->expired_time = time() + $ttl;
+        $model->hash = md5($key);
+        $model->key = $key;
+        $model->value = $value;
+        $model->expired_time = time() + $ttl;
 
-        $cache->save();
+        $model->save();
     }
 
     /**
@@ -100,10 +100,10 @@ class Db extends Component implements EngineInterface
     public function delete($key)
     {
         /**
-         * @var \ManaPHP\Cache\Engine\Db\Model $cache
+         * @var \ManaPHP\Cache\Adapter\Db\Model $model
          */
-        $cache = new $this->_model;
+        $model = new $this->_model;
 
-        $cache::deleteAll(['hash' => md5($key)]);
+        $model::deleteAll(['hash' => md5($key)]);
     }
 }
