@@ -50,8 +50,8 @@ class Redis extends Component implements AdapterInterface
     public function setDependencyInjector($dependencyInjector)
     {
         parent::setDependencyInjector($dependencyInjector);
-        if (!is_object($this->redis) && isset($this->redisDi)) {
-            $this->redisDi->getShared($this->_service, ['key' => $this->_key]);
+        if (isset($this->redisDi)) {
+            $this->redis = $this->redisDi->getShared($this->_service, ['key' => $this->_key]);
         }
     }
 
