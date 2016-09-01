@@ -4,6 +4,7 @@ namespace ManaPHP\Store\Adapter;
 use ManaPHP\Component;
 use ManaPHP\Store\AdapterInterface;
 use ManaPHP\Utility\Text;
+use ManaPHP\Store\Adapter\File\Exception as FileException;
 
 class File extends Component implements AdapterInterface
 {
@@ -116,11 +117,11 @@ class File extends Component implements AdapterInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new Exception('Create `dir` store directory failed: :message'/**m0152cd058643d24d6*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
+            throw new FileException('Create `dir` store directory failed: :message'/**m0152cd058643d24d6*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
         }
 
         if (file_put_contents($file, $value, LOCK_EX) === false) {
-            throw new Exception('write store `:file` file failed: :message'/**m0d7c8cf410b1e3a68*/, ['file' => $file, 'message' => Exception::getLastErrorMessage()]);
+            throw new FileException('write store `:file` file failed: :message'/**m0d7c8cf410b1e3a68*/, ['file' => $file, 'message' => Exception::getLastErrorMessage()]);
         }
 
         clearstatcache(true, $file);

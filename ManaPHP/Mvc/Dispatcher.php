@@ -3,7 +3,7 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\Dispatcher\Exception;
+use ManaPHP\Mvc\Dispatcher\Exception as DispatcherException;
 use ManaPHP\Mvc\Dispatcher\NotFoundActionException;
 use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
 use ManaPHP\Utility\Text;
@@ -243,7 +243,7 @@ class Dispatcher extends Component implements DispatcherInterface
      * @param string $action
      * @param array  $params
      *
-     * @return void
+     * @return bool
      * @throws \ManaPHP\Mvc\Dispatcher\Exception
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundActionException
@@ -257,7 +257,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->_params = $params;
 
         if ($this->fireEvent('dispatcher:beforeDispatchLoop') === false) {
-            return;
+            return false;
         }
 
         $controllerInstance = null;
@@ -269,11 +269,11 @@ class Dispatcher extends Component implements DispatcherInterface
             $this->_finished = true;
 
             if ($numberDispatches++ === 32) {
-                throw new Exception('dispatcher has detected a cyclic routing causing stability problems'/**m016bfe7f4f190e087*/);
+                throw new DispatcherException('dispatcher has detected a cyclic routing causing stability problems'/**m016bfe7f4f190e087*/);
             }
 
             if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
-                return;
+                return false;
             }
 
             if ($this->_finished === false) {
@@ -294,19 +294,19 @@ class Dispatcher extends Component implements DispatcherInterface
             foreach (get_class_methods($controllerInstance) as $method) {
                 if ($actionMethod === strtolower($method)) {
                     if (substr($method, -strlen($this->_actionSuffix)) !== $this->_actionSuffix) {
-                        throw new Exception('`:method` action of `:controller`  does not suffix with `:suffix`'/**m02be64d9c0cc78392*/,
+                        throw new DispatcherException('`:method` action of `:controller`  does not suffix with `:suffix`'/**m02be64d9c0cc78392*/,
                             ['method' => $method, 'controller' => $controllerClassName, 'suffix' => $this->_actionSuffix]);
                     }
 
                     /** @noinspection SubStrUsedAsArrayAccessInspection */
                     $firstChar = substr($method, 0, 1);
                     if (strtolower($firstChar) !== $firstChar) {
-                        throw new Exception('`:method` action of `:controller` does not prefix with lowercase character'/**m05039932d378d3ede*/,
+                        throw new DispatcherException('`:method` action of `:controller` does not prefix with lowercase character'/**m05039932d378d3ede*/,
                             ['method' => $method, 'controller' => $controllerClassName]);
                     }
 
                     if ($this->_actionName . $this->_actionSuffix !== $method) {
-                        throw new Exception('`:method` of `:controller` is not equal to `:action` '/**m05039932d378d3ede*/,
+                        throw new DispatcherException('`:method` of `:controller` is not equal to `:action` '/**m05039932d378d3ede*/,
                             ['method' => $method, 'action' => $this->_actionName . $this->_actionSuffix, 'controller' => $controllerClassName]);
                     }
 
@@ -335,7 +335,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
 
             if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
-                return;
+                return false;
             }
 
             if ($this->_finished === false) {
@@ -359,7 +359,7 @@ class Dispatcher extends Component implements DispatcherInterface
             $this->fireEvent('dispatcher:afterDispatch');
 
             if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
-                return;
+                return false;
             }
 
             if ($this->_finished === false) {
@@ -378,6 +378,8 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         $this->fireEvent('dispatcher:afterDispatchLoop');
+
+        return true;
     }
 
     /**
@@ -408,7 +410,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 $this->_actionName = lcfirst(Text::camelize($parts[1]));
                 break;
             default:
-                throw new Exception('`:forward` forward format is invalid'/**m03a65d2ea494b97ba*/, ['forward' => $forward]);
+                throw new DispatcherException('`:forward` forward format is invalid'/**m03a65d2ea494b97ba*/, ['forward' => $forward]);
         }
 
         $this->_params = array_merge($this->_params, $params);

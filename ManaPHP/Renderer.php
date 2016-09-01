@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Renderer\Exception;
+use ManaPHP\Renderer\Exception as RendererException;
 
 class Renderer extends Component implements RendererInterface
 {
@@ -91,17 +91,17 @@ class Renderer extends Component implements RendererInterface
                 $this->fireEvent('renderer:beforeRender', $eventArguments);
 
                 if (isset($vars['view'])) {
-                    throw new Exception('variable `view` is reserved for renderer'/**m0662b55555fc72f7d*/);
+                    throw new RendererException('variable `view` is reserved for renderer'/**m0662b55555fc72f7d*/);
                 }
                 $vars['view'] = isset($this->view) ? $this->view : null;
 
                 if (isset($vars['renderer'])) {
-                    throw new Exception('variable `renderer` is reserved for renderer'/**m04c9833791ad0d92b*/);
+                    throw new RendererException('variable `renderer` is reserved for renderer'/**m04c9833791ad0d92b*/);
                 }
                 $vars['renderer'] = $this;
 
                 if (isset($vars['di'])) {
-                    throw new Exception('variable `di` is reserved for renderer'/**m0351d1318ca365b9b*/);
+                    throw new RendererException('variable `di` is reserved for renderer'/**m0351d1318ca365b9b*/);
                 }
                 $vars['di'] = $this->_dependencyInjector;
 
@@ -129,7 +129,7 @@ class Renderer extends Component implements RendererInterface
         }
 
         if ($notExists) {
-            throw new Exception('`:template` with `:extensions` extension file was not found'/**m0312a7f5d4bc76939*/,
+            throw new RendererException('`:template` with `:extensions` extension file was not found'/**m0312a7f5d4bc76939*/,
                 ['template' => $template, 'extensions' => implode(', or ', array_keys($this->_engines))]);
         }
 
@@ -150,7 +150,7 @@ class Renderer extends Component implements RendererInterface
                 if (PHP_EOL !== "\n") {
                     $realPath = str_replace('\\', '/', realpath($file));
                     if ($file !== $realPath) {
-                        throw new Exception('`:real_file` file name does case mismatch for `:wanted_file`', ['real_file' => $realPath, 'wanted_file' => $file]);
+                        throw new RendererException('`:real_file` file name does case mismatch for `:wanted_file`', ['real_file' => $realPath, 'wanted_file' => $file]);
                     }
                 }
                 return true;
@@ -201,7 +201,7 @@ class Renderer extends Component implements RendererInterface
     public function stopSection($overwrite = false)
     {
         if (count($this->_sectionStack) === 0) {
-            throw new Exception('cannot stop a section without first starting session'/**m0005e5105f6b924c8*/);
+            throw new RendererException('cannot stop a section without first starting session'/**m0005e5105f6b924c8*/);
         }
 
         $last = array_pop($this->_sectionStack);
@@ -219,7 +219,7 @@ class Renderer extends Component implements RendererInterface
     public function appendSection()
     {
         if (count($this->_sectionStack) === 0) {
-            throw new Exception('Cannot append a section without first starting one:'/**m0612bf4d28a6f9d36*/);
+            throw new RendererException('Cannot append a section without first starting one:'/**m0612bf4d28a6f9d36*/);
         }
 
         $last = array_pop($this->_sectionStack);

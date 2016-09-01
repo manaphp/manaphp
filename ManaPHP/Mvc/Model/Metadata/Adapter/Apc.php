@@ -2,6 +2,7 @@
 namespace ManaPHP\Mvc\Model\Metadata\Adapter;
 
 use ManaPHP\Mvc\Model\Metadata;
+use ManaPHP\Mvc\Model\Metadata\Adapter\Apc\Exception as ApcException;
 
 class Apc extends Metadata
 {
@@ -26,7 +27,7 @@ class Apc extends Metadata
     public function __construct($options = [])
     {
         if (!extension_loaded('apc')) {
-            throw new Exception('`apc` is not installed, or the extension is not loaded'/**m0763710a465cf1bb2*/);
+            throw new ApcException('`apc` is not installed, or the extension is not loaded'/**m0763710a465cf1bb2*/);
         }
 
         if (is_object($options)) {

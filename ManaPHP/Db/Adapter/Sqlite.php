@@ -3,6 +3,7 @@ namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Mvc\Model\Metadata;
+use ManaPHP\Db\Adapter\Sqlite\Exception as SqliteException;
 
 class Sqlite extends Db
 {
@@ -17,7 +18,7 @@ class Sqlite extends Db
         }
 
         if (!isset($options['file'])) {
-            throw new Exception('file is not provide to sqlite adapter.'/**m0c03cc731dd915d96*/);
+            throw new SqliteException('file is not provide to sqlite adapter.'/**m0c03cc731dd915d96*/);
         }
         $options['dsn'] = $options['file'];
         unset($options['file']);

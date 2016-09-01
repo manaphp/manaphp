@@ -3,6 +3,7 @@
 namespace ManaPHP\Http\Request;
 
 use ManaPHP\Utility\Text;
+use ManaPHP\Http\Request\File\Exception as FileException;
 
 /**
  * ManaPHP\Http\Request\File
@@ -146,7 +147,7 @@ class File implements FileInterface
                 $allowedExtensions = str_replace(',.', ',', $allowedExtensions);
 
                 if (!Text::contains($allowedExtensions, $extension, true)) {
-                    throw new Exception('`:extension` file type is not allowed upload'/**m0fc09a879406a3940*/, ['extension' => $extension]);
+                    throw new FileException('`:extension` file type is not allowed upload'/**m0fc09a879406a3940*/, ['extension' => $extension]);
                 }
             }
 
@@ -154,32 +155,32 @@ class File implements FileInterface
                 $alwaysRejectedExtensions = ',' . str_replace(' ', '', self::$_alwaysRejectedExtensions) . ',';
                 $alwaysRejectedExtensions = str_replace(',.', ',', $alwaysRejectedExtensions);
                 if (Text::contains($alwaysRejectedExtensions, $extension, true)) {
-                    throw new Exception('`:extension` file types is not allowed upload always'/**m0331d91c39adb3af6*/, ['extensions' => self::$_alwaysRejectedExtensions]);
+                    throw new FileException('`:extension` file types is not allowed upload always'/**m0331d91c39adb3af6*/, ['extensions' => self::$_alwaysRejectedExtensions]);
                 }
             }
         }
 
         if ($this->_file['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception('error code of upload file is not UPLOAD_ERR_OK: :error'/**m0454e71638e03eee6*/, ['error' => $this->_file['error']]);
+            throw new FileException('error code of upload file is not UPLOAD_ERR_OK: :error'/**m0454e71638e03eee6*/, ['error' => $this->_file['error']]);
         }
 
         if (is_file($destination)) {
-            throw new Exception('`:file` file already exists'/**m0402f85613fe0f167*/, ['file' => $destination]);
+            throw new FileException('`:file` file already exists'/**m0402f85613fe0f167*/, ['file' => $destination]);
         }
 
         $dir = dirname($destination);
         /** @noinspection NotOptimalIfConditionsInspection */
         if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new Exception('unable to create `:dir` uploaded directory: :message'/**m01de5a9e19a205e54*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
+            throw new FileException('unable to create `:dir` uploaded directory: :message'/**m01de5a9e19a205e54*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
         }
 
         if (!move_uploaded_file($this->_file['tmp_name'], $destination)) {
-            throw new Exception('move_uploaded_file to `:destination` failed: :message'/**m01d834f396d846d2b*/,
+            throw new FileException('move_uploaded_file to `:destination` failed: :message'/**m01d834f396d846d2b*/,
                 ['destination' => $destination, 'message' => Exception::getLastErrorMessage()]);
         }
 
         if (!chmod($destination, 0644)) {
-            throw new Exception('chmod `:destination` destination failed: :message'/**m0a0e7dc6898fb4abe*/,
+            throw new FileException('chmod `:destination` destination failed: :message'/**m0a0e7dc6898fb4abe*/,
                 ['destination' => $destination, 'message' => Exception::getLastErrorMessage()]);
         }
     }

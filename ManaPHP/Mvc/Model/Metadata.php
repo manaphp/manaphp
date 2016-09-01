@@ -3,7 +3,7 @@
 namespace ManaPHP\Mvc\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\Model\Metadata\Exception;
+use ManaPHP\Mvc\Model\Metadata\Exception as MetadataException;
 
 /**
  * ManaPHP\Mvc\Model\Metadata
@@ -72,7 +72,8 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                 $diff = array_diff($properties, $data[self::MODEL_ATTRIBUTES]);
 
                 if (count($diff) !== 0) {
-                    throw new Exception('`:model` model is not contains `:columns` columns'/**m0bb273aae32bfd843*/, ['model' => $modelName, 'columns' => implode(',', $diff)]);
+                    throw new MetadataException('`:model` model is not contains `:columns` columns'/**m0bb273aae32bfd843*/,
+                        ['model' => $modelName, 'columns' => implode(',', $diff)]);
                 }
 
                 $data[self::MODEL_COLUMN_PROPERTIES] = $properties;

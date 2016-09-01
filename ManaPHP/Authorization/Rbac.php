@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Authorization;
 
-use ManaPHP\Authorization\Rbac\Exception;
+use ManaPHP\Authorization\Rbac\Exception as RbacException;
 use ManaPHP\Authorization\Rbac\Models\Permission;
 use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
@@ -110,7 +110,7 @@ class Rbac extends Component implements AuthorizationInterface
                 $action = $parts[2];
                 break;
             default:
-                throw new Exception('`:permission` has too many parts'/**m059345500bb0de141*/, ['permission' => $permissionName]);
+                throw new RbacException('`:permission` has too many parts'/**m059345500bb0de141*/, ['permission' => $permissionName]);
         }
 
         return [$module, $controller, $action];
@@ -135,7 +135,7 @@ class Rbac extends Component implements AuthorizationInterface
             ->execute();
 
         if (count($rows) === 0) {
-            throw new Exception('`:permission` is not exists'/**m06ab9af781c2de7f2*/, ['permission' => $permissionName]);
+            throw new RbacException('`:permission` is not exists'/**m06ab9af781c2de7f2*/, ['permission' => $permissionName]);
         }
 
         return $rows[0];
@@ -206,7 +206,7 @@ class Rbac extends Component implements AuthorizationInterface
             /** @noinspection IsEmptyFunctionUsageInspection */
             return (!empty($userId));
         } elseif ($permissionType === Permission::TYPE_PENDING) {
-            throw new Exception('`:permission` type is not assigned'/**m0ac1449c071933ff6*/, ['permission' => $permissionName]);
+            throw new RbacException('`:permission` type is not assigned'/**m0ac1449c071933ff6*/, ['permission' => $permissionName]);
         }
 
         $rolesByPermission = $this->_getRolesByPermission($permissionId);

@@ -2,6 +2,7 @@
 namespace ManaPHP\Task\Metadata\Adapter;
 
 use ManaPHP\Task\Metadata;
+use ManaPHP\Task\Metadata\Adapter\Apc\Exception as ApcException;
 
 class Apc extends Metadata
 {
@@ -15,7 +16,7 @@ class Apc extends Metadata
     public function __construct($options = [])
     {
         if (!extension_loaded('apc')) {
-            throw new Exception('`apc` is not installed, or the extension is not loaded'/**m06424012cd041dd33*/);
+            throw new ApcException('`apc` is not installed, or the extension is not loaded'/**m06424012cd041dd33*/);
         }
 
         $this->_prefix = 'manaphp:task:';

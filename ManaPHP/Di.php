@@ -2,7 +2,7 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Di\Exception;
+use ManaPHP\Di\Exception as DiException;
 
 /**
  * ManaPHP\Di
@@ -94,7 +94,7 @@ class Di implements DiInterface
     protected $_sharedInstances = [];
 
     /**
-     * Latest DI build
+     * First DI build
      *
      * @var \ManaPHP\Di
      */
@@ -102,11 +102,13 @@ class Di implements DiInterface
 
     public function __construct()
     {
-        self::$_default = $this;
+        if (self::$_default === null) {
+            self::$_default = $this;
+        }
     }
 
     /**
-     * Return the latest DI created
+     * Return the First DI created
      *
      * @return \ManaPHP\Di
      */
@@ -149,7 +151,7 @@ class Di implements DiInterface
     public function remove($name)
     {
         if (in_array($name, $this->_aliases, true)) {
-            throw new Exception('`:name` service is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, ['name' => $name]);
+            throw new DiException('`:name` service is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, ['name' => $name]);
         }
 
         if (isset($this->_aliases[$name])) {
@@ -210,7 +212,7 @@ class Di implements DiInterface
         if (is_string($definition)) {
             if (!class_exists($definition)) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new Exception('`:name` service cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $_name, 'class' => $definition]);
+                throw new DiException('`:name` service cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $_name, 'class' => $definition]);
             }
             $count = count($parameters);
 
@@ -233,7 +235,7 @@ class Di implements DiInterface
             $instance = $definition;
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new Exception('`:name` service cannot be resolved: service implement type is not supported'/**m072d42756355fb069*/, ['name' => $_name]);
+            throw new DiException('`:name` service cannot be resolved: service implement type is not supported'/**m072d42756355fb069*/, ['name' => $_name]);
         }
 
         if ($shared) {
@@ -325,7 +327,7 @@ class Di implements DiInterface
      */
     public function __call($method, $arguments = [])
     {
-        throw new Exception('Call to undefined method `:method`'/**m06946faf1ec42dea1*/, ['method' => $method]);
+        throw new DiException('Call to undefined method `:method`'/**m06946faf1ec42dea1*/, ['method' => $method]);
     }
 
     /**

@@ -9,7 +9,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Http\Session\AdapterInterface;
-use ManaPHP\Http\Session\Exception;
+use ManaPHP\Http\Session\Exception as SessionException;
 
 /**
  * ManaPHP\Http\Session\AdapterInterface initializer
@@ -59,7 +59,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
             [$this->adapter, 'gc']);
 
         if (!session_start()) {
-            throw new Exception('session start failed: ' . Exception::getLastErrorMessage());
+            throw new SessionException('session start failed: ' . Exception::getLastErrorMessage());
         }
 
         return $this;
@@ -133,7 +133,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
         }
 
         if (!session_destroy()) {
-            throw new Exception('destroy session failed: :message'/**m08409465b2b90d8a8*/, ['message' => Exception::getLastErrorMessage()]);
+            throw new SessionException('destroy session failed: :message'/**m08409465b2b90d8a8*/, ['message' => Exception::getLastErrorMessage()]);
         }
     }
 

@@ -2,6 +2,7 @@
 namespace ManaPHP\Renderer\Engine;
 
 use ManaPHP\Renderer\EngineInterface;
+use ManaPHP\Renderer\Engine\Exception as EngineException;
 
 class Html implements EngineInterface
 {
@@ -15,7 +16,7 @@ class Html implements EngineInterface
     {
         $str = file_get_contents($file);
         if ($str === false) {
-            throw new Exception('read `:file` template file failed', ['file' => $file]);
+            throw new EngineException('read `:file` template file failed', ['file' => $file]);
         }
 
         echo $str;

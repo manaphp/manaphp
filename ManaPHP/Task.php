@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Task\Exception;
+use ManaPHP\Task\Exception as TaskException;
 use ManaPHP\Task\Metadata;
 
 /**
@@ -40,7 +40,7 @@ abstract class Task extends Component implements TaskInterface
 
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($this->tasksMetadata->get($this, Metadata::FIELD_STATUS) == Task::STATUS_RUNNING) {
-            throw new Exception('Task is exists already'/**m094686781957e77e4*/);
+            throw new TaskException('Task is exists already'/**m094686781957e77e4*/);
         }
 
         $start_time = time();
@@ -97,7 +97,7 @@ abstract class Task extends Component implements TaskInterface
                     break;
                 }
             }
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $stop_time = time();
             $stop_type = self::STOP_TYPE_EXCEPTION;
             $stop_reason = 'EXCEPTION: ' . json_encode($e->dump(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

@@ -2,6 +2,7 @@
 namespace ManaPHP\Counter\Adapter;
 
 use ManaPHP\Counter\AdapterInterface;
+use ManaPHP\Counter\Adapter\Db\Exception as DbException;
 
 /**
  * @property \ManaPHP\DbInterface $db
@@ -103,7 +104,7 @@ class Db implements AdapterInterface
             }
         }
 
-        throw new Exception('update `:type`:`:id` counter failed: has been tried :times times.'/**m0a877d4eed799613c*/,
+        throw new DbException('update `:type`:`:id` counter failed: has been tried :times times.'/**m0a877d4eed799613c*/,
             ['type' => $type, 'id' => $id, 'times' => $this->_maxTries]);
     }
 

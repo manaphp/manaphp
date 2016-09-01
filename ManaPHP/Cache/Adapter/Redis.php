@@ -10,7 +10,8 @@ use ManaPHP\Component;
  *
  * @package ManaPHP\Cache\Adapter
  *
- * @property \Redis $redis
+ * @property \Redis               $redis
+ * @property \ManaPHP\DiInterface $redisDi
  */
 class Redis extends Component implements AdapterInterface
 {
@@ -18,6 +19,11 @@ class Redis extends Component implements AdapterInterface
      * @var string
      */
     protected $_prefix = 'manaphp:cache:';
+
+    /**
+     * @var string
+     */
+    protected $_service = 'cache';
 
     /**
      * Redis constructor.
@@ -34,6 +40,14 @@ class Redis extends Component implements AdapterInterface
 
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
+        }
+    }
+
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+        if (!is_object($this->redis) && isset($this->redisDi)) {
+            $this->redis = $this->redisDi->getShared($this->_service, ['prefix' => $this->_prefix]);
         }
     }
 

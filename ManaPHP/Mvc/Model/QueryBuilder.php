@@ -3,7 +3,7 @@
 namespace ManaPHP\Mvc\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\Model\QueryBuilder\Exception;
+use ManaPHP\Mvc\Model\QueryBuilder\Exception as QueryBuilderException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -724,7 +724,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         if (count($this->_models) === 0) {
-            throw new Exception('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
+            throw new QueryBuilderException('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
         }
 
         /**
@@ -782,7 +782,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         foreach ($this->_models as $alias => $model) {
             if ($model instanceof QueryBuilderInterface) {
                 if (is_int($alias)) {
-                    throw new Exception('if using SubQuery, you must assign an alias for it'/**m0e5f4aa93dc102dde*/);
+                    throw new QueryBuilderException('if using SubQuery, you must assign an alias for it'/**m0e5f4aa93dc102dde*/);
                 }
 
                 $selectedModels[] = '(' . $model->getSql() . ') AS `' . $alias . '`';
@@ -827,7 +827,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $joinModel->getBind());
                 if ($joinAlias === null) {
-                    throw new Exception('if using SubQuery, you must assign an alias for it'/**m0a80f96a41e1596cb*/);
+                    throw new QueryBuilderException('if using SubQuery, you must assign an alias for it'/**m0a80f96a41e1596cb*/);
                 }
             } else {
                 $sql .= ' JOIN [' . $joinModel . ']';
@@ -975,7 +975,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         if (isset($_cacheOptions['key'])) {
             if ($_cacheOptions['key'][0] === '/') {
-                throw new Exception('modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, ['key' => $_cacheOptions['key']]);
+                throw new QueryBuilderException('modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, ['key' => $_cacheOptions['key']]);
             }
 
             $_cacheOptions['key'] = $prefix . '/' . $_cacheOptions['key'];
@@ -1027,7 +1027,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 ->getReadConnection(end($this->_models))
                 ->fetchAll($this->_sql, $this->_bind);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage() . ':' . $this->_sql);
+            throw new QueryBuilderException($e->getMessage() . ':' . $this->_sql);
         }
 
         if (isset($_cacheOptions)) {
@@ -1048,7 +1048,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     protected function _getTotalRows(&$rowCount)
     {
         if (count($this->_union) !== 0) {
-            throw new Exception('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
+            throw new QueryBuilderException('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
         }
 
         $this->_columns = 'COUNT(*) as row_count';
@@ -1072,7 +1072,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 $rowCount = count($result);
             }
         } catch (\Exception $e) {
-            throw new Exception(':message : :sql'/**m0009da8b8bb870246*/, ['message' => $e->getMessage(), 'sql' => $this->_sql]);
+            throw new QueryBuilderException(':message : :sql'/**m0009da8b8bb870246*/, ['message' => $e->getMessage(), 'sql' => $this->_sql]);
         }
 
         return $this;
@@ -1129,7 +1129,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 ->getReadConnection(end($this->_models))
                 ->fetchAll($this->_sql, $this->_bind);
         } catch (\Exception $e) {
-            throw new Exception(':message: :sql'/**m0c844e2a50a095405*/, ['message' => $e->getMessage(), 'sql' => $this->_sql]);
+            throw new QueryBuilderException(':message: :sql'/**m0c844e2a50a095405*/, ['message' => $e->getMessage(), 'sql' => $this->_sql]);
         }
 
         if (!$this->_limit) {

@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Paginator\Exception;
+use ManaPHP\Paginator\Exception as PaginatorException;
 
 /**
  * Class Paginator
@@ -99,7 +99,7 @@ class Paginator extends Component implements PaginatorInterface
     {
         if ($urlTemplate === null) {
             if (!$this->request->hasServer('REQUEST_URI')) {
-                throw new Exception('REQUEST_URI is not exist in $_SERVER'/**m043f318485f00921e*/);
+                throw new PaginatorException('REQUEST_URI is not exist in $_SERVER'/**m043f318485f00921e*/);
             } else {
                 $urlTemplate = $this->request->getServer('REQUEST_URI', 'ignore');
             }
@@ -112,7 +112,7 @@ class Paginator extends Component implements PaginatorInterface
         }
 
         if (strpos($urlTemplate, '{page}') === false) {
-            throw new Exception('`:template` url template is invalid: it must contain {page} pattern'/**m0b85431254175cf7a*/, ['template' => $urlTemplate]);
+            throw new PaginatorException('`:template` url template is invalid: it must contain {page} pattern'/**m0b85431254175cf7a*/, ['template' => $urlTemplate]);
         }
 
         $str = '';

@@ -2,7 +2,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Filter\Exception;
+use ManaPHP\Http\Filter\Exception as FilterException;
 use ManaPHP\Utility\Text;
 
 class Filter extends Component implements FilterInterface
@@ -147,7 +147,7 @@ class Filter extends Component implements FilterInterface
             $file = $this->alias->resolve($this->_messagesFile);
 
             if (!is_file($file)) {
-                throw new Exception('`:file` filter message template file is not exists'/**m08523be1bf26d3984*/, ['file' => $file]);
+                throw new FilterException('`:file` filter message template file is not exists'/**m08523be1bf26d3984*/, ['file' => $file]);
             }
 
             /** @noinspection PhpIncludeInspection */
@@ -218,7 +218,7 @@ class Filter extends Component implements FilterInterface
         } elseif (function_exists($name)) {
             $method = $name;
         } else {
-            throw new Exception('`:name` filter is not be recognized'/**m09d0e9938a3a49e27*/, ['name' => $name]);
+            throw new FilterException('`:name` filter is not be recognized'/**m09d0e9938a3a49e27*/, ['name' => $name]);
         }
 
         $callParameter = [$value, $parameters];
@@ -226,7 +226,7 @@ class Filter extends Component implements FilterInterface
         if ($value === null) {
             $error = $this->_getError($attribute, $value, $name, $parameters);
 
-            throw new Exception($error);
+            throw new FilterException($error);
         }
 
         return $value;

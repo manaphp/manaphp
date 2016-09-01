@@ -3,7 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Request\Exception;
+use ManaPHP\Http\Request\Exception as RequestException;
 use ManaPHP\Http\Request\File;
 use ManaPHP\Utility\Text;
 
@@ -351,7 +351,7 @@ class Request extends Component implements RequestInterface
                 return 'http';
             }
         } else {
-            throw new Exception('`HTTPS` field not exists in $_SERVER'/**m0b994a4143d072cff*/);
+            throw new RequestException('`HTTPS` field not exists in $_SERVER'/**m0b994a4143d072cff*/);
         }
     }
 

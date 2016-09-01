@@ -2,6 +2,7 @@
 namespace ManaPHP\Serializer\Adapter;
 
 use ManaPHP\Serializer\AdapterInterface;
+use ManaPHP\Serializer\Adapter\Php\Exception as PhpException;
 
 class Php implements AdapterInterface
 {
@@ -29,11 +30,11 @@ class Php implements AdapterInterface
     {
         $data = unserialize($serialized);
         if ($data === false) {
-            throw new Exception('unserialize failed: :message'/**m066507d6397244b1c*/, ['message' => Exception::getLastErrorMessage()]);
+            throw new PhpException('unserialize failed: :message'/**m066507d6397244b1c*/, ['message' => Exception::getLastErrorMessage()]);
         }
 
         if (!is_array($data)) {
-            throw new Exception('de serialized data is not a array maybe it has been corrupted'/**m06a7e8b3300369f79*/);
+            throw new PhpException('de serialized data is not a array maybe it has been corrupted'/**m06a7e8b3300369f79*/);
         }
 
         if (isset($data['__wrapper__']) && count($data) === 1) {

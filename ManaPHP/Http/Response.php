@@ -3,7 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Response\Exception;
+use ManaPHP\Http\Response\Exception as ResponseException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -315,7 +315,7 @@ class Response extends Component implements ResponseInterface
     public function send()
     {
         if ($this->_sent === true) {
-            throw new Exception('Response was already sent'/**m0b202f9440b7adc49*/);
+            throw new ResponseException('Response was already sent'/**m0b202f9440b7adc49*/);
         }
 
         if (!headers_sent()) {
@@ -351,7 +351,7 @@ class Response extends Component implements ResponseInterface
         }
 
         if (!file_exists($file)) {
-            throw new Exception('Sent file is not exists: `:file`'/**m0ff2d0759014d7170*/, ['file' => $file]);
+            throw new ResponseException('Sent file is not exists: `:file`'/**m0ff2d0759014d7170*/, ['file' => $file]);
         }
 
         $this->_file = $file;

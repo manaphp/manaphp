@@ -4,7 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Image\Adapter\Gd;
 use ManaPHP\Image\Adapter\Imagick;
-use ManaPHP\Image\Exception;
+use ManaPHP\Image\Exception as ImageException;
 
 class Image implements ImageInterface
 {
@@ -27,7 +27,7 @@ class Image implements ImageInterface
         } elseif (extension_loaded('gd')) {
             $this->adapter = new Gd($file);
         } else {
-            throw new Exception('No valid Image Adapter exists.'/**m0e2528a66b81cf976*/);
+            throw new ImageException('No valid Image Adapter exists.'/**m0e2528a66b81cf976*/);
         }
     }
 

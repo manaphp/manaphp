@@ -150,7 +150,10 @@ class Application extends Component implements ApplicationInterface
         $handler = [$this, '_eventHandlerBeforeExecuteRoute'];
         $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', $handler);
 
-        $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
+        $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
+        if ($ret === false) {
+            return $this->response;
+        }
 
         $actionReturnValue = $this->dispatcher->getReturnedValue();
         if ($actionReturnValue === null || is_string($actionReturnValue)) {

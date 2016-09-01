@@ -7,7 +7,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Logger\AdapterInterface;
-use ManaPHP\Logger\Exception;
+use ManaPHP\Logger\Exception as LoggerException;
 use ManaPHP\Utility\Text;
 
 class Logger extends Component implements LoggerInterface
@@ -83,7 +83,8 @@ class Logger extends Component implements LoggerInterface
     public function setLevel($level)
     {
         if (!isset($this->_s2i[$level])) {
-            throw new Exception('`:level` level is not one of `:levels`'/**m0511c3e8c2bcd64c8*/, ['level' => $level, 'levels' => implode(',', array_keys($this->getLevels()))]);
+            throw new LoggerException('`:level` level is not one of `:levels`'/**m0511c3e8c2bcd64c8*/,
+                ['level' => $level, 'levels' => implode(',', array_keys($this->getLevels()))]);
         }
 
         $this->_level = $level;

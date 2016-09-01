@@ -2,6 +2,7 @@
 namespace ManaPHP\Serializer\Adapter;
 
 use ManaPHP\Serializer\AdapterInterface;
+use ManaPHP\Serializer\Adapter\Json\Exception as JsonException;
 
 class Json implements AdapterInterface
 {
@@ -19,7 +20,7 @@ class Json implements AdapterInterface
 
         $serialized = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         if ($serialized === false) {
-            throw new Exception('json_encode failed: :message'/**m00e71e702b60675c8*/, ['message' => json_last_error_msg()]);
+            throw new JsonException('json_encode failed: :message'/**m00e71e702b60675c8*/, ['message' => json_last_error_msg()]);
         }
 
         return $serialized;
@@ -35,11 +36,11 @@ class Json implements AdapterInterface
     {
         $data = json_decode($serialized, true);
         if ($data === null) {
-            throw new Exception('json_encode failed: :message'/**m08965457cf85e81eb*/, ['message' => json_last_error_msg()]);
+            throw new JsonException('json_encode failed: :message'/**m08965457cf85e81eb*/, ['message' => json_last_error_msg()]);
         }
 
         if (!is_array($data)) {
-            throw new Exception('json serialized data is not a array, maybe it has been corrupted.'/**m0e320c4b7e49fcb54*/);
+            throw new JsonException('json serialized data is not a array, maybe it has been corrupted.'/**m0e320c4b7e49fcb54*/);
         }
 
         if (isset($data['__wrapper__']) && count($data) === 1) {

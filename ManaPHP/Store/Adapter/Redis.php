@@ -10,7 +10,8 @@ use ManaPHP\Store\AdapterInterface;
  *
  * @package ManaPHP\Store\Adapter
  *
- * @property \Redis $redis
+ * @property \Redis               $redis
+ * @property \ManaPHP\DiInterface $redisDi
  */
 class Redis extends Component implements AdapterInterface
 {
@@ -18,6 +19,11 @@ class Redis extends Component implements AdapterInterface
      * @var string
      */
     protected $_key = 'manaphp:store:';
+
+    /**
+     * @var string
+     */
+    protected $_service = 'store';
 
     /**
      * Redis constructor.
@@ -34,6 +40,18 @@ class Redis extends Component implements AdapterInterface
 
         if (isset($options['key'])) {
             $this->_key .= $options['key'];
+        }
+
+        if (isset($options['service'])) {
+            $this->_service = $options['service'];
+        }
+    }
+
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+        if (!is_object($this->redis) && isset($this->redisDi)) {
+            $this->redisDi->getShared($this->_service, ['key' => $this->_key]);
         }
     }
 

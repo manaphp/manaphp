@@ -70,7 +70,7 @@ interface DiInterface
     public function has($name);
 
     /**
-     * Return the last DI created
+     *Return the First DI created
      *
      * @return static
      */

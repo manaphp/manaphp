@@ -2,6 +2,7 @@
 namespace ManaPHP\Image\Adapter;
 
 use ManaPHP\Image\AdapterInterface;
+use ManaPHP\Image\Adapter\Gd\Exception as GdException;
 
 class Gd implements AdapterInterface
 {
@@ -37,7 +38,7 @@ class Gd implements AdapterInterface
     public function __construct($file)
     {
         if (!extension_loaded('gd')) {
-            throw new Exception('gd is not installed, or the extension is not loaded'/**m02d21d9765a90c68b*/);
+            throw new GdException('gd is not installed, or the extension is not loaded'/**m02d21d9765a90c68b*/);
         }
 
         if (is_file($file)) {
@@ -57,11 +58,11 @@ class Gd implements AdapterInterface
             } elseif ($type === IMAGETYPE_PNG) {
                 $this->_image = imagecreatefrompng($this->_real_path);
             } else {
-                throw new Exception('Installed GD does not support such images'/**m0fc930b8083eb2b4f*/);
+                throw new GdException('Installed GD does not support such images'/**m0fc930b8083eb2b4f*/);
             }
             imagesavealpha($this->_image, true);
         } else {
-            throw new Exception('`:file` file is not exists'/**m028d68547edc10000*/, ['file' => $file]);
+            throw new GdException('`:file` file is not exists'/**m028d68547edc10000*/, ['file' => $file]);
         }
     }
 
@@ -227,7 +228,7 @@ class Gd implements AdapterInterface
         } elseif ($maskType === IMAGETYPE_PNG) {
             $maskImage = imagecreatefrompng($file);
         } else {
-            throw new Exception('Installed GD does not support such images'/**m0d78d3cd78b039e72*/);
+            throw new GdException('Installed GD does not support such images'/**m0d78d3cd78b039e72*/);
         }
 
         imagesavealpha($maskImage, true);
@@ -269,7 +270,7 @@ class Gd implements AdapterInterface
         } elseif ($ext === 'png') {
             imagepng($this->_image, $file);
         } else {
-            throw new Exception('`:extension` is not supported by Installed GD'/**m0e69270218b72270a*/, ['extension' => $ext]);
+            throw new GdException('`:extension` is not supported by Installed GD'/**m0e69270218b72270a*/, ['extension' => $ext]);
         }
     }
 }

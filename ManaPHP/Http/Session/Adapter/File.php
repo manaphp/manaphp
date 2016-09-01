@@ -9,7 +9,7 @@ namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Component;
 use ManaPHP\Http\Session\AdapterInterface;
-use ManaPHP\Http\Session\Exception;
+use ManaPHP\Http\Session\Adapter\Exception as SessionException;
 
 class File extends Component implements AdapterInterface
 {
@@ -121,16 +121,17 @@ class File extends Component implements AdapterInterface
         $file = $this->_getFileName($sessionId);
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new Exception('create `:dir` session directory failed: :message'/**m0842502d4c2904242*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
+            throw new SessionException('create `:dir` session directory failed: :message'/**m0842502d4c2904242*/,
+                ['dir' => $dir, 'message' => SessionException::getLastErrorMessage()]);
         }
 
         if (file_put_contents($file, $data, LOCK_EX) === false) {
-            trigger_error(strtr('write `:file` session file failed: :message'/**m0f7ee56f71e1ec344*/, [':file' => $file, ':message' => Exception::getLastErrorMessage()]));
+            trigger_error(strtr('write `:file` session file failed: :message'/**m0f7ee56f71e1ec344*/, [':file' => $file, ':message' => SessionException::getLastErrorMessage()]));
         }
 
-        @touch($file, time() + $this->_ttl);
-
         file_put_contents($file, $data);
+
+        @touch($file, time() + $this->_ttl);
         clearstatcache(true, $file);
     }
 
