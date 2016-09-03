@@ -4,8 +4,8 @@ namespace ManaPHP\Http;
 interface ClientInterface
 {
     /**
-     * @param string  $proxy
-     * @param boolean $peek
+     * @param string $proxy
+     * @param bool   $peek
      *
      * @return static
      */

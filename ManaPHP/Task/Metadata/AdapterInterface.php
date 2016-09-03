@@ -8,7 +8,7 @@ interface AdapterInterface
      *
      * @return mixed|false
      */
-    public function _get($key);
+    public function get($key);
 
     /**
      * @param string $key
@@ -16,19 +16,19 @@ interface AdapterInterface
      *
      * @return void
      */
-    public function _set($key, $value);
+    public function set($key, $value);
 
     /**
      * @param string $key
      *
      * @return void
      */
-    public function _delete($key);
+    public function delete($key);
 
     /**
      * @param string $key
      *
      * @return bool
      */
-    public function _exists($key);
+    public function exists($key);
 }

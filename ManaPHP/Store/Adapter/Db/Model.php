@@ -18,6 +18,9 @@ class Model extends \ManaPHP\Mvc\Model
      */
     public $value;
 
+    /**
+     * @return string
+     */
     public function getSource()
     {
         return 'manaphp_store';

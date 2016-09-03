@@ -14,6 +14,8 @@ interface UrlInterface
 
     /**
      * Returns the base uri for all the generated urls.
+     *
+     * @return string
      */
     public function getBaseUri();
 
@@ -21,7 +23,7 @@ interface UrlInterface
      * @param string $uri
      * @param array  $args
      *
-     * @return mixed
+     * @return string
      */
     public function get($uri = null, $args = []);
 

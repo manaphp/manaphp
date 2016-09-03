@@ -6,6 +6,11 @@ use ManaPHP\Utility\File\Exception as FileException;
 
 class File
 {
+    /**
+     * @param string $file
+     *
+     * @return bool
+     */
     public static function exists($file)
     {
         $file = Di::getDefault()->getShared('alias')->resolve($file);
@@ -13,6 +18,14 @@ class File
         return file_exists($file);
     }
 
+    /**
+     * @param string $file
+     * @param string $data
+     *
+     * @return void
+     *
+     * @throws \ManaPHP\Utility\File\Exception
+     */
     public static function setContent($file, $data)
     {
         $file = Di::getDefault()->getShared('alias')->resolve($file);
@@ -29,6 +42,13 @@ class File
         clearstatcache(true, $file);
     }
 
+    /**
+     * @param string $file
+     * @param string $data
+     *
+     * @return void
+     * @throws \ManaPHP\Utility\File\Exception
+     */
     public static function appendContent($file, $data)
     {
         $file = Di::getDefault()->getShared('alias')->resolve($file);
@@ -45,6 +65,11 @@ class File
         clearstatcache(true, $file);
     }
 
+    /**
+     * @param string $file
+     *
+     * @return string
+     */
     public static function getContent($file)
     {
         $file = Di::getDefault()->getShared('alias')->resolve($file);
@@ -52,6 +77,11 @@ class File
         return file_get_contents($file);
     }
 
+    /**
+     * @param string $file
+     *
+     * @return void
+     */
     public static function delete($file)
     {
         $file = Di::getDefault()->getShared('alias')->resolve($file);

@@ -2,8 +2,8 @@
 
 namespace ManaPHP\Image\Adapter;
 
-use ManaPHP\Image\AdapterInterface;
 use ManaPHP\Image\Adapter\Imagick\Exception as ImagickException;
+use ManaPHP\Image\AdapterInterface;
 
 class Imagick implements AdapterInterface
 {
@@ -218,8 +218,8 @@ class Imagick implements AdapterInterface
     }
 
     /**
-     * @param string|null $file
-     * @param int         $quality
+     * @param string $file
+     * @param int    $quality
      *
      * @throws \ManaPHP\Image\Adapter\Exception
      */

@@ -24,7 +24,7 @@ use ManaPHP\Utility\Text;
 class Response extends Component implements ResponseInterface
 {
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_sent = false;
 
@@ -103,18 +103,14 @@ class Response extends Component implements ResponseInterface
      *    $this->response->setExpires(new DateTime());
      *</code>
      *
-     * @param int|\DateTime $datetime
+     * @param int $timestamp
      *
      * @return static
      */
-    public function setExpires($datetime)
+    public function setExpires($timestamp)
     {
-        if (is_int($datetime)) {
-            $date = new \DateTime('now', new \DateTimeZone('UTC'));
-            $date->setTimestamp($datetime);
-        } else {
-            $date = clone $datetime;
-        }
+        $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        $date->setTimestamp($timestamp);
 
         $date->setTimezone(new \DateTimeZone('UTC'));
         $this->setHeader('Expires', $date->format('D, d M Y H:i:s') . ' GMT');
@@ -230,8 +226,8 @@ class Response extends Component implements ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"), JSON_NUMERIC_CHECK);
      *</code>
      *
-     * @param mixed    $content
-     * @param int|null $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
+     * @param array $content
+     * @param int   $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
      *
      * @return static
      */
@@ -275,7 +271,7 @@ class Response extends Component implements ResponseInterface
     /**
      * Check if the response is already sent
      *
-     * @return boolean
+     * @return bool
      */
     public function isSent()
     {

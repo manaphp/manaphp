@@ -122,15 +122,15 @@ abstract class Controller extends Component implements ControllerInterface
     }
 
     /**
-     * @param $cacheOptions
-     * @param $action
+     * @param int|array $cacheOptions
+     * @param string    $action
      *
      * @return array|false
      */
     protected function _getCacheOptions($cacheOptions, $action)
     {
         if (is_array($cacheOptions)) {
-            $_cacheOptions = $cacheOptions;
+            $_cacheOptions = (array)$cacheOptions;
         } else {
             $_cacheOptions = ['ttl' => $cacheOptions];
         }

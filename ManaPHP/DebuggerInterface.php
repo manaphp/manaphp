@@ -26,7 +26,7 @@ interface DebuggerInterface
     public function var_dump($value, $name = null);
 
     /**
-     * @param null|string $template
+     * @param string $template
      *
      * @return string|array
      */

@@ -241,8 +241,8 @@ class Captcha extends Component implements CaptchaInterface
     }
 
     /**
-     * @param string  $code
-     * @param boolean $isTry
+     * @param string $code
+     * @param bool   $isTry
      *
      * @return void
      * @throws \ManaPHP\Security\Captcha\Exception

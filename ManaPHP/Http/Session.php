@@ -43,6 +43,12 @@ class Session extends Component implements SessionInterface, \ArrayAccess
         $this->adapter = $options['adapter'];
     }
 
+    /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     * @throws \ManaPHP\Http\Session\Exception
+     */
     public function setDependencyInjector($dependencyInjector)
     {
         parent::setDependencyInjector($dependencyInjector);
@@ -51,12 +57,14 @@ class Session extends Component implements SessionInterface, \ArrayAccess
             $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
         }
 
-        session_set_save_handler([$this->adapter, 'open'],
-            [$this->adapter, 'close'],
-            [$this->adapter, 'read'],
-            [$this->adapter, 'write'],
-            [$this->adapter, 'destroy'],
-            [$this->adapter, 'gc']);
+        $open = [$this->adapter, 'open'];
+        $close = [$this->adapter, 'close'];
+        $read = [$this->adapter, 'read'];
+        $write = [$this->adapter, 'write'];
+        $destroy = [$this->adapter, 'destroy'];
+        $gc = [$this->adapter, 'gc'];
+
+        session_set_save_handler($open, $close, $read, $write, $destroy, $gc);
 
         if (!session_start()) {
             throw new SessionException('session start failed: ' . Exception::getLastErrorMessage());
@@ -65,6 +73,9 @@ class Session extends Component implements SessionInterface, \ArrayAccess
         return $this;
     }
 
+    /**
+     *
+     */
     public function __destruct()
     {
         session_write_close();
@@ -103,7 +114,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function has($name)
     {

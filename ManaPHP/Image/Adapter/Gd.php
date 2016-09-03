@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Image\Adapter;
 
-use ManaPHP\Image\AdapterInterface;
 use ManaPHP\Image\Adapter\Gd\Exception as GdException;
+use ManaPHP\Image\AdapterInterface;
 
 class Gd implements AdapterInterface
 {

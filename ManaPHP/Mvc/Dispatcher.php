@@ -30,12 +30,12 @@ use ManaPHP\Utility\Text;
 class Dispatcher extends Component implements DispatcherInterface
 {
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_finished = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_forwarded = false;
 
@@ -422,7 +422,7 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * Check if the current executed action was forwarded by another one
      *
-     * @return boolean
+     * @return bool
      */
     public function wasForwarded()
     {

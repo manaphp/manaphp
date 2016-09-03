@@ -2,9 +2,9 @@
 namespace ManaPHP\Store\Adapter;
 
 use ManaPHP\Component;
+use ManaPHP\Store\Adapter\File\Exception as FileException;
 use ManaPHP\Store\AdapterInterface;
 use ManaPHP\Utility\Text;
-use ManaPHP\Store\Adapter\File\Exception as FileException;
 
 class File extends Component implements AdapterInterface
 {

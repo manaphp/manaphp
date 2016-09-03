@@ -92,7 +92,7 @@ interface RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function has($name);
 
@@ -101,7 +101,7 @@ interface RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasGet($name);
 
@@ -110,7 +110,7 @@ interface RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPost($name);
 
@@ -119,7 +119,7 @@ interface RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPut($name);
 
@@ -128,7 +128,7 @@ interface RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasQuery($name);
 
@@ -142,7 +142,7 @@ interface RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasServer($name);
 
@@ -156,7 +156,7 @@ interface RequestInterface
     /**
      * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
      *
-     * @return boolean
+     * @return bool
      */
     public function isAjax();
 
@@ -190,7 +190,7 @@ interface RequestInterface
     /**
      * Checks whether HTTP method is POST. if $_SERVER['REQUEST_METHOD']=='POST'
      *
-     * @return boolean
+     * @return bool
      */
     public function isPost();
 
@@ -198,58 +198,58 @@ interface RequestInterface
      *
      * Checks whether HTTP method is GET. if $_SERVER['REQUEST_METHOD']=='GET'
      *
-     * @return boolean
+     * @return bool
      */
     public function isGet();
 
     /**
      * Checks whether HTTP method is PUT. if $_SERVER['REQUEST_METHOD']=='PUT'
      *
-     * @return boolean
+     * @return bool
      */
     public function isPut();
 
     /**
      * Checks whether HTTP method is HEAD. if $_SERVER['REQUEST_METHOD']=='HEAD'
      *
-     * @return boolean
+     * @return bool
      */
     public function isHead();
 
     /**
      * Checks whether HTTP method is DELETE. if $_SERVER['REQUEST_METHOD']=='DELETE'
      *
-     * @return boolean
+     * @return bool
      */
     public function isDelete();
 
     /**
      * Checks whether HTTP method is OPTIONS. if $_SERVER['REQUEST_METHOD']=='OPTIONS'
      *
-     * @return boolean
+     * @return bool
      */
     public function isOptions();
 
     /**
      * Checks whether HTTP method is PATCH. if $_SERVER['REQUEST_METHOD']=='PATCH'
      *
-     * @return boolean
+     * @return bool
      */
     public function isPatch();
 
     /**
      * Checks whether request include attached files
      *
-     * @param boolean $onlySuccessful
+     * @param bool $onlySuccessful
      *
-     * @return boolean
+     * @return bool
      */
     public function hasFiles($onlySuccessful = false);
 
     /**
      * Gets attached files as \ManaPHP\Http\Request\FileInterface compatible instances
      *
-     * @param boolean $onlySuccessful
+     * @param bool $onlySuccessful
      *
      * @return \ManaPHP\Http\Request\FileInterface[]
      */

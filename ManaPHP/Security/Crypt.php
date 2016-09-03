@@ -58,8 +58,8 @@ class Crypt extends Component implements CryptInterface
      *    $encrypted = $crypt->encrypt("Ultra-secret text", "encrypt password");
      *</code>
      *
-     * @param string      $text
-     * @param string|null $key
+     * @param string $text
+     * @param string $key
      *
      * @return string
      * @throws \ManaPHP\Security\Crypt\Exception
@@ -91,8 +91,8 @@ class Crypt extends Component implements CryptInterface
      *    echo $crypt->decrypt($encrypted, "decrypt password");
      *</code>
      *
-     * @param string      $text
-     * @param string|null $key
+     * @param string $text
+     * @param string $key
      *
      * @return string
      * @throws \ManaPHP\Security\Crypt\Exception

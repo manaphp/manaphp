@@ -102,7 +102,7 @@ class Bag extends Component implements BagInterface
      *
      * @param string $property
      *
-     * @return boolean
+     * @return bool
      */
     public function has($property)
     {

@@ -74,12 +74,12 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     protected $_offset = 0;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_forUpdate;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_sharedLock;
 
@@ -932,8 +932,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     /**
      * Set default bind parameters
      *
-     * @param array   $bind
-     * @param boolean $merge
+     * @param array $bind
+     * @param bool  $merge
      *
      * @return static
      */
@@ -1040,12 +1040,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
-     * @param int|string $rowCount
-     *
-     * @return static
+     * @return int
      * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
-    protected function _getTotalRows(&$rowCount)
+    protected function _getTotalRows()
     {
         if (count($this->_union) !== 0) {
             throw new QueryBuilderException('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
@@ -1075,7 +1073,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             throw new QueryBuilderException(':message : :sql'/**m0009da8b8bb870246*/, ['message' => $e->getMessage(), 'sql' => $this->_sql]);
         }
 
-        return $this;
+        return $rowCount;
     }
 
     /**
@@ -1136,7 +1134,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $totalRows = count($result);
         } else {
             if (count($result) % $this->_limit === 0) {
-                $copy->_getTotalRows($totalRows);
+                $totalRows = $copy->_getTotalRows();
             } else {
                 $totalRows = $this->_offset + count($result);
             }

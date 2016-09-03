@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Serializer\Adapter;
 
-use ManaPHP\Serializer\AdapterInterface;
 use ManaPHP\Serializer\Adapter\Php\Exception as PhpException;
+use ManaPHP\Serializer\AdapterInterface;
 
 class Php implements AdapterInterface
 {

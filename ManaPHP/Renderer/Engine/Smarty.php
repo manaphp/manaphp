@@ -10,6 +10,8 @@ class Smarty extends Component implements EngineInterface
     /**
      * @param string $file
      * @param array  $vars
+     *
+     * @return void
      */
     public function render($file, $vars = [])
     {

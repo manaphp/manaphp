@@ -12,9 +12,9 @@ class Exception extends \Exception
     /**
      * Exception constructor.
      *
-     * @param string          $message
-     * @param int|array       $code
-     * @param \Exception|null $previous
+     * @param string     $message
+     * @param int|array  $code
+     * @param \Exception $previous
      */
     public function __construct($message = '', $code = 0, \Exception $previous = null)
     {

@@ -1,7 +1,8 @@
 <?php
 namespace ManaPHP\Task\Metadata\Adapter;
 
-use ManaPHP\Task\Metadata;
+use ManaPHP\Component;
+use ManaPHP\Task\Metadata\AdapterInterface;
 
 /**
  * Class Redis
@@ -9,7 +10,7 @@ use ManaPHP\Task\Metadata;
  * @package ManaPHP\Task\Metadata\Adapter
  * @property \Redis $redis
  */
-class Db extends Metadata
+class Db extends Component implements AdapterInterface
 {
     /**
      * @var string
@@ -32,8 +33,6 @@ class Db extends Metadata
         if (isset($options['model'])) {
             $this->_model = $options['model'];
         }
-
-        parent::__construct($options);
     }
 
     /**
@@ -42,7 +41,7 @@ class Db extends Metadata
      * @return mixed|false
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _get($key)
+    public function get($key)
     {
         /**
          * @var \ManaPHP\Task\Metadata\Adapter\Db\Model $instance
@@ -64,7 +63,7 @@ class Db extends Metadata
      * @return void
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _set($key, $value)
+    public function set($key, $value)
     {
         /**
          * @var \ManaPHP\Task\Metadata\Adapter\Db\Model $instance
@@ -84,7 +83,7 @@ class Db extends Metadata
      * @return void
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _delete($key)
+    public function delete($key)
     {
         /**
          * @var \ManaPHP\Task\Metadata\Adapter\Db\Model $instance
@@ -99,7 +98,7 @@ class Db extends Metadata
      * @return bool
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function _exists($key)
+    public function exists($key)
     {
         /**
          * @var \ManaPHP\Task\Metadata\Adapter\Db\Model $instance

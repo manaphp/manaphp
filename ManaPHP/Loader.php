@@ -37,8 +37,8 @@ class Loader
      *        ));
      * </code>
      *
-     * @param array   $namespaces
-     * @param boolean $merge
+     * @param array $namespaces
+     * @param bool  $merge
      *
      * @return static
      */
@@ -66,8 +66,8 @@ class Loader
     /**
      * Register classes and their locations
      *
-     * @param array   $classes
-     * @param boolean $merge
+     * @param array $classes
+     * @param bool  $merge
      *
      * @return static
      */

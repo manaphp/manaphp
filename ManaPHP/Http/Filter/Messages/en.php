@@ -4,7 +4,7 @@ return [
     //  'default' => '',
     // 'ignore' => '',
     //  'xss' => '',
-    'boolean' => 'The :attribute field must be true or false.',
+    'bool' => 'The :attribute field must be true or false.',
     'int' => 'The :attribute must be an integer.',
     'float' => 'The :attribute must be a float.',
     'date' => 'The :attribute is not a valid date.',

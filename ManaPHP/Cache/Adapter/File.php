@@ -1,9 +1,9 @@
 <?php
 namespace ManaPHP\Cache\Adapter;
 
+use ManaPHP\Cache\Adapter\File\Exception as FileException;
 use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
-use ManaPHP\Cache\Adapter\File\Exception as FileException;
 
 class File extends Component implements AdapterInterface
 {

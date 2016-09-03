@@ -112,7 +112,7 @@ interface DispatcherInterface
     /**
      * Check if the current executed action was forwarded by another one
      *
-     * @return boolean
+     * @return bool
      */
     public function wasForwarded();
 

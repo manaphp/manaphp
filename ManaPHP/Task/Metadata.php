@@ -5,7 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Task;
 use ManaPHP\Utility\Text;
 
-abstract class Metadata extends Component implements MetadataInterface, Task\Metadata\AdapterInterface
+class Metadata extends Component implements MetadataInterface
 {
     const FIELD_CLASS = 'class';
     const FIELD_START_TIME = 'start_time';
@@ -30,17 +30,24 @@ abstract class Metadata extends Component implements MetadataInterface, Task\Met
     protected $_taskIds = [];
 
     /**
+     * @var \ManaPHP\Task\Metadata\AdapterInterface
+     */
+    public $adapter;
+
+    /**
      * Metadata constructor.
      *
-     * @param string|array $options
+     * @param string|array|\ManaPHP\Task\Metadata\AdapterInterface $options
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
+        if ($options instanceof Task\Metadata\AdapterInterface || is_string($options)) {
+            $options = ['adapter' => $options];
+        } elseif (is_object($options)) {
             $options = (array)$options;
-        } elseif (is_string($options)) {
-            $options = ['prefix' => $options];
         }
+
+        $this->adapter = $options['adapter'];
 
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
@@ -48,38 +55,53 @@ abstract class Metadata extends Component implements MetadataInterface, Task\Met
     }
 
     /**
-     * @param string|\ManaPHP\TaskInterface $task
-     * @param string                        $field
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+
+        if (!is_object($this->adapter)) {
+            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $task
+     * @param string $field
      *
      * @return string
      */
     protected function _formatKey($task, $field)
     {
-        $taskName = is_string($task) ? $task : get_class($task);
-        if (!isset($this->_taskIds[$taskName])) {
-            if (preg_match('#^[^/]*/([^/]*)/Tasks/([a-z\d]*)Task$#i', str_replace('\\', '/', $taskName), $match) === 1) {
-                $this->_taskIds[$taskName] = $match[1] . ':' . $match[2];
+        if (!isset($this->_taskIds[$task])) {
+            if (preg_match('#^[^/]*/([^/]*)/Tasks/([a-z\d]*)Task$#i', str_replace('\\', '/', $task), $match) === 1) {
+                $this->_taskIds[$task] = $match[1] . ':' . $match[2];
             } else {
-                $this->_taskIds[$taskName] = $taskName;
+                $this->_taskIds[$task] = $task;
             }
         }
 
-        return $this->_prefix . $this->_taskIds[$taskName] . ':' . $field;
+        return $this->_prefix . $this->_taskIds[$task] . ':' . $field;
     }
 
     /**
-     * @param string|\ManaPHP\TaskInterface $task
-     * @param string                        $field
+     * @param string $task
+     * @param string $field
      *
      * @return mixed
      */
     public function get($task, $field)
     {
-        return $this->_get($this->_formatKey($task, $field));
+        return $this->adapter->get($this->_formatKey($task, $field));
     }
 
     /**
-     * @param string|\ManaPHP\TaskInterface $task
+     * @param string $task
      *
      * @return array
      */
@@ -94,7 +116,7 @@ abstract class Metadata extends Component implements MetadataInterface, Task\Met
                 continue;
             }
 
-            $value = $this->_get($this->_formatKey($task, $field));
+            $value = $this->adapter->get($this->_formatKey($task, $field));
             if ($value !== false) {
                 $data[(string)$field] = $value;
             }
@@ -136,41 +158,41 @@ abstract class Metadata extends Component implements MetadataInterface, Task\Met
     }
 
     /**
-     * @param string|\ManaPHP\TaskInterface $task
-     * @param string                        $field
-     * @param mixed                         $value
+     * @param string $task
+     * @param string $field
+     * @param mixed  $value
      *
      * @return void
      */
     public function set($task, $field, $value)
     {
-        $this->_set($this->_formatKey($task, $field), $value);
+        $this->adapter->set($this->_formatKey($task, $field), $value);
     }
 
     /**
-     * @param string|\ManaPHP\TaskInterface $task
-     * @param string                        $field
+     * @param string $task
+     * @param string $field
      *
      * @return void
      */
     public function delete($task, $field)
     {
-        $this->_delete($this->_formatKey($task, $field));
+        $this->adapter->delete($this->_formatKey($task, $field));
     }
 
     /**
-     * @param string|\ManaPHP\TaskInterface $task
-     * @param string                        $field
+     * @param string $task
+     * @param string $field
      *
      * @return bool
      */
     public function exists($task, $field)
     {
-        return $this->_exists($this->_formatKey($task, $field));
+        return $this->adapter->exists($this->_formatKey($task, $field));
     }
 
     /**
-     * @param string|\ManaPHP\TaskInterface $task
+     * @param string $task
      *
      * @return void
      */
@@ -183,7 +205,7 @@ abstract class Metadata extends Component implements MetadataInterface, Task\Met
                 continue;
             }
 
-            $this->_delete($this->_formatKey($task, $field));
+            $this->adapter->delete($this->_formatKey($task, $field));
         }
     }
 }

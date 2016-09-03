@@ -86,6 +86,12 @@ class Rbac extends Component implements AuthorizationInterface
         }
     }
 
+    /**
+     * @param string $permissionName
+     *
+     * @return array
+     * @throws \ManaPHP\Authorization\Rbac\Exception
+     */
     protected function _parsePermissionName($permissionName)
     {
         $parts = explode('::', $permissionName);
@@ -113,7 +119,8 @@ class Rbac extends Component implements AuthorizationInterface
                 throw new RbacException('`:permission` has too many parts'/**m059345500bb0de141*/, ['permission' => $permissionName]);
         }
 
-        return [$module, $controller, $action];
+        $r = [$module, $controller, $action];
+        return $r;
     }
 
     /**
@@ -183,8 +190,8 @@ class Rbac extends Component implements AuthorizationInterface
     }
 
     /**
-     * @param string      $permissionName
-     * @param string|null $userId
+     * @param string $permissionName
+     * @param string $userId
      *
      * @return bool
      * @throws \ManaPHP\Authorization\Rbac\Exception

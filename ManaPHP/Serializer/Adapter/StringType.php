@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Serializer\Adapter;
 
-use ManaPHP\Serializer\AdapterInterface;
 use ManaPHP\Serializer\Adapter\StringType\Exception as StringTypeException;
+use ManaPHP\Serializer\AdapterInterface;
 
 class StringType implements AdapterInterface
 {

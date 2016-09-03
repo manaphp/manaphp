@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Counter\Adapter;
 
-use ManaPHP\Counter\AdapterInterface;
 use ManaPHP\Counter\Adapter\Db\Exception as DbException;
+use ManaPHP\Counter\AdapterInterface;
 
 /**
  * @property \ManaPHP\DbInterface $db

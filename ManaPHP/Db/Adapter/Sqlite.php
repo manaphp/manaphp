@@ -2,11 +2,18 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
-use ManaPHP\Mvc\Model\Metadata;
 use ManaPHP\Db\Adapter\Sqlite\Exception as SqliteException;
+use ManaPHP\Mvc\Model\Metadata;
 
 class Sqlite extends Db
 {
+    /**
+     * Sqlite constructor.
+     *
+     * @param string|array $options
+     *
+     * @throws \ManaPHP\Db\Adapter\Sqlite\Exception
+     */
     public function __construct($options)
     {
         $this->_type = 'sqlite';
@@ -27,7 +34,7 @@ class Sqlite extends Db
     }
 
     /**
-     * @param string
+     * @param string $source
      *
      * @return array
      * @throws \ManaPHP\Db\Exception

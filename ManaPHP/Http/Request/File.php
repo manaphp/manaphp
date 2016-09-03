@@ -2,8 +2,8 @@
 
 namespace ManaPHP\Http\Request;
 
-use ManaPHP\Utility\Text;
 use ManaPHP\Http\Request\File\Exception as FileException;
+use ManaPHP\Utility\Text;
 
 /**
  * ManaPHP\Http\Request\File
@@ -121,7 +121,7 @@ class File implements FileInterface
     /**
      * Checks whether the file has been uploaded via Post.
      *
-     * @return boolean
+     * @return bool
      */
     public function isUploadedFile()
     {

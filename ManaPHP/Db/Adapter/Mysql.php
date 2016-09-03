@@ -37,7 +37,7 @@ class Mysql extends Db
     }
 
     /**
-     * @param string
+     * @param string $source
      *
      * @return array
      * @throws \ManaPHP\Db\Exception

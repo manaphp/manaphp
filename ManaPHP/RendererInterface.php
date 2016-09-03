@@ -6,9 +6,9 @@ interface RendererInterface
     /**
      * Checks whether view exists on registered extensions and render it
      *
-     * @param string  $template
-     * @param array   $vars
-     * @param boolean $directOutput
+     * @param string $template
+     * @param array  $vars
+     * @param bool   $directOutput
      *
      * @return string
      */

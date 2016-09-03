@@ -33,7 +33,7 @@ class Client extends Component implements ClientInterface
     protected $_curlResponseHeader = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_peek = false;
 
@@ -54,7 +54,7 @@ class Client extends Component implements ClientInterface
      *    across transports.)
      *    (string, default: 'xxx/ca.pem')
      *    - `verify_host`: Should we verify the common name in the SSL certificate?
-     *    (boolean: default, true)
+     *    (bool: default, true)
      *
      * @param array $headers
      *
@@ -82,6 +82,12 @@ class Client extends Component implements ClientInterface
         $this->_headers = array_merge($defaultHeaders, $headers);
     }
 
+    /**
+     * @param string $proxy
+     * @param bool   $peek
+     *
+     * @return static
+     */
     public function setProxy($proxy = '127.0.0.1:8888', $peek = true)
     {
         $this->_options['proxy'] = $proxy;

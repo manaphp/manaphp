@@ -35,7 +35,7 @@ interface BagInterface
      *
      * @param string $property
      *
-     * @return boolean
+     * @return bool
      */
     public function has($property);
 

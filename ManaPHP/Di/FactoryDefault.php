@@ -55,7 +55,7 @@ class FactoryDefault extends Di
             'authorization' => 'ManaPHP\Authorization\Bypass',
             'userIdentity' => 'ManaPHP\Authentication\UserIdentity',
             'paginator' => 'ManaPHP\Paginator',
-            'tasksMetadata' => 'ManaPHP\Task\Metadata\Adapter\Redis',
+            'tasksMetadata' => ['class' => 'ManaPHP\Task\Metadata', 'parameters' => ['ManaPHP\Task\Metadata\Adapter\Redis']],
             'viewsCache' => [
                 'class' => 'ManaPHP\Cache\Adapter\File',
                 'parameters' => [['dir' => '@data/viewsCache', 'extension' => '.html']]

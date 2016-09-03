@@ -58,9 +58,9 @@ class Renderer extends Component implements RendererInterface
      *
      * @noinspection PhpDocMissingThrowsInspection
      *
-     * @param string  $template
-     * @param array   $vars
-     * @param boolean $directOutput
+     * @param string $template
+     * @param array  $vars
+     * @param bool   $directOutput
      *
      * @return string
      * @throws \ManaPHP\Renderer\Exception

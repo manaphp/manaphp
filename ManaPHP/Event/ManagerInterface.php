@@ -29,7 +29,7 @@ interface ManagerInterface
      * @param \ManaPHP\Component|\ManaPHP\Di $source
      * @param array                          $data
      *
-     * @return boolean|null
+     * @return bool|null
      */
     public function fireEvent($event, $source, $data = []);
 

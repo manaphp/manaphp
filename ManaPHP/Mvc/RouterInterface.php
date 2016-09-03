@@ -24,7 +24,7 @@ interface RouterInterface
      * @param string $host
      * @param bool   $silent
      *
-     * @return boolean
+     * @return bool
      */
     public function handle($uri = null, $host = null, $silent = true);
 
@@ -52,7 +52,7 @@ interface RouterInterface
     /**
      * Set whether router must remove the extra slashes in the handled routes
      *
-     * @param boolean $remove
+     * @param bool $remove
      *
      * @return static
      */

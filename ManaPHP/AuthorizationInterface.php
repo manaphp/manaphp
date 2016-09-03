@@ -9,7 +9,7 @@ interface AuthorizationInterface
      * @param string $permission
      * @param string $userId
      *
-     * @return boolean
+     * @return bool
      */
     public function isAllowed($permission, $userId = null);
 }

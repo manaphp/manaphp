@@ -172,9 +172,9 @@ class Filter extends Component implements FilterInterface
     }
 
     /**
-     * @param string                   $attribute
-     * @param string                   $rules
-     * @param string|int|boolean|array $value
+     * @param string                $attribute
+     * @param string                $rules
+     * @param string|int|bool|array $value
      *
      * @return mixed
      * @throws \ManaPHP\Http\Filter\Exception
@@ -306,9 +306,9 @@ class Filter extends Component implements FilterInterface
     /**
      * @param string $value
      *
-     * @return boolean|null
+     * @return bool|null
      */
-    protected function _rule_boolean($value)
+    protected function _rule_bool($value)
     {
         $trueValues = ['1', 'true'];
         $falseValues = ['0', 'false'];

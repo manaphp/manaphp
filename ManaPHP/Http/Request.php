@@ -62,7 +62,7 @@ class Request extends Component implements RequestInterface
     /**
      *
      * @param array        $source
-     * @param string|null  $name
+     * @param string       $name
      * @param string|array $rules
      * @param mixed        $defaultValue
      *
@@ -255,7 +255,7 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function has($name)
     {
@@ -267,7 +267,7 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasGet($name)
     {
@@ -279,7 +279,7 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPost($name)
     {
@@ -291,7 +291,7 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPut($name)
     {
@@ -307,7 +307,7 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasQuery($name)
     {
@@ -319,7 +319,7 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasServer($name)
     {
@@ -358,7 +358,7 @@ class Request extends Component implements RequestInterface
     /**
      * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
      *
-     * @return boolean
+     * @return bool
      */
     public function isAjax()
     {
@@ -430,7 +430,7 @@ class Request extends Component implements RequestInterface
     /**
      * Checks whether HTTP method is POST. if $_SERVER['REQUEST_METHOD']=='POST'
      *
-     * @return boolean
+     * @return bool
      */
     public function isPost()
     {
@@ -440,7 +440,7 @@ class Request extends Component implements RequestInterface
     /**
      * Checks whether HTTP method is GET. if $_SERVER['REQUEST_METHOD']=='GET'
      *
-     * @return boolean
+     * @return bool
      */
     public function isGet()
     {
@@ -450,7 +450,7 @@ class Request extends Component implements RequestInterface
     /**
      * Checks whether HTTP method is PUT. if $_SERVER['REQUEST_METHOD']=='PUT'
      *
-     * @return boolean
+     * @return bool
      */
     public function isPut()
     {
@@ -460,7 +460,7 @@ class Request extends Component implements RequestInterface
     /**
      * Checks whether HTTP method is PATCH. if $_SERVER['REQUEST_METHOD']=='PATCH'
      *
-     * @return boolean
+     * @return bool
      */
     public function isPatch()
     {
@@ -470,7 +470,7 @@ class Request extends Component implements RequestInterface
     /**
      * Checks whether HTTP method is HEAD. if $_SERVER['REQUEST_METHOD']=='HEAD'
      *
-     * @return boolean
+     * @return bool
      */
     public function isHead()
     {
@@ -480,7 +480,7 @@ class Request extends Component implements RequestInterface
     /**
      * Checks whether HTTP method is DELETE. if $_SERVER['REQUEST_METHOD']=='DELETE'
      *
-     * @return boolean
+     * @return bool
      */
     public function isDelete()
     {
@@ -490,7 +490,7 @@ class Request extends Component implements RequestInterface
     /**
      * Checks whether HTTP method is OPTIONS. if $_SERVER['REQUEST_METHOD']=='OPTIONS'
      *
-     * @return boolean
+     * @return bool
      */
     public function isOptions()
     {
@@ -501,9 +501,9 @@ class Request extends Component implements RequestInterface
      * Checks whether request includes attached files
      * http://php.net/manual/en/features.file-upload.multiple.php
      *
-     * @param boolean $onlySuccessful
+     * @param bool $onlySuccessful
      *
-     * @return boolean
+     * @return bool
      */
     public function hasFiles($onlySuccessful = false)
     {
@@ -533,7 +533,7 @@ class Request extends Component implements RequestInterface
     /**
      * Gets attached files as \ManaPHP\Http\Request\File instances
      *
-     * @param boolean $onlySuccessful
+     * @param bool $onlySuccessful
      *
      * @return \ManaPHP\Http\Request\File[]
      */

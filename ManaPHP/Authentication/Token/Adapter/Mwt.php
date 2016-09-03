@@ -2,10 +2,10 @@
 namespace ManaPHP\Authentication\Token\Adapter;
 
 use ManaPHP\Authentication\Token;
+use ManaPHP\Authentication\Token\Adapter\Mwt\Exception as MwtException;
 use ManaPHP\Authentication\TokenInterface;
 use ManaPHP\Component;
 use ManaPHP\Utility\Text;
-use ManaPHP\Authentication\Token\Adapter\Mwt\Exception as MwtException;
 
 class Mwt extends Component implements TokenInterface
 {

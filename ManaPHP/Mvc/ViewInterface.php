@@ -28,7 +28,7 @@ interface ViewInterface
     /**
      * Adds parameters to view
      *
-     * @param $vars
+     * @param array $vars
      *
      * @return static
      */

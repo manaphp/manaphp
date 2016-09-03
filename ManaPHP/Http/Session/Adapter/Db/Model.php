@@ -19,6 +19,9 @@ class Model extends \ManaPHP\Mvc\Model
      */
     public $expired_time;
 
+    /**
+     * @return string
+     */
     public function getSource()
     {
         return 'manaphp_session';

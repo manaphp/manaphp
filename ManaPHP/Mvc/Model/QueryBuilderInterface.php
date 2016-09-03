@@ -227,8 +227,8 @@ interface QueryBuilderInterface
     /**
      * Set default bind parameters
      *
-     * @param array   $bind
-     * @param boolean $merge
+     * @param array $bind
+     * @param bool  $merge
      *
      * @return static
      */

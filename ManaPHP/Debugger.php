@@ -33,6 +33,13 @@ class Debugger extends Component implements DebuggerInterface
 
     protected $_exception = [];
 
+    /**
+     * @param \ManaPHP\ComponentInterface $source
+     * @param mixed                       $data
+     * @param \ManaPHP\Event\Event        $event
+     *
+     * @return void
+     */
     public function _eventHandlerPeek($source, $data, $event)
     {
         if ($event === 'logger:log') {
@@ -168,6 +175,12 @@ class Debugger extends Component implements DebuggerInterface
         return true;
     }
 
+    /**
+     * @param mixed  $value
+     * @param string $name
+     *
+     * @return static
+     */
     public function var_dump($value, $name = null)
     {
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
@@ -193,6 +206,9 @@ class Debugger extends Component implements DebuggerInterface
         return $this;
     }
 
+    /**
+     * @return array
+     */
     protected function _getBasic()
     {
         $loaded_extensions = get_loaded_extensions();
@@ -218,6 +234,11 @@ class Debugger extends Component implements DebuggerInterface
         return $r;
     }
 
+    /**
+     * @param string $template
+     *
+     * @return array|string
+     */
     public function output($template = 'Default')
     {
         $data = [];

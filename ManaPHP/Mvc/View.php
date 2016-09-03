@@ -99,7 +99,7 @@ class View extends Component implements ViewInterface
     /**
      * Adds parameters to view
      *
-     * @param $vars
+     * @param array $vars
      *
      * @return static
      */

@@ -40,11 +40,11 @@ interface ResponseInterface
     /**
      * Sets output expire time header
      *
-     * @param int|\DateTime $datetime
+     * @param int $timestamp
      *
      * @return static
      */
-    public function setExpires($datetime);
+    public function setExpires($timestamp);
 
     /**
      * Sends a Not-Modified response
@@ -88,8 +88,8 @@ interface ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"));
      *</code>
      *
-     * @param mixed    $content
-     * @param int|null $jsonOptions
+     * @param array $content
+     * @param int   $jsonOptions
      *
      * @return static
      */

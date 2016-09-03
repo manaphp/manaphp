@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Renderer\Engine;
 
-use ManaPHP\Renderer\EngineInterface;
 use ManaPHP\Renderer\Engine\Exception as EngineException;
+use ManaPHP\Renderer\EngineInterface;
 
 class Html implements EngineInterface
 {

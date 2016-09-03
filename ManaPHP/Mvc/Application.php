@@ -28,7 +28,7 @@ use ManaPHP\Di\FactoryDefault;
 class Application extends Component implements ApplicationInterface
 {
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_implicitView = true;
 
@@ -58,7 +58,7 @@ class Application extends Component implements ApplicationInterface
      * By default. The view is implicitly buffering all the output
      * You can full disable the view component using this method
      *
-     * @param boolean $implicitView
+     * @param bool $implicitView
      *
      * @return static
      */

@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Cache\Adapter;
 
+use ManaPHP\Cache\Adapter\Apc\Exception as ApcException;
 use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
-use ManaPHP\Cache\Adapter\Apc\Exception as ApcException;
 
 class Apc extends Component implements AdapterInterface
 {

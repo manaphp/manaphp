@@ -31,7 +31,7 @@ interface SessionInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function has($name);
 

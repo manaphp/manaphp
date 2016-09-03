@@ -43,7 +43,7 @@ class Router extends Component implements RouterInterface
     protected $_groups = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_wasMatched = false;
 
@@ -63,7 +63,7 @@ class Router extends Component implements RouterInterface
     protected $_defaultParams = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_removeExtraSlashes = false;
 
@@ -89,7 +89,7 @@ class Router extends Component implements RouterInterface
     /**
      * Set whether router must remove the extra slashes in the handled routes
      *
-     * @param boolean $remove
+     * @param bool $remove
      *
      * @return static
      */
@@ -111,11 +111,11 @@ class Router extends Component implements RouterInterface
      * $router->handle('/posts/edit/1');
      *</code>
      *
-     * @param string|null $uri
-     * @param string      $host
-     * @param bool        $silent
+     * @param string $uri
+     * @param string $host
+     * @param bool   $silent
      *
-     * @return boolean
+     * @return bool
      * @throws \ManaPHP\Mvc\Router\Exception
      * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
      */

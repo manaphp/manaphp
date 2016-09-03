@@ -108,7 +108,7 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
     /**
      * Prints the messages in the session flasher
      *
-     * @param $remove bool
+     * @param bool $remove
      *
      * @return void
      */

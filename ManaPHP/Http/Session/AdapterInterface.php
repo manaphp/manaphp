@@ -67,7 +67,7 @@ interface AdapterInterface
      *
      * @param int $ttl
      *
-     * @return mixed
+     * @return bool
      */
     public function gc($ttl);
 }

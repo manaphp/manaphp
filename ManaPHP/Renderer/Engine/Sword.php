@@ -654,6 +654,13 @@ class Sword extends Component implements EngineInterface
         $this->_directives[$name] = $handler;
     }
 
+    /**
+     * @param string $file
+     * @param array  $vars
+     *
+     * @return void
+     * @throws \ManaPHP\Utility\File\Exception
+     */
     public function render($file, $vars = [])
     {
         $_compiledFile = $this->alias->resolve('@data/sword' . str_replace($this->alias->get('@app'), '', $file));

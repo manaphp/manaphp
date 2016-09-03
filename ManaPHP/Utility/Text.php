@@ -13,9 +13,9 @@ class Text
     public static function contains($haystack, $needle, $ignoreCase = false)
     {
         if ($ignoreCase) {
-            return (stripos($haystack, $needle) !== false);
+            return stripos($haystack, $needle) !== false;
         } else {
-            return (strpos($haystack, $needle) !== false);
+            return strpos($haystack, $needle) !== false;
         }
 
     }
@@ -30,9 +30,9 @@ class Text
     public static function startsWith($haystack, $needle, $ignoreCase = false)
     {
         if ($ignoreCase) {
-            return (stripos($haystack, $needle) === 0);
+            return stripos($haystack, $needle) === 0;
         } else {
-            return (strpos($haystack, $needle) === 0);
+            return strpos($haystack, $needle) === 0;
         }
     }
 
@@ -46,9 +46,9 @@ class Text
     public static function endsWith($haystack, $needle, $ignoreCase = false)
     {
         if ($ignoreCase) {
-            return (strripos($haystack, $needle) === strlen($haystack) - strlen($needle));
+            return strripos($haystack, $needle) === strlen($haystack) - strlen($needle);
         } else {
-            return (substr_compare($haystack, $needle, -strlen($needle)) === 0);
+            return substr_compare($haystack, $needle, -strlen($needle)) === 0;
         }
 
     }
@@ -63,6 +63,11 @@ class Text
         return strtolower(preg_replace('/[A-Z]/', '_$0', lcfirst($str)));
     }
 
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
     public static function camelize($str)
     {
         if (Text::contains($str, '_')) {

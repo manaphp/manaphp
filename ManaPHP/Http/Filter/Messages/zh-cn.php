@@ -4,7 +4,7 @@ return [
     //  'default' => '',
     // 'ignore' => '',
     //  'xss' => '',
-    'boolean' => 'The :attribute field must be true or false.',
+    'bool' => 'The :attribute field must be true or false.',
     'int' => ':attribute 应是整数。',
     'float' => ':attribute 应是浮点数。',
     'date' => ':attribute 日期格式错误。',

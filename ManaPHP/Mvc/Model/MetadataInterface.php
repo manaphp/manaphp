@@ -50,7 +50,7 @@ interface MetadataInterface
      * @param string|\ManaPHP\Mvc\ModelInterface $model
      * @param string                             $attribute
      *
-     * @return boolean
+     * @return bool
      */
     public function hasAttribute($model, $attribute);
 

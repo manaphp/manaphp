@@ -1,11 +1,17 @@
 <?php
 namespace ManaPHP\Task\Metadata\Adapter;
 
-use ManaPHP\Task\Metadata;
+use ManaPHP\Component;
 use ManaPHP\Task\Metadata\Adapter\Apc\Exception as ApcException;
+use ManaPHP\Task\Metadata\AdapterInterface;
 
-class Apc extends Metadata
+class Apc extends Component implements AdapterInterface
 {
+    /**
+     * @var string
+     */
+    protected $_prefix = 'manaphp:task:';
+
     /**
      * Apc constructor.
      *
@@ -18,10 +24,15 @@ class Apc extends Metadata
         if (!extension_loaded('apc')) {
             throw new ApcException('`apc` is not installed, or the extension is not loaded'/**m06424012cd041dd33*/);
         }
+        if (is_object($options)) {
+            $options = (array)$options;
+        } elseif (is_string($options)) {
+            $options = ['prefix' => $options];
+        }
 
-        $this->_prefix = 'manaphp:task:';
-
-        parent::__construct($options);
+        if (isset($options['prefix'])) {
+            $this->_prefix = $options['prefix'];
+        }
     }
 
     /**
@@ -29,7 +40,7 @@ class Apc extends Metadata
      *
      * @return mixed|false
      */
-    public function _get($key)
+    public function get($key)
     {
         return apc_fetch($key);
     }
@@ -40,7 +51,7 @@ class Apc extends Metadata
      *
      * @return void
      */
-    public function _set($key, $value)
+    public function set($key, $value)
     {
         apcu_store($key, $value);
     }
@@ -50,7 +61,7 @@ class Apc extends Metadata
      *
      * @return void
      */
-    public function _delete($key)
+    public function delete($key)
     {
         apc_delete($key);
     }
@@ -60,8 +71,8 @@ class Apc extends Metadata
      *
      * @return bool
      */
-    public function _exists($key)
+    public function exists($key)
     {
-        apc_exists($key);
+        return apc_exists($key);
     }
 }

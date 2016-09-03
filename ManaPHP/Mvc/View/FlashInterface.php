@@ -47,7 +47,7 @@ interface FlashInterface
     /**
      * Prints the messages in the session flasher
      *
-     * @param $remove bool
+     * @param bool $remove
      *
      * @return void
      */

@@ -10,13 +10,13 @@ interface CookiesInterface
     /**
      * Sets a cookie to be sent at the end of the request
      *
-     * @param string  $name
-     * @param mixed   $value
-     * @param int     $expire
-     * @param string  $path
-     * @param string  $domain
-     * @param boolean $secure
-     * @param boolean $httpOnly
+     * @param string $name
+     * @param mixed  $value
+     * @param int    $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
      *
      * @return static
      */
@@ -44,7 +44,7 @@ interface CookiesInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function has($name);
 
@@ -54,7 +54,7 @@ interface CookiesInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function delete($name);
 

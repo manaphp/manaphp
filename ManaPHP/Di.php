@@ -120,10 +120,10 @@ class Di implements DiInterface
     /**
      * Registers a service in the services container
      *
-     * @param string  $name
-     * @param mixed   $definition
-     * @param boolean $shared
-     * @param array   $aliases
+     * @param string $name
+     * @param mixed  $definition
+     * @param bool   $shared
+     * @param array  $aliases
      *
      * @return void
      */
@@ -295,7 +295,7 @@ class Di implements DiInterface
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function has($name)
     {

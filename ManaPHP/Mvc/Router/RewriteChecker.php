@@ -5,6 +5,11 @@ use ManaPHP\Mvc\Router\RewriteChecker\Exception as RewriteCheckerException;
 
 class RewriteChecker
 {
+    /**
+     * RewriteChecker constructor.
+     *
+     * @throws \ManaPHP\Mvc\Router\RewriteChecker\Exception
+     */
     public function __construct()
     {
         if (!isset($_SERVER['MANAPHP_REWRITE_ON'])) {

@@ -47,12 +47,19 @@ class Redis extends Component implements AdapterInterface
         }
     }
 
+    /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
     public function setDependencyInjector($dependencyInjector)
     {
         parent::setDependencyInjector($dependencyInjector);
         if (isset($this->redisDi)) {
             $this->redis = $this->redisDi->getShared($this->_service, ['key' => $this->_key]);
         }
+
+        return $this;
     }
 
     /**

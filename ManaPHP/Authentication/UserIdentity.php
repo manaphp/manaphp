@@ -6,23 +6,23 @@ class UserIdentity implements UserIdentityInterface
     /**
      * @var string
      */
-    protected $_userId = '0';
+    protected $_userId;
 
     /**
      * @var string
      */
-    protected $_userName = '';
+    protected $_userName;
 
     /**
      * UserIdentity constructor.
      *
-     * @param int|string $id
-     * @param string     $name
+     * @param string $id
+     * @param string $name
      */
-    public function __construct($id = 0, $name = '')
+    public function __construct($id = '0', $name = '')
     {
-        $this->_userId = (string)$id;
-        $this->_userName = $name ?: $id;
+        $this->_userId = $id;
+        $this->_userName = $name;
     }
 
     /**

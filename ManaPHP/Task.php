@@ -36,19 +36,21 @@ abstract class Task extends Component implements TaskInterface
      */
     public function start($timeLimit = 0)
     {
-        $this->logger->info('[%task%] starting...', ['task' => get_called_class()]);
+        $task = get_class($this);
+
+        $this->logger->info('[%task%] starting...', ['task' => $task]);
 
         /** @noinspection TypeUnsafeComparisonInspection */
-        if ($this->tasksMetadata->get($this, Metadata::FIELD_STATUS) == Task::STATUS_RUNNING) {
+        if ($this->tasksMetadata->get($task, Metadata::FIELD_STATUS) == Task::STATUS_RUNNING) {
             throw new TaskException('Task is exists already'/**m094686781957e77e4*/);
         }
 
         $start_time = time();
 
-        $this->tasksMetadata->reset($this);
-        $this->tasksMetadata->set($this, Metadata::FIELD_STATUS, self::STATUS_RUNNING);
-        $this->tasksMetadata->set($this, Metadata::FIELD_CLASS, get_class($this));
-        $this->tasksMetadata->set($this, Metadata::FIELD_START_TIME, date('Y-m-d H:i:s', $start_time));
+        $this->tasksMetadata->reset($task);
+        $this->tasksMetadata->set($task, Metadata::FIELD_STATUS, self::STATUS_RUNNING);
+        $this->tasksMetadata->set($task, Metadata::FIELD_CLASS, $task);
+        $this->tasksMetadata->set($task, Metadata::FIELD_START_TIME, date('Y-m-d H:i:s', $start_time));
 
         $stop_reason = '';
         $stop_time = 0;
@@ -76,16 +78,16 @@ abstract class Task extends Component implements TaskInterface
             flush();
 
             while (true) {
-                $this->tasksMetadata->set($this, Metadata::FIELD_KEEP_ALIVE_TIME, date('Y-m-d H:i:s'));
-                $this->tasksMetadata->set($this, Metadata::FIELD_MEMORY_PEAK_USAGE, round(memory_get_peak_usage() / 1024 / 1024, 3) . 'MB');
+                $this->tasksMetadata->set($task, Metadata::FIELD_KEEP_ALIVE_TIME, date('Y-m-d H:i:s'));
+                $this->tasksMetadata->set($task, Metadata::FIELD_MEMORY_PEAK_USAGE, round(memory_get_peak_usage() / 1024 / 1024, 3) . 'MB');
 
                 $this->run();
 
-                if ($this->tasksMetadata->exists($this, Metadata::FIELD_CANCEL_FLAG)) {
+                if ($this->tasksMetadata->exists($task, Metadata::FIELD_CANCEL_FLAG)) {
                     $stop_time = time();
                     $stop_type = self::STOP_TYPE_CANCEL;
                     $stop_reason = 'CANCEL';
-                    $this->logger->info('[%task%]: ' . $stop_reason, ['task' => get_called_class()]);
+                    $this->logger->info('[%task%]: ' . $stop_reason, ['task' => $task]);
                     break;
                 }
 
@@ -93,7 +95,7 @@ abstract class Task extends Component implements TaskInterface
                     $stop_time = time();
                     $stop_type = self::STOP_TYPE_MEMORY_LIMIT;
                     $stop_reason = 'MEMORY LIMIT';
-                    $this->logger->fatal('[%task%]: ' . $stop_reason, ['task' => get_called_class()]);
+                    $this->logger->fatal('[%task%]: ' . $stop_reason, ['task' => $task]);
                     break;
                 }
             }
@@ -101,17 +103,17 @@ abstract class Task extends Component implements TaskInterface
             $stop_time = time();
             $stop_type = self::STOP_TYPE_EXCEPTION;
             $stop_reason = 'EXCEPTION: ' . json_encode($e->dump(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $this->logger->fatal('[%task%]: ' . $stop_reason, ['task' => get_called_class()]);
+            $this->logger->fatal('[%task%]: ' . $stop_reason, ['task' => $task]);
         }
 
         $duration_time = $stop_time - $start_time;
 
-        $this->tasksMetadata->set($this, Metadata::FIELD_STATUS, Task::STATUS_STOP);
-        $this->tasksMetadata->set($this, Metadata::FIELD_STOP_TIME, date('Y-m-d H:i:s', $stop_time));
-        $this->tasksMetadata->set($this, Metadata::FIELD_DURATION_TIME, $duration_time);
+        $this->tasksMetadata->set($task, Metadata::FIELD_STATUS, Task::STATUS_STOP);
+        $this->tasksMetadata->set($task, Metadata::FIELD_STOP_TIME, date('Y-m-d H:i:s', $stop_time));
+        $this->tasksMetadata->set($task, Metadata::FIELD_DURATION_TIME, $duration_time);
         /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
-        $this->tasksMetadata->set($this, Metadata::FIELD_DURATION_TIME_HUMAN, round($duration_time / 3600 / 24) . ' days ' . gmstrftime('%H:%M:%S', $duration_time % (3600 * 24)));
-        $this->tasksMetadata->set($this, Metadata::FIELD_STOP_REASON, $stop_reason);
-        $this->tasksMetadata->set($this, Metadata::FIELD_STOP_TYPE, $stop_type);
+        $this->tasksMetadata->set($task, Metadata::FIELD_DURATION_TIME_HUMAN, round($duration_time / 3600 / 24) . ' days ' . gmstrftime('%H:%M:%S', $duration_time % (3600 * 24)));
+        $this->tasksMetadata->set($task, Metadata::FIELD_STOP_REASON, $stop_reason);
+        $this->tasksMetadata->set($task, Metadata::FIELD_STOP_TYPE, $stop_type);
     }
 }

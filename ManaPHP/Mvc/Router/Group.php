@@ -54,10 +54,15 @@ class Group extends Component implements GroupInterface
     protected $_routes = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $_useDefaultRoutes;
 
+    /**
+     * Group constructor.
+     *
+     * @param bool $useDefaultRoutes
+     */
     public function __construct($useDefaultRoutes = true)
     {
         $this->_useDefaultRoutes = $useDefaultRoutes;

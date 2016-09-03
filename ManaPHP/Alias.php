@@ -11,6 +11,9 @@ class Alias extends Component implements AliasInterface
      */
     protected $_aliases = [];
 
+    /**
+     * Alias constructor.
+     */
     public function __construct()
     {
         $this->set('@manaphp', str_replace('\\', '/', __DIR__));

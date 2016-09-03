@@ -109,7 +109,7 @@ class Model extends Component implements ModelInterface
     /**
      * Sets table name which model should be mapped
      *
-     * @param $source
+     * @param string $source
      *
      * @return static
      */
@@ -452,7 +452,7 @@ class Model extends Component implements ModelInterface
     /**
      * Checks if the current record already exists or not
      *
-     * @return boolean
+     * @return bool
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     protected function _exists()

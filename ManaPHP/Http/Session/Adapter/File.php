@@ -8,8 +8,8 @@
 namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Session\AdapterInterface;
 use ManaPHP\Http\Session\Adapter\Exception as SessionException;
+use ManaPHP\Http\Session\AdapterInterface;
 
 class File extends Component implements AdapterInterface
 {

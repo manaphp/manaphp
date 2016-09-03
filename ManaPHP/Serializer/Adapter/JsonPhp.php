@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Serializer\Adapter;
 
-use ManaPHP\Serializer\AdapterInterface;
 use ManaPHP\Serializer\Adapter\JsonPhp\Exception as JsonPhpException;
+use ManaPHP\Serializer\AdapterInterface;
 
 class JsonPhp implements AdapterInterface
 {

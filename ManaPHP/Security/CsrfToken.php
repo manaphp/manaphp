@@ -43,24 +43,28 @@ class CsrfToken extends Component implements CsrfTokenInterface
     /**
      * CsrfToken constructor.
      *
-     * @param array $options
+     * @param int|string|array $options
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
+        if (is_int($options) || is_string($options)) {
+            $_options = ['length' => $options];
+        } elseif (is_object($options)) {
+            $_options = (array)$options;
+        } elseif (is_array($options)) {
+            $_options = (array)$options;
         }
 
-        if (isset($options['length'])) {
-            $this->_length = $options['length'];
+        if (isset($_options['length'])) {
+            $this->_length = $_options['length'];
         }
 
-        if (isset($options['useCookie'])) {
-            $this->_useCookie = $options['useCookie'];
+        if (isset($_options['useCookie'])) {
+            $this->_useCookie = $_options['useCookie'];
         }
 
-        if (isset($options['name'])) {
-            $this->_name = $options['name'];
+        if (isset($_options['name'])) {
+            $this->_name = $_options['name'];
         }
     }
 
