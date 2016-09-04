@@ -5,6 +5,11 @@ use ManaPHP\Configure\EngineInterface;
 
 class Php implements EngineInterface
 {
+    /**
+     * @param string $file
+     *
+     * @return mixed
+     */
     public function load($file)
     {
         /** @noinspection PhpIncludeInspection */
