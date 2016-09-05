@@ -42,6 +42,7 @@
 <div class="container" id="app">
     <ul class="nav nav-tabs">
         <li><a href="#tab_basic" data-toggle="tab">Basic</a></li>
+        <li><a href="#tab_warnings" data-toggle="tab">Warnings</a></li>
         <li><a href="#tab_dump" data-toggle="tab">Dump</a></li>
         <li><a href="#tab_components" data-toggle="tab">Components</a></li>
         <li><a href="#tab_view" data-toggle="tab">View</a></li>
@@ -76,6 +77,23 @@
                 <tr v-for="(name,value) in basic">
                     <td>{{$index}}</td>
                     <td>{{name}}</td>
+                    <td>{{value}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_warnings">
+            <h4>Basic Information</h4>
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <td style="width: 5%">#</td>
+                    <td>info</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="value in warnings">
+                    <td>{{$index}}</td>
                     <td>{{value}}</td>
                 </tr>
                 </tbody>

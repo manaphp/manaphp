@@ -71,7 +71,7 @@ class Component implements ComponentInterface
     public function __set($name, $value)
     {
         if (is_scalar($value)) {
-            trigger_error('Set to undefined property `' . $name . '` of `' . get_called_class() . '`.');
+            $this->fireEvent('component:setUndefinedProperty', ['name' => $name, 'class' => get_called_class()]);
         }
 
         $this->$name = $value;

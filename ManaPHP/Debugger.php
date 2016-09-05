@@ -33,6 +33,8 @@ class Debugger extends Component implements DebuggerInterface
 
     protected $_exception = [];
 
+    protected $_warnings = [];
+	
     /**
      * @param \ManaPHP\ComponentInterface $source
      * @param mixed                       $data
@@ -112,6 +114,8 @@ class Debugger extends Component implements DebuggerInterface
             }
         } elseif ($event === 'renderer:beforeRender') {
             $this->_view[] = ['file' => $data['file'], 'vars' => $data['vars'], 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
+        } elseif ($event === 'component:setUndefinedProperty') {
+            $this->_warnings[] = 'Set to undefined property `' . $data['name'] . '` of `' . $data['class'] . '`';
         }
     }
 
@@ -253,7 +257,7 @@ class Debugger extends Component implements DebuggerInterface
         $data['configure'] = isset($this->configure) ? $this->configure->__debugInfo() : [];
         $data['view'] = $this->_view;
         $data['exception'] = $this->_exception;
-
+        $data['warnings'] = $this->_warnings;
         $data['components'] = [];
         /** @noinspection ImplicitMagicMethodCallInspection */
         /** @noinspection ForeachSourceInspection */
