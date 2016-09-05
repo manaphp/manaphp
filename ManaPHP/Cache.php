@@ -42,6 +42,11 @@ class Cache extends Component implements CacheInterface
         }
     }
 
+    /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
     public function setDependencyInjector($dependencyInjector)
     {
         parent::setDependencyInjector($dependencyInjector);

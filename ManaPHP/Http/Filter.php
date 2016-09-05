@@ -151,7 +151,7 @@ class Filter extends Component implements FilterInterface
             }
 
             /** @noinspection PhpIncludeInspection */
-            $options['messages'] = require $file;
+            $this->_messages = require $file;
         }
 
         $replaces = [];

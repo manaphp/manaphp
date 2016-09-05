@@ -45,7 +45,7 @@ interface RendererInterface
      *
      * @param  bool $overwrite
      *
-     * @return string
+     * @return void
      */
     public function stopSection($overwrite = false);
 

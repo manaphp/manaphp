@@ -205,9 +205,9 @@ class Di implements DiInterface
             return $this->_sharedInstances[$name];
         }
 
-        if (isset($this->eventsManager)) {
-            $this->eventsManager->fireEvent('di:beforeResolve', $this, ['name' => $_name, 'parameters' => $parameters]);
-        }
+//        if (isset($this->eventsManager)) {
+//            $this->eventsManager->fireEvent('di:beforeResolve', $this, ['name' => $_name, 'parameters' => $parameters]);
+//        }
 
         if (is_string($definition)) {
             if (!class_exists($definition)) {
@@ -246,9 +246,9 @@ class Di implements DiInterface
             $instance->setDependencyInjector($this);
         }
 
-        if (isset($this->eventsManager)) {
-            $this->eventsManager->fireEvent('di:afterResolve', $this, ['name' => $_name, 'parameters' => $parameters, 'instance' => $instance]);
-        }
+//        if (isset($this->eventsManager)) {
+//            $this->eventsManager->fireEvent('di:afterResolve', $this, ['name' => $_name, 'parameters' => $parameters, 'instance' => $instance]);
+//        }
 
         return $instance;
     }

@@ -195,7 +195,7 @@ class Renderer extends Component implements RendererInterface
      *
      * @param  bool $overwrite
      *
-     * @return string
+     * @return void
      * @throws \ManaPHP\Renderer\Exception
      */
     public function stopSection($overwrite = false)
