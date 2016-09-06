@@ -62,10 +62,10 @@ class Url extends Component implements UrlInterface
         }
 
         if (is_array($args)) {
-            if (Text::contains($strUri, '{')) {
+            if (Text::contains($strUri, ':')) {
                 foreach ($args as $k => $v) {
                     $count = 0;
-                    $strUri = str_replace('{' . $k . '}', $v, $strUri, $count);
+                    $strUri = str_replace(':' . $k, $v, $strUri, $count);
                     if ($count !== 0) {
                         unset($args[$k]);
                     }

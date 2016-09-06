@@ -27,8 +27,8 @@ class MvcUrlTest extends TestCase
 
         $this->assertEquals('/home?from=google', $url->get('/home', ['from' => 'google']));
         $this->assertEquals('/home?t=1&from=google', $url->get('/home?t=1', ['from' => 'google']));
-        $this->assertEquals('/article/10', $url->get('/article/{article_id}', ['article_id' => 10]));
-        $this->assertEquals('/article/10?from=google', $url->get('/article/{article_id}', ['article_id' => 10, 'from' => 'google']));
+        $this->assertEquals('/article/10', $url->get('/article/:article_id', ['article_id' => 10]));
+        $this->assertEquals('/article/10?from=google', $url->get('/article/:article_id', ['article_id' => 10, 'from' => 'google']));
 
         $url->setBaseUri('/manaphp');
 
@@ -40,8 +40,8 @@ class MvcUrlTest extends TestCase
 
         $this->assertEquals('/manaphp/home?from=google', $url->get('/home', ['from' => 'google']));
         $this->assertEquals('/manaphp/home?t=1&from=google', $url->get('/home?t=1', ['from' => 'google']));
-        $this->assertEquals('/manaphp/article/10', $url->get('/article/{article_id}', ['article_id' => 10]));
-        $this->assertEquals('/manaphp/article/10?from=google', $url->get('/article/{article_id}', ['article_id' => 10, 'from' => 'google']));
+        $this->assertEquals('/manaphp/article/10', $url->get('/article/:article_id', ['article_id' => 10]));
+        $this->assertEquals('/manaphp/article/10?from=google', $url->get('/article/:article_id', ['article_id' => 10, 'from' => 'google']));
     }
 
     public function test_getJs()
