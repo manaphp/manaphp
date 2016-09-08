@@ -16,7 +16,7 @@ interface SessionInterface
      *
      * @return mixed
      */
-    public function get($name, $defaultValue = null);
+    public function get($name = null, $defaultValue = null);
 
     /**
      * Sets a session variable in an application context
@@ -48,4 +48,9 @@ interface SessionInterface
      * @return void
      */
     public function destroy();
+
+    /**
+     * @return string
+     */
+    public function getSessionId();
 }

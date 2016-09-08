@@ -89,9 +89,11 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      *
      * @return mixed
      */
-    public function get($name, $defaultValue = null)
+    public function get($name = null, $defaultValue = null)
     {
-        if (isset($_SESSION[$name])) {
+        if ($name === null) {
+            return $_SESSION;
+        } elseif (isset($_SESSION[$name])) {
             return $_SESSION[$name];
         } else {
             return $defaultValue;
@@ -129,6 +131,14 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     public function remove($name)
     {
         unset($_SESSION[$name]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSessionId()
+    {
+        return session_id();
     }
 
     /**
@@ -196,6 +206,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
             $data = [];
         }
 
+        $data['_internal_'] = ['adapter' => get_class($this->adapter)];
         return $data;
     }
 }

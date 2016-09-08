@@ -1027,7 +1027,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 ->getReadConnection(end($this->_models))
                 ->fetchAll($this->_sql, $this->_bind);
         } catch (\Exception $e) {
-            throw new QueryBuilderException($e->getMessage() . ':' . $this->_sql);
+            throw new QueryBuilderException(':message sql: :sql bind: :bind'/**m0713300d0496c663e*/, ['message' => $e->getMessage(), 'sql' => $this->_sql, 'bind' => json_encode($this->_bind)]);
         }
 
         if (isset($_cacheOptions)) {
