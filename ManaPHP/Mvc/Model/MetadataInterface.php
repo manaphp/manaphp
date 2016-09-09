@@ -60,22 +60,4 @@ interface MetadataInterface
      * @return array
      */
     public function getColumnProperties($model);
-
-    /**
-     * Reads meta-data from the adapter
-     *
-     * @param string $key
-     *
-     * @return array
-     */
-    public function read($key);
-
-    /**
-     * Writes meta-data to the adapter
-     *
-     * @param string $key
-     * @param array  $data
-     */
-    public function write($key, $data);
-
 }
