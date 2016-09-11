@@ -18,9 +18,9 @@ interface RequestInterface
     /**
      * Gets a variable from the $_REQUEST applying filters if needed
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      */
@@ -29,9 +29,9 @@ interface RequestInterface
     /**
      * Gets variable from $_GET applying filters if needed
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      */
@@ -40,9 +40,9 @@ interface RequestInterface
     /**
      * Gets a variable from the $_POST applying filters if needed
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      */
@@ -57,9 +57,9 @@ interface RequestInterface
      *    $userEmail = $request->getPut("user_email", "email");
      *</code>
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      */
@@ -68,9 +68,9 @@ interface RequestInterface
     /**
      * Gets variable from $_GET applying filters if needed
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      */
@@ -79,9 +79,9 @@ interface RequestInterface
     /**
      * Gets variable from $_SERVER applying filters if needed
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      */

@@ -22,18 +22,18 @@ class HttpFilterTest extends TestCase
         $this->assertEquals(1, $this->filter->sanitize('open', 'default:1|int', null));
     }
 
-    public function test_boolean()
+    public function test_bool()
     {
-        $this->assertTrue($this->filter->sanitize('open', 'boolean', '1'));
-        $this->assertTrue($this->filter->sanitize('open', 'boolean', 'true'));
-        $this->assertTrue($this->filter->sanitize('open', 'boolean', true));
+        $this->assertTrue($this->filter->sanitize('open', 'bool', '1'));
+        $this->assertTrue($this->filter->sanitize('open', 'bool', 'true'));
+        $this->assertTrue($this->filter->sanitize('open', 'bool', true));
 
-        $this->assertFalse($this->filter->sanitize('open', 'boolean', '0'));
-        $this->assertFalse($this->filter->sanitize('open', 'boolean', 'false'));
-        $this->assertFalse($this->filter->sanitize('open', 'boolean', false));
+        $this->assertFalse($this->filter->sanitize('open', 'bool', '0'));
+        $this->assertFalse($this->filter->sanitize('open', 'bool', 'false'));
+        $this->assertFalse($this->filter->sanitize('open', 'bool', false));
 
         try {
-            $this->filter->sanitize('open', 'boolean', 'd');
+            $this->filter->sanitize('open', 'bool', 'd');
             $this->assertFalse('why not?');
         } catch (\Exception $e) {
 

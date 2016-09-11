@@ -61,10 +61,10 @@ class Request extends Component implements RequestInterface
 
     /**
      *
-     * @param array        $source
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param array  $source
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return string|null
      * @throws \ManaPHP\Http\Request\Exception
@@ -75,19 +75,10 @@ class Request extends Component implements RequestInterface
 
             $data = [];
 
-            if ($rules === null) {
-                $rules = [];
-            }
-
-            if (is_string($rules)) {
+            if ($rules !== null) {
                 /** @noinspection SuspiciousLoopInspection */
                 foreach ($source as $name => $_) {
                     $data[$name] = $this->_getHelper($source, $name, $rules);
-                }
-            } else {
-                /** @noinspection SuspiciousLoopInspection */
-                foreach ($source as $name => $_) {
-                    $data[$name] = $this->_getHelper($source, $name, isset($rules[$name]) ? $rules[$name] : null);
                 }
             }
 
@@ -186,9 +177,9 @@ class Request extends Component implements RequestInterface
     /**
      * Gets variable from $_SERVER applying filters if needed
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
@@ -207,9 +198,9 @@ class Request extends Component implements RequestInterface
      *    $userEmail = $request->getPut("user_email", "email");
      *</code>
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
@@ -238,9 +229,9 @@ class Request extends Component implements RequestInterface
      *    $id = $request->getQuery("id", null, 150);
      *</code>
      *
-     * @param string       $name
-     * @param string|array $rules
-     * @param mixed        $defaultValue
+     * @param string $name
+     * @param string $rules
+     * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
