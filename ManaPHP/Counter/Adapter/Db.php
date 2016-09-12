@@ -29,7 +29,7 @@ class Db implements AdapterInterface
         if (is_object($options)) {
             $options = (array)$options;
         } elseif (is_string($options)) {
-            $options['model'] = $options;
+            $options = ['model' => $options];
         }
 
         if (isset($options['model'])) {

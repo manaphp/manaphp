@@ -72,17 +72,17 @@ class Request extends Component implements RequestInterface
     protected function _getHelper($source, $name = null, $rules = null, $defaultValue = null)
     {
         if ($name === null) {
-
-            $data = [];
-
             if ($rules !== null) {
+                $data = [];
                 /** @noinspection SuspiciousLoopInspection */
                 foreach ($source as $name => $_) {
                     $data[$name] = $this->_getHelper($source, $name, $rules);
                 }
-            }
 
-            return $data;
+                return $data;
+            } else {
+                return $source;
+            }
         }
 
         $value = isset($source[$name]) ? $source[$name] : $defaultValue;
