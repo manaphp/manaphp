@@ -28,6 +28,11 @@ use ManaPHP\Di\FactoryDefault;
 class Application extends Component implements ApplicationInterface
 {
     /**
+     * @var array
+     */
+    protected $_modules;
+
+    /**
      * @var bool
      */
     protected $_implicitView = true;
@@ -172,5 +177,26 @@ class Application extends Component implements ApplicationInterface
         }
 
         return $this->response;
+    }
+
+    /**
+     * @return array
+     */
+    public function getModules()
+    {
+        if ($this->_modules === null) {
+            $app = $this->alias->get('@app');
+
+            $modules = [];
+            foreach (glob($app . '/*', GLOB_ONLYDIR) as $dir) {
+                if (is_file($dir . '/Module.php')) {
+                    $modules[] = basename($dir);
+                }
+            }
+
+            $this->_modules = $modules;
+        }
+
+        return $this->_modules;
     }
 }

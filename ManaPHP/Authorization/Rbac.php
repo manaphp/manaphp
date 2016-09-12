@@ -7,44 +7,6 @@ use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
 
 /**
- * CREATE TABLE `rbac_role` (
- * `role_id` int(11) NOT NULL AUTO_INCREMENT,
- * `role_name` char(64) CHARACTER SET latin1 NOT NULL,
- * `description` char(128) CHARACTER SET latin1 NOT NULL,
- * `created_time` int(11) NOT NULL,
- * PRIMARY KEY (`role_id`)
- * ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
- *
- *
- * CREATE TABLE `rbac_permission` (
- * `permission_id` int(11) NOT NULL AUTO_INCREMENT,
- * `permission_type` tinyint(4) NOT NULL,
- * `module` char(32) NOT NULL,
- * `controller` char(32) NOT NULL,
- * `action` char(32) NOT NULL,
- * `description` char(128) NOT NULL,
- * `created_time` int(11) NOT NULL,
- * PRIMARY KEY (`permission_id`)
- * ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
- *
- *
- * CREATE TABLE `rbac_role_permission` (
- * `id` int(11) NOT NULL AUTO_INCREMENT,
- * `role_id` int(11) NOT NULL,
- * `permission_id` int(11) NOT NULL,
- * `created_time` int(11) NOT NULL,
- * PRIMARY KEY (`id`)
- * ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
- *
- * CREATE TABLE `rbac_user_role` (
- * `id` int(11) NOT NULL AUTO_INCREMENT,
- * `user_id` int(11) NOT NULL,
- * `role_id` int(11) NOT NULL,
- * `created_time` int(11) NOT NULL,
- * PRIMARY KEY (`id`)
- * ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
- *
- *
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
@@ -73,8 +35,8 @@ class Rbac extends Component implements AuthorizationInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['userRoleMode'])) {
-            $this->_userRoleModel = $options['userRoleMode'];
+        if (isset($options['userRoleModel'])) {
+            $this->_userRoleModel = $options['userRoleModel'];
         }
 
         if (isset($options['rolePermissionModel'])) {
@@ -124,69 +86,57 @@ class Rbac extends Component implements AuthorizationInterface
     }
 
     /**
-     * @param string $permissionName
-     *
-     * @return array
-     * @throws \ManaPHP\Authorization\Rbac\Exception
-     */
-    protected function _getPermission($permissionName)
-    {
-        list($module, $controller, $action) = $this->_parsePermissionName($permissionName);
-
-        $rows = $this->modelsManager->createBuilder()
-            ->columns('permission_id, permission_type')
-            ->addFrom($this->_permissionModel)
-            ->where('module', $module)
-            ->where('controller', $controller)
-            ->where('action', $action)
-            ->execute();
-
-        if (count($rows) === 0) {
-            throw new RbacException('`:permission` is not exists'/**m06ab9af781c2de7f2*/, ['permission' => $permissionName]);
-        }
-
-        return $rows[0];
-    }
-
-    /**
      * @param int $permissionId
      *
      * @return array
      */
-    protected function _getRolesByPermission($permissionId)
+    protected function _getRolesByPermissionId($permissionId)
     {
-        $rows = $this->modelsManager->createBuilder()
-            ->columns('role_id')
-            ->addFrom($this->_rolePermissionModel)
-            ->where('permission_id', $permissionId)
-            ->execute();
-
-        $roleIds = [];
-        foreach ($rows as $row) {
-            $roleIds[] = $row['role_id'];
+        /**
+         * @var \ManaPHP\Authorization\Rbac\Models\RolePermission $model
+         */
+        $model = new $this->_rolePermissionModel;
+        $roles = [];
+        foreach ($model::findAll(['permission_id' => $permissionId]) as $item) {
+            $roles[] = $item->role_id;
         }
 
-        return $roleIds;
+        return $roles;
     }
 
+
     /**
-     * @param int|string $userId
+     * @param string $userId
      *
      * @return array
      */
-    protected function _getRolesByUser($userId)
+    protected function _getRolesByUserId($userId)
     {
-        $rows = $this->modelsManager->createBuilder()
-            ->columns('role_id')
-            ->addFrom($this->_rolePermissionModel)
-            ->where('user_id', $userId)
-            ->execute();
-        $roleIds = [];
-        foreach ($rows as $row) {
-            $roleIds[] = $row['role_id'];
+        /**
+         * @var \ManaPHP\Authorization\Rbac\Models\UserRole $model
+         */
+        $model = new $this->_userRoleModel();
+        $roles = [];
+        foreach ($model::findAll(['user_id' => $userId]) as $item) {
+            $roles[] = $item->role_id;
         }
 
-        return $roleIds;
+        return $roles;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return false|\ManaPHP\Authorization\Rbac\Models\Permission
+     */
+    protected function _getPermisionByName($name)
+    {
+        list($module, $controller, $action) = $this->_parsePermissionName($name);
+        /**
+         * @var \ManaPHP\Authorization\Rbac\Models\Permission $model
+         */
+        $model = new $this->_permissionModel();
+        return $model::findFirst(['module' => $module, 'controller' => $controller, 'action' => $action]);
     }
 
     /**
@@ -198,32 +148,29 @@ class Rbac extends Component implements AuthorizationInterface
      */
     public function isAllowed($permissionName, $userId = null)
     {
-        if ($userId === null) {
-            $userId = $this->userIdentity->getId();
+        $userId = $userId ?: $this->userIdentity->getId();
+
+        $permission = $this->_getPermisionByName($permissionName);
+        if (!$permission) {
+            throw new RbacException('`:permission` permission is not exists'/**m06ab9af781c2de7f2*/, ['permission' => $permissionName]);
         }
 
-        $permission = $this->_getPermission($permissionName);
+        switch ($permission->permission_type) {
+            case Permission::TYPE_PENDING:
+                throw new RbacException('`:permission` type is not assigned'/**m0ac1449c071933ff6*/, ['permission' => $permission->description]);
+            case Permission::TYPE_PUBLIC:
+                return true;
+            case Permission::TYPE_INTERNAL:
+                return !empty($userId);
+            case Permission::TYPE_DISABLED:
+                throw new RbacException('`:permission` permission is disabled', ['permission' => $permission->description]);
+            case Permission::TYPE_PRIVATE:
+                $rolesByPermissionId = $this->_getRolesByPermissionId($permission->permission_id);
+                $rolesByUserId = $this->_getRolesByUserId($userId);
 
-        $permissionId = (int)$permission['permission_id'];
-        $permissionType = (int)$permission['permission_type'];
-
-        if ($permissionType === Permission::TYPE_PUBLIC) {
-            return true;
-        } elseif ($permissionType === Permission::TYPE_INTERNAL) {
-            /** @noinspection IsEmptyFunctionUsageInspection */
-            return (!empty($userId));
-        } elseif ($permissionType === Permission::TYPE_PENDING) {
-            throw new RbacException('`:permission` type is not assigned'/**m0ac1449c071933ff6*/, ['permission' => $permissionName]);
-        }
-
-        $rolesByPermission = $this->_getRolesByPermission($permissionId);
-
-        $rolesByUser = $this->_getRolesByUser($userId);
-
-        if (array_intersect($rolesByUser, $rolesByPermission)) {
-            return true;
-        } else {
-            return false;
+                return array_intersect($rolesByPermissionId, $rolesByUserId);
+            default:
+                throw new RbacException('`:permission` type is not recognized', ['permission' => $permissionName]);
         }
     }
 }

@@ -24,4 +24,12 @@ class Role extends Model
      * @var int
      */
     public $created_time;
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+        return 'rbac_role';
+    }
 }

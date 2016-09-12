@@ -9,6 +9,7 @@ class Permission extends Model
     const TYPE_PUBLIC = 1;
     const TYPE_INTERNAL = 2;
     const TYPE_PRIVATE = 3;
+    const TYPE_DISABLED = 4;
 
     /**
      * @var int
@@ -45,6 +46,9 @@ class Permission extends Model
      */
     public $created_time;
 
+    /**
+     * @return string
+     */
     public function getSource()
     {
         return 'rbac_permission';

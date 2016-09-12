@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Authorization\Rbac\Annotation;
+namespace ManaPHP\Authorization\Rbac\PermissionBuilder;
 
 class Exception extends \ManaPHP\Authorization\Rbac\Exception
 {
