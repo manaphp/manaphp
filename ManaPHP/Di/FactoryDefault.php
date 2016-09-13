@@ -28,6 +28,7 @@ class FactoryDefault extends Di
             'url' => 'ManaPHP\Mvc\Url',
             'modelsManager' => 'ManaPHP\Mvc\Model\Manager',
             'modelsMetadata' => 'ManaPHP\Mvc\Model\Metadata\Adapter\Memory',
+            'queryBuilder' => ['ManaPHP\Mvc\Model\QueryBuilder', false],
             'response' => 'ManaPHP\Http\Response',
             'cookies' => 'ManaPHP\Http\Cookies',
             'request' => 'ManaPHP\Http\Request',

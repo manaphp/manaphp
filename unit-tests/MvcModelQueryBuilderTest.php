@@ -25,17 +25,7 @@ class MvcModelQueryBuilderTest extends TestCase
 
     public function setUp()
     {
-        $this->di = new ManaPHP\Di();
-
-        $this->di->set('modelsManager', function () {
-            return new ManaPHP\Mvc\Model\Manager();
-        });
-
-        $this->di->set('eventsManager', new \ManaPHP\Event\Manager());
-
-        $this->di->set('modelsMetadata', function () {
-            return new ManaPHP\Mvc\Model\Metadata\Adapter\Memory();
-        });
+        $this->di = new ManaPHP\Di\FactoryDefault();
 
         $this->di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';

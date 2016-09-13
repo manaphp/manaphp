@@ -213,7 +213,7 @@ class Manager extends Component implements ManagerInterface
     public function createBuilder($params = null)
     {
         $getParameter = [$params];
-        $this->_builder = $this->_dependencyInjector->get('ManaPHP\Mvc\Model\QueryBuilder', $getParameter);
+        $this->_builder = $this->_dependencyInjector->get('queryBuilder', $getParameter);
 
         return $this->_builder;
     }

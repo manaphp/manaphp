@@ -104,7 +104,6 @@ class Rbac extends Component implements AuthorizationInterface
         return $roles;
     }
 
-
     /**
      * @param string $userId
      *

@@ -61,13 +61,6 @@ class HttpResponseTest extends TestCase
 
         date_default_timezone_set('PRC');
 
-        $time = strtotime('2015-12-18 00:12:41');
-
-        $datetime = new DateTime();
-        $datetime->setTimestamp($time);
-        $response->setExpires($datetime);
-        $this->assertEquals(['Expires' => 'Thu, 17 Dec 2015 16:12:41 GMT'], $response->getHeaders());
-
         $response->setExpires(strtotime('2015-12-18 00:12:42'));
         $this->assertEquals(['Expires' => 'Thu, 17 Dec 2015 16:12:42 GMT'], $response->getHeaders());
     }

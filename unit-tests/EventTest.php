@@ -27,10 +27,8 @@ class DummyListener
         $this->_testCase = $testCase;
     }
 
-    public function doAction($component, $data, \ManaPHP\Event\Event $event)
+    public function doAction($component, $data)
     {
-        $this->_testCase->assertEquals('doAction', $event->getType());
-        $this->_testCase->assertInstanceOf('ManaPHP\Event\Event', $event);
         $this->_testCase->assertInstanceOf('DummyComponent', $component);
         $this->_testCase->assertEquals($data, ['extra data']);
     }
@@ -54,9 +52,7 @@ class EventTest extends TestCase
         //use closure
         $component = new DummyComponent();
         $that = $this;
-        $component->attachEvent('dummy:doAction', function ($source, $data, \ManaPHP\Event\Event $event) use ($that) {
-            $that->assertEquals('doAction', $event->getType());
-            $that->assertInstanceOf('ManaPHP\Event\Event', $event);
+        $component->attachEvent('dummy:doAction', function ($source, $data) use ($that) {
             $that->assertInstanceOf('DummyComponent', $source);
             $that->assertEquals($data, ['extra data']);
         });

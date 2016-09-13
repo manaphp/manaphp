@@ -6,6 +6,7 @@ use ManaPHP\Component;
 
 /**
  * Class PermissionBuilder
+ *
  * @package ManaPHP\Authorization\Rbac
  *
  * @property \ManaPHP\AliasInterface $alias

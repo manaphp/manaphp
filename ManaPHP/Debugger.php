@@ -34,11 +34,11 @@ class Debugger extends Component implements DebuggerInterface
     protected $_exception = [];
 
     protected $_warnings = [];
-	
+
     /**
      * @param \ManaPHP\ComponentInterface $source
      * @param mixed                       $data
-     * @param \ManaPHP\Event\Event        $event
+     * @param string                      $event
      *
      * @return void
      */
