@@ -74,6 +74,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\Paginator                            $paginator
+ * @property \ManaPHP\FilesystemInterface                  $filesystem
  */
 class Di implements DiInterface
 {

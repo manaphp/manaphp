@@ -69,6 +69,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken
  * @property \ManaPHP\Paginator                            $paginator
  * @property \ManaPHP\Cache\AdapterInterface               $viewsCache
+ * @property \ManaPHP\FilesystemInterface                  $filesystem
  */
 abstract class Controller extends Component implements ControllerInterface
 {
