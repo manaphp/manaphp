@@ -160,7 +160,8 @@ class Rbac extends Component implements AuthorizationInterface
             case Permission::TYPE_PUBLIC:
                 return true;
             case Permission::TYPE_INTERNAL:
-                return !empty($userId);
+                /** @noinspection TypeUnsafeComparisonInspection */
+                return $userId != '0';
             case Permission::TYPE_DISABLED:
                 throw new RbacException('`:permission` permission is disabled', ['permission' => $permission->description]);
             case Permission::TYPE_PRIVATE:

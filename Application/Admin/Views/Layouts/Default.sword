@@ -236,6 +236,7 @@
                     </ul>
                 </li>
                 <li class="header">HEADER</li>
+                <li><a href="@url('/admin/system_information')">System Information</a></li>
                 <!-- Optionally, you can add icons to the links -->
                 <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
                 <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>

@@ -81,7 +81,7 @@ interface FilesystemInterface
      * @throws \ManaPHP\Filesystem\Adapter\Exception
      */
     public function dirCreate($dir, $mode = 0755);
-    
+
     /**
      * @param string $old
      * @param string $new

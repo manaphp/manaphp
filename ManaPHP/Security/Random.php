@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Security;
 
-class Random
+class Random implements RandomInterface
 {
     /**
      * @param int $length
@@ -44,6 +44,7 @@ class Random
         $str = '';
 
         $bytes = $this->getByte($length);
+        /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $length; $i++) {
             $r = ord($bytes[$i]) % $base;
 
@@ -67,6 +68,7 @@ class Random
      */
     public function getInt($min = 0, $max = 4294967296)
     {
+        /** @noinspection TypeUnsafeComparisonInspection */
         if ($min == $max) {
             return $min;
         } else {
@@ -84,6 +86,5 @@ class Random
     {
         return $min + $this->getByte(4) / 4294967296 * ($max - $min);
     }
-
 
 }
