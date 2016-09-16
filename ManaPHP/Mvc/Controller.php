@@ -70,6 +70,8 @@ use ManaPHP\Component;
  * @property \ManaPHP\Paginator                            $paginator
  * @property \ManaPHP\Cache\AdapterInterface               $viewsCache
  * @property \ManaPHP\FilesystemInterface                  $filesystem
+ * @property \ManaPHP\Security\RandomInterface             $random
+ * @property \ManaPHP\Message\QueueInterface               $messageQueue
  */
 abstract class Controller extends Component implements ControllerInterface
 {

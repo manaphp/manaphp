@@ -75,6 +75,8 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\Paginator                            $paginator
  * @property \ManaPHP\FilesystemInterface                  $filesystem
+ * @property \ManaPHP\Security\RandomInterface             $random
+ * @property \ManaPHP\Message\QueueInterface               $messageQueue
  */
 class Di implements DiInterface
 {

@@ -18,7 +18,7 @@ class FilesystemAdapterFileTest extends TestCase
 
     public function test_fileExists()
     {
-        $this->_filesystem->filePut('@file/fileExists','');
+        $this->_filesystem->filePut('@file/fileExists', '');
         $this->assertTrue($this->_filesystem->fileExists('@file/fileExists'));
         $this->_filesystem->fileDelete('@file/fileExists');
 
@@ -38,7 +38,7 @@ class FilesystemAdapterFileTest extends TestCase
 
     public function test_fileGet()
     {
-        $this->_filesystem->filePut('@file/fileGet','MANAPHP');
+        $this->_filesystem->filePut('@file/fileGet', 'MANAPHP');
         $this->assertEquals('MANAPHP', $this->_filesystem->fileGet('@file/fileGet'));
         $this->_filesystem->fileDelete('@file/fileGet');
 
@@ -83,7 +83,8 @@ class FilesystemAdapterFileTest extends TestCase
         $this->_filesystem->fileDelete('@file/fileMoveNew');
     }
 
-    public function test_fileCopy(){
+    public function test_fileCopy()
+    {
         $this->_filesystem->filePut('@file/fileCopySrc', 'copy');
         $this->_filesystem->fileDelete('@file/fileCopyDst');
         $this->_filesystem->fileCopy('@file/fileCopySrc', '@file/fileCopyDst');
