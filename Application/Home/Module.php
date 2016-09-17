@@ -1,16 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/11/21
- * Time: 22:21
- */
 namespace Application\Home;
 
-use ManaPHP\Component;
-use ManaPHP\Mvc\ModuleInterface;
-
-class Module extends Component implements ModuleInterface
+class Module extends \ManaPHP\Mvc\Module
 {
     public function registerServices($di)
     {

@@ -225,11 +225,10 @@ class Router extends Component implements RouterInterface
      *
      * @param string|\ManaPHP\Mvc\Router\GroupInterface $group
      * @param string                                    $path
-     * @param string                                    $module
      *
      * @return static
      */
-    public function mount($group, $path = null, $module = null)
+    public function mount($group, $path = null)
     {
         if (is_object($group)) {
             $groupClassName = get_class($group);
@@ -239,12 +238,11 @@ class Router extends Component implements RouterInterface
             $groupInstance = null;
         }
 
-        if (!$module) {
-            $parts = explode('\\', $groupClassName);
-            unset($parts[0]);
-            array_pop($parts);
-            $module = implode('\\', $parts);
-        }
+        $parts = explode('\\', $groupClassName);
+        unset($parts[0]);
+        array_pop($parts);
+        $module = implode('\\', $parts);
+
 
         if ($path === null) {
             $path = '/' . $module;
