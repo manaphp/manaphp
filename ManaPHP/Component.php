@@ -11,6 +11,9 @@ namespace ManaPHP;
  *
  * @property \ManaPHP\AliasInterface         $alias
  * @property \ManaPHP\Event\ManagerInterface $eventsManager
+ * @property \ManaPHP\FilesystemInterface    $filesystem
+ * @property \ManaPHP\LoggerInterface        $logger
+ * @property \Application\Configure          $configure
  */
 class Component implements ComponentInterface
 {

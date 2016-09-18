@@ -99,4 +99,20 @@ interface FilesystemInterface
      * @return void
      */
     public function dirCopy($src, $dst, $overwrite = false);
+
+    /**
+     * @param string $pattern
+     * @param int    $flags
+     *
+     * @return mixed
+     */
+    public function glob($pattern, $flags = 0);
+
+    /**
+     * @param string $dir
+     * @param int    $sorting_order
+     *
+     * @return array
+     */
+    public function scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING);
 }

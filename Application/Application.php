@@ -9,7 +9,7 @@ namespace Application {
 
     class Application extends \ManaPHP\Mvc\Application
     {
-        protected function registerServices()
+        public function registerServices()
         {
             $self = $this;
 
@@ -19,7 +19,7 @@ namespace Application {
                 return (new Router())
                     ->mount(new Home\RouteGroup(), '/')
                     ->mount(Admin\RouteGroup::class, '/admin')
-                    ->mount(Api\RouteGroup::class, '/api', 'Api');
+                    ->mount(Api\RouteGroup::class, '/api');
             });
 
             $this->_dependencyInjector->setShared('crypt', function () use ($self) {

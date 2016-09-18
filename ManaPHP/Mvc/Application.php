@@ -13,25 +13,16 @@ use ManaPHP\Di\FactoryDefault;
  * needed and integrating it with the rest to allow the MVC pattern to operate as desired.
  *
  *
- * @property \ManaPHP\Loader                      $loader
  * @property \ManaPHP\Mvc\ViewInterface           $view
  * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
  * @property \ManaPHP\Mvc\RouterInterface         $router
  * @property \ManaPHP\Http\RequestInterface       $request
  * @property \ManaPHP\Http\ResponseInterface      $response
  * @property \ManaPHP\Http\SessionInterface       $session
- * @property \ManaPHP\DebuggerInterface           $debugger
- * @property \Application\Configure               $configure
- * @property \ManaPHP\LoggerInterface             $logger
  * @property \ManaPHP\Security\CsrfTokenInterface $csrfToken
  */
-class Application extends Component implements ApplicationInterface
+abstract class Application extends \ManaPHP\Application
 {
-    /**
-     * @var array
-     */
-    protected $_modules;
-
     /**
      * @var bool
      */
@@ -177,26 +168,5 @@ class Application extends Component implements ApplicationInterface
         }
 
         return $this->response;
-    }
-
-    /**
-     * @return array
-     */
-    public function getModules()
-    {
-        if ($this->_modules === null) {
-            $app = $this->alias->get('@app');
-
-            $modules = [];
-            foreach (glob($app . '/*', GLOB_ONLYDIR) as $dir) {
-                if (is_file($dir . '/Module.php')) {
-                    $modules[] = basename($dir);
-                }
-            }
-
-            $this->_modules = $modules;
-        }
-
-        return $this->_modules;
     }
 }

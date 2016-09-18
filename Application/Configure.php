@@ -50,7 +50,11 @@ namespace Application {
 
             $this->debugger = new \stdClass();
 
-            $this->debugger->autoResponse = $_SERVER['REMOTE_ADDR'] === $_SERVER['SERVER_ADDR'] || Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.');
+            if (PHP_SAPI !== 'cli') {
+                $this->debugger->autoResponse = $_SERVER['REMOTE_ADDR'] === $_SERVER['SERVER_ADDR'] || Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.');
+            } else {
+                $this->debugger->autoResponse = false;
+            }
         }
     }
 }

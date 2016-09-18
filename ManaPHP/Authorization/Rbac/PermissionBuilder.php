@@ -69,8 +69,8 @@ class PermissionBuilder extends Component
 
         $permissions = [];
 
-        foreach (glob($app . '/' . $module . '/Controllers/*.php') as $file) {
-            $file = str_replace(dirname($app) . '/', '', str_replace('\\', '/', $file));
+        foreach ($this->filesystem->glob('@app/' . $module . '/Controllers/*.php') as $file) {
+            $file = str_replace(dirname($app) . '/', '', $file);
             $controller = str_replace('/', '\\', pathinfo($file, PATHINFO_DIRNAME) . '\\' . basename($file, '.php'));
             $permissions = array_merge($permissions, $this->getControllerPermissions($controller));
         }

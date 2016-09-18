@@ -297,4 +297,37 @@ class File extends Component implements FilesystemInterface
 
         $this->_dirCopy($src, $dst, $overwrite);
     }
+
+    /**
+     * @param string $pattern
+     * @param int    $flags
+     *
+     * @return mixed
+     */
+    public function glob($pattern, $flags = 0)
+    {
+        $r = glob($this->alias->resolve($pattern), $flags);
+        $r = $r !== false ? $r : [];
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            foreach ($r as $k => $v) {
+                $r[$k] = str_replace('\\', '/', $v);
+            }
+        }
+
+        return $r;
+    }
+
+    /**
+     * @param string $dir
+     * @param int    $sorting_order
+     *
+     * @return array
+     */
+    public function scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING)
+    {
+        $r = scandir($this->alias->resolve($dir), $sorting_order);
+
+        return is_array($r) ? $r : [];
+    }
 }
