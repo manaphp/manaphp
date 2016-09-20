@@ -104,7 +104,7 @@ interface FilesystemInterface
      * @param string $pattern
      * @param int    $flags
      *
-     * @return mixed
+     * @return array
      */
     public function glob($pattern, $flags = 0);
 

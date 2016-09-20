@@ -50,7 +50,7 @@ class HelpController extends Controller
         sort($commands);
 
         foreach ($commands as $command) {
-            $this->console->write($command . " ");
+            $this->console->write($command . ' ');
         }
     }
 }

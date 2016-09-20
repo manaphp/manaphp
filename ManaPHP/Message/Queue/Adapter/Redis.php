@@ -2,11 +2,12 @@
 namespace ManaPHP\Message\Queue\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Message\QueueInterface;
 use ManaPHP\Message\Queue\Adapter\Redis\Exception as RedisException;
+use ManaPHP\Message\QueueInterface;
 
 /**
  * Class Redis
+ *
  * @package ManaPHP\Message\Queue\Adapter
  *
  * @property \Redis $redis
@@ -19,7 +20,7 @@ class Redis extends Component implements QueueInterface
     protected $_prefix = 'manaphp:message_queue:';
 
     /**
-     * @var array
+     * @var int[]
      */
     protected $_priorities = [self::PRIORITY_HIGHEST, self::PRIORITY_NORMAL, self::PRIORITY_LOWEST];
 
@@ -44,7 +45,7 @@ class Redis extends Component implements QueueInterface
         }
 
         if (isset($options['priorities'])) {
-            $this->_priorities = $options['priorities'];
+            $this->_priorities = (array)$options['priorities'];
         }
     }
 
@@ -65,8 +66,8 @@ class Redis extends Component implements QueueInterface
     }
 
     /**
-     * @param string|array $topic
-     * @param int          $timeout
+     * @param string $topic
+     * @param int    $timeout
      *
      * @return string|false
      */
@@ -90,6 +91,7 @@ class Redis extends Component implements QueueInterface
 
             return false;
         } else {
+            /** @noinspection PhpMethodParametersCountMismatchInspection */
             $r = $this->redis->brPop($this->_topicKeys[$topic], $timeout);
             return isset($r[1]) ? $r[1] : false;
         }
@@ -117,6 +119,7 @@ class Redis extends Component implements QueueInterface
     {
         if ($priority === null) {
             $length = 0;
+            /** @noinspection SuspiciousLoopInspection */
             foreach ($this->_priorities as $priority) {
                 $length += $this->redis->lLen($this->_prefix . $topic . ':' . $priority);
             }

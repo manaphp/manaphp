@@ -2,8 +2,8 @@
 namespace ManaPHP\Filesystem\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\FilesystemInterface;
 use ManaPHP\Filesystem\Adapter\File\Exception as FileException;
+use ManaPHP\FilesystemInterface;
 
 class File extends Component implements FilesystemInterface
 {
@@ -302,7 +302,7 @@ class File extends Component implements FilesystemInterface
      * @param string $pattern
      * @param int    $flags
      *
-     * @return mixed
+     * @return array
      */
     public function glob($pattern, $flags = 0)
     {

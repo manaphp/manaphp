@@ -3,6 +3,7 @@ namespace ManaPHP;
 
 /**
  * Class Application
+ *
  * @package ManaPHP
  *
  * @property \ManaPHP\Loader            $loader

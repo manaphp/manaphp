@@ -61,7 +61,7 @@ class Db implements AdapterInterface
      * @param int    $step
      *
      * @return int
-     * @throws \ManaPHP\Counter\Adapter\Exception
+     * @throws \ManaPHP\Counter\Adapter\Db\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function increment($type, $id, $step = 1)

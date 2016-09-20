@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Mvc;
 
-use ManaPHP\ApplicationInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\FactoryDefault;
 
 /**

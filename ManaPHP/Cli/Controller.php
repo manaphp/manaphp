@@ -5,6 +5,7 @@ use ManaPHP\Component;
 
 /**
  * Class Controller
+ *
  * @package ManaPHP\Cli
  *
  * @property \ManaPHP\Http\ClientInterface       $httpClient

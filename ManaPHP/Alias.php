@@ -13,6 +13,8 @@ class Alias extends Component implements AliasInterface
 
     /**
      * Alias constructor.
+     *
+     * @throws \ManaPHP\Alias\Exception
      */
     public function __construct()
     {

@@ -2,9 +2,9 @@
 namespace ManaPHP\Renderer\Engine;
 
 use ManaPHP\Component;
+use ManaPHP\Renderer\Engine\Sword\Exception as SwordException;
 use ManaPHP\Renderer\EngineInterface;
 use ManaPHP\Utility\Text;
-use ManaPHP\Renderer\Engine\Sword\Exception as SwordException;
 
 class Sword extends Component implements EngineInterface
 {

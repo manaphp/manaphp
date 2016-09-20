@@ -62,6 +62,7 @@ class PermissionBuilder extends Component
      * @param string $module
      *
      * @return array
+     * @throws \ManaPHP\Authorization\Rbac\PermissionBuilder\Exception
      */
     public function getModulePermissions($module)
     {

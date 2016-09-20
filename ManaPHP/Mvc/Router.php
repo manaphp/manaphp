@@ -243,7 +243,6 @@ class Router extends Component implements RouterInterface
         array_pop($parts);
         $module = implode('\\', $parts);
 
-
         if ($path === null) {
             $path = '/' . $module;
         }

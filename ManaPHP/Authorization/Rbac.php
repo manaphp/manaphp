@@ -81,14 +81,14 @@ class Rbac extends Component implements AuthorizationInterface
                 throw new RbacException('`:permission` has too many parts'/**m059345500bb0de141*/, ['permission' => $permissionName]);
         }
 
-        $r = [$module, $controller, $action];
-        return $r;
+        return [$module, $controller, $action];
     }
 
     /**
      * @param int $permissionId
      *
      * @return array
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     protected function _getRolesByPermissionId($permissionId)
     {
@@ -108,6 +108,7 @@ class Rbac extends Component implements AuthorizationInterface
      * @param string $userId
      *
      * @return array
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     protected function _getRolesByUserId($userId)
     {
@@ -127,8 +128,10 @@ class Rbac extends Component implements AuthorizationInterface
      * @param string $name
      *
      * @return false|\ManaPHP\Authorization\Rbac\Models\Permission
+     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Authorization\Rbac\Exception
      */
-    protected function _getPermisionByName($name)
+    protected function _getPermissionByName($name)
     {
         list($module, $controller, $action) = $this->_parsePermissionName($name);
         /**
@@ -143,13 +146,14 @@ class Rbac extends Component implements AuthorizationInterface
      * @param string $userId
      *
      * @return bool
+     * @throws \ManaPHP\Mvc\Model\Exception
      * @throws \ManaPHP\Authorization\Rbac\Exception
      */
     public function isAllowed($permissionName, $userId = null)
     {
         $userId = $userId ?: $this->userIdentity->getId();
 
-        $permission = $this->_getPermisionByName($permissionName);
+        $permission = $this->_getPermissionByName($permissionName);
         if (!$permission) {
             throw new RbacException('`:permission` permission is not exists'/**m06ab9af781c2de7f2*/, ['permission' => $permissionName]);
         }

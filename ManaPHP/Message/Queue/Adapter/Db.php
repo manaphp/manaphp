@@ -30,6 +30,7 @@ class Db extends Component implements QueueInterface
      * @param int    $priority
      *
      * @return void
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function push($topic, $body, $priority = self::PRIORITY_NORMAL)
     {
@@ -52,6 +53,7 @@ class Db extends Component implements QueueInterface
      * @param int    $timeout
      *
      * @return string|false
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function pop($topic, $timeout = PHP_INT_MAX)
     {
@@ -79,6 +81,7 @@ class Db extends Component implements QueueInterface
      * @param string $topic
      *
      * @return void
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function delete($topic)
     {
@@ -95,6 +98,7 @@ class Db extends Component implements QueueInterface
      * @param int    $priority
      *
      * @return int
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function length($topic, $priority = null)
     {
