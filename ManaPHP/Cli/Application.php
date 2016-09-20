@@ -10,6 +10,7 @@ use ManaPHP\Utility\Text;
  * @package ManaPHP\Cli
  *
  * @property \ManaPHP\Cli\ConsoleInterface $console
+ * @property \ManaPHP\Cli\RouterInterface  $router
  *
  */
 abstract class Application extends \ManaPHP\Application
@@ -32,6 +33,7 @@ abstract class Application extends \ManaPHP\Application
         $this->_dependencyInjector->setShared('console', 'ManaPHP\Cli\Console');
         $this->_dependencyInjector->setShared('arguments', 'ManaPHP\Cli\Arguments');
         $this->_dependencyInjector->setShared('crossword', 'ManaPHP\Text\Crossword');
+        $this->_dependencyInjector->setShared('router', 'ManaPHP\Cli\Router');
     }
 
     /**
@@ -43,42 +45,15 @@ abstract class Application extends \ManaPHP\Application
     public function handle($args = null)
     {
         $this->_args = $args ?: $GLOBALS['argv'];
-        if (count($this->_args) === 1) {
-            $command = 'help:list';
-        } else {
-            $command = $this->_args[1];
+
+        $command = count($this->_args) === 1 ? null : $this->_args[1];
+        if (!$this->router->handle($command)) {
+            $this->console->writeLn('command name is invalid: ' . $command);
+            return 1;
         }
 
-        $parts = explode(':', $command);
-        switch (count($parts)) {
-            case 1:
-                $controllerName = $parts[0];
-                $actionName = 'default';
-                break;
-            case 2:
-                $controllerName = $parts[0];
-                $actionName = $parts[1];
-                break;
-            default:
-                $this->console->writeLn('command name is invalid: ' . $command);
-                return 1;
-        }
-
-        $r = $this->dispatch($controllerName, $actionName);
-        return is_int($r) ? $r : 0;
-    }
-
-    /**
-     * @param string $controller
-     * @param string $action
-     *
-     * @return int
-     * @throws \ManaPHP\Cli\Application\Exception
-     */
-    public function dispatch($controller, $action)
-    {
-        $controllerName = Text::camelize($controller);
-        $actionName = lcfirst(Text::camelize($action));
+        $controllerName = Text::camelize($this->router->getControllerName());
+        $actionName = lcfirst(Text::camelize($this->router->getActionName()));
 
         $controllerClassName = null;
         foreach (['Application\\Cli\\Controllers\\' . $controllerName . 'Controller', 'ManaPHP\\Cli\\Controllers\\' . $controllerName . 'Controller'] as $class) {
@@ -115,6 +90,6 @@ abstract class Application extends \ManaPHP\Application
             }
         }
 
-        return $r;
+        return is_int($r) ? $r : 0;
     }
 }

@@ -1,14 +1,9 @@
 <?php
 namespace Application\Cli\Controllers;
 
+use ManaPHP\Cli\Controller;
 use ManaPHP\Utility\Text;
-use \ManaPHP\Cli\Controller;
 
-/**
- * Class MinifyController
- * @package Application\Cli\Controllers
- * @description minity the ManaPHP source code
- */
 class MinifyController extends Controller
 {
     protected function _getSourceFiles($dir)

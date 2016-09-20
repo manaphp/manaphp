@@ -1,12 +1,13 @@
 <?php
 namespace Application\Admin\Controllers;
 
-use ManaPHP\Authorization\Rbac\PermissionBuilder;
 use ManaPHP\Authorization\Rbac\Models\Permission;
+use ManaPHP\Authorization\Rbac\PermissionBuilder;
 use ManaPHP\Mvc\Controller;
 
 /**
  * Class RbacPermissionController
+ *
  * @package Application\Admin\Controllers
  *
  * @property \ManaPHP\Mvc\Application $application
