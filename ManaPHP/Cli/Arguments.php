@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Cli;
 
-use ManaPHP\Component;
 use ManaPHP\Cli\Arguments\Exception as ArgumentsException;
+use ManaPHP\Component;
 
 class Arguments extends Component implements ArgumentsInterface
 {

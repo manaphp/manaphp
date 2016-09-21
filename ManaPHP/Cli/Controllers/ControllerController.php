@@ -12,12 +12,7 @@ use ManaPHP\Utility\Text;
  */
 class ControllerController extends Controller
 {
-    public function defaultAction()
-    {
-
-    }
-
-    public function createAction()
+    public function createCommand()
     {
         $usage = 'format is invalid: {Module}:{A,B,C,D,E}';
 

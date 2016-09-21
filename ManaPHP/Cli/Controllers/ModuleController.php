@@ -14,12 +14,10 @@ use ManaPHP\Utility\Text;
  */
 class ModuleController extends Controller
 {
-    public function defaultAction()
-    {
-        return $this->listAction();
-    }
-
-    public function listAction()
+    /**
+     * @description list the modules
+     */
+    public function listCommand()
     {
         $modules = $this->application->getModules();
         sort($modules);
@@ -27,7 +25,11 @@ class ModuleController extends Controller
         $this->console->write(implode(',', $modules));
     }
 
-    public function createAction()
+    /**
+     * @description create a new module
+     * @throws \Application\Exception
+     */
+    public function createCommand()
     {
         $modules = ['dd'];
 

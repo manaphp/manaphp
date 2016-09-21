@@ -40,7 +40,11 @@ class MinifyController extends Controller
         return $content;
     }
 
-    public function defaultAction()
+    /**
+     * @description minify the ManaPHP framework source code
+     * @return int
+     */
+    public function defaultCommand()
     {
         $ManaPHPSrcDir = $this->alias->get('@manaphp');
         $ManaPHPDstDir = $ManaPHPSrcDir . '_' . date('ymd');
@@ -81,5 +85,7 @@ class MinifyController extends Controller
         $this->console->writeLn('total     lines: ' . $totalLines);
         $this->console->writeLn('class     lines: ' . $totalClassLines);
         $this->console->writeLn('interface lines:  ' . $totalInterfaceLines);
+
+        return 0;
     }
 }

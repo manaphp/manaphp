@@ -25,8 +25,39 @@ use ManaPHP\Component;
  * @property \ManaPHP\Cli\ConsoleInterface       $console
  * @property \ManaPHP\Cli\ArgumentsInterface     $arguments
  * @property \ManaPHP\Text\CrosswordInterface    $crossword
+ * @property \ManaPHP\Cli\RouterInterface        $cliRouter
  */
 abstract class Controller extends Component implements ControllerInterface
 {
+    /**
+     * @return array
+     */
+    public function getCommands()
+    {
+        $controller = basename(get_called_class(), 'Controller');
 
+        $commands = [];
+        $rc = new \ReflectionClass($this);
+        foreach (get_class_methods($this) as $method) {
+            if (preg_match('#^(.*)Command$#', $method, $match) !== 1) {
+                continue;
+            }
+            $command = lcfirst($controller);
+            $command .= $match[1] !== 'default' ? (':' . $match[1]) : '';
+
+            $rm = $rc->getMethod($match[0]);
+            $comment = $rm->getDocComment();
+            if ($comment && preg_match('#\*\s+@description\s+(.*)#', $comment, $match) === 1) {
+                $commands[$command] = $match[1];
+            } else {
+                $commands[$command] = '';
+            }
+        }
+
+        if (count($commands) === 1) {
+            $commands = [lcfirst($controller) => array_values($commands)[0]];
+        }
+
+        return $commands;
+    }
 }

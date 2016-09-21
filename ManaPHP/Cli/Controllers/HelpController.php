@@ -5,12 +5,11 @@ use ManaPHP\Cli\Controller;
 
 class HelpController extends Controller
 {
-    public function defaultAction()
-    {
-        return $this->listAction();
-    }
-
-    public function listAction()
+    /**
+     * @description list all commands
+     * @return int
+     */
+    public function listCommand()
     {
         $controllerNames = [];
         $commands = [];
@@ -18,39 +17,33 @@ class HelpController extends Controller
         foreach ($this->filesystem->glob('@app/Cli/Controllers/*Controller.php') as $file) {
             if (preg_match('#/(\w+/\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
                 $controllerClassName = str_replace('/', '\\', $matches[1]);
-                $controllerName = $matches[2];
-                $controllerNames[] = $controllerName;
-
-                $rc = new \ReflectionClass($controllerClassName);
-                foreach ($rc->getMethods() as $rm) {
-                    if (preg_match('#^(.*)Action$#', $rm->getName(), $matches) === 1) {
-                        $commands[] = lcfirst($controllerName) . ($matches[1] === 'default' ? '' : (':' . $matches[1]));
-                    }
-                }
+                $controllerNames[] = $matches[2];
+                /**
+                 * @var \ManaPHP\Cli\ControllerInterface $instance
+                 */
+                $instance = new $controllerClassName();
+                $commands = array_merge($commands, $instance->getCommands());
             }
         }
 
         foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
             if (preg_match('#/(\w+/\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
                 $controllerClassName = str_replace('/', '\\', $matches[1]);
-                $controllerName = $matches[2];
-                if (in_array($controllerName, $controllerNames, true)) {
+                if (in_array($matches[2], $controllerNames, true)) {
                     continue;
                 }
-
-                $rc = new \ReflectionClass($controllerClassName);
-                foreach ($rc->getMethods() as $rm) {
-                    if (preg_match('#^(.*)Action$#', $rm->getName(), $matches) === 1) {
-                        $commands[] = lcfirst($controllerName) . ($matches[1] === 'default' ? '' : (':' . $matches[1]));
-                    }
-                }
+                /**
+                 * @var \ManaPHP\Cli\ControllerInterface $instance
+                 */
+                $instance = new $controllerClassName();
+                $commands = array_merge($commands, $instance->getCommands());
             }
         }
 
-        sort($commands);
-
-        foreach ($commands as $command) {
-            $this->console->write($command . ' ');
+        ksort($commands);
+        foreach ($commands as $command => $description) {
+            $this->console->writeLn(str_pad($command, 18, ' ') . "  " . $description);
         }
+        return 0;
     }
 }

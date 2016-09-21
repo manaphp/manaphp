@@ -5,7 +5,7 @@ use ManaPHP\Cli\Controller;
 
 class ViewController extends Controller
 {
-    public function defaultAction()
+    public function listCommand()
     {
 
     }

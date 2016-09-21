@@ -4,7 +4,7 @@ namespace ManaPHP\Cli;
 interface ControllerInterface
 {
     /**
-     * @return int
+     * @return array
      */
-    public function defaultAction();
+    public function getCommands();
 }

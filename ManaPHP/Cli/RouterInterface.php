@@ -18,7 +18,7 @@ interface RouterInterface
      *
      * @return bool
      */
-    public function handle($cmd);
+    public function route($cmd);
 
     /**
      * @param string $alias

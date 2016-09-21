@@ -3,8 +3,20 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
 
+/**
+ * Class Router
+ *
+ * @package ManaPHP\Cli
+ *
+ * @property \ManaPHP\Text\CrosswordInterface $crossword
+ */
 class Router extends Component implements RouterInterface
 {
+    /**
+     * @var bool
+     */
+    protected $_guessCommand = true;
+
     /**
      * @var array
      */
@@ -37,11 +49,50 @@ class Router extends Component implements RouterInterface
     }
 
     /**
+     * @return array
+     */
+    protected function _getControllers()
+    {
+        $controllers = [];
+
+        foreach ($this->filesystem->glob('@app/Cli/Controllers/*Controller.php') as $file) {
+            if (preg_match('#/(\w+/\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
+                $controllers[$matches[2]] = str_replace('/', '\\', $matches[1]);
+            }
+        }
+
+        foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
+            if (preg_match('#/(\w+/\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
+                if (in_array($matches[2], $controllers, true)) {
+                    continue;
+                }
+
+                $controllers[$matches[2]] = str_replace('/', '\\', $matches[1]);
+            }
+        }
+
+        return $controllers;
+    }
+
+    protected function _getCommands($controller)
+    {
+        $commands = [];
+
+        foreach (get_class_methods($controller) as $method) {
+            if (preg_match('#^(.*)Command$#', $method, $match) === 1) {
+                $commands[] = $match[1];
+            }
+        }
+
+        return $commands;
+    }
+
+    /**
      * @param string $cmd
      *
      * @return bool
      */
-    public function handle($cmd)
+    public function route($cmd)
     {
         $this->_controllerName = null;
         $this->_actionName = null;
@@ -55,16 +106,39 @@ class Router extends Component implements RouterInterface
         $parts = explode(':', $command);
         switch (count($parts)) {
             case 1:
-                $this->_controllerName = $parts[0];
-                $this->_actionName = 'default';
-                return true;
+                $controllerName = $parts[0];
+                $actionName = null;
+                break;
             case 2:
-                $this->_controllerName = $parts[0];
-                $this->_actionName = $parts[1];
-                return true;
+                $controllerName = $parts[0];
+                $actionName = $parts[1];
+                break;
+            default:
+                return false;
         }
 
-        return false;
+        if ($this->_guessCommand) {
+            $controllers = $this->_getControllers();
+            $controllerName = $this->crossword->guess(array_keys($controllers), $controllerName);
+            if (!$controllerName) {
+                return false;
+            }
+            $commands = $this->_getCommands($controllers[$controllerName]);
+            if ($actionName === null && count($commands) === 1) {
+                $actionName = $commands[0];
+            } else {
+                $actionName = $this->crossword->guess($commands, $actionName);
+                if (!$actionName) {
+                    return false;
+                }
+            }
+        } else {
+            $actionName = $actionName ?: 'default';
+        }
+
+        $this->_controllerName = $controllerName;
+        $this->_actionName = $actionName;
+        return true;
     }
 
     /**

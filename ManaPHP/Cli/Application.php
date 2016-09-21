@@ -10,7 +10,7 @@ use ManaPHP\Utility\Text;
  * @package ManaPHP\Cli
  *
  * @property \ManaPHP\Cli\ConsoleInterface $console
- * @property \ManaPHP\Cli\RouterInterface  $router
+ * @property \ManaPHP\Cli\RouterInterface  $cliRouter
  *
  */
 abstract class Application extends \ManaPHP\Application
@@ -33,7 +33,7 @@ abstract class Application extends \ManaPHP\Application
         $this->_dependencyInjector->setShared('console', 'ManaPHP\Cli\Console');
         $this->_dependencyInjector->setShared('arguments', 'ManaPHP\Cli\Arguments');
         $this->_dependencyInjector->setShared('crossword', 'ManaPHP\Text\Crossword');
-        $this->_dependencyInjector->setShared('router', 'ManaPHP\Cli\Router');
+        $this->_dependencyInjector->setShared('cliRouter', 'ManaPHP\Cli\Router');
     }
 
     /**
@@ -47,13 +47,13 @@ abstract class Application extends \ManaPHP\Application
         $this->_args = $args ?: $GLOBALS['argv'];
 
         $command = count($this->_args) === 1 ? null : $this->_args[1];
-        if (!$this->router->handle($command)) {
+        if (!$this->cliRouter->route($command)) {
             $this->console->writeLn('command name is invalid: ' . $command);
             return 1;
         }
 
-        $controllerName = Text::camelize($this->router->getControllerName());
-        $actionName = lcfirst(Text::camelize($this->router->getActionName()));
+        $controllerName = Text::camelize($this->cliRouter->getControllerName());
+        $actionName = lcfirst(Text::camelize($this->cliRouter->getActionName()));
 
         $controllerClassName = null;
         foreach (['Application\\Cli\\Controllers\\' . $controllerName . 'Controller', 'ManaPHP\\Cli\\Controllers\\' . $controllerName . 'Controller'] as $class) {
@@ -69,26 +69,13 @@ abstract class Application extends \ManaPHP\Application
 
         $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
 
-        $actionMethod = $actionName . 'Action';
+        $actionMethod = $actionName . 'Command';
         if (!method_exists($controllerInstance, $actionMethod)) {
             $this->console->writeLn('`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, ['command' => lcfirst($controllerName) . ':' . $actionName]);
             return 1;
         }
 
-        // Calling beforeExecuteRoute as callback
-        if (method_exists($controllerInstance, 'beforeExecuteRoute')) {
-            if ($controllerInstance->beforeExecuteRoute($this) === false) {
-                return 0;
-            }
-        }
-
         $r = $controllerInstance->$actionMethod();
-
-        if (method_exists($controllerInstance, 'afterExecuteRoute')) {
-            if ($controllerInstance->afterExecuteRoute($this) === false) {
-                return 0;
-            }
-        }
 
         return is_int($r) ? $r : 0;
     }

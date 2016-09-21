@@ -21,6 +21,12 @@ class Crossword
 
         $word = strtolower($word);
 
+        foreach ($words as $v) {
+            if (strtolower($v) === $word) {
+                return $v;
+            }
+        }
+
         /** @noinspection ForeachSourceInspection */
         foreach ($words as $k => $v) {
             if (strspn($word, strtolower($v)) !== strlen($word)) {
