@@ -2,29 +2,31 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
+use ManaPHP\Cli\Arguments\Exception as ArgumentsException;
 
 class Arguments extends Component implements ArgumentsInterface
 {
     /**
      * @var array
      */
-    protected $_options = [];
-
-    /**
-     * @var array
-     */
     protected $_arguments;
 
     /**
-     * @param string $name
-     * @param int    $type
-     * @param string $description
+     * Arguments constructor.
      *
-     * @return void
+     * @param array $_arguments
      */
-    public function set($name, $type, $description = '')
+    public function __construct($_arguments = null)
     {
-        $this->_options[$name] = ['type' => $type, 'description' => $description];
+        if ($_arguments === null) {
+            if (isset($GLOBALS['argv'][2])) {
+                $this->_arguments = array_slice($GLOBALS['argv'], 2);
+            } else {
+                $this->_arguments = [];
+            }
+        } else {
+            $this->_arguments = $_arguments;
+        }
     }
 
     /**
@@ -32,22 +34,35 @@ class Arguments extends Component implements ArgumentsInterface
      * @param mixed  $defaultValue
      *
      * @return mixed
+     * @throws \ManaPHP\Cli\Arguments\Exception
      */
     public function get($name = null, $defaultValue = null)
     {
-        if ($name === null) {
-            if (isset($GLOBALS['argv'][2])) {
-                return array_slice($GLOBALS['argv'], 2);
-            } else {
-                return [];
+        foreach (explode(':', $name) as $p) {
+            $is_short = strlen($p) === 1;
+
+            for ($i = 0; $i < count($this->_arguments); $i++) {
+                if ($is_short) {
+                    if ($this->_arguments[$i] !== '-' . $p) {
+                        continue;
+                    }
+                } else {
+                    if ($this->_arguments[$i] !== '--' . $p) {
+                        continue;
+                    }
+                }
+
+                if (isset($this->_arguments[$i + 1])) {
+                    if ($this->_arguments[$i + 1] === '-') {
+                        throw new ArgumentsException('`:argument` argument value is invalid', ['argument' => $name]);
+                    } else {
+                        return $this->_arguments[$i + 1];
+                    }
+                }
             }
         }
 
-        if ($this->_arguments === null) {
-            $this->_arguments = [];
-        }
-
-        return isset($this->_arguments[$name]) ? $this->_arguments[$name] : $defaultValue;
+        return $defaultValue;
     }
 
     /**
@@ -57,19 +72,24 @@ class Arguments extends Component implements ArgumentsInterface
      */
     public function has($name)
     {
-        if ($this->_arguments === null) {
-            $this->_arguments = [];
+        foreach (explode(':', $name) as $p) {
+            $is_short = strlen($p) === 1;
+
+            for ($i = 0; $i < count($this->_arguments); $i++) {
+                if ($is_short) {
+                    if ($this->_arguments[$i] !== '-' . $p) {
+                        continue;
+                    }
+                } else {
+                    if ($this->_arguments[$i] !== '--' . $p) {
+                        continue;
+                    }
+                }
+
+                return true;
+            }
         }
 
-        return isset($this->_arguments[$name]);
-    }
-
-    public function _parse()
-    {
-        $shorts = '';
-
-        foreach ($this->_options as $k => $v) {
-
-        }
+        return false;
     }
 }
