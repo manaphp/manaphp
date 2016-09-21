@@ -13,6 +13,13 @@ interface FilesystemInterface
     /**
      * @param string $file
      *
+     * @return int|false
+     */
+    public function fileSize($file);
+
+    /**
+     * @param string $file
+     *
      * @return void
      */
     public function fileDelete($file);

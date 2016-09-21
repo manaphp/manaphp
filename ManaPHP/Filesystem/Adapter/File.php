@@ -22,6 +22,16 @@ class File extends Component implements FilesystemInterface
     /**
      * @param string $file
      *
+     * @return int|false
+     */
+    public function fileSize($file)
+    {
+        return @filesize($this->alias->resolve($file));
+    }
+
+    /**
+     * @param string $file
+     *
      * @return void
      */
     public function fileDelete($file)

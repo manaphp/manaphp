@@ -314,6 +314,13 @@ class Response extends Component implements ResponseInterface
             throw new ResponseException('Response was already sent'/**m0b202f9440b7adc49*/);
         }
 
+        if ($this->_file) {
+            if (!$this->filesystem->fileExists($this->_file)) {
+                throw new ResponseException('Sent file is not exists: `:file`'/**m0ff2d0759014d7170*/, ['file' => $this->_file]);
+            }
+            $this->setHeader('Content-Length', $this->filesystem->fileSize($this->_file));
+        }
+
         if (!headers_sent()) {
             $this->sendHeaders();
         }
@@ -321,8 +328,8 @@ class Response extends Component implements ResponseInterface
         if ($this->_content !== null) {
             echo $this->_content;
         } else {
-            if (is_string($this->_file) && $this->_file !== '') {
-                readfile($this->_file);
+            if ($this->_file) {
+                readfile($this->alias->resolve($this->_file));
             }
         }
 
@@ -346,13 +353,8 @@ class Response extends Component implements ResponseInterface
             $attachmentName = basename($file);
         }
 
-        if (!file_exists($file)) {
-            throw new ResponseException('Sent file is not exists: `:file`'/**m0ff2d0759014d7170*/, ['file' => $file]);
-        }
-
         $this->_file = $file;
 
-        $this->setHeader('Content-Length', filesize($file));
         $this->setAttachment($attachmentName);
 
         return $this;
