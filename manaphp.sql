@@ -81,4 +81,14 @@ CREATE TABLE `rbac_user_role` (
   `created_time` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id_role_id` (`user_id`,`role_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+#ManaPHP\Security\RateLimiter\Adapter\Db\Model
+CREATE TABLE `manaphp_rate_limiter` (
+  `hash` char(32) CHARACTER SET ascii NOT NULL,
+  `id` char(32) NOT NULL,
+  `resource` char(128) NOT NULL,
+  `times` int(11) NOT NULL,
+  `expired_time` int(11) NOT NULL,
+  PRIMARY KEY (`hash`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

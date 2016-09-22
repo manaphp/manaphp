@@ -77,6 +77,8 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\FilesystemInterface                  $filesystem
  * @property \ManaPHP\Security\RandomInterface             $random
  * @property \ManaPHP\Message\QueueInterface               $messageQueue
+ * @property \ManaPHP\Text\CrosswordInterface              $crossword
+ * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
  */
 class Di implements DiInterface
 {
