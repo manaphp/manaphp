@@ -122,4 +122,19 @@ interface FilesystemInterface
      * @return array
      */
     public function scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING);
+
+    /**
+     * @param string $dir
+     * @param string $pattern
+     *
+     * @return array
+     */
+    public function files($dir, $pattern = null);
+
+    /**
+     * @param string $dir
+     *
+     * @return array
+     */
+    public function directories($dir);
 }

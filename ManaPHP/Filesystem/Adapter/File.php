@@ -340,4 +340,42 @@ class File extends Component implements FilesystemInterface
 
         return is_array($r) ? $r : [];
     }
+
+    /**
+     * @param string $dir
+     * @param string $pattern
+     *
+     * @return array
+     */
+    public function files($dir, $pattern = null)
+    {
+        $dir = $this->alias->resolve($dir);
+
+        $files = [];
+        foreach ($this->scandir($dir) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            if (!is_file($dir . '/' . $item)) {
+                continue;
+            }
+
+            if ($pattern === null || fnmatch($pattern, $item)) {
+                $files[] = $dir . '/' . $item;
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * @param string $dir
+     *
+     * @return array
+     */
+    public function directories($dir)
+    {
+        return $this->glob($dir . '/*', GLOB_ONLYDIR);
+    }
 }
