@@ -57,6 +57,7 @@ class FactoryDefault extends Di
             'filesystem' => 'ManaPHP\Filesystem\Adapter\File',
             'random' => 'ManaPHP\Security\Random',
             'messageQueue' => 'ManaPHP\Message\Queue\Adapter\Db',
+            'crossword' => 'ManaPHP\Text\Crossword',
             'tasksMetadata' => ['class' => 'ManaPHP\Task\Metadata', 'parameters' => ['ManaPHP\Task\Metadata\Adapter\Redis']],
             'viewsCache' => [
                 'class' => 'ManaPHP\Cache\Adapter\File',

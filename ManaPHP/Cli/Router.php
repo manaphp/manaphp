@@ -2,6 +2,7 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
+use ManaPHP\Utility\Text;
 
 /**
  * Class Router
@@ -56,18 +57,18 @@ class Router extends Component implements RouterInterface
         $controllers = [];
 
         foreach ($this->filesystem->glob('@app/Cli/Controllers/*Controller.php') as $file) {
-            if (preg_match('#/(\w+/\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
-                $controllers[$matches[2]] = str_replace('/', '\\', $matches[1]);
+            if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
+                $controllers[] = $matches[1];
             }
         }
 
         foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
-            if (preg_match('#/(\w+/\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
-                if (in_array($matches[2], $controllers, true)) {
+            if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
+                if (in_array($matches[1], $controllers, true)) {
                     continue;
                 }
 
-                $controllers[$matches[2]] = str_replace('/', '\\', $matches[1]);
+                $controllers[] = $matches[1];
             }
         }
 
@@ -78,7 +79,15 @@ class Router extends Component implements RouterInterface
     {
         $commands = [];
 
-        foreach (get_class_methods($controller) as $method) {
+        $controllerClassName = basename($this->alias->get('@app')) . '\Cli\Controllers\\' . $controller . 'Controller';
+        if (!class_exists($controllerClassName)) {
+            $controllerClassName = 'ManaPHP\Cli\Controllers\\' . $controller . 'Controller';
+            if (!class_exists($controllerClassName)) {
+                return [];
+            }
+        }
+
+        foreach (get_class_methods($controllerClassName) as $method) {
             if (preg_match('#^(.*)Command$#', $method, $match) === 1) {
                 $commands[] = $match[1];
             }
@@ -117,23 +126,33 @@ class Router extends Component implements RouterInterface
                 return false;
         }
 
-        if ($this->_guessCommand) {
+        if ($this->_guessCommand && strlen($controllerName) <= 3) {
             $controllers = $this->_getControllers();
-            $controllerName = $this->crossword->guess(array_keys($controllers), $controllerName);
+            $controllerName = $this->crossword->guess($controllers, $controllerName);
             if (!$controllerName) {
                 return false;
             }
-            $commands = $this->_getCommands($controllers[$controllerName]);
-            if ($actionName === null && count($commands) === 1) {
+        } else {
+            $controllerName = Text::camelize($controllerName);
+        }
+
+        if ($actionName === null) {
+            $commands = $this->_getCommands($controllerName);
+            if (count($commands) === 1) {
                 $actionName = $commands[0];
             } else {
+                return false;
+            }
+        } else {
+            if ($this->_guessCommand && strlen($actionName) <= 2) {
+                $commands = $this->_getCommands($controllerName);
                 $actionName = $this->crossword->guess($commands, $actionName);
                 if (!$actionName) {
                     return false;
                 }
+            } else {
+                $actionName = lcfirst(Text::camelize($actionName));
             }
-        } else {
-            $actionName = $actionName ?: 'default';
         }
 
         $this->_controllerName = $controllerName;

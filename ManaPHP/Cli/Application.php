@@ -32,7 +32,6 @@ abstract class Application extends \ManaPHP\Application
         $this->_dependencyInjector->setShared('application', $this);
         $this->_dependencyInjector->setShared('console', 'ManaPHP\Cli\Console');
         $this->_dependencyInjector->setShared('arguments', 'ManaPHP\Cli\Arguments');
-        $this->_dependencyInjector->setShared('crossword', 'ManaPHP\Text\Crossword');
         $this->_dependencyInjector->setShared('cliRouter', 'ManaPHP\Cli\Router');
     }
 
@@ -52,8 +51,10 @@ abstract class Application extends \ManaPHP\Application
             return 1;
         }
 
-        $controllerName = Text::camelize($this->cliRouter->getControllerName());
-        $actionName = lcfirst(Text::camelize($this->cliRouter->getActionName()));
+        $controllerName = $this->cliRouter->getControllerName();
+        $actionName = lcfirst($this->cliRouter->getActionName());
+
+        $this->console->writeLn('executed command is `' . Text::underscore($controllerName) . ':' . Text::underscore($actionName) . '`');
 
         $controllerClassName = null;
         foreach (['Application\\Cli\\Controllers\\' . $controllerName . 'Controller', 'ManaPHP\\Cli\\Controllers\\' . $controllerName . 'Controller'] as $class) {
