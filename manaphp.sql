@@ -92,3 +92,13 @@ CREATE TABLE `manaphp_rate_limiter` (
   `expired_time` int(11) NOT NULL,
   PRIMARY KEY (`hash`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+#ManaPHP\Meter\Linear\Model
+CREATE TABLE `manaphp_linear_meter` (
+  `hash` char(32) CHARACTER SET ascii NOT NULL,
+  `type` char(16) NOT NULL,
+  `id` char(64) NOT NULL,
+  `count` int(11) NOT NULL,
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`hash`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

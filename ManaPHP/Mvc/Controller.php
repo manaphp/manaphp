@@ -73,6 +73,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Security\RandomInterface             $random
  * @property \ManaPHP\Message\QueueInterface               $messageQueue
  * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
+ * @property \ManaPHP\Meter\LinearInterface                $linearMeter
  */
 abstract class Controller extends Component implements ControllerInterface
 {
