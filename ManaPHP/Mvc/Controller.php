@@ -74,6 +74,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Message\QueueInterface               $messageQueue
  * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
  * @property \ManaPHP\Meter\LinearInterface                $linearMeter
+ * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
  */
 abstract class Controller extends Component implements ControllerInterface
 {

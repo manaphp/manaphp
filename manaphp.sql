@@ -102,3 +102,15 @@ CREATE TABLE `manaphp_linear_meter` (
   `created_time` int(11) NOT NULL,
   PRIMARY KEY (`hash`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+#ManaPHP\Meter\Round\Model
+CREATE TABLE `manaphp_round_meter` (
+  `hash` char(32) CHARACTER SET ascii NOT NULL,
+  `type` char(16) NOT NULL,
+  `id` char(32) NOT NULL,
+  `begin_time` int(11) NOT NULL,
+  `duration` int(11) NOT NULL,
+  `count` int(11) NOT NULL,
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`hash`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8

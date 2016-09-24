@@ -80,6 +80,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Text\CrosswordInterface              $crossword
  * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
  * @property \ManaPHP\Meter\LinearInterface                $linearMeter
+ * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
  */
 class Di implements DiInterface
 {

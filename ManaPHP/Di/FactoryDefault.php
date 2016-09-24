@@ -60,6 +60,7 @@ class FactoryDefault extends Di
             'crossword' => 'ManaPHP\Text\Crossword',
             'rateLimiter' => 'ManaPHP\Security\RateLimiter\Adapter\Db',
             'linearMeter' => 'ManaPHP\Meter\Linear',
+            'roundMeter' => 'ManaPHP\Meter\Round',
             'tasksMetadata' => ['class' => 'ManaPHP\Task\Metadata', 'parameters' => ['ManaPHP\Task\Metadata\Adapter\Redis']],
             'viewsCache' => [
                 'class' => 'ManaPHP\Cache\Adapter\File',
