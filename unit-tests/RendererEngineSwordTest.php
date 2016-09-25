@@ -164,6 +164,61 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
+    public function test_Can()
+    {
+        $source = <<<'EOT'
+@can('home:index:index')
+EOT;
+        $compiled = <<<'EOT'
+<?php if ($di->authorization->isAllowed('home:index:index')): ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
+    public function test_Allow()
+    {
+        $source = <<<'EOT'
+@allow('m:c:a',<ul><ul>)
+EOT;
+        $compiled = <<<'EOT'
+<?php if ($di->authorization->isAllowed('m:c:a')): ?><ul><ul><?php endif ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
+    public function test_Cannot()
+    {
+        $source = <<<'EOT'
+@cannot('home:index:index')
+EOT;
+        $compiled = <<<'EOT'
+<?php if (!$di->authorization->isAllowed('home:index:index')): ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
+    public function test_EndCan()
+    {
+        $source = <<<'EOT'
+@endcan
+EOT;
+        $compiled = <<<'EOT'
+<?php endif; ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
+    public function test_EndCannot()
+    {
+        $source = <<<'EOT'
+@endcannot
+EOT;
+        $compiled = <<<'EOT'
+<?php endif; ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
     public function test_Endif()
     {
         $source = <<<'EOT'

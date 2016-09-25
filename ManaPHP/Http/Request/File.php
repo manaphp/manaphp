@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Http\Request;
 
+use ManaPHP\Component;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Utility\Text;
 
@@ -28,7 +29,7 @@ use ManaPHP\Utility\Text;
  *    }
  *</code>
  */
-class File implements FileInterface
+class File extends Component implements FileInterface
 {
     /**
      * @var string
@@ -164,22 +165,18 @@ class File implements FileInterface
             throw new FileException('error code of upload file is not UPLOAD_ERR_OK: :error'/**m0454e71638e03eee6*/, ['error' => $this->_file['error']]);
         }
 
-        if (is_file($destination)) {
+        if ($this->filesystem->fileExists($destination)) {
             throw new FileException('`:file` file already exists'/**m0402f85613fe0f167*/, ['file' => $destination]);
         }
 
-        $dir = dirname($destination);
-        /** @noinspection NotOptimalIfConditionsInspection */
-        if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new FileException('unable to create `:dir` uploaded directory: :message'/**m01de5a9e19a205e54*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
-        }
+        $this->filesystem->dirCreate(dirname($destination));
 
-        if (!move_uploaded_file($this->_file['tmp_name'], $destination)) {
+        if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($destination))) {
             throw new FileException('move_uploaded_file to `:destination` failed: :message'/**m01d834f396d846d2b*/,
                 ['destination' => $destination, 'message' => Exception::getLastErrorMessage()]);
         }
 
-        if (!chmod($destination, 0644)) {
+        if (!chmod($this->alias->resolve($destination), 0644)) {
             throw new FileException('chmod `:destination` destination failed: :message'/**m0a0e7dc6898fb4abe*/,
                 ['destination' => $destination, 'message' => Exception::getLastErrorMessage()]);
         }

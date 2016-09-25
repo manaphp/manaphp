@@ -349,6 +349,44 @@ class Sword extends Component implements EngineInterface
     }
 
     /**
+     * Compile the can statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileCan($expression)
+    {
+        return "<?php if (\$di->authorization->isAllowed{$expression}): ?>";
+    }
+
+    /**
+     * Compile the allow statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileAllow($expression)
+    {
+        $parts = explode(',', substr($expression, 1, -1));
+        $expr = $this->compileString($parts[1]);
+        return "<?php if (\$di->authorization->isAllowed($parts[0])): ?>$expr<?php endif ?>";
+    }
+
+    /**
+     * Compile the cannot statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileCannot($expression)
+    {
+        return "<?php if (!\$di->authorization->isAllowed{$expression}): ?>";
+    }
+
+    /**
      * Compile the if statements into valid PHP.
      *
      * @param  string $expression
@@ -440,6 +478,34 @@ class Sword extends Component implements EngineInterface
         $expression
     ) {
         return '<?php endforeach; ?>';
+    }
+
+    /**
+     * Compile the end-can statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileEndcan(
+        /** @noinspection PhpUnusedParameterInspection */
+        $expression
+    ) {
+        return '<?php endif; ?>';
+    }
+
+    /**
+     * Compile the end-cannot statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileEndcannot(
+        /** @noinspection PhpUnusedParameterInspection */
+        $expression
+    ) {
+        return '<?php endif; ?>';
     }
 
     /**
