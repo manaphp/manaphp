@@ -11,6 +11,7 @@ class ImageAdapterGdTest extends TestCase
     {
         parent::setUp();
 
+        $di=new \ManaPHP\Di\FactoryDefault();
         $this->_originalImage = __DIR__ . '/Image/original.jpg';
         $this->_resultDirectory = __DIR__ . '/Image/Adapter/Gd/Result';
         if (!@mkdir($this->_resultDirectory, 0755, true) && !is_dir($this->_resultDirectory)) {

@@ -11,6 +11,8 @@ class ImageAdapterImagickTest extends TestCase
     {
         parent::setUp();
 
+        new \ManaPHP\Di\FactoryDefault();
+
         $this->_originalImage = __DIR__ . '/Image/original.jpg';
         $this->_resultDirectory = __DIR__ . '/Image/Adapter/Imagick/Result';
         if (!@mkdir($this->_resultDirectory, 0755, true) && !is_dir($this->_resultDirectory)) {

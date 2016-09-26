@@ -1,19 +1,16 @@
 <?php
 namespace ManaPHP\Image\Adapter;
 
+use ManaPHP\Component;
 use ManaPHP\Image\Adapter\Gd\Exception as GdException;
 use ManaPHP\Image\AdapterInterface;
 
-class Gd implements AdapterInterface
+class Gd extends Component implements AdapterInterface
 {
     /**
      * @var string
      */
     protected $_file;
-    /**
-     * @var string
-     */
-    protected $_real_path;
 
     /**
      * @var resource
@@ -41,29 +38,28 @@ class Gd implements AdapterInterface
             throw new GdException('gd is not installed, or the extension is not loaded'/**m02d21d9765a90c68b*/);
         }
 
-        if (is_file($file)) {
-            $this->_file = $file;
-            $this->_real_path = realpath($this->_file);
-            $imageInfo = getimagesize($this->_real_path);
-            $this->_width = $imageInfo[0];
-            /** @noinspection MultiAssignmentUsageInspection */
-            $this->_height = $imageInfo[1];
-            /** @noinspection MultiAssignmentUsageInspection */
-            $type = $imageInfo[2];
-
-            if ($type === IMAGETYPE_GIF) {
-                $this->_image = imagecreatefromgif($this->_real_path);
-            } elseif ($type === IMAGETYPE_JPEG) {
-                $this->_image = imagecreatefromjpeg($this->_real_path);
-            } elseif ($type === IMAGETYPE_PNG) {
-                $this->_image = imagecreatefrompng($this->_real_path);
-            } else {
-                throw new GdException('Installed GD does not support such images'/**m0fc930b8083eb2b4f*/);
-            }
-            imagesavealpha($this->_image, true);
-        } else {
+        $this->_file = realpath($this->alias->resolve($file));
+        if (!$this->_file) {
             throw new GdException('`:file` file is not exists'/**m028d68547edc10000*/, ['file' => $file]);
         }
+
+        $imageInfo = getimagesize($this->_file);
+        $this->_width = $imageInfo[0];
+        /** @noinspection MultiAssignmentUsageInspection */
+        $this->_height = $imageInfo[1];
+        /** @noinspection MultiAssignmentUsageInspection */
+        $type = $imageInfo[2];
+
+        if ($type === IMAGETYPE_GIF) {
+            $this->_image = imagecreatefromgif($this->_file);
+        } elseif ($type === IMAGETYPE_JPEG) {
+            $this->_image = imagecreatefromjpeg($this->_file);
+        } elseif ($type === IMAGETYPE_PNG) {
+            $this->_image = imagecreatefrompng($this->_file);
+        } else {
+            throw new GdException('Installed GD does not support such images'/**m0fc930b8083eb2b4f*/);
+        }
+        imagesavealpha($this->_image, true);
     }
 
     /**
@@ -194,8 +190,8 @@ class Gd implements AdapterInterface
     ) {
         $textColor = imagecolorallocatealpha($this->_image, ($color >> 16) & 0xFF, ($color >> 8) & 0xFF,
             $color & 0xFF, abs(1 - $opacity) * 127);
-        if ($font_file !== null) {
-            imagettftext($this->_image, $size, 0, $offsetX, $offsetY, $textColor, $font_file, $text);
+        if ($font_file) {
+            imagettftext($this->_image, $size, 0, $offsetX, $offsetY, $textColor, $this->alias->resolve($font_file), $text);
         } else {
             imagestring($this->_image, $size, $offsetX, $offsetY, $text, $textColor);
         }
@@ -214,6 +210,8 @@ class Gd implements AdapterInterface
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
+        $file = $this->alias->resolve($file);
+
         $maskImageInfo = getimagesize($file);
         $maskWidth = $maskImageInfo[0];
         /** @noinspection MultiAssignmentUsageInspection */
@@ -256,13 +254,19 @@ class Gd implements AdapterInterface
      *
      * @throws \ManaPHP\Image\Adapter\Exception
      */
-    public function save($file = null, $quality = 80)
+    public function save($file, $quality = 80)
     {
+        $file = $this->alias->resolve($file);
+
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         if ($ext === '') {
             $ext = 'jpg';
         }
 
+        $dir = dirname($file);
+        if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+            throw new GdException('create `:dir` image directory failed: :message'/**m0798bf2f57ec615b2*/, ['dir' => $dir, 'message' => error_get_last()['message']]);
+        }
         if ($ext === 'gif') {
             imagegif($this->_image, $file);
         } elseif ($ext === 'jpg' || $ext === 'jpeg') {
@@ -272,5 +276,10 @@ class Gd implements AdapterInterface
         } else {
             throw new GdException('`:extension` is not supported by Installed GD'/**m0e69270218b72270a*/, ['extension' => $ext]);
         }
+    }
+
+    public function __destruct()
+    {
+        imagedestroy($this->_image);
     }
 }

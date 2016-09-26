@@ -113,4 +113,15 @@ CREATE TABLE `manaphp_round_meter` (
   `count` int(11) NOT NULL,
   `created_time` int(11) NOT NULL,
   PRIMARY KEY (`hash`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+#ManaPHP\Message\Queue\Adapter\Db\Model
+CREATE TABLE `manaphp_message_queue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `deleted` tinyint(4) NOT NULL,
+  `topic` char(16) NOT NULL,
+  `body` varchar(4000) NOT NULL,
+  `priority` tinyint(4) NOT NULL,
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;

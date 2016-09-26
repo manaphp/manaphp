@@ -11,6 +11,8 @@ class ImageTest extends TestCase
     {
         parent::setUp();
 
+        new \ManaPHP\Di\FactoryDefault();
+
         $this->_originalImage = __DIR__ . '/Image/original.jpg';
         $this->_resultDirectory = __DIR__ . '/Image/Result';
     }

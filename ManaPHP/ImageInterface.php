@@ -133,5 +133,5 @@ interface ImageInterface
      * @param string $file
      * @param int    $quality
      */
-    public function save($file = null, $quality = 80);
+    public function save($file, $quality = 80);
 }

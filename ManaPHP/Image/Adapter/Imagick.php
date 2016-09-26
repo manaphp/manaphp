@@ -2,20 +2,16 @@
 
 namespace ManaPHP\Image\Adapter;
 
+use ManaPHP\Component;
 use ManaPHP\Image\Adapter\Imagick\Exception as ImagickException;
 use ManaPHP\Image\AdapterInterface;
 
-class Imagick implements AdapterInterface
+class Imagick extends Component implements AdapterInterface
 {
     /**
      * @var string
      */
     protected $_file;
-
-    /**
-     * @var string
-     */
-    protected $_real_path;
 
     /**
      * @var \Imagick
@@ -43,24 +39,22 @@ class Imagick implements AdapterInterface
             throw new ImagickException('Imagick is not installed, or the extension is not loaded'/**m08adb1315d01ac35d*/);
         }
 
-        $this->_file = $file;
-        $this->_image = new \Imagick();
-        $real_path = realpath($this->_file);
-        if ($real_path) {
-            $this->_real_path = $real_path;
-            if (!$this->_image->readImage($this->_real_path)) {
-                throw new ImagickException('Imagick::readImage `:file` failed'/**m0bde8a84f102e2334*/, ['file' => $this->_file]);
-            }
-
-            if ($this->_image->getNumberImages() !== 1) {
-                throw new ImagickException('not support multiple iterations: `:file`'/**m02c9881cd81a06a01*/, ['file' => $this->_file]);
-            }
-
-            if (!$this->_image->getImageAlphaChannel()) {
-                $this->_image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
-            }
-        } else {
+        $this->_file = realpath($this->alias->resolve($file));
+        if (!$this->_file) {
             throw new ImagickException('`:file` file is not exists'/**m03d72c93d7f919633*/, ['file' => $file]);
+        }
+
+        $this->_image = new \Imagick();
+        if (!$this->_image->readImage($this->_file)) {
+            throw new ImagickException('Imagick::readImage `:file` failed'/**m0bde8a84f102e2334*/, ['file' => $file]);
+        }
+
+        if ($this->_image->getNumberImages() !== 1) {
+            throw new ImagickException('not support multiple iterations: `:file`'/**m02c9881cd81a06a01*/, ['file' => $file]);
+        }
+
+        if (!$this->_image->getImageAlphaChannel()) {
+            $this->_image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
         }
 
         $this->_width = $this->_image->getImageWidth();
@@ -175,7 +169,7 @@ class Imagick implements AdapterInterface
         $textColor = sprintf('rgb(%u,%u,%u)', ($color >> 16) & 0xFF, ($color >> 8) & 0xFF, $color & 0xFF);
         $draw->setFillColor(new \ImagickPixel($textColor));
         if ($font_file) {
-            $draw->setFont($font_file);
+            $draw->setFont($this->alias->resolve($font_file));
         }
         $draw->setFontSize($size);
         $draw->setFillOpacity($opacity);
@@ -197,7 +191,7 @@ class Imagick implements AdapterInterface
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
-        $watermark = new \Imagick($file);
+        $watermark = new \Imagick($this->alias->resolve($file));
 
         if ($watermark->getImageAlphaChannel() === \Imagick::ALPHACHANNEL_UNDEFINED) {
             $watermark->setImageOpacity($opacity);
@@ -223,8 +217,10 @@ class Imagick implements AdapterInterface
      *
      * @throws \ManaPHP\Image\Adapter\Exception
      */
-    public function save($file = null, $quality = 80)
+    public function save($file, $quality = 80)
     {
+        $file = $this->alias->resolve($file);
+
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
         $this->_image->setFormat($ext);
@@ -238,13 +234,9 @@ class Imagick implements AdapterInterface
             }
         }
 
-        if ($file === null) {
-            $file = $this->_file;
-        } else {
-            $dir = dirname($file);
-            if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                throw new ImagickException('create `:dir` image directory failed: :message'/**m0798bf2f57ec615b2*/, ['dir' => $dir, 'message' => error_get_last()['message']]);
-            }
+        $dir = dirname($file);
+        if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+            throw new ImagickException('create `:dir` image directory failed: :message'/**m0798bf2f57ec615b2*/, ['dir' => $dir, 'message' => error_get_last()['message']]);
         }
 
         if (!$this->_image->writeImage($file)) {

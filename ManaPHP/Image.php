@@ -227,7 +227,7 @@ class Image implements ImageInterface
         return $this;
     }
 
-    public function save($file = null, $quality = 80)
+    public function save($file, $quality = 80)
     {
         $this->adapter->save($file, $quality);
 
