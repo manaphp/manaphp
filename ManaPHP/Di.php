@@ -81,6 +81,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
  * @property \ManaPHP\Meter\LinearInterface                $linearMeter
  * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
+ * @property \ManaPHP\Security\SecintInterface             $secint
  */
 class Di implements DiInterface
 {

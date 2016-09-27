@@ -75,6 +75,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
  * @property \ManaPHP\Meter\LinearInterface                $linearMeter
  * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
+ * @property \ManaPHP\Security\SecintInterface             $secint
  */
 abstract class Controller extends Component implements ControllerInterface
 {
