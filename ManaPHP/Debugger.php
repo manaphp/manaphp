@@ -126,8 +126,9 @@ class Debugger extends Component implements DebuggerInterface
      */
     public function start($listenException = false)
     {
-        if (isset($_GET['_debugger'])) {
-            $file = $this->alias->resolve('@data/debugger/' . substr($_GET['_debugger'], 0, 6) . '/' . $_GET['_debugger'] . '.html');
+        if ($this->request->hasQuery('_debugger')) {
+            $file = $this->alias->resolve('@data/debugger/' . substr($this->request->getQuery('_debugger', 'ignore'), 0, 6) . '/' . $this->request->getQuery('_debugger',
+                    'ignore') . '.html');
             if (is_file($file)) {
                 exit(file_get_contents($file));
             }

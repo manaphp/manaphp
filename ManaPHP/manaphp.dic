@@ -43,3 +43,4 @@ autoloader
 gitattributes
 subsplit
 urandom
+secint

@@ -3,28 +3,29 @@ namespace ManaPHP\Http;
 
 interface FilterInterface
 {
-
     /**
      * @param string   $name
      * @param callable $method
      *
      * @return static
      */
-    public function addRule($name, $method);
-
-    /**
-     * @param array $attributes
-     *
-     * @return static
-     */
-    public function addAttributes($attributes);
+    public function addFilter($name, $method);
 
     /**
      * @param string $attribute
-     * @param string $rules
+     * @param string $rule
+     * @param string $name
+     *
+     * @return static
+     */
+    public function addRule($attribute, $rule, $name = null);
+
+    /**
+     * @param string $attribute
+     * @param string $rule
      * @param string $value
      *
      * @return mixed
      */
-    public function sanitize($attribute, $rules, $value);
+    public function sanitize($attribute, $rule, $value);
 }

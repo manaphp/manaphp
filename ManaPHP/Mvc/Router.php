@@ -14,6 +14,7 @@ use ManaPHP\Utility\Text;
  * decomposing it into parameters to determine which module, controller, and
  * action of that controller should receive the request</p>
  *
+ * @property \ManaPHP\Http\RequestInterface $request
  */
 class Router extends Component implements RouterInterface
 {
@@ -75,15 +76,13 @@ class Router extends Component implements RouterInterface
      */
     public function getRewriteUri()
     {
-        if (isset($_GET['_url'])) {
-            $url = $_GET['_url'];
-        } elseif (isset($_SERVER['PATH_INFO'])) {
-            $url = $_SERVER['PATH_INFO'];
-        } /** @noinspection DefaultValueInElseBranchInspection */ else {
-            $url = '/';
+        if ($this->request->hasQuery('_url')) {
+            return $this->request->getQuery('_url', 'ignore');
+        } elseif ($this->request->hasServer('PATH_INFO')) {
+            return $this->request->getServer('PATH_INFO');
+        } else {
+            return '/';
         }
-
-        return $url;
     }
 
     /**

@@ -10,6 +10,11 @@ namespace ManaPHP;
 class Exception extends \Exception
 {
     /**
+     * @var array
+     */
+    protected $_bind;
+
+    /**
      * Exception constructor.
      *
      * @param string     $message
@@ -18,18 +23,21 @@ class Exception extends \Exception
      */
     public function __construct($message = '', $code = 0, \Exception $previous = null)
     {
+        $tr = [];
+
         if (is_array($code)) {
-            $tr = [];
+            $this->_bind = $code;
 
             /** @noinspection ForeachSourceInspection */
             foreach ($code as $k => $v) {
                 $tr[':' . $k] = $v;
             }
-            $message = strtr($message, $tr);
             $code = 0;
+        } else {
+            $this->_bind = [];
         }
 
-        parent::__construct($message, $code, $previous);
+        parent::__construct(strtr($message, $tr), $code, $previous);
     }
 
     /**
@@ -59,5 +67,13 @@ class Exception extends \Exception
         $error = error_get_last();
 
         return $error['message'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getBind()
+    {
+        return $this->_bind;
     }
 }

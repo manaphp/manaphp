@@ -44,59 +44,26 @@ class Request extends Component implements RequestInterface
     protected $_clientAddress;
 
     /**
-     * @var array
-     */
-    protected $_rules = [];
-
-    /**
-     * @param array $rules
-     *
-     * @return static
-     */
-    public function setRules($rules)
-    {
-        $this->_rules = array_merge($this->_rules, $rules);
-        return $this;
-    }
-
-    /**
      *
      * @param array  $source
      * @param string $name
-     * @param string $rules
+     * @param string $rule
      * @param mixed  $defaultValue
      *
      * @return string|null
      * @throws \ManaPHP\Http\Request\Exception
      */
-    protected function _getHelper($source, $name = null, $rules = null, $defaultValue = null)
+    protected function _getHelper($source, $name = null, $rule = null, $defaultValue = null)
     {
         if ($name === null) {
-            if ($rules !== null) {
-                $data = [];
-                /** @noinspection SuspiciousLoopInspection */
-                foreach ($source as $name => $_) {
-                    $data[$name] = $this->_getHelper($source, $name, $rules);
-                }
-
-                return $data;
-            } else {
-                return $source;
+            $data = [];
+            foreach ($source as $k => $_) {
+                $data[$k] = $this->_getHelper($source, $k, $rule);
             }
+            return $data;
         }
 
-        $value = isset($source[$name]) ? $source[$name] : $defaultValue;
-
-        if ($rules === null) {
-            if ($value === null) {
-                return null;
-            } else {
-                $rules = isset($this->_rules[$name]) ? $this->_rules[$name] : '';
-            }
-        }
-
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        return $this->filter->sanitize($name, $rules, $value);
+        return $this->filter->sanitize($name, $rule, isset($source[$name]) ? $source[$name] : $defaultValue);
     }
 
     /**
@@ -112,15 +79,15 @@ class Request extends Component implements RequestInterface
      *</code>
      *
      * @param string $name
-     * @param string $rules
+     * @param string $rule
      * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function get($name = null, $rules = null, $defaultValue = null)
+    public function get($name = null, $rule = null, $defaultValue = null)
     {
-        return $this->_getHelper($_REQUEST, $name, $rules, $defaultValue);
+        return $this->_getHelper($_REQUEST, $name, $rule, $defaultValue);
     }
 
     /**
@@ -139,15 +106,15 @@ class Request extends Component implements RequestInterface
      *</code>
      *
      * @param string $name
-     * @param string $rules
+     * @param string $rule
      * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getGet($name = null, $rules = null, $defaultValue = null)
+    public function getGet($name = null, $rule = null, $defaultValue = null)
     {
-        return $this->_getHelper($_GET, $name, $rules, $defaultValue);
+        return $this->_getHelper($_GET, $name, $rule, $defaultValue);
     }
 
     /**
@@ -163,30 +130,33 @@ class Request extends Component implements RequestInterface
      *</code>
      *
      * @param string $name
-     * @param string $rules
+     * @param string $rule
      * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getPost($name = null, $rules = null, $defaultValue = null)
+    public function getPost($name = null, $rule = null, $defaultValue = null)
     {
-        return $this->_getHelper($_POST, $name, $rules, $defaultValue);
+        return $this->_getHelper($_POST, $name, $rule, $defaultValue);
     }
 
     /**
-     * Gets variable from $_SERVER applying filters if needed
+     * Gets variable from $_SERVER
      *
      * @param string $name
-     * @param string $rules
      * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getServer($name = null, $rules = null, $defaultValue = null)
+    public function getServer($name = null, $defaultValue = null)
     {
-        return $this->_getHelper($_SERVER, $name, $rules, $defaultValue);
+        if ($name === null) {
+            return $_SERVER;
+        } else {
+            return isset($_SERVER[$name]) ? $_SERVER[$name] : $defaultValue;
+        }
     }
 
     /**
@@ -199,19 +169,19 @@ class Request extends Component implements RequestInterface
      *</code>
      *
      * @param string $name
-     * @param string $rules
+     * @param string $rule
      * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getPut($name = null, $rules = null, $defaultValue = null)
+    public function getPut($name = null, $rule = null, $defaultValue = null)
     {
         if ($this->_putCache === null && $this->isPut()) {
             parse_str($this->getRawBody(), $this->_putCache);
         }
 
-        return $this->_getHelper($this->_putCache, $name, $rules, $defaultValue);
+        return $this->_getHelper($this->_putCache, $name, $rule, $defaultValue);
     }
 
     /**
@@ -230,15 +200,15 @@ class Request extends Component implements RequestInterface
      *</code>
      *
      * @param string $name
-     * @param string $rules
+     * @param string $rule
      * @param mixed  $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getQuery($name = null, $rules = null, $defaultValue = null)
+    public function getQuery($name = null, $rule = null, $defaultValue = null)
     {
-        return $this->_getHelper($_GET, $name, $rules, $defaultValue);
+        return $this->_getHelper($_GET, $name, $rule, $defaultValue);
     }
 
     /**

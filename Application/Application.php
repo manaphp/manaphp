@@ -6,12 +6,15 @@ namespace Application {
     use ManaPHP\Mvc\NotFoundException;
     use ManaPHP\Mvc\Router;
     use ManaPHP\Security\Crypt;
+    use ManaPHP\Security\Secint;
 
     class Application extends \ManaPHP\Mvc\Application
     {
         public function registerServices()
         {
             $self = $this;
+
+            $this->loader->registerNamespaces([basename($this->alias->get('@app')) => $this->alias->get('@app')]);
 
             $this->_dependencyInjector->setShared('configure', new Configure());
 
@@ -39,6 +42,10 @@ namespace Application {
                 $redis = new \Redis();
                 $redis->connect('localhost');
                 return $redis;
+            });
+
+            $this->_dependencyInjector->set('secint', function () {
+                return new Secint();
             });
         }
 
@@ -84,9 +91,6 @@ namespace Application {
         public function main()
         {
             date_default_timezone_set('PRC');
-
-            $this->loader->registerNamespaces([basename($this->alias->get('@app')) => $this->alias->get('@app')]);
-
             $this->registerServices();
 
             if (!$this->configure->debugger->autoResponse && isset($_GET['_debugger'])) {

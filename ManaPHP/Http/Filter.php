@@ -5,17 +5,24 @@ use ManaPHP\Component;
 use ManaPHP\Http\Filter\Exception as FilterException;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class Filter
+ *
+ * @package ManaPHP\Http
+ *
+ * @property \ManaPHP\Security\SecintInterface $secint
+ */
 class Filter extends Component implements FilterInterface
 {
     /**
      * @var array
      */
-    protected $_rules = [];
+    protected $_filters = [];
 
     /**
-     * @var array
+     * @var array|string
      */
-    protected $_messages = [];
+    protected $_messages = 'en';
 
     /**
      * @var array
@@ -33,9 +40,9 @@ class Filter extends Component implements FilterInterface
     protected $_xssByReplace = true;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $_messagesFile;
+    protected $_rules = [];
 
     /**
      * Filter constructor.
@@ -45,8 +52,8 @@ class Filter extends Component implements FilterInterface
     public function __construct($options = [])
     {
         foreach (get_class_methods($this) as $method) {
-            if (Text::startsWith($method, '_rule_')) {
-                $this->_rules[substr($method, 6)] = [$this, $method];
+            if (Text::startsWith($method, '_filter_')) {
+                $this->_filters[substr($method, 8)] = [$this, $method];
             }
         }
 
@@ -54,18 +61,9 @@ class Filter extends Component implements FilterInterface
             $options = (array)$options;
         }
 
-        if (!isset($options['messages'])) {
-            $options['messages'] = 'en';
+        if (isset($options['messages'])) {
+            $this->_messages = $options['messages'];
         }
-
-        if (is_string($options['messages'])) {
-            if (Text::contains($options['messages'], '.')) {
-                $this->_messagesFile = $options['messages'];
-            } else {
-                $this->_messagesFile = '@manaphp/Http/Filter/Messages/' . $options['messages'] . '.php';
-            }
-        }
-        $this->_messages = $options['messages'];
 
         if (isset($options['defaultMessage'])) {
             $this->_defaultMessage = $options['defaultMessage'];
@@ -82,105 +80,86 @@ class Filter extends Component implements FilterInterface
      *
      * @return static
      */
-    public function addRule($name, $method)
+    public function addFilter($name, $method)
     {
-        $this->_rules[$name] = $method;
+        $this->_filters[$name] = $method;
 
         return $this;
-    }
-
-    /**
-     * @param array $attributes
-     *
-     * @return static
-     */
-    public function addAttributes($attributes)
-    {
-        $this->_attributes = array_merge($this->_attributes, $attributes);
-
-        return $this;
-    }
-
-    /**
-     * @param string $rules
-     *
-     * @return array
-     */
-    protected function _parseRules($rules)
-    {
-        $parts = (array)explode('|', $rules);
-
-        $items = [];
-        foreach ($parts as $part) {
-            if (Text::contains($part, ':')) {
-                $parts2 = explode(':', $part);
-                $name = $parts2[0];
-                $parameters = explode(',', $parts2[1]);
-            } else {
-                $name = $part;
-                $parameters = [];
-            }
-
-            $name = trim($name);
-            if ($name === '') {
-                continue;
-            }
-
-            $items[$name] = $parameters;
-        }
-
-        return $items;
     }
 
     /**
      * @param string $attribute
-     * @param mixed  $value
      * @param string $rule
-     * @param array  $parameters
+     * @param string $name
      *
-     * @return string
-     * @throws \ManaPHP\Http\Filter\Exception
+     * @return static
      */
-    protected function _getError($attribute, $value, $rule, $parameters)
+    public function addRule($attribute, $rule, $name = null)
     {
-        if (count($this->_messages) === 0) {
-            $file = $this->alias->resolve($this->_messagesFile);
+        $this->_rules[$attribute] = $rule;
 
-            if (!is_file($file)) {
-                throw new FilterException('`:file` filter message template file is not exists'/**m08523be1bf26d3984*/, ['file' => $file]);
+        if ($name !== null) {
+            $this->_attributes[$attribute] = $name;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $rule
+     *
+     * @return array
+     */
+    protected function _parseRule($rule)
+    {
+        $parts = (array)explode('|', $rule);
+
+        $filters = [];
+        foreach ($parts as $part) {
+            if (Text::contains($part, ':')) {
+                $parts2 = explode(':', $part);
+                $filter = $parts2[0];
+                $parameters = explode(',', $parts2[1]);
+            } else {
+                $filter = $part;
+                $parameters = [];
             }
 
-            /** @noinspection PhpIncludeInspection */
-            $this->_messages = require $file;
+            $filter = trim($filter);
+            if ($filter === '') {
+                continue;
+            }
+
+            $filters[$filter] = $parameters;
         }
 
-        $replaces = [];
-
-        $replaces[':attribute'] = isset($this->_attributes[$attribute]) ? $this->_attributes[$attribute] : $attribute;
-        $replaces[':value'] = $value;
-        foreach ($parameters as $k => $parameter) {
-            $replaces[':parameter[' . $k . ']'] = $parameter;
-        }
-
-        if (isset($this->_messages[$rule])) {
-            $message = $this->_messages[$rule];
-        } else {
-            $message = $this->_defaultMessage;
-        }
-
-        return strtr($message, $replaces);
+        return $filters;
     }
 
     /**
      * @param string                $attribute
-     * @param string                $rules
+     * @param string                $rule
      * @param string|int|bool|array $value
      *
      * @return mixed
      * @throws \ManaPHP\Http\Filter\Exception
      */
-    public function sanitize($attribute, $rules, $value)
+    public function sanitize($attribute, $rule, $value)
     {
+        if ($rule === null && isset($this->_rules[$attribute])) {
+            $rule = $this->_rules[$attribute];
+        }
+
+        if ($rule === null && $value === null) {
+            return null;
+        }
+
+        $filters = $this->_parseRule($rule);
+
+        if ($value === null && !isset($filters['default'])) {
+            $this->_sanitize($attribute, 'required', [], null);
+        }
+
         if (is_int($value)) {
             $value = (string)$value;
         } elseif (is_bool($value)) {
@@ -189,12 +168,11 @@ class Filter extends Component implements FilterInterface
             $value = '';
         }
 
-        $ruleItems = $this->_parseRules($rules);
-        foreach ($ruleItems as $name => $parameters) {
-            $value = $this->_sanitize($attribute, $name, $parameters, $value);
+        foreach ($filters as $filter => $parameters) {
+            $value = $this->_sanitize($attribute, $filter, $parameters, $value);
         }
 
-        if (is_string($value) && !isset($ruleItems['ignore']) && !isset($ruleItems['xss'])) {
+        if (is_string($value) && !isset($filters['ignore']) && !isset($filters['xss'])) {
             $parameters = [];
             $value = $this->_sanitize($attribute, 'xss', $parameters, $value);
         }
@@ -204,29 +182,57 @@ class Filter extends Component implements FilterInterface
 
     /**
      * @param string $attribute
-     * @param string $name
+     * @param string $filter
      * @param array  $parameters
      * @param mixed  $value
      *
      * @return mixed
      * @throws \ManaPHP\Http\Filter\Exception
      */
-    protected function _sanitize($attribute, $name, $parameters, $value)
+    protected function _sanitize($attribute, $filter, $parameters, $value)
     {
-        if (isset($this->_rules[$name])) {
-            $method = $this->_rules[$name];
-        } elseif (function_exists($name)) {
-            $method = $name;
+        $srcValue = $value;
+
+        if (isset($this->_filters[$filter])) {
+            $value = call_user_func_array($this->_filters[$filter], [$value, $parameters]);
+        } elseif (function_exists($filter)) {
+            $value = call_user_func_array($filter, array_merge([$value], $parameters));
         } else {
-            throw new FilterException('`:name` filter is not be recognized'/**m09d0e9938a3a49e27*/, ['name' => $name]);
+            throw new FilterException('`:name` filter is not be recognized'/**m09d0e9938a3a49e27*/, ['name' => $filter]);
         }
 
-        $callParameter = [$value, $parameters];
-        $value = call_user_func_array($method, $callParameter);
         if ($value === null) {
-            $error = $this->_getError($attribute, $value, $name, $parameters);
+            if (is_string($this->_messages)) {
+                if (!Text::contains($this->_messages, '.')) {
+                    $file = '@manaphp/Http/Filter/Messages/' . $this->_messages . '.php';
+                } else {
+                    $file = $this->_messages;
+                }
 
-            throw new FilterException($error);
+                if (!$this->filesystem->fileExists($file)) {
+                    throw new FilterException('`:file` filter message template file is not exists'/**m08523be1bf26d3984*/, ['file' => $file]);
+                }
+
+                /** @noinspection PhpIncludeInspection */
+                $this->_messages = require $this->alias->resolve($file);
+            }
+
+            if (isset($this->_messages[$filter])) {
+                $message = $this->_messages[$filter];
+            } else {
+                $message = $this->_defaultMessage;
+            }
+
+            $bind = [];
+
+            $bind['filter'] = $filter;
+            $bind['attribute'] = isset($this->_attributes[$attribute]) ? $this->_attributes[$attribute] : $attribute;
+            $bind['value'] = $srcValue;
+            foreach ($parameters as $k => $parameter) {
+                $bind['parameter[' . $k . ']'] = $parameter;
+            }
+
+            throw new FilterException($message, $bind);
         }
 
         return $value;
@@ -237,7 +243,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_required($value)
+    protected function _filter_required($value)
     {
         if ($value === '') {
             return null;
@@ -252,7 +258,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return mixed
      */
-    protected function _rule_default($value, $parameters)
+    protected function _filter_default($value, $parameters)
     {
         if ($value === '' || $value === null) {
             return $parameters[0];
@@ -266,7 +272,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return mixed
      */
-    protected function _rule_ignore($value)
+    protected function _filter_ignore($value)
     {
         return $value;
     }
@@ -277,7 +283,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string
      */
-    protected function _rule_xss($value, $parameters)
+    protected function _filter_xss($value, $parameters)
     {
         if ($value === '') {
             return $value;
@@ -308,7 +314,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return bool|null
      */
-    protected function _rule_bool($value)
+    protected function _filter_bool($value)
     {
         $trueValues = ['1', 'true'];
         $falseValues = ['0', 'false'];
@@ -327,7 +333,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return int|null
      */
-    protected function _rule_int($value)
+    protected function _filter_int($value)
     {
         if (preg_match('#^[+-]?\d+$#', $value) === 1) {
             return (int)$value;
@@ -341,7 +347,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return float|null
      */
-    protected function _rule_float($value)
+    protected function _filter_float($value)
     {
         if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false
             && preg_match('#^[+-]?[\d\.]+$#', $value) === 1
@@ -357,7 +363,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return int|null
      */
-    protected function _rule_date($value)
+    protected function _filter_date($value)
     {
         $timestamp = strtotime($value);
         if ($timestamp !== false) {
@@ -373,10 +379,10 @@ class Filter extends Component implements FilterInterface
      *
      * @return int|null
      */
-    protected function _rule_range($value, $parameters)
+    protected function _filter_range($value, $parameters)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $value = $this->_rule_float($value);
+        $value = $this->_filter_float($value);
         if ($value === null || $value < $parameters[0] || $value > $parameters[1]) {
             return null;
         } else {
@@ -390,10 +396,10 @@ class Filter extends Component implements FilterInterface
      *
      * @return float|null
      */
-    protected function _rule_min($value, $parameters)
+    protected function _filter_min($value, $parameters)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $value = $this->_rule_float($value);
+        $value = $this->_filter_float($value);
         if ($value === null || $value < $parameters[0]) {
             return null;
         } else {
@@ -407,10 +413,10 @@ class Filter extends Component implements FilterInterface
      *
      * @return float|null
      */
-    protected function _rule_max($value, $parameters)
+    protected function _filter_max($value, $parameters)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $value = $this->_rule_float($value);
+        $value = $this->_filter_float($value);
         if ($value === null || $value > $parameters[0]) {
             return null;
         } else {
@@ -424,7 +430,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_minLength($value, $parameters)
+    protected function _filter_minLength($value, $parameters)
     {
         if (function_exists('mb_strlen')) {
             $length = mb_strlen($value);
@@ -445,7 +451,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_maxLength($value, $parameters)
+    protected function _filter_maxLength($value, $parameters)
     {
         if (function_exists('mb_strlen')) {
             $length = mb_strlen($value);
@@ -466,7 +472,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_length($value, $parameters)
+    protected function _filter_length($value, $parameters)
     {
         if (function_exists('mb_strlen')) {
             $length = mb_strlen($value);
@@ -487,7 +493,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_equal($value, $parameters)
+    protected function _filter_equal($value, $parameters)
     {
         if ($value === $parameters[0]) {
             return $value;
@@ -502,7 +508,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_regex($value, $parameters)
+    protected function _filter_regex($value, $parameters)
     {
         if (preg_match($parameters[0], $value) === 1) {
             return $value;
@@ -516,7 +522,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_alpha($value)
+    protected function _filter_alpha($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
         if (preg_match('#^[a-zA-Z]+$#', $value) === 1) {
@@ -531,7 +537,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_digit($value)
+    protected function _filter_digit($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
         if (preg_match('#^\d+$#', $value) === 1) {
@@ -546,7 +552,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_alnum($value)
+    protected function _filter_alnum($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
         if (preg_match('#^[a-zA-Z0-9]+$#', $value) === 1) {
@@ -561,7 +567,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string
      */
-    protected function _rule_lower($value)
+    protected function _filter_lower($value)
     {
         return strtolower($value);
     }
@@ -571,7 +577,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string
      */
-    protected function _rule_upper($value)
+    protected function _filter_upper($value)
     {
         return strtoupper($value);
     }
@@ -581,7 +587,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_account($value)
+    protected function _filter_account($value)
     {
         if (preg_match('#^[a-z][a-z_\d]{1,14}[a-z\d]$#', $value) === 1) {
             return $value;
@@ -595,7 +601,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_password($value)
+    protected function _filter_password($value)
     {
         if ($value !== '') {
             return $value;
@@ -609,7 +615,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_email($value)
+    protected function _filter_email($value)
     {
         $value = trim($value);
         if (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) {
@@ -624,7 +630,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_url($value)
+    protected function _filter_url($value)
     {
         $value = trim($value);
 
@@ -648,7 +654,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_in($value, $parameters)
+    protected function _filter_in($value, $parameters)
     {
         if (in_array($value, $parameters, true)) {
             return $value;
@@ -663,7 +669,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_not_in($value, $parameters)
+    protected function _filter_not_in($value, $parameters)
     {
         if (!in_array($value, $parameters, true)) {
             return $value;
@@ -677,7 +683,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return mixed|null
      */
-    protected function _rule_json($value)
+    protected function _filter_json($value)
     {
         if (is_scalar($value)) {
             $a = json_decode($value, true);
@@ -694,7 +700,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_mobile($value)
+    protected function _filter_mobile($value)
     {
         $value = trim($value);
 
@@ -710,7 +716,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _rule_ip($value)
+    protected function _filter_ip($value)
     {
         $value = trim($value);
 
@@ -722,13 +728,30 @@ class Filter extends Component implements FilterInterface
     }
 
     /**
+     * @param string $value
+     * @param array  $parameters
+     *
+     * @return int|null
+     */
+    protected function _filter_secint($value, $parameters)
+    {
+        $v = $this->secint->decode($value, isset($parameters[0]) ? $parameters[0] : '');
+        if ($v === false) {
+            return null;
+        } else {
+            return $v;
+        }
+    }
+
+    /**
      * @return array
      */
     public function dump()
     {
         $data = parent::dump();
-        $data['_rules'] = array_keys($this->_rules);
+        $data['_filters'] = array_keys($this->_filters);
 
         return $data;
     }
+
 }
