@@ -8,7 +8,7 @@ class Secint extends Component implements SecintInterface
     /**
      * @var string
      */
-    protected $_key = 'key';
+    protected $_key;
 
     /**
      * @var array
@@ -26,9 +26,7 @@ class Secint extends Component implements SecintInterface
             $options = ['key' => $options];
         }
 
-        if (isset($options['key'])) {
-            $this->_key = $options['key'];
-        }
+        $this->_key = isset($options['key']) ? $options['key'] : $this->configure->getSecretKey('secint');
     }
 
     /**

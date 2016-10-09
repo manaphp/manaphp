@@ -36,17 +36,21 @@ class Crypt extends Component implements CryptInterface
     /**
      * Crypt constructor.
      *
-     * @param string $key
+     * @param string|array $options
      *
      * @throws \ManaPHP\Security\Crypt\Exception
      */
-    public function __construct($key = null)
+    public function __construct($options = [])
     {
         if (!extension_loaded('mcrypt')) {
             throw new CryptException('`mcrypt` extension is required'/**m0aa1a20cbe4572ac7*/);
         }
 
-        $this->_key = $key;
+        if (is_string($options)) {
+            $options = ['key' => $options];
+        }
+
+        $this->_key = isset($options['key']) ? $options['key'] : $this->configure->getSecretKey('crypt');
 
         $this->_mcrypt = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
     }
@@ -68,10 +72,6 @@ class Crypt extends Component implements CryptInterface
     {
         if ($key === null) {
             $key = $this->_key;
-        }
-
-        if ($key === null) {
-            throw new CryptException('encryption key cannot be empty'/**m03ba6c4b40a99a319*/);
         }
 
         $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
@@ -101,10 +101,6 @@ class Crypt extends Component implements CryptInterface
     {
         if ($key === null) {
             $key = $this->_key;
-        }
-
-        if ($key === null) {
-            throw new CryptException('encryption key cannot be empty'/**m0f10f822ab9ce1c9b*/);
         }
 
         $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);

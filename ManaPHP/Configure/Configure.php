@@ -16,6 +16,11 @@ class Configure extends Component implements ConfigureInterface
     public $debug = true;
 
     /**
+     * @var string
+     */
+    protected $_secretKeyPrefix = 'key';
+
+    /**
      * @return array
      */
     public function __debugInfo()
@@ -28,5 +33,15 @@ class Configure extends Component implements ConfigureInterface
             }
         }
         return $data;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public function getSecretKey($type)
+    {
+        return md5($this->_secretKeyPrefix . ':' . $type);
     }
 }

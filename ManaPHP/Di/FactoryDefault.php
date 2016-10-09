@@ -23,6 +23,7 @@ class FactoryDefault extends Di
         $this->_services = [
             'eventsManager' => 'ManaPHP\Event\Manager',
             'alias' => 'ManaPHP\Alias',
+            'configure' => 'ManaPHP\Configure\Configure',
             'router' => 'ManaPHP\Mvc\Router',
             'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
             'url' => 'ManaPHP\Mvc\Url',
@@ -61,6 +62,7 @@ class FactoryDefault extends Di
             'rateLimiter' => 'ManaPHP\Security\RateLimiter\Adapter\Db',
             'linearMeter' => 'ManaPHP\Meter\Linear',
             'roundMeter' => 'ManaPHP\Meter\Round',
+            'secint' => 'ManaPHP\Security\Secint',
             'tasksMetadata' => ['class' => 'ManaPHP\Task\Metadata', 'parameters' => ['ManaPHP\Task\Metadata\Adapter\Redis']],
             'viewsCache' => [
                 'class' => 'ManaPHP\Cache\Adapter\File',
