@@ -3,8 +3,9 @@ namespace Application;
 
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\DbInterface;
+use ManaPHP\Cli\Application;
 
-class Cli extends \ManaPHP\Cli\Application
+class Cli extends Application
 {
     public function registerServices()
     {
@@ -15,7 +16,7 @@ class Cli extends \ManaPHP\Cli\Application
 
         $this->_dependencyInjector->set('db', function () use ($self) {
             $mysql = new Mysql((array)$self->configure->database);
-            $mysql->attachEvent('db:beforeQuery', function (DbInterface $source, $data) use ($self) {
+            $mysql->attachEvent('db:beforeQuery', function (DbInterface $source) use ($self) {
                 $self->logger->debug('SQL: ', $source->getSQL());
             });
             return $mysql;

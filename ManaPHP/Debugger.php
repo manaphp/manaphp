@@ -274,11 +274,7 @@ class Debugger extends Component implements DebuggerInterface
             return $data;
         }
 
-        if (!Text::contains($template, '/')) {
-            $file = $this->alias->resolve('@manaphp/Debugger/Template/' . $template);
-        } else {
-            $file = $template;
-        }
+        $file = Text::contains($template, '/') ? $template : $this->alias->resolve('@manaphp/Debugger/Template/' . $template);
 
         return $this->renderer->render($file, ['data' => $data], false);
     }

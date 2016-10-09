@@ -11,7 +11,7 @@ interface SecintInterface
      *
      * @return string the generated hash
      */
-    public function encode($id, $type);
+    public function encode($id, $type = '');
 
     /**
      * Decodes a hash to the original parameter values.
@@ -21,5 +21,5 @@ interface SecintInterface
      *
      * @return int|false
      */
-    public function decode($hash, $type);
+    public function decode($hash, $type = '');
 }

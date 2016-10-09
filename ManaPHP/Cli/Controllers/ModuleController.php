@@ -28,6 +28,7 @@ class ModuleController extends Controller
     /**
      * @description create a new module
      * @throws \Application\Exception
+     * @throws \ManaPHP\Filesystem\Adapter\Exception
      */
     public function createCommand()
     {

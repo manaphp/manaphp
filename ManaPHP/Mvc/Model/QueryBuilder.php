@@ -371,8 +371,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *    $builder->where('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
      *</code>
      *
-     * @param string $conditions
-     * @param mixed  $bind
+     * @param string                 $conditions
+     * @param int|float|string|array $bind
      *
      * @return static
      */
@@ -389,8 +389,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
      *</code>
      *
-     * @param string $conditions
-     * @param mixed  $bind
+     * @param string                 $conditions
+     * @param int|float|string|array $bind
      *
      * @return static
      */
@@ -427,9 +427,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *    $builder->betweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string $expr
-     * @param mixed  $min
-     * @param mixed  $max
+     * @param string    $expr
+     * @param int|float $min
+     * @param int|float $max
      *
      * @return static
      */
@@ -453,9 +453,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *    $builder->notBetweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string $expr
-     * @param mixed  $min
-     * @param mixed  $max
+     * @param string    $expr
+     * @param int|float $min
+     * @param int|float $max
      *
      * @return static
      */
@@ -960,11 +960,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     protected function _getCacheOptions($cacheOptions)
     {
-        if (is_array($cacheOptions)) {
-            $_cacheOptions = (array)$cacheOptions;
-        } else {
-            $_cacheOptions = ['ttl' => $cacheOptions];
-        }
+        $_cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
 
         if (isset($this->_models[0]) && count($this->_models) === 1) {
             $modelName = $this->_models[0];

@@ -25,7 +25,7 @@ class Redis extends Component implements QueueInterface
     protected $_priorities = [self::PRIORITY_HIGHEST, self::PRIORITY_NORMAL, self::PRIORITY_LOWEST];
 
     /**
-     * @var array
+     * @var array[]
      */
     protected $_topicKeys = [];
 

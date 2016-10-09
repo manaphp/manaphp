@@ -22,6 +22,7 @@ class HelpController extends Controller
                  * @var \ManaPHP\Cli\ControllerInterface $instance
                  */
                 $instance = new $controllerClassName();
+                /** @noinspection SlowArrayOperationsInLoopInspection */
                 $commands = array_merge($commands, $instance->getCommands());
             }
         }
@@ -36,13 +37,14 @@ class HelpController extends Controller
                  * @var \ManaPHP\Cli\ControllerInterface $instance
                  */
                 $instance = new $controllerClassName();
+                /** @noinspection SlowArrayOperationsInLoopInspection */
                 $commands = array_merge($commands, $instance->getCommands());
             }
         }
 
         ksort($commands);
         foreach ($commands as $command => $description) {
-            $this->console->writeLn(str_pad($command, 18, ' ') . "  " . $description);
+            $this->console->writeLn(str_pad($command, 18, ' ') . '  ' . $description);
         }
         return 0;
     }

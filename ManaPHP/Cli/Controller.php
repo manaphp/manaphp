@@ -34,7 +34,7 @@ abstract class Controller extends Component implements ControllerInterface
      */
     public function getCommands()
     {
-        $controller = basename(get_called_class(), 'Controller');
+        $controller = lcfirst(basename(get_called_class(), 'Controller'));
 
         $commands = [];
         $rc = new \ReflectionClass($this);
@@ -42,8 +42,7 @@ abstract class Controller extends Component implements ControllerInterface
             if (preg_match('#^(.*)Command$#', $method, $match) !== 1) {
                 continue;
             }
-            $command = lcfirst($controller);
-            $command .= $match[1] !== 'default' ? (':' . $match[1]) : '';
+            $command = $controller . ($match[1] !== 'default' ? (':' . $match[1]) : '');
 
             $rm = $rc->getMethod($match[0]);
             $comment = $rm->getDocComment();
@@ -55,7 +54,7 @@ abstract class Controller extends Component implements ControllerInterface
         }
 
         if (count($commands) === 1) {
-            $commands = [lcfirst($controller) => array_values($commands)[0]];
+            $commands = [$controller => array_values($commands)[0]];
         }
 
         return $commands;

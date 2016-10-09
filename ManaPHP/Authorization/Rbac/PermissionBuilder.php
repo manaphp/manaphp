@@ -23,6 +23,12 @@ class PermissionBuilder extends Component
     {
         $rc = new \ReflectionClass($controller);
 
+        if (preg_match('#^[^/]*/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $controller), $match) !== 1) {
+            throw new PermissionBuilderException('class name is not good: :controller'/**m0356156d8fc74b80f*/, ['controller' => $rc->getName()]);
+        }
+        $moduleName = $match[1];
+        $controllerName = $match[2];
+
         $permissions = [];
         foreach ($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
@@ -31,7 +37,7 @@ class PermissionBuilder extends Component
                 continue;
             }
 
-            $action = $match[1];
+            $actionName = $match[1];
 
             if ($match[2] !== 'Action') {
                 throw new PermissionBuilderException('`:action` action of `:controller` is not suffix with `Action`'/**m05bcf1d580ad9945f*/,
@@ -43,15 +49,11 @@ class PermissionBuilder extends Component
                     ['controller' => $rc->getName(), 'action' => $methodName]);
             }
 
-            if (preg_match('#^[^/]*/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $controller), $match) !== 1) {
-                throw new PermissionBuilderException('class name is not good: :controller'/**m0356156d8fc74b80f*/, ['controller' => $rc->getName()]);
-            }
-
             $permissions[] = [
-                'module' => $match[1],
-                'controller' => $match[2],
-                'action' => $action,
-                'description' => $match[1] . '::' . $match[2] . '::' . $action
+                'module' => $moduleName,
+                'controller' => $controllerName,
+                'action' => $actionName,
+                'description' => $moduleName . '::' . $controllerName . '::' . $actionName
             ];
         }
 
@@ -73,6 +75,7 @@ class PermissionBuilder extends Component
         foreach ($this->filesystem->glob('@app/' . $module . '/Controllers/*.php') as $file) {
             $file = str_replace(dirname($app) . '/', '', $file);
             $controller = str_replace('/', '\\', pathinfo($file, PATHINFO_DIRNAME) . '\\' . basename($file, '.php'));
+            /** @noinspection SlowArrayOperationsInLoopInspection */
             $permissions = array_merge($permissions, $this->getControllerPermissions($controller));
         }
 

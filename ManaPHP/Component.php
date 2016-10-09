@@ -119,7 +119,7 @@ class Component implements ComponentInterface
      * @param string $event
      * @param array  $data
      *
-     * @return bool
+     * @return bool|null
      */
     public function fireEvent($event, $data = [])
     {

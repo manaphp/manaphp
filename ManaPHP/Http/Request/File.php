@@ -135,7 +135,8 @@ class File extends Component implements FileInterface
      * @param string       $destination
      * @param string|false $allowedExtensions
      *
-     * @throws \ManaPHP\Http\Request\Exception
+     * @throws \ManaPHP\Filesystem\Adapter\Exception
+     * @throws \ManaPHP\Http\Request\File\Exception
      */
     public function moveTo($destination, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip')
     {

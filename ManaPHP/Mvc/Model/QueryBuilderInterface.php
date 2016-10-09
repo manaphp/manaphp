@@ -94,8 +94,8 @@ interface QueryBuilderInterface
     /**
      * Sets conditions for the query
      *
-     * @param string $conditions
-     * @param mixed  $bind
+     * @param string                 $conditions
+     * @param int|float|string|array $bind
      *
      * @return static
      */
@@ -104,8 +104,8 @@ interface QueryBuilderInterface
     /**
      * Appends a condition to the current conditions using a AND operator
      *
-     * @param string $conditions
-     * @param mixed  $bind
+     * @param string                 $conditions
+     * @param int|float|string|array $bind
      *
      * @return static
      */
@@ -114,9 +114,9 @@ interface QueryBuilderInterface
     /**
      * Appends a BETWEEN condition to the current conditions
      *
-     * @param string $expr
-     * @param mixed  $min
-     * @param mixed  $max
+     * @param string    $expr
+     * @param int|float $min
+     * @param int|float $max
      *
      * @return static
      */
@@ -129,9 +129,9 @@ interface QueryBuilderInterface
      *    $builder->notBetweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string $expr
-     * @param mixed  $min
-     * @param mixed  $max
+     * @param string    $expr
+     * @param int|float $min
+     * @param int|float $max
      *
      * @return static
      */

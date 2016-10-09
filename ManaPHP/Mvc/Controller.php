@@ -137,11 +137,7 @@ abstract class Controller extends Component implements ControllerInterface
      */
     protected function _getCacheOptions($cacheOptions, $action)
     {
-        if (is_array($cacheOptions)) {
-            $_cacheOptions = (array)$cacheOptions;
-        } else {
-            $_cacheOptions = ['ttl' => $cacheOptions];
-        }
+        $_cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
 
         $parts = explode('\\', get_called_class());
         $prefix = '/' . $parts[1] . '/Views/' . basename($parts[3], 'Controller') . '/' . ucfirst($action);

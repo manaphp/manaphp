@@ -271,12 +271,7 @@ class View extends Component implements ViewInterface
         $view = "/$this->_moduleName/Views/$path";
 
         if ($cacheOptions !== null) {
-
-            if (is_array($cacheOptions)) {
-                $_cacheOptions = (array)$cacheOptions;
-            } else {
-                $_cacheOptions = ['ttl' => $cacheOptions];
-            }
+            $_cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
 
             if (!isset($_cacheOptions['key'])) {
                 $_cacheOptions['key'] = $view;

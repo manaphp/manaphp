@@ -19,11 +19,7 @@ class Arguments extends Component implements ArgumentsInterface
     public function __construct($_arguments = null)
     {
         if ($_arguments === null) {
-            if (isset($GLOBALS['argv'][2])) {
-                $this->_arguments = array_slice($GLOBALS['argv'], 2);
-            } else {
-                $this->_arguments = [];
-            }
+            $this->_arguments = isset($GLOBALS['argv'][2]) ? array_slice($GLOBALS['argv'], 2) : [];
         } else {
             $this->_arguments = $_arguments;
         }
@@ -41,13 +37,13 @@ class Arguments extends Component implements ArgumentsInterface
         foreach (explode(':', $name) as $p) {
             $is_short = strlen($p) === 1;
 
-            for ($i = 0; $i < count($this->_arguments); $i++) {
+            foreach ($this->_arguments as $i => $argument) {
                 if ($is_short) {
-                    if ($this->_arguments[$i] !== '-' . $p) {
+                    if ($argument !== '-' . $p) {
                         continue;
                     }
                 } else {
-                    if ($this->_arguments[$i] !== '--' . $p) {
+                    if ($argument !== '--' . $p) {
                         continue;
                     }
                 }
@@ -75,13 +71,13 @@ class Arguments extends Component implements ArgumentsInterface
         foreach (explode(':', $name) as $p) {
             $is_short = strlen($p) === 1;
 
-            for ($i = 0; $i < count($this->_arguments); $i++) {
+            foreach ($this->_arguments as $argument) {
                 if ($is_short) {
-                    if ($this->_arguments[$i] !== '-' . $p) {
+                    if ($argument !== '-' . $p) {
                         continue;
                     }
                 } else {
-                    if ($this->_arguments[$i] !== '--' . $p) {
+                    if ($argument !== '--' . $p) {
                         continue;
                     }
                 }

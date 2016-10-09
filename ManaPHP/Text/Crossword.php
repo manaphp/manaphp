@@ -12,15 +12,12 @@ class Crossword
     public function guess($words, $word)
     {
         if (is_string($words)) {
-            if (strpos($words, ',') !== false) {
-                $words = explode(',', $words);
-            } else {
-                $words = [$words];
-            }
+            $words = strpos($words, ',') !== false ? explode(',', $words) : [$words];
         }
 
         $word = strtolower($word);
 
+        /** @noinspection ForeachSourceInspection */
         foreach ($words as $v) {
             if (strtolower($v) === $word) {
                 return $v;

@@ -709,11 +709,7 @@ class Model extends Component implements ModelInterface
             return false;
         }
 
-        if ($this->fireEvent('model:' . $eventName) === false) {
-            return false;
-        }
-
-        return true;
+        return $this->fireEvent('model:' . $eventName) !== false;
     }
 
     /**

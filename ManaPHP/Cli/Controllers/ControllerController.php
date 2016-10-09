@@ -34,11 +34,11 @@ class ControllerController extends Controller
         }
 
         $controllers = explode(',', $parts[1]);
+        $controllerNamespace = basename($this->alias->get('@app')) . '\\' . $moduleName . '\\Controllers';
         foreach ($controllers as $controller) {
             $controller = Text::camelize($controller);
             $controllerName = $controller . 'Controller';
             $controllerFile = '@app/' . $moduleName . '/Controllers/' . $controllerName . '.php';
-            $controllerNamespace = basename($this->alias->get('@app')) . '\\' . $moduleName . '\\Controllers';
 
             if ($this->filesystem->fileExists($controllerFile)) {
                 $this->console->writeLn('`:controller` controller exists already', ['controller' => $controllerNamespace . '\\' . $controller]);
@@ -59,5 +59,7 @@ EOD;
             $this->filesystem->filePut('@app/' . $moduleName . '/Views/' . $controller . '/Index.sword', '');
             $this->filesystem->filePut('@app/' . $moduleName . '/Layouts/' . $controller . '.sword', '@content()');
         }
+
+        return 0;
     }
 }
