@@ -4,11 +4,10 @@ namespace ManaPHP\Authentication;
 interface TokenInterface
 {
     /**
-     * @param int $ttl
      *
      * @return string
      */
-    public function encode($ttl = null);
+    public function encode();
 
     /**
      * @param string $str
@@ -16,9 +15,4 @@ interface TokenInterface
      * @return static
      */
     public function decode($str);
-
-    /**
-     * @return int
-     */
-    public function getExpiredTime();
 }

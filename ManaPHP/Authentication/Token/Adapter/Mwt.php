@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Authentication\Token\Adapter;
 
-use ManaPHP\Authentication\Token;
 use ManaPHP\Authentication\Token\Adapter\Mwt\Exception as MwtException;
 use ManaPHP\Authentication\TokenInterface;
 use ManaPHP\Component;
@@ -12,12 +11,7 @@ class Mwt extends Component implements TokenInterface
     /**
      * @var string
      */
-    protected $_type;
-
-    /**
-     * @var int
-     */
-    protected $_expired_time;
+    protected $_type = 1;
 
     /**
      * @var array
@@ -37,55 +31,60 @@ class Mwt extends Component implements TokenInterface
     /**
      * Mwt constructor.
      *
-     * @param string       $type
-     * @param string|array $keys
+     * @param array $options
      */
-    public function __construct($type, $keys)
+    public function __construct($options = [])
     {
-        $this->_type = $type;
-
-        if (is_string($keys)) {
-            $keys = [$keys];
-        }
-
-        $this->_keys = (array)$keys;
-
         foreach (get_object_vars($this) as $field => $_) {
             if (!Text::startsWith($field, '_')) {
                 $this->_fields[] = $field;
             }
         }
+
+        if (isset($options['type'])) {
+            $this->_type = $options['type'];
+        }
+
+        if (isset($options['keys'])) {
+            $this->_keys = $options['keys'];
+        } else {
+            $this->_keys = [$this->configure->getSecretKey('mwt:' . $this->_type)];
+        }
+
+        if (isset($options['ttl'])) {
+            $this->_ttl = $options['ttl'];
+        }
     }
 
     /**
-     * @param mixed $data
-     *
      * @return string
+     * @throws \ManaPHP\Authentication\Token\Adapter\Exception
      */
-    protected function _encode($data)
+    public function encode()
     {
-        $r = $this->_type . '.' . base64_encode(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        $hash = base64_encode(md5($r . $this->_keys[0], true));
-        $r .= '.' . $hash;
+        $data = [];
 
-        $from = ['+', '/', '='];
-        $to = ['-', '_', ''];
-        return str_replace($from, $to, $r);
+        $data['SALT'] = mt_rand(0, 2147483647);
+        $data['EXP'] = $this->_ttl + time();
+        foreach ($this->_fields as $k => $v) {
+            $data[$v] = $this->{is_int($k) ? $v : $k};
+        }
+
+        $payload = rtrim(base64_encode(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)), '=');
+        $hash = rtrim(base64_encode(md5($this->_type . $payload . $this->_keys[0], true)), '=');
+
+        return strtr($this->_type . '.' . $payload . '.' . $hash, '+/', '-_');
     }
 
     /**
      * @param string $str
      *
-     * @return mixed
+     * @return static
      * @throws \ManaPHP\Authentication\Token\Adapter\Exception
      */
-    protected function _decode($str)
+    public function decode($str)
     {
-        $from = ['-', '_'];
-        $to = ['+', '/'];
-        $t = str_replace($from, $to, $str);
-
-        $parts = explode('.', $t);
+        $parts = explode('.', strtr($str, '-_', '+/'));
         if (count($parts) !== 3) {
             throw new MwtException('`:token` is not contain 3 parts'/**m0b5ce4741348c3747*/, ['token' => $str]);
         }
@@ -95,16 +94,9 @@ class Mwt extends Component implements TokenInterface
         /** @noinspection MultiAssignmentUsageInspection */
         $hash = $parts[2];
 
-        $mod4 = strlen($payload) % 4;
-        $payload .= str_repeat('=', $mod4 ? 4 - $mod4 : 0);
-        $mod4 = strlen($hash) % 4;
-        $hash .= str_repeat('=', $mod4 ? 4 - $mod4 : 0);
-
         $success = false;
         foreach ($this->_keys as $key) {
-            if (base64_encode(md5($type . '.' . $payload . $key, true)) !== $hash) {
-                continue;
-            } else {
+            if (rtrim(base64_encode(md5($type . $payload . $key, true)), '=') === $hash) {
                 $success = true;
                 break;
             }
@@ -119,70 +111,19 @@ class Mwt extends Component implements TokenInterface
             throw new MwtException('type is not correct: :type'/**m09537eea529cf24a6*/, ['type' => $type]);
         }
 
-        $r = json_decode(base64_decode($payload), true);
-        if (!is_array($r)) {
+        $data = json_decode(base64_decode($payload), true);
+        if (!is_array($data)) {
             throw new MwtException('payload is not array.'/**m02e36efb31ed0db24*/);
         }
-
-        return $r;
-    }
-
-    /**
-     * @param int $ttl
-     *
-     * @return string
-     * @throws \ManaPHP\Authentication\Token\Adapter\Exception
-     */
-    public function encode($ttl = 0)
-    {
-        $data = [];
-
-        $data['SALT'] = mt_rand();
-        $data['EXP'] = (($ttl !== 0) ? $ttl : $this->_ttl) + time();
-        foreach ($this->_fields as $k => $v) {
-            $valueField = is_int($k) ? $v : $k;
-
-            if (!isset($this->{$valueField})) {
-                throw new MwtException('`:field` field value is NULL', ['field' => $valueField]);
-            }
-            $data[$v] = $this->{$valueField};
-        }
-
-        return $this->_encode($data);
-    }
-
-    /**
-     * @param string $str
-     *
-     * @return static
-     * @throws \ManaPHP\Authentication\Token\Adapter\Exception
-     */
-    public function decode($str)
-    {
-        $data = $this->_decode($str);
 
         if (!isset($data['EXP']) && $data['EXP'] < time()) {
             throw new MwtException('token is expired.'/**m0b57c4265f54099b0*/, Exception::CODE_EXPIRE);
         }
 
         foreach ($this->_fields as $k => $v) {
-            $keyField = is_int($k) ? $v : $k;
-
-            if (!isset($data[$v])) {
-                throw new MwtException('`:field` field value is not exists in payload'/**m059345500bb0de141*/, ['field' => $v]);
-            }
-
-            $this->{$keyField} = $data[$v];
+            $this->{is_int($k) ? $v : $k} = $data[$v];
         }
 
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getExpiredTime()
-    {
-        return $this->_expired_time;
     }
 }
