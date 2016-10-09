@@ -196,15 +196,19 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     }
 
     /**
+     * @return void
+     */
+    public function clean()
+    {
+        $this->adapter->clean();
+    }
+
+    /**
      * @return array
      */
     public function __debugInfo()
     {
-        if (isset($_SESSION) && is_array($_SESSION)) {
-            $data = $_SESSION;
-        } else {
-            $data = [];
-        }
+        $data = (isset($_SESSION) && is_array($_SESSION)) ? $_SERVER : [];
 
         $data['_internal_'] = ['adapter' => get_class($this->adapter)];
         return $data;

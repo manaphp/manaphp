@@ -117,4 +117,18 @@ class Db extends Component implements AdapterInterface
     {
         return true;
     }
+
+    /**
+     * @return void
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public function clean()
+    {
+        /**
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model ;
+         */
+        $model = new $this->_model;
+
+        $model::deleteAll(':current_time >expired_time', ['current_time' => time()]);
+    }
 }

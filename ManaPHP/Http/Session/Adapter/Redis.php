@@ -103,4 +103,12 @@ class Redis extends Component implements AdapterInterface
     {
         return true;
     }
+
+    /**
+     * @return void
+     */
+    public function clean()
+    {
+
+    }
 }

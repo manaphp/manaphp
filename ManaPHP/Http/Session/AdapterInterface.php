@@ -70,4 +70,9 @@ interface AdapterInterface
      * @return bool
      */
     public function gc($ttl);
+
+    /**
+     * @return void
+     */
+    public function clean();
 }

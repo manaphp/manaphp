@@ -160,4 +160,38 @@ class File extends Component implements AdapterInterface
     {
         return true;
     }
+
+    /**
+     * @param string $dir
+     *
+     * @return void
+     */
+    protected function _clean($dir)
+    {
+        foreach (scandir($dir) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $dir . '/' . $item;
+            if (is_file($path)) {
+                if (time() > filemtime($path)) {
+                    @unlink($path);
+                }
+            } else {
+                $this->_clean($path);
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function clean()
+    {
+        $dir = $this->alias->resolve($this->_dir);
+        if (is_dir($dir)) {
+            $this->_clean($dir);
+        }
+    }
 }
