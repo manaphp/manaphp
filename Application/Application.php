@@ -4,9 +4,6 @@ namespace Application {
     use ManaPHP\Db\Adapter\Mysql;
     use ManaPHP\DbInterface;
     use ManaPHP\Mvc\NotFoundException;
-    use ManaPHP\Mvc\Router;
-    use ManaPHP\Security\Crypt;
-    use ManaPHP\Security\Secint;
 
     class Application extends \ManaPHP\Mvc\Application
     {
@@ -18,20 +15,13 @@ namespace Application {
 
             $this->_dependencyInjector->setShared('configure', new Configure());
 
-            $this->_dependencyInjector->setShared('router', function () {
-                return (new Router())
-                    ->mount(new Home\RouteGroup(), '/')
-                    ->mount(Admin\RouteGroup::class, '/admin')
-                    ->mount(Api\RouteGroup::class, '/api');
-            });
-
-            $this->_dependencyInjector->setShared('crypt', function () use ($self) {
-                return new Crypt($self->configure->crypt->key);
-            });
+            $this->router->mount(new Home\RouteGroup(), '/')
+                ->mount(Admin\RouteGroup::class, '/admin')
+                ->mount(Api\RouteGroup::class, '/api');
 
             $this->_dependencyInjector->set('db', function () use ($self) {
                 $mysql = new Mysql((array)$this->configure->database);
-                $mysql->attachEvent('db:beforeQuery', function (DbInterface $source, $data, $event) use ($self) {
+                $mysql->attachEvent('db:beforeQuery', function (DbInterface $source) use ($self) {
                     $self->logger->debug('SQL: ' . $source->getSQL());
                 });
 
@@ -42,10 +32,6 @@ namespace Application {
                 $redis = new \Redis();
                 $redis->connect('localhost');
                 return $redis;
-            });
-
-            $this->_dependencyInjector->set('secint', function () {
-                return new Secint();
             });
         }
 

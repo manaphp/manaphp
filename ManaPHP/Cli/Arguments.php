@@ -16,10 +16,10 @@ class Arguments extends Component implements ArgumentsInterface
      *
      * @param array $_arguments
      */
-    public function __construct($_arguments = null)
+    public function __construct($_arguments = [])
     {
-        if ($_arguments === null) {
-            $this->_arguments = isset($GLOBALS['argv'][2]) ? array_slice($GLOBALS['argv'], 2) : [];
+        if (isset($GLOBALS['argv'][2]) && count($_arguments) === 0) {
+            $this->_arguments = array_slice($GLOBALS['argv'], 2);
         } else {
             $this->_arguments = $_arguments;
         }
@@ -69,20 +69,16 @@ class Arguments extends Component implements ArgumentsInterface
     public function has($name)
     {
         foreach (explode(':', $name) as $p) {
-            $is_short = strlen($p) === 1;
-
             foreach ($this->_arguments as $argument) {
-                if ($is_short) {
-                    if ($argument !== '-' . $p) {
-                        continue;
+                if (strlen($p) === 1) {
+                    if ($argument === '-' . $p) {
+                        return true;
                     }
                 } else {
-                    if ($argument !== '--' . $p) {
-                        continue;
+                    if ($argument === '--' . $p) {
+                        return true;
                     }
                 }
-
-                return true;
             }
         }
 

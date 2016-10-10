@@ -72,9 +72,9 @@ class Secint extends Component implements SecintInterface
             $this->_keys[$type] = md5($this->_key . $type, true);
         }
 
-        $r = unpack('Vid/Vrand', mcrypt_decrypt(MCRYPT_XTEA, $this->_keys[$type], base64_decode($hash . '='), MCRYPT_MODE_ECB));
+        $r = unpack('Vid/Vr', mcrypt_decrypt(MCRYPT_XTEA, $this->_keys[$type], base64_decode($hash . '='), MCRYPT_MODE_ECB));
 
-        if ($r['rand'] & 0xFFFF) {
+        if ($r['r'] & 0xFFFF) {
             return false;
         } else {
             return $r['id'];

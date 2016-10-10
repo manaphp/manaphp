@@ -1,9 +1,9 @@
 <?php
 namespace Application;
 
+use ManaPHP\Cli\Application;
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\DbInterface;
-use ManaPHP\Cli\Application;
 
 class Cli extends Application
 {

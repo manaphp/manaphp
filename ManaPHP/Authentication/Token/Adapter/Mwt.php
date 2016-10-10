@@ -116,7 +116,7 @@ class Mwt extends Component implements TokenInterface
             throw new MwtException('payload is not array.'/**m02e36efb31ed0db24*/);
         }
 
-        if (!isset($data['EXP']) && $data['EXP'] < time()) {
+        if (!isset($data['EXP']) || time() > $data['EXP']) {
             throw new MwtException('token is expired.'/**m0b57c4265f54099b0*/, Exception::CODE_EXPIRE);
         }
 

@@ -45,11 +45,11 @@ class  AuthenticationTokenAdapterMwtTest extends TestCase
         $this->assertEquals($userToken->name, $decodeUserToken->name);
 
         //expire
-        $userToken = new UserToken();
+        $userToken = new UserToken(['ttl' => 1]);
         $userToken->id = 100;
         $userToken->name = 'mana';
 
-        $encoded = $userToken->encode(1);
+        $encoded = $userToken->encode();
         $this->assertContains('.', $encoded);
         $decodeUserToken = new UserToken();
         sleep(2);
@@ -57,7 +57,7 @@ class  AuthenticationTokenAdapterMwtTest extends TestCase
         try {
             $decodeUserToken->decode($encoded);
             $this->fail('why not?');
-        } catch (\Exception $e) {
+        } catch (\ManaPHP\Exception $e) {
 
         }
 

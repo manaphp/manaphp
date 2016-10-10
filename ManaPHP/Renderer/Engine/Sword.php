@@ -487,7 +487,7 @@ class Sword extends Component implements EngineInterface
      *
      * @return string
      */
-    protected function _compileEndcan(
+    protected function _compileEndCan(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -501,7 +501,7 @@ class Sword extends Component implements EngineInterface
      *
      * @return string
      */
-    protected function _compileEndcannot(
+    protected function _compileEndCannot(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {

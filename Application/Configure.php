@@ -34,6 +34,17 @@ namespace Application {
         {
             $this->debug = true;
 
+            /*
+             * --------------------------------------------------------------------------
+             *  Encryption Key
+             * --------------------------------------------------------------------------
+             *
+             *  This key should be set to a random, 32 character string, otherwise these encrypted strings
+             *  will not be safe. Please do this before deploying an application!
+             *
+             */
+            $this->_secretKeyPrefix = 'key';
+
             $this->database = new \stdClass();
             $this->database->host = 'localhost';
             $this->database->port = 3306;
@@ -44,9 +55,6 @@ namespace Application {
 
             $this->logger = new \stdClass();
             $this->logger->file = '@data/logger/' . date('Ymd') . '.log';
-
-            $this->crypt = new \stdClass();
-            $this->crypt->key = 'test';
 
             $this->debugger = new \stdClass();
 
