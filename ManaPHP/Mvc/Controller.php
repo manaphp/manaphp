@@ -40,8 +40,8 @@ use ManaPHP\Component;
  *</code>
  *
  * @method void initialize();
- * @method bool beforeExecuteRoute(DispatcherInterface $dispatcher);
- * @method bool afterExecuteRoute(DispatcherInterface $dispatcher);
+ * @method bool beforeExecuteRoute();
+ * @method bool afterExecuteRoute();
  * @method onConstruct();
  *
  *
@@ -81,11 +81,6 @@ use ManaPHP\Component;
 abstract class Controller extends Component implements ControllerInterface
 {
     /**
-     * @var array
-     */
-    protected $_cacheOptions = [];
-
-    /**
      * \ManaPHP\Mvc\Controller constructor
      *
      */
@@ -94,68 +89,5 @@ abstract class Controller extends Component implements ControllerInterface
         if (method_exists($this, 'onConstruct')) {
             $this->{'onConstruct'}();
         }
-    }
-
-    /**
-     * @param string $action
-     *
-     * @return string|false
-     */
-    public function getCachedResponse($action)
-    {
-        if (isset($this->_cacheOptions[$action])) {
-            $cacheOptions = $this->_getCacheOptions($this->_cacheOptions[$action], $action);
-            if (is_array($cacheOptions)) {
-                return $this->viewsCache->get($cacheOptions['key']);
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param string $action
-     * @param string $content
-     *
-     * @return void
-     */
-    public function setCachedResponse($action, $content)
-    {
-        if (isset($this->_cacheOptions[$action])) {
-            $cacheOptions = $this->_getCacheOptions($this->_cacheOptions[$action], $action);
-            if (is_array($cacheOptions)) {
-                $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
-            }
-        }
-    }
-
-    /**
-     * @param int|array $cacheOptions
-     * @param string    $action
-     *
-     * @return array|false
-     */
-    protected function _getCacheOptions($cacheOptions, $action)
-    {
-        $_cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
-
-        $parts = explode('\\', get_called_class());
-        $prefix = '/' . $parts[1] . '/Views/' . basename($parts[3], 'Controller') . '/' . ucfirst($action);
-
-        if (isset($_cacheOptions['key'])) {
-            if (is_callable($_cacheOptions['key'])) {
-                $key = $_cacheOptions['key']($this);
-                if (!is_string($key)) {
-                    return false;
-                }
-                $_cacheOptions['key'] = $prefix . '/' . $key;
-            } else {
-                $_cacheOptions['key'] = $prefix . '/' . $_cacheOptions['key'];
-            }
-        } else {
-            $_cacheOptions['key'] = $prefix;
-        }
-
-        return $_cacheOptions;
     }
 }

@@ -23,7 +23,7 @@ abstract class Application extends Component implements ApplicationInterface
     {
         if ($this->_modules === null) {
             $modules = [];
-            foreach (glob('@app/*', GLOB_ONLYDIR) as $dir) {
+            foreach (glob($this->alias->resolve('@app/*'), GLOB_ONLYDIR) as $dir) {
                 if (is_file($dir . '/Module.php')) {
                     $modules[] = basename($dir);
                 }

@@ -28,10 +28,9 @@ use ManaPHP\Utility\Text;
  * </code>
  *
  *
- * @property \ManaPHP\RendererInterface       $renderer
- * @property \ManaPHP\Cache\AdapterInterface  $viewsCache
- * @property \ManaPHP\Http\RequestInterface   $request
- * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property \ManaPHP\RendererInterface      $renderer
+ * @property \ManaPHP\Cache\AdapterInterface $viewsCache
+ * @property \ManaPHP\Http\RequestInterface  $request
  */
 class View extends Component implements ViewInterface
 {
@@ -49,11 +48,6 @@ class View extends Component implements ViewInterface
      * @var false|string|null
      */
     protected $_layout;
-
-    /**
-     * @var string
-     */
-    protected $_moduleName;
 
     /**
      * @var string
@@ -127,16 +121,6 @@ class View extends Component implements ViewInterface
     }
 
     /**
-     * Gets the name of the module rendered
-     *
-     * @return string
-     */
-    public function getModuleName()
-    {
-        return $this->_moduleName;
-    }
-
-    /**
      * Gets the name of the controller rendered
      *
      * @return string
@@ -164,19 +148,14 @@ class View extends Component implements ViewInterface
      * $view->start()->render('posts', 'recent')->finish();
      *</code>
      *
-     * @param string $module
      * @param string $controller
      * @param string $action
      *
      * @return static
      * @throws \ManaPHP\Mvc\View\Exception
      */
-    public function render($module, $controller, $action)
+    public function render($controller, $action)
     {
-        if ($this->_moduleName === null) {
-            $this->_moduleName = $module;
-        }
-
         if ($this->_controllerName === null) {
             $this->_controllerName = $controller;
         }
@@ -187,19 +166,10 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:beforeRender');
 
-        $view = "/{$this->_moduleName}/Views/{$this->_controllerName}/" . ucfirst($this->_actionName);
-
-        $this->_content = $this->renderer->render("@app{$view}", $this->_viewVars, false);
+        $this->_content = $this->renderer->render("@views/{$this->_controllerName}/" . ucfirst($this->_actionName), $this->_viewVars, false);
 
         if ($this->_layout !== false) {
-            if (is_string($this->_layout)) {
-                $layout = $this->_layout;
-            } else {
-                $layout = $this->_controllerName;
-            }
-
-            $view = "/$this->_moduleName/Views/Layouts/" . ucfirst($layout);
-            $this->_content = $this->renderer->render("@app{$view}", $this->_viewVars, false);
+            $this->_content = $this->renderer->render('@views/Layouts/' . ucfirst($this->_layout ?: $this->_controllerName), $this->_viewVars, false);
         }
 
         $this->fireEvent('view:afterRender');
@@ -231,13 +201,11 @@ class View extends Component implements ViewInterface
      */
     public function pick($view)
     {
-        $parts = array_pad(explode('/', $view), -3, null);
+        $parts = array_pad(explode('/', $view), -2, null);
 
-        $this->_moduleName = $parts[0];
+        $this->_controllerName = $parts[0];
         /** @noinspection MultiAssignmentUsageInspection */
-        $this->_controllerName = $parts[1];
-        /** @noinspection MultiAssignmentUsageInspection */
-        $this->_actionName = $parts[2];
+        $this->_actionName = $parts[1];
 
         return $this;
     }
@@ -268,23 +236,20 @@ class View extends Component implements ViewInterface
             $path = $this->_controllerName . '/' . $path;
         }
 
-        $view = "/$this->_moduleName/Views/$path";
-
         if ($cacheOptions !== null) {
-            $_cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
+            $cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
 
-            if (!isset($_cacheOptions['key'])) {
-                $_cacheOptions['key'] = $view;
-            }
+            $cacheOptions['key'] = "@views/$path" . (isset($cacheOptions['key']) ? '/' . $cacheOptions['key'] : '');
+            $cacheOptions['key'] = str_replace($this->alias->resolve('@app'), '', $this->alias->resolve($cacheOptions['key']));
 
-            $content = $this->viewsCache->get($_cacheOptions['key']);
+            $content = $this->viewsCache->get($cacheOptions['key']);
             if ($content === false) {
-                $content = $this->renderer->render("@app{$view}", $vars, false);
-                $this->viewsCache->set($_cacheOptions['key'], $content, $_cacheOptions['ttl']);
+                $content = $this->renderer->render("@views/$path", $vars, false);
+                $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
             }
             echo $content;
         } else {
-            $this->renderer->render("@app{$view}", $vars, true);
+            $this->renderer->render("@views/$path", $vars, true);
         }
     }
 
@@ -297,7 +262,7 @@ class View extends Component implements ViewInterface
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
-        $widgetClassName = basename($this->alias->get('@app')) . "\\{$this->_moduleName}\\Widgets\\{$widget}Widget";
+        $widgetClassName = $this->alias->resolve("@ns.widgets\\{$widget}Widget");
 
         if (!class_exists($widgetClassName)) {
             throw new ViewException('`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, ['widget' => $widget, 'class' => $widgetClassName]);
@@ -309,30 +274,23 @@ class View extends Component implements ViewInterface
         $widgetInstance = $this->_dependencyInjector->get($widgetClassName);
         $vars = $widgetInstance->run($options);
 
-        $view = "/$this->_moduleName/Views/Widgets/" . $widget;
+        $view = '@views/Widgets/' . $widget;
 
         if ($cacheOptions !== null) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-            if (is_array($cacheOptions)) {
-                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-                $_cacheOptions = (array)$cacheOptions;
-            } else {
-                $_cacheOptions = ['ttl' => $cacheOptions];
-            }
+            $cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
 
-            if (!isset($_cacheOptions['key'])) {
-                $_cacheOptions['key'] = $view;
-            }
+            $cacheOptions['key'] = $view . (isset($cacheOptions['key']) ? '/' . $cacheOptions['key'] : '');
+            $cacheOptions['key'] = str_replace($this->alias->resolve('@app') . '/', '', $this->alias->resolve($cacheOptions['key']));
 
-            $content = $this->viewsCache->get($_cacheOptions['key']);
+            $content = $this->viewsCache->get($cacheOptions['key']);
             if ($content === false) {
                 if (is_string($vars)) {
                     $content = $vars;
                 } else {
-                    $content = $this->renderer->render("@app{$view}", $vars, false);
+                    $content = $this->renderer->render($view, $vars, false);
                 }
 
-                $this->viewsCache->set($_cacheOptions['key'], $content, $_cacheOptions['ttl']);
+                $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
             }
 
             echo $content;
@@ -340,7 +298,7 @@ class View extends Component implements ViewInterface
             if (is_string($vars)) {
                 echo $vars;
             } else {
-                $this->renderer->render("@app{$view}", $vars, true);
+                $this->renderer->render($view, $vars, true);
             }
         }
     }
@@ -376,9 +334,7 @@ class View extends Component implements ViewInterface
     public function dump()
     {
         $data = parent::dump();
-        if (is_string($data['_content'])) {
-            $data['_content'] = 'content length: ' . strlen($data['_content']);
-        }
+        unset($data['_content']);
 
         return $data;
     }

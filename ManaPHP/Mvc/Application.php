@@ -32,11 +32,6 @@ abstract class Application extends \ManaPHP\Application
     protected $_moduleObject;
 
     /**
-     * @var bool
-     */
-    protected $_useCachedResponse;
-
-    /**
      * \ManaPHP\Mvc\Application
      *
      * @param \ManaPHP\DiInterface $dependencyInjector
@@ -64,14 +59,12 @@ abstract class Application extends \ManaPHP\Application
     }
 
     /**
-     * @param \ManaPHP\Mvc\Dispatcher $dispatcher
-     *
      * @return bool
      * @throws \ManaPHP\Security\CsrfToken\Exception
      * @throws \ManaPHP\Http\Request\Exception
      * @throws \ManaPHP\Security\Crypt\Exception
      */
-    public function _eventHandlerBeforeExecuteRoute($dispatcher)
+    public function _eventHandlerBeforeExecuteRoute()
     {
         $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
         if (isset($this->csrfToken)
@@ -83,14 +76,6 @@ abstract class Application extends \ManaPHP\Application
         /** @noinspection IfReturnReturnSimplificationInspection */
         if ($this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName()) === false) {
             return false;
-        }
-
-        if ($content = $dispatcher->getController()->getCachedResponse($dispatcher->getActionName())) {
-            $this->_useCachedResponse = true;
-            $dispatcher->setReturnedValue($dispatcher->getController()->response->setContent($content));
-            return false;
-        } else {
-            $this->_useCachedResponse = false;
         }
 
         return true;
@@ -126,8 +111,11 @@ abstract class Application extends \ManaPHP\Application
         $controllerName = $this->router->getControllerName();
         $actionName = $this->router->getActionName();
         $params = $this->router->getParams();
-
-        $moduleClassName = basename($this->alias->get('@app')) . "\\$moduleName\\Module";
+        $this->alias->set('@views', "@app/$moduleName/Views");
+        $this->alias->set('@ns.module', '@ns.app\\' . $moduleName);
+        $this->alias->set('@ns.controllers', '@ns.module\\Controllers');
+        $this->alias->set('@ns.widgets', '@ns.module\\Widgets');
+        $moduleClassName = $this->alias->resolve('@ns.module\\Module');
 
         $eventData = ['module' => $moduleName];
         $this->fireEvent('application:beforeStartModule', $eventData);
@@ -136,10 +124,6 @@ abstract class Application extends \ManaPHP\Application
 
         $eventData = ['module' => $moduleName];
         $this->fireEvent('application:afterStartModule', $eventData);
-
-        if ($this->dispatcher->getRootNamespace() === null) {
-            $this->dispatcher->setRootNamespace(basename($this->alias->get('@app')));
-        }
 
         $handler = [$this, '_eventHandlerBeforeExecuteRoute'];
         $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', $handler);
@@ -154,15 +138,11 @@ abstract class Application extends \ManaPHP\Application
             if ($this->_implicitView === true) {
 
                 $this->view->setContent($actionReturnValue);
-                $this->view->render($this->dispatcher->getModuleName(), $this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+                $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
                 $this->response->setContent($this->view->getContent());
             } else {
                 $this->response->setContent($actionReturnValue);
             }
-        }
-
-        if (!$this->_useCachedResponse) {
-            $this->dispatcher->getController()->setCachedResponse($this->dispatcher->getActionName(), $this->response->getContent());
         }
 
         return $this->response;

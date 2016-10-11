@@ -34,7 +34,7 @@ class ControllerController extends Controller
         }
 
         $controllers = explode(',', $parts[1]);
-        $controllerNamespace = basename($this->alias->get('@app')) . '\\' . $moduleName . '\\Controllers';
+        $controllerNamespace = $this->alias->resolve('@ns.app' . '\\' . $moduleName . '\\Controllers');
         foreach ($controllers as $controller) {
             $controller = Text::camelize($controller);
             $controllerName = $controller . 'Controller';

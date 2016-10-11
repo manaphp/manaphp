@@ -43,7 +43,7 @@ namespace Application {
              *  will not be safe. Please do this before deploying an application!
              *
              */
-            $this->_secretKeyPrefix = 'key';
+            $this->_masterKey = 'key';
 
             $this->database = new \stdClass();
             $this->database->host = 'localhost';

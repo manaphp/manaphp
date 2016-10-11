@@ -44,27 +44,12 @@ interface ViewInterface
     public function getVar($name = null);
 
     /**
-     * Gets the name of the controller rendered
-     *
-     * @return string
-     */
-    public function getControllerName();
-
-    /**
-     * Gets the name of the action rendered
-     *
-     * @return string
-     */
-    public function getActionName();
-
-    /**
      * Executes render process from dispatching data
      *
-     * @param string $module
      * @param string $controller
      * @param string $action
      */
-    public function render($module, $controller, $action);
+    public function render($controller, $action);
 
     /**
      * Choose a view different to render than last-controller/last-action

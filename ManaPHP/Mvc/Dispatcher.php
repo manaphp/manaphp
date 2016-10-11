@@ -47,11 +47,6 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @var string
      */
-    protected $_rootNamespace;
-
-    /**
-     * @var string
-     */
     protected $_controllerName;
 
     /**
@@ -98,30 +93,6 @@ class Dispatcher extends Component implements DispatcherInterface
      * @var array
      */
     protected $_initializedControllers = [];
-
-    /**
-     * Sets the namespace where the controller class is
-     *
-     * @param string $namespaceName
-     *
-     * @return static
-     */
-    public function setRootNamespace($namespaceName)
-    {
-        $this->_rootNamespace = $namespaceName;
-
-        return $this;
-    }
-
-    /**
-     * Gets a namespace to be prepended to the current handler name
-     *
-     * @return string
-     */
-    public function getRootNamespace()
-    {
-        return $this->_rootNamespace;
-    }
 
     /**
      * Gets the module where the controller class is
@@ -280,7 +251,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 continue;
             }
 
-            $controllerClassName = $this->_rootNamespace . '\\' . $this->_moduleName . '\\Controllers\\' . $this->_controllerName . $this->_controllerSuffix;
+            $controllerClassName = $this->alias->resolve('@ns.controllers\\' . $this->_controllerName . $this->_controllerSuffix);
 
             if (!$this->_dependencyInjector->has($controllerClassName) && !class_exists($controllerClassName)) {
                 throw new NotFoundControllerException('`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, ['controller' => $controllerClassName]);
@@ -323,6 +294,14 @@ class Dispatcher extends Component implements DispatcherInterface
                     ['action' => $this->_actionName . $this->_actionSuffix, 'controller' => $controllerClassName]);
             }
 
+            if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
+                return false;
+            }
+
+            if ($this->_finished === false) {
+                continue;
+            }
+
             // Calling beforeExecuteRoute as callback
             if (method_exists($controllerInstance, 'beforeExecuteRoute')) {
                 if ($controllerInstance->beforeExecuteRoute($this) === false) {
@@ -332,14 +311,6 @@ class Dispatcher extends Component implements DispatcherInterface
                 if ($this->_finished === false) {
                     continue;
                 }
-            }
-
-            if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
-                return false;
-            }
-
-            if ($this->_finished === false) {
-                continue;
             }
 
             if (!in_array($controllerClassName, $this->_initializedControllers,

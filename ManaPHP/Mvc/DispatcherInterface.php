@@ -8,22 +8,6 @@ namespace ManaPHP\Mvc;
 interface DispatcherInterface
 {
     /**
-     * Sets the root namespace
-     *
-     * @param string $namespace
-     *
-     * @return static
-     */
-    public function setRootNamespace($namespace);
-
-    /**
-     * Returns the root namespace
-     *
-     * @return string
-     */
-    public function getRootNamespace();
-
-    /**
      * Gets the module where the controller class is
      *
      * @return string

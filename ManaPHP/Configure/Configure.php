@@ -18,7 +18,7 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
-    protected $_secretKeyPrefix = 'key';
+    protected $_masterKey = 'key';
 
     /**
      * @return array
@@ -42,6 +42,6 @@ class Configure extends Component implements ConfigureInterface
      */
     public function getSecretKey($type)
     {
-        return md5($this->_secretKeyPrefix . ':' . $type);
+        return md5($this->_masterKey . ':' . $type);
     }
 }

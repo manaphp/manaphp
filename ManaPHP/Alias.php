@@ -38,6 +38,7 @@ class Alias extends Component implements AliasInterface
                         $dir = dirname($file);
 
                         $this->set('@app', $dir);
+                        $this->set('@ns.app', basename($dir));
                         $this->set('@data', dirname($dir) . '/Data');
 
                         $found = true;
@@ -65,7 +66,11 @@ class Alias extends Component implements AliasInterface
             throw new AliasException('`:name` must start with `@`'/**m02b52e71dba71561a*/, ['name' => $name]);
         }
 
-        $this->_aliases[$name] = $this->resolve($path);
+        if (strpos($name, '@ns.') === 0) {
+            $this->_aliases[$name] = $path[0] === '@' ? $this->resolve($path) : $path;
+        } else {
+            $this->_aliases[$name] = $this->resolve($path);
+        }
 
         return $this->_aliases[$name];
     }
@@ -114,13 +119,17 @@ class Alias extends Component implements AliasInterface
             throw new AliasException('`:path` can not end with `/` or `\`'/**m02677305f62c5336e*/, ['path' => $path]);
         }
 
-        $path = str_replace('\\', '/', $path);
-
         if ($path[0] !== '@') {
-            return $path;
+            return str_replace('\\', '/', $path);
         }
 
-        $parts = explode('/', $path, 2);
+        if (strpos($path, '@ns.') === 0) {
+            $parts = explode('\\', $path, 2);
+        } else {
+            $path = str_replace('\\', '/', $path);
+            $parts = explode('/', $path, 2);
+        }
+
         $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
 
