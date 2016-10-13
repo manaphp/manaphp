@@ -164,7 +164,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
-        $this->_sql = $sql;
+        $this->_sql = preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
         $this->_bind = $bind;
         $this->_affectedRows = 0;
 
@@ -172,10 +172,10 @@ abstract class Db extends Component implements DbInterface
 
         try {
             if (count($bind) !== 0) {
-                $statement = $this->_pdo->prepare($sql);
+                $statement = $this->_pdo->prepare($this->_sql);
                 $statement = $this->_executePrepared($statement, $bind);
             } else {
-                $statement = $this->_pdo->query($sql);
+                $statement = $this->_pdo->query($this->_sql);
             }
 
             $this->_affectedRows = $statement->rowCount();
@@ -206,7 +206,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function execute($sql, $bind = [])
     {
-        $this->_sql = $sql;
+        $this->_sql = preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
         $this->_bind = $bind;
 
         $this->_affectedRows = 0;
@@ -215,10 +215,10 @@ abstract class Db extends Component implements DbInterface
 
         try {
             if (count($bind) !== 0) {
-                $statement = $this->_executePrepared($this->_pdo->prepare($sql), $bind);
+                $statement = $this->_executePrepared($this->_pdo->prepare($this->_sql), $bind);
                 $this->_affectedRows = $statement->rowCount();
             } else {
-                $this->_affectedRows = $this->_pdo->exec($sql);
+                $this->_affectedRows = $this->_pdo->exec($this->_sql);
             }
         } catch (\PDOException $e) {
             throw new DbException($e->getMessage());

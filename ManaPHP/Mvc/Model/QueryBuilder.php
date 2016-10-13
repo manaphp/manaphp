@@ -29,7 +29,7 @@ use ManaPHP\Utility\Text;
 class QueryBuilder extends Component implements QueryBuilderInterface
 {
     /**
-     * @var string|array
+     * @var string
      */
     protected $_columns;
 
@@ -224,7 +224,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *    $builder->columns(array('id', 'name'));
      *</code>
      *
-     * @param string|array $columns
+     * @param string $columns
      *
      * @return static
      */
@@ -403,7 +403,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 $conditions .= ' =';
             }
 
-            $parts = explode(' ', $conditions);
+            $parts = explode(' ', $conditions, 2);
+            $conditions = preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $parts[0]) . ' ' . $parts[1];
             $column = str_replace('.', '_', $parts[0]);
             /** @noinspection CascadeStringReplacementInspection */
             $from = ['`', '[', ']'];
@@ -679,11 +680,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
          * Process order clause
          */
         if ($this->_order !== null) {
-            if (is_array($this->_order)) {
-                $sql .= ' ORDER BY ' . implode(', ', $this->_order);
-            } else {
-                $sql .= ' ORDER BY ' . $this->_order;
-            }
+            $sql .= ' ORDER BY ' . $this->_order;
         }
 
         /**
@@ -743,35 +740,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
          * Generate SQL for columns
          */
         if ($this->_columns !== null) {
-            if (is_array($this->_columns)) {
-                $columns = '';
-                /** @noinspection ForeachSourceInspection */
-                foreach ($this->_columns as $column) {
-                    if (strpos($column, '.') === false) {
-                        $columns .= ', `' . $column . '`';
-                    } else {
-                        $columns .= ', ' . $column;
-                    }
-                }
-                $sql .= ltrim($columns, ', ');
-            } else {
-                $sql .= preg_replace('/(\s+)/', ' ', $this->_columns);
-            }
+            $sql .= preg_replace('/(\s+)/', ' ', $this->_columns);
         } else {
-            if (count($this->_models) === 1) {
-                $sql .= '*';
-            } else {
-                $selectedColumns = [];
-                /** @noinspection ForeachSourceInspection */
-                foreach ($this->_models as $alias => $model) {
-                    if (is_int($alias)) {
-                        $selectedColumns[] = '[' . $model . '].*';
-                    } else {
-                        $selectedColumns[] = '`' . $alias . '`.*';
-                    }
-                }
-                $sql .= implode(', ', $selectedColumns);
+            $selectedColumns = [];
+            /** @noinspection ForeachSourceInspection */
+            foreach ($this->_models as $alias => $model) {
+                $selectedColumns[] = '[' . (is_int($alias) ? $model : $alias) . '].*';
             }
+            $sql .= implode(', ', $selectedColumns);
         }
 
         /**
@@ -785,12 +761,12 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                     throw new QueryBuilderException('if using SubQuery, you must assign an alias for it'/**m0e5f4aa93dc102dde*/);
                 }
 
-                $selectedModels[] = '(' . $model->getSql() . ') AS `' . $alias . '`';
+                $selectedModels[] = '(' . $model->getSql() . ') AS [' . $alias . ']';
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $model->getBind());
             } else {
                 if (is_string($alias)) {
-                    $selectedModels[] = '[' . $model . '] AS `' . $alias . '`';
+                    $selectedModels[] = '[' . $model . '] AS [' . $alias . ']';
                 } else {
                     $selectedModels[] = '[' . $model . ']';
                 }
@@ -834,7 +810,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             }
 
             if ($joinAlias !== null) {
-                $sql .= ' AS `' . $joinAlias . '`';
+                $sql .= ' AS [' . $joinAlias . ']';
             }
 
             if ($joinCondition) {
@@ -857,7 +833,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             if (is_int($k)) {
                 $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
             } else {
-                $wheres[] = "`$k`=:$k";
+                $wheres[] = "[$k]=:$k";
                 $this->_bind[$k] = $v;
             }
         }
@@ -888,11 +864,25 @@ class QueryBuilder extends Component implements QueryBuilderInterface
          * Process order clause
          */
         if ($this->_order !== null) {
-            if (is_array($this->_order)) {
-                $sql .= ' ORDER BY ' . implode(', ', $this->_order);
-            } else {
-                $sql .= ' ORDER BY ' . $this->_order;
+            $order = '';
+            foreach (explode(',', $this->_order) as $item) {
+                $parts = explode(' ', trim($item));
+                if (count($parts) === 1) {
+                    $by = trim($parts[0]);
+                    $type = 'ASC';
+                } elseif (count($parts) === 2) {
+                    $by = trim($parts[0]);
+                    $type = strtoupper($parts[1]);
+                } else {
+                    $order = $this->_order;
+                    break;
+                }
+
+                if (preg_match('#^[a-z_][a-z0-9_.]*#i', $by) === 1) {
+                    $order .= preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $by) . ' ' . $type . ', ';
+                }
             }
+            $sql .= ' ORDER BY ' . rtrim($order, ', ');
         }
 
         /**
@@ -917,7 +907,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $model) {
             if (!$model instanceof QueryBuilderInterface) {
-                $sql = str_replace('[' . $model . ']', '`' . $this->modelsManager->getModelSource($model) . '`', $sql);
+                $sql = str_replace('[' . $model . ']', '[' . $this->modelsManager->getModelSource($model) . ']', $sql);
             }
         }
 
@@ -1046,7 +1036,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             throw new QueryBuilderException('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
         }
 
-        $this->_columns = 'COUNT(*) as row_count';
+        $this->_columns = 'COUNT(*) as [row_count]';
         $this->_limit = 0;
         $this->_offset = 0;
 

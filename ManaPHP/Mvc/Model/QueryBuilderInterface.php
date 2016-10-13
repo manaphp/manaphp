@@ -21,7 +21,7 @@ interface QueryBuilderInterface
     /**
      * Sets the columns to be queried
      *
-     * @param string|array $columns
+     * @param string $columns
      *
      * @return static
      */

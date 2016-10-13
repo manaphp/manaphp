@@ -97,15 +97,6 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(2, $rows);
         $this->assertCount(3, $rows[0]);
 
-        //array format columns
-        $builder = $this->modelsManager->createBuilder()
-            ->columns(['a.address_id', 'a.address', 'a.phone'])
-            ->addFrom(get_class(new Address()), 'a')
-            ->limit(2);
-        $rows = $builder->execute();
-        $this->assertCount(2, $rows);
-        $this->assertCount(3, $rows[0]);
-
         //dense multi space to only one for columns
         $builder = $this->modelsManager->createBuilder()
             ->columns('a.address_id,
@@ -331,11 +322,6 @@ class MvcModelQueryBuilderTest extends TestCase
         $builder = $this->modelsManager->createBuilder()
             ->addFrom(get_class(new Address()))
             ->andWhere(' address_id ', 1);
-        $this->assertCount(1, $builder->execute());
-
-        $builder = $this->modelsManager->createBuilder()
-            ->addFrom(get_class(new Address()))
-            ->andWhere('`address_id`', 1);
         $this->assertCount(1, $builder->execute());
 
         $builder = $this->modelsManager->createBuilder()

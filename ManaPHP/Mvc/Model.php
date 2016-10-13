@@ -295,7 +295,11 @@ class Model extends Component implements ModelInterface
         }
 
         if (!isset($parameters['columns']) && (isset($parameters[0]) || isset($parameters['conditions']))) {
-            $parameters['columns'] = $dependencyInjector->modelsMetadata->getColumnProperties($modelName);
+            $columns = '';
+            foreach ($dependencyInjector->modelsMetadata->getColumnProperties($modelName) as $column) {
+                $columns .= '[' . $column . '], ';
+            }
+            $parameters['columns'] = substr($columns, 0, -2);
         }
 
         $builder = $modelsManager->createBuilder($parameters)
@@ -364,7 +368,7 @@ class Model extends Component implements ModelInterface
                     ['model' => get_called_class()]);
             }
 
-            $parameters = [$primaryKeys[0] . '= :' . $primaryKeys[0], 'bind' => [$primaryKeys[0] => $parameters]];
+            $parameters = ['[' . $primaryKeys[0] . ']' . '=:' . $primaryKeys[0], 'bind' => [$primaryKeys[0] => $parameters]];
         } elseif (is_string($parameters)) {
             $parameters = [$parameters];
         }
@@ -373,8 +377,11 @@ class Model extends Component implements ModelInterface
 
         /** @noinspection OffsetOperationsInspection */
         if (!isset($parameters['columns']) && (isset($parameters[0]) || isset($parameters['conditions']))) {
-            /** @noinspection OffsetOperationsInspection */
-            $parameters['columns'] = $dependencyInjector->modelsMetadata->getColumnProperties($modelName);
+            $columns = '';
+            foreach ($dependencyInjector->modelsMetadata->getColumnProperties($modelName) as $column) {
+                $columns .= '[' . $column . '], ';
+            }
+            $parameters['columns'] = substr($columns, 0, -2);
         }
 
         /**
@@ -489,7 +496,7 @@ class Model extends Component implements ModelInterface
             }
         }
 
-        $sql = 'SELECT COUNT(*) as row_count' . ' FROM `' . $this->getSource() . '` WHERE ' . implode(' AND ',
+        $sql = 'SELECT COUNT(*) as [row_count]' . ' FROM [' . $this->getSource() . '] WHERE ' . implode(' AND ',
                 $conditions);
         $num = $this->getWriteConnection()->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
 
@@ -518,10 +525,13 @@ class Model extends Component implements ModelInterface
             $parameters = [$parameters];
         }
 
+        if (preg_match('#^[a-z_][a-z0-9_]*$#i', $column) === 1) {
+            $column = '[' . $column . ']';
+        }
         if (isset($parameters['group'])) {
-            $columns = "$parameters[group], $function($column) AS $alias";
+            $columns = "[$parameters[group]], $function($column) AS [$alias]";
         } /** @noinspection DefaultValueInElseBranchInspection */ else {
-            $columns = "$function($column) AS $alias";
+            $columns = "$function($column) AS [$alias]";
         }
 
         /**
