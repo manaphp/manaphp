@@ -79,11 +79,6 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     protected $_forUpdate;
 
     /**
-     * @var bool
-     */
-    protected $_sharedLock;
-
-    /**
      * @var array
      */
     protected $_bind = [];
@@ -139,9 +134,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     {
         if ($params === null) {
             $params = [];
-        }
-
-        if (is_string($params)) {
+        } elseif (is_string($params)) {
             $params = [$params];
         }
 
@@ -159,7 +152,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         if (isset($params['distinct'])) {
-            $this->_distinct = $params['distinct'];
+            $this->distinct($params['distinct']);
         }
 
         if (isset($params['models'])) {
@@ -167,7 +160,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         if (isset($params['columns'])) {
-            $this->_columns = $params['columns'];
+            $this->columns($params['columns']);
         }
 
         if (isset($params['joins'])) {
@@ -175,31 +168,23 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         if (isset($params['group'])) {
-            $this->_group = $params['group'];
+            $this->groupBy($params['group']);
         }
 
         if (isset($params['having'])) {
-            $this->_having = $params['having'];
+            $this->having($params['having']);
         }
 
         if (isset($params['order'])) {
-            $this->_order = $params['order'];
+            $this->orderBy($params['order']);
         }
 
         if (isset($params['limit'])) {
-            $this->_limit = $params['limit'];
-        }
-
-        if (isset($params['offset'])) {
-            $this->_offset = $params['offset'];
+            $this->limit($params['limit'], isset($params['offset']) ? $params['offset'] : 0);
         }
 
         if (isset($params['for_update'])) {
-            $this->_forUpdate = $params['for_update'];
-        }
-
-        if (isset($params['shared_lock'])) {
-            $this->_sharedLock = $params['shared_lock'];
+            $this->forUpdate($params['for_update']);
         }
     }
 
@@ -230,7 +215,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     public function columns($columns)
     {
-        $this->_columns = $columns;
+        $this->_columns = preg_replace('/(\s+)/', ' ', $columns);
 
         return $this;
     }
@@ -568,7 +553,26 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     public function orderBy($orderBy)
     {
-        $this->_order = $orderBy;
+        $r = '';
+        foreach (explode(',', $orderBy) as $item) {
+            $parts = explode(' ', trim($item));
+            if (count($parts) === 1) {
+                $by = trim($parts[0]);
+                $type = 'ASC';
+            } elseif (count($parts) === 2) {
+                $by = trim($parts[0]);
+                $type = strtoupper($parts[1]);
+            } else {
+                $r = $orderBy;
+                break;
+            }
+
+            if (preg_match('#^[a-z_][a-z0-9_.]*#i', $by) === 1) {
+                $r .= preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $by) . ' ' . $type . ', ';
+            }
+        }
+
+        $this->_order = substr($r, 0, -2);
 
         return $this;
     }
@@ -585,17 +589,28 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *
      * @return static
      */
-    public function having($having, $bind = null)
+    public function having($having, $bind = [])
     {
-        if ($this->_having === null) {
-            $this->_having = [$having];
-        } else {
-            $this->_having[] = $having;
-        }
+        $this->_having = $having;
+        $this->_bind = array_merge($this->_bind, $bind);
 
-        if ($bind !== null) {
-            $this->_bind = array_merge($this->_bind, $bind);
-        }
+        return $this;
+    }
+
+    /**
+     * Sets a FOR UPDATE clause
+     *
+     *<code>
+     *    $builder->forUpdate(true);
+     *</code>
+     *
+     * @param bool $forUpdate
+     *
+     * @return static
+     */
+    public function forUpdate($forUpdate = true)
+    {
+        $this->_forUpdate = (bool)$forUpdate;
 
         return $this;
     }
@@ -644,13 +659,28 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *    $builder->groupBy(array('Robots.name'));
      *</code>
      *
-     * @param string $group
+     * @param string $groupBy
      *
      * @return static
      */
-    public function groupBy($group)
+    public function groupBy($groupBy)
     {
-        $this->_group = $group;
+        $r = '';
+        foreach (explode(',', $groupBy) as $item) {
+            $parts = explode(' ', trim($item));
+            if (count($parts) === 1) {
+                $by = trim($parts[0]);
+            } else {
+                $r = $groupBy;
+                break;
+            }
+
+            if (preg_match('#^[a-z_][a-z0-9_.]*#i', $by) === 1) {
+                $r .= preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $by) . ', ';
+            }
+        }
+
+        $this->_group = substr($r, 0, -2);;
 
         return $this;
     }
@@ -690,6 +720,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $sql .= ' LIMIT ' . $this->_limit;
         }
 
+        if ($this->_offset !== 0) {
+            $sql .= ' OFFSET ' . $this->_offset;
+        }
+
         $this->_models[] = $builder->getModels()[0];
 
         return $sql;
@@ -724,35 +758,25 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             throw new QueryBuilderException('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
         }
 
-        /**
-         * Generate SQL for SELECT
-         */
         $sql = 'SELECT ';
 
-        /**
-         * Generate SQL for DISTINCT
-         */
         if ($this->_distinct) {
             $sql .= 'DISTINCT ';
         }
 
-        /**
-         * Generate SQL for columns
-         */
         if ($this->_columns !== null) {
-            $sql .= preg_replace('/(\s+)/', ' ', $this->_columns);
+            $columns = $this->_columns;
         } else {
+            $columns = '';
             $selectedColumns = [];
             /** @noinspection ForeachSourceInspection */
             foreach ($this->_models as $alias => $model) {
                 $selectedColumns[] = '[' . (is_int($alias) ? $model : $alias) . '].*';
             }
-            $sql .= implode(', ', $selectedColumns);
+            $columns .= implode(', ', $selectedColumns);
         }
+        $sql .= $columns;
 
-        /**
-         *  generate for FROM
-         */
         $selectedModels = [];
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $alias => $model) {
@@ -774,10 +798,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
         $sql .= ' FROM ' . implode(', ', $selectedModels);
 
-        /**
-         *  Join multiple models
-         */
-
+        $joinSQL = '';
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_joins as $join) {
             $joinModel = $join[0];
@@ -795,33 +816,34 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             }
 
             if ($joinType !== null) {
-                $sql .= ' ' . $joinType;
+                $joinSQL .= ' ' . $joinType;
             }
 
             if ($joinModel instanceof QueryBuilderInterface) {
-                $sql .= ' JOIN (' . $joinModel->getSql() . ')';
+                $joinSQL .= ' JOIN (' . $joinModel->getSql() . ')';
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $joinModel->getBind());
                 if ($joinAlias === null) {
                     throw new QueryBuilderException('if using SubQuery, you must assign an alias for it'/**m0a80f96a41e1596cb*/);
                 }
             } else {
-                $sql .= ' JOIN [' . $joinModel . ']';
+                $joinSQL .= ' JOIN [' . $joinModel . ']';
             }
 
             if ($joinAlias !== null) {
-                $sql .= ' AS [' . $joinAlias . ']';
+                $joinSQL .= ' AS [' . $joinAlias . ']';
             }
 
             if ($joinCondition) {
-                $sql .= ' ON ' . $joinCondition;
+                $joinSQL .= ' ON ' . $joinCondition;
             }
         }
+        $sql .= $joinSQL;
 
         $wheres = [];
 
         if (is_string($this->_conditions)) {
-            $this->_conditions = $this->_conditions === '' ? [] : [$this->_conditions];
+            $this->_conditions = [$this->_conditions];
         }
 
         /** @noinspection ForeachSourceInspection */
@@ -842,58 +864,28 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $sql .= ' WHERE ' . implode(' AND ', $wheres);
         }
 
-        /**
-         * Process group parameters
-         */
         if ($this->_group !== null) {
             $sql .= ' GROUP BY ' . $this->_group;
         }
 
-        /**
-         * Process having parameters
-         */
         if ($this->_having !== null) {
-            if (count($this->_having) === 1) {
-                $sql .= ' HAVING ' . $this->_having[0];
-            } else {
-                $sql .= ' HAVING (' . implode(' AND ', $this->_having) . ')';
-            }
+            $sql .= ' HAVING ' . $this->_having;
         }
 
-        /**
-         * Process order clause
-         */
         if ($this->_order !== null) {
-            $order = '';
-            foreach (explode(',', $this->_order) as $item) {
-                $parts = explode(' ', trim($item));
-                if (count($parts) === 1) {
-                    $by = trim($parts[0]);
-                    $type = 'ASC';
-                } elseif (count($parts) === 2) {
-                    $by = trim($parts[0]);
-                    $type = strtoupper($parts[1]);
-                } else {
-                    $order = $this->_order;
-                    break;
-                }
-
-                if (preg_match('#^[a-z_][a-z0-9_.]*#i', $by) === 1) {
-                    $order .= preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $by) . ' ' . $type . ', ';
-                }
-            }
-            $sql .= ' ORDER BY ' . rtrim($order, ', ');
+            $sql .= ' ORDER BY ' . $this->_order;
         }
 
-        /**
-         * Process limit parameters
-         */
         if ($this->_limit !== 0) {
             $sql .= ' LIMIT ' . $this->_limit;
         }
 
         if ($this->_offset !== 0) {
             $sql .= ' OFFSET ' . $this->_offset;
+        }
+
+        if ($this->_forUpdate) {
+            $sql .= ' FOR UPDATE';
         }
 
         //compatible with other SQL syntax

@@ -465,8 +465,7 @@ class MvcModelQueryBuilderTest extends TestCase
             ->columns('COUNT(city_id) as count_city, country_id')
             ->addFrom(get_class(new City()))
             ->groupBy('country_id')
-            ->having('COUNT(city_id) >1')
-            ->having('COUNT(city_id) <7');
+            ->having('COUNT(city_id) >1 AND COUNT(city_id) <7');
         $rows = $builder->execute();
         $this->assertCount(46, $rows);
         foreach ($rows as $row) {
@@ -478,8 +477,7 @@ class MvcModelQueryBuilderTest extends TestCase
             ->columns('COUNT(city_id) as count_city, country_id')
             ->addFrom(get_class(new City()))
             ->groupBy('country_id')
-            ->having('COUNT(city_id) >:min_count', ['min_count' => 1])
-            ->having('COUNT(city_id) <:max_count', ['max_count' => 7]);
+            ->having('COUNT(city_id) >:min_count AND COUNT(city_id) <:max_count', ['min_count' => 1,'max_count' => 7]);
         $rows = $builder->execute();
         $this->assertCount(46, $rows);
     }

@@ -177,6 +177,19 @@ interface QueryBuilderInterface
     public function having($having, $bind = null);
 
     /**
+     * Sets a FOR UPDATE clause
+     *
+     *<code>
+     *    $builder->forUpdate(true);
+     *</code>
+     *
+     * @param bool $forUpdate
+     *
+     * @return static
+     */
+    public function forUpdate($forUpdate = true);
+
+    /**
      * Sets a LIMIT clause
      *
      * @param int $limit

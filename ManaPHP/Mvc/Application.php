@@ -136,7 +136,6 @@ abstract class Application extends \ManaPHP\Application
         $actionReturnValue = $this->dispatcher->getReturnedValue();
         if ($actionReturnValue === null || is_string($actionReturnValue)) {
             if ($this->_implicitView === true) {
-
                 $this->view->setContent($actionReturnValue);
                 $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
                 $this->response->setContent($this->view->getContent());
