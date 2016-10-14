@@ -553,26 +553,30 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     public function orderBy($orderBy)
     {
-        $r = '';
-        foreach (explode(',', $orderBy) as $item) {
-            $parts = explode(' ', trim($item));
-            if (count($parts) === 1) {
-                $by = trim($parts[0]);
-                $type = 'ASC';
-            } elseif (count($parts) === 2) {
-                $by = trim($parts[0]);
-                $type = strtoupper($parts[1]);
-            } else {
-                $r = $orderBy;
-                break;
+        if (preg_match('#^[a-z0-9_.\s]*$#i', $orderBy) === 1) {
+            $r = '';
+            foreach (explode(',', $orderBy) as $item) {
+                $parts = explode(' ', trim($item));
+                if (count($parts) === 1) {
+                    $by = trim($parts[0]);
+                    $type = 'ASC';
+                } elseif (count($parts) === 2) {
+                    $by = trim($parts[0]);
+                    $type = strtoupper($parts[1]);
+                } else {
+                    $r = $orderBy;
+                    break;
+                }
+
+                if (preg_match('#^[a-z_][a-z0-9_.]*#i', $by) === 1) {
+                    $r .= preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $by) . ' ' . $type . ', ';
+                }
             }
 
-            if (preg_match('#^[a-z_][a-z0-9_.]*#i', $by) === 1) {
-                $r .= preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $by) . ' ' . $type . ', ';
-            }
+            $this->_order = substr($r, 0, -2);
+        } else {
+            $this->_order = $orderBy;
         }
-
-        $this->_order = substr($r, 0, -2);
 
         return $this;
     }
