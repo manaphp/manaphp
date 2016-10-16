@@ -125,4 +125,14 @@ class Url extends Component implements UrlInterface
 
         return $strUri;
     }
+
+    /**
+     * @param string $uri
+     *
+     * @return string
+     */
+    public function getAsset($uri)
+    {
+        return $this->get($uri);
+    }
 }

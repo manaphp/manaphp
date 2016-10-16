@@ -42,4 +42,11 @@ interface UrlInterface
      * @return string
      */
     public function getJs($uri, $correspondingMin = true);
+
+    /**
+     * @param string $uri
+     *
+     * @return string
+     */
+    public function getAsset($uri);
 }

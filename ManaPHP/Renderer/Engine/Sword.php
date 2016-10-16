@@ -696,7 +696,7 @@ class Sword extends Component implements EngineInterface
     }
 
     /**
-     * Compile the widget statements into valid PHP.
+     * Compile the Url statements into valid PHP.
      *
      * @param  string $expression
      *
@@ -705,6 +705,18 @@ class Sword extends Component implements EngineInterface
     protected function _compileUrl($expression)
     {
         return "<?php echo \$di->url->get{$expression}; ?>";
+    }
+
+    /**
+     * Compile the Asset statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileAsset($expression)
+    {
+        return "<?php echo \$di->url->getAsset{$expression}; ?>";
     }
 
     /**

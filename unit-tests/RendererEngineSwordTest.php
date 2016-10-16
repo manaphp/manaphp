@@ -536,6 +536,17 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
+    public function test_Asset()
+    {
+        $source = <<<'EOT'
+@asset('/app.js')
+EOT;
+        $compiled = <<<'EOT'
+<?php echo $di->url->getAsset('/app.js'); ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
     public function test_literal()
     {
         $source = <<<'EOT'
