@@ -341,6 +341,23 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param bool $assoc
+     *
+     * @return array|\stdClass
+     * @throws \ManaPHP\Http\Request\Exception
+     */
+    public function getJsonBody($assoc = true)
+    {
+        $r = json_decode(file_get_contents('php://input'), $assoc);
+
+        if ($r === null) {
+            throw new RequestException('json_decode raw body failed.');
+        }
+
+        return $r;
+    }
+
+    /**
      * Gets most possible client IPv4 Address. This method search in $_SERVER['REMOTE_ADDR'] and optionally in $_SERVER['HTTP_X_FORWARDED_FOR']
      *
      * @return string
