@@ -181,7 +181,12 @@ abstract class Db extends Component implements DbInterface
             $this->_affectedRows = $statement->rowCount();
             $statement->setFetchMode($fetchMode);
         } catch (\PDOException $e) {
-            throw new DbException($e->getMessage());
+            throw new DbException(':message . ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+                [
+                    'message' => $e->getMessage(),
+                    'sql' => $this->_sql,
+                    'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                ]);
         }
 
         $this->fireEvent('db:afterQuery');
@@ -221,7 +226,12 @@ abstract class Db extends Component implements DbInterface
                 $this->_affectedRows = $this->_pdo->exec($this->_sql);
             }
         } catch (\PDOException $e) {
-            throw new DbException($e->getMessage());
+            throw new DbException(':message . ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+                [
+                    'message' => $e->getMessage(),
+                    'sql' => $this->_sql,
+                    'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                ]);
         }
 
         if (is_int($this->_affectedRows)) {

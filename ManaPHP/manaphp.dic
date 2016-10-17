@@ -46,3 +46,4 @@ urandom
 secint
 scandir
 maxlifetime
+Rbac
