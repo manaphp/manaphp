@@ -35,7 +35,7 @@ class HttpFilterTest extends TestCase
         try {
             $this->filter->sanitize('open', 'bool', 'd');
             $this->assertFalse('why not?');
-        } catch (\Exception $e) {
+        } catch (\ManaPHP\Exception $e) {
 
         }
     }
@@ -49,7 +49,7 @@ class HttpFilterTest extends TestCase
         try {
             $this->filter->sanitize('age', 'int', 'A18');
             $this->assertFalse('why not?');
-        } catch (\Exception $e) {
+        } catch (\ManaPHP\Exception $e) {
 
         }
     }
@@ -64,7 +64,7 @@ class HttpFilterTest extends TestCase
         try {
             $this->filter->sanitize('age', 'float', 'A8');
             $this->assertFalse('why not?');
-        } catch (\Exception $e) {
+        } catch (\ManaPHP\Exception $e) {
 
         }
     }
@@ -89,14 +89,14 @@ class HttpFilterTest extends TestCase
         try {
             $this->filter->sanitize('age', 'range:0,100', 'A18');
             $this->assertFalse('why not?');
-        } catch (\Exception $e) {
+        } catch (\ManaPHP\Exception $e) {
 
         }
 
         try {
             $this->filter->sanitize('age', 'range:0,100', '-1');
             $this->assertFalse('why not?');
-        } catch (\Exception $e) {
+        } catch (\ManaPHP\Exception $e) {
 
         }
     }

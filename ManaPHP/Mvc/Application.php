@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Http\ResponseInterface;
 
 /**
  * ManaPHP\Mvc\Application
@@ -22,11 +23,6 @@ use ManaPHP\Di\FactoryDefault;
 abstract class Application extends \ManaPHP\Application
 {
     /**
-     * @var bool
-     */
-    protected $_implicitView = true;
-
-    /**
      * @var \ManaPHP\Mvc\ModuleInterface
      */
     protected $_moduleObject;
@@ -44,21 +40,6 @@ abstract class Application extends \ManaPHP\Application
     }
 
     /**
-     * By default. The view is implicitly buffering all the output
-     * You can full disable the view component using this method
-     *
-     * @param bool $implicitView
-     *
-     * @return static
-     */
-    public function useImplicitView($implicitView)
-    {
-        $this->_implicitView = $implicitView;
-
-        return $this;
-    }
-
-    /**
      * @return bool
      * @throws \ManaPHP\Security\CsrfToken\Exception
      * @throws \ManaPHP\Http\Request\Exception
@@ -73,12 +54,12 @@ abstract class Application extends \ManaPHP\Application
             $this->csrfToken->verify();
         }
 
-        /** @noinspection IfReturnReturnSimplificationInspection */
-        if ($this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName()) === false) {
+        $r = $this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+        if ($r === false || $r instanceof ResponseInterface) {
             return false;
+        } else {
+            return true;
         }
-
-        return true;
     }
 
     /**
@@ -135,13 +116,9 @@ abstract class Application extends \ManaPHP\Application
 
         $actionReturnValue = $this->dispatcher->getReturnedValue();
         if ($actionReturnValue === null || is_string($actionReturnValue)) {
-            if ($this->_implicitView === true) {
-                $this->view->setContent($actionReturnValue);
-                $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-                $this->response->setContent($this->view->getContent());
-            } else {
-                $this->response->setContent($actionReturnValue);
-            }
+            $this->view->setContent($actionReturnValue);
+            $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+            $this->response->setContent($this->view->getContent());
         }
 
         return $this->response;

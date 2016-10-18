@@ -26,7 +26,7 @@ interface ModuleInterface
      * @param string $controller
      * @param string $action
      *
-     * @return false|void
+     * @return \ManaPHP\Http\ResponseInterface|false|void
      */
     public function authorize($controller, $action);
 }

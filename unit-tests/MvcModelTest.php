@@ -312,7 +312,6 @@ class MvcModelTest extends TestCase
         $student->save();
 
         $student = Student::findFirst(1);
-        $this->assertNotEquals(false, $student);
         $this->assertTrue($student instanceof Student);
         $this->assertEquals('1', $student->id);
         $this->assertEquals('30', $student->age);

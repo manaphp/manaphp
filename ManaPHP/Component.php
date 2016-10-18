@@ -50,9 +50,7 @@ class Component implements ComponentInterface
             $this->_dependencyInjector = Di::getDefault();
         }
 
-        if ($name === 'di') {
-            $this->{'di'} = $this->_dependencyInjector;
-        } elseif ($name === 'persistent') {
+        if ($name === 'persistent') {
             $getParameter = [get_class($this), $this->_dependencyInjector];
             $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', $getParameter);
         } else {

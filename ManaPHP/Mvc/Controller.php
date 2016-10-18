@@ -61,7 +61,6 @@ use ManaPHP\Component;
  * @property \ManaPHP\Http\ResponseInterface               $response
  * @property \ManaPHP\Security\CryptInterface              $crypt
  * @property \ManaPHP\Http\Session\BagInterface            $persistent
- * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\LoggerInterface                      $logger
  * @property \Application\Configure                        $configure

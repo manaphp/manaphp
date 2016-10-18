@@ -10,8 +10,7 @@ class Module extends \ManaPHP\Mvc\Module
 
     public function authorize($controller, $action)
     {
-//      $this->response->redirect('http://www.baidu.com/');
-//      return false;
+//      return $this->response->redirect('http://www.baidu.com/');
 
 //      $this->dispatcher->forward('index/about');
 
