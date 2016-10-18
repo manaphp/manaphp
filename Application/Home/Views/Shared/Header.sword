@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+    <style>
+        .debugger {
+            position: fixed;
+            right: 20px;
+            top: 30px;
+            background-color: red
+        }
+    </style>
+</head>
+<body>
+<div>
+    @flash()
+</div>

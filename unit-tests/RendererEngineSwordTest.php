@@ -557,4 +557,45 @@ EOT;
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
+
+    public function test_Flash()
+    {
+        $source = <<<'EOT'
+@flash()
+EOT;
+        $compiled = <<<'EOT'
+<?php $di->flash->output() ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
+    public function test_json(){
+        $source = <<<'EOT'
+@json(get_included_files())
+EOT;
+        $compiled = <<<'EOT'
+<?php echo json_encode(get_included_files(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ;?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
+    public function test_debugger(){
+        $source = <<<'EOT'
+@debugger()
+EOT;
+        $compiled = <<<'EOT'
+<?php if($di->configure->debug){?><div class="debugger"><a target="_blank" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
+    public function test_csrfToken(){
+        $source = <<<'EOT'
+@csrfToken()
+EOT;
+        $compiled = <<<'EOT'
+<?php echo $di->csrfToken->get(); ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
 }

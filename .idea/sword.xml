@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BladeInjectionConfiguration" escapedTextEnd="!!}" escapedTextStart="{!!">
+    <customDirectives>
+      <data directive="@endif" />
+      <data directive="@while" injection="true" prefix="&lt;?php while (" suffix="): ?&gt;" />
+      <data directive="@layout" injection="true" prefix="&lt;?php $view-&gt;setLayout(" suffix="); ?&gt;" />
+      <data directive="@stack" injection="true" prefix="&lt;?php echo $__env-&gt;yieldContent(" suffix="); ?&gt;" />
+      <data directive="@widget" injection="true" prefix="&lt;?php echo $view-&gt;widget(" suffix="); ?&gt;" />
+      <data directive="@csrfToken" />
+      <data directive="@for" injection="true" prefix="&lt;?php for (" suffix="): ?&gt;" />
+      <data directive="@endforelse" />
+      <data directive="@endsection" />
+      <data directive="@json" injection="true" prefix="&lt;?php echo json_encode(" suffix="); ?&gt;" />
+      <data directive="@section" injection="true" prefix="&lt;?php $__env-&gt;startSection(" suffix="); ?&gt;" />
+      <data directive="@debugger" injection="true" prefix="&lt;?php echo $di-&gt;debugger-&gt;save()" suffix="; ?&gt;" />
+      <data directive="@forelse" injection="true" prefix="&lt;?php foreach(" suffix="): ?&gt;" />
+      <data directive="@php" injection="true" prefix="&lt;?php " suffix="; ?&gt;" />
+      <data directive="@append" />
+      <data directive="@continue" injection="true" prefix="&lt;?php if(" suffix=") continue; ?&gt;" />
+      <data directive="@url" injection="true" prefix="&lt;?php echo $di-&gt;url-&gt;get(" suffix="); ?&gt;" />
+      <data directive="@endwhile" />
+      <data directive="@allow" injection="true" prefix="&lt;?php if ($di-&gt;authorization-&gt;isAllowed(" suffix="&lt;?php endif ?&gt;" />
+      <data directive="@flash" />
+      <data directive="@overwrite" />
+      <data directive="@content" />
+      <data directive="@endpush" />
+      <data directive="@elseif" injection="true" prefix="&lt;?php elseif (" suffix="): ?&gt;" />
+      <data directive="@partial" injection="true" prefix="&lt;?php $view-&gt;partial(" suffix="); ?&gt;" />
+      <data directive="@else" />
+      <data directive="@endforeach" />
+      <data directive="@endphp" />
+      <data directive="@if" injection="true" prefix="&lt;?php if (" suffix="): ?&gt;" />
+      <data directive="@yield" injection="true" prefix="&lt;?php echo $__env-&gt;yieldContent(" suffix="); ?&gt;" />
+      <data directive="@push" injection="true" prefix="&lt;?php $__env-&gt;startSection(" suffix="); ?&gt;" />
+      <data directive="@endfor" />
+      <data directive="@foreach" injection="true" prefix="&lt;?php foreach(" suffix="): ?&gt;" />
+      <data directive="@break" injection="true" prefix="&lt;?php if(" suffix=") break; ?&gt;" />
+      <data directive="@asset" injection="true" prefix="&lt;?php echo $di-&gt;url-&gt;getAsset(" suffix="); ?&gt;" />
+      <data directive="@empty" />
+      <data directive="@stop" />
+    </customDirectives>
+  </component>
+</project>

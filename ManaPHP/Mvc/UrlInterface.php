@@ -28,6 +28,14 @@ interface UrlInterface
     public function get($uri = null, $args = []);
 
     /**
+     * @param string $uri
+     * @param array  $args
+     *
+     * @return string
+     */
+    public function getFullUrl($uri = null, $args = []);
+
+    /**
      * @param string      $uri
      * @param bool|string $correspondingMin
      *

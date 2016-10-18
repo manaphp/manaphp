@@ -36,7 +36,7 @@ class FactoryDefault extends Di
             'filter' => 'ManaPHP\Http\Filter',
             'crypt' => 'ManaPHP\Security\Crypt',
             'flash' => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
-            'flashSession' => 'ManaPHP\Flash\Adapter\Session',
+            'flashSession' => 'ManaPHP\Mvc\View\Flash\Adapter\Session',
             'session' => ['class' => 'ManaPHP\Http\Session', 'parameters' => ['ManaPHP\Http\Session\Adapter\File']],
             'sessionBag' => ['ManaPHP\Http\Session\Bag', false],
             'loader' => 'ManaPHP\Loader',

@@ -716,7 +716,63 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileAsset($expression)
     {
-        return "<?php echo \$di->url->getAsset{$expression}; ?>";
+        return "<?php echo \$di->url->getAsset{$expression }; ?>";
+    }
+
+    /**
+     * Compile the Asset statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileFlash(
+        /** @noinspection PhpUnusedParameterInspection */
+        $expression)
+    {
+        return '<?php $di->flash->output() ?>';
+    }
+
+    /**
+     * Compile the json statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileJson($expression)
+    {
+        $expression = substr($expression, 1, -1);
+        return "<?php echo json_encode({$expression}, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ;?>";
+    }
+
+    /**
+     * Compile the json statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileDebugger(
+        /** @noinspection PhpUnusedParameterInspection */
+        $expression)
+    {
+        /** @noinspection HtmlUnknownTarget */
+        return '<?php if($di->configure->debug){?><div class="debugger"><a target="_blank" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?>';
+    }
+
+    /**
+     * Compile the json statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileCsrfToken(
+        /** @noinspection PhpUnusedParameterInspection */
+        $expression)
+    {
+        return '<?php echo $di->csrfToken->get(); ?>';
     }
 
     /**

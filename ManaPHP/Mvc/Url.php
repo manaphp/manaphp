@@ -9,7 +9,8 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP\Mvc
  *
- * @property \Application\Configure $configure
+ * @property \Application\Configure         $configure
+ * @property \ManaPHP\Http\RequestInterface $request
  */
 class Url extends Component implements UrlInterface
 {
@@ -78,6 +79,29 @@ class Url extends Component implements UrlInterface
         }
 
         return $strUri;
+    }
+
+    /**
+     * @param string $uri
+     * @param array  $args
+     *
+     * @return string
+     */
+    public function getFullUrl($uri = null, $args = [])
+    {
+        $url = $this->get($uri, $args);
+        if (strpos($url, '://') === false) {
+            $scheme = $this->request->getScheme();
+            $host = $this->request->getServer('HTTP_HOST');
+            $port = (int)$this->request->getServer('SERVER_PORT');
+            if ($this->request->getScheme() === 'https') {
+                return $scheme . '://' . $host . ($port === 443 ? '' : ':' . $port) . $url;
+            } else {
+                return $scheme . '://' . $host . ($port === 80 ? '' : ':' . $port) . $url;
+            }
+        } else {
+            return $url;
+        }
     }
 
     /**

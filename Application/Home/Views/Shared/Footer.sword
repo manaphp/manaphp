@@ -1,5 +1,3 @@
-<div style="position: fixed;right: 20px; top: 30px; background-color: red">
-    <a target="_blank" href="{{$di->debugger->save()}}">Debugger</a>
-</div>
+@debugger()
 </body>
 </html>
