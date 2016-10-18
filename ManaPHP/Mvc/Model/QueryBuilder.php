@@ -684,7 +684,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             }
         }
 
-        $this->_group = substr($r, 0, -2);;
+        $this->_group = substr($r, 0, -2);
 
         return $this;
     }

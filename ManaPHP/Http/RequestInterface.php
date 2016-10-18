@@ -138,6 +138,13 @@ interface RequestInterface
     public function hasServer($name);
 
     /**
+     * @param string $name
+     *
+     * @return string|null
+     */
+    public function getHeader($name);
+
+    /**
      * Gets HTTP schema (http/https)
      *
      * @return string
@@ -276,4 +283,9 @@ interface RequestInterface
      * @return string
      */
     public function getUri();
+
+    /**
+     * @return string|null
+     */
+    public function getAccessToken();
 }

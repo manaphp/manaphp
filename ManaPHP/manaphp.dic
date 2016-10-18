@@ -47,3 +47,4 @@ secint
 scandir
 maxlifetime
 Rbac
+getallheaders

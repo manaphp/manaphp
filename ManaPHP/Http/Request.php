@@ -296,6 +296,26 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return string|null
+     */
+    public function getHeader($name)
+    {
+        $name = strtoupper(str_replace('-', '_', $name));
+        if (isset($_SERVER[$name])) {
+            return $_SERVER[$name];
+        }
+
+        $name = 'HTTP_' . $name;
+        if (isset($_SERVER[$name])) {
+            return $_SERVER[$name];
+        }
+
+        return null;
+    }
+
+    /**
      * Gets HTTP schema (http/https)
      *
      * @return string
@@ -593,5 +613,44 @@ class Request extends Component implements RequestInterface
     public function getUri()
     {
         return strip_tags($_SERVER['REQUEST_URI']);
+    }
+
+    /**
+     * @return string|null
+     * @throws \ManaPHP\Http\Request\Exception
+     */
+    public function getAccessToken()
+    {
+        if ($this->has('access_token')) {
+            return $this->get('access_token', 'ignore');
+        } else {
+            $basic = null;
+            if (function_exists('getallheaders')) {
+                $headers = getallheaders();
+                if (isset($headers['Authorization'])) {
+                    $basic = $headers['Authorization'];
+                } elseif (isset($headers['X_ACCESS_TOKEN'])) {
+                    return $headers['X_ACCESS_TOKEN'];
+                }
+            } else {
+                $token = $this->getHeader('X_ACCESS_TOKEN');
+                if ($token) {
+                    return $token;
+                }
+
+                $basic = $this->getHeader('Authorization');
+            }
+
+            if (!$basic) {
+                return null;
+            }
+
+            $parts = explode(' ', $basic, 2);
+            if ($parts[0] === 'Bearer' && count($parts) === 2) {
+                return $parts[1];
+            } else {
+                return null;
+            }
+        }
     }
 }
