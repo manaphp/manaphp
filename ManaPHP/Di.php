@@ -118,7 +118,7 @@ class Di implements DiInterface
     /**
      * Return the First DI created
      *
-     * @return \ManaPHP\Di
+     * @return static
      */
     public static function getDefault()
     {
@@ -133,7 +133,7 @@ class Di implements DiInterface
      * @param bool   $shared
      * @param array  $aliases
      *
-     * @return void
+     * @return static
      */
     public function set($name, $definition, $shared = false, $aliases = [])
     {
@@ -146,6 +146,8 @@ class Di implements DiInterface
         } else {
             $this->_services[$name] = [$definition, $shared];
         }
+
+        return $this;
     }
 
     /**
@@ -317,11 +319,11 @@ class Di implements DiInterface
      * @param mixed  $definition
      * @param array  $aliases
      *
-     * @return void
+     * @return static
      */
     public function setShared($name, $definition, $aliases = [])
     {
-        $this->set($name, $definition, true, $aliases);
+        return $this->set($name, $definition, true, $aliases);
     }
 
     /**

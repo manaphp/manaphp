@@ -16,7 +16,7 @@ interface DiInterface
      * @param bool   $shared
      * @param array  $aliases
      *
-     * @return void
+     * @return static
      */
     public function set($name, $definition, $shared = false, $aliases = []);
 
@@ -27,7 +27,7 @@ interface DiInterface
      * @param mixed  $definition
      * @param array  $aliases
      *
-     * @return void
+     * @return static
      */
     public function setShared($name, $definition, $aliases = []);
 

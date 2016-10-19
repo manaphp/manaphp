@@ -30,10 +30,10 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
     public function __construct($cssClasses = [])
     {
         $this->_cssClasses = count($cssClasses) !== 0 ? $cssClasses : [
-            'error' => 'flash-error-message',
-            'notice' => 'flash-notice-message',
-            'success' => 'flash-success-message',
-            'warning' => 'flash-warning-message'
+            'error' => 'flash-error',
+            'notice' => 'flash-notice',
+            'success' => 'flash-success',
+            'warning' => 'flash-warning'
         ];
     }
 

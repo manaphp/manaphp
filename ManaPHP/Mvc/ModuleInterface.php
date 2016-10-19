@@ -5,13 +5,16 @@ namespace ManaPHP\Mvc;
 /**
  * ManaPHP\Mvc\ModuleInterface initializer
  *
- * @property \ManaPHP\Http\SessionInterface         $session
- * @property \ManaPHP\Http\RequestInterface         $request
- * @property \ManaPHP\Http\ResponseInterface        $response
- * @property \ManaPHP\Mvc\DispatcherInterface       $dispatcher
- * @property \Application\Configure                 $configure
- * @property \ManaPHP\Http\ClientInterface          $httpClient
- * @property \ManaPHP\Security\RateLimiterInterface $rateLimiter
+ * @property \ManaPHP\Http\SessionInterface                $session
+ * @property \ManaPHP\Http\RequestInterface                $request
+ * @property \ManaPHP\Http\ResponseInterface               $response
+ * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
+ * @property \Application\Configure                        $configure
+ * @property \ManaPHP\Http\ClientInterface                 $httpClient
+ * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
+ * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
+ * @property \ManaPHP\AuthorizationInterface               $authorization
+ * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken
  */
 interface ModuleInterface
 {

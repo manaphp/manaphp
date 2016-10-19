@@ -781,11 +781,13 @@ class Sword extends Component implements EngineInterface
      * @param  string   $name
      * @param  callable $handler
      *
-     * @return void
+     * @return static
      */
     public function directive($name, callable $handler)
     {
         $this->_directives[$name] = $handler;
+
+        return $this;
     }
 
     /**

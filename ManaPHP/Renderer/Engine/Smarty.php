@@ -18,9 +18,9 @@ class Smarty extends Component implements EngineInterface
         if (!isset($this->smarty)) {
             $this->_dependencyInjector->setShared('smarty', 'Smarty');
             /** @noinspection PhpUndefinedFieldInspection */
-            $this->smarty->setCompileDir($this->alias->resolve('@data/Smarty/templates_c'))
-                ->setCacheDir($this->alias->resolve('@data/Smarty/caches'))
-                ->setConfigDir($this->alias->resolve('@data/Smarty/configs'))
+            $this->smarty->setCompileDir($this->alias->resolve('@data/smarty/templates_c'))
+                ->setCacheDir($this->alias->resolve('@data/smarty/caches'))
+                ->setConfigDir($this->alias->resolve('@data/smarty/configs'))
                 ->setDebugging($this->configure->debug);
         }
 
