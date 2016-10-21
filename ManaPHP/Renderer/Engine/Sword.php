@@ -6,6 +6,11 @@ use ManaPHP\Renderer\Engine\Sword\Exception as SwordException;
 use ManaPHP\Renderer\EngineInterface;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class ManaPHP\Renderer\Engine\Sword
+ *
+ * @package ManaPHP\Renderer\Engine
+ */
 class Sword extends Component implements EngineInterface
 {
     /**
@@ -728,8 +733,8 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileFlash(
         /** @noinspection PhpUnusedParameterInspection */
-        $expression)
-    {
+        $expression
+    ) {
         return '<?php $di->flash->output() ?>';
     }
 
@@ -755,8 +760,8 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileDebugger(
         /** @noinspection PhpUnusedParameterInspection */
-        $expression)
-    {
+        $expression
+    ) {
         /** @noinspection HtmlUnknownTarget */
         return '<?php if($di->configure->debug){?><div class="debugger"><a target="_blank" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?>';
     }
@@ -770,8 +775,8 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileCsrfToken(
         /** @noinspection PhpUnusedParameterInspection */
-        $expression)
-    {
+        $expression
+    ) {
         return '<?php echo $di->csrfToken->get(); ?>';
     }
 

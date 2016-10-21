@@ -3,18 +3,17 @@ namespace ManaPHP;
 
 use ManaPHP\Facade\Exception as FacadeException;
 
+/**
+ * Class ManaPHP\Facade
+ *
+ * @package ManaPHP
+ */
 class Facade
 {
-
     /**
      * @var array
      */
     protected static $_instances = [];
-
-    /**
-     * @var array
-     */
-    protected static $_names = [];
 
     /**
      * Get the root object behind the facade.

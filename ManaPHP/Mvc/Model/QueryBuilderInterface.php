@@ -3,7 +3,9 @@
 namespace ManaPHP\Mvc\Model;
 
 /**
- * ManaPHP\Mvc\Model\Query\BuilderInterface initializer
+ * Interface ManaPHP\Mvc\Model\QueryBuilderInterface
+ *
+ * @package ManaPHP\Mvc\Model
  */
 interface QueryBuilderInterface
 {
@@ -247,7 +249,8 @@ interface QueryBuilderInterface
      */
     public function setBind($bind, $merge = true);
 
-    /**build the query and execute it.
+    /**
+     * build the query and execute it.
      *
      * @param int|array $cacheOptions
      *
@@ -255,7 +258,8 @@ interface QueryBuilderInterface
      */
     public function execute($cacheOptions = null);
 
-    /**build the query and execute it.
+    /**
+     * build the query and execute it.
      *
      * @param int|string $totalRows
      * @param int|array  $cacheOptions

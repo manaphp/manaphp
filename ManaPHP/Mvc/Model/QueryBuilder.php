@@ -7,19 +7,9 @@ use ManaPHP\Mvc\Model\QueryBuilder\Exception as QueryBuilderException;
 use ManaPHP\Utility\Text;
 
 /**
- * ManaPHP\Mvc\Model\Query\Builder
+ * Class ManaPHP\Mvc\Model\QueryBuilder
  *
- * Helps to create SQL queries using an OO interface
- *
- *<code>
- *$resultset = $this->modelsManager->createBuilder()
- *   ->from('Robots')
- *   ->join('RobotsParts')
- *   ->limit(20)
- *   ->orderBy('Robots.name')
- *   ->getQuery()
- *   ->execute();
- *</code>
+ * @package ManaPHP\Mvc\Model
  *
  * @property \ManaPHP\Cache\AdapterInterface     $modelsCache
  * @property \ManaPHP\Paginator                  $paginator
@@ -1077,7 +1067,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         return $this;
     }
 
-    /**build the query and execute it.
+    /**
+     * build the query and execute it.
      *
      * @param int|string $totalRows
      * @param int|array  $cacheOptions

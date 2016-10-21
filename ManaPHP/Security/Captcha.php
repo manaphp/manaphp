@@ -5,7 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Security\Captcha\Exception as CaptchaException;
 
 /**
- * Class Captcha
+ * Class ManaPHP\Security\Captcha
  *
  * @package ManaPHP\Security
  *
@@ -100,6 +100,11 @@ class Captcha extends Component implements CaptchaInterface
         return $this;
     }
 
+    /**
+     * @param float $a
+     *
+     * @return float
+     */
     protected function _rand_amplitude($a)
     {
         return mt_rand((1 - $a) * 10000, (1 + $a) * 10000) / 10000;
