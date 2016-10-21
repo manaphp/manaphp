@@ -120,11 +120,10 @@ class Debugger extends Component implements DebuggerInterface
     }
 
     /**
-     * @param bool $listenException
      *
      * @return static
      */
-    public function start($listenException = false)
+    public function start()
     {
         if ($this->request->hasQuery('_debugger')) {
             $file = $this->alias->resolve('@data/debugger/' . substr($this->request->getQuery('_debugger', 'ignore'), 0, 6) . '/' . $this->request->getQuery('_debugger',
@@ -136,11 +135,6 @@ class Debugger extends Component implements DebuggerInterface
 
         $handler = [$this, '_eventHandlerPeek'];
         $this->eventsManager->peekEvents($handler);
-
-        if ($listenException) {
-            $handler = [$this, 'onUncaughtException'];
-            set_exception_handler($handler);
-        }
 
         return $this;
     }

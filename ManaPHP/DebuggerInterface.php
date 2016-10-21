@@ -4,18 +4,10 @@ namespace ManaPHP;
 interface DebuggerInterface
 {
     /**
-     * @param bool $listenException
      *
      * @return static
      */
-    public function start($listenException = false);
-
-    /**
-     * @param \Exception $exception
-     *
-     * @return bool
-     */
-    public function onUncaughtException($exception);
+    public function start();
 
     /**
      * @param mixed  $value

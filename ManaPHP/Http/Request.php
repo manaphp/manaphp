@@ -622,35 +622,28 @@ class Request extends Component implements RequestInterface
     public function getAccessToken()
     {
         if ($this->has('access_token')) {
-            return $this->get('access_token', 'ignore');
+            return $this->get('access_token');
+        } elseif ($this->hasServer('X_ACCESS_TOKEN')) {
+            return $this->getServer('X_ACCESS_TOKEN');
         } else {
-            $basic = null;
+            $authorization = null;
             if (function_exists('getallheaders')) {
                 $headers = getallheaders();
                 if (isset($headers['Authorization'])) {
-                    $basic = $headers['Authorization'];
-                } elseif (isset($headers['X_ACCESS_TOKEN'])) {
-                    return $headers['X_ACCESS_TOKEN'];
+                    $authorization = $headers['Authorization'];
                 }
             } else {
-                $token = $this->getHeader('X_ACCESS_TOKEN');
-                if ($token) {
-                    return $token;
+                $authorization = $this->getHeader('Authorization');
+            }
+
+            if ($authorization) {
+                $parts = explode(' ', $authorization, 2);
+                if ($parts[0] === 'Bearer' && count($parts) === 2) {
+                    return $parts[1];
                 }
-
-                $basic = $this->getHeader('Authorization');
-            }
-
-            if (!$basic) {
-                return null;
-            }
-
-            $parts = explode(' ', $basic, 2);
-            if ($parts[0] === 'Bearer' && count($parts) === 2) {
-                return $parts[1];
-            } else {
-                return null;
             }
         }
+
+        return null;
     }
 }
