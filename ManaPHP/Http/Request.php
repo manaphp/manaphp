@@ -8,21 +8,9 @@ use ManaPHP\Http\Request\File;
 use ManaPHP\Utility\Text;
 
 /**
- * ManaPHP\Http\Request
+ * Class ManaPHP\Http\Request
  *
- * <p>Encapsulates request information for easy and secure access from application controllers.</p>
- *
- * <p>The request object is a simple value object that is passed between the dispatcher and controller classes.
- * It packages the HTTP request environment.</p>
- *
- *<code>
- *    $request = new ManaPHP\Http\Request();
- *    if ($request->isPost() == true) {
- *        if ($request->isAjax() == true) {
- *            echo 'Request was made using POST and AJAX';
- *        }
- *    }
- *</code>
+ * @package ManaPHP\Http
  *
  * @property \ManaPHP\Http\FilterInterface $filter
  */

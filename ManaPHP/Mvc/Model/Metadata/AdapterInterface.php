@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Mvc\Model\Metadata;
 
+/**
+ * Interface ManaPHP\Mvc\Model\Metadata\AdapterInterface
+ *
+ * @package ManaPHP\Mvc\Model\Metadata
+ */
 interface AdapterInterface
 {
     /**

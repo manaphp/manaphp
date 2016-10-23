@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Cookies
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Http\CookiesInterface getFacadeInstance()
  */
 class Cookies extends Facade

@@ -3,9 +3,9 @@
 namespace ManaPHP;
 
 /**
- * ManaPHP\Version
+ * Class ManaPHP\Version
  *
- * This class allows to get the installed version of the framework
+ * @package ManaPHP
  */
 class Version
 {

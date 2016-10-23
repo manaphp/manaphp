@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Text;
 
+/**
+ * Interface ManaPHP\Text\CrosswordInterface
+ *
+ * @package ManaPHP\Text
+ */
 interface CrosswordInterface
 {
     /**

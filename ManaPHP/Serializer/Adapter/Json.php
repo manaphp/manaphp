@@ -4,6 +4,11 @@ namespace ManaPHP\Serializer\Adapter;
 use ManaPHP\Serializer\Adapter\Json\Exception as JsonException;
 use ManaPHP\Serializer\AdapterInterface;
 
+/**
+ * Class ManaPHP\Serializer\Adapter\Json
+ *
+ * @package ManaPHP\Serializer\Adapter
+ */
 class Json implements AdapterInterface
 {
     /**

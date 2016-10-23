@@ -2,6 +2,11 @@
 
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\CounterInterface
+ *
+ * @package ManaPHP
+ */
 interface CounterInterface
 {
     /**

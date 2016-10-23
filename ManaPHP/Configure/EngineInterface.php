@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Configure;
 
+/**
+ * Interface ManaPHP\Configure\EngineInterface
+ *
+ * @package ManaPHP\Configure
+ */
 interface EngineInterface
 {
     /**

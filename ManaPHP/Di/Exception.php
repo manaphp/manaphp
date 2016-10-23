@@ -3,10 +3,9 @@
 namespace ManaPHP\Di;
 
 /**
- * \ManaPHP\Di\Exception
+ * Class ManaPHP\Di\Exception
  *
- * Exceptions thrown in \ManaPHP\Di will use this class
- *
+ * @package ManaPHP\Di
  */
 class Exception extends \ManaPHP\Exception
 {

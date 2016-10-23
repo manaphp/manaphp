@@ -2,6 +2,11 @@
 
 namespace ManaPHP\Image;
 
+/**
+ * Interface ManaPHP\Image\AdapterInterface
+ *
+ * @package ManaPHP\Image
+ */
 interface AdapterInterface
 {
     /**

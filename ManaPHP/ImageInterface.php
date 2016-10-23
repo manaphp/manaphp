@@ -3,7 +3,7 @@
 namespace ManaPHP;
 
 /**
- * Interface ImageInterface
+ * Interface ManaPHP\ImageInterface
  *
  * @package ManaPHP
  */

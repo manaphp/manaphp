@@ -5,7 +5,7 @@ use ManaPHP\Debugger\Exception as DebuggerException;
 use ManaPHP\Utility\Text;
 
 /**
- * Class Debugger
+ * Class ManaPHP\Debugger
  *
  * @package ManaPHP
  *

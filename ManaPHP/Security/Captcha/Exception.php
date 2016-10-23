@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Security\Captcha;
 
+/**
+ * Class ManaPHP\Security\Captcha\Exception
+ *
+ * @package ManaPHP\Security\Captcha
+ */
 class Exception extends \ManaPHP\Security\Exception
 {
     const CODE_UNKNOWN = 0;

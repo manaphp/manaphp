@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Flash
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Mvc\View\FlashInterface getFacadeInstance()
  */
 class Flash extends Facade

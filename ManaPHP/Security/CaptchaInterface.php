@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Security;
 
+/**
+ * Interface ManaPHP\Security\CaptchaInterface
+ *
+ * @package ManaPHP\Security
+ */
 interface CaptchaInterface
 {
     /**

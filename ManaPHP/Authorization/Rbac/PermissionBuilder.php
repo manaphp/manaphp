@@ -5,7 +5,7 @@ use ManaPHP\Authorization\Rbac\PermissionBuilder\Exception as PermissionBuilderE
 use ManaPHP\Component;
 
 /**
- * Class PermissionBuilder
+ * Class ManaPHP\Authorization\Rbac\PermissionBuilder
  *
  * @package ManaPHP\Authorization\Rbac
  *

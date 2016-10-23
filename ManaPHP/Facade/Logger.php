@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Logger
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\LoggerInterface getFacadeInstance()
  */
 class Logger extends Facade

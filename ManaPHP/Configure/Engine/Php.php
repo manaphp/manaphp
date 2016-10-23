@@ -3,6 +3,11 @@ namespace ManaPHP\Configure\Engine;
 
 use ManaPHP\Configure\EngineInterface;
 
+/**
+ * Class ManaPHP\Configure\Engine\Php
+ *
+ * @package ManaPHP\Configure\Engine
+ */
 class Php implements EngineInterface
 {
     /**

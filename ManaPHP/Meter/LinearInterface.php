@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Meter;
 
+/**
+ * Interface ManaPHP\Meter\LinearInterface
+ *
+ * @package ManaPHP\Meter
+ */
 interface LinearInterface
 {
     /**

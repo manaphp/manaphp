@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\RoundMeterInterface
+ *
+ * @package ManaPHP
+ */
 interface RoundMeterInterface
 {
     /**

@@ -3,6 +3,11 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
 
+/**
+ * Class ManaPHP\Cli\Console
+ *
+ * @package ManaPHP\Cli
+ */
 class Console extends Component implements ConsoleInterface
 {
     /**

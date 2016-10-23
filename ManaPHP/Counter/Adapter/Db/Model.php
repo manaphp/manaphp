@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Counter\Adapter\Db;
 
+/**
+ * Class ManaPHP\Counter\Adapter\Db\Model
+ *
+ * @package ManaPHP\Counter\Adapter\Db
+ */
 class Model extends \ManaPHP\Mvc\Model
 {
     /**

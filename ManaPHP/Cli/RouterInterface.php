@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Cli;
 
+/**
+ * Interface ManaPHP\Cli\RouterInterface
+ *
+ * @package ManaPHP\Cli
+ */
 interface RouterInterface
 {
     /**

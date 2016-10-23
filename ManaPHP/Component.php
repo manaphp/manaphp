@@ -7,7 +7,9 @@
 namespace ManaPHP;
 
 /**
- * ManaPHP\Component
+ * Class ManaPHP\Component
+ *
+ * @package ManaPHP
  *
  * @property \ManaPHP\AliasInterface         $alias
  * @property \ManaPHP\Event\ManagerInterface $eventsManager

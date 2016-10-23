@@ -4,6 +4,11 @@ namespace ManaPHP\Serializer\Adapter;
 use ManaPHP\Serializer\Adapter\StringType\Exception as StringTypeException;
 use ManaPHP\Serializer\AdapterInterface;
 
+/**
+ * Class ManaPHP\Serializer\Adapter\StringType
+ *
+ * @package ManaPHP\Serializer\Adapter
+ */
 class StringType implements AdapterInterface
 {
     /**

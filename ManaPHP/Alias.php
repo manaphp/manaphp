@@ -4,6 +4,11 @@ namespace ManaPHP;
 use ManaPHP\Alias\Exception as AliasException;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class ManaPHP\Alias
+ *
+ * @package ManaPHP
+ */
 class Alias extends Component implements AliasInterface
 {
     /**

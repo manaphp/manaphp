@@ -5,6 +5,11 @@ use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Sqlite\Exception as SqliteException;
 use ManaPHP\Mvc\Model\Metadata;
 
+/**
+ * Class ManaPHP\Db\Adapter\Sqlite
+ *
+ * @package ManaPHP\Db\Adapter
+ */
 class Sqlite extends Db
 {
     /**

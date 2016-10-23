@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Mvc;
 
+/**
+ * Interface ManaPHP\Mvc\UrlInterface
+ *
+ * @package ManaPHP\Mvc
+ */
 interface UrlInterface
 {
     /**

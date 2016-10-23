@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Security;
 
+/**
+ * Interface ManaPHP\Security\SecintInterface
+ *
+ * @package ManaPHP\Security
+ */
 interface SecintInterface
 {
     /**

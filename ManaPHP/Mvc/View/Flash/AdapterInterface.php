@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Mvc\View\Flash;
 
+/**
+ * Interface ManaPHP\Mvc\View\Flash\AdapterInterface
+ *
+ * @package ManaPHP\Mvc\View\Flash
+ */
 interface AdapterInterface
 {
     /**

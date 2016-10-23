@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Task\Metadata\Adapter\Db;
 
+/**
+ * Class ManaPHP\Task\Metadata\Adapter\Db\Model
+ *
+ * @package ManaPHP\Task\Metadata\Adapter\Db
+ */
 class Model extends \ManaPHP\Mvc\Model
 {
     /**

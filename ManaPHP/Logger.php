@@ -10,6 +10,11 @@ use ManaPHP\Logger\AdapterInterface;
 use ManaPHP\Logger\Exception as LoggerException;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class ManaPHP\Logger
+ *
+ * @package ManaPHP
+ */
 class Logger extends Component implements LoggerInterface
 {
     const LEVEL_OFF = 'OFF';

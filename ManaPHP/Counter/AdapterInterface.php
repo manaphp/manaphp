@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Counter;
 
+/**
+ * Interface ManaPHP\Counter\AdapterInterface
+ *
+ * @package ManaPHP\Counter
+ */
 interface AdapterInterface
 {
     /**

@@ -3,10 +3,9 @@
 namespace ManaPHP;
 
 /**
- * ManaPHP\Loader
+ * Class ManaPHP\Loader
  *
- * This component helps to load your project classes automatically based on some conventions
- *
+ * @package ManaPHP
  */
 class Loader
 {

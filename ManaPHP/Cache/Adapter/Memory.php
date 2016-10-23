@@ -3,6 +3,11 @@ namespace ManaPHP\Cache\Adapter;
 
 use ManaPHP\Cache\AdapterInterface;
 
+/**
+ * Class ManaPHP\Cache\Adapter\Memory
+ *
+ * @package ManaPHP\Cache\Adapter
+ */
 class Memory implements AdapterInterface
 {
     /**

@@ -3,9 +3,9 @@
 namespace ManaPHP\Event;
 
 /**
- * ManaPHP\Event\Event
+ * Class ManaPHP\Event\Event
  *
- * This class offers contextual information of a fired event in the EventsManager
+ * @package ManaPHP\Event
  */
 class Event
 {

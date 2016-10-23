@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Logger;
 
+/**
+ * Interface ManaPHP\Logger\AdapterInterface
+ *
+ * @package ManaPHP\Logger
+ */
 interface AdapterInterface
 {
     /**

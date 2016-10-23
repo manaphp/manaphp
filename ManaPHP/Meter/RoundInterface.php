@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Meter;
 
+/**
+ * Interface ManaPHP\Meter\RoundInterface
+ *
+ * @package ManaPHP\Meter
+ */
 interface RoundInterface
 {
     /**

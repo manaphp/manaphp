@@ -7,26 +7,9 @@ use ManaPHP\Mvc\View\Exception as ViewException;
 use ManaPHP\Utility\Text;
 
 /**
- * ManaPHP\Mvc\View
+ * Class ManaPHP\Mvc\View
  *
- * ManaPHP\Mvc\View is a class for working with the "view" portion of the model-view-controller pattern.
- * That is, it exists to help keep the view script separate from the model and controller scripts.
- * It provides a system of helpers, output filters, and variable escaping.
- *
- * <code>
- * //Setting views directory
- * $view = new ManaPHP\Mvc\View();
- * $view->setViewsDir('app/views/');
- *
- * $view->start();
- * //Shows recent posts view (app/views/posts/recent.phtml)
- * $view->render('posts', 'recent');
- * $view->finish();
- *
- * //Printing views output
- * echo $view->getContent();
- * </code>
- *
+ * @package ManaPHP\Mvc
  *
  * @property \ManaPHP\RendererInterface      $renderer
  * @property \ManaPHP\Cache\AdapterInterface $viewsCache

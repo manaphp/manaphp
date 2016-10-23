@@ -3,7 +3,9 @@
 namespace ManaPHP;
 
 /**
- * \ManaPHP\Db\AdapterInterface initializer
+ * Interface ManaPHP\DbInterface
+ *
+ * @package ManaPHP
  */
 interface DbInterface
 {

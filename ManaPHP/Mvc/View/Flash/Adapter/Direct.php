@@ -5,9 +5,9 @@ namespace ManaPHP\Mvc\View\Flash\Adapter;
 use ManaPHP\Mvc\View\Flash;
 
 /**
- * ManaPHP\Flash\Direct
+ * Class ManaPHP\Mvc\View\Flash\Adapter\Direct
  *
- * This is a variant of the ManaPHP\Flash that immediately outputs any message passed to it
+ * @package ManaPHP\Mvc\View\Flash\Adapter
  */
 class Direct extends Flash
 {

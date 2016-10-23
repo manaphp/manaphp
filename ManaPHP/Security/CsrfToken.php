@@ -5,7 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Security\CsrfToken\Exception as CsrfTokenException;
 
 /**
- * Class CsrfToken
+ * Class ManaPHP\Security\CsrfToken
  *
  * @package ManaPHP\Security
  *

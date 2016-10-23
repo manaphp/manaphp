@@ -3,6 +3,11 @@ namespace ManaPHP;
 
 use ManaPHP\Counter\AdapterInterface;
 
+/**
+ * Class ManaPHP\Counter
+ *
+ * @package ManaPHP
+ */
 class Counter extends Component implements CounterInterface
 {
     /**

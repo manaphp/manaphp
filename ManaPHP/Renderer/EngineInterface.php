@@ -2,6 +2,11 @@
 
 namespace ManaPHP\Renderer;
 
+/**
+ * Interface ManaPHP\Renderer\EngineInterface
+ *
+ * @package ManaPHP\Renderer
+ */
 interface EngineInterface
 {
     /**

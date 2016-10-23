@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Security;
 
+/**
+ * Interface ManaPHP\Security\RateLimiterInterface
+ *
+ * @package ManaPHP\Security
+ */
 interface  RateLimiterInterface
 {
     /**

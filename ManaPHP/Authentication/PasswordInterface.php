@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Authentication;
 
+/**
+ * Interface ManaPHP\Authentication\PasswordInterface
+ *
+ * @package ManaPHP\Authentication
+ */
 interface PasswordInterface
 {
     /**

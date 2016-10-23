@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Utility;
 
+/**
+ * Class ManaPHP\Utility\Text
+ *
+ * @package ManaPHP\Utility
+ */
 class Text
 {
     /**

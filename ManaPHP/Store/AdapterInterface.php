@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Store;
 
+/**
+ * Interface ManaPHP\Store\AdapterInterface
+ *
+ * @package ManaPHP\Store
+ */
 interface AdapterInterface
 {
 

@@ -4,6 +4,11 @@ namespace ManaPHP\Cache\Adapter;
 use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
 
+/**
+ * Class ManaPHP\Cache\Adapter\Db
+ *
+ * @package ManaPHP\Cache\Adapter
+ */
 class Db extends Component implements AdapterInterface
 {
     /**

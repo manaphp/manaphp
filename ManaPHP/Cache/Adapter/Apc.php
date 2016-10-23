@@ -6,6 +6,11 @@ use ManaPHP\Cache\Adapter\Apc\Exception as ApcException;
 use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
 
+/**
+ * Class ManaPHP\Cache\Adapter\Apc
+ *
+ * @package ManaPHP\Cache\Adapter
+ */
 class Apc extends Component implements AdapterInterface
 {
     /**

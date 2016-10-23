@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Secint
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Security\SecintInterface getFacadeInstance()
  */
 class Secint extends Facade

@@ -6,12 +6,9 @@ use ManaPHP\Mvc\Router\Route\Exception as RouteException;
 use ManaPHP\Utility\Text;
 
 /**
- * ManaPHP\Mvc\Router\Route
+ * Class ManaPHP\Mvc\Router\Route
  *
- * This class represents every route added to the router
- *
- * NOTE_PHP:
- *    Hostname Constraints has been removed by PHP implementation
+ * @package ManaPHP\Mvc\Router
  */
 class Route implements RouteInterface
 {

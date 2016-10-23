@@ -5,9 +5,10 @@ use ManaPHP\Component;
 use ManaPHP\Logger\AdapterInterface;
 
 /**
- * Class Db
+ * Class ManaPHP\Logger\Adapter\Db
  *
  * @package ManaPHP\Logger\Adapter
+ *
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\Http\RequestInterface                $request

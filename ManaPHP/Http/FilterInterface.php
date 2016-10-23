@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Http;
 
+/**
+ * Interface ManaPHP\Http\FilterInterface
+ *
+ * @package ManaPHP\Http
+ */
 interface FilterInterface
 {
     /**

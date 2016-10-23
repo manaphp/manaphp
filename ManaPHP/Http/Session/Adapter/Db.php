@@ -4,6 +4,11 @@ namespace ManaPHP\Http\Session\Adapter;
 use ManaPHP\Component;
 use ManaPHP\Http\Session\AdapterInterface;
 
+/**
+ * Class ManaPHP\Http\Session\Adapter\Db
+ *
+ * @package ManaPHP\Http\Session\Adapter
+ */
 class Db extends Component implements AdapterInterface
 {
 

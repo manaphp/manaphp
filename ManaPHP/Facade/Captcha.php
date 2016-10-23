@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Captcha
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Security\CaptchaInterface getFacadeInstance()
  */
 class Captcha extends Facade

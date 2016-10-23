@@ -4,7 +4,7 @@ namespace ManaPHP\Meter;
 use ManaPHP\Component;
 
 /**
- * Class Linear
+ * Class ManaPHP\Meter\Linear
  *
  * @package ManaPHP\Meter
  *

@@ -3,7 +3,9 @@
 namespace ManaPHP\Http\Request;
 
 /**
- * ManaPHP\Http\Request\FileInterface initializer
+ * Interface ManaPHP\Http\Request\FileInterface
+ *
+ * @package ManaPHP\Http\Request
  */
 interface FileInterface
 {

@@ -4,6 +4,11 @@ namespace ManaPHP\Logger\Adapter;
 use ManaPHP\Component;
 use ManaPHP\Logger\AdapterInterface;
 
+/**
+ * Class ManaPHP\Logger\Adapter\Memory
+ *
+ * @package ManaPHP\Logger\Adapter
+ */
 class Memory extends Component implements AdapterInterface
 {
     /**

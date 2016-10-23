@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\RoundMeter
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Meter\RoundInterface getFacadeInstance()
  */
 class RoundMeter extends Facade

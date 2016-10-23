@@ -5,6 +5,11 @@ namespace ManaPHP\Renderer\Engine;
 use ManaPHP\Component;
 use ManaPHP\Renderer\EngineInterface;
 
+/**
+ * Class ManaPHP\Renderer\Engine\Smarty
+ *
+ * @package ManaPHP\Renderer\Engine
+ */
 class Smarty extends Component implements EngineInterface
 {
     /**

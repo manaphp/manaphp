@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Security;
 
+/**
+ * Interface ManaPHP\Security\CsrfTokenInterface
+ *
+ * @package ManaPHP\Security
+ */
 interface CsrfTokenInterface
 {
     /**

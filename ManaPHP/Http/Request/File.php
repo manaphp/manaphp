@@ -7,27 +7,9 @@ use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Utility\Text;
 
 /**
- * ManaPHP\Http\Request\File
+ * Class ManaPHP\Http\Request\File
  *
- * Provides OO wrappers to the $_FILES
- *
- *<code>
- *    class PostsController extends \ManaPHP\Mvc\Controller
- *    {
- *
- *        public function uploadAction()
- *        {
- *            //Check if the user has uploaded files
- *            if ($this->request->hasFiles() == true) {
- *                //Print the real file names and their sizes
- *                foreach ($this->request->getFiles() as $file){
- *                    echo $file->getName(), " ", $file->getSize(), "\n";
- *                }
- *            }
- *        }
- *
- *    }
- *</code>
+ * @package ManaPHP\Http\Request
  */
 class File extends Component implements FileInterface
 {

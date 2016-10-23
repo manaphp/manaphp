@@ -4,6 +4,11 @@ namespace ManaPHP\Configure\Engine;
 use ManaPHP\Configure\Engine\Json\Exception as JsonException;
 use ManaPHP\Configure\EngineInterface;
 
+/**
+ * Class ManaPHP\Configure\Engine\Json
+ *
+ * @package ManaPHP\Configure\Engine
+ */
 class Json implements EngineInterface
 {
     /**

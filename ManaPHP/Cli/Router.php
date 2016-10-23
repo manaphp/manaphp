@@ -5,7 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Utility\Text;
 
 /**
- * Class Router
+ * Class ManaPHP\Cli\Router
  *
  * @package ManaPHP\Cli
  *

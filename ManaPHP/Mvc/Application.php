@@ -6,11 +6,9 @@ use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Http\ResponseInterface;
 
 /**
- * ManaPHP\Mvc\Application
+ * Class ManaPHP\Mvc\Application
  *
- * This component encapsulates all the complex operations behind instantiating every component
- * needed and integrating it with the rest to allow the MVC pattern to operate as desired.
- *
+ * @package ManaPHP\Mvc
  *
  * @property \ManaPHP\Mvc\ViewInterface           $view
  * @property \ManaPHP\Mvc\Dispatcher              $dispatcher

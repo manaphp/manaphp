@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\DebuggerInterface
+ *
+ * @package ManaPHP
+ */
 interface DebuggerInterface
 {
     /**

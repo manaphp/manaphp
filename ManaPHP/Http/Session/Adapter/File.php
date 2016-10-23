@@ -11,6 +11,11 @@ use ManaPHP\Component;
 use ManaPHP\Http\Session\Adapter\Exception as SessionException;
 use ManaPHP\Http\Session\AdapterInterface;
 
+/**
+ * Class ManaPHP\Http\Session\Adapter\File
+ *
+ * @package ManaPHP\Http\Session\Adapter
+ */
 class File extends Component implements AdapterInterface
 {
     /**

@@ -4,7 +4,7 @@ namespace ManaPHP\Cli;
 use ManaPHP\Component;
 
 /**
- * Class Controller
+ * Class ManaPHP\Cli\Controller
  *
  * @package ManaPHP\Cli
  *

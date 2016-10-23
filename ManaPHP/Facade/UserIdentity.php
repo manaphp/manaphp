@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\UserIdentity
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Authentication\UserIdentityInterface getFacadeInstance()
  */
 class UserIdentity extends Facade

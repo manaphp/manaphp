@@ -6,7 +6,7 @@ use ManaPHP\Http\Filter\Exception as FilterException;
 use ManaPHP\Utility\Text;
 
 /**
- * Class Filter
+ * Class ManaPHP\Http\Filter
  *
  * @package ManaPHP\Http
  *

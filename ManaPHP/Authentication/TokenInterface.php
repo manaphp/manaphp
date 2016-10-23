@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Authentication;
 
+/**
+ * Interface ManaPHP\Authentication\TokenInterface
+ *
+ * @package ManaPHP\Authentication
+ */
 interface TokenInterface
 {
     /**

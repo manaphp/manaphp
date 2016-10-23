@@ -3,7 +3,9 @@
 namespace ManaPHP\Mvc\Router;
 
 /**
- * ManaPHP\Mvc\Router\RouteInterface initializer
+ * Interface ManaPHP\Mvc\Router\RouteInterface
+ *
+ * @package ManaPHP\Mvc\Router
  */
 interface RouteInterface
 {

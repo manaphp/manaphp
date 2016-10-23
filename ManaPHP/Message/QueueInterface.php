@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Message;
 
+/**
+ * Interface ManaPHP\Message\QueueInterface
+ *
+ * @package ManaPHP\Message
+ */
 interface QueueInterface
 {
     const PRIORITY_HIGHEST = 1;

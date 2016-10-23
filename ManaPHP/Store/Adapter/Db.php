@@ -4,6 +4,11 @@ namespace ManaPHP\Store\Adapter;
 use ManaPHP\Component;
 use ManaPHP\Store\AdapterInterface;
 
+/**
+ * Class ManaPHP\Store\Adapter\Db
+ *
+ * @package ManaPHP\Store\Adapter
+ */
 class Db extends Component implements AdapterInterface
 {
     /**

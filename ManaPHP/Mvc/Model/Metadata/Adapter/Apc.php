@@ -4,6 +4,11 @@ namespace ManaPHP\Mvc\Model\Metadata\Adapter;
 use ManaPHP\Mvc\Model\Metadata;
 use ManaPHP\Mvc\Model\Metadata\Adapter\Apc\Exception as ApcException;
 
+/**
+ * Class ManaPHP\Mvc\Model\Metadata\Adapter\Apc
+ *
+ * @package ManaPHP\Mvc\Model\Metadata\Adapter
+ */
 class Apc extends Metadata
 {
 

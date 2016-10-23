@@ -6,7 +6,7 @@ use ManaPHP\Http\Client\Exception as ClientException;
 use ManaPHP\Utility\Text;
 
 /**
- * Class Client
+ * Class ManaPHP\Http\Client
  *
  * @package ManaPHP\Http
  */

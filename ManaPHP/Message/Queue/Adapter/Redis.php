@@ -6,7 +6,7 @@ use ManaPHP\Message\Queue\Adapter\Redis\Exception as RedisException;
 use ManaPHP\Message\QueueInterface;
 
 /**
- * Class Redis
+ * Class ManaPHP\Message\Queue\Adapter\Redis
  *
  * @package ManaPHP\Message\Queue\Adapter
  *

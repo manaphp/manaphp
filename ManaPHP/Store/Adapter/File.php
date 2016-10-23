@@ -6,6 +6,11 @@ use ManaPHP\Store\Adapter\File\Exception as FileException;
 use ManaPHP\Store\AdapterInterface;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class ManaPHP\Store\Adapter\File
+ *
+ * @package ManaPHP\Store\Adapter
+ */
 class File extends Component implements AdapterInterface
 {
     /**

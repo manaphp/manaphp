@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\ApplicationInterface
+ *
+ * @package ManaPHP
+ */
 interface ApplicationInterface
 {
     /**

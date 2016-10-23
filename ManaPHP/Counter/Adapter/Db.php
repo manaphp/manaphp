@@ -5,6 +5,10 @@ use ManaPHP\Counter\Adapter\Db\Exception as DbException;
 use ManaPHP\Counter\AdapterInterface;
 
 /**
+ * Class ManaPHP\Counter\Adapter\Db
+ *
+ * @package ManaPHP\Counter\Adapter
+ *
  * @property \ManaPHP\DbInterface $db
  */
 class Db implements AdapterInterface

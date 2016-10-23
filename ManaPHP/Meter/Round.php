@@ -4,7 +4,7 @@ namespace ManaPHP\Meter;
 use ManaPHP\Component;
 
 /**
- * Class Round
+ * Class ManaPHP\Meter\Round
  *
  * @package ManaPHP\Meter
  *

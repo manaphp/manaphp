@@ -12,7 +12,9 @@ use ManaPHP\Http\Session\AdapterInterface;
 use ManaPHP\Http\Session\Exception as SessionException;
 
 /**
- * ManaPHP\Http\Session\AdapterInterface initializer
+ * Class ManaPHP\Http\Session
+ *
+ * @package ManaPHP\Http
  */
 class Session extends Component implements SessionInterface, \ArrayAccess
 {

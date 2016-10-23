@@ -3,7 +3,9 @@
 namespace ManaPHP\Http;
 
 /**
- * ManaPHP\Http\Session\AdapterInterface initializer
+ * Interface ManaPHP\Http\SessionInterface
+ *
+ * @package ManaPHP\Http
  */
 interface SessionInterface
 {

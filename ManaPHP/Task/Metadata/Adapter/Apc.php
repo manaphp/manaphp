@@ -5,6 +5,11 @@ use ManaPHP\Component;
 use ManaPHP\Task\Metadata\Adapter\Apc\Exception as ApcException;
 use ManaPHP\Task\Metadata\AdapterInterface;
 
+/**
+ * Class ManaPHP\Task\Metadata\Adapter\Apc
+ *
+ * @package ManaPHP\Task\Metadata\Adapter
+ */
 class Apc extends Component implements AdapterInterface
 {
     /**

@@ -6,9 +6,9 @@ use ManaPHP\Component;
 use ManaPHP\Renderer\EngineInterface;
 
 /**
- * ManaPHP\Mvc\View\Adapter\Php
+ * Class ManaPHP\Renderer\Engine\Php
  *
- * Adapter to use PHP itself as template engine
+ * @package ManaPHP\Renderer\Engine
  */
 class Php extends Component implements EngineInterface
 {

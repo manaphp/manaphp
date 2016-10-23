@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\AuthorizationInterface
+ *
+ * @package ManaPHP
+ */
 interface AuthorizationInterface
 {
     /**

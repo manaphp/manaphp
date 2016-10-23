@@ -3,6 +3,11 @@ namespace ManaPHP\Mvc\Router;
 
 use ManaPHP\Mvc\Router\RewriteChecker\Exception as RewriteCheckerException;
 
+/**
+ * Class ManaPHP\Mvc\Router\RewriteChecker
+ *
+ * @package ManaPHP\Mvc\Router
+ */
 class RewriteChecker
 {
     /**

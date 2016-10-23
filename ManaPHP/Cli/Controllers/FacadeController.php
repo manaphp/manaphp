@@ -3,6 +3,11 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
+/**
+ * Class ManaPHP\Cli\Controllers\FacadeController
+ *
+ * @package ManaPHP\Cli\Controllers
+ */
 class FacadeController extends Controller
 {
 

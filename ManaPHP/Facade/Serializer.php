@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Serializer
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Serializer\AdapterInterface getFacadeInstance()
  */
 class Serializer extends Facade

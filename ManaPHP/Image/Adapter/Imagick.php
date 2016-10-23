@@ -6,6 +6,11 @@ use ManaPHP\Component;
 use ManaPHP\Image\Adapter\Imagick\Exception as ImagickException;
 use ManaPHP\Image\AdapterInterface;
 
+/**
+ * Class ManaPHP\Image\Adapter\Imagick
+ *
+ * @package ManaPHP\Image\Adapter
+ */
 class Imagick extends Component implements AdapterInterface
 {
     /**

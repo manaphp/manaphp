@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Meter\Round;
 
+/**
+ * Class ManaPHP\Meter\Round\Model
+ *
+ * @package ManaPHP\Meter\Round
+ */
 class Model extends \ManaPHP\Mvc\Model
 {
     /**

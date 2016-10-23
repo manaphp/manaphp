@@ -5,9 +5,10 @@ use ManaPHP\Component;
 use ManaPHP\Task\Metadata\AdapterInterface;
 
 /**
- * Class Redis
+ * Class ManaPHP\Task\Metadata\Adapter\Db
  *
  * @package ManaPHP\Task\Metadata\Adapter
+ *
  * @property \Redis $redis
  */
 class Db extends Component implements AdapterInterface

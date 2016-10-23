@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Filesystem
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\FilesystemInterface getFacadeInstance()
  */
 class Filesystem extends Facade

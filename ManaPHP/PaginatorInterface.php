@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\PaginatorInterface
+ *
+ * @package ManaPHP
+ */
 interface PaginatorInterface
 {
     /**

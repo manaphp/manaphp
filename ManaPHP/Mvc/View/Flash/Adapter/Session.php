@@ -4,7 +4,7 @@ namespace ManaPHP\Mvc\View\Flash\Adapter;
 use ManaPHP\Mvc\View\Flash;
 
 /**
- * Class Session
+ * Class ManaPHP\Mvc\View\Flash\Adapter\Session
  *
  * @package ManaPHP\Mvc\View\Flash\Adapter
  *

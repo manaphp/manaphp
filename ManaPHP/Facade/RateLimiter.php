@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\RateLimiter
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Security\RateLimiterInterface getFacadeInstance()
  */
 class RateLimiter extends Facade

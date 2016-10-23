@@ -2,7 +2,7 @@
 namespace ManaPHP;
 
 /**
- * Class Application
+ * Class ManaPHP\Application
  *
  * @package ManaPHP
  *

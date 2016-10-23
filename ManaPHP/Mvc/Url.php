@@ -5,7 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Utility\Text;
 
 /**
- * Class Url
+ * Class ManaPHP\Mvc\Url
  *
  * @package ManaPHP\Mvc
  *

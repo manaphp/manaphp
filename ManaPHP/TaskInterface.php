@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\TaskInterface
+ *
+ * @package ManaPHP
+ */
 interface TaskInterface
 {
     /**

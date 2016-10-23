@@ -5,7 +5,7 @@ use ManaPHP\Task\Exception as TaskException;
 use ManaPHP\Task\Metadata;
 
 /**
- * Class Task
+ * Class ManaPHP\Task
  *
  * @package ManaPHP
  *

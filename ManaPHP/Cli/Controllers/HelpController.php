@@ -3,6 +3,11 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
+/**
+ * Class ManaPHP\Cli\Controllers\HelpController
+ *
+ * @package ManaPHP\Cli\Controllers
+ */
 class HelpController extends Controller
 {
     /**

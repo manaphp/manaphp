@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Http;
 
+/**
+ * Interface ManaPHP\Http\ClientInterface
+ *
+ * @package ManaPHP\Http
+ */
 interface ClientInterface
 {
     /**

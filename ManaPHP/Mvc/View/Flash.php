@@ -6,14 +6,9 @@ use ManaPHP\Component;
 use ManaPHP\Mvc\View\Flash\AdapterInterface;
 
 /**
- * ManaPHP\Flash
+ * Class ManaPHP\Mvc\View\Flash
  *
- * Shows HTML notifications related to different circumstances. Classes can be stylized using CSS
- *
- *<code>
- * $flash->success("The record was successfully deleted");
- * $flash->error("Cannot open the file");
- *</code>
+ * @package ManaPHP\Mvc\View
  */
 abstract class Flash extends Component implements FlashInterface, AdapterInterface
 {

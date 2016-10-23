@@ -4,7 +4,7 @@ namespace ManaPHP;
 use ManaPHP\Paginator\Exception as PaginatorException;
 
 /**
- * Class Paginator
+ * Class ManaPHP\Paginator
  *
  * @package ManaPHP
  *

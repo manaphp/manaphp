@@ -4,6 +4,11 @@ namespace ManaPHP\Renderer\Engine;
 use ManaPHP\Renderer\Engine\Exception as EngineException;
 use ManaPHP\Renderer\EngineInterface;
 
+/**
+ * Class ManaPHP\Renderer\Engine\Html
+ *
+ * @package ManaPHP\Renderer\Engine
+ */
 class Html implements EngineInterface
 {
     /**

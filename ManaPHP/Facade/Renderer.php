@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Renderer
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\RendererInterface getFacadeInstance()
  */
 class Renderer extends Facade

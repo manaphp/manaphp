@@ -6,7 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Store\AdapterInterface;
 
 /**
- * Class Redis
+ * Class ManaPHP\Store\Adapter\Redis
  *
  * @package ManaPHP\Store\Adapter
  *

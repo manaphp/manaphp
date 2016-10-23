@@ -4,6 +4,11 @@ namespace ManaPHP\Mvc\Model\Metadata\Adapter;
 
 use ManaPHP\Mvc\Model\Metadata;
 
+/**
+ * Class ManaPHP\Mvc\Model\Metadata\Adapter\Memory
+ *
+ * @package ManaPHP\Mvc\Model\Metadata\Adapter
+ */
 class Memory extends Metadata
 {
     /**

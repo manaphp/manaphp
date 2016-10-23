@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\RendererInterface
+ *
+ * @package ManaPHP
+ */
 interface RendererInterface
 {
     /**

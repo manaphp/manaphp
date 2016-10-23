@@ -5,6 +5,11 @@ use ManaPHP\Component;
 use ManaPHP\Image\Adapter\Gd\Exception as GdException;
 use ManaPHP\Image\AdapterInterface;
 
+/**
+ * Class ManaPHP\Image\Adapter\Gd
+ *
+ * @package ManaPHP\Image\Adapter
+ */
 class Gd extends Component implements AdapterInterface
 {
     /**

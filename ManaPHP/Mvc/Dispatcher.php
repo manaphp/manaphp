@@ -9,23 +9,9 @@ use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
 use ManaPHP\Utility\Text;
 
 /**
- * ManaPHP\Mvc\Dispatcher
+ * Class ManaPHP\Mvc\Dispatcher
  *
- * Dispatching is the process of taking the request object, extracting the module name,
- * controller name, action name, and optional parameters contained in it, and then
- * instantiating a controller and calling an action of that controller.
- *
- *<code>
- *
- *    $di = new ManaPHP\Di();
- *
- *    $dispatcher = new ManaPHP\Mvc\Dispatcher();
- *
- *  $dispatcher->setDI($di);
- *
- *  $controller = $dispatcher->dispatch('app','posts','index');
- *
- *</code>
+ * @package ManaPHP\Mvc
  */
 class Dispatcher extends Component implements DispatcherInterface
 {

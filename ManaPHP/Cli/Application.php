@@ -5,13 +5,12 @@ use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Utility\Text;
 
 /**
- * Class Application
+ * Class ManaPHP\Cli\Application
  *
  * @package ManaPHP\Cli
  *
  * @property \ManaPHP\Cli\ConsoleInterface $console
  * @property \ManaPHP\Cli\RouterInterface  $cliRouter
- *
  */
 abstract class Application extends \ManaPHP\Application
 {

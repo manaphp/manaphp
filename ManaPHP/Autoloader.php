@@ -2,6 +2,11 @@
 
 namespace ManaPHP;
 
+/**
+ * Class ManaPHP\Autoloader
+ *
+ * @package ManaPHP
+ */
 class Autoloader
 {
     /**

@@ -5,9 +5,10 @@ use ManaPHP\Component;
 use ManaPHP\Http\Session\AdapterInterface;
 
 /**
- * Class Redis
+ * Class ManaPHP\Http\Session\Adapter\Redis
  *
  * @package ManaPHP\Http\Session\Adapter
+ *
  * @property \Redis $redis
  */
 class Redis extends Component implements AdapterInterface

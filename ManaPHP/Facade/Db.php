@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Db
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\DbInterface getFacadeInstance()
  */
 class Db extends Facade

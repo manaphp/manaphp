@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Logger\Adapter\Db;
 
+/**
+ * Class ManaPHP\Logger\Adapter\Db\Model
+ *
+ * @package ManaPHP\Logger\Adapter\Db
+ */
 class Model extends \ManaPHP\Mvc\Model
 {
     /**

@@ -6,6 +6,11 @@ use ManaPHP\Image\Adapter\Gd;
 use ManaPHP\Image\Adapter\Imagick;
 use ManaPHP\Image\Exception as ImageException;
 
+/**
+ * Class ManaPHP\Image
+ *
+ * @package ManaPHP
+ */
 class Image implements ImageInterface
 {
     /**

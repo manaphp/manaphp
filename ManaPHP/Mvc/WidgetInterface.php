@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Mvc;
 
+/**
+ * Interface ManaPHP\Mvc\WidgetInterface
+ *
+ * @package ManaPHP\Mvc
+ */
 interface WidgetInterface
 {
     /**

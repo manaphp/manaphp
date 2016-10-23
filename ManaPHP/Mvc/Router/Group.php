@@ -5,46 +5,9 @@ namespace ManaPHP\Mvc\Router;
 use ManaPHP\Component;
 
 /**
- * ManaPHP\Mvc\Router\Group
+ * Class ManaPHP\Mvc\Router\Group
  *
- * Helper class to create a group of routes with common attributes
- *
- * NOTE_PHP:
- *        1.Hostname Constraints has been removed by PHP implementation
- *        2. remove clear method
- *
- *<code>
- * $router = new ManaPHP\Mvc\Router();
- *
- * //Create a group with a common module and controller
- * $blog = new ManaPHP\Mvc\Router\Group(array(
- *    'module' => 'blog',
- *    'controller' => 'index'
- * ));
- *
- * //All the routes start with /blog
- * $blog->setPrefix('/blog');
- *
- * //Add a route to the group
- * $blog->add('/save', array(
- *    'action' => 'save'
- * ));
- *
- * //Add another route to the group
- * $blog->add('/edit/{id}', array(
- *    'action' => 'edit'
- * ));
- *
- * //This route maps to a controller different than the default
- * $blog->add('/blog', array(
- *    'controller' => 'about',
- *    'action' => 'index'
- * ));
- *
- * //Add the group to the router
- * $router->mount($blog);
- *</code>
- *
+ * @package ManaPHP\Mvc\Router
  */
 class Group extends Component implements GroupInterface
 {

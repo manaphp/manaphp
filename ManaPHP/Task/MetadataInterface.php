@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Task;
 
+/**
+ * Interface ManaPHP\Task\MetadataInterface
+ *
+ * @package ManaPHP\Task
+ */
 interface MetadataInterface
 {
     /**

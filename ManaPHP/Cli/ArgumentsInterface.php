@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Cli;
 
+/**
+ * Interface ManaPHP\Cli\ArgumentsInterface
+ *
+ * @package ManaPHP\Cli
+ */
 interface ArgumentsInterface
 {
     /**

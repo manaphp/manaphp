@@ -3,6 +3,11 @@ namespace ManaPHP\Authentication;
 
 use ManaPHP\Component;
 
+/**
+ * Class ManaPHP\Authentication\Password
+ *
+ * @package ManaPHP\Authentication
+ */
 class Password extends Component implements PasswordInterface
 {
     /**

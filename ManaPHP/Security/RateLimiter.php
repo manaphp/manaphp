@@ -6,9 +6,10 @@ use ManaPHP\Security\RateLimiter\Exception as RateLimiterException;
 use ManaPHP\Utility\Text;
 
 /**
- * Class RateLimiter
+ * Class ManaPHP\Security\RateLimiter
  *
  * @package ManaPHP\Security
+ *
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\Http\RequestInterface                $request

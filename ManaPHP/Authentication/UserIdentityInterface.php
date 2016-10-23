@@ -1,7 +1,12 @@
 <?php
 namespace ManaPHP\Authentication;
 
-interface   UserIdentityInterface
+/**
+ * Interface ManaPHP\Authentication\UserIdentityInterface
+ *
+ * @package ManaPHP\Authentication
+ */
+interface UserIdentityInterface
 {
     /**
      * @return string

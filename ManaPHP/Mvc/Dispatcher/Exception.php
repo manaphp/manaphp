@@ -3,10 +3,9 @@
 namespace ManaPHP\Mvc\Dispatcher;
 
 /**
- * ManaPHP\Mvc\Dispatcher\Exception
+ * Class ManaPHP\Mvc\Dispatcher\Exception
  *
- * Exceptions thrown in ManaPHP\Mvc\Dispatcher will use this class
- *
+ * @package ManaPHP\Mvc\Dispatcher
  */
 class Exception extends \ManaPHP\Mvc\Exception
 {

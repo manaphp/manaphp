@@ -4,6 +4,11 @@ namespace ManaPHP\Configure\Engine;
 use ManaPHP\Configure\Engine\Ini\Exception as IniException;
 use ManaPHP\Configure\EngineInterface;
 
+/**
+ * Class ManaPHP\Configure\Engine\Ini
+ *
+ * @package ManaPHP\Configure\Engine
+ */
 class Ini implements EngineInterface
 {
     /**

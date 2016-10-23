@@ -3,9 +3,9 @@
 namespace ManaPHP\Http\Request\File;
 
 /**
- * ManaPHP\Http\Request\File\Exception
+ * Class ManaPHP\Http\Request\File\Exception
  *
- *
+ * @package ManaPHP\Http\Request\File
  */
 class Exception extends \ManaPHP\Http\Request\Exception
 {

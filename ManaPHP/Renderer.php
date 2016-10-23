@@ -3,6 +3,11 @@ namespace ManaPHP;
 
 use ManaPHP\Renderer\Exception as RendererException;
 
+/**
+ * Class ManaPHP\Renderer
+ *
+ * @package ManaPHP
+ */
 class Renderer extends Component implements RendererInterface
 {
     /**
@@ -25,6 +30,11 @@ class Renderer extends Component implements RendererInterface
      */
     protected $_sectionStack = [];
 
+    /**
+     * Renderer constructor.
+     *
+     * @param array $engines
+     */
     public function __construct(
         $engines = [
             '.sword' => 'ManaPHP\Renderer\Engine\Sword',

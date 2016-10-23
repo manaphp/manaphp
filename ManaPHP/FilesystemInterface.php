@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface ManaPHP\FilesystemInterface
+ *
+ * @package ManaPHP
+ */
 interface FilesystemInterface
 {
     /**

@@ -4,9 +4,10 @@ namespace ManaPHP\Security\RateLimiter\Adapter;
 use ManaPHP\Security\RateLimiter;
 
 /**
- * Class Redis
+ * Class ManaPHP\Security\RateLimiter\Adapter\Redis
  *
  * @package ManaPHP\Security\RateLimiter\Adapter
+ *
  * @property \Redis                         $redis
  * @property \ManaPHP\Http\RequestInterface $request
  */

@@ -4,6 +4,11 @@ namespace ManaPHP\Cli;
 use ManaPHP\Cli\Arguments\Exception as ArgumentsException;
 use ManaPHP\Component;
 
+/**
+ * Class ManaPHP\Cli\Arguments
+ *
+ * @package ManaPHP\Cli
+ */
 class Arguments extends Component implements ArgumentsInterface
 {
     /**

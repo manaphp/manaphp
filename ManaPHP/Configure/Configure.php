@@ -4,9 +4,9 @@ namespace ManaPHP\Configure;
 use ManaPHP\Component;
 
 /**
- * Class Configure
+ * Class ManaPHP\Configure\Configure
  *
- * @package ManaPHP
+ * @package ManaPHP\Configure
  */
 class Configure extends Component implements ConfigureInterface
 {

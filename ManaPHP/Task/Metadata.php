@@ -5,6 +5,11 @@ use ManaPHP\Component;
 use ManaPHP\Task;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class ManaPHP\Task\Metadata
+ *
+ * @package ManaPHP\Task
+ */
 class Metadata extends Component implements MetadataInterface
 {
     const FIELD_CLASS = 'class';

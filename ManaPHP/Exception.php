@@ -3,9 +3,9 @@
 namespace ManaPHP;
 
 /**
- * ManaPHP\Exception
+ * Class ManaPHP\Exception
  *
- * All framework exceptions should use or extend this exception
+ * @package ManaPHP
  */
 class Exception extends \Exception
 {

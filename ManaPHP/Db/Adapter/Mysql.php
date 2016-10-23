@@ -10,6 +10,11 @@ namespace ManaPHP\Db\Adapter;
 use ManaPHP\Db;
 use ManaPHP\Mvc\Model\Metadata;
 
+/**
+ * Class ManaPHP\Db\Adapter\Mysql
+ *
+ * @package ManaPHP\Db\Adapter
+ */
 class Mysql extends Db
 {
     /**

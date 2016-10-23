@@ -3,6 +3,11 @@ namespace ManaPHP\Authorization;
 
 use ManaPHP\AuthorizationInterface;
 
+/**
+ * Class ManaPHP\Authorization\Bypass
+ *
+ * @package ManaPHP\Authorization
+ */
 class Bypass implements AuthorizationInterface
 {
     /**

@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Cache\Adapter\Db;
 
+/**
+ * Class ManaPHP\Cache\Adapter\Db\Model
+ *
+ * @package ManaPHP\Cache\Adapter\Db
+ */
 class Model extends \ManaPHP\Mvc\Model
 {
     /**

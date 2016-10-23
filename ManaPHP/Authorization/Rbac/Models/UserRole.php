@@ -3,6 +3,11 @@ namespace ManaPHP\Authorization\Rbac\Models;
 
 use ManaPHP\Mvc\Model;
 
+/**
+ * Class ManaPHP\Authorization\Rbac\Models\UserRole
+ *
+ * @package ManaPHP\Authorization\Rbac\Models
+ */
 class UserRole extends Model
 {
     /**

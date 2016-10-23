@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Cache
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\CacheInterface getFacadeInstance()
  */
 class Cache extends Facade

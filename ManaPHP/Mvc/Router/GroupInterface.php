@@ -1,52 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/11/15
- * Time: 17:02
- */
-
 namespace ManaPHP\Mvc\Router;
 
 /**
- * ManaPHP\Mvc\Router\GroupInterface
+ * Interface ManaPHP\Mvc\Router\GroupInterface
  *
- * PHP_NOTE:
- *      String paths(:: separated) formatted has been removed.
- *      for example "App::Blog::Add"
- *
- *<code>
- * $router = new \ManaPHP\Mvc\Router();
- *
- * //Create a group with a common module and controller
- * $blog = new Group(array(
- *    'module' => 'blog',
- *    'controller' => 'index'
- * ));
- *
- * //All the routes start with /blog
- * $blog->setPrefix('/blog');
- *
- * //Add a route to the group
- * $blog->add('/save', array(
- *    'action' => 'save'
- * ));
- *
- * //Add another route to the group
- * $blog->add('/edit/{id}', array(
- *    'action' => 'edit'
- * ));
- *
- * //This route maps to a controller different than the default
- * $blog->add('/blog', array(
- *    'controller' => 'about',
- *    'action' => 'index'
- * ));
- *
- * //Add the group to the router
- * $router->mount($blog);
- *</code>
- *
+ * @package ManaPHP\Mvc\Router
  */
 interface GroupInterface
 {

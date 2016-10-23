@@ -6,6 +6,11 @@ use ManaPHP\Authentication\TokenInterface;
 use ManaPHP\Component;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class ManaPHP\Authentication\Token\Adapter\Mwt
+ *
+ * @package ManaPHP\Authentication\Token\Adapter
+ */
 class Mwt extends Component implements TokenInterface
 {
     /**

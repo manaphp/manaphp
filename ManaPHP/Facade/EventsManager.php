@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\EventsManager
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Event\ManagerInterface getFacadeInstance()
  */
 class EventsManager extends Facade

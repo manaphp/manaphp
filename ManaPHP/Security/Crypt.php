@@ -6,20 +6,9 @@ use ManaPHP\Component;
 use ManaPHP\Security\Crypt\Exception as CryptException;
 
 /**
- * ManaPHP\Crypt
+ * Class ManaPHP\Security\Crypt
  *
- * Provides encryption facilities to ManaPHP applications
- *
- *<code>
- *    $crypt = new ManaPHP\Crypt();
- *
- *    $key = 'le password';
- *    $text = 'This is a secret text';
- *
- *    $encrypted = $crypt->encrypt($text, $key);
- *
- *    echo $crypt->decrypt($encrypted, $key);
- *</code>
+ * @package ManaPHP\Security
  */
 class Crypt extends Component implements CryptInterface
 {

@@ -4,7 +4,7 @@ namespace ManaPHP;
 use ManaPHP\Cache\AdapterInterface;
 
 /**
- * Class Cache
+ * Class ManaPHP\Cache
  *
  * @package ManaPHP
  *

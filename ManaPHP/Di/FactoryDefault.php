@@ -5,11 +5,9 @@ namespace ManaPHP\Di;
 use ManaPHP\Di;
 
 /**
- * ManaPHP\Di\FactoryDefault
+ * Class ManaPHP\Di\FactoryDefault
  *
- * This is a variant of the standard ManaPHP\Di. By default it automatically
- * registers all the services provided by the framework. Thanks to this, the developer does not need
- * to register each service individually providing a full stack framework
+ * @package ManaPHP\Di
  */
 class FactoryDefault extends Di
 {

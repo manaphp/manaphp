@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\ModelsMetadata
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Mvc\Model\MetadataInterface getFacadeInstance()
  */
 class ModelsMetadata extends Facade

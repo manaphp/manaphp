@@ -3,7 +3,9 @@
 namespace ManaPHP\Http;
 
 /**
- * ManaPHP\Http\ResponseInterface initializer
+ * Interface ManaPHP\Http\ResponseInterface
+ *
+ * @package ManaPHP\Http
  */
 interface ResponseInterface
 {

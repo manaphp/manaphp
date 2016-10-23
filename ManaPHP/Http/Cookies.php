@@ -5,9 +5,9 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 
 /**
- * ManaPHP\Http\Cookies
+ * Class ManaPHP\Http\Cookies
  *
- * This class is a bag to manage the cookies
+ * @package ManaPHP\Http
  *
  * @property \ManaPHP\Security\CryptInterface $crypt
  */

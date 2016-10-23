@@ -4,6 +4,11 @@ namespace ManaPHP\Message\Queue\Adapter;
 use ManaPHP\Component;
 use ManaPHP\Message\QueueInterface;
 
+/**
+ * Class ManaPHP\Message\Queue\Adapter\Db
+ *
+ * @package ManaPHP\Message\Queue\Adapter
+ */
 class Db extends Component implements QueueInterface
 {
     /**

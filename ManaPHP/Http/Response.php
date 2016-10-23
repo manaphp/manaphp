@@ -7,16 +7,9 @@ use ManaPHP\Http\Response\Exception as ResponseException;
 use ManaPHP\Utility\Text;
 
 /**
- * ManaPHP\Http\Response
- * Part of the HTTP cycle is return responses to the clients.
- * ManaPHP\HTTP\Response is the ManaPHP component responsible to achieve this task.
- * HTTP responses are usually composed by headers and body.
- *<code>
- *    $response = new ManaPHP\Http\Response();
- *    $response->setStatusCode(200, "OK");
- *    $response->setContent("<html><body>Hello</body></html>");
- *    $response->send();
- *</code>
+ * Class ManaPHP\Http\Response
+ *
+ * @package ManaPHP\Http
  *
  * @property \ManaPHP\Http\CookiesInterface $cookies
  * @property \ManaPHP\Mvc\UrlInterface      $url

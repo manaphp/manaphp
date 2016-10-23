@@ -5,36 +5,9 @@ namespace ManaPHP;
 use ManaPHP\Di\Exception as DiException;
 
 /**
- * ManaPHP\Di
+ * Class ManaPHP\Di
  *
- * ManaPHP\Di is a component that implements Dependency Injection/Service Location
- * of services and it's itself a container for them.
- *
- * Since ManaPHP is highly decoupled, ManaPHP\Di is essential to integrate the different
- * components of the framework. The developer can also use this component to inject dependencies
- * and manage global instances of the different classes used in the application.
- *
- * Basically, this component implements the `Inversion of Control` pattern. Applying this,
- * the objects do not receive their dependencies using setters or constructors, but requesting
- * a service dependency injector. This reduces the overall complexity, since there is only one
- * way to get the required dependencies within a component.
- *
- * Additionally, this pattern increases testability in the code, thus making it less prone to errors.
- *
- *<code>
- * $di = new ManaPHP\Di();
- *
- * //Using a string definition
- * $di->set('request', 'ManaPHP\Http\Request', true);
- *
- * //Using an anonymous function
- * $di->set('request', function(){
- *      return new ManaPHP\Http\Request();
- * }, true);
- *
- * $request = $di->getRequest();
- *
- *</code>
+ * @package ManaPHP
  *
  * @property \ManaPHP\AliasInterface                       $alias
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher

@@ -5,7 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Counter\AdapterInterface;
 
 /**
- * Class Redis
+ * Class ManaPHP\Counter\Adapter\Redis
  *
  * @package ManaPHP\Counter\Adapter
  *

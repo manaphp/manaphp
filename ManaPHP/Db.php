@@ -5,6 +5,11 @@ namespace ManaPHP;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class ManaPHP\Db
+ *
+ * @package ManaPHP
+ */
 abstract class Db extends Component implements DbInterface
 {
     /**

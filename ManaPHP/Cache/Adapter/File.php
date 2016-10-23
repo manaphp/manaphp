@@ -5,6 +5,11 @@ use ManaPHP\Cache\Adapter\File\Exception as FileException;
 use ManaPHP\Cache\AdapterInterface;
 use ManaPHP\Component;
 
+/**
+ * Class ManaPHP\Cache\Adapter\File
+ *
+ * @package ManaPHP\Cache\Adapter
+ */
 class File extends Component implements AdapterInterface
 {
     /**

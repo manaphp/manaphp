@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Crossword
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Text\CrosswordInterface getFacadeInstance()
  */
 class Crossword extends Facade

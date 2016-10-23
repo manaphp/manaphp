@@ -3,6 +3,11 @@ namespace ManaPHP\Authorization\Rbac\Models;
 
 use ManaPHP\Mvc\Model;
 
+/**
+ * Class ManaPHP\Authorization\Rbac\Models\Permission
+ *
+ * @package ManaPHP\Authorization\Rbac\Models
+ */
 class Permission extends Model
 {
     const TYPE_PENDING = 0;

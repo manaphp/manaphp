@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Random
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Security\RandomInterface getFacadeInstance()
  */
 class Random extends Facade

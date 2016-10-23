@@ -3,7 +3,9 @@
 namespace ManaPHP\Mvc\Model;
 
 /**
- * ManaPHP\Mvc\Model\MetaDataInterface initializer
+ * Interface ManaPHP\Mvc\Model\MetadataInterface
+ *
+ * @package ManaPHP\Mvc\Model
  */
 interface MetadataInterface
 {

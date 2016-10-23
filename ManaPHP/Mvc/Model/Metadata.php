@@ -6,20 +6,9 @@ use ManaPHP\Component;
 use ManaPHP\Mvc\Model\Metadata\Exception as MetadataException;
 
 /**
- * ManaPHP\Mvc\Model\Metadata
+ * Class ManaPHP\Mvc\Model\Metadata
  *
- * <p>Because ManaPHP\Mvc\Model requires meta-data like field names, data types, primary keys, etc.
- * this component collect them and store for further querying by ManaPHP\Mvc\Model.
- * ManaPHP\Mvc\Model\Metadata can also use adapters to store temporarily or permanently the meta-data.</p>
- *
- * <p>A standard ManaPHP\Mvc\Model\Metadata can be used to query model attributes:</p>
- *
- * <code>
- *    $metaData = new ManaPHP\Mvc\Model\Metadata\Memory();
- *    $attributes = $metaData->getAttributes(new Robots());
- *    print_r($attributes);
- * </code>
- *
+ * @package ManaPHP\Mvc\Model
  */
 abstract class Metadata extends Component implements MetadataInterface, Metadata\AdapterInterface
 {

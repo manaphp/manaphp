@@ -3,10 +3,9 @@
 namespace ManaPHP\Mvc\Router;
 
 /**
- * ManaPHP\Mvc\Router\Exception
+ * Class ManaPHP\Mvc\Router\Exception
  *
- * Exceptions thrown in ManaPHP\Mvc\Router will use this class
- *
+ * @package ManaPHP\Mvc\Router
  */
 class Exception extends \ManaPHP\Mvc\Exception
 {

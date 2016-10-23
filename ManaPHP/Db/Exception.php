@@ -3,10 +3,9 @@
 namespace ManaPHP\Db;
 
 /**
- * ManaPHP\Db\Exception
+ * Class ManaPHP\Db\Exception
  *
- * Exceptions thrown in ManaPHP\Db will use this class
- *
+ * @package ManaPHP\Db
  */
 class Exception extends \ManaPHP\Exception
 {

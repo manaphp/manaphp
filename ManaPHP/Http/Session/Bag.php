@@ -5,16 +5,9 @@ namespace ManaPHP\Http\Session;
 use ManaPHP\Component;
 
 /**
- * ManaPHP\Http\Session\Bag
+ * Class ManaPHP\Http\Session\Bag
  *
- * This component helps to separate session data into "namespaces". Working by this way
- * you can easily create groups of session variables into the application
- *
- *<code>
- *    $user = new \ManaPHP\Session\Bag('user');
- *    $user->set('name',"Kimbra Johnson");
- *    $user->set('age', 22);
- *</code>
+ * @package ManaPHP\Http\Session
  *
  * @property \ManaPHP\Http\SessionInterface $session
  */

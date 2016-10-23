@@ -9,10 +9,9 @@
 namespace ManaPHP\Http\Session;
 
 /**
- * ManaPHP\Http\Session\Exception
+ * Class ManaPHP\Http\Session\Exception
  *
- * Exceptions thrown in ManaPHP\Http\Response will use this class
- *
+ * @package ManaPHP\Http\Session
  */
 class Exception extends \ManaPHP\Http\Exception
 {

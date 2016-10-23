@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Meter\Linear;
 
+/**
+ * Class ManaPHP\Meter\Linear\Model
+ *
+ * @package ManaPHP\Meter\Linear
+ */
 class Model extends \ManaPHP\Mvc\Model
 {
     /**

@@ -7,6 +7,10 @@ use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
 
 /**
+ * Class ManaPHP\Authorization\Rbac
+ *
+ * @package ManaPHP\Authorization
+ *
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity

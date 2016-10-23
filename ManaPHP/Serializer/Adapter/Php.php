@@ -4,6 +4,11 @@ namespace ManaPHP\Serializer\Adapter;
 use ManaPHP\Serializer\Adapter\Php\Exception as PhpException;
 use ManaPHP\Serializer\AdapterInterface;
 
+/**
+ * Class ManaPHP\Serializer\Adapter\Php
+ *
+ * @package ManaPHP\Serializer\Adapter
+ */
 class Php implements AdapterInterface
 {
     /**

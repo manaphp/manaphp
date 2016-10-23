@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Cache;
 
+/**
+ * Interface ManaPHP\Cache\AdapterInterface
+ *
+ * @package ManaPHP\Cache
+ */
 interface AdapterInterface
 {
     /**

@@ -6,7 +6,7 @@ use ManaPHP\Cli\Controller;
 use ManaPHP\Utility\Text;
 
 /**
- * Class ModuleController
+ * Class ManaPHP\Cli\Controllers\ModuleController
  *
  * @package ManaPHP\Cli\Controllers
  *

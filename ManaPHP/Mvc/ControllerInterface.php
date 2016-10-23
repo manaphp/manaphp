@@ -3,7 +3,9 @@
 namespace ManaPHP\Mvc;
 
 /**
- * ManaPHP\Mvc\ControllerInterface initializer
+ * Interface ManaPHP\Mvc\ControllerInterface
+ *
+ * @package ManaPHP\Mvc
  */
 interface ControllerInterface
 {

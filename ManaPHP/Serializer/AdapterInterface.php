@@ -1,9 +1,13 @@
 <?php
 namespace ManaPHP\Serializer;
 
+/**
+ * Interface ManaPHP\Serializer\AdapterInterface
+ *
+ * @package ManaPHP\Serializer
+ */
 interface AdapterInterface
 {
-
     /**
      * @param mixed $data
      *

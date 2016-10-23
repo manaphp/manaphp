@@ -5,9 +5,10 @@ use ManaPHP\Cli\Controller;
 use ManaPHP\Utility\Text;
 
 /**
- * Class ControllerController
+ * Class ManaPHP\Cli\Controllers\ControllerController
  *
  * @package ManaPHP\Cli\Controllers
+ *
  * @property \ManaPHP\ApplicationInterface $application
  */
 class ControllerController extends Controller

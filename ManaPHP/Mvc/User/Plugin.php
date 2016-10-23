@@ -9,10 +9,9 @@ namespace ManaPHP\Mvc\User;
 use ManaPHP\Component;
 
 /**
- * ManaPHP\Mvc\User\Plugin
+ * Class ManaPHP\Mvc\User\Plugin
  *
- * This class can be used to provide user plugins an easy access to services
- * in the application
+ * @package ManaPHP\Mvc\User
  */
 class Plugin extends Component
 {

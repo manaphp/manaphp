@@ -6,9 +6,10 @@ use ManaPHP\Facade;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
- * Class Request
+ * Class ManaPHP\Facade\Dispatcher
  *
  * @package ManaPHP\Facade
+ *
  * @method  static \ManaPHP\Mvc\DispatcherInterface getFacadeInstance()
  */
 class Dispatcher extends Facade

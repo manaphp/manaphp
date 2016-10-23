@@ -4,7 +4,7 @@ namespace ManaPHP\Mvc;
 use ManaPHP\Component;
 
 /**
- * Class Widget
+ * Class ManaPHP\Mvc\Widget
  *
  * @package ManaPHP\Mvc
  *

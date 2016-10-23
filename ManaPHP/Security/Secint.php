@@ -3,6 +3,11 @@ namespace ManaPHP\Security;
 
 use ManaPHP\Component;
 
+/**
+ * Class ManaPHP\Security\Secint
+ *
+ * @package ManaPHP\Security
+ */
 class Secint extends Component implements SecintInterface
 {
     /**

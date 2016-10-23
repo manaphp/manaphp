@@ -6,22 +6,9 @@ use ManaPHP\Component;
 use ManaPHP\Utility\Text;
 
 /**
- * ManaPHP\Mvc\Model\Manager
+ * Class ManaPHP\Mvc\Model\Manager
  *
- * This components controls the initialization of models, keeping record of relations
- * between the different models of the application.
- *
- * A ModelsManager is injected to a model via a Dependency Injector/Services Container such as ManaPHP\Di.
- *
- * <code>
- * $di = new ManaPHP\Di();
- *
- * $di->set('modelsManager', function() {
- *      return new ManaPHP\Mvc\Model\Manager();
- * });
- *
- * $robot = new Robots($di);
- * </code>
+ * @package ManaPHP\Mvc\Model
  */
 class Manager extends Component implements ManagerInterface
 {

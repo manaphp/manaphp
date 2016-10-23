@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP\Http\Session\Adapter\Db;
 
+/**
+ * Class ManaPHP\Http\Session\Adapter\Db\Model
+ *
+ * @package ManaPHP\Http\Session\Adapter\Db
+ */
 class Model extends \ManaPHP\Mvc\Model
 {
 

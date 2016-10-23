@@ -3,6 +3,11 @@ namespace ManaPHP\Security\RateLimiter\Adapter;
 
 use ManaPHP\Security\RateLimiter;
 
+/**
+ * Class ManaPHP\Security\RateLimiter\Adapter\Db
+ *
+ * @package ManaPHP\Security\RateLimiter\Adapter
+ */
 class Db extends RateLimiter
 {
     /**

@@ -4,6 +4,11 @@ namespace ManaPHP\Store\Adapter;
 use ManaPHP\Component;
 use ManaPHP\Store\AdapterInterface;
 
+/**
+ * Class ManaPHP\Store\Adapter\Memory
+ *
+ * @package ManaPHP\Store\Adapter
+ */
 class Memory extends Component implements AdapterInterface
 {
     /**
