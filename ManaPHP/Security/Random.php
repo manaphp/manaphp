@@ -71,13 +71,14 @@ class Random implements RandomInterface
      *
      * @return int
      */
-    public function getInt($min = 0, $max = 4294967296)
+    public function getInt($min = 0, $max = 2147483647)
     {
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($min == $max) {
             return $min;
         } else {
-            return $min + $this->getByte(4) % ($max - $min);
+            $ar = unpack('l', $this->getByte(4));
+            return $min + abs($ar[1]) % ($max - $min + 1);
         }
     }
 
@@ -89,7 +90,6 @@ class Random implements RandomInterface
      */
     public function getFloat($min = 0.0, $max = 1.0)
     {
-        return $min + $this->getByte(4) / 4294967296 * ($max - $min);
+        return $min + $this->getInt() / 2147483647 * ($max - $min);
     }
-
 }

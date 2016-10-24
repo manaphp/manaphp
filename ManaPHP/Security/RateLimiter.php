@@ -79,7 +79,7 @@ abstract class RateLimiter extends Component implements RateLimiterInterface
         }
 
         if (!$this->_limit($id, $this->dispatcher->getModuleName() . ':' . $resource, $duration, $times)) {
-            throw new RateLimiterException('rate limit is exceed.');
+            throw new RateLimiterException('rate limit is exceed.', ['resource' => $resource, 'duration' => $duration, 'ip_times' => $ip_times, 'user_times' => $user_times]);
         }
     }
 }

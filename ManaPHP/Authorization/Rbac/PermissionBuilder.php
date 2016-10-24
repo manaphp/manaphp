@@ -24,7 +24,7 @@ class PermissionBuilder extends Component
         $rc = new \ReflectionClass($controller);
 
         if (preg_match('#^[^/]*/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $controller), $match) !== 1) {
-            throw new PermissionBuilderException('class name is not good: :controller'/**m0356156d8fc74b80f*/, ['controller' => $rc->getName()]);
+            return [];
         }
         $moduleName = $match[1];
         $controllerName = $match[2];

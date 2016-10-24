@@ -29,7 +29,7 @@ interface RandomInterface
      *
      * @return int
      */
-    public function getInt($min = 0, $max = 4294967296);
+    public function getInt($min = 0, $max = 2147483647);
 
     /**
      * @param float $min
