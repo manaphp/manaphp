@@ -75,6 +75,11 @@ class Router extends Component implements RouterInterface
         return $controllers;
     }
 
+    /**
+     * @param string $controller
+     *
+     * @return array
+     */
     protected function _getCommands($controller)
     {
         $commands = [];

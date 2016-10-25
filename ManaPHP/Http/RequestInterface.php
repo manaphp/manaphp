@@ -181,9 +181,12 @@ interface RequestInterface
      */
     public function getClientAddress();
 
-    /**set the client address for getClientAddress method
+    /**
+     * set the client address for getClientAddress method
      *
-     * @param string|callable
+     * @param string|callable $address
+     *
+     * @return static
      */
     public function setClientAddress($address);
 

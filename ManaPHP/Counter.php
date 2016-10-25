@@ -42,6 +42,11 @@ class Counter extends Component implements CounterInterface
         }
     }
 
+    /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
     public function setDependencyInjector($dependencyInjector)
     {
         parent::setDependencyInjector($dependencyInjector);

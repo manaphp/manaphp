@@ -353,6 +353,11 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
+    /**
+     * @param string $attachmentName
+     *
+     * @return static
+     */
     public function setAttachment($attachmentName)
     {
         if (isset($_SERVER['HTTP_USER_AGENT'])) {

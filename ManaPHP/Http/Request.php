@@ -390,9 +390,12 @@ class Request extends Component implements RequestInterface
         return $this->_clientAddress;
     }
 
-    /**set the client address for getClientAddress method
+    /**
+     * set the client address for getClientAddress method
      *
-     * @param string|callable
+     * @param string|callable $address
+     *
+     * @return static
      */
     public function setClientAddress($address)
     {
@@ -401,6 +404,8 @@ class Request extends Component implements RequestInterface
         } else {
             $this->_clientAddress = $address();
         }
+
+        return $this;
     }
 
     /**

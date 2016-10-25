@@ -46,16 +46,33 @@ class Apc extends Component implements AdapterInterface
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     public function exists($key)
     {
         return apc_exists($this->_prefix . $key);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
     public function get($key)
     {
         return apc_fetch($this->_prefix . $key);
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     * @param int    $ttl
+     *
+     * @throws \ManaPHP\Cache\Adapter\Apc\Exception
+     */
     public function set($key, $value, $ttl)
     {
         $r = apc_store($this->_prefix . $key, $value, $ttl);
@@ -64,6 +81,11 @@ class Apc extends Component implements AdapterInterface
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return void
+     */
     public function delete($key)
     {
         apc_delete($this->_prefix . $key);

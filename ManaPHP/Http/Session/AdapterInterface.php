@@ -56,7 +56,8 @@ interface AdapterInterface
      */
     public function write($sessionId, $data);
 
-    /**This callback is executed when a session is destroyed with session_destroy()
+    /**
+     * This callback is executed when a session is destroyed with session_destroy()
      * or with session_regenerate_id() with the destroy parameter set to TRUE.
      * Return value should be TRUE for success, FALSE for failure.
      *

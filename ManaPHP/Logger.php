@@ -176,7 +176,7 @@ class Logger extends Component implements LoggerInterface
         return $this->log(self::LEVEL_DEBUG, $message, $context);
     }
 
-    /**-
+    /**
      * Sends/Writes an info message to the log
      *
      * @param string $message

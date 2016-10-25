@@ -24,6 +24,11 @@ abstract class Application extends \ManaPHP\Application
      */
     protected $_controllerAliases = [];
 
+    /**
+     * Application constructor.
+     *
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     */
     public function __construct($dependencyInjector = null)
     {
         $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();

@@ -232,6 +232,12 @@ class Image implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param string $file
+     * @param int    $quality
+     *
+     * @return static
+     */
     public function save($file, $quality = 80)
     {
         $this->adapter->save($file, $quality);
