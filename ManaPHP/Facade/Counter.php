@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Counter
  *
- * @package ManaPHP\Facade
+ * @package counter
  *
  * @method  static \ManaPHP\CounterInterface getFacadeInstance()
  */

@@ -14,7 +14,7 @@ use ManaPHP\Http\Session\Exception as SessionException;
 /**
  * Class ManaPHP\Http\Session
  *
- * @package ManaPHP\Http
+ * @package session
  */
 class Session extends Component implements SessionInterface, \ArrayAccess
 {

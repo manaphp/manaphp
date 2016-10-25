@@ -7,7 +7,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Http\Session\Bag
  *
- * @package ManaPHP\Http\Session
+ * @package session
  *
  * @property \ManaPHP\Http\SessionInterface $session
  */

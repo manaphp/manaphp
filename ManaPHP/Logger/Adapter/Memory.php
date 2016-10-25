@@ -7,7 +7,7 @@ use ManaPHP\Logger\AdapterInterface;
 /**
  * Class ManaPHP\Logger\Adapter\Memory
  *
- * @package ManaPHP\Logger\Adapter
+ * @package logger
  */
 class Memory extends Component implements AdapterInterface
 {

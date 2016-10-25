@@ -8,7 +8,7 @@ use ManaPHP\FilesystemInterface;
 /**
  * Class ManaPHP\Filesystem\Adapter\File
  *
- * @package ManaPHP\Filesystem\Adapter
+ * @package filesystem\adapter
  */
 class File extends Component implements FilesystemInterface
 {

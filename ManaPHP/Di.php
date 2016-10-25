@@ -7,7 +7,7 @@ use ManaPHP\Di\Exception as DiException;
 /**
  * Class ManaPHP\Di
  *
- * @package ManaPHP
+ * @package di
  *
  * @property \ManaPHP\AliasInterface                       $alias
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher

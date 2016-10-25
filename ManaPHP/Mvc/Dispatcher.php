@@ -11,7 +11,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Mvc\Dispatcher
  *
- * @package ManaPHP\Mvc
+ * @package dispatcher
  */
 class Dispatcher extends Component implements DispatcherInterface
 {

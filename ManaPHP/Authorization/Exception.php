@@ -4,7 +4,7 @@ namespace ManaPHP\Authorization;
 /**
  * Class ManaPHP\Authorization\Exception
  *
- * @package ManaPHP\Authorization
+ * @package authorization
  */
 class Exception extends \ManaPHP\Exception
 {

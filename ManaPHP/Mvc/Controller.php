@@ -7,7 +7,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Mvc\Controller
  *
- * @package ManaPHP\Mvc
+ * @package controller
  *
  * @method void initialize();
  * @method bool beforeExecuteRoute();

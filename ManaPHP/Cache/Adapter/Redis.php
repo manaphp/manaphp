@@ -8,7 +8,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Cache\Adapter\Redis
  *
- * @package ManaPHP\Cache\Adapter
+ * @package cache\adapter
  *
  * @property \Redis               $redis
  * @property \ManaPHP\DiInterface $redisDi

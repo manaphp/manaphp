@@ -10,7 +10,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Http\Request
  *
- * @package ManaPHP\Http
+ * @package request
  *
  * @property \ManaPHP\Http\FilterInterface $filter
  */

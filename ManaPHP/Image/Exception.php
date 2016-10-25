@@ -5,7 +5,7 @@ namespace ManaPHP\Image;
 /**
  * Class ManaPHP\Image\Exception
  *
- * @package ManaPHP\Image
+ * @package image
  */
 class Exception extends \ManaPHP\Exception
 {

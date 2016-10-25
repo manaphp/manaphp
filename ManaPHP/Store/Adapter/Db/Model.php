@@ -4,7 +4,7 @@ namespace ManaPHP\Store\Adapter\Db;
 /**
  * Class ManaPHP\Store\Adapter\Db\Model
  *
- * @package ManaPHP\Store\Adapter\Db
+ * @package store\adapter
  */
 class Model extends \ManaPHP\Mvc\Model
 {

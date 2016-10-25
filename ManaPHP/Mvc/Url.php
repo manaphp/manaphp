@@ -7,7 +7,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Mvc\Url
  *
- * @package ManaPHP\Mvc
+ * @package url
  *
  * @property \Application\Configure         $configure
  * @property \ManaPHP\Http\RequestInterface $request

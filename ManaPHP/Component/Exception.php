@@ -4,7 +4,7 @@ namespace ManaPHP\Component;
 /**
  * Class ManaPHP\Component\Exception
  *
- * @package ManaPHP\Component
+ * @package component
  */
 class Exception extends \ManaPHP\Exception
 {

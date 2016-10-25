@@ -4,7 +4,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\FilesystemInterface
  *
- * @package ManaPHP
+ * @package filesystem
  */
 interface FilesystemInterface
 {

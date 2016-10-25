@@ -4,7 +4,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\ApplicationInterface
  *
- * @package ManaPHP
+ * @package application
  */
 interface ApplicationInterface
 {

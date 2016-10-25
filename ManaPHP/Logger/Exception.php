@@ -4,7 +4,7 @@ namespace ManaPHP\Logger;
 /**
  * Class ManaPHP\Logger\Exception
  *
- * @package ManaPHP\Logger
+ * @package logger
  */
 class Exception extends \ManaPHP\Exception
 {

@@ -6,7 +6,7 @@ use ManaPHP\Facade\Exception as FacadeException;
 /**
  * Class ManaPHP\Facade
  *
- * @package ManaPHP
+ * @package facade
  */
 class Facade
 {

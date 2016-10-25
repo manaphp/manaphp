@@ -6,7 +6,7 @@ use ManaPHP\Mvc\NotFoundException;
 /**
  * Class ManaPHP\Mvc\Dispatcher\NotFoundActionException
  *
- * @package ManaPHP\Mvc\Dispatcher
+ * @package dispatcher
  */
 class NotFoundActionException extends NotFoundException
 {

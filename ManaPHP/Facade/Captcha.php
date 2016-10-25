@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Captcha
  *
- * @package ManaPHP\Facade
+ * @package captcha
  *
  * @method  static \ManaPHP\Security\CaptchaInterface getFacadeInstance()
  */

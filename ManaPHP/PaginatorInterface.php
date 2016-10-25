@@ -4,7 +4,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\PaginatorInterface
  *
- * @package ManaPHP
+ * @package paginator
  */
 interface PaginatorInterface
 {

@@ -4,7 +4,7 @@ namespace ManaPHP\Mvc;
 /**
  * Interface ManaPHP\Mvc\UrlInterface
  *
- * @package ManaPHP\Mvc
+ * @package url
  */
 interface UrlInterface
 {

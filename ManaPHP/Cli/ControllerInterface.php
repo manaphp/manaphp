@@ -4,7 +4,7 @@ namespace ManaPHP\Cli;
 /**
  * Interface ManaPHP\Cli\ControllerInterface
  *
- * @package ManaPHP\Cli
+ * @package controller
  */
 interface ControllerInterface
 {

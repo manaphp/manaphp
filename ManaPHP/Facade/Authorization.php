@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Authorization
  *
- * @package ManaPHP\Facade
+ * @package authorization
  *
  * @method  static \ManaPHP\AuthorizationInterface getFacadeInstance()
  */

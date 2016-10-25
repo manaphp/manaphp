@@ -4,7 +4,7 @@ namespace ManaPHP\Meter\Linear;
 /**
  * Class ManaPHP\Meter\Linear\Model
  *
- * @package ManaPHP\Meter\Linear
+ * @package linearMeter
  */
 class Model extends \ManaPHP\Mvc\Model
 {

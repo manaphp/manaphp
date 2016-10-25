@@ -5,7 +5,7 @@ namespace ManaPHP\Http;
 /**
  * Interface ManaPHP\Http\CookiesInterface
  *
- * @package ManaPHP\Http
+ * @package cookies
  */
 interface CookiesInterface
 {

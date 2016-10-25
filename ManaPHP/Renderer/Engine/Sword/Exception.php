@@ -4,7 +4,7 @@ namespace ManaPHP\Renderer\Engine\Sword;
 /**
  * Class ManaPHP\Renderer\Engine\Sword\Exception
  *
- * @package ManaPHP\Renderer\Engine\Sword
+ * @package renderer\engine
  */
 class Exception extends \ManaPHP\Renderer\Engine\Exception
 {

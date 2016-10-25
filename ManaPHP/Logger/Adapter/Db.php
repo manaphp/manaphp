@@ -7,7 +7,7 @@ use ManaPHP\Logger\AdapterInterface;
 /**
  * Class ManaPHP\Logger\Adapter\Db
  *
- * @package ManaPHP\Logger\Adapter
+ * @package logger
  *
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher

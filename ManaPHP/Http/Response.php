@@ -9,7 +9,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Http\Response
  *
- * @package ManaPHP\Http
+ * @package response
  *
  * @property \ManaPHP\Http\CookiesInterface $cookies
  * @property \ManaPHP\Mvc\UrlInterface      $url

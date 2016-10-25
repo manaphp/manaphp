@@ -4,7 +4,7 @@ namespace ManaPHP\Http\Client;
 /**
  * Class ManaPHP\Http\Client\Exception
  *
- * @package ManaPHP\Http\Client
+ * @package httpClient
  */
 class Exception extends \ManaPHP\Http\Exception
 {

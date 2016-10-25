@@ -4,7 +4,7 @@ namespace ManaPHP\Authentication;
 /**
  * Interface ManaPHP\Authentication\PasswordInterface
  *
- * @package ManaPHP\Authentication
+ * @package password
  */
 interface PasswordInterface
 {

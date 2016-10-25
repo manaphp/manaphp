@@ -4,7 +4,7 @@ namespace ManaPHP\Meter;
 /**
  * Interface ManaPHP\Meter\LinearInterface
  *
- * @package ManaPHP\Meter
+ * @package linearMeter
  */
 interface LinearInterface
 {

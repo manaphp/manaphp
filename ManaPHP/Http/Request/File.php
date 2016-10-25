@@ -9,7 +9,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Http\Request\File
  *
- * @package ManaPHP\Http\Request
+ * @package request
  */
 class File extends Component implements FileInterface
 {

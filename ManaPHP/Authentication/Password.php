@@ -6,7 +6,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Authentication\Password
  *
- * @package ManaPHP\Authentication
+ * @package password
  */
 class Password extends Component implements PasswordInterface
 {

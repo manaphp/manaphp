@@ -6,7 +6,7 @@ use ManaPHP\Store\AdapterInterface;
 /**
  * Class ManaPHP\Store
  *
- * @package ManaPHP
+ * @package store
  *
  * @property \ManaPHP\Serializer\AdapterInterface $serializer
  */

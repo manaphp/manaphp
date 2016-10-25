@@ -9,7 +9,7 @@ use ManaPHP\Image\Exception as ImageException;
 /**
  * Class ManaPHP\Image
  *
- * @package ManaPHP
+ * @package image
  */
 class Image implements ImageInterface
 {

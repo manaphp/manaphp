@@ -9,7 +9,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Mvc\Router
  *
- * @package ManaPHP\Mvc
+ * @package router
  *
  * @property \ManaPHP\Http\RequestInterface $request
  */

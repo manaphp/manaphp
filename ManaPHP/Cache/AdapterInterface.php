@@ -4,7 +4,7 @@ namespace ManaPHP\Cache;
 /**
  * Interface ManaPHP\Cache\AdapterInterface
  *
- * @package ManaPHP\Cache
+ * @package cache
  */
 interface AdapterInterface
 {

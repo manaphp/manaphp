@@ -7,7 +7,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Debugger
  *
- * @package ManaPHP
+ * @package debugger
  *
  * @property \ManaPHP\Mvc\RouterInterface   $router
  * @property \ManaPHP\Mvc\UrlInterface      $url

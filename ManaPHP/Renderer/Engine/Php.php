@@ -8,7 +8,7 @@ use ManaPHP\Renderer\EngineInterface;
 /**
  * Class ManaPHP\Renderer\Engine\Php
  *
- * @package ManaPHP\Renderer\Engine
+ * @package renderer\engine
  */
 class Php extends Component implements EngineInterface
 {

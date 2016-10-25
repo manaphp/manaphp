@@ -4,7 +4,7 @@ namespace ManaPHP\Authentication;
 /**
  * Class ManaPHP\Authentication\UserIdentity
  *
- * @package ManaPHP\Authentication
+ * @package userIdentity
  */
 class UserIdentity implements UserIdentityInterface
 {

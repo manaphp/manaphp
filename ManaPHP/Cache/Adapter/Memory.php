@@ -6,7 +6,7 @@ use ManaPHP\Cache\AdapterInterface;
 /**
  * Class ManaPHP\Cache\Adapter\Memory
  *
- * @package ManaPHP\Cache\Adapter
+ * @package cache\adapter
  */
 class Memory implements AdapterInterface
 {

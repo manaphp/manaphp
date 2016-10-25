@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Renderer
  *
- * @package ManaPHP\Facade
+ * @package renderer
  *
  * @method  static \ManaPHP\RendererInterface getFacadeInstance()
  */

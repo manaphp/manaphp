@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Url
  *
- * @package ManaPHP\Facade
+ * @package url
  *
  * @method  static \ManaPHP\Mvc\UrlInterface getFacadeInstance()
  */

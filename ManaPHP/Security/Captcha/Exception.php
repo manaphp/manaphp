@@ -4,7 +4,7 @@ namespace ManaPHP\Security\Captcha;
 /**
  * Class ManaPHP\Security\Captcha\Exception
  *
- * @package ManaPHP\Security\Captcha
+ * @package captcha
  */
 class Exception extends \ManaPHP\Security\Exception
 {

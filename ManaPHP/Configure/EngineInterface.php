@@ -4,7 +4,7 @@ namespace ManaPHP\Configure;
 /**
  * Interface ManaPHP\Configure\EngineInterface
  *
- * @package ManaPHP\Configure
+ * @package configure
  */
 interface EngineInterface
 {

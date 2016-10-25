@@ -7,7 +7,7 @@ use ManaPHP\Mvc\View\Flash;
 /**
  * Class ManaPHP\Mvc\View\Flash\Adapter\Direct
  *
- * @package ManaPHP\Mvc\View\Flash\Adapter
+ * @package flash\adapter
  */
 class Direct extends Flash
 {

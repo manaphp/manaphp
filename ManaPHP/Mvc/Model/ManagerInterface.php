@@ -5,7 +5,7 @@ namespace ManaPHP\Mvc\Model;
 /**
  * Interface ManaPHP\Mvc\Model\ManagerInterface
  *
- * @package ManaPHP\Mvc\Model
+ * @package modelsManager
  */
 interface ManagerInterface
 {

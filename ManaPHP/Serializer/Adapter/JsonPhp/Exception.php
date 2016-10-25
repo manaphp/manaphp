@@ -4,7 +4,7 @@ namespace ManaPHP\Serializer\Adapter\JsonPhp;
 /**
  * Class ManaPHP\Serializer\Adapter\JsonPhp\Exception
  *
- * @package ManaPHP\Serializer\Adapter\JsonPhp
+ * @package serializer\adapter
  */
 class Exception extends \ManaPHP\Serializer\Adapter\Exception
 {

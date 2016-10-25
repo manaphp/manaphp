@@ -4,7 +4,7 @@ namespace ManaPHP\Logger\Adapter\Db;
 /**
  * Class ManaPHP\Logger\Adapter\Db\Model
  *
- * @package ManaPHP\Logger\Adapter\Db
+ * @package logger
  */
 class Model extends \ManaPHP\Mvc\Model
 {

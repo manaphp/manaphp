@@ -8,7 +8,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Db
  *
- * @package ManaPHP
+ * @package db
  */
 abstract class Db extends Component implements DbInterface
 {

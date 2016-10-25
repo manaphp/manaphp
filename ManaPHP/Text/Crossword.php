@@ -4,7 +4,7 @@ namespace ManaPHP\Text;
 /**
  * Class ManaPHP\Text\Crossword
  *
- * @package ManaPHP\Text
+ * @package crossword
  */
 class Crossword
 {

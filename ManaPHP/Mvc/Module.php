@@ -6,7 +6,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Mvc\Module
  *
- * @package ManaPHP\Mvc
+ * @package module
  */
 abstract class Module extends Component implements ModuleInterface
 {

@@ -5,7 +5,7 @@ namespace ManaPHP\Event;
 /**
  * Class ManaPHP\Event\Event
  *
- * @package ManaPHP\Event
+ * @package eventsManager
  */
 class Event
 {

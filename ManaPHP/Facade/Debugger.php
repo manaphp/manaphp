@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Debugger
  *
- * @package ManaPHP\Facade
+ * @package debugger
  *
  * @method  static \ManaPHP\DebuggerInterface getFacadeInstance()
  */

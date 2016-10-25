@@ -5,7 +5,7 @@ namespace ManaPHP\Mvc;
 /**
  * Interface ManaPHP\Mvc\ModuleInterface
  *
- * @package ManaPHP\Mvc
+ * @package module
  *
  * @property \ManaPHP\Http\SessionInterface                $session
  * @property \ManaPHP\Http\RequestInterface                $request

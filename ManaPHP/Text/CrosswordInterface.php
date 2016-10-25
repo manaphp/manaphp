@@ -4,7 +4,7 @@ namespace ManaPHP\Text;
 /**
  * Interface ManaPHP\Text\CrosswordInterface
  *
- * @package ManaPHP\Text
+ * @package crossword
  */
 interface CrosswordInterface
 {

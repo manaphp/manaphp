@@ -7,7 +7,7 @@ use ManaPHP\Http\Session\AdapterInterface;
 /**
  * Class ManaPHP\Http\Session\Adapter\Db
  *
- * @package ManaPHP\Http\Session\Adapter
+ * @package session\adapter
  */
 class Db extends Component implements AdapterInterface
 {

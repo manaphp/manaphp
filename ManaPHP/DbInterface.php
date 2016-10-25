@@ -5,7 +5,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\DbInterface
  *
- * @package ManaPHP
+ * @package db
  */
 interface DbInterface
 {

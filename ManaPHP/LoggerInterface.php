@@ -4,7 +4,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\LoggerInterface
  *
- * @package ManaPHP
+ * @package logger
  */
 interface LoggerInterface
 {

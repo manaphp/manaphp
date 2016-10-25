@@ -6,7 +6,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Mvc\Widget
  *
- * @package ManaPHP\Mvc
+ * @package widget
  *
  * @property \ManaPHP\Mvc\UrlInterface           $url
  * @property \ManaPHP\CacheInterface             $cache

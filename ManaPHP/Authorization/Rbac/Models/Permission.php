@@ -6,7 +6,7 @@ use ManaPHP\Mvc\Model;
 /**
  * Class ManaPHP\Authorization\Rbac\Models\Permission
  *
- * @package ManaPHP\Authorization\Rbac\Models
+ * @package rbac\models
  */
 class Permission extends Model
 {

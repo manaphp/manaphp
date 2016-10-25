@@ -7,7 +7,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Authorization\Rbac\PermissionBuilder
  *
- * @package ManaPHP\Authorization\Rbac
+ * @package rbac
  *
  * @property \ManaPHP\AliasInterface $alias
  */

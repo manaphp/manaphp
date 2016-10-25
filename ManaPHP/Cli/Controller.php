@@ -6,7 +6,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Cli\Controller
  *
- * @package ManaPHP\Cli
+ * @package controller
  *
  * @property \ManaPHP\Http\ClientInterface       $httpClient
  * @property \ManaPHP\Mvc\Model\ManagerInterface $modelsManager

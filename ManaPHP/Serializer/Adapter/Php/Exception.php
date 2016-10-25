@@ -4,7 +4,7 @@ namespace ManaPHP\Serializer\Adapter\Php;
 /**
  * Class ManaPHP\Serializer\Adapter\Php\Exception
  *
- * @package ManaPHP\Serializer\Adapter\Php
+ * @package serializer\adapter
  */
 class Exception extends \ManaPHP\Serializer\Adapter\Exception
 {

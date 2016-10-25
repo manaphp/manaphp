@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\UserIdentity
  *
- * @package ManaPHP\Facade
+ * @package userIdentity
  *
  * @method  static \ManaPHP\Authentication\UserIdentityInterface getFacadeInstance()
  */

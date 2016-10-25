@@ -7,7 +7,7 @@ use ManaPHP\Mvc\Model\Metadata\Adapter\Apc\Exception as ApcException;
 /**
  * Class ManaPHP\Mvc\Model\Metadata\Adapter\Apc
  *
- * @package ManaPHP\Mvc\Model\Metadata\Adapter
+ * @package modelsMetadata\adapter
  */
 class Apc extends Metadata
 {

@@ -8,7 +8,7 @@ use ManaPHP\Security\Crypt\Exception as CryptException;
 /**
  * Class ManaPHP\Security\Crypt
  *
- * @package ManaPHP\Security
+ * @package crypt
  */
 class Crypt extends Component implements CryptInterface
 {

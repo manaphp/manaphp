@@ -4,7 +4,7 @@ namespace ManaPHP\Security\RateLimiter;
 /**
  * Class ManaPHP\Security\RateLimiter\Exception
  *
- * @package ManaPHP\Security\RateLimiter
+ * @package rateLimiter
  */
 class Exception extends \ManaPHP\Security\Exception
 {

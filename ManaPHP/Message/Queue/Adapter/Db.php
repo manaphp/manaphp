@@ -7,7 +7,7 @@ use ManaPHP\Message\QueueInterface;
 /**
  * Class ManaPHP\Message\Queue\Adapter\Db
  *
- * @package ManaPHP\Message\Queue\Adapter
+ * @package messageQueue\adapter
  */
 class Db extends Component implements QueueInterface
 {

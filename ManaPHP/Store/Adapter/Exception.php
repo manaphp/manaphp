@@ -4,7 +4,7 @@ namespace ManaPHP\Store\Adapter;
 /**
  * Class ManaPHP\Store\Adapter\Exception
  *
- * @package ManaPHP\Store\Adapter
+ * @package store\adapter
  */
 class Exception extends \ManaPHP\Store\Exception
 {

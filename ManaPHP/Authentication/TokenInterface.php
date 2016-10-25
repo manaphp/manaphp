@@ -4,7 +4,7 @@ namespace ManaPHP\Authentication;
 /**
  * Interface ManaPHP\Authentication\TokenInterface
  *
- * @package ManaPHP\Authentication
+ * @package token
  */
 interface TokenInterface
 {

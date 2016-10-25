@@ -6,7 +6,7 @@ use ManaPHP\Configure\EngineInterface;
 /**
  * Class ManaPHP\Configure\Engine\Php
  *
- * @package ManaPHP\Configure\Engine
+ * @package configure\engine
  */
 class Php implements EngineInterface
 {

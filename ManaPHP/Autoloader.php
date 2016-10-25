@@ -5,7 +5,7 @@ namespace ManaPHP;
 /**
  * Class ManaPHP\Autoloader
  *
- * @package ManaPHP
+ * @package autoloader
  */
 class Autoloader
 {

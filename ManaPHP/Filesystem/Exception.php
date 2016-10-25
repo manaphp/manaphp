@@ -4,7 +4,7 @@ namespace ManaPHP\Filesystem;
 /**
  * Class ManaPHP\Filesystem\Exception
  *
- * @package ManaPHP\Filesystem
+ * @package filesystem
  */
 class Exception extends \ManaPHP\Exception
 {

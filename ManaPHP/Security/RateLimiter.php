@@ -8,7 +8,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Security\RateLimiter
  *
- * @package ManaPHP\Security
+ * @package rateLimiter
  *
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity

@@ -7,7 +7,7 @@ use ManaPHP\Serializer\AdapterInterface;
 /**
  * Class ManaPHP\Serializer\Adapter\JsonPhp
  *
- * @package ManaPHP\Serializer\Adapter
+ * @package serializer\adapter
  */
 class JsonPhp implements AdapterInterface
 {

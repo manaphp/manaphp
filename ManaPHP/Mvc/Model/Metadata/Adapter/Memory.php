@@ -7,7 +7,7 @@ use ManaPHP\Mvc\Model\Metadata;
 /**
  * Class ManaPHP\Mvc\Model\Metadata\Adapter\Memory
  *
- * @package ManaPHP\Mvc\Model\Metadata\Adapter
+ * @package modelsMetadata\adapter
  */
 class Memory extends Metadata
 {

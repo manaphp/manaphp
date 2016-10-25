@@ -7,7 +7,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Alias
  *
- * @package ManaPHP
+ * @package alias
  */
 class Alias extends Component implements AliasInterface
 {

@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\MessageQueue
  *
- * @package ManaPHP\Facade
+ * @package messageQueue
  *
  * @method  static \ManaPHP\Message\QueueInterface getFacadeInstance()
  */

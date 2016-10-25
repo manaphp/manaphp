@@ -4,7 +4,7 @@ namespace ManaPHP\Task\Metadata;
 /**
  * Interface ManaPHP\Task\Metadata\AdapterInterface
  *
- * @package ManaPHP\Task\Metadata
+ * @package tasksMetadata
  */
 interface AdapterInterface
 {

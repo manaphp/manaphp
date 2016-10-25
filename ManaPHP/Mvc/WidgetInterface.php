@@ -4,7 +4,7 @@ namespace ManaPHP\Mvc;
 /**
  * Interface ManaPHP\Mvc\WidgetInterface
  *
- * @package ManaPHP\Mvc
+ * @package widget
  */
 interface WidgetInterface
 {

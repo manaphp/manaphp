@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Secint
  *
- * @package ManaPHP\Facade
+ * @package secint
  *
  * @method  static \ManaPHP\Security\SecintInterface getFacadeInstance()
  */

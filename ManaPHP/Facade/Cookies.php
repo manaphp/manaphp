@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Cookies
  *
- * @package ManaPHP\Facade
+ * @package cookies
  *
  * @method  static \ManaPHP\Http\CookiesInterface getFacadeInstance()
  */

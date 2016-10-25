@@ -4,7 +4,7 @@ namespace ManaPHP\Image\Adapter\Imagick;
 /**
  * Class ManaPHP\Image\Adapter\Imagick\Exception
  *
- * @package ManaPHP\Image\Adapter\Imagick
+ * @package image\adapter
  */
 class Exception extends \ManaPHP\Image\Adapter\Exception
 {

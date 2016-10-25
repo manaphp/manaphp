@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\ModelsMetadata
  *
- * @package ManaPHP\Facade
+ * @package modelsMetadata
  *
  * @method  static \ManaPHP\Mvc\Model\MetadataInterface getFacadeInstance()
  */

@@ -5,7 +5,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\ImageInterface
  *
- * @package ManaPHP
+ * @package image
  */
 interface ImageInterface
 {

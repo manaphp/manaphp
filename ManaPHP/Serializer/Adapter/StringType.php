@@ -7,7 +7,7 @@ use ManaPHP\Serializer\AdapterInterface;
 /**
  * Class ManaPHP\Serializer\Adapter\StringType
  *
- * @package ManaPHP\Serializer\Adapter
+ * @package serializer\adapter
  */
 class StringType implements AdapterInterface
 {

@@ -4,7 +4,7 @@ namespace ManaPHP\Security\RateLimiter\Adapter\Db;
 /**
  * Class ManaPHP\Security\RateLimiter\Adapter\Db\Model
  *
- * @package ManaPHP\Security\RateLimiter\Adapter\Db
+ * @package rateLimiter\adapter
  */
 class Model extends \ManaPHP\Mvc\Model
 {

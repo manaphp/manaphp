@@ -8,7 +8,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Mvc\Router\Route
  *
- * @package ManaPHP\Mvc\Router
+ * @package router
  */
 class Route implements RouteInterface
 {

@@ -7,7 +7,7 @@ use ManaPHP\Configure\EngineInterface;
 /**
  * Class ManaPHP\Configure\Engine\Json
  *
- * @package ManaPHP\Configure\Engine
+ * @package configure\engine
  */
 class Json implements EngineInterface
 {

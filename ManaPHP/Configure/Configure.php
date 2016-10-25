@@ -6,7 +6,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Configure\Configure
  *
- * @package ManaPHP\Configure
+ * @package configure
  */
 class Configure extends Component implements ConfigureInterface
 {

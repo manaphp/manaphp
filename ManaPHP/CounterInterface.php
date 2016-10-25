@@ -5,7 +5,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\CounterInterface
  *
- * @package ManaPHP
+ * @package counter
  */
 interface CounterInterface
 {

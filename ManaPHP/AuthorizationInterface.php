@@ -4,7 +4,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\AuthorizationInterface
  *
- * @package ManaPHP
+ * @package authorization
  */
 interface AuthorizationInterface
 {

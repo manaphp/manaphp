@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Password
  *
- * @package ManaPHP\Facade
+ * @package password
  *
  * @method  static \ManaPHP\Authentication\PasswordInterface getFacadeInstance()
  */

@@ -8,7 +8,7 @@ use ManaPHP\Mvc\Model\Metadata\Exception as MetadataException;
 /**
  * Class ManaPHP\Mvc\Model\Metadata
  *
- * @package ManaPHP\Mvc\Model
+ * @package modelsMetadata
  */
 abstract class Metadata extends Component implements MetadataInterface, Metadata\AdapterInterface
 {

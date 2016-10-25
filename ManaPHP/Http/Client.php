@@ -8,7 +8,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Http\Client
  *
- * @package ManaPHP\Http
+ * @package httpClient
  */
 class Client extends Component implements ClientInterface
 {

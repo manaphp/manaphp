@@ -9,7 +9,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Cache\Adapter\Apc
  *
- * @package ManaPHP\Cache\Adapter
+ * @package cache\adapter
  */
 class Apc extends Component implements AdapterInterface
 {

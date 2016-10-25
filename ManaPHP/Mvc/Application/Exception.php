@@ -5,7 +5,7 @@ namespace ManaPHP\Mvc\Application;
 /**
  * Class ManaPHP\Mvc\Application\Exception
  *
- * @package ManaPHP\Mvc\Application
+ * @package application
  */
 class Exception extends \ManaPHP\Exception
 {

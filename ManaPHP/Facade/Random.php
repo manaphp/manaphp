@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Random
  *
- * @package ManaPHP\Facade
+ * @package random
  *
  * @method  static \ManaPHP\Security\RandomInterface getFacadeInstance()
  */

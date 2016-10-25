@@ -13,7 +13,7 @@ use ManaPHP\Mvc\Model\Metadata;
 /**
  * Class ManaPHP\Db\Adapter\Mysql
  *
- * @package ManaPHP\Db\Adapter
+ * @package db\adapter
  */
 class Mysql extends Db
 {

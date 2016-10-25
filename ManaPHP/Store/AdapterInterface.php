@@ -4,7 +4,7 @@ namespace ManaPHP\Store;
 /**
  * Interface ManaPHP\Store\AdapterInterface
  *
- * @package ManaPHP\Store
+ * @package store
  */
 interface AdapterInterface
 {

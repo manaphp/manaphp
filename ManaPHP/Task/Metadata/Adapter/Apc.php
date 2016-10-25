@@ -8,7 +8,7 @@ use ManaPHP\Task\Metadata\AdapterInterface;
 /**
  * Class ManaPHP\Task\Metadata\Adapter\Apc
  *
- * @package ManaPHP\Task\Metadata\Adapter
+ * @package tasksMetadata\adapter
  */
 class Apc extends Component implements AdapterInterface
 {

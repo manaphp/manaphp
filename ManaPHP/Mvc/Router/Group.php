@@ -7,7 +7,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Mvc\Router\Group
  *
- * @package ManaPHP\Mvc\Router
+ * @package router
  */
 class Group extends Component implements GroupInterface
 {

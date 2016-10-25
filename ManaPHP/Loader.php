@@ -5,7 +5,7 @@ namespace ManaPHP;
 /**
  * Class ManaPHP\Loader
  *
- * @package ManaPHP
+ * @package loader
  */
 class Loader
 {

@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Filesystem
  *
- * @package ManaPHP\Facade
+ * @package filesystem
  *
  * @method  static \ManaPHP\FilesystemInterface getFacadeInstance()
  */

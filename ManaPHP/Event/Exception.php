@@ -5,7 +5,7 @@ namespace ManaPHP\Event;
 /**
  * Class ManaPHP\Event\Exception
  *
- * @package ManaPHP\Event
+ * @package eventsManager
  */
 class Exception extends \ManaPHP\Exception
 {

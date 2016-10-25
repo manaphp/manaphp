@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Db
  *
- * @package ManaPHP\Facade
+ * @package db
  *
  * @method  static \ManaPHP\DbInterface getFacadeInstance()
  */

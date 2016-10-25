@@ -7,7 +7,7 @@ use ManaPHP\Counter\AdapterInterface;
 /**
  * Class ManaPHP\Counter\Adapter\Redis
  *
- * @package ManaPHP\Counter\Adapter
+ * @package counter\adapter
  *
  * @property \Redis $redis
  */

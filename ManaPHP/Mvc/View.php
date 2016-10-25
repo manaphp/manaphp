@@ -9,7 +9,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Mvc\View
  *
- * @package ManaPHP\Mvc
+ * @package view
  *
  * @property \ManaPHP\RendererInterface      $renderer
  * @property \ManaPHP\Cache\AdapterInterface $viewsCache

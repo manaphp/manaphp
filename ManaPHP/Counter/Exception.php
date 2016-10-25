@@ -4,7 +4,7 @@ namespace ManaPHP\Counter;
 /**
  * Class ManaPHP\Counter\Exception
  *
- * @package ManaPHP\Counter
+ * @package counter
  */
 class Exception extends \ManaPHP\Exception
 {

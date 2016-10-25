@@ -4,7 +4,7 @@ namespace ManaPHP\Meter\Round;
 /**
  * Class ManaPHP\Meter\Round\Model
  *
- * @package ManaPHP\Meter\Round
+ * @package roundMeter
  */
 class Model extends \ManaPHP\Mvc\Model
 {

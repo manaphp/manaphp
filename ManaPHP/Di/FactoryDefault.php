@@ -7,7 +7,7 @@ use ManaPHP\Di;
 /**
  * Class ManaPHP\Di\FactoryDefault
  *
- * @package ManaPHP\Di
+ * @package di
  */
 class FactoryDefault extends Di
 {

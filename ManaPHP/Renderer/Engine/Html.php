@@ -7,7 +7,7 @@ use ManaPHP\Renderer\EngineInterface;
 /**
  * Class ManaPHP\Renderer\Engine\Html
  *
- * @package ManaPHP\Renderer\Engine
+ * @package renderer\engine
  */
 class Html implements EngineInterface
 {

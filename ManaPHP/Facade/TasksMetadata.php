@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\TasksMetadata
  *
- * @package ManaPHP\Facade
+ * @package tasksMetadata
  *
  * @method  static \ManaPHP\Task\MetadataInterface getFacadeInstance()
  */

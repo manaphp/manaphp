@@ -7,7 +7,7 @@ use ManaPHP\Security\Captcha\Exception as CaptchaException;
 /**
  * Class ManaPHP\Security\Captcha
  *
- * @package ManaPHP\Security
+ * @package captcha
  *
  * @property \ManaPHP\Http\ResponseInterface $response
  * @property \ManaPHP\Http\SessionInterface  $session

@@ -4,7 +4,7 @@ namespace ManaPHP\Renderer;
 /**
  * Class ManaPHP\Renderer\Exception
  *
- * @package ManaPHP\Renderer
+ * @package renderer
  */
 class Exception extends \ManaPHP\Exception
 {

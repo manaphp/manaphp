@@ -4,7 +4,7 @@ namespace ManaPHP\Meter;
 /**
  * Interface ManaPHP\Meter\RoundInterface
  *
- * @package ManaPHP\Meter
+ * @package roundMeter
  */
 interface RoundInterface
 {

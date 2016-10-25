@@ -7,7 +7,7 @@ use ManaPHP\Security\CsrfToken\Exception as CsrfTokenException;
 /**
  * Class ManaPHP\Security\CsrfToken
  *
- * @package ManaPHP\Security
+ * @package csrfToken
  *
  * @property \ManaPHP\Http\CookiesInterface  $cookies
  * @property \ManaPHP\Http\ResponseInterface $response

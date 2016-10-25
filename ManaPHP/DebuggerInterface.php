@@ -4,7 +4,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\DebuggerInterface
  *
- * @package ManaPHP
+ * @package debugger
  */
 interface DebuggerInterface
 {

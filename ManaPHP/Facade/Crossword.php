@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Crossword
  *
- * @package ManaPHP\Facade
+ * @package crossword
  *
  * @method  static \ManaPHP\Text\CrosswordInterface getFacadeInstance()
  */

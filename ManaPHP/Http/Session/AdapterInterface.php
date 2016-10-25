@@ -4,7 +4,7 @@ namespace ManaPHP\Http\Session;
 /**
  * Interface ManaPHP\Http\Session\AdapterInterface
  *
- * @package ManaPHP\Http\Session
+ * @package session
  */
 interface AdapterInterface
 {

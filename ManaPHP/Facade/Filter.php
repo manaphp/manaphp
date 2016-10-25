@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Filter
  *
- * @package ManaPHP\Facade
+ * @package filter
  *
  * @method  static \ManaPHP\Http\FilterInterface getFacadeInstance()
  */

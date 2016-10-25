@@ -8,7 +8,7 @@ use ManaPHP\Message\QueueInterface;
 /**
  * Class ManaPHP\Message\Queue\Adapter\Redis
  *
- * @package ManaPHP\Message\Queue\Adapter
+ * @package messageQueue\adapter
  *
  * @property \Redis $redis
  */

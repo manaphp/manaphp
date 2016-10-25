@@ -8,7 +8,7 @@ use ManaPHP\Http\ResponseInterface;
 /**
  * Class ManaPHP\Mvc\Application
  *
- * @package ManaPHP\Mvc
+ * @package application
  *
  * @property \ManaPHP\Mvc\ViewInterface           $view
  * @property \ManaPHP\Mvc\Dispatcher              $dispatcher

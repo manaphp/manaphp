@@ -8,7 +8,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Mvc\Model\Manager
  *
- * @package ManaPHP\Mvc\Model
+ * @package modelsManager
  */
 class Manager extends Component implements ManagerInterface
 {

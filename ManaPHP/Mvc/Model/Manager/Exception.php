@@ -4,7 +4,7 @@ namespace ManaPHP\Mvc\Model\Manager;
 /**
  * Class ManaPHP\Mvc\Model\Manager\Exception
  *
- * @package ManaPHP\Mvc\Model\Manager
+ * @package modelsManager
  */
 class Exception extends \ManaPHP\Mvc\Model\Exception
 {

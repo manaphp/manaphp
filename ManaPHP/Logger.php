@@ -13,7 +13,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Logger
  *
- * @package ManaPHP
+ * @package logger
  */
 class Logger extends Component implements LoggerInterface
 {

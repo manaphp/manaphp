@@ -4,7 +4,7 @@ namespace ManaPHP\Utility;
 /**
  * Class ManaPHP\Utility\Text
  *
- * @package ManaPHP\Utility
+ * @package text
  */
 class Text
 {

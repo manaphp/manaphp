@@ -4,7 +4,7 @@ namespace ManaPHP\Http\Filter;
 /**
  * Class ManaPHP\Http\Filter\Exception
  *
- * @package ManaPHP\Http\Filter
+ * @package filter
  */
 class Exception extends \ManaPHP\Http\Exception
 {

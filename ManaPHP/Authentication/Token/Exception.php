@@ -4,7 +4,7 @@ namespace ManaPHP\Authentication\Token;
 /**
  * Class ManaPHP\Authentication\Token\Exception
  *
- * @package ManaPHP\Authentication\Token
+ * @package token
  */
 class Exception extends \ManaPHP\Authentication\Exception
 {

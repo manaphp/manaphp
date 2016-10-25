@@ -4,7 +4,7 @@ namespace ManaPHP\Security\Crypt;
 /**
  * Class ManaPHP\Security\Crypt\Exception
  *
- * @package ManaPHP\Security\Crypt
+ * @package crypt
  */
 class Exception extends \ManaPHP\Security\Exception
 {

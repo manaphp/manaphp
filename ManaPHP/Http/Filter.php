@@ -8,7 +8,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Http\Filter
  *
- * @package ManaPHP\Http
+ * @package filter
  *
  * @property \ManaPHP\Security\SecintInterface $secint
  */

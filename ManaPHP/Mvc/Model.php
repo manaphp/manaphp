@@ -10,7 +10,7 @@ use ManaPHP\Mvc\Model\Exception as ModelException;
 /**
  * Class ManaPHP\Mvc\Model
  *
- * @package ManaPHP\Mvc
+ * @package model
  *
  * @method initialize()
  * @method onConstruct()

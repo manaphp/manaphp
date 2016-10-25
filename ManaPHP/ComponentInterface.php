@@ -10,7 +10,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\ComponentInterface
  *
- * @package ManaPHP
+ * @package component
  */
 interface ComponentInterface
 {

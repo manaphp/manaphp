@@ -4,7 +4,7 @@ namespace ManaPHP;
 /**
  * Class ManaPHP\Application
  *
- * @package ManaPHP
+ * @package application
  *
  * @property \ManaPHP\Loader            $loader
  * @property \ManaPHP\DebuggerInterface $debugger

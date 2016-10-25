@@ -9,7 +9,7 @@ use ManaPHP\Image\AdapterInterface;
 /**
  * Class ManaPHP\Image\Adapter\Imagick
  *
- * @package ManaPHP\Image\Adapter
+ * @package image\adapter
  */
 class Imagick extends Component implements AdapterInterface
 {

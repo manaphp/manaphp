@@ -4,7 +4,7 @@ namespace ManaPHP\Renderer\Engine\Php;
 /**
  * Class ManaPHP\Renderer\Engine\Php\Exception
  *
- * @package ManaPHP\Renderer\Engine\Php
+ * @package renderer\engine
  */
 class Exception extends \ManaPHP\Renderer\Engine\Exception
 {

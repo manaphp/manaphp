@@ -4,7 +4,7 @@ namespace ManaPHP\Http;
 /**
  * Interface ManaPHP\Http\FilterInterface
  *
- * @package ManaPHP\Http
+ * @package filter
  */
 interface FilterInterface
 {

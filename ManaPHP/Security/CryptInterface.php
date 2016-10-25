@@ -5,7 +5,7 @@ namespace ManaPHP\Security;
 /**
  * Interface ManaPHP\Security\CryptInterface
  *
- * @package ManaPHP\Security
+ * @package crypt
  */
 interface CryptInterface
 {

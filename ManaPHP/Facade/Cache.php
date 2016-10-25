@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Cache
  *
- * @package ManaPHP\Facade
+ * @package cache
  *
  * @method  static \ManaPHP\CacheInterface getFacadeInstance()
  */

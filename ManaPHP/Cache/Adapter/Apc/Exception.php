@@ -4,7 +4,7 @@ namespace ManaPHP\Cache\Adapter\Apc;
 /**
  * Class ManaPHP\Cache\Adapter\Apc\Exception
  *
- * @package ManaPHP\Cache\Adapter\Apc
+ * @package cache\adapter
  */
 class Exception extends \ManaPHP\Cache\Adapter\Exception
 {

@@ -7,7 +7,7 @@ use ManaPHP\Store\AdapterInterface;
 /**
  * Class ManaPHP\Store\Adapter\Memory
  *
- * @package ManaPHP\Store\Adapter
+ * @package store\adapter
  */
 class Memory extends Component implements AdapterInterface
 {

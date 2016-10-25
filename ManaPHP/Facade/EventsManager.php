@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\EventsManager
  *
- * @package ManaPHP\Facade
+ * @package eventsManager
  *
  * @method  static \ManaPHP\Event\ManagerInterface getFacadeInstance()
  */

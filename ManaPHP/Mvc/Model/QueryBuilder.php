@@ -9,7 +9,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Mvc\Model\QueryBuilder
  *
- * @package ManaPHP\Mvc\Model
+ * @package queryBuilder
  *
  * @property \ManaPHP\Cache\AdapterInterface     $modelsCache
  * @property \ManaPHP\Paginator                  $paginator

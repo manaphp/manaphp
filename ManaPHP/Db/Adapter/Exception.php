@@ -4,7 +4,7 @@ namespace ManaPHP\Db\Adapter;
 /**
  * Class ManaPHP\Db\Adapter\Exception
  *
- * @package ManaPHP\Db\Adapter
+ * @package db\adapter
  */
 class Exception extends \ManaPHP\Db\Exception
 {

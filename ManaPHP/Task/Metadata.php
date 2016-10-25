@@ -8,7 +8,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Task\Metadata
  *
- * @package ManaPHP\Task
+ * @package tasksMetadata
  */
 class Metadata extends Component implements MetadataInterface
 {

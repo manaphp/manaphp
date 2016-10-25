@@ -14,7 +14,7 @@ use ManaPHP\Http\Session\AdapterInterface;
 /**
  * Class ManaPHP\Http\Session\Adapter\File
  *
- * @package ManaPHP\Http\Session\Adapter
+ * @package session\adapter
  */
 class File extends Component implements AdapterInterface
 {

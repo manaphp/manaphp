@@ -5,7 +5,7 @@ namespace ManaPHP;
 /**
  * Class ManaPHP\Version
  *
- * @package ManaPHP
+ * @package version
  */
 class Version
 {

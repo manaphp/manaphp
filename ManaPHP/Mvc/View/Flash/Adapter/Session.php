@@ -6,7 +6,7 @@ use ManaPHP\Mvc\View\Flash;
 /**
  * Class ManaPHP\Mvc\View\Flash\Adapter\Session
  *
- * @package ManaPHP\Mvc\View\Flash\Adapter
+ * @package flash\adapter
  *
  * @property \ManaPHP\Http\SessionInterface $session
  */

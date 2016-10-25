@@ -6,7 +6,7 @@ use ManaPHP\Mvc\NotFoundException;
 /**
  * Class ManaPHP\Mvc\Router\NotFoundRouteException
  *
- * @package ManaPHP\Mvc\Router
+ * @package router
  */
 class NotFoundRouteException extends NotFoundException
 {

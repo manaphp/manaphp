@@ -4,7 +4,7 @@ namespace ManaPHP\Http;
 /**
  * Interface ManaPHP\Http\ClientInterface
  *
- * @package ManaPHP\Http
+ * @package httpClient
  */
 interface ClientInterface
 {

@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Crypt
  *
- * @package ManaPHP\Facade
+ * @package crypt
  *
  * @method  static \ManaPHP\Security\CryptInterface getFacadeInstance()
  */

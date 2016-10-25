@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\LinearMeter
  *
- * @package ManaPHP\Facade
+ * @package linearMeter
  *
  * @method  static \ManaPHP\Meter\LinearInterface getFacadeInstance()
  */

@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Dispatcher
  *
- * @package ManaPHP\Facade
+ * @package dispatcher
  *
  * @method  static \ManaPHP\Mvc\DispatcherInterface getFacadeInstance()
  */

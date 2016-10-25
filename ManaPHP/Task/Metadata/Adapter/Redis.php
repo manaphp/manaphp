@@ -7,7 +7,7 @@ use ManaPHP\Task\Metadata\AdapterInterface;
 /**
  * Class ManaPHP\Task\Metadata\Adapter\Redis
  *
- * @package ManaPHP\Task\Metadata\Adapter
+ * @package tasksMetadata\adapter
  *
  * @property \Redis               $redis
  * @property \ManaPHP\DiInterface $redisDi

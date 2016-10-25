@@ -6,7 +6,7 @@ use ManaPHP\Renderer\Exception as RendererException;
 /**
  * Class ManaPHP\Renderer
  *
- * @package ManaPHP
+ * @package renderer
  */
 class Renderer extends Component implements RendererInterface
 {

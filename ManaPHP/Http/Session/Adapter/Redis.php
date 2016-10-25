@@ -7,7 +7,7 @@ use ManaPHP\Http\Session\AdapterInterface;
 /**
  * Class ManaPHP\Http\Session\Adapter\Redis
  *
- * @package ManaPHP\Http\Session\Adapter
+ * @package session\adapter
  *
  * @property \Redis $redis
  */

@@ -8,7 +8,7 @@ use ManaPHP\Mvc\View\Flash\AdapterInterface;
 /**
  * Class ManaPHP\Mvc\View\Flash
  *
- * @package ManaPHP\Mvc\View
+ * @package flash
  */
 abstract class Flash extends Component implements FlashInterface, AdapterInterface
 {

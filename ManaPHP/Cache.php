@@ -6,7 +6,7 @@ use ManaPHP\Cache\AdapterInterface;
 /**
  * Class ManaPHP\Cache
  *
- * @package ManaPHP
+ * @package cache
  *
  * @property \ManaPHP\Serializer\AdapterInterface $serializer
  */

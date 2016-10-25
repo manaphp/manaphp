@@ -9,7 +9,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Authorization\Rbac
  *
- * @package ManaPHP\Authorization
+ * @package rbac
  *
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager

@@ -4,7 +4,7 @@ namespace ManaPHP\Debugger;
 /**
  * Class ManaPHP\Debugger\Exception
  *
- * @package ManaPHP\Debugger
+ * @package debugger
  */
 class Exception extends \ManaPHP\Exception
 {

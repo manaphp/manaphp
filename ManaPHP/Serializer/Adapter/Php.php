@@ -7,7 +7,7 @@ use ManaPHP\Serializer\AdapterInterface;
 /**
  * Class ManaPHP\Serializer\Adapter\Php
  *
- * @package ManaPHP\Serializer\Adapter
+ * @package serializer\adapter
  */
 class Php implements AdapterInterface
 {

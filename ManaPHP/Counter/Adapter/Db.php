@@ -7,7 +7,7 @@ use ManaPHP\Counter\AdapterInterface;
 /**
  * Class ManaPHP\Counter\Adapter\Db
  *
- * @package ManaPHP\Counter\Adapter
+ * @package counter\adapter
  *
  * @property \ManaPHP\DbInterface $db
  */

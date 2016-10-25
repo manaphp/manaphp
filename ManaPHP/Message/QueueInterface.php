@@ -4,7 +4,7 @@ namespace ManaPHP\Message;
 /**
  * Interface ManaPHP\Message\QueueInterface
  *
- * @package ManaPHP\Message
+ * @package messageQueue
  */
 interface QueueInterface
 {

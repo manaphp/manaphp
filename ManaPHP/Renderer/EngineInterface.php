@@ -5,7 +5,7 @@ namespace ManaPHP\Renderer;
 /**
  * Interface ManaPHP\Renderer\EngineInterface
  *
- * @package ManaPHP\Renderer
+ * @package renderer
  */
 interface EngineInterface
 {

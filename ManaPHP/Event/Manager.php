@@ -7,7 +7,7 @@ use ManaPHP\Event\Manager\Exception as ManagerException;
 /**
  * Class ManaPHP\Event\Manager
  *
- * @package ManaPHP\Event
+ * @package eventsManager
  */
 class Manager implements ManagerInterface
 {

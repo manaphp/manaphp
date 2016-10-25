@@ -6,7 +6,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Meter\Round
  *
- * @package ManaPHP\Meter
+ * @package roundMeter
  *
  * @property \Redis $redis
  */

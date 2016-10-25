@@ -8,7 +8,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Cache\Adapter\File
  *
- * @package ManaPHP\Cache\Adapter
+ * @package cache\adapter
  */
 class File extends Component implements AdapterInterface
 {

@@ -4,7 +4,7 @@ namespace ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Exception
  *
- * @package ManaPHP\Facade
+ * @package facade
  */
 class Exception extends \ManaPHP\Exception
 {

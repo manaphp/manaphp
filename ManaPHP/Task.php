@@ -7,7 +7,7 @@ use ManaPHP\Task\Metadata;
 /**
  * Class ManaPHP\Task
  *
- * @package ManaPHP
+ * @package task
  *
  * @property \ManaPHP\Task\MetadataInterface $tasksMetadata
  * @property \ManaPHP\LoggerInterface        $logger

@@ -6,7 +6,7 @@ use ManaPHP\Paginator\Exception as PaginatorException;
 /**
  * Class ManaPHP\Paginator
  *
- * @package ManaPHP
+ * @package paginator
  *
  * @property \ManaPHP\Http\RequestInterface $request
  */

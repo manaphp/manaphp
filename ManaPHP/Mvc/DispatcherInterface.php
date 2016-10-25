@@ -5,7 +5,7 @@ namespace ManaPHP\Mvc;
 /**
  * Interface ManaPHP\Mvc\DispatcherInterface
  *
- * @package ManaPHP\Mvc
+ * @package dispatcher
  */
 interface DispatcherInterface
 {

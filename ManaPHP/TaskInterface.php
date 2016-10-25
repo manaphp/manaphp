@@ -4,7 +4,7 @@ namespace ManaPHP;
 /**
  * Interface ManaPHP\TaskInterface
  *
- * @package ManaPHP
+ * @package task
  */
 interface TaskInterface
 {

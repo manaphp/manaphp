@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\CsrfToken
  *
- * @package ManaPHP\Facade
+ * @package csrfToken
  *
  * @method  static \ManaPHP\Security\CsrfTokenInterface getFacadeInstance()
  */

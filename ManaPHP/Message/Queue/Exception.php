@@ -4,7 +4,7 @@ namespace ManaPHP\Message\Queue;
 /**
  * Class ManaPHP\Message\Queue\Exception
  *
- * @package ManaPHP\Message\Queue
+ * @package messageQueue
  */
 class Exception extends \ManaPHP\Message\Exception
 {

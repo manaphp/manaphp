@@ -6,7 +6,7 @@ use ManaPHP\Counter\AdapterInterface;
 /**
  * Class ManaPHP\Counter
  *
- * @package ManaPHP
+ * @package counter
  */
 class Counter extends Component implements CounterInterface
 {

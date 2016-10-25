@@ -4,7 +4,7 @@ namespace ManaPHP\Serializer;
 /**
  * Interface ManaPHP\Serializer\AdapterInterface
  *
- * @package ManaPHP\Serializer
+ * @package serializer
  */
 interface AdapterInterface
 {

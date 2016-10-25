@@ -7,7 +7,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Cli\Application
  *
- * @package ManaPHP\Cli
+ * @package application
  *
  * @property \ManaPHP\Cli\ConsoleInterface $console
  * @property \ManaPHP\Cli\RouterInterface  $cliRouter

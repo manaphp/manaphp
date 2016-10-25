@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\RoundMeter
  *
- * @package ManaPHP\Facade
+ * @package roundMeter
  *
  * @method  static \ManaPHP\Meter\RoundInterface getFacadeInstance()
  */

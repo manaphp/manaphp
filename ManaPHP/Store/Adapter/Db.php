@@ -7,7 +7,7 @@ use ManaPHP\Store\AdapterInterface;
 /**
  * Class ManaPHP\Store\Adapter\Db
  *
- * @package ManaPHP\Store\Adapter
+ * @package store\adapter
  */
 class Db extends Component implements AdapterInterface
 {

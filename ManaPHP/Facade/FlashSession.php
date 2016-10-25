@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\FlashSession
  *
- * @package ManaPHP\Facade
+ * @package flash
  *
  * @method  static \ManaPHP\Http\RequestInterface getFacadeInstance()
  */

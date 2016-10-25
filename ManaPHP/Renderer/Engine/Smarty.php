@@ -8,7 +8,7 @@ use ManaPHP\Renderer\EngineInterface;
 /**
  * Class ManaPHP\Renderer\Engine\Smarty
  *
- * @package ManaPHP\Renderer\Engine
+ * @package renderer\engine
  */
 class Smarty extends Component implements EngineInterface
 {

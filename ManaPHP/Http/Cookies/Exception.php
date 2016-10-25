@@ -4,7 +4,7 @@ namespace ManaPHP\Http\Cookies;
 /**
  * Class ManaPHP\Http\Cookies\Exception
  *
- * @package ManaPHP\Http\Cookies
+ * @package cookies
  */
 class  Exception extends \ManaPHP\Http\Exception
 {

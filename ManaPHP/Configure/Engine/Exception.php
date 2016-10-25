@@ -4,7 +4,7 @@ namespace ManaPHP\Configure\Engine;
 /**
  * Class ManaPHP\Configure\Engine\Exception
  *
- * @package ManaPHP\Configure\Engine
+ * @package configure\engine
  */
 class Exception extends \ManaPHP\Configure\Exception
 {

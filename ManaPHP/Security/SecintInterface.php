@@ -4,7 +4,7 @@ namespace ManaPHP\Security;
 /**
  * Interface ManaPHP\Security\SecintInterface
  *
- * @package ManaPHP\Security
+ * @package secint
  */
 interface SecintInterface
 {

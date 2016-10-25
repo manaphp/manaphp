@@ -4,7 +4,7 @@ namespace ManaPHP\Counter;
 /**
  * Interface ManaPHP\Counter\AdapterInterface
  *
- * @package ManaPHP\Counter
+ * @package counter
  */
 interface AdapterInterface
 {

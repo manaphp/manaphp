@@ -6,7 +6,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Security\Secint
  *
- * @package ManaPHP\Security
+ * @package secint
  */
 class Secint extends Component implements SecintInterface
 {

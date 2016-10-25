@@ -4,7 +4,7 @@ namespace ManaPHP\Mvc\Router\RewriteChecker;
 /**
  * Class ManaPHP\Mvc\Router\RewriteChecker\Exception
  *
- * @package ManaPHP\Mvc\Router\RewriteChecker
+ * @package router
  */
 class Exception extends \ManaPHP\Mvc\Router\Exception
 {

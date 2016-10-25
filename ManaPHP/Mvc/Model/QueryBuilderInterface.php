@@ -5,7 +5,7 @@ namespace ManaPHP\Mvc\Model;
 /**
  * Interface ManaPHP\Mvc\Model\QueryBuilderInterface
  *
- * @package ManaPHP\Mvc\Model
+ * @package queryBuilder
  */
 interface QueryBuilderInterface
 {

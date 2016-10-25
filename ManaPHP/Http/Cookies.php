@@ -7,7 +7,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Http\Cookies
  *
- * @package ManaPHP\Http
+ * @package cookies
  *
  * @property \ManaPHP\Security\CryptInterface $crypt
  */

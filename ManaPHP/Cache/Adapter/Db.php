@@ -7,7 +7,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Cache\Adapter\Db
  *
- * @package ManaPHP\Cache\Adapter
+ * @package cache\adapter
  */
 class Db extends Component implements AdapterInterface
 {

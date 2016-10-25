@@ -7,7 +7,7 @@ use ManaPHP\Configure\EngineInterface;
 /**
  * Class ManaPHP\Configure\Engine\Ini
  *
- * @package ManaPHP\Configure\Engine
+ * @package configure\engine
  */
 class Ini implements EngineInterface
 {

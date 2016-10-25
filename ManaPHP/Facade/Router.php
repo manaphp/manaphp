@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Router
  *
- * @package ManaPHP\Facade
+ * @package router
  *
  * @method  static \ManaPHP\Mvc\RouterInterface getFacadeInstance()
  */

@@ -6,7 +6,7 @@ use ManaPHP\Security\RateLimiter;
 /**
  * Class ManaPHP\Security\RateLimiter\Adapter\Redis
  *
- * @package ManaPHP\Security\RateLimiter\Adapter
+ * @package rateLimiter\adapter
  *
  * @property \Redis                         $redis
  * @property \ManaPHP\Http\RequestInterface $request

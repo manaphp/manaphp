@@ -4,7 +4,7 @@ namespace ManaPHP\Counter\Adapter\Db;
 /**
  * Class ManaPHP\Counter\Adapter\Db\Model
  *
- * @package ManaPHP\Counter\Adapter\Db
+ * @package counter\adapter
  */
 class Model extends \ManaPHP\Mvc\Model
 {

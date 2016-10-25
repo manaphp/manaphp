@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Logger
  *
- * @package ManaPHP\Facade
+ * @package logger
  *
  * @method  static \ManaPHP\LoggerInterface getFacadeInstance()
  */

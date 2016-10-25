@@ -8,7 +8,7 @@ use ManaPHP\Image\AdapterInterface;
 /**
  * Class ManaPHP\Image\Adapter\Gd
  *
- * @package ManaPHP\Image\Adapter
+ * @package image\adapter
  */
 class Gd extends Component implements AdapterInterface
 {

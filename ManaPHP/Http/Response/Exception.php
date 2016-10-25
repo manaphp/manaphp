@@ -5,7 +5,7 @@ namespace ManaPHP\Http\Response;
 /**
  * Class ManaPHP\Http\Response\Exception
  *
- * @package ManaPHP\Http\Response
+ * @package response
  */
 class Exception extends \ManaPHP\Http\Exception
 {

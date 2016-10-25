@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\Serializer
  *
- * @package ManaPHP\Facade
+ * @package serializer
  *
  * @method  static \ManaPHP\Serializer\AdapterInterface getFacadeInstance()
  */

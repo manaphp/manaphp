@@ -9,7 +9,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Store\Adapter\File
  *
- * @package ManaPHP\Store\Adapter
+ * @package store\adapter
  */
 class File extends Component implements AdapterInterface
 {

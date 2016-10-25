@@ -6,7 +6,7 @@ use ManaPHP\Component;
 /**
  * Class ManaPHP\Meter\Linear
  *
- * @package ManaPHP\Meter
+ * @package linearMeter
  *
  * @property \Redis $redis
  */

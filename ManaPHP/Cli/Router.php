@@ -7,7 +7,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Cli\Router
  *
- * @package ManaPHP\Cli
+ * @package router
  *
  * @property \ManaPHP\Text\CrosswordInterface $crossword
  */

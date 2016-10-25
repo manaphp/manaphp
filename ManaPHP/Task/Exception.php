@@ -4,7 +4,7 @@ namespace ManaPHP\Task;
 /**
  * Class ManaPHP\Task\Exception
  *
- * @package ManaPHP\Task
+ * @package task
  */
 class Exception extends \ManaPHP\Exception
 {

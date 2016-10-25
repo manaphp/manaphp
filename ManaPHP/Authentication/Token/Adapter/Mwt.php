@@ -9,7 +9,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class ManaPHP\Authentication\Token\Adapter\Mwt
  *
- * @package ManaPHP\Authentication\Token\Adapter
+ * @package token\adapter
  */
 class Mwt extends Component implements TokenInterface
 {

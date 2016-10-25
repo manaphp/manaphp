@@ -8,7 +8,7 @@ use ManaPHP\Mvc\Model\Metadata;
 /**
  * Class ManaPHP\Db\Adapter\Sqlite
  *
- * @package ManaPHP\Db\Adapter
+ * @package db\adapter
  */
 class Sqlite extends Db
 {

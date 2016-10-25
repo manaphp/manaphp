@@ -8,7 +8,7 @@ use ManaPHP\Facade;
 /**
  * Class ManaPHP\Facade\RateLimiter
  *
- * @package ManaPHP\Facade
+ * @package rateLimiter
  *
  * @method  static \ManaPHP\Security\RateLimiterInterface getFacadeInstance()
  */
