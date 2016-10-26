@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Di\FactoryDefault;
+
 /**
  * Class ManaPHP\Application
  *
@@ -15,6 +17,35 @@ abstract class Application extends Component implements ApplicationInterface
      * @var array
      */
     protected $_modules;
+
+    /**
+     * Application constructor.
+     *
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     */
+    public function __construct($dependencyInjector = null)
+    {
+        $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
+
+        $this->_dependencyInjector->setShared('application', $this);
+
+        $class = str_replace('\\', '/', get_called_class());
+        foreach (get_included_files() as $file) {
+            if (DIRECTORY_SEPARATOR === '\\') {
+                $file = str_replace('\\', '/', $file);
+            }
+
+            if (strpos($file, $class . '.php') !== false) {
+                $app_dir = dirname($file);
+                $app_ns = basename($app_dir);
+                $this->alias->set('@app', $app_dir);
+                $this->alias->set('@ns.app', $app_ns);
+                $this->alias->set('@data', dirname($app_dir) . '/Data');
+                $this->loader->registerNamespaces([$app_ns => $app_dir]);
+                break;
+            }
+        }
+    }
 
     /**
      * @return array

@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Cli;
 
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Utility\Text;
 
 /**
@@ -31,9 +30,8 @@ abstract class Application extends \ManaPHP\Application
      */
     public function __construct($dependencyInjector = null)
     {
-        $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
+        parent::__construct($dependencyInjector);
 
-        $this->_dependencyInjector->setShared('application', $this);
         $this->_dependencyInjector->setShared('console', 'ManaPHP\Cli\Console');
         $this->_dependencyInjector->setShared('arguments', 'ManaPHP\Cli\Arguments');
         $this->_dependencyInjector->setShared('cliRouter', 'ManaPHP\Cli\Router');

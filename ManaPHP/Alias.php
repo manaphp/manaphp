@@ -2,7 +2,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Alias\Exception as AliasException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Alias
@@ -24,38 +23,6 @@ class Alias extends Component implements AliasInterface
     public function __construct()
     {
         $this->set('@manaphp', str_replace('\\', '/', __DIR__));
-
-        /**
-         * @var $traces array
-         */
-        $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-
-        $found = false;
-        foreach ($traces as $trace) {
-            if (isset($trace['class']) && !Text::startsWith($trace['class'], 'ManaPHP\\')) {
-                $class = str_replace('\\', '/', $trace['class']);
-                foreach (get_included_files() as $file) {
-                    if (DIRECTORY_SEPARATOR === '\\') {
-                        $file = str_replace('\\', '/', $file);
-                    }
-
-                    if (Text::contains($file, $class . '.php')) {
-                        $dir = dirname($file);
-
-                        $this->set('@app', $dir);
-                        $this->set('@ns.app', basename($dir));
-                        $this->set('@data', dirname($dir) . '/Data');
-
-                        $found = true;
-                        break;
-                    }
-                }
-            }
-
-            if ($found) {
-                break;
-            }
-        }
     }
 
     /**

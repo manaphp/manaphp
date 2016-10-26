@@ -98,6 +98,7 @@ class TaskController extends ControllerBase
 
                 for ($i = 0; $i < 2; $i++) {
                     sleep(1);
+                    /** @noinspection TypeUnsafeComparisonInspection */
                     if ($this->tasksMetadata->get($taskName, Metadata::FIELD_STATUS) == Task::STATUS_STOP) {
                         break;
                     }

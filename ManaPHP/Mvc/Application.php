@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Mvc;
 
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Http\ResponseInterface;
 
 /**
@@ -24,18 +23,6 @@ abstract class Application extends \ManaPHP\Application
      * @var \ManaPHP\Mvc\ModuleInterface
      */
     protected $_moduleObject;
-
-    /**
-     * \ManaPHP\Mvc\Application
-     *
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     */
-    public function __construct($dependencyInjector = null)
-    {
-        $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
-
-        $this->_dependencyInjector->setShared('application', $this);
-    }
 
     /**
      * @return bool

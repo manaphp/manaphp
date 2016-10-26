@@ -11,8 +11,6 @@ namespace Application {
         {
             $self = $this;
 
-            $this->loader->registerNamespaces([basename($this->alias->get('@app')) => $this->alias->get('@app')]);
-
             $this->_dependencyInjector->setShared('configure', new Configure());
 
             $this->router->mount(new Home\RouteGroup(), '/')
