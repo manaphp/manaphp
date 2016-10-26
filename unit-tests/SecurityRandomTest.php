@@ -22,7 +22,7 @@ class SecurityRandomTest extends TestCase
     public function test_getInt()
     {
         $random = new \ManaPHP\Security\Random();
-        $this->assertEquals(1, $random->getInt(1));
+        $this->assertEquals(1, $random->getInt(1,1));
     }
 
     public function test_getFloat()
