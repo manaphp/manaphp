@@ -16,6 +16,11 @@ class Role extends Model
     public $role_id;
 
     /**
+     * @var int
+     */
+    public $enabled;
+
+    /**
      * @var string
      */
     public $role_name;
