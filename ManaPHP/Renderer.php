@@ -147,6 +147,17 @@ class Renderer extends Component implements RendererInterface
     }
 
     /**
+     * @param string $path
+     * @param array  $vars
+     *
+     * @return void
+     */
+    public function partial($path, $vars = [])
+    {
+        $this->render($path, $vars, true);
+    }
+
+    /**
      * @param string $template
      *
      * @return bool

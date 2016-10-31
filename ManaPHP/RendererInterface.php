@@ -20,6 +20,14 @@ interface RendererInterface
     public function render($template, $vars, $directOutput = false);
 
     /**
+     * @param string $path
+     * @param array  $vars
+     *
+     * @return void
+     */
+    public function partial($path, $vars = []);
+
+    /**
      * @param string $template
      *
      * @return bool

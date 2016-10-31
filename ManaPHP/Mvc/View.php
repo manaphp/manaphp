@@ -232,7 +232,7 @@ class View extends Component implements ViewInterface
             }
             echo $content;
         } else {
-            $this->renderer->render("@views/$path", $vars, true);
+            $this->renderer->partial("@views/$path",$vars);
         }
     }
 
