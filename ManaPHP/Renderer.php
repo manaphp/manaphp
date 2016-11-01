@@ -45,25 +45,6 @@ class Renderer extends Component implements RendererInterface
     }
 
     /**
-     * @param string $extension
-     *
-     * @return \ManaPHP\Renderer\EngineInterface
-     * @throws \ManaPHP\Renderer\Exception
-     */
-    protected function _loadEngine($extension)
-    {
-        $arguments = [$this->_dependencyInjector];
-        $engine = $this->_engines[$extension];
-        if ($engine instanceof \Closure) {
-            $engine = call_user_func_array($engine, $arguments);
-        } elseif (is_string($engine)) {
-            $engine = $this->_dependencyInjector->getShared($engine, $arguments);
-        }
-
-        return $engine;
-    }
-
-    /**
      * Checks whether $template exists on registered extensions and render it
      *
      * @noinspection PhpDocMissingThrowsInspection
@@ -92,7 +73,7 @@ class Renderer extends Component implements RendererInterface
                 }
 
                 if (!isset($this->_resolved[$extension])) {
-                    $this->_resolved[$extension] = $this->_loadEngine($extension);
+                    $this->_resolved[$extension] = $this->_dependencyInjector->getShared($engine, [$this->_dependencyInjector]);
                 }
 
                 $engine = $this->_resolved[$extension];
@@ -146,6 +127,7 @@ class Renderer extends Component implements RendererInterface
      * @param array  $vars
      *
      * @return void
+     * @throws \Exception
      */
     public function partial($path, $vars = [])
     {

@@ -75,8 +75,8 @@ interface ViewInterface
      *    $this->partial('shared/footer', array('content' => $html));
      * </code>
      *
-     * @param string    $path
-     * @param array     $vars
+     * @param string $path
+     * @param array  $vars
      */
     public function partial($path, $vars = []);
 

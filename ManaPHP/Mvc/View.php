@@ -224,8 +224,8 @@ class View extends Component implements ViewInterface
      *    $this->partial('shared/footer', array('content' => $html));
      * </code>
      *
-     * @param string    $path
-     * @param array     $vars
+     * @param string $path
+     * @param array  $vars
      *
      * @throws \ManaPHP\Mvc\View\Exception
      * @throws \ManaPHP\Renderer\Exception
