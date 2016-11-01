@@ -113,7 +113,9 @@ class Debugger extends Component implements DebuggerInterface
                 }
             }
         } elseif ($event === 'renderer:beforeRender') {
-            $this->_view[] = ['file' => $data['file'], 'vars' => $data['vars'], 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
+            $vars = $data['vars'];
+            unset($vars['view']);
+            $this->_view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
         } elseif ($event === 'component:setUndefinedProperty') {
             $this->_warnings[] = 'Set to undefined property `' . $data['name'] . '` of `' . $data['class'] . '`';
         }

@@ -124,6 +124,24 @@ class View extends Component implements ViewInterface
     }
 
     /**
+     * @param string $template
+     * @param array  $vars
+     * @param bool   $directOutput
+     *
+     * @return string
+     * @throws \ManaPHP\Mvc\View\Exception
+     */
+    public function _render($template, $vars, $directOutput)
+    {
+        if (isset($vars['view'])) {
+            throw new ViewException('variable `view` is reserved for view'/**m0662b55555fc72f7d*/);
+        }
+        $vars['view'] = isset($this->view) ? $this->view : null;
+
+        return $this->renderer->render($template, $vars, $directOutput);
+    }
+
+    /**
      * Executes render process from dispatching data
      *
      *<code>
@@ -149,10 +167,10 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:beforeRender');
 
-        $this->_content = $this->renderer->render("@views/{$this->_controllerName}/" . ucfirst($this->_actionName), $this->_viewVars, false);
+        $this->_content = $this->_render("@views/{$this->_controllerName}/" . ucfirst($this->_actionName), $this->_viewVars, false);
 
         if ($this->_layout !== false) {
-            $this->_content = $this->renderer->render('@views/Layouts/' . ucfirst($this->_layout ?: $this->_controllerName), $this->_viewVars, false);
+            $this->_content = $this->_render('@views/Layouts/' . ucfirst($this->_layout ?: $this->_controllerName), $this->_viewVars, false);
         }
 
         $this->fireEvent('view:afterRender');
@@ -208,32 +226,17 @@ class View extends Component implements ViewInterface
      *
      * @param string    $path
      * @param array     $vars
-     * @param int|array $cacheOptions
      *
      * @throws \ManaPHP\Mvc\View\Exception
      * @throws \ManaPHP\Renderer\Exception
      */
-    public function partial($path, $vars = [], $cacheOptions = null)
+    public function partial($path, $vars = [])
     {
         if (!Text::contains($path, '/')) {
             $path = $this->_controllerName . '/' . $path;
         }
 
-        if ($cacheOptions !== null) {
-            $cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
-
-            $cacheOptions['key'] = "@views/$path" . (isset($cacheOptions['key']) ? '/' . $cacheOptions['key'] : '');
-            $cacheOptions['key'] = str_replace($this->alias->resolve('@app'), '', $this->alias->resolve($cacheOptions['key']));
-
-            $content = $this->viewsCache->get($cacheOptions['key']);
-            if ($content === false) {
-                $content = $this->renderer->render("@views/$path", $vars, false);
-                $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
-            }
-            echo $content;
-        } else {
-            $this->renderer->partial("@views/$path",$vars);
-        }
+        $this->_render("@views/$path", $vars, true);
     }
 
     /**
@@ -270,7 +273,7 @@ class View extends Component implements ViewInterface
                 if (is_string($vars)) {
                     $content = $vars;
                 } else {
-                    $content = $this->renderer->render($view, $vars, false);
+                    $content = $this->_render($view, $vars, false);
                 }
 
                 $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
@@ -281,7 +284,7 @@ class View extends Component implements ViewInterface
             if (is_string($vars)) {
                 echo $vars;
             } else {
-                $this->renderer->render($view, $vars, true);
+                $this->_render($view, $vars, true);
             }
         }
     }

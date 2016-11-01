@@ -77,9 +77,8 @@ interface ViewInterface
      *
      * @param string    $path
      * @param array     $vars
-     * @param int|array $cacheOptions
      */
-    public function partial($path, $vars = [], $cacheOptions = null);
+    public function partial($path, $vars = []);
 
     /**
      * Renders a widget

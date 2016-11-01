@@ -76,7 +76,7 @@ class Renderer extends Component implements RendererInterface
      * @throws \ManaPHP\Renderer\Exception
      * @throws \Exception
      */
-    public function render($template, $vars, $directOutput = false)
+    public function render($template, $vars = [], $directOutput = false)
     {
         $notExists = true;
         $content = null;
@@ -99,11 +99,6 @@ class Renderer extends Component implements RendererInterface
 
                 $eventArguments = ['file' => $file, 'vars' => $vars];
                 $this->fireEvent('renderer:beforeRender', $eventArguments);
-
-                if (isset($vars['view'])) {
-                    throw new RendererException('variable `view` is reserved for renderer'/**m0662b55555fc72f7d*/);
-                }
-                $vars['view'] = isset($this->view) ? $this->view : null;
 
                 if (isset($vars['renderer'])) {
                     throw new RendererException('variable `renderer` is reserved for renderer'/**m04c9833791ad0d92b*/);

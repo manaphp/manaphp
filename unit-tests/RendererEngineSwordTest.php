@@ -313,7 +313,7 @@ EOT;
 @include('footer')
 EOT;
         $compiled = <<<'EOT'
-<?php $view->partial('footer'); ?>
+<?php isset($view) ? $view->partial('footer') : $renderer->partial('footer'); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
@@ -321,7 +321,7 @@ EOT;
 @include('footer',['p1'=>1,'p2'=>2])
 EOT;
         $compiled = <<<'EOT'
-<?php $view->partial('footer',['p1'=>1,'p2'=>2]); ?>
+<?php isset($view) ? $view->partial('footer',['p1'=>1,'p2'=>2]) : $renderer->partial('footer',['p1'=>1,'p2'=>2]); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -343,7 +343,7 @@ EOT;
 @include('footer')
 EOT;
         $compiled = <<<'EOT'
-<?php $view->partial('footer'); ?>
+<?php isset($view) ? $view->partial('footer') : $renderer->partial('footer'); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
@@ -351,7 +351,7 @@ EOT;
 @include('footer',['p1'=>1,'p2'=>2])
 EOT;
         $compiled = <<<'EOT'
-<?php $view->partial('footer',['p1'=>1,'p2'=>2]); ?>
+<?php isset($view) ? $view->partial('footer',['p1'=>1,'p2'=>2]) : $renderer->partial('footer',['p1'=>1,'p2'=>2]); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }

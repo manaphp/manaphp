@@ -550,11 +550,7 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileInclude($expression)
     {
-        if (Text::startsWith($expression, '(')) {
-            $expression = substr($expression, 1, -1);
-        }
-
-        return "<?php \$view->partial($expression); ?>";
+        return "<?php isset(\$view) ? \$view->partial{$expression} : \$renderer->partial{$expression}; ?>";
     }
 
     /**

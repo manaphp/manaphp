@@ -17,7 +17,7 @@ interface RendererInterface
      *
      * @return string
      */
-    public function render($template, $vars, $directOutput = false);
+    public function render($template, $vars = [], $directOutput = false);
 
     /**
      * @param string $path
