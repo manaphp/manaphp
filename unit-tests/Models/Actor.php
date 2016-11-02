@@ -9,6 +9,13 @@ namespace Models;
 
 use ManaPHP\Mvc\Model;
 
+/**
+ * Class Actor
+ * @package Models
+ * @method  static $this findFirstByActorId(int $actor_id, int|array $cacheOptions = null)
+ * @method static Actor[] findByFirstName(string $first_name, int|array $cacheOptions = null)
+ * @method static int countByFirstName(string $first_name, int|array $cacheOptions = null)
+ */
 class Actor extends Model
 {
     public $actor_id;
