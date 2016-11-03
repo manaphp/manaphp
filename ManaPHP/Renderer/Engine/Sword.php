@@ -803,10 +803,11 @@ class Sword extends Component implements EngineInterface
 
         if (!file_exists($_compiledFile) || filemtime($file) > filemtime($_compiledFile)) {
             $dir = dirname($_compiledFile);
-            if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+
+            if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
                 throw new SwordException('create `:dir` directory failed: :message', ['dir' => $dir, 'message' => SwordException::getLastErrorMessage()]);
             }
-            if (!file_put_contents($_compiledFile, $this->compileString(file_get_contents($file)), LOCK_EX)) {
+            if (file_put_contents($_compiledFile, $this->compileString(file_get_contents($file)), LOCK_EX) === false) {
                 throw new SwordException('write compiled sword `:file` failed: :message', ['file' => $_compiledFile, 'message' => SwordException::getLastErrorMessage()]);
             }
         }
