@@ -62,7 +62,7 @@ abstract class Application extends \ManaPHP\Application
      * @throws \ManaPHP\Mvc\View\Exception
      * @throws \ManaPHP\Renderer\Exception
      * @throws \ManaPHP\Alias\Exception
-     * @throws \ManaPHP\Mvc\Router\Exception|
+     * @throws \ManaPHP\Mvc\Router\Exception
      * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
      */
     public function handle($uri = null)
