@@ -46,7 +46,6 @@ class Response extends Component implements ResponseInterface
      * @param string $message
      *
      * @return static
-     * @throws
      */
     public function setStatusCode($code, $message)
     {

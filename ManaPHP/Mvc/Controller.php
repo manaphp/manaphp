@@ -12,7 +12,7 @@ use ManaPHP\Component;
  * @method void initialize();
  * @method bool beforeExecuteRoute();
  * @method bool afterExecuteRoute();
- * @method onConstruct();
+ * @method void onConstruct();
  *
  *
  * @property \ManaPHP\Mvc\ViewInterface                    $view

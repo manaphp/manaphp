@@ -15,7 +15,7 @@ use ManaPHP\Message\QueueInterface;
 class Redis extends Component implements QueueInterface
 {
     /**
-     * @var
+     * @var string
      */
     protected $_prefix = 'manaphp:message_queue:';
 

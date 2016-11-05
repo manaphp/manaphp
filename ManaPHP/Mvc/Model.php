@@ -13,8 +13,8 @@ use ManaPHP\Utility\Text;
  *
  * @package model
  *
- * @method initialize()
- * @method onConstruct()
+ * @method void initialize()
+ * @method void onConstruct()
  *
  * method beforeCreate()
  * method afterCreate()

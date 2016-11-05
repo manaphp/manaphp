@@ -37,7 +37,7 @@ interface CookiesInterface
      *
      * @param string $name
      *
-     * @return $mixed
+     * @return mixed
      */
     public function get($name);
 
