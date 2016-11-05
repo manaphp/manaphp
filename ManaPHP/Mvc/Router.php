@@ -41,6 +41,11 @@ class Router extends Component implements RouterInterface
     protected $_groups = [];
 
     /**
+     * @var array
+     */
+    protected $_modules = [];
+
+    /**
      * @var bool
      */
     protected $_wasMatched = false;
@@ -252,6 +257,8 @@ class Router extends Component implements RouterInterface
             'groupInstance' => $groupInstance
         ];
 
+        $this->_modules[$module] = $path ?: '/';
+
         return $this;
     }
 
@@ -303,5 +310,13 @@ class Router extends Component implements RouterInterface
     public function wasMatched()
     {
         return $this->_wasMatched;
+    }
+
+    /**
+     * @return array
+     */
+    public function getModules()
+    {
+        return $this->_modules;
     }
 }

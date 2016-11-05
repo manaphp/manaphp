@@ -523,7 +523,7 @@ EOT;
 @url('/')
 EOT;
         $compiled = <<<'EOT'
-<?php echo $di->url->get('/'); ?>
+<?php echo $url->get('/'); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
@@ -531,7 +531,7 @@ EOT;
 @url('/',['id'=>100])
 EOT;
         $compiled = <<<'EOT'
-<?php echo $di->url->get('/',['id'=>100]); ?>
+<?php echo $url->get('/',['id'=>100]); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -542,7 +542,7 @@ EOT;
 @asset('/app.js')
 EOT;
         $compiled = <<<'EOT'
-<?php echo $di->url->getAsset('/app.js'); ?>
+<?php echo $url->getAsset('/app.js'); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }

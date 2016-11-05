@@ -99,4 +99,9 @@ interface RouterInterface
      * @return bool
      */
     public function wasMatched();
+
+    /**
+     * @return array
+     */
+    public function getModules();
 }

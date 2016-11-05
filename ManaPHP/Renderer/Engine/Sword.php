@@ -704,7 +704,11 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileUrl($expression)
     {
-        return "<?php echo \$di->url->get{$expression}; ?>";
+        if (strcspn($expression, '$\'"') === strlen($expression)) {
+            $expression = '(\'' . trim($expression, '()') . '\')';
+        }
+
+        return "<?php echo \$url->get{$expression}; ?>";
     }
 
     /**
@@ -716,7 +720,11 @@ class Sword extends Component implements EngineInterface
      */
     protected function _compileAsset($expression)
     {
-        return "<?php echo \$di->url->getAsset{$expression }; ?>";
+        if (strcspn($expression, '$\'"') === strlen($expression)) {
+            $expression = '(\'' . trim($expression, '()') . '\')';
+        }
+
+        return "<?php echo \$url->getAsset{$expression }; ?>";
     }
 
     /**
@@ -773,6 +781,20 @@ class Sword extends Component implements EngineInterface
         $expression
     ) {
         return '<?php echo $di->csrfToken->get(); ?>';
+    }
+
+    /**
+     * Compile the json statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compilePagination(
+        /** @noinspection PhpUnusedParameterInspection */
+        $expression
+    ) {
+        return "<?php echo \$di->paginator->renderAsHtml{$expression}; ?>";
     }
 
     /**

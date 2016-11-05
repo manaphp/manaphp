@@ -171,8 +171,8 @@ class Response extends Component implements ResponseInterface
      *    $response->redirect("http://www.example.com/new-location", false);
      *</code>
      *
-     * @param string $location
-     * @param bool   $temporarily
+     * @param string|array $location
+     * @param bool         $temporarily
      *
      * @return static
      */

@@ -2,6 +2,7 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
+use ManaPHP\Mvc\Url\Exception as UrlException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -9,57 +10,99 @@ use ManaPHP\Utility\Text;
  *
  * @package url
  *
- * @property \Application\Configure         $configure
- * @property \ManaPHP\Http\RequestInterface $request
+ * @property \Application\Configure           $configure
+ * @property \ManaPHP\Http\RequestInterface   $request
+ * @property \ManaPHP\Mvc\RouterInterface     $router
+ * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class Url extends Component implements UrlInterface
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $_baseUri = '';
+    protected $_baseUrls = [];
 
     /**
      * Url constructor.
-     */
-    public function __construct()
-    {
-        $this->_baseUri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    }
-
-    /**
-     * @param string $baseUri
      *
-     * @return static
-     */
-    public function setBaseUri($baseUri)
-    {
-        $this->_baseUri = rtrim($baseUri, '/');
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBaseUri()
-    {
-        return $this->_baseUri;
-    }
-
-    /**
-     * @param string $uri
-     * @param array  $args
+     * @param array $options
      *
-     * @return string
+     * @throws \ManaPHP\Mvc\Url\Exception
      */
-    public function get($uri = null, $args = [])
+    public function __construct($options = [])
     {
-        $strUri = $uri;
-        if ($uri[0] === '/') {
-            if ($uri === '/' || $uri[1] !== '/') {
-                $strUri = $this->_baseUri . $uri;
+        $selfPath = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
+        if ($selfPath !== '/' && preg_match('#(.*)/public$#i', $selfPath, $match) === 1) {
+            $selfPath = $match[1];
+        } else {
+            $selfPath = rtrim($selfPath, '/');
+        }
+        if (isset($options['baseUrls'])) {
+            /** @noinspection ForeachSourceInspection */
+            foreach ($options['baseUrls'] as $module => $path) {
+                $this->_baseUrls[$module] = rtrim($path, '/');
             }
+
+            if (!isset($this->_baseUrls[''])) {
+                throw new UrlException('Default baseUrl is not set');
+            }
+        } else {
+            foreach ($this->router->getModules() as $module => $path) {
+                if ($path[0] === '/') {
+                    $baseUri = $selfPath . ($path === '/' ? '' : $path);
+                } else {
+                    $baseUri = $path;
+                }
+
+                $this->_baseUrls[$module] = $baseUri;
+            }
+
+            $this->_baseUrls[''] = $this->_baseUrls[$this->dispatcher->getModuleName()];
+        }
+
+        if (!isset($this->_baseUrls['assets'])) {
+            $this->_baseUrls['assets'] = $selfPath;
+        }
+    }
+
+    /**
+     * @param string|array $uri
+     * @param array        $args
+     * @param string       $module
+     *
+     * @return string
+     * @throws \ManaPHP\Mvc\Url\Exception
+     */
+    public function get($uri = null, $args = [], $module = null)
+    {
+        if (is_array($uri)) {
+            $tmp = $uri;
+
+            $uri = $tmp[0];
+            if (isset($tmp[1])) {
+                if (is_array($tmp[1])) {
+                    $args = $tmp[1];
+                } else {
+                    $module = $tmp[1];
+                }
+            }
+
+            if (isset($location[2])) {
+                $module = $location[2];
+            }
+        }
+
+        if ($uri[0] === '/') {
+            if (!isset($this->_baseUrls[$module])) {
+                if (isset($this->_baseUrls[ucfirst($module)])) {
+                    throw new UrlException('module name is case-sensitive: `:module`', ['module' => $module]);
+                } else {
+                    throw new UrlException('`:module` is not exists', ['module' => $module]);
+                }
+            }
+            $strUri = $this->_baseUrls[$module] . $uri;
+        } else {
+            $strUri = $uri;
         }
 
         if (is_array($args)) {
@@ -84,12 +127,14 @@ class Url extends Component implements UrlInterface
     /**
      * @param string $uri
      * @param array  $args
+     * @param string $module
      *
      * @return string
+     * @throws \ManaPHP\Mvc\Url\Exception
      */
-    public function getFullUrl($uri = null, $args = [])
+    public function getAbsolute($uri = null, $args = [], $module = null)
     {
-        $url = $this->get($uri, $args);
+        $url = $this->get($uri, $args, $module);
         if (strpos($url, '://') === false) {
             $scheme = $this->request->getScheme();
             $host = $this->request->getServer('HTTP_HOST');
@@ -105,58 +150,13 @@ class Url extends Component implements UrlInterface
     }
 
     /**
-     * @param string      $uri
-     * @param bool|string $correspondingMin
-     *
-     * @return string
-     */
-    public function getCss($uri, $correspondingMin = true)
-    {
-        if ($this->configure->debug) {
-            $strUri = $this->get($uri);
-        } else {
-            if ($correspondingMin === true) {
-                $strUri = substr($this->get($uri), 0, -4) . '.min.css';
-            } elseif ($correspondingMin === false) {
-                $strUri = $this->get($uri);
-            } else {
-                $strUri = $this->get($correspondingMin);
-            }
-        }
-
-        return $strUri;
-    }
-
-    /**
-     * @param string      $uri
-     * @param bool|string $correspondingMin
-     *
-     * @return string
-     */
-    public function getJs($uri, $correspondingMin = true)
-    {
-        if ($this->configure->debug) {
-            $strUri = $this->get($uri);
-        } else {
-            if ($correspondingMin === true) {
-                $strUri = substr($this->get($uri), 0, -3) . '.min.js';
-            } elseif ($correspondingMin === false) {
-                $strUri = $this->get($uri);
-            } else {
-                $strUri = $this->get($correspondingMin);
-            }
-        }
-
-        return $strUri;
-    }
-
-    /**
      * @param string $uri
      *
      * @return string
+     * @throws \ManaPHP\Mvc\Url\Exception
      */
     public function getAsset($uri)
     {
-        return $this->get($uri);
+        return $this->_baseUrls['assets'] . $uri;
     }
 }

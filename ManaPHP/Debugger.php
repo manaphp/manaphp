@@ -300,6 +300,6 @@ class Debugger extends Component implements DebuggerInterface
             error_log('save debug file failed: ' . $file);
         }
 
-        return $this->url->getFullUrl('/?_debugger=' . $id);
+        return $this->url->getAbsolute('/?_debugger=' . $id);
     }
 }

@@ -91,6 +91,11 @@ class Renderer extends Component implements RendererInterface
                 }
                 $vars['di'] = $this->_dependencyInjector;
 
+                if (isset($vars['url'])) {
+                    throw new RendererException('variable `url` is reserved for renderer'/**m0394e70537f32f733*/);
+                }
+                $vars['url'] = isset($this->url) ? $this->url : null;
+
                 if ($directOutput) {
                     $engine->render($file, $vars);
                     $content = null;

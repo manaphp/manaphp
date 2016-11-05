@@ -68,8 +68,8 @@ interface ResponseInterface
     /**
      * Redirect by HTTP to another action or URL
      *
-     * @param string $location
-     * @param bool   $temporarily
+     * @param string|array $location
+     * @param bool         $temporarily
      *
      * @return static
      */
