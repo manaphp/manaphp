@@ -24,7 +24,7 @@ class Translation extends Component implements TranslationInterface
     protected $_messages = [];
 
     /**
-     * @var
+     * @var string
      */
     protected $_language;
 
