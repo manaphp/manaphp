@@ -39,10 +39,12 @@ namespace PHPSTORM_META {                                // we want to avoid the
  * @xglobal $view ManaPHP\Mvc\ViewInterface
  */
 /**
- * @var \ManaPHP\Mvc\View $view
- * @var \ManaPHP\Di       $di
+ * @var \ManaPHP\Mvc\ViewInterface     $view
+ * @var \ManaPHP\Di                    $di
+ * @var \ManaPHP\Http\RequestInterface $request
  */
 $view = null;
 $di = null;
+$request = null;
 unset($view, $renderer);
 

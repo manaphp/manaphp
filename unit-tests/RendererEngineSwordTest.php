@@ -584,7 +584,7 @@ EOT;
 @debugger()
 EOT;
         $compiled = <<<'EOT'
-<?php if($di->configure->debug){?><div class="debugger"><a target="_blank" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?>
+<?php if($di->configure->debug){?><div class="debugger"><a target="_blank" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?> 
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }

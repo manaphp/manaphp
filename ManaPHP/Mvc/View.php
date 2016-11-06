@@ -138,6 +138,11 @@ class View extends Component implements ViewInterface
         }
         $vars['view'] = isset($this->view) ? $this->view : null;
 
+        if (isset($vars['request'])) {
+            throw new ViewException('variable `request` is reserved for view');
+        }
+        $vars['request'] = isset($this->request) ? $this->request : null;
+
         return $this->renderer->render($template, $vars, $directOutput);
     }
 

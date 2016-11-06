@@ -90,6 +90,11 @@ class Url extends Component implements UrlInterface
             if (isset($location[2])) {
                 $module = $location[2];
             }
+        } else {
+            if (is_string($args)) {
+                $module = $args;
+                $args = [];
+            }
         }
 
         if ($uri[0] === '/') {
