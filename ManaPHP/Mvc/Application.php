@@ -78,6 +78,7 @@ abstract class Application extends \ManaPHP\Application
         $actionName = $this->router->getActionName();
         $params = $this->router->getParams();
         $this->alias->set('@views', "@app/$moduleName/Views");
+        $this->alias->set('@messages', "@app/$moduleName/Messages");
         $this->alias->set('@ns.module', '@ns.app\\' . $moduleName);
         $this->alias->set('@ns.controllers', '@ns.module\\Controllers');
         $this->alias->set('@ns.widgets', '@ns.module\\Widgets');

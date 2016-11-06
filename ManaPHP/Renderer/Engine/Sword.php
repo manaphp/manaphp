@@ -85,7 +85,7 @@ class Sword extends Component implements EngineInterface
     {
         $pattern = sprintf('/%s--(.*?)--%s/s', $this->_escapedTags[0], $this->_escapedTags[1]);
 
-        return preg_replace($pattern, '<?php /*$1*/ ?>', $value);
+        return preg_replace($pattern, '<?php /*$1*/ ?> ', $value);
     }
 
     /**
@@ -766,7 +766,7 @@ class Sword extends Component implements EngineInterface
         $expression
     ) {
         /** @noinspection HtmlUnknownTarget */
-        return '<?php if($di->configure->debug){?><div class="debugger"><a target="_blank" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?>';
+        return '<?php if($di->configure->debug){?><div class="debugger"><a target="_blank" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?> ';
     }
 
     /**
@@ -795,6 +795,20 @@ class Sword extends Component implements EngineInterface
         $expression
     ) {
         return "<?php echo \$di->paginator->renderAsHtml{$expression}; ?>";
+    }
+
+    /**
+     * Compile the json statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileTranslate(
+        /** @noinspection PhpUnusedParameterInspection */
+        $expression
+    ) {
+        return "<?php echo \$di->translation->translate{$expression}; ?>";
     }
 
     /**
