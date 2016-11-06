@@ -5,6 +5,10 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class MvcUrlTest extends TestCase
 {
+    public function setup(){
+        $di=new \ManaPHP\Di\FactoryDefault();
+    }
+	
     public function test_get()
     {
         $url = new \ManaPHP\Mvc\Url(['baseUrls'=>[''=>'/']]);

@@ -144,7 +144,7 @@ class Router extends Component implements RouterInterface
             if ($path === '' || $path[0] === '/') {
                 $checkedUri = $refinedUri;
             } else {
-                $checkedUri = $_SERVER['HTTP_HOST'] . $refinedUri;
+                $checkedUri = (strpos($path, '://') ? $this->request->getScheme() . '://' : '') . $_SERVER['HTTP_HOST'] . $refinedUri;
             }
 
             /**

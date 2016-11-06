@@ -51,7 +51,7 @@ class Url extends Component implements UrlInterface
                 if ($path[0] === '/') {
                     $baseUri = $selfPath . ($path === '/' ? '' : $path);
                 } else {
-                    $baseUri = $path;
+                    $baseUri = (strpos($path, '://') ? '' : $this->request->getScheme() . '://') . $path;
                 }
 
                 $this->_baseUrls[$module] = $baseUri;
