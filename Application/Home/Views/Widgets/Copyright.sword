@@ -10,17 +10,8 @@
         color: blue;
     }
 
-    .manaphp_included_files {
-        display: none;
-    }
 </style>
 
 <div class="manaphp_copyright">
     &copy; {{ $year }} <a href="https://github.com/manaphp">ManaPHP</a>
 </div>
-
-@if($di->configure->debug)
-    <div class="manaphp_included_files">
-        @php(print_r(get_included_files()))
-    </div>
-@endif

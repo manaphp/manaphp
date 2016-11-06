@@ -1,0 +1,10 @@
+.debugger {
+    position: fixed;
+    right: 20px;
+    top: 30px;
+    background-color: red;
+    z-index: 1000000;
+}
+.table a{
+    cursor: pointer;
+}

@@ -1,0 +1,23 @@
+<div class="box box-info">
+    <div class="box-body">
+        <table class="table">
+            <thead>
+            <tr>
+                <td>#</td>
+                <td>user name</td>
+                <td width="10%">register time</td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($di->paginator->items as $admin)
+                <tr>
+                    <td>{{$index +1}}</td>
+                    <td>{{$admin['admin_name']}}</td>
+                    <td>{{date('Y-m-d H:i:s',$admin['created_time'])}}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
+    <div class="box-footer">@pagination()</div>
+</div>

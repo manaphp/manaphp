@@ -89,10 +89,16 @@ namespace Application {
             //   $this->useImplicitView(false);
 
             try {
-                $this->handle()->send();
+                $this->handle();
             } catch (NotFoundException $e) {
                 $this->notFoundException($e);
+            } catch (\ManaPHP\Security\Captcha\Exception $e) {
+                if ($this->request->isAjax()) {
+                    $this->response->setJsonContent(['code' => __LINE__, 'error' => 'capcha is wrong.']);
+                }
             }
+
+            $this->response->send();
         }
     }
 }

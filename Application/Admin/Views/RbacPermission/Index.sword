@@ -1,26 +1,27 @@
 @include('Header')
+<div class="box box-info">
+    <div class="box-body">
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <td width="20%">name</td>
+                <td>description</td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($permission_groups as $group=>$permissions)
+                @php(sort($permissions))
+                <tr>
+                    <td>{{$group}}</td>
+                    <td>
+                        @foreach($permissions as $permission)
+                            <a href="#" class="btn" title="{{$permission['description']}}">{{$permission['action']}}</a>
+                        @endforeach
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
 
-<table class="table-bordered">
-    <thead>
-    <tr>
-        <td>#</td>
-        <td>name</td>
-        <td>description</td>
-    </tr>
-    </thead>
-    <tbody>
-    <tr v-for="permission in permissions">
-        <td> @{{$index}}</td>
-        <td> @{{permission.module permision.controller permission.action}}</td>
-        <td> @{{permission.description}}</td>
-    </tr>
-    </tbody>
-</table>
-
-@section('script')
-    data={!! json_encode($data,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES) !!};
-    $vm=new Vue({
-    el: 'body',
-    data: data
-    });
-@append
+    </div>
+</div>

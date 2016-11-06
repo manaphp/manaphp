@@ -25,3 +25,7 @@ The best way to install ManaPHP is to download the ManaPHP from [github](https:/
 Database for unit-tests
 -----------------------
 https://github.com/manaphp/download/blob/master/manaphp_unit_test_db.sql
+
+#Passport
+account: admin
+password: 1

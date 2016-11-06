@@ -1,0 +1,99 @@
+<div class="box box-info">
+    <div class="box-title">
+
+    </div>
+    <div class="box-body">
+        <form action="@url('/session_log')">
+            <div class="row">
+                <div class="col-md-offset- col-md-3">
+                    <div class="form-group form-inline">
+                        <label class="font-light">Range Select</label>
+                        <input type="text" class="form-control" name="date_range"
+                               value="{{$di->request->get('date_range')}}">
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-primary" type="submit">Query</button>
+                </div>
+            </div>
+        </form>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <td width="5%">#</td>
+                <td>admin name</td>
+                <td width="10%">udid</td>
+                <td width="10%">login_ip</td>
+                <td width="20%">user agent</td>
+                <td width="15%">login_time</td>
+                <td width="15%">logout_time</td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($admin_logins as $admin_login)
+                <tr>
+                    <td>{{$index + 1}}</td>
+                    <td><a data-toggle="modal" data-target="#admin_login_log_dialog" @click='
+                login_id={{$admin_login['login_id']}}'>{{ $admin_login['admin_name']}}</a>
+                    </td>
+                    <td>{{substr($admin_login['udid'],0,8)}}</td>
+                    <td>{{$admin_login['ip']}}</td>
+                    <td title="{{$admin_login['user_agent']}}">{{substr($admin_login['user_agent'],0,32)}}</td>
+                    <td>{{ date('Y-m-d H:i:s',$admin_login['login_time']) }}</td>
+                    <td>{{ date('Y-m-d H:i:s',$admin_login['logout_time']) }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
+    <div class="box-footer">@pagination()</div>
+</div>
+<div id="admin_login_log_dialog" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td title="@{{admin_login|json 4}}">name</td>
+                    <td>value</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(name, value) in admin_login">
+                    <td>@{{name}}</td>
+                    <td>@{{value}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section('script')
+    <script>
+        $(function () {
+            var vm = new Vue({
+                el: 'body',
+                data: {
+                    login_id: 0,
+                    admin_login: {1: 2}
+                },
+                watch: {
+                    'login_id': function (id) {
+                        $.getJSON("@url('/session_log/detail')",
+                                {
+                                    login_id: id
+                                },
+                                function (result) {
+                                    vm.admin_login = result.data.admin_login;
+                                });
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function () {
+            $('input[name=date_range]').daterangepicker();
+        })
+    </script>
+@append

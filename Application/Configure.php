@@ -50,7 +50,7 @@ namespace Application {
             $this->database->port = 3306;
             $this->database->username = 'root';
             $this->database->password = '';
-            $this->database->dbname = 'manaphp_unit_test';
+            $this->database->dbname = 'manaphp';
             $this->database->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
             $this->logger = new \stdClass();

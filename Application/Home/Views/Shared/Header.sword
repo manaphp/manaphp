@@ -8,11 +8,13 @@
             position: fixed;
             right: 20px;
             top: 30px;
-            background-color: red
+            background-color: red;
+            z-index: 1000000;
         }
     </style>
 </head>
 <body>
 <div>
+    <a href="@url('/','Admin')">Admin</a>
     @flash()
 </div>
