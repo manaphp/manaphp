@@ -21,12 +21,14 @@ abstract class Application extends Component implements ApplicationInterface
     /**
      * Application constructor.
      *
+     * @param \ManaPHP\Loader      $loader
      * @param \ManaPHP\DiInterface $dependencyInjector
      */
-    public function __construct($dependencyInjector = null)
+    public function __construct($loader, $dependencyInjector = null)
     {
         $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
 
+        $this->_dependencyInjector->setShared('loader', $loader);
         $this->_dependencyInjector->setShared('application', $this);
 
         $class = str_replace('\\', '/', get_called_class());

@@ -36,10 +36,8 @@ class Session extends Component implements SessionInterface, \ArrayAccess
             return;
         }
 
-        if ($options instanceof AdapterInterface || is_string($options)) {
+        if (is_string($options) || is_object($options)) {
             $options = ['adapter' => $options];
-        } elseif (is_object($options)) {
-            $options = (array)$options;
         }
 
         $this->adapter = $options['adapter'];

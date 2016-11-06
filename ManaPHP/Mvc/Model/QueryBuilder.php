@@ -462,7 +462,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     public function inWhere($expr, $values)
     {
-        if ($values instanceof QueryBuilderInterface) {
+        if ($values instanceof $this) {
             $this->andWhere($expr . ' IN (' . $values->getSql() . ')');
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } else {
@@ -504,7 +504,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     public function notInWhere($expr, $values)
     {
-        if ($values instanceof QueryBuilderInterface) {
+        if ($values instanceof $this) {
             $this->andWhere($expr . ' NOT IN (' . $values->getSql() . ')');
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } else {
@@ -774,7 +774,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         $selectedModels = [];
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $alias => $model) {
-            if ($model instanceof QueryBuilderInterface) {
+            if ($model instanceof $this) {
                 if (is_int($alias)) {
                     throw new QueryBuilderException('if using SubQuery, you must assign an alias for it'/**m0e5f4aa93dc102dde*/);
                 }
@@ -813,7 +813,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 $joinSQL .= ' ' . $joinType;
             }
 
-            if ($joinModel instanceof QueryBuilderInterface) {
+            if ($joinModel instanceof $this) {
                 $joinSQL .= ' JOIN (' . $joinModel->getSql() . ')';
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $joinModel->getBind());
@@ -892,7 +892,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $model) {
-            if (!$model instanceof QueryBuilderInterface) {
+            if (!$model instanceof $this) {
                 $sql = str_replace('[' . $model . ']', '[' . $this->modelsManager->getModelSource($model) . ']', $sql);
             }
         }

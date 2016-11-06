@@ -46,10 +46,8 @@ class Metadata extends Component implements MetadataInterface
      */
     public function __construct($options = [])
     {
-        if ($options instanceof Task\Metadata\AdapterInterface || is_string($options)) {
+        if (is_string($options) || is_object($options)) {
             $options = ['adapter' => $options];
-        } elseif (is_object($options)) {
-            $options = (array)$options;
         }
 
         $this->adapter = $options['adapter'];

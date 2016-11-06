@@ -26,11 +26,12 @@ abstract class Application extends \ManaPHP\Application
     /**
      * Application constructor.
      *
+     * @param \ManaPHP\Loader      $loader
      * @param \ManaPHP\DiInterface $dependencyInjector
      */
-    public function __construct($dependencyInjector = null)
+    public function __construct($loader, $dependencyInjector = null)
     {
-        parent::__construct($dependencyInjector);
+        parent::__construct($loader, $dependencyInjector);
 
         $this->_dependencyInjector->setShared('console', 'ManaPHP\Cli\Console');
         $this->_dependencyInjector->setShared('arguments', 'ManaPHP\Cli\Arguments');

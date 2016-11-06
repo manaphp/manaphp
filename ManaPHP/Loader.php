@@ -19,8 +19,15 @@ class Loader
      */
     protected $_namespaces = [];
 
-    public function __construct()
+    /**
+     * Loader constructor.
+     *
+     * @param string $manaPHPDir
+     */
+    public function __construct($manaPHPDir = null)
     {
+        $this->_namespaces['ManaPHP'] = str_replace('\\', '/', $manaPHPDir ?: __DIR__);
+
         $al_function = [$this, '___autoload'];
         spl_autoload_register($al_function);
     }

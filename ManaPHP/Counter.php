@@ -27,10 +27,8 @@ class Counter extends Component implements CounterInterface
      */
     public function __construct($options = [])
     {
-        if ($options instanceof AdapterInterface || is_string($options)) {
+        if (is_string($options) || is_object($options)) {
             $options = ['adapter' => $options];
-        } elseif (is_object($options)) {
-            $options = (array)$options;
         }
 
         if (isset($options['adapter'])) {

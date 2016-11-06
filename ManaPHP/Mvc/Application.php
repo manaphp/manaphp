@@ -40,7 +40,7 @@ abstract class Application extends \ManaPHP\Application
         }
 
         $r = $this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-        if ($r === false || $r instanceof ResponseInterface) {
+        if ($r === false || is_object($r)) {
             return false;
         } else {
             return true;

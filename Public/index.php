@@ -9,11 +9,13 @@
 error_reporting(E_ALL);
 ini_set('html_errors', 'on');
 
-require dirname(__DIR__) . '/ManaPHP/Autoloader.php';
-new \ManaPHP\Autoloader(dirname(__DIR__));
-new \ManaPHP\Mvc\Router\RewriteChecker();
+require dirname(__DIR__) . '/ManaPHP/Loader.php';
+//require dirname(__DIR__) . '/ManaPHP/base.php';
+$loader = new \ManaPHP\Loader();
+//new \ManaPHP\Mvc\Router\RewriteChecker();
 
 require dirname(__DIR__) . '/Application/Application.php';
-$application = new \Application\Application();
+$application = new \Application\Application($loader);
 
 $application->main();
+//$application->getDependencyInjector()->filesystem->filePut('@manaphp/base.php',(new \ManaPHP\Loader\ClassMerger())->merge());

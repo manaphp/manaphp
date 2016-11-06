@@ -39,6 +39,15 @@ class Component implements ComponentInterface
     }
 
     /**
+     * Returns the internal dependency injector
+     *
+     * @return \ManaPHP\Di
+     */
+    public function getDependencyInjector(){
+        return $this->_dependencyInjector;
+    }
+
+    /**
      * Magic method __get
      *
      * @param string $name
