@@ -1,0 +1,30 @@
+<?php
+
+use Sami\RemoteRepository\GitLabRemoteRepository;
+use Sami\Sami;
+use Sami\Version\GitVersionCollection;
+use Symfony\Component\Finder\Finder;
+
+/** @noinspection PhpUndefinedClassInspection */
+$iterator = Finder::create()
+    ->files()
+    ->name('*.php')
+    ->exclude('Tests')
+    ->in($dir = '/d/wamp/www/manaphp/ManaPHP');
+
+/** @noinspection PhpUndefinedClassInspection */
+$versions = GitVersionCollection::create($dir)
+    ->add('develop', 'develop branch')
+    ->add('master', 'master branch');
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection SpellCheckingInspection */
+return new Sami($iterator, array(
+    //   'theme' => 'symfony',
+    'versions' => $versions,
+    'title' => 'ManaPHP API',
+    'build_dir' => __DIR__ . '/../manaphp_api/docs/%version%',
+    'cache_dir' => __DIR__ . '/../manaphp_api/cache/%version%',
+    'remote_repository' => new GitLabRemoteRepository('manaphp/manaphp', dirname($dir), 'https://git.oschina.net/'),
+    'default_opened_level' => 2,
+));
