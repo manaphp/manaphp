@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Cache\AdapterInterface;
-
 /**
  * Class ManaPHP\Cache
  *

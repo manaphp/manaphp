@@ -6,7 +6,6 @@
  */
 namespace ManaPHP;
 
-use ManaPHP\Logger\AdapterInterface;
 use ManaPHP\Logger\Exception as LoggerException;
 use ManaPHP\Utility\Text;
 

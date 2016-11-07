@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Mvc;
 
-use ManaPHP\Http\ResponseInterface;
-
 /**
  * Class ManaPHP\Mvc\Application
  *

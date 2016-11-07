@@ -43,7 +43,8 @@ class Component implements ComponentInterface
      *
      * @return \ManaPHP\Di
      */
-    public function getDependencyInjector(){
+    public function getDependencyInjector()
+    {
         return $this->_dependencyInjector;
     }
 

@@ -33,7 +33,6 @@ class Cli extends Application
     {
         date_default_timezone_set('PRC');
 
-        $this->loader->registerNamespaces([basename($this->alias->get('@app')) => $this->alias->get('@app')]);
         $this->registerServices();
 
         $this->debugger->start();

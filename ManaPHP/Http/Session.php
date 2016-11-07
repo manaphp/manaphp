@@ -8,7 +8,6 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Session\AdapterInterface;
 use ManaPHP\Http\Session\Exception as SessionException;
 
 /**

@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Store\AdapterInterface;
-
 /**
  * Class ManaPHP\Store
  *
