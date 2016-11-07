@@ -1,10 +1,8 @@
 <?php
-namespace ManaPHP\Configure;
-
-use ManaPHP\Component;
+namespace ManaPHP;
 
 /**
- * Class ManaPHP\Configure\Configure
+ * Class ManaPHP\Configure
  *
  * @package configure
  */

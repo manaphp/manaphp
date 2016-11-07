@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Configure;
+namespace ManaPHP;
 
 /**
- * Interface ManaPHP\Configure\ConfigureInterface
+ * Interface ManaPHP\ConfigureInterface
  *
  * @package configure
  */

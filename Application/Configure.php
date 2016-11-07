@@ -3,7 +3,7 @@ namespace Application {
 
     use ManaPHP\Utility\Text;
 
-    class Configure extends \ManaPHP\Configure\Configure
+    class Configure extends \ManaPHP\Configure
     {
         /**
          * @var \ConfManaPHP\Db\Adapter\Mysql $database
