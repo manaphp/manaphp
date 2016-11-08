@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Debugger\Exception as DebuggerException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -9,11 +8,12 @@ use ManaPHP\Utility\Text;
  *
  * @package debugger
  *
- * @property \ManaPHP\Mvc\RouterInterface   $router
- * @property \ManaPHP\Mvc\UrlInterface      $url
- * @property \ManaPHP\Http\RequestInterface $request
- * @property \ManaPHP\LoggerInterface       $logger
- * @property \ManaPHP\RendererInterface     $renderer
+ * @property \ManaPHP\Mvc\RouterInterface      $router
+ * @property \ManaPHP\Mvc\UrlInterface         $url
+ * @property \ManaPHP\Http\RequestInterface    $request
+ * @property \ManaPHP\LoggerInterface          $logger
+ * @property \ManaPHP\RendererInterface        $renderer
+ * @property \ManaPHP\Security\RandomInterface $random
  */
 class Debugger extends Component implements DebuggerInterface
 {
@@ -127,11 +127,10 @@ class Debugger extends Component implements DebuggerInterface
      */
     public function start()
     {
-        if ($this->request->hasQuery('_debugger')) {
-            $file = $this->alias->resolve('@data/debugger/' . substr($this->request->getQuery('_debugger', 'ignore'), 0, 6) . '/' . $this->request->getQuery('_debugger',
-                    'ignore') . '.html');
-            if (is_file($file)) {
-                exit(file_get_contents($file));
+        if (isset($_GET['_debugger']) && preg_match('#^[a-zA-Z0-9_/]+\.html$#', $_GET['_debugger'])) {
+            $file = '@data/debugger' . $_GET['_debugger'];
+            if ($this->filesystem->fileExists($file)) {
+                exit($this->filesystem->fileGet($file));
             }
         }
 
@@ -287,19 +286,8 @@ class Debugger extends Component implements DebuggerInterface
             return '';
         }
 
-        $parts = explode(' ', microtime());
-        $id = date('ymd_His', $parts[1]) . '_' . substr($parts[0], 2, 6);
-        $file = $this->alias->resolve('@data/debugger/' . substr($id, 0, 6) . '/' . $id . '.html');
-
-        $dir = dirname($file);
-        if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new DebuggerException('create `:dir` debugger directory failed: :message'/**m0a030185047c651e6*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
-        }
-
-        if (!file_put_contents($file, $this->output($template))) {
-            error_log('save debug file failed: ' . $file);
-        }
-
-        return $this->url->getAbsolute('/?_debugger=' . $id);
+        $file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+        $this->filesystem->filePut('@data/debugger' . $file, $this->output($template));
+        return $this->url->getAbsolute('/?_debugger=' . $file);
     }
 }

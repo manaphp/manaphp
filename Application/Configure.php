@@ -20,11 +20,6 @@ namespace Application {
          */
         public $crypt;
 
-        /**
-         * @var \ConfManaPHP\Debugger
-         */
-        public $debugger;
-
         public function __construct()
         {
             $this->config();
@@ -55,14 +50,6 @@ namespace Application {
 
             $this->logger = new \stdClass();
             $this->logger->file = '@data/logger/' . date('Ymd') . '.log';
-
-            $this->debugger = new \stdClass();
-
-            if (PHP_SAPI !== 'cli') {
-                $this->debugger->autoResponse = $_SERVER['REMOTE_ADDR'] === $_SERVER['SERVER_ADDR'] || Text::startsWith($_SERVER['REMOTE_ADDR'], '192.168.');
-            } else {
-                $this->debugger->autoResponse = false;
-            }
         }
     }
 }
