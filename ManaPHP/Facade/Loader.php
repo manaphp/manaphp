@@ -10,7 +10,7 @@ use ManaPHP\Facade;
  *
  * @package loader
  *
- * @method  static \ManaPHP\Loader getFacadeInstance()
+ * @method  static \ManaPHP\LoaderInterface getFacadeInstance()
  */
 class Loader extends Facade
 {

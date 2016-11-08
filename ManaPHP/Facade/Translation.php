@@ -10,7 +10,7 @@ use ManaPHP\Facade;
  *
  * @package captcha
  *
- * @method  static \ManaPHP\I18n\Translation getFacadeInstance()
+ * @method  static \ManaPHP\I18n\TranslationInterface getFacadeInstance()
  */
 class Translation extends Facade
 {

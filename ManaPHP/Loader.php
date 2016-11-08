@@ -60,12 +60,6 @@ class Loader
 
         $this->_namespaces = $merge ? array_merge($this->_namespaces, $namespaces) : $namespaces;
 
-        $cmp_function = function ($a, $b) {
-            return strlen($b) - strlen($a);
-        };
-
-        uksort($this->_namespaces, $cmp_function);
-
         return $this;
     }
 
@@ -96,23 +90,19 @@ class Loader
      *
      * @param string $file The file to require.
      *
-     * @return bool
+     * @return true
      */
     protected function ___requireFile($file)
     {
-        if (is_file($file)) {
-            if (PHP_EOL !== "\n") {
-                $realPath = str_replace('\\', '/', realpath($file));
-                if ($realPath !== $file) {
-                    trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
-                }
+        if (PHP_EOL !== "\n") {
+            $realPath = str_replace('\\', '/', realpath($file));
+            if ($realPath !== $file) {
+                trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
             }
-            /** @noinspection PhpIncludeInspection */
-            require $file;
-            return true;
-        } else {
-            return false;
         }
+        /** @noinspection PhpIncludeInspection */
+        require $file;
+        return true;
     }
 
     /**
@@ -125,6 +115,9 @@ class Loader
     public function ___autoload($className)
     {
         if (isset($this->_classes[$className])) {
+            if (!is_file($this->_classes[$className])) {
+                trigger_error(strtr('load `:class` class failed: `:file` is not exists.', [':class' => $className, 'file' => $this->_classes[$className]]), E_USER_ERROR);
+            }
             return $this->___requireFile($this->_classes[$className]);
         }
 
@@ -135,10 +128,16 @@ class Loader
             }
 
             $file = $path . str_replace('\\', '/', substr($className, strlen($namespace))) . '.php';
-
-            return $this->___requireFile($file);
+            if (is_file($file)) {
+                return $this->___requireFile($file);
+            }
         }
 
         return false;
+    }
+
+    public function dump()
+    {
+        return get_object_vars($this);
     }
 }

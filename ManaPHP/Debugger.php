@@ -259,7 +259,7 @@ class Debugger extends Component implements DebuggerInterface
         /** @noinspection ImplicitMagicMethodCallInspection */
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_dependencyInjector->__debugInfo()['_sharedInstances'] as $k => $v) {
-            if ($v instanceof Component) {
+            if (method_exists($v, 'dump')) {
                 $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $v->dump()];
             } else {
                 $data['components'][] = ['name' => '', 'class' => get_class($v)];

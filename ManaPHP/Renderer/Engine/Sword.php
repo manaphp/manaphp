@@ -840,6 +840,7 @@ class Sword extends Component implements EngineInterface
         if (!file_exists($_compiledFile) || filemtime($file) > filemtime($_compiledFile)) {
             $dir = dirname($_compiledFile);
 
+            /** @noinspection NotOptimalIfConditionsInspection */
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
                 throw new SwordException('create `:dir` directory failed: :message', ['dir' => $dir, 'message' => SwordException::getLastErrorMessage()]);
             }

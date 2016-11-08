@@ -10,7 +10,7 @@ use ManaPHP\Facade;
  *
  * @package cache
  *
- * @method  static \ManaPHP\Configure getFacadeInstance()
+ * @method  static \ManaPHP\ConfigureInterface getFacadeInstance()
  */
 class Configure extends Facade
 {

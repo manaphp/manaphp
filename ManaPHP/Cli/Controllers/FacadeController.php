@@ -25,8 +25,9 @@ EOD;
             if (preg_match('#static\s+(.*)\s+getFacadeInstance*#', $this->filesystem->fileGet($file), $match) !== 1) {
                 continue;
             }
-
-            $r = $this->generate($facadeName, $match[1]);
+            $interfaceName = $match[1];
+            $r = $this->generate($facadeName, $interfaceName);
+            $this->console->writeLn(str_pad(' ' . $facadeName . ':', 16, ' ') . $interfaceName);
             $content .= PHP_EOL . PHP_EOL . $r;
         }
 
