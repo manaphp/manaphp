@@ -84,7 +84,7 @@ class Router extends Component implements RouterInterface
     {
         $commands = [];
 
-        $controllerClassName = basename($this->alias->get('@app')) . '\Cli\Controllers\\' . $controller . 'Controller';
+        $controllerClassName = $this->alias->resolve('@ns.app\\Cli\Controllers\\' . $controller . 'Controller');
         if (!class_exists($controllerClassName)) {
             $controllerClassName = 'ManaPHP\Cli\Controllers\\' . $controller . 'Controller';
             /** @noinspection NotOptimalIfConditionsInspection */
