@@ -56,6 +56,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
  * @property \ManaPHP\Security\SecintInterface             $secint
  * @property \ManaPHP\I18n\Translation                     $translation
+ * @property \ManaPHP\Renderer\Engine\Sword\Compiler       $swordCompiler
  */
 class Di implements DiInterface
 {
