@@ -58,16 +58,6 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @var string
      */
-    protected $_controllerSuffix = 'Controller';
-
-    /**
-     * @var string
-     */
-    protected $_actionSuffix = 'Action';
-
-    /**
-     * @var string
-     */
     protected $_previousControllerName;
 
     /**
@@ -237,7 +227,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 continue;
             }
 
-            $controllerClassName = $this->alias->resolve('@ns.controllers\\' . $this->_controllerName . $this->_controllerSuffix);
+            $controllerClassName = $this->alias->resolve('@ns.controllers\\' . $this->_controllerName . 'Controller');
 
             if (!$this->_dependencyInjector->has($controllerClassName) && !class_exists($controllerClassName)) {
                 throw new NotFoundControllerException('`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, ['controller' => $controllerClassName]);
@@ -247,37 +237,23 @@ class Dispatcher extends Component implements DispatcherInterface
             $this->_controller = $controllerInstance;
 
             $hasAction = false;
-            $actionMethod = strtolower($this->_actionName . $this->_actionSuffix);
+            $actionMethod = $this->_actionName . 'Action';
             foreach (get_class_methods($controllerInstance) as $method) {
-                if ($actionMethod === strtolower($method)) {
-                    if (substr($method, -strlen($this->_actionSuffix)) !== $this->_actionSuffix) {
-                        throw new DispatcherException('`:method` action of `:controller`  does not suffix with `:suffix`'/**m02be64d9c0cc78392*/,
-                            ['method' => $method, 'controller' => $controllerClassName, 'suffix' => $this->_actionSuffix]);
-                    }
-
-                    /** @noinspection SubStrUsedAsArrayAccessInspection */
-                    $firstChar = substr($method, 0, 1);
-                    if (strtolower($firstChar) !== $firstChar) {
-                        throw new DispatcherException('`:method` action of `:controller` does not prefix with lowercase character'/**m05039932d378d3ede*/,
-                            ['method' => $method, 'controller' => $controllerClassName]);
-                    }
-
-                    if ($this->_actionName . $this->_actionSuffix !== $method) {
+                if (strcasecmp($actionMethod, $method) === 0) {
+                    if ($actionMethod !== $method) {
                         throw new DispatcherException('`:method` of `:controller` is not equal to `:action` '/**m05039932d378d3ede*/,
-                            ['method' => $method, 'action' => $this->_actionName . $this->_actionSuffix, 'controller' => $controllerClassName]);
+                            ['method' => $method, 'action' => $this->_actionName . 'Action', 'controller' => $controllerClassName]);
                     }
 
                     $hasAction = true;
-                    $this->_actionName = substr($method, 0, -strlen($this->_actionSuffix));
                     $actionMethod = $method;
                     break;
-
                 }
             }
 
             if (!$hasAction) {
                 throw new NotFoundActionException('`:action` action was not found on `:controller`'/**m061a35fc1c0cd0b6f*/,
-                    ['action' => $this->_actionName . $this->_actionSuffix, 'controller' => $controllerClassName]);
+                    ['action' => $actionMethod, 'controller' => $controllerClassName]);
             }
 
             if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {

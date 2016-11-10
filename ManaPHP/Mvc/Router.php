@@ -51,21 +51,6 @@ class Router extends Component implements RouterInterface
     protected $_wasMatched = false;
 
     /**
-     * @var string
-     */
-    protected $_defaultController = 'index';
-
-    /**
-     * @var string
-     */
-    protected $_defaultAction = 'index';
-
-    /**
-     * @var array
-     */
-    protected $_defaultParams = [];
-
-    /**
      * @var bool
      */
     protected $_removeExtraSlashes = false;
@@ -178,9 +163,9 @@ class Router extends Component implements RouterInterface
 
         if ($routeFound) {
             $this->_module = $module;
-            $this->_controller = $this->_defaultController;
-            $this->_action = $this->_defaultAction;
-            $this->_params = $this->_defaultParams;
+            $this->_controller = 'index';
+            $this->_action = 'index';
+            $this->_params = [];
 
             if (isset($parts['module'])) {
                 $this->_module = $parts['module'];
