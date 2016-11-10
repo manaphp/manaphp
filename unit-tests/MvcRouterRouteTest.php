@@ -23,10 +23,9 @@ class MvcRouterRouteTest extends TestCase
         $this->assertEquals([], $parts);
 
         // :module, :controller, :action, :params
-        $route = new \ManaPHP\Mvc\Router\Route('/:module/:controller/:action/:params');
-        $parts = $route->match('/admin/blog/edit/a/b/c');
+        $route = new \ManaPHP\Mvc\Router\Route('/:controller/:action/:params');
+        $parts = $route->match('/blog/edit/a/b/c');
         $this->assertNotFalse($parts);
-        $this->assertEquals('admin', $parts['module']);
         $this->assertEquals('blog', $parts['controller']);
         $this->assertEquals('edit', $parts['action']);
         $this->assertEquals('a/b/c', $parts['params']);
@@ -71,9 +70,9 @@ class MvcRouterRouteTest extends TestCase
             ),
         );
         $group = new \ManaPHP\Mvc\Router\Group();
-        $group->add('/some/{name}', ['controller' => 'c', 'action' => 'a']);
-        $group->add('/some/{name}/{id:[0-9]+}', ['controller' => 'c', 'action' => 'a']);
-        $group->add('/some/{name}/{id:[0-9]+}/{date}', ['controller' => 'c', 'action' => 'a']);
+        $group->add('/some/{name}', 'c::a');
+        $group->add('/some/{name}/{id:[0-9]+}', 'c::a');
+        $group->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         $router->mount($group, '/');
 
@@ -101,9 +100,8 @@ class MvcRouterRouteTest extends TestCase
             'action' => 'get',
         ));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/route2', 'news::posts::show');
+        $route = new \ManaPHP\Mvc\Router\Route('/route2', 'posts::show');
         $this->assertEquals($route->getPaths(), array(
-            'module' => 'news',
             'controller' => 'posts',
             'action' => 'show',
         ));

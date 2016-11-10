@@ -163,36 +163,18 @@ class Router extends Component implements RouterInterface
 
         if ($routeFound) {
             $this->_module = $module;
-            $this->_controller = 'index';
-            $this->_action = 'index';
-            $this->_params = [];
-
-            if (isset($parts['module'])) {
-                $this->_module = $parts['module'];
-                unset($parts['module']);
-            }
-
-            if (isset($parts['controller'])) {
-                $this->_controller = basename($parts['controller'], 'Controller');
-                unset($parts['controller']);
-            }
-
-            if (isset($parts['action'])) {
-                $this->_action = basename($parts['action'], 'Action');
-                unset($parts['action']);
-            }
+            $this->_controller = isset($parts['controller']) ? basename($parts['controller'], 'Controller') : 'index';
+            $this->_action = isset($parts['action']) ? basename($parts['action'], 'Action') : 'index';
 
             $params = [];
             if (isset($parts['params'])) {
-                if (is_string($parts['params'])) {
-                    $params_str = trim($parts['params'], '/');
-                    if ($params_str !== '') {
-                        $params = explode('/', $params_str);
-                    }
+                $params_str = trim($parts['params'], '/');
+                if ($params_str !== '') {
+                    $params = explode('/', $params_str);
                 }
-
-                unset($parts['params']);
             }
+
+            unset($parts['controller'], $parts['action'], $parts['params']);
 
             $this->_params = array_merge($params, $parts);
         }

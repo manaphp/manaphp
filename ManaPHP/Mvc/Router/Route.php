@@ -62,7 +62,6 @@ class Route implements RouteInterface
         // If a pattern contains ':', maybe there are placeholders to replace
         if (Text::contains($pattern, ':')) {
             $tr = [
-                '/:module' => '/{module:[a-z\d_-]+}',
                 '/:controller' => '/{controller:[a-z\d_-]+}',
                 '/:action' => '/{action:[a-z\d_-]+}',
                 '/:params' => '/{params:.+}',
@@ -141,55 +140,40 @@ class Route implements RouteInterface
      */
     public static function getRoutePaths($paths = null)
     {
-        if ($paths !== null) {
-            if (is_array($paths) && isset($paths[0])) {
-                $paths = implode('::', $paths);
-            }
+        $routePaths = [];
 
-            if (is_string($paths)) {
-                $parts = explode('::', $paths);
-
-                $moduleName = '';
-                $actionName = '';
-
-                if (count($parts) === 3) {
-                    $moduleName = $parts[0];
-                    /** @noinspection MultiAssignmentUsageInspection */
-                    $controllerName = $parts[1];
-                    /** @noinspection MultiAssignmentUsageInspection */
-                    $actionName = $parts[2];
-                } elseif (count($parts) === 2) {
-                    $controllerName = $parts[0];
-                    /** @noinspection MultiAssignmentUsageInspection */
-                    $actionName = $parts[1];
-                } else {
-                    $controllerName = $parts[0];
-                }
-
-                $routePaths = [];
-                if ($moduleName !== '') {
-                    $routePaths['module'] = $moduleName;
-                }
-
-                if ($controllerName !== '') {
-                    $routePaths['controller'] = $controllerName;
-                }
-
-                if ($actionName !== '') {
-                    $routePaths['action'] = $actionName;
-                }
-            } elseif (is_array($paths)) {
-                $routePaths = $paths;
+        if (is_string($paths)) {
+            $parts = explode('::', $paths);
+            if (count($parts) === 2) {
+                $routePaths['controller'] = $parts[0];
+                /** @noinspection MultiAssignmentUsageInspection */
+                $routePaths['action'] = $parts[1];
             } else {
-                throw new RouteException('route paths must be a string or array.'/**m03f7b85074aa7a9b6*/);
+                $routePaths['controller'] = $parts[0];
+            }
+        } elseif (is_array($paths)) {
+            if (isset($paths[0])) {
+                if (strpos($paths[0], '::')) {
+                    $parts = explode('::', $paths);
+                    $routePaths['controller'] = $parts[0];
+                    $routePaths['action'] = $parts[1];
+                } else {
+                    $routePaths['controller'] = $paths[0];
+                }
+            } elseif (isset($paths[1])) {
+                $routePaths['action'] = $paths[1];
             }
 
-            if (isset($routePaths['controller']) && is_string($routePaths['controller'])) {
-                $parts = explode('\\', $routePaths['controller']);
-                $routePaths['controller'] = basename(end($parts), 'Controller');
+            foreach ($paths as $k => $v) {
+                if (is_string($k)) {
+                    $routePaths[$k] = $v;
+                }
             }
-        } else {
-            $routePaths = [];
+        }
+
+        if (isset($routePaths['controller']) && is_string($routePaths['controller'])) {
+            $parts = explode('\\', $routePaths['controller']);
+            $routePaths['controller'] = basename(end($parts), 'Controller');
         }
 
         return $routePaths;

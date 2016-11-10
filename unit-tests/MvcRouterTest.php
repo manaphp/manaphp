@@ -126,54 +126,21 @@ class MvcRouterTest extends TestCase
 
         $router = new ManaPHP\Mvc\Router();
         $group = new Test\App\RouteGroup();
-        $group->add('/', array(
-            'controller' => 'index',
-            'action' => 'index'
-        ));
+        $group->add('/', 'index::index');
 
-        $group->add('/system/:controller/a/:action/:params', array(
-            'controller' => 1,
-            'action' => 2,
-            'params' => 3,
-        ));
+        $group->add('/system/:controller/a/:action/:params');
 
-        $group->add('/([a-z]{2})/:controller', array(
-            'controller' => 2,
-            'action' => 'index',
-            'language' => 1
-        ));
+        $group->add('/{language:[a-z]{2}}/:controller');
 
-        $group->add('/admin/:controller/:action/:int', array(
-            'controller' => 1,
-            'action' => 2,
-            'id' => 3
-        ));
+        $group->add('/admin/:controller/:action/{id:\d+}');
 
-        $group->add('/posts/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params', array(
-            'controller' => 'posts',
-            'action' => 'show',
-            'year' => 1,
-            'month' => 2,
-            'day' => 3,
-            'params' => 4,
-        ));
+        $group->add('/posts/{year:\d{4}}/{month:\d{2}}/{day:\d{2}}/:params', 'posts::show');
 
-        $group->add('/manual/([a-z]{2})/([a-z\.]+)\.html', array(
-            'controller' => 'manual',
-            'action' => 'show',
-            'language' => 1,
-            'file' => 2
-        ));
+        $group->add('/manual/{language:[a-z]{2}}/{file:[a-z\.]+}\.html', 'manual::show');
 
-        $group->add('/named-manual/{language:([a-z]{2})}/{file:[a-z\.]+}\.html', array(
-            'controller' => 'manual',
-            'action' => 'show',
-        ));
+        $group->add('/named-manual/{language:([a-z]{2})}/{file:[a-z\.]+}\.html', 'manual::show');
 
-        $group->add('/very/static/route', array(
-            'controller' => 'static',
-            'action' => 'route'
-        ));
+        $group->add('/very/static/route', 'static::route');
 
         $group->add('/feed/{lang:[a-z]+}/blog/{blog:[a-z\-]+}\.{type:[a-z\-]+}', 'feed::get');
 
@@ -256,40 +223,19 @@ class MvcRouterTest extends TestCase
         $router = new ManaPHP\Mvc\Router();
         $router->setDependencyInjector($di);
         $group = new \Test\App\RouteGroup();
-        $group->add('/docs/index', array(
-            'controller' => 'documentation2',
-            'action' => 'index'
-        ));
+        $group->add('/docs/index', 'documentation2::index');
 
-        $group->addPost('/docs/index', array(
-            'controller' => 'documentation3',
-            'action' => 'index'
-        ));
+        $group->addPost('/docs/index', 'documentation3::index');
 
-        $group->addGet('/docs/index', array(
-            'controller' => 'documentation4',
-            'action' => 'index'
-        ));
+        $group->addGet('/docs/index', 'documentation4::index');
 
-        $group->addPut('/docs/index', array(
-            'controller' => 'documentation5',
-            'action' => 'index'
-        ));
+        $group->addPut('/docs/index', 'documentation5::index');
 
-        $group->addDelete('/docs/index', array(
-            'controller' => 'documentation6',
-            'action' => 'index'
-        ));
+        $group->addDelete('/docs/index', 'documentation6::index');
 
-        $group->addOptions('/docs/index', array(
-            'controller' => 'documentation7',
-            'action' => 'index'
-        ));
+        $group->addOptions('/docs/index', 'documentation7::index');
 
-        $group->addHead('/docs/index', array(
-            'controller' => 'documentation8',
-            'action' => 'index'
-        ));
+        $group->addHead('/docs/index', 'documentation8::index');
 
         $router->mount($group, '/');
         foreach ($tests as $n => $test) {
@@ -306,14 +252,7 @@ class MvcRouterTest extends TestCase
     {
         $group = new \Test\App\RouteGroup();
 
-        $group->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params', array(
-            'controller' => 'posts',
-            'action' => 'show',
-            'year' => 1, // ([0-9]{4})
-            'month' => 2, // ([0-9]{2})
-            'day' => 3, // ([0-9]{2})
-            'params' => 4  // :params
-        ));
+        $group->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params', 'posts::show');
 
         $router = new \ManaPHP\Mvc\Router();
         $router->mount($group, '/');
@@ -356,9 +295,9 @@ class MvcRouterTest extends TestCase
             ),
         );
         $group = new \Test\App\RouteGroup();
-        $group->add('/some/{name}', ['controller' => 'c', 'action' => 'a']);
-        $group->add('/some/{name}/{id:[0-9]+}', ['controller' => 'c', 'action' => 'a']);
-        $group->add('/some/{name}/{id:[0-9]+}/{date}', ['controller' => 'c', 'action' => 'a']);
+        $group->add('/some/{name}', 'c::a');
+        $group->add('/some/{name}/{id:[0-9]+}', 'c::a');
+        $group->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         $router->mount($group, '/');
 
@@ -418,10 +357,7 @@ class MvcRouterTest extends TestCase
             'action' => 'edit'
         ));
 
-        $group->add('/about', array(
-            'controller' => 'about',
-            'action' => 'index'
-        ));
+        $group->add('/about', 'about::index');
 
         $router->mount($group, '/blog');
 
@@ -475,7 +411,7 @@ class MvcRouterTest extends TestCase
         $this->assertEquals('detail', $router->getActionName());
 
         //multiple module usage with binding to domain
-       
+
         $_SERVER['HTTP_HOST'] = 'blog.manaphp.com';
         $router = (new \ManaPHP\Mvc\Router())->mount($group, 'blog.manaphp.com');
         $router->handle('/article/1', 'blog.manaphp.com');
@@ -532,9 +468,8 @@ class MvcRouterTest extends TestCase
             'action' => 'get',
         ));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/route2', 'news::posts::show');
+        $route = new \ManaPHP\Mvc\Router\Route('/route2', 'posts::show');
         $this->assertEquals($route->getPaths(), array(
-            'module' => 'news',
             'controller' => 'posts',
             'action' => 'show',
         ));
@@ -549,12 +484,11 @@ class MvcRouterTest extends TestCase
     public function test_shortPaths_usage()
     {
         $group = new \Test\App\RouteGroup();
-        $group->add('/', 'admin::user::list');
+        $group->add('/', 'user::list');
         $router = new \ManaPHP\Mvc\Router();
         $router->mount($group, '/');
         $router->handle('/');
         $this->assertTrue($router->wasMatched());
-        $this->assertEquals('admin', $router->getModuleName());
         $this->assertEquals('user', $router->getControllerName());
         $this->assertEquals('list', $router->getActionName());
 

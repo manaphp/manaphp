@@ -188,13 +188,7 @@ class Group extends Component implements GroupInterface
                 }
 
                 foreach ($route->getPaths() as $k => $v) {
-                    if (is_int($v)) {
-                        if (isset($matches[$v])) {
-                            $parts[$k] = $matches[$v];
-                        }
-                    } else {
-                        $parts[$k] = $v;
-                    }
+                    $parts[$k] = $v;
                 }
 
                 return $parts;
