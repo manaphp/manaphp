@@ -810,6 +810,20 @@ class Compiler extends Component
     }
 
     /**
+     * Compile the eol statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileEol(
+        /** @noinspection PhpUnusedParameterInspection */
+        $expression
+    ) {
+        return '<?php echo PHP_EOL ?>';
+    }
+
+    /**
      * Register a handler for custom directives.
      *
      * @param  string   $name
