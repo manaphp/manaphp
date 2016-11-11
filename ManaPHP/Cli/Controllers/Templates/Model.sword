@@ -1,0 +1,21 @@
+<?= '<?php' ?>@eol
+namespace {!! $model_namespace !!};
+
+/**@eol
+ * Class {!! $model_namespace,'\\',$model_name !!}@eol
+ *
+@foreach($by_columns as $k=>$v)
+ * {!! '@method' !!} static $this|false findFirstBy{!! $v !!}(string ${!! $k !!}, int|array $cacheOptions = null)@eol
+ * {!! '@method' !!} static {!! $model_name !!}[]|false findBy{!! $v !!}(string ${!! $k !!}, int|array $cacheOptions = null)@eol
+@endforeach
+ */
+class {!! $model_name !!} extends {!! $model_extends!!}@eol
+{
+@foreach($columns as $column=>$type)
+    /**
+     * @var {!!$type!!}@eol
+     */
+    public ${!! $column !!};
+
+@endforeach
+}

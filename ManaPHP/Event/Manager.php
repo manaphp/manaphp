@@ -54,7 +54,7 @@ class Manager implements ManagerInterface
             if ($handler instanceof \Closure) {
                 $handler($source, $data, $event);
             } else {
-                $handler[0]->$handler[1]($source, $data, $event);
+                $handler[0]->{$handler[1]}($source, $data, $event);
             }
         }
 
