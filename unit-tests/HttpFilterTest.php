@@ -22,6 +22,7 @@ class HttpFilterTest extends TestCase
         $this->assertEquals(1, $this->filter->sanitize('open', 'default:1|int', null));
     }
 
+
     public function test_bool()
     {
         $this->assertTrue($this->filter->sanitize('open', 'bool', '1'));
@@ -36,7 +37,6 @@ class HttpFilterTest extends TestCase
             $this->filter->sanitize('open', 'bool', 'd');
             $this->assertFalse('why not?');
         } catch (\ManaPHP\Exception $e) {
-
         }
     }
 
@@ -50,7 +50,6 @@ class HttpFilterTest extends TestCase
             $this->filter->sanitize('age', 'int', 'A18');
             $this->assertFalse('why not?');
         } catch (\ManaPHP\Exception $e) {
-
         }
     }
 

@@ -21,7 +21,7 @@ class FactoryDefault extends Di
         $this->_services = [
             'eventsManager' => 'ManaPHP\Event\Manager',
             'alias' => 'ManaPHP\Alias',
-            'configure' => 'ManaPHP\Configure\Configure',
+            'configure' => 'ManaPHP\Configure',
             'router' => 'ManaPHP\Mvc\Router',
             'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
             'url' => 'ManaPHP\Mvc\Url',
