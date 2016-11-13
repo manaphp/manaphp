@@ -68,7 +68,7 @@ class Manager implements ManagerInterface
             if ($handler instanceof \Closure) {
                 $ret = $handler($source, $data, $event);
             } else {
-                $ret = $handler[0]->$handler[1]($source, $data, $event);
+                $ret = $handler[0]->{$handler[1]}($source, $data, $event);
             }
 
             if ($ret === false && $i !== count($this->_events[$event]) - 1) {

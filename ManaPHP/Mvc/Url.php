@@ -87,8 +87,8 @@ class Url extends Component implements UrlInterface
                 }
             }
 
-            if (isset($location[2])) {
-                $module = $location[2];
+            if (isset($tmp[2])) {
+                $module = $tmp[2];
             }
         } else {
             if (is_string($args)) {

@@ -207,7 +207,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function __debugInfo()
     {
-        $data = (isset($_SESSION) && is_array($_SESSION)) ? $_SERVER : [];
+        $data = (isset($_SESSION) && is_array($_SESSION)) ? $_SESSION : [];
 
         $data['_internal_'] = ['adapter' => get_class($this->adapter)];
         return $data;
