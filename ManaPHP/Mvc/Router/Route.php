@@ -160,7 +160,9 @@ class Route implements RouteInterface
                 } else {
                     $routePaths['controller'] = $paths[0];
                 }
-            } elseif (isset($paths[1])) {
+            }
+
+            if (isset($paths[1])) {
                 $routePaths['action'] = $paths[1];
             }
 
