@@ -144,11 +144,10 @@ class Url extends Component implements UrlInterface
         if (strpos($url, '://') === false) {
             $scheme = $this->request->getScheme();
             $host = $this->request->getServer('HTTP_HOST');
-            $port = (int)$this->request->getServer('SERVER_PORT');
             if ($this->request->getScheme() === 'https') {
-                return $scheme . '://' . $host . ($port === 443 ? '' : ':' . $port) . $url;
+                return $scheme . '://' . $host . $url;
             } else {
-                return $scheme . '://' . $host . ($port === 80 ? '' : ':' . $port) . $url;
+                return $scheme . '://' . $host . $url;
             }
         } else {
             return $url;

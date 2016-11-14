@@ -33,8 +33,8 @@ class HelpController extends Controller
         }
 
         foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
-            if (preg_match('#/(\w+/\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
-                $controllerClassName = str_replace('/', '\\', $matches[1]);
+            if (preg_match('#/(\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
+                $controllerClassName = 'ManaPHP\\' . str_replace('/', '\\', $matches[1]);
                 if (in_array($matches[2], $controllerNames, true)) {
                     continue;
                 }
