@@ -9,11 +9,11 @@ class Module extends \ManaPHP\Mvc\Module
 {
     public function registerServices($di)
     {
-        $this->_dependencyInjector->setShared('authorization', new Rbac());
-        $this->_dependencyInjector->setShared('userIdentity', new UserIdentity($this->session->get('admin_auth', [])));
-        $this->_dependencyInjector->setShared('translation', function () {
+        $this->_dependencyInjector->authorization = new Rbac();
+        $this->_dependencyInjector->userIdentity = new UserIdentity($this->session->get('admin_auth', []));
+        $this->_dependencyInjector->translation = function () {
             return new Translation(['language' => 'zh-CN,en']);
-        });
+        };
     }
 
     public function authorize($controller, $action)

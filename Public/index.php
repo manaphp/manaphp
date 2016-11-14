@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/11/21
- * Time: 21:52
- */
-
 error_reporting(E_ALL);
 ini_set('html_errors', 'on');
 

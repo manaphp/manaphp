@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Application\AbortException;
 use ManaPHP\Di\FactoryDefault;
 
 /**
@@ -66,5 +67,16 @@ abstract class Application extends Component implements ApplicationInterface
         }
 
         return $this->_modules;
+    }
+
+    /**
+     * @param int    $code
+     * @param string $message
+     *
+     * @throws \ManaPHP\Application\AbortException
+     */
+    public function abort($code, $message)
+    {
+        throw new AbortException($message, $code);
     }
 }

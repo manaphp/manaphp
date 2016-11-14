@@ -116,5 +116,7 @@ class Mysql extends Db
     public function truncateTable($source)
     {
         $this->execute('TRUNCATE TABLE ' . $this->escapeIdentifier($source));
+
+        return $this;
     }
 }

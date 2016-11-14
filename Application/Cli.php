@@ -12,9 +12,7 @@ class Cli extends Application
         $self = $this;
         $this->_dependencyInjector->remove('url');
 
-        $this->_dependencyInjector->setShared('configure', function () {
-            return new Configure();
-        });
+        $this->_dependencyInjector->configure = new Configure();
 
         $this->_dependencyInjector->set('db', function () use ($self) {
             $mysql = new Mysql((array)$self->configure->database);
@@ -24,11 +22,11 @@ class Cli extends Application
             return $mysql;
         });
 
-        $this->_dependencyInjector->setShared('redis', function () {
+        $this->_dependencyInjector->redis = function () {
             $redis = new \Redis();
             $redis->connect('localhost');
             return $redis;
-        });
+        };
     }
 
     public function main()

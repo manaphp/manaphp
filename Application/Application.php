@@ -11,7 +11,7 @@ namespace Application {
         {
             $self = $this;
 
-            $this->_dependencyInjector->setShared('configure', new Configure());
+            $this->_dependencyInjector->configure = new Configure();
 
             $this->router->mount(new Home\RouteGroup(), '/')
                 ->mount(Admin\RouteGroup::class, '/admin')
@@ -26,11 +26,11 @@ namespace Application {
                 return $mysql;
             });
 
-            $this->_dependencyInjector->setShared('redis', function () {
+            $this->_dependencyInjector->redis = function () {
                 $redis = new \Redis();
                 $redis->connect('localhost');
                 return $redis;
-            });
+            };
         }
 
         /**

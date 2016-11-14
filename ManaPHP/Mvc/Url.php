@@ -91,6 +91,7 @@ class Url extends Component implements UrlInterface
                 $module = $tmp[2];
             }
         } else {
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             if (is_string($args)) {
                 $module = $args;
                 $args = [];

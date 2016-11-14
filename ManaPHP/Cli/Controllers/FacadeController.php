@@ -18,6 +18,7 @@ class FacadeController extends Controller
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
+class Exception extends \ManaPHP\Exception{}
 
 EOD;
         foreach ($this->filesystem->glob('@manaphp/Facade/*.php') as $file) {

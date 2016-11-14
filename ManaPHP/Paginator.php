@@ -65,6 +65,8 @@ class Paginator extends Component implements PaginatorInterface
         $this->pages = (int)ceil($this->count / $size);
         $this->prev = max(1, $this->page - 1);
         $this->next = min($this->page + 1, $this->pages);
+
+        return $this;
     }
 
     /**

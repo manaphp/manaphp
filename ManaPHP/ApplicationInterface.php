@@ -22,4 +22,12 @@ interface ApplicationInterface
      * @return array
      */
     public function getModules();
+
+    /**
+     * @param int    $code
+     * @param string $message
+     *
+     * @return void
+     */
+    public function abort($code, $message);
 }

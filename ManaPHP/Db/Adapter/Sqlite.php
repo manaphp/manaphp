@@ -106,5 +106,7 @@ class Sqlite extends Db
         $escapedTable = $this->escapeIdentifier($source);
         $this->execute('DELETE ' . 'FROM ' . $escapedTable);
         $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=' . $escapedTable);
+
+        return $this;
     }
 }

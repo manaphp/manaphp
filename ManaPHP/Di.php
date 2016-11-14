@@ -256,7 +256,6 @@ class Di implements DiInterface
         return $this->_sharedInstances[$name];
     }
 
-    /** @noinspection MagicMethodsValidityInspection */
     /**
      * Magic method __get
      *
@@ -268,11 +267,35 @@ class Di implements DiInterface
     public function __get($propertyName)
     {
         if ($this->has($propertyName)) {
-            $this->{$propertyName} = $this->getShared($propertyName);
-            return $this->{$propertyName};
+            return $this->getShared($propertyName);
         }
 
         return null;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @throws \ManaPHP\Di\Exception
+     */
+    public function __set($name, $value)
+    {
+        if ($value === null) {
+            $this->remove($name);
+        } else {
+            $this->setShared($name, $value);
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return $this->has($name);
     }
 
     /**
