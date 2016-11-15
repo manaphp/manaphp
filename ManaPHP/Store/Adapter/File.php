@@ -122,11 +122,11 @@ class File extends Component implements AdapterInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new FileException('Create `dir` store directory failed: :message'/**m0152cd058643d24d6*/, ['dir' => $dir, 'message' => Exception::getLastErrorMessage()]);
+            throw new FileException('Create `dir` store directory failed: :last_error_message'/**m0152cd058643d24d6*/, ['dir' => $dir]);
         }
 
         if (file_put_contents($file, $value, LOCK_EX) === false) {
-            throw new FileException('write store `:file` file failed: :message'/**m0d7c8cf410b1e3a68*/, ['file' => $file, 'message' => Exception::getLastErrorMessage()]);
+            throw new FileException('write store `:file` file failed: :last_error_message'/**m0d7c8cf410b1e3a68*/, ['file' => $file]);
         }
 
         clearstatcache(true, $file);

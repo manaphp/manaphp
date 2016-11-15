@@ -114,15 +114,15 @@ class File extends Component implements FileInterface
     /**
      * Moves the temporary file to a destination within the application
      *
-     * @param string       $destination
+     * @param string       $dst
      * @param string|false $allowedExtensions
      *
      * @throws \ManaPHP\Filesystem\Adapter\Exception
      * @throws \ManaPHP\Http\Request\File\Exception
      */
-    public function moveTo($destination, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip')
+    public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip')
     {
-        $extension = pathinfo($destination, PATHINFO_EXTENSION);
+        $extension = pathinfo($dst, PATHINFO_EXTENSION);
         if ($extension) {
             $extension = ',' . $extension . ',';
 
@@ -148,20 +148,18 @@ class File extends Component implements FileInterface
             throw new FileException('error code of upload file is not UPLOAD_ERR_OK: :error'/**m0454e71638e03eee6*/, ['error' => $this->_file['error']]);
         }
 
-        if ($this->filesystem->fileExists($destination)) {
-            throw new FileException('`:file` file already exists'/**m0402f85613fe0f167*/, ['file' => $destination]);
+        if ($this->filesystem->fileExists($dst)) {
+            throw new FileException('`:file` file already exists'/**m0402f85613fe0f167*/, ['file' => $dst]);
         }
 
-        $this->filesystem->dirCreate(dirname($destination));
+        $this->filesystem->dirCreate(dirname($dst));
 
-        if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($destination))) {
-            throw new FileException('move_uploaded_file to `:destination` failed: :message'/**m01d834f396d846d2b*/,
-                ['destination' => $destination, 'message' => Exception::getLastErrorMessage()]);
+        if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($dst))) {
+            throw new FileException('move_uploaded_file to `:dst` failed: :last_error_message'/**m01d834f396d846d2b*/, ['dst' => $dst]);
         }
 
-        if (!chmod($this->alias->resolve($destination), 0644)) {
-            throw new FileException('chmod `:destination` destination failed: :message'/**m0a0e7dc6898fb4abe*/,
-                ['destination' => $destination, 'message' => Exception::getLastErrorMessage()]);
+        if (!chmod($this->alias->resolve($dst), 0644)) {
+            throw new FileException('chmod `:dst` destination failed: :last_error_message'/**m0a0e7dc6898fb4abe*/, ['dst' => $dst]);
         }
     }
 

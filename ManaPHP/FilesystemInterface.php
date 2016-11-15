@@ -53,13 +53,13 @@ interface FilesystemInterface
     public function fileAppend($file, $content);
 
     /**
-     * @param string $old
-     * @param string $new
+     * @param string $src
+     * @param string $dst
      * @param bool   $overwrite
      *
      * @return void
      */
-    public function fileMove($old, $new, $overwrite = false);
+    public function fileMove($src, $dst, $overwrite = false);
 
     /**
      * @param string $src
@@ -95,13 +95,13 @@ interface FilesystemInterface
     public function dirCreate($dir, $mode = 0755);
 
     /**
-     * @param string $old
-     * @param string $new
+     * @param string $src
+     * @param string $dst
      * @param bool   $overwrite
      *
      * @return void
      */
-    public function dirMove($old, $new, $overwrite = false);
+    public function dirMove($src, $dst, $overwrite = false);
 
     /**
      * @param string $src

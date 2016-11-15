@@ -17,7 +17,7 @@ class Cli extends Application
         $this->_dependencyInjector->set('db', function () use ($self) {
             $mysql = new Mysql((array)$self->configure->database);
             $mysql->attachEvent('db:beforeQuery', function (DbInterface $source) use ($self) {
-                $self->logger->debug('SQL: '. $source->getSQL());
+                $self->logger->debug('SQL: ' . $source->getSQL());
             });
             return $mysql;
         });

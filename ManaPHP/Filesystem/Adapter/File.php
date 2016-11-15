@@ -68,11 +68,11 @@ class File extends Component implements FilesystemInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new FileException('create `:dir` directory failed: :message'/**m0d79ea0fd2e396837*/, ['dir' => $dir, 'message' => FileException::getLastErrorMessage()]);
+            throw new FileException('create `:dir` directory failed: :last_error_message'/**m0d79ea0fd2e396837*/, ['dir' => $dir]);
         }
 
         if (file_put_contents($file, $data, LOCK_EX) === false) {
-            throw new FileException('write `:file` file failed: :message'/**m02e67e7a286a4d112*/, ['file' => $file, 'message' => FileException::getLastErrorMessage()]);
+            throw new FileException('write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, ['file' => $file]);
         }
     }
 
@@ -90,34 +90,34 @@ class File extends Component implements FilesystemInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new FileException('create `:dir` directory failed: :message'/**m0d79ea0fd2e396837*/, ['dir' => $dir, 'message' => FileException::getLastErrorMessage()]);
+            throw new FileException('create `:dir` directory failed: :last_error_message'/**m0d79ea0fd2e396837*/, ['dir' => $dir]);
         }
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
-            throw new FileException('write `:file` file failed: :message'/**m02e67e7a286a4d112*/, ['file' => $file, 'message' => FileException::getLastErrorMessage()]);
+            throw new FileException('write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, ['file' => $file]);
         }
     }
 
     /**
-     * @param string $old
-     * @param string $new
+     * @param string $src
+     * @param string $dst
      * @param bool   $overwrite
      *
      * @return void
      * @throws \ManaPHP\Filesystem\Adapter\File\Exception
      */
-    public function fileMove($old, $new, $overwrite = false)
+    public function fileMove($src, $dst, $overwrite = false)
     {
-        if (rtrim($new, '\\/') !== $new) {
-            $new .= basename($old);
+        if (rtrim($dst, '\\/') !== $dst) {
+            $dst .= basename($src);
         }
 
-        if (!$overwrite && is_file($new)) {
-            throw new FileException('move `:old` to `:new` failed: file exists already', ['old' => $old, 'new' => $new]);
+        if (!$overwrite && is_file($dst)) {
+            throw new FileException('move `:src` to `:dst` failed: file exists already', ['src' => $src, 'dst' => $dst]);
         }
 
-        if (!rename($this->alias->resolve($old), $this->alias->resolve($new))) {
-            throw new FileException('move `:old` to `:new` failed: :message', ['old' => $old, 'new' => $new, 'message' => FileException::getLastErrorMessage()]);
+        if (!rename($this->alias->resolve($src), $this->alias->resolve($dst))) {
+            throw new FileException('move `:src` to `:dst` failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
         }
     }
 
@@ -141,11 +141,11 @@ class File extends Component implements FilesystemInterface
         if ($overwrite || !is_file($dst)) {
             $dir = dirname($dst);
             if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                throw new FileException('create `:dir` failed: :message', ['dir' => $dir, 'message' => FileException::getLastErrorMessage()]);
+                throw new FileException('create `:dir` failed: :last_error_message', ['dir' => $dir]);
             }
 
             if (!copy($src, $dst)) {
-                throw new FileException('move `:src` to `:dst` failed: :message', ['src' => $src, 'dst' => $dst, 'message' => FileException::getLastErrorMessage()]);
+                throw new FileException('move `:src` to `:dst` failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
             }
         }
     }
@@ -176,7 +176,7 @@ class File extends Component implements FilesystemInterface
             $path = $dir . '/' . $item;
             if (is_file($path)) {
                 if (!unlink($path)) {
-                    throw new FileException('delete `:dir` file failed: :message', ['dir' => $dir, 'message' => FileException::getLastErrorMessage()]);
+                    throw new FileException('delete `:dir` file failed: :last_error_message', ['dir' => $dir]);
                 }
             } elseif (is_dir($path)) {
                 if ($recursive) {
@@ -184,7 +184,7 @@ class File extends Component implements FilesystemInterface
                 }
 
                 if (!rmdir($path)) {
-                    throw new FileException('delete `:dir` directory failed: :message', ['dir' => $dir, 'message' => FileException::getLastErrorMessage()]);
+                    throw new FileException('delete `:dir` directory failed: :last_error_message', ['dir' => $dir]);
                 }
             } else {
                 break;
@@ -223,30 +223,29 @@ class File extends Component implements FilesystemInterface
         $dir = $this->alias->resolve($dir);
 
         if (@mkdir($dir, $mode, true) && !is_dir($dir)) {
-            throw new FileException('create `:dir` directory failed: :message', ['dir' => $dir, 'message' => FileException::getLastErrorMessage()]);
+            throw new FileException('create `:dir` directory failed: :last_error_message', ['dir' => $dir]);
         }
     }
 
     /**
-     * @param string $old
-     * @param string $new
+     * @param string $src
+     * @param string $dst
      * @param bool   $overwrite
      *
      * @return void
      * @throws \ManaPHP\Filesystem\Adapter\File\Exception
      */
-    public function dirMove($old, $new, $overwrite = false)
+    public function dirMove($src, $dst, $overwrite = false)
     {
-        $old = $this->alias->resolve($old);
-        $new = $this->alias->resolve($new);
+        $src = $this->alias->resolve($src);
+        $dst = $this->alias->resolve($dst);
 
-        if (!$overwrite && is_dir($new)) {
-            throw new FileException('move `:old` to `:new` failed: destination directory is exists already', ['old' => $old, 'new' => $new]);
+        if (!$overwrite && is_dir($dst)) {
+            throw new FileException('move `:src` to `:dst` failed: destination directory is exists already', ['src' => $src, 'dst' => $dst]);
         }
 
-        if (!rename($old, $new)) {
-            throw new FileException('move `:old` directory to `:new` directory failed: :message',
-                ['old' => $old, 'new' => $new, 'message' => FileException::getLastErrorMessage()]);
+        if (!rename($src, $dst)) {
+            throw new FileException('move `:src` directory to `:dst` directory failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
         }
     }
 
@@ -270,13 +269,12 @@ class File extends Component implements FilesystemInterface
             if (is_file($srcPath)) {
                 if ($overwrite || !file_exists($dstPath)) {
                     if (!copy($srcPath, $dstPath)) {
-                        throw new FileException('copy `:src` file to `:dst` file failed: :message',
-                            ['src' => $srcPath, 'dst' => $dstPath, 'message' => FileException::getLastErrorMessage()]);
+                        throw new FileException('copy `:src` file to `:dst` file failed: :last_error_message', ['src' => $srcPath, 'dst' => $dstPath]);
                     }
                 }
             } elseif (is_dir($srcPath)) {
                 if (!@mkdir($dstPath, 0755) && !is_dir($dstPath)) {
-                    throw new FileException('create `:dir` directory failed: :message', ['dir' => $dstPath, 'message' => FileException::getLastErrorMessage()]);
+                    throw new FileException('create `:dir` directory failed: :last_error_message', ['dir' => $dstPath]);
                 }
 
                 if ($overwrite || !is_dir($dstPath)) {
@@ -306,8 +304,7 @@ class File extends Component implements FilesystemInterface
         }
 
         if (!@mkdir($dst, 0755, true) && !is_dir($dst)) {
-            throw new FileException('copy `:src` directory to `:dst` directory failed: :message',
-                ['src' => $src, 'dst' => $dst, 'message' => FileException::getLastErrorMessage()]);
+            throw new FileException('copy `:src` directory to `:dst` directory failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
         }
 
         $this->_dirCopy($src, $dst, $overwrite);

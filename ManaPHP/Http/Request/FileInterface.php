@@ -49,10 +49,10 @@ interface FileInterface
     /**
      * Move the temporary file to a destination
      *
-     * @param string       $destination
+     * @param string       $dst
      * @param string|false $allowedExtensions
      */
-    public function moveTo($destination, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip');
+    public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip');
 
     /**
      * Returns the file extension

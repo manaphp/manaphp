@@ -35,7 +35,7 @@ class Php implements AdapterInterface
     {
         $data = unserialize($serialized);
         if ($data === false) {
-            throw new PhpException('unserialize failed: :message'/**m066507d6397244b1c*/, ['message' => Exception::getLastErrorMessage()]);
+            throw new PhpException('unserialize failed: :last_error_message'/**m066507d6397244b1c*/);
         }
 
         if (!is_array($data)) {

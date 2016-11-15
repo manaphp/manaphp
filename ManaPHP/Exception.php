@@ -27,14 +27,16 @@ class Exception extends \Exception
 
         if (is_array($code)) {
             $this->_bind = $code;
-
-            /** @noinspection ForeachSourceInspection */
-            foreach ($code as $k => $v) {
-                $tr[':' . $k] = $v;
-            }
             $code = 0;
         } else {
             $this->_bind = [];
+        }
+
+        if (!isset($this->_bind['last_error_message'])) {
+            $this->_bind['last_error_message'] = error_get_last()['message'];
+        }
+        foreach ($this->_bind as $k => $v) {
+            $tr[':' . $k] = $v;
         }
 
         parent::__construct(strtr($message, $tr), $code, $previous);

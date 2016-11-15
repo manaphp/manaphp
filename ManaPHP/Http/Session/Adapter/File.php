@@ -126,12 +126,11 @@ class File extends Component implements AdapterInterface
         $file = $this->_getFileName($sessionId);
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new SessionException('create `:dir` session directory failed: :message'/**m0842502d4c2904242*/,
-                ['dir' => $dir, 'message' => SessionException::getLastErrorMessage()]);
+            throw new SessionException('create `:dir` session directory failed: :last_error_message'/**m0842502d4c2904242*/, ['dir' => $dir]);
         }
 
         if (file_put_contents($file, $data, LOCK_EX) === false) {
-            trigger_error(strtr('write `:file` session file failed: :message'/**m0f7ee56f71e1ec344*/, [':file' => $file, ':message' => SessionException::getLastErrorMessage()]));
+            trigger_error(strtr('write `:file` session file failed: :last_error_message'/**m0f7ee56f71e1ec344*/, [':file' => $file]));
         }
 
         file_put_contents($file, $data);

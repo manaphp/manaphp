@@ -66,7 +66,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
         session_set_save_handler($open, $close, $read, $write, $destroy, $gc);
 
         if (!session_start()) {
-            throw new SessionException('session start failed: ' . Exception::getLastErrorMessage());
+            throw new SessionException('session start failed: :last_error_message');
         }
 
         return $this;
@@ -153,7 +153,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
         }
 
         if (!session_destroy()) {
-            throw new SessionException('destroy session failed: :message'/**m08409465b2b90d8a8*/, ['message' => Exception::getLastErrorMessage()]);
+            throw new SessionException('destroy session failed: :last_error_message'/**m08409465b2b90d8a8*/);
         }
     }
 
