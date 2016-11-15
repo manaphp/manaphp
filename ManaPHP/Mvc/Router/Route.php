@@ -154,7 +154,7 @@ class Route implements RouteInterface
         } elseif (is_array($paths)) {
             if (isset($paths[0])) {
                 if (strpos($paths[0], '::')) {
-                    $parts = explode('::', $paths);
+                    $parts = explode('::', $paths[0]);
                     $routePaths['controller'] = $parts[0];
                     $routePaths['action'] = $parts[1];
                 } else {
