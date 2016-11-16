@@ -15,16 +15,7 @@ interface UrlInterface
      *
      * @return string
      */
-    public function get($uri = null, $args = [], $module = null);
-
-    /**
-     * @param string $uri
-     * @param array  $args
-     * @param string $module
-     *
-     * @return string
-     */
-    public function getAbsolute($uri = null, $args = [], $module = null);
+    public function get($uri, $args = [], $module = null);
 
     /**
      * @param string $uri

@@ -23,6 +23,11 @@ class Url extends Component implements UrlInterface
     protected $_baseUrls = [];
 
     /**
+     * @var string
+     */
+    protected $_assets;
+
+    /**
      * Url constructor.
      *
      * @param array $options
@@ -37,31 +42,36 @@ class Url extends Component implements UrlInterface
         } else {
             $selfPath = rtrim($selfPath, '/');
         }
+
         if (isset($options['baseUrls'])) {
             /** @noinspection ForeachSourceInspection */
-            foreach ($options['baseUrls'] as $module => $path) {
-                $this->_baseUrls[$module] = rtrim($path, '/');
+            foreach ($options['baseUrls'] as $module => $baseUrl) {
+                $this->_baseUrls[$module] = rtrim($baseUrl, '/');
+            }
+
+        } else {
+            $host = $this->request->getServer('HTTP_HOST');
+            $scheme = $this->request->getScheme();
+
+            foreach ($this->router->getModules() as $module => $path) {
+                if ($path[0] === '/') {
+                    $baseUrl = $scheme . '://' . $host . $selfPath . ($path === '/' ? '' : $path);
+                } else {
+                    $baseUrl = (strpos($path, '://') ? '' : $scheme . '://') . $path;
+                }
+
+                $this->_baseUrls[$module] = $baseUrl;
             }
 
             if (!isset($this->_baseUrls[''])) {
-                throw new UrlException('Default baseUrl is not set');
+                $this->_baseUrls[''] = $this->_baseUrls[$this->dispatcher->getModuleName()];
             }
-        } else {
-            foreach ($this->router->getModules() as $module => $path) {
-                if ($path[0] === '/') {
-                    $baseUri = $selfPath . ($path === '/' ? '' : $path);
-                } else {
-                    $baseUri = (strpos($path, '://') ? '' : $this->request->getScheme() . '://') . $path;
-                }
-
-                $this->_baseUrls[$module] = $baseUri;
-            }
-
-            $this->_baseUrls[''] = $this->_baseUrls[$this->dispatcher->getModuleName()];
         }
 
-        if (!isset($this->_baseUrls['assets'])) {
-            $this->_baseUrls['assets'] = $selfPath;
+        if (isset($options['assets'])) {
+            $this->_assets = rtrim($options['assets'], '/');
+        } else {
+            $this->_assets = $selfPath;
         }
     }
 
@@ -73,85 +83,57 @@ class Url extends Component implements UrlInterface
      * @return string
      * @throws \ManaPHP\Mvc\Url\Exception
      */
-    public function get($uri = null, $args = [], $module = null)
+    public function get($uri, $args = [], $module = null)
     {
         if (is_array($uri)) {
             $tmp = $uri;
 
             $uri = $tmp[0];
+
             if (isset($tmp[1])) {
-                if (is_array($tmp[1])) {
-                    $args = $tmp[1];
-                } else {
-                    $module = $tmp[1];
-                }
+                $args = $tmp[1];
             }
 
             if (isset($tmp[2])) {
                 $module = $tmp[2];
             }
-        } else {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-            if (is_string($args)) {
-                $module = $args;
-                $args = [];
-            }
         }
 
-        if ($uri[0] === '/') {
-            if (!isset($this->_baseUrls[$module])) {
-                if (isset($this->_baseUrls[ucfirst($module)])) {
-                    throw new UrlException('module name is case-sensitive: `:module`', ['module' => $module]);
-                } else {
-                    throw new UrlException('`:module` is not exists', ['module' => $module]);
-                }
-            }
-            $strUri = $this->_baseUrls[$module] . $uri;
-        } else {
-            $strUri = $uri;
+        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+        if (is_string($args)) {
+            $module = $args;
+            $args = [];
         }
 
-        if (is_array($args)) {
-            if (Text::contains($strUri, ':')) {
-                foreach ($args as $k => $v) {
-                    $count = 0;
-                    $strUri = str_replace(':' . $k, $v, $strUri, $count);
-                    if ($count !== 0) {
-                        unset($args[$k]);
-                    }
-                }
-            }
-
-            if (count($args) !== 0) {
-                $strUri = $strUri . (Text::contains($strUri, '?') ? '&' : '?') . http_build_query($args);
-            }
-        }
-
-        return $strUri;
-    }
-
-    /**
-     * @param string $uri
-     * @param array  $args
-     * @param string $module
-     *
-     * @return string
-     * @throws \ManaPHP\Mvc\Url\Exception
-     */
-    public function getAbsolute($uri = null, $args = [], $module = null)
-    {
-        $url = $this->get($uri, $args, $module);
-        if (strpos($url, '://') === false) {
-            $scheme = $this->request->getScheme();
-            $host = $this->request->getServer('HTTP_HOST');
-            if ($this->request->getScheme() === 'https') {
-                return $scheme . '://' . $host . $url;
+        if (!isset($this->_baseUrls[$module])) {
+            if (isset($this->_baseUrls[ucfirst($module)])) {
+                throw new UrlException('module name is case-sensitive: `:module`', ['module' => $module]);
             } else {
-                return $scheme . '://' . $host . $url;
+                throw new UrlException('`:module` is not exists', ['module' => $module]);
             }
-        } else {
-            return $url;
         }
+
+        if ($uri === '' || $uri[0] !== '/') {
+            $baseUrl = $this->_baseUrls[$module];
+            $strUrl = (strpos($baseUrl, '://') ? parse_url($baseUrl, PHP_URL_PATH) : $baseUrl).'/' . $uri;
+        } else {
+            $strUrl = $this->_baseUrls[$module] . $uri;
+        }
+
+        if (Text::contains($strUrl, ':')) {
+            foreach ($args as $k => $v) {
+                $count = 0;
+                $strUrl = str_replace(':' . $k, $v, $strUrl, $count);
+                if ($count !== 0) {
+                    unset($args[$k]);
+                }
+            }
+        }
+        if (count($args) !== 0) {
+            $strUrl .= (Text::contains($strUrl, '?') ? '&' : '?') . http_build_query($args);
+        }
+
+        return $strUrl;
     }
 
     /**
@@ -162,6 +144,6 @@ class Url extends Component implements UrlInterface
      */
     public function getAsset($uri)
     {
-        return $this->_baseUrls['assets'] . $uri;
+        return $this->_assets . $uri;
     }
 }

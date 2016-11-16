@@ -288,6 +288,6 @@ class Debugger extends Component implements DebuggerInterface
 
         $file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
         $this->filesystem->filePut('@data/debugger' . $file, $this->output($template));
-        return $this->url->getAbsolute('/?_debugger=' . $file);
+        return $this->url->get('/?_debugger=' . $file);
     }
 }
