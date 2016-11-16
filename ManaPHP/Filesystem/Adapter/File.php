@@ -108,6 +108,9 @@ class File extends Component implements FilesystemInterface
      */
     public function fileMove($src, $dst, $overwrite = false)
     {
+        $src = $this->alias->resolve($src);
+        $dst = $this->alias->resolve($dst);
+
         if (rtrim($dst, '\\/') !== $dst) {
             $dst .= basename($src);
         }
@@ -116,7 +119,7 @@ class File extends Component implements FilesystemInterface
             throw new FileException('move `:src` to `:dst` failed: file exists already', ['src' => $src, 'dst' => $dst]);
         }
 
-        if (!rename($this->alias->resolve($src), $this->alias->resolve($dst))) {
+        if (!rename($src, $dst)) {
             throw new FileException('move `:src` to `:dst` failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
         }
     }
@@ -131,12 +134,12 @@ class File extends Component implements FilesystemInterface
      */
     public function fileCopy($src, $dst, $overwrite = false)
     {
-        $src = $this->alias->resolve($src);
-        $dst = $this->alias->resolve($dst);
-
         if (rtrim($dst, '\\/') !== $dst) {
             $dst .= basename($src);
         }
+
+        $src = $this->alias->resolve($src);
+        $dst = $this->alias->resolve($dst);
 
         if ($overwrite || !is_file($dst)) {
             $dir = dirname($dst);
