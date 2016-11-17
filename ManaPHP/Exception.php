@@ -47,6 +47,8 @@ class Exception extends \Exception
      */
     public function dump()
     {
+        $data = [];
+
         $data['id'] = date('His') . mt_rand(10, 99);
         $data['code'] = $this->code;
         $data['message'] = $this->message;

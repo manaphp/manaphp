@@ -59,21 +59,17 @@ class Facade
             throw new FacadeException('');
         }
 
-        if (PHP_VERSION_ID >= 50600) {
-            return $instance->$method(...$arguments);
-        } else {
-            switch (count($arguments)) {
-                case 0:
-                    return $instance->$method();
-                case 1:
-                    return $instance->$method($arguments[0]);
-                case 2:
-                    return $instance->$method($arguments[0], $arguments[1]);
-                case 3:
-                    return $instance->$method($arguments[0], $arguments[1], $arguments[2]);
-                default:
-                    return call_user_func_array([$instance, $method], $arguments);
-            }
+        switch (count($arguments)) {
+            case 0:
+                return $instance->$method();
+            case 1:
+                return $instance->$method($arguments[0]);
+            case 2:
+                return $instance->$method($arguments[0], $arguments[1]);
+            case 3:
+                return $instance->$method($arguments[0], $arguments[1], $arguments[2]);
+            default:
+                return call_user_func_array([$instance, $method], $arguments);
         }
     }
 }

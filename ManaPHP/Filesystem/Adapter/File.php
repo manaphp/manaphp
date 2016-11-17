@@ -45,6 +45,21 @@ class File extends Component implements FilesystemInterface
     }
 
     /**
+     * @param string $dir
+     * @param int    $mode
+	 * @return void
+     *
+     * @throws \ManaPHP\Filesystem\Adapter\File\Exception
+     */
+    public function _dirCreate($dir, $mode = 0755)
+    {
+        /** @noinspection NotOptimalIfConditionsInspection */
+        if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {
+            throw new FileException('create `:dir` directory failed: :last_error_message'/**m0d79ea0fd2e396837*/, ['dir' => $dir]);
+        }
+    }
+
+    /**
      * @param string $file
      *
      * @return string|false
@@ -66,11 +81,7 @@ class File extends Component implements FilesystemInterface
     {
         $file = $this->alias->resolve($file);
 
-        $dir = dirname($file);
-        if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new FileException('create `:dir` directory failed: :last_error_message'/**m0d79ea0fd2e396837*/, ['dir' => $dir]);
-        }
-
+        $this->_dirCreate(dirname($file));
         if (file_put_contents($file, $data, LOCK_EX) === false) {
             throw new FileException('write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, ['file' => $file]);
         }
@@ -87,11 +98,7 @@ class File extends Component implements FilesystemInterface
     public function fileAppend($file, $data)
     {
         $file = $this->alias->resolve($file);
-
-        $dir = dirname($file);
-        if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new FileException('create `:dir` directory failed: :last_error_message'/**m0d79ea0fd2e396837*/, ['dir' => $dir]);
-        }
+        $this->_dirCreate(dirname($file));
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
             throw new FileException('write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, ['file' => $file]);
@@ -142,10 +149,7 @@ class File extends Component implements FilesystemInterface
         $dst = $this->alias->resolve($dst);
 
         if ($overwrite || !is_file($dst)) {
-            $dir = dirname($dst);
-            if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                throw new FileException('create `:dir` failed: :last_error_message', ['dir' => $dir]);
-            }
+            $this->_dirCreate(dirname($dst));
 
             if (!copy($src, $dst)) {
                 throw new FileException('move `:src` to `:dst` failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
@@ -223,11 +227,7 @@ class File extends Component implements FilesystemInterface
      */
     public function dirCreate($dir, $mode = 0755)
     {
-        $dir = $this->alias->resolve($dir);
-
-        if (@mkdir($dir, $mode, true) && !is_dir($dir)) {
-            throw new FileException('create `:dir` directory failed: :last_error_message', ['dir' => $dir]);
-        }
+        $this->_dirCreate($this->alias->resolve($dir), $mode);
     }
 
     /**
@@ -271,15 +271,13 @@ class File extends Component implements FilesystemInterface
             $dstPath = $dst . '/' . $item;
             if (is_file($srcPath)) {
                 if ($overwrite || !file_exists($dstPath)) {
+
                     if (!copy($srcPath, $dstPath)) {
                         throw new FileException('copy `:src` file to `:dst` file failed: :last_error_message', ['src' => $srcPath, 'dst' => $dstPath]);
                     }
                 }
             } elseif (is_dir($srcPath)) {
-                if (!@mkdir($dstPath, 0755) && !is_dir($dstPath)) {
-                    throw new FileException('create `:dir` directory failed: :last_error_message', ['dir' => $dstPath]);
-                }
-
+                $this->_dirCreate($dstPath);
                 if ($overwrite || !is_dir($dstPath)) {
                     $this->_dirCopy($srcPath, $dstPath, $overwrite);
                 }
@@ -305,11 +303,7 @@ class File extends Component implements FilesystemInterface
         if (!is_dir($src)) {
             throw new FileException('copy `:src` directory to `:dst` directory failed: source directory is not exists', ['src' => $src, 'dst' => $dst]);
         }
-
-        if (!@mkdir($dst, 0755, true) && !is_dir($dst)) {
-            throw new FileException('copy `:src` directory to `:dst` directory failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
-        }
-
+        $this->_dirCreate($dst);
         $this->_dirCopy($src, $dst, $overwrite);
     }
 

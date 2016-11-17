@@ -136,7 +136,7 @@ class View extends Component implements ViewInterface
         if (isset($vars['view'])) {
             throw new ViewException('variable `view` is reserved for view'/**m0662b55555fc72f7d*/);
         }
-        $vars['view'] = isset($this->view) ? $this->view : null;
+        $vars['view'] = $this;
 
         if (isset($vars['request'])) {
             throw new ViewException('variable `request` is reserved for view');

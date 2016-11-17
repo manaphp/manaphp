@@ -12,7 +12,7 @@ namespace Application {
             $self = $this;
 
             $this->_dependencyInjector->configure = new Configure();
-
+            $this->_dependencyInjector->alias->set('@manaphp', dirname(__DIR__).'/ManaPHP');
             $this->router->mount(new Home\RouteGroup(), '/')
                 ->mount(Admin\RouteGroup::class, '/admin')
                 ->mount(Api\RouteGroup::class, '/api');

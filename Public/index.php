@@ -2,9 +2,9 @@
 error_reporting(E_ALL);
 ini_set('html_errors', 'on');
 
-require dirname(__DIR__) . '/ManaPHP/Loader.php';
+class_exists('ManaPHP\Loader') || require dirname(__DIR__) . '/ManaPHP/Loader.php';
 //require dirname(__DIR__) . '/ManaPHP/base.php';
-$loader = new \ManaPHP\Loader();
+$loader = new \ManaPHP\Loader(dirname(__DIR__).'/ManaPHP');
 //new \ManaPHP\Mvc\Router\RewriteChecker();
 
 require dirname(__DIR__) . '/Application/Application.php';
