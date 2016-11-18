@@ -307,7 +307,6 @@ class Request extends Component implements RequestInterface
      * Gets HTTP schema (http/https)
      *
      * @return string
-     * @throws \ManaPHP\Http\Request\Exception
      */
     public function getScheme()
     {
@@ -320,7 +319,7 @@ class Request extends Component implements RequestInterface
                 return 'http';
             }
         } else {
-            throw new RequestException('`HTTPS` field not exists in $_SERVER'/**m0b994a4143d072cff*/);
+            return 'http';
         }
     }
 
