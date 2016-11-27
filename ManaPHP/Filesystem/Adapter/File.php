@@ -47,7 +47,8 @@ class File extends Component implements FilesystemInterface
     /**
      * @param string $dir
      * @param int    $mode
-	 * @return void
+     *
+     * @return void
      *
      * @throws \ManaPHP\Filesystem\Adapter\File\Exception
      */

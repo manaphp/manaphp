@@ -1,26 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/20
- * Time: 22:06
- */
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Mvc\Model\Metadata;
 
-/**
- * Class ManaPHP\Db\Adapter\Mysql
- *
- * @package db\adapter
- */
-class Mysql extends Db
+class SqlSrv extends Db
 {
     /**
-     * \ManaPHP\Db\Adapter constructor
+     * SqlSrv constructor.
      *
-     * @param array|\ConfManaPHP\Db\Adapter\Mysql $options
+     * @param array $options
      */
     public function __construct($options)
     {
@@ -32,9 +21,7 @@ class Mysql extends Db
             $this->_options = $options['options'];
         }
 
-        if (!isset($this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND])) {
-            $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES 'UTF8'";
-        }
+        $this->_options[\PDO::ATTR_STRINGIFY_FETCHES] = true;
 
         $this->_username = isset($options['username']) ? $options['username'] : null;
         $this->_password = isset($options['password']) ? $options['password'] : null;
@@ -48,38 +35,38 @@ class Mysql extends Db
             foreach ($options as $k => $v) {
                 $dsn_parts[] = $k . '=' . $v;
             }
-            $this->_dsn = 'mysql:' . implode(';', $dsn_parts);
+            $this->_dsn = 'odbc:' . implode(';', $dsn_parts);
         }
 
         parent::__construct();
     }
 
-    /**
-     * @param string $source
-     *
-     * @return array
-     * @throws \ManaPHP\Db\Exception
-     */
     public function getMetadata($source)
     {
-        $columns = $this->fetchAll('DESCRIBE ' . $this->_escapeIdentifier($source), null, \PDO::FETCH_NUM);
+        $parts = explode('.', $source);
+        if (count($parts) === 1) {
+            $columns = $this->fetchAll("exec sp_columns '$parts[0]'");
+        } else {
+            $columns = $this->fetchAll("exec sp_columns @table_name='$parts[1]', @table_owner='$parts[0]'");
+        }
 
         $attributes = [];
         $primaryKeys = [];
         $nonPrimaryKeys = [];
         $autoIncrementAttribute = null;
+
         foreach ($columns as $column) {
-            $columnName = $column[0];
+            $columnName = $column['COLUMN_NAME'];
 
             $attributes[] = $columnName;
 
-            if ($column[3] === 'PRI') {
+            if ($column['TYPE_NAME'] === 'int identity') {
                 $primaryKeys[] = $columnName;
             } else {
-                $nonPrimaryKeys = $columnName;
+                $nonPrimaryKeys[] = $columnName;
             }
 
-            if ($column[5] === 'auto_increment') {
+            if ($column['TYPE_NAME'] === 'int identity') {
                 $autoIncrementAttribute = $columnName;
             }
         }
@@ -88,23 +75,24 @@ class Mysql extends Db
             Metadata::MODEL_ATTRIBUTES => $attributes,
             Metadata::MODEL_PRIMARY_KEY => $primaryKeys,
             Metadata::MODEL_NON_PRIMARY_KEY => $nonPrimaryKeys,
-            Metadata::MODEL_IDENTITY_COLUMN => $autoIncrementAttribute,
+            Metadata::MODEL_IDENTITY_COLUMN => $autoIncrementAttribute
         ];
 
         return $r;
     }
 
     /**
-     * @param string $source
-     *
-     * @return static
-     * @throws \ManaPHP\Db\Exception
+     * @return int
      */
+    public function lastInsertId()
+    {
+        $row = $this->fetchOne('SELECT @@IDENTITY AS lid');
+        return $row['lid'];
+    }
+
     public function truncateTable($source)
     {
-        $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
-
-        return $this;
+        // TODO: Implement truncateTable() method.
     }
 
     public function buildSql($params)
@@ -112,13 +100,19 @@ class Mysql extends Db
         $sql = '';
 
         if (isset($params['columns'])) {
-            $sql .= 'SELECT ';
 
+            $sql .= 'SELECT ';
+            if (isset($params['limit']) && !isset($params['offset'])) {
+                $sql .= ' TOP ' . $params['limit'];
+            }
             if (isset($params['distinct'])) {
                 $sql .= 'DISTINCT ';
             }
 
             $sql .= $params['columns'];
+            if (isset($params['limit']) && isset($params['offset'])) {
+                $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . (isset($params['order']) ? $params['order'] : 'rand()') . ') AS row_number';
+            }
         }
 
         if (isset($params['from'])) {
@@ -133,6 +127,10 @@ class Mysql extends Db
             $sql .= ' WHERE ' . $params['where'];
         }
 
+        if (isset($params['limit']) && isset($params['offset'])) {
+            $sql = 'SELECT' . ' t.* FROM (' . $sql . ') as t WHERE t.row_number BETWEEN ' . $params['limit'] . ' + 1 AND ' . $params['limit'] . ' + ' . $params['offset'];
+        }
+
         if (isset($params['group'])) {
             $sql .= ' GROUP BY ' . $params['group'];
         }
@@ -143,14 +141,6 @@ class Mysql extends Db
 
         if (isset($params['order'])) {
             $sql .= ' ORDER BY' . $params['order'];
-        }
-
-        if (isset($params['limit'])) {
-            $sql .= ' LIMIT ' . $params['limit'];
-        }
-
-        if (isset($params['offset'])) {
-            $sql .= ' OFFSET ' . $params['offset'];
         }
 
         if (isset($params['forUpdate'])) {
@@ -167,6 +157,6 @@ class Mysql extends Db
      */
     public function replaceQuoteCharacters($sql)
     {
-        return preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
+        return $sql;
     }
 }

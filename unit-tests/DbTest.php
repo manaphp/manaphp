@@ -174,14 +174,4 @@ class DbTest extends TestCase
         $this->db->delete('_student', 'id=1');
         $this->assertFalse($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
     }
-
-    public function test_escapeIdentifier()
-    {
-        if ($this->db instanceof ManaPHP\Db\Adapter\Mysql) {
-            $this->assertEquals('`city`', $this->db->escapeIdentifier('city'));
-            $this->assertEquals('`app`.`city`', $this->db->escapeIdentifier('app.city'));
-        } else {
-            $this->assertEquals("'city'", $this->db->escapeIdentifier('city'));
-        }
-    }
 }

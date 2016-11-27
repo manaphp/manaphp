@@ -13,18 +13,6 @@ use ManaPHP\Utility\Text;
 abstract class Db extends Component implements DbInterface
 {
     /**
-     * @var array
-     */
-    protected $_options;
-
-    /**
-     * Type of database system driver is used for
-     *
-     * @var string
-     */
-    protected $_type;
-
-    /**
      * @var string
      */
     protected $_dsn;
@@ -38,6 +26,11 @@ abstract class Db extends Component implements DbInterface
      * @var string
      */
     protected $_password;
+
+    /**
+     * @var array
+     */
+    protected $_options = [];
 
     /**
      * Active SQL Statement
@@ -74,37 +67,26 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * \ManaPHP\Db\Adapter constructor
-     *
-     * @param array $options
      */
-    public function __construct($options)
+    public function __construct()
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        }
-
-        if (!isset($options['options'])) {
-            $options['options'] = [];
-        }
-        $this->_options = $options['options'];
-
         $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
 
-        $this->_username = isset($options['username']) ? $options['username'] : null;
-        $this->_password = isset($options['password']) ? $options['password'] : null;
-        unset($options['username'], $options['password'], $options['options']);
+        $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+    }
 
-        if (isset($options['dsn'])) {
-            $this->_dsn = $options['dsn'];
-        } else {
-            $dsn_parts = [];
-            foreach ($options as $k => $v) {
-                $dsn_parts[] = $k . '=' . $v;
+    protected function _escapeIdentifier($identifier)
+    {
+        $list = [];
+        foreach (explode('.', $identifier) as $id) {
+            if ($identifier[0] === '[') {
+                $list[] = $id;
+            } else {
+                $list[] = "[$id]";
             }
-            $this->_dsn = implode(';', $dsn_parts);
         }
 
-        $this->_pdo = new \PDO($this->_type . ':' . $this->_dsn, $this->_username, $this->_password, $this->_options);
+        return implode('.', $list);
     }
 
     /**
@@ -169,7 +151,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
-        $this->_sql = preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
+        $this->_sql = $this->replaceQuoteCharacters($sql);
         $this->_bind = $bind;
         $this->_affectedRows = 0;
 
@@ -186,7 +168,7 @@ abstract class Db extends Component implements DbInterface
             $this->_affectedRows = $statement->rowCount();
             $statement->setFetchMode($fetchMode);
         } catch (\PDOException $e) {
-            throw new DbException(':message . ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+            throw new DbException(':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
                 [
                     'message' => $e->getMessage(),
                     'sql' => $this->_sql,
@@ -216,7 +198,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function execute($sql, $bind = [])
     {
-        $this->_sql = preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
+        $this->_sql = $this->replaceQuoteCharacters($sql);
         $this->_bind = $bind;
 
         $this->_affectedRows = 0;
@@ -231,7 +213,7 @@ abstract class Db extends Component implements DbInterface
                 $this->_affectedRows = $this->_pdo->exec($this->_sql);
             }
         } catch (\PDOException $e) {
-            throw new DbException(':message . ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+            throw new DbException(':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
                 [
                     'message' => $e->getMessage(),
                     'sql' => $this->_sql,
@@ -338,19 +320,18 @@ abstract class Db extends Component implements DbInterface
             throw new DbException('Unable to insert into :table table without data'/**m07945f8783104be33*/, ['table' => $table]);
         }
 
-        $escapedTable = $this->escapeIdentifier($table);
         if (array_key_exists(0, $columnValues)) {
             $insertedValues = rtrim(str_repeat('?,', count($columnValues)), ',');
 
             $sql = /** @lang Text */
-                "INSERT INTO $escapedTable VALUES ($insertedValues)";
+                'INSERT INTO ' . $this->_escapeIdentifier($table) . " VALUES ($insertedValues)";
         } else {
             $columns = array_keys($columnValues);
             $insertedValues = ':' . implode(',:', $columns);
-            $insertedColumns = '`' . implode('`,`', $columns) . '`';
+            $insertedColumns = '[' . implode('],[', $columns) . ']';
 
             $sql = /** @lang Text */
-                "INSERT INTO $escapedTable ($insertedColumns) VALUES ($insertedValues)";
+                'INSERT INTO ' . $this->_escapeIdentifier($table) . " ($insertedColumns) VALUES ($insertedValues)";
         }
 
         $this->execute($sql, $columnValues);
@@ -380,8 +361,6 @@ abstract class Db extends Component implements DbInterface
      */
     public function update($table, $columnValues, $conditions, $bind = [])
     {
-        $escapedTable = "`$table`";
-
         if (count($columnValues) === 0) {
             throw new DbException('Unable to update :table table without data'/**m07b005f0072d05d71*/, ['table' => $table]);
         }
@@ -397,7 +376,7 @@ abstract class Db extends Component implements DbInterface
             if (is_int($k)) {
                 $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
             } else {
-                $wheres[] = "`$k`=:$k";
+                $wheres[] = "[$k]=:$k";
                 $bind[$k] = $v;
             }
         }
@@ -407,16 +386,14 @@ abstract class Db extends Component implements DbInterface
             if (is_int($k)) {
                 $setColumns[] = $v;
             } else {
-                $setColumns[] = "`$k`=:$k";
+                $setColumns[] = "[$k]=:$k";
                 $bind[$k] = $v;
             }
         }
 
-        $updateColumns = implode(',', $setColumns);
-        $updateSql = /** @lang Text */
-            "UPDATE $escapedTable SET $updateColumns WHERE " . implode(' AND ', $wheres);
+        $sql = 'UPDATE ' . $this->_escapeIdentifier($table) . ' SET ' . implode(',', $setColumns) . ' WHERE ' . implode(' AND ', $wheres);
 
-        return $this->execute($updateSql, $bind);
+        return $this->execute($sql, $bind);
     }
 
     /**
@@ -450,32 +427,15 @@ abstract class Db extends Component implements DbInterface
             if (is_int($k)) {
                 $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
             } else {
-                $wheres[] = "`$k`=:$k";
+                $wheres[] = "[$k]=:$k";
                 $bind[$k] = $v;
             }
         }
 
         $sql = /**@lang Text */
-            "DELETE FROM `$table` WHERE " . implode(' AND ', $wheres);
+            'DELETE FROM ' . $this->_escapeIdentifier($table) . ' WHERE ' . implode(' AND ', $wheres);
 
         return $this->execute($sql, $bind);
-    }
-
-    /**
-     * Appends a LIMIT clause to $sqlQuery argument
-     * <code>
-     *    echo $connection->limit("SELECT * FROM robots", 5);
-     * </code>
-     *
-     * @param    string $sql
-     * @param    int    $number
-     * @param   int     $offset
-     *
-     * @return    string
-     */
-    public function limit($sql, $number, $offset = 0)
-    {
-        return $sql . ' LIMIT ' . $number . ($offset === 0 ? '' : (' OFFSET ' . $offset));
     }
 
     /**

@@ -84,6 +84,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     protected static $_hiddenParamNumber = 0;
 
     /**
+     * @var \ManaPHP\Mvc\Model
+     */
+    protected static $_modelInstance;
+
+    /**
      * @var array
      */
     protected $_union = [];
@@ -700,23 +705,27 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $sql = implode(' ' . $this->_union['type'] . ' ', $unions);
 
+        $params = [];
+
         /**
          * Process order clause
          */
         if ($this->_order !== null) {
-            $sql .= ' ORDER BY ' . $this->_order;
+            $params['order'] = $this->_order;
         }
 
         /**
          * Process limit parameters
          */
         if ($this->_limit !== 0) {
-            $sql .= ' LIMIT ' . $this->_limit;
+            $params['limit'] = $this->_limit;
         }
 
         if ($this->_offset !== 0) {
-            $sql .= ' OFFSET ' . $this->_offset;
+            $params['offset'] = $this->_offset;
         }
+
+        $sql .= self::$_modelInstance->getReadConnection()->buildSql($params);
 
         $this->_models[] = $builder->getModels()[0];
 
@@ -752,10 +761,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             throw new QueryBuilderException('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
         }
 
-        $sql = 'SELECT ';
-
+        $params = [];
         if ($this->_distinct) {
-            $sql .= 'DISTINCT ';
+            $params['distinct'] = true;
         }
 
         if ($this->_columns !== null) {
@@ -769,9 +777,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             }
             $columns .= implode(', ', $selectedColumns);
         }
-        $sql .= $columns;
+        $params['columns'] = $columns;
 
         $selectedModels = [];
+
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $alias => $model) {
             if ($model instanceof $this) {
@@ -790,7 +799,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 }
             }
         }
-        $sql .= ' FROM ' . implode(', ', $selectedModels);
+
+        $params['from'] = implode(', ', $selectedModels);
 
         $joinSQL = '';
         /** @noinspection ForeachSourceInspection */
@@ -832,7 +842,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
                 $joinSQL .= ' ON ' . $joinCondition;
             }
         }
-        $sql .= $joinSQL;
+        $params['join'] = $joinSQL;
 
         $wheres = [];
 
@@ -855,33 +865,43 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         if (count($wheres) !== 0) {
-            $sql .= ' WHERE ' . implode(' AND ', $wheres);
+            $params['where'] = implode(' AND ', $wheres);
         }
 
         if ($this->_group !== null) {
-            $sql .= ' GROUP BY ' . $this->_group;
+            $params['group'] = $this->_group;
         }
 
         if ($this->_having !== null) {
-            $sql .= ' HAVING ' . $this->_having;
+            $params['having'] = $this->_having;
         }
 
         if ($this->_order !== null) {
-            $sql .= ' ORDER BY ' . $this->_order;
+            $params['order'] = $this->_order;
         }
 
         if ($this->_limit !== 0) {
-            $sql .= ' LIMIT ' . $this->_limit;
+            $params['limit'] = $this->_limit;
         }
 
-        if ($this->_offset !== 0) {
-            $sql .= ' OFFSET ' . $this->_offset;
+        if ($this->_offset != 0) {
+            $params['offset'] = $this->_offset;
         }
 
         if ($this->_forUpdate) {
-            $sql .= ' FOR UPDATE';
+            $params['forUpdate'] = $this->_forUpdate;
         }
 
+        if (self::$_modelInstance === null) {
+            foreach ($this->_models as $model) {
+                if (is_string($model)) {
+                    self::$_modelInstance = new $model;
+                    break;
+                }
+            }
+        }
+
+        $sql = self::$_modelInstance->getReadConnection()->buildSql($params);
         //compatible with other SQL syntax
         $replaces = [];
         foreach ($this->_bind as $key => $_) {
@@ -893,7 +913,13 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $model) {
             if (!$model instanceof $this) {
-                $sql = str_replace('[' . $model . ']', '[' . $this->modelsManager->getModelSource($model) . ']', $sql);
+                $source = $this->modelsManager->getModelSource($model);
+                if (strpos($source, '.')) {
+                    $source = '[' . implode('].[', explode('.', $source)) . ']';
+                } else {
+                    $source = '[' . $source . ']';
+                }
+                $sql = str_replace('[' . $model . ']', $source, $sql);
             }
         }
 
@@ -982,7 +1008,8 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     public function execute($cacheOptions = null)
     {
         self::$_hiddenParamNumber = 0;
-
+        self::$_modelInstance = null;
+		
         $this->_sql = $this->_buildSql();
 
         if ($cacheOptions !== null) {
@@ -994,14 +1021,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             }
         }
 
-        try {
-            $result = $this->modelsManager
-                ->getReadConnection(end($this->_models))
-                ->fetchAll($this->_sql, $this->_bind);
-        } catch (\Exception $e) {
-            throw new QueryBuilderException(':message sql: :sql bind: :bind'/**m0713300d0496c663e*/,
-                ['message' => $e->getMessage(), 'sql' => $this->_sql, 'bind' => json_encode($this->_bind)]);
-        }
+        $result = $this->modelsManager
+            ->getReadConnection(end($this->_models))
+            ->fetchAll($this->_sql, $this->_bind);
 
         if (isset($_cacheOptions)) {
             $this->modelsCache->set($_cacheOptions['key'],
@@ -1028,22 +1050,18 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $this->_sql = $this->_buildSql();
 
-        try {
-            if ($this->_group === null) {
-                $result = $this->modelsManager
-                    ->getReadConnection(end($this->_models))
-                    ->fetchOne($this->_sql, $this->_bind);
+        if ($this->_group === null) {
+            $result = $this->modelsManager
+                ->getReadConnection(end($this->_models))
+                ->fetchOne($this->_sql, $this->_bind);
 
-                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-                $rowCount = (int)$result['row_count'];
-            } else {
-                $result = $this->modelsManager
-                    ->getReadConnection(end($this->_models))
-                    ->fetchAll($this->_sql, $this->_bind);
-                $rowCount = count($result);
-            }
-        } catch (\Exception $e) {
-            throw new QueryBuilderException(':message : :sql'/**m0009da8b8bb870246*/, ['message' => $e->getMessage(), 'sql' => $this->_sql]);
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+            $rowCount = (int)$result['row_count'];
+        } else {
+            $result = $this->modelsManager
+                ->getReadConnection(end($this->_models))
+                ->fetchAll($this->_sql, $this->_bind);
+            $rowCount = count($result);
         }
 
         return $rowCount;
@@ -1079,6 +1097,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     public function executeEx(&$totalRows, $cacheOptions = null)
     {
         self::$_hiddenParamNumber = 0;
+        self::$_modelInstance = null;
 
         $copy = clone $this;
 
@@ -1096,13 +1115,9 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             }
         }
 
-        try {
-            $result = $this->modelsManager
-                ->getReadConnection(end($this->_models))
-                ->fetchAll($this->_sql, $this->_bind);
-        } catch (\Exception $e) {
-            throw new QueryBuilderException(':message: :sql'/**m0c844e2a50a095405*/, ['message' => $e->getMessage(), 'sql' => $this->_sql]);
-        }
+        $result = $this->modelsManager
+            ->getReadConnection(end($this->_models))
+            ->fetchAll($this->_sql, $this->_bind);
 
         if (!$this->_limit) {
             $totalRows = count($result);

@@ -94,22 +94,6 @@ interface DbInterface
     public function delete($table, $conditions, $bind = []);
 
     /**
-     * Appends a LIMIT clause to $sql argument
-     *
-     * <code>
-     *  $db->limit('',10);  //LIMIT 10
-     *  $db->limit('',10,100);   //LIMIT 10 OFFSET 100
-     * </code>
-     *
-     * @param    string $sql
-     * @param    int    $number
-     * @param   int     $offset
-     *
-     * @return    string
-     */
-    public function limit($sql, $number, $offset = null);
-
-    /**
      * Active SQL statement in the object
      *
      * @return string
@@ -162,14 +146,6 @@ interface DbInterface
      */
     public function affectedRows();
 
-    /**
-     * Escapes a column/table/schema name
-     *
-     * @param string|array $identifier
-     *
-     * @return string
-     */
-    public function escapeIdentifier($identifier);
 
     /**
      * Returns insert id for the auto_increment column inserted in the last SQL statement
@@ -224,4 +200,18 @@ interface DbInterface
      * @return static
      */
     public function truncateTable($source);
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function buildSql($params);
+
+    /**
+     * @param string $sql
+     *
+     * @return string
+     */
+    public function replaceQuoteCharacters($sql);
 }

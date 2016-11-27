@@ -21,21 +21,27 @@ class Sqlite extends Db
      */
     public function __construct($options)
     {
-        $this->_type = 'sqlite';
-
         if (is_object($options)) {
             $options = (array)$options;
         } elseif (is_string($options)) {
             $options = ['file' => $options];
         }
 
-        if (!isset($options['file'])) {
-            throw new SqliteException('file is not provide to sqlite adapter.'/**m0c03cc731dd915d96*/);
+        if (isset($options['options'])) {
+            $this->_options = $options['options'];
         }
-        $options['dsn'] = $options['file'];
-        unset($options['file']);
 
-        parent::__construct($options);
+        if (isset($options['dsn'])) {
+            $this->_dsn = $options['dsn'];
+        } else {
+            if (!isset($options['file'])) {
+                throw new SqliteException('file is not provide to sqlite adapter.'/**m0c03cc731dd915d96*/);
+            }
+
+            $this->_dsn = 'sqlite:' . $options['file'];
+        }
+
+        parent::__construct();
     }
 
     /**
@@ -46,7 +52,7 @@ class Sqlite extends Db
      */
     public function getMetadata($source)
     {
-        $columns = $this->fetchAll('PRAGMA table_info(' . $this->escapeIdentifier($source) . ')', null, \PDO::FETCH_ASSOC);
+        $columns = $this->fetchAll('PRAGMA table_info(' . $this->_escapeIdentifier($source) . ')', null, \PDO::FETCH_ASSOC);
 
         $attributes = [];
         $primaryKeys = [];
@@ -80,22 +86,6 @@ class Sqlite extends Db
     }
 
     /**
-     * Escapes a column/table/schema name
-     * <code>
-     * echo $connection->escapeIdentifier('my_table'); // `my_table`
-     * echo $connection->escapeIdentifier('companies.name'); // `companies`.`name`
-     * <code>
-     *
-     * @param string $identifier
-     *
-     * @return string
-     */
-    public function escapeIdentifier($identifier)
-    {
-        return "'" . $identifier . "'";
-    }
-
-    /**
      * @param string $source
      *
      * @return static
@@ -103,10 +93,72 @@ class Sqlite extends Db
      */
     public function truncateTable($source)
     {
-        $escapedTable = $this->escapeIdentifier($source);
-        $this->execute('DELETE ' . 'FROM ' . $escapedTable);
-        $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=' . $escapedTable);
+        $this->execute('DELETE ' . 'FROM ' . $this->_escapeIdentifier($source));
+        $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $source]);
 
         return $this;
+    }
+
+    public function buildSql($params)
+    {
+        $sql = '';
+
+        if (isset($params['columns'])) {
+            $sql .= 'SELECT ';
+
+            if (isset($params['distinct'])) {
+                $sql .= 'DISTINCT ';
+            }
+
+            $sql .= $params['columns'];
+        }
+
+        if (isset($params['from'])) {
+            $sql .= ' FROM ' . $params['from'];
+        }
+
+        if (isset($params['join'])) {
+            $sql .= $params['join'];
+        }
+
+        if (isset($params['where'])) {
+            $sql .= ' WHERE ' . $params['where'];
+        }
+
+        if (isset($params['group'])) {
+            $sql .= ' GROUP BY ' . $params['group'];
+        }
+
+        if (isset($params['having'])) {
+            $sql .= ' HAVING ' . $params['having'];
+        }
+
+        if (isset($params['order'])) {
+            $sql .= ' ORDER BY' . $params['order'];
+        }
+
+        if (isset($params['limit'])) {
+            $sql .= ' LIMIT ' . $params['limit'];
+        }
+
+        if (isset($params['offset'])) {
+            $sql .= ' OFFSET ' . $params['offset'];
+        }
+
+        if (isset($params['forUpdate'])) {
+            $sql .= 'FOR UPDATE';
+        }
+
+        return $sql;
+    }
+
+    /**
+     * @param string $sql
+     *
+     * @return string
+     */
+    public function replaceQuoteCharacters($sql)
+    {
+        return preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
     }
 }

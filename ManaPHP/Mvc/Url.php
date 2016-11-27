@@ -115,7 +115,7 @@ class Url extends Component implements UrlInterface
 
         if ($uri === '' || $uri[0] !== '/') {
             $baseUrl = $this->_baseUrls[$module];
-            $strUrl = (strpos($baseUrl, '://') ? parse_url($baseUrl, PHP_URL_PATH) : $baseUrl).'/' . $uri;
+            $strUrl = (strpos($baseUrl, '://') ? parse_url($baseUrl, PHP_URL_PATH) : $baseUrl) . '/' . $uri;
         } else {
             $strUrl = $this->_baseUrls[$module] . $uri;
         }
