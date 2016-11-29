@@ -48,3 +48,5 @@ scandir
 maxlifetime
 Rbac
 getallheaders
+dblib
+sqlsrv
