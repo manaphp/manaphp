@@ -46,6 +46,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
  * @property \ManaPHP\Security\SecintInterface             $secint
  * @property \ManaPHP\Http\FilterInterface                 $filter
+ * @property \ManaPHP\Mvc\Model\MetadataInterface          $modelsMetadata
  */
 abstract class Controller extends Component implements ControllerInterface
 {
