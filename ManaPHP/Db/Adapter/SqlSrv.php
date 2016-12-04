@@ -126,7 +126,7 @@ class SqlSrv extends Db
 
             $sql .= 'SELECT ';
             if (isset($params['limit']) && !isset($params['offset'])) {
-                $sql .= ' TOP ' . $params['limit'];
+                $sql .= ' TOP ' . $params['limit'] . ' ';
             }
             if (isset($params['distinct'])) {
                 $sql .= 'DISTINCT ';
@@ -166,7 +166,7 @@ class SqlSrv extends Db
             $sql .= ' HAVING ' . $params['having'];
         }
 
-        if (isset($params['order'])) {
+        if (isset($params['order']) && !isset($params['offset'])) {
             $sql .= ' ORDER BY' . $params['order'];
         }
 

@@ -1047,6 +1047,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         $this->_columns = 'COUNT(*) as [row_count]';
         $this->_limit = 0;
         $this->_offset = 0;
+        $this->_order = null;
 
         $this->_sql = $this->_buildSql();
 
