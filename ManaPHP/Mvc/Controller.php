@@ -47,6 +47,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Security\SecintInterface             $secint
  * @property \ManaPHP\Http\FilterInterface                 $filter
  * @property \ManaPHP\Mvc\Model\MetadataInterface          $modelsMetadata
+ * @property \ManaPHP\Mvc\UrlInterface                     $url
  */
 abstract class Controller extends Component implements ControllerInterface
 {

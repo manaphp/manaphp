@@ -67,14 +67,22 @@ class SqlSrv extends Db
     public function getMetadata($source)
     {
         $parts = explode('.', $source);
+
+        if (count($parts) === 1) {
+            $columns = $this->fetchAll("exec sp_pkeys '$parts[0]'");
+        } else {
+            $columns = $this->fetchAll("exec sp_pkeys @table_name ='$parts[1]', @table_owner ='$parts[0]'");
+        }
+
+        $primaryKeys = count($columns) === 1 ? [$columns[0]['COLUMN_NAME']] : [];
+
         if (count($parts) === 1) {
             $columns = $this->fetchAll("exec sp_columns '$parts[0]'");
         } else {
-            $columns = $this->fetchAll("exec sp_columns @table_name='$parts[1]', @table_owner='$parts[0]'");
+            $columns = $this->fetchAll("exec sp_columns @table_name ='$parts[1]', @table_owner ='$parts[0]'");
         }
 
         $attributes = [];
-        $primaryKeys = [];
         $nonPrimaryKeys = [];
         $autoIncrementAttribute = null;
 
@@ -83,9 +91,7 @@ class SqlSrv extends Db
 
             $attributes[] = $columnName;
 
-            if ($column['TYPE_NAME'] === 'int identity') {
-                $primaryKeys[] = $columnName;
-            } else {
+            if (!in_array($columnName, $primaryKeys, true)) {
                 $nonPrimaryKeys[] = $columnName;
             }
 
@@ -126,7 +132,7 @@ class SqlSrv extends Db
 
             $sql .= 'SELECT ';
             if (isset($params['limit']) && !isset($params['offset'])) {
-                $sql .= ' TOP ' . $params['limit'] . ' ';
+                $sql .= 'TOP ' . $params['limit'] . ' ';
             }
             if (isset($params['distinct'])) {
                 $sql .= 'DISTINCT ';
@@ -134,11 +140,11 @@ class SqlSrv extends Db
 
             $sql .= $params['columns'];
             if (isset($params['limit']) && isset($params['offset'])) {
-                if(!isset($params['order'])){
+                if (!isset($params['order'])) {
                     throw new SqlSrvException('if use offset CLAUSE, must provide order CLAUSE.');
                 }
 
-                $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . (isset($params['order']) ? $params['order'] : 'rand()') . ') AS row_number';
+                $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . (isset($params['order']) ? $params['order'] : 'rand()') . ') AS _row_number_';
             }
         }
 
@@ -155,7 +161,7 @@ class SqlSrv extends Db
         }
 
         if (isset($params['limit']) && isset($params['offset'])) {
-            $sql = 'SELECT' . ' t.* FROM (' . $sql . ') as t WHERE t.row_number BETWEEN ' . $params['limit'] . ' + 1 AND ' . $params['limit'] . ' + ' . $params['offset'];
+            $sql = 'SELECT' . ' t.* FROM (' . $sql . ') as t WHERE t._row_number_ BETWEEN ' . $params['limit'] . ' + 1 AND ' . $params['limit'] . ' + ' . $params['offset'];
         }
 
         if (isset($params['group'])) {
