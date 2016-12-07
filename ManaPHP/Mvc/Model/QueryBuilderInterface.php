@@ -184,7 +184,7 @@ interface QueryBuilderInterface
      *
      * @return static
      */
-    public function having($having, $bind = null);
+    public function having($having, $bind = []);
 
     /**
      * Sets a FOR UPDATE clause

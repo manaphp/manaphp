@@ -84,7 +84,7 @@ interface DispatcherInterface
      *
      * @return false|\ManaPHP\Mvc\ControllerInterface
      */
-    public function dispatch($module, $controller, $action, $params = null);
+    public function dispatch($module, $controller, $action, $params = []);
 
     /**
      * Forwards the execution flow to another controller/action

@@ -746,11 +746,11 @@ class Filter extends Component implements FilterInterface
 
     /**
      * @param string $value
-     * @param array  $parameter
+     * @param array  $parameters
      *
      * @return int|null
      */
-    protected function _filter_timestamp($value, $parameter)
+    protected function _filter_timestamp($value, $parameters)
     {
         if (is_numeric($value)) {
             return (int)$value;

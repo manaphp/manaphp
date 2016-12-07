@@ -1034,8 +1034,8 @@ class Model extends Component implements ModelInterface
     }
 
     /**
-     * @param string     $method
-     * @param int|string $arguments
+     * @param string $method
+     * @param array  $arguments
      *
      * @return array|false|int|\ManaPHP\Mvc\Model|static[]
      * @throws \ManaPHP\Mvc\Model\Exception
