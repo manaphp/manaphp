@@ -406,6 +406,15 @@ class MvcModelQueryBuilderTest extends TestCase
         $this->assertCount(4, $builder->execute());
     }
 
+    public function test_likeWhere()
+    {
+        $builder = $this->modelsManager->createBuilder()->addFrom(get_class(new Address()))->likeWhere('address', '14%');
+        $this->assertCount(33, $builder->execute());
+
+        $builder = $this->modelsManager->createBuilder()->addFrom(get_class(new Address()))->likeWhere(['address','district'],'we%');
+        $this->assertCount(15, $builder->execute());
+    }
+
     public function test_orderBy()
     {
         $builder = $this->modelsManager->createBuilder()
@@ -477,7 +486,7 @@ class MvcModelQueryBuilderTest extends TestCase
             ->columns('COUNT(city_id) as count_city, country_id')
             ->addFrom(get_class(new City()))
             ->groupBy('country_id')
-            ->having('COUNT(city_id) >:min_count AND COUNT(city_id) <:max_count', ['min_count' => 1,'max_count' => 7]);
+            ->having('COUNT(city_id) >:min_count AND COUNT(city_id) <:max_count', ['min_count' => 1, 'max_count' => 7]);
         $rows = $builder->execute();
         $this->assertCount(46, $rows);
     }

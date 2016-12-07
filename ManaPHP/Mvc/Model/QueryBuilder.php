@@ -535,6 +535,31 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
+     * @param string|array $expr
+     * @param string       $like
+     *
+     * @return static
+     */
+    public function likeWhere($expr, $like)
+    {
+        if (is_array($expr)) {
+            $conditions = [];
+            $bind = [];
+            /** @noinspection ForeachSourceInspection */
+            foreach ($expr as $column) {
+                $key = str_replace('.[]` ', '_', $column);
+                $conditions[] = $column . ' LIKE :' . $key;
+                $bind[$key] = $like;
+            }
+
+            return $this->andWhere(implode(' OR ', $conditions), $bind);
+        } else {
+            $key = str_replace('.[]` ', '_', $expr);
+            return $this->andWhere($expr . ' LIKE :' . $key, [$key => $like]);
+        }
+    }
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>
@@ -1009,7 +1034,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     {
         self::$_hiddenParamNumber = 0;
         self::$_modelInstance = null;
-		
+
         $this->_sql = $this->_buildSql();
 
         if ($cacheOptions !== null) {

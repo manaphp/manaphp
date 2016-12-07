@@ -12,6 +12,7 @@ use ManaPHP\Utility\Text;
  * Class ManaPHP\Mvc\Dispatcher
  *
  * @package dispatcher
+ * @property \ManaPHP\Http\FilterInterface $filter
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -128,24 +129,19 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * Gets a param by its name or numeric index
      *
-     * @param  string|int   $param
-     * @param  string|array $filters
-     * @param  mixed        $defaultValue
+     * @param  string|int $param
+     * @param  string     $rule
      *
      * @return mixed
      * @throws \ManaPHP\Mvc\Dispatcher\Exception
      */
-    public function getParam($param, $filters = null, $defaultValue = null)
+    public function getParam($param, $rule = null)
     {
         if (!isset($this->_params[$param])) {
-            return $defaultValue;
+            throw new DispatcherException('`:param` param is not exists', ['param' => $param]);
         }
 
-        if ($filters === null) {
-            return $this->_params[$param];
-        }
-
-        return null;
+        return $rule ? $this->filter->sanitize($param, $rule, $this->_params[$param]) : $this->_params[$param];
     }
 
     /**

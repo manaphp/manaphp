@@ -48,13 +48,12 @@ interface DispatcherInterface
     /**
      * Gets a param by its name or numeric index
      *
-     * @param  string|int   $param
-     * @param  string|array $filters
-     * @param mixed         $defaultValue
+     * @param  string|int $param
+     * @param  string     $rule
      *
      * @return mixed
      */
-    public function getParam($param, $filters = null, $defaultValue = null);
+    public function getParam($param, $rule = null);
 
     /**
      * @param string $param

@@ -160,6 +160,14 @@ interface QueryBuilderInterface
     public function notInWhere($expr, $values);
 
     /**
+     * @param string|array $expr
+     * @param string       $like
+     *
+     * @return static
+     */
+    public function likeWhere($expr, $like);
+
+    /**
      * Sets a ORDER BY condition clause
      *
      * @param string $orderBy

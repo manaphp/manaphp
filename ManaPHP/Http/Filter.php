@@ -117,7 +117,7 @@ class Filter extends Component implements FilterInterface
         $filters = [];
         foreach ($parts as $part) {
             if (Text::contains($part, ':')) {
-                $parts2 = explode(':', $part);
+                $parts2 = explode(':', $part, 2);
                 $filter = $parts2[0];
                 $parameters = explode(',', $parts2[1]);
             } else {
@@ -360,14 +360,15 @@ class Filter extends Component implements FilterInterface
 
     /**
      * @param string $value
+     * @param array  $parameters
      *
      * @return int|null
      */
-    protected function _filter_date($value)
+    protected function _filter_date($value, $parameters)
     {
-        $timestamp = strtotime($value);
+        $timestamp = is_numeric($value) ? $value : strtotime($value);
         if ($timestamp !== false) {
-            return $timestamp;
+            return date(isset($parameters[0]) ? $parameters[0] : 'Y-m-d H:i:s', $timestamp);
         } else {
             return null;
         }
