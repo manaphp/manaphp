@@ -34,13 +34,6 @@ class Compiler extends Component
     protected $_escapedTags = ['{{', '}}'];
 
     /**
-     * Counter to keep track of nested forElse statements.
-     *
-     * @var int
-     */
-    protected $_forElseCounter = 0;
-
-    /**
      * Compile the given Blade template contents.
      *
      * @param  string $value
@@ -337,20 +330,6 @@ class Compiler extends Component
     }
 
     /**
-     * Compile the for else statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compileForElse($expression)
-    {
-        $empty = '$__empty_' . ++$this->_forElseCounter;
-
-        return "<?php {$empty} = true; foreach{$expression}: {$empty} = false; ?>";
-    }
-
-    /**
      * Compile the can statements into valid PHP.
      *
      * @param  string $expression
@@ -410,22 +389,6 @@ class Compiler extends Component
     protected function _compileElseIf($expression)
     {
         return "<?php elseif{$expression}: ?>";
-    }
-
-    /**
-     * Compile the empty statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compileEmpty(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        $empty = '$__empty_' . $this->_forElseCounter--;
-
-        return "<?php endforeach; if ({$empty}): ?>";
     }
 
     /**
@@ -518,20 +481,6 @@ class Compiler extends Component
      * @return string
      */
     protected function _compileEndIf(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        return '<?php endif; ?>';
-    }
-
-    /**
-     * Compile the end-for-else statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compileEndForElse(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {

@@ -48,10 +48,11 @@ interface RendererInterface
      * Start injecting content into a section.
      *
      * @param  string $section
+     * @param  string $default
      *
      * @return void
      */
-    public function startSection($section);
+    public function startSection($section, $default = null);
 
     /**
      * Stop injecting content into a section.

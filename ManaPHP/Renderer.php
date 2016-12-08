@@ -184,13 +184,18 @@ class Renderer extends Component implements RendererInterface
      * Start injecting content into a section.
      *
      * @param  string $section
+     * @param string  $default
      *
      * @return void
      */
-    public function startSection($section)
+    public function startSection($section, $default = null)
     {
-        ob_start();
-        $this->_sectionStack[] = $section;
+        if ($default === null) {
+            ob_start();
+            $this->_sectionStack[] = $section;
+        } else {
+            $this->_sections[$section] = $default;
+        }
     }
 
     /**

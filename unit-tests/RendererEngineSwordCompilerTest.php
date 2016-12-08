@@ -51,7 +51,7 @@ EOT;
 {{-- comments --}}
 EOT;
         $compiled = <<<'EOT'
-<?php /* comments */ ?>
+<?php /* comments */ ?> 
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -120,17 +120,6 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_Empty()
-    {
-        $source = <<<'EOT'
-@empty
-EOT;
-        $compiled = <<<'EOT'
-<?php endforeach; if ($__empty_0): ?>
-EOT;
-        $this->assertEquals($compiled, $this->sword->compileString($source));
-    }
-
     public function test_EndFor()
     {
         $source = <<<'EOT'
@@ -149,17 +138,6 @@ EOT;
 EOT;
         $compiled = <<<'EOT'
 <?php endforeach; ?>
-EOT;
-        $this->assertEquals($compiled, $this->sword->compileString($source));
-    }
-
-    public function test_Endforelse()
-    {
-        $source = <<<'EOT'
-@endforelse
-EOT;
-        $compiled = <<<'EOT'
-<?php endif; ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -281,17 +259,6 @@ EOT;
 EOT;
         $compiled = <<<'EOT'
 <?php $index = -1; foreach($users as $user): $index++; ?>
-EOT;
-        $this->assertEquals($compiled, $this->sword->compileString($source));
-    }
-
-    public function test_ForElse()
-    {
-        $source = <<<'EOT'
-@forelse($users as $user)
-EOT;
-        $compiled = <<<'EOT'
-<?php $__empty_1 = true; foreach($users as $user): $__empty_1 = false; ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
