@@ -547,14 +547,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $bind = [];
             /** @noinspection ForeachSourceInspection */
             foreach ($expr as $column) {
-                $key = str_replace('.[]` ', '_', $column);
+                $key = str_replace('.', '_', $column);
                 $conditions[] = $column . ' LIKE :' . $key;
                 $bind[$key] = $like;
             }
 
             return $this->andWhere(implode(' OR ', $conditions), $bind);
         } else {
-            $key = str_replace('.[]` ', '_', $expr);
+            $key = str_replace('.', '_', $expr);
             return $this->andWhere($expr . ' LIKE :' . $key, [$key => $like]);
         }
     }

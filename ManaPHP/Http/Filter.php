@@ -367,13 +367,51 @@ class Filter extends Component implements FilterInterface
     protected function _filter_date($value, $parameters)
     {
         $timestamp = is_numeric($value) ? $value : strtotime($value);
-        if ($timestamp !== false) {
-            return date(isset($parameters[0]) ? $parameters[0] : 'Y-m-d H:i:s', $timestamp);
-        } else {
+        if ($timestamp === false) {
             return null;
+        }
+
+        if (isset($parameters[0])) {
+            if ($parameters[0] === 'start') {
+                return date('Y-m-d', $timestamp) . ' 00:00:00';
+            } elseif ($parameters[0] === 'end') {
+                return date('Y-m-d', $timestamp) . ' 23:59:59';
+            } else {
+                return date($parameters[0], $timestamp);
+            }
+        } else {
+            return $value;
         }
     }
 
+	/**
+     * @param string $value
+     * @param array  $parameters
+     *
+     * @return int|null
+     */
+    protected function _filter_timestamp($value, $parameters)
+    {
+        $timestamp = is_numeric($value) ? (int)$value : strtotime($value);
+        if ($timestamp === false) {
+            return null;
+        }
+
+        if (isset($parameters[0])) {
+            if ($parameters[0] === 'start') {
+                /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
+                return (int)($timestamp / 86400) * 86400;
+            } elseif ($parameters[0] === 'end') {
+                /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
+                return (int)($timestamp / 86400) * 86400 + 86399;
+            } else {
+                return strtotime(date($parameters[0], $timestamp));
+            }
+        }
+
+        return $timestamp;
+    }
+	
     /**
      * @param string $value
      * @param array  $parameters
@@ -741,23 +779,6 @@ class Filter extends Component implements FilterInterface
             return null;
         } else {
             return $v;
-        }
-    }
-
-    /**
-     * @param string $value
-     * @param array  $parameters
-     *
-     * @return int|null
-     */
-    protected function _filter_timestamp($value, $parameters)
-    {
-        if (is_numeric($value)) {
-            return (int)$value;
-        } else {
-            $r = strtotime($value);
-
-            return $r === false ? null : $r;
         }
     }
 
