@@ -13,7 +13,6 @@ class Compiler extends Component
     /**
      * All custom "directive" handlers.
      *
-     * This was implemented as a more usable "extend" in 5.1.
      *
      * @var array
      */
@@ -34,7 +33,7 @@ class Compiler extends Component
     protected $_escapedTags = ['{{', '}}'];
 
     /**
-     * Compile the given Blade template contents.
+     * Compile the given Sword template contents.
      *
      * @param  string $value
      *
@@ -66,7 +65,7 @@ class Compiler extends Component
     }
 
     /**
-     * Compile Blade comments into valid PHP.
+     * Compile Sword comments into valid PHP.
      *
      * @param  string $value
      *
@@ -80,7 +79,7 @@ class Compiler extends Component
     }
 
     /**
-     * Compile Blade echos into valid PHP.
+     * Compile Sword echos into valid PHP.
      *
      * @param  string $value
      *
@@ -138,7 +137,7 @@ class Compiler extends Component
     }
 
     /**
-     * Compile Blade statements that start with "@".
+     * Compile Sword statements that start with "@".
      *
      * @param  string $value
      *
