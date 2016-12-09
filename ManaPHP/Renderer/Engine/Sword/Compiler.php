@@ -277,20 +277,6 @@ class Compiler extends Component
     }
 
     /**
-     * Compile the overwrite statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compileOverwrite(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        return '<?php $renderer->stopSection(true); ?>';
-    }
-
-    /**
      * Compile the else statements into valid PHP.
      *
      * @param  string $expression
@@ -509,44 +495,6 @@ class Compiler extends Component
     protected function _compilePartial($expression)
     {
         return $this->_compileInclude($expression);
-    }
-
-    /**
-     * Compile the stack statements into the content.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compileStack($expression)
-    {
-        return "<?php echo \$renderer->getSection{$expression}; ?>";
-    }
-
-    /**
-     * Compile the push statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compilePush($expression)
-    {
-        return "<?php \$renderer->startSection{$expression}; ?>";
-    }
-
-    /**
-     * Compile the end push statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compileEndPush(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        return '<?php $renderer->appendSection(); ?>';
     }
 
     /**

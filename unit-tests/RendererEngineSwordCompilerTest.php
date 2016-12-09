@@ -208,17 +208,6 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_EndPush()
-    {
-        $source = <<<'EOT'
-@endpush
-EOT;
-        $compiled = <<<'EOT'
-<?php $renderer->appendSection(); ?>
-EOT;
-        $this->assertEquals($compiled, $this->sword->compileString($source));
-    }
-
     public function test_EndSection()
     {
         $source = <<<'EOT'
@@ -293,17 +282,6 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_Overwrite()
-    {
-        $source = <<<'EOT'
-@overwrite
-EOT;
-        $compiled = <<<'EOT'
-<?php $renderer->stopSection(true); ?>
-EOT;
-        $this->assertEquals($compiled, $this->sword->compileString($source));
-    }
-
     public function test_Partial()
     {
         $source = <<<'EOT'
@@ -323,17 +301,6 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_Push()
-    {
-        $source = <<<'EOT'
-@push('scripts')
-EOT;
-        $compiled = <<<'EOT'
-<?php $renderer->startSection('scripts'); ?>
-EOT;
-        $this->assertEquals($compiled, $this->sword->compileString($source));
-    }
-
     public function test_Section()
     {
         $source = <<<'EOT'
@@ -341,25 +308,6 @@ EOT;
 EOT;
         $compiled = <<<'EOT'
 <?php $renderer->startSection('scripts'); ?>
-EOT;
-        $this->assertEquals($compiled, $this->sword->compileString($source));
-    }
-
-    public function test_Stack()
-    {
-        $source = <<<'EOT'
-@stack('scripts')
-EOT;
-        $compiled = <<<'EOT'
-<?php echo $renderer->getSection('scripts'); ?>
-EOT;
-        $this->assertEquals($compiled, $this->sword->compileString($source));
-
-        $source = <<<'EOT'
-@stack('scripts','')
-EOT;
-        $compiled = <<<'EOT'
-<?php echo $renderer->getSection('scripts',''); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
