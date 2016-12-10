@@ -104,6 +104,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     protected $_sql;
 
     /**
+     * @var int|array
+     */
+    protected $_cacheOptions;
+
+    /**
      * \ManaPHP\Mvc\Model\Query\Builder constructor
      *
      *<code>
@@ -1042,22 +1047,33 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
-     * @param int|array $cacheOptions
+     * @param array|int $options
+     *
+     * @return static
+     */
+    public function cache($options)
+    {
+        $this->_cacheOptions = $options;
+
+        return $this;
+    }
+
+    /**
      *
      * @return array
      * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
-    public function execute($cacheOptions = null)
+    public function execute()
     {
         self::$_hiddenParamNumber = 0;
         self::$_modelInstance = null;
 
         $this->_sql = $this->_buildSql();
 
-        if ($cacheOptions !== null) {
-            $_cacheOptions = $this->_getCacheOptions($cacheOptions);
+        if ($this->_cacheOptions !== null) {
+            $cacheOptions = $this->_getCacheOptions($this->_cacheOptions);
 
-            $data = $this->modelsCache->get($_cacheOptions['key']);
+            $data = $this->modelsCache->get($cacheOptions['key']);
             if ($data !== false) {
                 return json_decode($data, true)['rows'];
             }
@@ -1067,10 +1083,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             ->getReadConnection(end($this->_models))
             ->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
 
-        if (isset($_cacheOptions)) {
-            $this->modelsCache->set($_cacheOptions['key'],
+        if (isset($cacheOptions)) {
+            $this->modelsCache->set($cacheOptions['key'],
                 json_encode($this->_buildCacheData($result, -1), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                $_cacheOptions['ttl']);
+                $cacheOptions['ttl']);
         }
 
         return $result;
@@ -1111,18 +1127,16 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
-     * @param int       $size
-     * @param int       $page
-     * @param int|array $cacheOptions
+     * @param int $size
+     * @param int $page
      *
      * @return static
      * @throws \ManaPHP\Paginator\Exception
      * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
-    public function paginate($size, $page, $cacheOptions = null)
+    public function paginate($size, $page)
     {
-        $this->paginator->items = $this->limit($size, ($page - 1) * $size)
-            ->executeEx($totalRows, $cacheOptions);
+        $this->paginator->items = $this->limit($size, ($page - 1) * $size)->executeEx($totalRows);
         $this->paginator->paginate($totalRows, $size, $page);
 
         return $this;
@@ -1132,12 +1146,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * build the query and execute it.
      *
      * @param int|string $totalRows
-     * @param int|array  $cacheOptions
      *
      * @return array
      * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
-    public function executeEx(&$totalRows, $cacheOptions = null)
+    public function executeEx(&$totalRows)
     {
         self::$_hiddenParamNumber = 0;
         self::$_modelInstance = null;
@@ -1146,10 +1159,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $this->_sql = $this->_buildSql();
 
-        if ($cacheOptions !== null) {
-            $_cacheOptions = $this->_getCacheOptions($cacheOptions);
+        if ($this->_cacheOptions !== null) {
+            $cacheOptions = $this->_getCacheOptions($this->_cacheOptions);
 
-            $result = $this->modelsCache->get($_cacheOptions['key']);
+            $result = $this->modelsCache->get($cacheOptions['key']);
 
             if ($result !== false) {
                 $result = json_decode($result, true);
@@ -1172,10 +1185,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             }
         }
 
-        if (isset($_cacheOptions)) {
-            $this->modelsCache->set($_cacheOptions['key'],
+        if (isset($cacheOptions)) {
+            $this->modelsCache->set($cacheOptions['key'],
                 json_encode($this->_buildCacheData($result, $totalRows), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                $_cacheOptions['ttl']);
+                $cacheOptions['ttl']);
         }
 
         return $result;

@@ -226,11 +226,10 @@ interface QueryBuilderInterface
     /**
      * @param int       $size
      * @param int       $page
-     * @param int|array $cacheOptions
      *
      * @return static
      */
-    public function paginate($size, $page, $cacheOptions = null);
+    public function paginate($size, $page);
 
     /**
      * Sets a LIMIT clause
@@ -264,23 +263,27 @@ interface QueryBuilderInterface
     public function setBind($bind, $merge = true);
 
     /**
-     * build the query and execute it.
+     * @param int|array $options
      *
-     * @param int|array $cacheOptions
+     * @return static
+     */
+    public function cache($options);
+
+    /**
+     * build the query and execute it.
      *
      * @return array
      */
-    public function execute($cacheOptions = null);
+    public function execute();
 
     /**
      * build the query and execute it.
      *
      * @param int|string $totalRows
-     * @param int|array  $cacheOptions
      *
      * @return array
      */
-    public function executeEx(&$totalRows, $cacheOptions = null);
+    public function executeEx(&$totalRows);
 
     /**
      * @param \ManaPHP\Mvc\Model\QueryBuilderInterface[] $builders

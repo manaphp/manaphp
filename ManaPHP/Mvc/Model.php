@@ -281,13 +281,14 @@ class Model extends Component implements ModelInterface
         }
 
         $builder = $modelsManager->createBuilder($parameters)
-            ->from($modelName);
+            ->from($modelName)
+            ->cache($cacheOptions);
 
-        $resultset = $builder->execute($cacheOptions);
+        $resultset = $builder->execute();
 
         $modelInstances = [];
-        foreach ($resultset as $result) {
-            $modelInstances[] = new static($result, $dependencyInjector);
+        foreach ($resultset as $key => $result) {
+            $modelInstances[$key] = new static($result, $dependencyInjector);
         }
 
         return $modelInstances;
@@ -371,9 +372,10 @@ class Model extends Component implements ModelInterface
          */
         $builder = $modelsManager->createBuilder($parameters)
             ->from($modelName)
-            ->limit(1);
+            ->limit(1)
+            ->cache($cacheOptions);
 
-        $resultset = $builder->execute($cacheOptions);
+        $resultset = $builder->execute();
 
         if (isset($resultset[0])) {
             return new static($resultset[0], $dependencyInjector);
@@ -421,9 +423,10 @@ class Model extends Component implements ModelInterface
         $builder = $modelsManager->createBuilder($parameters)
             ->columns('1 as stub')
             ->from($modelName)
-            ->limit(1);
+            ->limit(1)
+            ->cache($cacheOptions);
 
-        $resultset = $builder->execute($cacheOptions);
+        $resultset = $builder->execute();
 
         return isset($resultset[0]);
     }
@@ -525,9 +528,10 @@ class Model extends Component implements ModelInterface
          */
         $builder = $modelsManager->createBuilder($parameters)
             ->columns($columns)
-            ->from(get_called_class());
+            ->from(get_called_class())
+            ->cache($cacheOptions);
 
-        $resultset = $builder->execute($cacheOptions);
+        $resultset = $builder->execute();
 
         if (isset($parameters['group'])) {
             return $resultset;
@@ -1063,6 +1067,8 @@ class Model extends Component implements ModelInterface
             return static::findFirst([Text::underscore(substr($method, 11)) => $arguments[0]], $arguments[1]);
         } elseif (strpos($method, 'findBy') === 0) {
             return static::find([Text::underscore(substr($method, 6)) => $arguments[0]], $arguments[1]);
+        } elseif (strpos($method, 'findAllBy') === 0) {
+            return static::find([Text::underscore(substr($method, 9)) => $arguments[0]], $arguments[1]);
         } elseif (strpos($method, 'countBy') === 0) {
             return static::count([Text::underscore(substr($method, 7)) => $arguments[0]], '*', $arguments[1]);
         } else {
