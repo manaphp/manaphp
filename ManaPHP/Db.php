@@ -281,18 +281,34 @@ abstract class Db extends Component implements DbInterface
      *    }
      *</code>
      *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
+     * @param string          $sql
+     * @param array           $bind
+     * @param int             $fetchMode
+     * @param string|callable $indexBy
      *
      * @throws \ManaPHP\Db\Exception
      * @return array
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
+    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
         $result = $this->query($sql, $bind, $fetchMode);
 
-        return $result->fetchAll();
+        if ($indexBy === null) {
+            return $result->fetchAll();
+        } elseif (is_scalar($indexBy)) {
+            $rows = [];
+            while ($row = $result->fetch($fetchMode)) {
+                $rows[$row[$indexBy]] = $row;
+            }
+            return $rows;
+        } else {
+            $rows = [];
+            while ($row = $result->fetch()) {
+                $rows[$indexBy($row)] = $row;
+            }
+
+            return $rows;
+        }
     }
 
     /**

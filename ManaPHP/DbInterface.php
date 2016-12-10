@@ -34,13 +34,14 @@ interface DbInterface
      *  $db->fetchAll('SELECT * FROM city WHERE city_id <:city_id',['city_id'=>5]);
      * </code>
      *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
+     * @param string          $sql
+     * @param array           $bind
+     * @param int             $fetchMode
+     * @param string|callable $indexBy
      *
      * @return array
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
+    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null);
 
     /**
      * Inserts data into a table using custom SQL syntax

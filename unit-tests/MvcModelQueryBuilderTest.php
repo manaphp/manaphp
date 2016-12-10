@@ -411,7 +411,7 @@ class MvcModelQueryBuilderTest extends TestCase
         $builder = $this->modelsManager->createBuilder()->addFrom(get_class(new Address()))->likeWhere('address', '14%');
         $this->assertCount(33, $builder->execute());
 
-        $builder = $this->modelsManager->createBuilder()->addFrom(get_class(new Address()))->likeWhere(['address','district'],'we%');
+        $builder = $this->modelsManager->createBuilder()->addFrom(get_class(new Address()))->likeWhere(['address', 'district'], 'we%');
         $this->assertCount(15, $builder->execute());
     }
 
@@ -455,6 +455,31 @@ class MvcModelQueryBuilderTest extends TestCase
         for ($i = 0; $i < count($rows) - 1; $i++) {
             $this->assertTrue($rows[$i]['address_id'] > $rows[$i + 1]['address_id']);
         }
+    }
+
+    public function test_indexBy()
+    {
+        $buidler = $this->modelsManager->createBuilder()
+            ->columns('address_id')
+            ->addFrom(get_class(new Address()))
+            ->where('address_id >=', 5)
+            ->indexBy('address_id')
+            ->limit(1);
+        $rows = $buidler->execute();
+        $this->assertCount(1, $rows);
+        $this->assertArrayHasKey('5', $rows);
+
+        $buidler = $this->modelsManager->createBuilder()
+            ->columns('address_id')
+            ->addFrom(get_class(new Address()))
+            ->where('address_id >=', 5)
+            ->indexBy(function ($row) {
+                return 'address_' . $row['address_id'];
+            })
+            ->limit(1);
+        $rows = $buidler->execute();
+        $this->assertCount(1, $rows);
+        $this->assertArrayHasKey('address_5', $rows);
     }
 
     public function test_having()

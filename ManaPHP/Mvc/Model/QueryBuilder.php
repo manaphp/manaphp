@@ -54,6 +54,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     protected $_order;
 
     /**
+     * @var string|callable
+     */
+    protected $_index;
+
+    /**
      * @var int
      */
     protected $_limit = 0;
@@ -710,6 +715,18 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
+     * @param callable|string $indexBy
+     *
+     * @return static
+     */
+    public function indexBy($indexBy)
+    {
+        $this->_index = $indexBy;
+
+        return $this;
+    }
+
+    /**
      * @return string
      * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
@@ -1048,7 +1065,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $result = $this->modelsManager
             ->getReadConnection(end($this->_models))
-            ->fetchAll($this->_sql, $this->_bind);
+            ->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
 
         if (isset($_cacheOptions)) {
             $this->modelsCache->set($_cacheOptions['key'],
@@ -1143,7 +1160,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $result = $this->modelsManager
             ->getReadConnection(end($this->_models))
-            ->fetchAll($this->_sql, $this->_bind);
+            ->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
 
         if (!$this->_limit) {
             $totalRows = count($result);

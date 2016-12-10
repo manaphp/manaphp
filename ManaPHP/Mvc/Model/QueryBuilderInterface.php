@@ -9,7 +9,6 @@ namespace ManaPHP\Mvc\Model;
  */
 interface QueryBuilderInterface
 {
-
     /**
      * Sets the columns to be queried
      *
@@ -175,6 +174,13 @@ interface QueryBuilderInterface
      * @return static
      */
     public function orderBy($orderBy);
+
+    /**
+     * @param string|callable $indexBy
+     *
+     * @return static
+     */
+    public function indexBy($indexBy);
 
     /**
      * Sets a HAVING condition clause
