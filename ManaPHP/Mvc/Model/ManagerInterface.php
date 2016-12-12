@@ -103,4 +103,9 @@ interface ManagerInterface
      * @return string
      */
     public function getLastQuery();
+
+    /**
+     * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
+     */
+    public function getLastBuilder();
 }

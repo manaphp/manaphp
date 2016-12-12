@@ -152,6 +152,11 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $params = [];
         }
 
+        if (isset($params[1])) {
+            $params['bind'] = $params[1];
+            unset($params[1]);
+        }
+
         if (isset($params['bind'])) {
             $this->_bind = array_merge($this->_bind, $params['bind']);
         }

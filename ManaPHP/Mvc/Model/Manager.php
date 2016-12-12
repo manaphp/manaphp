@@ -214,4 +214,12 @@ class Manager extends Component implements ManagerInterface
     {
         return $this->_builder->getSql();
     }
+
+    /**
+     * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
+     */
+    public function getLastBuilder()
+    {
+        return $this->_builder;
+    }
 }

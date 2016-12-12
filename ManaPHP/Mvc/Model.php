@@ -261,28 +261,36 @@ class Model extends Component implements ModelInterface
     {
         $dependencyInjector = Di::getDefault();
 
-        /**
-         * @var $modelsManager \ManaPHP\Mvc\Model\Manager
-         */
-        $modelsManager = $dependencyInjector->getShared('modelsManager');
-
         $modelName = get_called_class();
 
         if (is_string($parameters)) {
             $parameters = [$parameters];
         }
 
-        if (!isset($parameters['columns']) && (isset($parameters[0]) || isset($parameters['conditions']))) {
+        if (isset($parameters['columns'])) {
+            $columns = $parameters['columns'];
+            unset($parameters['columns']);
+        } else {
             $columns = '';
             foreach ($dependencyInjector->modelsMetadata->getColumnProperties($modelName) as $column) {
                 $columns .= '[' . $column . '], ';
             }
-            $parameters['columns'] = substr($columns, 0, -2);
+            $columns = substr($columns, 0, -2);
         }
 
-        $builder = $modelsManager->createBuilder($parameters)
+        if (isset($parameters['in'])) {
+            $inWhere = $parameters['in'];
+            unset($parameters['in']);
+        }
+
+        $builder = $dependencyInjector->modelsManager->createBuilder($parameters)
+            ->columns($columns)
             ->from($modelName)
             ->cache($cacheOptions);
+
+        if (isset($inWhere)) {
+            $builder->inWhere($dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName)[0], $inWhere);
+        }
 
         $resultset = $builder->execute();
 
@@ -336,11 +344,9 @@ class Model extends Component implements ModelInterface
     public static function findFirst($parameters = null, $cacheOptions = null)
     {
         $dependencyInjector = Di::getDefault();
-        $modelsManager = $dependencyInjector->getShared('modelsManager');
 
         if (is_numeric($parameters)) {
-            $modelsMetadata = $dependencyInjector->getShared('modelsMetadata');
-            $primaryKeys = $modelsMetadata->getPrimaryKeyAttributes(get_called_class());
+            $primaryKeys = $dependencyInjector->modelsMetadata->getPrimaryKeyAttributes(get_called_class());
 
             if (count($primaryKeys) === 0) {
                 throw new ModelException('parameter is integer, but the primary key of `:model` model is none', ['model' => get_called_class()]);
@@ -358,19 +364,19 @@ class Model extends Component implements ModelInterface
 
         $modelName = get_called_class();
 
-        /** @noinspection OffsetOperationsInspection */
-        if (!isset($parameters['columns']) && (isset($parameters[0]) || isset($parameters['conditions']))) {
+        if (isset($parameters['columns'])) {
+            $columns = $parameters['columns'];
+            unset($parameters['columns']);
+        } else {
             $columns = '';
             foreach ($dependencyInjector->modelsMetadata->getColumnProperties($modelName) as $column) {
                 $columns .= '[' . $column . '], ';
             }
-            $parameters['columns'] = substr($columns, 0, -2);
+            $columns = substr($columns, 0, -2);
         }
 
-        /**
-         * @var $modelsManager \ManaPHP\Mvc\Model\Manager
-         */
-        $builder = $modelsManager->createBuilder($parameters)
+        $builder = $dependencyInjector->modelsManager->createBuilder($parameters)
+            ->columns($columns)
             ->from($modelName)
             ->limit(1)
             ->cache($cacheOptions);
@@ -395,11 +401,9 @@ class Model extends Component implements ModelInterface
     public static function exists($parameters = null, $cacheOptions = null)
     {
         $dependencyInjector = Di::getDefault();
-        $modelsManager = $dependencyInjector->getShared('modelsManager');
 
         if (is_numeric($parameters)) {
-            $modelsMetadata = $dependencyInjector->getShared('modelsMetadata');
-            $primaryKeys = $modelsMetadata->getPrimaryKeyAttributes(get_called_class());
+            $primaryKeys = $dependencyInjector->modelsMetadata->getPrimaryKeyAttributes(get_called_class());
 
             if (count($primaryKeys) === 0) {
                 throw new ModelException('parameter is integer, but the primary key of `:model` model is none', ['model' => get_called_class()]);
@@ -420,7 +424,7 @@ class Model extends Component implements ModelInterface
         /**
          * @var $modelsManager \ManaPHP\Mvc\Model\Manager
          */
-        $builder = $modelsManager->createBuilder($parameters)
+        $builder = $dependencyInjector->modelsManager->createBuilder($parameters)
             ->columns('1 as stub')
             ->from($modelName)
             ->limit(1)
@@ -442,7 +446,7 @@ class Model extends Component implements ModelInterface
     {
         $dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
-        return $dependencyInjector->getShared('modelsManager')->createBuilder()->addFrom(get_called_class());
+        return $dependencyInjector->modelsManager->createBuilder()->addFrom(get_called_class());
     }
 
     /**
@@ -507,7 +511,6 @@ class Model extends Component implements ModelInterface
     protected static function _groupResult($function, $alias, $column, $parameters, $cacheOptions)
     {
         $dependencyInjector = Di::getDefault();
-        $modelsManager = $dependencyInjector->getShared('modelsManager');
         if ($parameters === null) {
             $parameters = [];
         } elseif (is_string($parameters)) {
@@ -523,10 +526,7 @@ class Model extends Component implements ModelInterface
             $columns = "$function($column) AS [$alias]";
         }
 
-        /**
-         * @var $modelsManager \ManaPHP\Mvc\Model\Manager
-         */
-        $builder = $modelsManager->createBuilder($parameters)
+        $builder = $dependencyInjector->modelsManager->createBuilder($parameters)
             ->columns($columns)
             ->from(get_called_class())
             ->cache($cacheOptions);
