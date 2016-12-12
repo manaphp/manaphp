@@ -161,7 +161,7 @@ class SqlSrv extends Db
         }
 
         if (isset($params['limit']) && isset($params['offset'])) {
-            $sql = 'SELECT' . ' t.* FROM (' . $sql . ') as t WHERE t._row_number_ BETWEEN ' . $params['limit'] . ' + 1 AND ' . $params['limit'] . ' + ' . $params['offset'];
+            $sql = 'SELECT' . ' t.* FROM (' . $sql . ') as t WHERE t._row_number_ BETWEEN ' . $params['offset'] . ' + 1 AND ' . $params['offset'].' + '.$params['limit'];
         }
 
         if (isset($params['group'])) {
