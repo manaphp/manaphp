@@ -32,6 +32,11 @@ class Request extends Component implements RequestInterface
     protected $_clientAddress;
 
     /**
+     * @var array
+     */
+    protected $_headers;
+
+    /**
      *
      * @param array  $source
      * @param string $name
@@ -284,23 +289,61 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @return array
+     */
+    protected function _initHeaders()
+    {
+        if (function_exists('apache_request_headers')) {
+            $this->_headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
+        } else {
+            foreach ($_SERVER as $k => $v) {
+                if (strpos($k, 'HTTP_') === 0) {
+                    $this->_headers[str_replace('_', '-', substr($k, 5))] = $v;
+                }
+            }
+        }
+    }
+
+    /**
      * @param string $name
+     *
+     * @return bool
+     */
+    public function hasHeader($name)
+    {
+        if ($this->_headers === null) {
+            $this->_initHeaders();
+        }
+
+        if (isset($this->_headers[$name])) {
+            return true;
+        }
+
+        return isset($this->_headers[strtoupper($name)]);
+    }
+
+    /**
+     * @param string $name
+     * @param string $default
      *
      * @return string|null
      */
-    public function getHeader($name)
+    public function getHeader($name = null, $default = null)
     {
-        $name = strtoupper(str_replace('-', '_', $name));
-        if (isset($_SERVER[$name])) {
-            return $_SERVER[$name];
+        if ($this->_headers === null) {
+            $this->_initHeaders();
         }
 
-        $name = 'HTTP_' . $name;
-        if (isset($_SERVER[$name])) {
-            return $_SERVER[$name];
-        }
+        if ($name === null) {
+            return $this->_headers;
+        } else {
+            if (isset($this->_headers[$name])) {
+                return $this->_headers[$name];
+            }
 
-        return null;
+            $ucname = strtoupper($name);
+            return isset($this->_headers[$ucname]) ? $this->_headers[$ucname] : $default;
+        }
     }
 
     /**
@@ -608,6 +651,22 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @return bool
+     */
+    public function hasAccessToken()
+    {
+        if ($this->has('access_token')) {
+            return true;
+        } elseif ($this->hasHeader('X_ACCESS_TOKEN')) {
+            return true;
+        } elseif ($this->hasHeader('Authorization')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @return string|null
      * @throws \ManaPHP\Http\Request\Exception
      */
@@ -615,19 +674,10 @@ class Request extends Component implements RequestInterface
     {
         if ($this->has('access_token')) {
             return $this->get('access_token');
-        } elseif ($this->hasServer('X_ACCESS_TOKEN')) {
-            return $this->getServer('X_ACCESS_TOKEN');
+        } elseif ($this->hasHeader('X_ACCESS_TOKEN')) {
+            return $this->getHeader('X_ACCESS_TOKEN');
         } else {
-            $authorization = null;
-            if (function_exists('getallheaders')) {
-                $headers = getallheaders();
-                if (isset($headers['Authorization'])) {
-                    $authorization = $headers['Authorization'];
-                }
-            } else {
-                $authorization = $this->getHeader('Authorization');
-            }
-
+            $authorization = $this->getHeader('Authorization');
             if ($authorization) {
                 $parts = explode(' ', $authorization, 2);
                 if ($parts[0] === 'Bearer' && count($parts) === 2) {

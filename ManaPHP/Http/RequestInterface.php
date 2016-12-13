@@ -142,9 +142,17 @@ interface RequestInterface
     /**
      * @param string $name
      *
+     * @return bool
+     */
+    public function hasHeader($name);
+
+    /**
+     * @param string $name
+     * @param string $default
+     *
      * @return string|null
      */
-    public function getHeader($name);
+    public function getHeader($name = null, $default = null);
 
     /**
      * Gets HTTP schema (http/https)
@@ -288,6 +296,11 @@ interface RequestInterface
      * @return string
      */
     public function getUri();
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToken();
 
     /**
      * @return string|null
