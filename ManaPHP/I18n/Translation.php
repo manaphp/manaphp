@@ -35,17 +35,9 @@ class Translation extends Component implements TranslationInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['files'])) {
-            $files = $options['files'];
-        } else {
-            $files = ['@messages/:language/' . 'Module.php', '@messages/:language/' . $this->dispatcher->getControllerName() . '.php'];
-        }
+        $files = isset($options['files']) ? $options['files'] : ['@messages/:language/' . 'Module.php', '@messages/:language/' . $this->dispatcher->getControllerName() . '.php'];
 
-        if (isset($options['language'])) {
-            $this->_language = preg_replace('#\s*#', '', $options['language']);
-        } else {
-            $this->_language = 'en';
-        }
+        $this->_language = isset($options['language']) ? preg_replace('#\s*#', '', $options['language']) : 'en';
 
         $languages = array_reverse(explode(',', $this->_language));
 
@@ -73,11 +65,7 @@ class Translation extends Component implements TranslationInterface
      */
     public function translate($messageId, $bind = [])
     {
-        if (isset($this->_messages[$messageId])) {
-            $message = $this->_messages[$messageId];
-        } else {
-            $message = $messageId;
-        }
+        $message = isset($this->_messages[$messageId]) ? $this->_messages[$messageId] : $messageId;
 
         if (count($bind) !== 0) {
             $replaces = [];

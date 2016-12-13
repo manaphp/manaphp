@@ -394,7 +394,7 @@ class Response extends Component implements ResponseInterface
 
         $this->setAttachment($attachmentName);
 
-        $file = fopen('php://temp', 'r+');
+        $file = fopen('php://temp', 'rb+');
 
         fprintf($file, "\xEF\xBB\xBF");
 

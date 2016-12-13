@@ -68,11 +68,7 @@ class Url extends Component implements UrlInterface
             }
         }
 
-        if (isset($options['assets'])) {
-            $this->_assets = rtrim($options['assets'], '/');
-        } else {
-            $this->_assets = $selfPath;
-        }
+        $this->_assets = isset($options['assets']) ? rtrim($options['assets'], '/') : $selfPath;
     }
 
     /**

@@ -66,7 +66,8 @@ class Crypt extends Component implements CryptInterface
         $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
         $encryptKey = md5($key, true);
 
-        $iv = mcrypt_create_iv($ivSize, MCRYPT_RAND);
+        /** @noinspection CryptographicallySecureRandomnessInspection */
+        $iv = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
 
         mcrypt_generic_init($this->_mcrypt, $encryptKey, $iv);
 

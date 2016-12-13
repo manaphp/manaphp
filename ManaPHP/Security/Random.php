@@ -18,6 +18,7 @@ class Random implements RandomInterface
         if (function_exists('random_bytes')) {
             return random_bytes($length);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
+            /** @noinspection CryptographicallySecureRandomnessInspection */
             return openssl_random_pseudo_bytes($length);
         } elseif (file_exists('/dev/urandom')) {
             $handle = fopen('/dev/urandom', 'rb');

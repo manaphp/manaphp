@@ -50,11 +50,7 @@ class Mwt extends Component implements TokenInterface
             $this->_type = $options['type'];
         }
 
-        if (isset($options['keys'])) {
-            $this->_keys = $options['keys'];
-        } else {
-            $this->_keys = [$this->configure->getSecretKey('mwt:' . $this->_type)];
-        }
+        $this->_keys = isset($options['keys']) ? $options['keys'] : [$this->configure->getSecretKey('mwt:' . $this->_type)];
 
         if (isset($options['ttl'])) {
             $this->_ttl = $options['ttl'];

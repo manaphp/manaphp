@@ -23,11 +23,7 @@ class Arguments extends Component implements ArgumentsInterface
      */
     public function __construct($_arguments = [])
     {
-        if (isset($GLOBALS['argv'][2]) && count($_arguments) === 0) {
-            $this->_arguments = array_slice($GLOBALS['argv'], 2);
-        } else {
-            $this->_arguments = $_arguments;
-        }
+        $this->_arguments = (isset($GLOBALS['argv'][2]) && count($_arguments) === 0) ? array_slice($GLOBALS['argv'], 2) : $_arguments;
     }
 
     /**
