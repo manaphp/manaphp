@@ -67,12 +67,17 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * \ManaPHP\Db\Adapter constructor
+     * @throws \ManaPHP\Db\Exception
      */
     public function __construct()
     {
         $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
 
-        $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+        try {
+            $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+        } catch (\PDOException $e) {
+            throw new DbException(':exception_message: :dsn', ['exception_message' => $e->getMessage(), 'dsn' => $this->_dsn]);
+        }
     }
 
     protected function _escapeIdentifier($identifier)

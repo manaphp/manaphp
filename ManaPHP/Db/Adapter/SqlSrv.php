@@ -11,6 +11,8 @@ class SqlSrv extends Db
      * SqlSrv constructor.
      *
      * @param array $options
+     *
+     * @throws \ManaPHP\Db\Exception
      */
     public function __construct($options)
     {
@@ -45,6 +47,11 @@ class SqlSrv extends Db
                 if (isset($options['host']) && !isset($options['server'])) {
                     $options['server'] = $options['host'];
                     unset($options['host']);
+                }
+
+                if (isset($options['server'], $options['port'])) {
+                    $options['server'] .= ',' . $options['port'];
+                    unset($options['port']);
                 }
 
                 if (isset($options['dbname']) && !isset($options['database'])) {
@@ -112,6 +119,7 @@ class SqlSrv extends Db
 
     /**
      * @return int
+     * @throws \ManaPHP\Db\Exception
      */
     public function lastInsertId()
     {
@@ -119,9 +127,17 @@ class SqlSrv extends Db
         return $row['lid'];
     }
 
+    /**
+     * @param string $source
+     *
+     * @return $this
+     * @throws \ManaPHP\Db\Exception
+     */
     public function truncateTable($source)
     {
-        // TODO: Implement truncateTable() method.
+        $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
+
+        return $this;
     }
 
     public function buildSql($params)
@@ -139,7 +155,7 @@ class SqlSrv extends Db
             }
 
             $sql .= $params['columns'];
-            if (isset($params['limit']) && isset($params['offset'])) {
+            if (isset($params['limit'], $params['offset'])) {
                 if (!isset($params['order'])) {
                     throw new SqlSrvException('if use offset CLAUSE, must provide order CLAUSE.');
                 }
@@ -160,8 +176,8 @@ class SqlSrv extends Db
             $sql .= ' WHERE ' . $params['where'];
         }
 
-        if (isset($params['limit']) && isset($params['offset'])) {
-            $sql = 'SELECT' . ' t.* FROM (' . $sql . ') as t WHERE t._row_number_ BETWEEN ' . $params['offset'] . ' + 1 AND ' . $params['offset'].' + '.$params['limit'];
+        if (isset($params['limit'], $params['offset'])) {
+            $sql = 'SELECT' . ' t.* FROM (' . $sql . ') as t WHERE t._row_number_ BETWEEN ' . $params['offset'] . ' + 1 AND ' . $params['offset'] . ' + ' . $params['limit'];
         }
 
         if (isset($params['group'])) {

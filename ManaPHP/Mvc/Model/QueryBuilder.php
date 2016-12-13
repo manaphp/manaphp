@@ -193,6 +193,10 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $this->limit($params['limit'], isset($params['offset']) ? $params['offset'] : 0);
         }
 
+        if (isset($params['offset'])) {
+            $this->_offset = (int)$params['offset'];
+        }
+
         if (isset($params['for_update'])) {
             $this->forUpdate($params['for_update']);
         }
@@ -936,7 +940,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
             $params['limit'] = $this->_limit;
         }
 
-        if ($this->_offset != 0) {
+        if ($this->_offset !== 0) {
             $params['offset'] = $this->_offset;
         }
 

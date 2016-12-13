@@ -18,6 +18,7 @@ class Sqlite extends Db
      * @param string|array $options
      *
      * @throws \ManaPHP\Db\Adapter\Sqlite\Exception
+     * @throws \ManaPHP\Db\Exception
      */
     public function __construct($options)
     {

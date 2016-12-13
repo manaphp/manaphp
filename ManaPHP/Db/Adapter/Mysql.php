@@ -21,6 +21,8 @@ class Mysql extends Db
      * \ManaPHP\Db\Adapter constructor
      *
      * @param array|\ConfManaPHP\Db\Adapter\Mysql $options
+     *
+     * @throws \ManaPHP\Db\Exception
      */
     public function __construct($options)
     {
@@ -45,6 +47,7 @@ class Mysql extends Db
             unset($options['username'], $options['password'], $options['options']);
 
             $dsn_parts = [];
+            /** @noinspection ForeachSourceInspection */
             foreach ($options as $k => $v) {
                 $dsn_parts[] = $k . '=' . $v;
             }
