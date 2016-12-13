@@ -123,6 +123,23 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * Set a custom ETag
+     *<code>
+     *    $response->setEtag(md5(time()));
+     *</code>
+     *
+     * @param string $etag
+     *
+     * @return static
+     */
+    public function setEtag($etag)
+    {
+        $this->setHeader('Etag', $etag);
+
+        return $this;
+    }
+
+    /**
      * Sets the response content-type mime, optionally the charset
      *<code>
      *    $response->setContentType('application/pdf');
@@ -141,23 +158,6 @@ class Response extends Component implements ResponseInterface
         } else {
             $this->setHeader('Content-Type', $contentType . '; charset=' . $charset);
         }
-
-        return $this;
-    }
-
-    /**
-     * Set a custom ETag
-     *<code>
-     *    $response->setEtag(md5(time()));
-     *</code>
-     *
-     * @param string $etag
-     *
-     * @return static
-     */
-    public function setEtag($etag)
-    {
-        $this->setHeader('Etag', $etag);
 
         return $this;
     }

@@ -166,7 +166,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         }
 
         if (isset($params['models'])) {
-            $this->_models = $params['models'];
+            $this->_models = (array)$params['models'];
         }
 
         if (isset($params['columns'])) {
@@ -827,7 +827,6 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         } else {
             $columns = '';
             $selectedColumns = [];
-            /** @noinspection ForeachSourceInspection */
             foreach ($this->_models as $alias => $model) {
                 $selectedColumns[] = '[' . (is_int($alias) ? $model : $alias) . '].*';
             }
@@ -837,7 +836,6 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $selectedModels = [];
 
-        /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $alias => $model) {
             if ($model instanceof $this) {
                 if (is_int($alias)) {
@@ -966,7 +964,6 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
         $sql = strtr($sql, $replaces);
 
-        /** @noinspection ForeachSourceInspection */
         foreach ($this->_models as $model) {
             if (!$model instanceof $this) {
                 $source = $this->modelsManager->getModelSource($model);

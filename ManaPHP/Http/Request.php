@@ -289,13 +289,14 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @return array
+     * @return void
      */
     protected function _initHeaders()
     {
         if (function_exists('apache_request_headers')) {
             $this->_headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
         } else {
+            /** @noinspection ForeachSourceInspection */
             foreach ($_SERVER as $k => $v) {
                 if (strpos($k, 'HTTP_') === 0) {
                     $this->_headers[str_replace('_', '-', substr($k, 5))] = $v;

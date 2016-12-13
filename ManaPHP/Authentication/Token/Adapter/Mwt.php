@@ -96,6 +96,7 @@ class Mwt extends Component implements TokenInterface
         $hash = $parts[2];
 
         $success = false;
+        /** @noinspection ForeachSourceInspection */
         foreach ($this->_keys as $key) {
             if (rtrim(base64_encode(md5($type . $payload . $key, true)), '=') === $hash) {
                 $success = true;

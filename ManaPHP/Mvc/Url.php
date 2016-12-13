@@ -95,6 +95,10 @@ class Url extends Component implements UrlInterface
             }
         }
 
+        if(strpos($uri,'://')){
+            return $uri;
+        }
+
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         if (is_string($args)) {
             $module = $args;
@@ -117,6 +121,7 @@ class Url extends Component implements UrlInterface
         }
 
         if (Text::contains($strUrl, ':')) {
+            /** @noinspection ForeachSourceInspection */
             foreach ($args as $k => $v) {
                 $count = 0;
                 $strUrl = str_replace(':' . $k, $v, $strUrl, $count);

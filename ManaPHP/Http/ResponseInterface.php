@@ -55,6 +55,12 @@ interface ResponseInterface
      */
     public function setNotModified();
 
+    /* @param string $etag
+     *
+     * @return static
+     */
+    public function setEtag($etag);
+
     /**
      * Sets the response content-type mime, optionally the charset
      *

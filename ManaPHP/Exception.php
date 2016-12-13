@@ -35,6 +35,7 @@ class Exception extends \Exception
         if (!isset($this->_bind['last_error_message'])) {
             $this->_bind['last_error_message'] = error_get_last()['message'];
         }
+        /** @noinspection ForeachSourceInspection */
         foreach ($this->_bind as $k => $v) {
             $tr[':' . $k] = $v;
         }

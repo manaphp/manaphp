@@ -166,6 +166,7 @@ class Route implements RouteInterface
                 $routePaths['action'] = $paths[1];
             }
 
+            /** @noinspection ForeachSourceInspection */
             foreach ($paths as $k => $v) {
                 if (is_string($k)) {
                     $routePaths[$k] = $v;
