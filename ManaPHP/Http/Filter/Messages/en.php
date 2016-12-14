@@ -12,7 +12,7 @@ return [
     'min' => 'The :attribute must be at least :parameter[0].',
     'max' => 'The :attribute must be greater than :parameter[0].',
     'minLength' => 'The :attribute must be at least :parameters[0] characters.',
-    'maxLength' => 'The :attribute must be greater than :parameter[0] characters.',
+    'maxLength' => 'The :attribute must be shorter than :parameter[0] characters.',
     'length' => 'The :attribute must be between :parameter[0] and :parameter[1] characters.',
     'equal' => 'The :attribute must equal :parameter[0].',
     //  'regex' => 'The :attribute format is invalid.',

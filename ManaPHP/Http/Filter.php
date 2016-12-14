@@ -150,8 +150,8 @@ class Filter extends Component implements FilterInterface
             $rule = $this->_rules[$attribute];
         }
 
-        if ($rule === null && $value === null) {
-            return null;
+        if ($rule === null && !is_string($value)) {
+            return $value;
         }
 
         $filters = $this->_parseRule($rule);
@@ -384,7 +384,7 @@ class Filter extends Component implements FilterInterface
         }
     }
 
-	/**
+    /**
      * @param string $value
      * @param array  $parameters
      *
@@ -411,7 +411,7 @@ class Filter extends Component implements FilterInterface
 
         return $timestamp;
     }
-	
+
     /**
      * @param string $value
      * @param array  $parameters
