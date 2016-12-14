@@ -245,11 +245,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_required($value)
     {
-        if ($value === '') {
-            return null;
-        } else {
-            return $value;
-        }
+        return $value === '' ? null : $value;
     }
 
     /**
@@ -260,11 +256,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_default($value, $parameters)
     {
-        if ($value === '' || $value === null) {
-            return $parameters[0];
-        } else {
-            return $value;
-        }
+        return $value === '' || $value === null ? $parameters[0] : $value;
     }
 
     /**
@@ -329,26 +321,30 @@ class Filter extends Component implements FilterInterface
     }
 
     /**
-     * @param string $value
+     * @param string|int $value
      *
      * @return int|null
      */
     protected function _filter_int($value)
     {
-        if (preg_match('#^[+-]?\d+$#', $value) === 1) {
-            return (int)$value;
-        } else {
-            return null;
+        if (is_int($value)) {
+            return $value;
         }
+
+        return preg_match('#^[+-]?\d+$#', $value) ? (int)$value : null;
     }
 
     /**
-     * @param string $value
+     * @param string|float|int $value
      *
      * @return float|null
      */
     protected function _filter_float($value)
     {
+        if (is_int($value) || is_float($value)) {
+            return $value;
+        }
+
         if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false
             && preg_match('#^[+-]?[\d\.]+$#', $value) === 1
         ) {
@@ -422,11 +418,8 @@ class Filter extends Component implements FilterInterface
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $value = $this->_filter_float($value);
-        if ($value === null || $value < $parameters[0] || $value > $parameters[1]) {
-            return null;
-        } else {
-            return $value;
-        }
+
+        return $value === null || $value < $parameters[0] || $value > $parameters[1] ? null : $value;
     }
 
     /**
@@ -439,11 +432,8 @@ class Filter extends Component implements FilterInterface
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $value = $this->_filter_float($value);
-        if ($value === null || $value < $parameters[0]) {
-            return null;
-        } else {
-            return $value;
-        }
+
+        return $value === null || $value < $parameters[0] ? null : $value;
     }
 
     /**
@@ -456,11 +446,8 @@ class Filter extends Component implements FilterInterface
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $value = $this->_filter_float($value);
-        if ($value === null || $value > $parameters[0]) {
-            return null;
-        } else {
-            return $value;
-        }
+
+        return $value === null || $value > $parameters[0] ? null : $value;
     }
 
     /**
@@ -471,17 +458,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_minLength($value, $parameters)
     {
-        if (function_exists('mb_strlen')) {
-            $length = mb_strlen($value);
-        } else {
-            $length = strlen($value);
-        }
-
-        if ($length >= $parameters[0]) {
-            return $value;
-        } else {
-            return null;
-        }
+        return $this->_strlen($value) >= $parameters[0] ? $value : null;
     }
 
     /**
@@ -492,17 +469,17 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_maxLength($value, $parameters)
     {
-        if (function_exists('mb_strlen')) {
-            $length = mb_strlen($value);
-        } else {
-            $length = strlen($value);
-        }
+        return $this->_strlen($value) <= $parameters[0] ? $value : null;
+    }
 
-        if ($length <= $parameters[0]) {
-            return $value;
-        } else {
-            return null;
-        }
+    /**
+     * @param string $value
+     *
+     * @return int
+     */
+    protected function _strlen($value)
+    {
+        return function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
     }
 
     /**
@@ -513,17 +490,9 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_length($value, $parameters)
     {
-        if (function_exists('mb_strlen')) {
-            $length = mb_strlen($value);
-        } else {
-            $length = strlen($value);
-        }
+        $length = $this->_strlen($value);
 
-        if ($length >= $parameters[0] && $length <= $parameters[1]) {
-            return $value;
-        } else {
-            return null;
-        }
+        return $length >= $parameters[0] && $length <= $parameters[1] ? $value : null;
     }
 
     /**
@@ -534,11 +503,8 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_equal($value, $parameters)
     {
-        if ($value === $parameters[0]) {
-            return $value;
-        } else {
-            return null;
-        }
+        /** @noinspection TypeUnsafeComparisonInspection */
+        return $value == $parameters[0] ? $value : null;
     }
 
     /**
@@ -549,11 +515,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_regex($value, $parameters)
     {
-        if (preg_match($parameters[0], $value) === 1) {
-            return $value;
-        } else {
-            return null;
-        }
+        return preg_match($parameters[0], $value) ? $value : null;
     }
 
     /**
@@ -564,11 +526,7 @@ class Filter extends Component implements FilterInterface
     protected function _filter_alpha($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
-        if (preg_match('#^[a-zA-Z]+$#', $value) === 1) {
-            return $value;
-        } else {
-            return null;
-        }
+        return preg_match('#^[a-zA-Z]+$#', $value) ? $value : null;
     }
 
     /**
@@ -579,11 +537,7 @@ class Filter extends Component implements FilterInterface
     protected function _filter_digit($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
-        if (preg_match('#^\d+$#', $value) === 1) {
-            return $value;
-        } else {
-            return null;
-        }
+        return preg_match('#^\d+$#', $value) ? $value : null;
     }
 
     /**
@@ -594,11 +548,7 @@ class Filter extends Component implements FilterInterface
     protected function _filter_alnum($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
-        if (preg_match('#^[a-zA-Z0-9]+$#', $value) === 1) {
-            return $value;
-        } else {
-            return null;
-        }
+        return preg_match('#^[a-zA-Z0-9]+$#', $value) ? $value : null;
     }
 
     /**
@@ -628,11 +578,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_account($value)
     {
-        if (preg_match('#^[a-z][a-z_\d]{1,14}[a-z\d]$#', $value) === 1) {
-            return $value;
-        } else {
-            return null;
-        }
+        return preg_match('#^[a-z][a-z_\d]{1,14}[a-z\d]$#', $value) ? $value : null;
     }
 
     /**
@@ -642,11 +588,9 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_password($value)
     {
-        if ($value !== '') {
-            return $value;
-        } else {
-            return null;
-        }
+        $value = trim($value);
+
+        return $value !== '' ? $value : null;
     }
 
     /**
@@ -657,11 +601,8 @@ class Filter extends Component implements FilterInterface
     protected function _filter_email($value)
     {
         $value = trim($value);
-        if (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) {
-            return $value;
-        } else {
-            return null;
-        }
+
+        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false ? $value : null;
     }
 
     /**
@@ -695,11 +636,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_in($value, $parameters)
     {
-        if (in_array($value, $parameters, true)) {
-            return $value;
-        } else {
-            return null;
-        }
+        return in_array($value, $parameters, false) ? $value : null;
     }
 
     /**
@@ -710,11 +647,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_not_in($value, $parameters)
     {
-        if (!in_array($value, $parameters, true)) {
-            return $value;
-        } else {
-            return null;
-        }
+        return in_array($value, $parameters, false) ? null : $value;
     }
 
     /**
@@ -743,11 +676,7 @@ class Filter extends Component implements FilterInterface
     {
         $value = trim($value);
 
-        if (preg_match('#^1[3-8]\d{9}$#', $value) === 1) {
-            return $value;
-        } else {
-            return null;
-        }
+        return preg_match('#^1[3-8]\d{9}$#', $value) ? $value : null;
     }
 
     /**
@@ -759,11 +688,7 @@ class Filter extends Component implements FilterInterface
     {
         $value = trim($value);
 
-        if (filter_var($value, FILTER_VALIDATE_IP) !== false) {
-            return $value;
-        } else {
-            return null;
-        }
+        return filter_var($value, FILTER_VALIDATE_IP) !== false ? $value : null;
     }
 
     /**
