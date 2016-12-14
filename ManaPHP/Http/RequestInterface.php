@@ -80,6 +80,14 @@ interface RequestInterface
      */
     public function getServer($name = null, $defaultValue = null);
 
+    /* @param string $name
+     * @param string $rule
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
+     */
+    public function getJson($name = null, $rule = null, $defaultValue = null);
+
     /**
      * Checks whether $_SERVER has certain index
      *
@@ -124,6 +132,13 @@ interface RequestInterface
      * @return bool
      */
     public function hasQuery($name);
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasJson($name);
 
     /**
      * @return string

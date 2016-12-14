@@ -37,6 +37,11 @@ class Request extends Component implements RequestInterface
     protected $_headers;
 
     /**
+     * @var array
+     */
+    protected $_jsonCache;
+
+    /**
      *
      * @param array  $source
      * @param string $name
@@ -205,6 +210,42 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @throws RequestException
+     */
+    protected function _initJson()
+    {
+        global $_JSON;
+
+        if (isset($_JSON)) {
+            $this->_jsonCache = $_JSON;
+        } else {
+            $r = json_decode(file_get_contents('php://input'), true);
+
+            if ($r === null) {
+                throw new RequestException('json_decode raw body failed.');
+            }
+
+            $this->_jsonCache = $r;
+        }
+    }
+
+    /* @param string $name
+     * @param string $rule
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
+     * @throws \ManaPHP\Http\Request\Exception
+     */
+    public function getJson($name = null, $rule = null, $defaultValue = null)
+    {
+        if ($this->_jsonCache === null) {
+            $this->_initJson();
+        }
+
+        return $this->_getHelper($this->_jsonCache, $name, $rule, $defaultValue);
+    }
+
+    /**
      * Checks whether $_REQUEST has certain index
      *
      * @param string $name
@@ -278,6 +319,21 @@ class Request extends Component implements RequestInterface
     public function hasServer($name)
     {
         return isset($_SERVER[$name]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     * @throws \ManaPHP\Http\Request\Exception
+     */
+    public function hasJson($name)
+    {
+        if ($this->_jsonCache === null) {
+            $this->_initJson();
+        }
+
+        return isset($this->_jsonCache[$name]);
     }
 
     /**
