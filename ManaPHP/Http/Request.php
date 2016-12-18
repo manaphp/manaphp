@@ -17,14 +17,9 @@ use ManaPHP\Utility\Text;
 class Request extends Component implements RequestInterface
 {
     /**
-     * @var string
-     */
-    protected $_rawBody;
-
-    /**
      * @var array
      */
-    protected $_putCache;
+    protected $_put;
 
     /**
      * @var string
@@ -39,7 +34,7 @@ class Request extends Component implements RequestInterface
     /**
      * @var array
      */
-    protected $_jsonCache;
+    protected $_json;
 
     /**
      *
@@ -188,11 +183,11 @@ class Request extends Component implements RequestInterface
      */
     public function getPut($name = null, $rule = null, $defaultValue = null)
     {
-        if ($this->_putCache === null && $this->isPut()) {
-            parse_str($this->getRawBody(), $this->_putCache);
+        if ($this->_put === null && $this->isPut()) {
+            parse_str($this->getRawBody(), $this->_put);
         }
 
-        return $this->_getHelper($this->_putCache, $name, $rule, $defaultValue);
+        return $this->_getHelper($this->_put, $name, $rule, $defaultValue);
     }
 
     /**
@@ -230,7 +225,7 @@ class Request extends Component implements RequestInterface
         global $_JSON;
 
         if (isset($_JSON)) {
-            $this->_jsonCache = $_JSON;
+            $this->_json = $_JSON;
         } else {
             $r = json_decode(file_get_contents('php://input'), true);
 
@@ -238,7 +233,7 @@ class Request extends Component implements RequestInterface
                 throw new RequestException('json_decode raw body failed.');
             }
 
-            $this->_jsonCache = $r;
+            $this->_json = $r;
         }
     }
 
@@ -251,11 +246,11 @@ class Request extends Component implements RequestInterface
      */
     public function getJson($name = null, $rule = null, $defaultValue = null)
     {
-        if ($this->_jsonCache === null) {
+        if ($this->_json === null) {
             $this->_initJson();
         }
 
-        return $this->_getHelper($this->_jsonCache, $name, $rule, $defaultValue);
+        return $this->_getHelper($this->_json, $name, $rule, $defaultValue);
     }
 
     /**
@@ -303,11 +298,11 @@ class Request extends Component implements RequestInterface
      */
     public function hasPut($name)
     {
-        if ($this->_putCache === null && $this->isPut()) {
-            parse_str($this->getRawBody(), $this->_putCache);
+        if ($this->_put === null && $this->isPut()) {
+            parse_str($this->getRawBody(), $this->_put);
         }
 
-        return isset($this->_putCache[$name]);
+        return isset($this->_put[$name]);
     }
 
     /**
@@ -342,11 +337,11 @@ class Request extends Component implements RequestInterface
      */
     public function hasJson($name)
     {
-        if ($this->_jsonCache === null) {
+        if ($this->_json === null) {
             $this->_initJson();
         }
 
-        return isset($this->_jsonCache[$name]);
+        return isset($this->_json[$name]);
     }
 
     /**
@@ -453,28 +448,7 @@ class Request extends Component implements RequestInterface
      */
     public function getRawBody()
     {
-        if ($this->_rawBody === null) {
-            $this->_rawBody = file_get_contents('php://input');
-        }
-
-        return $this->_rawBody;
-    }
-
-    /**
-     * @param bool $assoc
-     *
-     * @return array|\stdClass
-     * @throws \ManaPHP\Http\Request\Exception
-     */
-    public function getJsonBody($assoc = true)
-    {
-        $r = json_decode(file_get_contents('php://input'), $assoc);
-
-        if ($r === null) {
-            throw new RequestException('json_decode raw body failed.');
-        }
-
-        return $r;
+        return file_get_contents('php://input');
     }
 
     /**

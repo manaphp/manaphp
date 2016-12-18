@@ -191,13 +191,6 @@ interface RequestInterface
     public function getRawBody();
 
     /**
-     * @param bool $assoc
-     *
-     * @return array|\stdClass
-     */
-    public function getJsonBody($assoc = true);
-
-    /**
      * Gets most possibly client IPv4 Address. This methods search in $_SERVER['REMOTE_ADDR'] and optionally in $_SERVER['HTTP_X_FORWARDED_FOR']
      *
      * @return string
