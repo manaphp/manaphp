@@ -35,6 +35,10 @@ class Arguments extends Component implements ArgumentsInterface
      */
     public function get($name = null, $defaultValue = null)
     {
+        if ($name === null) {
+            return $this->_arguments;
+        }
+
         foreach (explode(':', $name) as $p) {
             $is_short = strlen($p) === 1;
 

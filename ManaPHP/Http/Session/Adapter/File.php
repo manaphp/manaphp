@@ -184,6 +184,7 @@ class File extends Component implements AdapterInterface
                 }
             } else {
                 $this->_clean($path);
+                @rmdir($path);
             }
         }
     }

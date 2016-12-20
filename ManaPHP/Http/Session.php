@@ -31,10 +31,6 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function __construct($options = [])
     {
-        if (PHP_SAPI === 'cli') {
-            return;
-        }
-
         if (is_string($options) || is_object($options)) {
             $options = ['adapter' => $options];
         }
@@ -65,7 +61,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
 
         session_set_save_handler($open, $close, $read, $write, $destroy, $gc);
 
-        if (!session_start()) {
+        if (PHP_SAPI !== 'cli' && !session_start()) {
             throw new SessionException('session start failed: :last_error_message');
         }
 
@@ -77,7 +73,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function __destruct()
     {
-        session_write_close();
+        PHP_SAPI !== 'cli' && session_write_close();
     }
 
     /**
@@ -148,11 +144,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function destroy()
     {
-        if (PHP_SAPI === 'cli') {
-            return;
-        }
-
-        if (!session_destroy()) {
+        if (PHP_SAPI !== 'cli' && !session_destroy()) {
             throw new SessionException('destroy session failed: :last_error_message'/**m08409465b2b90d8a8*/);
         }
     }

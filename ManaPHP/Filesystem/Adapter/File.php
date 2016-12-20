@@ -170,11 +170,10 @@ class File extends Component implements FilesystemInterface
 
     /**
      * @param string $dir
-     * @param bool   $recursive
      *
      * @throws \ManaPHP\Filesystem\Adapter\File\Exception
      */
-    protected function _dirDelete($dir, $recursive)
+    protected function _dirDelete($dir)
     {
         foreach (scandir($dir, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -184,30 +183,31 @@ class File extends Component implements FilesystemInterface
             $path = $dir . '/' . $item;
             if (is_file($path)) {
                 if (!unlink($path)) {
-                    throw new FileException('delete `:dir` file failed: :last_error_message', ['dir' => $dir]);
+                    throw new FileException('delete `:file` file failed: :last_error_message', ['file' => $path]);
                 }
             } elseif (is_dir($path)) {
-                if ($recursive) {
-                    $this->_dirDelete($path, $recursive);
-                }
+                $this->_dirDelete($path);
 
                 if (!rmdir($path)) {
-                    throw new FileException('delete `:dir` directory failed: :last_error_message', ['dir' => $dir]);
+                    throw new FileException('delete `:dir` directory failed: :last_error_message', ['dir' => $path]);
                 }
             } else {
                 break;
             }
         }
+
+        if (!rmdir($dir)) {
+            throw new FileException('delete `:dir` directory failed: :last_error_message', ['dir' => $dir]);
+        }
     }
 
     /**
      * @param string $dir
-     * @param bool   $recursive
      *
      * @return void
      * @throws \ManaPHP\Filesystem\Adapter\File\Exception
      */
-    public function dirDelete($dir, $recursive = false)
+    public function dirDelete($dir)
     {
         $dir = $this->alias->resolve($dir);
 
@@ -215,7 +215,7 @@ class File extends Component implements FilesystemInterface
             return;
         }
 
-        $this->_dirDelete($dir, $recursive);
+        $this->_dirDelete($dir);
     }
 
     /**

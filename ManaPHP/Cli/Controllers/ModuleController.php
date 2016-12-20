@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Cli\Controllers;
 
-use Application\Exception;
 use ManaPHP\Cli\Controller;
 use ManaPHP\Utility\Text;
 
