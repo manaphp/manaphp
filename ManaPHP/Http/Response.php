@@ -179,17 +179,16 @@ class Response extends Component implements ResponseInterface
     public function redirect($location, $temporarily = true)
     {
         if ($temporarily) {
-            $message = 'Temporarily Moved';
-            $statusCode = '302';
-
+            $this->setStatusCode(302, 'Temporarily Moved');
         } else {
-            $message = 'Permanently Moved';
-            $statusCode = '301';
+            $this->setStatusCode(301, 'Permanently Moved');
         }
 
-        $this->setStatusCode($statusCode, $message);
-
-        $this->setHeader('Location', isset($this->url) ? $this->url->get($location) : $location);
+        if (isset($this->url)) {
+            $this->setHeader('Location', is_array($location) ? call_user_func_array([$this->url, 'get'], $location) : $this->url->get($location));
+        } else {
+            $this->setHeader('Location', $location);
+        }
 
         return $this;
     }

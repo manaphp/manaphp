@@ -81,24 +81,6 @@ class Url extends Component implements UrlInterface
      */
     public function get($uri, $args = [], $module = null)
     {
-        if (is_array($uri)) {
-            $tmp = $uri;
-
-            $uri = $tmp[0];
-
-            if (isset($tmp[1])) {
-                $args = $tmp[1];
-            }
-
-            if (isset($tmp[2])) {
-                $module = $tmp[2];
-            }
-        }
-
-        if(strpos($uri,'://')){
-            return $uri;
-        }
-
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         if (is_string($args)) {
             $module = $args;
