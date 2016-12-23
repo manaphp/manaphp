@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Meter\RoundInterface;
 
 /**
  * Class ManaPHP\Facade\RoundMeter
  *
  * @package roundMeter
  *
- * @method  static \ManaPHP\Meter\RoundInterface getFacadeInstance()
+ * @method  static RoundInterface getFacadeInstance()
  */
 class RoundMeter extends Facade
 {

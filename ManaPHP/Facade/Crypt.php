@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Security\CryptInterface;
 
 /**
  * Class ManaPHP\Facade\Crypt
  *
  * @package crypt
  *
- * @method  static \ManaPHP\Security\CryptInterface getFacadeInstance()
+ * @method  static CryptInterface getFacadeInstance()
  */
 class Crypt extends Facade
 {

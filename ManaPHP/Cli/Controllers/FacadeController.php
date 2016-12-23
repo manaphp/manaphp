@@ -23,10 +23,22 @@ class Exception extends \ManaPHP\Exception{}
 EOD;
         foreach ($this->filesystem->glob('@manaphp/Facade/*.php') as $file) {
             $facadeName = pathinfo($file, PATHINFO_FILENAME);
-            if (preg_match('#static\s+(.*)\s+getFacadeInstance*#', $this->filesystem->fileGet($file), $match) !== 1) {
+            $lines = $this->filesystem->fileGet($file);
+            if (preg_match('#static\s+(.*)\s+getFacadeInstance*#', $lines, $match) !== 1) {
                 continue;
             }
-            $interfaceName = $match[1];
+
+            if (strpos($match[1], '\\') === false) {
+                $interfaceName = $match[1];
+                if (preg_match('#use\s+(.*' . $interfaceName . ')#', $lines, $match) !== 1) {
+                    throw new Exception('`:interface` interface is not invalid.', ['interface' => $interfaceName]);
+                }
+
+                $interfaceName = ($match[1] === '\\' ? '' : '\\') . $match[1];
+            } else {
+                $interfaceName = $match[1];
+            }
+
             $r = $this->generate($facadeName, $interfaceName);
             $this->console->writeLn(str_pad(' ' . $facadeName . ':', 16, ' ') . $interfaceName);
             $content .= PHP_EOL . PHP_EOL . $r;
@@ -44,7 +56,6 @@ EOD;
     public function generate($facadeClassName, $interfaceName)
     {
         $content = <<<EOD
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
   * @method  static $interfaceName getFacadeInstance()

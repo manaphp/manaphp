@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Text\CrosswordInterface;
 
 /**
  * Class ManaPHP\Facade\Crossword
  *
  * @package crossword
  *
- * @method  static \ManaPHP\Text\CrosswordInterface getFacadeInstance()
+ * @method  static CrosswordInterface getFacadeInstance()
  */
 class Crossword extends Facade
 {

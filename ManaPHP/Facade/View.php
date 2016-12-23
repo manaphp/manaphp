@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Mvc\ViewInterface;
 
 /**
  * Class ManaPHP\Facade\View
  *
  * @package view
  *
- * @method  static \ManaPHP\Mvc\ViewInterface getFacadeInstance()
+ * @method  static ViewInterface getFacadeInstance()
  */
 class View extends Facade
 {

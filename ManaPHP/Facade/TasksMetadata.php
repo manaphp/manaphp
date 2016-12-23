@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Task\MetadataInterface;
 
 /**
  * Class ManaPHP\Facade\TasksMetadata
  *
  * @package tasksMetadata
  *
- * @method  static \ManaPHP\Task\MetadataInterface getFacadeInstance()
+ * @method  static MetadataInterface getFacadeInstance()
  */
 class TasksMetadata extends Facade
 {

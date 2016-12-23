@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Message\QueueInterface;
 
 /**
  * Class ManaPHP\Facade\MessageQueue
  *
  * @package messageQueue
  *
- * @method  static \ManaPHP\Message\QueueInterface getFacadeInstance()
+ * @method  static QueueInterface getFacadeInstance()
  */
 class MessageQueue extends Facade
 {

@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Mvc\RouterInterface;
 
 /**
  * Class ManaPHP\Facade\Router
  *
  * @package router
  *
- * @method  static \ManaPHP\Mvc\RouterInterface getFacadeInstance()
+ * @method  static RouterInterface getFacadeInstance()
  */
 class Router extends Facade
 {

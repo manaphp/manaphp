@@ -1,16 +1,15 @@
 <?php
 namespace ManaPHP\Facade;
 
+use ManaPHP\DbInterface;
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
  * Class ManaPHP\Facade\Db
  *
  * @package db
  *
- * @method  static \ManaPHP\DbInterface getFacadeInstance()
+ * @method  static DbInterface getFacadeInstance()
  */
 class Db extends Facade
 {

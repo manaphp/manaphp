@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Security\SecintInterface;
 
 /**
  * Class ManaPHP\Facade\Secint
  *
  * @package secint
  *
- * @method  static \ManaPHP\Security\SecintInterface getFacadeInstance()
+ * @method  static SecintInterface getFacadeInstance()
  */
 class Secint extends Facade
 {

@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Http\RequestInterface;
 
 /**
  * Class ManaPHP\Facade\FlashSession
  *
  * @package flash
  *
- * @method  static \ManaPHP\Http\RequestInterface getFacadeInstance()
+ * @method  static RequestInterface getFacadeInstance()
  */
 class FlashSession extends Facade
 {

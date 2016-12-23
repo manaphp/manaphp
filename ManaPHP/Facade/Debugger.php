@@ -1,16 +1,15 @@
 <?php
 namespace ManaPHP\Facade;
 
+use ManaPHP\DebuggerInterface;
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
  * Class ManaPHP\Facade\Debugger
  *
  * @package debugger
  *
- * @method  static \ManaPHP\DebuggerInterface getFacadeInstance()
+ * @method  static DebuggerInterface getFacadeInstance()
  */
 class Debugger extends Facade
 {

@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Mvc\Model\MetadataInterface;
 
 /**
  * Class ManaPHP\Facade\ModelsMetadata
  *
  * @package modelsMetadata
  *
- * @method  static \ManaPHP\Mvc\Model\MetadataInterface getFacadeInstance()
+ * @method  static MetadataInterface getFacadeInstance()
  */
 class ModelsMetadata extends Facade
 {

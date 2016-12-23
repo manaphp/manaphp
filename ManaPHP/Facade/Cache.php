@@ -1,16 +1,15 @@
 <?php
 namespace ManaPHP\Facade;
 
+use ManaPHP\CacheInterface;
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
  * Class ManaPHP\Facade\Cache
  *
  * @package cache
  *
- * @method  static \ManaPHP\CacheInterface getFacadeInstance()
+ * @method  static CacheInterface getFacadeInstance()
  */
 class Cache extends Facade
 {

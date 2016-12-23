@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Http\SessionInterface;
 
 /**
  * Class ManaPHP\Facade\Session
  *
  * @package session
  *
- * @method  static \ManaPHP\Http\SessionInterface getFacadeInstance()
+ * @method  static SessionInterface getFacadeInstance()
  */
 class Session extends Facade
 {

@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\I18n\TranslationInterface;
 
 /**
  * Class ManaPHP\Facade\Translation
  *
  * @package captcha
  *
- * @method  static \ManaPHP\I18n\TranslationInterface getFacadeInstance()
+ * @method  static TranslationInterface getFacadeInstance()
  */
 class Translation extends Facade
 {

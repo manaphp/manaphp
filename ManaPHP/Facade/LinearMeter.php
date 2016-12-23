@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Meter\LinearInterface;
 
 /**
  * Class ManaPHP\Facade\LinearMeter
  *
  * @package linearMeter
  *
- * @method  static \ManaPHP\Meter\LinearInterface getFacadeInstance()
+ * @method  static LinearInterface getFacadeInstance()
  */
 class LinearMeter extends Facade
 {

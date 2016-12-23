@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Http\ClientInterface;
 
 /**
  * Class ManaPHP\Facade\HttpClient
  *
  * @package httpClient
  *
- * @method  static \ManaPHP\Http\ClientInterface getFacadeInstance()
+ * @method  static ClientInterface getFacadeInstance()
  */
 class HttpClient extends Facade
 {

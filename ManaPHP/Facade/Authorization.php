@@ -1,16 +1,15 @@
 <?php
 namespace ManaPHP\Facade;
 
+use ManaPHP\AuthorizationInterface;
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
  * Class ManaPHP\Facade\Authorization
  *
  * @package authorization
  *
- * @method  static \ManaPHP\AuthorizationInterface getFacadeInstance()
+ * @method  static AuthorizationInterface getFacadeInstance()
  */
 class Authorization extends Facade
 {

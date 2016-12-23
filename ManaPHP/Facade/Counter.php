@@ -1,16 +1,15 @@
 <?php
 namespace ManaPHP\Facade;
 
+use ManaPHP\CounterInterface;
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
  * Class ManaPHP\Facade\Counter
  *
  * @package counter
  *
- * @method  static \ManaPHP\CounterInterface getFacadeInstance()
+ * @method  static CounterInterface getFacadeInstance()
  */
 class Counter extends Facade
 {

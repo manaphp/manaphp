@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Serializer\AdapterInterface;
 
 /**
  * Class ManaPHP\Facade\Serializer
  *
  * @package serializer
  *
- * @method  static \ManaPHP\Serializer\AdapterInterface getFacadeInstance()
+ * @method  static AdapterInterface getFacadeInstance()
  */
 class Serializer extends Facade
 {

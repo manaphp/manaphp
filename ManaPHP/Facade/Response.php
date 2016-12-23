@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Http\ResponseInterface;
 
 /**
  * Class ManaPHP\Facade\Response
  *
  * @package response
  *
- * @method  static \ManaPHP\Http\ResponseInterface getFacadeInstance()
+ * @method  static ResponseInterface getFacadeInstance()
  */
 class Response extends Facade
 {

@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Security\CsrfTokenInterface;
 
 /**
  * Class ManaPHP\Facade\CsrfToken
  *
  * @package csrfToken
  *
- * @method  static \ManaPHP\Security\CsrfTokenInterface getFacadeInstance()
+ * @method  static CsrfTokenInterface getFacadeInstance()
  */
 class CsrfToken extends Facade
 {

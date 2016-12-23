@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\LoggerInterface;
 
 /**
  * Class ManaPHP\Facade\Logger
  *
  * @package logger
  *
- * @method  static \ManaPHP\LoggerInterface getFacadeInstance()
+ * @method  static LoggerInterface getFacadeInstance()
  */
 class Logger extends Facade
 {

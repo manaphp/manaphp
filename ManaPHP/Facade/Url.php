@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Mvc\UrlInterface;
 
 /**
  * Class ManaPHP\Facade\Url
  *
  * @package url
  *
- * @method  static \ManaPHP\Mvc\UrlInterface getFacadeInstance()
+ * @method  static UrlInterface getFacadeInstance()
  */
 class Url extends Facade
 {

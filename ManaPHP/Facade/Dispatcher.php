@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Mvc\DispatcherInterface;
 
 /**
  * Class ManaPHP\Facade\Dispatcher
  *
  * @package dispatcher
  *
- * @method  static \ManaPHP\Mvc\DispatcherInterface getFacadeInstance()
+ * @method  static DispatcherInterface getFacadeInstance()
  */
 class Dispatcher extends Facade
 {

@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Security\CaptchaInterface;
 
 /**
  * Class ManaPHP\Facade\Captcha
  *
  * @package captcha
  *
- * @method  static \ManaPHP\Security\CaptchaInterface getFacadeInstance()
+ * @method  static CaptchaInterface getFacadeInstance()
  */
 class Captcha extends Facade
 {

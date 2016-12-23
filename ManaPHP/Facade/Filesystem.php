@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\FilesystemInterface;
 
 /**
  * Class ManaPHP\Facade\Filesystem
  *
  * @package filesystem
  *
- * @method  static \ManaPHP\FilesystemInterface getFacadeInstance()
+ * @method  static FilesystemInterface getFacadeInstance()
  */
 class Filesystem extends Facade
 {

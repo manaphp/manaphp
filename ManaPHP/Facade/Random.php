@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Security\RandomInterface;
 
 /**
  * Class ManaPHP\Facade\Random
  *
  * @package random
  *
- * @method  static \ManaPHP\Security\RandomInterface getFacadeInstance()
+ * @method  static RandomInterface getFacadeInstance()
  */
 class Random extends Facade
 {

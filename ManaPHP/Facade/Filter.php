@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Http\FilterInterface;
 
 /**
  * Class ManaPHP\Facade\Filter
  *
  * @package filter
  *
- * @method  static \ManaPHP\Http\FilterInterface getFacadeInstance()
+ * @method  static FilterInterface getFacadeInstance()
  */
 class Filter extends Facade
 {

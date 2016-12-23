@@ -1,16 +1,15 @@
 <?php
 namespace ManaPHP\Facade;
 
+use ManaPHP\Authentication\UserIdentityInterface;
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
 /**
  * Class ManaPHP\Facade\UserIdentity
  *
  * @package userIdentity
  *
- * @method  static \ManaPHP\Authentication\UserIdentityInterface getFacadeInstance()
+ * @method  static UserIdentityInterface getFacadeInstance()
  */
 class UserIdentity extends Facade
 {

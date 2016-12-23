@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\Http\CookiesInterface;
 
 /**
  * Class ManaPHP\Facade\Cookies
  *
  * @package cookies
  *
- * @method  static \ManaPHP\Http\CookiesInterface getFacadeInstance()
+ * @method  static CookiesInterface getFacadeInstance()
  */
 class Cookies extends Facade
 {

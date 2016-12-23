@@ -2,15 +2,14 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-
-/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+use ManaPHP\LoaderInterface;
 
 /**
  * Class ManaPHP\Facade\Loader
  *
  * @package loader
  *
- * @method  static \ManaPHP\LoaderInterface getFacadeInstance()
+ * @method  static LoaderInterface getFacadeInstance()
  */
 class Loader extends Facade
 {
