@@ -2,8 +2,8 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
-use ManaPHP\Mvc\Model\Metadata;
 use ManaPHP\Db\Adapter\SqlSrv\Exception as SqlSrvException;
+use ManaPHP\Mvc\Model\Metadata;
 
 class SqlSrv extends Db
 {

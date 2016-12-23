@@ -113,7 +113,7 @@ class ModelController extends Controller
 
     /**
      * @return false|string
-     * @throws \ManaPHP\Cli\Application\Exception
+     * @throws \ManaPHP\Cli\Controllers\Exception
      */
     protected function _getCurrentModule()
     {

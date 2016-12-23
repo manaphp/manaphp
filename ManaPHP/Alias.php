@@ -87,7 +87,6 @@ class Alias extends Component implements AliasInterface
     {
         if (rtrim($path, '\\/') !== $path) {
 
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new AliasException('`:path` can not end with `/` or `\`'/**m02677305f62c5336e*/, ['path' => $path]);
         }
 
@@ -105,7 +104,6 @@ class Alias extends Component implements AliasInterface
         $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
 
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new AliasException('`:alias` is not exists for `:path`'/**m0aac421937afe5850*/, ['alias' => $alias, 'path' => $path]);
         }
 

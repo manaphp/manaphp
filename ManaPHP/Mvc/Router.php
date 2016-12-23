@@ -102,6 +102,7 @@ class Router extends Component implements RouterInterface
      * @param bool   $silent
      *
      * @return bool
+     * @throws \ManaPHP\Di\Exception
      * @throws \ManaPHP\Mvc\Router\Exception
      * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
      */

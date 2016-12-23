@@ -224,8 +224,8 @@ interface QueryBuilderInterface
     public function page($size, $current = 1);
 
     /**
-     * @param int       $size
-     * @param int       $page
+     * @param int $size
+     * @param int $page
      *
      * @return static
      */

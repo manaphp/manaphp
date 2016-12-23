@@ -406,8 +406,8 @@ class Request extends Component implements RequestInterface
                 return $this->_headers[$name];
             }
 
-            $ucname = strtoupper($name);
-            return isset($this->_headers[$ucname]) ? $this->_headers[$ucname] : $default;
+            $ucName = strtoupper($name);
+            return isset($this->_headers[$ucName]) ? $this->_headers[$ucName] : $default;
         }
     }
 

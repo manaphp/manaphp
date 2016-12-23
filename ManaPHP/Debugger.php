@@ -249,13 +249,11 @@ class Debugger extends Component implements DebuggerInterface
 
         $data['sql'] = ['prepared' => $this->_sql_prepared, 'executed' => $this->_sql_executed, 'count' => $this->_sql_count];
 
-        /** @noinspection ImplicitMagicMethodCallInspection */
         $data['configure'] = isset($this->configure) ? $this->configure->__debugInfo() : [];
         $data['view'] = $this->_view;
         $data['exception'] = $this->_exception;
         $data['warnings'] = $this->_warnings;
         $data['components'] = [];
-        /** @noinspection ImplicitMagicMethodCallInspection */
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_dependencyInjector->__debugInfo()['_sharedInstances'] as $k => $v) {
             if (method_exists($v, 'dump')) {

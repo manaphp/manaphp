@@ -148,7 +148,6 @@ class Di implements DiInterface
         return $this;
     }
 
-    /** @noinspection PhpDocMissingThrowsInspection */
     /**
      * Resolves the service based on its configuration
      *
@@ -156,6 +155,7 @@ class Di implements DiInterface
      * @param array  $parameters
      *
      * @return mixed
+     * @throws \ManaPHP\Di\Exception
      */
     public function get($_name, $parameters = [])
     {
@@ -176,10 +176,7 @@ class Di implements DiInterface
 
                 $shared = isset($service['shared']) ? $service['shared'] : true;
             } else {
-                $parts = $this->_services[$name];
-                $definition = $parts[0];
-                /** @noinspection MultiAssignmentUsageInspection */
-                $shared = $parts[1];
+                list($definition, $shared) = $this->_services[$name];
             }
         } else {
             $definition = $name;
@@ -196,7 +193,6 @@ class Di implements DiInterface
 
         if (is_string($definition)) {
             if (!class_exists($definition)) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new DiException('`:name` service cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $_name, 'class' => $definition]);
             }
             $count = count($parameters);
@@ -219,7 +215,6 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new DiException('`:name` service cannot be resolved: service implement type is not supported'/**m072d42756355fb069*/, ['name' => $_name]);
         }
 
@@ -245,11 +240,11 @@ class Di implements DiInterface
      * @param array  $parameters
      *
      * @return mixed
+     * @throws \ManaPHP\Di\Exception
      */
     public function getShared($name, $parameters = [])
     {
         if (!isset($this->_sharedInstances[$name])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_sharedInstances[$name] = $this->get($name, $parameters);
         }
 

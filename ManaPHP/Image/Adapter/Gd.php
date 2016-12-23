@@ -48,12 +48,7 @@ class Gd extends Component implements AdapterInterface
             throw new GdException('`:file` file is not exists'/**m028d68547edc10000*/, ['file' => $file]);
         }
 
-        $imageInfo = getimagesize($this->_file);
-        $this->_width = $imageInfo[0];
-        /** @noinspection MultiAssignmentUsageInspection */
-        $this->_height = $imageInfo[1];
-        /** @noinspection MultiAssignmentUsageInspection */
-        $type = $imageInfo[2];
+        list($this->_width, $this->_height, $type) = getimagesize($this->_file);
 
         if ($type === IMAGETYPE_GIF) {
             $this->_image = imagecreatefromgif($this->_file);
@@ -217,12 +212,7 @@ class Gd extends Component implements AdapterInterface
     {
         $file = $this->alias->resolve($file);
 
-        $maskImageInfo = getimagesize($file);
-        $maskWidth = $maskImageInfo[0];
-        /** @noinspection MultiAssignmentUsageInspection */
-        $maskHeight = $maskImageInfo[1];
-        /** @noinspection MultiAssignmentUsageInspection */
-        $maskType = $maskImageInfo[2];
+        list($maskWidth, $maskHeight, $maskType) = getimagesize($file);
 
         if ($maskType === IMAGETYPE_GIF) {
             $maskImage = imagecreatefromgif($file);

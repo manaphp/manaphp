@@ -84,7 +84,6 @@ class Paginator extends Component implements PaginatorInterface
         ];
 
         if ($itemsName !== false) {
-            /** @noinspection OffsetOperationsInspection */
             $data[$itemsName] = $this->items;
         }
 

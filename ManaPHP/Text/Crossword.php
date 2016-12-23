@@ -17,7 +17,7 @@ class Crossword
     public function guess($words, $word)
     {
         if (is_string($words)) {
-            $words = strpos($words, ',') !== false ? explode(',', $words) : [$words];
+            $words = explode(',', $words);
         }
 
         $word = strtolower($word);

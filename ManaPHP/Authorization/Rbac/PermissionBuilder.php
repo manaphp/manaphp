@@ -72,6 +72,10 @@ class PermissionBuilder extends Component
 
         $permissions = [];
 
+        if (!$this->filesystem->dirExists('@app/' . $module)) {
+            throw new PermissionBuilderException('`:module_dir` module directory is not exists.', ['module_dir' => $this->alias->resolve('@app/' . $module)]);
+        }
+
         foreach ($this->filesystem->glob('@app/' . $module . '/Controllers/*.php') as $file) {
             $file = str_replace(dirname($app) . '/', '', $file);
             $controller = str_replace('/', '\\', pathinfo($file, PATHINFO_DIRNAME) . '\\' . basename($file, '.php'));

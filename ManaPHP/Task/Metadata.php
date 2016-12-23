@@ -133,7 +133,7 @@ class Metadata extends Component implements MetadataInterface
             }
 
             /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
-            $data['up_time_human'] = round($data['up_time'] / 3600 / 24) . ' days ' . gmstrftime('%H:%M:%S', $data['up_time'] % (3600 * 24));
+            $data['up_time_human'] = round($data['up_time'] / 86400) . ' days ' . gmstrftime('%H:%M:%S', $data['up_time'] % 86400);
         }
 
         if (isset($data[self::FIELD_KEEP_ALIVE_TIME])) {
@@ -144,7 +144,7 @@ class Metadata extends Component implements MetadataInterface
             }
 
             /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
-            $data['keep_alive_time_human'] = round($keep_alive / 3600 / 24) . ' days ' . gmstrftime('%H:%M:%S', $keep_alive % (3600 * 24));
+            $data['keep_alive_time_human'] = round($keep_alive / 86400) . ' days ' . gmstrftime('%H:%M:%S', $keep_alive % 86400);
         }
 
         if (!isset($data[self::FIELD_STATUS])) {

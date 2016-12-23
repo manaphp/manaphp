@@ -112,7 +112,7 @@ abstract class Task extends Component implements TaskInterface
         $this->tasksMetadata->set($task, Metadata::FIELD_STOP_TIME, date('Y-m-d H:i:s', $stop_time));
         $this->tasksMetadata->set($task, Metadata::FIELD_DURATION_TIME, $duration_time);
         /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
-        $this->tasksMetadata->set($task, Metadata::FIELD_DURATION_TIME_HUMAN, round($duration_time / 3600 / 24) . ' days ' . gmstrftime('%H:%M:%S', $duration_time % (3600 * 24)));
+        $this->tasksMetadata->set($task, Metadata::FIELD_DURATION_TIME_HUMAN, round($duration_time / 86400) . ' days ' . gmstrftime('%H:%M:%S', $duration_time % 86400));
         $this->tasksMetadata->set($task, Metadata::FIELD_STOP_REASON, $stop_reason);
         $this->tasksMetadata->set($task, Metadata::FIELD_STOP_TYPE, $stop_type);
     }

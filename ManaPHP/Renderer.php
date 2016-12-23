@@ -47,8 +47,6 @@ class Renderer extends Component implements RendererInterface
     /**
      * Checks whether $template exists on registered extensions and render it
      *
-     * @noinspection PhpDocMissingThrowsInspection
-     *
      * @param string $template
      * @param array  $vars
      * @param bool   $directOutput
@@ -106,7 +104,6 @@ class Renderer extends Component implements RendererInterface
                     } catch (\Exception $e) {
                         ob_end_clean();
 
-                        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                         throw $e;
                     }
 

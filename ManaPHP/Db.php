@@ -67,6 +67,7 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * \ManaPHP\Db\Adapter constructor
+     *
      * @throws \ManaPHP\Db\Exception
      */
     public function __construct()

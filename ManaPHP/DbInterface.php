@@ -147,7 +147,6 @@ interface DbInterface
      */
     public function affectedRows();
 
-
     /**
      * Returns insert id for the auto_increment column inserted in the last SQL statement
      *

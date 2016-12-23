@@ -684,10 +684,8 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compilePagination(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function _compilePagination($expression)
+    {
         return "<?php echo \$di->paginator->renderAsHtml{$expression}; ?>";
     }
 
@@ -698,10 +696,8 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compileTranslate(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function _compileTranslate($expression)
+    {
         return "<?php echo \$di->translation->translate{$expression}; ?>";
     }
 

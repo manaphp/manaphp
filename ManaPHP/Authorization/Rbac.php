@@ -66,20 +66,14 @@ class Rbac extends Component implements AuthorizationInterface
             case 1:
                 $module = $this->dispatcher->getModuleName();
                 $controller = $this->dispatcher->getControllerName();
-                $action = $parts[0];
+                list($action) = $parts;
                 break;
             case 2:
                 $module = $this->dispatcher->getModuleName();
-                $controller = $parts[0];
-                /** @noinspection MultiAssignmentUsageInspection */
-                $action = $parts[1];
+                list($controller, $action) = $parts;
                 break;
             case 3:
-                $module = $parts[0];
-                /** @noinspection MultiAssignmentUsageInspection */
-                $controller = $parts[1];
-                /** @noinspection MultiAssignmentUsageInspection */
-                $action = $parts[2];
+                list($module, $controller, $action) = $parts;
                 break;
             default:
                 throw new RbacException('`:permission` has too many parts'/**m059345500bb0de141*/, ['permission' => $permissionName]);
@@ -168,7 +162,6 @@ class Rbac extends Component implements AuthorizationInterface
             case Permission::TYPE_PUBLIC:
                 return true;
             case Permission::TYPE_INTERNAL:
-                /** @noinspection IsEmptyFunctionUsageInspection */
                 return !empty($userId);
             case Permission::TYPE_DISABLED:
                 return false;

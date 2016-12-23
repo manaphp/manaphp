@@ -76,12 +76,8 @@ class Text
     public static function camelize($str)
     {
         if (Text::contains($str, '_')) {
-            /**
-             * @var $parts array
-             */
             $parts = explode('_', $str);
             foreach ($parts as $k => $v) {
-                /** @noinspection AlterInForeachInspection */
                 $parts[$k] = ucfirst($v);
             }
 

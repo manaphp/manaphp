@@ -40,21 +40,15 @@ class Round extends Component implements RoundInterface
             $options = ['model' => $options];
         }
 
-        /** @noinspection OffsetOperationsInspection */
         if (isset($options['useRedis'])) {
-            /** @noinspection OffsetOperationsInspection */
             $this->_useRedis = $options['useRedis'];
         }
 
-        /** @noinspection OffsetOperationsInspection */
         if (isset($options['model'])) {
-            /** @noinspection OffsetOperationsInspection */
             $this->_model = $options['model'];
         }
 
-        /** @noinspection OffsetOperationsInspection */
         if (isset($options['prefix'])) {
-            /** @noinspection OffsetOperationsInspection */
             $this->_prefix = $options['prefix'];
         }
     }
@@ -114,7 +108,6 @@ class Round extends Component implements RoundInterface
             $it = null;
 
             while ($keys = $this->redis->scan($it, $this->_prefix . $type . ':*', 32)) {
-                /** @noinspection ForeachSourceInspection */
                 foreach ($keys as $key) {
                     $parts = explode('-', substr($key, strrpos($key, ':') + 1));
                     $begin_time = $parts[0];

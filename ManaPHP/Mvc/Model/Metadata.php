@@ -48,7 +48,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                     $model = new $model();
                 }
 
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $data = $model->getReadConnection()->getMetadata($model->getSource());
 
                 $properties = [];

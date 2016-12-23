@@ -53,7 +53,6 @@ class Loader
         foreach ($namespaces as $namespace => $path) {
             $path = rtrim($path, '\\/');
             if (DIRECTORY_SEPARATOR === '\\') {
-                /** @noinspection AlterInForeachInspection */
                 $namespaces[$namespace] = str_replace('\\', '/', $path);
             }
         }
@@ -75,7 +74,6 @@ class Loader
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             foreach ($classes as $key => $path) {
-                /** @noinspection AlterInForeachInspection */
                 $classes[$key] = str_replace('\\', '/', $path);
             }
         }

@@ -4,7 +4,7 @@ namespace ManaPHP\Application;
 use ManaPHP\Exception;
 
 /**
- * Class ManaPHP\Appication\AbortException
+ * Class ManaPHP\Application\AbortException
  *
  * @package application
  */

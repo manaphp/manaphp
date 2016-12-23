@@ -206,16 +206,11 @@ class Group extends Component implements GroupInterface
             $parts = explode('/', trim($uri, '/'), 3);
             $count = count($parts);
             if ($count === 1) {
-                $paths['controller'] = $parts[0];
+                list($paths['controller']) = $parts;
             } elseif ($count === 2) {
-                $paths['controller'] = $parts[0];
-                /** @noinspection MultiAssignmentUsageInspection */
-                $paths['action'] = $parts[1];
+                list($paths['controller'], $paths['action']) = $parts;
             } elseif ($count === 3) {
-                $paths['controller'] = $parts[0];
-                $paths['action'] = $parts[1];
-                /** @noinspection MultiAssignmentUsageInspection */
-                $paths['params'] = $parts[2];
+                list($paths['controller'], $paths['action'], $paths['params']) = $parts;
             }
 
             if (isset($paths['controller']) && preg_match('#^[a-zA-Z0-9_-]+$#', $paths['controller']) !== 1) {

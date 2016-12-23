@@ -148,7 +148,6 @@ class CsrfToken extends Component implements CsrfTokenInterface
      */
     public function __toString()
     {
-        /** @noinspection MagicMethodsValidityInspection */
         return $this->get();
     }
 }

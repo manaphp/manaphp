@@ -177,7 +177,6 @@ class Client extends Component implements ClientInterface
                         $parts = explode(';', $file);
 
                         if (count($parts) === 1) {
-                            /** @noinspection AlterInForeachInspection */
                             $data[$k] = new \CURLFile($file);
                         } else {
                             $file = $parts[0];
@@ -185,7 +184,6 @@ class Client extends Component implements ClientInterface
                             if ($types[0] !== 'type' || count($types) !== 2) {
                                 throw new ClientException('`:file` file name format is invalid'/**m05efb8755481bd2eb*/, ['file' => $v]);
                             } else {
-                                /** @noinspection AlterInForeachInspection */
                                 $data[$k] = new \CURLFile($file, $types[1]);
                             }
                         }
@@ -258,8 +256,8 @@ class Client extends Component implements ClientInterface
 
         $this->_responseBody = curl_exec($curl);
 
-        /** @noinspection NotOptimalIfConditionsInspection */
-        if (curl_errno($curl) === 23 || curl_errno($curl) === 61) {
+        $err = curl_errno($curl);
+        if ($err === 23 || $err === 61) {
             curl_setopt($curl, CURLOPT_ENCODING, 'none');
             $this->_responseBody = curl_exec($curl);
         }

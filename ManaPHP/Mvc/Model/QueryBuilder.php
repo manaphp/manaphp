@@ -859,13 +859,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
         $joinSQL = '';
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_joins as $join) {
-            $joinModel = $join[0];
-            /** @noinspection MultiAssignmentUsageInspection */
-            $joinCondition = $join[1];
-            /** @noinspection MultiAssignmentUsageInspection */
-            $joinAlias = $join[2];
-            /** @noinspection MultiAssignmentUsageInspection */
-            $joinType = $join[3];
+            list($joinModel, $joinCondition, $joinAlias, $joinType) = $join;
 
             if ($joinAlias !== null) {
                 $this->_models[$joinAlias] = $joinModel;

@@ -89,11 +89,7 @@ class Mwt extends Component implements TokenInterface
         if (count($parts) !== 3) {
             throw new MwtException('`:token` is not contain 3 parts'/**m0b5ce4741348c3747*/, ['token' => $str]);
         }
-
-        $type = $parts[0];
-        $payload = $parts[1];
-        /** @noinspection MultiAssignmentUsageInspection */
-        $hash = $parts[2];
+        list($type, $payload, $hash) = $parts;
 
         $success = false;
         /** @noinspection ForeachSourceInspection */

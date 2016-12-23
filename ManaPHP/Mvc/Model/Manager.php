@@ -196,6 +196,7 @@ class Manager extends Component implements ManagerInterface
      * @param string|array $params
      *
      * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
+     * @throws \ManaPHP\Di\Exception
      */
     public function createBuilder($params = null)
     {

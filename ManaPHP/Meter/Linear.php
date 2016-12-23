@@ -42,21 +42,15 @@ class Linear extends Component implements LinearInterface
             $options = (array)$options;
         }
 
-        /** @noinspection OffsetOperationsInspection */
         if (isset($options['model'])) {
-            /** @noinspection OffsetOperationsInspection */
             $this->_model = $options['model'];
         }
 
-        /** @noinspection OffsetOperationsInspection */
         if (isset($options['useRedis'])) {
-            /** @noinspection OffsetOperationsInspection */
             $this->_useRedis = $options['useRedis'];
         }
 
-        /** @noinspection OffsetOperationsInspection */
         if (isset($options['prefix'])) {
-            /** @noinspection OffsetOperationsInspection */
             $this->_prefix = $options['prefix'];
         }
     }

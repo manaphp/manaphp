@@ -207,11 +207,7 @@ class View extends Component implements ViewInterface
      */
     public function pick($view)
     {
-        $parts = array_pad(explode('/', $view), -2, null);
-
-        $this->_controllerName = $parts[0];
-        /** @noinspection MultiAssignmentUsageInspection */
-        $this->_actionName = $parts[1];
+        list($this->_controllerName, $this->_actionName) = array_pad(explode('/', $view), -2, null);
 
         return $this;
     }
@@ -250,6 +246,7 @@ class View extends Component implements ViewInterface
      * @param int|array $cacheOptions
      *
      * @throws \ManaPHP\Mvc\View\Exception
+     * @throws \ManaPHP\Di\Exception
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {

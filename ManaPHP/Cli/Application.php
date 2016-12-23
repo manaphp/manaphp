@@ -60,7 +60,10 @@ abstract class Application extends \ManaPHP\Application
         $this->console->writeLn('executed command is `' . Text::underscore($controllerName) . ':' . Text::underscore($actionName) . '`');
 
         $controllerClassName = null;
-        foreach ([$this->alias->resolve('@ns.app\\Cli\\Controllers\\' . $controllerName . 'Controller'), 'ManaPHP\\Cli\\Controllers\\' . $controllerName . 'Controller'] as $class) {
+        foreach ([
+                     $this->alias->resolve('@ns.app\\Cli\\Controllers\\' . $controllerName . 'Controller'),
+                     'ManaPHP\\Cli\\Controllers\\' . $controllerName . 'Controller'
+                 ] as $class) {
             if ($this->_dependencyInjector->has($class) || class_exists($class)) {
                 $controllerClassName = $class;
             }
