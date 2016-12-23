@@ -144,7 +144,7 @@ class Mysql extends Db
         }
 
         if (isset($params['order'])) {
-            $sql .= ' ORDER BY' . $params['order'];
+            $sql .= ' ORDER BY ' . $params['order'];
         }
 
         if (isset($params['limit'])) {

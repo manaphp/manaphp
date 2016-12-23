@@ -189,7 +189,7 @@ class SqlSrv extends Db
         }
 
         if (isset($params['order']) && !isset($params['offset'])) {
-            $sql .= ' ORDER BY' . $params['order'];
+            $sql .= ' ORDER BY ' . $params['order'];
         }
 
         if (isset($params['forUpdate'])) {
