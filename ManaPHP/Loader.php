@@ -28,7 +28,7 @@ class Loader
     {
         $this->_namespaces['ManaPHP'] = str_replace('\\', '/', $manaPHPDir ?: __DIR__);
 
-        $al_function = [$this, '___autoload'];
+        $al_function = [$this, '_autoload'];
         spl_autoload_register($al_function);
     }
 
@@ -90,7 +90,7 @@ class Loader
      *
      * @return true
      */
-    protected function ___requireFile($file)
+    protected function _requireFile($file)
     {
         if (PHP_EOL !== "\n") {
             $realPath = str_replace('\\', '/', realpath($file));
@@ -110,13 +110,13 @@ class Loader
      *
      * @return bool
      */
-    public function ___autoload($className)
+    public function _autoload($className)
     {
         if (isset($this->_classes[$className])) {
             if (!is_file($this->_classes[$className])) {
                 trigger_error(strtr('load `:class` class failed: `:file` is not exists.', [':class' => $className, 'file' => $this->_classes[$className]]), E_USER_ERROR);
             }
-            return $this->___requireFile($this->_classes[$className]);
+            return $this->_requireFile($this->_classes[$className]);
         }
 
         /** @noinspection LoopWhichDoesNotLoopInspection */
@@ -127,7 +127,7 @@ class Loader
 
             $file = $path . str_replace('\\', '/', substr($className, strlen($namespace))) . '.php';
             if (is_file($file)) {
-                return $this->___requireFile($file);
+                return $this->_requireFile($file);
             }
         }
 
