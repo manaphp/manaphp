@@ -1,0 +1,29 @@
+@layout(false)
+        <!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <style>
+        .debugger {
+            position: fixed;
+            right: 20px;
+            top: 30px;
+            background-color: red;
+            z-index: 1000000;
+        }
+    </style>
+    <style>
+        .mana_container {
+            width: 70%;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+<div class="mana_container">
+@content()
+</div>
+@debugger()
+</body>
+</html>
