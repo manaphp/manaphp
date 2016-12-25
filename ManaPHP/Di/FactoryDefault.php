@@ -61,6 +61,7 @@ class FactoryDefault extends Di
             'roundMeter' => 'ManaPHP\Meter\Round',
             'secint' => 'ManaPHP\Security\Secint',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
+            'stopwatch' => 'ManaPHP\Stopwatch',
             'tasksMetadata' => ['class' => 'ManaPHP\Task\Metadata', 'parameters' => ['ManaPHP\Task\Metadata\Adapter\Redis']],
             'viewsCache' => [
                 'class' => 'ManaPHP\Cache\Adapter\File',
