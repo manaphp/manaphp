@@ -1,8 +1,6 @@
 <?php
 namespace Application {
 
-    use ManaPHP\Utility\Text;
-
     class Configure extends \ManaPHP\Configure
     {
         /**

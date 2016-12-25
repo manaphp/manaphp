@@ -56,7 +56,7 @@ if (!function_exists('cache')) {
      *
      * If an array is passed, we'll assume you want to put to the cache.
      *
-     * @param  dynamic  key|key,default|key,data,expiration|null
+     * @param  dynamic  string|string,default|key,data,expiration|null
      *
      * @return \ManaPHP\CacheInterface|string|false
      *
@@ -186,7 +186,7 @@ if (!function_exists('session')) {
      * @param  array|string $key
      * @param  mixed        $default
      *
-     * @return mixed
+     * @return \ManaPHP\Http\SessionInterface|mixed
      */
     function session($key = null, $default = null)
     {
