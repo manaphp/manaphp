@@ -80,12 +80,12 @@
                 watch: {
                     'login_id': function (id) {
                         $.getJSON("@url('/session_log/detail')",
-                                {
-                                    login_id: id
-                                },
-                                function (result) {
-                                    vm.admin_login = result.data.admin_login;
-                                });
+                            {
+                                login_id: id
+                            },
+                            function (result) {
+                                vm.admin_login = result.data.admin_login;
+                            });
                     }
                 }
             });

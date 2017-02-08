@@ -18,7 +18,7 @@ class SessionLogController extends ControllerBase
             ->orderBy('al.login_id DESC');
 
         $parts = explode(' - ', $date_range);
-        if (count($parts) == 2) {
+        if (count($parts) === 2) {
             $date_start = strtotime($parts[0]);
             $date_end = strtotime($parts[1]);
             if ($date_start && $date_end) {

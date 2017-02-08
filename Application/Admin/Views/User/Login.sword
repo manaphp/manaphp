@@ -60,9 +60,9 @@
             }
 
             $captcha.attr('data-src', $captcha.attr('src'))
-                    .on('click', function ($e) {
-                        $captcha.attr('src', $captcha.attr('data-src') + '?' + new Date());
-                    });
+                .on('click', function ($e) {
+                    $captcha.attr('src', $captcha.attr('data-src') + '?' + new Date());
+                });
 
             $('form').bootstrapValidator().on('success.form.bv', function (e) {
                 e.preventDefault();

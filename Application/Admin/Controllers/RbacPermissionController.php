@@ -58,6 +58,6 @@ class RbacPermissionController extends ControllerBase
             }
         }
 
-        return $this->response->redirect('/admin/rbac_permission');
+        return $this->response->redirect('/rbac_permission');
     }
 }

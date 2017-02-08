@@ -11,7 +11,7 @@
     </thead>
     <tbody>
     @foreach($data['tasks'] as $name=>$task)
-        <tr title="{{json_encode($task,JSON_PRETTY_PRINT)}}">
+        <tr title="@json($task)">
             <td>{{$index}}</td>
             <td>{{$name}}</td>
             <td>{{ ['none','running','stop'][$task['status']] }}</td>

@@ -60,7 +60,7 @@ class TaskController extends ControllerBase
             if ($this->tasksMetadata->get($taskName, Metadata::FIELD_STATUS) != Task::STATUS_RUNNING) {
                 $this->tasksMetadata->reset($taskName);
 
-                $this->response->redirect('/admin/task');
+                $this->response->redirect('/task');
                 /**
                  * @var $task \ManaPHP\Task
                  */
@@ -70,7 +70,7 @@ class TaskController extends ControllerBase
             }
         }
 
-        return $this->response->redirect('/admin/task');
+        return $this->response->redirect('/task');
     }
 
     public function stopAction()
@@ -83,7 +83,7 @@ class TaskController extends ControllerBase
             $this->tasksMetadata->set($taskName, Metadata::FIELD_CANCEL_FLAG, 1);
         }
 
-        return $this->response->redirect('/admin/task');
+        return $this->response->redirect('/task');
     }
 
     public function killAction()
@@ -108,6 +108,6 @@ class TaskController extends ControllerBase
             $this->tasksMetadata->reset($taskName);
         }
 
-        return $this->response->redirect('/admin/task');
+        return $this->response->redirect('/task');
     }
 }

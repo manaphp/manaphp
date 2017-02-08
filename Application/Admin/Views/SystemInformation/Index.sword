@@ -16,9 +16,11 @@
 </table>
 
 @section('script')
-    data={!! json_encode(['data' => $data],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES) !!};
-    $vm=new Vue({
-    el: 'body',
-    data: data
-    });
+    <script>
+        data =@json(['data' => $data]);
+        $vm = new Vue({
+            el: 'body',
+            data: data
+        });
+    </script>
 @append
