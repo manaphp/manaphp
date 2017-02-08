@@ -114,7 +114,7 @@ class Debugger extends Component implements DebuggerInterface
             }
         } elseif ($event === 'renderer:beforeRender') {
             $vars = $data['vars'];
-            unset($vars['view']);
+            unset($vars['view'], $vars['request']);
             $this->_view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
         } elseif ($event === 'component:setUndefinedProperty') {
             $this->_warnings[] = 'Set to undefined property `' . $data['name'] . '` of `' . $data['class'] . '`';
@@ -256,11 +256,11 @@ class Debugger extends Component implements DebuggerInterface
         $data['components'] = [];
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_dependencyInjector->__debugInfo()['_sharedInstances'] as $k => $v) {
-            if (method_exists($v, 'dump')) {
-                $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $v->dump()];
-            } else {
-                $data['components'][] = ['name' => '', 'class' => get_class($v)];
-            }
+            $data['components'][] = [
+                'name' => $k,
+                'class' => get_class($v),
+                'properties' => $v instanceof Component ? $v->dump() : ''
+            ];
         }
 
         if (!$template) {

@@ -1,12 +1,14 @@
 <?php
 namespace ManaPHP\Security;
 
+use ManaPHP\Component;
+
 /**
  * Class ManaPHP\Security\Random
  *
  * @package random
  */
-class Random implements RandomInterface
+class Random extends Component implements RandomInterface
 {
     /**
      * @param int $length
