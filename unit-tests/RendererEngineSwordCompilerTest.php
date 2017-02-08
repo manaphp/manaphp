@@ -484,7 +484,8 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_json(){
+    public function test_json()
+    {
         $source = <<<'EOT'
 @json(get_included_files())
 EOT;
@@ -494,7 +495,8 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_debugger(){
+    public function test_debugger()
+    {
         $source = <<<'EOT'
 @debugger()
 EOT;
@@ -504,7 +506,8 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_csrfToken(){
+    public function test_csrfToken()
+    {
         $source = <<<'EOT'
 @csrfToken()
 EOT;

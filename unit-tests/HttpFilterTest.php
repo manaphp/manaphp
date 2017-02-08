@@ -22,7 +22,6 @@ class HttpFilterTest extends TestCase
         $this->assertEquals(1, $this->filter->sanitize('open', 'default:1|int', null));
     }
 
-
     public function test_bool()
     {
         $this->assertTrue($this->filter->sanitize('open', 'bool', '1'));
