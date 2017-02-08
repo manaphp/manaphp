@@ -1,17 +1,16 @@
 <?php
-namespace Application\Home\Widgets {
+namespace Application\Home\Widgets;
 
-    use ManaPHP\Mvc\Widget;
+use ManaPHP\Mvc\Widget;
 
-    class CopyrightWidget extends Widget
+class CopyrightWidget extends Widget
+{
+    public function run($options = [])
     {
-        public function run($options = [])
-        {
-            $vars = [];
+        $vars = [];
 
-            $vars['year'] = date('Y');
+        $vars['year'] = date('Y');
 
-            return $vars;
-        }
+        return $vars;
     }
 }
