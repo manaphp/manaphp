@@ -18,7 +18,7 @@ class Module extends \ManaPHP\Mvc\Module
 
     public function authorize($controller, $action)
     {
-        if (!in_array($controller . ':' . $action, ['User:captcha', 'User:login', 'User:register']) && !$this->userIdentity->getId()) {
+        if (!in_array($controller . ':' . $action, ['User:captcha', 'User:login', 'User:register'], true) && !$this->userIdentity->getId()) {
             return $this->response->redirect(['/user/login?redirect=' . $this->request->get('redirect', null, $this->request->getUrl(true))]);
         }
     }
