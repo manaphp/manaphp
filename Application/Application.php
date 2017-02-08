@@ -89,7 +89,7 @@ class Application extends \ManaPHP\Mvc\Application
             $this->notFoundException($e);
         } catch (\ManaPHP\Security\Captcha\Exception $e) {
             if ($this->request->isAjax()) {
-                $this->response->setJsonContent(['code' => __LINE__, 'error' => 'capcha is wrong.']);
+                $this->response->setJsonContent(['code' => __LINE__, 'error' => 'captcha is wrong.']);
             }
         }
 
