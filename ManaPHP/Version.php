@@ -20,6 +20,6 @@ class Version
      */
     public static function get()
     {
-        return '0.7.12';
+        return '0.7.13';
     }
 }
