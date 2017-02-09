@@ -149,7 +149,7 @@ class Router extends Component implements RouterInterface
              * @var \ManaPHP\Mvc\Router\Group $groupInstance
              */
             if ($group['groupInstance'] === null) {
-                $group['groupInstance'] = $this->_dependencyInjector->get($group['groupClassName']);
+                $group['groupInstance'] = $this->_dependencyInjector->get(class_exists($group['groupClassName']) ? $group['groupClassName'] : 'ManaPHP\Mvc\Router\Group');
             }
             $groupInstance = $group['groupInstance'];
 
@@ -203,7 +203,7 @@ class Router extends Component implements RouterInterface
             $groupClassName = get_class($group);
             $groupInstance = $group;
         } else {
-            $groupClassName = $group;
+            $groupClassName = strrpos($group, '\\') ? $group : $this->alias->resolve("@ns.app\\$group\\RouteGroup");
             $groupInstance = null;
         }
 
