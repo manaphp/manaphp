@@ -6,7 +6,7 @@ namespace ManaPHP;
  *
  * @package configure
  */
-class Configure extends Component implements ConfigureInterface
+class Configure implements ConfigureInterface
 {
     /**
      * @var bool
