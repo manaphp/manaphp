@@ -15,23 +15,28 @@ interface DiInterface
      *
      * @param string $name
      * @param mixed  $definition
-     * @param bool   $shared
-     * @param array  $aliases
      *
      * @return static
      */
-    public function set($name, $definition, $shared = false, $aliases = []);
+    public function set($name, $definition);
 
     /**
      * Registers an "always shared" service in the services container
      *
      * @param string $name
      * @param mixed  $definition
-     * @param array  $aliases
      *
      * @return static
      */
-    public function setShared($name, $definition, $aliases = []);
+    public function setShared($name, $definition);
+
+    /**
+     * @param string       $service
+     * @param string|array $aliases
+     *
+     * @return static
+     */
+    public function setAliases($service, $aliases);
 
     /**
      * Removes a service from the service container

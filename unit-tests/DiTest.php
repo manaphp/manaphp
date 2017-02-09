@@ -50,7 +50,7 @@ class DiTest extends TestCase
         //anonymous function
         $this->_di->set('request3', function () {
             return new ManaPHP\Http\Request();
-        }, false, ['request31', 'request32']);
+        })->setAliases('request3', ['request31', 'request32']);
 
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request2'));
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request31'));
@@ -72,7 +72,7 @@ class DiTest extends TestCase
         //anonymous function
         $this->_di->setShared('set_request3', function () {
             return new ManaPHP\Http\Request();
-        }, ['request31', 'request32']);
+        })->setAliases('set_request3', ['request31', 'request32']);
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request31'));
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request32'));
     }

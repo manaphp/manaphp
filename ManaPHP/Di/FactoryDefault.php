@@ -35,17 +35,17 @@ class FactoryDefault extends Di
             'crypt' => 'ManaPHP\Security\Crypt',
             'flash' => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
             'flashSession' => 'ManaPHP\Mvc\View\Flash\Adapter\Session',
-            'session' => ['class' => 'ManaPHP\Http\Session', 'parameters' => ['ManaPHP\Http\Session\Adapter\File']],
+            'session' => ['ManaPHP\Http\Session', ['ManaPHP\Http\Session\Adapter\File']],
             'sessionBag' => ['ManaPHP\Http\Session\Bag', false],
             'view' => 'ManaPHP\Mvc\View',
-            'logger' => ['class' => 'ManaPHP\Logger', 'parameters' => ['ManaPHP\Logger\Adapter\File']],
+            'logger' => ['ManaPHP\Logger',['ManaPHP\Logger\Adapter\File']],
             'renderer' => 'ManaPHP\Renderer',
             'debugger' => 'ManaPHP\Debugger',
             'password' => 'ManaPHP\Authentication\Password',
             'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
-            'cache' => ['class' => 'ManaPHP\Cache', 'parameters' => ['ManaPHP\Cache\Adapter\File']],
-            'store' => ['class' => 'ManaPHP\Store', 'parameters' => ['ManaPHP\Store\Adapter\File']],
-            'counter' => ['class' => 'ManaPHP\Counter', 'parameters' => ['ManaPHP\Counter\Adapter\Db']],
+            'cache' => ['ManaPHP\Cache', ['ManaPHP\Cache\Adapter\File']],
+            'store' => ['ManaPHP\Store', ['ManaPHP\Store\Adapter\File']],
+            'counter' => ['ManaPHP\Counter',['ManaPHP\Counter\Adapter\Db']],
             'httpClient' => 'ManaPHP\Http\Client',
             'captcha' => 'ManaPHP\Security\Captcha',
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
@@ -62,15 +62,9 @@ class FactoryDefault extends Di
             'secint' => 'ManaPHP\Security\Secint',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'stopwatch' => 'ManaPHP\Stopwatch',
-            'tasksMetadata' => ['class' => 'ManaPHP\Task\Metadata', 'parameters' => ['ManaPHP\Task\Metadata\Adapter\Redis']],
-            'viewsCache' => [
-                'class' => 'ManaPHP\Cache\Adapter\File',
-                'parameters' => [['dir' => '@data/viewsCache', 'extension' => '.html']]
-            ],
-            'modelsCache' => [
-                'class' => 'ManaPHP\Cache\Adapter\File',
-                'parameters' => [['dir' => '@data/modelsCache', 'extension' => '.json']]
-            ],
+            'tasksMetadata' => ['ManaPHP\Task\Metadata', ['ManaPHP\Task\Metadata\Adapter\Redis']],
+            'viewsCache' => ['ManaPHP\Cache\Adapter\File', [['dir' => '@data/viewsCache', 'extension' => '.html']]],
+            'modelsCache' => ['ManaPHP\Cache\Adapter\File', [['dir' => '@data/modelsCache', 'extension' => '.json']]],
         ];
     }
 }

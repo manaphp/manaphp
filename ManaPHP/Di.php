@@ -106,21 +106,53 @@ class Di implements DiInterface
      *
      * @param string $name
      * @param mixed  $definition
-     * @param bool   $shared
-     * @param array  $aliases
      *
      * @return static
      */
-    public function set($name, $definition, $shared = false, $aliases = [])
+    public function set($name, $definition)
     {
-        foreach ($aliases as $alias) {
-            $this->_aliases[$alias] = $name;
-        }
-
-        if ($shared && is_string($definition)) {
-            $this->_services[$name] = $definition;
+        if (!is_array($definition)) {
+            $definition = [$definition, false];
         } else {
-            $this->_services[$name] = [$definition, $shared];
+            if (!is_bool($definition[count($definition)] - 1)) {
+                $definition[] = false;
+            }
+        }
+        $this->_services[$name] = $definition;
+
+        return $this;
+    }
+
+    /**
+     * Registers an "always shared" service in the services container
+     *
+     * @param string $name
+     * @param mixed  $definition
+     *
+     * @return static
+     */
+    public function setShared($name, $definition)
+    {
+        $this->_services[$name] = $definition;
+
+        return $this;
+    }
+
+    /**
+     * @param string       $service
+     * @param string|array $aliases
+     *
+     * @return static
+     */
+    public function setAliases($service, $aliases)
+    {
+        if (is_string($aliases)) {
+            $this->_aliases[$aliases] = $service;
+        } else {
+            /** @noinspection ForeachSourceInspection */
+            foreach ($aliases as $alias) {
+                $this->_aliases[$alias] = $service;
+            }
         }
 
         return $this;
@@ -167,16 +199,21 @@ class Di implements DiInterface
             if (is_string($service)) {
                 $definition = $service;
                 $shared = true;
-            } elseif (isset($service['class'])) {
-                $definition = $service['class'];
-
-                if (isset($service['parameters'])) {
-                    $parameters = $service['parameters'];
+            } elseif (is_array($service)) {
+                $definition = $service[0];
+                if (isset($service[1])) {
+                    if (is_bool($service[1])) {
+                        $shared = $service[1];
+                    } else {
+                        $parameters = $service[1];
+                        $shared = isset($service[2]) ? $service[2] : true;
+                    }
+                } else {
+                    $shared = true;
                 }
-
-                $shared = isset($service['shared']) ? $service['shared'] : true;
             } else {
-                list($definition, $shared) = $this->_services[$name];
+                $definition = $service;
+                $shared = false;
             }
         } else {
             $definition = $name;
@@ -305,20 +342,6 @@ class Di implements DiInterface
     public function has($name)
     {
         return isset($this->_services[$name]) || isset($this->_aliases[$name]);
-    }
-
-    /**
-     * Registers an "always shared" service in the services container
-     *
-     * @param string $name
-     * @param mixed  $definition
-     * @param array  $aliases
-     *
-     * @return static
-     */
-    public function setShared($name, $definition, $aliases = [])
-    {
-        return $this->set($name, $definition, true, $aliases);
     }
 
     /**
