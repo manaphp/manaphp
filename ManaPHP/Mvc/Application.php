@@ -84,7 +84,8 @@ abstract class Application extends \ManaPHP\Application
 
         $eventData = ['module' => $moduleName];
         $this->fireEvent('application:beforeStartModule', $eventData);
-        $this->_moduleObject = $this->_dependencyInjector->getShared($moduleClassName);
+
+        $this->_moduleObject = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module');
         $this->_moduleObject->registerServices($this->_dependencyInjector);
 
         $eventData = ['module' => $moduleName];

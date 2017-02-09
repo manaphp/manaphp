@@ -8,7 +8,19 @@ use ManaPHP\Component;
  *
  * @package module
  */
-abstract class Module extends Component implements ModuleInterface
+class Module extends Component implements ModuleInterface
 {
+    public function registerServices($di)
+    {
 
+    }
+
+    public function authorize($controller, $action)
+    {
+//      return $this->response->redirect('http://www.baidu.com/');
+
+//      $this->dispatcher->forward('index/about');
+
+        return true;
+    }
 }
