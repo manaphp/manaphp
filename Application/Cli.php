@@ -10,7 +10,6 @@ class Cli extends Application
     public function registerServices()
     {
         $self = $this;
-        $this->_dependencyInjector->remove('url');
 
         $this->_dependencyInjector->configure = new Configure();
 

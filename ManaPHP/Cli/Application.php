@@ -36,6 +36,8 @@ abstract class Application extends \ManaPHP\Application
         $this->_dependencyInjector->setShared('console', 'ManaPHP\Cli\Console');
         $this->_dependencyInjector->setShared('arguments', 'ManaPHP\Cli\Arguments');
         $this->_dependencyInjector->setShared('cliRouter', 'ManaPHP\Cli\Router');
+
+        $this->_dependencyInjector->remove('url');
     }
 
     /**
