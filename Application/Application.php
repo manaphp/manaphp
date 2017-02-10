@@ -1,38 +1,10 @@
 <?php
 namespace Application;
 
-use ManaPHP\Db\Adapter\Mysql;
-use ManaPHP\DbInterface;
 use ManaPHP\Mvc\NotFoundException;
 
 class Application extends \ManaPHP\Mvc\Application
 {
-    public function registerServices()
-    {
-        $self = $this;
-
-        $this->_dependencyInjector->configure = new Configure();
-        $this->_dependencyInjector->alias->set('@manaphp', dirname(__DIR__) . '/ManaPHP');
-        $this->router->mount(new Home\RouteGroup(), '/')
-            ->mount(Admin\RouteGroup::class, '/admin')
-            ->mount(Api\RouteGroup::class, '/api');
-
-        $this->_dependencyInjector->set('db', function () use ($self) {
-            $mysql = new Mysql((array)$this->configure->database);
-            $mysql->attachEvent('db:beforeQuery', function (DbInterface $source) use ($self) {
-                $self->logger->debug('SQL: ' . $source->getSQL());
-            });
-
-            return $mysql;
-        });
-
-        $this->_dependencyInjector->redis = function () {
-            $redis = new \Redis();
-            $redis->connect('localhost');
-            return $redis;
-        };
-    }
-
     /**
      * @param \ManaPHP\Mvc\NotFoundException $e
      *

@@ -1,12 +1,14 @@
 <?php
 namespace Application;
 
+use ManaPHP\Db\Adapter\Mysql;
+
 class Configure extends \ManaPHP\Configure
 {
     /**
-     * @var \ConfManaPHP\Db\Adapter\Mysql $database
+     * @var \ConfManaPHP\Db\Adapter\Mysql
      */
-    public $database;
+    public $db;
 
     /**
      * @var \ConfManaPHP\Logger\Adapter\File
@@ -17,6 +19,16 @@ class Configure extends \ManaPHP\Configure
      * @var \ConfManaPHP\Security\Crypt
      */
     public $crypt;
+
+    /**
+     * @var array
+     */
+    public $modules;
+
+    /**
+     * @var \ConfManaPHP\Redis
+     */
+    public $redis;
 
     public function __construct()
     {
@@ -38,15 +50,18 @@ class Configure extends \ManaPHP\Configure
          */
         $this->_masterKey = 'key';
 
-        $this->database = new \stdClass();
-        $this->database->host = 'localhost';
-        $this->database->port = 3306;
-        $this->database->username = 'root';
-        $this->database->password = '';
-        $this->database->dbname = 'manaphp';
-        $this->database->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
+        $this->db = new \stdClass();
+        $this->db->adapter = Mysql::class;
+        $this->db->host = 'localhost';
+        $this->db->port = 3306;
+        $this->db->username = 'root';
+        $this->db->password = '';
+        $this->db->dbname = 'manaphp';
+        $this->db->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
         $this->logger = new \stdClass();
         $this->logger->file = '@data/logger/' . date('Ymd') . '.log';
+
+        $this->modules = ['Home' => '/', 'Admin' => '/admin', 'Api' => '/api'];
     }
 }

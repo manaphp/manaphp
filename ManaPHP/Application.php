@@ -58,8 +58,11 @@ abstract class Application extends Component implements ApplicationInterface
         if ($this->_modules === null) {
             $modules = [];
             foreach (glob($this->alias->resolve('@app/*'), GLOB_ONLYDIR) as $dir) {
-                if (is_file($dir . '/Module.php')) {
-                    $modules[] = basename($dir);
+                if (is_dir($dir . '/Controllers')) {
+                    $module = basename($dir);
+                    if ($module !== 'Cli') {
+                        $modules[] = $module;
+                    }
                 }
             }
 
@@ -78,5 +81,43 @@ abstract class Application extends Component implements ApplicationInterface
     public function abort($code, $message)
     {
         throw new AbortException($message, $code);
+    }
+
+    public function registerServices()
+    {
+        $configureClass = $this->alias->resolve('@ns.app\\Configure');
+        if (class_exists($configureClass)) {
+            $this->_dependencyInjector->setShared('configure', new $configureClass);
+        }
+
+        $configure = $this->configure;
+
+        if (PHP_SAPI !== 'cli') {
+            foreach (isset($configure->modules) ? $configure->modules : ['Home' => '/'] as $module => $path) {
+                $this->_dependencyInjector->router->mount($module, $path);
+            }
+        }
+
+        if (isset($configure->redis)) {
+            $c = (array)$configure->redis;
+            foreach (isset($c['host']) ? ['redis' => $c] : $c as $service => $config) {
+                $c += ['port' => 6379, 'timeout' => 0.0];
+                $this->_dependencyInjector->setShared($service, function () use ($config) {
+                    $redis = new \Redis();
+                    $redis->connect($config['host'], $config['port'], $config['timeout']);
+
+                    return $redis;
+                });
+            }
+        }
+
+        if (isset($configure->db)) {
+            $c = (array)$configure->db;
+            foreach (isset($c['host']) ? ['db' => $c] : $c as $service => $config) {
+                $adapter = isset($config['adapter']) ? $config['adapter'] : 'ManaPHP\Db\Adapter\Mysql';
+                unset($config['adapter']);
+                $this->_dependencyInjector->setShared($service, [$adapter, [$config]]);
+            }
+        }
     }
 }

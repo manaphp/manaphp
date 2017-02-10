@@ -173,3 +173,13 @@ namespace ConfManaPHP\Security {
         public $bgRGB;
     }
 }
+
+namespace ConfManaPHP {
+
+    class Redis
+    {
+        public $host;
+        public $port;
+        public $timeout;
+    }
+}
