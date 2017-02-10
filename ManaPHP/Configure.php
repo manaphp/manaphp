@@ -5,6 +5,7 @@ namespace ManaPHP;
  * Class ManaPHP\Configure
  *
  * @package configure
+ *
  */
 class Configure implements ConfigureInterface
 {

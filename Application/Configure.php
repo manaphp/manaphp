@@ -5,31 +5,6 @@ use ManaPHP\Db\Adapter\Mysql;
 
 class Configure extends \ManaPHP\Configure
 {
-    /**
-     * @var \ConfManaPHP\Db\Adapter\Mysql
-     */
-    public $db;
-
-    /**
-     * @var \ConfManaPHP\Logger\Adapter\File
-     */
-    public $logger;
-
-    /**
-     * @var \ConfManaPHP\Security\Crypt
-     */
-    public $crypt;
-
-    /**
-     * @var array
-     */
-    public $modules;
-
-    /**
-     * @var \ConfManaPHP\Redis
-     */
-    public $redis;
-
     public function __construct()
     {
         $this->config();
@@ -61,6 +36,9 @@ class Configure extends \ManaPHP\Configure
 
         $this->logger = new \stdClass();
         $this->logger->file = '@data/logger/' . date('Ymd') . '.log';
+
+        $this->redis = new \stdClass();
+        $this->redis->host = 'localhost';
 
         $this->modules = ['Home' => '/', 'Admin' => '/admin', 'Api' => '/api'];
     }
