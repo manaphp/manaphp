@@ -11,7 +11,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Cli\ConsoleInterface $console
  * @property \ManaPHP\Cli\RouterInterface  $cliRouter
  */
-abstract class Application extends \ManaPHP\Application
+class Application extends \ManaPHP\Application
 {
     /**
      * @var array
@@ -87,5 +87,14 @@ abstract class Application extends \ManaPHP\Application
         $r = $controllerInstance->$actionMethod();
 
         return is_int($r) ? $r : 0;
+    }
+
+    public function main()
+    {
+        $this->registerServices();
+
+        $this->configure->debug && $this->debugger->start();
+
+        exit($this->handle());
     }
 }

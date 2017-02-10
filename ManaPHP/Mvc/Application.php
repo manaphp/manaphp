@@ -15,7 +15,7 @@ namespace ManaPHP\Mvc;
  * @property \ManaPHP\Http\SessionInterface       $session
  * @property \ManaPHP\Security\CsrfTokenInterface $csrfToken
  */
-abstract class Application extends \ManaPHP\Application
+class Application extends \ManaPHP\Application
 {
     /**
      * @var \ManaPHP\Mvc\ModuleInterface
@@ -107,5 +107,16 @@ abstract class Application extends \ManaPHP\Application
         }
 
         return $this->response;
+    }
+
+    public function main()
+    {
+        $this->registerServices();
+
+        $this->configure->debug && $this->debugger->start();
+
+        $this->handle();
+
+        $this->response->send();
     }
 }
