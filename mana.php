@@ -4,6 +4,8 @@
 error_reporting(E_ALL);
 ini_set('html_errors', 'off');
 
+date_default_timezone_set('PRC');
+
 require __DIR__ . '/ManaPHP/Loader.php';
 $loader = new \ManaPHP\Loader();
 

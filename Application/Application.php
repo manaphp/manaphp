@@ -46,14 +46,9 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
-        date_default_timezone_set('PRC');
         $this->registerServices();
 
         $this->debugger->start();
-
-        // $this->logger->debug('start');
-
-        //   $this->useImplicitView(false);
 
         try {
             $this->handle();

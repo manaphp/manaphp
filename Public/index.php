@@ -2,6 +2,8 @@
 error_reporting(E_ALL);
 ini_set('html_errors', 'on');
 
+date_default_timezone_set('PRC');
+
 define('ROOT_PATH', dirname(__DIR__));
 
 class_exists('ManaPHP\Loader') || require ROOT_PATH . '/ManaPHP/Loader.php';
