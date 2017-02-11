@@ -63,6 +63,14 @@ class Loader
     }
 
     /**
+     * @return array
+     */
+    public function getRegisteredNamespaces()
+    {
+        return $this->_namespaces;
+    }
+
+    /**
      * Register classes and their locations
      *
      * @param array $classes

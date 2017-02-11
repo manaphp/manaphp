@@ -32,21 +32,43 @@ abstract class Application extends Component implements ApplicationInterface
         $this->_dependencyInjector->setShared('loader', $loader);
         $this->_dependencyInjector->setShared('application', $this);
 
-        $class = str_replace('\\', '/', get_called_class());
-        foreach (get_included_files() as $file) {
-            if (DIRECTORY_SEPARATOR === '\\') {
-                $file = str_replace('\\', '/', $file);
+        $namespaces = $this->loader->getRegisteredNamespaces();
+        if (isset($namespaces['Application'])) {
+            $app_dir = $namespaces['Application'];
+        } else {
+            $className = str_replace('\\', '/', get_called_class());
+            if (strpos($className, 'ManaPHP/') !== 0) {
+                foreach (get_included_files() as $file) {
+                    if (DIRECTORY_SEPARATOR === '\\') {
+                        $file = str_replace('\\', '/', $file);
+                    }
+
+                    if (strpos($file, $className . '.php') !== false) {
+                        $app_dir = dirname($file);
+                        break;
+                    }
+                }
+            } else {
+                $dir = dirname(get_included_files()[0]);
+                for ($i = 0; $i < 2; $i++) {
+                    if (is_dir($dir . '/Application')) {
+                        $app_dir = $dir . '/Application';
+                        break;
+                    }
+                    $dir = dirname($dir);
+                }
+            }
+        }
+
+        if (isset($app_dir)) {
+            $app_ns = basename($app_dir);
+            if (!isset($namespaces[$app_ns])) {
+                $this->loader->registerNamespaces([basename($app_dir) => $app_dir]);
             }
 
-            if (strpos($file, $class . '.php') !== false) {
-                $app_dir = dirname($file);
-                $app_ns = basename($app_dir);
-                $this->alias->set('@app', $app_dir);
-                $this->alias->set('@ns.app', $app_ns);
-                $this->alias->set('@data', dirname($app_dir) . '/Data');
-                $this->loader->registerNamespaces([$app_ns => $app_dir]);
-                break;
-            }
+            $this->alias->set('@app', $app_dir);
+            $this->alias->set('@ns.app', $app_ns);
+            $this->alias->set('@data', dirname($app_dir) . '/Data');
         }
     }
 

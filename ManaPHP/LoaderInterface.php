@@ -22,6 +22,11 @@ interface LoaderInterface
     public function registerNamespaces($namespaces, $merge = true);
 
     /**
+     * @return array
+     */
+    public function getRegisteredNamespaces();
+
+    /**
      * Register classes and their locations
      *
      * @param array $classes
