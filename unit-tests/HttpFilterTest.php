@@ -69,7 +69,7 @@ class HttpFilterTest extends TestCase
 
     public function test_date()
     {
-        $this->assertEquals(1465171200, $this->filter->sanitize('from', 'date', '2016-6-6'));
+        $this->assertEquals('2016-6-6', $this->filter->sanitize('from', 'date', '2016-6-6'));
 
         try {
             $this->filter->sanitize('from', 'date', 'qq');

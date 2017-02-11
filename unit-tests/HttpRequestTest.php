@@ -116,12 +116,7 @@ class HttpRequestTest extends TestCase
     {
         $request = new \ManaPHP\Http\Request();
 
-        try {
-            $this->assertEquals('http', $request->getScheme());
-            $this->fail('why not?');
-        } catch (\Exception $e) {
-            $this->assertInstanceOf('ManaPHP\Http\Request\Exception', $e);
-        }
+        $this->assertEquals('http', $request->getScheme());
 
         $_SERVER['HTTPS'] = 'off';
         $this->assertEquals('http', $request->getScheme());
