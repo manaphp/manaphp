@@ -63,7 +63,7 @@ abstract class Application extends Component implements ApplicationInterface
         if (isset($app_dir)) {
             $app_ns = basename($app_dir);
             if (!isset($namespaces[$app_ns])) {
-                $this->loader->registerNamespaces([basename($app_dir) => $app_dir]);
+                $this->loader->registerNamespaces([$app_ns => $app_dir]);
             }
 
             $this->alias->set('@app', $app_dir);
