@@ -262,7 +262,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
             // Calling beforeExecuteRoute as callback
             if (method_exists($controllerInstance, 'beforeExecuteRoute')) {
-                if ($controllerInstance->beforeExecuteRoute($this) === false) {
+                if ($controllerInstance->beforeExecuteRoute() === false) {
                     continue;
                 }
 
@@ -296,7 +296,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
 
             if (method_exists($controllerInstance, 'afterExecuteRoute')) {
-                if ($controllerInstance->afterExecuteRoute($this) === false) {
+                if ($controllerInstance->afterExecuteRoute() === false) {
                     continue;
                 }
 

@@ -2,11 +2,10 @@
 namespace Application\Admin\Controllers;
 
 use ManaPHP\Mvc\Controller;
-use ManaPHP\Mvc\DispatcherInterface;
 
 class ControllerBase extends Controller
 {
-    public function beforeExecuteRoute(DispatcherInterface $dispatcher)
+    public function beforeExecuteRoute()
     {
         $this->view->setLayout('Default');
     }
