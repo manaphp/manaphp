@@ -164,11 +164,11 @@ class Di implements DiInterface
      * @param string $name
      *
      * @return static
-     * @throws \ManaPHP\Di\Exception
      */
     public function remove($name)
     {
         if (in_array($name, $this->_aliases, true)) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new DiException('`:name` service is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, ['name' => $name]);
         }
 
