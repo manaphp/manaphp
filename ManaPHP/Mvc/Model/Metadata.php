@@ -64,7 +64,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                         ['model' => $modelName, 'columns' => implode(',', $diff)]);
                 }
 
-                $data[self::MODEL_COLUMN_PROPERTIES] = $properties;
+                $data[self::MODEL_COLUMN_PROPERTIES] = $properties ?: $data[self::MODEL_ATTRIBUTES];
 
                 $this->_metadata[$modelName] = $data;
                 $this->write($modelName, $data);

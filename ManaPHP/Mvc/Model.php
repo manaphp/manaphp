@@ -33,7 +33,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Mvc\Model\MetadataInterface $modelsMetadata
  * @property \ManaPHP\Mvc\Model\ManagerInterface  $modelsManager
  */
-class Model extends Component implements ModelInterface
+class Model extends Component implements ModelInterface, \JsonSerializable
 {
     /**
      * @var array
@@ -976,7 +976,7 @@ class Model extends Component implements ModelInterface
     {
         $data = [];
 
-        foreach ($this->modelsMetadata->getAttributes($this) as $attributeField) {
+        foreach ($this->modelsMetadata->getColumnProperties($this) as $attributeField) {
             $data[$attributeField] = isset($this->{$attributeField}) ? $this->{$attributeField} : null;
         }
 
@@ -1074,5 +1074,14 @@ class Model extends Component implements ModelInterface
         } else {
             return null;
         }
+    }
+
+    /**
+     * @return array
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }
