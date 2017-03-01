@@ -8,17 +8,17 @@ class TimeController extends ControllerBase
     {
         $data = [];
         $data['current_time'] = date('Y-m-d H:i:s');
-        return $this->response->setJsonContent(['code' => 0, 'error' => '', 'data' => $data]);
+        return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $data]);
     }
 
     public function timestampAction()
     {
         if (!$this->request->hasQuery('access_token')) {
-            return $this->response->setJsonContent(['code' => __LINE__, 'error' => 'access_token is missing.']);
+            return $this->response->setJsonContent(['code' => __LINE__, 'message' => 'access_token is missing.']);
         }
         $access_token = $this->request->getQuery('access_token');
         if ($access_token !== 'manaphp') {
-            return $this->response->setJsonContent(['code' => __LINE__, 'error' => 'access_token is wrong.']);
+            return $this->response->setJsonContent(['code' => __LINE__, 'message' => 'access_token is wrong.']);
         }
 
         $time = time();
@@ -26,6 +26,6 @@ class TimeController extends ControllerBase
         $data['timestamp'] = $time;
         $data['time_human'] = date('Y-m-d H:i:s', $time);
 
-        return $this->response->setJsonContent(['code' => 0, 'error' => '', 'data' => $data]);
+        return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $data]);
     }
 }
