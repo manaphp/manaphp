@@ -46,6 +46,13 @@ interface ViewInterface
     public function getVar($name = null);
 
     /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasVar($name);
+
+    /**
      * Executes render process from dispatching data
      *
      * @param string $controller

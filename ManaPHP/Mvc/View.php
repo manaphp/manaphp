@@ -104,6 +104,16 @@ class View extends Component implements ViewInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasVar($name)
+    {
+        return isset($this->_viewVars[$name]);
+    }
+
+    /**
      * Gets the name of the controller rendered
      *
      * @return string
@@ -237,7 +247,7 @@ class View extends Component implements ViewInterface
             $path = $this->_controllerName . '/' . $path;
         }
 
-        $this->_render("@views/$path", $vars, true);
+        $this->_render($path[0] === '@' ? $path : "@views/$path", $vars, true);
     }
 
     /**

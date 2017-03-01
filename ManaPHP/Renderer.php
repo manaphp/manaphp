@@ -62,7 +62,7 @@ class Renderer extends Component implements RendererInterface
 
         foreach ($this->_engines as $extension => $engine) {
             $file = $this->alias->resolve($template . $extension);
-            if (file_exists($file)) {
+            if (is_file($file)) {
                 if (PHP_EOL !== "\n") {
                     $realPath = str_replace('\\', '/', realpath($file));
                     if ($file !== $realPath) {
@@ -145,7 +145,7 @@ class Renderer extends Component implements RendererInterface
     public function exists($template)
     {
         foreach ($this->_engines as $extension => $_) {
-            $file = $template . $extension;
+            $file = $this->alias->resolve($template . $extension);
             if (is_file($file)) {
                 if (PHP_EOL !== "\n") {
                     $realPath = str_replace('\\', '/', realpath($file));
