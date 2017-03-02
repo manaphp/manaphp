@@ -50,20 +50,13 @@ interface RouterInterface
     public function mount($group, $path = null);
 
     /**
-     * Set whether router must remove the extra slashes in the handled routes
-     *
-     * @param bool $remove
-     *
-     * @return static
-     */
-    public function removeExtraSlashes($remove);
-
-    /**
      * Get rewrite info. This info is read from $_GET['_url'] or _SERVER["REQUEST_URI"].
+     *
+     * @param string $uri
      *
      * @return string
      */
-    public function getRewriteUri();
+    public function getRewriteUri($uri = null);
 
     /**
      * Returns processed module name

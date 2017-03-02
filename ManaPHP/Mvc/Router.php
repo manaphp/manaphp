@@ -51,39 +51,32 @@ class Router extends Component implements RouterInterface
     protected $_wasMatched = false;
 
     /**
-     * @var bool
-     */
-    protected $_removeExtraSlashes = false;
-
-    /**
      * Get rewrite info. This info is read from $_GET['_url'] or _SERVER["REQUEST_URI"].
+     *
+     * @param string $uri
      *
      * @return string
      * @throws \ManaPHP\Mvc\Router\Exception
      */
-    public function getRewriteUri()
+    public function getRewriteUri($uri = null)
     {
-        if ($this->request->hasQuery('_url')) {
-            return $this->request->getQuery('_url', 'ignore');
-        } elseif ($this->request->hasServer('PATH_INFO')) {
-            return $this->request->getServer('PATH_INFO');
-        } else {
-            return '/';
+        if ($uri === null) {
+            if ($this->request->hasQuery('_url')) {
+                $uri = $this->request->getQuery('_url', 'ignore');
+            } elseif ($this->request->hasServer('PATH_INFO')) {
+                $uri = $this->request->getServer('PATH_INFO');
+            } else {
+                return '/';
+            }
         }
-    }
 
-    /**
-     * Set whether router must remove the extra slashes in the handled routes
-     *
-     * @param bool $remove
-     *
-     * @return static
-     */
-    public function removeExtraSlashes($remove)
-    {
-        $this->_removeExtraSlashes = $remove;
+        if ($uri === '/') {
+            return '/';
+        } else {
+            $uri = rtrim($uri, '/');
 
-        return $this;
+            return $uri === '' ? '/' : $uri;
+        }
     }
 
     /**
@@ -108,29 +101,22 @@ class Router extends Component implements RouterInterface
      */
     public function handle($uri = null, $host = null, $silent = true)
     {
-        if ($uri === null) {
-            $uri = $this->getRewriteUri();
-        }
-
-        if ($this->_removeExtraSlashes) {
-            $uri = rtrim($uri, '/');
-        }
-        $refinedUri = $uri === '' ? '/' : $uri;
+        $uri = $this->getRewriteUri($uri);
 
         $this->fireEvent('router:beforeCheckRoutes');
 
         $module = null;
         $routeFound = false;
         for ($i = count($this->_groups) - 1; $i >= 0; $i--) {
-            $group = $this->_groups[$i];
+            $group = &$this->_groups[$i];
 
             $path = $group['path'];
             $module = $group['module'];
 
             if ($path === '' || $path[0] === '/') {
-                $checkedUri = $refinedUri;
+                $checkedUri = $uri;
             } else {
-                $checkedUri = (strpos($path, '://') ? $this->request->getScheme() . '://' : '') . $_SERVER['HTTP_HOST'] . $refinedUri;
+                $checkedUri = $_SERVER['HTTP_HOST'] . $uri;
             }
 
             /**
