@@ -17,18 +17,17 @@ class Group extends Component implements GroupInterface
     protected $_routes = [];
 
     /**
-     * @var bool
-     */
-    protected $_useDefaultRoutes;
-
-    /**
      * Group constructor.
      *
      * @param bool $useDefaultRoutes
+     *
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function __construct($useDefaultRoutes = true)
     {
-        $this->_useDefaultRoutes = $useDefaultRoutes;
+        if ($useDefaultRoutes) {
+            $this->add('/?(:controller)?(/:action)?(/:params)?');
+        }
     }
 
     /**
@@ -170,60 +169,19 @@ class Group extends Component implements GroupInterface
      * @param string $uri
      *
      * @return array|false
+     * @throws \ManaPHP\Mvc\Router\Exception
      */
     public function match($uri)
     {
         for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
             $route = $this->_routes[$i];
 
-            $matches = $route->match($uri);
-            if ($matches !== false) {
-                $parts = [];
-
-                /** @noinspection ForeachSourceInspection */
-                foreach ($matches as $k => $v) {
-                    if (is_string($k)) {
-                        $parts[$k] = $v;
-                    }
-                }
-
-                foreach ($route->getPaths() as $k => $v) {
-                    $parts[$k] = $v;
-                }
-
+            $parts = $route->match($uri);
+            if ($parts !== false) {
                 return $parts;
             }
         }
 
-        if ($this->_useDefaultRoutes) {
-
-            $paths = [];
-
-            if ($uri === '/') {
-                return $paths;
-            }
-
-            $parts = explode('/', trim($uri, '/'), 3);
-            $count = count($parts);
-            if ($count === 1) {
-                list($paths['controller']) = $parts;
-            } elseif ($count === 2) {
-                list($paths['controller'], $paths['action']) = $parts;
-            } elseif ($count === 3) {
-                list($paths['controller'], $paths['action'], $paths['params']) = $parts;
-            }
-
-            if (isset($paths['controller']) && preg_match('#^[a-zA-Z0-9_-]+$#', $paths['controller']) !== 1) {
-                return false;
-            }
-
-            if (isset($paths['action']) && preg_match('#^[a-zA-Z0-9_-]+$#', $paths['action']) !== 1) {
-                return false;
-            }
-
-            return $paths;
-        } else {
-            return false;
-        }
+        return false;
     }
 }
