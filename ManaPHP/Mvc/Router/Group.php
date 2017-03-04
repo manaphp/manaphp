@@ -166,17 +166,30 @@ class Group extends Component implements GroupInterface
     }
 
     /**
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     * @throws \ManaPHP\Mvc\Router\Route\Exception
+     */
+    public function addRest($pattern, $paths = null)
+    {
+        return $this->_addRoute($pattern, $paths, 'REST');
+    }
+
+    /**
      * @param string $uri
+     * @param string $method
      *
      * @return array|false
      * @throws \ManaPHP\Mvc\Router\Exception
      */
-    public function match($uri)
+    public function match($uri, $method = 'GET')
     {
         for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
             $route = $this->_routes[$i];
 
-            $parts = $route->match($uri);
+            $parts = $route->match($uri, $method);
             if ($parts !== false) {
                 return $parts;
             }

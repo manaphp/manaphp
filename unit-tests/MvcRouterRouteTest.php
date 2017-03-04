@@ -16,30 +16,19 @@ class MvcRouterRouteTest extends TestCase
 
     public function test_construct()
     {
-
         //  literal route test
         $route = new \ManaPHP\Mvc\Router\Route('/blog/edit');
-        $parts = $route->match('/blog/edit');
-        $this->assertEquals([], $parts);
+        $this->assertEquals([], $route->match('/blog/edit'));
 
         // :module, :controller, :action, :params
         $route = new \ManaPHP\Mvc\Router\Route('/:controller/:action/:params');
-        $parts = $route->match('/blog/edit/a/b/c');
-        $this->assertNotFalse($parts);
-        $this->assertEquals('blog', $parts['controller']);
-        $this->assertEquals('edit', $parts['action']);
-        $this->assertEquals('a/b/c', $parts['params']);
-
+        $this->assertEquals(['controller' => 'blog', 'action' => 'edit', 'params' => 'a/b/c'], $route->match('/blog/edit/a/b/c'));
         //  normal pcre
         $route = new \ManaPHP\Mvc\Router\Route('/blog/{user:[a-z0-9]{4,}}/view-{id:\d+}.html');
-        $parts = $route->match('/blog/mana/view-1234.html');
-        $this->assertEquals('1234', $parts['id']);
-        $this->assertEquals('mana', $parts['user']);
+        $this->assertEquals(['user' => 'mana', 'id' => '1234'], $route->match('/blog/mana/view-1234.html'));
 
         $route = new \ManaPHP\Mvc\Router\Route('/blog/{id:\d+}');
-        $parts = $route->match('/blog/1234');
-        $this->assertEquals('1234', $parts['id']);
-
+        $this->assertEquals(['id' => '1234'], $route->match('/blog/1234'));
     }
 
     public function test_params()
@@ -48,25 +37,25 @@ class MvcRouterRouteTest extends TestCase
 
         $tests = array(
             array(
-                'method' => null,
                 'uri' => '/some/hattie',
                 'controller' => 'c',
                 'action' => 'a',
-                'params' => array('name' => 'hattie')
+                'name' => 'hattie'
             ),
             array(
-                'method' => null,
                 'uri' => '/some/hattie/100',
                 'controller' => 'c',
                 'action' => 'a',
-                'params' => array('name' => 'hattie', 'id' => 100)
+                'name' => 'hattie',
+                'id' => 100
             ),
             array(
-                'method' => null,
                 'uri' => '/some/hattie/100/2011-01-02',
                 'controller' => 'c',
                 'action' => 'a',
-                'params' => array('name' => 'hattie', 'id' => 100, 'date' => '2011-01-02')
+                'name' => 'hattie',
+                'id' => 100,
+                'date' => '2011-01-02'
             ),
         );
         $group = new \ManaPHP\Mvc\Router\Group();
@@ -74,42 +63,53 @@ class MvcRouterRouteTest extends TestCase
         $group->add('/some/{name}/{id:[0-9]+}', 'c::a');
         $group->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
-        $router->mount($group, '/');
-
         foreach ($tests as $n => $test) {
-            $_SERVER['REQUEST_METHOD'] = $test['method'];
-
-            $router->handle($test['uri']);
-            $this->assertEquals(strtolower($test['controller']), strtolower($router->getControllerName()),
-                'Testing ' . $test['uri']);
-            $this->assertEquals($test['action'], $router->getActionName(), 'Testing ' . $test['uri']);
-            $this->assertEquals($test['params'], $router->getParams(), 'Testing ' . $test['uri']);
+            $this->assertEquals($test, array_merge(['uri' => $test['uri']], $group->match($test['uri'])));
         }
     }
 
     public function test_shortPaths()
     {
-        $route = new \ManaPHP\Mvc\Router\Route('/route0', 'feed');
-        $this->assertEquals($route->getPaths(), array(
+        $route = new \ManaPHP\Mvc\Router\Route('/', 'feed');
+        $this->assertEquals($route->match('/'), array(
             'controller' => 'feed'
         ));
 
-        $route = new ManaPHP\Mvc\Router\Route('/route1', 'feed::get');
-        $this->assertEquals($route->getPaths(), array(
+        $route = new ManaPHP\Mvc\Router\Route('/', 'feed::get');
+        $this->assertEquals($route->match('/'), array(
             'controller' => 'feed',
             'action' => 'get',
         ));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/route2', 'posts::show');
-        $this->assertEquals($route->getPaths(), array(
+        $route = new \ManaPHP\Mvc\Router\Route('/', 'posts::show');
+        $this->assertEquals($route->match('/'), array(
             'controller' => 'posts',
             'action' => 'show',
         ));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/route3', 'posts::show');
-        $this->assertEquals($route->getPaths(), array(
+        $route = new \ManaPHP\Mvc\Router\Route('/', 'posts::show');
+        $this->assertEquals($route->match('/'), array(
             'controller' => 'posts',
             'action' => 'show',
         ));
+    }
+
+    public function test_rest()
+    {
+        $route = new \ManaPHP\Mvc\Router\Route('/users', [], 'REST');
+        $this->assertEquals(['action' => 'list'], $route->match('/users', 'GET'));
+        $this->assertEquals(['action' => 'create'], $route->match('/users', 'POST'));
+        $this->assertEquals(['action' => 'detail', 'params' => '123'], $route->match('/users/123', 'GET'));
+        $this->assertEquals(['action' => 'update', 'params' => '123'], $route->match('/users/123', 'POST'));
+        $this->assertEquals(['action' => 'update', 'params' => '123'], $route->match('/users/123', 'PUT'));
+        $this->assertEquals(['action' => 'delete', 'params' => '123'], $route->match('/users/123', 'DELETE'));
+
+        $route = new \ManaPHP\Mvc\Router\Route('/users/{user_id:int}/orders', [], 'REST');
+        $this->assertEquals(['action' => 'list', 'user_id' => 1], $route->match('/users/1/orders', 'GET'));
+        $this->assertEquals(['action' => 'create', 'user_id' => 1], $route->match('/users/1/orders', 'POST'));
+        $this->assertEquals(['action' => 'detail', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'GET'));
+        $this->assertEquals(['action' => 'update', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'POST'));
+        $this->assertEquals(['action' => 'update', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'PUT'));
+        $this->assertEquals(['action' => 'delete', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'DELETE'));
     }
 }

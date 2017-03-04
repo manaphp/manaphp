@@ -152,6 +152,7 @@ class MvcRouterTest extends TestCase
 
         $router->mount($group, '/');
         foreach ($tests as $n => $test) {
+            $_SERVER['REQUEST_METHOD']='GET';
             $router->handle($test['uri']);
             $this->assertEquals('App', $router->getModuleName());
             $this->assertEquals($test['controller'], $router->getControllerName(), 'Testing ' . $test['uri']);
@@ -255,6 +256,7 @@ class MvcRouterTest extends TestCase
         $group->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params', 'posts::show');
 
         $router = new \ManaPHP\Mvc\Router();
+        $_SERVER['REQUEST_METHOD']='GET';
         $router->mount($group, '/');
         $router->handle('/news/2016/03/12/china');
         $this->assertTrue($router->wasMatched());
@@ -316,8 +318,6 @@ class MvcRouterTest extends TestCase
     {
         $router = new ManaPHP\Mvc\Router();
 
-        $router->removeExtraSlashes(true);
-
         $routes = array(
             '/index/' => array(
                 'controller' => 'index',
@@ -335,6 +335,7 @@ class MvcRouterTest extends TestCase
 
         $router->mount(new \Test\App\RouteGroup(), '/');
         foreach ($routes as $route => $paths) {
+            $_SERVER['REQUEST_METHOD']='GET';
             $router->handle($route);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->assertTrue($router->wasMatched());
@@ -380,6 +381,7 @@ class MvcRouterTest extends TestCase
         );
 
         foreach ($routes as $route => $paths) {
+            $_SERVER['REQUEST_METHOD']='GET';
             $router->handle($route);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->assertTrue($router->wasMatched());
@@ -396,6 +398,7 @@ class MvcRouterTest extends TestCase
 
         //single module usage
         $router = (new \ManaPHP\Mvc\Router())->mount($group, '/');
+        $_SERVER['REQUEST_METHOD']='GET';
         $router->handle('/article/1');
         $this->assertTrue($router->wasMatched());
         $this->assertEquals('Blog', $router->getModuleName());
@@ -457,25 +460,25 @@ class MvcRouterTest extends TestCase
 
     public function test_shortPaths()
     {
-        $route = new \ManaPHP\Mvc\Router\Route('/route0', 'feed');
-        $this->assertEquals($route->getPaths(), array(
+        $route = new \ManaPHP\Mvc\Router\Route('/', 'feed');
+        $this->assertEquals($route->match('/'), array(
             'controller' => 'feed'
         ));
 
-        $route = new ManaPHP\Mvc\Router\Route('/route1', 'feed::get');
-        $this->assertEquals($route->getPaths(), array(
+        $route = new ManaPHP\Mvc\Router\Route('/', 'feed::get');
+        $this->assertEquals($route->match('/'), array(
             'controller' => 'feed',
             'action' => 'get',
         ));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/route2', 'posts::show');
-        $this->assertEquals($route->getPaths(), array(
+        $route = new \ManaPHP\Mvc\Router\Route('/', 'posts::show');
+        $this->assertEquals($route->match('/'), array(
             'controller' => 'posts',
             'action' => 'show',
         ));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/route3', 'posts::show');
-        $this->assertEquals($route->getPaths(), array(
+        $route = new \ManaPHP\Mvc\Router\Route('/', 'posts::show');
+        $this->assertEquals($route->match('/'), array(
             'controller' => 'posts',
             'action' => 'show',
         ));
@@ -487,6 +490,7 @@ class MvcRouterTest extends TestCase
         $group->add('/', 'user::list');
         $router = new \ManaPHP\Mvc\Router();
         $router->mount($group, '/');
+        $_SERVER['REQUEST_METHOD']='GET';
         $router->handle('/');
         $this->assertTrue($router->wasMatched());
         $this->assertEquals('user', $router->getControllerName());

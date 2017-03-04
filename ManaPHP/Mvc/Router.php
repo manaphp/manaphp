@@ -139,7 +139,7 @@ class Router extends Component implements RouterInterface
             }
             $groupInstance = $group['groupInstance'];
 
-            $parts = $groupInstance->match($handledUri);
+            $parts = $groupInstance->match($handledUri, $_SERVER['REQUEST_METHOD']);
             $routeFound = $parts !== false;
             if ($routeFound) {
                 break;

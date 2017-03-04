@@ -1,6 +1,7 @@
 <?php
 namespace Application\Api;
 
+use Application\Api\Controllers\CustomerController;
 use Application\Api\Controllers\TimeController;
 use ManaPHP\Mvc\Router\Group;
 
@@ -10,5 +11,6 @@ class RouteGroup extends Group
     {
         parent::__construct(true);
         $this->addGet('/time/current', [TimeController::class, 'current']);
+        $this->addRest('/customers', CustomerController::class);
     }
 }

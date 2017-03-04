@@ -12,7 +12,6 @@ use ManaPHP\Utility\Text;
  */
 class Route implements RouteInterface
 {
-
     /**
      * @var string
      */
@@ -31,23 +30,23 @@ class Route implements RouteInterface
     /**
      * @var string
      */
-    protected $_httpMethod;
+    protected $_method;
 
     /**
      * \ManaPHP\Mvc\Router\Route constructor
      *
      * @param string       $pattern
      * @param string|array $paths
-     * @param string       $httpMethod
+     * @param string       $method
      *
      * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
-    public function __construct($pattern, $paths = null, $httpMethod = null)
+    public function __construct($pattern, $paths = null, $method = null)
     {
         $this->_pattern = $pattern;
-        $this->_compiledPattern = $this->_compilePattern($pattern);
-        $this->_paths = self::getRoutePaths($paths);
-        $this->_httpMethod = $httpMethod;
+        $this->_compiledPattern = $this->_compilePattern($method !== 'REST' ? $pattern : ($pattern . '(/{params:[a-z0-9_-]+})?'));
+        $this->_paths = $this->_getRoutePaths($paths);
+        $this->_method = $method;
     }
 
     /**
@@ -62,10 +61,10 @@ class Route implements RouteInterface
         // If a pattern contains ':', maybe there are placeholders to replace
         if (Text::contains($pattern, ':')) {
             $tr = [
-                '/:controller' => '/{controller:[a-z\d_-]+}',
-                '/:action' => '/{action:[a-z\d_-]+}',
-                '/:params' => '/{params:.+}',
-                '/:int' => '/(\d+)',
+                ':controller' => '{controller:[a-z\d_-]+}',
+                ':action' => '{action:[a-z\d_-]+}',
+                ':params' => '{params:.+}',
+                ':int' => ':\d+',
             ];
             $pattern = strtr($pattern, $tr);
         }
@@ -74,11 +73,7 @@ class Route implements RouteInterface
             $pattern = $this->_extractNamedParams($pattern);
         }
 
-        if (Text::contains($pattern, '(') || Text::contains($pattern, '[')) {
-            return '#^' . $pattern . '$#i';
-        } else {
-            return $pattern;
-        }
+        return '#^' . $pattern . '$#i';
     }
 
     /**
@@ -138,7 +133,7 @@ class Route implements RouteInterface
      * @return array
      * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
-    public static function getRoutePaths($paths = null)
+    public function _getRoutePaths($paths = [])
     {
         $routePaths = [];
 
@@ -174,7 +169,7 @@ class Route implements RouteInterface
             }
         }
 
-        if (isset($routePaths['controller']) && is_string($routePaths['controller'])) {
+        if (isset($routePaths['controller']) && strpos($routePaths['controller'], '\\') !== false) {
             $parts = explode('\\', $routePaths['controller']);
             $routePaths['controller'] = basename(end($parts), 'Controller');
         }
@@ -183,45 +178,49 @@ class Route implements RouteInterface
     }
 
     /**
-     * Returns the paths
-     *
-     * @return array
-     */
-    public function getPaths()
-    {
-        return $this->_paths;
-    }
-
-    /**
      * @param string $uri
+     * @param string $method
      *
      * @return bool|array
      * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
-    public function match($uri)
+    public function match($uri, $method = 'GET')
     {
         $matches = [];
 
-        if ($this->_httpMethod !== null && $this->_httpMethod !== $_SERVER['REQUEST_METHOD']) {
+        if ($this->_method !== null && $this->_method !== $method && $this->_method !== 'REST') {
             return false;
         }
 
-        if (Text::contains($this->_compiledPattern, '^')) {
-            $r = preg_match($this->_compiledPattern, $uri, $matches);
-            if ($r === false) {
-                throw new RouteException('`:compiled` pcre pattern is invalid for `:pattern`'/**m0d6fa1de6a93475dd*/,
-                    ['compiled' => $this->_compiledPattern, 'pattern' => $this->_pattern]);
-            } elseif ($r === 1) {
-                return $matches;
-            } else {
-                return false;
+        $r = preg_match($this->_compiledPattern, $uri, $matches);
+        if ($r === false) {
+            throw new RouteException('`:compiled` pcre pattern is invalid for `:pattern`'/**m0d6fa1de6a93475dd*/,
+                ['compiled' => $this->_compiledPattern, 'pattern' => $this->_pattern]);
+        } elseif ($r === 1) {
+            $parts = array_merge($matches, $this->_paths);
+
+            if ($this->_method === 'REST') {
+                if (isset($matches['params'])) {
+                    $methodAction = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
+                } else {
+                    $methodAction = ['GET' => 'list', 'POST' => 'create'];
+                }
+                if (isset($methodAction[$method])) {
+                    $parts['action'] = $methodAction[$method];
+                } else {
+                    return false;
+                }
             }
         } else {
-            if ($this->_compiledPattern === $uri) {
-                return $matches;
-            } else {
-                return false;
+            return false;
+        }
+
+        foreach ($parts as $k => $v) {
+            if (is_int($k)) {
+                unset($parts[$k]);
             }
         }
+
+        return $parts;
     }
 }

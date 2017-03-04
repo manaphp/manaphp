@@ -10,16 +10,10 @@ namespace ManaPHP\Mvc\Router;
 interface RouteInterface
 {
     /**
-     * Returns the paths
-     *
-     * @return array
-     */
-    public function getPaths();
-
-    /**
      * @param string $uri
+     * @param string $method
      *
      * @return false|array
      */
-    public function match($uri);
+    public function match($uri, $method = 'GET');
 }

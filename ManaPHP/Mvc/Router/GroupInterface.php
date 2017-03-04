@@ -94,9 +94,18 @@ interface GroupInterface
     public function addHead($pattern, $paths = null);
 
     /**
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addRest($pattern, $paths = null);
+
+    /**
      * @param string $uri
+     * @param string $method
      *
      * @return false|array
      */
-    public function match($uri);
+    public function match($uri, $method = 'GET');
 }
