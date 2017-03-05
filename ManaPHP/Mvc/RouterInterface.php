@@ -22,12 +22,12 @@ interface RouterInterface
      *
      * </code>
      * @param string $uri
+     * @param string $method
      * @param string $host
-     * @param bool   $silent
      *
      * @return bool
      */
-    public function handle($uri = null, $host = null, $silent = true);
+    public function handle($uri = null, $method = null, $host = null);
 
     /**
      * Mounts a group of routes in the router

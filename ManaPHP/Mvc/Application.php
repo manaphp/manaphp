@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Mvc;
 
+use ManaPHP\Mvc\Router\NotFoundRouteException;
+
 /**
  * Class ManaPHP\Mvc\Application
  *
@@ -49,6 +51,7 @@ class Application extends \ManaPHP\Application
      * Handles a MVC request
      *
      * @param string $uri
+     * @param string $method
      *
      * @return \ManaPHP\Http\ResponseInterface
      * @throws \ManaPHP\Mvc\Application\Exception
@@ -63,13 +66,15 @@ class Application extends \ManaPHP\Application
      * @throws \ManaPHP\Mvc\Router\Exception
      * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
      */
-    public function handle($uri = null)
+    public function handle($uri = null, $method = null)
     {
         if ($this->fireEvent('application:boot') === false) {
             return $this->response;
         }
 
-        $this->router->handle($uri, null, false);
+        if (!$this->router->handle($uri, $method)) {
+            throw new NotFoundRouteException('router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, ['uri' => $this->router->getRewriteUri($uri)]);
+        }
 
         $moduleName = ucfirst($this->router->getModuleName());
         $controllerName = $this->router->getControllerName();

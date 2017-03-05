@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\Router\NotFoundRouteException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -91,15 +90,15 @@ class Router extends Component implements RouterInterface
      *</code>
      *
      * @param string $uri
+     * @param string $method
      * @param string $host
-     * @param bool   $silent
      *
      * @return bool
      * @throws \ManaPHP\Di\Exception
      * @throws \ManaPHP\Mvc\Router\Exception
      * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
      */
-    public function handle($uri = null, $host = null, $silent = true)
+    public function handle($uri = null, $method = null, $host = null)
     {
         $uri = $this->getRewriteUri($uri);
 
@@ -139,7 +138,7 @@ class Router extends Component implements RouterInterface
             }
             $groupInstance = $group['groupInstance'];
 
-            $parts = $groupInstance->match($handledUri, $_SERVER['REQUEST_METHOD']);
+            $parts = $groupInstance->match($handledUri, $method ?: $_SERVER['REQUEST_METHOD']);
             $routeFound = $parts !== false;
             if ($routeFound) {
                 break;
@@ -167,10 +166,6 @@ class Router extends Component implements RouterInterface
         }
 
         $this->fireEvent('router:afterCheckRoutes');
-
-        if (!$routeFound && !$silent) {
-            throw new NotFoundRouteException('router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, ['uri' => $uri]);
-        }
 
         return $routeFound;
     }
