@@ -38,7 +38,7 @@ interface AdapterInterface
     /**
      * The read callback must always return a session encoded (serialized) string, or an empty string if there is no data to read.
      *
-     * @param $sessionId
+     * @param string $sessionId
      *
      * @return string
      */
@@ -52,7 +52,7 @@ interface AdapterInterface
      * @param string $sessionId
      * @param string $data
      *
-     * @return void
+     * @return string
      */
     public function write($sessionId, $data);
 

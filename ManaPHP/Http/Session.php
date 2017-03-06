@@ -23,6 +23,11 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     public $adapter;
 
     /**
+     * @var bool
+     */
+    protected $_started = false;
+
+    /**
      * Session constructor.
      *
      * @param string|array|\ManaPHP\Http\Session\AdapterInterface $options
@@ -61,10 +66,9 @@ class Session extends Component implements SessionInterface, \ArrayAccess
 
         session_set_save_handler($open, $close, $read, $write, $destroy, $gc);
 
-        if (PHP_SAPI !== 'cli' && !session_start()) {
-            throw new SessionException('session start failed: :last_error_message');
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            throw new SessionException('please call $this->session->start(), NOT session_start()');
         }
-
         return $this;
     }
 
@@ -73,7 +77,24 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function __destruct()
     {
-        PHP_SAPI !== 'cli' && session_write_close();
+        PHP_SAPI !== 'cli' && $this->_started && session_write_close();
+    }
+
+    /**
+     * @return static
+     */
+    public function start()
+    {
+        if (!$this->_started) {
+            if (PHP_SAPI !== 'cli' && session_status() !== PHP_SESSION_ACTIVE && !session_start()) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                throw new SessionException('session start failed: :last_error_message');
+            }
+
+            $this->_started = true;
+        }
+
+        return $this;
     }
 
     /**
@@ -86,6 +107,8 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function get($name = null, $defaultValue = null)
     {
+        $this->_started || $this->start();
+
         if ($name === null) {
             return $_SESSION;
         } elseif (isset($_SESSION[$name])) {
@@ -103,6 +126,8 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function set($name, $value)
     {
+        $this->_started || $this->start();
+
         $_SESSION[$name] = $value;
     }
 
@@ -115,6 +140,8 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function has($name)
     {
+        $this->_started || $this->start();
+
         return isset($_SESSION[$name]);
     }
 
@@ -125,15 +152,54 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function remove($name)
     {
+        $this->_started || $this->start();
+
         unset($_SESSION[$name]);
     }
 
     /**
      * @return string
      */
-    public function getSessionId()
+    public function getId()
     {
+        $this->_started || $this->start();
+
         return session_id();
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return void
+     * @throws \ManaPHP\Http\Session\Exception
+     */
+    public function setId($id)
+    {
+        if ($this->_started) {
+            throw new SessionException('session_id($id) needs to be called before session_start()');
+        }
+
+        session_id($id);
+
+        $this->_started || $this->start();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return session_name();
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public function setName($name)
+    {
+        return session_name($name);
     }
 
     /**
@@ -144,6 +210,8 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function destroy()
     {
+        $this->_started || $this->start();
+
         if (PHP_SAPI !== 'cli' && !session_destroy()) {
             throw new SessionException('destroy session failed: :last_error_message'/**m08409465b2b90d8a8*/);
         }

@@ -9,6 +9,10 @@ namespace ManaPHP\Http;
  */
 interface SessionInterface
 {
+    /**
+     * @return static
+     */
+    public function start();
 
     /**
      * Gets a session variable from an application context
@@ -54,7 +58,26 @@ interface SessionInterface
     /**
      * @return string
      */
-    public function getSessionId();
+    public function getId();
+
+    /**
+     * @param string $id
+     *
+     * @return void
+     */
+    public function setId($id);
+
+    /**
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public function setName($name);
 
     /**
      * @return void
