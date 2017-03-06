@@ -141,17 +141,22 @@ class Di implements DiInterface
     /**
      * @param string       $service
      * @param string|array $aliases
+     * @param bool         $force
      *
      * @return static
      */
-    public function setAliases($service, $aliases)
+    public function setAliases($service, $aliases, $force = false)
     {
         if (is_string($aliases)) {
-            $this->_aliases[$aliases] = $service;
+            if ($force || !isset($this->_aliases[$aliases])) {
+                $this->_aliases[$aliases] = $service;
+            }
         } else {
             /** @noinspection ForeachSourceInspection */
             foreach ($aliases as $alias) {
-                $this->_aliases[$alias] = $service;
+                if ($force || !isset($this->_aliases[$alias])) {
+                    $this->_aliases[$alias] = $service;
+                }
             }
         }
 

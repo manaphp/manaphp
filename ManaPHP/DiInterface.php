@@ -33,10 +33,11 @@ interface DiInterface
     /**
      * @param string       $service
      * @param string|array $aliases
+     * @param bool         $force
      *
      * @return static
      */
-    public function setAliases($service, $aliases);
+    public function setAliases($service, $aliases, $force = false);
 
     /**
      * Removes a service from the service container
