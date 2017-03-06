@@ -15,7 +15,7 @@ class Apc extends Component implements AdapterInterface
     /**
      * @var string
      */
-    protected $_prefix = 'manaphp:task:';
+    protected $_prefix;
 
     /**
      * Apc constructor.
@@ -38,6 +38,33 @@ class Apc extends Component implements AdapterInterface
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
         }
+    }
+
+    /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+        if ($this->_prefix === null) {
+            $this->_prefix = $this->_dependencyInjector->configure->appID . ':tasks_metadata:';
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
+
+        return $this;
     }
 
     /**

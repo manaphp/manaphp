@@ -11,11 +11,10 @@ use ManaPHP\Mvc\Model\Metadata\Adapter\Apc\Exception as ApcException;
  */
 class Apc extends Metadata
 {
-
     /**
      * @var string
      */
-    protected $_prefix = 'manaphp:modelsMetadata:';
+    protected $_prefix;
 
     /**
      * @var int
@@ -50,6 +49,33 @@ class Apc extends Metadata
         if (isset($options['ttl'])) {
             $this->_ttl = $options['ttl'];
         }
+    }
+
+    /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+        if ($this->_prefix === null) {
+            $this->_prefix = $this->_dependencyInjector->configure->appID . ':models_metadata:';
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
+
+        return $this;
     }
 
     /**
