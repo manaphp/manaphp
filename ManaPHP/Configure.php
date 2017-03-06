@@ -17,6 +17,11 @@ class Configure implements ConfigureInterface
     /**
      * @var string
      */
+    public $appID = 'manaphp';
+
+    /**
+     * @var string
+     */
     protected $_masterKey = 'key';
 
     /**
