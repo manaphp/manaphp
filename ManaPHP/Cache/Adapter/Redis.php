@@ -10,20 +10,14 @@ use ManaPHP\Component;
  *
  * @package cache\adapter
  *
- * @property \Redis               $redis
- * @property \ManaPHP\DiInterface $redisDi
+ * @property \Redis $cacheRedis
  */
 class Redis extends Component implements AdapterInterface
 {
     /**
      * @var string
      */
-    protected $_prefix = 'manaphp:cache:';
-
-    /**
-     * @var string
-     */
-    protected $_service = 'cache';
+    protected $_prefix;
 
     /**
      * Redis constructor.
@@ -51,9 +45,23 @@ class Redis extends Component implements AdapterInterface
     public function setDependencyInjector($dependencyInjector)
     {
         parent::setDependencyInjector($dependencyInjector);
-        if (isset($this->redisDi)) {
-            $this->redis = $this->redisDi->getShared($this->_service, ['prefix' => $this->_prefix]);
+
+        $this->_dependencyInjector->setAliases('redis', 'cacheRedis');
+        if ($this->_prefix === null) {
+            $this->_prefix = $this->_dependencyInjector->configure->appID . ':cache:';
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
 
         return $this;
     }
@@ -65,7 +73,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function get($key)
     {
-        return $this->redis->get($this->_prefix . $key);
+        return $this->cacheRedis->get($this->_prefix . $key);
     }
 
     /**
@@ -77,7 +85,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function set($key, $value, $ttl)
     {
-        $this->redis->set($this->_prefix . $key, $value, $ttl);
+        $this->cacheRedis->set($this->_prefix . $key, $value, $ttl);
     }
 
     /**
@@ -87,7 +95,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function delete($key)
     {
-        $this->redis->delete($this->_prefix . $key);
+        $this->cacheRedis->delete($this->_prefix . $key);
     }
 
     /**
@@ -97,6 +105,6 @@ class Redis extends Component implements AdapterInterface
      */
     public function exists($key)
     {
-        return $this->redis->exists($this->_prefix . $key);
+        return $this->cacheRedis->exists($this->_prefix . $key);
     }
 }

@@ -9,14 +9,14 @@ use ManaPHP\Counter\AdapterInterface;
  *
  * @package counter\adapter
  *
- * @property \Redis $redis
+ * @property \Redis $counterRedis
  */
 class Redis extends Component implements AdapterInterface
 {
     /**
      * @var string
      */
-    protected $_prefix = 'manaphp:counter:';
+    protected $_prefix;
 
     /**
      * Redis constructor.
@@ -37,6 +37,35 @@ class Redis extends Component implements AdapterInterface
     }
 
     /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+        $this->_dependencyInjector->setAliases('redis', 'counterRedis');
+
+        if ($this->_prefix === null) {
+            $this->_prefix = $this->_dependencyInjector->configure->appID . ':counter:';
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * @param string $type
      * @param string $id
      *
@@ -44,7 +73,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function get($type, $id)
     {
-        return (int)$this->redis->hGet($this->_prefix . $type, $id);
+        return (int)$this->counterRedis->hGet($this->_prefix . $type, $id);
     }
 
     /**
@@ -56,7 +85,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function increment($type, $id, $step = 1)
     {
-        return $this->redis->hIncrBy($this->_prefix . $type, $id, $step);
+        return $this->counterRedis->hIncrBy($this->_prefix . $type, $id, $step);
     }
 
     /**
@@ -67,6 +96,6 @@ class Redis extends Component implements AdapterInterface
      */
     public function delete($type, $id)
     {
-        $this->redis->hDel($this->_prefix . $type, $id);
+        $this->counterRedis->hDel($this->_prefix . $type, $id);
     }
 }

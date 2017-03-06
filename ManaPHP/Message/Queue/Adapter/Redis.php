@@ -10,14 +10,14 @@ use ManaPHP\Message\QueueInterface;
  *
  * @package messageQueue\adapter
  *
- * @property \Redis $redis
+ * @property \Redis $messageQueueRedis
  */
 class Redis extends Component implements QueueInterface
 {
     /**
      * @var string
      */
-    protected $_prefix = 'manaphp:message_queue:';
+    protected $_prefix;
 
     /**
      * @var int[]
@@ -50,6 +50,35 @@ class Redis extends Component implements QueueInterface
     }
 
     /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+        $this->_dependencyInjector->setAliases('redis', 'messageQueueRedis');
+
+        if ($this->_prefix === null) {
+            $this->_prefix = $this->_dependencyInjector->configure->appID . ':message_queue:';
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * @param string $topic
      * @param string $body
      * @param int    $priority
@@ -62,7 +91,7 @@ class Redis extends Component implements QueueInterface
             throw new RedisException('`:priority` priority of `:topic is invalid`', ['priority' => $priority, 'topic' => $topic]);
         }
 
-        $this->redis->lPush($this->_prefix . $topic . ':' . $priority, $body);
+        $this->messageQueueRedis->lPush($this->_prefix . $topic . ':' . $priority, $body);
     }
 
     /**
@@ -83,7 +112,7 @@ class Redis extends Component implements QueueInterface
         }
         if ($timeout === 0) {
             foreach ($this->_topicKeys[$topic] as $key) {
-                $r = $this->redis->rPop($key);
+                $r = $this->messageQueueRedis->rPop($key);
                 if ($r !== false) {
                     return $r;
                 }
@@ -92,7 +121,7 @@ class Redis extends Component implements QueueInterface
             return false;
         } else {
             /** @noinspection PhpMethodParametersCountMismatchInspection */
-            $r = $this->redis->brPop($this->_topicKeys[$topic], $timeout);
+            $r = $this->messageQueueRedis->brPop($this->_topicKeys[$topic], $timeout);
             return isset($r[1]) ? $r[1] : false;
         }
     }
@@ -105,7 +134,7 @@ class Redis extends Component implements QueueInterface
     public function delete($topic)
     {
         foreach ($this->_priorities as $priority) {
-            $this->redis->delete($this->_prefix . $topic . ':' . $priority);
+            $this->messageQueueRedis->delete($this->_prefix . $topic . ':' . $priority);
         }
     }
 
@@ -121,12 +150,12 @@ class Redis extends Component implements QueueInterface
             $length = 0;
             /** @noinspection SuspiciousLoopInspection */
             foreach ($this->_priorities as $priority) {
-                $length += $this->redis->lLen($this->_prefix . $topic . ':' . $priority);
+                $length += $this->messageQueueRedis->lLen($this->_prefix . $topic . ':' . $priority);
             }
 
             return $length;
         } else {
-            return $this->redis->lLen($this->_prefix . $topic . ':' . $priority);
+            return $this->messageQueueRedis->lLen($this->_prefix . $topic . ':' . $priority);
         }
     }
 }

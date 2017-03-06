@@ -8,7 +8,7 @@ use ManaPHP\Security\RateLimiter;
  *
  * @package rateLimiter\adapter
  *
- * @property \Redis                         $redis
+ * @property \Redis                         $rateLimiterRedis
  * @property \ManaPHP\Http\RequestInterface $request
  */
 class Redis extends RateLimiter
@@ -16,7 +16,7 @@ class Redis extends RateLimiter
     /**
      * @var string
      */
-    protected $_prefix = 'rate_limiter:';
+    protected $_prefix;
 
     /**
      * Redis constructor.
@@ -35,6 +35,36 @@ class Redis extends RateLimiter
     }
 
     /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+
+        $this->_dependencyInjector->setAliases('redis', 'rateLimiterRedis');
+
+        if ($this->_prefix === null) {
+            $this->_prefix = $this->_dependencyInjector->configure->appID . ':rate_limiter:';
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * @param string $id
      * @param string $resource
      * @param int    $duration
@@ -45,9 +75,9 @@ class Redis extends RateLimiter
     protected function _limit($id, $resource, $duration, $times)
     {
         $key = $this->_prefix . $id . ':' . $resource;
-        $current_times = $this->redis->incr($key);
+        $current_times = $this->rateLimiterRedis->incr($key);
         if ($current_times === 1) {
-            $this->redis->setTimeout($key, $duration);
+            $this->rateLimiterRedis->setTimeout($key, $duration);
         }
 
         return $times >= $current_times;

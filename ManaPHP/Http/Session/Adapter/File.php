@@ -19,11 +19,6 @@ use ManaPHP\Http\Session\AdapterInterface;
 class File extends Component implements AdapterInterface
 {
     /**
-     * @var int
-     */
-    protected $_ttl;
-
-    /**
      * @var string
      */
     protected $_dir = '@data/session';
@@ -48,8 +43,6 @@ class File extends Component implements AdapterInterface
         if (is_object($options)) {
             $options = (array)$options;
         }
-
-        $this->_ttl = (int)(isset($options['ttl']) ? $options['ttl'] : ini_get('session.gc_maxlifetime'));
 
         if (isset($options['dir'])) {
             $this->_dir = ltrim($options['dir'], '\\/');
@@ -135,7 +128,7 @@ class File extends Component implements AdapterInterface
             trigger_error(strtr('write `:file` session file failed: :last_error_message'/**m0f7ee56f71e1ec344*/, [':file' => $file]));
         }
 
-        @touch($file, time() + $this->_ttl);
+        @touch($file, time() + ini_get('session.gc_maxlifetime'));
         clearstatcache(true, $file);
 
         return true;
@@ -164,6 +157,8 @@ class File extends Component implements AdapterInterface
      */
     public function gc($ttl)
     {
+        $this->clean();
+
         return true;
     }
 
@@ -186,7 +181,6 @@ class File extends Component implements AdapterInterface
                 }
             } else {
                 $this->_clean($path);
-                @rmdir($path);
             }
         }
     }

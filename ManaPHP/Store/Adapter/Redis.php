@@ -10,7 +10,7 @@ use ManaPHP\Store\AdapterInterface;
  *
  * @package store\adapter
  *
- * @property \Redis               $redis
+ * @property \Redis               $storeRedis
  * @property \ManaPHP\DiInterface $redisDi
  */
 class Redis extends Component implements AdapterInterface
@@ -18,12 +18,7 @@ class Redis extends Component implements AdapterInterface
     /**
      * @var string
      */
-    protected $_key = 'manaphp:store:';
-
-    /**
-     * @var string
-     */
-    protected $_service = 'store';
+    protected $_key;
 
     /**
      * Redis constructor.
@@ -41,10 +36,6 @@ class Redis extends Component implements AdapterInterface
         if (isset($options['key'])) {
             $this->_key .= $options['key'];
         }
-
-        if (isset($options['service'])) {
-            $this->_service = $options['service'];
-        }
     }
 
     /**
@@ -55,9 +46,23 @@ class Redis extends Component implements AdapterInterface
     public function setDependencyInjector($dependencyInjector)
     {
         parent::setDependencyInjector($dependencyInjector);
-        if (isset($this->redisDi)) {
-            $this->redis = $this->redisDi->getShared($this->_service, ['key' => $this->_key]);
+
+        $this->_dependencyInjector->setAliases('redis', 'storeRedis');
+        if ($this->_key === null) {
+            $this->_key = $this->_dependencyInjector->configure->appID . ':store:';
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return static
+     */
+    public function setKey($key)
+    {
+        $this->_key = $key;
 
         return $this;
     }
@@ -72,7 +77,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function get($id)
     {
-        return $this->redis->hGet($this->_key, $id);
+        return $this->storeRedis->hGet($this->_key, $id);
     }
 
     /**
@@ -86,7 +91,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function set($id, $value)
     {
-        $this->redis->hSet($this->_key, $id, $value);
+        $this->storeRedis->hSet($this->_key, $id, $value);
     }
 
     /**
@@ -99,7 +104,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function delete($id)
     {
-        $this->redis->hDel($this->_key, $id);
+        $this->storeRedis->hDel($this->_key, $id);
     }
 
     /**
@@ -112,6 +117,6 @@ class Redis extends Component implements AdapterInterface
      */
     public function exists($id)
     {
-        return $this->redis->hExists($this->_key, $id);
+        return $this->storeRedis->hExists($this->_key, $id);
     }
 }

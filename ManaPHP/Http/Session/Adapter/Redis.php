@@ -9,20 +9,14 @@ use ManaPHP\Http\Session\AdapterInterface;
  *
  * @package session\adapter
  *
- * @property \Redis $redis
+ * @property \Redis $sessionRedis
  */
 class Redis extends Component implements AdapterInterface
 {
-
-    /**
-     * @var int
-     */
-    protected $_ttl;
-
     /**
      * @var string
      */
-    protected $_prefix = 'manaphp:session:';
+    protected $_prefix;
 
     /**
      * Redis constructor.
@@ -35,11 +29,39 @@ class Redis extends Component implements AdapterInterface
             $options = (array)$options;
         }
 
-        $this->_ttl = (int)(isset($options['ttl']) ? $options['ttl'] : ini_get('session.gc_maxlifetime'));
-
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
         }
+    }
+
+    /**
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return static
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        parent::setDependencyInjector($dependencyInjector);
+
+        $this->_dependencyInjector->setAliases('redis', 'sessionRedis');
+
+        if ($this->_prefix === null) {
+            $this->_prefix = $this->_dependencyInjector->configure->appID . ':session:';
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
+
+        return $this;
     }
 
     /**
@@ -68,7 +90,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function read($sessionId)
     {
-        $data = $this->redis->get($this->_prefix . $sessionId);
+        $data = $this->sessionRedis->get($this->_prefix . $sessionId);
         return is_string($data) ? $data : '';
     }
 
@@ -80,7 +102,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function write($sessionId, $data)
     {
-        return $this->redis->set($this->_prefix . $sessionId, $data, $this->_ttl);
+        return $this->sessionRedis->set($this->_prefix . $sessionId, $data, (int)ini_get('session.gc_maxlifetime'));
     }
 
     /**
@@ -90,7 +112,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function destroy($sessionId)
     {
-        $this->redis->delete($this->_prefix . $sessionId);
+        $this->sessionRedis->delete($this->_prefix . $sessionId);
 
         return true;
     }
@@ -102,6 +124,8 @@ class Redis extends Component implements AdapterInterface
      */
     public function gc($ttl)
     {
+        $this->clean();
+
         return true;
     }
 

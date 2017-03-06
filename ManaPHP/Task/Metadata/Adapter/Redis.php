@@ -9,15 +9,14 @@ use ManaPHP\Task\Metadata\AdapterInterface;
  *
  * @package tasksMetadata\adapter
  *
- * @property \Redis               $redis
- * @property \ManaPHP\DiInterface $redisDi
+ * @property \Redis $taskMetadataRedis
  */
 class Redis extends Component implements AdapterInterface
 {
     /**
      * @var string
      */
-    protected $_prefix = 'manaphp:task:';
+    protected $_prefix;
 
     /**
      * Redis constructor.
@@ -46,9 +45,23 @@ class Redis extends Component implements AdapterInterface
     {
         parent::setDependencyInjector($dependencyInjector);
 
-        if (isset($this->redisDi)) {
-            $this->redis = $this->redisDi->getShared('task', ['prefix' => $this->_prefix]);
+        $this->_dependencyInjector->setAliases('redis', 'taskMetadataRedis');
+
+        if ($this->_prefix === null) {
+            $this->_prefix = $this->_dependencyInjector->configure->appID . ':task_metadata:';
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
 
         return $this;
     }
@@ -60,7 +73,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function get($key)
     {
-        return $this->redis->get($this->_prefix . $key);
+        return $this->taskMetadataRedis->get($this->_prefix . $key);
     }
 
     /**
@@ -71,7 +84,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function set($key, $value)
     {
-        $this->redis->set($this->_prefix . $key, $value);
+        $this->taskMetadataRedis->set($this->_prefix . $key, $value);
     }
 
     /**
@@ -81,7 +94,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function delete($key)
     {
-        $this->redis->delete($this->_prefix . $key);
+        $this->taskMetadataRedis->delete($this->_prefix . $key);
     }
 
     /**
@@ -91,6 +104,6 @@ class Redis extends Component implements AdapterInterface
      */
     public function exists($key)
     {
-        return $this->redis->exists($this->_prefix . $key);
+        return $this->taskMetadataRedis->exists($this->_prefix . $key);
     }
 }

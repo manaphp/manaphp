@@ -11,9 +11,9 @@ use ManaPHP\Http\Session\AdapterInterface;
  */
 class Db extends Component implements AdapterInterface
 {
-
-    protected $_ttl;
-
+    /**
+     * @var string
+     */
     protected $_model = 'ManaPHP\Http\Session\Adapter\Db\Model';
 
     /**
@@ -26,8 +26,6 @@ class Db extends Component implements AdapterInterface
         if (is_object($options)) {
             $options = (array)$options;
         }
-
-        $this->_ttl = (int)(isset($options['ttl']) ? $options['ttl'] : ini_get('session.gc_maxlifetime'));
 
         if (isset($options['model'])) {
             $this->_model = $options['model'];
@@ -89,7 +87,7 @@ class Db extends Component implements AdapterInterface
 
         $model->session_id = $sessionId;
         $model->data = $data;
-        $model->expired_time = time() + $this->_ttl;
+        $model->expired_time = time() + ini_get('session.gc_maxlifetime');
         $model->save();
 
         return true;
@@ -117,9 +115,12 @@ class Db extends Component implements AdapterInterface
      * @param int $ttl
      *
      * @return bool
+     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function gc($ttl)
     {
+        $this->clean();
+
         return true;
     }
 
