@@ -76,11 +76,11 @@ class Redis extends Component implements AdapterInterface
      * @param string $sessionId
      * @param string $data
      *
-     * @return void
+     * @return bool
      */
     public function write($sessionId, $data)
     {
-        $this->redis->set($this->_prefix . $sessionId, $data, $this->_ttl);
+        return $this->redis->set($this->_prefix . $sessionId, $data, $this->_ttl);
     }
 
     /**

@@ -119,6 +119,8 @@ class File extends Component implements AdapterInterface
      * @param string $sessionId
      * @param string $data
      *
+     * @return bool
+     *
      * @throws \ManaPHP\Http\Session\Exception
      */
     public function write($sessionId, $data)
@@ -133,10 +135,10 @@ class File extends Component implements AdapterInterface
             trigger_error(strtr('write `:file` session file failed: :last_error_message'/**m0f7ee56f71e1ec344*/, [':file' => $file]));
         }
 
-        file_put_contents($file, $data);
-
         @touch($file, time() + $this->_ttl);
         clearstatcache(true, $file);
+
+        return true;
     }
 
     /**
