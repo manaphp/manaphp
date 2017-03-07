@@ -305,6 +305,8 @@ class Response extends Component implements ResponseInterface
             throw new ResponseException('Response was already sent'/**m0b202f9440b7adc49*/);
         }
 
+        $this->fireEvent('response:beforeSend');
+
         if ($this->_file) {
             if (!$this->filesystem->fileExists($this->_file)) {
                 throw new ResponseException('Sent file is not exists: `:file`'/**m0ff2d0759014d7170*/, ['file' => $this->_file]);
@@ -325,6 +327,8 @@ class Response extends Component implements ResponseInterface
         }
 
         $this->_sent = true;
+
+        $this->fireEvent('response:afterSend');
 
         return $this;
     }

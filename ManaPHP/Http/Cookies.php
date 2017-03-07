@@ -45,6 +45,10 @@ class Cookies extends Component implements CookiesInterface
         $secure = false,
         $httpOnly = true
     ) {
+        if (headers_sent($file, $line)) {
+            trigger_error("Headers has been sent in $file:$line", E_USER_WARNING);
+        }
+
         if ($expire) {
             $current = time();
             if ($expire < $current) {
