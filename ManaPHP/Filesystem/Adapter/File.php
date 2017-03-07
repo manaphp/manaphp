@@ -376,6 +376,16 @@ class File extends Component implements FilesystemInterface
      */
     public function directories($dir)
     {
-        return $this->glob($dir . '/*', GLOB_ONLYDIR);
+        return $this->glob($this->alias->resolve($dir) . '/*', GLOB_ONLYDIR);
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return int|false
+     */
+    public function getModifiedTime($path)
+    {
+        return filemtime($this->alias->resolve($path));
     }
 }

@@ -142,4 +142,11 @@ interface FilesystemInterface
      * @return array
      */
     public function directories($dir);
+
+    /**
+     * @param string $path
+     *
+     * @return int|false
+     */
+    public function getModifiedTime($path);
 }
