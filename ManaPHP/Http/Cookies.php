@@ -169,6 +169,8 @@ class Cookies extends Component implements CookiesInterface
         $file = null;
         $line = null;
 
+        $this->fireEvent('cookies:beforeSend');
+
         if (headers_sent($file, $line)) {
             trigger_error("Headers has been sent in $file:$line", E_USER_WARNING);
         }
@@ -182,5 +184,7 @@ class Cookies extends Component implements CookiesInterface
         foreach ($this->_deletedCookies as $cookie => $_) {
             setcookie($cookie);
         }
+
+        $this->fireEvent('cookies:afterSend');
     }
 }
