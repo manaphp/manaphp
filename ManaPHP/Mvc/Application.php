@@ -24,21 +24,23 @@ class Application extends \ManaPHP\Application
      */
     protected $_moduleObject;
 
+    public function beforeStartModule()
+    {
+        $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
+        if (isset($this->csrfToken) && !in_array($this->request->getMethod(), $ignoreMethods, true)
+        ) {
+            $this->csrfToken->verify();
+        }
+    }
+
     /**
      * @return bool
      * @throws \ManaPHP\Security\CsrfToken\Exception
      * @throws \ManaPHP\Http\Request\Exception
      * @throws \ManaPHP\Security\Crypt\Exception
      */
-    public function _eventHandlerBeforeExecuteRoute()
+    public function onDispatcherBeforeExecuteRoute()
     {
-        $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
-        if (isset($this->csrfToken)
-            && !in_array($this->request->getMethod(), $ignoreMethods, true)
-        ) {
-            $this->csrfToken->verify();
-        }
-
         $r = $this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
         if ($r === false || is_object($r)) {
             return false;
@@ -87,17 +89,16 @@ class Application extends \ManaPHP\Application
         $this->alias->set('@ns.widgets', '@ns.module\\Widgets');
         $moduleClassName = $this->alias->resolve('@ns.module\\Module');
 
-        $eventData = ['module' => $moduleName];
-        $this->fireEvent('application:beforeStartModule', $eventData);
+        $this->beforeStartModule();
+
+        $this->fireEvent('application:beforeStartModule');
 
         $this->_moduleObject = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module');
         $this->_moduleObject->registerServices($this->_dependencyInjector);
 
-        $eventData = ['module' => $moduleName];
-        $this->fireEvent('application:afterStartModule', $eventData);
+        $this->fireEvent('application:afterStartModule');
 
-        $handler = [$this, '_eventHandlerBeforeExecuteRoute'];
-        $this->dispatcher->attachEvent('dispatcher:beforeExecuteRoute', $handler);
+        $this->attachEvent('dispatcher:beforeExecuteRoute');
 
         $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
         if ($ret === false) {

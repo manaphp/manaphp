@@ -117,9 +117,9 @@ class Component implements ComponentInterface
      *
      * @return static
      */
-    public function attachEvent($event, $handler)
+    public function attachEvent($event, $handler = null)
     {
-        $this->eventsManager->attachEvent($event, $handler);
+        $this->eventsManager->attachEvent($event, $handler ?: $this);
 
         return $this;
     }

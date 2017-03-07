@@ -70,12 +70,12 @@ class Session extends Component implements SessionInterface, \ArrayAccess
             throw new SessionException('please call $this->session->start(), NOT session_start()');
         }
 
-        $this->attachEvent('response:beforeSend', [$this, '_eventResponseBeforeSend']);
+        $this->attachEvent('response:beforeSend');
 
         return $this;
     }
 
-    public function _eventResponseBeforeSend()
+    public function onResponseBeforeSend()
     {
         PHP_SAPI !== 'cli' && $this->_started && session_write_close();
     }

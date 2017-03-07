@@ -38,7 +38,7 @@ interface ComponentInterface
      *
      * @return static
      */
-    public function attachEvent($event, $handler);
+    public function attachEvent($event, $handler = null);
 
     /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
