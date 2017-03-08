@@ -438,15 +438,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     /**
      * Create a criteria for a specific model
      *
+     * @param string               $alias
      * @param \ManaPHP\DiInterface $dependencyInjector
      *
      * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
      */
-    public static function query($dependencyInjector = null)
+    public static function query($alias = null, $dependencyInjector = null)
     {
         $dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
-        return $dependencyInjector->modelsManager->createBuilder()->addFrom(get_called_class());
+        return $dependencyInjector->modelsManager->createBuilder()->addFrom(get_called_class(), $alias);
     }
 
     /**

@@ -143,11 +143,12 @@ interface ModelInterface
     /**
      * Create a criteria for a special model
      *
+     * @param string               $alias
      * @param \ManaPHP\DiInterface $dependencyInjector
      *
      * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
      */
-    public static function query($dependencyInjector = null);
+    public static function query($alias = null, $dependencyInjector = null);
 
     /**
      * Allows to count how many records match the specified conditions
