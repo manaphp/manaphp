@@ -516,4 +516,34 @@ EOT;
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
+
+    public function test_request()
+    {
+        $source = <<<'EOT'
+@request('id')
+EOT;
+        $compiled = <<<'EOT'
+<?php if(isset($_REQUEST['id'])) echo $renderer->escape($_REQUEST['id']); else echo ''; ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+
+        $source = <<<'EOT'
+@request('id','manaphp')
+EOT;
+        $compiled = <<<'EOT'
+<?php if(isset($_REQUEST['id'])) echo $renderer->escape($_REQUEST['id']); else echo 'manaphp'; ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
+
+    public function test_date()
+    {
+        $source = <<<'EOT'
+@date(1)
+EOT;
+        $compiled = <<<'EOT'
+<?php echo date('Y-m-d H:i:s', 1) ?>
+EOT;
+        $this->assertEquals($compiled, $this->sword->compileString($source));
+    }
 }
