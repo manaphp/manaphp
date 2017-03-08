@@ -46,7 +46,7 @@ class Request extends Component implements RequestInterface
      * @return string|null
      * @throws \ManaPHP\Http\Request\Exception
      */
-    protected function _getHelper($source, $name = null, $rule = null, $defaultValue = null)
+    protected function _getHelper($source, $name = null, $rule = null, $defaultValue = '')
     {
         if ($name === null) {
             if ($rule === false || $rule === 'ignore') {
@@ -55,7 +55,7 @@ class Request extends Component implements RequestInterface
 
             $data = [];
             foreach ($source as $k => $v) {
-                $data[$k] = is_array($v) ? $this->_getHelper($v, null, null) : $this->filter->sanitize($k, null, $v);
+                $data[$k] = is_array($v) ? $this->_getHelper($v) : $this->filter->sanitize($k, null, $v);
             }
 
             return $data;
@@ -65,7 +65,11 @@ class Request extends Component implements RequestInterface
             }
 
             if (isset($source[$name])) {
-                return is_array($source[$name]) ? $this->_getHelper($source[$name], null, null) : $this->filter->sanitize($name, $rule, $source[$name]);
+                if (is_array($source[$name])) {
+                    return $this->_getHelper($source[$name]);
+                } else {
+                    return $this->filter->sanitize($name, $rule, $source[$name] !== '' ? $source[$name] : $defaultValue);
+                }
             } else {
                 return $this->filter->sanitize($name, $rule, $defaultValue);
             }
@@ -91,7 +95,7 @@ class Request extends Component implements RequestInterface
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function get($name = null, $rule = null, $defaultValue = null)
+    public function get($name = null, $rule = null, $defaultValue = '')
     {
         return $this->_getHelper($_REQUEST, $name, $rule, $defaultValue);
     }
@@ -118,7 +122,7 @@ class Request extends Component implements RequestInterface
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getGet($name = null, $rule = null, $defaultValue = null)
+    public function getGet($name = null, $rule = null, $defaultValue = '')
     {
         return $this->_getHelper($_GET, $name, $rule, $defaultValue);
     }
@@ -142,7 +146,7 @@ class Request extends Component implements RequestInterface
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getPost($name = null, $rule = null, $defaultValue = null)
+    public function getPost($name = null, $rule = null, $defaultValue = '')
     {
         return $this->_getHelper($_POST, $name, $rule, $defaultValue);
     }
@@ -156,7 +160,7 @@ class Request extends Component implements RequestInterface
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getServer($name = null, $defaultValue = null)
+    public function getServer($name = null, $defaultValue = '')
     {
         if ($name === null) {
             return $_SERVER;
@@ -181,7 +185,7 @@ class Request extends Component implements RequestInterface
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getPut($name = null, $rule = null, $defaultValue = null)
+    public function getPut($name = null, $rule = null, $defaultValue = '')
     {
         if ($this->_put === null && $this->isPut()) {
             parse_str($this->getRawBody(), $this->_put);
@@ -212,7 +216,7 @@ class Request extends Component implements RequestInterface
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getQuery($name = null, $rule = null, $defaultValue = null)
+    public function getQuery($name = null, $rule = null, $defaultValue = '')
     {
         return $this->_getHelper($_GET, $name, $rule, $defaultValue);
     }
@@ -244,7 +248,7 @@ class Request extends Component implements RequestInterface
      * @return mixed
      * @throws \ManaPHP\Http\Request\Exception
      */
-    public function getJson($name = null, $rule = null, $defaultValue = null)
+    public function getJson($name = null, $rule = null, $defaultValue = '')
     {
         if ($this->_json === null) {
             $this->_initJson();

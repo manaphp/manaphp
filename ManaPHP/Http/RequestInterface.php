@@ -18,7 +18,7 @@ interface RequestInterface
      *
      * @return mixed
      */
-    public function get($name = null, $rule = null, $defaultValue = null);
+    public function get($name = null, $rule = null, $defaultValue = '');
 
     /**
      * Gets variable from $_GET applying filters if needed
@@ -29,7 +29,7 @@ interface RequestInterface
      *
      * @return mixed
      */
-    public function getGet($name = null, $rule = null, $defaultValue = null);
+    public function getGet($name = null, $rule = null, $defaultValue = '');
 
     /**
      * Gets a variable from the $_POST applying filters if needed
@@ -40,7 +40,7 @@ interface RequestInterface
      *
      * @return mixed
      */
-    public function getPost($name = null, $rule = null, $defaultValue = null);
+    public function getPost($name = null, $rule = null, $defaultValue = '');
 
     /**
      * Gets a variable from put request
@@ -57,7 +57,7 @@ interface RequestInterface
      *
      * @return mixed
      */
-    public function getPut($name = null, $rule = null, $defaultValue = null);
+    public function getPut($name = null, $rule = null, $defaultValue = '');
 
     /**
      * Gets variable from $_GET applying filters if needed
@@ -68,7 +68,7 @@ interface RequestInterface
      *
      * @return mixed
      */
-    public function getQuery($name = null, $rule = null, $defaultValue = null);
+    public function getQuery($name = null, $rule = null, $defaultValue = '');
 
     /**
      * Gets variable from $_SERVER
@@ -78,7 +78,7 @@ interface RequestInterface
      *
      * @return mixed
      */
-    public function getServer($name = null, $defaultValue = null);
+    public function getServer($name = null, $defaultValue = '');
 
     /* @param string $name
      * @param string $rule
@@ -86,7 +86,7 @@ interface RequestInterface
      *
      * @return mixed
      */
-    public function getJson($name = null, $rule = null, $defaultValue = null);
+    public function getJson($name = null, $rule = null, $defaultValue = '');
 
     /**
      * Checks whether $_SERVER has certain index

@@ -23,7 +23,7 @@ class HttpRequestTest extends TestCase
     {
         $request = new \ManaPHP\Http\Request();
 
-        $this->assertNull($request->get('name'));
+        $this->assertSame('', $request->get('name'));
 
         $this->assertEquals('test', $request->get('name', null, 'test'));
 
@@ -42,7 +42,7 @@ class HttpRequestTest extends TestCase
     {
         $request = new \ManaPHP\Http\Request();
 
-        $this->assertNull($request->getGet('name'));
+        $this->assertSame('', $request->getGet('name'));
 
         $this->assertEquals('test', $request->getGet('name', null, 'test'));
 
@@ -61,7 +61,7 @@ class HttpRequestTest extends TestCase
     {
         $request = new \ManaPHP\Http\Request();
 
-        $this->assertNull($request->getPost('name'));
+        $this->assertSame('', $request->getPost('name'));
 
         $this->assertEquals('test', $request->getPost('name', null, 'test'));
 
@@ -81,7 +81,7 @@ class HttpRequestTest extends TestCase
         $request = new \ManaPHP\Http\Request();
 
         $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $this->assertNull($request->getPut('name'));
+        $this->assertSame('', $request->getPut('name'));
 
         $this->assertEquals('test', $request->getPut('name', null, 'test'));
 
@@ -97,7 +97,7 @@ class HttpRequestTest extends TestCase
     {
         $request = new \ManaPHP\Http\Request();
 
-        $this->assertNull($request->getQuery('name'));
+        $this->assertSame('', $request->getQuery('name'));
 
         $this->assertEquals('test', $request->getQuery('name', null, 'test'));
 
@@ -504,5 +504,20 @@ class HttpRequestTest extends TestCase
         $_GET['_url'] = 'abc';
         $_GET['page'] = 1;
         $this->assertEquals('http://www.manaphp.com/index.php?page=1', $request->getUrl(true));
+    }
+
+    public function test_getEmptyValue()
+    {
+        $request = new \ManaPHP\Http\Request();
+
+        $_REQUEST = [];
+        $this->assertSame('', $request->get('k'));
+        $this->assertSame(null, $request->get('k', null, null));
+        $this->assertSame('v', $request->get('k', null, 'v'));
+
+        $_REQUEST = ['k' => ''];
+        $this->assertSame('', $request->get('k'));
+        $this->assertSame(null, $request->get('k', null, null));
+        $this->assertSame('v', $request->get('k', null, 'v'));
     }
 }
