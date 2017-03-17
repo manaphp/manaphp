@@ -10,7 +10,8 @@ use ManaPHP\Utility\Text;
  *
  * @package filter
  *
- * @property \ManaPHP\Security\SecintInterface $secint
+ * @property \ManaPHP\Security\SecintInterface       $secint
+ * @property \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  */
 class Filter extends Component implements FilterInterface
 {
@@ -150,7 +151,7 @@ class Filter extends Component implements FilterInterface
             $rule = $this->_rules[$attribute];
         }
 
-        if ($rule === null && !is_string($value)) {
+        if ($rule === null) {
             return $value;
         }
 
@@ -170,11 +171,6 @@ class Filter extends Component implements FilterInterface
 
         foreach ($filters as $filter => $parameters) {
             $value = $this->_sanitize($attribute, $filter, $parameters, $value);
-        }
-
-        if (is_string($value) && !isset($filters['ignore']) && !isset($filters['xss'])) {
-            $parameters = [];
-            $value = $this->_sanitize($attribute, 'xss', $parameters, $value);
         }
 
         return $value;
@@ -279,26 +275,9 @@ class Filter extends Component implements FilterInterface
     {
         if ($value === '') {
             return $value;
-        }
-
-        if (count($parameters) === 0) {
-            $xssReplace = $this->_xssByReplace;
         } else {
-            $xssReplace = $parameters[0];
+            return $this->htmlPurifier->purify($value);
         }
-
-        if ($xssReplace) {
-            $tr = ['<' => '＜', '>' => '＞', '\'' => '‘', '"' => '“', '&' => '＆', '\\' => '＼', '#' => '＃'];
-            $value = strtr($value, $tr);
-        } else {
-            $value = str_replace('<>\'"&\\#', ' ', $value);
-        }
-
-        $from = ['\u', '\U'];
-        $to = ' ';
-        $value = str_replace($from, $to, $value);//http://zone.wooyun.org/content/1253
-
-        return $value;
     }
 
     /**
