@@ -118,8 +118,8 @@ class Stopwatch extends Component implements StopwatchInterface
     }
 
     /**
-     * @param array      $times
-     * @param callable[] $functions
+     * @param int|int[]           $times
+     * @param callable|callable[] $functions
      *
      * @return array
      */
@@ -127,16 +127,19 @@ class Stopwatch extends Component implements StopwatchInterface
     {
         $data = [];
 
-        foreach ($times as $t) {
+        foreach ((array)$times as $t) {
             $item = [];
-
-            foreach ($functions as $name => $function) {
+            foreach ((array)$functions as $name => $function) {
                 $start = microtime(true);
-                $function($t);
-                $item[$name] = round(microtime(true) - $start, 4);
+
+                for ($i = 0; $i < $t; $i++) {
+                    $function($t);
+                }
+
+                $item[$name] = round(microtime(true) - $start, 3);
             }
 
-            $data[$t] = $item;
+            $data[$t] = is_array($functions) ? $item : $item[0];
         }
 
         return $data;

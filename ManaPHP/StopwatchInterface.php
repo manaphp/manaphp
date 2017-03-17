@@ -48,8 +48,8 @@ interface StopwatchInterface
     public function getUsedMemory($name);
 
     /**
-     * @param array      $times
-     * @param callable[] $functions
+     * @param int|int[]           $times
+     * @param callable|callable[] $functions
      *
      * @return array
      */
