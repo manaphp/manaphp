@@ -65,6 +65,7 @@ class FactoryDefault extends Di
             'tasksMetadata' => ['ManaPHP\Task\Metadata', ['ManaPHP\Task\Metadata\Adapter\Redis']],
             'viewsCache' => ['ManaPHP\Cache\Adapter\File', [['dir' => '@data/viewsCache', 'extension' => '.html']]],
             'modelsCache' => ['ManaPHP\Cache\Adapter\File', [['dir' => '@data/modelsCache', 'extension' => '.json']]],
+            'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
         ];
     }
 }

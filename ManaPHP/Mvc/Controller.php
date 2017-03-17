@@ -49,6 +49,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Mvc\Model\MetadataInterface          $modelsMetadata
  * @property \ManaPHP\Mvc\UrlInterface                     $url
  * @property \ManaPHP\StopwatchInterface                   $stopwatch
+ * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier
  */
 abstract class Controller extends Component implements ControllerInterface
 {

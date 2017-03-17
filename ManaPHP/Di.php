@@ -58,6 +58,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\I18n\Translation                     $translation
  * @property \ManaPHP\Renderer\Engine\Sword\Compiler       $swordCompiler
  * @property \ManaPHP\StopwatchInterface                   $stopwatch
+ * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier
  */
 class Di implements DiInterface
 {
