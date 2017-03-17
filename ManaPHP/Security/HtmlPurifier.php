@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP\Security;
 
-class HtmlPurifier implements HtmlPurifierInterface
+use ManaPHP\Component;
+
+class HtmlPurifier extends Component implements HtmlPurifierInterface
 {
     /**
      * @var string
