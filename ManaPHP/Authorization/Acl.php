@@ -3,6 +3,8 @@ namespace ManaPHP\Authorization;
 
 use ManaPHP\Authorization\Acl\Exception as AclException;
 use ManaPHP\AuthorizationInterface;
+use ManaPHP\Component;
+use ManaPHP\Di;
 use ManaPHP\Utility\Text;
 
 /**
@@ -12,7 +14,7 @@ use ManaPHP\Utility\Text;
  *
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  */
-class Acl implements AuthorizationInterface
+class Acl extends Component implements AuthorizationInterface, \Serializable
 {
     /**
      * @var array[]
@@ -90,5 +92,23 @@ class Acl implements AuthorizationInterface
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return json_encode($this->_acl, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * @param string $serialized
+     */
+    public function unserialize($serialized)
+    {
+        $this->_acl = json_decode($serialized, true);
+
+        $this->_dependencyInjector = Di::getDefault();
     }
 }
