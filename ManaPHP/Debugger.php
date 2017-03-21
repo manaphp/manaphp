@@ -245,7 +245,7 @@ class Debugger extends Component implements DebuggerInterface
         $data['basic'] = $this->_getBasic();
 
         $data['dump'] = $this->_dump;
-        $data['logger'] = ['log' => $this->_log, 'levels' => $this->logger->getLevels(), 'level' => 5];
+        $data['logger'] = ['log' => $this->_log, 'levels' => $this->logger->getLevels(), 'level' => 6];
 
         $data['sql'] = ['prepared' => $this->_sql_prepared, 'executed' => $this->_sql_executed, 'count' => $this->_sql_count];
 

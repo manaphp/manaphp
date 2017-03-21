@@ -661,7 +661,7 @@ class Compiler extends Component
         $expression
     ) {
         /** @noinspection HtmlUnknownTarget */
-        return '<?php if($di->configure->debug){?><div class="debugger"><a target="_blank" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?> ';
+        return '<?php if($di->configure->debug){?><div class="debugger"><a target="_self" href="<?php echo $di->debugger->save(); ?>">Debugger</a></div><?php }?> ';
     }
 
     /**

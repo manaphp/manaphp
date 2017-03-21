@@ -3,15 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>About</title>
-    <style>
-        .debugger {
-            position: fixed;
-            right: 20px;
-            top: 30px;
-            background-color: red;
-            z-index: 1000000;
-        }
-    </style>
+    <link rel="stylesheet" href="@asset(/assets/admin/css/manaphp.css)">
 </head>
 <body>
 <div>
