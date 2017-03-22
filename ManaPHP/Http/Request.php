@@ -467,12 +467,11 @@ class Request extends Component implements RequestInterface
                 $this->_clientAddress = $_SERVER['REMOTE_ADDR'];
             } else {
                 $client_address = $_SERVER['REMOTE_ADDR'];
-                if (Text::startsWith($client_address, '127.0.') || Text::startsWith($client_address,
-                        '192.168.') || Text::startsWith($client_address, '10.')
+                if (Text::startsWith($client_address, '192.168.') || Text::startsWith($client_address, '10.') || Text::startsWith($client_address, '127.')
                 ) {
                     $this->_clientAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
                 } else {
-                    $this->_clientAddress = $_SERVER['REMOTE_ADDR'];
+                    $this->_clientAddress = $client_address;
                 }
             }
         }
