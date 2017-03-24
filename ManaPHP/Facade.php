@@ -15,6 +15,15 @@ class Facade
      */
     protected static $_instances = [];
 
+    private function __construct()
+    {
+    }
+
+    private function __clone()
+    {
+
+    }
+
     /**
      * Get the root object behind the facade.
      *

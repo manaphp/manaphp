@@ -50,6 +50,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Mvc\UrlInterface                     $url
  * @property \ManaPHP\StopwatchInterface                   $stopwatch
  * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier
+ * @property \Redis                                        $redis
  */
 abstract class Controller extends Component implements ControllerInterface
 {
