@@ -41,7 +41,7 @@ class MinifyController extends Controller
     }
 
     /**
-     * @description minify the ManaPHP framework source code
+     * @CliCommand minify framework source code
      * @return int
      */
     public function defaultCommand()

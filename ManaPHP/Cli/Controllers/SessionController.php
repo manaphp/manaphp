@@ -11,7 +11,10 @@ use ManaPHP\Cli\Controller;
  */
 class  SessionController extends Controller
 {
-    public function defaultCommand()
+    /**
+     * @CliCommand clean expired sessions
+     */
+    public function cleanCommand()
     {
         $this->session->clean();
     }

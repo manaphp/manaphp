@@ -14,9 +14,22 @@ use ManaPHP\Utility\Text;
  */
 class ModelController extends Controller
 {
-    public function defaultCommand()
+    /**
+     * @CliCommand create model
+     * @CliParam   --force,-f   force create all models
+     * @CliParam   --module,-m  the module name
+     * @CliParam   --pattern,-p filter the tables with fnmatch
+     * @CliParam   --table,-t   which table to create model
+     */
+    public function createCommand()
     {
-        $module = $this->_getCurrentModule();
+        $module = $this->arguments->get('module:m');
+        if ($module) {
+            $module = $this->crossword->guess($this->application->getModules(), $module);
+            if (!$module) {
+                return $this->console->error('invalid `:module` module', ['module' => $this->arguments->get('module:m')]);
+            }
+        }
 
         if ($module === '') {
             $modelDirectory = '@app/Models';
@@ -31,8 +44,14 @@ class ModelController extends Controller
 
         $templateFile = '@manaphp/Cli/Controllers/Templates/Model';
         $tables = $this->arguments->get('table:t');
-        $tables = $tables ? [$tables] : $this->_getTables();
+        $tables = $tables ? explode(',', $tables) : $this->db->getTables();
+        $pattern = $this->arguments->get('pattern:p');
+
         foreach ($tables as $table) {
+            if ($pattern && !fnmatch($pattern, $table)) {
+                continue;
+            }
+
             $modelName = Text::camelize($table);
             $modelFile = $this->alias->resolve($modelDirectory . '/' . $modelName . '.php');
 
@@ -40,7 +59,6 @@ class ModelController extends Controller
                 if ($force) {
                     $this->console->writeLn('`:model` has been overwrite', ['model' => $modelNamespace . '\\' . $modelName]);
                 } else {
-                    $this->console->writeLn('`:model` is already exists', ['model' => $modelNamespace . '\\' . $modelName]);
                     continue;
                 }
             }
@@ -60,50 +78,24 @@ class ModelController extends Controller
     }
 
     /**
-     * @return array
-     */
-    protected function _getTables()
-    {
-        $tables = [];
-        foreach ($this->db->fetchAll('SHOW TABLES', [], \PDO::FETCH_BOTH) as $row) {
-            $tables[] = $row[0];
-        }
-
-        return $tables;
-    }
-
-    /**
-     * @param string $table
+     * @CliCommand list tables
+     * @CliParam   --pattern,-p  filter tables with fnmatch
      *
-     * @return array
+     * @return void
      */
-    protected function _getColumns($table)
+    public function tablesCommand()
     {
-        $columns = [];
+        $tables = $this->db->getTables();
+        sort($tables);
 
-        foreach ($this->db->fetchAll("DESC `$table`") as $row) {
-            $columns[$row['Field']] = 'string';
+        $pattern = $this->arguments->get('pattern:p');
+        $line = 0;
+        foreach ($tables as $table) {
+            if ($pattern && !fnmatch($pattern, $table)) {
+                continue;
+            }
+
+            $this->console->writeLn(sprintf('%-3d ', $line++) . $table);
         }
-
-        return $columns;
-    }
-
-    /**
-     * @return false|string
-     * @throws \ManaPHP\Cli\Controllers\Exception
-     */
-    protected function _getCurrentModule()
-    {
-        $module = $this->arguments->get('module:m');
-        if (!$module) {
-            return '';
-        }
-
-        $module = $this->crossword->guess($this->application->getModules(), $module);
-        if (!$module) {
-            throw new Exception('invalid module');
-        }
-
-        return $module;
     }
 }

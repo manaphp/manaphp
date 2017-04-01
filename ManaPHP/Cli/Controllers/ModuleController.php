@@ -14,43 +14,56 @@ use ManaPHP\Utility\Text;
 class ModuleController extends Controller
 {
     /**
-     * @description list the modules
+     * @CliCommand list all modules
      */
     public function listCommand()
     {
-        $modules = $this->application->getModules();
-        sort($modules);
-
-        $this->console->write(implode(',', $modules));
+        $modules = $this->configure->modules;
+        ksort($modules);
+        foreach ($modules as $module => $bind) {
+            $this->console->writeLn($module . ' => ' . $bind);
+        }
     }
 
     /**
-     * @description create a new module
+     * @CliCommand create a new module
+     * @CliParam   --module,-m  the module name
+     * @CliParam   --api        skip create view related files
      * @throws \ManaPHP\Filesystem\Adapter\Exception
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
     public function createCommand()
     {
-        $modules = ['dd'];
-
-        foreach ($modules as $module) {
-            $module = Text::camelize($module);
-            $moduleDir = $this->alias->resolve('@app/' . $module);
-
-            if ($this->filesystem->dirExists($moduleDir)) {
-                throw new Exception('`:module` module is exists already.', ['module' => $module]);
+        $module = $this->arguments->get('module:m');
+        $api = $this->arguments->has('api');
+        if (!$module) {
+            $arguments = $this->arguments->get();
+            if ($arguments[0] !== '-') {
+                $module = $arguments[0];
+            } else {
+                return $this->console->error('please use --module assign in the module name');
             }
+        }
 
-            $this->filesystem->dirCreate($moduleDir . '/Models');
+        $module = Text::camelize($module);
+        $moduleDir = $this->alias->resolve('@app/' . $module);
+
+        if ($this->filesystem->dirExists($moduleDir)) {
+            return $this->console->error('`:module` module is exists already.', ['module' => $module]);
+        }
+
+        $this->filesystem->dirCreate($moduleDir . '/Models');
+        if (!$api) {
             $this->filesystem->dirCreate($moduleDir . '/Views');
             $this->filesystem->dirCreate($moduleDir . '/Views/Shared');
             $this->filesystem->dirCreate($moduleDir . '/Views/Layouts');
             $this->filesystem->dirCreate($moduleDir . '/Views/Widgets');
             $this->filesystem->dirCreate($moduleDir . '/Widgets');
-            $this->filesystem->dirCreate($moduleDir . '/Controllers');
+        }
+        $this->filesystem->dirCreate($moduleDir . '/Controllers');
 
 //------------------------------
-            $controllerBaseContent = <<<EOD
+        $controllerBaseContent = <<<EOD
 <?php
 
 namespace Application\\$module\Controllers;
@@ -62,9 +75,9 @@ class ControllerBase extends Controller
 
 }
 EOD;
-            $this->filesystem->filePut($moduleDir . './Controllers/ControllerBase.php', $controllerBaseContent);
+        $this->filesystem->filePut($moduleDir . './Controllers/ControllerBase.php', $controllerBaseContent);
 //---------------------------------------
-            $indexControllerContent = <<<EOD
+        $indexControllerContent = <<<EOD
 <?php
 
 namespace Application\\$module\Controllers;
@@ -77,9 +90,9 @@ class IndexController extends ControllerBase
 }
 
 EOD;
-            $this->filesystem->filePut($moduleDir . '/Controllers/IndexController.php', $indexControllerContent);
+        $this->filesystem->filePut($moduleDir . '/Controllers/IndexController.php', $indexControllerContent);
 //-----------------------
-            $moduleContent = <<<EOD
+        $moduleContent = <<<EOD
 <?php
 namespace Application\\$module;
 
@@ -96,9 +109,9 @@ class Module extends \ManaPHP\Mvc\Module
     }
 }
 EOD;
-            $this->filesystem->filePut($moduleDir . '/Module.php', $moduleContent);
+        $this->filesystem->filePut($moduleDir . '/Module.php', $moduleContent);
 //------------------------
-            $routeGroupContent = <<<EOD
+        $routeGroupContent = <<<EOD
 <?php
 namespace Application\\$module;
 
@@ -112,9 +125,9 @@ class RouteGroup extends Group
     }
 }
 EOD;
-            $this->filesystem->filePut($moduleDir . '/RouteGroup.php', $routeGroupContent);
+        $this->filesystem->filePut($moduleDir . '/RouteGroup.php', $routeGroupContent);
 
-            $viewLayoutsDefaultContent = <<<EOD
+        $viewLayoutsDefaultContent = <<<EOD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,6 +139,7 @@ EOD;
 </body>
 </html>
 EOD;
+        if (!$api) {
             $this->filesystem->filePut($moduleDir . '/Views/Layouts/Default.sword', $viewLayoutsDefaultContent);
             $this->filesystem->filePut($moduleDir . '/Views/Layouts/Index.sword', $viewLayoutsDefaultContent);
 //----------

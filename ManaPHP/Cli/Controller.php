@@ -53,9 +53,9 @@ abstract class Controller extends Component implements ControllerInterface
 
                 if ($tag === '@CliCommand') {
                     $description = trim($description);
-                    $this->console->writeLn('    ' . $controller . ':' . basename($method, 'Command') . ' ' . $description);
+                    $this->console->writeLn($controller . ':' . basename($method, 'Command') . ' ' . $description);
                 } elseif ($tag === '@CliParam') {
-                    $this->console->writeLn('      ' . $description);
+                    $this->console->writeLn(' ' . $description);
                 }
             }
         }

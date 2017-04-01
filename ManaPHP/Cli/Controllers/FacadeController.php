@@ -10,7 +10,10 @@ use ManaPHP\Cli\Controller;
  */
 class FacadeController extends Controller
 {
-
+    /**
+     * @CliCommand create helper of framework facade
+     * @throws \ManaPHP\Cli\Controllers\Exception
+     */
     public function frameworkCommand()
     {
         $content = <<<EOD

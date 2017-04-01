@@ -11,7 +11,7 @@ use ManaPHP\Cli\Controller;
 class HelpController extends Controller
 {
     /**
-     * @description list all commands
+     * @CliCommand list all commands
      * @return int
      */
     public function listCommand()
@@ -69,7 +69,7 @@ class HelpController extends Controller
 
             $rm = $rc->getMethod($match[0]);
             $comment = $rm->getDocComment();
-            if ($comment && preg_match('#\*\s+@description\s+(.*)#', $comment, $match) === 1) {
+            if ($comment && preg_match('#\*\s+@CliCommand\s+(.*)#', $comment, $match) === 1) {
                 $commands[$command] = $match[1];
             } else {
                 $commands[$command] = '';

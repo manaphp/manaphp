@@ -10,60 +10,64 @@ use ManaPHP\Utility\Text;
  * @package ManaPHP\Cli\Controllers
  *
  * @property \ManaPHP\ApplicationInterface $application
+ * @property \ManaPHP\RendererInterface    $renderer
  */
 class ControllerController extends Controller
 {
     /**
-     * @description create controller
+     * @CliCommand create controller
+     * @CliParam   --module,-m      the module for controller
+     * @CliParam   --controller,-c  the controller name
+     * @CliParam   --action,-a      the action list for controller
+     * @CliParam   --force          force to recreate all files
+     * @CliParam   --api            skip all views
      * @return int
      */
     public function createCommand()
     {
-        $usage = 'format is invalid: {Module}:{A,B,C,D,E}';
+        $module = $this->arguments->get('module:m', 'Home');
+        $controller = $this->arguments->get('controller:c', '');
+        $force = $this->arguments->has('force');
+        $api = $this->arguments->has('api');
 
-        $arguments = $this->arguments->get();
-        if (count($arguments) === 0) {
-            $this->console->writeLn($usage);
-            return 1;
+        if (!$controller) {
+            return $this->console->error('please use --controller assign in the controller name');
         }
 
-        $parts = explode(':', $arguments[0]);
-        if (count($parts) !== 2) {
-            $this->console->writeLn($usage);
-            return 1;
-        }
-
-        $moduleName = Text::camelize($this->crossword->guess($this->application->getModules(), $parts[0]));
+        $moduleName = Text::camelize($this->crossword->guess($this->application->getModules(), $module));
         if (!$moduleName) {
-            return $this->console->error('module name is unknown: `:module`', ['module' => $parts[0]]);
+            return $this->console->error('module name is unknown: `:module`', ['module' => $module]);
+        }
+        $controller = Text::camelize($controller);
+        $controllerName = $controller . 'Controller';
+        $controllerFile = '@app/' . $moduleName . '/Controllers/' . $controllerName . '.php';
+
+        $controllerNamespace = $this->alias->resolve('@ns.app' . '\\' . $moduleName . '\\Controllers');
+
+        if (!$force && $this->filesystem->fileExists($controllerFile)) {
+            return $this->console->error('`:controller` controller exists already', ['controller' => $controllerNamespace . '\\' . $controller]);
+        }
+        $actions = [];
+        foreach (explode(',', $this->arguments->get('action:a', 'list,create,detail,update,delete')) as $action) {
+            $action = trim($action);
+            $action = lcfirst(Text::camelize($action));
+
+            $actions[] = $action;
         }
 
-        $controllers = explode(',', $parts[1]);
-        $controllerNamespace = $this->alias->resolve('@ns.app' . '\\' . $moduleName . '\\Controllers');
-        foreach ($controllers as $controller) {
-            $controller = Text::camelize($controller);
-            $controllerName = $controller . 'Controller';
-            $controllerFile = '@app/' . $moduleName . '/Controllers/' . $controllerName . '.php';
+        $controllerBase = !$this->filesystem->fileExists("@app/$moduleName/Controllers/ControllerBase.php") ? 'ControllerBase' : '\ManaPHP\Mvc\Controller';
 
-            if ($this->filesystem->fileExists($controllerFile)) {
-                $this->console->writeLn('`:controller` controller exists already', ['controller' => $controllerNamespace . '\\' . $controller]);
-                continue;
+        $vars = compact('controllerNamespace', 'controllerName', 'actions', 'controllerBase');
+
+        $this->filesystem->filePut($controllerFile, $this->renderer->render('@manaphp/Cli/Controllers/Templates/Controller', $vars));
+
+        if (!$api) {
+            $this->filesystem->filePut("@app/$moduleName/Views/Layouts/$controller.sword", '@content()');
+
+            foreach ($actions as $action) {
+                $action = Text::camelize($action);
+                $this->filesystem->filePut("@app/$moduleName/Views/$controller/$action.sword", '');
             }
-            $controllerContent = <<<EOD
-<?php
-namespace $controllerNamespace;
-
-class $controllerName extends ControllerBase
-{
-     public function indexAction()
-     {
-        
-     }
-}
-EOD;
-            $this->filesystem->filePut($controllerFile, $controllerContent);
-            $this->filesystem->filePut('@app/' . $moduleName . '/Views/' . $controller . '/Index.sword', '');
-            $this->filesystem->filePut('@app/' . $moduleName . '/Layouts/' . $controller . '.sword', '@content()');
         }
 
         return 0;

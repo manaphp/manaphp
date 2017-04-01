@@ -94,7 +94,7 @@ class Router extends Component implements RouterInterface
         }
 
         foreach (get_class_methods($controllerClassName) as $method) {
-            if (preg_match('#^(.*)Command$#', $method, $match) === 1) {
+            if (preg_match('#^(.*)Command$#', $method, $match) === 1 && $match[1] !== 'help') {
                 $commands[] = $match[1];
             }
         }
@@ -147,7 +147,7 @@ class Router extends Component implements RouterInterface
             if (count($commands) === 1) {
                 $actionName = $commands[0];
             } else {
-                return false;
+                $actionName = 'help';
             }
         } else {
             if ($this->_guessCommand && strlen($actionName) <= 2) {
