@@ -6,7 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Model\Exception as ModelException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Mvc\Model
@@ -1036,45 +1035,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         return false;
-    }
-
-    /**
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return array|false|int|\ManaPHP\Mvc\Model|static[]
-     * @throws \ManaPHP\Mvc\Model\Exception
-     */
-    public static function __callStatic($method, $arguments)
-    {
-        switch (count($arguments)) {
-            case 0:
-                throw new ModelException('The `:method` requires one argument at least', ['method' => $method]);
-                break;
-            case 1:
-                $arguments[] = null;
-                break;
-            case 2;
-                break;
-            default:
-                throw new ModelException('The `:method` requires two arguments at most', ['method' => $method]);
-        }
-
-        if (!is_scalar($arguments[0])) {
-            throw new ModelException('The first argument of `:method`  must be a scalar value', ['method' => $method]);
-        }
-
-        if (strpos($method, 'findFirstBy') === 0) {
-            return static::findFirst([Text::underscore(substr($method, 11)) => $arguments[0]], $arguments[1]);
-        } elseif (strpos($method, 'findBy') === 0) {
-            return static::find([Text::underscore(substr($method, 6)) => $arguments[0]], $arguments[1]);
-        } elseif (strpos($method, 'findAllBy') === 0) {
-            return static::find([Text::underscore(substr($method, 9)) => $arguments[0]], $arguments[1]);
-        } elseif (strpos($method, 'countBy') === 0) {
-            return static::count([Text::underscore(substr($method, 7)) => $arguments[0]], '*', $arguments[1]);
-        } else {
-            return null;
-        }
     }
 
     /**

@@ -2,6 +2,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Mvc\Model\Metadata;
 use ManaPHP\Utility\Text;
 
 /**
@@ -29,7 +30,9 @@ class ModelController extends Controller
         $force = $this->arguments->has('force:f');
 
         $templateFile = '@manaphp/Cli/Controllers/Templates/Model';
-        foreach ($this->_getTables() as $table) {
+        $tables = $this->arguments->get('table:t');
+        $tables = $tables ? [$tables] : $this->_getTables();
+        foreach ($tables as $table) {
             $modelName = Text::camelize($table);
             $modelFile = $this->alias->resolve($modelDirectory . '/' . $modelName . '.php');
 
@@ -44,12 +47,13 @@ class ModelController extends Controller
 
             $vars = [];
 
-            $vars['columns'] = $this->_getColumns($table);
+            $vars['columns'] = $this->db->getMetadata($table)[Metadata::MODEL_ATTRIBUTES];
+
             $vars['model_name'] = $modelName;
             $vars['model_namespace'] = $modelNamespace;
             $vars['model_extends'] = $modelExtends;
             $vars['model_file'] = $modelFile;
-            $vars['by_columns'] = $this->_getByColumns($table);
+            $vars['table'] = $table;
 
             $this->filesystem->filePut($modelFile, $this->renderer->render($templateFile, $vars));
         }
@@ -79,33 +83,6 @@ class ModelController extends Controller
 
         foreach ($this->db->fetchAll("DESC `$table`") as $row) {
             $columns[$row['Field']] = 'string';
-        }
-
-        return $columns;
-    }
-
-    /**
-     * @param array $table
-     *
-     * @return array
-     */
-    protected function _getByColumns($table)
-    {
-        $keyColumns = [];
-        foreach ($this->db->fetchAll("SHOW INDEX FROM `$table`") as $row) {
-            $keyName = $row['Key_name'];
-            if (!isset($keyColumns[$keyName])) {
-                $keyColumns[$keyName] = [];
-            }
-            $keyColumns[$keyName] = $row['Column_name'];
-        }
-
-        $columns = [];
-
-        foreach ($keyColumns as $k => $v) {
-            if (count($v) === 1) {
-                $columns[$v] = Text::camelize($v);
-            }
         }
 
         return $columns;
