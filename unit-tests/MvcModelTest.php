@@ -419,21 +419,21 @@ class MvcModelTest extends TestCase
         $this->assertTrue($actor->hasChanged(['first_name']));
     }
 
-    public function test_findFirstBy()
-    {
-        $actor = Actor::findFirstByActorId(2);
-        $this->assertInstanceOf(Actor::class, $actor);
-        $this->assertEquals(2, $actor->actor_id);
-    }
-
-    public function test_findBy()
-    {
-        $actors = Actor::findByFirstName('BEN');
-        $this->assertCount(2, $actors);
-    }
-
-    public function test_countBy()
-    {
-        $this->assertEquals(2, Actor::countByFirstName('BEN'));
-    }
+//    public function test_findFirstBy()
+//    {
+//        $actor = Actor::findFirstByActorId(2);
+//        $this->assertInstanceOf(Actor::class, $actor);
+//        $this->assertEquals(2, $actor->actor_id);
+//    }
+//
+//    public function test_findBy()
+//    {
+//        $actors = Actor::findByFirstName('BEN');
+//        $this->assertCount(2, $actors);
+//    }
+//
+//    public function test_countBy()
+//    {
+//        $this->assertEquals(2, Actor::countByFirstName('BEN'));
+//    }
 }
