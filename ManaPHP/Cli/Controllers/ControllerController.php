@@ -13,6 +13,10 @@ use ManaPHP\Utility\Text;
  */
 class ControllerController extends Controller
 {
+    /**
+     * @description create controller
+     * @return int
+     */
     public function createCommand()
     {
         $usage = 'format is invalid: {Module}:{A,B,C,D,E}';
@@ -49,7 +53,8 @@ class ControllerController extends Controller
 <?php
 namespace $controllerNamespace;
 
-class $controllerName extends ControllerBase{
+class $controllerName extends ControllerBase
+{
      public function indexAction()
      {
         

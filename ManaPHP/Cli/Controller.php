@@ -29,34 +29,35 @@ use ManaPHP\Component;
  */
 abstract class Controller extends Component implements ControllerInterface
 {
-    /**
-     * @return array
-     */
-    public function getCommands()
+    public function helpCommand()
     {
-        $controller = lcfirst(basename(get_called_class(), 'Controller'));
+        $parts = explode('\\', get_class($this));
+        $controller = strtolower(basename(end($parts), 'Controller'));
 
-        $commands = [];
-        $rc = new \ReflectionClass($this);
         foreach (get_class_methods($this) as $method) {
-            if (preg_match('#^(.*)Command$#', $method, $match) !== 1) {
+            if (preg_match('#^.*Command$#', $method) !== 1) {
                 continue;
             }
-            $command = $controller . ($match[1] !== 'default' ? (':' . $match[1]) : '');
 
-            $rm = $rc->getMethod($match[0]);
-            $comment = $rm->getDocComment();
-            if ($comment && preg_match('#\*\s+@description\s+(.*)#', $comment, $match) === 1) {
-                $commands[$command] = $match[1];
-            } else {
-                $commands[$command] = '';
+            $this->console->writeLn('');
+
+            $rm = new \ReflectionMethod($this, $method);
+            $lines = explode("\n", $rm->getDocComment());
+            foreach ($lines as $line) {
+                $line = trim($line, ' \t*');
+                $parts = explode(' ', $line, 2);
+                if (count($parts) !== 2) {
+                    continue;
+                }
+                list($tag, $description) = $parts;
+
+                if ($tag === '@CliCommand') {
+                    $description = trim($description);
+                    $this->console->writeLn('    ' . $controller . ':' . basename($method, 'Command') . ' ' . $description);
+                } elseif ($tag === '@CliParam') {
+                    $this->console->writeLn('      ' . $description);
+                }
             }
         }
-
-        if (count($commands) === 1) {
-            $commands = [$controller => array_values($commands)[0]];
-        }
-
-        return $commands;
     }
 }
