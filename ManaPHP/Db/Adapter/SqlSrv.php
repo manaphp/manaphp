@@ -140,6 +140,21 @@ class SqlSrv extends Db
         return $this;
     }
 
+    public function dropTable($source)
+    {
+        throw new Exception('not implement');
+    }
+
+    public function getTables($schema = null)
+    {
+        throw new Exception('not implement');
+    }
+
+    public function tableExists($table, $schema = null)
+    {
+        throw new Exception('not implement');
+    }
+
     public function buildSql($params)
     {
         $sql = '';

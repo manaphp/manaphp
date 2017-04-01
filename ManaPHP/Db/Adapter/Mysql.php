@@ -109,6 +109,64 @@ class Mysql extends Db
         return $this;
     }
 
+    /**
+     * @param string $source
+     *
+     * @return static
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function dropTable($source)
+    {
+        $this->execute('DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
+
+        return $this;
+    }
+
+    /**
+     * @param string $schema
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function getTables($schema = null)
+    {
+        if ($schema) {
+            $sql = 'SHOW TABLES FROM `' . $this->_escapeIdentifier($schema) . '`';
+        } else {
+            $sql = 'SHOW TABLES';
+        }
+
+        $tables = [];
+        foreach ($this->fetchAll($sql, [], \PDO::FETCH_NUM) as $row) {
+            $tables[] = $row[0];
+        }
+
+        return $tables;
+    }
+
+    /**
+     * @param string $source
+     *
+     * @return bool
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function tableExists($source)
+    {
+        $parts = explode('.', str_replace('[]`', '', $source));
+
+        if (count($parts) === 2) {
+            /** @noinspection SqlDialectInspection */
+            $sql = "SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME`= '$parts[0]' AND `TABLE_SCHEMA` = '$parts[1]'";
+        } else {
+            /** @noinspection SqlDialectInspection */
+            $sql = "SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = '$parts[0]' AND `TABLE_SCHEMA` = DATABASE()";
+        }
+
+        $r = $this->fetchOne($sql, [], \PDO::FETCH_NUM);
+
+        return $r[0] === '1';
+    }
+
     public function buildSql($params)
     {
         $sql = '';

@@ -100,6 +100,55 @@ class Sqlite extends Db
         return $this;
     }
 
+    /**
+     * @param string $source
+     *
+     * @return static
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function dropTable($source)
+    {
+        $this->execute('DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
+
+        return $this;
+    }
+
+    /**
+     * @param string $schema
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function getTables($schema = null)
+    {
+        /** @noinspection SqlDialectInspection */
+        $sql = "SELECT tbl_name FROM sqlite_master WHERE type = 'table' ORDER BY tbl_name";
+        $tables = [];
+        foreach ($this->fetchAll($sql, [], \PDO::FETCH_ASSOC) as $row) {
+            $tables[] = $row['tbl_name'];
+        }
+
+        return $tables;
+    }
+
+    /**
+     * @param string $source
+     *
+     * @return bool
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function tableExists($source)
+    {
+        $parts = explode('.', str_replace('[]`', '', $source));
+
+        /** @noinspection SqlDialectInspection */
+        $sql = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master WHERE type='table' AND tbl_name='$parts[0]'";
+
+        $r = $this->fetchOne($sql, [], \PDO::FETCH_NUM);
+
+        return $r[0] === '1';
+    }
+
     public function buildSql($params)
     {
         $sql = '';

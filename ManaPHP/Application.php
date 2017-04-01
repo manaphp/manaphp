@@ -139,7 +139,7 @@ abstract class Application extends Component implements ApplicationInterface
 
         if (isset($configure->db)) {
             $c = (array)$configure->db;
-            foreach (isset($c['host']) ? ['db' => $c] : $c as $service => $config) {
+            foreach (isset($c['host']) || isset($c['adapter']) ? ['db' => $c] : $c as $service => $config) {
                 if (!is_array($config)) {
                     $config = (array)$config;
                 }

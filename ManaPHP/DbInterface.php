@@ -202,6 +202,28 @@ interface DbInterface
     public function truncateTable($source);
 
     /**
+     * @param string $source
+     *
+     * @return static
+     */
+    public function dropTable($source);
+
+    /**
+     * @param string $schema
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function getTables($schema = null);
+
+    /**
+     * @param string $source
+     *
+     * @return bool
+     */
+    public function tableExists($source);
+
+    /**
      * @param array $params
      *
      * @return string
