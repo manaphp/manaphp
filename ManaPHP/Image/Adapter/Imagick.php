@@ -41,7 +41,7 @@ class Imagick extends Component implements AdapterInterface
     public function __construct($file)
     {
         if (!extension_loaded('imagick')) {
-            throw new ImagickException('Imagick is not installed, or the extension is not loaded'/**m08adb1315d01ac35d*/);
+            throw new ImagickException('Imagick extension is not loaded: http://pecl.php.net/package/imagick'/**m08adb1315d01ac35d*/);
         }
 
         $this->_file = realpath($this->alias->resolve($file));

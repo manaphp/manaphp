@@ -17,6 +17,10 @@ class Random extends Component implements RandomInterface
      */
     public function getByte($length)
     {
+        if ($length === 0) {
+            return '';
+        }
+
         if (function_exists('random_bytes')) {
             return random_bytes($length);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {

@@ -16,7 +16,7 @@ class ModelController extends Controller
 {
     /**
      * @CliCommand create model
-     * @CliParam   --force,-f   force create all models
+     * @CliParam   --force,-f   force create models
      * @CliParam   --module,-m  the module name
      * @CliParam   --pattern,-p filter the tables with fnmatch
      * @CliParam   --table,-t   which table to create model
