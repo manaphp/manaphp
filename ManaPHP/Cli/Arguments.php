@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Arguments\Exception as ArgumentsException;
@@ -37,6 +38,10 @@ class Arguments extends Component implements ArgumentsInterface
     {
         if ($name === null) {
             return $this->_arguments;
+        }
+
+        if (strpos($name, '-') !== false) {
+            throw new ArgumentsException('please remove `-` characters for `:argument` argument', ['argument' => $name]);
         }
 
         foreach (explode(':', $name) as $p) {
