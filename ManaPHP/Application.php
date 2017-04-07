@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Application\AbortException;
@@ -66,6 +67,7 @@ abstract class Application extends Component implements ApplicationInterface
                 $this->loader->registerNamespaces([$app_ns => $app_dir]);
             }
 
+            $this->alias->set('@root', dirname($app_dir));
             $this->alias->set('@app', $app_dir);
             $this->alias->set('@ns.app', $app_ns);
             $this->alias->set('@data', dirname($app_dir) . '/Data');
