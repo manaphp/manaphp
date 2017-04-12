@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc\Router;
 
 use ManaPHP\Mvc\Router\Route\Exception as RouteException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Mvc\Router\Route
@@ -59,7 +58,7 @@ class Route implements RouteInterface
     protected function _compilePattern($pattern)
     {
         // If a pattern contains ':', maybe there are placeholders to replace
-        if (Text::contains($pattern, ':')) {
+        if (strpos($pattern, ':') !== false) {
             $tr = [
                 ':controller' => '{controller:[a-z\d_-]+}',
                 ':action' => '{action:[a-z\d_-]+}',
@@ -69,60 +68,31 @@ class Route implements RouteInterface
             $pattern = strtr($pattern, $tr);
         }
 
-        if (Text::contains($pattern, '{')) {
-            $pattern = $this->_extractNamedParams($pattern);
-        }
+        if (strpos($pattern, '{') !== false) {
+            $need_restore_token = false;
 
-        return '#^' . $pattern . '$#i';
-    }
+            if (preg_match('#{\d#', $pattern) === 1) {
+                $need_restore_token = true;
+                $pattern = preg_replace('#{([\d,]+)}#', '@\1@', $pattern);
+            }
 
-    /**
-     * Extracts parameters from a string
-     *
-     * @param string $pattern
-     *
-     * @return string
-     */
-    protected function _extractNamedParams($pattern)
-    {
-        if (!Text::contains($pattern, '{')) {
-            return $pattern;
-        }
-
-        $left_token = '@_@';
-        $right_token = '!_!';
-        $need_restore_token = false;
-
-        if (preg_match('#{\d#', $pattern) === 1
-            && !Text::contains($pattern, $left_token)
-            && !Text::contains($pattern, $right_token)
-        ) {
-            $need_restore_token = true;
-            $pattern = preg_replace('#{(\d+,?\d*)}#', $left_token . '\1' . $right_token, $pattern);
-        }
-
-        $matches = [];
-        if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
-            foreach ($matches as $match) {
-
-                if (!Text::contains($match[0], ':')) {
-                    $to = '(?<' . $match[1] . '>[\w-]+)';
-                    $pattern = str_replace($match[0], $to, $pattern);
-                } else {
-                    $parts = explode(':', $match[1]);
-                    $to = '(?<' . $parts[0] . '>' . $parts[1] . ')';
+            $matches = [];
+            if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
+                foreach ($matches as $match) {
+                    $parts = explode(':', $match[1], 2);
+                    $to = '(?<' . $parts[0] . '>' . (isset($parts[1]) ? $parts[1] : '[\w-]+') . ')';
                     $pattern = str_replace($match[0], $to, $pattern);
                 }
             }
-        }
 
-        if ($need_restore_token) {
-            $from = [$left_token, $right_token];
-            $to = ['{', '}'];
-            $pattern = str_replace($from, $to, $pattern);
-        }
+            if ($need_restore_token) {
+                $pattern = preg_replace('#@([\d,]+)@#', '{\1}', $pattern);
+            }
 
-        return $pattern;
+            return '#^' . $pattern . '$#i';
+        } else {
+            return $pattern;
+        }
     }
 
     /**
@@ -190,6 +160,10 @@ class Route implements RouteInterface
 
         if ($this->_method !== null && $this->_method !== $method && $this->_method !== 'REST') {
             return false;
+        }
+
+        if ($this->_compiledPattern[0] !== '#') {
+            return strcasecmp($this->_compiledPattern, $uri) === 0 ? $this->_paths : false;
         }
 
         $r = preg_match($this->_compiledPattern, $uri, $matches);
