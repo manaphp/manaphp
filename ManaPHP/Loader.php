@@ -26,7 +26,11 @@ class Loader
      */
     public function __construct($manaPHPDir = null)
     {
-        $this->_namespaces['ManaPHP'] = str_replace('\\', '/', $manaPHPDir ?: __DIR__);
+        if ($manaPHPDir === null) {
+            $manaPHPDir = __DIR__;
+        }
+
+        $this->_namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? str_replace('\\', '/', $manaPHPDir) : $manaPHPDir;
 
         $al_function = [$this, '_autoload'];
         spl_autoload_register($al_function);
