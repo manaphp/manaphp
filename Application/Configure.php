@@ -31,7 +31,7 @@ class Configure extends \ManaPHP\Configure
         $this->db->port = 3306;
         $this->db->username = 'root';
         $this->db->password = '';
-        $this->db->dbname = 'manaphp_unit_test';//https://github.com/manaphp/download/blob/master/manaphp_unit_test_db.sql
+        $this->db->dbname = 'manaphp_unit_test';//https://raw.githubusercontent.com/manaphp/download/master/manaphp_unit_test_db.sql
         $this->db->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
 
         $this->logger = new \stdClass();
