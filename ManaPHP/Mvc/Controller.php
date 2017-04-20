@@ -51,6 +51,8 @@ use ManaPHP\Component;
  * @property \ManaPHP\StopwatchInterface                   $stopwatch
  * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier
  * @property \Redis                                        $redis
+ * @property \MongoDB\Client                               $mongodb
+ * @property \Elasticsearch\Client                         $elasticsearch
  */
 abstract class Controller extends Component implements ControllerInterface
 {
