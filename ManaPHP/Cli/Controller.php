@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
@@ -26,6 +27,9 @@ use ManaPHP\Component;
  * @property \ManaPHP\Cli\ArgumentsInterface     $arguments
  * @property \ManaPHP\Text\CrosswordInterface    $crossword
  * @property \ManaPHP\Cli\RouterInterface        $cliRouter
+ * @property \Redis                              $redis
+ * @property \MongoDB\Client                     $mongodb
+ * @property \Elasticsearch\Client               $elasticsearch
  */
 abstract class Controller extends Component implements ControllerInterface
 {

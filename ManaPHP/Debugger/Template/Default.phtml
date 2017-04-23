@@ -112,9 +112,9 @@
         <tbody>
         <tr v-for="(item, index) in dump">
           <td>{{index}}</td>
-          <td title="{{item.file}}:{{item.line}}">{{item.base_name}}:{{item.line}}</td>
+          <td :title="item.file + ':' + item.line">{{item.base_name}}:{{item.line}}</td>
           <td>{{item.name}}</td>
-          <td title="{{item.value|json 4}}">
+          <td :title="json_encode(item.value)">
             <pre>{{item.value|json 4}}</pre>
           </td>
         </tr>
@@ -135,9 +135,9 @@
         <tbody>
         <tr v-for="(item, index) in components">
           <td>{{index}}</td>
-          <td title="{{item.name}}">{{item.name}}</td>
+          <td :title="item.name">{{item.name}}</td>
           <td>{{item.class}}</td>
-          <td title="{{item.properties|json 4}}">
+          <td :title="json_encode(item.properties)">
             <pre>{{item.properties|json 4}}</pre>
           </td>
         </tr>
@@ -157,9 +157,9 @@
         <tbody>
         <tr v-for="(item, index) in view">
           <td>{{index}}</td>
-          <td title="{{item.file}}">{{item.base_name}}</td>
+          <td :title="item.file">{{item.base_name}}</td>
           <td>
-            <pre>{{item.vars|json 4}}</pre>
+            <pre :title="json_encode(item.vars)">{{item.vars|json 4}}</pre>
           </td>
         </tr>
         </tbody>
@@ -179,7 +179,7 @@
         <tr v-for="(value,name, index) in configure">
           <td>{{index}}</td>
           <td>{{name}}</td>
-          <td title="{{value|json 4}}">
+          <td :title="json_encode(value)">
             <pre>{{value|json 4}}</pre>
           </td>
         </tr>
@@ -242,7 +242,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(item, index) in sql.executed" title="{{item|json 4}}">
+          <tr v-for="(item, index) in sql.executed" :title="json_encode(item)">
             <td>{{index}}</td>
             <td>{{item.row_count}}</td>
             <td>{{item.emulated}}</td>
@@ -333,6 +333,11 @@ unset($data['server']['PATH']);
                 } else {
                     return data['included_files'];
                 }
+            }
+        },
+        methods: {
+            json_encode: function (data) {
+                return JSON.stringify(data, null, 4);
             }
         }
     })

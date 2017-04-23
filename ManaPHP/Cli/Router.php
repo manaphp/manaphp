@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
@@ -132,7 +133,7 @@ class Router extends Component implements RouterInterface
                 return false;
         }
 
-        if ($this->_guessCommand && strlen($controllerName) <= 3) {
+        if ($this->_guessCommand && strlen($controllerName) <= 4) {
             $controllers = $this->_getControllers();
             $controllerName = $this->crossword->guess($controllers, $controllerName);
             if (!$controllerName) {

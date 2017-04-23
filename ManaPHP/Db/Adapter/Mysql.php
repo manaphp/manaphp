@@ -64,7 +64,7 @@ class Mysql extends Db
      */
     public function getMetadata($source)
     {
-        $columns = $this->fetchAll('DESCRIBE ' . $this->_escapeIdentifier($source), null, \PDO::FETCH_NUM);
+        $columns = $this->fetchAll('DESCRIBE ' . $this->_escapeIdentifier($source), [], \PDO::FETCH_NUM);
 
         $attributes = [];
         $primaryKeys = [];
