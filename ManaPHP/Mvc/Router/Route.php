@@ -140,8 +140,7 @@ class Route implements RouteInterface
         }
 
         if (isset($routePaths['controller']) && strpos($routePaths['controller'], '\\') !== false) {
-            $parts = explode('\\', $routePaths['controller']);
-            $routePaths['controller'] = basename(end($parts), 'Controller');
+            $routePaths['controller'] = basename(str_replace('\\', '/', $routePaths['controller']), 'Controller');
         }
 
         return $routePaths;
@@ -171,7 +170,13 @@ class Route implements RouteInterface
             throw new RouteException('`:compiled` pcre pattern is invalid for `:pattern`'/**m0d6fa1de6a93475dd*/,
                 ['compiled' => $this->_compiledPattern, 'pattern' => $this->_pattern]);
         } elseif ($r === 1) {
-            $parts = array_merge($matches, $this->_paths);
+            $parts = $this->_paths;
+
+            foreach ($matches as $k => $v) {
+                if (is_string($k)) {
+                    $parts[$k] = $v;
+                }
+            }
 
             if ($this->_method === 'REST') {
                 if (isset($matches['params'])) {
@@ -187,12 +192,6 @@ class Route implements RouteInterface
             }
         } else {
             return false;
-        }
-
-        foreach ($parts as $k => $v) {
-            if (is_int($k)) {
-                unset($parts[$k]);
-            }
         }
 
         return $parts;

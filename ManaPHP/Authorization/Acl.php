@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Authorization;
 
 use ManaPHP\Authorization\Acl\Exception as AclException;
@@ -31,7 +32,7 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
     public function allow($roleId, $controller, $actions = '*')
     {
         if (strpos($controller, '\\') !== false) {
-            $controller = basename(end(explode('\\', $controller)), 'Controller');
+            $controller = basename(str_replace('\\', '/', $controller), 'Controller');
         } else {
             $controller = Text::camelize($controller);
         }

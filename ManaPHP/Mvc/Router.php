@@ -149,8 +149,8 @@ class Router extends Component implements RouterInterface
 
         if ($routeFound) {
             $this->_module = $module;
-            $this->_controller = isset($parts['controller']) ? basename($parts['controller'], 'Controller') : 'index';
-            $this->_action = isset($parts['action']) ? basename($parts['action'], 'Action') : 'index';
+            $this->_controller = isset($parts['controller']) ? $parts['controller'] : 'index';
+            $this->_action = isset($parts['action']) ? $parts['action'] : 'index';
 
             $params = [];
             if (isset($parts['params'])) {

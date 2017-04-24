@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
@@ -13,6 +14,7 @@ class HelpController extends Controller
     /**
      * @CliCommand list all commands
      * @return int
+     * @throws \ReflectionException
      */
     public function listCommand()
     {
@@ -50,10 +52,11 @@ class HelpController extends Controller
      * @param string $controllerClassName
      *
      * @return array
+     * @throws \ReflectionException
      */
     protected function _getCommands($controllerClassName)
     {
-        $controller = lcfirst(basename($controllerClassName, 'Controller'));
+        $controller = lcfirst(basename(str_replace('\\', '/', $controllerClassName), 'Controller'));
 
         $commands = [];
         $rc = new \ReflectionClass($controllerClassName);
