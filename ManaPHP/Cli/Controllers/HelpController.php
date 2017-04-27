@@ -3,6 +3,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Cli\Controllers\HelpController
@@ -56,7 +57,7 @@ class HelpController extends Controller
      */
     protected function _getCommands($controllerClassName)
     {
-        $controller = lcfirst(basename(str_replace('\\', '/', $controllerClassName), 'Controller'));
+        $controller = Text::underscore(basename(str_replace('\\', '/', $controllerClassName), 'Controller'));
 
         $commands = [];
         $rc = new \ReflectionClass($controllerClassName);
