@@ -73,6 +73,7 @@ abstract class Db extends Component implements DbInterface
     public function __construct()
     {
         $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
+        $this->_options[\PDO::ATTR_EMULATE_PREPARES] = false;
 
         try {
             $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
