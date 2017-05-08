@@ -9,25 +9,25 @@ namespace ManaPHP\Cli;
 interface ConsoleInterface
 {
     /**
-     * @param string $str
-     * @param array  $context
+     * @param string|array $str
+     * @param array        $context
      *
      * @return static
      */
     public function write($str, $context = []);
 
     /**
-     * @param string $str
-     * @param array  $context
+     * @param string|array $str
+     * @param array        $context
      *
      * @return static
      */
     public function writeLn($str = '', $context = []);
 
     /**
-     * @param string $str
-     * @param array  $context
-     * @param int    $code
+     * @param string|array $str
+     * @param array        $context
+     * @param int          $code
      *
      * @return int
      */

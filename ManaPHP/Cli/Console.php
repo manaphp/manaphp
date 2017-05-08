@@ -11,13 +11,17 @@ use ManaPHP\Component;
 class Console extends Component implements ConsoleInterface
 {
     /**
-     * @param string $str
-     * @param array  $context
+     * @param string|array $str
+     * @param array        $context
      *
      * @return static
      */
     public function write($str, $context = [])
     {
+        if (is_array($str)) {
+            $str = json_encode($str, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
         if (count($context) === 0) {
             echo $str;
         } else {
@@ -34,20 +38,23 @@ class Console extends Component implements ConsoleInterface
     }
 
     /**
-     * @param string $str
-     * @param array  $context
+     * @param string|array $str
+     * @param array        $context
      *
      * @return static
      */
     public function writeLn($str = '', $context = [])
     {
-        return $this->write($str . PHP_EOL, $context);
+        $this->write($str, $context);
+        $this->write(PHP_EOL);
+
+        return $this;
     }
 
     /**
-     * @param string $str
-     * @param array  $context
-     * @param int    $code
+     * @param string|array $str
+     * @param array        $context
+     * @param int          $code
      *
      * @return int
      */
