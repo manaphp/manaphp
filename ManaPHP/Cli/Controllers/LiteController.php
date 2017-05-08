@@ -7,6 +7,11 @@ use ManaPHP\Cli\Controller;
 class LiteController extends Controller
 {
     /**
+     * @var string
+     */
+    protected $_tmpFile = '@root/manaphp_lite.tmp';
+
+    /**
      * @CliCommand build manaphp framework lite php file
      * @CliParam   --config,-c  config file name default:@root/manaphp_lite.json
      * @CliParam   --output,-o  output file name default:@root/manaphp_lite.php
@@ -43,8 +48,6 @@ class LiteController extends Controller
 
             $content = $this->filesystem->fileGet($file);
 
-            $content = preg_replace('#^<\?php#', '', $content, 1) . PHP_EOL;
-
             if (preg_match('#\s+implements\s+.*#', $content, $matches) === 1) {
                 $implements = $matches[0];
                 $implements = preg_replace('#[a-zA-Z]+Interface,?#', '', $implements);
@@ -53,17 +56,35 @@ class LiteController extends Controller
                 }
                 $content = str_replace($matches[0], $implements, $content);
             }
-            $content = preg_replace('#\s*/\*\*.*?\*/#ms', '', $content);//remove comments
-            $content = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $content);//remove blank lines
-            $content = preg_replace('#([\r\n]+)\s+{#', '{', $content);//repositionClose;
 
-            $contents .= '//' . $c . $content;
+            $contents .= '/**' . $c . '*/' . preg_replace('#^\s*<\?php\s*#', '', $this->_strip_whitespace($content), 1) . PHP_EOL;
         }
 
-        $contents = '<?php' . PHP_EOL . '/**' . PHP_EOL . implode('  ' . PHP_EOL, $classes) . PHP_EOL . '*/' . PHP_EOL . PHP_EOL . $contents;
+        $contents = '<?php' . PHP_EOL . $contents;
 
         $this->filesystem->filePut($outputFile, $contents);
 
         $this->console->writeLn('lite file generated in `:output` successfully ', ['output' => $outputFile]);
+    }
+
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _strip_whitespace($str)
+    {
+        $this->filesystem->filePut($this->_tmpFile, $str);
+        $str = php_strip_whitespace($this->alias->resolve($this->_tmpFile));
+//        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments
+//        $str = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $str);//remove blank lines
+//        $str = preg_replace('#([\r\n]+)\s+{#', '{', $str);//repositionClose;
+
+        return $str;
+    }
+
+    public function __destruct()
+    {
+        $this->filesystem->fileDelete($this->_tmpFile);
     }
 }
