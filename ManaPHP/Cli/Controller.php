@@ -1,5 +1,4 @@
 <?php
-
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
@@ -43,8 +42,8 @@ abstract class Controller extends Component implements ControllerInterface
                 continue;
             }
 
-            $this->console->writeLn('');
-
+            $command = $controller . ':' . basename($method, 'Command');
+            $params = [];
             $rm = new \ReflectionMethod($this, $method);
             $lines = explode("\n", $rm->getDocComment());
             foreach ($lines as $line) {
@@ -56,10 +55,19 @@ abstract class Controller extends Component implements ControllerInterface
                 list($tag, $description) = $parts;
 
                 if ($tag === '@CliCommand') {
-                    $description = trim($description);
-                    $this->console->writeLn($controller . ':' . basename($method, 'Command') . ' ' . $description);
+                    $command = $controller . ':' . basename($method, 'Command') . ' ' . trim($description);
                 } elseif ($tag === '@CliParam') {
-                    $this->console->writeLn(' ' . $description);
+                    $parts = explode(' ', $description, 2);
+                    $params[trim($parts[0])] = trim($parts[1]);
+                }
+            }
+
+            $this->console->writeLn($command);
+
+            if (count($params) !== 0) {
+                $maxLength = max(array_map('strlen', array_keys($params)));
+                foreach ($params as $name => $value) {
+                    $this->console->writeLn('  ' . str_pad($name, $maxLength + 1) . ' ' . $value);
                 }
             }
         }

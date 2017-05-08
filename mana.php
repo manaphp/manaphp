@@ -1,5 +1,4 @@
 #!/usr/bin/env php
-
 <?php
 error_reporting(E_ALL);
 ini_set('html_errors', 'off');

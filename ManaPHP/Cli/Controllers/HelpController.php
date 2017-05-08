@@ -1,5 +1,4 @@
 <?php
-
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
@@ -43,8 +42,11 @@ class HelpController extends Controller
         }
 
         ksort($commands);
+
+        $maxLength = max(array_map('strlen', array_keys($commands)));
+
         foreach ($commands as $command => $description) {
-            $this->console->writeLn(str_pad($command, 18, ' ') . '  ' . $description);
+            $this->console->writeLn(str_pad($command, $maxLength + 1, ' ') . ' ' . $description);
         }
         return 0;
     }

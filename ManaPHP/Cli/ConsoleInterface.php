@@ -22,7 +22,7 @@ interface ConsoleInterface
      *
      * @return static
      */
-    public function writeLn($str, $context = []);
+    public function writeLn($str = '', $context = []);
 
     /**
      * @param string $str

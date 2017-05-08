@@ -39,7 +39,7 @@ class Console extends Component implements ConsoleInterface
      *
      * @return static
      */
-    public function writeLn($str, $context = [])
+    public function writeLn($str = '', $context = [])
     {
         return $this->write($str . PHP_EOL, $context);
     }
