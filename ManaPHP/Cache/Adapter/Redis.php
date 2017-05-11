@@ -29,7 +29,7 @@ class Redis extends Component implements AdapterInterface
         if (is_object($options)) {
             $options = (array)$options;
         } elseif (is_string($options)) {
-            $options['prefix'] = $options;
+            $options = ['prefix' => $options];
         }
 
         if (isset($options['prefix'])) {
