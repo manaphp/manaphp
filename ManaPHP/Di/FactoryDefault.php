@@ -66,6 +66,7 @@ class FactoryDefault extends Di
             'viewsCache' => ['ManaPHP\Cache\Adapter\File', [['dir' => '@data/viewsCache', 'extension' => '.html']]],
             'modelsCache' => ['ManaPHP\Cache\Adapter\File', [['dir' => '@data/modelsCache', 'extension' => '.json']]],
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
+            'environment'=>'ManaPHP\Cli\Environment',
         ];
     }
 }
