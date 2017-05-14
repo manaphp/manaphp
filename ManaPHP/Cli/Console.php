@@ -22,9 +22,13 @@ class Console extends Component implements ConsoleInterface
             $str = json_encode($str, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
-        if (count($context) === 0) {
+        if (strpos($str, ':') === false) {
             echo $str;
         } else {
+            if (!isset($context['last_error_message'])) {
+                $context['last_error_message'] = error_get_last()['message'];
+            }
+
             $replaces = [];
 
             foreach ($context as $k => $v) {
