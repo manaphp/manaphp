@@ -11,7 +11,7 @@ interface EngineInterface
     /**
      * @param string $file
      *
-     * @return mixed
+     * @return array
      */
     public function load($file);
 }

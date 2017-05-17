@@ -20,4 +20,18 @@ interface ConfigureInterface
      * @return string
      */
     public function getSecretKey($type);
+
+    /**
+     * @return static
+     */
+    public function reset();
+
+    /**
+     * @param string $file
+     * @param string $mode
+     *
+     * @return static
+     * @throws \ManaPHP\Configure\Exception
+     */
+    public function load($file, $mode = null);
 }

@@ -7,6 +7,8 @@ class Configure extends \ManaPHP\Configure
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->config();
     }
 

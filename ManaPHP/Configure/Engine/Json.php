@@ -14,7 +14,7 @@ class Json implements EngineInterface
     /**
      * @param string $file
      *
-     * @return mixed
+     * @return array
      * @throws \ManaPHP\Configure\Engine\Json\Exception
      */
     public function load($file)
