@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Configure\Exception as ConfigureException;
@@ -9,7 +10,7 @@ use ManaPHP\Configure\Exception as ConfigureException;
  * @package configure
  *
  */
-class Configure implements ConfigureInterface, \ArrayAccess
+class Configure extends Component implements ConfigureInterface, \ArrayAccess
 {
     /**
      * @var bool
@@ -57,7 +58,8 @@ class Configure implements ConfigureInterface, \ArrayAccess
             '.php' => 'ManaPHP\Configure\Engine\Php',
             '.json' => 'ManaPHP\Configure\Engine\Json'
         ]
-    ) {
+    )
+    {
         $this->_engines = $engines;
     }
 
@@ -106,7 +108,7 @@ class Configure implements ConfigureInterface, \ArrayAccess
         }
 
         if (!isset($this->_resolved[$ext])) {
-            $this->_resolved[$ext] = Di::getDefault()->getShared($this->_engines[$ext]);
+            $this->_resolved[$ext] = $this->_dependencyInjector->getShared($this->_engines[$ext]);
         }
 
         $data = $this->_resolved[$ext]->load($file);
@@ -153,17 +155,15 @@ class Configure implements ConfigureInterface, \ArrayAccess
      */
     public function load($file, $mode = null)
     {
-        $di = Di::getDefault();
-
         if (strpos($file, '*') !== false) {
-            foreach ($di->filesystem->glob($file) as $f) {
+            foreach ($this->_dependencyInjector->filesystem->glob($file) as $f) {
                 if (is_file($f)) {
                     /** @noinspection SlowArrayOperationsInLoopInspection */
                     $this->_data = array_merge($this->_data, $this->_load($f, $mode));
                 }
             }
         } else {
-            $this->_data = array_merge($this->_load($di->alias->resolve($file), $mode));
+            $this->_data = array_merge($this->_load($this->_dependencyInjector->alias->resolve($file), $mode));
         }
 
         return $this;
@@ -205,5 +205,14 @@ class Configure implements ConfigureInterface, \ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->_data[$offset]);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function __set($name, $value)
+    {
+        $this->{$name} = $value;
     }
 }
