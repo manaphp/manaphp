@@ -38,10 +38,15 @@ class File extends Component implements FilesystemInterface
      * @param string $file
      *
      * @return void
+     * @throws \ManaPHP\Filesystem\Adapter\File\Exception
      */
     public function fileDelete($file)
     {
-        @unlink($this->alias->resolve($file));
+        foreach ($this->files($file) as $f) {
+            if (!unlink($f) && $this->fileExists($f)) {
+                throw new FileException('delete `:file` failed: :last_error_message', ['file' => $f]);
+            }
+        }
     }
 
     /**
@@ -333,36 +338,38 @@ class File extends Component implements FilesystemInterface
      * @param int    $sorting_order
      *
      * @return array
+     * @throws \ManaPHP\Filesystem\Adapter\File\Exception
      */
     public function scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING)
     {
-        $r = scandir($this->alias->resolve($dir), $sorting_order);
+        $r = @scandir($this->alias->resolve($dir), $sorting_order);
+        if ($r === false) {
+            throw new FileException('scandir `:dir` directory failed: :last_error_message', ['dir' => $dir]);
+        }
 
-        return is_array($r) ? $r : [];
+        $items = [];
+        foreach ($r as $item) {
+            if ($item !== '.' && $item !== '..') {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
     }
 
     /**
      * @param string $dir
-     * @param string $pattern
      *
      * @return array
      */
-    public function files($dir, $pattern = null)
+    public function files($dir)
     {
         $dir = $this->alias->resolve($dir);
 
         $files = [];
-        foreach ($this->scandir($dir) as $item) {
-            if ($item === '.' || $item === '..') {
-                continue;
-            }
-
-            if (!is_file($dir . '/' . $item)) {
-                continue;
-            }
-
-            if ($pattern === null || fnmatch($pattern, $item)) {
-                $files[] = $dir . '/' . $item;
+        foreach ($this->glob($dir . (strpos($dir, '*') === false ? '/*' : ''), SCANDIR_SORT_ASCENDING) as $item) {
+            if (is_file($item)) {
+                $files[] = $item;
             }
         }
 
@@ -376,7 +383,7 @@ class File extends Component implements FilesystemInterface
      */
     public function directories($dir)
     {
-        return $this->glob($this->alias->resolve($dir) . '/*', GLOB_ONLYDIR);
+        return $this->glob($dir . (strpos($dir, '*') === false ? '/*' : ''), GLOB_ONLYDIR);
     }
 
     /**

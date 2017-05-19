@@ -130,11 +130,10 @@ interface FilesystemInterface
 
     /**
      * @param string $dir
-     * @param string $pattern
      *
      * @return array
      */
-    public function files($dir, $pattern = null);
+    public function files($dir);
 
     /**
      * @param string $dir

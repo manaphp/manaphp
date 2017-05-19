@@ -98,11 +98,6 @@ class Alias extends Component implements AliasInterface
      */
     public function resolve($path)
     {
-        if (rtrim($path, '\\/') !== $path) {
-
-            throw new AliasException('`:path` can not end with `/` or `\`'/**m02677305f62c5336e*/, ['path' => $path]);
-        }
-
         if ($path[0] !== '@') {
             return str_replace('\\', '/', $path);
         }
