@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Application\AbortException;
+use ManaPHP\Application\Exception as ApplicationException;
 use ManaPHP\Di\FactoryDefault;
 
 /**
@@ -124,33 +125,44 @@ abstract class Application extends Component implements ApplicationInterface
         }
 
         if (isset($configure->redis)) {
-            $c = (array)$configure->redis;
-            foreach (isset($c['host']) ? ['redis' => $c] : $c as $service => $config) {
-                if (!is_array($config)) {
-                    $config = (array)$config;
+            if (is_string($configure->redis)) {
+                $parts = parse_url($configure->redis);
+                $config = [];
+                if (isset($parts['host'])) {
+                    $config['host'] = $parts['host'];
+                } 
+                if (isset($parts['port'])) {
+                    $config['port'] = $parts['port'];
                 }
-
-                $c += ['port' => 6379, 'timeout' => 0.0];
-                $this->_dependencyInjector->setShared($service, function () use ($config) {
-                    $redis = new \Redis();
-                    $redis->connect($config['host'], $config['port'], $config['timeout']);
-
-                    return $redis;
-                });
+            } else {
+                $config = (array)$configure->redis;
             }
+
+            $config += ['port' => 6379, 'timeout' => 0.0];
+            $this->_dependencyInjector->setShared('redis', function () use ($config) {
+                $redis = new \Redis();
+                $redis->connect($config['host'], $config['port'], $config['timeout']);
+
+                return $redis;
+            });
         }
 
         if (isset($configure->db)) {
-            $c = (array)$configure->db;
-            foreach (isset($c['host']) || isset($c['adapter']) ? ['db' => $c] : $c as $service => $config) {
-                if (!is_array($config)) {
-                    $config = (array)$config;
+            if (is_string($configure->db)) {
+                $scheme = parse_url($configure->db, PHP_URL_SCHEME);
+                if ($scheme === false) {
+                    throw new ApplicationException('`:db` db config is invalid', ['db' => $configure->db]);
                 }
 
+                $adapter = 'ManaPHP\Db\Adapter\\' . ucfirst($scheme);
+                $config = $configure->db;
+            } else {
+                $config = (array)$configure->db;
                 $adapter = isset($config['adapter']) ? $config['adapter'] : 'ManaPHP\Db\Adapter\Mysql';
                 unset($config['adapter']);
-                $this->_dependencyInjector->setShared($service, [$adapter, [$config]]);
+
             }
+            $this->_dependencyInjector->setShared('db', [$adapter, [$config]]);
         }
     }
 }

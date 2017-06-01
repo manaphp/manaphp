@@ -5,18 +5,41 @@ use ManaPHP\Db;
 use ManaPHP\Db\Adapter\SqlSrv\Exception as SqlSrvException;
 use ManaPHP\Mvc\Model\Metadata;
 
-class SqlSrv extends Db
+class Mssql extends Db
 {
     /**
      * SqlSrv constructor.
      *
-     * @param array $options
+     * @param array|string $options
      *
      * @throws \ManaPHP\Db\Exception
      */
     public function __construct($options)
     {
-        if (is_object($options)) {
+        if (is_string($options)) {
+            $parts = parse_url($options);
+            $options = [];
+
+            if (isset($parts['user'])) {
+                $options['username'] = $parts['user'];
+            }
+
+            if (isset($parts['pass'])) {
+                $options['password'] = $parts['pass'];
+            }
+
+            if (isset($parts['host'])) {
+                $options['host'] = $parts['host'];
+            }
+
+            if (isset($parts['port'])) {
+                $options['port'] = $parts['port'];
+            }
+
+            if (isset($parts['path'])) {
+                $options['database'] = trim($parts['path'], '/');
+            }
+        } elseif (is_object($options)) {
             $options = (array)$options;
         }
 

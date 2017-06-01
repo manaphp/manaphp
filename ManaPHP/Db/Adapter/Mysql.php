@@ -20,13 +20,35 @@ class Mysql extends Db
     /**
      * \ManaPHP\Db\Adapter constructor
      *
-     * @param array $options
+     * @param array|string $options
      *
      * @throws \ManaPHP\Db\Exception
      */
     public function __construct($options)
     {
-        if (is_object($options)) {
+        if (is_string($options)) {
+            $parts = parse_url($options);
+            $options = [];
+            if (isset($parts['user'])) {
+                $options['username'] = $parts['user'];
+            }
+
+            if (isset($parts['pass'])) {
+                $options['password'] = $parts['pass'];
+            }
+
+            if (isset($parts['host'])) {
+                $options['host'] = $parts['host'];
+            }
+
+            if (isset($parts['port'])) {
+                $options['port'] = $parts['port'];
+            }
+
+            if (isset($parts['path'])) {
+                $options['dbname'] = trim($parts['path'], '/');
+            }
+        } elseif (is_object($options)) {
             $options = (array)$options;
         }
 
@@ -38,8 +60,8 @@ class Mysql extends Db
             $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES 'UTF8'";
         }
 
-        $this->_username = isset($options['username']) ? $options['username'] : null;
-        $this->_password = isset($options['password']) ? $options['password'] : null;
+        $this->_username = isset($options['username']) ? $options['username'] : 'root';
+        $this->_password = isset($options['password']) ? $options['password'] : '';
 
         if (isset($options['dsn'])) {
             $this->_dsn = $options['dsn'];

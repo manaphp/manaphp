@@ -1,8 +1,6 @@
 <?php
 namespace Application;
 
-use ManaPHP\Db\Adapter\Mysql;
-
 class Configure extends \ManaPHP\Configure
 {
     public function __construct()
@@ -27,21 +25,12 @@ class Configure extends \ManaPHP\Configure
          */
         $this->_masterKey = 'key';
 
-        $this->db = new \stdClass();
-        $this->db->adapter = Mysql::class;
-        $this->db->host = 'localhost';
-        $this->db->port = 3306;
-        $this->db->username = 'root';
-        $this->db->password = '';
-        $this->db->dbname = 'manaphp_unit_test';//https://raw.githubusercontent.com/manaphp/download/master/manaphp_unit_test_db.sql
-        $this->db->options = [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"];
+        $this->db = 'mysql://localhost/manaphp_unit_test';
 
         $this->logger = new \stdClass();
         $this->logger->file = '@data/logger/' . date('Ymd') . '.log';
 
-        $this->redis = new \stdClass();
-        $this->redis->host = 'localhost';
-
+        $this->redis = 'redis://localhost';
         $this->modules = ['Home' => '/', 'Admin' => '/admin', 'Api' => '/api'];
     }
 }
