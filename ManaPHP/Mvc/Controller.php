@@ -51,7 +51,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\StopwatchInterface                   $stopwatch
  * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier
  * @property \ManaPHP\Cli\EnvironmentInterface             $environment
- * @property \Redis                                        $redis
+ * @property \ManaPHP\Redis                                $redis
  * @property \MongoDB\Client                               $mongodb
  * @property \Elasticsearch\Client                         $elasticsearch
  */

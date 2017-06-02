@@ -125,26 +125,7 @@ abstract class Application extends Component implements ApplicationInterface
         }
 
         if (isset($configure->redis)) {
-            if (is_string($configure->redis)) {
-                $parts = parse_url($configure->redis);
-                $config = [];
-                if (isset($parts['host'])) {
-                    $config['host'] = $parts['host'];
-                } 
-                if (isset($parts['port'])) {
-                    $config['port'] = $parts['port'];
-                }
-            } else {
-                $config = (array)$configure->redis;
-            }
-
-            $config += ['port' => 6379, 'timeout' => 0.0];
-            $this->_dependencyInjector->setShared('redis', function () use ($config) {
-                $redis = new \Redis();
-                $redis->connect($config['host'], $config['port'], $config['timeout']);
-
-                return $redis;
-            });
+            $this->_dependencyInjector->setShared('redis', ['ManaPHP\Redis', [$configure->redis]]);
         }
 
         if (isset($configure->db)) {
@@ -160,7 +141,6 @@ abstract class Application extends Component implements ApplicationInterface
                 $config = (array)$configure->db;
                 $adapter = isset($config['adapter']) ? $config['adapter'] : 'ManaPHP\Db\Adapter\Mysql';
                 unset($config['adapter']);
-
             }
             $this->_dependencyInjector->setShared('db', [$adapter, [$config]]);
         }

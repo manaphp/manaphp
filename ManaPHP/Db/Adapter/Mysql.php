@@ -8,6 +8,7 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
+use ManaPHP\Db\Adapter\Mysql\Exception as MysqlException;
 use ManaPHP\Mvc\Model\Metadata;
 
 /**
@@ -18,6 +19,11 @@ use ManaPHP\Mvc\Model\Metadata;
 class Mysql extends Db
 {
     /**
+     * @var string
+     */
+    protected $_charset;
+
+    /**
      * \ManaPHP\Db\Adapter constructor
      *
      * @param array|string $options
@@ -27,8 +33,16 @@ class Mysql extends Db
     public function __construct($options)
     {
         if (is_string($options)) {
+            $url = $options;
+
             $parts = parse_url($options);
+
             $options = [];
+
+            if ($parts['scheme'] !== 'mysql') {
+                throw new MysqlException('`:url` is invalid, `:scheme` scheme is not recognized', ['url' => $url, 'scheme' => $parts['scheme']]);
+            }
+
             if (isset($parts['user'])) {
                 $options['username'] = $parts['user'];
             }
@@ -48,6 +62,13 @@ class Mysql extends Db
             if (isset($parts['path'])) {
                 $options['dbname'] = trim($parts['path'], '/');
             }
+
+            if (isset($parts['query'])) {
+                parse_str($parts['query'], $parts2);
+                if (isset($parts2['charset'])) {
+                    $options['charset'] = $parts2['charset'];
+                }
+            }
         } elseif (is_object($options)) {
             $options = (array)$options;
         }
@@ -56,9 +77,9 @@ class Mysql extends Db
             $this->_options = $options['options'];
         }
 
-        if (!isset($this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND])) {
-            $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES 'UTF8'";
-        }
+        $this->_charset = isset($options['charset']) ? $options['charset'] : 'UTF8';
+        unset($options['charset']);
+        $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
 
         $this->_username = isset($options['username']) ? $options['username'] : 'root';
         $this->_password = isset($options['password']) ? $options['password'] : '';

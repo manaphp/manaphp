@@ -2,7 +2,7 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
-use ManaPHP\Db\Adapter\SqlSrv\Exception as SqlSrvException;
+use ManaPHP\Db\Adapter\Mssql\Exception as MssqlException;
 use ManaPHP\Mvc\Model\Metadata;
 
 class Mssql extends Db
@@ -17,8 +17,15 @@ class Mssql extends Db
     public function __construct($options)
     {
         if (is_string($options)) {
+            $url = $options;
+
             $parts = parse_url($options);
+
             $options = [];
+
+            if ($parts['scheme'] !== 'mssql') {
+                throw new MssqlException('`:url` is invalid, `:scheme` scheme is not recognized', ['url' => $url, 'scheme' => $parts['scheme']]);
+            }
 
             if (isset($parts['user'])) {
                 $options['username'] = $parts['user'];
@@ -195,7 +202,7 @@ class Mssql extends Db
             $sql .= $params['columns'];
             if (isset($params['limit'], $params['offset'])) {
                 if (!isset($params['order'])) {
-                    throw new SqlSrvException('if use offset CLAUSE, must provide order CLAUSE.');
+                    throw new MssqlException('if use offset CLAUSE, must provide order CLAUSE.');
                 }
 
                 $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . (isset($params['order']) ? $params['order'] : 'rand()') . ') AS _row_number_';

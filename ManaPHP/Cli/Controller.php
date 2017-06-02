@@ -26,7 +26,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Cli\ArgumentsInterface     $arguments
  * @property \ManaPHP\Text\CrosswordInterface    $crossword
  * @property \ManaPHP\Cli\RouterInterface        $cliRouter
- * @property \Redis                              $redis
+ * @property \ManaPHP\Redis                      $redis
  * @property \ManaPHP\Cli\EnvironmentInterface   $environment
  * @property \MongoDB\Client                     $mongodb
  * @property \Elasticsearch\Client               $elasticsearch

@@ -25,12 +25,12 @@ class Configure extends \ManaPHP\Configure
          */
         $this->_masterKey = 'key';
 
-        $this->db = 'mysql://localhost/manaphp_unit_test';
+        $this->db = 'mysql://localhost/manaphp_unit_test?charset=utf8';
 
         $this->logger = new \stdClass();
         $this->logger->file = '@data/logger/' . date('Ymd') . '.log';
 
-        $this->redis = 'redis://localhost';
+        $this->redis = 'redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth=';
         $this->modules = ['Home' => '/', 'Admin' => '/admin', 'Api' => '/api'];
     }
 }
