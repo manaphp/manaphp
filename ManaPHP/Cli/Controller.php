@@ -55,9 +55,9 @@ abstract class Controller extends Component implements ControllerInterface
                     continue;
                 }
                 list($tag, $description) = $parts;
-
+                $description = trim($description);
                 if ($tag === '@CliCommand') {
-                    $command = $controller . ':' . basename($method, 'Command') . ' ' . trim($description);
+                    $command = str_pad($controller . ':' . basename($method, 'Command'), 13) . ' ' . $description;
                 } elseif ($tag === '@CliParam') {
                     $parts = explode(' ', $description, 2);
                     $params[trim($parts[0])] = trim($parts[1]);
@@ -65,11 +65,18 @@ abstract class Controller extends Component implements ControllerInterface
             }
 
             $this->console->writeLn($command);
-
             if (count($params) !== 0) {
-                $maxLength = max(array_map('strlen', array_keys($params)));
+                $this->console->writeLn('  Options:');
+
+                $maxLength = max(max(array_map('strlen', array_keys($params))), 1);
                 foreach ($params as $name => $value) {
-                    $this->console->writeLn('  ' . str_pad($name, $maxLength + 1) . ' ' . $value);
+                    $parts = explode(',', $name);
+                    if (count($parts) === 2) {
+                        $option = strlen($parts[0]) > strlen($parts[1]) ? ($parts[1] . ',' . $parts[0]) : ($parts[0] . ',' . $parts[1]);
+                    } else {
+                        $option = '   ' . $name;
+                    }
+                    $this->console->writeLn('    ' . str_pad($option, $maxLength + 1, ' ') . ' ' . $value);
                 }
             }
         }

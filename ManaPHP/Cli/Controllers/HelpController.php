@@ -18,37 +18,57 @@ class HelpController extends Controller
      */
     public function listCommand()
     {
-        $controllerNames = [];
         $commands = [];
-
-        foreach ($this->filesystem->glob('@app/Cli/Controllers/*Controller.php') as $file) {
-            if (preg_match('#/(\w+/\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
-                $controllerClassName = str_replace('/', '\\', $matches[1]);
-                $controllerNames[] = $matches[2];
-                /** @noinspection SlowArrayOperationsInLoopInspection */
-                $commands = array_merge($commands, $this->_getCommands($controllerClassName));
-            }
-        }
 
         foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
             if (preg_match('#/(\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
                 $controllerClassName = 'ManaPHP\\' . str_replace('/', '\\', $matches[1]);
-                if (in_array($matches[2], $controllerNames, true)) {
-                    continue;
-                }
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $commands = array_merge($commands, $this->_getCommands($controllerClassName));
             }
         }
+        $this->_list('manaphp commands: ', $commands);
+
+        $commands = [];
+
+        foreach (['@app/Cli/Controllers', '@app/Controllers', '@app'] as $dir) {
+            if ($this->filesystem->dirExists($dir)) {
+                foreach ($this->filesystem->glob($dir . '/*Controller.php') as $file) {
+                    if (preg_match('#(\w+)Controller\.php$#', $file, $matches)) {
+                        $controllerClassName = strtr($file, ['.php' => '', $this->alias->resolve('@root/') => '', '/' => '\\']);
+                        /** @noinspection SlowArrayOperationsInLoopInspection */
+                        $commands = array_merge($commands, $this->_getCommands($controllerClassName));
+                    }
+                }
+                break;
+            }
+        }
+
+        $this->_list('application commands: ', $commands);
+
+        return 0;
+    }
+
+    /**
+     * @param string $title
+     * @param array  $commands
+     */
+    protected function _list($title, $commands)
+    {
+        $this->console->writeLn('');
+        $this->console->writeLn($title);
+
+        if (count($commands) === 0) {
+            return;
+        }
 
         ksort($commands);
 
-        $maxLength = max(array_map('strlen', array_keys($commands)));
+        $maxLength = max(max(array_map('strlen', array_keys($commands))), 16);
 
         foreach ($commands as $command => $description) {
-            $this->console->writeLn(str_pad($command, $maxLength + 1, ' ') . ' ' . $description);
+            $this->console->writeLn('  ' . str_pad($command, $maxLength + 1, ' ') . ' ' . $description);
         }
-        return 0;
     }
 
     /**
