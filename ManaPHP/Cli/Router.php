@@ -20,11 +20,6 @@ class Router extends Component implements RouterInterface
     protected $_guessCommand = true;
 
     /**
-     * @var array
-     */
-    protected $_commandAliases = [];
-
-    /**
      * @var string
      */
     protected $_controllerName;
@@ -85,7 +80,7 @@ class Router extends Component implements RouterInterface
     {
         $commands = [];
 
-        $controllerClassName = $this->alias->resolve('@ns.app\\Cli\Controllers\\' . $controller . 'Controller');
+        $controllerClassName = $this->alias->resolveNS('@ns.app\\Cli\Controllers\\' . $controller . 'Controller');
         if (!class_exists($controllerClassName)) {
             $controllerClassName = 'ManaPHP\Cli\Controllers\\' . $controller . 'Controller';
             /** @noinspection NotOptimalIfConditionsInspection */
@@ -114,10 +109,6 @@ class Router extends Component implements RouterInterface
         $this->_actionName = null;
 
         $command = $cmd ?: 'help:list';
-
-        if (isset($this->_commandAliases[strtolower($command)])) {
-            $command = $this->_commandAliases[strtolower($command)];
-        }
 
         $parts = explode(':', $command);
         switch (count($parts)) {
@@ -165,18 +156,5 @@ class Router extends Component implements RouterInterface
         $this->_controllerName = $controllerName;
         $this->_actionName = $actionName;
         return true;
-    }
-
-    /**
-     * @param string $alias
-     * @param string $command
-     *
-     * @return static
-     */
-    public function setAlias($alias, $command)
-    {
-        $this->_commandAliases[$alias] = $command;
-
-        return $this;
     }
 }

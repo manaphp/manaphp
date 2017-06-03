@@ -24,12 +24,4 @@ interface RouterInterface
      * @return bool
      */
     public function route($cmd);
-
-    /**
-     * @param string $alias
-     * @param string $command
-     *
-     * @return static
-     */
-    public function setAlias($alias, $command);
 }
