@@ -30,6 +30,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Cli\EnvironmentInterface   $environment
  * @property \MongoDB\Client                     $mongodb
  * @property \Elasticsearch\Client               $elasticsearch
+ * @property \ManaPHP\ZookeeperInterface         $zookeeper
  */
 abstract class Controller extends Component implements ControllerInterface
 {

@@ -54,6 +54,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Redis                                $redis
  * @property \MongoDB\Client                               $mongodb
  * @property \Elasticsearch\Client                         $elasticsearch
+ * @property \ManaPHP\ZookeeperInterface                   $zookeeper
  */
 abstract class Controller extends Component implements ControllerInterface
 {

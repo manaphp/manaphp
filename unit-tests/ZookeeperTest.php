@@ -125,7 +125,7 @@ class ZookeeperTest extends TestCase
         $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
 
         $count = 0;
-        
+
         $zookeeper->watchChildren('/manaphp', function ($e) use (&$count) {
             $count++;
         });
