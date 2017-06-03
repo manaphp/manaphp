@@ -95,6 +95,16 @@ interface FilesystemInterface
     public function dirCreate($dir, $mode = 0755);
 
     /**
+     * @param string $dir
+     * @param int    $mode
+     *
+     * @return void
+     *
+     * @throws \ManaPHP\Filesystem\Adapter\Exception
+     */
+    public function dirReCreate($dir, $mode = 0755);
+
+    /**
      * @param string $src
      * @param string $dst
      * @param bool   $overwrite

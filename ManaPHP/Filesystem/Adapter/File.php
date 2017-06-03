@@ -192,10 +192,6 @@ class File extends Component implements FilesystemInterface
                 }
             } elseif (is_dir($path)) {
                 $this->_dirDelete($path);
-
-                if (!rmdir($path)) {
-                    throw new FileException('delete `:dir` directory failed: :last_error_message', ['dir' => $path]);
-                }
             } else {
                 break;
             }
@@ -234,6 +230,21 @@ class File extends Component implements FilesystemInterface
     public function dirCreate($dir, $mode = 0755)
     {
         $this->_dirCreate($this->alias->resolve($dir), $mode);
+    }
+
+    /**
+     * @param string $dir
+     * @param int    $mode
+     *
+     * @return void
+     *
+     * @throws \ManaPHP\Filesystem\Adapter\Exception
+     */
+    public function dirReCreate($dir, $mode = 0755)
+    {
+        $this->dirDelete($dir);
+
+        $this->dirCreate($dir, $mode);
     }
 
     /**
@@ -283,8 +294,8 @@ class File extends Component implements FilesystemInterface
                     }
                 }
             } elseif (is_dir($srcPath)) {
-                $this->_dirCreate($dstPath);
                 if ($overwrite || !is_dir($dstPath)) {
+                    $this->_dirCreate($dstPath);
                     $this->_dirCopy($srcPath, $dstPath, $overwrite);
                 }
             } else {
@@ -322,9 +333,15 @@ class File extends Component implements FilesystemInterface
     public function glob($pattern, $flags = 0)
     {
         $pattern = $this->alias->resolve($pattern);
+
         if (strpos($pattern, 'phar://') === 0) {
-            $r = [];
             $dir = dirname($pattern);
+
+            if (!$this->filesystem->dirExists($dir)) {
+                return [];
+            }
+
+            $r = [];
             $p = basename($pattern);
             $h = opendir($dir);
             while (($file = readdir($h)) !== false) {
