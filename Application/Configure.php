@@ -25,6 +25,7 @@ class Configure extends \ManaPHP\Configure
          */
         $this->_masterKey = 'key';
 
+        //https://raw.githubusercontent.com/manaphp/download/master/manaphp_unit_test_db.sql
         $this->db = 'mysql://localhost/manaphp_unit_test?charset=utf8';
 
         $this->logger = new \stdClass();
