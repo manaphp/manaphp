@@ -321,8 +321,32 @@ class File extends Component implements FilesystemInterface
      */
     public function glob($pattern, $flags = 0)
     {
-        $r = glob($this->alias->resolve($pattern), $flags);
-        $r = $r !== false ? $r : [];
+        $pattern = $this->alias->resolve($pattern);
+        if (strpos($pattern, 'phar://') === 0) {
+            $r = [];
+            $dir = dirname($pattern);
+            $p = basename($pattern);
+            $h = opendir($dir);
+            while (($file = readdir($h)) !== false) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+
+                if (!fnmatch($p, $file)) {
+                    continue;
+                }
+
+                if (($flags & GLOB_ONLYDIR) && !is_dir($dir . '/' . $file)) {
+                    continue;
+                }
+
+                $r[] = $dir . '/' . $file;
+            }
+        } else {
+
+            $r = glob($pattern, $flags);
+            $r = $r !== false ? $r : [];
+        }
 
         if (DIRECTORY_SEPARATOR === '\\') {
             foreach ($r as $k => $v) {

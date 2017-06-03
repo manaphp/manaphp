@@ -104,7 +104,7 @@ class Loader
      */
     protected function _requireFile($file)
     {
-        if (PHP_EOL !== "\n") {
+        if (PHP_EOL !== "\n" && strpos($file, 'phar://') !== 0) {
             $realPath = str_replace('\\', '/', realpath($file));
             if ($realPath !== $file) {
                 trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
