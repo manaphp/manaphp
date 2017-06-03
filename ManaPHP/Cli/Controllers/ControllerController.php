@@ -42,7 +42,7 @@ class ControllerController extends Controller
         $controllerName = $controller . 'Controller';
         $controllerFile = '@app/' . $moduleName . '/Controllers/' . $controllerName . '.php';
 
-        $controllerNamespace = $this->alias->resolve('@ns.app' . '\\' . $moduleName . '\\Controllers');
+        $controllerNamespace = $this->alias->resolveNS('@ns.app' . '\\' . $moduleName . '\\Controllers');
 
         if (!$force && $this->filesystem->fileExists($controllerFile)) {
             return $this->console->error('`:controller` controller exists already', ['controller' => $controllerNamespace . '\\' . $controller]);

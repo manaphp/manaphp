@@ -260,7 +260,7 @@ class View extends Component implements ViewInterface
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
-        $widgetClassName = $this->alias->resolve("@ns.widgets\\{$widget}Widget");
+        $widgetClassName = $this->alias->resolveNS("@ns.widgets\\{$widget}Widget");
 
         if (!class_exists($widgetClassName)) {
             throw new ViewException('`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, ['widget' => $widget, 'class' => $widgetClassName]);

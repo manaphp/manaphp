@@ -184,7 +184,7 @@ class Router extends Component implements RouterInterface
             $groupClassName = get_class($group);
             $groupInstance = $group;
         } else {
-            $groupClassName = strrpos($group, '\\') ? $group : $this->alias->resolve("@ns.app\\$group\\RouteGroup");
+            $groupClassName = strrpos($group, '\\') ? $group : $this->alias->resolveNS("@ns.app\\$group\\RouteGroup");
             $groupInstance = null;
         }
 

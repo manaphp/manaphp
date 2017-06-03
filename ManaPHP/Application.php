@@ -111,7 +111,7 @@ abstract class Application extends Component implements ApplicationInterface
 
     public function registerServices()
     {
-        $configureClass = $this->alias->resolve('@ns.app\\Configure');
+        $configureClass = $this->alias->resolveNS('@ns.app\\Configure');
         if (class_exists($configureClass)) {
             $this->_dependencyInjector->setShared('configure', new $configureClass);
         }

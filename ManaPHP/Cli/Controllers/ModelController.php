@@ -33,10 +33,10 @@ class ModelController extends Controller
 
         if ($module === '') {
             $modelDirectory = '@app/Models';
-            $modelNamespace = $this->alias->resolve('@ns.app\Models');
+            $modelNamespace = $this->alias->resolveNS('@ns.app\Models');
         } else {
             $modelDirectory = "@app/$module/Models";
-            $modelNamespace = $this->alias->resolve("@ns.app\\$module\\Models");
+            $modelNamespace = $this->alias->resolveNS("@ns.app\\$module\\Models");
         }
         $modelExtends = $this->filesystem->fileExists("$modelDirectory/ModelBase.php") ? 'ModelBase' : '\ManaPHP\Mvc\Model';
 

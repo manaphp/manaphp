@@ -36,4 +36,11 @@ interface AliasInterface
      * @return string
      */
     public function resolve($path);
+
+    /**
+     * @param string $ns
+     *
+     * @return string
+     */
+    public function resolveNS($ns);
 }

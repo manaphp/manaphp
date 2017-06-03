@@ -87,7 +87,7 @@ class Application extends \ManaPHP\Application
         $this->alias->set('@ns.module', '@ns.app\\' . $moduleName);
         $this->alias->set('@ns.controllers', '@ns.module\\Controllers');
         $this->alias->set('@ns.widgets', '@ns.module\\Widgets');
-        $moduleClassName = $this->alias->resolve('@ns.module\\Module');
+        $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
 
         $this->beforeStartModule();
 

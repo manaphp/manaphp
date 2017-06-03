@@ -117,4 +117,27 @@ class Alias extends Component implements AliasInterface
 
         return str_replace($alias, $this->_aliases[$alias], $path);
     }
+
+    /**
+     * @param string $ns
+     *
+     * @return string
+     * @throws \ManaPHP\Alias\Exception
+     */
+    public function resolveNS($ns)
+    {
+        if ($ns[0] !== '@') {
+            return $ns;
+        }
+
+        $parts = explode('\\', $ns, 2);
+
+        $alias = $parts[0];
+        if (!isset($this->_aliases[$alias])) {
+
+            throw new AliasException('`:alias` is not exists for `:namespace`'/**m0aac421937afe5850*/, ['alias' => $alias, 'namespace' => $ns]);
+        }
+
+        return str_replace($alias, $this->_aliases[$alias], $ns);
+    }
 }
