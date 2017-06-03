@@ -68,7 +68,7 @@ class Sqlite extends Db
             if ($column['pk'] === '1') {
                 $primaryKeys[] = $columnName;
             } else {
-                $nonPrimaryKeys = $columnName;
+                $nonPrimaryKeys[] = $columnName;
             }
 
             if ($column['pk'] === '1' && $column['type'] === 'INTEGER') {

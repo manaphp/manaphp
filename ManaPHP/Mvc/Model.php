@@ -760,7 +760,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         $columnValues = [];
-        foreach ($this->modelsMetadata->getAttributes($this) as $attributeField) {
+        foreach ($this->modelsMetadata->getNonPrimaryKeyAttributes($this) as $attributeField) {
             if (isset($this->{$attributeField})) {
                 /** @noinspection NestedPositiveIfStatementsInspection */
                 if (!isset($this->_snapshot[$attributeField]) || $this->{$attributeField} !== $this->_snapshot[$attributeField]) {

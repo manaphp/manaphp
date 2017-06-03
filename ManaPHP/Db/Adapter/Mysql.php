@@ -121,7 +121,7 @@ class Mysql extends Db
             if ($column[3] === 'PRI') {
                 $primaryKeys[] = $columnName;
             } else {
-                $nonPrimaryKeys = $columnName;
+                $nonPrimaryKeys[] = $columnName;
             }
 
             if ($column[5] === 'auto_increment') {
