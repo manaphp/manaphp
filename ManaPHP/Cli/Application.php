@@ -94,8 +94,6 @@ class Application extends \ManaPHP\Application
     {
         $this->registerServices();
 
-        $this->configure->debug && $this->debugger->start();
-
         exit($this->handle());
     }
 }
