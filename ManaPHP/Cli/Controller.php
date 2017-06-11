@@ -28,6 +28,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Cli\RouterInterface        $cliRouter
  * @property \ManaPHP\Redis                      $redis
  * @property \ManaPHP\Cli\EnvironmentInterface   $environment
+ * @property \ManaPHP\Net\ConnectivityInterface  $netConnectivity
  * @property \MongoDB\Client                     $mongodb
  * @property \Elasticsearch\Client               $elasticsearch
  * @property \ManaPHP\ZookeeperInterface         $zookeeper

@@ -60,6 +60,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\StopwatchInterface                   $stopwatch
  * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier
  * @property \ManaPHP\Cli\EnvironmentInterface             $environment
+ * @property \ManaPHP\Net\ConnectivityInterface            $netConnectivity
  */
 class Di implements DiInterface
 {
