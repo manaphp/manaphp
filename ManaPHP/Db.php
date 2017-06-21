@@ -121,6 +121,8 @@ abstract class Db extends Component implements DbInterface
                 $type = \PDO::PARAM_BOOL;
             } elseif ($value === null) {
                 $type = \PDO::PARAM_NULL;
+            } elseif (is_float($value)) {
+                $type = \PDO::PARAM_STR;
             } else {
                 throw new DbException('The `:type` type of `:parameter` parameter is not support'/**m06d8e38e608d5556f*/, ['parameter' => $parameter, 'type' => gettype($value)]);
             }

@@ -419,6 +419,21 @@ class MvcModelTest extends TestCase
         $this->assertTrue($actor->hasChanged(['first_name']));
     }
 
+    public function test_assignment()
+    {
+        $payment = Payment::findFirst(1);
+        $this->assertEquals(2.99, round($payment->amount, 2));
+
+        $payment->amount = new \ManaPHP\Db\Assignment(0.01, '+');
+        $payment->save();
+        $this->assertEquals(3, round(Payment::findFirst(1)->amount, 2));
+
+        $payment = Payment::findFirst(1);
+        $payment->amount = new \ManaPHP\Db\Assignment(0.01, '-');
+        $payment->save();
+        $this->assertEquals(2.99, round(Payment::findFirst(1)->amount, 2));
+    }
+
 //    public function test_findFirstBy()
 //    {
 //        $actor = Actor::findFirstByActorId(2);
