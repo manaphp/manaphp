@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Db\AssignmentInterface;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Utility\Text;
 
@@ -409,8 +410,15 @@ abstract class Db extends Component implements DbInterface
             if (is_int($k)) {
                 $setColumns[] = $v;
             } else {
-                $setColumns[] = "[$k]=:$k";
-                $bind[$k] = $v;
+                if ($v instanceof AssignmentInterface) {
+                    $v->setFieldName($k);
+                    $setColumns[] = $v->getSql();
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
+                    $bind = array_merge($bind, $v->getBind());
+                } else {
+                    $setColumns[] = "[$k]=:$k";
+                    $bind[$k] = $v;
+                }
             }
         }
 
