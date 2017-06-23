@@ -22,11 +22,22 @@ class Crossword
 
         $word = strtolower($word);
 
+        $likeWord = null;
+        $likeCount = 0;
         /** @noinspection ForeachSourceInspection */
         foreach ($words as $v) {
-            if (strtolower($v) === $word) {
+            if ($v === $word || strtolower($v) === $word) {
                 return $v;
             }
+
+            if ($likeCount <= 1 && strpos($v, $word) === 0) {
+                $likeWord = $v;
+                $likeCount++;
+            }
+        }
+
+        if ($likeCount === 1) {
+            return $likeWord;
         }
 
         /** @noinspection ForeachSourceInspection */

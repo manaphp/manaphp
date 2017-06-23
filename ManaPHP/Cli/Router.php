@@ -126,13 +126,16 @@ class Router extends Component implements RouterInterface
 
         if ($this->_guessCommand && strlen($controllerName) <= 4) {
             $controllers = $this->_getControllers();
+            foreach ($controllers as $k => $controller) {
+                $controllers[$k] = Text::underscore($controller);
+            }
+
             $controllerName = $this->crossword->guess($controllers, $controllerName);
             if (!$controllerName) {
                 return false;
             }
-        } else {
-            $controllerName = Text::camelize($controllerName);
         }
+        $controllerName = Text::camelize($controllerName);
 
         if ($actionName === null) {
             $commands = $this->_getCommands($controllerName);
@@ -142,7 +145,7 @@ class Router extends Component implements RouterInterface
                 $actionName = 'help';
             }
         } else {
-            if ($this->_guessCommand && strlen($actionName) <= 2) {
+            if ($this->_guessCommand) {
                 $commands = $this->_getCommands($controllerName);
                 $actionName = $this->crossword->guess($commands, $actionName);
                 if (!$actionName) {
