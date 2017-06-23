@@ -61,7 +61,7 @@ abstract class Controller extends Component implements ControllerInterface
                     $command = str_pad($controller . ':' . basename($method, 'Command'), 13) . ' ' . $description;
                 } elseif ($tag === '@CliParam') {
                     $parts = explode(' ', $description, 2);
-                    $params[trim($parts[0])] = trim($parts[1]);
+                    $params[trim($parts[0])] = isset($parts[1]) ? trim($parts[1]) : '';
                 }
             }
 
@@ -69,7 +69,6 @@ abstract class Controller extends Component implements ControllerInterface
             if (count($params) !== 0) {
                 $this->console->writeLn('  Options:');
 
-                $maxLength = max(max(array_map('strlen', array_keys($params))), 1);
                 foreach ($params as $name => $value) {
                     $parts = explode(',', $name);
                     if (count($parts) === 2) {
@@ -77,7 +76,16 @@ abstract class Controller extends Component implements ControllerInterface
                     } else {
                         $option = '   ' . $name;
                     }
-                    $this->console->writeLn('    ' . str_pad($option, $maxLength + 1, ' ') . ' ' . $value);
+
+                    if ($option !== $name) {
+                        $params[$option] = $value;
+                        unset($params[$name]);
+                    }
+                }
+
+                $maxLength = max(max(array_map('strlen', array_keys($params))), 1);
+                foreach ($params as $name => $value) {
+                    $this->console->writeLn('    ' . str_pad($name, $maxLength + 1, ' ') . ' ' . $value);
                 }
             }
         }
