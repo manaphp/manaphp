@@ -86,7 +86,7 @@ class HelpController extends Controller
                 continue;
             }
 
-            $command = $controller . ($match[1] !== 'default' ? (':' . $match[1]) : '');
+            $command = $controller . ' ' . $match[1];
 
             $rm = $rc->getMethod($match[0]);
             $comment = $rm->getDocComment();
@@ -95,10 +95,6 @@ class HelpController extends Controller
             } else {
                 $commands[$command] = '';
             }
-        }
-
-        if (count($commands) === 1) {
-            $commands = [$controller => array_values($commands)[0]];
         }
 
         return $commands;

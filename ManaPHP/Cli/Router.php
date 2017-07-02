@@ -99,29 +99,22 @@ class Router extends Component implements RouterInterface
     }
 
     /**
-     * @param string $cmd
+     * @param array $args
      *
      * @return bool
      */
-    public function route($cmd)
+    public function route($args)
     {
         $this->_controllerName = null;
         $this->_actionName = null;
 
-        $command = $cmd ?: 'help:list';
+        list(, $controllerName, $actionName) = array_pad($args, 3, null);
+        if ($controllerName === null) {
+            $controllerName = 'help';
+        }
 
-        $parts = explode(':', $command);
-        switch (count($parts)) {
-            case 1:
-                $controllerName = $parts[0];
-                $actionName = null;
-                break;
-            case 2:
-                $controllerName = $parts[0];
-                $actionName = $parts[1];
-                break;
-            default:
-                return false;
+        if ($actionName === null) {
+            $actionName = $controllerName === 'help' ? 'list' : 'help';
         }
 
         if ($this->_guessCommand && strlen($controllerName) <= 4) {

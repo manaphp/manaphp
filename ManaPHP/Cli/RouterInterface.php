@@ -19,9 +19,9 @@ interface RouterInterface
     public function getActionName();
 
     /**
-     * @param string $cmd
+     * @param array $args
      *
      * @return bool
      */
-    public function route($cmd);
+    public function route($args);
 }
