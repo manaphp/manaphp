@@ -65,7 +65,7 @@ class Cookies extends Component implements CookiesInterface
         ];
 
         if ($name[0] === '!') {
-            $name = substr($name, 1);
+            $name = (string)substr($name, 1);
             $value = $this->_encrypt($value);
         }
 
@@ -109,7 +109,7 @@ class Cookies extends Component implements CookiesInterface
     public function get($name)
     {
         if ($name[0] === '!') {
-            $name = substr($name, 1);
+            $name = (string)substr($name, 1);
             if (isset($_COOKIE[$name])) {
                 return $this->_decrypt($_COOKIE[$name]);
             }
@@ -133,7 +133,7 @@ class Cookies extends Component implements CookiesInterface
     public function has($name)
     {
         if ($name[0] === '!') {
-            $name = substr($name, 1);
+            $name = (string)substr($name, 1);
         }
 
         return isset($_COOKIE[$name]);
@@ -149,7 +149,7 @@ class Cookies extends Component implements CookiesInterface
     public function delete($name)
     {
         if ($name[0] === '!') {
-            $name = substr($name, 1);
+            $name = (string)substr($name, 1);
         }
 
         unset($this->_cookies[$name], $_COOKIE[$name]);

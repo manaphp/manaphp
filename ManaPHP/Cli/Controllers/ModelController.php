@@ -20,6 +20,7 @@ class ModelController extends Controller
      * @CliParam   --module,-m  the module name
      * @CliParam   --pattern,-p filter the tables with fnmatch
      * @CliParam   --table,-t   which table to create model
+     * @throws \ManaPHP\Db\Exception
      */
     public function createCommand()
     {
@@ -75,6 +76,8 @@ class ModelController extends Controller
 
             $this->filesystem->filePut($modelFile, $this->renderer->render($templateFile, $vars));
         }
+
+        return 0;
     }
 
     /**
@@ -82,6 +85,7 @@ class ModelController extends Controller
      * @CliParam   --pattern,-p  filter tables with fnmatch
      *
      * @return void
+     * @throws \ManaPHP\Db\Exception
      */
     public function tablesCommand()
     {

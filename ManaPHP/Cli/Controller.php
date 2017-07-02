@@ -50,6 +50,7 @@ abstract class Controller extends Component implements ControllerInterface
 
             $command = $controller . ':' . basename($method, 'Command');
             $params = [];
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $rm = new \ReflectionMethod($this, $method);
             $lines = explode("\n", $rm->getDocComment());
             foreach ($lines as $line) {

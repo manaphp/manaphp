@@ -149,5 +149,7 @@ EOD;
 EOD;
             $this->filesystem->filePut($moduleDir . '/Views/Index/Index.sword', $viewIndexContent);
         }
+
+        return 0;
     }
 }

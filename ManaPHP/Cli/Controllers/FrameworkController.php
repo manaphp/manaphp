@@ -65,6 +65,8 @@ class FrameworkController extends Controller
         $this->filesystem->filePut($outputFile, $contents);
 
         $this->console->writeLn('lite file generated in `:output` successfully ', ['output' => $outputFile]);
+
+        return 0;
     }
 
     /**

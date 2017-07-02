@@ -545,7 +545,7 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return "<?php echo \$view->getContent(); ?>";
+        return '<?php echo $view->getContent(); ?>';
     }
 
     /**
@@ -558,7 +558,7 @@ class Compiler extends Component
     protected function _compilePhp($expression)
     {
         if ($expression[0] === '(') {
-            $expression = substr($expression, 1, -1);
+            $expression = (string)substr($expression, 1, -1);
         }
 
         return $expression ? "<?php {$expression}; ?>" : '<?php ';
@@ -645,7 +645,7 @@ class Compiler extends Component
      */
     protected function _compileJson($expression)
     {
-        $expression = substr($expression, 1, -1);
+        $expression = (string)substr($expression, 1, -1);
         return "<?php echo json_encode({$expression}, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ;?>";
     }
 

@@ -43,7 +43,7 @@ class Request extends Component implements RequestInterface
      * @param string $rule
      * @param mixed  $defaultValue
      *
-     * @return string|null
+     * @return array|string|null
      * @throws \ManaPHP\Http\Request\Exception
      */
     protected function _getHelper($source, $name = null, $rule = null, $defaultValue = '')
@@ -395,7 +395,7 @@ class Request extends Component implements RequestInterface
      * @param string $name
      * @param string $default
      *
-     * @return string|null
+     * @return array|string|null
      */
     public function getHeader($name = null, $default = null)
     {

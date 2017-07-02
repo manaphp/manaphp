@@ -13,6 +13,7 @@ class Mssql extends Db
      * @param array|string $options
      *
      * @throws \ManaPHP\Db\Exception
+     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
     public function __construct($options)
     {
@@ -172,17 +173,17 @@ class Mssql extends Db
 
     public function dropTable($source)
     {
-        throw new Exception('not implement');
+        throw new MssqlException('not implement');
     }
 
     public function getTables($schema = null)
     {
-        throw new Exception('not implement');
+        throw new MssqlException('not implement');
     }
 
     public function tableExists($table, $schema = null)
     {
-        throw new Exception('not implement');
+        throw new MssqlException('not implement');
     }
 
     public function buildSql($params)

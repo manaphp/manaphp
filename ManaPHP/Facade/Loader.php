@@ -1,4 +1,4 @@
-<?
+<?php
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;

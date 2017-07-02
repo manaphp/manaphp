@@ -128,6 +128,7 @@ class File extends Component implements AdapterInterface
             trigger_error(strtr('write `:file` session file failed: :last_error_message'/**m0f7ee56f71e1ec344*/, [':file' => $file]));
         }
 
+        /** @noinspection UsageOfSilenceOperatorInspection */
         @touch($file, time() + ini_get('session.gc_maxlifetime'));
         clearstatcache(true, $file);
 
@@ -169,7 +170,7 @@ class File extends Component implements AdapterInterface
      */
     protected function _clean($dir)
     {
-        foreach (scandir($dir) as $item) {
+        foreach (scandir($dir, SCANDIR_SORT_ASCENDING) as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }

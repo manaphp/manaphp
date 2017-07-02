@@ -67,6 +67,7 @@ class $facadeClassName extends Facade
 {
 
 EOD;
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $rc = new \ReflectionClass($interfaceName);
         $lines = file($rc->getFileName());
         foreach ($rc->getMethods() as $method) {

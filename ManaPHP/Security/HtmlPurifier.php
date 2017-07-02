@@ -123,6 +123,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
 
         $doc = new \DOMDocument();
         try {
+            /** @noinspection UsageOfSilenceOperatorInspection */
             @$doc->loadHTML($html);
         } catch (\Exception $e) {
             return '';

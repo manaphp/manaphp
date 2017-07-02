@@ -131,6 +131,7 @@ class File extends Component implements AdapterInterface
             throw new FileException('write `:file` cache file failed: :last_error_message'/**m0f7ee56f71e1ec344*/, ['file' => $file]);
         }
 
+        /** @noinspection UsageOfSilenceOperatorInspection */
         @touch($file, time() + $ttl);
         clearstatcache(true, $file);
     }

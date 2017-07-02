@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mvc\Model\Metadata\Adapter;
 
 use ManaPHP\Mvc\Model\Metadata;
@@ -39,7 +40,7 @@ class Apc extends Metadata
         }
 
         if (is_string($options)) {
-            $options['prefix'] = $options;
+            $options = ['prefix' => $options];
         }
 
         if (isset($options['prefix'])) {

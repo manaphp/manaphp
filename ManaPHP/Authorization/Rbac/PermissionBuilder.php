@@ -21,6 +21,7 @@ class PermissionBuilder extends Component
      */
     public function getControllerPermissions($controller)
     {
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $rc = new \ReflectionClass($controller);
 
         if (preg_match('#^[^/]*/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $controller), $match) !== 1) {

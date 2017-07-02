@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP\Cli;
 
-use ManaPHP\Utility\Text;
-
 /**
  * Class ManaPHP\Cli\Application
  *

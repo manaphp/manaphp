@@ -252,6 +252,7 @@ class Di implements DiInterface
             } elseif ($count === 3) {
                 $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
             } else {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $reflection = new \ReflectionClass($definition);
                 $instance = $reflection->newInstanceArgs($parameters);
             }

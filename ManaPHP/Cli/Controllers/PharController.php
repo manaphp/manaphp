@@ -14,6 +14,7 @@ class PharController extends Controller
         $pharFile = $this->alias->resolve('@root/manacli.phar');
 
         $this->console->writeLn('cleaning `:dir` dir',['dir'=>$this->alias->resolve('@phar')]);
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $this->filesystem->dirReCreate('@phar');
 
         $this->console->writeLn('copying manaphp framework files.');
