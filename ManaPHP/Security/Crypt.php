@@ -43,7 +43,7 @@ class Crypt extends Component implements CryptInterface
             $this->_masterKey = $options['masterKey'];
         }
 
-        $this->_mcrypt = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+        $this->_mcrypt = @mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
     }
 
     /**
