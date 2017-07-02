@@ -18,13 +18,6 @@ namespace ManaPHP;
 interface ConfigureInterface
 {
     /**
-     * @param string $type
-     *
-     * @return string
-     */
-    public function getSecretKey($type);
-
-    /**
      * @return static
      */
     public function reset();

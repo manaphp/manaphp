@@ -1,4 +1,5 @@
 <?php
+
 namespace Application;
 
 class Configure extends \ManaPHP\Configure
@@ -23,7 +24,7 @@ class Configure extends \ManaPHP\Configure
          *  will not be safe. Please do this before deploying an application!
          *
          */
-        $this->_masterKey = 'key';
+        $this->crypt->setMasterKey('key');
 
         //https://raw.githubusercontent.com/manaphp/download/master/manaphp_unit_test_db.sql
         $this->db = 'mysql://localhost/manaphp_unit_test?charset=utf8';

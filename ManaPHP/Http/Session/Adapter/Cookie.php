@@ -42,7 +42,7 @@ class Cookie extends Component implements AdapterInterface
         parent::setDependencyInjector($dependencyInjector);
 
         if ($this->_key === null) {
-            $this->_key = $this->_dependencyInjector->configure->getSecretKey('cookieSession');
+            $this->_key = $this->_dependencyInjector->crypt->getDerivedKey('cookieSession');
         }
 
         return $this;

@@ -18,7 +18,7 @@ interface CryptInterface
      *
      * @return string
      */
-    public function encrypt($text, $key = null);
+    public function encrypt($text, $key);
 
     /**
      * Decrypts a text
@@ -28,5 +28,17 @@ interface CryptInterface
      *
      * @return string
      */
-    public function decrypt($text, $key = null);
+    public function decrypt($text, $key);
+
+    /**
+     * @param string $key
+     * @return static
+     */
+    public function setMasterKey($key);
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    public function getDerivedKey($type);
 }

@@ -4,6 +4,7 @@
  * User: Mark
  * Date: 2016/1/18
  */
+
 namespace ManaPHP;
 
 /**
@@ -11,11 +12,12 @@ namespace ManaPHP;
  *
  * @package component
  *
- * @property \ManaPHP\AliasInterface         $alias
- * @property \ManaPHP\Event\ManagerInterface $eventsManager
- * @property \ManaPHP\FilesystemInterface    $filesystem
- * @property \ManaPHP\LoggerInterface        $logger
- * @property \Application\Configure          $configure
+ * @property \ManaPHP\AliasInterface          $alias
+ * @property \ManaPHP\Event\ManagerInterface  $eventsManager
+ * @property \ManaPHP\FilesystemInterface     $filesystem
+ * @property \ManaPHP\LoggerInterface         $logger
+ * @property \Application\Configure           $configure
+ * @property \ManaPHP\Security\CryptInterface $crypt
  */
 class Component implements ComponentInterface
 {

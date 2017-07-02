@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Authentication\Token\Adapter;
 
 use ManaPHP\Authentication\Token\Adapter\Mwt\Exception as MwtException;
@@ -50,7 +51,7 @@ class Mwt extends Component implements TokenInterface
             $this->_type = $options['type'];
         }
 
-        $this->_keys = isset($options['keys']) ? $options['keys'] : [$this->configure->getSecretKey('mwt:' . $this->_type)];
+        $this->_keys = isset($options['keys']) ? $options['keys'] : [$this->crypt->getDerivedKey('mwt:' . $this->_type)];
 
         if (isset($options['ttl'])) {
             $this->_ttl = $options['ttl'];

@@ -31,7 +31,7 @@ class Secint extends Component implements SecintInterface
             $options = ['key' => $options];
         }
 
-        $this->_key = isset($options['key']) ? $options['key'] : $this->configure->getSecretKey('secint');
+        $this->_key = isset($options['key']) ? $options['key'] : $this->crypt->getDerivedKey('secint');
     }
 
     /**

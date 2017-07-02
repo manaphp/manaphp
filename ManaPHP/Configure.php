@@ -23,11 +23,6 @@ class Configure extends Component implements ConfigureInterface, \ArrayAccess
     public $appID = 'manaphp';
 
     /**
-     * @var string
-     */
-    protected $_masterKey = 'key';
-
-    /**
      * @var \ManaPHP\Configure\EngineInterface[]
      */
     protected $_resolved = [];
@@ -79,16 +74,6 @@ class Configure extends Component implements ConfigureInterface, \ArrayAccess
             }
         }
         return $data;
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return string
-     */
-    public function getSecretKey($type)
-    {
-        return md5($this->_masterKey . ':' . $type);
     }
 
     /**

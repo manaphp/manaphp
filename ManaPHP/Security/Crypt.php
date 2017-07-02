@@ -15,7 +15,7 @@ class Crypt extends Component implements CryptInterface
     /**
      * @var string
      */
-    protected $_key;
+    protected $_masterKey = null;
 
     /**
      * @var resource
@@ -36,10 +36,12 @@ class Crypt extends Component implements CryptInterface
         }
 
         if (is_string($options)) {
-            $options = ['key' => $options];
+            $options = ['masterKey' => $options];
         }
 
-        $this->_key = isset($options['key']) ? $options['key'] : $this->configure->getSecretKey('crypt');
+        if (isset($options['masterKey'])) {
+            $this->_masterKey = $options['masterKey'];
+        }
 
         $this->_mcrypt = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
     }
@@ -57,12 +59,8 @@ class Crypt extends Component implements CryptInterface
      * @return string
      * @throws \ManaPHP\Security\Crypt\Exception
      */
-    public function encrypt($text, $key = null)
+    public function encrypt($text, $key)
     {
-        if ($key === null) {
-            $key = $this->_key;
-        }
-
         $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
         $encryptKey = md5($key, true);
 
@@ -87,12 +85,8 @@ class Crypt extends Component implements CryptInterface
      * @return string
      * @throws \ManaPHP\Security\Crypt\Exception
      */
-    public function decrypt($text, $key = null)
+    public function decrypt($text, $key)
     {
-        if ($key === null) {
-            $key = $this->_key;
-        }
-
         $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
 
         if (strlen($text) < $ivSize * 3) {
@@ -118,5 +112,28 @@ class Crypt extends Component implements CryptInterface
         }
 
         return $plainText;
+    }
+
+    /**
+     * @param string $key
+     * @return static
+     */
+    public function setMasterKey($key)
+    {
+        $this->_masterKey = $key;
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     * @throws \ManaPHP\Security\Crypt\Exception
+     */
+    public function getDerivedKey($type)
+    {
+        if ($this->_masterKey === null) {
+            throw new CryptException('getDerivedKey for `:type` type Failed: master key is not set', ['type' => $type]);
+        }
+
+        return md5($this->_masterKey . ':' . $type);
     }
 }
