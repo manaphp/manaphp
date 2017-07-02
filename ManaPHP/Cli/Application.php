@@ -59,8 +59,6 @@ class Application extends \ManaPHP\Application
         $controllerName = $this->cliRouter->getControllerName();
         $actionName = lcfirst($this->cliRouter->getActionName());
 
-        $this->console->writeLn('executed command is `' . Text::underscore($controllerName) . ':' . Text::underscore($actionName) . '`');
-
         $controllerClassName = null;
 
         foreach (['@ns.app\\Cli\\Controllers', '@ns.app\\Cli', '@ns.app', 'ManaPHP\\Cli\\Controllers'] as $prefix) {

@@ -35,6 +35,9 @@ use ManaPHP\Component;
  */
 abstract class Controller extends Component implements ControllerInterface
 {
+    /**
+     * @CliCommand show the help information
+     */
     public function helpCommand()
     {
         $parts = explode('\\', get_class($this));

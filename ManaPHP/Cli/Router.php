@@ -135,10 +135,12 @@ class Router extends Component implements RouterInterface
                 return false;
             }
         }
-        $controllerName = Text::camelize($controllerName);
+        $this->_controllerName = Text::camelize($controllerName);
 
-        if ($actionName === null) {
-            $commands = $this->_getCommands($controllerName);
+        if ($actionName === 'help') {
+            null;
+        } elseif ($actionName === null) {
+            $commands = $this->_getCommands($this->_controllerName);
             if (count($commands) === 1) {
                 $actionName = $commands[0];
             } else {
@@ -146,18 +148,15 @@ class Router extends Component implements RouterInterface
             }
         } else {
             if ($this->_guessCommand) {
-                $commands = $this->_getCommands($controllerName);
+                $commands = $this->_getCommands($this->_controllerName);
                 $actionName = $this->crossword->guess($commands, $actionName);
                 if (!$actionName) {
                     return false;
                 }
-            } else {
-                $actionName = lcfirst(Text::camelize($actionName));
             }
         }
 
-        $this->_controllerName = $controllerName;
-        $this->_actionName = $actionName;
+        $this->_actionName = lcfirst(Text::camelize($actionName));
         return true;
     }
 }
