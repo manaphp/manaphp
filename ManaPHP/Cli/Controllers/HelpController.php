@@ -31,16 +31,11 @@ class HelpController extends Controller
 
         $commands = [];
 
-        foreach (['@app/Cli/Controllers', '@app/Controllers', '@app'] as $dir) {
-            if ($this->filesystem->dirExists($dir)) {
-                foreach ($this->filesystem->glob($dir . '/*Controller.php') as $file) {
-                    if (preg_match('#(\w+)Controller\.php$#', $file, $matches)) {
-                        $controllerClassName = strtr($file, ['.php' => '', $this->alias->resolve('@root/') => '', '/' => '\\']);
-                        /** @noinspection SlowArrayOperationsInLoopInspection */
-                        $commands = array_merge($commands, $this->_getCommands($controllerClassName));
-                    }
-                }
-                break;
+        foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
+            if (preg_match('#(\w+)Controller\.php$#', $file, $matches)) {
+                $controllerClassName = strtr($file, ['.php' => '', $this->alias->resolve('@root/') => '', '/' => '\\']);
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $commands = array_merge($commands, $this->_getCommands($controllerClassName));
             }
         }
 
