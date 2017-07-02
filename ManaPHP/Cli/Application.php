@@ -48,9 +48,8 @@ class Application extends \ManaPHP\Application
     {
         $this->_args = $args ?: $GLOBALS['argv'];
 
-        $command = count($this->_args) === 1 ? null : $this->_args[1];
-        if (!$this->cliRouter->route($command)) {
-            $this->console->writeLn('command name is invalid: ' . $command);
+        if (!$this->cliRouter->route($this->_args)) {
+            $this->console->writeLn('command name is invalid: ' . implode(' ',$this->_args));
             return 1;
         }
 
@@ -59,7 +58,7 @@ class Application extends \ManaPHP\Application
 
         $controllerClassName = null;
 
-        foreach (['@ns.app\\Cli\\Controllers', '@ns.app\\Cli', '@ns.app', 'ManaPHP\\Cli\\Controllers'] as $prefix) {
+        foreach (['@ns.cli', 'ManaPHP\\Cli\\Controllers'] as $prefix) {
             $class = $this->alias->resolveNS($prefix . '\\' . $controllerName . 'Controller');
 
             if (class_exists($class)) {
