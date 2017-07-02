@@ -4,12 +4,12 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
-class LiteController extends Controller
+class FrameworkController extends Controller
 {
     /**
      * @var string
      */
-    protected $_tmpFile = '@root/manaphp_lite.tmp';
+    protected $_tmpLiteFile = '@root/manaphp_lite.tmp';
 
     /**
      * @CliCommand build manaphp framework lite php file
@@ -17,7 +17,7 @@ class LiteController extends Controller
      * @CliParam   --output,-o  output file name default:@root/manaphp_lite.php
      *
      */
-    public function defaultCommand()
+    public function liteCommand()
     {
         if (!$this->filesystem->fileExists('@root/manaphp_lite.json')) {
             $this->filesystem->fileCopy('@manaphp/manaphp_lite.json', '@root/manaphp_lite.json');
@@ -74,8 +74,8 @@ class LiteController extends Controller
      */
     protected function _strip_whitespace($str)
     {
-        $this->filesystem->filePut($this->_tmpFile, $str);
-        $str = php_strip_whitespace($this->alias->resolve($this->_tmpFile));
+        $this->filesystem->filePut($this->_tmpLiteFile, $str);
+        $str = php_strip_whitespace($this->alias->resolve($this->_tmpLiteFile));
 //        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments
 //        $str = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $str);//remove blank lines
 //        $str = preg_replace('#([\r\n]+)\s+{#', '{', $str);//repositionClose;
@@ -85,6 +85,6 @@ class LiteController extends Controller
 
     public function __destruct()
     {
-        $this->filesystem->fileDelete($this->_tmpFile);
+        $this->filesystem->fileDelete($this->_tmpLiteFile);
     }
 }
