@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 /**
@@ -19,9 +20,9 @@ interface AliasInterface
     /**
      * @param string $name
      *
-     * @return string|false
+     * @return array|string|false
      */
-    public function get($name);
+    public function get($name = null);
 
     /**
      * @param string $name

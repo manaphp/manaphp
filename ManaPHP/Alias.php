@@ -63,11 +63,15 @@ class Alias extends Component implements AliasInterface
     /**
      * @param string $name
      *
-     * @return bool|string
+     * @return bool|string|array
      * @throws \ManaPHP\Alias\Exception
      */
-    public function get($name)
+    public function get($name = null)
     {
+        if ($name === null) {
+            return $this->_aliases;
+        }
+
         if ($name[0] !== '@') {
             throw new AliasException('`:name` must start with `@`'/**m0f809631289d02f8e*/, ['name' => $name]);
         }
