@@ -154,6 +154,11 @@ class BashCompletionController extends Controller
         return $filtered_words;
     }
 
+    /**
+     * @CliCommand complete for bash
+     *
+     * @return int
+     */
     public function completeCommand()
     {
         $arguments = $this->arguments->get();
@@ -189,6 +194,39 @@ class BashCompletionController extends Controller
 
         $this->console->writeLn(implode(' ', $this->_filterWords($words, $current)));
 
+        return 0;
+    }
+
+    /**
+     * @CliCommand install bash completion script
+     */
+    public function installCommand()
+    {
+        $content = <<<'EOT'
+#!/bin/bash
+
+_manacli(){
+   COMPREPLY=( $(./manacli.php bash_completion complete $COMP_CWORD "${COMP_WORDS[@]}") )
+   return 0;
+}
+
+complete -F _manacli manacli
+EOT;
+        $file = '/etc/bash_completion.d/manacli';
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            return $this->console->error('Windows system is not support bash completion!');
+        }
+
+        try {
+            $this->filesystem->filePut($file, PHP_EOL === '\n' ? $content : str_replace("\r", '', $content));
+            $this->filesystem->chmod($file, 0755);
+        } catch (\Exception $e) {
+            return $this->console->error('write bash completion script failed: ', $e->getMessage());
+        }
+
+        $this->console->writeLn('install bash completion script successfully');
+        $this->console->writeLn("please execute `source $file` command to become effective");
         return 0;
     }
 }
