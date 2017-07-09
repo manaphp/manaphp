@@ -48,6 +48,11 @@ class Client extends Component implements ClientInterface
     protected $_peek = false;
 
     /**
+     * @var string
+     */
+    protected $_proxy = '';
+
+    /**
      * Client constructor.
      *
      * @param array $options
@@ -55,8 +60,6 @@ class Client extends Component implements ClientInterface
      *    (integer, seconds, default: 10)
      *    - `max_redirects`: How many times should we redirect 3xx before error?
      *    (integer, default: 10)
-     *    (string, default: '')
-     *    - `proxy`: Proxy details to use for proxy by-passing and authentication
      *    (string, default: '')
      *    - `ssl_certificates`: Should we verify SSL certificates? Allows passing in a custom
      *    certificate file as a string. (Using true uses the system-wide root
@@ -100,7 +103,11 @@ class Client extends Component implements ClientInterface
      */
     public function setProxy($proxy = '127.0.0.1:8888', $peek = true)
     {
-        $this->_options['proxy'] = $proxy;
+        if (strpos($proxy, '://') === false) {
+            $this->_proxy = 'http://' . $proxy;
+        } else {
+            $this->_proxy = $proxy;
+        }
 
         $this->_peek = $peek;
 
@@ -232,6 +239,7 @@ class Client extends Component implements ClientInterface
                 break;
             case 'HEAD':
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'HEAD');
+                curl_setopt($curl, CURLOPT_NOBODY, true);
                 break;
         }
 
@@ -254,9 +262,25 @@ class Client extends Component implements ClientInterface
         }
         curl_setopt($curl, CURLOPT_HTTPHEADER, $formatted_headers);
 
-        if ($options['proxy']) {
-            curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-            curl_setopt($curl, CURLOPT_PROXY, $options['proxy']);
+        if ($this->_proxy) {
+            $parts = parse_url($this->_proxy);
+            $scheme = $parts['scheme'];
+            if ($scheme === 'http') {
+                curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+            } elseif ($scheme === 'sock4') {
+                curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS4);
+            } elseif ($scheme === 'sock5') {
+                curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+            } else {
+                throw new ClientException('`:scheme` scheme of `:proxy` proxy is unknown', ['scheme' => $scheme, 'proxy' => $this->_proxy]);
+            }
+
+            curl_setopt($curl, CURLOPT_PROXYPORT, $parts['port']);
+            curl_setopt($curl, CURLOPT_PROXY, $parts['host']);
+            if (isset($parts['user'], $parts['pass'])) {
+                curl_setopt($curl, CURLOPT_PROXYUSERNAME, $parts['user']);
+                curl_setopt($curl, CURLOPT_PROXYPASSWORD, $parts['pass']);
+            }
         }
 
         if ($options['ssl_certificates']) {
@@ -266,7 +290,9 @@ class Client extends Component implements ClientInterface
                 curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($options['ssl_certificates']));
             }
         } else {
+            /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         }
 
@@ -281,7 +307,7 @@ class Client extends Component implements ClientInterface
         }
 
         if (curl_errno($curl)) {
-            throw new ClientException('cURL error: :code::message'/**m0d2c9a60b72a0362f*/, ['code' => curl_errno($curl), 'message' => curl_error($curl)]);
+            throw new ClientException('cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, ['url' => $url, 'message' => curl_error($curl)]);
         }
 
         $this->_responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
