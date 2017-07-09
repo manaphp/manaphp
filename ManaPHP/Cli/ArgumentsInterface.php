@@ -9,7 +9,7 @@ namespace ManaPHP\Cli;
 interface ArgumentsInterface
 {
     /**
-     * @param string $name
+     * @param string|int $name
      * @param mixed  $defaultValue
      *
      * @return mixed

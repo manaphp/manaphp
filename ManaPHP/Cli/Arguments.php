@@ -36,14 +36,18 @@ class Arguments extends Component implements ArgumentsInterface
     }
 
     /**
-     * @param string $name
-     * @param mixed  $defaultValue
+     * @param string|int $name
+     * @param mixed      $defaultValue
      *
      * @return mixed
      * @throws \ManaPHP\Cli\Arguments\Exception
      */
     public function get($name = null, $defaultValue = null)
     {
+        if (is_int($name)) {
+            return isset($this->_arguments[$name]) ? $this->_arguments[$name] : $defaultValue;
+        }
+
         if ($name === null) {
             return $this->_arguments;
         }
