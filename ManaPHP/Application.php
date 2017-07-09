@@ -126,6 +126,8 @@ abstract class Application extends Component implements ApplicationInterface
 
         $configure = $this->configure;
 
+        date_default_timezone_set($configure->timezone);
+
         if (PHP_SAPI !== 'cli') {
             foreach (isset($configure->modules) ? $configure->modules : ['Home' => '/'] as $module => $path) {
                 $this->_dependencyInjector->router->mount($module, $path);

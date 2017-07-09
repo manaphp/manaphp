@@ -20,6 +20,11 @@ class Configure extends Component implements ConfigureInterface, \ArrayAccess
     /**
      * @var string
      */
+    public $timezone = 'UTC';
+
+    /**
+     * @var string
+     */
     public $appID = 'manaphp';
 
     /**
