@@ -23,14 +23,24 @@ class Client extends Component implements ClientInterface
     protected $_options = [];
 
     /**
-     * @var string
+     * @var int
      */
-    protected $_responseBody = false;
+    protected $_responseCode;
 
     /**
      * @var array
      */
-    protected $_curlResponseHeader = [];
+    protected $_responseHeaders;
+
+    /**
+     * @var string
+     */
+    protected $_responseBody;
+
+    /**
+     * @var array
+     */
+    protected $_curlInfo;
 
     /**
      * @var bool
@@ -147,7 +157,11 @@ class Client extends Component implements ClientInterface
      */
     public function _request($type, $url, $data, $headers, $options)
     {
-        $this->_curlResponseHeader = [];
+        $this->_responseCode = null;
+        $this->_responseHeaders = null;
+        $this->_responseBody = null;
+
+        $this->_curlInfo = [];
 
         $curl = curl_init();
 
@@ -216,6 +230,9 @@ class Client extends Component implements ClientInterface
             case 'DELETE':
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
                 break;
+            case 'HEAD':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'HEAD');
+                break;
         }
 
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -223,6 +240,7 @@ class Client extends Component implements ClientInterface
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $options['timeout']);
         curl_setopt($curl, CURLOPT_REFERER, isset($headers['Referer']) ? $headers['Referer'] : $url);
         curl_setopt($curl, CURLOPT_USERAGENT, $headers['User-Agent']);
+        curl_setopt($curl, CURLOPT_HEADER, 1);
 
         unset($headers['Referer'], $headers['User-Agent'], $headers['Cookie']);
 
@@ -254,25 +272,29 @@ class Client extends Component implements ClientInterface
 
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options['verify_host'] ? 2 : 0);
 
-        $this->_responseBody = curl_exec($curl);
+        $response = curl_exec($curl);
 
         $err = curl_errno($curl);
         if ($err === 23 || $err === 61) {
             curl_setopt($curl, CURLOPT_ENCODING, 'none');
-            $this->_responseBody = curl_exec($curl);
+            $response = curl_exec($curl);
         }
 
         if (curl_errno($curl)) {
             throw new ClientException('cURL error: :code::message'/**m0d2c9a60b72a0362f*/, ['code' => curl_errno($curl), 'message' => curl_error($curl)]);
         }
 
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $this->_responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        $this->_curlResponseHeader = curl_getinfo($curl);
+        $pos = strpos($response, "\r\n\r\n");
+        $this->_responseHeaders = explode("\r\n", substr($response, 0, $pos));
+        $this->_responseBody = substr($response, $pos + 4);
+
+        $this->_curlInfo = curl_getinfo($curl);
 
         curl_close($curl);
 
-        return $httpCode;
+        return $this->_responseCode;
     }
 
     /**
@@ -355,6 +377,62 @@ class Client extends Component implements ClientInterface
     public function patch($url, $data = [], $headers = [], $options = [])
     {
         return $this->request('PATCH', $url, $data, $headers, $options);
+    }
+
+    /**
+     * @param array|string $url
+     * @param string|array $data
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return int
+     * @throws \ManaPHP\Http\Client\Exception
+     */
+    public function head($url, $data = [], $headers = [], $options = [])
+    {
+        return $this->request('HEAD', $url, $data, $headers, $options);
+    }
+
+    /**
+     * @return int
+     */
+    public function getResponseCode()
+    {
+        return $this->_responseCode;
+    }
+
+    /**
+     * @param bool $assoc
+     *
+     * @return array
+     */
+    public function getResponseHeaders($assoc = true)
+    {
+        if (!$assoc) {
+            return $this->_responseHeaders;
+        }
+
+        $headers = [];
+        foreach ($this->_responseHeaders as $i => $header) {
+            if ($i === 0) {
+                continue;
+            }
+
+            list($name, $value) = explode(': ', $header, 2);
+            if (isset($headers[$name])) {
+                if (!is_array($headers[$name])) {
+                    $headers[$name] = [$headers[$name]];
+                }
+
+                $headers[$name][] = $value;
+
+            } else {
+                $headers[$name] = $value;
+            }
+        }
+
+        return $headers;
+
     }
 
     /**

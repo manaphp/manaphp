@@ -65,7 +65,30 @@ interface ClientInterface
     public function patch($url, $data = [], $headers = [], $options = []);
 
     /**
+     * @param string|array $url
+     * @param string|array $data
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return int
+     */
+    public function head($url, $data = [], $headers = [], $options = []);
+
+    /**
+     * @return int
+     */
+    public function getResponseCode();
+
+    /**
+     * @param bool $assoc
+     *
+     * @return array
+     */
+    public function getResponseHeaders($assoc = true);
+
+    /**
      * @return string
      */
     public function getResponseBody();
+
 }
