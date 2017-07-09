@@ -13,6 +13,8 @@ class Configure extends \ManaPHP\Configure
 
     public function config()
     {
+        $this->timezone = 'PRC';
+
         $this->debug = true;
 
         /*
