@@ -436,4 +436,18 @@ class File extends Component implements FilesystemInterface
     {
         return filemtime($this->alias->resolve($path));
     }
+
+    /**
+     * @param string $file
+     * @param int    $mode
+     *
+     * @return void
+     * @throws \ManaPHP\Filesystem\Adapter\File\Exception
+     */
+    public function chmod($file, $mode)
+    {
+        if (!chmod($this->alias->resolve($file), $mode)) {
+            throw new FileException('chmod `:file` file to `:mode` mode failed: :last_error_message', ['file' => $file, 'mode' => $mode]);
+        }
+    }
 }

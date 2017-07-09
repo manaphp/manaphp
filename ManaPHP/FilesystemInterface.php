@@ -158,4 +158,12 @@ interface FilesystemInterface
      * @return int|false
      */
     public function getModifiedTime($path);
+
+    /**
+     * @param string $file
+     * @param int    $mode
+     *
+     * @return void
+     */
+    public function chmod($file, $mode);
 }
