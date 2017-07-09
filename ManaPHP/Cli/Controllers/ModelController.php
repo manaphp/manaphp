@@ -81,6 +81,21 @@ class ModelController extends Controller
     }
 
     /**
+     * @param string $arg_name
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function createCompletion($arg_name)
+    {
+        if ($arg_name === '--table' || $arg_name === '-t') {
+            return $this->db->getTables();
+        }else{
+            return [];
+        }
+    }
+
+    /**
      * @CliCommand list tables
      * @CliParam   --pattern,-p  filter tables with fnmatch
      *

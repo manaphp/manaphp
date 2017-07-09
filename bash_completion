@@ -1,0 +1,8 @@
+#!/bin/bash
+
+_manacli(){
+   COMPREPLY = ( $(./manacli.php bash_completion complete $COMP_CWORD "${COMP_WORDS[@]}") )
+   return 0;
+}
+
+complete -F _manacli manacli
