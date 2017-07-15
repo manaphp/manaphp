@@ -223,7 +223,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 continue;
             }
 
-            $controllerClassName = $this->alias->resolveNS('@ns.controllers\\' . $this->_controllerName . 'Controller');
+            $controllerClassName = $this->alias->resolveNS('@ns.module\Controllers\\' . $this->_controllerName . 'Controller');
 
             if (!$this->_dependencyInjector->has($controllerClassName) && !class_exists($controllerClassName)) {
                 throw new NotFoundControllerException('`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, ['controller' => $controllerClassName]);

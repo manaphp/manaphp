@@ -82,11 +82,17 @@ class Application extends \ManaPHP\Application
         $controllerName = $this->router->getControllerName();
         $actionName = $this->router->getActionName();
         $params = $this->router->getParams();
-        $this->alias->set('@views', "@app/$moduleName/Views");
-        $this->alias->set('@messages', "@app/$moduleName/Messages");
+        $this->alias->set('@module', "@app/$moduleName");
         $this->alias->set('@ns.module', '@ns.app\\' . $moduleName);
-        $this->alias->set('@ns.controllers', '@ns.module\\Controllers');
-        $this->alias->set('@ns.widgets', '@ns.module\\Widgets');
+        $this->alias->set('@views', "@app/$moduleName/Views");
+
+        $web = dirname($_SERVER['SCRIPT_NAME']);
+        if (substr_compare($web, '/public', -7, 7, true) === 0) {
+            $web = substr($web, 0, -7);
+        }
+        $this->alias->set('@web', ($web === '/' || $web === '\\') ? '' : $web);
+
+        $this->alias->set('@messages', "@app/$moduleName/Messages");
         $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
 
         $this->beforeStartModule();
