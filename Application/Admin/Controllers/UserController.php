@@ -27,7 +27,7 @@ class UserController extends ControllerBase
                 $this->cookies->delete('user_name');
             }
 
-            $admin = Admin::findFirstByAdminName($user_name);
+            $admin = Admin::findFirst(['admin_name' => $user_name]);
             if (!$admin || !$this->password->verify($password, $admin->password, $admin->salt)) {
                 return $this->response->setJsonContent(['code' => __LINE__, 'error' => 'account or password is wrong.']);
             }

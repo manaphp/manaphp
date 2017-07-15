@@ -5,8 +5,6 @@ namespace Application\Admin\Models;
  * Class Admin
  *
  * @package Application\Admin\Models
- *
- * @method static $this|false findFirstByAdminName(string $admin_name, int | array $cacheOptions = null)
  */
 class Admin extends ModelBase
 {
