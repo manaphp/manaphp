@@ -73,14 +73,6 @@ abstract class Application extends Component implements ApplicationInterface
             $this->alias->set('@data', '@root/Data');
             $this->alias->set('@app', $app_dir);
             $this->alias->set('@ns.app', $app_ns);
-
-            foreach (['@app/Cli/Controllers', '@app/Controllers', '@app'] as $dir) {
-                if ($this->filesystem->dirExists($dir)) {
-                    $this->alias->set('@cli', $this->alias->resolve($dir));
-                    $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr($dir, ['@app' => '@ns.app', '/' => '\\'])));
-                    break;
-                }
-            }
         }
     }
 

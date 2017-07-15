@@ -31,6 +31,14 @@ class Application extends \ManaPHP\Application
     {
         parent::__construct($loader, $dependencyInjector);
 
+        foreach (['@app/Cli/Controllers', '@app/Controllers', '@app'] as $dir) {
+            if ($this->filesystem->dirExists($dir)) {
+                $this->alias->set('@cli', $this->alias->resolve($dir));
+                $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr($dir, ['@app' => '@ns.app', '/' => '\\'])));
+                break;
+            }
+        }
+
         $this->_dependencyInjector->setShared('console', 'ManaPHP\Cli\Console');
         $this->_dependencyInjector->setShared('arguments', 'ManaPHP\Cli\Arguments');
         $this->_dependencyInjector->setShared('cliRouter', 'ManaPHP\Cli\Router');
@@ -49,7 +57,7 @@ class Application extends \ManaPHP\Application
         $this->_args = $args ?: $GLOBALS['argv'];
 
         if (!$this->cliRouter->route($this->_args)) {
-            $this->console->writeLn('command name is invalid: ' . implode(' ',$this->_args));
+            $this->console->writeLn('command name is invalid: ' . implode(' ', $this->_args));
             return 1;
         }
 
