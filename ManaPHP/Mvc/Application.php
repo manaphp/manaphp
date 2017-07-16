@@ -84,7 +84,7 @@ class Application extends \ManaPHP\Application
         $params = $this->router->getParams();
         $this->alias->set('@module', "@app/$moduleName");
         $this->alias->set('@ns.module', '@ns.app\\' . $moduleName);
-        $this->alias->set('@views', "@app/$moduleName/Views");
+        $this->alias->set('@views', '@module/Views');
 
         $web = dirname($_SERVER['SCRIPT_NAME']);
         if (substr_compare($web, '/public', -7, 7, true) === 0) {
@@ -92,7 +92,7 @@ class Application extends \ManaPHP\Application
         }
         $this->alias->set('@web', ($web === '/' || $web === '\\') ? '' : $web);
 
-        $this->alias->set('@messages', "@app/$moduleName/Messages");
+        $this->alias->set('@messages', "@module/Messages");
         $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
 
         $this->beforeStartModule();
