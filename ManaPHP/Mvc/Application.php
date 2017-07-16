@@ -103,17 +103,15 @@ class Application extends \ManaPHP\Application
         $this->_moduleObject->registerServices($this->_dependencyInjector);
 
         $this->fireEvent('application:afterStartModule');
-        
-        $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-        if ($ret === false) {
-            return $this->response;
-        }
 
-        $actionReturnValue = $this->dispatcher->getReturnedValue();
-        if ($actionReturnValue === null || is_string($actionReturnValue)) {
-            $this->view->setContent($actionReturnValue);
-            $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-            $this->response->setContent($this->view->getContent());
+        $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
+        if ($ret !== false) {
+            $actionReturnValue = $this->dispatcher->getReturnedValue();
+            if ($actionReturnValue === null || is_string($actionReturnValue)) {
+                $this->view->setContent($actionReturnValue);
+                $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+                $this->response->setContent($this->view->getContent());
+            }
         }
 
         return $this->response;
