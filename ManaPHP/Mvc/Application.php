@@ -103,9 +103,7 @@ class Application extends \ManaPHP\Application
         $this->_moduleObject->registerServices($this->_dependencyInjector);
 
         $this->fireEvent('application:afterStartModule');
-
-        $this->attachEvent('dispatcher:beforeExecuteRoute');
-
+        
         $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
         if ($ret === false) {
             return $this->response;
