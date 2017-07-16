@@ -9,8 +9,7 @@ namespace ManaPHP;
 interface DebuggerInterface
 {
     /**
-     *
-     * @return static
+     * @return void
      */
     public function start();
 
@@ -23,16 +22,17 @@ interface DebuggerInterface
     public function var_dump($value, $name = null);
 
     /**
-     * @param string $template
-     *
-     * @return string|array
-     */
-    public function output($template = 'Default');
-
-    /**
-     * @param string $template
-     *
      * @return string
      */
-    public function save($template = 'Default');
+    public function output();
+
+    /**
+     * @return void
+     */
+    public function save();
+
+    /**
+     * @return string
+     */
+    public function getUrl();
 }

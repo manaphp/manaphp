@@ -17,6 +17,16 @@ use ManaPHP\Utility\Text;
  */
 class Debugger extends Component implements DebuggerInterface
 {
+    /**
+     * @var string
+     */
+    protected $_template = 'Default';
+
+    /**
+     * @var string
+     */
+    protected $_file = null;
+
     protected $_dump = [];
     protected $_view = [];
 
@@ -122,22 +132,25 @@ class Debugger extends Component implements DebuggerInterface
     }
 
     /**
-     *
-     * @return static
+     * @return void
      */
     public function start()
     {
+        if (Text::contains($_SERVER['HTTP_USER_AGENT'], 'ApacheBench')) {
+            return;
+        }
+
         if (isset($_GET['_debugger']) && preg_match('#^[a-zA-Z0-9_/]+\.html$#', $_GET['_debugger'])) {
             $file = '@data/debugger' . $_GET['_debugger'];
             if ($this->filesystem->fileExists($file)) {
                 exit($this->filesystem->fileGet($file));
             }
         }
+		
+        $this->_file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
 
         $handler = [$this, '_eventHandlerPeek'];
         $this->eventsManager->peekEvents($handler);
-
-        return $this;
     }
 
     /**
@@ -235,11 +248,9 @@ class Debugger extends Component implements DebuggerInterface
     }
 
     /**
-     * @param string $template
-     *
-     * @return array|string
+     * @return string
      */
-    public function output($template = 'Default')
+    public function output()
     {
         $data = [];
         $data['basic'] = $this->_getBasic();
@@ -267,29 +278,31 @@ class Debugger extends Component implements DebuggerInterface
             ];
         }
 
-        if (!$template) {
-            return $data;
-        }
+        $template = Text::contains($this->_template, '/') ? $this->_template : ('@manaphp/Debugger/Template/' . $this->_template);
 
-        $file = Text::contains($template, '/') ? $template : $this->alias->resolve('@manaphp/Debugger/Template/' . $template);
-
-        return $this->renderer->render($file, ['data' => $data], false);
+        return $this->renderer->render($this->alias->resolve($template), ['data' => $data], false);
     }
 
     /**
-     * @param string $template
-     *
-     * @return string
      * @throws \ManaPHP\Debugger\Exception
      */
-    public function save($template = 'Default')
+    public function save()
     {
-        if (Text::contains($_SERVER['HTTP_USER_AGENT'], 'ApacheBench')) {
-            return '';
+        if ($this->_file !== null) {
+            $this->filesystem->filePut('@data/debugger/' . $this->_file, $this->output());
         }
+    }
 
-        $file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
-        $this->filesystem->filePut('@data/debugger' . $file, $this->output($template));
-        return $this->url->get('/?_debugger=' . $file);
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url->get('/?_debugger=' . $this->_file);
+    }
+
+    public function __destruct()
+    {
+        $this->save();
     }
 }
