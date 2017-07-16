@@ -74,6 +74,7 @@
       </ul>
     </li>
     <li><a href="#tab_log" data-toggle="tab">Log</a></li>
+    <li><a href="#tab_event" data-toggle="tab">Events</a></li>
     <li><a href="#tab_sql" data-toggle="tab">SQL</a></li>
     <li><a href="#tab_included_files" data-toggle="tab">IncludedFiles</a></li>
   </ul>
@@ -222,6 +223,23 @@
         <tr v-for="(item, index) in logger.log" v-if="logger.levels[item.level] <= logger.level">
           <td>{{index}}</td>
           <td>{{item.message}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tab-pane" id="tab_event">
+      <h4>Events</h4>
+      <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+          <td>#</td>
+          <td>message</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(item, index) in events">
+          <td>{{index}}</td>
+          <td>{{item}}</td>
         </tr>
         </tbody>
       </table>

@@ -44,6 +44,8 @@ class Debugger extends Component implements DebuggerInterface
     protected $_exception = [];
 
     protected $_warnings = [];
+	
+    protected $_events = [];
 
     /**
      * @param \ManaPHP\ComponentInterface $source
@@ -54,6 +56,8 @@ class Debugger extends Component implements DebuggerInterface
      */
     public function _eventHandlerPeek($source, $data, $event)
     {
+        $this->_events[] = $event;
+
         if ($event === 'logger:log') {
             if (count($this->_log) <= $this->_log_max) {
                 $format = '[%time%][%level%] %message%';
@@ -265,6 +269,8 @@ class Debugger extends Component implements DebuggerInterface
         $data['exception'] = $this->_exception;
         $data['warnings'] = $this->_warnings;
         $data['components'] = [];
+        $data['events'] = $this->_events;
+
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_dependencyInjector->__debugInfo()['_sharedInstances'] as $k => $v) {
             if ($k === 'configure') {
