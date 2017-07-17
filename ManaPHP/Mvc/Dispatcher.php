@@ -12,7 +12,8 @@ use ManaPHP\Utility\Text;
  * Class ManaPHP\Mvc\Dispatcher
  *
  * @package dispatcher
- * @property \ManaPHP\Http\FilterInterface $filter
+ * @property \ManaPHP\Http\FilterInterface  $filter
+ * @property \ManaPHP\Http\RequestInterface $request
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -278,11 +279,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 $this->_initializedControllers[] = $controllerClassName;
             }
 
-            if (isset($this->_params[0])) {
-                $this->_returnedValue = $controllerInstance->$actionMethod($this->_params[0]);
-            } else {
-                $this->_returnedValue = $controllerInstance->$actionMethod();
-            }
+            $this->_returnedValue = $this->_callControllerAction($controllerInstance, $actionMethod);
 
             // Call afterDispatch
             $this->fireEvent('dispatcher:afterDispatch');
@@ -309,6 +306,47 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->fireEvent('dispatcher:afterDispatchLoop');
 
         return true;
+    }
+
+    protected function _callControllerAction($controllerInstance, $actionMethod)
+    {
+        $args = [];
+        $missing = [];
+
+        $parameters = (new \ReflectionMethod($controllerInstance, $actionMethod))->getParameters();
+        foreach ($parameters as $parameter) {
+            $name = $parameter->getName();
+            $value = null;
+
+            if (isset($this->_params[$name])) {
+                $value = $this->_params[$name];
+            } elseif ($this->request->has($name)) {
+                $value = $this->request->get($name);
+            } elseif ($this->request->hasJson($name)) {
+                $value = $this->request->getJson($name);
+            } elseif (count($this->_params) === 1 && count($parameters) === 1) {
+                $value = $this->_params[0];
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $value = $parameter->getDefaultValue();
+            }
+
+            if ($value === null) {
+                $missing[] = $name;
+                continue;
+            }
+
+            if ($parameter->isArray()) {
+                $args[] = (array)$value;
+            } else {
+                $args[] = $value;
+            }
+        }
+
+        if (count($missing) !== 0) {
+            throw new DispatcherException('Missing required parameters: `:parameters`', ['parameters' => implode(',', $missing)]);
+        }
+
+        return call_user_func_array([$controllerInstance, $actionMethod], $args);
     }
 
     /**
