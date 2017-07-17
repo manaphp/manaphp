@@ -230,14 +230,15 @@ class Request extends Component implements RequestInterface
 
         if (isset($_JSON)) {
             $this->_json = $_JSON;
-        } else {
+        } elseif (isset($_SERVER['HTTP_CONTENT_TYPE']) && strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false) {
             $r = json_decode(file_get_contents('php://input'), true);
 
             if ($r === null) {
                 throw new RequestException('json_decode raw body failed.');
             }
-
             $this->_json = $r;
+        } else {
+            $this->_json = [];
         }
     }
 
