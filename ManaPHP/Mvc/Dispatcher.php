@@ -317,8 +317,11 @@ class Dispatcher extends Component implements DispatcherInterface
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;
-
-            if (isset($this->_params[$name])) {
+            $type = $parameter->getClass();
+			
+            if ($type !== null && is_subclass_of($type->getName(), Component::class)) {
+                $value = $this->_dependencyInjector->get($type->getName());
+            } elseif (isset($this->_params[$name])) {
                 $value = $this->_params[$name];
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name);
