@@ -9,6 +9,20 @@ namespace ManaPHP;
 interface PaginatorInterface
 {
     /**
+     * @param array $displayText
+     *
+     * @return static
+     */
+    public function setDisplayText($displayText);
+
+    /**
+     * @param int $number
+     *
+     * @return static
+     */
+    public function setNumberOfLinks($number);
+
+    /**
      * @param int $count
      * @param int $page
      * @param int $size

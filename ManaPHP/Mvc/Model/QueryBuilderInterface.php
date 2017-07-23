@@ -227,7 +227,7 @@ interface QueryBuilderInterface
      * @param int $size
      * @param int $page
      *
-     * @return static
+     * @return \ManaPHP\PaginatorInterface
      */
     public function paginate($size, $page);
 

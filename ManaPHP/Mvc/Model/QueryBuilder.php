@@ -1130,16 +1130,15 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      * @param int $size
      * @param int $page
      *
-     * @return static
+     * @return \ManaPHP\PaginatorInterface
      * @throws \ManaPHP\Paginator\Exception
      * @throws \ManaPHP\Mvc\Model\QueryBuilder\Exception
      */
     public function paginate($size, $page)
     {
         $this->paginator->items = $this->limit($size, ($page - 1) * $size)->executeEx($totalRows);
-        $this->paginator->paginate($totalRows, $size, $page);
-
-        return $this;
+		
+        return $this->paginator->paginate($totalRows, $size, $page);
     }
 
     /**
