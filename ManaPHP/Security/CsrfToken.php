@@ -53,6 +53,8 @@ class CsrfToken extends Component implements CsrfTokenInterface
             $_options = (array)$options;
         } elseif (is_array($options)) {
             $_options = (array)$options;
+        } else {
+            $_options = $options;
         }
 
         if (isset($_options['length'])) {
