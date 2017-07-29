@@ -492,7 +492,6 @@ class Compiler extends Component
      *
      * @return string
      */
-
     protected function _compilePartial($expression)
     {
         return $this->_compileInclude($expression);

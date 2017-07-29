@@ -242,6 +242,10 @@ class Renderer extends Component implements RendererInterface
      */
     public function escape($v)
     {
-        return htmlentities($v, ENT_QUOTES, 'UTF-8', false);
+        if (is_string($v)) {
+            return htmlentities($v, ENT_QUOTES, 'UTF-8', false);
+        } else {
+            return $v;
+        }
     }
 }
