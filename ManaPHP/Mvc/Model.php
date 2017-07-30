@@ -675,7 +675,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @return double
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function average($column, $parameters = null, $cacheOptions = null)
+    public static function avg($column, $parameters = null, $cacheOptions = null)
     {
         return (double)self::_groupResult('AVG', 'average', $column, $parameters, $cacheOptions);
     }

@@ -207,7 +207,7 @@ interface ModelInterface
      *
      * @return double
      */
-    public static function average($column, $parameters = null, $cacheOptions = null);
+    public static function avg($column, $parameters = null, $cacheOptions = null);
 
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
