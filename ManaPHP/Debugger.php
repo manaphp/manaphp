@@ -44,7 +44,7 @@ class Debugger extends Component implements DebuggerInterface
     protected $_exception = [];
 
     protected $_warnings = [];
-	
+
     protected $_events = [];
 
     /**
@@ -150,7 +150,7 @@ class Debugger extends Component implements DebuggerInterface
                 exit($this->filesystem->fileGet($file));
             }
         }
-		
+
         $this->_file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
 
         $handler = [$this, '_eventHandlerPeek'];
@@ -277,11 +277,13 @@ class Debugger extends Component implements DebuggerInterface
                 continue;
             }
 
-            $data['components'][] = [
-                'name' => $k,
-                'class' => get_class($v),
-                'properties' => $v instanceof Component ? $v->dump() : ''
-            ];
+            $properties = $v instanceof Component ? $v->dump() : '';
+			
+            if ($k === 'response') {
+                $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
+            }
+
+            $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
         }
 
         $template = Text::contains($this->_template, '/') ? $this->_template : ('@manaphp/Debugger/Template/' . $this->_template);
