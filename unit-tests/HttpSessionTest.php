@@ -13,6 +13,7 @@ class HttpSessionTest extends TestCase
     public function setUp()
     {
         error_reporting(0);
+        new \ManaPHP\Di\FactoryDefault();
     }
 
     public function test_get()
