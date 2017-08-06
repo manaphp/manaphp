@@ -297,15 +297,15 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *</code>
      *
      * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
-     * @param string                                          $conditions
+     * @param string                                          $condition
      * @param string                                          $alias
      * @param string                                          $type
      *
      * @return static
      */
-    public function join($model, $conditions = null, $alias = null, $type = null)
+    public function join($model, $condition = null, $alias = null, $type = null)
     {
-        $this->_joins[] = [$model, $conditions, $alias, $type];
+        $this->_joins[] = [$model, $condition, $alias, $type];
 
         return $this;
     }
@@ -320,14 +320,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *</code>
      *
      * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
-     * @param string                                          $conditions
+     * @param string                                          $condition
      * @param string                                          $alias
      *
      * @return static
      */
-    public function innerJoin($model, $conditions = null, $alias = null)
+    public function innerJoin($model, $condition = null, $alias = null)
     {
-        $this->_joins[] = [$model, $conditions, $alias, 'INNER'];
+        $this->_joins[] = [$model, $condition, $alias, 'INNER'];
 
         return $this;
     }
@@ -340,14 +340,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *</code>
      *
      * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
-     * @param string                                          $conditions
+     * @param string                                          $condition
      * @param string                                          $alias
      *
      * @return static
      */
-    public function leftJoin($model, $conditions = null, $alias = null)
+    public function leftJoin($model, $condition = null, $alias = null)
     {
-        $this->_joins[] = [$model, $conditions, $alias, 'LEFT'];
+        $this->_joins[] = [$model, $condition, $alias, 'LEFT'];
 
         return $this;
     }
@@ -360,14 +360,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *</code>
      *
      * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
-     * @param string                                          $conditions
+     * @param string                                          $condition
      * @param string                                          $alias
      *
      * @return static
      */
-    public function rightJoin($model, $conditions = null, $alias = null)
+    public function rightJoin($model, $condition = null, $alias = null)
     {
-        $this->_joins[] = [$model, $conditions, $alias, 'RIGHT'];
+        $this->_joins[] = [$model, $condition, $alias, 'RIGHT'];
 
         return $this;
     }
@@ -380,14 +380,14 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *    $builder->where('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
      *</code>
      *
-     * @param string                 $conditions
+     * @param string                 $condition
      * @param int|float|string|array $bind
      *
      * @return static
      */
-    public function where($conditions, $bind = [])
+    public function where($condition, $bind = [])
     {
-        return $this->andWhere($conditions, $bind);
+        return $this->andWhere($condition, $bind);
     }
 
     /**
@@ -398,32 +398,32 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
      *</code>
      *
-     * @param string                 $conditions
+     * @param string                 $condition
      * @param int|float|string|array $bind
      *
      * @return static
      */
-    public function andWhere($conditions, $bind = [])
+    public function andWhere($condition, $bind = [])
     {
         if (is_scalar($bind)) {
-            $conditions = trim($conditions);
+            $condition = trim($condition);
 
-            if (!Text::contains($conditions, ' ')) {
-                $conditions .= ' =';
+            if (!Text::contains($condition, ' ')) {
+                $condition .= ' =';
             }
 
-            $parts = explode(' ', $conditions, 2);
-            $conditions = preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $parts[0]) . ' ' . $parts[1];
+            $parts = explode(' ', $condition, 2);
+            $condition = preg_replace('#[a-z_][a-z0-9_]*#i', '[\\0]', $parts[0]) . ' ' . $parts[1];
             $column = str_replace('.', '_', $parts[0]);
             /** @noinspection CascadeStringReplacementInspection */
             $from = ['`', '[', ']'];
             $column = str_replace($from, '', $column);
 
-            $conditions = $conditions . ' :' . $column;
+            $condition = $condition . ' :' . $column;
             $bind = [$column => $bind];
         }
 
-        $this->_conditions[] = $conditions;
+        $this->_conditions[] = $condition;
 
         $this->_bind = array_merge($this->_bind, $bind);
 

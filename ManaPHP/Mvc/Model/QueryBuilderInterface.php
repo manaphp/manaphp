@@ -61,66 +61,66 @@ interface QueryBuilderInterface
      * Adds a INNER join to the query
      *
      * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
-     * @param string                                          $conditions
+     * @param string                                          $condition
      * @param string                                          $alias
      * @param string                                          $type
      *
      * @return static
      */
-    public function join($model, $conditions = null, $alias = null, $type = null);
+    public function join($model, $condition = null, $alias = null, $type = null);
 
     /**
      * Adds a INNER join to the query
      *
      * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
-     * @param string                                          $conditions
+     * @param string                                          $condition
      * @param string                                          $alias
      *
      * @return static
      */
-    public function innerJoin($model, $conditions = null, $alias = null);
+    public function innerJoin($model, $condition = null, $alias = null);
 
     /**
      * Adds a LEFT join to the query
      *
      * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
-     * @param string                                          $conditions
+     * @param string                                          $condition
      * @param string                                          $alias
      *
      * @return static
      */
-    public function leftJoin($model, $conditions = null, $alias = null);
+    public function leftJoin($model, $condition = null, $alias = null);
 
     /**
      * Adds a RIGHT join to the query
      *
      * @param string|\ManaPHP\Mvc\Model\QueryBuilderInterface $model
-     * @param string                                          $conditions
+     * @param string                                          $condition
      * @param string                                          $alias
      *
      * @return static
      */
-    public function rightJoin($model, $conditions = null, $alias = null);
+    public function rightJoin($model, $condition = null, $alias = null);
 
     /**
      * Sets conditions for the query
      *
-     * @param string                 $conditions
+     * @param string                 $condition
      * @param int|float|string|array $bind
      *
      * @return static
      */
-    public function where($conditions, $bind = []);
+    public function where($condition, $bind = []);
 
     /**
      * Appends a condition to the current conditions using a AND operator
      *
-     * @param string                 $conditions
+     * @param string                 $condition
      * @param int|float|string|array $bind
      *
      * @return static
      */
-    public function andWhere($conditions, $bind = []);
+    public function andWhere($condition, $bind = []);
 
     /**
      * Appends a BETWEEN condition to the current conditions
