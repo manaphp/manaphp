@@ -15,7 +15,7 @@ class Crypt extends Component implements CryptInterface
     /**
      * @var string
      */
-    protected $_masterKey = null;
+    protected $_masterKey;
 
     /**
      * @var resource
@@ -116,15 +116,19 @@ class Crypt extends Component implements CryptInterface
 
     /**
      * @param string $key
+     *
      * @return static
      */
     public function setMasterKey($key)
     {
         $this->_masterKey = $key;
+
+        return $this;
     }
 
     /**
      * @param string $type
+     *
      * @return string
      * @throws \ManaPHP\Security\Crypt\Exception
      */
