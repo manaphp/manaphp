@@ -92,7 +92,7 @@ class Application extends \ManaPHP\Application
         }
         $this->alias->set('@web', ($web === '/' || $web === '\\') ? '' : $web);
 
-        $this->alias->set('@messages', "@module/Messages");
+        $this->alias->set('@messages', '@module/Messages');
         $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
 
         $this->beforeStartModule();
