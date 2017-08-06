@@ -25,7 +25,7 @@ class Debugger extends Component implements DebuggerInterface
     /**
      * @var string
      */
-    protected $_file = null;
+    protected $_file;
 
     protected $_dump = [];
     protected $_view = [];
