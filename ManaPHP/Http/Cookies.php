@@ -24,6 +24,27 @@ class Cookies extends Component implements CookiesInterface
     protected $_deletedCookies = [];
 
     /**
+     * @var string
+     */
+    protected $_key;
+
+    /**
+     * Cookies constructor.
+     *
+     * @param string|array $options
+     */
+    public function __construct($options = [])
+    {
+        if (is_string($options)) {
+            $options = ['key' => $options];
+        }
+
+        if (isset($options['key'])) {
+            $this->_key = $options['key'];
+        }
+    }
+
+    /**
      * Sets a cookie to be sent at the end of the request
      *
      * @param string $name
@@ -86,7 +107,11 @@ class Cookies extends Component implements CookiesInterface
      */
     protected function _decrypt($value)
     {
-        return $this->crypt->decrypt(base64_decode($value));
+        if ($this->_key === null) {
+            $this->_key = $this->crypt->getDerivedKey('cookies');
+        }
+
+        return $this->crypt->decrypt(base64_decode($value), $this->_key);
     }
 
     /**
@@ -96,7 +121,11 @@ class Cookies extends Component implements CookiesInterface
      */
     protected function _encrypt($value)
     {
-        return base64_encode($this->crypt->encrypt($value));
+        if ($this->_key === null) {
+            $this->_key = $this->crypt->getDerivedKey('cookies');
+        }
+
+        return base64_encode($this->crypt->encrypt($value, $this->_key));
     }
 
     /**
@@ -143,17 +172,21 @@ class Cookies extends Component implements CookiesInterface
      * Deletes a cookie by its name
      *
      * @param string $name
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
      *
      * @return static
      */
-    public function delete($name)
+    public function delete($name, $path = null, $domain = null, $secure = false, $httpOnly = true)
     {
         if ($name[0] === '!') {
             $name = (string)substr($name, 1);
         }
 
         unset($this->_cookies[$name], $_COOKIE[$name]);
-        $this->_deletedCookies[$name] = null;
+        $this->_deletedCookies[$name] = ['path' => $path, 'domain' => $domain, 'secure' => $secure, 'httpOnly' => $httpOnly];
 
         return $this;
     }
@@ -181,8 +214,8 @@ class Cookies extends Component implements CookiesInterface
                 $cookie['httpOnly']);
         }
 
-        foreach ($this->_deletedCookies as $cookie => $_) {
-            setcookie($cookie);
+        foreach ($this->_deletedCookies as $cookie => $param) {
+            setcookie($cookie, '', 0, $param['path'], $param['domain'], $param['secure'], $param['httpOnly']);
         }
 
         $this->fireEvent('cookies:afterSend');

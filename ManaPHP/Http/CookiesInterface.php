@@ -55,10 +55,14 @@ interface CookiesInterface
      * This method does not removes cookies from the $_COOKIE
      *
      * @param string $name
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
      *
      * @return bool
      */
-    public function delete($name);
+    public function delete($name, $path = null, $domain = null, $secure = false, $httpOnly = true);
 
     /**
      * Sends the cookies to the client
