@@ -14,6 +14,7 @@ use ManaPHP\Http\Session\Exception as SessionException;
  * Class ManaPHP\Http\Session
  *
  * @package session
+ * @property \ManaPHP\Http\Cookies $cookies
  */
 class Session extends Component implements SessionInterface, \ArrayAccess
 {
@@ -214,6 +215,11 @@ class Session extends Component implements SessionInterface, \ArrayAccess
 
         if (PHP_SAPI !== 'cli' && !session_destroy()) {
             throw new SessionException('destroy session failed: :last_error_message'/**m08409465b2b90d8a8*/);
+        }
+
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            $this->cookies->delete(session_name(), $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         }
     }
 
