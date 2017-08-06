@@ -691,18 +691,13 @@ class QueryBuilder extends Component implements QueryBuilderInterface
 
     /**
      * @param int $size
-     * @param int $current
+     * @param int $page
      *
      * @return static
      */
-    public function page($size, $current = 1)
+    public function page($size, $page = 1)
     {
-        $current = (int)max(1, $current);
-
-        $this->_limit = (int)$size;
-        $this->_offset = (int)($current - 1) * $size;
-
-        return $this;
+        return $this->limit($size, (max(1, $page) - 1) * $size);
     }
 
     /**
@@ -1146,7 +1141,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
      */
     public function paginate($size, $page)
     {
-        $this->paginator->items = $this->limit($size, ($page - 1) * $size)->executeEx($totalRows);
+        $this->paginator->items = $this->page($size, $page)->executeEx($totalRows);
 
         return $this->paginator->paginate($totalRows, $size, $page);
     }

@@ -227,11 +227,11 @@ interface QueryBuilderInterface
 
     /**
      * @param int $size
-     * @param int $current
+     * @param int $page
      *
      * @return static
      */
-    public function page($size, $current = 1);
+    public function page($size, $page = 1);
 
     /**
      * @param int $size
