@@ -119,7 +119,7 @@ class MvcModelTest extends TestCase
 
     public function test_average()
     {
-        $avg = Payment::average('amount');
+        $avg = Payment::avg('amount');
         $this->assertEquals('double', gettype($avg));
 
         $this->assertEquals(4.20, round($avg, 2));
