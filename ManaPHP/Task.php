@@ -41,7 +41,7 @@ abstract class Task extends Component implements TaskInterface
         $this->logger->info('[%task%] starting...', ['task' => $task]);
 
         /** @noinspection TypeUnsafeComparisonInspection */
-        if ($this->tasksMetadata->get($task, Metadata::FIELD_STATUS) == Task::STATUS_RUNNING) {
+        if ($this->tasksMetadata->get($task, Metadata::FIELD_STATUS) == self::STATUS_RUNNING) {
             throw new TaskException('Task is exists already'/**m094686781957e77e4*/);
         }
 
@@ -108,7 +108,7 @@ abstract class Task extends Component implements TaskInterface
 
         $duration_time = $stop_time - $start_time;
 
-        $this->tasksMetadata->set($task, Metadata::FIELD_STATUS, Task::STATUS_STOP);
+        $this->tasksMetadata->set($task, Metadata::FIELD_STATUS, self::STATUS_STOP);
         $this->tasksMetadata->set($task, Metadata::FIELD_STOP_TIME, date('Y-m-d H:i:s', $stop_time));
         $this->tasksMetadata->set($task, Metadata::FIELD_DURATION_TIME, $duration_time);
         /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
