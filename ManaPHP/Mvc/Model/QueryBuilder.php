@@ -247,22 +247,20 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
-     * Sets the models who makes part of the query
+     * alias of addFrom
      *
      *<code>
      *    $builder->from('Robots');
-     *    $builder->from(array('Robots', 'RobotsParts'));
      *</code>
      *
-     * @param string|array $models
+     * @param string $model
+     * @param string $alias
      *
      * @return static
      */
-    public function from($models)
+    public function from($model, $alias = null)
     {
-        $this->_models = [$models];
-
-        return $this;
+        return $this->addFrom($model, $alias);
     }
 
     /**

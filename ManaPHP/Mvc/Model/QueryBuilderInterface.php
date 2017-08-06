@@ -38,13 +38,14 @@ interface QueryBuilderInterface
     public function columns($columns);
 
     /**
-     * Sets the models who makes part of the query
+     * alias of addFrom
      *
-     * @param string|array $models
+     * @param string $model
+     * @param string $alias
      *
      * @return static
      */
-    public function from($models);
+    public function from($model, $alias = null);
 
     /**
      * Add a model to take part of the query
