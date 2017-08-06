@@ -217,6 +217,18 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     }
 
     /**
+     * Alias of columns
+     *
+     * @param string $columns
+     *
+     * @return static
+     */
+    public function select($columns)
+    {
+        return $this->columns($columns);
+    }
+
+    /**
      * Sets the columns to be queried
      *
      *<code>
@@ -1137,7 +1149,7 @@ class QueryBuilder extends Component implements QueryBuilderInterface
     public function paginate($size, $page)
     {
         $this->paginator->items = $this->limit($size, ($page - 1) * $size)->executeEx($totalRows);
-		
+
         return $this->paginator->paginate($totalRows, $size, $page);
     }
 

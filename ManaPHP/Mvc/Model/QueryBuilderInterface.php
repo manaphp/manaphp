@@ -20,6 +20,15 @@ interface QueryBuilderInterface
     public function distinct($distinct);
 
     /**
+     * Alias of columns
+     *
+     * @param string $columns
+     *
+     * @return static
+     */
+    public function select($columns);
+
+    /**
      * Sets the columns to be queried
      *
      * @param string $columns
