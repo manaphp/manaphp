@@ -31,7 +31,9 @@ class Secint extends Component implements SecintInterface
             $options = ['key' => $options];
         }
 
-        $this->_key = isset($options['key']) ? $options['key'] : $this->crypt->getDerivedKey('secint');
+        if (isset($options['key'])) {
+            $this->_key = $options['key'];
+        }
     }
 
     /**
@@ -45,6 +47,10 @@ class Secint extends Component implements SecintInterface
     public function encode($id, $type = '')
     {
         if (!isset($this->_keys[$type])) {
+            if ($this->_key === null) {
+                $this->_key = $this->crypt->getDerivedKey('secint');
+            }
+
             $this->_keys[$type] = md5($this->_key . $type, true);
         }
 
@@ -74,6 +80,10 @@ class Secint extends Component implements SecintInterface
         }
 
         if (!isset($this->_keys[$type])) {
+            if ($this->_key === null) {
+                $this->_key = $this->crypt->getDerivedKey('secint');
+            }
+
             $this->_keys[$type] = md5($this->_key . $type, true);
         }
 
