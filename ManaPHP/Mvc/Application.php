@@ -97,6 +97,8 @@ class Application extends \ManaPHP\Application
 
         $this->beforeStartModule();
 
+        $this->attachEvent('dispatcher:beforeExecuteRoute');
+
         $this->fireEvent('application:beforeStartModule');
 
         $this->_moduleObject = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module');
