@@ -146,7 +146,7 @@ interface ModelInterface
      * @param string               $alias
      * @param \ManaPHP\DiInterface $dependencyInjector
      *
-     * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
+     * @return \ManaPHP\Mvc\Model\QueryInterface
      */
     public static function query($alias = null, $dependencyInjector = null);
 

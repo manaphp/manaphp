@@ -261,37 +261,28 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $dependencyInjector = Di::getDefault();
 
         $modelName = get_called_class();
+        $query = static::createQuery()
+            ->cache($cacheOptions);
 
         if (is_string($parameters)) {
             $parameters = [$parameters];
         }
 
         if (isset($parameters['columns'])) {
-            $columns = $parameters['columns'];
+            $query->select($parameters['columns']);
             unset($parameters['columns']);
         } else {
-            $columns = '';
-            foreach ($dependencyInjector->modelsMetadata->getColumnProperties($modelName) as $column) {
-                $columns .= '[' . $column . '], ';
-            }
-            $columns = substr($columns, 0, -2);
+            $query->select($dependencyInjector->modelsMetadata->getColumnProperties($modelName));
         }
 
         if (isset($parameters['in'])) {
-            $inWhere = $parameters['in'];
+            $query->inWhere($dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName)[0], $parameters['in']);
             unset($parameters['in']);
         }
 
-        $builder = $dependencyInjector->modelsManager->createBuilder($parameters)
-            ->columns($columns)
-            ->from($modelName)
-            ->cache($cacheOptions);
+        $query->buildFromArray($parameters);
 
-        if (isset($inWhere)) {
-            $builder->inWhere($dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName)[0], $inWhere);
-        }
-
-        $resultset = $builder->execute();
+        $resultset = $query->execute();
 
         $modelInstances = [];
         foreach ($resultset as $key => $result) {
@@ -343,8 +334,13 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     public static function findFirst($parameters = null, $cacheOptions = null)
     {
         $dependencyInjector = Di::getDefault();
+        $modelName = get_called_class();
 
-        if (is_numeric($parameters)) {
+        $query = static::createQuery()
+            ->cache($cacheOptions)
+            ->limit(1);
+
+        if (is_scalar($parameters)) {
             $primaryKeys = $dependencyInjector->modelsMetadata->getPrimaryKeyAttributes(get_called_class());
 
             if (count($primaryKeys) === 0) {
@@ -361,26 +357,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $parameters = [$parameters];
         }
 
-        $modelName = get_called_class();
-
         if (isset($parameters['columns'])) {
-            $columns = $parameters['columns'];
+            $query->select($parameters['columns']);
             unset($parameters['columns']);
         } else {
-            $columns = '';
-            foreach ($dependencyInjector->modelsMetadata->getColumnProperties($modelName) as $column) {
-                $columns .= '[' . $column . '], ';
-            }
-            $columns = substr($columns, 0, -2);
+            $query->select($dependencyInjector->modelsMetadata->getColumnProperties($modelName));
         }
 
-        $builder = $dependencyInjector->modelsManager->createBuilder($parameters)
-            ->columns($columns)
-            ->from($modelName)
-            ->limit(1)
-            ->cache($cacheOptions);
+        $query->buildFromArray($parameters);
 
-        $resultset = $builder->execute();
+        $resultset = $query->execute();
 
         if (isset($resultset[0])) {
             return new static($resultset[0], $dependencyInjector);
@@ -400,17 +386,18 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     public static function exists($parameters = null, $cacheOptions = null)
     {
         $dependencyInjector = Di::getDefault();
+        $modelName = get_called_class();
 
         if (is_numeric($parameters)) {
-            $primaryKeys = $dependencyInjector->modelsMetadata->getPrimaryKeyAttributes(get_called_class());
+            $primaryKeys = $dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName);
 
             if (count($primaryKeys) === 0) {
-                throw new ModelException('parameter is integer, but the primary key of `:model` model is none', ['model' => get_called_class()]);
+                throw new ModelException('parameter is scalar, but the primary key of `:model` model is none', ['model' => $modelName]);
             }
 
             if (count($primaryKeys) !== 1) {
-                throw new ModelException('parameter is integer, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/,
-                    ['model' => get_called_class()]);
+                throw new ModelException('parameter is scalar, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/,
+                    ['model' => $modelName]);
             }
 
             $parameters = [$primaryKeys[0] => $parameters];
@@ -418,20 +405,29 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $parameters = [$parameters];
         }
 
-        $modelName = get_called_class();
-
-        /**
-         * @var $modelsManager \ManaPHP\Mvc\Model\Manager
-         */
-        $builder = $dependencyInjector->modelsManager->createBuilder($parameters)
-            ->columns('1 as stub')
-            ->from($modelName)
+        $query = static::createQuery()
+            ->buildFromArray($parameters)
+            ->columns('1 as [stub]')
             ->limit(1)
             ->cache($cacheOptions);
 
-        $resultset = $builder->execute();
+        $resultset = $query->execute();
 
         return isset($resultset[0]);
+    }
+
+    /**
+     * alias of createQuery
+     *
+     * @param string               $alias
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @deprecated
+     */
+    public static function query($alias = null, $dependencyInjector = null)
+    {
+        return static::createQuery($alias, $dependencyInjector);
     }
 
     /**
@@ -440,13 +436,13 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param string               $alias
      * @param \ManaPHP\DiInterface $dependencyInjector
      *
-     * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
+     * @return \ManaPHP\Mvc\Model\QueryInterface
      */
-    public static function query($alias = null, $dependencyInjector = null)
+    public static function createQuery($alias = null, $dependencyInjector = null)
     {
         $dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
-        return $dependencyInjector->modelsManager->createBuilder()->addFrom(get_called_class(), $alias);
+        return $dependencyInjector->modelsManager->createQuery()->from(get_called_class(), $alias);
     }
 
     /**
@@ -511,6 +507,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     protected static function _groupResult($function, $alias, $column, $parameters, $cacheOptions)
     {
         $dependencyInjector = Di::getDefault();
+
+        $query = static::createQuery()
+            ->cache($cacheOptions);
+
         if ($parameters === null) {
             $parameters = [];
         } elseif (is_string($parameters)) {
@@ -521,23 +521,23 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $column = '[' . $column . ']';
         }
         if (isset($parameters['group'])) {
-            $columns = "[$parameters[group]], $function($column) AS [$alias]";
+            $query->select("[$parameters[group]], $function($column) AS [$alias]");
+            $group = $parameters['group'];
+            unset($parameters['group']);
         } /** @noinspection DefaultValueInElseBranchInspection */ else {
-            $columns = "$function($column) AS [$alias]";
+            $query->select("$function($column) AS [$alias]");
         }
 
-        $builder = $dependencyInjector->modelsManager->createBuilder($parameters)
-            ->columns($columns)
-            ->from(get_called_class())
-            ->cache($cacheOptions);
+        $query->buildFromArray($parameters);
 
-        $resultset = $builder->execute();
-
-        if (isset($parameters['group'])) {
-            return $resultset;
+        if (isset($group)) {
+            $query->groupBy($group);
+            $rs = $query->execute();
+            return $rs;
+        } else {
+            $rs = $query->execute();
+            return $rs[0][$alias];
         }
-
-        return $resultset[0][$alias];
     }
 
     /**

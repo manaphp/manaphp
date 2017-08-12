@@ -132,8 +132,6 @@ class MvcModelTest extends TestCase
         $this->assertInstanceOf(get_class(new Actor()), $actor);
         $this->assertInstanceOf('ManaPHP\Mvc\Model', $actor);
 
-        $this->assertTrue(is_object(Actor::findFirst('')));
-        $this->assertTrue(is_object(Actor::findFirst('actor_id=1')));
         $this->assertTrue(is_object(Actor::findFirst(['actor_id=1'])));
         $this->assertTrue(is_object(Actor::findFirst(['conditions' => 'actor_id=1'])));
 
