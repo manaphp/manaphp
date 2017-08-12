@@ -11,7 +11,7 @@ use Models\City;
 use Models\Country;
 use Models\Payment;
 
-class MvcModelQueryBuilderTest extends TestCase
+class MvcModelQueryTest extends TestCase
 {
     /**
      * @var \ManaPHP\DiInterface
@@ -321,11 +321,6 @@ class MvcModelQueryBuilderTest extends TestCase
 
         $builder = $this->modelsManager->createBuilder()
             ->addFrom(get_class(new Address()))
-            ->andWhere(' address_id ', 1);
-        $this->assertCount(1, $builder->execute());
-
-        $builder = $this->modelsManager->createBuilder()
-            ->addFrom(get_class(new Address()))
             ->andWhere('address_id =', 1);
         $this->assertCount(1, $builder->execute());
 
@@ -333,11 +328,6 @@ class MvcModelQueryBuilderTest extends TestCase
             ->addFrom(get_class(new Address()))
             ->andWhere('address_id <', 2);
         $this->assertCount(1, $builder->execute());
-
-        $builder = $this->modelsManager->createBuilder()
-            ->addFrom(get_class(new Address()))
-            ->andWhere('address_id LIKE', '2%');
-        $this->assertCount(110, $builder->execute());
 
         $builder = $this->modelsManager->createBuilder()
             ->addFrom(get_class(new Address()), 'a')
@@ -658,7 +648,7 @@ class MvcModelQueryBuilderTest extends TestCase
         }
 
         $builder = $this->modelsManager->createBuilder()
-            ->unionAll([
+            ->union([
                 $this->modelsManager->createBuilder()
                     ->columns('*')
                     ->from(City::class)
@@ -666,72 +656,72 @@ class MvcModelQueryBuilderTest extends TestCase
             ]);
         $this->assertCount(5, $builder->execute());
 
-        $builder = $this->modelsManager->createBuilder()
-            ->unionAll([
-                $this->modelsManager->createBuilder()
-                    ->columns('*')
-                    ->from(City::class)
-                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
-                $this->modelsManager->createBuilder()
-                    ->columns('*')
-                    ->from(City::class)
-                    ->inWhere('city_id', [1, 2, 3, 4, 5])
-            ])
-            ->orderBy('city_id DESC');
+//        $builder = $this->modelsManager->createBuilder()
+//            ->union([
+//                $this->modelsManager->createBuilder()
+//                    ->columns('*')
+//                    ->from(City::class)
+//                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
+//                $this->modelsManager->createBuilder()
+//                    ->columns('*')
+//                    ->from(City::class)
+//                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+//            ])
+//            ->orderBy('city_id DESC');
+//
+//        $rows = $builder->execute();
+//        $this->assertCount(10, $rows);
+//        $this->assertEquals('5', $rows[0]['city_id']);
+//        $this->assertEquals('5', $rows[1]['city_id']);
 
-        $rows = $builder->execute();
-        $this->assertCount(10, $rows);
-        $this->assertEquals('5', $rows[0]['city_id']);
-        $this->assertEquals('5', $rows[1]['city_id']);
+//        $builder = $this->modelsManager->createBuilder()
+//            ->unionAll([
+//                $this->modelsManager->createBuilder()
+//                    ->columns('*')
+//                    ->from(City::class)
+//                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
+//                $this->modelsManager->createBuilder()
+//                    ->columns('*')
+//                    ->from(City::class)
+//                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+//            ])
+//            ->orderBy('city_id ASC');
 
-        $builder = $this->modelsManager->createBuilder()
-            ->unionAll([
-                $this->modelsManager->createBuilder()
-                    ->columns('*')
-                    ->from(City::class)
-                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
-                $this->modelsManager->createBuilder()
-                    ->columns('*')
-                    ->from(City::class)
-                    ->inWhere('city_id', [1, 2, 3, 4, 5])
-            ])
-            ->orderBy('city_id ASC');
-
-        $rows = $builder->execute();
-        $this->assertCount(10, $rows);
-        $this->assertEquals('1', $rows[0]['city_id']);
-        $this->assertEquals('1', $rows[1]['city_id']);
-
-        $builder = $this->modelsManager->createBuilder()
-            ->unionAll([
-                $this->modelsManager->createBuilder()
-                    ->columns('*')
-                    ->from(City::class)
-                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
-                $this->modelsManager->createBuilder()
-                    ->columns('*')
-                    ->from(City::class)
-                    ->inWhere('city_id', [1, 2, 3, 4, 5])
-            ])
-            ->orderBy('city_id ASC')
-            ->limit(5);
-
-        $rows = $builder->execute();
-        $this->assertCount(5, $rows);
-
-        $builder = $this->modelsManager->createBuilder()
-            ->unionDistinct([
-                $this->modelsManager->createBuilder()
-                    ->columns('*')
-                    ->from(City::class)
-                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
-                $this->modelsManager->createBuilder()
-                    ->columns('*')
-                    ->from(City::class)
-                    ->inWhere('city_id', [1, 2, 3, 4, 5])
-            ]);
-
-        $rows = $builder->execute();
-        $this->assertCount(5, $rows);
+//        $rows = $builder->execute();
+//        $this->assertCount(10, $rows);
+//        $this->assertEquals('1', $rows[0]['city_id']);
+//        $this->assertEquals('1', $rows[1]['city_id']);
+//
+//        $builder = $this->modelsManager->createBuilder()
+//            ->union([
+//                $this->modelsManager->createBuilder()
+//                    ->columns('*')
+//                    ->from(City::class)
+//                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
+//                $this->modelsManager->createBuilder()
+//                    ->columns('*')
+//                    ->from(City::class)
+//                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+//            ])
+//            ->orderBy('city_id ASC')
+//            ->limit(5);
+//
+//        $rows = $builder->execute();
+//        $this->assertCount(5, $rows);
+//
+//        $builder = $this->modelsManager->createBuilder()
+//            ->unionDistinct([
+//                $this->modelsManager->createBuilder()
+//                    ->columns('*')
+//                    ->from(City::class)
+//                    ->inWhere('city_id', [1, 2, 3, 4, 5]),
+//                $this->modelsManager->createBuilder()
+//                    ->columns('*')
+//                    ->from(City::class)
+//                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+//            ]);
+//
+//        $rows = $builder->execute();
+//        $this->assertCount(5, $rows);
     }
 }
