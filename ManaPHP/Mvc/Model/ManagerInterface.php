@@ -88,24 +88,20 @@ interface ManagerInterface
      */
     public function getWriteConnectionService($model);
 
+
+    /**
+     * alias of createQuery
+     *
+     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @throws \ManaPHP\Di\Exception
+     * @deprecated
+     */
+    public function createBuilder();
+
     /**
      * Creates a \ManaPHP\Mvc\Model\Query\Builder
      *
-     * @param string|array $params
-     *
-     * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
+     * @return \ManaPHP\Mvc\Model\QueryInterface
      */
-    public function createBuilder($params = null);
-
-    /**
-     * Returns the last query created or executed in the
-     *
-     * @return string
-     */
-    public function getLastQuery();
-
-    /**
-     * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
-     */
-    public function getLastBuilder();
+    public function createQuery();
 }

@@ -28,7 +28,7 @@ class Manager extends Component implements ManagerInterface
     protected $_sources = [];
 
     /**
-     * @var \ManaPHP\Mvc\Model\QueryBuilderInterface
+     * @var \ManaPHP\Mvc\Model\QueryInterface
      */
     protected $_builder;
 
@@ -191,36 +191,24 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
+     * alias of createQuery
+     *
+     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @throws \ManaPHP\Di\Exception
+     * @deprecated
+     */
+    public function createBuilder()
+    {
+        return $this->createQuery();
+    }
+
+    /**
      * Creates a \ManaPHP\Mvc\Model\Query\Builder
      *
-     * @param string|array $params
-     *
-     * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
-     * @throws \ManaPHP\Di\Exception
+     * @return \ManaPHP\Mvc\Model\QueryInterface
      */
-    public function createBuilder($params = null)
+    public function createQuery()
     {
-        $getParameter = [$params];
-        $this->_builder = $this->_dependencyInjector->get('queryBuilder', $getParameter);
-
-        return $this->_builder;
-    }
-
-    /**
-     * Returns the latest query created or executed in the models manager
-     *
-     * @return string
-     */
-    public function getLastQuery()
-    {
-        return $this->_builder->getSql();
-    }
-
-    /**
-     * @return \ManaPHP\Mvc\Model\QueryBuilderInterface
-     */
-    public function getLastBuilder()
-    {
-        return $this->_builder;
+        return $this->_dependencyInjector->get('queryBuilder');
     }
 }
