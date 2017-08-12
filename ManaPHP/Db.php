@@ -192,6 +192,14 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
+     * @return \ManaPHP\Db\QueryInterface
+     */
+    public function createQuery()
+    {
+        return $this->_dependencyInjector->get('ManaPHP\Db\Query', [$this]);
+    }
+
+    /**
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server does n't return any rows
      *<code>
