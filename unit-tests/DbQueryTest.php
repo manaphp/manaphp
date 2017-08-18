@@ -6,12 +6,7 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class DbQueryTest extends TestCase
 {
-    /**
-     * @var \ManaPHP\DbInterface
-     */
-    protected $db;
-
-    public function setUp()
+   public function setUp()
     {
         $di = new \ManaPHP\Di\FactoryDefault();
 
