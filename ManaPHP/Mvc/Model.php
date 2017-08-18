@@ -388,7 +388,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $dependencyInjector = Di::getDefault();
         $modelName = get_called_class();
 
-        if (is_numeric($parameters)) {
+        if (is_scalar($parameters)) {
             $primaryKeys = $dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName);
 
             if (count($primaryKeys) === 0) {
@@ -442,7 +442,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     {
         $dependencyInjector = $dependencyInjector ?: Di::getDefault();
 
-        return $dependencyInjector->modelsManager->createQuery()->from(get_called_class(), $alias);
+        return $dependencyInjector->get('ManaPHP\Mvc\Model\Query')->from(get_called_class(), $alias);
     }
 
     /**
@@ -506,8 +506,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     protected static function _groupResult($function, $alias, $column, $parameters, $cacheOptions)
     {
-        $dependencyInjector = Di::getDefault();
-
         $query = static::createQuery()
             ->cache($cacheOptions);
 
@@ -1044,5 +1042,13 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * @return string
+     */
+    public static function shardKey()
+    {
+        return null;
     }
 }
