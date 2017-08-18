@@ -20,33 +20,6 @@ interface ModelInterface
     public function getSource();
 
     /**
-     * Sets both read/write connection services
-     *
-     * @param string $connectionService
-     *
-     * @return static
-     */
-    public function setConnectionService($connectionService);
-
-    /**
-     * Sets the DependencyInjection connection service used to write data
-     *
-     * @param string $connectionService
-     *
-     * @return static
-     */
-    public function setWriteConnectionService($connectionService);
-
-    /**
-     * Sets the DependencyInjection connection service used to read data
-     *
-     * @param string $connectionService
-     *
-     * @return static
-     */
-    public function setReadConnectionService($connectionService);
-
-    /**
      * Returns DependencyInjection connection service used to read data
      *
      * @return string
@@ -299,4 +272,9 @@ interface ModelInterface
      * @return bool
      */
     public function hasChanged($fields);
+
+    /**
+     * @return string
+     */
+    public static function shardKey();
 }

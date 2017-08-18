@@ -6,6 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Model\Exception as ModelException;
+use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Mvc\Model
@@ -84,20 +85,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * Sets table name which model should be mapped
-     *
-     * @param string $source
-     *
-     * @return static
-     */
-    public function setSource($source)
-    {
-        $this->modelsManager->setModelSource($this, $source);
-
-        return $this;
-    }
-
-    /**
      * Returns table name mapped in the model
      *
      * @return string
@@ -105,49 +92,8 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function getSource()
     {
-        return $this->modelsManager->getModelSource($this);
-    }
-
-    /**
-     * Sets the DependencyInjection connection service name
-     *
-     * @param string $connectionService
-     *
-     * @return static
-     */
-    public function setConnectionService($connectionService)
-    {
-        $this->modelsManager->setConnectionService($this, $connectionService);
-
-        return $this;
-    }
-
-    /**
-     * Sets the DependencyInjection connection service name used to read data
-     *
-     * @param string $connectionService
-     *
-     * @return static
-     */
-    public function setReadConnectionService($connectionService)
-    {
-        $this->modelsManager->setReadConnectionService($this, $connectionService);
-
-        return $this;
-    }
-
-    /**
-     * Sets the DependencyInjection connection service name used to write data
-     *
-     * @param string $connectionService
-     *
-     * @return static
-     */
-    public function setWriteConnectionService($connectionService)
-    {
-        $this->modelsManager->setWriteConnectionService($this, $connectionService);
-
-        return $this;
+        $modelName = get_called_class();
+        return Text::underscore(Text::contains($modelName, '\\') ? substr($modelName, strrpos($modelName, '\\') + 1) : $modelName);
     }
 
     /**
@@ -157,7 +103,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function getReadConnectionService()
     {
-        return $this->modelsManager->getReadConnectionService($this);
+        return 'db';
     }
 
     /**
@@ -167,7 +113,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function getWriteConnectionService()
     {
-        return $this->modelsManager->getWriteConnectionService($this);
+        return 'db';
     }
 
     /**
@@ -177,7 +123,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function getReadConnection()
     {
-        return $this->modelsManager->getReadConnection($this);
+        return $this->{$this->getReadConnectionService()};
     }
 
     /**
@@ -187,7 +133,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function getWriteConnection()
     {
-        return $this->modelsManager->getWriteConnection($this);
+        return $this->{$this->getWriteConnectionService()};
     }
 
     /**

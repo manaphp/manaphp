@@ -92,11 +92,15 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
             }
             return parent::from($model, $alias);
         } else {
+            /**
+             * @var \ManaPHP\Mvc\ModelInterface $modelInstance
+             */
+            $modelInstance = new $model();
             if ($this->_db === null) {
-                $this->_db = $this->modelsManager->getReadConnection($model);
+                $this->_db = $modelInstance->getReadConnection();
             }
 
-            return parent::from($this->modelsManager->getModelSource($model), $alias);
+            return parent::from($modelInstance->getSource(), $alias);
         }
     }
 
@@ -107,7 +111,17 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
 
     public function join($model, $condition = null, $alias = null, $type = null)
     {
-        return parent::join($model instanceof Query ? $model : $this->modelsManager->getModelSource($model), $condition, $alias, $type);
+
+        if ($model instanceof Query) {
+            return parent::join($model, $condition, $alias, $type);
+        } else {
+            /**
+             * @var \ManaPHP\Mvc\ModelInterface $modelInstance
+             */
+            $modelInstance = new $model();
+
+            return parent::join($modelInstance->getSource(), $condition, $alias, $type);
+        }
     }
 
     /**
@@ -115,6 +129,8 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
      *
      * @param string|array           $condition
      * @param int|float|string|array $bind
+     *
+     * @deprecated
      *
      * @return static
      */

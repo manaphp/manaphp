@@ -27,9 +27,9 @@ class TestCity2 extends \ManaPHP\Mvc\Model
 
 class TestCity3 extends \ManaPHP\Mvc\Model
 {
-    public function initialize()
+    public function getSource()
     {
-        $this->setSource('the_city');
+        return 'the_city';
     }
 }
 
