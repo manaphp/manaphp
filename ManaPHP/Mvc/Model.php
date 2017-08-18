@@ -41,11 +41,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     protected $_snapshot = [];
 
     /**
-     * @var array
-     */
-    protected static $_initialized = [];
-
-    /**
      * \ManaPHP\Mvc\Model constructor
      *
      * @param array                $data
@@ -55,19 +50,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     {
         $this->_dependencyInjector = $dependencyInjector ?: FactoryDefault::getDefault();
 
-        $modelName = get_class($this);
-
-        if (!isset(self::$_initialized[$modelName])) {
-            if (method_exists($this, 'initialize')) {
-                $this->initialize();
-            }
-
-            self::$_initialized[$modelName] = true;
-        }
-
-        /**
-         * This allows the developer to execute initialization stuff every time an instance is created
-         */
         if (method_exists($this, 'onConstruct')) {
             $this->onConstruct();
         }
