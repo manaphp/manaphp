@@ -20,18 +20,13 @@ interface ModelInterface
     public function getSource();
 
     /**
-     * Returns DependencyInjection connection service
-     *
-     * @return string
-     */
-    public function getService();
-
-    /**
      * Gets internal database connection
      *
-     * @return \ManaPHP\DbInterface
+     * @param mixed $context
+     *
+     * @return \ManaPHP\DbInterface|false
      */
-    public function getDb();
+    public function getDb($context = null);
 
     /**
      * Assigns values to a model from an array
@@ -258,9 +253,4 @@ interface ModelInterface
      * @return bool
      */
     public function hasChanged($fields);
-
-    /**
-     * @return string
-     */
-    public static function shardKey();
 }

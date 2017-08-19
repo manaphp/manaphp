@@ -79,23 +79,17 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * Returns the DependencyInjection connection service name used to crud data related to the model
-     *
-     * @return string
-     */
-    public function getService()
-    {
-        return 'db';
-    }
-
-    /**
      * Gets the connection used to crud data to the model
+     *
+     * @param mixed $context
      *
      * @return \ManaPHP\DbInterface
      */
-    public function getDb()
+    public function getDb($context = null)
     {
-        return $this->{$this->getService()};
+        $service = 'db';
+
+        return $this->{$service};
     }
 
     /**
@@ -395,7 +389,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
         $sql = 'SELECT COUNT(*) as [row_count]' . ' FROM [' . $this->getSource() . '] WHERE ' . implode(' AND ',
                 $conditions);
-        $num = $this->getDb()->getMasterConnection()->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
+
+        $db = $this->getDb($this);
+        if ($db === false) {
+            throw new ModelException('`:model` model db sharding for _exists failed',
+                ['model' => get_called_class(), 'context' => $this]);
+        }
+
+        $num = $db->getMasterConnection()->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
 
         return $num['row_count'] > 0;
     }
@@ -637,7 +638,11 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             throw new ModelException('`:model` model is unable to insert without data'/**m020f0d8415e5f94d7*/, ['model' => get_class($this)]);
         }
 
-        $db = $this->getDb();
+        $db = $this->getDb($this);
+        if ($db === false) {
+            throw new ModelException('`:model` model db sharding for insert failed',
+                ['model' => get_called_class(), 'context' => $this]);
+        }
 
         $db->insert($this->getSource(), $columnValues);
         $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
@@ -679,7 +684,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             return;
         }
 
-        $this->getDb()->update($this->getSource(), $columnValues, $conditions);
+        $db = $this->getDb($this);
+
+        if ($db === false) {
+            throw new ModelException('`:model` model db sharding for update failed',
+                ['model' => get_called_class(), 'context' => $this]);
+        }
+
+        $db->update($this->getSource(), $columnValues, $conditions);
 
         $this->_snapshot = $this->toArray();
     }
@@ -806,7 +818,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
          */
         $instance = new static();
 
-        return $instance->getDb()->update($instance->getSource(), $columnValues, $conditions, $bind);
+        $db = $instance->getDb($bind);
+
+        if ($db === false) {
+            throw new ModelException('`:model` model db sharding for _exists failed updateAll',
+                ['model' => get_called_class(), 'context' => $bind]);
+        }
+
+        return $db->update($instance->getSource(), $columnValues, $conditions, $bind);
     }
 
     /**
@@ -823,7 +842,13 @@ class Model extends Component implements ModelInterface, \JsonSerializable
          */
         $instance = new static();
 
-        return $instance->getDb()->delete($instance->getSource(), $conditions, $bind);
+        $db = $instance->getDb($bind);
+        if ($db === false) {
+            throw new ModelException('`:model` model db sharding for deleteAll failed',
+                ['model' => get_called_class(), 'context' => $bind]);
+        }
+
+        return $db->delete($instance->getSource(), $conditions, $bind);
     }
 
     /**
@@ -863,7 +888,13 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $conditions[$attributeField] = $this->{$attributeField};
         }
 
-        $this->getDb()->delete($this->getSource(), $conditions);
+        $db = $this->getDb($this);
+        if ($db === false) {
+            throw new ModelException('`:model` model db sharding for delete failed',
+                ['model' => get_called_class(), 'context' => $this]);
+        }
+
+        $db->delete($this->getSource(), $conditions);
         $this->_fireEvent('afterDelete');
     }
 
@@ -949,13 +980,5 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * @return string
-     */
-    public static function shardKey()
-    {
-        return null;
     }
 }
