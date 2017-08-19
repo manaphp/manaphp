@@ -7,6 +7,7 @@
  * Time: 17:07
  */
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+
 use Models\Actor;
 use Models\City;
 use Models\Payment;
@@ -56,7 +57,8 @@ class MvcModelTest extends TestCase
 
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+            //$db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+            $db = new ManaPHP\Db\Adapter\Proxy(['masters' => ['mysql://root@localhost:/manaphp_unit_test'], 'slaves' => ['mysql://root@localhost:/manaphp_unit_test']]);
             // $db= new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
             echo get_class($db), PHP_EOL;
@@ -449,4 +451,56 @@ class MvcModelTest extends TestCase
 //    {
 //        $this->assertEquals(2, Actor::countByFirstName('BEN'));
 //    }
+
+    public function test_dbShard()
+    {
+        $student = new \Models\StudentShardDb();
+        $student->id = 10;
+        try {
+            $student->create();
+            $this->assertFalse('why not?');
+        } catch (\ManaPHP\Exception $e) {
+            $this->assertContains('db_10', $e->getMessage());
+        }
+
+        $student = new \Models\StudentShardDb();
+        $student->id = 10;
+        try {
+            $student->delete();
+            $this->assertFalse('why not?');
+        } catch (\ManaPHP\Exception $e) {
+            $this->assertContains('db_10', $e->getMessage());
+        };
+
+        $student = new \Models\StudentShardDb();
+        $student->id = 10;
+        $student->name = 'manaphp';
+        try {
+            $student->update();
+            $this->assertFalse('why not?');
+        } catch (\ManaPHP\Exception $e) {
+            $this->assertContains('db_10', $e->getMessage());
+        };
+
+        try {
+            \Models\StudentShardDb::updateAll(['name' => 'mark'], 'city_id =:city_id', ['id' => 10]);
+            $this->assertFalse('why not?');
+        } catch (\ManaPHP\Exception $e) {
+            $this->assertContains('db_10', $e->getMessage());
+        };
+
+        try {
+            \Models\StudentShardDb::deleteAll('city_id =:city_id', ['id' => 10]);
+            $this->assertFalse('why not?');
+        } catch (\ManaPHP\Exception $e) {
+            $this->assertContains('db_10', $e->getMessage());
+        };
+
+        try {
+            \Models\StudentShardDb::find(['id' => 10]);
+            $this->assertFalse('why not?');
+        } catch (\ManaPHP\Exception $e) {
+            $this->assertContains('db_10', $e->getMessage());
+        };
+    }
 }
