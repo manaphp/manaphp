@@ -79,43 +79,23 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * Returns the DependencyInjection connection service name used to read data related the model
+     * Returns the DependencyInjection connection service name used to crud data related to the model
      *
      * @return string
      */
-    public function getReadConnectionService()
+    public function getService()
     {
         return 'db';
     }
 
     /**
-     * Returns the DependencyInjection connection service name used to write data related to the model
-     *
-     * @return string
-     */
-    public function getWriteConnectionService()
-    {
-        return 'db';
-    }
-
-    /**
-     * Gets the connection used to read data for the model
+     * Gets the connection used to crud data to the model
      *
      * @return \ManaPHP\DbInterface
      */
-    public function getReadConnection()
+    public function getDb()
     {
-        return $this->{$this->getReadConnectionService()};
-    }
-
-    /**
-     * Gets the connection used to write data to the model
-     *
-     * @return \ManaPHP\DbInterface
-     */
-    public function getWriteConnection()
-    {
-        return $this->{$this->getWriteConnectionService()};
+        return $this->{$this->getService()};
     }
 
     /**
@@ -415,7 +395,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
         $sql = 'SELECT COUNT(*) as [row_count]' . ' FROM [' . $this->getSource() . '] WHERE ' . implode(' AND ',
                 $conditions);
-        $num = $this->getWriteConnection()->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
+        $num = $this->getDb()->getMasterConnection()->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
 
         return $num['row_count'] > 0;
     }
@@ -657,12 +637,12 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             throw new ModelException('`:model` model is unable to insert without data'/**m020f0d8415e5f94d7*/, ['model' => get_class($this)]);
         }
 
-        $connection = $this->getWriteConnection();
+        $db = $this->getDb();
 
-        $connection->insert($this->getSource(), $columnValues);
+        $db->insert($this->getSource(), $columnValues);
         $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
         if ($autoIncrementAttribute !== null) {
-            $this->{$autoIncrementAttribute} = $connection->lastInsertId();
+            $this->{$autoIncrementAttribute} = $db->lastInsertId();
         }
 
         $this->_snapshot = $this->toArray();
@@ -699,7 +679,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             return;
         }
 
-        $this->getWriteConnection()->update($this->getSource(), $columnValues, $conditions);
+        $this->getDb()->update($this->getSource(), $columnValues, $conditions);
 
         $this->_snapshot = $this->toArray();
     }
@@ -826,7 +806,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
          */
         $instance = new static();
 
-        return $instance->getWriteConnection()->update($instance->getSource(), $columnValues, $conditions, $bind);
+        return $instance->getDb()->update($instance->getSource(), $columnValues, $conditions, $bind);
     }
 
     /**
@@ -843,7 +823,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
          */
         $instance = new static();
 
-        return $instance->getWriteConnection()->delete($instance->getSource(), $conditions, $bind);
+        return $instance->getDb()->delete($instance->getSource(), $conditions, $bind);
     }
 
     /**
@@ -863,7 +843,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function delete()
     {
-        $writeConnection = $this->getWriteConnection();
         $primaryKeys = $this->modelsMetadata->getPrimaryKeyAttributes($this);
 
         if (count($primaryKeys) === 0) {
@@ -884,7 +863,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $conditions[$attributeField] = $this->{$attributeField};
         }
 
-        $writeConnection->delete($this->getSource(), $conditions);
+        $this->getDb()->delete($this->getSource(), $conditions);
         $this->_fireEvent('afterDelete');
     }
 

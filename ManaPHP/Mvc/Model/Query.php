@@ -97,7 +97,7 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
              */
             $modelInstance = new $model();
             if ($this->_db === null) {
-                $this->_db = $modelInstance->getReadConnection();
+                $this->_db = $modelInstance->getDb();
             }
 
             return parent::from($modelInstance->getSource(), $alias);
@@ -111,7 +111,6 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
 
     public function join($model, $condition = null, $alias = null, $type = null)
     {
-
         if ($model instanceof Query) {
             return parent::join($model, $condition, $alias, $type);
         } else {

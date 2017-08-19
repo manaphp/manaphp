@@ -20,32 +20,18 @@ interface ModelInterface
     public function getSource();
 
     /**
-     * Returns DependencyInjection connection service used to read data
+     * Returns DependencyInjection connection service
      *
      * @return string
      */
-    public function getReadConnectionService();
-
-    /**
-     * Returns DependencyInjection connection service used to write data
-     *
-     * @return string
-     */
-    public function getWriteConnectionService();
+    public function getService();
 
     /**
      * Gets internal database connection
      *
      * @return \ManaPHP\DbInterface
      */
-    public function getReadConnection();
-
-    /**
-     * Gets internal database connection
-     *
-     * @return \ManaPHP\DbInterface
-     */
-    public function getWriteConnection();
+    public function getDb();
 
     /**
      * Assigns values to a model from an array
