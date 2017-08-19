@@ -890,23 +890,8 @@ class Query extends Component implements QueryInterface
         $params['join'] = $joinSQL;
 
         $wheres = [];
-
-        if (is_string($this->_conditions)) {
-            $this->_conditions = [$this->_conditions];
-        }
-
-        /** @noinspection ForeachSourceInspection */
-        foreach ($this->_conditions as $k => $v) {
-            if ($v === '') {
-                continue;
-            }
-
-            if (is_int($k)) {
-                $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
-            } else {
-                $wheres[] = "[$k]=:$k";
-                $this->_bind[$k] = $v;
-            }
+        foreach ($this->_conditions as $v) {
+            $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
         }
 
         if (count($wheres) !== 0) {

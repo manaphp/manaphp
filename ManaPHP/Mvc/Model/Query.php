@@ -2,6 +2,9 @@
 
 namespace ManaPHP\Mvc\Model;
 
+use ManaPHP\Mvc\Model\Query\Exception as QueryException;
+use ManaPHP\Utility\Text;
+
 /**
  * Class ManaPHP\Mvc\Model\QueryBuilder
  *
@@ -14,6 +17,9 @@ namespace ManaPHP\Mvc\Model;
  */
 class Query extends \ManaPHP\Db\Query implements QueryInterface
 {
+    protected $_models = [];
+    protected $_modelJoins = [];
+
     /**
      * @param mixed $params
      *
@@ -28,12 +34,30 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
         }
 
         if (isset($params[0])) {
-            $this->_conditions = $params[0];
+            $conditions = $params[0];
         } elseif (isset($params['conditions'])) {
-            $this->_conditions = $params['conditions'];
+            $conditions = $params['conditions'];
         } else {
-            $this->_conditions = $params;
+            $conditions = $params;
             $params = [];
+        }
+
+        if (is_string($conditions)) {
+            $conditions = [$conditions];
+        }
+
+        /** @noinspection ForeachSourceInspection */
+        foreach ($conditions as $k => $v) {
+            if ($v === '') {
+                continue;
+            }
+
+            if (is_int($k)) {
+                $this->_conditions[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
+            } else {
+                $this->_conditions[] = "[$k]=:$k";
+                $this->_bind[$k] = $v;
+            }
         }
 
         if (isset($params[1])) {
@@ -78,6 +102,7 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
      * @param string|array $columns
      *
      * @return static
+     * @deprecated
      */
     public function columns($columns)
     {
@@ -86,22 +111,13 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
 
     public function from($model, $alias = null)
     {
-        if ($model instanceof Query) {
-            if ($this->_db === null) {
-                $this->_db = $model->_db;
-            }
-            return parent::from($model, $alias);
+        if ($alias === null) {
+            $this->_models[] = $model;
         } else {
-            /**
-             * @var \ManaPHP\Mvc\ModelInterface $modelInstance
-             */
-            $modelInstance = new $model();
-            if ($this->_db === null) {
-                $this->_db = $modelInstance->getDb();
-            }
-
-            return parent::from($modelInstance->getSource(), $alias);
+            $this->_models[$alias] = $model;
         }
+
+        return $this;
     }
 
     public function addFrom($model, $alias = null)
@@ -111,16 +127,57 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
 
     public function join($model, $condition = null, $alias = null, $type = null)
     {
-        if ($model instanceof Query) {
-            return parent::join($model, $condition, $alias, $type);
-        } else {
-            /**
-             * @var \ManaPHP\Mvc\ModelInterface $modelInstance
-             */
-            $modelInstance = new $model();
+        $this->_modelJoins[] = [$model, $condition, $alias, $type];
 
-            return parent::join($modelInstance->getSource(), $condition, $alias, $type);
+        return $this;
+    }
+
+    protected function _buildSql()
+    {
+        foreach ($this->_models as $alias => $model) {
+            if (is_int($alias)) {
+                $alias = null;
+            }
+
+            if ($model instanceof Query) {
+                if ($this->_db === null) {
+                    $this->_db = $model->_db;
+                }
+                parent::from($model, $alias);
+            } else {
+                /**
+                 * @var \ManaPHP\Mvc\ModelInterface $modelInstance
+                 */
+                $modelInstance = new $model();
+                if ($this->_db === null) {
+                    $db = $modelInstance->getDb($this);
+                    if ($db === false) {
+                        throw new QueryException('`:query` query db sharding failed',
+                            ['query' => get_called_class(), 'context' => $this]);
+                    }
+                    $this->_db = $db;
+                }
+                parent::from($modelInstance->getSource(), $alias);
+            }
+            $this->_models = [];
+
+            foreach ($this->_modelJoins as $k => $join) {
+                list($model, $condition, $alias, $type) = $join;
+                if ($model instanceof Query) {
+                    parent::join($model, $condition, $alias, $type);
+                } else {
+                    /**
+                     * @var \ManaPHP\Mvc\ModelInterface $modelInstance
+                     */
+                    $modelInstance = new $model();
+
+                    parent::join($modelInstance->getSource(), $condition, $alias, $type);
+                }
+            }
+            $this->_modelJoins = [];
         }
+
+        return parent::_buildSql();
     }
 
     /**
