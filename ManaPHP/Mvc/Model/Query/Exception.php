@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Mvc\Model\QueryBuilder;
+namespace ManaPHP\Mvc\Model\Query;
 
 /**
  * Class ManaPHP\Mvc\Model\QueryBuilder\Exception
