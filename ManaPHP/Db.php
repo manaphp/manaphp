@@ -83,6 +83,22 @@ abstract class Db extends Component implements DbInterface
         }
     }
 
+    /**
+     * @return \ManaPHP\DbInterface
+     */
+    public function getMasterConnection()
+    {
+        return $this;
+    }
+
+    /**
+     * @return \ManaPHP\DbInterface
+     */
+    public function getSlaveConnection()
+    {
+        return $this;
+    }
+
     protected function _escapeIdentifier($identifier)
     {
         $list = [];
@@ -581,7 +597,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function isUnderTransaction()
     {
-        return $this->_pdo->inTransaction();
+        return $this->_transactionLevel !== 0;
     }
 
     /**

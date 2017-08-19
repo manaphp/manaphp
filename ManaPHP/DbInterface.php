@@ -11,6 +11,16 @@ interface DbInterface
 {
 
     /**
+     * @return \ManaPHP\DbInterface
+     */
+    public function getMasterConnection();
+
+    /**
+     * @return \ManaPHP\DbInterface
+     */
+    public function getSlaveConnection();
+    
+    /**
      * Returns the first row in a SQL query result
      *
      * <code>
@@ -133,6 +143,7 @@ interface DbInterface
      * @return \ManaPHP\Db\Query
      */
     public function createQuery();
+
     /**
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server don't return any row
