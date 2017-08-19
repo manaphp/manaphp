@@ -164,6 +164,7 @@ class Query extends Component implements QueryInterface
             if (strpos($columns, '[') === false && strpos($columns, '(') === false) {
                 $columns = preg_replace('#\w+#', '[\\0]', $columns);
                 $columns = str_ireplace('[as]', 'AS', $columns);
+                $columns = preg_replace('#\s+#', ' ', $columns);
             }
 
             $this->_columns = $columns;
