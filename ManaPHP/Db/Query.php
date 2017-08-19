@@ -961,11 +961,17 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param string $key
+     *
      * @return array
      */
-    public function getBind()
+    public function getBind($key = null)
     {
-        return $this->_bind;
+        if ($key !== null) {
+            return isset($this->_bind[$key]) ? $this->_bind[$key] : null;
+        } else {
+            return $this->_bind;
+        }
     }
 
     /**

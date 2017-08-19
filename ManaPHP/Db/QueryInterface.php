@@ -270,9 +270,11 @@ interface QueryInterface
     public function getSql();
 
     /**
+     * @param string $key
+     *
      * @return array
      */
-    public function getBind();
+    public function getBind($key = null);
 
     /**
      * Set default bind parameters
