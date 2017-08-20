@@ -10,13 +10,6 @@ namespace ManaPHP\Mvc\Model;
 interface QueryInterface extends \ManaPHP\Db\QueryInterface
 {
     /**
-     * @param mixed $params
-     *
-     * @return static
-     */
-    public function buildFromArray($params);
-
-    /**
      * Sets the columns to be queried
      *
      * @param string $columns
