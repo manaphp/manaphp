@@ -43,6 +43,11 @@ interface ModelInterface
     public static function getPrimaryKey();
 
     /**
+     * @return array
+     */
+    public static function getFields();
+
+    /**
      * Create a criteria for a specific model
      *
      * @param string $alias

@@ -110,6 +110,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public static function getFields()
+    {
+        return Di::getDefault()->modelsMetadata->getAttributes(get_called_class());
+    }
+
+    /**
      * @param string|array $columns
      *
      * @return \ManaPHP\Mvc\Model\CriteriaInterface
@@ -138,16 +146,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function assign($data, $whiteList = null)
     {
-        foreach ($this->modelsMetadata->getAttributes($this) as $attribute) {
-            if (!isset($data[$attribute])) {
+        foreach (static::getFields() as $field) {
+            if (!isset($data[$field])) {
                 continue;
             }
 
-            if ($whiteList !== null && !in_array($attribute, $whiteList, true)) {
+            if ($whiteList !== null && !in_array($field, $whiteList, true)) {
                 continue;
             }
 
-            $this->{$attribute} = $data[$attribute];
+            $this->{$field} = $data[$field];
         }
 
         return $this;
@@ -206,7 +214,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $criteria->select($parameters['columns']);
             unset($parameters['columns']);
         } else {
-            $criteria->select($dependencyInjector->modelsMetadata->getColumnProperties($modelName));
+            $criteria->select(static::getFields());
         }
 
         if (isset($parameters['in'])) {
@@ -273,9 +281,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             return $parameters->limit(1)->execute();
         }
 
-        $dependencyInjector = Di::getDefault();
-        $modelName = get_called_class();
-
         $criteria = static::createCriteria()
             ->cache($cacheOptions)
             ->limit(1);
@@ -301,7 +306,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $criteria->select($parameters['columns']);
             unset($parameters['columns']);
         } else {
-            $criteria->select($dependencyInjector->modelsMetadata->getColumnProperties($modelName));
+            $criteria->select(static::getFields());
         }
 
         $criteria->buildFromArray($parameters);
@@ -429,7 +434,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $sql = 'SELECT COUNT(*) as [row_count]' . ' FROM [' . $source . '] WHERE ' . implode(' AND ',
                 $conditions);
 
-        $num = ($this->_dependencyInjector?:Di::getDefault())->getShared($db)->getMasterConnection()->fetchOne($sql, $bind);
+        $num = ($this->_dependencyInjector ?: Di::getDefault())->getShared($db)->getMasterConnection()->fetchOne($sql, $bind);
 
         return $num['row_count'] > 0;
     }
@@ -667,9 +672,9 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     protected function _doLowInsert()
     {
         $columnValues = [];
-        foreach ($this->modelsMetadata->getAttributes($this) as $attributeField) {
-            if ($this->{$attributeField} !== null) {
-                $columnValues[$attributeField] = $this->{$attributeField};
+        foreach (self::getFields() as $field) {
+            if ($this->{$field} !== null) {
+                $columnValues[$field] = $this->{$field};
             }
         }
 
@@ -962,7 +967,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     {
         $data = [];
 
-        foreach ($this->modelsMetadata->getColumnProperties($this) as $attributeField) {
+        foreach (self::getFields() as $attributeField) {
             $data[$attributeField] = isset($this->{$attributeField}) ? $this->{$attributeField} : null;
         }
 
@@ -989,7 +994,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     {
         $changed = [];
 
-        foreach ($this->modelsMetadata->getAttributes($this) as $field) {
+        foreach (self::getFields() as $field) {
             if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
                 $changed[] = $field;
             }
