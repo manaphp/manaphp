@@ -165,18 +165,23 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * }
      * </code>
      *
-     * @param    string|array $parameters
-     * @param  int|array      $cacheOptions
+     * @param  string|array|\ManaPHP\Mvc\Model\CriteriaInterface $parameters
+     * @param  int|array                                         $cacheOptions
      *
      * @return  static[]
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function find($parameters = null, $cacheOptions = null)
     {
+        if ($parameters instanceof Criteria) {
+            return $parameters->execute();
+        }
+
         $dependencyInjector = Di::getDefault();
 
         $modelName = get_called_class();
-        $query = static::createQuery()
+        $criteria = static::createCriteria()
             ->cache($cacheOptions);
 
         if (is_string($parameters)) {
@@ -184,20 +189,20 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         if (isset($parameters['columns'])) {
-            $query->select($parameters['columns']);
+            $criteria->select($parameters['columns']);
             unset($parameters['columns']);
         } else {
-            $query->select($dependencyInjector->modelsMetadata->getColumnProperties($modelName));
+            $criteria->select($dependencyInjector->modelsMetadata->getColumnProperties($modelName));
         }
 
         if (isset($parameters['in'])) {
-            $query->inWhere($dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName)[0], $parameters['in']);
+            $criteria->inWhere($dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName)[0], $parameters['in']);
             unset($parameters['in']);
         }
 
-        $query->buildFromArray($parameters);
+        $criteria->buildFromArray($parameters);
 
-        $resultset = $query->execute();
+        $resultset = $criteria->execute();
 
         $modelInstances = [];
         foreach ($resultset as $key => $result) {
@@ -214,6 +219,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param   int|array     $cacheOptions
      *
      * @return  static[]
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     final public static function findAll($parameters = null, $cacheOptions = null)
@@ -240,18 +246,23 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string|array $parameters
-     * @param int|array    $cacheOptions
+     * @param string|array|\ManaPHP\Mvc\Model\CriteriaInterface $parameters
+     * @param int|array                                         $cacheOptions
      *
      * @return static|false
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function findFirst($parameters = null, $cacheOptions = null)
     {
+        if ($parameters instanceof Criteria) {
+            return $parameters->limit(1)->execute();
+        }
+
         $dependencyInjector = Di::getDefault();
         $modelName = get_called_class();
 
-        $query = static::createQuery()
+        $criteria = static::createCriteria()
             ->cache($cacheOptions)
             ->limit(1);
 
@@ -273,15 +284,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         if (isset($parameters['columns'])) {
-            $query->select($parameters['columns']);
+            $criteria->select($parameters['columns']);
             unset($parameters['columns']);
         } else {
-            $query->select($dependencyInjector->modelsMetadata->getColumnProperties($modelName));
+            $criteria->select($dependencyInjector->modelsMetadata->getColumnProperties($modelName));
         }
 
-        $query->buildFromArray($parameters);
+        $criteria->buildFromArray($parameters);
 
-        $resultset = $query->execute();
+        $resultset = $criteria->execute();
 
         if (isset($resultset[0])) {
             return new static($resultset[0], $dependencyInjector);
@@ -320,15 +331,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $parameters = [$parameters];
         }
 
-        $query = static::createQuery()
+        return static::createCriteria()
             ->buildFromArray($parameters)
-            ->columns('1 as [stub]')
-            ->limit(1)
-            ->cache($cacheOptions);
-
-        $resultset = $query->execute();
-
-        return isset($resultset[0]);
+            ->cache($cacheOptions)
+            ->exists();
     }
 
     /**
@@ -428,11 +434,12 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|array    $cacheOptions
      *
      * @return mixed
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     protected static function _groupResult($function, $alias, $column, $parameters, $cacheOptions)
     {
-        $query = static::createQuery()
+        $criteria = static::createCriteria()
             ->cache($cacheOptions);
 
         if ($parameters === null) {
@@ -445,21 +452,21 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $column = '[' . $column . ']';
         }
         if (isset($parameters['group'])) {
-            $query->select("[$parameters[group]], $function($column) AS [$alias]");
+            $criteria->aggregate([$alias => "$function($column)", $parameters['group']]);
             $group = $parameters['group'];
             unset($parameters['group']);
         } /** @noinspection DefaultValueInElseBranchInspection */ else {
-            $query->select("$function($column) AS [$alias]");
+            $criteria->aggregate([$alias => "$function($column)"]);
         }
 
-        $query->buildFromArray($parameters);
+        $criteria->buildFromArray($parameters);
 
         if (isset($group)) {
-            $query->groupBy($group);
-            $rs = $query->execute();
+            $criteria->groupBy($group);
+            $rs = $criteria->execute();
             return $rs;
         } else {
-            $rs = $query->execute();
+            $rs = $criteria->execute();
             return $rs[0][$alias];
         }
     }
@@ -484,6 +491,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|array    $cacheOptions
      *
      * @return int|array
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function count($parameters = null, $column = '*', $cacheOptions = null)
@@ -516,6 +524,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|array    $cacheOptions
      *
      * @return mixed
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function sum($column, $parameters = null, $cacheOptions = null)
@@ -543,6 +552,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|array    $cacheOptions
      *
      * @return mixed
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function max($column, $parameters = null, $cacheOptions = null)
@@ -570,6 +580,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|array    $cacheOptions
      *
      * @return mixed
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function min($column, $parameters = null, $cacheOptions = null)
@@ -597,6 +608,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|array    $cacheOptions
      *
      * @return double
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function avg($column, $parameters = null, $cacheOptions = null)
