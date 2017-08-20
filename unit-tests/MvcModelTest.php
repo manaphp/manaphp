@@ -20,7 +20,7 @@ class TestCity1 extends \ManaPHP\Mvc\Model
 
 class TestCity2 extends \ManaPHP\Mvc\Model
 {
-    public function getSource($context = null)
+    public static function getSource($context = null)
     {
         return 'city';
     }
@@ -28,7 +28,7 @@ class TestCity2 extends \ManaPHP\Mvc\Model
 
 class TestCity3 extends \ManaPHP\Mvc\Model
 {
-    public function getSource($context = null)
+    public static function getSource($context = null)
     {
         return 'the_city';
     }

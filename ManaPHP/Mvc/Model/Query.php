@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc\Model;
 
 use ManaPHP\Mvc\Model\Query\Exception as QueryException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Mvc\Model\QueryBuilder
@@ -69,19 +68,15 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
                 }
                 parent::from($model, $alias);
             } else {
-                /**
-                 * @var \ManaPHP\Mvc\ModelInterface $modelInstance
-                 */
-                $modelInstance = new $model();
                 if ($this->_db === null) {
-                    if (($db = $modelInstance->getDb($this)) === false) {
+                    if (($db = $model::getDb($this)) === false) {
                         throw new QueryException('`:query` query db sharding failed',
                             ['query' => get_called_class(), 'context' => $this]);
                     }
                     $this->_db = $db;
                 }
 
-                if (($source = $modelInstance->getSource($this)) === false) {
+                if (($source = $model::getSource($this)) === false) {
                     throw new QueryException('`:query` query table sharding failed',
                         ['query' => get_called_class(), 'context' => $this]);
                 }
@@ -95,12 +90,8 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
                 if ($model instanceof Query) {
                     parent::join($model, $condition, $alias, $type);
                 } else {
-                    /**
-                     * @var \ManaPHP\Mvc\ModelInterface $modelInstance
-                     */
-                    $modelInstance = new $model();
-
-                    if (($source = $modelInstance->getSource($this)) === false) {
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    if (($source = $model::getSource($this)) === false) {
                         throw new QueryException('`:query` query table sharding failed',
                             ['query' => get_called_class(), 'context' => $this]);
                     }

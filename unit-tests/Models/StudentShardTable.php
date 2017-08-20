@@ -11,7 +11,7 @@ class StudentShardTable extends Model
     public $age;
     public $name;
 
-    public function getSource($context = null)
+    public static function getSource($context = null)
     {
         if ($context === true) {
             return '_student';
@@ -28,7 +28,7 @@ class StudentShardTable extends Model
         }
 
         if (isset($student_id)) {
-            return $this->{'student_' . ($student_id % 64)};
+            return 'student_' . ($student_id % 64);
         } else {
             return false;
         }

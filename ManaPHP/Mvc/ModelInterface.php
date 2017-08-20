@@ -19,7 +19,7 @@ interface ModelInterface
      *
      * @return string|false
      */
-    public function getSource($context = null);
+    public static function getSource($context = null);
 
     /**
      * Gets internal database connection
@@ -28,7 +28,14 @@ interface ModelInterface
      *
      * @return \ManaPHP\DbInterface|false
      */
-    public function getDb($context = null);
+    public static function getDb($context = null);
+
+    /**
+     * @param mixed $context
+     *
+     * @return \ManaPHP\DbInterface|false
+     */
+    public static function getConnection($context = null);
 
     /**
      * Create a criteria for a specific model

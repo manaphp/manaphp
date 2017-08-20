@@ -352,18 +352,17 @@ class Criteria extends Component implements CriteriaInterface
         }
         $this->_modelReplaced = true;
 
-        /**
-         * @var \ManaPHP\Mvc\ModelInterface $modelInstance
-         */
-        $modelInstance = new $this->_modelName;
+        $modelName = $this->_modelName;
         $bind = $this->_query->getBind();
-        if (($db = $modelInstance->getDb($bind)) === false) {
+        /** @noinspection PhpUndefinedMethodInspection */
+        if (($db = $modelName::getDb($bind)) === false) {
             throw new CriteriaException('`:model` model db sharding for query',
                 ['model' => $this->_modelName, 'context' => $bind]);
         }
-        $this->_query->setDb($db);
+        $this->_query->setDb($this->_dependencyInjector->getShared($db));
 
-        if (($source = $modelInstance->getSource($bind)) === false) {
+        /** @noinspection PhpUndefinedMethodInspection */
+        if (($source = $modelName::getSource($bind)) === false) {
             throw new CriteriaException('`:model` model table sharding for query',
                 ['model' => $this->_modelName, 'context' => $bind]);
         }
