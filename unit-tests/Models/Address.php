@@ -19,9 +19,4 @@ class Address extends Model
     public $postal_code;
     public $phone;
     public $last_update;
-
-    public function getSource()
-    {
-        return 'address';
-    }
 }

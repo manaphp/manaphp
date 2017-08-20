@@ -1,10 +1,11 @@
 <?php
+
 namespace Models;
 
 use ManaPHP\Db\Query;
 use ManaPHP\Mvc\Model;
 
-class StudentShardDb extends Model
+class StudentShardTable extends Model
 {
     public $id;
     public $age;
@@ -12,16 +13,11 @@ class StudentShardDb extends Model
 
     public function getSource($context = null)
     {
-        return '_student';
-    }
-
-    public function getDb($context = null)
-    {
         if ($context === true) {
-            return $this->{'db'};
+            return '_student';
         }
 
-        if ($context instanceof StudentShardDb) {
+        if ($context instanceof StudentShardTable) {
             $student_id = $context->id;
         } elseif (is_array($context)) {
             if (isset($context['id'])) {
@@ -32,9 +28,10 @@ class StudentShardDb extends Model
         }
 
         if (isset($student_id)) {
-            return $this->{'db_' . ($student_id % 64)};
+            return $this->{'student_' . ($student_id % 64)};
         } else {
             return false;
         }
     }
+
 }

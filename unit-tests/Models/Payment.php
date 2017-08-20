@@ -18,9 +18,4 @@ class Payment extends Model
     public $amount;
     public $payment_date;
     public $last_update;
-
-    public function getSource()
-    {
-        return 'payment';
-    }
 }

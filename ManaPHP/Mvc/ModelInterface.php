@@ -15,9 +15,11 @@ interface ModelInterface
      *  $city->getSource();
      * </code>
      *
+     * @param mixed $context
+     *
      * @return string
      */
-    public function getSource();
+    public function getSource($context = null);
 
     /**
      * Gets internal database connection

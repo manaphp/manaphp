@@ -23,10 +23,7 @@ class Model extends \ManaPHP\Mvc\Model
      */
     public $value;
 
-    /**
-     * @return string
-     */
-    public function getSource()
+    public function getSource($context = null)
     {
         return 'manaphp_task_metadata';
     }

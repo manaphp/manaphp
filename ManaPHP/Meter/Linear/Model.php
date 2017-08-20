@@ -33,10 +33,7 @@ class Model extends \ManaPHP\Mvc\Model
      */
     public $created_time;
 
-    /**
-     * @return string
-     */
-    public function getSource()
+    public function getSource($context = null)
     {
         return 'manaphp_linear_meter';
     }

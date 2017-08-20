@@ -23,9 +23,4 @@ class Actor extends Model
     public $first_name;
     public $last_name;
     public $last_update;
-
-    public function getSource()
-    {
-        return 'actor';
-    }
 }

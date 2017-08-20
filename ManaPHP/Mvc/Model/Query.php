@@ -150,14 +150,19 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
                  */
                 $modelInstance = new $model();
                 if ($this->_db === null) {
-                    $db = $modelInstance->getDb($this);
-                    if ($db === false) {
+                    if (($db = $modelInstance->getDb($this)) === false) {
                         throw new QueryException('`:query` query db sharding failed',
                             ['query' => get_called_class(), 'context' => $this]);
                     }
                     $this->_db = $db;
                 }
-                parent::from($modelInstance->getSource(), $alias);
+
+                if (($source = $modelInstance->getSource($this)) === false) {
+                    throw new QueryException('`:query` query table sharding failed',
+                        ['query' => get_called_class(), 'context' => $this]);
+                }
+
+                parent::from($source, $alias);
             }
             $this->_models = [];
 
@@ -171,7 +176,12 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
                      */
                     $modelInstance = new $model();
 
-                    parent::join($modelInstance->getSource(), $condition, $alias, $type);
+                    if (($source = $modelInstance->getSource($this)) === false) {
+                        throw new QueryException('`:query` query table sharding failed',
+                            ['query' => get_called_class(), 'context' => $this]);
+                    }
+
+                    parent::join($source, $condition, $alias, $type);
                 }
             }
             $this->_modelJoins = [];

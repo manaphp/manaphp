@@ -15,9 +15,4 @@ class City extends Model
     public $city;
     public $country_id;
     public $last_update;
-
-    public function getSource()
-    {
-        return 'city';
-    }
 }
