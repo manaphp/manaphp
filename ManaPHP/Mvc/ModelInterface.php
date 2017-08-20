@@ -31,6 +31,16 @@ interface ModelInterface
     public function getDb($context = null);
 
     /**
+     * Create a criteria for a specific model
+     *
+     * @param string               $alias
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @return \ManaPHP\Mvc\Model\QueryInterface
+     */
+    public static function createQuery($alias = null, $dependencyInjector = null);
+
+    /**
      * Assigns values to a model from an array
      * <code>
      *  $city->assign(['city_id'=>1,'city_name'=>'beijing']);
@@ -103,6 +113,7 @@ interface ModelInterface
      * @param \ManaPHP\DiInterface $dependencyInjector
      *
      * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @deprecated
      */
     public static function query($alias = null, $dependencyInjector = null);
 
