@@ -34,15 +34,6 @@ class TestCity3 extends \ManaPHP\Mvc\Model
     }
 }
 
-class TestCity4 extends \ManaPHP\Mvc\Model
-{
-    public $time;
-
-    public function onConstruct()
-    {
-        $this->time = time();
-    }
-}
 
 class MvcModelTest extends TestCase
 {
@@ -385,12 +376,6 @@ class MvcModelTest extends TestCase
         //use setSource
         $city = new TestCity3();
         $this->assertEquals('the_city', $city->getSource());
-    }
-
-    public function test_onConstruct()
-    {
-        $city = new TestCity4();
-        $this->assertNotNull($city->time);
     }
 
     public function test_getSnapshotData()
