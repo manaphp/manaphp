@@ -38,6 +38,11 @@ interface ModelInterface
     public static function getConnection($context = null);
 
     /**
+     * @return array
+     */
+    public static function getPrimaryKey();
+
+    /**
      * Create a criteria for a specific model
      *
      * @param string $alias

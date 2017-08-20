@@ -102,6 +102,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public static function getPrimaryKey()
+    {
+        return Di::getDefault()->modelsMetadata->getPrimaryKeyAttributes(get_called_class());
+    }
+
+    /**
      * @param string|array $columns
      *
      * @return \ManaPHP\Mvc\Model\CriteriaInterface
@@ -202,7 +210,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         if (isset($parameters['in'])) {
-            $criteria->inWhere($dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName)[0], $parameters['in']);
+            $criteria->inWhere(static::getPrimaryKey()[0], $parameters['in']);
             unset($parameters['in']);
         }
 
@@ -273,14 +281,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             ->limit(1);
 
         if (is_scalar($parameters)) {
-            $primaryKeys = $dependencyInjector->modelsMetadata->getPrimaryKeyAttributes(get_called_class());
+            $primaryKeys = static::getPrimaryKey();
 
             if (count($primaryKeys) === 0) {
-                throw new ModelException('parameter is integer, but the primary key of `:model` model is none', ['model' => get_called_class()]);
+                throw new ModelException('parameter is scalar, but the primary key of `:model` model is none', ['model' => get_called_class()]);
             }
 
             if (count($primaryKeys) !== 1) {
-                throw new ModelException('parameter is integer, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/,
+                throw new ModelException('parameter is scalar, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/,
                     ['model' => get_called_class()]);
             }
 
@@ -321,7 +329,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $modelName = get_called_class();
 
         if (is_scalar($parameters)) {
-            $primaryKeys = $dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($modelName);
+            $primaryKeys = static::getPrimaryKey();
 
             if (count($primaryKeys) === 0) {
                 throw new ModelException('parameter is scalar, but the primary key of `:model` model is none', ['model' => $modelName]);
@@ -376,7 +384,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     protected function _exists()
     {
-        $primaryKeys = $this->modelsMetadata->getPrimaryKeyAttributes($this);
+        $primaryKeys = static::getPrimaryKey();
         if (count($primaryKeys) === 0) {
             return false;
         }
@@ -421,7 +429,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $sql = 'SELECT COUNT(*) as [row_count]' . ' FROM [' . $source . '] WHERE ' . implode(' AND ',
                 $conditions);
 
-        $num = $this->_dependencyInjector->getShared($db)->getMasterConnection()->fetchOne($sql, $bind);
+        $num = ($this->_dependencyInjector?:Di::getDefault())->getShared($db)->getMasterConnection()->fetchOne($sql, $bind);
 
         return $num['row_count'] > 0;
     }
@@ -699,7 +707,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     protected function _doLowUpdate()
     {
         $conditions = [];
-        foreach ($this->modelsMetadata->getPrimaryKeyAttributes($this) as $attributeField) {
+        foreach (static::getPrimaryKey() as $attributeField) {
             if (!isset($this->{$attributeField})) {
                 throw new ModelException('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/, ['model' => get_class($this)]);
             }
@@ -905,7 +913,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function delete()
     {
-        $primaryKeys = $this->modelsMetadata->getPrimaryKeyAttributes($this);
+        $primaryKeys = static::getPrimaryKey();
 
         if (count($primaryKeys) === 0) {
             throw new ModelException('`:model` model must define a primary key in order to perform delete operation'/**m0d826d10544f3a078*/, ['model' => get_class($this)]);
