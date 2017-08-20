@@ -4,7 +4,7 @@ namespace ManaPHP\Db;
 interface QueryInterface
 {
     /**
-     * @param \ManaPHP\DbInterface $db
+     * @param \ManaPHP\DbInterface|string $db
      *
      * @return static
      */

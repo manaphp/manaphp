@@ -3,6 +3,7 @@ namespace ManaPHP\Db;
 
 use ManaPHP\Component;
 use ManaPHP\Db\Query\Exception as QueryException;
+use ManaPHP\Di;
 use ManaPHP\Utility\Text;
 
 /**
@@ -131,7 +132,7 @@ class Query extends Component implements QueryInterface
      *$queryBuilder = new \ManaPHP\Mvc\Model\Query\Builder($params);
      *</code>
      *
-     * @param \ManaPHP\DbInterface $db
+     * @param \ManaPHP\DbInterface|string $db
      */
     public function __construct($db = null)
     {
@@ -139,13 +140,15 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * @param \ManaPHP\DbInterface $db
+     * @param \ManaPHP\DbInterface|string $db
      *
      * @return static
      */
     public function setDb($db)
     {
         $this->_db = $db;
+
+        return $this;
     }
 
     /**
@@ -837,8 +840,8 @@ class Query extends Component implements QueryInterface
      */
     protected function _buildSql()
     {
-        if ($this->_db === null) {
-            $this->_db = $this->db;
+        if ($this->_db === null || is_string($this->_db)) {
+            $this->_db = ($this->_dependencyInjector ?: Di::getDefault())->getShared($this->_db ?: 'db');
         }
 
         if (count($this->_union) !== 0) {
