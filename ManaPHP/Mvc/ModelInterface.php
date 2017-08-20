@@ -34,11 +34,10 @@ interface ModelInterface
      * Create a criteria for a specific model
      *
      * @param string               $alias
-     * @param \ManaPHP\DiInterface $dependencyInjector
      *
      * @return \ManaPHP\Mvc\Model\QueryInterface
      */
-    public static function createQuery($alias = null, $dependencyInjector = null);
+    public static function createQuery($alias = null);
 
     /**
      * @param string|array $columns
@@ -117,12 +116,11 @@ interface ModelInterface
      * Create a criteria for a special model
      *
      * @param string               $alias
-     * @param \ManaPHP\DiInterface $dependencyInjector
      *
      * @return \ManaPHP\Mvc\Model\QueryInterface
      * @deprecated
      */
-    public static function query($alias = null, $dependencyInjector = null);
+    public static function query($alias = null);
 
     /**
      * Allows to count how many records match the specified conditions

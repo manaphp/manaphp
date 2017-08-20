@@ -4,7 +4,6 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Model\Criteria;
 use ManaPHP\Mvc\Model\Exception as ModelException;
 use ManaPHP\Utility\Text;
@@ -44,13 +43,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     /**
      * \ManaPHP\Mvc\Model constructor
      *
-     * @param array                $data
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param array $data
      */
-    final public function __construct($data = [], $dependencyInjector = null)
+    final public function __construct($data = [])
     {
-        $this->_dependencyInjector = $dependencyInjector ?: FactoryDefault::getDefault();
-
         if (method_exists($this, 'onConstruct')) {
             $this->onConstruct();
         }
@@ -206,7 +202,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
         $modelInstances = [];
         foreach ($resultset as $key => $result) {
-            $modelInstances[$key] = new static($result, $dependencyInjector);
+            $modelInstances[$key] = new static($result);
         }
 
         return $modelInstances;
@@ -295,7 +291,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $resultset = $criteria->execute();
 
         if (isset($resultset[0])) {
-            return new static($resultset[0], $dependencyInjector);
+            return new static($resultset[0]);
         } else {
             /** @noinspection PhpIncompatibleReturnTypeInspection */
             return false;
@@ -340,30 +336,26 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     /**
      * alias of createQuery
      *
-     * @param string               $alias
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param string $alias
      *
      * @return \ManaPHP\Mvc\Model\QueryInterface
      * @deprecated
      */
-    public static function query($alias = null, $dependencyInjector = null)
+    public static function query($alias = null)
     {
-        return static::createQuery($alias, $dependencyInjector);
+        return static::createQuery($alias);
     }
 
     /**
      * Create a criteria for a specific model
      *
-     * @param string               $alias
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param string $alias
      *
      * @return \ManaPHP\Mvc\Model\QueryInterface
      */
-    public static function createQuery($alias = null, $dependencyInjector = null)
+    public static function createQuery($alias = null)
     {
-        $dependencyInjector = $dependencyInjector ?: Di::getDefault();
-
-        return $dependencyInjector->get('ManaPHP\Mvc\Model\Query')->from(get_called_class(), $alias);
+        return Di::getDefault()->get('ManaPHP\Mvc\Model\Query')->from(get_called_class(), $alias);
     }
 
     /**
