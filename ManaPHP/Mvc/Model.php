@@ -411,7 +411,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $sql = 'SELECT COUNT(*) as [row_count]' . ' FROM [' . $source . '] WHERE ' . implode(' AND ',
                 $conditions);
 
-        $num = $db->getMasterConnection()->fetchOne($sql, $bind, \PDO::FETCH_ASSOC);
+        $num = $db->getMasterConnection()->fetchOne($sql, $bind);
 
         return $num['row_count'] > 0;
     }
