@@ -4,6 +4,13 @@ namespace ManaPHP\Db;
 interface QueryInterface
 {
     /**
+     * @param \ManaPHP\DbInterface $db
+     *
+     * @return static
+     */
+    public function setDb($db);
+
+    /**
      * Sets SELECT DISTINCT / SELECT ALL flag
      *
      * @param bool $distinct
@@ -18,6 +25,13 @@ interface QueryInterface
      * @return static
      */
     public function select($columns);
+
+    /**
+     * @param array $expr
+     *
+     * @return static
+     */
+    public function aggregate($expr);
 
     /**
      *
@@ -324,6 +338,11 @@ interface QueryInterface
      * @throws \ManaPHP\Db\Query\Exception
      */
     public function executeEx(&$totalRows);
+
+    /**
+     * @return bool
+     */
+    public function exists();
 
     /**
      * @param \ManaPHP\Db\QueryInterface[] $queries

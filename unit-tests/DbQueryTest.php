@@ -6,7 +6,7 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 class DbQueryTest extends TestCase
 {
-   public function setUp()
+    public function setUp()
     {
         $di = new \ManaPHP\Di\FactoryDefault();
 
@@ -299,5 +299,21 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city] GROUP BY [c].[city_id]',
             (new Query())->from('city')->groupBy(['c.city_id'])->getSql());
+    }
+
+    public function test_exists()
+    {
+        $this->assertTrue((new Query)->from('city')->exists());
+        $this->assertTrue((new Query)->from('city')->where('city_id', 1)->exists());
+        $this->assertFalse((new Query)->from('city')->where('city_id', 0)->exists());
+    }
+
+    public function test_aggregate()
+    {
+        $this->assertEquals('SELECT COUNT(*) AS [city_count] FROM [city]',
+            (new Query())->aggregate(['city_count' => 'COUNT(*)'])->from('city')->getSql());
+
+        $this->assertEquals('SELECT COUNT([city_id]) AS [city_count] FROM [city]',
+            (new Query())->aggregate(['city_count' => 'count(city_id)'])->from('city')->getSql());
     }
 }

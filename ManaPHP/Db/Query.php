@@ -139,6 +139,16 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param \ManaPHP\DbInterface $db
+     *
+     * @return static
+     */
+    public function setDb($db)
+    {
+        $this->_db = $db;
+    }
+
+    /**
      * Sets SELECT DISTINCT / SELECT ALL flag
      *
      * @param bool $distinct
@@ -187,6 +197,35 @@ class Query extends Component implements QueryInterface
             }
             $this->_columns = substr($r, 0, -2);
         }
+
+        return $this;
+    }
+
+    /**
+     * @param array $expr
+     *
+     * @return static
+     * @throws \ManaPHP\Db\Query\Exception
+     */
+    public function aggregate($expr)
+    {
+        $columns = '';
+
+        foreach ($expr as $k => $v) {
+            if (is_int($k)) {
+                $columns .= '[' . $v . '], ';
+            } else {
+                if (preg_match('#^(\w+)\(([\w]+)\)$#', $v, $matches) === 1) {
+                    $columns .= strtoupper($matches[1]) . '([' . $matches[2] . '])';
+                } else {
+                    $columns .= $v;
+                }
+
+                $columns .= ' AS [' . $k . '], ';
+            }
+        }
+
+        $this->_columns = substr($columns, 0, -2);
 
         return $this;
     }
@@ -1164,6 +1203,21 @@ class Query extends Component implements QueryInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @return bool
+     * @throws \ManaPHP\Db\Query\Exception
+     */
+    public function exists()
+    {
+        $this->_columns = '1 as [stub]';
+        $this->_limit = 1;
+        $this->_offset = 0;
+
+        $rs = $this->execute();
+
+        return isset($rs[0]);
     }
 
     /**
