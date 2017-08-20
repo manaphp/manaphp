@@ -17,7 +17,7 @@ interface ModelInterface
      *
      * @param mixed $context
      *
-     * @return string
+     * @return string|false
      */
     public function getSource($context = null);
 
@@ -33,7 +33,7 @@ interface ModelInterface
     /**
      * Create a criteria for a specific model
      *
-     * @param string               $alias
+     * @param string $alias
      *
      * @return \ManaPHP\Mvc\Model\QueryInterface
      */
@@ -115,7 +115,7 @@ interface ModelInterface
     /**
      * Create a criteria for a special model
      *
-     * @param string               $alias
+     * @param string $alias
      *
      * @return \ManaPHP\Mvc\Model\QueryInterface
      * @deprecated

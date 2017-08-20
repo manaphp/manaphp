@@ -64,7 +64,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param mixed $context
      *
-     * @return string
+     * @return string|false
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function getSource($context = null)
