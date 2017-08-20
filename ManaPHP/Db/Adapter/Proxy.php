@@ -1,10 +1,9 @@
 <?php
 namespace ManaPHP\Db\Adapter;
 
-use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Proxy\Exception as ProxyException;
 
-class Proxy extends Db
+class Proxy extends \ManaPHP\Db
 {
     /**
      * @var array
@@ -116,7 +115,7 @@ class Proxy extends Db
 
             $this->fireEvent('db:createMaster', ['options' => $options]);
 
-            $this->_masterConnection = new Db\Adapter\Mysql($options);
+            $this->_masterConnection = new Mysql($options);
         }
 
         if ($this->_currentConnection !== $this->_masterConnection) {
@@ -143,7 +142,7 @@ class Proxy extends Db
 
             $this->fireEvent('db:createSlave', ['dsn' => $options]);
 
-            $this->_slaveConnection = new Db\Adapter\Mysql($options);
+            $this->_slaveConnection = new Mysql($options);
         }
 
         if ($this->_currentConnection !== $this->_slaveConnection) {
@@ -292,7 +291,7 @@ class Proxy extends Db
         if ($this->_masterConnection !== null) {
             return $this->_masterConnection->tableExists($source);
         } else {
-            return $this->getSlaveConnection()->getTables($source);
+            return $this->getSlaveConnection()->tableExists($source);
         }
     }
 
