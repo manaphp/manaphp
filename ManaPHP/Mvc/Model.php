@@ -47,10 +47,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     final public function __construct($data = [])
     {
-        if (method_exists($this, 'onConstruct')) {
-            $this->onConstruct();
-        }
-
         if (count($data) !== 0) {
             $this->_snapshot = $data;
             foreach ($data as $attribute => $value) {
