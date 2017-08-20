@@ -5,6 +5,7 @@ namespace ManaPHP\Mvc;
 use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mvc\Model\Criteria;
 use ManaPHP\Mvc\Model\Exception as ModelException;
 use ManaPHP\Utility\Text;
 
@@ -92,6 +93,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $service = 'db';
 
         return $this->{$service};
+    }
+
+    /**
+     * @param string|array $columns
+     *
+     * @return \ManaPHP\Mvc\Model\CriteriaInterface
+     */
+    public static function createCriteria($columns = null)
+    {
+        return Di::getDefault()->get('ManaPHP\Mvc\Model\Criteria', [get_called_class(), $columns]);
     }
 
     /**

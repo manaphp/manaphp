@@ -41,6 +41,13 @@ interface ModelInterface
     public static function createQuery($alias = null, $dependencyInjector = null);
 
     /**
+     * @param string|array $columns
+     *
+     * @return \ManaPHP\Mvc\Model\CriteriaInterface
+     */
+    public static function createCriteria($columns = null);
+
+    /**
      * Assigns values to a model from an array
      * <code>
      *  $city->assign(['city_id'=>1,'city_name'=>'beijing']);
