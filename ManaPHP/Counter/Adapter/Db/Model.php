@@ -28,7 +28,7 @@ class Model extends \ManaPHP\Mvc\Model
      */
     public $value;
 
-    public function getSource($context = null)
+    public static function getSource($context = null)
     {
         return 'manaphp_counter';
     }
