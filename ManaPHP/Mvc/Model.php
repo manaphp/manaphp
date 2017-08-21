@@ -200,9 +200,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             return $parameters->execute();
         }
 
-        $dependencyInjector = Di::getDefault();
-
-        $modelName = get_called_class();
         $criteria = static::createCriteria()
             ->cache($cacheOptions);
 
@@ -330,19 +327,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public static function exists($parameters = null, $cacheOptions = null)
     {
-        $dependencyInjector = Di::getDefault();
-        $modelName = get_called_class();
-
         if (is_scalar($parameters)) {
             $primaryKeys = static::getPrimaryKey();
 
             if (count($primaryKeys) === 0) {
-                throw new ModelException('parameter is scalar, but the primary key of `:model` model is none', ['model' => $modelName]);
+                throw new ModelException('parameter is scalar, but the primary key of `:model` model is none', ['model' => get_called_class()]);
             }
 
             if (count($primaryKeys) !== 1) {
                 throw new ModelException('parameter is scalar, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/,
-                    ['model' => $modelName]);
+                    ['model' => get_called_class()]);
             }
 
             $parameters = [$primaryKeys[0] => $parameters];
