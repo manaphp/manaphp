@@ -58,6 +58,7 @@ class Db extends Component implements QueueInterface
      * @param int    $timeout
      *
      * @return string|false
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function pop($topic, $timeout = PHP_INT_MAX)
@@ -103,6 +104,7 @@ class Db extends Component implements QueueInterface
      * @param int    $priority
      *
      * @return int
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function length($topic, $priority = null)

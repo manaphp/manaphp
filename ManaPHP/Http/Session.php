@@ -83,12 +83,12 @@ class Session extends Component implements SessionInterface, \ArrayAccess
 
     /**
      * @return static
+     * @throws \ManaPHP\Http\Session\Exception
      */
     public function start()
     {
         if (!$this->_started) {
             if (PHP_SAPI !== 'cli' && session_status() !== PHP_SESSION_ACTIVE && !session_start()) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new SessionException('session start failed: :last_error_message');
             }
 

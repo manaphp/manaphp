@@ -160,6 +160,7 @@ class Linear extends Component implements LinearInterface
      * @param string $id
      *
      * @return int
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function get($type, $id)

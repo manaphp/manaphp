@@ -54,6 +54,7 @@ class Db extends Component implements AdapterInterface
      * @param string $key
      *
      * @return string|false
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function get($key)

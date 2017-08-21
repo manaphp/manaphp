@@ -55,6 +55,7 @@ class Db extends Component implements AdapterInterface
      * @param string $sessionId
      *
      * @return string
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function read($sessionId)

@@ -46,6 +46,7 @@ class Db implements AdapterInterface
      * @param string $id
      *
      * @return int
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function get($type, $id)
@@ -65,6 +66,7 @@ class Db implements AdapterInterface
      * @param int    $step
      *
      * @return int
+     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Counter\Adapter\Db\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
