@@ -4,7 +4,6 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
-use ManaPHP\Mvc\Model\Criteria;
 use ManaPHP\Mvc\Model\Exception as ModelException;
 use ManaPHP\Utility\Text;
 
@@ -187,8 +186,8 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * }
      * </code>
      *
-     * @param  string|array|\ManaPHP\Mvc\Model\CriteriaInterface $parameters
-     * @param  int|array                                         $cacheOptions
+     * @param  string|array $parameters
+     * @param  int|array    $cacheOptions
      *
      * @return  static[]
      * @throws \ManaPHP\Db\Query\Exception
@@ -196,10 +195,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public static function find($parameters = null, $cacheOptions = null)
     {
-        if ($parameters instanceof Criteria) {
-            return $parameters->execute();
-        }
-
         $criteria = static::createCriteria()
             ->cache($cacheOptions);
 
@@ -221,14 +216,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
         $criteria->buildFromArray($parameters);
 
-        $resultset = $criteria->execute();
-
-        $modelInstances = [];
-        foreach ($resultset as $key => $result) {
-            $modelInstances[$key] = new static($result);
-        }
-
-        return $modelInstances;
+        return $criteria->execute(true);
     }
 
     /**
@@ -265,8 +253,8 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string|array|\ManaPHP\Mvc\Model\CriteriaInterface $parameters
-     * @param int|array                                         $cacheOptions
+     * @param string|array $parameters
+     * @param int|array    $cacheOptions
      *
      * @return static|false
      * @throws \ManaPHP\Db\Query\Exception
@@ -274,10 +262,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public static function findFirst($parameters = null, $cacheOptions = null)
     {
-        if ($parameters instanceof Criteria) {
-            return $parameters->limit(1)->execute();
-        }
-
         $criteria = static::createCriteria()
             ->cache($cacheOptions)
             ->limit(1);
@@ -306,14 +290,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $criteria->select(static::getFields());
         }
 
-        $criteria->buildFromArray($parameters);
-
-        $resultset = $criteria->execute();
-
-        if (isset($resultset[0])) {
-            return new static($resultset[0]);
+        $rs = $criteria->buildFromArray($parameters)->execute(true);
+        if (isset($rs[0])) {
+            return $rs[0];
         } else {
-            /** @noinspection PhpIncompatibleReturnTypeInspection */
             return false;
         }
     }

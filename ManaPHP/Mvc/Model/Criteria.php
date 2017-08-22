@@ -419,14 +419,24 @@ class Criteria extends Component implements CriteriaInterface
     }
 
     /**
+     * @param bool $asModel
      *
-     * @return array
+     * @return array|\ManaPHP\Mvc\ModelInterface[]
      * @throws \ManaPHP\Mvc\Model\Criteria\Exception
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function execute()
+    public function execute($asModel = false)
     {
-        return $this->_replaceModelInfo()->_query->execute();
+        $rs = $this->_replaceModelInfo()->_query->execute();
+        if ($asModel) {
+            $models = [];
+            foreach ($rs as $k => $result) {
+                $models[$k] = new $this->_modelName($result);
+            }
+            return $models;
+        } else {
+            return $rs;
+        }
     }
 
     public function exists()

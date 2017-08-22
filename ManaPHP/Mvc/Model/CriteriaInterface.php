@@ -202,11 +202,12 @@ interface CriteriaInterface
     public function cache($options);
 
     /**
+     * @param bool $asModel
      *
-     * @return array
+     * @return array|\ManaPHP\Mvc\ModelInterface[]
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function execute();
+    public function execute($asModel = false);
 
     /**
      * @return bool
