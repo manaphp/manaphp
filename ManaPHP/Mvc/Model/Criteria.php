@@ -433,4 +433,12 @@ class Criteria extends Component implements CriteriaInterface
     {
         return $this->_replaceModelInfo()->_query->exists();
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getSql();
+    }
 }
