@@ -88,21 +88,19 @@ interface ModelInterface
      *
      * </code>
      * @param    string|array $parameters
-     * @param   int|array     $cacheOptions
      *
      * @return  static[]
      */
-    public static function find($parameters = null, $cacheOptions = null);
+    public static function find($parameters = null);
 
     /**
      * alias of find
      *
      * @param    string|array $parameters
-     * @param   int|array     $cacheOptions
      *
      * @return  static[]
      */
-    public static function findAll($parameters = null, $cacheOptions = null);
+    public static function findAll($parameters = null);
 
     /**
      * Allows to query the first record that match the specified conditions
@@ -115,11 +113,10 @@ interface ModelInterface
      * </code>
      *
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return static|false
      */
-    public static function findFirst($parameters = null, $cacheOptions = null);
+    public static function findFirst($parameters = null);
 
     /**
      * @param int|string   $id
@@ -131,11 +128,10 @@ interface ModelInterface
 
     /**
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return bool
      */
-    public static function exists($parameters = null, $cacheOptions = null);
+    public static function exists($parameters = null);
 
     /**
      * Create a criteria for a special model

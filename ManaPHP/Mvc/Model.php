@@ -30,7 +30,6 @@ use ManaPHP\Utility\Text;
  * method afterDelete()
  *
  * @property \ManaPHP\Mvc\Model\MetadataInterface $modelsMetadata
- * @property \ManaPHP\Mvc\Model\ManagerInterface  $modelsManager
  */
 class Model extends Component implements ModelInterface, \JsonSerializable
 {
@@ -187,17 +186,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @param  string|array $parameters
-     * @param  int|array    $cacheOptions
      *
      * @return  static[]
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function find($parameters = null, $cacheOptions = null)
+    public static function find($parameters = null)
     {
-        $criteria = static::createCriteria()
-            ->cache($cacheOptions);
-
+        $criteria = static::createCriteria();
         if (is_string($parameters)) {
             $parameters = [$parameters];
         }
@@ -223,15 +219,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * alias of find
      *
      * @param    string|array $parameters
-     * @param   int|array     $cacheOptions
      *
      * @return  static[]
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    final public static function findAll($parameters = null, $cacheOptions = null)
+    final public static function findAll($parameters = null)
     {
-        return self::find($parameters, $cacheOptions);
+        return self::find($parameters);
     }
 
     /**
@@ -254,21 +249,18 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return static|false
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function findFirst($parameters = null, $cacheOptions = null)
+    public static function findFirst($parameters = null)
     {
         if (is_scalar($parameters)) {
             return static::findById($parameters);
         }
 
-        $criteria = static::createCriteria()
-            ->cache($cacheOptions)
-            ->limit(1);
+        $criteria = static::createCriteria();
 
         if (isset($parameters['columns'])) {
             $criteria->select($parameters['columns']);
@@ -277,7 +269,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $criteria->select(static::getFields());
         }
 
-        $rs = $criteria->buildFromArray($parameters)->execute(true);
+        $rs = $criteria->buildFromArray($parameters)->limit(1)->execute(true);
         return isset($rs[0]) ? $rs[0] : false;
     }
 
@@ -300,12 +292,11 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
     /**
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return bool
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function exists($parameters = null, $cacheOptions = null)
+    public static function exists($parameters = null)
     {
         if (is_scalar($parameters)) {
             $primaryKeys = static::getPrimaryKey();
@@ -326,7 +317,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
         return static::createCriteria()
             ->buildFromArray($parameters)
-            ->cache($cacheOptions)
             ->exists();
     }
 
