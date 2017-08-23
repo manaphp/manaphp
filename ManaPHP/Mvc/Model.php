@@ -206,7 +206,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     final public static function findAll($filters = [], $options = null, $fields = null)
     {
-        return self::find($filters, $options, $fields);
+        return static::find($filters, $options, $fields);
     }
 
     /**
@@ -304,7 +304,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         if (!is_scalar($id)) {
             throw new ModelException(' `:id` must be scalar value.', ['id' => json_encode($id)]);
         }
-        
+
         return static::exists([static::getPrimaryKey()[0] => $id]);
     }
 
@@ -926,7 +926,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     {
         $data = [];
 
-        foreach (self::getFields() as $field) {
+        foreach (static::getFields() as $field) {
             $data[$field] = isset($this->{$field}) ? $this->{$field} : null;
         }
 
@@ -952,7 +952,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     {
         $changed = [];
 
-        foreach (self::getFields() as $field) {
+        foreach (static::getFields() as $field) {
             if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
                 $changed[] = $field;
             }
