@@ -7,6 +7,8 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Component\Exception as ComponentException;
+
 /**
  * Class ManaPHP\Component
  *
@@ -71,7 +73,7 @@ class Component implements ComponentInterface
         } else {
             $this->{$name} = $this->_dependencyInjector->{$name};
             if ($this->{$name} === null) {
-                throw new \ManaPHP\Di\Exception('Access to undefined property `:name` of `:class`', ['name' => $name, 'class' => get_called_class()]);
+                throw new ComponentException('Access to undefined property `:name` of `:class`', ['name' => $name, 'class' => get_called_class()]);
             }
         }
 
