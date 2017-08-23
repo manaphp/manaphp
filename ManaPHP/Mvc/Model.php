@@ -321,10 +321,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     /**
      * Generate a SQL SELECT statement for an aggregate
      *
-     * @param string       $function
-     * @param string       $alias
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $function
+     * @param string $alias
+     * @param string $field
+     * @param array  $parameters
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
@@ -336,31 +336,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
         if ($parameters === null) {
             $parameters = [];
-        } elseif (is_string($parameters)) {
-            $parameters = [$parameters];
         }
 
         if (preg_match('#^[a-z_][a-z0-9_]*$#i', $field) === 1) {
             $field = '[' . $field . ']';
         }
-        if (isset($parameters['group'])) {
-            $criteria->aggregate([$alias => "$function($field)", $parameters['group']]);
-            $group = $parameters['group'];
-            unset($parameters['group']);
-        } /** @noinspection DefaultValueInElseBranchInspection */ else {
-            $criteria->aggregate([$alias => "$function($field)"]);
-        }
 
-        $criteria->buildFromArray($parameters);
+        $rs = $criteria->aggregate([$alias => "$function($field)"])->where($parameters)->execute();
 
-        if (isset($group)) {
-            $criteria->groupBy($group);
-            $rs = $criteria->execute();
-            return $rs;
-        } else {
-            $rs = $criteria->execute();
-            return $rs[0][$alias];
-        }
+        return $rs[0][$alias];
     }
 
     /**
@@ -378,16 +362,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string|array $parameters
-     * @param string       $field
+     * @param array  $parameters
+     * @param string $field
      *
-     * @return int|array
+     * @return int
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function count($parameters = null, $field = null)
+    public static function count($parameters = null)
     {
-        $result = self::_groupResult('COUNT', 'row_count', $field ?: '*', $parameters);
+        $result = self::_groupResult('COUNT', 'row_count', '*', $parameters);
         if (is_string($result)) {
             $result = (int)$result;
         }
@@ -410,10 +394,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $field
+     * @param array  $parameters
      *
-     * @return mixed
+     * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
@@ -437,10 +421,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $field
+     * @param array  $parameters
      *
-     * @return mixed
+     * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
@@ -464,10 +448,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $field
+     * @param array  $parameters
      *
-     * @return mixed
+     * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
@@ -491,8 +475,8 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $field
+     * @param array  $parameters
      *
      * @return double
      * @throws \ManaPHP\Db\Query\Exception

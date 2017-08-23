@@ -141,48 +141,47 @@ interface ModelInterface
      * City::count(['country_id'=>2]);
      * </code>
      *
-     * @param string|array $parameters
-     * @param string       $field
+     * @param array $parameters
      *
-     * @return int|array
+     * @return int
      */
-    public static function count($parameters = null, $field = null);
+    public static function count($parameters = null);
 
     /**
      * Allows to calculate a summary on a column that match the specified conditions
      *
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $field
+     * @param array  $parameters
      *
-     * @return mixed
+     * @return int|float
      */
     public static function sum($field, $parameters = null);
 
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $field
+     * @param array  $parameters
      *
-     * @return mixed
+     * @return int|float
      */
     public static function max($field, $parameters = null);
 
     /**
      * Allows to get the min value of a column that match the specified conditions
      *
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $field
+     * @param array  $parameters
      *
-     * @return mixed
+     * @return int|float
      */
     public static function min($field, $parameters = null);
 
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
-     * @param string       $field
-     * @param string|array $parameters
+     * @param string $field
+     * @param array  $parameters
      *
      * @return double
      */
