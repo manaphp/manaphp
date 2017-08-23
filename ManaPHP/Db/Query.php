@@ -398,17 +398,23 @@ class Query extends Component implements QueryInterface
      */
     public function betweenWhere($expr, $min, $max)
     {
-        $minKey = '_min_' . $this->_hiddenParamNumber;
-        $maxKey = '_max_' . $this->_hiddenParamNumber;
-
-        $this->_hiddenParamNumber++;
-
         if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
+
             if (strpos($expr, '.') !== false) {
+                $id = str_replace('.', '_', $expr);
                 $expr = '[' . str_replace('.', '].[', $expr) . ']';
+
             } else {
+                $id = $expr;
                 $expr = '[' . $expr . ']';
             }
+
+            $minKey = $id . '_min';
+            $maxKey = $id . '_max';
+        } else {
+            $minKey = '_min_' . $this->_hiddenParamNumber;
+            $maxKey = '_max_' . $this->_hiddenParamNumber;
+            $this->_hiddenParamNumber++;
         }
 
         $this->_conditions[] = "$expr BETWEEN :$minKey AND :$maxKey";
