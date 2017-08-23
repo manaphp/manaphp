@@ -152,55 +152,50 @@ interface ModelInterface
      *
      * @param string|array $parameters
      * @param string       $column
-     * @param int|array    $cacheOptions
      *
      * @return int|array
      */
-    public static function count($parameters = null, $column = '*', $cacheOptions = null);
+    public static function count($parameters = null, $column = '*');
 
     /**
      * Allows to calculate a summary on a column that match the specified conditions
      *
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return mixed
      */
-    public static function sum($column, $parameters = null, $cacheOptions = null);
+    public static function sum($column, $parameters = null);
 
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return mixed
      */
-    public static function max($column, $parameters = null, $cacheOptions = null);
+    public static function max($column, $parameters = null);
 
     /**
      * Allows to get the min value of a column that match the specified conditions
      *
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return mixed
      */
-    public static function min($column, $parameters = null, $cacheOptions = null);
+    public static function min($column, $parameters = null);
 
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return double
      */
-    public static function avg($column, $parameters = null, $cacheOptions = null);
+    public static function avg($column, $parameters = null);
 
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.

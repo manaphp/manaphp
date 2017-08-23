@@ -410,16 +410,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param string       $alias
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    protected static function _groupResult($function, $alias, $column, $parameters, $cacheOptions)
+    protected static function _groupResult($function, $alias, $column, $parameters)
     {
-        $criteria = static::createCriteria()
-            ->cache($cacheOptions);
+        $criteria = static::createCriteria();
 
         if ($parameters === null) {
             $parameters = [];
@@ -467,15 +465,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param string|array $parameters
      * @param string       $column
-     * @param int|array    $cacheOptions
      *
      * @return int|array
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function count($parameters = null, $column = '*', $cacheOptions = null)
+    public static function count($parameters = null, $column = '*')
     {
-        $result = self::_groupResult('COUNT', 'row_count', $column, $parameters, $cacheOptions);
+        $result = self::_groupResult('COUNT', 'row_count', $column, $parameters);
         if (is_string($result)) {
             $result = (int)$result;
         }
@@ -500,15 +497,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function sum($column, $parameters = null, $cacheOptions = null)
+    public static function sum($column, $parameters = null)
     {
-        return self::_groupResult('SUM', 'summary', $column, $parameters, $cacheOptions = null);
+        return self::_groupResult('SUM', 'summary', $column, $parameters);
     }
 
     /**
@@ -528,15 +524,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function max($column, $parameters = null, $cacheOptions = null)
+    public static function max($column, $parameters = null)
     {
-        return self::_groupResult('MAX', 'maximum', $column, $parameters, $cacheOptions);
+        return self::_groupResult('MAX', 'maximum', $column, $parameters);
     }
 
     /**
@@ -556,15 +551,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function min($column, $parameters = null, $cacheOptions = null)
+    public static function min($column, $parameters = null)
     {
-        return self::_groupResult('MIN', 'minimum', $column, $parameters, $cacheOptions);
+        return self::_groupResult('MIN', 'minimum', $column, $parameters);
     }
 
     /**
@@ -584,15 +578,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param string       $column
      * @param string|array $parameters
-     * @param int|array    $cacheOptions
      *
      * @return double
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function avg($column, $parameters = null, $cacheOptions = null)
+    public static function avg($column, $parameters = null)
     {
-        return (double)self::_groupResult('AVG', 'average', $column, $parameters, $cacheOptions);
+        return (double)self::_groupResult('AVG', 'average', $column, $parameters);
     }
 
     /**
