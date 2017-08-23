@@ -141,7 +141,7 @@ interface ModelInterface
      *
      * @return int|array
      */
-    public static function count($parameters = null, $column = '*');
+    public static function count($parameters = null, $column = null);
 
     /**
      * Allows to calculate a summary on a column that match the specified conditions

@@ -436,9 +436,9 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function count($parameters = null, $column = '*')
+    public static function count($parameters = null, $column = null)
     {
-        $result = self::_groupResult('COUNT', 'row_count', $column, $parameters);
+        $result = self::_groupResult('COUNT', 'row_count', $column ?: '*', $parameters);
         if (is_string($result)) {
             $result = (int)$result;
         }
@@ -705,7 +705,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
         return $this;
     }
-    
+
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
