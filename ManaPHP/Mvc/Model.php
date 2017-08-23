@@ -969,7 +969,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *</code>
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function toArray()
     {
@@ -996,7 +995,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * Returns a list of changed values
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function getChangedFields()
     {
@@ -1018,7 +1016,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param string|array $fields
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function hasChanged($fields)
     {
@@ -1038,7 +1035,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
     /**
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function jsonSerialize()
     {
