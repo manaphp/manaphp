@@ -291,7 +291,7 @@ class MvcModelTest extends TestCase
         $student->name = 'mana2';
         $student->create();
 
-        $this->assertEquals(2, Student::updateAll(['name' => 'm'], '1=1'));
+        $this->assertEquals(2, Student::updateAll(['name' => 'm'], ['id>' => 0]));
 
         $student->update();
     }
@@ -349,7 +349,7 @@ class MvcModelTest extends TestCase
 
         $this->assertTrue(Student::findFirst(1) !== false);
 
-        Student::deleteAll('1=1');
+        Student::deleteAll(['id>' => 0]);
         $this->assertTrue(Student::findFirst(1) === false);
     }
 
@@ -473,14 +473,14 @@ class MvcModelTest extends TestCase
         }
 
         try {
-            \Models\StudentShardDb::updateAll(['name' => 'mark'], 'city_id =:city_id', ['id' => 10]);
+            \Models\StudentShardDb::updateAll(['name' => 'mark'], ['id' => 10]);
             $this->assertFalse('why not?');
         } catch (\ManaPHP\Exception $e) {
             $this->assertContains('db_10', $e->getMessage());
         }
 
         try {
-            \Models\StudentShardDb::deleteAll('city_id =:city_id', ['id' => 10]);
+            \Models\StudentShardDb::deleteAll(['id' => 10]);
             $this->assertFalse('why not?');
         } catch (\ManaPHP\Exception $e) {
             $this->assertContains('db_10', $e->getMessage());
@@ -525,14 +525,14 @@ class MvcModelTest extends TestCase
         }
 
         try {
-            \Models\StudentShardTable::updateAll(['name' => 'mark'], 'city_id =:city_id', ['id' => 10]);
+            \Models\StudentShardTable::updateAll(['name' => 'mark'], ['id' => 10]);
             $this->assertFalse('why not?');
         } catch (\ManaPHP\Exception $e) {
             $this->assertContains('student_10', $e->getMessage());
         }
 
         try {
-            \Models\StudentShardTable::deleteAll('city_id =:city_id', ['id' => 10]);
+            \Models\StudentShardTable::deleteAll(['id' => 10]);
             $this->assertFalse('why not?');
         } catch (\ManaPHP\Exception $e) {
             $this->assertContains('student_10', $e->getMessage());

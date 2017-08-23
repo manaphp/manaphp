@@ -812,15 +812,26 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * @param array        $fieldValues
-     * @param string|array $conditions
-     * @param array        $bind
+     * @param array $fieldValues
+     * @param array $conditions
      *
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function updateAll($fieldValues, $conditions, $bind = [])
+    public static function updateAll($fieldValues, $conditions)
     {
+        $wheres = [];
+        $bind = [];
+        foreach ($conditions as $field => $value) {
+            preg_match('#^(\w+)\s*(.*)$#', $field, $matches);
+            list(, $column, $op) = $matches;
+            if ($op === '') {
+                $op = '=';
+            }
+            $wheres[] = '[' . $column . ']' . $op . ':' . $column;
+            $bind[$column] = $value;
+        }
+
         if (($db = static::getDb($bind)) === false) {
             throw new ModelException('`:model` model db sharding for _exists failed updateAll',
                 ['model' => get_called_class(), 'context' => $bind]);
@@ -831,18 +842,29 @@ class Model extends Component implements ModelInterface, \JsonSerializable
                 ['model' => get_called_class(), 'context' => $bind]);
         }
 
-        return Di::getDefault()->getShared($db)->update($source, $fieldValues, $conditions, $bind);
+        return Di::getDefault()->getShared($db)->update($source, $fieldValues, implode(' AND ', $wheres), $bind);
     }
 
     /**
-     * @param string|array $conditions
-     * @param array        $bind
+     * @param array $conditions
      *
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function deleteAll($conditions, $bind = [])
+    public static function deleteAll($conditions)
     {
+        $wheres = [];
+        $bind = [];
+        foreach ($conditions as $field => $value) {
+            preg_match('#^(\w+)\s*(.*)$#', $field, $matches);
+            list(, $column, $op) = $matches;
+            if ($op === '') {
+                $op = '=';
+            }
+            $wheres[] = '[' . $column . ']' . $op . ':' . $column;
+            $bind[$column] = $value;
+        }
+
         if (($db = static::getDb($bind)) === false) {
             throw new ModelException('`:model` model db sharding for deleteAll failed',
                 ['model' => get_called_class(), 'context' => $bind]);
@@ -853,7 +875,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
                 ['model' => get_called_class(), 'context' => $bind]);
         }
 
-        return Di::getDefault()->getShared($db)->delete($source, $conditions, $bind);
+        return Di::getDefault()->getShared($db)->delete($source, implode(' AND ', $wheres), $bind);
     }
 
     /**

@@ -230,18 +230,17 @@ interface ModelInterface
     public static function updateById($id, $data, $whiteList = null);
 
     /**
-     * @param array        $fieldValues
-     * @param string|array $conditions
-     * @param array        $bind
+     * @param array $fieldValues
+     * @param array $conditions
      *
      * @return int
      */
-    public static function updateAll($fieldValues, $conditions, $bind = []);
+    public static function updateAll($fieldValues, $conditions);
 
     /**
      * Deletes a model instance. Returning true on success or false otherwise.
      *
-     * @return void
+     * @return int
      */
     public function delete();
 
@@ -253,12 +252,11 @@ interface ModelInterface
     public static function deleteById($id);
 
     /**
-     * @param string|array $conditions
-     * @param array        $bind
+     * @param array $conditions
      *
      * @return int
      */
-    public static function deleteAll($conditions, $bind = []);
+    public static function deleteAll($conditions);
 
     /**
      * Returns the instance as an array representation
