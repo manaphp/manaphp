@@ -587,7 +587,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             if (!isset($this->{$field})) {
                 return false;
             }
-            $conditions[$field] =$this->{$field};
+            $conditions[$field] = $this->{$field};
         }
 
         if (is_array($this->_snapshot)) {
