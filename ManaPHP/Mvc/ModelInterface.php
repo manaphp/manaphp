@@ -141,11 +141,12 @@ interface ModelInterface
      * City::count(['country_id'=>2]);
      * </code>
      *
-     * @param array $parameters
+     * @param array  $parameters
+     * @param string $field
      *
      * @return int
      */
-    public static function count($parameters = null);
+    public static function count($parameters = null, $field = null);
 
     /**
      * Allows to calculate a summary on a column that match the specified conditions

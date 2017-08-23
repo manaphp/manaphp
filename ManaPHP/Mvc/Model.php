@@ -369,9 +369,9 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function count($parameters = null)
+    public static function count($parameters = null, $field = null)
     {
-        $result = self::_groupResult('COUNT', 'row_count', '*', $parameters);
+        $result = self::_groupResult('COUNT', 'row_count', $field ?: '*', $parameters);
         if (is_string($result)) {
             $result = (int)$result;
         }
