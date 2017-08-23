@@ -26,7 +26,7 @@ interface ModelInterface
      *
      * @param mixed $context
      *
-     * @return \ManaPHP\DbInterface|false
+     * @return string|false
      */
     public static function getDb($context = null);
 
