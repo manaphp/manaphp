@@ -239,6 +239,16 @@ interface ModelInterface
     public function update($data = null, $whiteList = null);
 
     /**
+     * @param int|string $id
+     * @param array      $data
+     * @param array      $whiteList
+     *
+     * @return int
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function updateById($id, $data = null, $whiteList = null);
+
+    /**
      * @param array        $columnValues
      * @param string|array $conditions
      * @param array        $bind
@@ -253,6 +263,13 @@ interface ModelInterface
      * @return void
      */
     public function delete();
+
+    /**
+     * @param int|string $id
+     *
+     * @return void
+     */
+    public static function deleteById($id);
 
     /**
      * @param string|array $conditions

@@ -831,6 +831,48 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
+     * @param int|string $id
+     * @param array      $data
+     * @param array      $whiteList
+     *
+     * @return int
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function updateById($id, $data = null, $whiteList = null)
+    {
+        if (!is_scalar($id)) {
+            throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);
+        }
+
+        $conditions = [static::getPrimaryKey()[0] => $id];
+
+        if (($db = static::getDb($conditions)) === false) {
+            throw new ModelException('`:model` model db sharding for delete failed',
+                ['model' => get_called_class(), 'context' => $conditions]);
+        }
+
+        if (($source = static::getSource($conditions)) === false) {
+            throw new ModelException('`:model` model table sharding for delete failed',
+                ['model' => get_called_class(), 'context' => $conditions]);
+        }
+
+        $columnValues = [];
+        foreach (static::getFields() as $field) {
+            if (!isset($data[$field])) {
+                continue;
+            }
+
+            if ($whiteList !== null && !in_array($field, $whiteList, true)) {
+                continue;
+            }
+
+            $columnValues[$field] = $data[$field];
+        }
+
+        return Di::getDefault()->getShared($db)->update($source, $columnValues, $conditions);
+    }
+
+    /**
      * @param array        $columnValues
      * @param string|array $conditions
      * @param array        $bind
@@ -925,6 +967,33 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $this->_dependencyInjector->getShared($db)->delete($source, $conditions);
 
         $this->_fireEvent('afterDelete');
+    }
+
+    /**
+     * @param int|string $id
+     *
+     * @return int
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function deleteById($id)
+    {
+        if (!is_scalar($id)) {
+            throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);
+        }
+
+        $conditions = [static::getPrimaryKey()[0] => $id];
+
+        if (($db = static::getDb($conditions)) === false) {
+            throw new ModelException('`:model` model db sharding for delete failed',
+                ['model' => get_called_class(), 'context' => $conditions]);
+        }
+
+        if (($source = static::getSource($conditions)) === false) {
+            throw new ModelException('`:model` model table sharding for delete failed',
+                ['model' => get_called_class(), 'context' => $conditions]);
+        }
+
+        return Di::getDefault()->getShared($db)->delete($source, $conditions);
     }
 
     /**
