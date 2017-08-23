@@ -603,7 +603,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             }
         }
 
-        return static::createCriteria()->where($conditions)->exists(true);
+        return static::createCriteria()->where($conditions)->exists(false);
     }
 
     /**
