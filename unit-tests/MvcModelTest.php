@@ -34,7 +34,6 @@ class TestCity3 extends \ManaPHP\Mvc\Model
     }
 }
 
-
 class MvcModelTest extends TestCase
 {
     /**
@@ -202,6 +201,12 @@ class MvcModelTest extends TestCase
         $cities = City::find([['country_id' => 2], 'order' => 'city desc']);
         $this->assertCount(3, $cities);
         $this->assertEquals(483, $cities[0]->city_id);
+    }
+
+    public function test_findById()
+    {
+        $city = City::findById(10);
+        $this->assertEquals(10, $city->city_id);
     }
 
     public function test_find_usage()

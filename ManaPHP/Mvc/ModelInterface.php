@@ -122,6 +122,14 @@ interface ModelInterface
     public static function findFirst($parameters = null, $cacheOptions = null);
 
     /**
+     * @param int|string   $id
+     * @param string|array $fields
+     *
+     * @return static|false
+     */
+    public static function findById($id, $fields = null);
+
+    /**
      * @param string|array $parameters
      * @param int|array    $cacheOptions
      *

@@ -262,26 +262,13 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public static function findFirst($parameters = null, $cacheOptions = null)
     {
+        if (is_scalar($parameters)) {
+            return static::findById($parameters);
+        }
+
         $criteria = static::createCriteria()
             ->cache($cacheOptions)
             ->limit(1);
-
-        if (is_scalar($parameters)) {
-            $primaryKeys = static::getPrimaryKey();
-
-            if (count($primaryKeys) === 0) {
-                throw new ModelException('parameter is scalar, but the primary key of `:model` model is none', ['model' => get_called_class()]);
-            }
-
-            if (count($primaryKeys) !== 1) {
-                throw new ModelException('parameter is scalar, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/,
-                    ['model' => get_called_class()]);
-            }
-
-            $parameters = ['[' . $primaryKeys[0] . ']' . '=:' . $primaryKeys[0], 'bind' => [$primaryKeys[0] => $parameters]];
-        } elseif (is_string($parameters)) {
-            $parameters = [$parameters];
-        }
 
         if (isset($parameters['columns'])) {
             $criteria->select($parameters['columns']);
@@ -291,11 +278,24 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         $rs = $criteria->buildFromArray($parameters)->execute(true);
-        if (isset($rs[0])) {
-            return $rs[0];
-        } else {
-            return false;
+        return isset($rs[0]) ? $rs[0] : false;
+    }
+
+    /**
+     * @param int|string   $id
+     * @param string|array $fields
+     *
+     * @return static|false
+     * @throws \ManaPHP\Db\Query\Exception
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function findById($id, $fields = null)
+    {
+        if (!is_scalar($id)) {
+            throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
+        $rs = static::createCriteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey()[0], $id)->execute(true);
+        return isset($rs[0]) ? $rs[0] : false;
     }
 
     /**
