@@ -48,6 +48,11 @@ interface ModelInterface
     public static function getFields();
 
     /**
+     * @return string
+     */
+    public static function getAutoIncrementField();
+
+    /**
      * Create a criteria for a specific model
      *
      * @param string $alias

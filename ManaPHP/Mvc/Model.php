@@ -29,7 +29,6 @@ use ManaPHP\Utility\Text;
  * method beforeDelete()
  * method afterDelete()
  *
- * @property \ManaPHP\Mvc\Model\MetadataInterface $modelsMetadata
  */
 class Model extends Component implements ModelInterface, \JsonSerializable
 {
@@ -113,6 +112,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     public static function getFields()
     {
         return Di::getDefault()->modelsMetadata->getAttributes(get_called_class());
+    }
+
+    /**
+     * @return string
+     */
+    public static function getAutoIncrementField()
+    {
+        return Di::getDefault()->modelsMetadata->getAutoIncrementAttribute(get_called_class());
     }
 
     /**
@@ -702,7 +709,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $connection = $this->_dependencyInjector->getShared($db);
         $connection->insert($source, $fieldValues);
 
-        $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
+        $autoIncrementAttribute = static::getAutoIncrementField();
         if ($autoIncrementAttribute !== null) {
             $this->{$autoIncrementAttribute} = $connection->lastInsertId();
         }
