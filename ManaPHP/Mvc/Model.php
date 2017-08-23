@@ -294,6 +294,21 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
+     * @param int|string $id
+     *
+     * @return bool
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public static function existsById($id)
+    {
+        if (!is_scalar($id)) {
+            throw new ModelException(' `:id` must be scalar value.', ['id' => json_encode($id)]);
+        }
+        
+        return static::exists([static::getPrimaryKey()[0] => $id]);
+    }
+
+    /**
      * alias of createQuery
      *
      * @param string $alias

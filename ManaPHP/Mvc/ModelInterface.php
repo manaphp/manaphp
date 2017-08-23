@@ -130,6 +130,13 @@ interface ModelInterface
     public static function exists($filters = null);
 
     /**
+     * @param int|string $id
+     *
+     * @return bool
+     */
+    public static function existsById($id);
+	
+    /**
      * Create a criteria for a special model
      *
      * @param string $alias
