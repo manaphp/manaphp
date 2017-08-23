@@ -687,7 +687,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param array $whiteList
      *
      * @return static
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function assign($data, $whiteList = null)
     {

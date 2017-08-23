@@ -226,7 +226,6 @@ interface ModelInterface
      * @param array      $whiteList
      *
      * @return int
-     * @throws \ManaPHP\Mvc\Model\Exception
      */
     public static function updateById($id, $data, $whiteList = null);
 
