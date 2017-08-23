@@ -587,46 +587,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * Sends a pre-build INSERT SQL statement to the relational database system
-     *
-     * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
-     */
-    protected function _doLowInsert()
-    {
-        $fieldValues = [];
-        foreach (self::getFields() as $field) {
-            if ($this->{$field} !== null) {
-                $fieldValues[$field] = $this->{$field};
-            }
-        }
-
-        if (count($fieldValues) === 0) {
-            throw new ModelException('`:model` model is unable to insert without data'/**m020f0d8415e5f94d7*/, ['model' => get_class($this)]);
-        }
-
-        if (($db = static::getDb($this)) === false) {
-            throw new ModelException('`:model` model db sharding for insert failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        if (($source = static::getSource($this)) === false) {
-            throw new ModelException('`:model` model table sharding for insert failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        $connection = $this->_dependencyInjector->getShared($db);
-        $connection->insert($source, $fieldValues);
-
-        $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
-        if ($autoIncrementAttribute !== null) {
-            $this->{$autoIncrementAttribute} = $connection->lastInsertId();
-        }
-
-        $this->_snapshot = $this->toArray();
-    }
-
-    /**
      * Assigns values to a model from an array
      *
      *<code>
@@ -714,11 +674,41 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function create()
     {
+        $fieldValues = [];
+        foreach (static::getFields() as $field) {
+            if ($this->{$field} !== null) {
+                $fieldValues[$field] = $this->{$field};
+            }
+        }
+
+        if (count($fieldValues) === 0) {
+            throw new ModelException('`:model` model is unable to insert without data'/**m020f0d8415e5f94d7*/, ['model' => get_class($this)]);
+        }
+
+        if (($db = static::getDb($this)) === false) {
+            throw new ModelException('`:model` model db sharding for insert failed',
+                ['model' => get_called_class(), 'context' => $this]);
+        }
+
+        if (($source = static::getSource($this)) === false) {
+            throw new ModelException('`:model` model table sharding for insert failed',
+                ['model' => get_called_class(), 'context' => $this]);
+        }
+
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
             throw new ModelException('`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, ['model' => get_class($this)]);
         }
 
-        $this->_doLowInsert();
+        $connection = $this->_dependencyInjector->getShared($db);
+        $connection->insert($source, $fieldValues);
+
+        $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
+        if ($autoIncrementAttribute !== null) {
+            $this->{$autoIncrementAttribute} = $connection->lastInsertId();
+        }
+
+        $this->_snapshot = $this->toArray();
+
         $this->_fireEvent('afterCreate');
         $this->_fireEvent('afterSave');
     }
