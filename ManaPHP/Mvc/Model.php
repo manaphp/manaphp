@@ -821,7 +821,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function updateById($id, $data = null, $whiteList = null)
+    public static function updateById($id, $data, $whiteList = null)
     {
         if (!is_scalar($id)) {
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);

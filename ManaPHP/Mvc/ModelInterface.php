@@ -237,7 +237,7 @@ interface ModelInterface
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function updateById($id, $data = null, $whiteList = null);
+    public static function updateById($id, $data, $whiteList = null);
 
     /**
      * @param array        $columnValues
