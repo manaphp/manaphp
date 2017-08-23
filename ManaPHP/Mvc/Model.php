@@ -126,40 +126,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * Assigns values to a model from an array
-     *
-     *<code>
-     *$robot->assign(array(
-     *  'type' => 'mechanical',
-     *  'name' => 'Boy',
-     *  'year' => 1952
-     *));
-     *</code>
-     *
-     * @param array $data
-     * @param array $whiteList
-     *
-     * @return static
-     * @throws \ManaPHP\Mvc\Model\Exception
-     */
-    public function assign($data, $whiteList = null)
-    {
-        foreach (static::getFields() as $field) {
-            if (!isset($data[$field])) {
-                continue;
-            }
-
-            if ($whiteList !== null && !in_array($field, $whiteList, true)) {
-                continue;
-            }
-
-            $this->{$field} = $data[$field];
-        }
-
-        return $this;
-    }
-
-    /**
      * Allows to query a set of records that match the specified conditions
      *
      * <code>
@@ -706,6 +672,40 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $this->_snapshot = $this->toArray();
     }
 
+    /**
+     * Assigns values to a model from an array
+     *
+     *<code>
+     *$robot->assign(array(
+     *  'type' => 'mechanical',
+     *  'name' => 'Boy',
+     *  'year' => 1952
+     *));
+     *</code>
+     *
+     * @param array $data
+     * @param array $whiteList
+     *
+     * @return static
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    public function assign($data, $whiteList = null)
+    {
+        foreach (static::getFields() as $field) {
+            if (!isset($data[$field])) {
+                continue;
+            }
+
+            if ($whiteList !== null && !in_array($field, $whiteList, true)) {
+                continue;
+            }
+
+            $this->{$field} = $data[$field];
+        }
+
+        return $this;
+    }
+    
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *

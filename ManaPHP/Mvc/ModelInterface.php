@@ -64,20 +64,6 @@ interface ModelInterface
     public static function createCriteria($columns = null);
 
     /**
-     * Assigns values to a model from an array
-     * <code>
-     *  $city->assign(['city_id'=>1,'city_name'=>'beijing']);
-     *  $city->assign(['city_id'=>1,'city_name'=>'beijing'],['city_name']);
-     * </code>
-     *
-     * @param array $data
-     * @param array $whiteList
-     *
-     * @return static
-     */
-    public function assign($data, $whiteList = null);
-
-    /**
      * Allows to query a set of records that match the specified conditions
      *
      * <code>
@@ -196,6 +182,20 @@ interface ModelInterface
      * @return double
      */
     public static function avg($column, $parameters = null);
+
+    /**
+     * Assigns values to a model from an array
+     * <code>
+     *  $city->assign(['city_id'=>1,'city_name'=>'beijing']);
+     *  $city->assign(['city_id'=>1,'city_name'=>'beijing'],['city_name']);
+     * </code>
+     *
+     * @param array $data
+     * @param array $whiteList
+     *
+     * @return static
+     */
+    public function assign($data, $whiteList = null);
 
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
