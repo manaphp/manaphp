@@ -68,15 +68,8 @@ class MvcModelTest extends TestCase
         $this->assertEquals(200, Actor::count());
 
         $this->assertEquals(1, Actor::count(['actor_id' => 1]));
-        $this->assertEquals(1, Actor::count('actor_id=1'));
-        $this->assertEquals(1, Actor::count(['actor_id=1']));
-        $this->assertEquals(1, Actor::count(['conditions' => 'actor_id=1']));
-        $this->assertEquals(0, Actor::count(['actor_id=0']));
 
-        $this->assertEquals(128, Actor::count([''], ' DISTINCT first_name'));
-
-        $groups = Actor::count(['', 'group' => 'first_name', 'order' => 'row_count']);
-        $this->assertCount(128, $groups);
+        $this->assertEquals(128, Actor::count([], ' DISTINCT first_name'));
     }
 
     public function test_sum()
@@ -87,11 +80,6 @@ class MvcModelTest extends TestCase
 
         $sum = Payment::sum('amount', ['customer_id' => 1]);
         $this->assertEquals('118.68', $sum);
-
-        $sum = Payment::sum('amount', ['', 'group' => 'customer_id']);
-        $this->assertCount(599, $sum);
-        $this->assertEquals('1', $sum[0]['customer_id']);
-        $this->assertEquals('118.68', $sum[0]['summary']);
     }
 
     public function test_max()
