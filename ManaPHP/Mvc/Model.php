@@ -116,13 +116,13 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * @param string|array $columns
+     * @param string|array $fields
      *
      * @return \ManaPHP\Mvc\Model\CriteriaInterface
      */
-    public static function createCriteria($columns = null)
+    public static function createCriteria($fields = null)
     {
-        return Di::getDefault()->get('ManaPHP\Mvc\Model\Criteria', [get_called_class(), $columns]);
+        return Di::getDefault()->get('ManaPHP\Mvc\Model\Criteria', [get_called_class(), $fields]);
     }
 
     /**
@@ -374,14 +374,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param string       $function
      * @param string       $alias
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    protected static function _groupResult($function, $alias, $column, $parameters)
+    protected static function _groupResult($function, $alias, $field, $parameters)
     {
         $criteria = static::createCriteria();
 
@@ -391,15 +391,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $parameters = [$parameters];
         }
 
-        if (preg_match('#^[a-z_][a-z0-9_]*$#i', $column) === 1) {
-            $column = '[' . $column . ']';
+        if (preg_match('#^[a-z_][a-z0-9_]*$#i', $field) === 1) {
+            $field = '[' . $field . ']';
         }
         if (isset($parameters['group'])) {
-            $criteria->aggregate([$alias => "$function($column)", $parameters['group']]);
+            $criteria->aggregate([$alias => "$function($field)", $parameters['group']]);
             $group = $parameters['group'];
             unset($parameters['group']);
         } /** @noinspection DefaultValueInElseBranchInspection */ else {
-            $criteria->aggregate([$alias => "$function($column)"]);
+            $criteria->aggregate([$alias => "$function($field)"]);
         }
 
         $criteria->buildFromArray($parameters);
@@ -430,15 +430,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @param string|array $parameters
-     * @param string       $column
+     * @param string       $field
      *
      * @return int|array
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function count($parameters = null, $column = null)
+    public static function count($parameters = null, $field = null)
     {
-        $result = self::_groupResult('COUNT', 'row_count', $column ?: '*', $parameters);
+        $result = self::_groupResult('COUNT', 'row_count', $field ?: '*', $parameters);
         if (is_string($result)) {
             $result = (int)$result;
         }
@@ -461,16 +461,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function sum($column, $parameters = null)
+    public static function sum($field, $parameters = null)
     {
-        return self::_groupResult('SUM', 'summary', $column, $parameters);
+        return self::_groupResult('SUM', 'summary', $field, $parameters);
     }
 
     /**
@@ -488,16 +488,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function max($column, $parameters = null)
+    public static function max($field, $parameters = null)
     {
-        return self::_groupResult('MAX', 'maximum', $column, $parameters);
+        return self::_groupResult('MAX', 'maximum', $field, $parameters);
     }
 
     /**
@@ -515,16 +515,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function min($column, $parameters = null)
+    public static function min($field, $parameters = null)
     {
-        return self::_groupResult('MIN', 'minimum', $column, $parameters);
+        return self::_groupResult('MIN', 'minimum', $field, $parameters);
     }
 
     /**
@@ -542,16 +542,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return double
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function avg($column, $parameters = null)
+    public static function avg($field, $parameters = null)
     {
-        return (double)self::_groupResult('AVG', 'average', $column, $parameters);
+        return (double)self::_groupResult('AVG', 'average', $field, $parameters);
     }
 
     /**
@@ -594,14 +594,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     protected function _doLowInsert()
     {
-        $columnValues = [];
+        $fieldValues = [];
         foreach (self::getFields() as $field) {
             if ($this->{$field} !== null) {
-                $columnValues[$field] = $this->{$field};
+                $fieldValues[$field] = $this->{$field};
             }
         }
 
-        if (count($columnValues) === 0) {
+        if (count($fieldValues) === 0) {
             throw new ModelException('`:model` model is unable to insert without data'/**m020f0d8415e5f94d7*/, ['model' => get_class($this)]);
         }
 
@@ -616,7 +616,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         $connection = $this->_dependencyInjector->getShared($db);
-        $connection->insert($source, $columnValues);
+        $connection->insert($source, $fieldValues);
 
         $autoIncrementAttribute = $this->modelsMetadata->getAutoIncrementAttribute($this);
         if ($autoIncrementAttribute !== null) {
@@ -643,17 +643,17 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $conditions[$attributeField] = $this->{$attributeField};
         }
 
-        $columnValues = [];
+        $fieldValues = [];
         foreach ($this->modelsMetadata->getNonPrimaryKeyAttributes($this) as $attributeField) {
             if (isset($this->{$attributeField})) {
                 /** @noinspection NestedPositiveIfStatementsInspection */
                 if (!isset($this->_snapshot[$attributeField]) || $this->{$attributeField} !== $this->_snapshot[$attributeField]) {
-                    $columnValues[$attributeField] = $this->{$attributeField};
+                    $fieldValues[$attributeField] = $this->{$attributeField};
                 }
             }
         }
 
-        if (count($columnValues) === 0) {
+        if (count($fieldValues) === 0) {
             return;
         }
 
@@ -667,7 +667,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
                 ['model' => get_called_class(), 'context' => $this]);
         }
 
-        $this->_dependencyInjector->getShared($db)->update($source, $columnValues, $conditions);
+        $this->_dependencyInjector->getShared($db)->update($source, $fieldValues, $conditions);
 
         $this->_snapshot = $this->toArray();
     }
@@ -839,7 +839,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
                 ['model' => get_called_class(), 'context' => $conditions]);
         }
 
-        $columnValues = [];
+        $fieldValues = [];
         foreach (static::getFields() as $field) {
             if (!isset($data[$field])) {
                 continue;
@@ -849,21 +849,21 @@ class Model extends Component implements ModelInterface, \JsonSerializable
                 continue;
             }
 
-            $columnValues[$field] = $data[$field];
+            $fieldValues[$field] = $data[$field];
         }
 
-        return Di::getDefault()->getShared($db)->update($source, $columnValues, $conditions);
+        return Di::getDefault()->getShared($db)->update($source, $fieldValues, $conditions);
     }
 
     /**
-     * @param array        $columnValues
+     * @param array        $fieldValues
      * @param string|array $conditions
      * @param array        $bind
      *
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function updateAll($columnValues, $conditions, $bind = [])
+    public static function updateAll($fieldValues, $conditions, $bind = [])
     {
         if (($db = static::getDb($bind)) === false) {
             throw new ModelException('`:model` model db sharding for _exists failed updateAll',
@@ -875,7 +875,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
                 ['model' => get_called_class(), 'context' => $bind]);
         }
 
-        return Di::getDefault()->getShared($db)->update($source, $columnValues, $conditions, $bind);
+        return Di::getDefault()->getShared($db)->update($source, $fieldValues, $conditions, $bind);
     }
 
     /**

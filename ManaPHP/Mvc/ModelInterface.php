@@ -57,11 +57,11 @@ interface ModelInterface
     public static function createQuery($alias = null);
 
     /**
-     * @param string|array $columns
+     * @param string|array $fields
      *
      * @return \ManaPHP\Mvc\Model\CriteriaInterface
      */
-    public static function createCriteria($columns = null);
+    public static function createCriteria($fields = null);
 
     /**
      * Allows to query a set of records that match the specified conditions
@@ -137,51 +137,51 @@ interface ModelInterface
      * </code>
      *
      * @param string|array $parameters
-     * @param string       $column
+     * @param string       $field
      *
      * @return int|array
      */
-    public static function count($parameters = null, $column = null);
+    public static function count($parameters = null, $field = null);
 
     /**
      * Allows to calculate a summary on a column that match the specified conditions
      *
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return mixed
      */
-    public static function sum($column, $parameters = null);
+    public static function sum($field, $parameters = null);
 
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return mixed
      */
-    public static function max($column, $parameters = null);
+    public static function max($field, $parameters = null);
 
     /**
      * Allows to get the min value of a column that match the specified conditions
      *
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return mixed
      */
-    public static function min($column, $parameters = null);
+    public static function min($field, $parameters = null);
 
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
-     * @param string       $column
+     * @param string       $field
      * @param string|array $parameters
      *
      * @return double
      */
-    public static function avg($column, $parameters = null);
+    public static function avg($field, $parameters = null);
 
     /**
      * Assigns values to a model from an array
@@ -240,13 +240,13 @@ interface ModelInterface
     public static function updateById($id, $data, $whiteList = null);
 
     /**
-     * @param array        $columnValues
+     * @param array        $fieldValues
      * @param string|array $conditions
      * @param array        $bind
      *
      * @return int
      */
-    public static function updateAll($columnValues, $conditions, $bind = []);
+    public static function updateAll($fieldValues, $conditions, $bind = []);
 
     /**
      * Deletes a model instance. Returning true on success or false otherwise.
