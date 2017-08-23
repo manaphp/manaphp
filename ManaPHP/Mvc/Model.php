@@ -319,64 +319,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * Checks if the current record already exists or not
-     *
-     * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
-     */
-    protected function _exists()
-    {
-        $primaryKeys = static::getPrimaryKey();
-        if (count($primaryKeys) === 0) {
-            return false;
-        }
-
-        $conditions = [];
-        $bind = [];
-
-        foreach ($primaryKeys as $attributeField) {
-            if (!isset($this->{$attributeField})) {
-                return false;
-            }
-
-            $bindKey = $attributeField;
-
-            $conditions[] = $attributeField . ' =:' . $bindKey;
-            $bind[$bindKey] = $this->{$attributeField};
-        }
-
-        if (is_array($this->_snapshot)) {
-            $primaryKeyEqual = true;
-            foreach ($primaryKeys as $attributeField) {
-                if (!isset($this->_snapshot[$attributeField]) || $this->_snapshot[$attributeField] !== $this->{$attributeField}) {
-                    $primaryKeyEqual = false;
-                }
-            }
-
-            if ($primaryKeyEqual) {
-                return true;
-            }
-        }
-
-        if (($db = static::getDb($this)) === false) {
-            throw new ModelException('`:model` model db sharding for _exists failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        if (($source = static::getSource($this)) === false) {
-            throw new ModelException('`:model` model table sharding for _exists failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        $sql = 'SELECT COUNT(*) as [row_count]' . ' FROM [' . $source . '] WHERE ' . implode(' AND ',
-                $conditions);
-
-        $num = ($this->_dependencyInjector ?: Di::getDefault())->getShared($db)->getMasterConnection()->fetchOne($sql, $bind);
-
-        return $num['row_count'] > 0;
-    }
-
-    /**
      * Generate a SQL SELECT statement for an aggregate
      *
      * @param string       $function
@@ -624,6 +566,44 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         return $this;
+    }
+
+    /**
+     * Checks if the current record already exists or not
+     *
+     * @return bool
+     * @throws \ManaPHP\Mvc\Model\Exception
+     */
+    protected function _exists()
+    {
+        $primaryKeys = static::getPrimaryKey();
+        if (count($primaryKeys) === 0) {
+            return false;
+        }
+
+        $conditions = [];
+
+        foreach ($primaryKeys as $attributeField) {
+            if (!isset($this->{$attributeField})) {
+                return false;
+            }
+            $conditions[$attributeField] =$this->{$attributeField};
+        }
+
+        if (is_array($this->_snapshot)) {
+            $primaryKeyEqual = true;
+            foreach ($primaryKeys as $attributeField) {
+                if (!isset($this->_snapshot[$attributeField]) || $this->_snapshot[$attributeField] !== $this->{$attributeField}) {
+                    $primaryKeyEqual = false;
+                }
+            }
+
+            if ($primaryKeyEqual) {
+                return true;
+            }
+        }
+
+        return static::createCriteria()->where($conditions)->exists(true);
     }
 
     /**
