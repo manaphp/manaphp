@@ -809,18 +809,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
 
-        $conditions = [static::getPrimaryKey()[0] => $id];
-
-        if (($db = static::getDb($conditions)) === false) {
-            throw new ModelException('`:model` model db sharding for delete failed',
-                ['model' => get_called_class(), 'context' => $conditions]);
-        }
-
-        if (($source = static::getSource($conditions)) === false) {
-            throw new ModelException('`:model` model table sharding for delete failed',
-                ['model' => get_called_class(), 'context' => $conditions]);
-        }
-
         $fieldValues = [];
         foreach (static::getFields() as $field) {
             if (!isset($data[$field])) {
@@ -834,7 +822,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $fieldValues[$field] = $data[$field];
         }
 
-        return Di::getDefault()->getShared($db)->update($source, $fieldValues, $conditions);
+        return static::updateAll($fieldValues, [static::getPrimaryKey()[0] => $id]);
     }
 
     /**
@@ -894,7 +882,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *}
      * </code>
      *
-     * @return void
+     * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
     public function delete()
@@ -919,19 +907,11 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             $conditions[$attributeField] = $this->{$attributeField};
         }
 
-        if (($db = static::getDb($this)) === false) {
-            throw new ModelException('`:model` model db sharding for delete failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        if (($source = static::getSource($this)) === false) {
-            throw new ModelException('`:model` model table sharding for delete failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        $this->_dependencyInjector->getShared($db)->delete($source, $conditions);
+        $r = static::deleteAll($conditions);
 
         $this->_fireEvent('afterDelete');
+
+        return $r;
     }
 
     /**
@@ -946,19 +926,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
 
-        $conditions = [static::getPrimaryKey()[0] => $id];
-
-        if (($db = static::getDb($conditions)) === false) {
-            throw new ModelException('`:model` model db sharding for delete failed',
-                ['model' => get_called_class(), 'context' => $conditions]);
-        }
-
-        if (($source = static::getSource($conditions)) === false) {
-            throw new ModelException('`:model` model table sharding for delete failed',
-                ['model' => get_called_class(), 'context' => $conditions]);
-        }
-
-        return Di::getDefault()->getShared($db)->delete($source, $conditions);
+        return static::deleteAll([static::getPrimaryKey()[0] => $id]);
     }
 
     /**
