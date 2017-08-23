@@ -78,24 +78,24 @@ interface ModelInterface
      *  $cities=City::find(['conditions'=>'country_id =:country_id','bind'=>['country_id'=>2]]);
      *
      * </code>
-     * @param array        $parameters
+     * @param array        $filters
      * @param array        $options
      * @param string|array $fields
      *
      * @return  static[]
      */
-    public static function find($parameters = [], $options = null, $fields = null);
+    public static function find($filters = [], $options = null, $fields = null);
 
     /**
      * alias of find
      *
-     * @param array        $parameters
+     * @param array        $filters
      * @param array        $options
      * @param string|array $fields
      *
      * @return  static[]
      */
-    public static function findAll($parameters = [], $options = null, $fields = null);
+    public static function findAll($filters = [], $options = null, $fields = null);
 
     /**
      * Allows to query the first record that match the specified conditions
@@ -107,12 +107,12 @@ interface ModelInterface
      *  $city=City::findFirst(['conditions'=>'city_id =:city_id','bind'=>['city_id'=>10]]);
      * </code>
      *
-     * @param int|string|array $parameters
+     * @param int|string|array $filters
      * @param string|array     $fields
      *
      * @return static|false
      */
-    public static function findFirst($parameters = [], $fields = null);
+    public static function findFirst($filters = [], $fields = null);
 
     /**
      * @param int|string   $id
@@ -123,11 +123,11 @@ interface ModelInterface
     public static function findById($id, $fields = null);
 
     /**
-     * @param string|array $parameters
+     * @param string|array $filters
      *
      * @return bool
      */
-    public static function exists($parameters = null);
+    public static function exists($filters = null);
 
     /**
      * Create a criteria for a special model
@@ -146,52 +146,52 @@ interface ModelInterface
      * City::count(['country_id'=>2]);
      * </code>
      *
-     * @param array  $parameters
+     * @param array  $filters
      * @param string $field
      *
      * @return int
      */
-    public static function count($parameters = null, $field = null);
+    public static function count($filters = null, $field = null);
 
     /**
      * Allows to calculate a summary on a column that match the specified conditions
      *
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return int|float
      */
-    public static function sum($field, $parameters = null);
+    public static function sum($field, $filters = null);
 
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return int|float
      */
-    public static function max($field, $parameters = null);
+    public static function max($field, $filters = null);
 
     /**
      * Allows to get the min value of a column that match the specified conditions
      *
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return int|float
      */
-    public static function min($field, $parameters = null);
+    public static function min($field, $filters = null);
 
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return double
      */
-    public static function avg($field, $parameters = null);
+    public static function avg($field, $filters = null);
 
     /**
      * Assigns values to a model from an array
@@ -241,11 +241,11 @@ interface ModelInterface
 
     /**
      * @param array $fieldValues
-     * @param array $conditions
+     * @param array $filters
      *
      * @return int
      */
-    public static function updateAll($fieldValues, $conditions);
+    public static function updateAll($fieldValues, $filters);
 
     /**
      * Deletes a model instance. Returning true on success or false otherwise.
@@ -262,11 +262,11 @@ interface ModelInterface
     public static function deleteById($id);
 
     /**
-     * @param array $conditions
+     * @param array $filters
      *
      * @return int
      */
-    public static function deleteAll($conditions);
+    public static function deleteAll($filters);
 
     /**
      * Returns the instance as an array representation

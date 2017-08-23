@@ -158,7 +158,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * }
      * </code>
      *
-     * @param  array       $parameters
+     * @param  array       $filters
      * @param array        $options
      * @param string|array $fields
      *
@@ -166,14 +166,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function find($parameters = [], $options = [], $fields = null)
+    public static function find($filters = [], $options = [], $fields = null)
     {
         $criteria = static::createCriteria()->select($fields ?: static::getFields());
 
-        if (isset($parameters[0])) {
-            $criteria->inWhere(static::getPrimaryKey()[0], $parameters);
+        if (isset($filters[0])) {
+            $criteria->inWhere(static::getPrimaryKey()[0], $filters);
         } else {
-            $criteria->where($parameters);
+            $criteria->where($filters);
         }
 
         if ($options !== null) {
@@ -196,7 +196,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     /**
      * alias of find
      *
-     * @param    array     $parameters
+     * @param    array     $filters
      * @param array        $options
      * @param string|array $fields
      *
@@ -204,9 +204,9 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    final public static function findAll($parameters = [], $options = null, $fields = null)
+    final public static function findAll($filters = [], $options = null, $fields = null)
     {
-        return self::find($parameters, $options, $fields);
+        return self::find($filters, $options, $fields);
     }
 
     /**
@@ -228,22 +228,22 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param string|array $parameters
+     * @param string|array $filters
      * @param string|array $fields
      *
      * @return static|false
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function findFirst($parameters = [], $fields = null)
+    public static function findFirst($filters = [], $fields = null)
     {
-        if (is_scalar($parameters)) {
-            return static::findById($parameters, $fields);
+        if (is_scalar($filters)) {
+            return static::findById($filters, $fields);
         }
 
         $criteria = static::createCriteria()
             ->select($fields ?: static::getFields())
-            ->where($parameters)
+            ->where($filters)
             ->limit(1);
 
         $rs = $criteria->execute(true);
@@ -268,14 +268,14 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * @param int|string|array $parameters
+     * @param int|string|array $filters
      *
      * @return bool
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function exists($parameters = null)
+    public static function exists($filters = null)
     {
-        if (is_scalar($parameters)) {
+        if (is_scalar($filters)) {
             $primaryKeys = static::getPrimaryKey();
 
             if (count($primaryKeys) === 0) {
@@ -287,9 +287,9 @@ class Model extends Component implements ModelInterface, \JsonSerializable
                     ['model' => get_called_class()]);
             }
 
-            return static::createCriteria()->where($primaryKeys[0], $parameters)->exists();
+            return static::createCriteria()->where($primaryKeys[0], $filters)->exists();
         } else {
-            return static::createCriteria()->where($parameters)->exists();
+            return static::createCriteria()->where($filters)->exists();
         }
     }
 
@@ -324,25 +324,25 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param string $function
      * @param string $alias
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    protected static function _groupResult($function, $alias, $field, $parameters)
+    protected static function _groupResult($function, $alias, $field, $filters)
     {
         $criteria = static::createCriteria();
 
-        if ($parameters === null) {
-            $parameters = [];
+        if ($filters === null) {
+            $filters = [];
         }
 
         if (preg_match('#^[a-z_][a-z0-9_]*$#i', $field) === 1) {
             $field = '[' . $field . ']';
         }
 
-        $rs = $criteria->aggregate([$alias => "$function($field)"])->where($parameters)->execute();
+        $rs = $criteria->aggregate([$alias => "$function($field)"])->where($filters)->execute();
 
         return $rs[0][$alias];
     }
@@ -362,16 +362,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * </code>
      *
-     * @param array  $parameters
+     * @param array  $filters
      * @param string $field
      *
      * @return int
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function count($parameters = null, $field = null)
+    public static function count($filters = null, $field = null)
     {
-        $result = self::_groupResult('COUNT', 'row_count', $field ?: '*', $parameters);
+        $result = self::_groupResult('COUNT', 'row_count', $field ?: '*', $filters);
         if (is_string($result)) {
             $result = (int)$result;
         }
@@ -395,15 +395,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function sum($field, $parameters = null)
+    public static function sum($field, $filters = null)
     {
-        return self::_groupResult('SUM', 'summary', $field, $parameters);
+        return self::_groupResult('SUM', 'summary', $field, $filters);
     }
 
     /**
@@ -422,15 +422,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function max($field, $parameters = null)
+    public static function max($field, $filters = null)
     {
-        return self::_groupResult('MAX', 'maximum', $field, $parameters);
+        return self::_groupResult('MAX', 'maximum', $field, $filters);
     }
 
     /**
@@ -449,15 +449,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function min($field, $parameters = null)
+    public static function min($field, $filters = null)
     {
-        return self::_groupResult('MIN', 'minimum', $field, $parameters);
+        return self::_groupResult('MIN', 'minimum', $field, $filters);
     }
 
     /**
@@ -476,15 +476,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @param string $field
-     * @param array  $parameters
+     * @param array  $filters
      *
      * @return double
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function avg($field, $parameters = null)
+    public static function avg($field, $filters = null)
     {
-        return (double)self::_groupResult('AVG', 'average', $field, $parameters);
+        return (double)self::_groupResult('AVG', 'average', $field, $filters);
     }
 
     /**
@@ -774,16 +774,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
     /**
      * @param array $fieldValues
-     * @param array $conditions
+     * @param array $filters
      *
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function updateAll($fieldValues, $conditions)
+    public static function updateAll($fieldValues, $filters)
     {
         $wheres = [];
         $bind = [];
-        foreach ($conditions as $field => $value) {
+        foreach ($filters as $field => $value) {
             preg_match('#^(\w+)\s*(.*)$#', $field, $matches);
             list(, $column, $op) = $matches;
             if ($op === '') {
@@ -807,16 +807,16 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * @param array $conditions
+     * @param array $filters
      *
      * @return int
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function deleteAll($conditions)
+    public static function deleteAll($filters)
     {
         $wheres = [];
         $bind = [];
-        foreach ($conditions as $field => $value) {
+        foreach ($filters as $field => $value) {
             preg_match('#^(\w+)\s*(.*)$#', $field, $matches);
             list(, $column, $op) = $matches;
             if ($op === '') {
