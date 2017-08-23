@@ -627,52 +627,6 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * Sends a pre-build UPDATE SQL statement to the relational database system
-     *
-     * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
-     */
-    protected function _doLowUpdate()
-    {
-        $conditions = [];
-        foreach (static::getPrimaryKey() as $attributeField) {
-            if (!isset($this->{$attributeField})) {
-                throw new ModelException('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/, ['model' => get_class($this)]);
-            }
-
-            $conditions[$attributeField] = $this->{$attributeField};
-        }
-
-        $fieldValues = [];
-        foreach ($this->modelsMetadata->getNonPrimaryKeyAttributes($this) as $attributeField) {
-            if (isset($this->{$attributeField})) {
-                /** @noinspection NestedPositiveIfStatementsInspection */
-                if (!isset($this->_snapshot[$attributeField]) || $this->{$attributeField} !== $this->_snapshot[$attributeField]) {
-                    $fieldValues[$attributeField] = $this->{$attributeField};
-                }
-            }
-        }
-
-        if (count($fieldValues) === 0) {
-            return;
-        }
-
-        if (($db = static::getDb($this)) === false) {
-            throw new ModelException('`:model` model db sharding for update failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        if (($source = static::getSource($this)) === false) {
-            throw new ModelException('`:model` model table sharding for update failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        $this->_dependencyInjector->getShared($db)->update($source, $fieldValues, $conditions);
-
-        $this->_snapshot = $this->toArray();
-    }
-
-    /**
      * Assigns values to a model from an array
      *
      *<code>
@@ -785,11 +739,43 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      */
     public function update()
     {
+        $conditions = [];
+        $primaryKey = static::getPrimaryKey();
+
+        foreach ($primaryKey as $attributeField) {
+            if (!isset($this->{$attributeField})) {
+                throw new ModelException('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
+                    ['model' => get_class($this)]);
+            }
+
+            $conditions[$attributeField] = $this->{$attributeField};
+        }
+
+        $fieldValues = [];
+        foreach (static::getFields() as $attributeField) {
+            if (in_array($attributeField, $primaryKey, true)) {
+                continue;
+            }
+
+            if (isset($this->{$attributeField})) {
+                /** @noinspection NestedPositiveIfStatementsInspection */
+                if (!isset($this->_snapshot[$attributeField]) || $this->{$attributeField} !== $this->_snapshot[$attributeField]) {
+                    $fieldValues[$attributeField] = $this->{$attributeField};
+                }
+            }
+        }
+
+        if (count($fieldValues) === 0) {
+            return;
+        }
+
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
             throw new ModelException('`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, ['model' => get_class($this)]);
         }
 
-        $this->_doLowUpdate();
+        static::updateAll($fieldValues, $conditions);
+
+        $this->_snapshot = $this->toArray();
 
         $this->_fireEvent('afterUpdate');
         $this->_fireEvent('afterSave');
