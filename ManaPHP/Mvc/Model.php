@@ -723,18 +723,15 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *    $robot->save();
      *</code>
      *
-     * @param array $data
-     * @param array $whiteList
-     *
      * @return void
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function save($data = null, $whiteList = null)
+    public function save()
     {
         if ($this->_exists()) {
-            $this->update($data, $whiteList);
+            $this->update();
         } else {
-            $this->create($data, $whiteList);
+            $this->create();
         }
     }
 
@@ -759,18 +756,11 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *  ));
      *</code>
      *
-     * @param array $data
-     * @param array $whiteList
-     *
      * @return void
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function create($data = null, $whiteList = null)
+    public function create()
     {
-        if (is_array($data)) {
-            $this->assign($data, $whiteList);
-        }
-
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
             throw new ModelException('`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, ['model' => get_class($this)]);
         }
@@ -791,18 +781,11 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *    $robot->update();
      *</code>
      *
-     * @param array $data
-     * @param array $whiteList
-     *
      * @return void
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public function update($data = null, $whiteList = null)
+    public function update()
     {
-        if (is_array($data)) {
-            $this->assign($data, $whiteList);
-        }
-
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
             throw new ModelException('`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, ['model' => get_class($this)]);
         }

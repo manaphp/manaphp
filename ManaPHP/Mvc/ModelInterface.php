@@ -200,34 +200,25 @@ interface ModelInterface
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
-     * @param  array $data
-     * @param  array $whiteList
-     *
      * @return void
      */
-    public function save($data = null, $whiteList = null);
+    public function save();
 
     /**
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
-     * @param  array $data
-     * @param  array $whiteList
-     *
      * @return void
      */
-    public function create($data = null, $whiteList = null);
+    public function create();
 
     /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
-     * @param  array $data
-     * @param  array $whiteList
-     *
      * @return void
      */
-    public function update($data = null, $whiteList = null);
+    public function update();
 
     /**
      * @param int|string $id
