@@ -158,32 +158,37 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * }
      * </code>
      *
-     * @param  string|array $parameters
+     * @param  array       $parameters
+     * @param array        $options
+     * @param string|array $fields
      *
      * @return  static[]
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function find($parameters = null)
+    public static function find($parameters = [], $options = [], $fields = null)
     {
-        $criteria = static::createCriteria();
-        if (is_string($parameters)) {
-            $parameters = [$parameters];
-        }
+        $criteria = static::createCriteria()->select($fields ?: static::getFields());
 
-        if (isset($parameters['columns'])) {
-            $criteria->select($parameters['columns']);
-            unset($parameters['columns']);
+        if (isset($parameters[0])) {
+            $criteria->inWhere(static::getPrimaryKey()[0], $parameters);
         } else {
-            $criteria->select(static::getFields());
+            $criteria->where($parameters);
         }
 
-        if (isset($parameters['in'])) {
-            $criteria->inWhere(static::getPrimaryKey()[0], $parameters['in']);
-            unset($parameters['in']);
-        }
+        if ($options !== null) {
+            if (isset($options['distinct'])) {
+                $criteria->distinct($options['distinct']);
+            }
 
-        $criteria->buildFromArray($parameters);
+            if (isset($options['order'])) {
+                $criteria->orderBy($options['order']);
+            }
+
+            if (isset($options['limit'])) {
+                $criteria->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
+            }
+        }
 
         return $criteria->execute(true);
     }
@@ -191,15 +196,17 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     /**
      * alias of find
      *
-     * @param    string|array $parameters
+     * @param    array     $parameters
+     * @param array        $options
+     * @param string|array $fields
      *
      * @return  static[]
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    final public static function findAll($parameters = null)
+    final public static function findAll($parameters = [], $options = null, $fields = null)
     {
-        return self::find($parameters);
+        return self::find($parameters, $options, $fields);
     }
 
     /**
@@ -222,27 +229,24 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @param string|array $parameters
+     * @param string|array $fields
      *
      * @return static|false
      * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Mvc\Model\Exception
      */
-    public static function findFirst($parameters = null)
+    public static function findFirst($parameters = [], $fields = null)
     {
         if (is_scalar($parameters)) {
-            return static::findById($parameters);
+            return static::findById($parameters, $fields);
         }
 
-        $criteria = static::createCriteria();
+        $criteria = static::createCriteria()
+            ->select($fields ?: static::getFields())
+            ->where($parameters)
+            ->limit(1);
 
-        if (isset($parameters['columns'])) {
-            $criteria->select($parameters['columns']);
-            unset($parameters['columns']);
-        } else {
-            $criteria->select(static::getFields());
-        }
-
-        $rs = $criteria->buildFromArray($parameters)->limit(1)->execute(true);
+        $rs = $criteria->execute(true);
         return isset($rs[0]) ? $rs[0] : false;
     }
 
@@ -264,7 +268,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     }
 
     /**
-     * @param string|array $parameters
+     * @param int|string|array $parameters
      *
      * @return bool
      * @throws \ManaPHP\Mvc\Model\Exception
@@ -283,14 +287,10 @@ class Model extends Component implements ModelInterface, \JsonSerializable
                     ['model' => get_called_class()]);
             }
 
-            $parameters = [$primaryKeys[0] => $parameters];
-        } elseif (is_string($parameters)) {
-            $parameters = [$parameters];
+            return static::createCriteria()->where($primaryKeys[0], $parameters)->exists();
+        } else {
+            return static::createCriteria()->where($parameters)->exists();
         }
-
-        return static::createCriteria()
-            ->buildFromArray($parameters)
-            ->exists();
     }
 
     /**

@@ -78,20 +78,24 @@ interface ModelInterface
      *  $cities=City::find(['conditions'=>'country_id =:country_id','bind'=>['country_id'=>2]]);
      *
      * </code>
-     * @param    string|array $parameters
+     * @param array        $parameters
+     * @param array        $options
+     * @param string|array $fields
      *
      * @return  static[]
      */
-    public static function find($parameters = null);
+    public static function find($parameters = [], $options = null, $fields = null);
 
     /**
      * alias of find
      *
-     * @param    string|array $parameters
+     * @param array        $parameters
+     * @param array        $options
+     * @param string|array $fields
      *
      * @return  static[]
      */
-    public static function findAll($parameters = null);
+    public static function findAll($parameters = [], $options = null, $fields = null);
 
     /**
      * Allows to query the first record that match the specified conditions
@@ -103,11 +107,12 @@ interface ModelInterface
      *  $city=City::findFirst(['conditions'=>'city_id =:city_id','bind'=>['city_id'=>10]]);
      * </code>
      *
-     * @param string|array $parameters
+     * @param int|string|array $parameters
+     * @param string|array     $fields
      *
      * @return static|false
      */
-    public static function findFirst($parameters = null);
+    public static function findFirst($parameters = [], $fields = null);
 
     /**
      * @param int|string   $id

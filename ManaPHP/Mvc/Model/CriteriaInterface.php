@@ -27,13 +27,6 @@ interface CriteriaInterface
     public function aggregate($expr);
 
     /**
-     * @param mixed $params
-     *
-     * @return static
-     */
-    public function buildFromArray($params);
-
-    /**
      * Appends a condition to the current conditions using a AND operator
      *
      *<code>
