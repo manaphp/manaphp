@@ -46,8 +46,8 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     {
         if (count($data) !== 0) {
             $this->_snapshot = $data;
-            foreach ($data as $attribute => $value) {
-                $this->{$attribute} = $value;
+            foreach ($data as $field => $value) {
+                $this->{$field} = $value;
             }
 
             if (method_exists($this, 'afterFetch')) {
@@ -583,17 +583,17 @@ class Model extends Component implements ModelInterface, \JsonSerializable
 
         $conditions = [];
 
-        foreach ($primaryKeys as $attributeField) {
-            if (!isset($this->{$attributeField})) {
+        foreach ($primaryKeys as $field) {
+            if (!isset($this->{$field})) {
                 return false;
             }
-            $conditions[$attributeField] =$this->{$attributeField};
+            $conditions[$field] =$this->{$field};
         }
 
         if (is_array($this->_snapshot)) {
             $primaryKeyEqual = true;
-            foreach ($primaryKeys as $attributeField) {
-                if (!isset($this->_snapshot[$attributeField]) || $this->_snapshot[$attributeField] !== $this->{$attributeField}) {
+            foreach ($primaryKeys as $field) {
+                if (!isset($this->_snapshot[$field]) || $this->_snapshot[$field] !== $this->{$field}) {
                     $primaryKeyEqual = false;
                 }
             }
@@ -719,25 +719,25 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         $conditions = [];
         $primaryKey = static::getPrimaryKey();
 
-        foreach ($primaryKey as $attributeField) {
-            if (!isset($this->{$attributeField})) {
+        foreach ($primaryKey as $field) {
+            if (!isset($this->{$field})) {
                 throw new ModelException('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
                     ['model' => get_class($this)]);
             }
 
-            $conditions[$attributeField] = $this->{$attributeField};
+            $conditions[$field] = $this->{$field};
         }
 
         $fieldValues = [];
-        foreach (static::getFields() as $attributeField) {
-            if (in_array($attributeField, $primaryKey, true)) {
+        foreach (static::getFields() as $field) {
+            if (in_array($field, $primaryKey, true)) {
                 continue;
             }
 
-            if (isset($this->{$attributeField})) {
+            if (isset($this->{$field})) {
                 /** @noinspection NestedPositiveIfStatementsInspection */
-                if (!isset($this->_snapshot[$attributeField]) || $this->{$attributeField} !== $this->_snapshot[$attributeField]) {
-                    $fieldValues[$attributeField] = $this->{$attributeField};
+                if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
+                    $fieldValues[$field] = $this->{$field};
                 }
             }
         }
@@ -883,13 +883,13 @@ class Model extends Component implements ModelInterface, \JsonSerializable
         }
 
         $conditions = [];
-        foreach ($primaryKeys as $attributeField) {
-            if (!isset($this->{$attributeField})) {
+        foreach ($primaryKeys as $field) {
+            if (!isset($this->{$field})) {
                 throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:column` was not set'/**m01dec9cd3b69742a5*/,
-                    ['model' => get_class($this), 'column' => $attributeField]);
+                    ['model' => get_class($this), 'column' => $field]);
             }
 
-            $conditions[$attributeField] = $this->{$attributeField};
+            $conditions[$field] = $this->{$field};
         }
 
         $r = static::deleteAll($conditions);
@@ -927,8 +927,8 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     {
         $data = [];
 
-        foreach (self::getFields() as $attributeField) {
-            $data[$attributeField] = isset($this->{$attributeField}) ? $this->{$attributeField} : null;
+        foreach (self::getFields() as $field) {
+            $data[$field] = isset($this->{$field}) ? $this->{$field} : null;
         }
 
         return $data;
