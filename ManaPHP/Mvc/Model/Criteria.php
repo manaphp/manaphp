@@ -439,9 +439,9 @@ class Criteria extends Component implements CriteriaInterface
         }
     }
 
-    public function exists()
+    public function exists($fromSlaver = true)
     {
-        return $this->_replaceModelInfo()->_query->exists();
+        return $this->_replaceModelInfo()->_query->exists($fromSlaver);
     }
 
     /**

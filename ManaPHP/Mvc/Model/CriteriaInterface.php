@@ -210,7 +210,9 @@ interface CriteriaInterface
     public function execute($asModel = false);
 
     /**
+     * @param bool $fromSlaver
+     *
      * @return bool
      */
-    public function exists();
+    public function exists($fromSlaver = true);
 }
