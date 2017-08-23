@@ -38,7 +38,7 @@ class DbQueryTest extends TestCase
 
     public function test_betweenWhere()
     {
-        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] BETWEEN :_min_0 AND :_max_0',
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',
             City::createCriteria()->betweenWhere('city_id', 1, 10)->getSql());
 
     }

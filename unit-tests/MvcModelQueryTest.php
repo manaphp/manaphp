@@ -305,11 +305,6 @@ class MvcModelQueryTest extends TestCase
         $query = Address::createQuery()
             ->betweenWhere('address_id', 51, 100);
         $this->assertCount(50, $query->execute());
-
-        $query = Address::createQuery()
-            ->betweenWhere('address_id', 51, 100)
-            ->betweenWhere('address_id', 61, 70);
-        $this->assertCount(10, $query->execute());
     }
 
     public function test_notBetweenWhere()
