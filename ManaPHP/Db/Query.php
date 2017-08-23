@@ -1084,10 +1084,12 @@ class Query extends Component implements QueryInterface
 
     /**
      *
+     * @param bool $fromSlaver
+     *
      * @return array
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function execute()
+    public function execute($fromSlaver = true)
     {
         $this->_hiddenParamNumber = 0;
 
@@ -1102,8 +1104,7 @@ class Query extends Component implements QueryInterface
             }
         }
 
-        $result = $this->_db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
-
+        $result = ($fromSlaver ? $this->_db : $this->_db->getMasterConnection())->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
         if (isset($cacheOptions)) {
             $this->modelsCache->set($cacheOptions['key'],
                 json_encode($this->_buildCacheData($result, -1), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
@@ -1209,16 +1210,18 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param bool $fromSlaver
+     *
      * @return bool
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function exists()
+    public function exists($fromSlaver = true)
     {
         $this->_columns = '1 as [stub]';
         $this->_limit = 1;
         $this->_offset = 0;
 
-        $rs = $this->execute();
+        $rs = $this->execute($fromSlaver);
 
         return isset($rs[0]);
     }

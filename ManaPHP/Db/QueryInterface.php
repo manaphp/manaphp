@@ -313,11 +313,12 @@ interface QueryInterface
     public function cache($options);
 
     /**
+     * @param bool $fromSlaver
      *
      * @return array
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function execute();
+    public function execute($fromSlaver = true);
 
     /**
      * @param int $size
@@ -340,9 +341,11 @@ interface QueryInterface
     public function executeEx(&$totalRows);
 
     /**
+     * @param bool $fromSlaver
+     *
      * @return bool
      */
-    public function exists();
+    public function exists($fromSlaver = true);
 
     /**
      * @param \ManaPHP\Db\QueryInterface[] $queries
