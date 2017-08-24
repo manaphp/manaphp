@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\Model\Metadata\Exception as MetadataException;
+use ManaPHP\Db\Model\Metadata\Exception as MetadataException;
 
 /**
  * Class ManaPHP\Mvc\Model\Metadata
@@ -30,10 +30,10 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      *    print_r($metaData->readMetaData(new Robots()));
      *</code>
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Metadata\Exception
+     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     protected function _readMetaData($model)
     {
@@ -82,10 +82,10 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      *    print_r($metaData->getAttributes(new Robots()));
      *</code>
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Metadata\Exception
+     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function getAttributes($model)
     {
@@ -99,10 +99,10 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      *    print_r($metaData->getPrimaryKeyAttributes(new Robots()));
      *</code>
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Metadata\Exception
+     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function getPrimaryKeyAttributes($model)
     {
@@ -112,10 +112,10 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     /**
      * Returns attribute which is auto increment or null
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return string |null
-     * @throws \ManaPHP\Mvc\Model\Metadata\Exception
+     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function getAutoIncrementAttribute($model)
     {
@@ -125,10 +125,10 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     /**
      * Returns an array of fields which are not part of the primary key
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return    array
-     * @throws \ManaPHP\Mvc\Model\Metadata\Exception
+     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function getNonPrimaryKeyAttributes($model)
     {
@@ -142,11 +142,11 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      *    var_dump($metaData->hasAttribute(new Robots(), 'name'));
      *</code>
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      * @param string                             $attribute
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Metadata\Exception
+     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function hasAttribute($model, $attribute)
     {
@@ -154,10 +154,10 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     }
 
     /**
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Model\Metadata\Exception
+     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function getColumnProperties($model)
     {

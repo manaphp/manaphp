@@ -3,7 +3,7 @@ namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Sqlite\Exception as SqliteException;
-use ManaPHP\Mvc\Model\Metadata;
+use ManaPHP\Db\Model\Metadata;
 
 /**
  * Class ManaPHP\Db\Adapter\Sqlite

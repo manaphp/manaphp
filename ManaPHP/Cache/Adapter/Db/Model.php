@@ -6,7 +6,7 @@ namespace ManaPHP\Cache\Adapter\Db;
  *
  * @package cache\adapter
  */
-class Model extends \ManaPHP\Mvc\Model
+class Model extends \ManaPHP\Db\Model
 {
     /**
      * @var string

@@ -6,7 +6,7 @@ namespace ManaPHP\Counter\Adapter\Db;
  *
  * @package counter\adapter
  */
-class Model extends \ManaPHP\Mvc\Model
+class Model extends \ManaPHP\Db\Model
 {
     /**
      * @var string

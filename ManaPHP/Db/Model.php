@@ -1,14 +1,14 @@
 <?php
 
-namespace ManaPHP\Mvc;
+namespace ManaPHP\Db;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
-use ManaPHP\Mvc\Model\Exception as ModelException;
+use ManaPHP\Db\Model\Exception as ModelException;
 use ManaPHP\Utility\Text;
 
 /**
- * Class ManaPHP\Mvc\Model
+ * Class ManaPHP\Db\Model
  *
  * @package model
  *
@@ -62,7 +62,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param mixed $context
      *
      * @return string|false
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function getSource($context = null)
     {
@@ -86,7 +86,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param mixed $context
      *
      * @return \ManaPHP\DbInterface|false
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function getConnection($context = null)
     {
@@ -125,11 +125,11 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     /**
      * @param string|array $fields
      *
-     * @return \ManaPHP\Mvc\Model\CriteriaInterface
+     * @return \ManaPHP\Db\Model\CriteriaInterface
      */
     public static function createCriteria($fields = null)
     {
-        return Di::getDefault()->get('ManaPHP\Mvc\Model\Criteria', [get_called_class(), $fields]);
+        return Di::getDefault()->get('ManaPHP\Db\Model\Criteria', [get_called_class(), $fields]);
     }
 
     /**
@@ -164,7 +164,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return  static[]
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function find($filters = [], $options = [], $fields = null)
     {
@@ -202,7 +202,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return  static[]
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     final public static function findAll($filters = [], $options = null, $fields = null)
     {
@@ -233,7 +233,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return static|false
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function findFirst($filters = [], $fields = null)
     {
@@ -256,7 +256,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return static|false
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function findById($id, $fields = null)
     {
@@ -271,7 +271,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|string|array $filters
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function exists($filters = null)
     {
@@ -297,7 +297,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|string $id
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function existsById($id)
     {
@@ -313,7 +313,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param string $alias
      *
-     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @return \ManaPHP\Db\Model\QueryInterface
      * @deprecated
      */
     public static function query($alias = null)
@@ -326,11 +326,11 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @param string $alias
      *
-     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @return \ManaPHP\Db\Model\QueryInterface
      */
     public static function createQuery($alias = null)
     {
-        return Di::getDefault()->get('ManaPHP\Mvc\Model\Query')->from(get_called_class(), $alias);
+        return Di::getDefault()->get('ManaPHP\Db\Model\Query')->from(get_called_class(), $alias);
     }
 
     /**
@@ -343,7 +343,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return mixed
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     protected static function _groupResult($function, $alias, $field, $filters)
     {
@@ -382,7 +382,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return int
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function count($filters = null, $field = null)
     {
@@ -414,7 +414,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function sum($field, $filters = null)
     {
@@ -441,7 +441,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function max($field, $filters = null)
     {
@@ -468,7 +468,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return int|float
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function min($field, $filters = null)
     {
@@ -495,7 +495,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *
      * @return double
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function avg($field, $filters = null)
     {
@@ -571,7 +571,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * Checks if the current record already exists or not
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     protected function _exists()
     {
@@ -623,7 +623,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *</code>
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function save()
     {
@@ -656,7 +656,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *</code>
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function create()
     {
@@ -711,7 +711,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      *</code>
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function update()
     {
@@ -763,7 +763,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param array      $whiteList
      *
      * @return int
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function updateById($id, $data, $whiteList = null)
     {
@@ -792,7 +792,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param array $filters
      *
      * @return int
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function updateAll($fieldValues, $filters)
     {
@@ -825,7 +825,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param array $filters
      *
      * @return int
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function deleteAll($filters)
     {
@@ -867,7 +867,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * </code>
      *
      * @return int
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function delete()
     {
@@ -902,7 +902,7 @@ class Model extends Component implements ModelInterface, \JsonSerializable
      * @param int|string $id
      *
      * @return int
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public static function deleteById($id)
     {

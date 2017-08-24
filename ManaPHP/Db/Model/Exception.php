@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
 /**
  * Class ManaPHP\Mvc\Model\Exception

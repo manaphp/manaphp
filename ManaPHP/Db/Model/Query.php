@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
-use ManaPHP\Mvc\Model\Query\Exception as QueryException;
+use ManaPHP\Db\Model\Query\Exception as QueryException;
 
 /**
  * Class ManaPHP\Mvc\Model\QueryBuilder
@@ -11,7 +11,6 @@ use ManaPHP\Mvc\Model\Query\Exception as QueryException;
  *
  * @property \ManaPHP\Cache\AdapterInterface     $modelsCache
  * @property \ManaPHP\Paginator                  $paginator
- * @property \ManaPHP\Mvc\Model\ManagerInterface $modelsManager
  * @property \ManaPHP\Mvc\DispatcherInterface    $dispatcher
  */
 class Query extends \ManaPHP\Db\Query implements QueryInterface

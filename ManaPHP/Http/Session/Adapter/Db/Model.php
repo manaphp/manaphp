@@ -6,7 +6,7 @@ namespace ManaPHP\Http\Session\Adapter\Db;
  *
  * @package session\adapter
  */
-class Model extends \ManaPHP\Mvc\Model
+class Model extends \ManaPHP\Db\Model
 {
 
     /**

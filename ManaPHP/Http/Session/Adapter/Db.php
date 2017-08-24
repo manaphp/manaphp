@@ -56,7 +56,7 @@ class Db extends Component implements AdapterInterface
      *
      * @return string
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function read($sessionId)
     {
@@ -77,7 +77,7 @@ class Db extends Component implements AdapterInterface
      * @param string $data
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function write($sessionId, $data)
     {
@@ -98,7 +98,7 @@ class Db extends Component implements AdapterInterface
      * @param string $sessionId
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function destroy($sessionId)
     {
@@ -116,7 +116,7 @@ class Db extends Component implements AdapterInterface
      * @param int $ttl
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function gc($ttl)
     {
@@ -127,7 +127,7 @@ class Db extends Component implements AdapterInterface
 
     /**
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function clean()
     {

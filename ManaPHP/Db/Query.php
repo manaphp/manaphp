@@ -7,7 +7,7 @@ use ManaPHP\Di;
 use ManaPHP\Utility\Text;
 
 /**
- * Class ManaPHP\Mvc\Model\QueryBuilder
+ * Class ManaPHP\Db\Model\QueryBuilder
  *
  * @package queryBuilder
  *

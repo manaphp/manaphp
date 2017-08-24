@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Mvc;
+namespace ManaPHP\Db;
 
 /**
  * Interface ManaPHP\Mvc\ModelInterface
@@ -57,14 +57,14 @@ interface ModelInterface
      *
      * @param string $alias
      *
-     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @return \ManaPHP\Db\Model\QueryInterface
      */
     public static function createQuery($alias = null);
 
     /**
      * @param string|array $fields
      *
-     * @return \ManaPHP\Mvc\Model\CriteriaInterface
+     * @return \ManaPHP\Db\Model\CriteriaInterface
      */
     public static function createCriteria($fields = null);
 
@@ -141,7 +141,7 @@ interface ModelInterface
      *
      * @param string $alias
      *
-     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @return \ManaPHP\Db\Model\QueryInterface
      * @deprecated
      */
     public static function query($alias = null);

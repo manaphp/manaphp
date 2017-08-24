@@ -6,7 +6,7 @@ namespace ManaPHP\Message\Queue\Adapter\Db;
  *
  * @package messageQueue\adapter
  */
-class Model extends \ManaPHP\Mvc\Model
+class Model extends \ManaPHP\Db\Model
 {
     /**
      * @var int

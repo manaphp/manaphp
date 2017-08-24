@@ -6,7 +6,7 @@ namespace ManaPHP\Meter\Round;
  *
  * @package roundMeter
  */
-class Model extends \ManaPHP\Mvc\Model
+class Model extends \ManaPHP\Db\Model
 {
     /**
      * @var string

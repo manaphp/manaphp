@@ -52,7 +52,7 @@ class Db extends Component implements AdapterInterface
      * @param array  $context
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function log($level, $message, $context = [])
     {

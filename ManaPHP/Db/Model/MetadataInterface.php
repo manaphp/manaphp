@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
 /**
  * Interface ManaPHP\Mvc\Model\MetadataInterface
@@ -13,7 +13,7 @@ interface MetadataInterface
     /**
      * Returns table attributes names (fields)
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return    array
      */
@@ -22,7 +22,7 @@ interface MetadataInterface
     /**
      * Returns an array of fields which are part of the primary key
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
      */
@@ -31,7 +31,7 @@ interface MetadataInterface
     /**
      * Returns an array of fields which are not part of the primary key
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return    array
      */
@@ -40,7 +40,7 @@ interface MetadataInterface
     /**
      * Returns attribute which is auto increment or null
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return string |null
      */
@@ -49,7 +49,7 @@ interface MetadataInterface
     /**
      * Check if a model has certain attribute
      *
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      * @param string                             $attribute
      *
      * @return bool
@@ -57,7 +57,7 @@ interface MetadataInterface
     public function hasAttribute($model, $attribute);
 
     /**
-     * @param string|\ManaPHP\Mvc\ModelInterface $model
+     * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
      */

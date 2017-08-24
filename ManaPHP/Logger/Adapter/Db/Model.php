@@ -6,7 +6,7 @@ namespace ManaPHP\Logger\Adapter\Db;
  *
  * @package logger
  */
-class Model extends \ManaPHP\Mvc\Model
+class Model extends \ManaPHP\Db\Model
 {
     /**
      * @var int

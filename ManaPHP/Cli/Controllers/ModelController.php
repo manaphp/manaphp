@@ -2,7 +2,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
-use ManaPHP\Mvc\Model\Metadata;
+use ManaPHP\Db\Model\Metadata;
 use ManaPHP\Utility\Text;
 
 /**

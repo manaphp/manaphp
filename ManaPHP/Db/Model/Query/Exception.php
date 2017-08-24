@@ -1,12 +1,12 @@
 <?php
-namespace ManaPHP\Mvc\Model\Query;
+namespace ManaPHP\Db\Model\Query;
 
 /**
  * Class ManaPHP\Mvc\Model\QueryBuilder\Exception
  *
  * @package queryBuilder
  */
-class Exception extends \ManaPHP\Mvc\Model\Exception
+class Exception extends \ManaPHP\Db\Model\Exception
 {
 
 }

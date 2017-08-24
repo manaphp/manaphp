@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
 /**
  * Interface ManaPHP\Mvc\Model\ManagerInterface
@@ -12,7 +12,7 @@ interface ManagerInterface
     /**
      * alias of createQuery
      *
-     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @return \ManaPHP\Db\Model\QueryInterface
      * @throws \ManaPHP\Di\Exception
      * @deprecated
      */
@@ -21,7 +21,7 @@ interface ManagerInterface
     /**
      * Creates a \ManaPHP\Mvc\Model\Query\Builder
      *
-     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @return \ManaPHP\Db\Model\QueryInterface
      */
     public function createQuery();
 }

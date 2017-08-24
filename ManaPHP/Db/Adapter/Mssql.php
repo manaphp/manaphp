@@ -3,7 +3,7 @@ namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Mssql\Exception as MssqlException;
-use ManaPHP\Mvc\Model\Metadata;
+use ManaPHP\Db\Model\Metadata;
 
 class Mssql extends Db
 {

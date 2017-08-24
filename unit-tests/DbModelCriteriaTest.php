@@ -5,7 +5,7 @@ use Models\City;
 
 defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
-class DbQueryTest extends TestCase
+class DbModelCriteriaTest extends TestCase
 {
     public function setUp()
     {

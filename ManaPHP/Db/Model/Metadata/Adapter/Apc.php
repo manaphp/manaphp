@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Mvc\Model\Metadata\Adapter;
+namespace ManaPHP\Db\Model\Metadata\Adapter;
 
-use ManaPHP\Mvc\Model\Metadata;
-use ManaPHP\Mvc\Model\Metadata\Adapter\Apc\Exception as ApcException;
+use ManaPHP\Db\Model\Metadata;
+use ManaPHP\Db\Model\Metadata\Adapter\Apc\Exception as ApcException;
 
 /**
  * Class ManaPHP\Mvc\Model\Metadata\Adapter\Apc
@@ -27,7 +27,7 @@ class Apc extends Metadata
      *
      * @param string|array $options
      *
-     * @throws \ManaPHP\Mvc\Model\Metadata\Adapter\Exception
+     * @throws \ManaPHP\Db\Model\Metadata\Adapter\Exception
      */
     public function __construct($options = [])
     {

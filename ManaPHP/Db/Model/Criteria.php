@@ -1,10 +1,9 @@
 <?php
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
-use ManaPHP\Mvc\Model\Criteria\Exception as CriteriaException;
-use ManaPHP\Utility\Text;
+use ManaPHP\Db\Model\Criteria\Exception as CriteriaException;
 
 class Criteria extends Component implements CriteriaInterface
 {
@@ -302,7 +301,7 @@ class Criteria extends Component implements CriteriaInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Mvc\Model\Criteria\Exception
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      * @throws \ManaPHP\Db\Query\Exception
      */
     public function getSql()
@@ -350,8 +349,8 @@ class Criteria extends Component implements CriteriaInterface
     /**
      * @param bool $asModel
      *
-     * @return array|\ManaPHP\Mvc\ModelInterface[]
-     * @throws \ManaPHP\Mvc\Model\Criteria\Exception
+     * @return array|\ManaPHP\Db\ModelInterface[]
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      * @throws \ManaPHP\Db\Query\Exception
      */
     public function execute($asModel = false)

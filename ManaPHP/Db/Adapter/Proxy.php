@@ -1,9 +1,10 @@
 <?php
 namespace ManaPHP\Db\Adapter;
 
+use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Proxy\Exception as ProxyException;
 
-class Proxy extends \ManaPHP\Db
+class Proxy extends Db
 {
     /**
      * @var array

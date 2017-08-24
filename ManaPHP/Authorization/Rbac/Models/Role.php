@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Authorization\Rbac\Models;
 
-use ManaPHP\Mvc\Model;
+use ManaPHP\Db\Model;
 
 /**
  * Class ManaPHP\Authorization\Rbac\Models\Role

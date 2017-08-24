@@ -9,7 +9,7 @@ use ManaPHP\Component;
  * @package controller
  *
  * @property \ManaPHP\Http\ClientInterface       $httpClient
- * @property \ManaPHP\Mvc\Model\ManagerInterface $modelsManager
+ * @property \ManaPHP\Db\Model\ManagerInterface $modelsManager
  * @property \ManaPHP\CounterInterface           $counter
  * @property \ManaPHP\CacheInterface             $cache
  * @property \ManaPHP\DbInterface                $db

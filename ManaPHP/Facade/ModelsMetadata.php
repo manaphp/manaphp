@@ -2,7 +2,7 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-use ManaPHP\Mvc\Model\MetadataInterface;
+use ManaPHP\Db\Model\MetadataInterface;
 
 /**
  * Class ManaPHP\Facade\ModelsMetadata

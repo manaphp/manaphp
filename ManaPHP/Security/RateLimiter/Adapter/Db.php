@@ -39,7 +39,7 @@ class Db extends RateLimiter
      *
      * @return bool
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     protected function _limit($id, $resource, $duration, $times)
     {

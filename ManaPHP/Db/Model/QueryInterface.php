@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
 /**
  * Interface ManaPHP\Mvc\Model\QueryBuilderInterface
@@ -31,7 +31,7 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
     /**
      * Add a model to take part of the query
      *
-     * @param string|\ManaPHP\Mvc\Model\QueryInterface $model
+     * @param string|\ManaPHP\Db\Model\QueryInterface $model
      * @param string                                   $alias
      *
      * @return static
@@ -41,7 +41,7 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
     /**
      * Adds a INNER join to the query
      *
-     * @param string|\ManaPHP\Mvc\Model\QueryInterface $model
+     * @param string|\ManaPHP\Db\Model\QueryInterface $model
      * @param string                                   $condition
      * @param string                                   $alias
      * @param string                                   $type
@@ -53,7 +53,7 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
     /**
      * Adds a INNER join to the query
      *
-     * @param string|\ManaPHP\Mvc\Model\QueryInterface $model
+     * @param string|\ManaPHP\Db\Model\QueryInterface $model
      * @param string                                   $condition
      * @param string                                   $alias
      *
@@ -64,7 +64,7 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
     /**
      * Adds a LEFT join to the query
      *
-     * @param string|\ManaPHP\Mvc\Model\QueryInterface $model
+     * @param string|\ManaPHP\Db\Model\QueryInterface $model
      * @param string                                   $condition
      * @param string                                   $alias
      *
@@ -75,7 +75,7 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
     /**
      * Adds a RIGHT join to the query
      *
-     * @param string|\ManaPHP\Mvc\Model\QueryInterface $model
+     * @param string|\ManaPHP\Db\Model\QueryInterface $model
      * @param string                                   $condition
      * @param string                                   $alias
      *

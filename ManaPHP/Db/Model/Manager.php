@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
 use ManaPHP\Component;
 
@@ -14,7 +14,7 @@ class Manager extends Component implements ManagerInterface
     /**
      * alias of createQuery
      *
-     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @return \ManaPHP\Db\Model\QueryInterface
      * @throws \ManaPHP\Di\Exception
      * @deprecated
      */
@@ -24,9 +24,9 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * Creates a \ManaPHP\Mvc\Model\Query\Builder
+     * Creates a \ManaPHP\Db\Model\Query\Builder
      *
-     * @return \ManaPHP\Mvc\Model\QueryInterface
+     * @return \ManaPHP\Db\Model\QueryInterface
      */
     public function createQuery()
     {

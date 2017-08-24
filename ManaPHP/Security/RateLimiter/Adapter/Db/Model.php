@@ -6,7 +6,7 @@ namespace ManaPHP\Security\RateLimiter\Adapter\Db;
  *
  * @package rateLimiter\adapter
  */
-class Model extends \ManaPHP\Mvc\Model
+class Model extends \ManaPHP\Db\Model
 {
     /**
      * @var string

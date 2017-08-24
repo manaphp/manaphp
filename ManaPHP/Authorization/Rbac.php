@@ -12,7 +12,6 @@ use ManaPHP\Component;
  * @package rbac
  *
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
- * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  */
 class Rbac extends Component implements AuthorizationInterface
@@ -87,7 +86,7 @@ class Rbac extends Component implements AuthorizationInterface
      *
      * @return array
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     protected function _getRolesByPermissionId($permissionId)
     {
@@ -108,7 +107,7 @@ class Rbac extends Component implements AuthorizationInterface
      *
      * @return array
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     protected function _getRolesByUserId($userId)
     {
@@ -129,7 +128,7 @@ class Rbac extends Component implements AuthorizationInterface
      *
      * @return false|\ManaPHP\Authorization\Rbac\Models\Permission
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      * @throws \ManaPHP\Authorization\Rbac\Exception
      */
     protected function _getPermissionByName($name)
@@ -148,7 +147,7 @@ class Rbac extends Component implements AuthorizationInterface
      *
      * @return bool
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      * @throws \ManaPHP\Authorization\Rbac\Exception
      */
     public function isAllowed($permissionName, $userId = null)

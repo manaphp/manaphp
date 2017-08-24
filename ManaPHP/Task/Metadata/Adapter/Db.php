@@ -41,7 +41,7 @@ class Db extends Component implements AdapterInterface
      *
      * @return mixed|false
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function get($key)
     {
@@ -63,7 +63,7 @@ class Db extends Component implements AdapterInterface
      * @param mixed  $value
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function set($key, $value)
     {
@@ -83,7 +83,7 @@ class Db extends Component implements AdapterInterface
      * @param string $key
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function delete($key)
     {
@@ -98,7 +98,7 @@ class Db extends Component implements AdapterInterface
      * @param string $key
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function exists($key)
     {

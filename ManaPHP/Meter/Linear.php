@@ -60,7 +60,7 @@ class Linear extends Component implements LinearInterface
      * @param string $id
      *
      * @return static
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function record($type, $id)
     {
@@ -99,7 +99,7 @@ class Linear extends Component implements LinearInterface
      * @param string $id
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function flush($type, $id = null)
     {
@@ -127,7 +127,7 @@ class Linear extends Component implements LinearInterface
      * @param int    $count
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     protected function _save($type, $id, $count)
     {
@@ -161,7 +161,7 @@ class Linear extends Component implements LinearInterface
      *
      * @return int
      * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Mvc\Model\Exception
+     * @throws \ManaPHP\Db\Model\Exception
      */
     public function get($type, $id)
     {

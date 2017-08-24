@@ -6,7 +6,7 @@ namespace ManaPHP\Meter\Linear;
  *
  * @package linearMeter
  */
-class Model extends \ManaPHP\Mvc\Model
+class Model extends \ManaPHP\Db\Model
 {
     /**
      * @var string

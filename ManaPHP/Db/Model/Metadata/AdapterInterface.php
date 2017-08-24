@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Mvc\Model\Metadata;
+namespace ManaPHP\Db\Model\Metadata;
 
 /**
  * Interface ManaPHP\Mvc\Model\Metadata\AdapterInterface

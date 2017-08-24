@@ -9,7 +9,7 @@ namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Mysql\Exception as MysqlException;
-use ManaPHP\Mvc\Model\Metadata;
+use ManaPHP\Db\Model\Metadata;
 
 /**
  * Class ManaPHP\Db\Adapter\Mysql

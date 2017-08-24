@@ -22,7 +22,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Http\ClientInterface                 $httpClient
  * @property \ManaPHP\Authentication\PasswordInterface     $password
  * @property \ManaPHP\Http\CookiesInterface                $cookies
- * @property \ManaPHP\Mvc\Model\ManagerInterface           $modelsManager
+ * @property \ManaPHP\Db\Model\ManagerInterface            $modelsManager
  * @property \ManaPHP\CounterInterface                     $counter
  * @property \ManaPHP\CacheInterface                       $cache
  * @property \ManaPHP\DbInterface                          $db
@@ -46,7 +46,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
  * @property \ManaPHP\Security\SecintInterface             $secint
  * @property \ManaPHP\Http\FilterInterface                 $filter
- * @property \ManaPHP\Mvc\Model\MetadataInterface          $modelsMetadata
+ * @property \ManaPHP\Db\Model\MetadataInterface          $modelsMetadata
  * @property \ManaPHP\Mvc\UrlInterface                     $url
  * @property \ManaPHP\StopwatchInterface                   $stopwatch
  * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier

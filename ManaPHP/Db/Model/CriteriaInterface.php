@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Mvc\Model;
+namespace ManaPHP\Db\Model;
 
 interface CriteriaInterface
 {

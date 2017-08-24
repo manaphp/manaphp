@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Mvc\Model\Metadata\Adapter;
+namespace ManaPHP\Db\Model\Metadata\Adapter;
 
-use ManaPHP\Mvc\Model\Metadata;
+use ManaPHP\Db\Model\Metadata;
 
 /**
  * Class ManaPHP\Mvc\Model\Metadata\Adapter\Memory

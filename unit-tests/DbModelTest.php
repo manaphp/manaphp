@@ -34,7 +34,7 @@ class TestCity3 extends \ManaPHP\Mvc\Model
     }
 }
 
-class MvcModelTest extends TestCase
+class DbModelTest extends TestCase
 {
     /**
      * @var \ManaPHP\DiInterface

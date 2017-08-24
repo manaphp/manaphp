@@ -12,7 +12,7 @@ use Models\City;
 use Models\Country;
 use Models\Payment;
 
-class MvcModelQueryTest extends TestCase
+class DbModelQueryTest extends TestCase
 {
     public function setUp()
     {
