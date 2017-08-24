@@ -104,7 +104,7 @@ class Db implements AdapterInterface
             }
 
             $old_value = $counter->value;
-            $r = $counter::updateAll(['value =value + :step'], ['hash' => $hash, 'value' => $old_value], ['step' => $step]);
+            $r = $counter::updateAll(['value =value + ' . $step], ['hash' => $hash, 'value' => $old_value]);
             if ($r === 1) {
                 return $old_value + $step;
             }
