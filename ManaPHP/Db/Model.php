@@ -3,8 +3,8 @@
 namespace ManaPHP\Db;
 
 use ManaPHP\Component;
-use ManaPHP\Di;
 use ManaPHP\Db\Model\Exception as ModelException;
+use ManaPHP\Di;
 use ManaPHP\Utility\Text;
 
 /**
@@ -30,7 +30,7 @@ use ManaPHP\Utility\Text;
  * method afterDelete()
  *
  */
-class Model extends Component implements ModelInterface, \JsonSerializable
+class Model extends Component implements ModelInterface, \JsonSerializable, \Serializable
 {
     /**
      * @var array
@@ -991,5 +991,25 @@ class Model extends Component implements ModelInterface, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize($this->toArray());
+    }
+
+    /**
+     * @param string $serialized
+     *
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        $unserialized = unserialize($serialized);
+        $this->_snapshot = $unserialized;
+        $this->assign($unserialized);
     }
 }
