@@ -72,8 +72,10 @@ class Db extends Component implements QueueInterface
         $startTime = time();
 
         do {
-            $model = $modelInstance::findFirst([['topic' => $topic, 'deleted' => 0], 'order' => 'priority ASC, id ASC']);
-            if ($model && $modelInstance::updateAll(['deleted' => 1], ['id' => $model->id, 'deleted = 0'])) {
+            $models = $modelInstance::find(['topic' => $topic, 'deleted' => 0], ['order' => 'priority ASC, id ASC']);
+            $model = count($models) > 0 ? $models[0] : false;
+
+            if ($model && $modelInstance::updateAll(['deleted' => 1], ['id' => $model->id])) {
                 return $model->body;
             }
 
