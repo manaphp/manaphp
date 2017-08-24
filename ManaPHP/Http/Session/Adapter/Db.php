@@ -136,6 +136,6 @@ class Db extends Component implements AdapterInterface
          */
         $model = new $this->_model;
 
-        $model::deleteAll(':current_time >expired_time', ['current_time' => time()]);
+        $model::deleteAll(['expired_time<=' => time()]);
     }
 }
