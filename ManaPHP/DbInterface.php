@@ -9,7 +9,6 @@ namespace ManaPHP;
  */
 interface DbInterface
 {
-
     /**
      * @return \ManaPHP\DbInterface
      */
