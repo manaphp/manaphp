@@ -198,7 +198,6 @@ interface CriteriaInterface
      * @param bool $asModel
      *
      * @return array|\ManaPHP\Mvc\ModelInterface[]
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function execute($asModel = false);
 
