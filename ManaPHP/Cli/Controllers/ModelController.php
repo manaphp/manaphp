@@ -2,8 +2,8 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
-use ManaPHP\Db\Model\Metadata;
 use ManaPHP\Utility\Text;
+use ManaPHP\Db;
 
 /**
  * Class ModelController
@@ -66,7 +66,7 @@ class ModelController extends Controller
 
             $vars = [];
 
-            $vars['columns'] = $this->db->getMetadata($table)[Metadata::MODEL_ATTRIBUTES];
+            $vars['columns'] = $this->db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
 
             $vars['model_name'] = $modelName;
             $vars['model_namespace'] = $modelNamespace;

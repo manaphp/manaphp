@@ -3,7 +3,6 @@ namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Sqlite\Exception as SqliteException;
-use ManaPHP\Db\Model\Metadata;
 
 /**
  * Class ManaPHP\Db\Adapter\Sqlite
@@ -77,10 +76,10 @@ class Sqlite extends Db
         }
 
         $r = [
-            Metadata::MODEL_ATTRIBUTES => $attributes,
-            Metadata::MODEL_PRIMARY_KEY => $primaryKeys,
-            Metadata::MODEL_NON_PRIMARY_KEY => $nonPrimaryKeys,
-            Metadata::MODEL_IDENTITY_COLUMN => $autoIncrementAttribute,
+            self::METADATA_ATTRIBUTES => $attributes,
+            self::METADATA_PRIMARY_KEY => $primaryKeys,
+            self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
+            self::METADATA_IDENTITY_COLUMN => $autoIncrementAttribute,
         ];
 
         return $r;
