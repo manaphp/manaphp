@@ -53,7 +53,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Cli\EnvironmentInterface             $environment
  * @property \ManaPHP\Net\ConnectivityInterface            $netConnectivity
  * @property \ManaPHP\Redis                                $redis
- * @property \MongoDB\Client                               $mongodb
+ * @property \ManaPHP\Mongodb                              $mongodb
  * @property \Elasticsearch\Client                         $elasticsearch
  * @property \ManaPHP\ZookeeperInterface                   $zookeeper
  */
