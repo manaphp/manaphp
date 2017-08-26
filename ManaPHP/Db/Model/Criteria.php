@@ -2,8 +2,8 @@
 namespace ManaPHP\Db\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Di;
 use ManaPHP\Db\Model\Criteria\Exception as CriteriaException;
+use ManaPHP\Di;
 
 class Criteria extends Component implements CriteriaInterface
 {
@@ -55,13 +55,13 @@ class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @param string|array $columns
+     * @param string|array $fields
      *
      * @return static
      */
-    public function select($columns)
+    public function select($fields)
     {
-        $this->_query->select($columns);
+        $this->_query->select($fields);
 
         return $this;
     }
@@ -223,7 +223,7 @@ class Criteria extends Component implements CriteriaInterface
      *
      * @return static
      */
-    public function limit($limit, $offset = 0)
+    public function limit($limit, $offset = null)
     {
         $this->_query->limit($limit, $offset);
 
@@ -236,11 +236,24 @@ class Criteria extends Component implements CriteriaInterface
      *
      * @return static
      */
-    public function page($size, $page = 1)
+    public function page($size, $page = null)
     {
         $this->_query->page($size, $page);
 
         return $this;
+    }
+
+    /**
+     * @param int $size
+     * @param int $page
+     *
+     * @return \ManaPHP\Paginator
+     * @throws \ManaPHP\Paginator\Exception
+     * @throws \ManaPHP\Db\Query\Exception
+     */
+    public function paginate($size, $page = null)
+    {
+        return $this->_replaceModelInfo()->_query->paginate($size, $page);
     }
 
     /**
@@ -280,16 +293,17 @@ class Criteria extends Component implements CriteriaInterface
         }
         $this->_modelReplaced = true;
 
+        /**
+         * @var \ManaPHP\ModelInterface $modelName
+         */
         $modelName = $this->_modelName;
         $bind = $this->_query->getBind();
-        /** @noinspection PhpUndefinedMethodInspection */
         if (($db = $modelName::getDb($bind)) === false) {
             throw new CriteriaException('`:model` model db sharding for query',
                 ['model' => $this->_modelName, 'context' => $bind]);
         }
         $this->_query->setDb($this->_dependencyInjector->getShared($db));
 
-        /** @noinspection PhpUndefinedMethodInspection */
         if (($source = $modelName::getSource($bind)) === false) {
             throw new CriteriaException('`:model` model table sharding for query',
                 ['model' => $this->_modelName, 'context' => $bind]);
@@ -301,8 +315,6 @@ class Criteria extends Component implements CriteriaInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function getSql()
     {
@@ -347,13 +359,37 @@ class Criteria extends Component implements CriteriaInterface
     }
 
     /**
+     * @param string $field
+     *
+     * @return array
+     */
+    public function distinctField($field)
+    {
+        $values = [];
+        foreach ($this->distinct()->select($field)->fetchAll() as $v) {
+            $values[] = $v[$field];
+        }
+
+        return $values;
+    }
+
+    /**
      * @param bool $asModel
      *
-     * @return array|\ManaPHP\Db\ModelInterface[]
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
-     * @throws \ManaPHP\Db\Query\Exception
+     * @return array|\ManaPHP\ModelInterface|false
      */
-    public function execute($asModel = false)
+    public function fetchOne($asModel = false)
+    {
+        $r = $this->fetchAll($asModel);
+        return isset($r[0]) ? $r[0] : false;
+    }
+
+    /**
+     * @param bool $asModel
+     *
+     * @return array|\ManaPHP\Db\Model[]
+     */
+    public function fetchAll($asModel = false)
     {
         $rs = $this->_replaceModelInfo()->_query->execute();
         if ($asModel) {
@@ -367,9 +403,24 @@ class Criteria extends Component implements CriteriaInterface
         }
     }
 
-    public function exists($fromSlaver = true)
+    /**
+     * @param bool $forceUseMaster
+     *
+     * @return static
+     */
+    public function forceUseMaster($forceUseMaster = true)
     {
-        return $this->_replaceModelInfo()->_query->exists($fromSlaver);
+        $this->_query->forceUseMaster($forceUseMaster);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function exists()
+    {
+        return $this->_replaceModelInfo()->_query->exists();
     }
 
     /**
@@ -378,5 +429,23 @@ class Criteria extends Component implements CriteriaInterface
     public function __toString()
     {
         return $this->getSql();
+    }
+
+    /**
+     * @return int
+     */
+    public function delete()
+    {
+        return $this->_replaceModelInfo()->_query->delete();
+    }
+
+    /**
+     * @param $fieldValues
+     *
+     * @return int
+     */
+    public function update($fieldValues)
+    {
+        return $this->_replaceModelInfo()->_query->update($fieldValues);
     }
 }
