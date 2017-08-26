@@ -13,9 +13,4 @@ class City extends ModelBase
     public $city;
     public $country_id;
     public $last_update;
-
-    public function initialize()
-    {
-        $this->setSource('city');
-    }
 }
