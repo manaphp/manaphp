@@ -22,7 +22,6 @@ use ManaPHP\Component;
  * @property \ManaPHP\Http\ClientInterface                 $httpClient
  * @property \ManaPHP\Authentication\PasswordInterface     $password
  * @property \ManaPHP\Http\CookiesInterface                $cookies
- * @property \ManaPHP\Db\Model\ManagerInterface            $modelsManager
  * @property \ManaPHP\CounterInterface                     $counter
  * @property \ManaPHP\CacheInterface                       $cache
  * @property \ManaPHP\DbInterface                          $db

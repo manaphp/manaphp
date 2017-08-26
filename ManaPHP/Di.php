@@ -23,7 +23,6 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Event\ManagerInterface               $eventsManager
  * @property \ManaPHP\DbInterface                          $db
  * @property \ManaPHP\Security\CryptInterface              $crypt
- * @property \ManaPHP\Db\Model\ManagerInterface            $modelsManager
  * @property \ManaPHP\Db\Model\MetadataInterface           $modelsMetadata
  * @property \ManaPHP\Cache\AdapterInterface               $modelsCache
  * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
