@@ -1,10 +1,11 @@
 <?php
 namespace ManaPHP\Db\Adapter;
 
-use ManaPHP\Db;
+use ManaPHP\Component;
 use ManaPHP\Db\Adapter\Proxy\Exception as ProxyException;
+use ManaPHP\DbInterface;
 
-class Proxy extends Db
+class Proxy extends Component implements DbInterface
 {
     /**
      * @var array
@@ -32,9 +33,14 @@ class Proxy extends Db
     protected $_currentConnection;
 
     /**
+     * @var int
+     */
+    protected $_transactionLevel = 0;
+
+    /**
      * Proxy constructor.
      *
-     * @param array $options
+     * @param array[] $options
      */
     public function __construct($options)
     {
@@ -97,6 +103,8 @@ class Proxy extends Db
 
             $r -= $weight;
         }
+
+        return $ar[0];
     }
 
     /**
@@ -168,6 +176,14 @@ class Proxy extends Db
         } else {
             return $this->getSlaveConnection()->query($sql, $bind, $fetchMode);
         }
+    }
+
+    /**
+     * @return \ManaPHP\Db\QueryInterface
+     */
+    public function createQuery()
+    {
+        return $this->_dependencyInjector->get('ManaPHP\Db\Query', [$this]);
     }
 
     public function execute($sql, $bind = [])
