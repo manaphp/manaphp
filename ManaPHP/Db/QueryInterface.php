@@ -312,12 +312,11 @@ interface QueryInterface
     public function cache($options);
 
     /**
-     * @param bool $fromSlaver
      *
      * @return array
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function execute($fromSlaver = true);
+    public function execute();
 
     /**
      * @param int $size
@@ -327,24 +326,12 @@ interface QueryInterface
      * @throws \ManaPHP\Paginator\Exception
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function paginate($size, $page);
+    public function paginate($size, $page = null);
 
     /**
-     * build the query and execute it.
-     *
-     * @param int|string $totalRows
-     *
-     * @return array
-     * @throws \ManaPHP\Db\Query\Exception
-     */
-    public function executeEx(&$totalRows);
-
-    /**
-     * @param bool $fromSlaver
-     *
      * @return bool
      */
-    public function exists($fromSlaver = true);
+    public function exists();
 
     /**
      * @param \ManaPHP\Db\QueryInterface[] $queries
@@ -353,4 +340,33 @@ interface QueryInterface
      * @return static
      */
     public function union($queries, $distinct = false);
+
+    /**
+     * @param bool $forceUseMaster
+     *
+     * @return static
+     */
+    public function forceUseMaster($forceUseMaster = true);
+
+    /**
+     * @return array|false
+     */
+    public function fetchOne();
+
+    /**
+     * @return array
+     */
+    public function fetchAll();
+
+    /**
+     * @return int
+     */
+    public function delete();
+
+    /**
+     * @param array $fieldValues
+     *
+     * @return int
+     */
+    public function update($fieldValues);
 }

@@ -14,6 +14,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Cache\AdapterInterface  $modelsCache
  * @property \ManaPHP\Paginator               $paginator
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property \ManaPHP\Http\RequestInterface   $request
  */
 class Query extends Component implements QueryInterface
 {
@@ -103,6 +104,11 @@ class Query extends Component implements QueryInterface
     protected $_cacheOptions;
 
     /**
+     * @var bool
+     */
+    protected $_forceUseMaster = false;
+
+    /**
      * @var \ManaPHP\DbInterface
      */
     protected $_db;
@@ -137,6 +143,8 @@ class Query extends Component implements QueryInterface
     public function __construct($db = null)
     {
         $this->_db = $db;
+
+        $this->_dependencyInjector = Di::getDefault();
     }
 
     /**
@@ -358,6 +366,10 @@ class Query extends Component implements QueryInterface
      */
     public function where($condition, $bind = [])
     {
+        if ($condition === null) {
+            return $this;
+        }
+
         if (is_array($condition)) {
             /** @noinspection ForeachSourceInspection */
             foreach ($condition as $k => $v) {
@@ -855,7 +867,7 @@ class Query extends Component implements QueryInterface
     protected function _buildSql()
     {
         if ($this->_db === null || is_string($this->_db)) {
-            $this->_db = ($this->_dependencyInjector ?: Di::getDefault())->getShared($this->_db ?: 'db');
+            $this->_db = $this->_dependencyInjector->getShared($this->_db ?: 'db');
         }
 
         if (count($this->_union) !== 0) {
@@ -1043,48 +1055,32 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * @param int|array $cacheOptions
-     *
      * @return array
      * @throws \ManaPHP\Db\Query\Exception
      */
-    protected function _getCacheOptions($cacheOptions)
+    protected function _getCacheOptions()
     {
-        $_cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
-
-        if (isset($this->_tables[0]) && count($this->_tables) === 1) {
-            $modelName = $this->_tables[0];
-            $prefix = '/' . $this->dispatcher->getModuleName() . '/Models/' . substr($modelName, strrpos($modelName, '\\') + 1);
-        } else {
-            $prefix = '/' . $this->dispatcher->getModuleName() . '/Queries/' . $this->dispatcher->getControllerName();
-        }
-
-        if (isset($_cacheOptions['key'])) {
-            if ($_cacheOptions['key'][0] === '/') {
-                throw new QueryException('modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, ['key' => $_cacheOptions['key']]);
+        $cacheOptions = is_array($this->_cacheOptions) ? $this->_cacheOptions : ['ttl' => $this->_cacheOptions];
+        if (!isset($cacheOptions['key'])) {
+            if ($cacheOptions['key'][0] === '/') {
+                throw new QueryException('modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, ['key' => $cacheOptions['key']]);
             }
 
-            $_cacheOptions['key'] = $prefix . '/' . $_cacheOptions['key'];
-        } else {
-            $_cacheOptions['key'] = $prefix . '/' . md5($this->_sql . serialize($this->_bind));
+            $cacheOptions['key'] = md5($this->_sql . serialize($this->_bind));
         }
 
-        return $_cacheOptions;
+        return $cacheOptions;
     }
 
     /**
-     * @param array $rows
-     * @param int   $total
+     * @param array $items
+     * @param int   $count
      *
      * @return array
      */
-    protected function _buildCacheData($rows, $total)
+    protected function _buildCacheData($items, $count)
     {
-        $from = $this->dispatcher->getModuleName() . ':' . $this->dispatcher->getControllerName() . ':' . $this->dispatcher->getActionName();
-
-        $data = ['time' => date('Y-m-d H:i:s'), 'from' => $from, 'sql' => $this->_sql, 'bind' => $this->_bind, 'total' => $total, 'rows' => $rows];
-
-        return $data;
+        return ['time' => date('Y-m-d H:i:s'), 'sql' => $this->_sql, 'bind' => $this->_bind, 'count' => $count, 'items' => $items];
     }
 
     /**
@@ -1101,27 +1097,25 @@ class Query extends Component implements QueryInterface
 
     /**
      *
-     * @param bool $fromSlaver
-     *
      * @return array
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function execute($fromSlaver = true)
+    public function execute()
     {
         $this->_hiddenParamNumber = 0;
 
         $this->_sql = $this->_buildSql();
 
         if ($this->_cacheOptions !== null) {
-            $cacheOptions = $this->_getCacheOptions($this->_cacheOptions);
+            $cacheOptions = $this->_getCacheOptions();
 
             $data = $this->modelsCache->get($cacheOptions['key']);
             if ($data !== false) {
-                return json_decode($data, true)['rows'];
+                return json_decode($data, true)['items'];
             }
         }
 
-        $result = ($fromSlaver ? $this->_db : $this->_db->getMasterConnection())->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
+        $result = ($this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db)->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
         if (isset($cacheOptions)) {
             $this->modelsCache->set($cacheOptions['key'],
                 json_encode($this->_buildCacheData($result, -1), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
@@ -1165,80 +1159,73 @@ class Query extends Component implements QueryInterface
      * @param int $size
      * @param int $page
      *
-     * @return \ManaPHP\PaginatorInterface
+     * @return \ManaPHP\Paginator
      * @throws \ManaPHP\Paginator\Exception
      * @throws \ManaPHP\Db\Query\Exception
      */
     public function paginate($size, $page = null)
     {
-        $this->paginator->items = $this->page($size, $page)->executeEx($totalRows);
+        if ($page === null && $this->request->has('page')) {
+            $page = $this->request->get('page', 'int');
+        }
 
-        return $this->paginator->paginate($totalRows, $size, $page);
-    }
+        $this->page($size, $page);
 
-    /**
-     * build the query and execute it.
-     *
-     * @param int|string $totalRows
-     *
-     * @return array
-     * @throws \ManaPHP\Db\Query\Exception
-     */
-    public function executeEx(&$totalRows)
-    {
         $this->_hiddenParamNumber = 0;
 
         $copy = clone $this;
 
         $this->_sql = $this->_buildSql();
 
-        if ($this->_cacheOptions !== null) {
-            $cacheOptions = $this->_getCacheOptions($this->_cacheOptions);
+        do {
+            if ($this->_cacheOptions !== null) {
+                $cacheOptions = $this->_getCacheOptions();
 
-            $result = $this->modelsCache->get($cacheOptions['key']);
+                if (($result = $this->modelsCache->get($cacheOptions['key'])) !== false) {
+                    $result = json_decode($result, true);
 
-            if ($result !== false) {
-                $result = json_decode($result, true);
-                $totalRows = $result['total'];
-                return $result['rows'];
+                    $count = $result['count'];
+                    $items = $result['items'];
+                    break;
+                }
             }
-        }
 
-        /** @noinspection SuspiciousAssignmentsInspection */
-        $result = $this->_db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
+            /** @noinspection SuspiciousAssignmentsInspection */
+            $items = $this->_db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
 
             if ($this->_limit === null) {
-            $totalRows = count($result);
-        } else {
-            if (count($result) % $this->_limit === 0) {
-                $totalRows = $copy->_getTotalRows();
+                $count = count($items);
             } else {
-                $totalRows = $this->_offset + count($result);
+                if (count($items) % $this->_limit === 0) {
+                    $count = $copy->_getTotalRows();
+                } else {
+                    $count = $this->_offset + count($items);
+                }
             }
-        }
 
-        if (isset($cacheOptions)) {
-            $this->modelsCache->set($cacheOptions['key'],
-                json_encode($this->_buildCacheData($result, $totalRows), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                $cacheOptions['ttl']);
-        }
+            if (isset($cacheOptions)) {
+                $this->modelsCache->set($cacheOptions['key'],
+                    json_encode($this->_buildCacheData($items, $count), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+                    $cacheOptions['ttl']);
+            }
+        } while (false);
 
-        return $result;
+        $this->paginator->items = $items;
+
+        return $this->paginator->paginate($count, $size, $page);
     }
 
     /**
-     * @param bool $fromSlaver
-     *
      * @return bool
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function exists($fromSlaver = true)
+    public function exists()
     {
         $this->_columns = '1 as [stub]';
         $this->_limit = 1;
         $this->_offset = 0;
 
-        $rs = $this->execute($fromSlaver);
+        $rs = $this->execute();
 
         return isset($rs[0]);
     }
@@ -1270,5 +1257,56 @@ class Query extends Component implements QueryInterface
     public function __toString()
     {
         return $this->getSql();
+    }
+
+    /**
+     * @param bool $forceUseMaster
+     *
+     * @return static
+     */
+    public function forceUseMaster($forceUseMaster = true)
+    {
+        $this->_forceUseMaster = $forceUseMaster;
+
+        return $this;
+    }
+
+    /**
+     * @return array|false
+     * @throws \ManaPHP\Db\Query\Exception
+     */
+    public function fetchOne()
+    {
+        $r = $this->limit(1)->fetchAll();
+
+        return count($r) === 0 ? false : $r[0];
+    }
+
+    /**
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Query\Exception
+     */
+    public function fetchAll()
+    {
+        return $this->execute();
+    }
+
+    /**
+     * @param array $fieldValues
+     *
+     * @return int
+     */
+    public function update($fieldValues)
+    {
+        return $this->_db->update($this->_tables[0], $fieldValues, $this->_conditions, $this->_bind);
+    }
+
+    /**
+     * @return int
+     */
+    public function delete()
+    {
+        return $this->_db->delete($this->_tables[0], $this->_conditions, $this->_bind);
     }
 }
