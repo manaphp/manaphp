@@ -87,7 +87,6 @@ class DbModelTest extends TestCase
         $max = Payment::max('amount');
         $this->assertEquals('string', gettype($max));
         $this->assertEquals('11.99', $max);
-
     }
 
     public function test_min()
@@ -97,7 +96,7 @@ class DbModelTest extends TestCase
         $this->assertEquals('0.00', $min);
     }
 
-    public function test_average()
+    public function test_avg()
     {
         $avg = Payment::avg('amount');
         $this->assertEquals('double', gettype($avg));
