@@ -46,8 +46,7 @@ class Db implements AdapterInterface
      * @param string $id
      *
      * @return int
-     * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function get($type, $id)
     {
@@ -66,9 +65,8 @@ class Db implements AdapterInterface
      * @param int    $step
      *
      * @return int
-     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Counter\Adapter\Db\Exception
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function increment($type, $id, $step = 1)
     {
@@ -119,7 +117,7 @@ class Db implements AdapterInterface
      * @param string $id
      *
      * @return void
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function delete($type, $id)
     {
