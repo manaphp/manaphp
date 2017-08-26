@@ -30,5 +30,4 @@ class MongodbTest extends TestCase
         $documents = $this->mongodb->query('city', [], ['limit' => 3]);
         $this->assertCount(3, $documents);
     }
-
 }
