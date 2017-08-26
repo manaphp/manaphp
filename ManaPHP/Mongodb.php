@@ -2,7 +2,10 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Mongodb\Exception as MongodbException;
 use MongoDB\Driver\BulkWrite;
+use MongoDB\Driver\Command;
+use MongoDB\Driver\Exception\RuntimeException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\ReadPreference;
@@ -13,7 +16,7 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @var string
      */
-    protected $_database;
+    protected $_db;
 
     /**
      * @var \MongoDB\Driver\Manager;
@@ -38,7 +41,7 @@ class Mongodb extends Component implements MongodbInterface
         $this->_manager = new Manager($dsn);
         $pos = strrpos($dsn, '/');
         if ($pos !== false) {
-            $this->_database = substr($dsn, $pos + 1);
+            $this->_db = substr($dsn, $pos + 1);
         }
     }
 
@@ -47,13 +50,14 @@ class Mongodb extends Component implements MongodbInterface
      * @param \MongoDb\Driver\BulkWrite $bulk
      *
      * @return \MongoDB\Driver\WriteResult
+     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
     public function bulkWrite($source, $bulk)
     {
-        $ns = strpos($source, '.') === false ? ($this->_database . '.' . $source) : $source;
+        $ns = strpos($source, '.') === false ? ($this->_db . '.' . $source) : $source;
 
         if ($this->_writeConcern === null) {
-            $this->_writeConcern = new \MongoDB\Driver\WriteConcern(WriteConcern::MAJORITY, 1000);
+            $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 1000);
         }
 
         return $this->_manager->executeBulkWrite($ns, $bulk, $this->_writeConcern);
@@ -64,6 +68,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param array  $document
      *
      * @return \MongoDB\BSON\ObjectID|int|string
+     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
     public function insert($source, $document)
     {
@@ -75,16 +80,19 @@ class Mongodb extends Component implements MongodbInterface
 
     /**
      * @param string $source
-     * @param array  $filter
      * @param array  $document
+     * @param array  $filter
      * @param array  $updateOptions
      *
      * @return int
+     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
-    public function update($source, $filter, $document, $updateOptions = [])
+    public function update($source, $document, $filter, $updateOptions = [])
     {
         $bulk = new BulkWrite();
-        $bulk->update($filter, $document, $updateOptions);
+        $updateOptions += ['multi' => true];
+
+        $bulk->update($filter, ['$set' => $document], $updateOptions);
         $result = $this->bulkWrite($source, $bulk);
 
         return $result->getModifiedCount();
@@ -96,6 +104,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param array  $deleteOptions
      *
      * @return int|null
+     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
     public function delete($source, $filter, $deleteOptions = [])
     {
@@ -115,14 +124,91 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function query($source, $filter = [], $queryOptions = [], $secondaryPreferred = true)
     {
-        $ns = strpos($source, '.') === false ? ($this->_database . '.' . $source) : $source;
+        $ns = strpos($source, '.') === false ? ($this->_db . '.' . $source) : $source;
 
         if (is_bool($secondaryPreferred)) {
             $readPreference = $secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY;
         } else {
             $readPreference = $secondaryPreferred;
         }
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $cursor = $this->_manager->executeQuery($ns, new Query($filter, $queryOptions), new ReadPreference($readPreference));
+        $cursor->setTypeMap(['root' => 'array']);
         return $cursor->toArray();
+    }
+
+    /**
+     * @param \Mongodb\Driver\Command $command
+     * @param string                  $db
+     *
+     * @return \Mongodb\Driver\Cursor
+     * @throws \MongoDB\Driver\Exception\AuthenticationException
+     */
+    public function command($command, $db = null)
+    {
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        return $this->_manager->executeCommand($db ?: $this->_db, $command);
+    }
+
+    /**
+     * @param string $source
+     * @param array  $pipeline
+     *
+     * @return array
+     * @throws \MongoDB\Driver\Exception\Exception
+     * @throws \ManaPHP\Mongodb\Exception
+     */
+    public function pipeline($source, $pipeline)
+    {
+        $parts = explode('.', $source);
+
+        try {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $cursor = $this->_manager->executeCommand(count($parts) === 2 ? $parts[0] : $this->_db, new Command([
+                'aggregate' => count($parts) === 2 ? $parts[1] : $parts[0],
+                'pipeline' => $pipeline
+            ]));
+        } catch (RuntimeException $e) {
+            throw new MongodbException('`:pipeline` pipeline for `:collection` collection failed: :msg',
+                ['pipeline' => json_encode($pipeline), 'collection' => $source, 'msg' => $e->getMessage()]);
+        }
+        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+        $r = $cursor->toArray()[0];
+        if (!$r['ok']) {
+            throw new MongodbException('`:pipeline` pipeline for `:collection` collection failed `:code`: `:msg`',
+                ['code' => $r['code'], 'msg' => $r['errmsg'], 'collection' => $source]);
+        }
+
+        return $r['result'];
+    }
+
+    /**
+     * @param string $source
+     *
+     * @return static
+     * @throws \ManaPHP\Mongodb\Exception
+     */
+    public function truncateTable($source)
+    {
+        $parts = explode('.', $source);
+        $db = count($parts) === 2 ? $parts[1] : $this->_db;
+        $collection = count($parts) === 2 ? $parts[1] : $parts[0];
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        try {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $cursor = $this->_manager->executeCommand($db, new Command(['drop' => $collection]), new ReadPreference(ReadPreference::RP_PRIMARY));
+        } /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */ catch (RuntimeException $e) {
+            if ($e->getMessage() === 'ns not found') {
+                return $this;
+            }
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw $e;
+        }
+        $cursor->setTypeMap(['root' => 'array']);
+        $r = $cursor->toArray();
+        if (!$r[0]['ok']) {
+            throw new MongodbException('drop `:collection` collection of `:db` db failed: ', ['collection' => $collection, 'db' => $db, 'msg' => $r[0]['errmsg']]);
+        }
+        return $this;
     }
 }

@@ -14,13 +14,13 @@ interface MongodbInterface
 
     /**
      * @param string $source
-     * @param array  $filter
      * @param array  $document
+     * @param array  $filter
      * @param array  $updateOptions
      *
      * @return int
      */
-    public function update($source, $filter, $document, $updateOptions = []);
+    public function update($source, $document, $filter, $updateOptions = []);
 
     /**
      * @param string $source
@@ -41,4 +41,26 @@ interface MongodbInterface
      */
     public function query($source, $filter = [], $queryOptions = [], $secondaryPreferred = true);
 
+    /**
+     * @param \Mongodb\Driver\Command $command
+     * @param string                  $db
+     *
+     * @return \Mongodb\Driver\Cursor
+     */
+    public function command($command, $db = null);
+
+    /**
+     * @param string $source
+     * @param array  $pipeline
+     *
+     * @return array
+     */
+    public function pipeline($source, $pipeline);
+
+    /**
+     * @param string $source
+     *
+     * @return static
+     */
+    public function truncateTable($source);
 }
