@@ -247,7 +247,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function limit($limit, $offset = 0);
+    public function limit($limit, $offset = null);
 
     /**
      * @param int $size
@@ -255,7 +255,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function page($size, $page = 1);
+    public function page($size, $page = null);
 
     /**
      * Sets a GROUP BY clause
@@ -279,7 +279,6 @@ interface QueryInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function getSql();
 

@@ -60,12 +60,12 @@ class Query extends Component implements QueryInterface
     /**
      * @var int
      */
-    protected $_limit = 0;
+    protected $_limit;
 
     /**
      * @var int
      */
-    protected $_offset = 0;
+    protected $_offset;
 
     /**
      * @var bool
@@ -711,10 +711,15 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      */
-    public function limit($limit, $offset = 0)
+    public function limit($limit, $offset = null)
     {
-        $this->_limit = (int)$limit;
-        $this->_offset = (int)$offset;
+        if ($limit > 0) {
+            $this->_limit = (int)$limit;
+        }
+
+        if ($offset > 0) {
+            $this->_offset = (int)$offset;
+        }
 
         return $this;
     }
@@ -725,9 +730,15 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      */
-    public function page($size, $page = 1)
+    public function page($size, $page = null)
     {
-        return $this->limit($size, (max(1, $page) - 1) * $size);
+        if ($page === null && $this->request->has('page')) {
+            $page = $this->request->get('page', 'int');
+        }
+
+        $this->limit($size, $page ? ($page - 1) * $size : null);
+
+        return $this;
     }
 
     /**
@@ -779,7 +790,6 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
      */
     protected function _getUnionSql()
     {
@@ -810,11 +820,11 @@ class Query extends Component implements QueryInterface
         /**
          * Process limit parameters
          */
-        if ($this->_limit !== 0) {
+        if ($this->_limit !== null) {
             $params['limit'] = $this->_limit;
         }
 
-        if ($this->_offset !== 0) {
+        if ($this->_offset !== null) {
             $params['offset'] = $this->_offset;
         }
 
@@ -827,7 +837,6 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function getSql()
     {
@@ -842,7 +851,6 @@ class Query extends Component implements QueryInterface
      * Returns a SQL statement built based on the builder parameters
      *
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
      */
     protected function _buildSql()
     {
@@ -855,6 +863,7 @@ class Query extends Component implements QueryInterface
         }
 
         if (count($this->_tables) === 0) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new QueryException('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
         }
 
@@ -884,6 +893,7 @@ class Query extends Component implements QueryInterface
         foreach ($this->_tables as $alias => $table) {
             if ($table instanceof $this) {
                 if (is_int($alias)) {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     throw new QueryException('if using SubQuery, you must assign an alias for it'/**m0e5f4aa93dc102dde*/);
                 }
 
@@ -921,6 +931,7 @@ class Query extends Component implements QueryInterface
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $joinTable->getBind());
                 if ($joinAlias === null) {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     throw new QueryException('if using SubQuery, you must assign an alias for it'/**m0a80f96a41e1596cb*/);
                 }
             } else {
@@ -958,11 +969,11 @@ class Query extends Component implements QueryInterface
             $params['order'] = $this->_order;
         }
 
-        if ($this->_limit !== 0) {
+        if ($this->_limit !== null) {
             $params['limit'] = $this->_limit;
         }
 
-        if ($this->_offset !== 0) {
+        if ($this->_offset !== null) {
             $params['offset'] = $this->_offset;
         }
 
@@ -1131,8 +1142,8 @@ class Query extends Component implements QueryInterface
         }
 
         $this->_columns = 'COUNT(*) as [row_count]';
-        $this->_limit = 0;
-        $this->_offset = 0;
+        $this->_limit = null;
+        $this->_offset = null;
         $this->_order = null;
 
         $this->_sql = $this->_buildSql();
@@ -1158,7 +1169,7 @@ class Query extends Component implements QueryInterface
      * @throws \ManaPHP\Paginator\Exception
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function paginate($size, $page)
+    public function paginate($size, $page = null)
     {
         $this->paginator->items = $this->page($size, $page)->executeEx($totalRows);
 
@@ -1196,7 +1207,7 @@ class Query extends Component implements QueryInterface
         /** @noinspection SuspiciousAssignmentsInspection */
         $result = $this->_db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
 
-        if (!$this->_limit) {
+            if ($this->_limit === null) {
             $totalRows = count($result);
         } else {
             if (count($result) % $this->_limit === 0) {
