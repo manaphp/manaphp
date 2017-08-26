@@ -38,8 +38,7 @@ class Db extends Component implements AdapterInterface
      * @param string $key
      *
      * @return bool
-     * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function exists($key)
     {
@@ -56,8 +55,7 @@ class Db extends Component implements AdapterInterface
      * @param string $key
      *
      * @return string|false
-     * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function get($key)
     {
@@ -80,7 +78,7 @@ class Db extends Component implements AdapterInterface
      * @param int    $ttl
      *
      * @return void
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      * @throws \ManaPHP\Cache\Adapter\Exception
      */
     public function set($key, $value, $ttl)
@@ -102,7 +100,7 @@ class Db extends Component implements AdapterInterface
      * @param string $key
      *
      * @return void
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function delete($key)
     {
