@@ -197,10 +197,8 @@ class Mysql extends Db
         $parts = explode('.', str_replace('[]`', '', $source));
 
         if (count($parts) === 2) {
-            /** @noinspection SqlDialectInspection */
             $sql = "SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME`= '$parts[0]' AND `TABLE_SCHEMA` = '$parts[1]'";
         } else {
-            /** @noinspection SqlDialectInspection */
             $sql = "SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = '$parts[0]' AND `TABLE_SCHEMA` = DATABASE()";
         }
 
