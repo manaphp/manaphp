@@ -55,13 +55,12 @@ class Db extends Component implements AdapterInterface
      * @param string $sessionId
      *
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function read($sessionId)
     {
         /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model ;
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
          */
         $model = new $this->_model;
         $model = $model::findFirst(['session_id' => $sessionId]);
@@ -77,12 +76,12 @@ class Db extends Component implements AdapterInterface
      * @param string $data
      *
      * @return bool
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function write($sessionId, $data)
     {
         /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model ;
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
          */
         $model = new $this->_model;
 
@@ -98,12 +97,12 @@ class Db extends Component implements AdapterInterface
      * @param string $sessionId
      *
      * @return bool
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function destroy($sessionId)
     {
         /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model ;
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
          */
         $model = new $this->_model;
 
@@ -116,7 +115,7 @@ class Db extends Component implements AdapterInterface
      * @param int $ttl
      *
      * @return bool
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function gc($ttl)
     {
@@ -127,12 +126,12 @@ class Db extends Component implements AdapterInterface
 
     /**
      * @return void
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function clean()
     {
         /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model ;
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
          */
         $model = new $this->_model;
 
