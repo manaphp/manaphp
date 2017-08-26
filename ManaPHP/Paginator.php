@@ -13,11 +13,6 @@ use ManaPHP\Paginator\Exception as PaginatorException;
 class Paginator extends Component implements PaginatorInterface
 {
     /**
-     * @var array
-     */
-    public $items;
-
-    /**
      * @var int
      */
     public $count;
@@ -46,6 +41,11 @@ class Paginator extends Component implements PaginatorInterface
      * @var int
      */
     public $next;
+
+    /**
+     * @var array
+     */
+    public $items;
 
     /**
      * @var int
