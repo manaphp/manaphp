@@ -120,7 +120,6 @@ class Sqlite extends Db
      */
     public function getTables($schema = null)
     {
-        /** @noinspection SqlDialectInspection */
         $sql = "SELECT tbl_name FROM sqlite_master WHERE type = 'table' ORDER BY tbl_name";
         $tables = [];
         foreach ($this->fetchAll($sql, [], \PDO::FETCH_ASSOC) as $row) {
@@ -140,7 +139,6 @@ class Sqlite extends Db
     {
         $parts = explode('.', str_replace('[]`', '', $source));
 
-        /** @noinspection SqlDialectInspection */
         $sql = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master WHERE type='table' AND tbl_name='$parts[0]'";
 
         $r = $this->fetchOne($sql, [], \PDO::FETCH_NUM);
