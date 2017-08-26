@@ -32,7 +32,7 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
      * Add a model to take part of the query
      *
      * @param string|\ManaPHP\Db\Model\QueryInterface $model
-     * @param string                                   $alias
+     * @param string                                  $alias
      *
      * @return static
      */
@@ -42,9 +42,9 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
      * Adds a INNER join to the query
      *
      * @param string|\ManaPHP\Db\Model\QueryInterface $model
-     * @param string                                   $condition
-     * @param string                                   $alias
-     * @param string                                   $type
+     * @param string                                  $condition
+     * @param string                                  $alias
+     * @param string                                  $type
      *
      * @return static
      */
@@ -54,8 +54,8 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
      * Adds a INNER join to the query
      *
      * @param string|\ManaPHP\Db\Model\QueryInterface $model
-     * @param string                                   $condition
-     * @param string                                   $alias
+     * @param string                                  $condition
+     * @param string                                  $alias
      *
      * @return static
      */
@@ -65,8 +65,8 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
      * Adds a LEFT join to the query
      *
      * @param string|\ManaPHP\Db\Model\QueryInterface $model
-     * @param string                                   $condition
-     * @param string                                   $alias
+     * @param string                                  $condition
+     * @param string                                  $alias
      *
      * @return static
      */
@@ -76,8 +76,8 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
      * Adds a RIGHT join to the query
      *
      * @param string|\ManaPHP\Db\Model\QueryInterface $model
-     * @param string                                   $condition
-     * @param string                                   $alias
+     * @param string                                  $condition
+     * @param string                                  $alias
      *
      * @return static
      */

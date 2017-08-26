@@ -89,7 +89,9 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
                 if ($model instanceof Query) {
                     parent::join($model, $condition, $alias, $type);
                 } else {
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    /**
+                     * @var \ManaPHP\ModelInterface $model
+                     */
                     if (($source = $model::getSource($this)) === false) {
                         throw new QueryException('`:query` query table sharding failed',
                             ['query' => get_called_class(), 'context' => $this]);
