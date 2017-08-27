@@ -28,6 +28,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 $this->afterFetch();
             }
         }
+        $this->_dependencyInjector = Di::getDefault();
     }
 
     /**
@@ -36,7 +37,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param mixed $context
      *
      * @return string|false
-     * @throws \ManaPHP\Model\Exception
      */
     public static function getSource($context = null)
     {
@@ -75,7 +75,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return  static[]
-     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Model\Exception
      */
     public static function find($filters = [], $options = [], $fields = null)
@@ -102,7 +101,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        return $criteria->execute(true);
+        return $criteria->fetchAll(true);
     }
 
     /**
@@ -113,12 +112,25 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return  static[]
-     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Model\Exception
      */
     final public static function findAll($filters = [], $options = null, $fields = null)
     {
         return static::find($filters, $options, $fields);
+    }
+
+    /**
+     * alias of findFirst
+     *
+     * @param array        $filters
+     * @param string|array $fields
+     *
+     * @return false|static
+     * @throws \ManaPHP\Model\Exception
+     */
+    public static function findFirst($filters = [], $fields = null)
+    {
+        return static::findOne($filters, $fields);
     }
 
     /**
@@ -144,22 +156,15 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return static|false
-     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Model\Exception
      */
-    public static function findFirst($filters = [], $fields = null)
+    public static function findOne($filters = [], $fields = null)
     {
         if (is_scalar($filters)) {
-            return static::findById($filters, $fields);
+            $filters = [static::getPrimaryKey()[0] => $filters];
         }
 
-        $criteria = static::createCriteria()
-            ->select($fields ?: static::getFields())
-            ->where($filters)
-            ->limit(1);
-
-        $rs = $criteria->execute(true);
-        return isset($rs[0]) ? $rs[0] : false;
+        return static::createCriteria()->select($fields ?: static::getFields())->where($filters)->fetchOne(true);
     }
 
     /**
@@ -167,7 +172,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return static|false
-     * @throws \ManaPHP\Db\Query\Exception
      * @throws \ManaPHP\Model\Exception
      */
     public static function findById($id, $fields = null)
@@ -175,8 +179,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if (!is_scalar($id)) {
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
-        $rs = static::createCriteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey()[0], $id)->execute(true);
-        return isset($rs[0]) ? $rs[0] : false;
+
+        return static::createCriteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey()[0], $id)->fetchOne(true);
     }
 
     /**
@@ -198,11 +202,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 throw new ModelException('parameter is scalar, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/,
                     ['model' => get_called_class()]);
             }
-
-            return static::createCriteria()->where($primaryKeys[0], $filters)->exists();
-        } else {
-            return static::createCriteria()->where($filters)->exists();
+            $filters = [$primaryKeys[0] => $filters];
         }
+
+        return static::createCriteria()->where($filters)->exists();
     }
 
     /**
@@ -218,6 +221,157 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         return static::exists([static::getPrimaryKey()[0] => $id]);
+    }
+
+    /**
+     * Generate a SQL SELECT statement for an aggregate
+     *
+     * @param string $function
+     * @param string $alias
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return mixed
+     * @throws \ManaPHP\Model\Exception
+     */
+    protected static function _groupResult($function, $alias, $field, $filters)
+    {
+        return static::createCriteria()->aggregate([$alias => "$function($field)"])->where($filters)->fetchOne()[$alias];
+    }
+
+    /**
+     * Allows to count how many records match the specified conditions
+     *
+     * <code>
+     *
+     * //How many robots are there?
+     * $number = Robots::count();
+     * echo "There are ", $number, "\n";
+     *
+     * //How many mechanical robots are there?
+     * $number = Robots::count("type='mechanical'");
+     * echo "There are ", $number, " mechanical robots\n";
+     *
+     * </code>
+     *
+     * @param array  $filters
+     * @param string $field
+     *
+     * @return int
+     * @throws \ManaPHP\Model\Exception
+     */
+    public static function count($filters = null, $field = null)
+    {
+        $result = static::_groupResult('COUNT', 'row_count', $field ?: '*', $filters);
+        if (is_string($result)) {
+            $result = (int)$result;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Allows to calculate a summary on a column that match the specified conditions
+     *
+     * <code>
+     *
+     * //How much are all robots?
+     * $sum = Robots::sum(array('column' => 'price'));
+     * echo "The total price of robots is ", $sum, "\n";
+     *
+     * //How much are mechanical robots?
+     * $sum = Robots::sum(array("type='mechanical'", 'column' => 'price'));
+     * echo "The total price of mechanical robots is  ", $sum, "\n";
+     *
+     * </code>
+     *
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return int|float
+     * @throws \ManaPHP\Model\Exception
+     */
+    public static function sum($field, $filters = null)
+    {
+        return static::_groupResult('SUM', 'summary', $field, $filters);
+    }
+
+    /**
+     * Allows to get the max value of a column that match the specified conditions
+     *
+     * <code>
+     *
+     * //What is the max robot id?
+     * $id = Robots::max(array('column' => 'id'));
+     * echo "The max robot id is: ", $id, "\n";
+     *
+     * //What is the max id of mechanical robots?
+     * $sum = Robots::max(array("type='mechanical'", 'column' => 'id'));
+     * echo "The max robot id of mechanical robots is ", $id, "\n";
+     *
+     * </code>
+     *
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return int|float
+     * @throws \ManaPHP\Model\Exception
+     */
+    public static function max($field, $filters = null)
+    {
+        return static::_groupResult('MAX', 'maximum', $field, $filters);
+    }
+
+    /**
+     * Allows to get the min value of a column that match the specified conditions
+     *
+     * <code>
+     *
+     * //What is the min robot id?
+     * $id = Robots::min(array('column' => 'id'));
+     * echo "The min robot id is: ", $id;
+     *
+     * //What is the min id of mechanical robots?
+     * $sum = Robots::min(array("type='mechanical'", 'column' => 'id'));
+     * echo "The min robot id of mechanical robots is ", $id;
+     *
+     * </code>
+     *
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return int|float
+     * @throws \ManaPHP\Model\Exception
+     */
+    public static function min($field, $filters = null)
+    {
+        return static::_groupResult('MIN', 'minimum', $field, $filters);
+    }
+
+    /**
+     * Allows to calculate the average value on a column matching the specified conditions
+     *
+     * <code>
+     *
+     * //What's the average price of robots?
+     * $average = Robots::average(array('column' => 'price'));
+     * echo "The average price is ", $average, "\n";
+     *
+     * //What's the average price of mechanical robots?
+     * $average = Robots::average(array("type='mechanical'", 'column' => 'price'));
+     * echo "The average price of mechanical robots is ", $average, "\n";
+     *
+     * </code>
+     *
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return double
+     * @throws \ManaPHP\Model\Exception
+     */
+    public static function avg($field, $filters = null)
+    {
+        return (double)static::_groupResult('AVG', 'average', $field, $filters);
     }
 
     /**
@@ -335,7 +489,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, ['model' => get_class($this)]);
         }
 
-        static::updateAll($fieldValues, $conditions);
+        static::createCriteria()->where($conditions)->update($fieldValues);
 
         $this->_snapshot = $this->toArray();
 
@@ -369,8 +523,73 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
             $fieldValues[$field] = $data[$field];
         }
+        return static::createCriteria()->where(static::getPrimaryKey()[0], $id)->update($fieldValues);
+    }
 
-        return static::updateAll($fieldValues, [static::getPrimaryKey()[0] => $id]);
+    /**
+     * Checks if the current record already exists or not
+     *
+     * @return bool
+     */
+    protected function _exists()
+    {
+        $primaryKeys = static::getPrimaryKey();
+        if (count($primaryKeys) === 0) {
+            return false;
+        }
+
+        $conditions = [];
+
+        foreach ($primaryKeys as $field) {
+            if (!isset($this->{$field})) {
+                return false;
+            }
+            $conditions[$field] = $this->{$field};
+        }
+
+        if (is_array($this->_snapshot)) {
+            $primaryKeyEqual = true;
+            foreach ($primaryKeys as $field) {
+                if (!isset($this->_snapshot[$field]) || $this->_snapshot[$field] !== $this->{$field}) {
+                    $primaryKeyEqual = false;
+                }
+            }
+
+            if ($primaryKeyEqual) {
+                return true;
+            }
+        }
+
+        return static::createCriteria()->where($conditions)->forceUseMaster()->exists();
+    }
+
+    /**
+     * Inserts or updates a model instance. Returning true on success or false otherwise.
+     *
+     *<code>
+     *    //Creating a new robot
+     *    $robot = new Robots();
+     *    $robot->type = 'mechanical';
+     *    $robot->name = 'Boy';
+     *    $robot->year = 1952;
+     *    $robot->save();
+     *
+     *    //Updating a robot name
+     *    $robot = Robots::findFirst("id=100");
+     *    $robot->name = "Biomass";
+     *    $robot->save();
+     *</code>
+     *
+     * @return void
+     * @throws \ManaPHP\Model\Exception
+     */
+    public function save()
+    {
+        if ($this->_exists()) {
+            $this->update();
+        } else {
+            $this->create();
+        }
     }
 
     /**
@@ -393,24 +612,25 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $primaryKeys = static::getPrimaryKey();
 
         if (count($primaryKeys) === 0) {
-            throw new ModelException('`:model` model must define a primary key in order to perform delete operation'/**m0d826d10544f3a078*/, ['model' => get_class($this)]);
+            throw new ModelException('`:model` model must define a primary key in order to perform delete operation'/**m0d826d10544f3a078*/,
+                ['model' => get_class($this)]);
         }
 
         if ($this->_fireEventCancel('beforeDelete') === false) {
             throw new ModelException('`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, ['model' => get_class($this)]);
         }
 
-        $conditions = [];
+        $criteria = static::createCriteria();
         foreach ($primaryKeys as $field) {
             if (!isset($this->{$field})) {
                 throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:column` was not set'/**m01dec9cd3b69742a5*/,
                     ['model' => get_class($this), 'column' => $field]);
             }
 
-            $conditions[$field] = $this->{$field};
+            $criteria->where($field, $this->{$field});
         }
 
-        $r = static::deleteAll($conditions);
+        $r = $criteria->delete();
 
         $this->_fireEvent('afterDelete');
 
@@ -429,7 +649,30 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
 
-        return static::deleteAll([static::getPrimaryKey()[0] => $id]);
+        return static::createCriteria()->where(static::getPrimaryKey()[0], $id)->delete();
+    }
+
+    /**
+     * @param array $fieldValues
+     * @param array $filters
+     *
+     * @return int
+     * @throws \ManaPHP\Model\Exception
+     */
+    public static function updateAll($fieldValues, $filters)
+    {
+        return static::createCriteria()->where($filters)->update($fieldValues);
+    }
+
+    /**
+     * @param array $filters
+     *
+     * @return int
+     * @throws \ManaPHP\Model\Exception
+     */
+    public static function deleteAll($filters)
+    {
+        return static::createCriteria()->where($filters)->delete();
     }
 
     /**
