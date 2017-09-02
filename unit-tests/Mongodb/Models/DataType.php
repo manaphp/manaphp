@@ -1,0 +1,21 @@
+<?php
+namespace Mongodb\Models;
+
+use ManaPHP\Mongodb\Model;
+
+class DataType extends Model
+{
+    public static function getFieldTypes()
+    {
+        return [
+            'v_string' => 'string',
+            'v_int' => 'int',
+            'v_long' => 'long',
+            'v_float' => 'float',
+            'v_double' => 'double',
+            'v_objectid' => 'objectid',
+            'v_bool' => 'bool',
+            'v_date' => 'date'
+        ];
+    }
+}
