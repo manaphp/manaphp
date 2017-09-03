@@ -81,12 +81,25 @@ abstract class Db extends Component implements DbInterface
     {
         $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
         $this->_options[\PDO::ATTR_EMULATE_PREPARES] = false;
+    }
 
-        try {
-            $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
-        } catch (\PDOException $e) {
-            throw new DbException(':exception_message: :dsn', ['exception_message' => $e->getMessage(), 'dsn' => $this->_dsn]);
+    /**
+     * @return \PDO
+     * @throws \ManaPHP\Db\Exception
+     */
+    protected function _getPdo()
+    {
+        if ($this->_pdo === null) {
+            try {
+                $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
+                $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+                $this->fireEvent('db:afterConnect');
+            } catch (\PDOException $e) {
+                throw new DbException(':exception_message: :dsn', ['exception_message' => $e->getMessage(), 'dsn' => $this->_dsn]);
+            }
         }
+
+        return $this->_pdo;
     }
 
     /**
@@ -191,10 +204,10 @@ abstract class Db extends Component implements DbInterface
 
         try {
             if (count($bind) !== 0) {
-                $statement = $this->_pdo->prepare($this->_sql);
+                $statement = $this->_getPdo()->prepare($this->_sql);
                 $statement = $this->_executePrepared($statement, $bind);
             } else {
-                $statement = $this->_pdo->query($this->_sql);
+                $statement = $this->_getPdo()->query($this->_sql);
             }
 
             $this->_affectedRows = $statement->rowCount();
@@ -247,10 +260,10 @@ abstract class Db extends Component implements DbInterface
 
         try {
             if (count($bind) !== 0) {
-                $statement = $this->_executePrepared($this->_pdo->prepare($this->_sql), $bind);
+                $statement = $this->_executePrepared($this->_getPdo()->prepare($this->_sql), $bind);
                 $this->_affectedRows = $statement->rowCount();
             } else {
-                $this->_affectedRows = $this->_pdo->exec($this->_sql);
+                $this->_affectedRows = $this->_getPdo()->exec($this->_sql);
             }
         } catch (\PDOException $e) {
             throw new DbException(':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
@@ -516,14 +529,15 @@ abstract class Db extends Component implements DbInterface
      * @param int   $preservedStrLength
      *
      * @return int|string
+     * @throws \ManaPHP\Db\Exception
      */
     protected function _parseBindValue($value, $preservedStrLength)
     {
         if (is_string($value)) {
             if ($preservedStrLength > 0 && strlen($value) >= $preservedStrLength) {
-                return $this->_pdo->quote(substr($value, 0, $preservedStrLength) . '...');
+                return $this->_getPdo()->quote(substr($value, 0, $preservedStrLength) . '...');
             } else {
-                return $this->_pdo->quote($value);
+                return $this->_getPdo()->quote($value);
             }
         } elseif (is_int($value)) {
             return $value;
@@ -584,7 +598,7 @@ abstract class Db extends Component implements DbInterface
         if ($this->_transactionLevel === 0) {
             $this->fireEvent('db:beginTransaction');
 
-            if (!$this->_pdo->beginTransaction()) {
+            if (!$this->_getPdo()->beginTransaction()) {
                 throw new DbException('beginTransaction failed.'/**m009fd54f98ae8b9d4*/);
             }
         }
@@ -623,7 +637,7 @@ abstract class Db extends Component implements DbInterface
         if ($this->_transactionLevel === 0) {
             $this->fireEvent('db:rollbackTransaction');
 
-            if (!$this->_pdo->rollBack()) {
+            if (!$this->_getPdo()->rollBack()) {
                 throw new DbException('rollBack failed.'/**m0bf1d0a9da75bc040*/);
             }
         }
@@ -646,7 +660,7 @@ abstract class Db extends Component implements DbInterface
         if ($this->_transactionLevel === 0) {
             $this->fireEvent('db:commitTransaction');
 
-            if (!$this->_pdo->commit()) {
+            if (!$this->_getPdo()->commit()) {
                 throw new DbException('commit failed.'/**m0a74173017f21a198*/);
             }
         }
@@ -656,9 +670,10 @@ abstract class Db extends Component implements DbInterface
      * Returns insert id for the auto_increment column inserted in the last SQL statement
      *
      * @return int
+     * @throws \ManaPHP\Db\Exception
      */
     public function lastInsertId()
     {
-        return (int)$this->_pdo->lastInsertId();
+        return (int)$this->_getPdo()->lastInsertId();
     }
 }
