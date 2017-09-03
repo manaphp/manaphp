@@ -314,7 +314,6 @@ interface QueryInterface
     /**
      *
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function execute();
 
@@ -323,8 +322,6 @@ interface QueryInterface
      * @param int $page
      *
      * @return \ManaPHP\PaginatorInterface
-     * @throws \ManaPHP\Paginator\Exception
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function paginate($size, $page = null);
 
