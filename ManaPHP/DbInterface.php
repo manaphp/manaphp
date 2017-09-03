@@ -226,7 +226,6 @@ interface DbInterface
      * @param string $schema
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function getTables($schema = null);
 
