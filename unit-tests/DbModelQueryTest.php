@@ -525,34 +525,31 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(599, $query->execute());
     }
 
-    public function test_executeEx()
+    public function test_paginate()
     {
-        $rows = City::createQuery()->executeEx($totalRows);
-        $this->assertCount(600, $rows);
-        $this->assertEquals(600, $totalRows);
+        $pagination = City::createCriteria()->paginate(1000, 1);
+        $this->assertCount(600, $pagination->items);
+        $this->assertEquals(600, $pagination->count);
 
-        $rows = City::createQuery()->limit(100)->executeEx($totalRows);
-        $this->assertCount(100, $rows);
-        $this->assertEquals(600, $totalRows);
+        $pagination = City::createCriteria()->paginate(100, 1);
+        $this->assertCount(100, $pagination->items);
+        $this->assertEquals(600, $pagination->count);
 
-        $rows = City::createQuery()->limit(1000)->executeEx($totalRows);
-        $this->assertCount(600, $rows);
-        $this->assertEquals(600, $totalRows);
+        $pagination = City::createCriteria()->paginate(1000,1);
+        $this->assertCount(600, $pagination->items);
+        $this->assertEquals(600, $pagination->count);
 
-        $rows = City::createQuery()->limit(200, 100)->executeEx($totalRows);
-        $this->assertCount(200, $rows);
-        $this->assertEquals(600, $totalRows);
+        $pagination = City::createCriteria()->paginate(200, 2);
+        $this->assertCount(200, $pagination->items);
+        $this->assertEquals(600, $pagination->count);
 
-        $rows = City::createQuery()->limit(300, 1000)->executeEx($totalRows);
-        $this->assertCount(0, $rows);
-        $this->assertEquals(600, $totalRows);
+        $pagination = City::createCriteria()->paginate(30, 100);
+        $this->assertCount(0, $pagination->items);
+        $this->assertEquals(600, $pagination->count);
 
-        $rows = City::createQuery()
-            ->limit(10, 10)
-            ->groupBy('country_id')
-            ->executeEx($totalRows);
-        $this->assertCount(10, $rows);
-        $this->assertEquals(109, $totalRows);
+        $pagination = City::createCriteria()->groupBy('country_id')->paginate(10, 2);
+        $this->assertCount(10, $pagination->items);
+        $this->assertEquals(109, $pagination->count);
     }
 
     public function test_unionAll()
