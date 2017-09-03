@@ -89,8 +89,6 @@ interface FilesystemInterface
      * @param int    $mode
      *
      * @return void
-     *
-     * @throws \ManaPHP\Filesystem\Adapter\Exception
      */
     public function dirCreate($dir, $mode = 0755);
 
@@ -99,8 +97,6 @@ interface FilesystemInterface
      * @param int    $mode
      *
      * @return void
-     *
-     * @throws \ManaPHP\Filesystem\Adapter\Exception
      */
     public function dirReCreate($dir, $mode = 0755);
 
