@@ -35,7 +35,6 @@ interface StopwatchInterface
      * @param string|array $name
      *
      * @return float
-     * @throws \ManaPHP\Stopwatch\Exception
      */
     public function getElapsedTime($name);
 
@@ -43,7 +42,6 @@ interface StopwatchInterface
      * @param string $name
      *
      * @return int
-     * @throws \ManaPHP\Stopwatch\Exception
      */
     public function getUsedMemory($name);
 
