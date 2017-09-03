@@ -24,8 +24,6 @@ interface ZookeeperInterface
      * @param int    $flags
      *
      * @return static
-     * @throws \ZookeeperException
-     * @throws \ManaPHP\ZooKeeper\Exception
      */
     public function createNx($path, $value = '', $acl = null, $flags = null);
 
@@ -36,7 +34,6 @@ interface ZookeeperInterface
      * @param int    $version
      *
      * @return static
-     * @throws \ZookeeperException
      */
     public function delete($path, $version = -1);
 
@@ -90,7 +87,6 @@ interface ZookeeperInterface
      * @param string $path
      *
      * @return array
-     * @throws \ZookeeperException when connection not in connected status
      */
     public function getAcl($path);
 
@@ -102,7 +98,6 @@ interface ZookeeperInterface
      * @param array  $acl
      *
      * @return bool
-     * @throws \ZookeeperException when connection not in connected status
      */
     public function setAcl($path, $version, $acl);
 
@@ -111,7 +106,6 @@ interface ZookeeperInterface
      * (ie. last watcher state is ZOO_CONNECTED_STATE)
      *
      * @return int
-     * @throws \ZookeeperConnectionException when connection not in connected status
      */
     public function getSessionId();
 
@@ -121,8 +115,6 @@ interface ZookeeperInterface
      * @param bool         $onlyOnce
      *
      * @return static
-     * @throws \ZookeeperException
-     * @throws \ManaPHP\Zookeeper\Exception
      */
     public function watchData($paths, $callback, $onlyOnce = false);
 
@@ -132,8 +124,6 @@ interface ZookeeperInterface
      * @param bool         $onlyOnce
      *
      * @return static
-     * @throws \ZookeeperException
-     * @throws \ManaPHP\Zookeeper\Exception
      */
     public function watchChildren($paths, $callback, $onlyOnce = false);
 }
