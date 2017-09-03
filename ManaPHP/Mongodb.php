@@ -93,10 +93,12 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function insert($source, $document)
     {
+        $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+
         $bulk = new BulkWrite();
         $id = $bulk->insert($document);
-        $this->fireEvent('mongodb:beforeInsert');
-        $this->bulkWrite($source, $bulk);
+        $this->fireEvent('mongodb:beforeInsert', ['namespace' => $ns]);
+        $this->bulkWrite($ns, $bulk);
         $this->fireEvent('mongodb:afterInsert');
 
         return $id ?: $document['_id'];
@@ -113,13 +115,14 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function update($source, $document, $filter, $updateOptions = [])
     {
+        $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+
         $bulk = new BulkWrite();
         $updateOptions += ['multi' => true];
 
         $bulk->update($filter, ['$set' => $document], $updateOptions);
-
-        $this->fireEvent('mongodb:beforeUpdate');
-        $result = $this->bulkWrite($source, $bulk);
+        $this->fireEvent('mongodb:beforeUpdate', ['namespace' => $ns]);
+        $result = $this->bulkWrite($ns, $bulk);
         $this->fireEvent('mongodb:afterUpdate');
         return $result->getModifiedCount();
     }
@@ -134,10 +137,12 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function delete($source, $filter, $deleteOptions = [])
     {
+        $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+
         $bulk = new BulkWrite();
         $bulk->delete($filter, $deleteOptions);
-        $this->fireEvent('mongodb:beforeDelete');
-        $result = $this->bulkWrite($source, $bulk);
+        $this->fireEvent('mongodb:beforeDelete', ['namespace' => $ns]);
+        $result = $this->bulkWrite($ns, $bulk);
         $this->fireEvent('mongodb:afterDelete');
         return $result->getDeletedCount();
     }
@@ -152,15 +157,14 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function query($source, $filter = [], $queryOptions = [], $secondaryPreferred = true)
     {
-        $ns = strpos($source, '.') === false ? ($this->_defaultDb . '.' . $source) : $source;
-
+        $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
         if (is_bool($secondaryPreferred)) {
             $readPreference = $secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY;
         } else {
             $readPreference = $secondaryPreferred;
         }
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $this->fireEvent('mongodb:beforeQuery');
+        $this->fireEvent('mongodb:beforeQuery', ['namespace' => $ns]);
         $cursor = $this->_getManager()->executeQuery($ns, new Query($filter, $queryOptions), new ReadPreference($readPreference));
         $this->fireEvent('mongodb:afterQuery');
         $cursor->setTypeMap(['root' => 'array']);
@@ -176,8 +180,12 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function command($command, $db = null)
     {
+        $this->fireEvent('mongodb:beforeExecuteCommand', ['db' => $db ?: $this->_defaultDb, 'command' => $command]);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        return $this->_getManager()->executeCommand($db ?: $this->_defaultDb, $command);
+        $r = $this->_getManager()->executeCommand($db ?: $this->_defaultDb, $command);
+        $this->fireEvent('mongodb:afterExecuteCommand');
+
+        return $r;
     }
 
     /**
@@ -193,7 +201,7 @@ class Mongodb extends Component implements MongodbInterface
         $parts = explode('.', $source);
 
         try {
-            $this->fireEvent('mongodb:beforePipeline');
+            $this->fireEvent('mongodb:beforePipeline', ['namespace' => strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source)]);
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $cursor = $this->_getManager()->executeCommand(count($parts) === 2 ? $parts[0] : $this->_defaultDb, new Command([
                 'aggregate' => count($parts) === 2 ? $parts[1] : $parts[0],
