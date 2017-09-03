@@ -45,4 +45,13 @@ interface CacheInterface
      * @void
      */
     public function delete($key);
+
+    /**
+     * @param string   $key
+     * @param int      $ttl
+     * @param callable $callback
+     *
+     * @return mixed
+     */
+    public function remember($key, $ttl, $callback);
 }

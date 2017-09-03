@@ -100,4 +100,22 @@ class Cache extends Component implements CacheInterface
     {
         return $this->adapter->exists($this->_prefix . $key);
     }
+
+    /**
+     * @param string   $key
+     * @param int      $ttl
+     * @param callable $callback
+     *
+     * @return mixed
+     */
+    public function remember($key, $ttl, $callback)
+    {
+        $r = $this->get($key);
+        if ($r === false) {
+            $r = $callback();
+            $this->set($key, $r, $ttl);
+        }
+
+        return $r;
+    }
 }
