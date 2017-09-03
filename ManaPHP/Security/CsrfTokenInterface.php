@@ -20,7 +20,6 @@ interface CsrfTokenInterface
 
     /**
      * @return void
-     * @throws \ManaPHP\Security\CsrfToken\Exception
      */
     public function verify();
 }
