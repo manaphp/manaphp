@@ -16,7 +16,12 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @var string
      */
-    protected $_db;
+    protected $_dsn;
+
+    /**
+     * @var string
+     */
+    protected $_defaultDb;
 
     /**
      * @var \MongoDB\Driver\Manager;
@@ -38,11 +43,27 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function __construct($dsn = 'mongodb://127.0.0.1:27017/')
     {
-        $this->_manager = new Manager($dsn);
+        $this->_dsn = $dsn;
+
         $pos = strrpos($dsn, '/');
         if ($pos !== false) {
-            $this->_db = substr($dsn, $pos + 1);
+            $this->_defaultDb = substr($dsn, $pos + 1);
         }
+    }
+
+    /**
+     * @return \MongoDB\Driver\Manager
+     */
+    protected function _getManager()
+    {
+        if ($this->_manager === null) {
+            $this->fireEvent('mongodb:beforeConnect', ['dsn' => $this->_dsn]);
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $this->_manager = new Manager($this->_dsn);
+            $this->fireEvent('mongodb:afterConnect');
+        }
+
+        return $this->_manager;
     }
 
     /**
@@ -54,13 +75,13 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkWrite($source, $bulk)
     {
-        $ns = strpos($source, '.') === false ? ($this->_db . '.' . $source) : $source;
+        $ns = strpos($source, '.') === false ? ($this->_defaultDb . '.' . $source) : $source;
 
         if ($this->_writeConcern === null) {
             $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 1000);
         }
 
-        return $this->_manager->executeBulkWrite($ns, $bulk, $this->_writeConcern);
+        return $this->_getManager()->executeBulkWrite($ns, $bulk, $this->_writeConcern);
     }
 
     /**
@@ -74,7 +95,10 @@ class Mongodb extends Component implements MongodbInterface
     {
         $bulk = new BulkWrite();
         $id = $bulk->insert($document);
+        $this->fireEvent('mongodb:beforeInsert');
         $this->bulkWrite($source, $bulk);
+        $this->fireEvent('mongodb:afterInsert');
+
         return $id ?: $document['_id'];
     }
 
@@ -93,8 +117,10 @@ class Mongodb extends Component implements MongodbInterface
         $updateOptions += ['multi' => true];
 
         $bulk->update($filter, ['$set' => $document], $updateOptions);
-        $result = $this->bulkWrite($source, $bulk);
 
+        $this->fireEvent('mongodb:beforeUpdate');
+        $result = $this->bulkWrite($source, $bulk);
+        $this->fireEvent('mongodb:afterUpdate');
         return $result->getModifiedCount();
     }
 
@@ -110,7 +136,9 @@ class Mongodb extends Component implements MongodbInterface
     {
         $bulk = new BulkWrite();
         $bulk->delete($filter, $deleteOptions);
+        $this->fireEvent('mongodb:beforeDelete');
         $result = $this->bulkWrite($source, $bulk);
+        $this->fireEvent('mongodb:afterDelete');
         return $result->getDeletedCount();
     }
 
@@ -124,7 +152,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function query($source, $filter = [], $queryOptions = [], $secondaryPreferred = true)
     {
-        $ns = strpos($source, '.') === false ? ($this->_db . '.' . $source) : $source;
+        $ns = strpos($source, '.') === false ? ($this->_defaultDb . '.' . $source) : $source;
 
         if (is_bool($secondaryPreferred)) {
             $readPreference = $secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY;
@@ -132,7 +160,9 @@ class Mongodb extends Component implements MongodbInterface
             $readPreference = $secondaryPreferred;
         }
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $cursor = $this->_manager->executeQuery($ns, new Query($filter, $queryOptions), new ReadPreference($readPreference));
+        $this->fireEvent('mongodb:beforeQuery');
+        $cursor = $this->_getManager()->executeQuery($ns, new Query($filter, $queryOptions), new ReadPreference($readPreference));
+        $this->fireEvent('mongodb:afterQuery');
         $cursor->setTypeMap(['root' => 'array']);
         return $cursor->toArray();
     }
@@ -147,7 +177,7 @@ class Mongodb extends Component implements MongodbInterface
     public function command($command, $db = null)
     {
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        return $this->_manager->executeCommand($db ?: $this->_db, $command);
+        return $this->_getManager()->executeCommand($db ?: $this->_defaultDb, $command);
     }
 
     /**
@@ -163,11 +193,13 @@ class Mongodb extends Component implements MongodbInterface
         $parts = explode('.', $source);
 
         try {
+            $this->fireEvent('mongodb:beforePipeline');
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $cursor = $this->_manager->executeCommand(count($parts) === 2 ? $parts[0] : $this->_db, new Command([
+            $cursor = $this->_getManager()->executeCommand(count($parts) === 2 ? $parts[0] : $this->_defaultDb, new Command([
                 'aggregate' => count($parts) === 2 ? $parts[1] : $parts[0],
                 'pipeline' => $pipeline
             ]));
+            $this->fireEvent('mongodb:afterPipeline');
         } catch (RuntimeException $e) {
             throw new MongodbException('`:pipeline` pipeline for `:collection` collection failed: :msg',
                 ['pipeline' => json_encode($pipeline), 'collection' => $source, 'msg' => $e->getMessage()]);
@@ -191,12 +223,12 @@ class Mongodb extends Component implements MongodbInterface
     public function truncateTable($source)
     {
         $parts = explode('.', $source);
-        $db = count($parts) === 2 ? $parts[1] : $this->_db;
+        $db = count($parts) === 2 ? $parts[1] : $this->_defaultDb;
         $collection = count($parts) === 2 ? $parts[1] : $parts[0];
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         try {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $cursor = $this->_manager->executeCommand($db, new Command(['drop' => $collection]), new ReadPreference(ReadPreference::RP_PRIMARY));
+            $cursor = $this->_getManager()->executeCommand($db, new Command(['drop' => $collection]), new ReadPreference(ReadPreference::RP_PRIMARY));
         } /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */ catch (RuntimeException $e) {
             if ($e->getMessage() === 'ns not found') {
                 return $this;
