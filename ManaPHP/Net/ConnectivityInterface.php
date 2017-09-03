@@ -14,7 +14,6 @@ interface ConnectivityInterface
      * @param float $time
      *
      * @return bool
-     * @throws \ManaPHP\Net\Connectivity\Exception
      */
     public function wait($urls, $time = 0.1);
 }
