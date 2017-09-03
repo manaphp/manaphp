@@ -146,12 +146,9 @@ class Component implements ComponentInterface
      */
     public function __debugInfo()
     {
-        $defaultDi = Di::getDefault();
-
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-
-            if ($v === $defaultDi) {
+            if ($k === '_dependencyInjector' && ($v === null || $v === Di::getDefault())) {
                 continue;
             }
 
