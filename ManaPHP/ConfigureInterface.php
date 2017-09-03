@@ -27,7 +27,6 @@ interface ConfigureInterface
      * @param string $mode
      *
      * @return static
-     * @throws \ManaPHP\Configure\Exception
      */
     public function load($file, $mode = null);
 }
