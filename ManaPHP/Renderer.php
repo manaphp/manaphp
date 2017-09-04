@@ -99,6 +99,7 @@ class Renderer extends Component implements RendererInterface
                     $content = null;
                 } else {
                     ob_start();
+                    ob_implicit_flush(false);
                     try {
                         $engine->render($file, $vars);
                     } catch (\Exception $e) {
@@ -189,6 +190,7 @@ class Renderer extends Component implements RendererInterface
     {
         if ($default === null) {
             ob_start();
+            ob_implicit_flush(false);
             $this->_sectionStack[] = $section;
         } else {
             $this->_sections[$section] = $default;
