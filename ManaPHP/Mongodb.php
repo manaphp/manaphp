@@ -58,7 +58,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function ping()
     {
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = $this->_manager ? 0 : 1; $i < 2; $i++) {
             try {
                 $cursor = $this->_getManager()->executeCommand('admin', new Command(['ping' => 1]));
                 $cursor->setTypeMap(['root' => 'array']);
@@ -68,7 +68,6 @@ class Mongodb extends Component implements MongodbInterface
                 }
             } catch (\MongoDB\Driver\Exception\ConnectionTimeoutException $e) {
                 $this->_manager = null;
-                continue;
             }
         }
 
