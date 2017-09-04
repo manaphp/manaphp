@@ -52,6 +52,30 @@ class Mongodb extends Component implements MongodbInterface
     }
 
     /**
+     * Pings a server connection, or tries to reconnect if the connection has gone down
+     *
+     * @return bool
+     */
+    public function ping()
+    {
+        for ($i = 0; $i < 2; $i++) {
+            try {
+                $cursor = $this->_getManager()->executeCommand('admin', new Command(['ping' => 1]));
+                $cursor->setTypeMap(['root' => 'array']);
+                $r = $cursor->toArray()[0];
+                if ($r['ok']) {
+                    return true;
+                }
+            } catch (\MongoDB\Driver\Exception\ConnectionTimeoutException $e) {
+                $this->_manager = null;
+                continue;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return \MongoDB\Driver\Manager
      */
     protected function _getManager()
