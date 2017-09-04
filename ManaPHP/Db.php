@@ -695,4 +695,9 @@ abstract class Db extends Component implements DbInterface
     {
         return (int)$this->_getPdo()->lastInsertId();
     }
+
+    public function close()
+    {
+        $this->_pdo = null;
+    }
 }

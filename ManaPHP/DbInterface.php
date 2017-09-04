@@ -256,4 +256,6 @@ interface DbInterface
      * @return string
      */
     public function replaceQuoteCharacters($sql);
+
+    public function close();
 }
