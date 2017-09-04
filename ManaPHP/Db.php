@@ -103,6 +103,25 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
+     * Pings a server connection, or tries to reconnect if the connection has gone down
+     *
+     * @return bool
+     */
+    public function ping()
+    {
+        for ($i = $this->_pdo ? 0 : 1; $i < 2; $i++) {
+            try {
+                $this->_getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+                return true;
+            } catch (\Exception $e) {
+                $this->_pdo = null;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return \ManaPHP\DbInterface
      */
     public function getMasterConnection()

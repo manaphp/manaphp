@@ -10,6 +10,13 @@ namespace ManaPHP;
 interface DbInterface
 {
     /**
+     * Pings a server connection, or tries to reconnect if the connection has gone down
+     *
+     * @return bool
+     */
+    public function ping();
+
+    /**
      * @return \ManaPHP\DbInterface
      */
     public function getMasterConnection();
