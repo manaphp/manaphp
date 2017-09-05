@@ -505,7 +505,7 @@ class Criteria extends Component implements CriteriaInterface
                 $options['limit'] = $this->_limit;
             }
 
-            return $db->query($source, $this->_filters ? ['$and' => $this->_filters] : [], $options, !$this->_forceUseMaster);
+            $r = $db->query($source, $this->_filters ? ['$and' => $this->_filters] : [], $options, !$this->_forceUseMaster);
         } else {
             $pipeline = [];
             if (count($this->_filters) !== 0) {
@@ -528,21 +528,31 @@ class Criteria extends Component implements CriteriaInterface
 
             $r = $db->pipeline($source, $pipeline);
 
-            if ($this->_group === null) {
-                return $r;
-            }
-
-            $rows = [];
-            foreach ($r as $k => $v) {
-                if ($v['_id'] !== null) {
-                    $v += $v['_id'];
+            if ($this->_group !== null) {
+                foreach ($r as $k => $v) {
+                    if ($v['_id'] !== null) {
+                        $v += $v['_id'];
+                    }
+                    unset($v['_id']);
+                    $r[$k] = $v;
                 }
-                unset($v['_id']);
-                $rows[$k] = $v;
             }
-
-            return $rows;
         }
+
+        $rows = [];
+        $index = $this->_index;
+
+        foreach ($r as $v) {
+            if ($index === null) {
+                $rows[] = $v;
+            } elseif (is_scalar($index)) {
+                $rows[$v[$index]] = $v;
+            } else {
+                $rows[$index($v)] = $v;
+            }
+        }
+
+        return $rows;
     }
 
     /**
@@ -682,17 +692,12 @@ class Criteria extends Component implements CriteriaInterface
     public function fetchAll()
     {
         $rows = [];
-        $index = $this->_index;
+
         foreach ($this->execute() as $k => $document) {
-            $model = new $this->_modelName($document);
-            if ($index === null) {
-                $rows[] = $model;
-            } elseif (is_scalar($index)) {
-                $rows[$document[$index]] = $model;
-            } else {
-                $rows[$index($document)] = $model;
-            }
+            $rows[$k] = new $this->_modelName($document);
+
         }
+
         return $rows;
     }
 
