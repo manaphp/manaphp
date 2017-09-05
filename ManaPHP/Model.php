@@ -41,7 +41,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function getSource($context = null)
     {
         $modelName = get_called_class();
-        return Text::underscore(Text::contains($modelName, '\\') ? substr($modelName, strrpos($modelName, '\\') + 1) : $modelName);
+        return Text::underscore(($pos = strrpos($modelName, '\\')) === false ? $modelName : substr($modelName, $pos + 1));
     }
 
     /**
