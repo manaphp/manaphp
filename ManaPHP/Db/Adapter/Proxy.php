@@ -73,6 +73,15 @@ class Proxy extends Component implements DbInterface
         $this->_slaves = $slaves;
     }
 
+    public function ping()
+    {
+        if ($this->_currentConnection !== null) {
+            return $this->_currentConnection->ping();
+        } else {
+            return true;
+        }
+    }
+
     /**
      * @param array $ar
      *
@@ -327,6 +336,17 @@ class Proxy extends Component implements DbInterface
             return $this->_masterConnection->replaceQuoteCharacters($sql);
         } else {
             return $this->getSlaveConnection()->replaceQuoteCharacters($sql);
+        }
+    }
+
+    public function close()
+    {
+        if ($this->_masterConnection !== null) {
+            $this->_masterConnection->close();
+        }
+
+        if ($this->_slaveConnection !== null) {
+            $this->_slaveConnection->close();
         }
     }
 }
