@@ -506,6 +506,17 @@ class Criteria extends Component implements CriteriaInterface
             }
 
             $r = $db->query($source, $this->_filters ? ['$and' => $this->_filters] : [], $options, !$this->_forceUseMaster);
+            if ($this->_index === null) {
+                return $r;
+            } else {
+                $index = $this->_index;
+                $rows = [];
+                foreach ($r as $v) {
+                    $rows[is_scalar($index) ? $v[$index] : $index($v)] = $v;
+                }
+
+                return $rows;
+            }
         } else {
             $pipeline = [];
             if (count($this->_filters) !== 0) {
@@ -537,22 +548,18 @@ class Criteria extends Component implements CriteriaInterface
                     $r[$k] = $v;
                 }
             }
-        }
-
-        $rows = [];
-        $index = $this->_index;
-
-        foreach ($r as $v) {
-            if ($index === null) {
-                $rows[] = $v;
-            } elseif (is_scalar($index)) {
-                $rows[$v[$index]] = $v;
+            if ($this->_index === null) {
+                return $r;
             } else {
-                $rows[$index($v)] = $v;
+                $index = $this->_index;
+                $rows = [];
+                foreach ($r as $v) {
+                    $rows[is_scalar($index) ? $v[$index] : $index($v)] = $v;
+                }
+
+                return $rows;
             }
         }
-
-        return $rows;
     }
 
     /**
