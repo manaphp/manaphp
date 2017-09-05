@@ -69,7 +69,7 @@ class Criteria extends Component implements CriteriaInterface
     /**
      * @param array $expr
      *
-     * @return static
+     * @return array
      */
     public function aggregate($expr)
     {
@@ -77,7 +77,7 @@ class Criteria extends Component implements CriteriaInterface
 
         $this->_query->aggregate($expr);
 
-        return $this;
+        return $this->_replaceModelInfo()->_query->execute();
     }
 
     /**

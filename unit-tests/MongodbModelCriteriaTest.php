@@ -18,10 +18,10 @@ class MongodbModelCriteriaTest extends TestCase
     public function test_construct()
     {
         $document = City::createCriteria()->fetchOne();
-        $this->assertEquals(['_id', 'city_id', 'city', 'country_id', 'last_update'], array_keys($document));
+        $this->assertEquals(['_id', 'city_id', 'city', 'country_id', 'last_update'], array_keys($document->toArray()));
 
         $document = City::createCriteria(['city_id', 'city'])->fetchOne();
-        $this->assertEquals(['_id', 'city_id', 'city'], array_keys($document));
+        $this->assertEquals(['_id', 'city_id', 'city'], array_keys(array_filter($document->toArray())));
     }
 
     public function test_distinctField()
@@ -34,96 +34,99 @@ class MongodbModelCriteriaTest extends TestCase
     {
         $documents = City::createCriteria()->limit(1)->fetchAll();
         $this->assertCount(1, $documents);
-        $this->assertEquals(['_id', 'city_id', 'city', 'country_id', 'last_update'], array_keys($documents[0]));
+        $this->assertEquals(['_id', 'city_id', 'city', 'country_id', 'last_update'], array_keys($documents[0]->toArray()));
 
         $documents = City::createCriteria()->select('_id, city_id, city')->limit(1)->fetchAll();
         $this->assertCount(1, $documents);
-        $this->assertEquals(['_id', 'city_id', 'city'], array_keys($documents[0]));
+        $this->assertEquals(['_id', 'city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
 
         $documents = City::createCriteria()->select(['_id', 'city_id', 'city'])->limit(1)->fetchAll();
         $this->assertCount(1, $documents);
-        $this->assertEquals(['_id', 'city_id', 'city'], array_keys($documents[0]));
+        $this->assertEquals(['_id', 'city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
     }
 
     public function test_aggregate()
     {
-        $documents = City::createCriteria()->aggregate(['max' => 'MAX(city_id)'])->fetchOne();
-        $this->assertEquals(600, $documents['max']);
+        $documents = City::createCriteria()->aggregate(['max' => 'MAX(city_id)']);
+        $this->assertEquals(600, $documents[0]['max']);
 
-        $documents = City::createCriteria()->aggregate(['min' => 'MIN(city_id)'])->fetchOne();
-        $this->assertEquals(1, $documents['min']);
+        $documents = City::createCriteria()->aggregate(['min' => 'MIN(city_id)']);
+        $this->assertEquals(1, $documents[0]['min']);
 
-        $documents = City::createCriteria()->aggregate(['avg' => 'AVG(city_id)'])->fetchOne();
-        $this->assertEquals(300.5, $documents['avg']);
+        $documents = City::createCriteria()->aggregate(['avg' => 'AVG(city_id)']);
+        $this->assertEquals(300.5, $documents[0]['avg']);
 
-        $documents = City::createCriteria()->aggregate(['sum' => 'SUM(city_id)'])->fetchOne();
-        $this->assertEquals(180300, $documents['sum']);
+        $documents = City::createCriteria()->aggregate(['sum' => 'SUM(city_id)']);
+        $this->assertEquals(180300, $documents[0]['sum']);
 
-        $documents = City::createCriteria()->aggregate(['avg' => 'AVG(city_id)'])->fetchOne();
-        $this->assertEquals(300.5, $documents['avg']);
+        $documents = City::createCriteria()->aggregate(['avg' => 'AVG(city_id)']);
+        $this->assertEquals(300.5, $documents[0]['avg']);
 
-        $documents = City::createCriteria()->aggregate(['sum' => 'SUM(city_id)', 'avg' => 'AVG(city_id)'])->fetchOne();
-        $this->assertEquals(180300, $documents['sum']);
-        $this->assertEquals(300.5, $documents['avg']);
+        $documents = City::createCriteria()->aggregate(['sum' => 'SUM(city_id)', 'avg' => 'AVG(city_id)']);
+        $this->assertEquals(180300, $documents[0]['sum']);
+        $this->assertEquals(300.5, $documents[0]['avg']);
 
-        $documents = City::createCriteria()->aggregate(['max' => 'MAX(city_id+country_id)'])->fetchOne();
-        $this->assertEquals(691, $documents['max']);
+        $documents = City::createCriteria()->aggregate(['max' => 'MAX(city_id+country_id)']);
+        $this->assertEquals(691, $documents[0]['max']);
 
-        $documents = City::createCriteria()->aggregate(['max' => 'MAX(city_id + country_id)'])->fetchOne();
-        $this->assertEquals(691, $documents['max']);
+        $documents = City::createCriteria()->aggregate(['max' => 'MAX(city_id + country_id)']);
+        $this->assertEquals(691, $documents[0]['max']);
 
-        $documents = City::createCriteria()->aggregate(['max' => ['$max' => ['$add' => ['$city_id', '$country_id']]]])->fetchOne();
-        $this->assertEquals(691, $documents['max']);
+        $documents = City::createCriteria()->aggregate(['max' => ['$max' => ['$add' => ['$city_id', '$country_id']]]]);
+        $this->assertEquals(691, $documents[0]['max']);
 
-        $documents = City::createCriteria()->aggregate(['sum' => 'sum(city_id*country_id)'])->fetchOne();
-        $this->assertEquals(10003864, $documents['sum']);
+        $documents = City::createCriteria()->aggregate(['sum' => 'sum(city_id*country_id)']);
+        $this->assertEquals(10003864, $documents[0]['sum']);
 
-        $documents = City::createCriteria()->aggregate(['sum' => 'SUM(city_id*2.5)'])->fetchOne();
-        $this->assertEquals(450750, $documents['sum']);
+        $documents = City::createCriteria()->aggregate(['sum' => 'SUM(city_id*2.5)']);
+        $this->assertEquals(450750, $documents[0]['sum']);
     }
 
     public function test_where()
     {
+        /**
+         * @var City $document
+         */
         $document = City::createCriteria()->where('city_id', 2)->fetchOne();
-        $this->assertEquals(2, $document['city_id']);
+        $this->assertEquals(2, $document->city_id);
 
         $document = City::createCriteria()->where(['city_id' => 2])->fetchOne();
-        $this->assertEquals(2, $document['city_id']);
+        $this->assertEquals(2, $document->city_id);
 
         $documents = City::createCriteria()->where('city_id', -2)->fetchAll();
         $this->assertEmpty($documents);
 
         $documents = City::createCriteria()->where('city_id=', 10)->fetchAll();
         $this->assertCount(1, $documents);
-        $this->assertEquals(10, $documents[0]['city_id']);
+        $this->assertEquals(10, $documents[0]->city_id);
 
         $documents = City::createCriteria()->where('city_id>', 10)->fetchAll();
         $this->assertCount(590, $documents);
-        $this->assertEquals(11, $documents[0]['city_id']);
+        $this->assertEquals(11, $documents[0]->city_id);
 
         $documents = City::createCriteria()->where('city_id>=', 10)->fetchAll();
         $this->assertCount(591, $documents);
-        $this->assertEquals(10, $documents[0]['city_id']);
+        $this->assertEquals(10, $documents[0]->city_id);
 
         $documents = City::createCriteria()->where('city_id<', 10)->fetchAll();
         $this->assertCount(9, $documents);
-        $this->assertEquals(1, $documents[0]['city_id']);
+        $this->assertEquals(1, $documents[0]->city_id);
 
         $documents = City::createCriteria()->where('city_id<=', 10)->fetchAll();
         $this->assertCount(10, $documents);
-        $this->assertEquals(1, $documents[0]['city_id']);
+        $this->assertEquals(1, $documents[0]->city_id);
 
         $documents = City::createCriteria()->where('city_id!=', 10)->fetchAll();
         $this->assertCount(599, $documents);
-        $this->assertEquals(1, $documents[0]['city_id']);
+        $this->assertEquals(1, $documents[0]->city_id);
 
         $documents = City::createCriteria()->where('city_id<>', 10)->fetchAll();
         $this->assertCount(599, $documents);
-        $this->assertEquals(1, $documents[0]['city_id']);
+        $this->assertEquals(1, $documents[0]->city_id);
 
         $documents = City::createCriteria()->where('city_id', ['$ne' => 10])->fetchAll();
         $this->assertCount(599, $documents);
-        $this->assertEquals(1, $documents[0]['city_id']);
+        $this->assertEquals(1, $documents[0]->city_id);
     }
 
     public function test_betweenWhere()
@@ -168,25 +171,25 @@ class MongodbModelCriteriaTest extends TestCase
     public function test_orderBy()
     {
         $documents = City::createCriteria()->orderBy('city_id')->limit(10, 100)->fetchAll();
-        $this->assertEquals(101, $documents[0]['city_id']);
+        $this->assertEquals(101, $documents[0]->city_id);
 
         $documents = City::createCriteria()->orderBy('city_id asc')->limit(10, 100)->fetchAll();
-        $this->assertEquals(101, $documents[0]['city_id']);
+        $this->assertEquals(101, $documents[0]->city_id);
 
         $documents = City::createCriteria()->orderBy('city_id desc')->limit(10, 100)->fetchAll();
-        $this->assertEquals(500, $documents[0]['city_id']);
+        $this->assertEquals(500, $documents[0]->city_id);
 
         $documents = City::createCriteria()->orderBy('country_id desc, city_id desc')->limit(10, 100)->fetchAll();
-        $this->assertEquals(526, $documents[0]['city_id']);
+        $this->assertEquals(526, $documents[0]->city_id);
 
         $documents = City::createCriteria()->orderBy(['city_id' => SORT_ASC])->limit(10, 100)->fetchAll();
-        $this->assertEquals(101, $documents[0]['city_id']);
+        $this->assertEquals(101, $documents[0]->city_id);
 
         $documents = City::createCriteria()->orderBy(['city_id' => SORT_DESC])->limit(10, 100)->fetchAll();
-        $this->assertEquals(500, $documents[0]['city_id']);
+        $this->assertEquals(500, $documents[0]->city_id);
 
         $documents = City::createCriteria()->orderBy(['city_id' => 'desc'])->limit(10, 100)->fetchAll();
-        $this->assertEquals(500, $documents[0]['city_id']);
+        $this->assertEquals(500, $documents[0]->city_id);
     }
 
     public function test_limit()
@@ -199,7 +202,7 @@ class MongodbModelCriteriaTest extends TestCase
     {
         $documents = City::createCriteria()->page(10, 2)->fetchAll();
         $this->assertCount(10, $documents);
-        $this->assertEquals(11, $documents[0]['city_id']);
+        $this->assertEquals(11, $documents[0]->city_id);
     }
 
 //    public function test_groupBy(){
@@ -209,29 +212,29 @@ class MongodbModelCriteriaTest extends TestCase
 
     public function test_groupBy()
     {
-        $documents = City::createCriteria()->aggregate(['sum' => 'SUM(city_id)'])->groupBy('country_id')->fetchAll();
+        $documents = City::createCriteria()->groupBy('country_id')->aggregate(['sum' => 'SUM(city_id)']);
         $this->assertCount(109, $documents);
 
-        $documents = City::createCriteria()->aggregate(['sum' => 'SUM(city_id)'])->groupBy('country_id, city_id')->fetchAll();
+        $documents = City::createCriteria()->groupBy('country_id, city_id')->aggregate(['sum' => 'SUM(city_id)']);
         $this->assertCount(600, $documents);
 
-        $documents = City::createCriteria()->where(['country_id' => 24])->aggregate(['sum' => 'SUM(city_id)'])->groupBy('country_id')->fetchAll();
+        $documents = City::createCriteria()->where(['country_id' => 24])->groupBy('country_id')->aggregate(['sum' => 'SUM(city_id)']);
         $this->assertCount(1, $documents);
 
-        $documents = City::createCriteria()->aggregate(['count' => 'COUNT(*)'])->groupBy(['city' => ['$substr' => ['$city', 0, 1]]])->orderBy('count')->fetchAll();
+        $documents = City::createCriteria()->groupBy(['city' => ['$substr' => ['$city', 0, 1]]])->orderBy('count')->aggregate(['count' => 'COUNT(*)']);
         $this->assertCount(30, $documents);
 
-        $documents = City::createCriteria()->aggregate(['count' => 'COUNT(*)'])->groupBy('substr(city, 1, 1)')->orderBy('count')->fetchAll();
+        $documents = City::createCriteria()->groupBy('substr(city, 1, 1)')->orderBy('count')->aggregate(['count' => 'COUNT(*)']);
         $this->assertCount(30, $documents);
 
-        $documents = City::createCriteria()->aggregate(['count' => 'COUNT(*)'])->groupBy('substr(city, 1, 1)')->orderBy('count')->indexBy('city')->fetchAll();
+        $documents = City::createCriteria()->groupBy('substr(city, 1, 1)')->orderBy('count')->indexBy('city')->aggregate(['count' => 'COUNT(*)']);
         $this->assertCount(30, $documents);
         $this->assertArrayHasKey('s', $documents);
     }
 
     public function test_indexBy()
     {
-        $this->assertArrayHasKey('s', City::createCriteria()->aggregate(['count' => 'COUNT(*)'])->groupBy('substr(city, 1, 1)')->indexBy('city')->fetchAll());
+        $this->assertArrayHasKey('s', City::createCriteria()->groupBy('substr(city, 1, 1)')->indexBy('city')->aggregate(['count' => 'COUNT(*)']));
         $this->assertArrayHasKey(600, City::createCriteria()->indexBy('city_id')->fetchAll());
     }
 }

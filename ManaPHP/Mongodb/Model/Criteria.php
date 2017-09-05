@@ -151,7 +151,7 @@ class Criteria extends Component implements CriteriaInterface
     /**
      * @param array $expr
      *
-     * @return static
+     * @return array
      * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
     public function aggregate($expr)
@@ -188,7 +188,7 @@ class Criteria extends Component implements CriteriaInterface
             }
         }
 
-        return $this;
+        return $this->execute();
     }
 
     /**

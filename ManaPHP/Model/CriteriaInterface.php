@@ -13,7 +13,7 @@ interface CriteriaInterface
     /**
      * @param array $expr
      *
-     * @return static
+     * @return array
      */
     public function aggregate($expr);
 

@@ -236,7 +236,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     protected static function _groupResult($function, $alias, $field, $filters)
     {
-        return static::createCriteria()->aggregate([$alias => "$function($field)"])->where($filters)->fetchOne()[$alias];
+        return static::createCriteria()->where($filters)->aggregate([$alias => "$function($field)"])[0][$alias];
     }
 
     /**
