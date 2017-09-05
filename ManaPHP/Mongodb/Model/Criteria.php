@@ -684,13 +684,13 @@ class Criteria extends Component implements CriteriaInterface
         $rows = [];
         $index = $this->_index;
         foreach ($this->execute() as $k => $document) {
-            $value = new $this->_modelName($document);
+            $model = new $this->_modelName($document);
             if ($index === null) {
-                $rows[] = $value;
+                $rows[] = $model;
             } elseif (is_scalar($index)) {
-                $rows[$document[$index]] = $value;
+                $rows[$document[$index]] = $model;
             } else {
-                $rows[$index($document)] = $document;
+                $rows[$index($document)] = $model;
             }
         }
         return $rows;
