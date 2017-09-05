@@ -101,7 +101,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        return $criteria->fetchAll(true);
+        return $criteria->fetchAll();
     }
 
     /**
@@ -164,7 +164,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $filters = [static::getPrimaryKey()[0] => $filters];
         }
 
-        return static::createCriteria()->select($fields ?: static::getFields())->where($filters)->fetchOne(true);
+        return static::createCriteria()->select($fields ?: static::getFields())->where($filters)->fetchOne();
     }
 
     /**
@@ -180,7 +180,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
 
-        return static::createCriteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey()[0], $id)->fetchOne(true);
+        return static::createCriteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey()[0], $id)->fetchOne();
     }
 
     /**

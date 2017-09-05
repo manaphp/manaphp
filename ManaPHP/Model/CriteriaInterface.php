@@ -183,18 +183,14 @@ interface CriteriaInterface
     public function exists();
 
     /**
-     * @param bool $asModel
-     *
-     * @return array|\ManaPHP\ModelInterface|false
+     * @return \ManaPHP\ModelInterface|false
      */
-    public function fetchOne($asModel = false);
+    public function fetchOne();
 
     /**
-     * @param bool $asModel
-     *
      * @return array|\ManaPHP\ModelInterface[]
      */
-    public function fetchAll($asModel = false);
+    public function fetchAll();
 
     /**
      * @param $fieldValues

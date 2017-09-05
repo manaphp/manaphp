@@ -667,31 +667,24 @@ class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @param bool $asModel
-     *
-     * @return array|\ManaPHP\ModelInterface|false
+     * @return \ManaPHP\Mongodb\Model|false
      */
-    public function fetchOne($asModel = false)
+    public function fetchOne()
     {
-        $r = $this->limit(1)->fetchAll($asModel);
+        $r = $this->limit(1)->fetchAll();
         return isset($r[0]) ? $r[0] : false;
     }
 
     /**
-     * @param bool $asModel
      *
      * @return array|\ManaPHP\Mongodb\Model[]
      */
-    public function fetchAll($asModel = false)
+    public function fetchAll()
     {
-        if (!$asModel && $this->_index === null) {
-            return $this->execute();
-        }
-
         $rows = [];
         $index = $this->_index;
         foreach ($this->execute() as $k => $document) {
-            $value = $asModel ? new $this->_modelName($document) : $document;
+            $value = new $this->_modelName($document);
             if ($index === null) {
                 $rows[] = $value;
             } elseif (is_scalar($index)) {

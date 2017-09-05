@@ -374,33 +374,25 @@ class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @param bool $asModel
-     *
-     * @return array|\ManaPHP\ModelInterface|false
+     * @return array|\ManaPHP\Db\Model|false
      */
-    public function fetchOne($asModel = false)
+    public function fetchOne()
     {
-        $r = $this->fetchAll($asModel);
+        $r = $this->fetchAll();
         return isset($r[0]) ? $r[0] : false;
     }
 
     /**
-     * @param bool $asModel
-     *
      * @return array|\ManaPHP\Db\Model[]
      */
-    public function fetchAll($asModel = false)
+    public function fetchAll()
     {
         $rs = $this->_replaceModelInfo()->_query->execute();
-        if ($asModel) {
-            $models = [];
-            foreach ($rs as $k => $result) {
-                $models[$k] = new $this->_modelName($result);
-            }
-            return $models;
-        } else {
-            return $rs;
+        $models = [];
+        foreach ($rs as $k => $result) {
+            $models[$k] = new $this->_modelName($result);
         }
+        return $models;
     }
 
     /**
