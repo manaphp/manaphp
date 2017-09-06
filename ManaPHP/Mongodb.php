@@ -5,6 +5,7 @@ namespace ManaPHP;
 use ManaPHP\Mongodb\Exception as MongodbException;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
+use MongoDB\Driver\Exception\ConnectionTimeoutException;
 use MongoDB\Driver\Exception\RuntimeException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
@@ -60,13 +61,14 @@ class Mongodb extends Component implements MongodbInterface
     {
         for ($i = $this->_manager ? 0 : 1; $i < 2; $i++) {
             try {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $cursor = $this->_getManager()->executeCommand('admin', new Command(['ping' => 1]));
                 $cursor->setTypeMap(['root' => 'array']);
                 $r = $cursor->toArray()[0];
                 if ($r['ok']) {
                     return true;
                 }
-            } catch (\MongoDB\Driver\Exception\ConnectionTimeoutException $e) {
+            } catch (ConnectionTimeoutException $e) {
                 $this->_manager = null;
             }
         }
@@ -188,6 +190,7 @@ class Mongodb extends Component implements MongodbInterface
         }
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $this->fireEvent('mongodb:beforeQuery', ['namespace' => $ns]);
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $cursor = $this->_getManager()->executeQuery($ns, new Query($filter, $queryOptions), new ReadPreference($readPreference));
         $this->fireEvent('mongodb:afterQuery');
         $cursor->setTypeMap(['root' => 'array']);
