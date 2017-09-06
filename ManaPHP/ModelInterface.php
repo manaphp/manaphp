@@ -277,4 +277,20 @@ interface ModelInterface
      * @return bool
      */
     public function hasChanged($fields);
+
+    /**
+     * @param string       $class
+     * @param array|string $link
+     *
+     * @return \ManaPHP\Model\CriteriaInterface
+     */
+    public function hasOne($class, $link);
+
+    /**
+     * @param string       $class
+     * @param array|string $link
+     *
+     * @return \ManaPHP\Model\CriteriaInterface
+     */
+    public function hasMany($class, $link);
 }

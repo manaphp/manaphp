@@ -776,31 +776,47 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param string $class
-     * @param array  $link
+     * @param string       $class
+     * @param array|string $link
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
     public function hasOne($class, $link)
     {
+        if (is_string($link)) {
+            $key = $link;
+            $value = $this->{$link};
+        } else {
+            $key = key($link);
+            $value = $this->{current($link)};
+        }
+
         /**
          * @var \ManaPHP\Model $class
          */
-        return $class::createCriteria()->where(key($link), $this->{current($link)})->setFetchType(false);
+        return $class::createCriteria()->where($key, $value)->setFetchType(false);
     }
 
     /**
-     * @param string $class
-     * @param array  $link
+     * @param string       $class
+     * @param array|string $link
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
     public function hasMany($class, $link)
     {
+        if (is_string($link)) {
+            $key = $link;
+            $value = $this->{$link};
+        } else {
+            $key = key($link);
+            $value = $this->{current($link)};
+        }
+
         /**
          * @var \ManaPHP\Model $class
          */
-        return $class::createCriteria()->where(key($link), $this->{current($link)})->setFetchType(true);
+        return $class::createCriteria()->where($key, $value)->setFetchType(true);
     }
 
     public function __get($name)
