@@ -29,7 +29,7 @@ class UserRole extends Model
      * @var int
      */
     public $created_time;
-    
+
     public static function getSource($context = null)
     {
         return 'rbac_user_role';

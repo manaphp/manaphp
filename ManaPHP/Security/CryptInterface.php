@@ -32,12 +32,14 @@ interface CryptInterface
 
     /**
      * @param string $key
+     *
      * @return static
      */
     public function setMasterKey($key);
 
     /**
      * @param string $type
+     *
      * @return string
      */
     public function getDerivedKey($type);

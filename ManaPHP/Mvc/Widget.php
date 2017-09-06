@@ -8,10 +8,10 @@ use ManaPHP\Component;
  *
  * @package widget
  *
- * @property \ManaPHP\Mvc\UrlInterface           $url
- * @property \ManaPHP\CacheInterface             $cache
- * @property \ManaPHP\RendererInterface          $renderer
- * @property \ManaPHP\DbInterface                $db
+ * @property \ManaPHP\Mvc\UrlInterface  $url
+ * @property \ManaPHP\CacheInterface    $cache
+ * @property \ManaPHP\RendererInterface $renderer
+ * @property \ManaPHP\DbInterface       $db
  */
 abstract class Widget extends Component implements WidgetInterface
 {

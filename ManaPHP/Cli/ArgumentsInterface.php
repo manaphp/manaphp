@@ -10,7 +10,7 @@ interface ArgumentsInterface
 {
     /**
      * @param string|int $name
-     * @param mixed  $defaultValue
+     * @param mixed      $defaultValue
      *
      * @return mixed
      */

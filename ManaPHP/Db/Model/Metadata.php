@@ -138,7 +138,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      *</code>
      *
      * @param string|\ManaPHP\Db\ModelInterface $model
-     * @param string                             $attribute
+     * @param string                            $attribute
      *
      * @return bool
      * @throws \ManaPHP\Db\Model\Metadata\Exception

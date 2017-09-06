@@ -50,7 +50,7 @@ interface MetadataInterface
      * Check if a model has certain attribute
      *
      * @param string|\ManaPHP\Db\ModelInterface $model
-     * @param string                             $attribute
+     * @param string                            $attribute
      *
      * @return bool
      */

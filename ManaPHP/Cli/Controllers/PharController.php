@@ -13,7 +13,7 @@ class PharController extends Controller
         $this->alias->set('@phar', '@data/manacli_phar');
         $pharFile = $this->alias->resolve('@root/manacli.phar');
 
-        $this->console->writeLn('cleaning `:dir` dir',['dir'=>$this->alias->resolve('@phar')]);
+        $this->console->writeLn('cleaning `:dir` dir', ['dir' => $this->alias->resolve('@phar')]);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $this->filesystem->dirReCreate('@phar');
 

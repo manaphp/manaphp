@@ -147,8 +147,8 @@ abstract class Application extends Component implements ApplicationInterface
             $this->_dependencyInjector->setShared('db', [$adapter, [$config]]);
         }
 
-        if(isset($configure->mongodb)){
-            $this->_dependencyInjector->setShared('mongodb',new Mongodb($configure->mongodb));
+        if (isset($configure->mongodb)) {
+            $this->_dependencyInjector->setShared('mongodb', new Mongodb($configure->mongodb));
         }
     }
 }

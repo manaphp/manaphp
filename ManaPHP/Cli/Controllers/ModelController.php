@@ -2,8 +2,8 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
-use ManaPHP\Utility\Text;
 use ManaPHP\Db;
+use ManaPHP\Utility\Text;
 
 /**
  * Class ModelController
@@ -90,7 +90,7 @@ class ModelController extends Controller
     {
         if ($arg_name === '--table' || $arg_name === '-t') {
             return $this->db->getTables();
-        }else{
+        } else {
             return [];
         }
     }

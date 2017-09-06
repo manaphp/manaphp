@@ -50,7 +50,7 @@ class Alias extends Component implements AliasInterface
         if ($name[0] !== '@') {
             throw new AliasException('`:name` must start with `@`'/**m02b52e71dba71561a*/, ['name' => $name]);
         }
-		
+
         if ($path === '') {
             $this->_aliases[$name] = $path;
         } else {

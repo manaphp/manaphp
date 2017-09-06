@@ -25,7 +25,7 @@ interface DbInterface
      * @return \ManaPHP\DbInterface
      */
     public function getSlaveConnection();
-    
+
     /**
      * Returns the first row in a SQL query result
      *

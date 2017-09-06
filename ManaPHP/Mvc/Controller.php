@@ -45,7 +45,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
  * @property \ManaPHP\Security\SecintInterface             $secint
  * @property \ManaPHP\Http\FilterInterface                 $filter
- * @property \ManaPHP\Db\Model\MetadataInterface          $modelsMetadata
+ * @property \ManaPHP\Db\Model\MetadataInterface           $modelsMetadata
  * @property \ManaPHP\Mvc\UrlInterface                     $url
  * @property \ManaPHP\StopwatchInterface                   $stopwatch
  * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier

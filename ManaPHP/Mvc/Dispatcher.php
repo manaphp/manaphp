@@ -318,7 +318,7 @@ class Dispatcher extends Component implements DispatcherInterface
             $name = $parameter->getName();
             $value = null;
             $type = $parameter->getClass();
-			
+
             if ($type !== null && is_subclass_of($type->getName(), Component::class)) {
                 $value = $this->_dependencyInjector->get($type->getName());
             } elseif (isset($this->_params[$name])) {
