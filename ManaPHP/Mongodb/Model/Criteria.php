@@ -3,7 +3,6 @@ namespace ManaPHP\Mongodb\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
-use ManaPHP\Model\CriteriaInterface;
 use ManaPHP\Mongodb\Model\Criteria\Exception as CriteriaException;
 use MongoDB\Driver\Command;
 
@@ -16,7 +15,7 @@ use MongoDB\Driver\Command;
  * @property \ManaPHP\CacheInterface        $modelsCache
  * @property \ManaPHP\Http\RequestInterface $request
  */
-class Criteria extends Component implements CriteriaInterface
+class Criteria extends \ManaPHP\Model\Criteria
 {
     /**
      * @var array

@@ -1,11 +1,10 @@
 <?php
 namespace ManaPHP\Db\Model;
 
-use ManaPHP\Component;
 use ManaPHP\Db\Model\Criteria\Exception as CriteriaException;
 use ManaPHP\Di;
 
-class Criteria extends Component implements CriteriaInterface
+class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 {
     /**
      * @var \ManaPHP\Db\QueryInterface
