@@ -163,6 +163,18 @@ interface CriteriaInterface
     public function cache($options);
 
     /**
+     * @param bool $multiple
+     *
+     * @return static
+     */
+    public function setFetchType($multiple);
+
+    /**
+     * @return \ManaPHP\Model[]|\ManaPHP\Model
+     */
+    public function fetch();
+
+    /**
      * @param string $field
      *
      * @return array
