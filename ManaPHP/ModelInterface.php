@@ -279,18 +279,18 @@ interface ModelInterface
     public function hasChanged($fields);
 
     /**
-     * @param string       $class
-     * @param array|string $link
+     * @param string       $referenceModel
+     * @param array|string $referenceFields
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
-    public function hasOne($class, $link);
+    public function hasOne($referenceModel, $referenceFields);
 
     /**
-     * @param string       $class
-     * @param array|string $link
+     * @param string       $referenceModel
+     * @param array|string $referenceFields
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
-    public function hasMany($class, $link);
+    public function hasMany($referenceModel, $referenceFields);
 }

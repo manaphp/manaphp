@@ -776,47 +776,47 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param string       $class
-     * @param array|string $link
+     * @param string $referenceModel
+     * @param        $referenceFields
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
-    public function hasOne($class, $link)
+    public function hasOne($referenceModel, $referenceFields)
     {
-        if (is_string($link)) {
-            $key = $link;
-            $value = $this->{$link};
+        if (is_string($referenceFields)) {
+            $key = $referenceFields;
+            $value = $this->{$referenceFields};
         } else {
-            $key = key($link);
-            $value = $this->{current($link)};
+            $key = key($referenceFields);
+            $value = $this->{current($referenceFields)};
         }
 
         /**
-         * @var \ManaPHP\Model $class
+         * @var \ManaPHP\Model $referenceModel
          */
-        return $class::createCriteria()->where($key, $value)->setFetchType(false);
+        return $referenceModel::createCriteria()->where($key, $value)->setFetchType(false);
     }
 
     /**
-     * @param string       $class
-     * @param array|string $link
+     * @param string       $referenceModel
+     * @param array|string $referenceFields
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
-    public function hasMany($class, $link)
+    public function hasMany($referenceModel, $referenceFields)
     {
-        if (is_string($link)) {
-            $key = $link;
-            $value = $this->{$link};
+        if (is_string($referenceFields)) {
+            $key = $referenceFields;
+            $value = $this->{$referenceFields};
         } else {
-            $key = key($link);
-            $value = $this->{current($link)};
+            $key = key($referenceFields);
+            $value = $this->{current($referenceFields)};
         }
 
         /**
-         * @var \ManaPHP\Model $class
+         * @var \ManaPHP\Model $referenceModel
          */
-        return $class::createCriteria()->where($key, $value)->setFetchType(true);
+        return $referenceModel::createCriteria()->where($key, $value)->setFetchType(true);
     }
 
     public function __get($name)
