@@ -70,14 +70,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * }
      * </code>
      *
-     * @param  array       $filters
+     * @param array        $filters
      * @param array        $options
      * @param string|array $fields
      *
      * @return  static[]
-     * @throws \ManaPHP\Model\Exception
      */
-    public static function find($filters = [], $options = [], $fields = null)
+    public static function find($filters = [], $options = null, $fields = null)
     {
         $criteria = static::createCriteria()->select($fields ?: static::getFields());
 
@@ -107,12 +106,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * alias of find
      *
-     * @param    array     $filters
+     * @param array        $filters
      * @param array        $options
      * @param string|array $fields
      *
      * @return  static[]
-     * @throws \ManaPHP\Model\Exception
      */
     final public static function findAll($filters = [], $options = null, $fields = null)
     {
@@ -126,7 +124,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return false|static
-     * @throws \ManaPHP\Model\Exception
      */
     public static function findFirst($filters = [], $fields = null)
     {
@@ -156,7 +153,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return static|false
-     * @throws \ManaPHP\Model\Exception
      */
     public static function findOne($filters = [], $fields = null)
     {
@@ -172,11 +168,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return static|false
-     * @throws \ManaPHP\Model\Exception
      */
     public static function findById($id, $fields = null)
     {
         if (!is_scalar($id)) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
 
