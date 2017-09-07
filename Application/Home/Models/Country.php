@@ -19,6 +19,6 @@ class Country extends ModelBase
      */
     public function getCities()
     {
-        return $this->hasMany(City::class, 'country_id');
+        return $this->hasMany(City::class);
     }
 }
