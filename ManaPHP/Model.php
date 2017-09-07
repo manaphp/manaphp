@@ -821,10 +821,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     public function __get($name)
     {
-        $relation = 'get' . $name;
-        if (method_exists($this, $relation)) {
+        $method = 'get' . $name;
+        if (method_exists($this, $method)) {
 
-            return $this->$relation()->fetch();
+            return $this->$name = $this->$method()->fetch();
         } else {
             return parent::__get($name);
         }
