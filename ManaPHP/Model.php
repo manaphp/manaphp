@@ -827,4 +827,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return parent::__get($name);
         }
     }
+
+    public function __debugInfo()
+    {
+        $data = $this->toArray();
+        $data['*changed_fields*'] = $this->getChangedFields();
+
+        return $data;
+    }
 }
