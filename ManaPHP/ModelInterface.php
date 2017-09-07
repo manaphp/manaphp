@@ -284,7 +284,7 @@ interface ModelInterface
      *
      * @return \ManaPHP\Model\CriteriaInterface|false
      */
-    public function hasOne($referenceModel, $referenceField);
+    public function hasOne($referenceModel, $referenceField = null);
 
     /**
      * @param string $referenceModel
@@ -292,7 +292,7 @@ interface ModelInterface
      *
      * @return \ManaPHP\Model\CriteriaInterface|false
      */
-    public function belongsTo($referenceModel, $referenceField);
+    public function belongsTo($referenceModel, $referenceField = null);
 
     /**
      * @param string $referenceModel
@@ -300,5 +300,5 @@ interface ModelInterface
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
-    public function hasMany($referenceModel, $referenceField);
+    public function hasMany($referenceModel, $referenceField = null);
 }

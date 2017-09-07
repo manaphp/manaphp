@@ -776,13 +776,45 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param string $model
+     *
+     * @return string
+     * @throws \ManaPHP\Model\Exception
+     */
+    protected function _inferReferenceField($model)
+    {
+        /**
+         * @var \ManaPHP\ModelInterface $model
+         */
+        $modelTail = ($pos = strrpos($model, '\\')) !== false ? substr($model, $pos + 1) : $model;
+        $tryField = lcfirst($modelTail) . '_id';
+        $fields = $model::getFields();
+        if (in_array($tryField, $fields, true)) {
+            return $tryField;
+        } elseif (preg_match('#([A-Z][a-z]*)$#', $modelTail, $match) === 1) {
+            $tryField = $match[1] . '_id';
+            /** @noinspection NotOptimalIfConditionsInspection */
+            if (in_array($tryField, $fields, true)) {
+                return $tryField;
+            }
+        }
+
+        throw new ModelException('infer referenceField from `:model` failed.', ['model' => $model]);
+    }
+
+    /**
      * @param string $referenceModel
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface|false
+     * @throws \ManaPHP\Model\Exception
      */
-    public function hasOne($referenceModel, $referenceField)
+    public function hasOne($referenceModel, $referenceField = null)
     {
+        if ($referenceField === null) {
+            $referenceField = $this->_inferReferenceField($referenceModel);
+        }
+
         /**
          * @var \ManaPHP\Model $referenceModel
          */
@@ -794,9 +826,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface|false
+     * @throws \ManaPHP\Model\Exception
      */
-    public function belongsTo($referenceModel, $referenceField)
+    public function belongsTo($referenceModel, $referenceField = null)
     {
+        if ($referenceField === null) {
+            $referenceField = $this->_inferReferenceField($referenceModel);
+        }
+
         /**
          * @var \ManaPHP\Model $referenceModel
          */
@@ -808,9 +845,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface
+     * @throws \ManaPHP\Model\Exception
      */
-    public function hasMany($referenceModel, $referenceField)
+    public function hasMany($referenceModel, $referenceField = null)
     {
+        if ($referenceField === null) {
+            $referenceField = $this->_inferReferenceField(get_called_class());
+        }
+
         /**
          * @var \ManaPHP\Model $referenceModel
          */
