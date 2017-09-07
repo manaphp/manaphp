@@ -25,6 +25,6 @@ class City extends ModelBase
      */
     public function getCountry()
     {
-        return $this->hasOne(Country::class, ['country_id' => 'country_id']);
+        return $this->hasOne(Country::class, 'country_id');
     }
 }

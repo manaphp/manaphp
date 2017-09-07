@@ -777,46 +777,44 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * @param string $referenceModel
-     * @param        $referenceFields
+     * @param string $referenceField
      *
-     * @return \ManaPHP\Model\CriteriaInterface
+     * @return \ManaPHP\Model\CriteriaInterface|false
      */
-    public function hasOne($referenceModel, $referenceFields)
+    public function hasOne($referenceModel, $referenceField)
     {
-        if (is_string($referenceFields)) {
-            $key = $referenceFields;
-            $value = $this->{$referenceFields};
-        } else {
-            $key = key($referenceFields);
-            $value = $this->{current($referenceFields)};
-        }
-
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::createCriteria()->where($key, $value)->setFetchType(false);
+        return $referenceModel::createCriteria()->where($referenceModel::getPrimaryKey()[0], $this->$referenceField)->setFetchType(false);
     }
 
     /**
-     * @param string       $referenceModel
-     * @param array|string $referenceFields
+     * @param string $referenceModel
+     * @param string $referenceField
      *
-     * @return \ManaPHP\Model\CriteriaInterface
+     * @return \ManaPHP\Model\CriteriaInterface|false
      */
-    public function hasMany($referenceModel, $referenceFields)
+    public function belongsTo($referenceModel, $referenceField)
     {
-        if (is_string($referenceFields)) {
-            $key = $referenceFields;
-            $value = $this->{$referenceFields};
-        } else {
-            $key = key($referenceFields);
-            $value = $this->{current($referenceFields)};
-        }
-
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::createCriteria()->where($key, $value)->setFetchType(true);
+        return $referenceModel::createCriteria()->where($referenceModel::getPrimaryKey()[0], $this->$referenceField)->setFetchType(false);
+    }
+
+    /**
+     * @param string $referenceModel
+     * @param string $referenceField
+     *
+     * @return \ManaPHP\Model\CriteriaInterface
+     */
+    public function hasMany($referenceModel, $referenceField)
+    {
+        /**
+         * @var \ManaPHP\Model $referenceModel
+         */
+        return $referenceModel::createCriteria()->where($referenceField, $this->{static::getPrimaryKey()[0]})->setFetchType(true);
     }
 
     public function __get($name)

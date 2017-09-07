@@ -280,17 +280,25 @@ interface ModelInterface
 
     /**
      * @param string       $referenceModel
-     * @param array|string $referenceFields
+     * @param array|string $referenceField
      *
-     * @return \ManaPHP\Model\CriteriaInterface
+     * @return \ManaPHP\Model\CriteriaInterface|false
      */
-    public function hasOne($referenceModel, $referenceFields);
+    public function hasOne($referenceModel, $referenceField);
 
     /**
-     * @param string       $referenceModel
-     * @param array|string $referenceFields
+     * @param string $referenceModel
+     * @param string $referenceField
+     *
+     * @return \ManaPHP\Model\CriteriaInterface|false
+     */
+    public function belongsTo($referenceModel, $referenceField);
+
+    /**
+     * @param string $referenceModel
+     * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
-    public function hasMany($referenceModel, $referenceFields);
+    public function hasMany($referenceModel, $referenceField);
 }
