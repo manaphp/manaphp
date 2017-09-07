@@ -96,7 +96,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
 
             if (isset($options['limit'])) {
-                $criteria->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
+                $criteria->limit($options['limit'], isset($options['offset']) ? $options['offset'] : null);
             }
         }
 
