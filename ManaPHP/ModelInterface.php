@@ -42,6 +42,11 @@ interface ModelInterface
     public static function hasField($field);
 
     /**
+     * @return array|null
+     */
+    public static function getAccessibleFields();
+
+    /**
      * @return string
      */
     public static function getAutoIncrementField();

@@ -55,6 +55,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @return array|null
+     */
+    public static function getAccessibleFields()
+    {
+        return null;
+    }
+
+    /**
      * Allows to query a set of records that match the specified conditions
      *
      * <code>
@@ -430,16 +438,30 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function assign($data, $whiteList = null)
     {
-        foreach (static::getFields() as $field) {
-            if (!isset($data[$field])) {
-                continue;
-            }
+        if ($whiteList === null) {
+            $whiteList = static::getAccessibleFields();
+        }
 
-            if ($whiteList !== null && !in_array($field, $whiteList, true)) {
-                continue;
-            }
+        if ($whiteList === null) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new ModelException('`:model` model do not define accessible fields.', ['model' => get_called_class()]);
+        }
 
-            $this->{$field} = $data[$field];
+        $fields = static::getFields();
+
+        if ($whiteList !== []) {
+            $blackList = array_diff(array_intersect($fields, array_keys($data)), $whiteList);
+            if ($blackList !== []) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                throw new ModelException('`:blacklist` fields is not in accessible fields: `:whitelist`',
+                    ['blacklist' => implode(',', $blackList), 'whitelist' => implode(',', $whiteList)]);
+            }
+        }
+
+        foreach ($fields as $field) {
+            if (isset($data[$field])) {
+                $this->{$field} = $data[$field];
+            }
         }
 
         return $this;
