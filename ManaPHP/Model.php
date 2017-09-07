@@ -45,6 +45,16 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param string $field
+     *
+     * @return bool
+     */
+    public static function hasField($field)
+    {
+        return in_array($field, static::getFields(), true);
+    }
+
+    /**
      * Allows to query a set of records that match the specified conditions
      *
      * <code>

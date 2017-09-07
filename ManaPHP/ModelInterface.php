@@ -35,6 +35,13 @@ interface ModelInterface
     public static function getFields();
 
     /**
+     * @param string $field
+     *
+     * @return bool
+     */
+    public static function hasField($field);
+
+    /**
      * @return string
      */
     public static function getAutoIncrementField();
