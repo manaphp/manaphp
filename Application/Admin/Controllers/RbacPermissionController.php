@@ -16,12 +16,9 @@ class RbacPermissionController extends ControllerBase
     public function indexAction()
     {
         $this->view->setLayout();
-        $builder = $this->modelsManager->createBuilder()
-            ->columns('*')
-            ->addFrom(RbacPermission::class);
 
         $permission_groups = [];
-        foreach ($builder->execute() as $row) {
+        foreach (RbacPermission::createQuery()->execute() as $row) {
             $group = $row['module'] . ':' . $row['controller'];
 
             if (!isset($permissions[$group])) {

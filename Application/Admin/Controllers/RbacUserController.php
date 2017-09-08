@@ -8,9 +8,8 @@ class RbacUserController extends ControllerBase
 {
     public function indexAction()
     {
-        $builder = $this->modelsManager->createBuilder()
+        $builder = Admin::createQuery('a')
             ->columns('a.admin_id, a.admin_name, a.created_time, ad.email')
-            ->addFrom(Admin::class, 'a')
             ->leftJoin(AdminDetail::class, 'ad.admin_id=a.admin_id', 'ad')
             ->orderBy('a.admin_id DESC');
 

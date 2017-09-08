@@ -8,12 +8,7 @@ class RbacRoleController extends ControllerBase
 {
     public function indexAction()
     {
-        $builder = $this->modelsManager->createBuilder()
-            ->columns('rr.*')
-            ->addFrom(RbacRole::class, 'rr');
-
-        $roles = $builder->execute();
-
+        $roles = RbacRole::createQuery()->execute();
         $this->view->setVars(compact('roles'));
     }
 
