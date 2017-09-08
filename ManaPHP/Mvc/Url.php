@@ -72,19 +72,26 @@ class Url extends Component implements UrlInterface
     }
 
     /**
-     * @param string|array $uri
-     * @param array        $args
+     * @param string|array $args
      * @param string       $module
      *
      * @return string
      * @throws \ManaPHP\Mvc\Url\Exception
      */
-    public function get($uri, $args = [], $module = null)
+    public function get($args = [], $module = null)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         if (is_string($args)) {
-            $module = $args;
+            $uri = $args;
             $args = [];
+        } else {
+            $uri = $args[0];
+            unset($args[0]);
+
+            if (isset($args['#'])) {
+                $anchor = $args['#'];
+                unset($args['#']);
+            }
         }
 
         if (!isset($this->_baseUrls[$module])) {
@@ -114,6 +121,10 @@ class Url extends Component implements UrlInterface
         }
         if (count($args) !== 0) {
             $strUrl .= (Text::contains($strUrl, '?') ? '&' : '?') . http_build_query($args);
+        }
+
+        if (isset($anchor)) {
+            $strUrl .= '#' . $anchor;
         }
 
         return $strUrl;
