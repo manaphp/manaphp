@@ -52,6 +52,11 @@ interface ModelInterface
     public static function getAutoIncrementField();
 
     /**
+     * @return string|null
+     */
+    public static function getDisplayField();
+
+    /**
      * @param string|array $fields
      *
      * @return \ManaPHP\Db\Model\CriteriaInterface
@@ -86,6 +91,14 @@ interface ModelInterface
      * @return  static[]
      */
     public static function findAll($filters = [], $options = null, $fields = null);
+
+    /**
+     * @param array  $filters
+     * @param string $displayField
+     *
+     * @return mixed
+     */
+    public static function findList($filters = [], $displayField = null);
 
     /**
      * Allows to query the first record that match the specified conditions

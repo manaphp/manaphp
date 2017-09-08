@@ -63,6 +63,38 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @return string|null
+     */
+    public static function getDisplayField()
+    {
+        $fields = static::getFields();
+
+        if (in_array('name', $fields, true)) {
+            return 'name';
+        }
+
+        $primaryKey = static::getPrimaryKey();
+        if (count($primaryKey) === 1 && ($pos = strrpos($primaryKey[0], '_'))) {
+            $tryField = substr($primaryKey[0], $pos + 1) . '_name';
+
+            if (in_array($tryField, $fields, true)) {
+                return $tryField;
+            }
+        }
+
+        $modelName = get_called_class();
+        if ($pos = strrpos($modelName, '\\')) {
+            $tryField = lcfirst(substr($modelName, $pos + 1));
+
+            if (in_array($tryField, $fields, true)) {
+                return $tryField;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Allows to query a set of records that match the specified conditions
      *
      * <code>
@@ -133,6 +165,30 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     final public static function findAll($filters = [], $options = null, $fields = null)
     {
         return static::find($filters, $options, $fields);
+    }
+
+    /**
+     * @param array  $filters
+     * @param string $displayField
+     *
+     * @return array
+     */
+    public static function findList($filters = [], $displayField = null)
+    {
+        $displayField = $displayField ?: static::getDisplayField();
+        if ($displayField === null) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new ModelException('invoke :model:findList method must provide displayField', ['model' => get_called_class()]);
+        }
+        $primaryKey = static::getPrimaryKey()[0];
+        $criteria = static::createCriteria()->select([$primaryKey, $displayField])->where($filters);
+
+        $list = [];
+        foreach ($criteria->fetchAll() as $v) {
+            $list[$v->{$primaryKey}] = $v->{$displayField};
+        }
+
+        return $list;
     }
 
     /**

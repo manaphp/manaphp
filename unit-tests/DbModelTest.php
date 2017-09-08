@@ -154,6 +154,13 @@ class DbModelTest extends TestCase
         $this->assertEquals(483, $cities[0]->city_id);
     }
 
+    public function test_findList()
+    {
+        $this->assertCount(600, City::findList());
+        $this->assertCount(600, City::findList([], 'city'));
+        $this->assertCount(3, City::findList(['country_id' => 2], 'city'));
+    }
+
     public function test_findById()
     {
         $city = City::findById(10);
