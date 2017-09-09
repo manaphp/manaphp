@@ -240,9 +240,9 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } else {
                     throw new CriteriaException('unknown `:where` where filter', ['where' => $condition]);
                 }
-            } elseif (is_array($bind) && strpos($condition, '|=')) {
-                /** @noinspection PhpParamsInspection */
-                return $this->inWhere(substr($condition, 0, -2), $bind);
+            } elseif (is_array($bind) && isset($bind[0])) {
+                $pos = strpos($condition, '|=');
+                return $this->inWhere($pos ? substr($condition, 0, -2) : $condition, $bind);
             } else {
                 $this->_filters[] = [$condition => $bind];
             }
