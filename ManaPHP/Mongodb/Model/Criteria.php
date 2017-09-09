@@ -238,7 +238,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } elseif (isset($operator_map[$operator])) {
                     $this->_filters[] = [$field => [$operator_map[$operator] => $bind]];
                 } else {
-                    throw new CriteriaException('unknown `:where` where filter', ['where' => $$condition]);
+                    throw new CriteriaException('unknown `:where` where filter', ['where' => $condition]);
                 }
             } else {
                 $this->_filters[] = [$condition => $bind];
