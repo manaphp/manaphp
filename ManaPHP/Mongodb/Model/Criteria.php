@@ -729,6 +729,14 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
+     * @return array
+     */
+    public function asArray()
+    {
+        return $this->execute();
+    }
+
+    /**
      * @return bool
      */
     public function exists()

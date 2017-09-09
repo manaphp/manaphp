@@ -205,6 +205,11 @@ interface CriteriaInterface
     public function fetchAll();
 
     /**
+     * @return array
+     */
+    public function asArray();
+
+    /**
      * @param $fieldValues
      *
      * @return int

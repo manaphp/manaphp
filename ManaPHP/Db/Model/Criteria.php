@@ -395,6 +395,14 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
+     * @return array
+     */
+    public function asArray()
+    {
+        return $this->_replaceModelInfo()->_query->execute();
+    }
+
+    /**
      * @param bool $forceUseMaster
      *
      * @return static
