@@ -377,8 +377,8 @@ class Query extends Component implements QueryInterface
                 $this->where($k, $v);
             }
         } else {
-            if (is_scalar($bind) || strpos($condition, '=') !== false) {
-                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~|]*)$#', $condition, $matches) !== 1) {
+            if (is_scalar($bind)) {
+                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) !== 1) {
                     throw new QueryException('unknown `:condition` condition', ['condition' => $condition]);
                 }
 
@@ -388,27 +388,27 @@ class Query extends Component implements QueryInterface
                 }
 
                 $bind_key = str_replace('.', '_', $field);
-                $candiedField = preg_replace('#\w+#', '[\\0]', $field);
+                $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
                 if (in_array($operator, ['=', '>', '>=', '<', '<=', '!=', '<>'], true)) {
-                    $this->_conditions[] = $candiedField . $operator . ':' . $bind_key;
+                    $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
                     $this->_bind[$bind_key] = $bind;
                 } elseif ($operator === '^=') {
-                    $this->_conditions[] = $candiedField . ' LIKE :' . $bind_key;
+                    $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
                     $this->_bind[$bind_key] = $bind . '%';
                 } elseif ($operator === '$=') {
-                    $this->_conditions[] = $candiedField . ' LIKE :' . $bind_key;
+                    $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
                     $this->_bind[$bind_key] = '%' . $bind;
                 } elseif ($operator === '*=') {
-                    $this->_conditions[] = $candiedField . ' LIKE :' . $bind_key;
+                    $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
                     $this->_bind[$bind_key] = '%' . $bind . '%';
                 } elseif ($operator === '~=') {
-                    $this->_conditions[] = 'LOWER(' . $candiedField . ')' . ' LIKE :' . $bind_key;
+                    $this->_conditions[] = 'LOWER(' . $normalizedField . ')' . ' LIKE :' . $bind_key;
                     $this->_bind[$bind_key] = '%' . strtolower($bind) . '%';
-                } elseif ($operator === '|=') {
-                    return $this->inWhere($candiedField, $bind);
                 } else {
                     throw new QueryException('unknown `:where` where filter', ['where' => $condition]);
                 }
+            } elseif (is_array($bind) && strpos($condition, '|=')) {
+                return $this->inWhere(preg_replace('#\w+#', '[\\0]', substr($condition, 0, -2)), $bind);
             } else {
                 $this->_conditions[] = $condition;
                 $this->_bind = array_merge($this->_bind, $bind);
