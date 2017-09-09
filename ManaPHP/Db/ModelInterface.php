@@ -23,14 +23,5 @@ interface ModelInterface extends \ManaPHP\ModelInterface
      *
      * @return \ManaPHP\Db\Model\QueryInterface
      */
-    public static function createQuery($alias = null);
-
-    /**
-     * Create a criteria for a special model
-     *
-     * @param string $alias
-     *
-     * @return \ManaPHP\Db\Model\QueryInterface
-     */
     public static function query($alias = null);
 }

@@ -141,7 +141,7 @@ class Model extends \ManaPHP\Model
      *
      * @return \ManaPHP\Mongodb\Model\Criteria
      */
-    public static function createCriteria($fields = null)
+    public static function criteria($fields = null)
     {
         return Di::getDefault()->get('ManaPHP\Mongodb\Model\Criteria', [get_called_class(), $fields]);
     }

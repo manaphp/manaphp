@@ -18,7 +18,7 @@ class RbacPermissionController extends ControllerBase
         $this->view->setLayout();
 
         $permission_groups = [];
-        foreach (RbacPermission::createQuery()->execute() as $row) {
+        foreach (RbacPermission::query()->execute() as $row) {
             $group = $row['module'] . ':' . $row['controller'];
 
             if (!isset($permissions[$group])) {

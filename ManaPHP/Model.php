@@ -95,18 +95,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * alias of createCriteria
-     *
-     * @param string|array $fields
-     *
-     * @return \ManaPHP\Db\Model\CriteriaInterface
-     */
-    public static function criteria($fields = null)
-    {
-        return static::createCriteria($fields);
-    }
-
-    /**
      * Allows to query a set of records that match the specified conditions
      *
      * <code>
@@ -140,7 +128,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function find($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::createCriteria()->select($fields ?: static::getFields());
+        $criteria = static::criteria()->select($fields ?: static::getFields());
 
         if (isset($filters[0])) {
             $criteria->inWhere(static::getPrimaryKey()[0], $filters);
@@ -193,7 +181,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('invoke :model:findList method must provide displayField', ['model' => get_called_class()]);
         }
         $primaryKey = static::getPrimaryKey()[0];
-        $criteria = static::createCriteria()->select([$primaryKey, $displayField])->where($filters);
+        $criteria = static::criteria()->select([$primaryKey, $displayField])->where($filters);
 
         $list = [];
         foreach ($criteria->fetchAll() as $v) {
@@ -246,7 +234,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $filters = [static::getPrimaryKey()[0] => $filters];
         }
 
-        return static::createCriteria()->select($fields ?: static::getFields())->where($filters)->fetchOne();
+        return static::criteria()->select($fields ?: static::getFields())->where($filters)->fetchOne();
     }
 
     /**
@@ -262,7 +250,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
 
-        return static::createCriteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey()[0], $id)->fetchOne();
+        return static::criteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey()[0], $id)->fetchOne();
     }
 
     /**
@@ -287,7 +275,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $filters = [$primaryKeys[0] => $filters];
         }
 
-        return static::createCriteria()->where($filters)->exists();
+        return static::criteria()->where($filters)->exists();
     }
 
     /**
@@ -318,7 +306,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     protected static function _groupResult($function, $alias, $field, $filters)
     {
-        return static::createCriteria()->where($filters)->aggregate([$alias => "$function($field)"])[0][$alias];
+        return static::criteria()->where($filters)->aggregate([$alias => "$function($field)"])[0][$alias];
     }
 
     /**
@@ -585,7 +573,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, ['model' => get_class($this)]);
         }
 
-        static::createCriteria()->where($conditions)->update($fieldValues);
+        static::criteria()->where($conditions)->update($fieldValues);
 
         $this->_snapshot = $this->toArray();
 
@@ -619,7 +607,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
             $fieldValues[$field] = $data[$field];
         }
-        return static::createCriteria()->where(static::getPrimaryKey()[0], $id)->update($fieldValues);
+        return static::criteria()->where(static::getPrimaryKey()[0], $id)->update($fieldValues);
     }
 
     /**
@@ -656,7 +644,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        return static::createCriteria()->where($conditions)->forceUseMaster()->exists();
+        return static::criteria()->where($conditions)->forceUseMaster()->exists();
     }
 
     /**
@@ -716,7 +704,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, ['model' => get_class($this)]);
         }
 
-        $criteria = static::createCriteria();
+        $criteria = static::criteria();
         foreach ($primaryKeys as $field) {
             if (!isset($this->{$field})) {
                 throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:column` was not set'/**m01dec9cd3b69742a5*/,
@@ -745,7 +733,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);
         }
 
-        return static::createCriteria()->where(static::getPrimaryKey()[0], $id)->delete();
+        return static::criteria()->where(static::getPrimaryKey()[0], $id)->delete();
     }
 
     /**
@@ -757,7 +745,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function updateAll($fieldValues, $filters)
     {
-        return static::createCriteria()->where($filters)->update($fieldValues);
+        return static::criteria()->where($filters)->update($fieldValues);
     }
 
     /**
@@ -768,7 +756,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function deleteAll($filters)
     {
-        return static::createCriteria()->where($filters)->delete();
+        return static::criteria()->where($filters)->delete();
     }
 
     /**
@@ -913,7 +901,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::createCriteria()->where($referenceModel::getPrimaryKey()[0], $this->$referenceField)->setFetchType(false);
+        return $referenceModel::criteria()->where($referenceModel::getPrimaryKey()[0], $this->$referenceField)->setFetchType(false);
     }
 
     /**
@@ -931,7 +919,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::createCriteria()->where($referenceModel::getPrimaryKey()[0], $this->$referenceField)->setFetchType(false);
+        return $referenceModel::criteria()->where($referenceModel::getPrimaryKey()[0], $this->$referenceField)->setFetchType(false);
     }
 
     /**
@@ -949,7 +937,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::createCriteria()->where($referenceField, $this->{static::getPrimaryKey()[0]})->setFetchType(true);
+        return $referenceModel::criteria()->where($referenceField, $this->{static::getPrimaryKey()[0]})->setFetchType(true);
     }
 
     public function __get($name)

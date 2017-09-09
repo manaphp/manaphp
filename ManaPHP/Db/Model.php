@@ -87,21 +87,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
      *
      * @return \ManaPHP\Db\Model\CriteriaInterface
      */
-    public static function createCriteria($fields = null)
+    public static function criteria($fields = null)
     {
         return Di::getDefault()->get('ManaPHP\Db\Model\Criteria', [get_called_class(), $fields]);
-    }
-
-    /**
-     * alias of createQuery
-     *
-     * @param string $alias
-     *
-     * @return \ManaPHP\Db\Model\QueryInterface
-     */
-    public static function query($alias = null)
-    {
-        return static::createQuery($alias);
     }
 
     /**
@@ -111,7 +99,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      *
      * @return \ManaPHP\Db\Model\QueryInterface
      */
-    public static function createQuery($alias = null)
+    public static function query($alias = null)
     {
         return Di::getDefault()->get('ManaPHP\Db\Model\Query')->from(get_called_class(), $alias);
     }

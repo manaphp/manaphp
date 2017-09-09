@@ -61,7 +61,7 @@ interface ModelInterface
      *
      * @return \ManaPHP\Db\Model\CriteriaInterface
      */
-    public static function createCriteria($fields = null);
+    public static function criteria($fields = null);
 
     /**
      * Allows to query a set of records that match the specified conditions
