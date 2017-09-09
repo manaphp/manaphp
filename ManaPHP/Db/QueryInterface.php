@@ -120,12 +120,12 @@ interface QueryInterface
      *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
      *</code>
      *
-     * @param string|array           $condition
-     * @param int|float|string|array $bind
+     * @param string|array           $filter
+     * @param int|float|string|array $value
      *
      * @return static
      */
-    public function where($condition, $bind = []);
+    public function where($filter, $value = null);
 
     /**
      * Appends a BETWEEN condition to the current conditions

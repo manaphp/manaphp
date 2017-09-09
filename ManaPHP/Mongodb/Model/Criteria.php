@@ -198,55 +198,55 @@ class Criteria extends \ManaPHP\Model\Criteria
      *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
      *</code>
      *
-     * @param string|array           $condition
-     * @param int|float|string|array $bind
+     * @param string|array           $filter
+     * @param int|float|string|array $value
      *
      * @return static
      * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
-    public function where($condition, $bind = [])
+    public function where($filter, $value = null)
     {
-        if ($condition === null) {
+        if ($filter === null) {
             return $this;
-        } elseif (is_array($condition)) {
+        } elseif (is_array($filter)) {
             /** @noinspection ForeachSourceInspection */
-            foreach ($condition as $k => $v) {
+            foreach ($filter as $k => $v) {
                 $this->where($k, $v);
             }
-        } elseif (is_array($bind)) {
-            if (isset($bind[0]) || count($bind) === 0) {
-                if (strpos($condition, '!=') || strpos($condition, '<>')) {
-                    $this->notInWhere(substr($condition, 0, -2), $bind);
+        } elseif (is_array($value)) {
+            if (isset($value[0]) || count($value) === 0) {
+                if (strpos($filter, '!=') || strpos($filter, '<>')) {
+                    $this->notInWhere(substr($filter, 0, -2), $value);
                 } else {
-                    $this->inWhere($condition, $bind);
+                    $this->inWhere($filter, $value);
                 }
             } else {
-                $this->_filters[] = [$condition => $bind];
+                $this->_filters[] = [$filter => $value];
             }
-        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
             if ($operator === '') {
                 $operator = '=';
             }
 
             if ($operator === '^=') {
-                $this->_filters[] = [$field => ['$regex' => '^' . $bind]];
+                $this->_filters[] = [$field => ['$regex' => '^' . $value]];
             } elseif ($operator === '$=') {
-                $this->_filters[] = [$field => ['$regex' => $bind . '$']];
+                $this->_filters[] = [$field => ['$regex' => $value . '$']];
             } elseif ($operator === '*=') {
-                $this->_filters[] = [$field => ['$regex' => $bind]];
+                $this->_filters[] = [$field => ['$regex' => $value]];
             } elseif ($operator === '~=') {
-                $this->_filters[] = [$field => ['$regex' => $bind, '$options' => 'i']];
+                $this->_filters[] = [$field => ['$regex' => $value, '$options' => 'i']];
             } else {
                 $operator_map = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
                 if (isset($operator_map[$operator])) {
-                    $this->_filters[] = [$field => [$operator_map[$operator] => $bind]];
+                    $this->_filters[] = [$field => [$operator_map[$operator] => $value]];
                 } else {
-                    throw new CriteriaException('unknown `:where` where filter', ['where' => $condition]);
+                    throw new CriteriaException('unknown `:where` where filter', ['where' => $filter]);
                 }
             }
         } else {
-            throw new CriteriaException('unknown mongodb criteria `filter` filter', ['filter' => $condition]);
+            throw new CriteriaException('unknown mongodb criteria `filter` filter', ['filter' => $filter]);
         }
 
         return $this;

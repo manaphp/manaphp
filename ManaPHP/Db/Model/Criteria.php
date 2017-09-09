@@ -87,14 +87,14 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
      *</code>
      *
-     * @param string|array           $condition
-     * @param int|float|string|array $bind
+     * @param string|array           $filter
+     * @param int|float|string|array $value
      *
      * @return static
      */
-    public function where($condition, $bind = [])
+    public function where($filter, $value = [])
     {
-        $this->_query->where($condition, $bind);
+        $this->_query->where($filter, $value);
 
         return $this;
     }

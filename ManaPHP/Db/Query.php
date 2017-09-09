@@ -359,33 +359,34 @@ class Query extends Component implements QueryInterface
      *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
      *</code>
      *
-     * @param string|array           $condition
-     * @param int|float|string|array $bind
+     * @param string|array           $filter
+     * @param int|float|string|array $value
      *
      * @return static
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function where($condition, $bind = [])
+    public function where($filter, $value = null)
     {
-        if ($condition === null) {
+        if ($filter === null) {
             return $this;
-        } elseif (is_array($condition)) {
+        } elseif (is_array($filter)) {
             /** @noinspection ForeachSourceInspection */
-            foreach ($condition as $k => $v) {
+            foreach ($filter as $k => $v) {
                 $this->where($k, $v);
             }
-        } elseif (is_array($bind)) {
-            if (isset($bind[0]) || count($bind) === 0) {
-                if (strpos($condition, '!=') || strpos($condition, '<>')) {
-                    $this->notInWhere(substr($condition, 0, -2), $bind);
+            $this->_conditions[] = $filter;
+        } elseif (is_array($value)) {
+            if (isset($value[0]) || count($value) === 0) {
+                if (strpos($filter, '!=') || strpos($filter, '<>')) {
+                    $this->notInWhere(substr($filter, 0, -2), $value);
                 } else {
-                    $this->inWhere($condition, $bind);
+                    $this->inWhere($filter, $value);
                 }
             } else {
-                $this->_conditions[] = $condition;
-                $this->_bind = array_merge($this->_bind, $bind);
+                $this->_conditions[] = $filter;
+                $this->_bind = array_merge($this->_bind, $value);
             }
-        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
             if ($operator === '') {
                 $operator = '=';
@@ -395,24 +396,24 @@ class Query extends Component implements QueryInterface
             $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
             if (in_array($operator, ['=', '>', '>=', '<', '<=', '!=', '<>'], true)) {
                 $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
-                $this->_bind[$bind_key] = $bind;
+                $this->_bind[$bind_key] = $value;
             } elseif ($operator === '^=') {
                 $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
-                $this->_bind[$bind_key] = $bind . '%';
+                $this->_bind[$bind_key] = $value . '%';
             } elseif ($operator === '$=') {
                 $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
-                $this->_bind[$bind_key] = '%' . $bind;
+                $this->_bind[$bind_key] = '%' . $value;
             } elseif ($operator === '*=') {
                 $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
-                $this->_bind[$bind_key] = '%' . $bind . '%';
+                $this->_bind[$bind_key] = '%' . $value . '%';
             } elseif ($operator === '~=') {
                 $this->_conditions[] = 'LOWER(' . $normalizedField . ')' . ' LIKE :' . $bind_key;
-                $this->_bind[$bind_key] = '%' . strtolower($bind) . '%';
+                $this->_bind[$bind_key] = '%' . strtolower($value) . '%';
             } else {
-                throw new QueryException('unknown `:where` where filter', ['where' => $condition]);
+                throw new QueryException('unknown `:where` where filter', ['where' => $filter]);
             }
         } else {
-            throw new QueryException('unknown `:condition` condition', ['condition' => $condition]);
+            throw new QueryException('unknown `:condition` condition', ['condition' => $filter]);
         }
 
         return $this;
