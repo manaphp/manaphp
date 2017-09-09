@@ -152,19 +152,19 @@ class MongodbModelCriteriaTest extends TestCase
     public function test_betweenWhere()
     {
         $documents = City::createCriteria()->betweenWhere('city_id', 2, 3)->fetchAll();
-        $this->assertCount(1, $documents);
+        $this->assertCount(2, $documents);
 
         $documents = City::createCriteria()->betweenWhere('city_id', 2, 2)->fetchAll();
-        $this->assertCount(0, $documents);
+        $this->assertCount(1, $documents);
     }
 
     public function test_notBetweenWhere()
     {
         $documents = City::createCriteria()->notBetweenWhere('city_id', 100, 600)->fetchAll();
-        $this->assertCount(100, $documents);
+        $this->assertCount(99, $documents);
 
         $documents = City::createCriteria()->notBetweenWhere('city_id', 50, 200)->notBetweenWhere('city_id', 200, 600)->fetchAll();
-        $this->assertCount(50, $documents);
+        $this->assertCount(49, $documents);
     }
 
     public function test_inWhere()

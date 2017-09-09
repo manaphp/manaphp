@@ -267,7 +267,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function betweenWhere($expr, $min, $max)
     {
-        $this->_filters[] = [$expr => ['$gte' => $min, '$lt' => $max]];
+        $this->_filters[] = [$expr => ['$gte' => $min, '$lte' => $max]];
 
         return $this;
     }
@@ -287,7 +287,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function notBetweenWhere($expr, $min, $max)
     {
-        $this->_filters[] = ['$or' => [[$expr => ['$lt' => $min]], [$expr => ['$gte' => $max]]]];
+        $this->_filters[] = ['$or' => [[$expr => ['$lt' => $min]], [$expr => ['$gt' => $max]]]];
 
         return $this;
     }

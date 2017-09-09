@@ -174,6 +174,8 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) BETWEEN :_min_0 AND :_max_0',
             (new Query())->from('city')->betweenWhere('DATE(created_time)', 2000, 2100)->getSql());
+
+        $this->assertCount(20, (new Query)->from('city')->betweenWhere('city_id', 1, 20)->fetchAll());
     }
 
     public function test_notBetweenWhere()
@@ -186,6 +188,8 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) NOT BETWEEN :_min_0 AND :_max_0',
             (new Query())->from('city')->notBetweenWhere('DATE(created_time)', 2000, 2100)->getSql());
+
+        $this->assertCount(580, (new Query)->from('city')->notBetweenWhere('city_id', 1, 20)->fetchAll());
     }
 
     public function test_inWhere()
