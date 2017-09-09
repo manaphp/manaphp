@@ -363,6 +363,7 @@ class Query extends Component implements QueryInterface
      * @param int|float|string|array $bind
      *
      * @return static
+     * @throws \ManaPHP\Db\Query\Exception
      */
     public function where($condition, $bind = [])
     {
@@ -377,15 +378,35 @@ class Query extends Component implements QueryInterface
             }
         } else {
             if (is_scalar($bind)) {
-                preg_match('#^([\w\.]+)\s*(.*)$#', $condition, $matches);
-                list(, $column, $op) = $matches;
-                if ($op === '') {
-                    $op = '=';
+                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) !== 1) {
+                    throw new QueryException('unknown `:condition` condition', ['condition' => $condition]);
                 }
 
-                $bind_key = str_replace('.', '_', $column);
-                $this->_conditions[] = preg_replace('#\w+#', '[\\0]', $column) . $op . ':' . $bind_key;
-                $this->_bind[$bind_key] = $bind;
+                list(, $field, $operator) = $matches;
+                if ($operator === '') {
+                    $operator = '=';
+                }
+
+                $bind_key = str_replace('.', '_', $field);
+                $candiedField = preg_replace('#\w+#', '[\\0]', $field);
+                if (in_array($operator, ['=', '>', '>=', '<', '<=', '!=', '<>'], true)) {
+                    $this->_conditions[] = $candiedField . $operator . ':' . $bind_key;
+                    $this->_bind[$bind_key] = $bind;
+                } elseif ($operator === '^=') {
+                    $this->_conditions[] = $candiedField . ' LIKE :' . $bind_key;
+                    $this->_bind[$bind_key] = $bind . '%';
+                } elseif ($operator === '$=') {
+                    $this->_conditions[] = $candiedField . ' LIKE :' . $bind_key;
+                    $this->_bind[$bind_key] = '%' . $bind;
+                } elseif ($operator === '*=') {
+                    $this->_conditions[] = $candiedField . ' LIKE :' . $bind_key;
+                    $this->_bind[$bind_key] = '%' . $bind . '%';
+                } elseif ($operator === '~=') {
+                    $this->_conditions[] = 'LOWER(' . $candiedField . ')' . ' LIKE :' . $bind_key;
+                    $this->_bind[$bind_key] = '%' . strtolower($bind) . '%';
+                } else {
+                    throw new QueryException('unknown `:where` where filter', ['where' => $condition]);
+                }
             } else {
                 $this->_conditions[] = $condition;
                 $this->_bind = array_merge($this->_bind, $bind);

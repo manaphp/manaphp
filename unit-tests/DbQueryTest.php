@@ -144,6 +144,18 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id]>=:c_city_id',
             (new Query())->from('city')->where('c.city_id >=', 1)->getSql());
+
+        $result = (new Query())->from('city')->where('city^=', 'Ab')->fetchAll();
+        $this->assertCount(2, $result);
+
+        $result = (new Query())->from('city')->where('city$=', 'a')->fetchAll();
+        $this->assertCount(125, $result);
+
+        $result = (new Query())->from('city')->where('city*=', 'a')->fetchAll();
+        $this->assertCount(450, $result);
+
+        $result = (new Query())->from('city')->where('city~=', 'a')->fetchAll();
+        $this->assertCount(450, $result);
     }
 
     public function test_betweenWhere()
