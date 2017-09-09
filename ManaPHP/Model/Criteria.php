@@ -4,7 +4,7 @@ namespace ManaPHP\Model;
 use ManaPHP\Component;
 use ManaPHP\Model\Criteria\Exception as CriteriaException;
 
-abstract class Criteria extends Component implements CriteriaInterface
+abstract class Criteria extends Component implements CriteriaInterface, \JsonSerializable
 {
     /**
      * @var bool
@@ -36,5 +36,10 @@ abstract class Criteria extends Component implements CriteriaInterface
         } else {
             throw new CriteriaException('xxx');
         }
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->asArray();
     }
 }
