@@ -208,44 +208,45 @@ class Criteria extends \ManaPHP\Model\Criteria
     {
         if ($condition === null) {
             return $this;
-        }
-
-        if (is_array($condition)) {
+        } elseif (is_array($condition)) {
             /** @noinspection ForeachSourceInspection */
             foreach ($condition as $k => $v) {
                 $this->where($k, $v);
             }
-        } else {
-            if (is_scalar($bind)) {
-                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) !== 1) {
-                    throw new CriteriaException('unknown `:condition` condition', ['condition' => $condition]);
+        } elseif (is_array($bind)) {
+            if (isset($bind[0]) || count($bind) === 0) {
+                if (strpos($condition, '!=') || strpos($condition, '<>')) {
+                    $this->notInWhere(substr($condition, 0, -2), $bind);
+                } else {
+                    $this->inWhere($condition, $bind);
                 }
+            } else {
+                $this->_filters[] = [$condition => $bind];
+            }
+        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) === 1) {
+            list(, $field, $operator) = $matches;
+            if ($operator === '') {
+                $operator = '=';
+            }
 
-                list(, $field, $operator) = $matches;
-                if ($operator === '') {
-                    $operator = '=';
-                }
+            if ($operator === '^=') {
+                $this->_filters[] = [$field => ['$regex' => '^' . $bind]];
+            } elseif ($operator === '$=') {
+                $this->_filters[] = [$field => ['$regex' => $bind . '$']];
+            } elseif ($operator === '*=') {
+                $this->_filters[] = [$field => ['$regex' => $bind]];
+            } elseif ($operator === '~=') {
+                $this->_filters[] = [$field => ['$regex' => $bind, '$options' => 'i']];
+            } else {
                 $operator_map = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
-
-                if ($operator === '^=') {
-                    $this->_filters[] = [$field => ['$regex' => '^' . $bind]];
-                } elseif ($operator === '$=') {
-                    $this->_filters[] = [$field => ['$regex' => $bind . '$']];
-                } elseif ($operator === '*=') {
-                    $this->_filters[] = [$field => ['$regex' => $bind]];
-                } elseif ($operator === '~=') {
-                    $this->_filters[] = [$field => ['$regex' => $bind, '$options' => 'i']];
-                } elseif (isset($operator_map[$operator])) {
+                if (isset($operator_map[$operator])) {
                     $this->_filters[] = [$field => [$operator_map[$operator] => $bind]];
                 } else {
                     throw new CriteriaException('unknown `:where` where filter', ['where' => $condition]);
                 }
-            } elseif (isset($bind[0]) || (count($bind) === 0 && preg_match('#^[\w\.]+$#', $condition) === 1)) {
-                $pos = strpos($condition, '|=');
-                return $this->inWhere($pos ? substr($condition, 0, -2) : $condition, $bind);
-            } else {
-                $this->_filters[] = [$condition => $bind];
             }
+        } else {
+            throw new CriteriaException('unknown mongodb criteria `filter` filter', ['filter' => $condition]);
         }
 
         return $this;
