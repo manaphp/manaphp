@@ -98,7 +98,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
      * @param string $alias
      *
      * @return \ManaPHP\Db\Model\QueryInterface
-     * @deprecated
      */
     public static function query($alias = null)
     {

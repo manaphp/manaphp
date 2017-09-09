@@ -95,6 +95,18 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * alias of createCriteria
+     *
+     * @param string|array $fields
+     *
+     * @return \ManaPHP\Db\Model\CriteriaInterface
+     */
+    public static function criteria($fields = null)
+    {
+        return static::createCriteria($fields);
+    }
+
+    /**
      * Allows to query a set of records that match the specified conditions
      *
      * <code>
