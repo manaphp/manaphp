@@ -214,7 +214,12 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $this->where($k, $v);
             }
         } elseif (is_array($value)) {
-            if (isset($value[0]) || count($value) === 0) {
+            if (strpos($filter, '~=')) {
+                if (count($value) !== 2 || !isset($value[0], $value[1])) {
+                    throw new CriteriaException('`:filter` filter is valid: value is not a two elements array', ['filter' => $filter]);
+                }
+                $this->betweenWhere(substr($filter, 0, -2), $value[0], $value[1]);
+            } elseif (isset($value[0]) || count($value) === 0) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->notInWhere(substr($filter, 0, -2), $value);
                 } else {
