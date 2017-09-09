@@ -407,8 +407,9 @@ class Query extends Component implements QueryInterface
                 } else {
                     throw new QueryException('unknown `:where` where filter', ['where' => $condition]);
                 }
-            } elseif (is_array($bind) && strpos($condition, '|=')) {
-                return $this->inWhere(preg_replace('#\w+#', '[\\0]', substr($condition, 0, -2)), $bind);
+            } elseif (is_array($bind) && isset($bind[0])) {
+                $pos = strpos($condition, '|=');
+                return $this->inWhere(preg_replace('#\w+#', '[\\0]', $pos ? substr($condition, 0, -2) : $condition), $bind);
             } else {
                 $this->_conditions[] = $condition;
                 $this->_bind = array_merge($this->_bind, $bind);

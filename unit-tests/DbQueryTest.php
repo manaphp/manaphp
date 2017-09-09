@@ -156,7 +156,11 @@ class DbQueryTest extends TestCase
 
         $result = (new Query())->from('city')->where('city~=', 'a')->fetchAll();
         $this->assertCount(450, $result);
+
         $result = (new Query())->from('city')->where('city_id|=', [1,2,3,4])->fetchAll();
+        $this->assertCount(4, $result);
+
+        $result = (new Query())->from('city')->where('city_id', [1,2,3,4])->fetchAll();
         $this->assertCount(4, $result);
     }
 
