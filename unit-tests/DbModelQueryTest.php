@@ -345,11 +345,13 @@ class DbModelQueryTest extends TestCase
 
     public function test_likeWhere()
     {
-        $query = Address::query()->likeWhere('address', '14%');
-        $this->assertCount(33, $query->execute());
+        $documents = Address::criteria()->likeWhere('address', '%as%')->fetchAll();
+        $this->assertCount(24, $documents);
+        $documents = Address::criteria()->likeWhere('district', '%as%')->fetchAll();
+        $this->assertCount(48, $documents);
 
-        $query = Address::query()->likeWhere(['address', 'district'], 'we%');
-        $this->assertCount(15, $query->execute());
+        $documents = Address::criteria()->likeWhere(['address', 'district'], '%as%')->fetchAll();
+        $this->assertCount(71, $documents);
     }
 
     public function test_orderBy()
