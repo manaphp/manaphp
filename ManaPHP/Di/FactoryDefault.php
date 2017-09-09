@@ -67,7 +67,8 @@ class FactoryDefault extends Di
             'modelsCache' => ['ManaPHP\Cache\Adapter\File', [['dir' => '@data/modelsCache', 'extension' => '.json']]],
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
             'environment' => 'ManaPHP\Cli\Environment',
-            'netConnectivity' => 'ManaPHP\Net\Connectivity'
+            'netConnectivity' => 'ManaPHP\Net\Connectivity',
+            'dbQuery' => ['ManaPHP\Db\Query', false],
         ];
     }
 }
