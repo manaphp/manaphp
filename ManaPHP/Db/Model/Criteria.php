@@ -29,7 +29,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     /**
      * Criteria constructor.
      *
-     * @param string       $modelName
+     * @param string|array $modelName
      * @param string|array $columns
      */
     public function __construct($modelName, $columns = null)
@@ -37,6 +37,9 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
         $this->_modelName = $modelName;
 
         $this->_query = Di::getDefault()->get('ManaPHP\Db\Query');
+        if ($columns !== null) {
+            $this->_query->select($columns);
+        }
     }
 
     /**
