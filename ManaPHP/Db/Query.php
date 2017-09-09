@@ -602,6 +602,10 @@ class Query extends Component implements QueryInterface
      */
     public function likeWhere($expr, $like)
     {
+        if (strpos($like, '%') === false) {
+            $like = '%' . $like . '%';
+        }
+
         if (is_array($expr)) {
             $conditions = [];
             /** @noinspection ForeachSourceInspection */
