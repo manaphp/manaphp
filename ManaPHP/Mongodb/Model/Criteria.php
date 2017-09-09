@@ -343,7 +343,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function likeWhere($expr, $like)
     {
-        $this->_filters[$expr] = ['$regex' => $like];
+        $this->_filters[] = [$expr => ['$regex' => $like]];
 
         return $this;
     }
