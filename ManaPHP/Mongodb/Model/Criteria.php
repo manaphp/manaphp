@@ -217,7 +217,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
         } else {
             if (is_scalar($bind)) {
-                if (preg_match('#^([\w\.]+)\s*([<>=!]*)$#', $condition, $matches) !== 1) {
+                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) !== 1) {
                     throw new CriteriaException('unknown `:condition` condition', ['condition' => $condition]);
                 }
 
@@ -225,9 +225,21 @@ class Criteria extends \ManaPHP\Model\Criteria
                 if ($operator === '') {
                     $operator = '=';
                 }
-
                 $operator_map = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
-                $this->_filters[] = [$field => [$operator_map[$operator] => $bind]];
+
+                if ($operator === '^=') {
+                    $this->_filters[] = [$field => ['$regex' => '^' . $bind]];
+                } elseif ($operator === '$=') {
+                    $this->_filters[] = [$field => ['$regex' => $bind . '$']];
+                } elseif ($operator === '*=') {
+                    $this->_filters[] = [$field => ['$regex' => $bind]];
+                } elseif ($operator === '~=') {
+                    $this->_filters[] = [$field => ['$regex' => $bind, '$options' => 'i']];
+                } elseif (isset($operator_map[$operator])) {
+                    $this->_filters[] = [$field => [$operator_map[$operator] => $bind]];
+                } else {
+                    throw new CriteriaException('unknown `:where` where filter', ['where' => $$condition]);
+                }
             } else {
                 $this->_filters[] = [$condition => $bind];
             }
@@ -693,7 +705,7 @@ class Criteria extends \ManaPHP\Model\Criteria
 
     /**
      *
-     * @return array|\ManaPHP\Mongodb\Model[]
+     * @return \ManaPHP\Mongodb\Model[]
      */
     public function fetchAll()
     {

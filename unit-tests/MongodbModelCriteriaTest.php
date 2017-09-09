@@ -124,6 +124,20 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
+        $documents = City::createCriteria()->where('city^=', 'Ab')->fetchAll();
+        $this->assertCount(2, $documents);
+        $this->assertEquals(2, $documents[0]->city_id);
+        $this->assertEquals(3, $documents[1]->city_id);
+
+        $documents = City::createCriteria()->where('city$=', 'a')->fetchAll();
+        $this->assertCount(125, $documents);
+
+        $documents = City::createCriteria()->where('city*=', 'a')->fetchAll();
+        $this->assertCount(435, $documents);
+
+        $documents = City::createCriteria()->where('city~=', 'a')->fetchAll();
+        $this->assertCount(450, $documents);
+
         $documents = City::createCriteria()->where('city_id', ['$ne' => 10])->fetchAll();
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
