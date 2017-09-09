@@ -1128,7 +1128,6 @@ class Query extends Component implements QueryInterface
     /**
      *
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function execute()
     {
@@ -1137,6 +1136,7 @@ class Query extends Component implements QueryInterface
         $this->_sql = $this->_buildSql();
 
         if ($this->_cacheOptions !== null) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $cacheOptions = $this->_getCacheOptions();
 
             $data = $this->modelsCache->get($cacheOptions['key']);
@@ -1315,7 +1315,6 @@ class Query extends Component implements QueryInterface
     /**
      *
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function fetchAll()
     {
