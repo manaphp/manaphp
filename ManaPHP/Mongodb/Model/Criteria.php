@@ -216,8 +216,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $this->where($k, $v);
             }
         } else {
-            if (is_scalar($bind)) {
-                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) !== 1) {
+            if (is_scalar($bind) || strpos($condition, '=') !== false) {
+                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~|]*)$#', $condition, $matches) !== 1) {
                     throw new CriteriaException('unknown `:condition` condition', ['condition' => $condition]);
                 }
 
@@ -237,6 +237,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                     $this->_filters[] = [$field => ['$regex' => $bind, '$options' => 'i']];
                 } elseif (isset($operator_map[$operator])) {
                     $this->_filters[] = [$field => [$operator_map[$operator] => $bind]];
+                } elseif ($operator === '|=') {
+                    $this->_filters[] = [$field => ['$in' => $bind]];
                 } else {
                     throw new CriteriaException('unknown `:where` where filter', ['where' => $condition]);
                 }
