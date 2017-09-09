@@ -238,7 +238,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } elseif (isset($operator_map[$operator])) {
                     $this->_filters[] = [$field => [$operator_map[$operator] => $bind]];
                 } elseif ($operator === '|=') {
-                    $this->_filters[] = [$field => ['$in' => $bind]];
+                    /** @noinspection PhpParamsInspection */
+                    return $this->inWhere($field, $bind);
                 } else {
                     throw new CriteriaException('unknown `:where` where filter', ['where' => $condition]);
                 }
