@@ -148,7 +148,7 @@ class DbModelQueryTest extends TestCase
             ->select('*')
             ->from(City::createQuery()
                 ->select('*')
-                ->where('city_id<=5'), 'cc');
+                ->where('city_id<=', 5), 'cc');
         $rows = $query->execute();
         $this->assertCount(5, $rows);
     }
@@ -247,7 +247,7 @@ class DbModelQueryTest extends TestCase
 
     public function test_where()
     {
-        $query = Address::createQuery()->where('address_id <=100');
+        $query = Address::createQuery()->where('address_id <=', 100);
         $this->assertCount(100, $query->execute());
 
         $query = Address::createQuery()
@@ -267,7 +267,7 @@ class DbModelQueryTest extends TestCase
     public function test_andWhere()
     {
         $query = Address::createQuery()
-            ->andWhere('address_id <=100');
+            ->andWhere('address_id <=', 100);
         $this->assertCount(100, $query->execute());
 
         $query = Address::createQuery()
@@ -535,7 +535,7 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(100, $pagination->items);
         $this->assertEquals(600, $pagination->count);
 
-        $pagination = City::createCriteria()->paginate(1000,1);
+        $pagination = City::createCriteria()->paginate(1000, 1);
         $this->assertCount(600, $pagination->items);
         $this->assertEquals(600, $pagination->count);
 

@@ -313,15 +313,15 @@ class DbModelTest extends TestCase
     {
         //normal usage
         $city = new City();
-        $city->assign(['city_id' => 1, 'city' => 'beijing']);
+        $city->assign(['city_id' => 1, 'city' => 'beijing'], []);
         $this->assertEquals(1, $city->city_id);
         $this->assertEquals('beijing', $city->city);
 
         //normal usage with whitelist
         $city = new City();
-        $city->assign(['city_id' => 1, 'city' => 'beijing'], ['city_id']);
+        $city->assign(['city_id' => 1, 'city' => 'beijing'], ['city_id', 'city']);
         $this->assertEquals(1, $city->city_id);
-        $this->assertNull($city->city);
+        $this->assertEquals('beijing', $city->city);
     }
 
     public function test_getSource()
