@@ -280,15 +280,18 @@ class MongodbModelTest extends TestCase
     {
         //normal usage
         $city = new City();
-        $city->assign(['city_id' => 1, 'city' => 'beijing']);
+        $city->assign(['city_id' => 1, 'city' => 'beijing'], []);
         $this->assertEquals(1, $city->city_id);
         $this->assertEquals('beijing', $city->city);
 
         //normal usage with whitelist
         $city = new City();
-        $city->assign(['city_id' => 1, 'city' => 'beijing'], ['city_id']);
-        $this->assertEquals(1, $city->city_id);
-        $this->assertNull($city->city);
+        try {
+            $city->assign(['city_id' => 1, 'city' => 'beijing'], ['city_id']);
+            $this->assertFalse('why not1!');
+        } catch (\Exception $e) {
+
+        }
     }
 
     public function test_getSource()
