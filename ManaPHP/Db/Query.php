@@ -377,8 +377,8 @@ class Query extends Component implements QueryInterface
                 $this->where($k, $v);
             }
         } else {
-            if (is_scalar($bind)) {
-                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $condition, $matches) !== 1) {
+            if (is_scalar($bind) || strpos($condition, '=') !== false) {
+                if (preg_match('#^([\w\.]+)\s*([<>=!^$*~|]*)$#', $condition, $matches) !== 1) {
                     throw new QueryException('unknown `:condition` condition', ['condition' => $condition]);
                 }
 
@@ -404,6 +404,8 @@ class Query extends Component implements QueryInterface
                 } elseif ($operator === '~=') {
                     $this->_conditions[] = 'LOWER(' . $candiedField . ')' . ' LIKE :' . $bind_key;
                     $this->_bind[$bind_key] = '%' . strtolower($bind) . '%';
+                } elseif ($operator === '|=') {
+                    return $this->inWhere($candiedField, $bind);
                 } else {
                     throw new QueryException('unknown `:where` where filter', ['where' => $condition]);
                 }
