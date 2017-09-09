@@ -414,7 +414,7 @@ class Query extends Component implements QueryInterface
                 throw new QueryException('unknown `:where` where filter', ['where' => $filter]);
             }
         } else {
-            throw new QueryException('unknown `:condition` condition', ['condition' => $filter]);
+            throw new QueryException('unknown `:filter` filter', ['filter' => $filter]);
         }
 
         return $this;
