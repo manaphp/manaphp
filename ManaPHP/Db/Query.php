@@ -374,6 +374,7 @@ class Query extends Component implements QueryInterface
             foreach ($filter as $k => $v) {
                 $this->where($k, $v);
             }
+        } elseif ($value === null) {
             $this->_conditions[] = $filter;
         } elseif (is_array($value)) {
             if (isset($value[0]) || count($value) === 0) {
