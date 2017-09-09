@@ -3,6 +3,7 @@ defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
 
 require __DIR__ . '/TApplication/Application.php';
 
+use Mongodb\Models\Address;
 use Mongodb\Models\City;
 
 class MongodbModelCriteriaTest extends TestCase
@@ -189,6 +190,17 @@ class MongodbModelCriteriaTest extends TestCase
 
         $documents = City::criteria()->notInWhere('city_id', [])->fetchAll();
         $this->assertCount(600, $documents);
+    }
+
+    public function test_likeWhere()
+    {
+        $documents = Address::criteria()->likeWhere('address', 'as')->fetchAll();
+        $this->assertCount(21, $documents);
+        $documents = Address::criteria()->likeWhere('district', 'as')->fetchAll();
+        $this->assertCount(44, $documents);
+
+        $documents = Address::criteria()->likeWhere(['address', 'district'], 'as')->fetchAll();
+        $this->assertCount(64, $documents);
     }
 
     public function test_orderBy()
