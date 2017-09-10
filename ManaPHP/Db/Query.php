@@ -352,12 +352,12 @@ class Query extends Component implements QueryInterface
                 if (count($value) !== 2 || !isset($value[0], $value[1])) {
                     throw new QueryException('`:filter` filter is valid: value is not a two elements array', ['filter' => $filter]);
                 }
-                $this->betweenWhere(substr($filter, 0, -2), $value[0], $value[1]);
+                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif (isset($value[0]) || count($value) === 0) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
-                    $this->notInWhere(substr($filter, 0, -2), $value);
+                    $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
-                    $this->inWhere($filter, $value);
+                    $this->whereIn($filter, $value);
                 }
             } else {
                 $this->_conditions[] = $filter;
@@ -409,7 +409,7 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      */
-    public function betweenWhere($expr, $min, $max)
+    public function whereBetween($expr, $min, $max)
     {
         if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
 
@@ -439,6 +439,21 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * alias of whereBetween
+     *
+     * @param string           $expr
+     * @param int|float|string $min
+     * @param int|float|string $max
+     *
+     * @return static
+     * @deprecated
+     */
+    public function betweenWhere($expr, $min, $max)
+    {
+        return $this->whereBetween($expr, $min, $max);
+    }
+
+    /**
      * Appends a NOT BETWEEN condition to the current conditions
      *
      *<code>
@@ -451,7 +466,7 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      */
-    public function notBetweenWhere($expr, $min, $max)
+    public function whereNotBetween($expr, $min, $max)
     {
         $minKey = '_min_' . $this->_hiddenParamNumber;
         $maxKey = '_max_' . $this->_hiddenParamNumber;
@@ -475,6 +490,21 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * alias of whereNotBetween
+     *
+     * @param string           $expr
+     * @param int|float|string $min
+     * @param int|float|string $max
+     *
+     * @return static
+     * @deprecated
+     */
+    public function notBetweenWhere($expr, $min, $max)
+    {
+        return $this->whereNotBetween($expr, $min, $max);
+    }
+
+    /**
      * Appends an IN condition to the current conditions
      *
      *<code>
@@ -486,7 +516,7 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      */
-    public function inWhere($expr, $values)
+    public function whereIn($expr, $values)
     {
         if ($values instanceof $this) {
             $this->where($expr . ' IN (' . $values->getSql() . ')');
@@ -522,6 +552,20 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * alias of whereIn
+     *
+     * @param string                           $expr
+     * @param array|\ManaPHP\Db\QueryInterface $values
+     *
+     * @return static
+     * @deprecated
+     */
+    public function inWhere($expr, $values)
+    {
+        return $this->whereIn($expr, $values);
+    }
+
+    /**
      * Appends a NOT IN condition to the current conditions
      *
      *<code>
@@ -533,7 +577,7 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      */
-    public function notInWhere($expr, $values)
+    public function whereNotIn($expr, $values)
     {
         if ($values instanceof $this) {
             $this->where($expr . ' NOT IN (' . $values->getSql() . ')');
@@ -566,12 +610,26 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * alias of whereNotIn
+     *
+     * @param string                           $expr
+     * @param array|\ManaPHP\Db\QueryInterface $values
+     *
+     * @return static
+     * @deprecated
+     */
+    public function notInWhere($expr, $values)
+    {
+        return $this->whereNotIn($expr, $values);
+    }
+
+    /**
      * @param string|array $expr
      * @param string       $like
      *
      * @return static
      */
-    public function likeWhere($expr, $like)
+    public function whereLike($expr, $like)
     {
         if (strpos($like, '%') === false) {
             $like = '%' . $like . '%';

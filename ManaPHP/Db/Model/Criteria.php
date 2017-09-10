@@ -115,7 +115,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function whereBetween($expr, $min, $max)
     {
-        $this->_query->betweenWhere($expr, $min, $max);
+        $this->_query->whereBetween($expr, $min, $max);
 
         return $this;
     }
@@ -135,7 +135,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function whereNotBetween($expr, $min, $max)
     {
-        $this->_query->notBetweenWhere($expr, $min, $max);
+        $this->_query->whereNotBetween($expr, $min, $max);
 
         return $this;
     }
@@ -154,7 +154,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function whereIn($expr, $values)
     {
-        $this->_query->inWhere($expr, $values);
+        $this->_query->whereIn($expr, $values);
 
         return $this;
     }
@@ -173,7 +173,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function whereNotIn($expr, $values)
     {
-        $this->_query->notInWhere($expr, $values);
+        $this->_query->whereNotIn($expr, $values);
 
         return $this;
     }

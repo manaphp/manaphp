@@ -170,70 +170,70 @@ class DbQueryTest extends TestCase
     public function test_betweenWhere()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',
-            (new Query())->from('city')->betweenWhere('city_id', 1, 10)->getSql());
+            (new Query())->from('city')->whereBetween('city_id', 1, 10)->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id] BETWEEN :c_city_id_min AND :c_city_id_max',
-            (new Query())->from('city')->betweenWhere('c.city_id', 1, 10)->getSql());
+            (new Query())->from('city')->whereBetween('c.city_id', 1, 10)->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) BETWEEN :_min_0 AND :_max_0',
-            (new Query())->from('city')->betweenWhere('DATE(created_time)', 2000, 2100)->getSql());
+            (new Query())->from('city')->whereBetween('DATE(created_time)', 2000, 2100)->getSql());
 
-        $this->assertCount(20, (new Query)->from('city')->betweenWhere('city_id', 1, 20)->fetchAll());
+        $this->assertCount(20, (new Query)->from('city')->whereBetween('city_id', 1, 20)->fetchAll());
     }
 
     public function test_notBetweenWhere()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT BETWEEN :_min_0 AND :_max_0',
-            (new Query())->from('city')->notBetweenWhere('city_id', 1, 10)->getSql());
+            (new Query())->from('city')->whereNotBetween('city_id', 1, 10)->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id] NOT BETWEEN :_min_0 AND :_max_0',
-            (new Query())->from('city')->notBetweenWhere('c.city_id', 1, 10)->getSql());
+            (new Query())->from('city')->whereNotBetween('c.city_id', 1, 10)->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) NOT BETWEEN :_min_0 AND :_max_0',
-            (new Query())->from('city')->notBetweenWhere('DATE(created_time)', 2000, 2100)->getSql());
+            (new Query())->from('city')->whereNotBetween('DATE(created_time)', 2000, 2100)->getSql());
 
-        $this->assertCount(580, (new Query)->from('city')->notBetweenWhere('city_id', 1, 20)->fetchAll());
+        $this->assertCount(580, (new Query)->from('city')->whereNotBetween('city_id', 1, 20)->fetchAll());
     }
 
     public function test_inWhere()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE 1=2',
-            (new Query())->from('city')->inWhere('city_id', [])->getSql());
+            (new Query())->from('city')->whereIn('city_id', [])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0)',
-            (new Query())->from('city')->inWhere('city_id', [1])->getSql());
+            (new Query())->from('city')->whereIn('city_id', [1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0, :_in_0_1)',
-            (new Query())->from('city')->inWhere('city_id', [1, 2])->getSql());
+            (new Query())->from('city')->whereIn('city_id', [1, 2])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) IN (:_in_0_0, :_in_0_1)',
-            (new Query())->from('city')->inWhere('DATE(created_time)', [2000, 2001])->getSql());
+            (new Query())->from('city')->whereIn('DATE(created_time)', [2000, 2001])->getSql());
     }
 
     public function test_notInWhere()
     {
         $this->assertEquals('SELECT * FROM [city]',
-            (new Query())->from('city')->notInWhere('city_id', [])->getSql());
+            (new Query())->from('city')->whereNotIn('city_id', [])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (:_in_0_0)',
-            (new Query())->from('city')->notInWhere('city_id', [1])->getSql());
+            (new Query())->from('city')->whereNotIn('city_id', [1])->getSql());
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (:_in_0_0, :_in_0_1)',
-            (new Query())->from('city')->notInWhere('city_id', [1, 2])->getSql());
+            (new Query())->from('city')->whereNotIn('city_id', [1, 2])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) NOT IN (:_in_0_0, :_in_0_1)',
-            (new Query())->from('city')->notInWhere('DATE(created_time)', [2000, 2001])->getSql());
+            (new Query())->from('city')->whereNotIn('DATE(created_time)', [2000, 2001])->getSql());
     }
 
     public function test_likeWhere()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_name] LIKE :city_name',
-            (new Query())->from('city')->likeWhere('city_name', '%A%')->getSql());
+            (new Query())->from('city')->whereLike('city_name', '%A%')->getSql());
 
         $this->assertEquals('SELECT * FROM [city] AS [c] WHERE [c].[city_name] LIKE :c_city_name',
-            (new Query())->from('city', 'c')->likeWhere('c.city_name', '%A%')->getSql());
+            (new Query())->from('city', 'c')->whereLike('c.city_name', '%A%')->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE ([city_name] LIKE :city_name OR [country_name] LIKE :country_name)',
-            (new Query())->from('city')->likeWhere(['city_name', 'country_name'], '%A%')->getSql());
+            (new Query())->from('city')->whereLike(['city_name', 'country_name'], '%A%')->getSql());
     }
 
     public function test_limit()

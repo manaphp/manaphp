@@ -300,50 +300,50 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(1, $query->execute());
     }
 
-    public function test_betweenWhere()
+    public function test_whereBetween()
     {
         $query = Address::query()
-            ->betweenWhere('address_id', 51, 100);
+            ->whereBetween('address_id', 51, 100);
         $this->assertCount(50, $query->execute());
     }
 
-    public function test_notBetweenWhere()
+    public function test_whereNotBetween()
     {
         $query = Address::query()
-            ->notBetweenWhere('address_id', 51, 1000000);
+            ->whereNotBetween('address_id', 51, 1000000);
         $this->assertCount(50, $query->execute());
 
         $query = Address::query()
-            ->notBetweenWhere('address_id', 51, 1000000)
-            ->notBetweenWhere('address_id', 71, 7000000);
+            ->whereNotBetween('address_id', 51, 1000000)
+            ->whereNotBetween('address_id', 71, 7000000);
         $this->assertCount(50, $query->execute());
     }
 
-    public function test_inWhere()
+    public function test_whereIn()
     {
-        $query = Address::query()->inWhere('address_id', []);
+        $query = Address::query()->whereIn('address_id', []);
         $this->assertCount(0, $query->execute());
 
-        $query = Address::query()->inWhere('address_id', [1]);
+        $query = Address::query()->whereIn('address_id', [1]);
         $this->assertCount(1, $query->execute());
 
         $query = Address::query()
-            ->inWhere('address_id', [1, 2, 3, 4, 5]);
+            ->whereIn('address_id', [1, 2, 3, 4, 5]);
         $this->assertCount(5, $query->execute());
 
         $query = Address::query()
-            ->inWhere('address_id', [-3, -2, -1, 0, 1, 2]);
+            ->whereIn('address_id', [-3, -2, -1, 0, 1, 2]);
         $this->assertCount(2, $query->execute());
 
         $query = Address::query()
             ->select('*')
-            ->inWhere('city_id', Address::query()
+            ->whereIn('city_id', Address::query()
                 ->select('city_id')
-                ->inWhere('city_id', [1, 2, 3, 4]));
+                ->whereIn('city_id', [1, 2, 3, 4]));
         $this->assertCount(4, $query->execute());
     }
 
-    public function test_likeWhere()
+    public function test_whereLike()
     {
         $documents = Address::criteria()->whereLike('address', 'as')->fetchAll();
         $this->assertCount(24, $documents);
@@ -504,26 +504,26 @@ class DbModelQueryTest extends TestCase
         $this->assertEquals(603, $rowAddress);
 
         $query = Address::query()
-            ->notInWhere('address_id', []);
+            ->whereNotIn('address_id', []);
         $this->assertCount(603, $query->execute());
 
         $query = Address::query()
-            ->notInWhere('address_id', [1]);
+            ->whereNotIn('address_id', [1]);
         $this->assertCount(602, $query->execute());
 
         $query = Address::query()
-            ->notInWhere('address_id', [1, 2, 3]);
+            ->whereNotIn('address_id', [1, 2, 3]);
         $this->assertCount(600, $query->execute());
 
         $query = Address::query()
-            ->notInWhere('address_id', [-3, -2, -1, 0, 1, 2]);
+            ->whereNotIn('address_id', [-3, -2, -1, 0, 1, 2]);
         $this->assertCount(601, $query->execute());
 
         $query = Address::query()
             ->select('*')
-            ->notInWhere('city_id', Address::query()
+            ->whereNotIn('city_id', Address::query()
                 ->select('city_id')
-                ->inWhere('city_id', [1, 2, 3, 4]));
+                ->whereIn('city_id', [1, 2, 3, 4]));
         $this->assertCount(599, $query->execute());
     }
 
@@ -564,7 +564,7 @@ class DbModelQueryTest extends TestCase
             ->union([
                 City::query()
                     ->select('*')
-                    ->inWhere('city_id', [1, 2, 3, 4, 5])
+                    ->whereIn('city_id', [1, 2, 3, 4, 5])
             ]);
         $this->assertCount(5, $query->execute());
 
