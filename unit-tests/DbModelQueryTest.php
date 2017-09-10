@@ -343,14 +343,14 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(4, $query->execute());
     }
 
-    public function test_whereLike()
+    public function test_whereContains()
     {
-        $documents = Address::criteria()->whereLike('address', 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains('address', 'as')->fetchAll();
         $this->assertCount(24, $documents);
-        $documents = Address::criteria()->whereLike('district', 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains('district', 'as')->fetchAll();
         $this->assertCount(48, $documents);
 
-        $documents = Address::criteria()->whereLike(['address', 'district'], 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains(['address', 'district'], 'as')->fetchAll();
         $this->assertCount(71, $documents);
     }
 
