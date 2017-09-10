@@ -326,6 +326,12 @@ class DbQueryTest extends TestCase
             (new Query())->from('city')->groupBy(['c.city_id'])->getSql());
     }
 
+    public function test_count()
+    {
+        $this->assertEquals(600, (new Query())->from('city')->count());
+        $this->assertEquals(3, (new Query())->from('city')->where('country_id', 2)->count());
+    }
+
     public function test_exists()
     {
         $this->assertTrue((new Query)->from('city')->exists());
