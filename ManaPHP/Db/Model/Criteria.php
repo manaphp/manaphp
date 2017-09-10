@@ -12,11 +12,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     protected $_query;
 
     /**
-     * @var array
-     */
-    protected $_aggregate;
-
-    /**
      * @var string
      */
     protected $_modelName;
@@ -75,8 +70,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function aggregate($expr)
     {
-        $this->_aggregate = $expr;
-
         return $this->_replaceModelInfo()->_query->aggregate($expr);
     }
 
