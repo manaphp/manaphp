@@ -428,12 +428,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function distinctField($field)
     {
-        $values = [];
-        foreach ($this->distinct()->select($field)->fetchAll() as $v) {
-            $values[] = $v->{$field};
-        }
-
-        return $values;
+        return $this->_replaceModelInfo()->_query->distinctField($field);
     }
 
     /**

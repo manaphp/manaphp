@@ -401,6 +401,13 @@ interface QueryInterface
     public function fetchAll();
 
     /**
+     * @param string $field
+     *
+     * @return array
+     */
+    public function distinctField($field);
+
+    /**
      * @return int
      */
     public function delete();

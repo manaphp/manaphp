@@ -1468,6 +1468,21 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param string $field
+     *
+     * @return array
+     */
+    public function distinctField($field)
+    {
+        $values = [];
+        foreach ($this->distinct()->select($field)->fetchAll() as $v) {
+            $values[] = $v[$field];
+        }
+
+        return $values;
+    }
+
+    /**
      * @param array $fieldValues
      *
      * @return int
