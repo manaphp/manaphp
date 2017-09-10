@@ -36,6 +36,12 @@ class DbModelCriteriaTest extends TestCase
             City::criteria()->where('city_id', 1)->getSql());
     }
 
+    public function test_whereRaw()
+    {
+        $this->assertEquals('SELECT * FROM [city] WHERE city_id >1',
+            City::criteria()->whereRaw('city_id >1')->getSql());
+    }
+
     public function test_whereBetween()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',

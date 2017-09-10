@@ -121,6 +121,14 @@ interface QueryInterface
     public function where($filter, $value = null);
 
     /**
+     * @param string $filter
+     * @param array  $bind
+     *
+     * @return static
+     */
+    public function whereRaw($filter, $bind = null);
+
+    /**
      * Appends a BETWEEN condition to the current conditions
      *
      *<code>

@@ -153,6 +153,12 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertEquals(1, $documents[0]->city_id);
     }
 
+    public function test_whereRaw()
+    {
+        $documents = City::criteria()->whereRaw(['city_id' => ['$lt' => 10]])->fetchAll();
+        $this->assertCount(9, $documents);
+    }
+
     public function test_whereBetween()
     {
         $documents = City::criteria()->whereBetween('city_id', 2, 3)->fetchAll();

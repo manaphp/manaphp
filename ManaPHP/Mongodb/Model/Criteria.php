@@ -258,6 +258,18 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
+     * @param array $filter
+     *
+     * @return static
+     */
+    public function whereRaw($filter)
+    {
+        $this->_filters[] = $filter;
+
+        return $this;
+    }
+
+    /**
      * Appends a BETWEEN condition to the current conditions
      *
      *<code>

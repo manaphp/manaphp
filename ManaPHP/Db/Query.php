@@ -566,6 +566,23 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param string $filter
+     * @param array  $bind
+     *
+     * @return static
+     */
+    public function whereRaw($filter, $bind = null)
+    {
+        $this->_conditions[] = $filter;
+
+        if ($bind !== null) {
+            $this->_bind = array_merge($this->_bind, $bind);
+        }
+
+        return $this;
+    }
+
+    /**
      * Appends a NOT IN condition to the current conditions
      *
      *<code>

@@ -13,6 +13,14 @@ interface CriteriaInterface extends \ManaPHP\Model\CriteriaInterface
     public function distinct($distinct = true);
 
     /**
+     * @param string $filter
+     * @param array  $bind
+     *
+     * @return static
+     */
+    public function whereRaw($filter, $bind = null);
+
+    /**
      * @return string
      * @throws \ManaPHP\Db\Query\Exception
      */

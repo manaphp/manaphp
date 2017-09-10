@@ -101,6 +101,19 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
+     * @param string $filter
+     * @param array  $bind
+     *
+     * @return static
+     */
+    public function whereRaw($filter, $bind = null)
+    {
+        $this->_query->whereRaw($filter, $bind);
+
+        return $this;
+    }
+
+    /**
      * Appends a BETWEEN condition to the current conditions
      *
      *<code>
