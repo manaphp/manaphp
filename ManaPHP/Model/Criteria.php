@@ -101,7 +101,9 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
      */
     public function count()
     {
-        return $this->aggregate(['count' => 'COUNT(*)'])[0]['count'];
+        $r = $this->aggregate(['count' => 'COUNT(*)']);
+
+        return isset($r[0]) ? $r[0]['count'] : 0;
     }
 
     public function jsonSerialize()
