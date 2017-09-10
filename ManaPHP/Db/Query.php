@@ -1265,6 +1265,16 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param string $column
+     *
+     * @return int
+     */
+    public function count($column = '*')
+    {
+        return $this->aggregate(['count' => 'COUNT(*)'])->execute()[0]['count'];
+    }
+
+    /**
      * @param \ManaPHP\Db\QueryInterface[] $queries
      * @param bool                         $distinct
      *

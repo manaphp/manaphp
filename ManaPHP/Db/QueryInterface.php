@@ -344,7 +344,14 @@ interface QueryInterface
      * @return bool
      */
     public function exists();
-    
+
+    /**
+     * @param string $column
+     *
+     * @return int
+     */
+    public function count($column = '*');
+
     /**
      * @return array|false
      */
