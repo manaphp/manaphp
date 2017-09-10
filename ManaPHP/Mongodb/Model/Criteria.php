@@ -370,6 +370,39 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereContains($expr, $value)
+    {
+        return $this->whereLike($expr, $value);
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereStartsWith($expr, $value)
+    {
+        return $this->whereLike($expr, '^' . $value);
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereEndsWith($expr, $value)
+    {
+        return $this->whereLike($expr, $value . '$');
+    }
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>
