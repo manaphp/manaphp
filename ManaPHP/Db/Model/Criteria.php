@@ -231,6 +231,30 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNull($expr)
+    {
+        $this->_query->whereNull($expr);
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNotNull($expr)
+    {
+        $this->_query->whereNotNull($expr);
+
+        return $this;
+    }
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>

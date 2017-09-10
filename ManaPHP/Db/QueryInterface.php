@@ -211,6 +211,20 @@ interface QueryInterface
     public function whereEndsWith($expr, $value);
 
     /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNull($expr);
+
+    /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNotNull($expr);
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>

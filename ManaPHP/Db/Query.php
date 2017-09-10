@@ -720,6 +720,30 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNull($expr)
+    {
+        $this->_conditions[] = $expr . ' IS NULL';
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNotNull($expr)
+    {
+        $this->_conditions[] = $expr . ' IS NOT NULL';
+
+        return $this;
+    }
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>

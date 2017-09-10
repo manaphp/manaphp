@@ -89,6 +89,16 @@ class DbModelCriteriaTest extends TestCase
         $this->assertEquals(125, City::criteria()->whereEndsWith('city', 'a')->count());
     }
 
+    public function test_whereNull()
+    {
+        $this->assertEquals(0, City::criteria()->whereNull('city_id')->count());
+    }
+
+    public function test_whereNotNull()
+    {
+        $this->assertEquals(600, City::criteria()->whereNotNull('city_id')->count());
+    }
+
     public function test_limit()
     {
         $this->assertEquals('SELECT * FROM [city] LIMIT 10',

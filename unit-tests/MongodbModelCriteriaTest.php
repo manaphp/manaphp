@@ -219,6 +219,16 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertEquals(125, City::criteria()->whereEndsWith('city', 'a')->count());
     }
 
+    public function test_whereNull()
+    {
+        $this->assertEquals(0, City::criteria()->whereNull('city_id')->count());
+    }
+
+    public function test_whereNotNull()
+    {
+        $this->assertEquals(600, City::criteria()->whereNotNull('city_id')->count());
+    }
+
     public function test_orderBy()
     {
         $documents = City::criteria()->orderBy('city_id')->limit(10, 100)->fetchAll();

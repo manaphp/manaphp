@@ -403,6 +403,30 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNull($expr)
+    {
+        $this->_filters[] = [$expr => ['$type' => 10]];
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNotNull($expr)
+    {
+        $this->_filters[] = [$expr => ['$ne' => null]];
+
+        return $this;
+    }
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>
