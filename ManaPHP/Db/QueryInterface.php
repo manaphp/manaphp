@@ -312,6 +312,21 @@ interface QueryInterface
     public function cache($options);
 
     /**
+     * @param \ManaPHP\Db\QueryInterface[] $queries
+     * @param bool                         $distinct
+     *
+     * @return static
+     */
+    public function union($queries, $distinct = false);
+
+    /**
+     * @param bool $forceUseMaster
+     *
+     * @return static
+     */
+    public function forceUseMaster($forceUseMaster = true);
+
+    /**
      *
      * @return array
      */
@@ -329,22 +344,7 @@ interface QueryInterface
      * @return bool
      */
     public function exists();
-
-    /**
-     * @param \ManaPHP\Db\QueryInterface[] $queries
-     * @param bool                         $distinct
-     *
-     * @return static
-     */
-    public function union($queries, $distinct = false);
-
-    /**
-     * @param bool $forceUseMaster
-     *
-     * @return static
-     */
-    public function forceUseMaster($forceUseMaster = true);
-
+    
     /**
      * @return array|false
      */
