@@ -1,32 +1,31 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/17
- * Time: 21:42
- */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Di;
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Http\Response;
+use PHPUnit\Framework\TestCase;
 
 class HttpResponseTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
-        $di = new ManaPHP\Di\FactoryDefault();
+        $di = new FactoryDefault();
         $di->setShared('configure', 'ManaPHP\Configure\Configure');
 
     }
 
     public function test_setStatusCode()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         //set only time
         $response->setStatusCode(404, 'Not Found');
         $this->assertEquals(['Status' => '404 Not Found'], $response->getHeaders());
 
         //set multiple times
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
         $response->setStatusCode(200, 'OK');
         $response->setStatusCode(404, 'Not Found');
         $response->setStatusCode(409, 'Conflict');
@@ -35,7 +34,7 @@ class HttpResponseTest extends TestCase
 
     public function test_setHeader()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $response->setHeader('Content-Type', 'text/html');
         $this->assertEquals(['Content-Type' => 'text/html'], $response->getHeaders());
@@ -49,7 +48,7 @@ class HttpResponseTest extends TestCase
 
     public function test_setRawHeader()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $response->setRawHeader('Server: Apache');
         $this->assertEquals(['Server: Apache' => ''], $response->getHeaders());
@@ -57,7 +56,7 @@ class HttpResponseTest extends TestCase
 
     public function test_setExpires()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         date_default_timezone_set('PRC');
 
@@ -67,7 +66,7 @@ class HttpResponseTest extends TestCase
 
     public function test_setNotModified()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $response->setNotModified();
 
@@ -76,7 +75,7 @@ class HttpResponseTest extends TestCase
 
     public function test_setContentType()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $response->setContentType('application/json');
         $this->assertEquals(['Content-Type' => 'application/json'], $response->getHeaders());
@@ -87,8 +86,8 @@ class HttpResponseTest extends TestCase
 
     public function test_redirect()
     {
-        $response = new \ManaPHP\Http\Response();
-        $response->setDependencyInjector(new ManaPHP\Di());
+        $response = new Response();
+        $response->setDependencyInjector(new Di());
 
         $response->redirect('some/local/url');
         $this->assertEquals([
@@ -96,8 +95,8 @@ class HttpResponseTest extends TestCase
             'Location' => 'some/local/url'
         ], $response->getHeaders());
 
-        $response = new \ManaPHP\Http\Response();
-        $response->setDependencyInjector(new ManaPHP\Di());
+        $response = new Response();
+        $response->setDependencyInjector(new Di());
 
         $response->redirect('http://www.manaphp.com');
         $this->assertEquals([
@@ -105,8 +104,8 @@ class HttpResponseTest extends TestCase
             'Location' => 'http://www.manaphp.com'
         ], $response->getHeaders());
 
-        $response = new \ManaPHP\Http\Response();
-        $response->setDependencyInjector(new ManaPHP\Di());
+        $response = new Response();
+        $response->setDependencyInjector(new Di());
 
         $response->redirect('http://www.manaphp.com', false);
         $this->assertEquals([
@@ -114,8 +113,8 @@ class HttpResponseTest extends TestCase
             'Location' => 'http://www.manaphp.com'
         ], $response->getHeaders());
 
-        $response = new \ManaPHP\Http\Response();
-        $response->setDependencyInjector(new ManaPHP\Di());
+        $response = new Response();
+        $response->setDependencyInjector(new Di());
 
         $response->redirect('http://www.manaphp.com', false);
         $this->assertEquals([
@@ -126,7 +125,7 @@ class HttpResponseTest extends TestCase
 
     public function test_setContent()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $response->setContent('<h1>Hello');
         $this->assertEquals('<h1>Hello', $response->getContent());
@@ -137,7 +136,7 @@ class HttpResponseTest extends TestCase
 
     public function test_setJsonContent()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $response->setJsonContent(['code' => 0, 'message' => 'OK']);
         $this->assertEquals(['code' => 0, 'message' => 'OK'], json_decode($response->getContent(), true));
@@ -150,7 +149,7 @@ class HttpResponseTest extends TestCase
 
     public function test_appendContent()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $this->assertEquals('', $response->getContent());
 
@@ -163,7 +162,7 @@ class HttpResponseTest extends TestCase
 
     public function test_getContent()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $response->setContent('Hello');
         $this->assertEquals('Hello', $response->getContent());
@@ -174,12 +173,12 @@ class HttpResponseTest extends TestCase
      */
     public function test_setFileToSend()
     {
-        $response = new \ManaPHP\Http\Response();
+        $response = new Response();
 
         $response->setFileToSend(__FILE__);
         ob_start();
         $response->send();
-        $this->assertEquals(file_get_contents(__FILE__), ob_get_clean());
+        $this->assertStringEqualsFile(__FILE__, ob_get_clean());
         $this->assertTrue($response->isSent());
     }
 }

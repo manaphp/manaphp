@@ -1,11 +1,14 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Serializer\Adapter\JsonPhp;
+use PHPUnit\Framework\TestCase;
 
 class SerializerAdapterJsonPhpTest extends TestCase
 {
     public function test_serialize()
     {
-        $serializer = new \ManaPHP\Serializer\Adapter\JsonPhp();
+        $serializer = new JsonPhp();
 
         $data = true;
         $this->assertSame($data, $serializer->deserialize($serializer->serialize($data)));
@@ -28,7 +31,7 @@ class SerializerAdapterJsonPhpTest extends TestCase
         $data = ['ab' => 'abc'];
         $this->assertSame($data, $serializer->deserialize($serializer->serialize($data)));
 
-        $data = new stdClass();
+        $data = new \stdClass();
         $data->a = 1;
         $data->b = 2;
         $this->assertEquals($data, $serializer->deserialize($serializer->serialize($data)));

@@ -1,6 +1,9 @@
 <?php
+namespace Tests;
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Store\Adapter\File;
+use PHPUnit\Framework\TestCase;
 
 class StoreAdapterFileTest extends TestCase
 {
@@ -10,12 +13,12 @@ class StoreAdapterFileTest extends TestCase
     {
         parent::setUp();
 
-        $this->_di = new ManaPHP\Di\FactoryDefault();
+        $this->_di = new FactoryDefault();
     }
 
     public function test_exists()
     {
-        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new File('/d/store/test');
 
         $store->delete('var');
 
@@ -26,7 +29,7 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_get()
     {
-        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new File('/d/store/test');
 
         $store->delete('var');
 
@@ -37,7 +40,7 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_set()
     {
-        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new File('/d/store/test');
 
         $store->set('var', '');
         $this->assertSame('', $store->get('var'));
@@ -51,7 +54,7 @@ class StoreAdapterFileTest extends TestCase
 
     public function test_delete()
     {
-        $store = new \ManaPHP\Store\Adapter\File('/d/store/test');
+        $store = new File('/d/store/test');
 
         //exists and delete
         $store->set('var', 'value');

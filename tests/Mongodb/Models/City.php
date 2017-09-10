@@ -1,7 +1,9 @@
 <?php
-namespace Mongodb\Models;
+namespace Tests\Mongodb\Models;
 
-class City extends \ManaPHP\Mongodb\Model
+use ManaPHP\Mongodb\Model;
+
+class City extends Model
 {
     public $city_id;
     public $city;

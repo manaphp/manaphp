@@ -1,12 +1,15 @@
 <?php
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
 
-class MvcUrlTest extends TestCase
+use ManaPHP\Net\Connectivity;
+use PHPUnit\Framework\TestCase;
+
+class NetConnectivityTest extends TestCase
 {
     public function test_test()
     {
-        $connectivity = new \ManaPHP\Net\Connectivity();
+        $connectivity = new Connectivity();
 
         $this->assertTrue($connectivity->test('127.0.0.1:6379'));
         $this->assertTrue($connectivity->test('redis://127.0.0.1:6379'));
@@ -24,7 +27,7 @@ class MvcUrlTest extends TestCase
 
     public function test_wait()
     {
-        $connectivity = new \ManaPHP\Net\Connectivity();
+        $connectivity = new Connectivity();
 
         $this->assertTrue($connectivity->wait(['redis://127.0.0.1']));
         $this->assertFalse($connectivity->wait(['redis://127.0.0.1:1']));

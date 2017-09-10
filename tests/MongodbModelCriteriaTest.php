@@ -1,19 +1,20 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
 
-require __DIR__ . '/TApplication/Application.php';
-
-use Mongodb\Models\Address;
-use Mongodb\Models\City;
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mongodb;
+use PHPUnit\Framework\TestCase;
+use Tests\Mongodb\Models\Address;
+use Tests\Mongodb\Models\City;
 
 class MongodbModelCriteriaTest extends TestCase
 {
     public function setUp()
     {
-        $di = new \ManaPHP\Di\FactoryDefault();
+        $di = new FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
-        $di->setShared('mongodb', new ManaPHP\Mongodb($config['mongodb']));
+        $di->setShared('mongodb', new Mongodb($config['mongodb']));
     }
 
     public function test_construct()

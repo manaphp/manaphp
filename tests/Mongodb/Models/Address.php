@@ -1,7 +1,9 @@
 <?php
-namespace Mongodb\Models;
+namespace Tests\Mongodb\Models;
 
-class Address extends \ManaPHP\Mongodb\Model
+use ManaPHP\Mongodb\Model;
+
+class Address extends Model
 {
     public $address_id;
     public $address;

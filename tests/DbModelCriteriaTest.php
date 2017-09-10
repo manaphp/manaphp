@@ -1,18 +1,21 @@
 <?php
 
-use ManaPHP\Mvc\Model\Criteria;
-use Models\City;
+namespace Tests;
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mvc\Model\Criteria;
+use PHPUnit\Framework\TestCase;
+use Tests\Models\City;
 
 class DbModelCriteriaTest extends TestCase
 {
     public function setUp()
     {
-        $di = new \ManaPHP\Di\FactoryDefault();
+        $di = new FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
-        $di->db = $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+        $di->db = $db = new Mysql($config['mysql']);
         // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
         $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {

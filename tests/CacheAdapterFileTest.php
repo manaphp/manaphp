@@ -1,6 +1,9 @@
 <?php
+namespace Tests;
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+use ManaPHP\Cache\Adapter\File;
+use ManaPHP\Di\FactoryDefault;
+use PHPUnit\Framework\TestCase;
 
 class CacheAdapterFileTest extends TestCase
 {
@@ -10,12 +13,12 @@ class CacheAdapterFileTest extends TestCase
     {
         parent::setUp();
 
-        $this->_di = new ManaPHP\Di\FactoryDefault();
+        $this->_di = new FactoryDefault();
     }
 
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache\Adapter\File('/d/cache/test');
+        $cache = new File('/d/cache/test');
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -25,7 +28,7 @@ class CacheAdapterFileTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache\Adapter\File('/d/cache/test');
+        $cache = new File('/d/cache/test');
 
         $cache->delete('var');
 
@@ -36,7 +39,7 @@ class CacheAdapterFileTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache\Adapter\File('/d/cache/test');
+        $cache = new File('/d/cache/test');
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -56,7 +59,7 @@ class CacheAdapterFileTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Cache\Adapter\File('/d/cache/test');
+        $cache = new File('/d/cache/test');
 
         //exists and delete
         $cache->set('var', 'value', 100);

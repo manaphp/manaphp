@@ -5,7 +5,7 @@
  * Date: 2015/12/28
  * Time: 0:02
  */
-namespace Models;
+namespace Tests\Models;
 
 use ManaPHP\Mvc\Model;
 
@@ -24,9 +24,4 @@ class Film extends Model
     public $rating;
     public $special_features;
     public $last_update;
-
-    public function getSource()
-    {
-        return 'film';
-    }
 }

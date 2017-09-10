@@ -5,7 +5,7 @@
  * Date: 2015/12/28
  * Time: 0:05
  */
-namespace Models;
+namespace Tests\Models;
 
 use ManaPHP\Mvc\Model;
 
@@ -22,9 +22,4 @@ class Staff extends Model
     public $username;
     public $password;
     public $last_update;
-
-    public function getSource()
-    {
-        return 'staff';
-    }
 }

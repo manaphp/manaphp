@@ -1,6 +1,10 @@
 <?php
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\ZooKeeper;
+use PHPUnit\Framework\TestCase;
 
 class ZookeeperTest extends TestCase
 {
@@ -8,12 +12,12 @@ class ZookeeperTest extends TestCase
     {
         parent::setUp();
 
-        new ManaPHP\Di\FactoryDefault();
+        new FactoryDefault();
     }
 
     public function test_create()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
         $this->assertInstanceOf('ManaPHP\Zookeeper', $zookeeper->create('/manaphp', 'data'));
@@ -29,7 +33,7 @@ class ZookeeperTest extends TestCase
 
     public function test_createNx()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
         $this->assertInstanceOf('ManaPHP\Zookeeper', $zookeeper->createNx('/manaphp', 'data'));
@@ -45,7 +49,7 @@ class ZookeeperTest extends TestCase
 
     public function test_delete()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $this->assertInstanceOf('ManaPHP\Zookeeper', $zookeeper->delete('/manaphp'));
         $this->assertFalse($zookeeper->exists('/manaphp'));
@@ -58,7 +62,7 @@ class ZookeeperTest extends TestCase
 
     public function test_setData()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->createNx('/manaphp');
 
@@ -71,7 +75,7 @@ class ZookeeperTest extends TestCase
 
     public function test_getData()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
         $this->assertFalse($zookeeper->getData('/manaphp'));
@@ -82,7 +86,7 @@ class ZookeeperTest extends TestCase
 
     public function test_getChildren()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
         $this->assertFalse($zookeeper->getChildren('/manaphp'));
@@ -96,7 +100,7 @@ class ZookeeperTest extends TestCase
 
     public function test_exists()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
         $this->assertFalse($zookeeper->exists('/manaphp'));
@@ -107,7 +111,7 @@ class ZookeeperTest extends TestCase
 
     public function test_watchData()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $count = 0;
         $zookeeper->watchData('/manaphp', function ($e) use (&$count) {
@@ -122,7 +126,7 @@ class ZookeeperTest extends TestCase
 
     public function test_watchChildren()
     {
-        $zookeeper = new ManaPHP\ZooKeeper('localhost:2181');
+        $zookeeper = new ZooKeeper('localhost:2181');
 
         $count = 0;
 

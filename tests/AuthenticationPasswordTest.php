@@ -1,11 +1,14 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Authentication\Password;
+use PHPUnit\Framework\TestCase;
 
 class AuthenticationPasswordTest extends TestCase
 {
     public function test_salt()
     {
-        $password = new \ManaPHP\Authentication\Password();
+        $password = new Password();
 
         $this->assertEquals(1, strlen($password->salt(1)));
         $this->assertEquals(8, strlen($password->salt(8)));
@@ -17,7 +20,7 @@ class AuthenticationPasswordTest extends TestCase
 
     public function test_hash()
     {
-        $password = new \ManaPHP\Authentication\Password();
+        $password = new Password();
 
         $this->assertEquals('90d84517265740fa4009217c70df1576', $password->hash('manaphp'));
         $this->assertEquals('fb59be6e62639c9804198b2873695a67', $password->hash('manaphp', '12345678'));
@@ -25,7 +28,7 @@ class AuthenticationPasswordTest extends TestCase
 
     public function test_verify()
     {
-        $password = new \ManaPHP\Authentication\Password();
+        $password = new Password();
 
         $this->assertTrue($password->verify('manaphp', '90d84517265740fa4009217c70df1576'));
         $this->assertFalse($password->verify('manaphp', '90d84517265740fa4009217c70df157D'));

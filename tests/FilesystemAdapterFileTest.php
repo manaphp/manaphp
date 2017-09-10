@@ -1,5 +1,8 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Di\FactoryDefault;
+use PHPUnit\Framework\TestCase;
 
 class FilesystemAdapterFileTest extends TestCase
 {
@@ -10,10 +13,11 @@ class FilesystemAdapterFileTest extends TestCase
 
     public function setUp()
     {
-        $di = new ManaPHP\Di\FactoryDefault();
+        $di = new FactoryDefault();
         $di->alias->set('@file', __DIR__ . '/FileSystem/File');
 
         $this->_filesystem = $di->filesystem;
+        $this->_filesystem->dirDelete(__DIR__ . '/FileSystem/File');
     }
 
     public function test_fileExists()

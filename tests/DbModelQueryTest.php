@@ -1,30 +1,31 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/27
- * Time: 20:13
- */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
 
-use Models\Address;
-use Models\City;
-use Models\Country;
-use Models\Payment;
+use ManaPHP\Db\Adapter\Proxy;
+use ManaPHP\Db\Adapter\Sqlite;
+use ManaPHP\Db\Query;
+use ManaPHP\DbInterface;
+use ManaPHP\Di;
+use ManaPHP\Di\FactoryDefault;
+use PHPUnit\Framework\TestCase;
+use Tests\Models\Address;
+use Tests\Models\City;
+use Tests\Models\Country;
+use Tests\Models\Payment;
 
 class DbModelQueryTest extends TestCase
 {
     public function setUp()
     {
-        $di = new ManaPHP\Di\FactoryDefault();
+        $di = new FactoryDefault();
 
         $di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';
             //$db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-            $db = new ManaPHP\Db\Adapter\Proxy(['masters' => ['mysql://root@localhost:/manaphp_unit_test'], 'slaves' => ['mysql://root@localhost:/manaphp_unit_test']]);
+            $db = new Proxy(['masters' => ['mysql://root@localhost:/manaphp_unit_test'], 'slaves' => ['mysql://root@localhost:/manaphp_unit_test']]);
             //   $db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
-            $db->attachEvent('db:beforeQuery', function (ManaPHP\DbInterface $source) {
+            $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
                 var_dump($source->getSQL());
                 var_dump($source->getEmulatedSQL());
             });
@@ -144,7 +145,7 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(2, $rows);
         $this->assertCount(10, $rows[0]);
 
-        $query = (new \ManaPHP\Db\Query())
+        $query = (new Query())
             ->select('*')
             ->from(City::query()
                 ->select('*')
@@ -155,7 +156,7 @@ class DbModelQueryTest extends TestCase
 
     public function test_join()
     {
-        if (\ManaPHP\Di::getDefault()->getShared('db') instanceof ManaPHP\Db\Adapter\Sqlite) {
+        if (Di::getDefault()->getShared('db') instanceof Sqlite) {
             return;
         }
 
@@ -229,7 +230,7 @@ class DbModelQueryTest extends TestCase
 
     public function test_rightJoin()
     {
-        if (\ManaPHP\Di::getDefault()->getShared('db') instanceof ManaPHP\Db\Adapter\Sqlite) {
+        if (Di::getDefault()->getShared('db') instanceof Sqlite) {
             return;
         }
 
@@ -556,11 +557,11 @@ class DbModelQueryTest extends TestCase
 
     public function test_unionAll()
     {
-        if (\ManaPHP\Di::getDefault()->getShared('db') instanceof \ManaPHP\Db\Adapter\Sqlite) {
+        if (Di::getDefault()->getShared('db') instanceof Sqlite) {
             return;
         }
 
-        $query = (new \ManaPHP\Db\Query())
+        $query = (new Query())
             ->union([
                 City::query()
                     ->select('*')

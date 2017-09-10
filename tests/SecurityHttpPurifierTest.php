@@ -1,11 +1,14 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Security\HtmlPurifier;
+use PHPUnit\Framework\TestCase;
 
 class SecurityHttpPurifierTest extends TestCase
 {
     public function test_purify()
     {
-        $httpPurifier = new ManaPHP\Security\HtmlPurifier();
+        $httpPurifier = new HtmlPurifier();
 
 //最简单最常用的测试代码
         $source = <<<EOT
@@ -117,7 +120,7 @@ EOT;
 
     public function test_purify_normal()
     {
-        $httpPurifier = new ManaPHP\Security\HtmlPurifier();
+        $httpPurifier = new HtmlPurifier();
 
         $source = <<<EOT
 <p>manaphp</p>

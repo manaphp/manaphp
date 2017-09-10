@@ -1,11 +1,14 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Alias;
+use PHPUnit\Framework\TestCase;
 
 class AliasTest extends TestCase
 {
     public function test_setAlias()
     {
-        $alias = new \ManaPHP\Alias();
+        $alias = new Alias();
 
         $alias->set('@app', '\data\www\app');
         $this->assertEquals('/data/www/app', $alias->get('@app'));
@@ -27,7 +30,7 @@ class AliasTest extends TestCase
 
     public function test_get()
     {
-        $alias = new \ManaPHP\Alias();
+        $alias = new Alias();
 
         $alias->set('@app', '\app');
         $this->assertSame('/app', $alias->get('@app'));
@@ -42,7 +45,7 @@ class AliasTest extends TestCase
 
     public function test_resolve()
     {
-        $alias = new \ManaPHP\Alias();
+        $alias = new Alias();
 
         $this->assertEquals('/www/app', $alias->resolve('\www\app'));
 

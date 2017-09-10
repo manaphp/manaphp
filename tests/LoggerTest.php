@@ -1,34 +1,39 @@
 <?php
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Logger;
+use ManaPHP\Logger\Adapter\Memory;
+use PHPUnit\Framework\TestCase;
 
 class LoggerTest extends TestCase
 {
     public function setUp()
     {
-        new \ManaPHP\Di\FactoryDefault();
+        new FactoryDefault();
     }
 
     public function test_setLevel()
     {
-        $logger = new ManaPHP\Logger(new \ManaPHP\Logger\Adapter\Memory());
+        $logger = new Logger(new Memory());
 
         // To confirm the default level is LEVEL_ALL
-        $this->assertEquals(ManaPHP\Logger::LEVEL_ALL, $logger->getLevel());
+        $this->assertEquals(Logger::LEVEL_ALL, $logger->getLevel());
 
         $logger->debug('**debug**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $logger->adapter->getLogs());
         $log = $logger->adapter->getLogs()[0];
-        $this->assertEquals(ManaPHP\Logger::LEVEL_DEBUG, $log['level']);
+        $this->assertEquals(Logger::LEVEL_DEBUG, $log['level']);
         $this->assertContains('**debug**', $log['message']);
         $this->assertTrue(isset($log['context']));
 
         // To confirm the level can set correctly
-        $logger = new ManaPHP\Logger(new \ManaPHP\Logger\Adapter\Memory());
-        $logger->setLevel(ManaPHP\Logger::LEVEL_OFF);
-        $this->assertEquals(ManaPHP\Logger::LEVEL_OFF, $logger->getLevel());
+        $logger = new Logger(new Memory());
+        $logger->setLevel(Logger::LEVEL_OFF);
+        $this->assertEquals(Logger::LEVEL_OFF, $logger->getLevel());
 
         $logger->debug('**debug**');
 
@@ -38,76 +43,76 @@ class LoggerTest extends TestCase
 
     public function test_getLevel()
     {
-        $logger = new ManaPHP\Logger(new \ManaPHP\Logger\Adapter\Memory());
-        $logger->setLevel(ManaPHP\Logger::LEVEL_INFO);
-        $this->assertEquals(ManaPHP\Logger::LEVEL_INFO, $logger->getLevel());
+        $logger = new Logger(new Memory());
+        $logger->setLevel(Logger::LEVEL_INFO);
+        $this->assertEquals(Logger::LEVEL_INFO, $logger->getLevel());
     }
 
     public function test_debug()
     {
-        $logger = new ManaPHP\Logger(new \ManaPHP\Logger\Adapter\Memory());
+        $logger = new Logger(new Memory());
 
         $logger->debug('**debug**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $logger->adapter->getLogs());
         $log = $logger->adapter->getLogs()[0];
-        $this->assertEquals(ManaPHP\Logger::LEVEL_DEBUG, $log['level']);
+        $this->assertEquals(Logger::LEVEL_DEBUG, $log['level']);
         $this->assertContains('**debug**', $log['message']);
         $this->assertTrue(isset($log['context']));
     }
 
     public function test_info()
     {
-        $logger = new ManaPHP\Logger(new \ManaPHP\Logger\Adapter\Memory());
+        $logger = new Logger(new Memory());
 
         $logger->info('**info**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $logger->adapter->getLogs());
         $log = $logger->adapter->getLogs()[0];
-        $this->assertEquals(ManaPHP\Logger::LEVEL_INFO, $log['level']);
+        $this->assertEquals(Logger::LEVEL_INFO, $log['level']);
         $this->assertContains('**info**', $log['message']);
         $this->assertTrue(isset($log['context']));
     }
 
     public function test_warning()
     {
-        $logger = new ManaPHP\Logger(new \ManaPHP\Logger\Adapter\Memory());
+        $logger = new Logger(new Memory());
 
         $logger->warning('**warning**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $logger->adapter->getLogs());
         $log = $logger->adapter->getLogs()[0];
-        $this->assertEquals(ManaPHP\Logger::LEVEL_WARNING, $log['level']);
+        $this->assertEquals(Logger::LEVEL_WARNING, $log['level']);
         $this->assertContains('**warning**', $log['message']);
         $this->assertTrue(isset($log['context']));
     }
 
     public function test_error()
     {
-        $logger = new ManaPHP\Logger(new \ManaPHP\Logger\Adapter\Memory());
+        $logger = new Logger(new Memory());
         $logger->error('**error**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $logger->adapter->getLogs());
         $log = $logger->adapter->getLogs()[0];
-        $this->assertEquals(ManaPHP\Logger::LEVEL_ERROR, $log['level']);
+        $this->assertEquals(Logger::LEVEL_ERROR, $log['level']);
         $this->assertContains('**error**', $log['message']);
         $this->assertTrue(isset($log['context']));
     }
 
     public function test_fatal()
     {
-        $logger = new ManaPHP\Logger(new \ManaPHP\Logger\Adapter\Memory());
+        $logger = new Logger(new Memory());
 
         $logger->fatal('**fatal**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $logger->adapter->getLogs());
         $log = $logger->adapter->getLogs()[0];
-        $this->assertEquals(ManaPHP\Logger::LEVEL_FATAL, $log['level']);
+        $this->assertEquals(Logger::LEVEL_FATAL, $log['level']);
         $this->assertContains('**fatal**', $log['message']);
         $this->assertTrue(isset($log['context']));
     }

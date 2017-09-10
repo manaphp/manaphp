@@ -1,12 +1,15 @@
 <?php
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Cache\Adapter\Apc;
+use PHPUnit\Framework\TestCase;
 
 class CacheAdapterApcTest extends TestCase
 {
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Apc();
+        $cache = new Apc();
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
         $cache->set('var', 'value', 1000);
@@ -15,7 +18,7 @@ class CacheAdapterApcTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Apc();
+        $cache = new Apc();
         $cache->delete('var');
 
         $this->assertFalse($cache->get('var'));
@@ -25,7 +28,7 @@ class CacheAdapterApcTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Apc();
+        $cache = new Apc();
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -48,7 +51,7 @@ class CacheAdapterApcTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Apc();
+        $cache = new Apc();
 
         //exists and delete
         $cache->set('var', 'value', 100);

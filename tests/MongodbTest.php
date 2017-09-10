@@ -1,11 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/23
- * Time: 21:36
- */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mongodb;
+use PHPUnit\Framework\TestCase;
 
 class MongodbTest extends TestCase
 {
@@ -16,12 +14,12 @@ class MongodbTest extends TestCase
 
     public function setUp()
     {
-        new \ManaPHP\Di\FactoryDefault();
+        new FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
         //$this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
 
-        $this->mongodb = new ManaPHP\Mongodb($config['mongodb']);
+        $this->mongodb = new Mongodb($config['mongodb']);
     }
 
     public function test_query()

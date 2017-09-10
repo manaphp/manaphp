@@ -1,12 +1,15 @@
 <?php
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Cache\Adapter\Memory;
+use PHPUnit\Framework\TestCase;
 
 class CacheAdapterMemoryTest extends TestCase
 {
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new Memory();
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
         $cache->set('var', 'value', 1000);
@@ -15,7 +18,7 @@ class CacheAdapterMemoryTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new Memory();
         $cache->delete('var');
 
         $this->assertFalse($cache->get('var'));
@@ -25,7 +28,7 @@ class CacheAdapterMemoryTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new Memory();
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -45,7 +48,7 @@ class CacheAdapterMemoryTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Memory();
+        $cache = new Memory();
 
         //exists and delete
         $cache->set('var', 'value', 100);

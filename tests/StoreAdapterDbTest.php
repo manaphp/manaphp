@@ -1,6 +1,11 @@
 <?php
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Store\Adapter\Db;
+use PHPUnit\Framework\TestCase;
 
 class StoreAdapterDbTest extends TestCase
 {
@@ -10,11 +15,11 @@ class StoreAdapterDbTest extends TestCase
     {
         parent::setUp();
 
-        $this->_di = new ManaPHP\Di\FactoryDefault();
+        $this->_di = new FactoryDefault();
 
         $this->_di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+            $db = new Mysql($config['mysql']);
             $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
                 //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getSQL(), $source->getEmulatedSQL(2));
@@ -26,7 +31,7 @@ class StoreAdapterDbTest extends TestCase
 
     public function test_exists()
     {
-        $store = new \ManaPHP\Store\Adapter\Db();
+        $store = new Db();
 
         $store->delete('var');
         $this->assertFalse($store->exists('var'));
@@ -36,7 +41,7 @@ class StoreAdapterDbTest extends TestCase
 
     public function test_get()
     {
-        $store = new \ManaPHP\Store\Adapter\Db();
+        $store = new Db();
 
         $store->delete('var');
 
@@ -47,7 +52,7 @@ class StoreAdapterDbTest extends TestCase
 
     public function test_set()
     {
-        $store = new \ManaPHP\Store\Adapter\Db();
+        $store = new Db();
 
         $store->set('var', '');
         $this->assertSame('', $store->get('var'));
@@ -61,7 +66,7 @@ class StoreAdapterDbTest extends TestCase
 
     public function test_delete()
     {
-        $store = new \ManaPHP\Store\Adapter\Db();
+        $store = new Db();
 
         //exists and delete
         $store->set('var', 'value');

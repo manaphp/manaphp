@@ -1,8 +1,11 @@
 <?php
 
-use ManaPHP\Db\Query;
+namespace Tests;
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Db\Query;
+use ManaPHP\DbInterface;
+use PHPUnit\Framework\TestCase;
 
 class DbQueryTest extends TestCase
 {
@@ -11,10 +14,10 @@ class DbQueryTest extends TestCase
         $di = new \ManaPHP\Di\FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
-        $di->db = $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+        $di->db = $db = new Mysql($config['mysql']);
         // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
-        $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
+        $db->attachEvent('db:beforeQuery', function (DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 

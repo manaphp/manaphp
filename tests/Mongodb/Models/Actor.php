@@ -5,7 +5,7 @@
  * Date: 2015/12/27
  * Time: 23:58
  */
-namespace Mongodb\Models;
+namespace Tests\Mongodb\Models;
 
 use ManaPHP\Mongodb\Model;
 

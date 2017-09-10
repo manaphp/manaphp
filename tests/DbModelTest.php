@@ -6,19 +6,28 @@
  * Date: 2015/12/12
  * Time: 17:07
  */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
 
-use Models\Actor;
-use Models\City;
-use Models\Payment;
-use Models\Student;
+use ManaPHP\Db\Adapter\Proxy;
+use ManaPHP\Db\Assignment;
+use ManaPHP\DbInterface;
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Exception;
+use ManaPHP\Mvc\Model;
+use PHPUnit\Framework\TestCase;
+use Tests\Models\Actor;
+use Tests\Models\City;
+use Tests\Models\Payment;
+use Tests\Models\Student;
+use Tests\Models\StudentShardDb;
+use Tests\Models\StudentShardTable;
 
-class TestCity1 extends \ManaPHP\Mvc\Model
+class TestCity1 extends Model
 {
 
 }
 
-class TestCity2 extends \ManaPHP\Mvc\Model
+class TestCity2 extends Model
 {
     public static function getSource($context = null)
     {
@@ -26,7 +35,7 @@ class TestCity2 extends \ManaPHP\Mvc\Model
     }
 }
 
-class TestCity3 extends \ManaPHP\Mvc\Model
+class TestCity3 extends Model
 {
     public static function getSource($context = null)
     {
@@ -43,16 +52,16 @@ class DbModelTest extends TestCase
 
     public function setUp()
     {
-        $this->di = new \ManaPHP\Di\FactoryDefault();
+        $this->di = new FactoryDefault();
 
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
             //$db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-            $db = new ManaPHP\Db\Adapter\Proxy(['masters' => ['mysql://root@localhost:/manaphp_unit_test'], 'slaves' => ['mysql://root@localhost:/manaphp_unit_test']]);
+            $db = new Proxy(['masters' => ['mysql://root@localhost:/manaphp_unit_test'], 'slaves' => ['mysql://root@localhost:/manaphp_unit_test']]);
             // $db= new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
             echo get_class($db), PHP_EOL;
-            $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source) {
+            $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getEmulatedSQL());
             });
@@ -177,7 +186,7 @@ class DbModelTest extends TestCase
     }
 
     /**
-     * @param \ManaPHP\Mvc\Model $model
+     * @param Model $model
      */
     protected function _truncateTable($model)
     {
@@ -185,7 +194,7 @@ class DbModelTest extends TestCase
          * @var \ManaPHP\Db $db
          */
         $db = $this->di->getShared('db');
-        $db->truncateTable($model->getSource());
+        $db->truncateTable($model::getSource());
     }
 
     public function test_create()
@@ -265,7 +274,7 @@ class DbModelTest extends TestCase
         $student->save();
 
         $student = Student::findFirst(1);
-        $this->assertTrue($student instanceof Student);
+        $this->assertInstanceOf(Student::class, $student);
         $this->assertEquals('1', $student->id);
         $this->assertEquals('30', $student->age);
         $this->assertEquals('manaphp', $student->name);
@@ -290,9 +299,9 @@ class DbModelTest extends TestCase
         $student->name = 'mana';
         $student->create();
 
-        $this->assertTrue(Student::findFirst(1) !== false);
+        $this->assertNotFalse(Student::findFirst(1));
         $student->delete();
-        $this->assertTrue(Student::findFirst(1) === false);
+        $this->assertFalse(Student::findFirst(1));
     }
 
     public function test_deleteAll()
@@ -304,10 +313,10 @@ class DbModelTest extends TestCase
         $student->name = 'mana';
         $student->create();
 
-        $this->assertTrue(Student::findFirst(1) !== false);
+        $this->assertNotFalse(Student::findFirst(1));
 
         Student::deleteAll(['id>' => 0]);
-        $this->assertTrue(Student::findFirst(1) === false);
+        $this->assertFalse(Student::findFirst(1));
     }
 
     public function test_assign()
@@ -329,15 +338,15 @@ class DbModelTest extends TestCase
     {
         //infer the table name from table name
         $city = new TestCity1();
-        $this->assertEquals('test_city1', $city->getSource());
+        $this->assertEquals('test_city1', $city::getSource());
 
         //use getSource
         $city = new TestCity2();
-        $this->assertEquals('city', $city->getSource());
+        $this->assertEquals('city', $city::getSource());
 
         //use setSource
         $city = new TestCity3();
-        $this->assertEquals('the_city', $city->getSource());
+        $this->assertEquals('the_city', $city::getSource());
     }
 
     public function test_getSnapshotData()
@@ -371,12 +380,12 @@ class DbModelTest extends TestCase
         $payment = Payment::findFirst(1);
         $this->assertEquals(2.99, round($payment->amount, 2));
 
-        $payment->amount = new \ManaPHP\Db\Assignment(0.01, '+');
+        $payment->amount = new Assignment(0.01, '+');
         $payment->save();
         $this->assertEquals(3, round(Payment::findFirst(1)->amount, 2));
 
         $payment = Payment::findFirst(1);
-        $payment->amount = new \ManaPHP\Db\Assignment(0.01, '-');
+        $payment->amount = new Assignment(0.01, '-');
         $payment->save();
         $this->assertEquals(2.99, round(Payment::findFirst(1)->amount, 2));
     }
@@ -401,104 +410,104 @@ class DbModelTest extends TestCase
 
     public function test_shardDb()
     {
-        $student = new \Models\StudentShardDb();
+        $student = new StudentShardDb();
         $student->id = 10;
         try {
             $student->create();
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('db_10', $e->getMessage());
         }
 
-        $student = new \Models\StudentShardDb();
+        $student = new StudentShardDb();
         $student->id = 10;
         try {
             $student->delete();
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('db_10', $e->getMessage());
-        };
+        }
 
-        $student = new \Models\StudentShardDb();
+        $student = new StudentShardDb();
         $student->id = 10;
         $student->name = 'manaphp';
         try {
             $student->update();
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('db_10', $e->getMessage());
         }
 
         try {
-            \Models\StudentShardDb::updateAll(['name' => 'mark'], ['id' => 10]);
+            StudentShardDb::updateAll(['name' => 'mark'], ['id' => 10]);
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('db_10', $e->getMessage());
         }
 
         try {
-            \Models\StudentShardDb::deleteAll(['id' => 10]);
+            StudentShardDb::deleteAll(['id' => 10]);
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('db_10', $e->getMessage());
         }
 
         try {
-            \Models\StudentShardDb::find(['id' => 10]);
+            StudentShardDb::find(['id' => 10]);
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('db_10', $e->getMessage());
         }
     }
 
     public function test_shardTable()
     {
-        $student = new \Models\StudentShardTable();
+        $student = new StudentShardTable();
         $student->id = 10;
         try {
             $student->create();
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('student_10', $e->getMessage());
         }
 
-        $student = new \Models\StudentShardTable();
+        $student = new StudentShardTable();
         $student->id = 10;
         try {
             $student->delete();
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('student_10', $e->getMessage());
         }
 
-        $student = new \Models\StudentShardTable();
+        $student = new StudentShardTable();
         $student->id = 10;
         $student->name = 'manaphp';
         try {
             $student->update();
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('student_10', $e->getMessage());
         }
 
         try {
-            \Models\StudentShardTable::updateAll(['name' => 'mark'], ['id' => 10]);
+            StudentShardTable::updateAll(['name' => 'mark'], ['id' => 10]);
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('student_10', $e->getMessage());
         }
 
         try {
-            \Models\StudentShardTable::deleteAll(['id' => 10]);
+            StudentShardTable::deleteAll(['id' => 10]);
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('student_10', $e->getMessage());
         }
 
         try {
-            \Models\StudentShardTable::find(['id' => 10]);
+            StudentShardTable::find(['id' => 10]);
             $this->assertFalse('why not?');
-        } catch (\ManaPHP\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('student_10', $e->getMessage());
         }
     }

@@ -1,7 +1,8 @@
 <?php
-use ManaPHP\Utility\Text;
+namespace Tests;
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+use ManaPHP\Utility\Text;
+use PHPUnit\Framework\TestCase;
 
 class UtilityTextTest extends TestCase
 {

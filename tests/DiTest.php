@@ -1,12 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/15
- * Time: 20:35
- */
+namespace Tests;
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+use ManaPHP\Di;
+use ManaPHP\Http\Request;
+use PHPUnit\Framework\TestCase;
 
 class SimpleComponent
 {
@@ -32,7 +29,7 @@ class DiTest extends TestCase
 
     public function setUp()
     {
-        $this->_di = new ManaPHP\Di();
+        $this->_di = new Di();
     }
 
     public function test_set()
@@ -43,13 +40,13 @@ class DiTest extends TestCase
 
         //anonymous function
         $this->_di->set('request2', function () {
-            return new ManaPHP\Http\Request();
+            return new Request();
         });
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request2'));
 
         //anonymous function
         $this->_di->set('request3', function () {
-            return new ManaPHP\Http\Request();
+            return new Request();
         })->setAliases('request3', ['request31', 'request32']);
 
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request2'));
@@ -65,13 +62,13 @@ class DiTest extends TestCase
 
         //anonymous function
         $this->_di->setShared('request2', function () {
-            return new ManaPHP\Http\Request();
+            return new Request();
         });
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request2'));
 
         //anonymous function
         $this->_di->setShared('set_request3', function () {
-            return new ManaPHP\Http\Request();
+            return new Request();
         })->setAliases('set_request3', ['request31', 'request32']);
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request31'));
         $this->assertInstanceOf('ManaPHP\Http\Request', $this->_di->get('request32'));
@@ -80,7 +77,7 @@ class DiTest extends TestCase
     public function test_has()
     {
         $this->_di->set('has_request', function () {
-            return new ManaPHP\Http\Request();
+            return new Request();
         });
 
         $this->assertTrue($this->_di->has('has_request'));
@@ -90,7 +87,7 @@ class DiTest extends TestCase
     public function test_getShared()
     {
         $this->_di->set('getSharedObject', function () {
-            $object = new stdClass();
+            $object = new \stdClass();
             $object->microtime = md5(microtime(true) . mt_rand());
             return $object;
         });
@@ -110,7 +107,7 @@ class DiTest extends TestCase
             return new SomeComponent($v);
         });
 
-        $this->_di->set('getComponent2', 'SomeComponent');
+        $this->_di->set('getComponent2', 'Tests\SomeComponent');
 
         $this->assertEquals(100, $this->_di->get('getComponent1', [100])->value);
         $this->assertEquals(50, $this->_di->get('getComponent2', [50])->value);
@@ -119,7 +116,7 @@ class DiTest extends TestCase
     public function test_remove()
     {
         $this->_di->set('removeService', function () {
-            return new stdClass();
+            return new \stdClass();
         });
 
         $this->assertTrue($this->_di->has('removeService'));

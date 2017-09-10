@@ -1,6 +1,10 @@
 <?php
+namespace Tests;
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+use ManaPHP\Cache\Adapter\Db;
+use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Di\FactoryDefault;
+use PHPUnit\Framework\TestCase;
 
 class CacheAdapterDbTest extends TestCase
 {
@@ -10,11 +14,11 @@ class CacheAdapterDbTest extends TestCase
     {
         parent::setUp();
 
-        $this->_di = new ManaPHP\Di\FactoryDefault();
+        $this->_di = new FactoryDefault();
 
         $this->_di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            $db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+            $db = new Mysql($config['mysql']);
             $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
                 //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getSQL(), $source->getEmulatedSQL(2));
@@ -26,7 +30,7 @@ class CacheAdapterDbTest extends TestCase
 
     public function test_exists()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Db();
+        $cache = new Db();
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -36,7 +40,7 @@ class CacheAdapterDbTest extends TestCase
 
     public function test_get()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Db();
+        $cache = new Db();
 
         $cache->delete('var');
 
@@ -47,7 +51,7 @@ class CacheAdapterDbTest extends TestCase
 
     public function test_set()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Db();
+        $cache = new Db();
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -67,7 +71,7 @@ class CacheAdapterDbTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new \ManaPHP\Cache\Adapter\Db();
+        $cache = new Db();
 
         //exists and delete
         $cache->set('var', 'value', 100);

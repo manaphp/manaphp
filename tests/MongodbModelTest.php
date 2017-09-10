@@ -1,23 +1,22 @@
 <?php
+namespace Tests;
 
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/12
- * Time: 17:07
- */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mongodb;
+use ManaPHP\Mongodb\Model;
+use MongoDB\BSON\ObjectID;
+use PHPUnit\Framework\TestCase;
+use Tests\Mongodb\Models\Actor;
+use Tests\Mongodb\Models\City;
+use Tests\Mongodb\Models\DataType;
+use Tests\Mongodb\Models\Student;
 
-use Mongodb\Models\Actor;
-use Mongodb\Models\City;
-use Mongodb\Models\Student;
-
-class TestCity1 extends \ManaPHP\Mvc\Model
+class TestCity1 extends Model
 {
 
 }
 
-class TestCity2 extends \ManaPHP\Mvc\Model
+class TestCity2 extends Model
 {
     public static function getSource($context = null)
     {
@@ -42,15 +41,15 @@ class MongodbModelTest extends TestCase
 
     public function setUp()
     {
-        $this->di = new \ManaPHP\Di\FactoryDefault();
+        $this->di = new FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
-        $this->di->setShared('mongodb', new \ManaPHP\Mongodb($config['mongodb']));
+        $this->di->setShared('mongodb', new Mongodb($config['mongodb']));
     }
 
     public function test_getConsistentValue()
     {
-        $dt = new \Mongodb\Models\DataType();
+        $dt = new DataType();
         $this->assertSame('manaphp', $dt::getNormalizedValue('string', 'manaphp'));
         $this->assertSame('123', $dt::getNormalizedValue('string', 123));
 
@@ -63,14 +62,14 @@ class MongodbModelTest extends TestCase
         $this->assertSame(1.23, $dt::getNormalizedValue('double', 1.23));
         $this->assertSame(1.23, $dt::getNormalizedValue('double', '1.23'));
 
-        $objectId = new \MongoDB\BSON\ObjectID();
+        $objectId = new ObjectID();
         $this->assertEquals($objectId, $dt::getNormalizedValue('objectid', $objectId));
 
-        $this->assertEquals(new \MongoDB\BSON\ObjectID('123456789012345678901234'), $dt::getNormalizedValue('objectid', '123456789012345678901234'));
+        $this->assertEquals(new ObjectID('123456789012345678901234'), $dt::getNormalizedValue('objectid', '123456789012345678901234'));
 
-        $this->assertSame(true, $dt::getNormalizedValue('bool', true));
-        $this->assertSame(true, $dt::getNormalizedValue('bool', 1));
-        $this->assertSame(false, $dt::getNormalizedValue('bool', 0));
+        $this->assertTrue($dt::getNormalizedValue('bool', true));
+        $this->assertTrue($dt::getNormalizedValue('bool', 1));
+        $this->assertFalse($dt::getNormalizedValue('bool', 0));
     }
 
     public function test_count()

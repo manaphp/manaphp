@@ -1,17 +1,21 @@
 <?php
 
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mvc\Url;
+use PHPUnit\Framework\TestCase;
 
 class MvcUrlTest extends TestCase
 {
     public function setup()
     {
-        $di = new \ManaPHP\Di\FactoryDefault();
+        $di = new FactoryDefault();
     }
 
     public function test_get()
     {
-        $url = new \ManaPHP\Mvc\Url(['baseUrls' => ['' => '/']]);
+        $url = new Url(['baseUrls' => ['' => '/']]);
         $this->assertEquals('/', $url->get('/'));
         $this->assertEquals('/home', $url->get('/home'));
         $this->assertEquals('/home', $url->get('home'));
@@ -25,7 +29,7 @@ class MvcUrlTest extends TestCase
         $this->assertEquals('/article/10', $url->get(['/article/:article_id', 'article_id' => 10]));
         $this->assertEquals('/article/10?from=google', $url->get(['/article/:article_id', 'article_id' => 10, 'from' => 'google']));
 
-        $url = new \ManaPHP\Mvc\Url(['baseUrls' => ['' => 'http://www.manaphp.com/manaphp']]);
+        $url = new Url(['baseUrls' => ['' => 'http://www.manaphp.com/manaphp']]);
         $this->assertEquals('http://www.manaphp.com/manaphp/', $url->get('/'));
         $this->assertEquals('/manaphp/', $url->get(''));
         $this->assertEquals('http://www.manaphp.com/manaphp/home', $url->get('/home'));

@@ -1,13 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/19
- * Time: 23:20
- */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
 
-class DummyComponent extends \ManaPHP\Component
+use ManaPHP\Component;
+use ManaPHP\Di\FactoryDefault;
+use PHPUnit\Framework\TestCase;
+
+class DummyComponent extends Component
 {
     public function doAction()
     {
@@ -29,7 +27,7 @@ class DummyListener
 
     public function doAction($component, $data)
     {
-        $this->_testCase->assertInstanceOf('DummyComponent', $component);
+        $this->_testCase->assertInstanceOf('Tests\DummyComponent', $component);
         $this->_testCase->assertEquals($data, ['extra data']);
     }
 }
@@ -38,7 +36,7 @@ class EventTest extends TestCase
 {
     public function setUp()
     {
-        new \ManaPHP\Di\FactoryDefault();
+        new FactoryDefault();
     }
 
     public function test_attachEvent()
@@ -53,7 +51,7 @@ class EventTest extends TestCase
         $component = new DummyComponent();
         $that = $this;
         $component->attachEvent('dummy:doAction', function ($source, $data) use ($that) {
-            $that->assertInstanceOf('DummyComponent', $source);
+            $that->assertInstanceOf('Tests\DummyComponent', $source);
             $that->assertEquals($data, ['extra data']);
         });
         $component->doAction();

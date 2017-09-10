@@ -5,7 +5,7 @@
  * Date: 2015/12/28
  * Time: 0:01
  */
-namespace Models;
+namespace Tests\Models;
 
 use ManaPHP\Mvc\Model;
 
@@ -20,9 +20,4 @@ class Customer extends Model
     public $active;
     public $create_date;
     public $last_update;
-
-    public function getSource()
-    {
-        return 'customer';
-    }
 }

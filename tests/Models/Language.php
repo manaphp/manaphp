@@ -5,7 +5,7 @@
  * Date: 2015/12/28
  * Time: 0:04
  */
-namespace Models;
+namespace Tests\Models;
 
 use ManaPHP\Mvc\Model;
 
@@ -14,9 +14,4 @@ class Language extends Model
     public $language_id;
     public $name;
     public $last_update;
-
-    public function getSource()
-    {
-        return 'language';
-    }
 }

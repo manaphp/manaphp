@@ -1,7 +1,7 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
 
-require __DIR__ . '/TApplication/Application.php';
+use PHPUnit\Framework\TestCase;
 
 class MvcApplicationTest extends TestCase
 {

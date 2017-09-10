@@ -1,39 +1,39 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/15
- * Time: 22:15
- */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mvc\Router;
+use ManaPHP\Mvc\Router\Group;
+use ManaPHP\Mvc\Router\Route;
+use PHPUnit\Framework\TestCase;
 
 class MvcRouterRouteTest extends TestCase
 {
     public function setUp()
     {
-        new \ManaPHP\Di\FactoryDefault();
+        new FactoryDefault();
     }
 
     public function test_construct()
     {
         //  literal route test
-        $route = new \ManaPHP\Mvc\Router\Route('/blog/edit');
+        $route = new Route('/blog/edit');
         $this->assertEquals([], $route->match('/blog/edit'));
 
         // :module, :controller, :action, :params
-        $route = new \ManaPHP\Mvc\Router\Route('/:controller/:action/:params');
+        $route = new Route('/:controller/:action/:params');
         $this->assertEquals(['controller' => 'blog', 'action' => 'edit', 'params' => 'a/b/c'], $route->match('/blog/edit/a/b/c'));
         //  normal pcre
-        $route = new \ManaPHP\Mvc\Router\Route('/blog/{user:[a-z0-9]{4,}}/view-{id:\d+}.html');
+        $route = new Route('/blog/{user:[a-z0-9]{4,}}/view-{id:\d+}.html');
         $this->assertEquals(['user' => 'mana', 'id' => '1234'], $route->match('/blog/mana/view-1234.html'));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/blog/{id:\d+}');
+        $route = new Route('/blog/{id:\d+}');
         $this->assertEquals(['id' => '1234'], $route->match('/blog/1234'));
     }
 
     public function test_params()
     {
-        $router = new ManaPHP\Mvc\Router();
+        $router = new Router();
 
         $tests = array(
             array(
@@ -58,7 +58,7 @@ class MvcRouterRouteTest extends TestCase
                 'date' => '2011-01-02'
             ),
         );
-        $group = new \ManaPHP\Mvc\Router\Group();
+        $group = new Group();
         $group->add('/some/{name}', 'c::a');
         $group->add('/some/{name}/{id:[0-9]+}', 'c::a');
         $group->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
@@ -70,24 +70,24 @@ class MvcRouterRouteTest extends TestCase
 
     public function test_shortPaths()
     {
-        $route = new \ManaPHP\Mvc\Router\Route('/', 'feed');
+        $route = new Route('/', 'feed');
         $this->assertEquals($route->match('/'), array(
             'controller' => 'feed'
         ));
 
-        $route = new ManaPHP\Mvc\Router\Route('/', 'feed::get');
+        $route = new Route('/', 'feed::get');
         $this->assertEquals($route->match('/'), array(
             'controller' => 'feed',
             'action' => 'get',
         ));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/', 'posts::show');
+        $route = new Route('/', 'posts::show');
         $this->assertEquals($route->match('/'), array(
             'controller' => 'posts',
             'action' => 'show',
         ));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/', 'posts::show');
+        $route = new Route('/', 'posts::show');
         $this->assertEquals($route->match('/'), array(
             'controller' => 'posts',
             'action' => 'show',
@@ -96,7 +96,7 @@ class MvcRouterRouteTest extends TestCase
 
     public function test_rest()
     {
-        $route = new \ManaPHP\Mvc\Router\Route('/users', [], 'REST');
+        $route = new Route('/users', [], 'REST');
         $this->assertEquals(['action' => 'list'], $route->match('/users', 'GET'));
         $this->assertEquals(['action' => 'create'], $route->match('/users', 'POST'));
         $this->assertEquals(['action' => 'detail', 'params' => '123'], $route->match('/users/123', 'GET'));
@@ -104,7 +104,7 @@ class MvcRouterRouteTest extends TestCase
         $this->assertEquals(['action' => 'update', 'params' => '123'], $route->match('/users/123', 'PUT'));
         $this->assertEquals(['action' => 'delete', 'params' => '123'], $route->match('/users/123', 'DELETE'));
 
-        $route = new \ManaPHP\Mvc\Router\Route('/users/{user_id:int}/orders', [], 'REST');
+        $route = new Route('/users/{user_id:int}/orders', [], 'REST');
         $this->assertEquals(['action' => 'list', 'user_id' => 1], $route->match('/users/1/orders', 'GET'));
         $this->assertEquals(['action' => 'create', 'user_id' => 1], $route->match('/users/1/orders', 'POST'));
         $this->assertEquals(['action' => 'detail', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'GET'));

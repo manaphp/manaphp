@@ -1,11 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/19
- * Time: 16:12
- */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Http\Session;
+use PHPUnit\Framework\TestCase;
 
 class HttpSessionTest extends TestCase
 {
@@ -13,12 +11,12 @@ class HttpSessionTest extends TestCase
     public function setUp()
     {
         error_reporting(0);
-        new \ManaPHP\Di\FactoryDefault();
+        new FactoryDefault();
     }
 
     public function test_get()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $this->assertFalse($session->has('some'));
         $session->set('some', 'value');
@@ -30,7 +28,7 @@ class HttpSessionTest extends TestCase
 
     public function test_offsetGet()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $session->set('some', 'value');
         $this->assertEquals('value', $session['some']);
@@ -38,7 +36,7 @@ class HttpSessionTest extends TestCase
 
     public function test_set()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $this->assertFalse($session->has('some'));
         $session->set('some', 'value');
@@ -47,7 +45,7 @@ class HttpSessionTest extends TestCase
 
     public function test_offsetSet()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $this->assertFalse($session->has('some'));
         $session['some'] = 'value';
@@ -56,7 +54,7 @@ class HttpSessionTest extends TestCase
 
     public function test_has()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $this->assertFalse($session->has('some'));
 
@@ -66,7 +64,7 @@ class HttpSessionTest extends TestCase
 
     public function test_offsetExists()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $this->assertFalse(isset($session['some']));
 
@@ -76,14 +74,14 @@ class HttpSessionTest extends TestCase
 
     public function test_destroy()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $session->destroy();
     }
 
     public function test_remove()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $session->set('some', 'value');
         $this->assertTrue($session->has('some'));
@@ -94,7 +92,7 @@ class HttpSessionTest extends TestCase
 
     public function test_offsetUnset()
     {
-        $session = new \ManaPHP\Http\Session();
+        $session = new Session();
 
         $session->set('some', 'value');
         $this->assertTrue($session->has('some'));

@@ -1,17 +1,21 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
+
+use ManaPHP\Http\Cookies;
+use ManaPHP\Security\Crypt;
+use PHPUnit\Framework\TestCase;
 
 class HttpCookiesTest extends TestCase
 {
     /**
-     * @var \ManaPHP\Http\Cookies
+     * @var Cookies
      */
     protected $_cookies;
 
     public function setUp()
     {
-        $this->_cookies = new \ManaPHP\Http\Cookies();
-        $this->_cookies->crypt = new ManaPHP\Security\Crypt('abc');
+        $this->_cookies = new Cookies();
+        $this->_cookies->crypt = new Crypt('abc');
     }
 
     public function test_set()

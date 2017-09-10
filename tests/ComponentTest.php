@@ -1,7 +1,10 @@
 <?php
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
+namespace Tests;
 
-class TClass1 extends \ManaPHP\Component
+use ManaPHP\Component;
+use PHPUnit\Framework\TestCase;
+
+class TClass1 extends Component
 {
     public $publicP;
     protected $protectedP;
