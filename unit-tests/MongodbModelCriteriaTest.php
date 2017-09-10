@@ -272,4 +272,10 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertArrayHasKey('s', City::criteria()->groupBy('substr(city, 1, 1)')->indexBy('city')->aggregate(['count' => 'COUNT(*)']));
         $this->assertArrayHasKey(600, City::criteria()->indexBy('city_id')->fetchAll());
     }
+
+    public function test_count()
+    {
+        $this->assertEquals(600, City::criteria()->count());
+        $this->assertEquals(3, City::criteria()->where('country_id', 2)->count());
+    }
 }

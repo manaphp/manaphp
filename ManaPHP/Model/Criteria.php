@@ -38,6 +38,14 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
         }
     }
 
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return $this->aggregate(['count' => 'COUNT(*)'])[0]['count'];
+    }
+
     public function jsonSerialize()
     {
         return $this->asArray();
