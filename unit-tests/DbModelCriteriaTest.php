@@ -36,41 +36,41 @@ class DbModelCriteriaTest extends TestCase
             City::criteria()->where('city_id', 1)->getSql());
     }
 
-    public function test_betweenWhere()
+    public function test_whereBetween()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',
-            City::criteria()->betweenWhere('city_id', 1, 10)->getSql());
+            City::criteria()->whereBetween('city_id', 1, 10)->getSql());
 
     }
 
-    public function test_notBetweenWhere()
+    public function test_whereNotBetween()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT BETWEEN :_min_0 AND :_max_0',
-            City::criteria()->notBetweenWhere('city_id', 1, 10)->getSql());
+            City::criteria()->whereNotBetween('city_id', 1, 10)->getSql());
     }
 
-    public function test_inWhere()
+    public function test_whereIn()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE 1=2',
-            City::criteria()->inWhere('city_id', [])->getSql());
+            City::criteria()->whereIn('city_id', [])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0)',
-            City::criteria()->inWhere('city_id', [1])->getSql());
+            City::criteria()->whereIn('city_id', [1])->getSql());
     }
 
-    public function test_notInWhere()
+    public function test_whereNotIn()
     {
         $this->assertEquals('SELECT * FROM [city]',
-            City::criteria()->notInWhere('city_id', [])->getSql());
+            City::criteria()->whereNotIn('city_id', [])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (:_in_0_0)',
-            City::criteria()->notInWhere('city_id', [1])->getSql());
+            City::criteria()->whereNotIn('city_id', [1])->getSql());
     }
 
-    public function test_likeWhere()
+    public function test_whereLike()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_name] LIKE :city_name',
-            City::criteria()->likeWhere('city_name', '%A%')->getSql());
+            City::criteria()->whereLike('city_name', '%A%')->getSql());
     }
 
     public function test_limit()

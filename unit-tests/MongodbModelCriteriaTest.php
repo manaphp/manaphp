@@ -153,53 +153,53 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertEquals(1, $documents[0]->city_id);
     }
 
-    public function test_betweenWhere()
+    public function test_whereBetween()
     {
-        $documents = City::criteria()->betweenWhere('city_id', 2, 3)->fetchAll();
+        $documents = City::criteria()->whereBetween('city_id', 2, 3)->fetchAll();
         $this->assertCount(2, $documents);
 
-        $documents = City::criteria()->betweenWhere('city_id', 2, 2)->fetchAll();
+        $documents = City::criteria()->whereBetween('city_id', 2, 2)->fetchAll();
         $this->assertCount(1, $documents);
     }
 
-    public function test_notBetweenWhere()
+    public function test_whereNotBetween()
     {
-        $documents = City::criteria()->notBetweenWhere('city_id', 100, 600)->fetchAll();
+        $documents = City::criteria()->whereNotBetween('city_id', 100, 600)->fetchAll();
         $this->assertCount(99, $documents);
 
-        $documents = City::criteria()->notBetweenWhere('city_id', 50, 200)->notBetweenWhere('city_id', 200, 600)->fetchAll();
+        $documents = City::criteria()->whereNotBetween('city_id', 50, 200)->whereNotBetween('city_id', 200, 600)->fetchAll();
         $this->assertCount(49, $documents);
     }
 
-    public function test_inWhere()
+    public function test_whereIn()
     {
-        $documents = City::criteria()->inWhere('city_id', [1, 2, 3, 4])->fetchAll();
+        $documents = City::criteria()->whereIn('city_id', [1, 2, 3, 4])->fetchAll();
         $this->assertCount(4, $documents);
 
-        $documents = City::criteria()->inWhere('city_id', [1, 2, 3, 4])->inWhere('city_id', [2, 4])->fetchAll();
+        $documents = City::criteria()->whereIn('city_id', [1, 2, 3, 4])->whereIn('city_id', [2, 4])->fetchAll();
         $this->assertCount(2, $documents);
 
-        $documents = City::criteria()->inWhere('city_id', [])->fetchAll();
+        $documents = City::criteria()->whereIn('city_id', [])->fetchAll();
         $this->assertCount(0, $documents);
     }
 
-    public function test_notInWhere()
+    public function test_whereNotIn()
     {
-        $documents = City::criteria()->notInWhere('city_id', [1, 2, 3, 4])->fetchAll();
+        $documents = City::criteria()->whereNotIn('city_id', [1, 2, 3, 4])->fetchAll();
         $this->assertCount(596, $documents);
 
-        $documents = City::criteria()->notInWhere('city_id', [])->fetchAll();
+        $documents = City::criteria()->whereNotIn('city_id', [])->fetchAll();
         $this->assertCount(600, $documents);
     }
 
-    public function test_likeWhere()
+    public function test_whereLike()
     {
-        $documents = Address::criteria()->likeWhere('address', 'as')->fetchAll();
+        $documents = Address::criteria()->whereLike('address', 'as')->fetchAll();
         $this->assertCount(21, $documents);
-        $documents = Address::criteria()->likeWhere('district', 'as')->fetchAll();
+        $documents = Address::criteria()->whereLike('district', 'as')->fetchAll();
         $this->assertCount(44, $documents);
 
-        $documents = Address::criteria()->likeWhere(['address', 'district'], 'as')->fetchAll();
+        $documents = Address::criteria()->whereLike(['address', 'district'], 'as')->fetchAll();
         $this->assertCount(64, $documents);
     }
 

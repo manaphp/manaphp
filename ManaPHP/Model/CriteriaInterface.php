@@ -45,7 +45,7 @@ interface CriteriaInterface
      *
      * @return static
      */
-    public function betweenWhere($expr, $min, $max);
+    public function whereBetween($expr, $min, $max);
 
     /**
      * Appends a NOT BETWEEN condition to the current conditions
@@ -60,7 +60,7 @@ interface CriteriaInterface
      *
      * @return static
      */
-    public function notBetweenWhere($expr, $min, $max);
+    public function whereNotBetween($expr, $min, $max);
 
     /**
      * Appends an IN condition to the current conditions
@@ -74,7 +74,7 @@ interface CriteriaInterface
      *
      * @return static
      */
-    public function inWhere($expr, $values);
+    public function whereIn($expr, $values);
 
     /**
      * Appends a NOT IN condition to the current conditions
@@ -88,7 +88,7 @@ interface CriteriaInterface
      *
      * @return static
      */
-    public function notInWhere($expr, $values);
+    public function whereNotIn($expr, $values);
 
     /**
      * @param string|array $expr
@@ -96,7 +96,7 @@ interface CriteriaInterface
      *
      * @return static
      */
-    public function likeWhere($expr, $like);
+    public function whereLike($expr, $like);
 
     /**
      * Sets a ORDER BY condition clause

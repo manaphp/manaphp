@@ -131,7 +131,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $criteria = static::criteria()->select($fields ?: static::getFields());
 
         if (isset($filters[0])) {
-            $criteria->inWhere(static::getPrimaryKey()[0], $filters);
+            $criteria->whereIn(static::getPrimaryKey()[0], $filters);
         } else {
             $criteria->where($filters);
         }

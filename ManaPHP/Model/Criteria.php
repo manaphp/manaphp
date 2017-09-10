@@ -12,6 +12,64 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     protected $_multiple;
 
     /**
+     * alias of whereBetween
+     *
+     * @param string           $expr
+     * @param int|float|string $min
+     * @param int|float|string $max
+     *
+     * @return static
+     * @deprecated
+     */
+    public function betweenWhere($expr, $min, $max)
+    {
+        return $this->whereBetween($expr, $min, $max);
+    }
+
+    /**
+     * alias of whereNotBetween
+     *
+     * @param string           $expr
+     * @param int|float|string $min
+     * @param int|float|string $max
+     *
+     * @return static
+     * @deprecated
+     */
+    public function notBetweenWhere($expr, $min, $max)
+    {
+        return $this->whereNotBetween($expr, $min, $max);
+    }
+
+    /**
+     * alias of whereIn
+     *
+     * @param string                           $expr
+     * @param array|\ManaPHP\Db\QueryInterface $values
+     *
+     * @return static
+     * @deprecated
+     */
+    public function inWhere($expr, $values)
+    {
+        return $this->whereIn($expr, $values);
+    }
+
+    /**
+     * alias of whereNotIn
+     *
+     * @param string                           $expr
+     * @param array|\ManaPHP\Db\QueryInterface $values
+     *
+     * @return static
+     * @deprecated
+     */
+    public function notInWhere($expr, $values)
+    {
+        return $this->whereNotIn($expr, $values);
+    }
+
+    /**
      * @param bool $multiple
      *
      * @return static

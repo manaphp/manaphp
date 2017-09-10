@@ -218,12 +218,12 @@ class Criteria extends \ManaPHP\Model\Criteria
                 if (count($value) !== 2 || !isset($value[0], $value[1])) {
                     throw new CriteriaException('`:filter` filter is valid: value is not a two elements array', ['filter' => $filter]);
                 }
-                $this->betweenWhere(substr($filter, 0, -2), $value[0], $value[1]);
+                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif (isset($value[0]) || count($value) === 0) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
-                    $this->notInWhere(substr($filter, 0, -2), $value);
+                    $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
-                    $this->inWhere($filter, $value);
+                    $this->whereIn($filter, $value);
                 }
             } else {
                 $this->_filters[] = [$filter => $value];
@@ -270,7 +270,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return static
      */
-    public function betweenWhere($expr, $min, $max)
+    public function whereBetween($expr, $min, $max)
     {
         $this->_filters[] = [$expr => ['$gte' => $min, '$lte' => $max]];
 
@@ -290,7 +290,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return static
      */
-    public function notBetweenWhere($expr, $min, $max)
+    public function whereNotBetween($expr, $min, $max)
     {
         $this->_filters[] = ['$or' => [[$expr => ['$lt' => $min]], [$expr => ['$gt' => $max]]]];
 
@@ -309,7 +309,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return static
      */
-    public function inWhere($expr, $values)
+    public function whereIn($expr, $values)
     {
         $this->_filters[] = [$expr => ['$in' => $values]];
 
@@ -328,7 +328,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return static
      */
-    public function notInWhere($expr, $values)
+    public function whereNotIn($expr, $values)
     {
         $this->_filters[] = [$expr => ['$nin' => $values]];
 
@@ -341,7 +341,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return static
      */
-    public function likeWhere($expr, $like)
+    public function whereLike($expr, $like)
     {
         if (is_array($expr)) {
             $or = [];
