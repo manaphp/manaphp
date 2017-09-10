@@ -9,3 +9,6 @@
 /Data/
 /Public/test.php
 /unit-tests/FileSystem
+/tests/Image/Adapter
+/tests/Image/Result
+/tests/FileSystem
