@@ -168,25 +168,47 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param array  $filters
-     * @param string $displayField
+     * @param array        $filters
+     * @param string|array $field
      *
      * @return array
      */
-    public static function findList($filters = [], $displayField = null)
+    public static function findList($filters = [], $field = null)
     {
-        $displayField = $displayField ?: static::getDisplayField();
-        if ($displayField === null) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('invoke :model:findList method must provide displayField', ['model' => get_called_class()]);
-        }
-        $primaryKey = static::getPrimaryKey()[0];
-        $criteria = static::criteria()->select([$primaryKey, $displayField])->where($filters);
+        $criteria = static::criteria()->where($filters);
 
         $list = [];
-        foreach ($criteria->fetchAll() as $v) {
-            $list[$v->{$primaryKey}] = $v->{$displayField};
+        if ($field === null) {
+            $field = static::getDisplayField();
+            if ($field === null) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                throw new ModelException('invoke :model:findList method must provide displayField', ['model' => get_called_class()]);
+            }
+            $keyField = static::getPrimaryKey()[0];
+            $valueField = $field;
+
+            foreach ($criteria->select([$keyField, $valueField])->fetchAll() as $v) {
+                $list[$v->{$keyField}] = $v->{$valueField};
+            }
+        } elseif (is_string($field)) {
+            $list = $criteria->distinctField($field);
+        } else {
+            $keyField = key($field);
+            $valueField = current($field);
+            foreach ($criteria->select([$keyField, $valueField])->fetchAll() as $v) {
+                $keyValue = $v->{$keyField};
+
+                if (!isset($list[$keyValue])) {
+                    $list[$keyValue] = $v->{$valueField};
+                } elseif (is_array($list[$keyValue])) {
+                    $list[$keyValue][] = $v->{$valueField};
+                } else {
+                    $list[$keyValue] = [$list[$keyValue], $v->{$valueField}];
+                }
+            }
         }
+
+        ksort($list);
 
         return $list;
     }

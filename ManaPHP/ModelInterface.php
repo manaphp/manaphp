@@ -93,12 +93,12 @@ interface ModelInterface
     public static function findAll($filters = [], $options = null, $fields = null);
 
     /**
-     * @param array  $filters
-     * @param string $displayField
+     * @param array        $filters
+     * @param string|array $field
      *
      * @return mixed
      */
-    public static function findList($filters = [], $displayField = null);
+    public static function findList($filters = [], $field = null);
 
     /**
      * Allows to query the first record that match the specified conditions

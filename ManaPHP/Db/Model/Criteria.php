@@ -430,7 +430,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     {
         $values = [];
         foreach ($this->distinct()->select($field)->fetchAll() as $v) {
-            $values[] = $v[$field];
+            $values[] = $v->{$field};
         }
 
         return $values;

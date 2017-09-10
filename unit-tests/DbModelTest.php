@@ -157,8 +157,9 @@ class DbModelTest extends TestCase
     public function test_findList()
     {
         $this->assertCount(600, City::findList());
-        $this->assertCount(600, City::findList([], 'city'));
+        $this->assertCount(599, City::findList([], 'city'));
         $this->assertCount(3, City::findList(['country_id' => 2], 'city'));
+        $this->assertCount(3, City::findList(['country_id' => 2], ['city_id' => 'city']));
     }
 
     public function test_findById()
