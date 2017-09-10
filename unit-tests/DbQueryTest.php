@@ -335,10 +335,10 @@ class DbQueryTest extends TestCase
 
     public function test_aggregate()
     {
-        $this->assertEquals('SELECT COUNT(*) AS [city_count] FROM [city]',
-            (new Query())->aggregate(['city_count' => 'COUNT(*)'])->from('city')->getSql());
+        $this->assertEquals(['city_count' => 600],
+            (new Query())->from('city')->aggregate(['city_count' => 'COUNT(*)'])[0]);
 
-        $this->assertEquals('SELECT COUNT([city_id]) AS [city_count] FROM [city]',
-            (new Query())->aggregate(['city_count' => 'count(city_id)'])->from('city')->getSql());
+        $this->assertEquals(['city_count' => 600],
+            (new Query())->from('city')->aggregate(['city_count' => 'count(city_id)'])[0]);
     }
 }

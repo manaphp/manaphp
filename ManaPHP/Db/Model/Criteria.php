@@ -77,9 +77,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     {
         $this->_aggregate = $expr;
 
-        $this->_query->aggregate($expr);
-
-        return $this->_replaceModelInfo()->_query->execute();
+        return $this->_replaceModelInfo()->_query->aggregate($expr);
     }
 
     /**

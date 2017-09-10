@@ -27,13 +27,6 @@ interface QueryInterface
     public function select($columns);
 
     /**
-     * @param array $expr
-     *
-     * @return static
-     */
-    public function aggregate($expr);
-
-    /**
      *
      *<code>
      *    $builder->from('Robots');
@@ -331,6 +324,13 @@ interface QueryInterface
      * @return array
      */
     public function execute();
+
+    /**
+     * @param array $expr
+     *
+     * @return array
+     */
+    public function aggregate($expr);
 
     /**
      * @param int $size

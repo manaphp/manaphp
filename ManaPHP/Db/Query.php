@@ -213,35 +213,6 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * @param array $expr
-     *
-     * @return static
-     * @throws \ManaPHP\Db\Query\Exception
-     */
-    public function aggregate($expr)
-    {
-        $columns = '';
-
-        foreach ($expr as $k => $v) {
-            if (is_int($k)) {
-                $columns .= '[' . $v . '], ';
-            } else {
-                if (preg_match('#^(\w+)\(([\w]+)\)$#', $v, $matches) === 1) {
-                    $columns .= strtoupper($matches[1]) . '([' . $matches[2] . '])';
-                } else {
-                    $columns .= $v;
-                }
-
-                $columns .= ' AS [' . $k . '], ';
-            }
-        }
-
-        $this->_columns = substr($columns, 0, -2);
-
-        return $this;
-    }
-
-    /**
      *
      *<code>
      *    $builder->from('Robots');
@@ -1160,6 +1131,35 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param array $expr
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Query\Exception
+     */
+    public function aggregate($expr)
+    {
+        $columns = '';
+
+        foreach ($expr as $k => $v) {
+            if (is_int($k)) {
+                $columns .= '[' . $v . '], ';
+            } else {
+                if (preg_match('#^(\w+)\(([\w]+)\)$#', $v, $matches) === 1) {
+                    $columns .= strtoupper($matches[1]) . '([' . $matches[2] . '])';
+                } else {
+                    $columns .= $v;
+                }
+
+                $columns .= ' AS [' . $k . '], ';
+            }
+        }
+
+        $this->_columns = substr($columns, 0, -2);
+
+        return $this->execute();
+    }
+
+    /**
      * @return int
      * @throws \ManaPHP\Db\Query\Exception
      */
@@ -1271,7 +1271,7 @@ class Query extends Component implements QueryInterface
      */
     public function count($column = '*')
     {
-        return $this->aggregate(['count' => 'COUNT(*)'])->execute()[0]['count'];
+        return $this->aggregate(['count' => 'COUNT(*)'])[0]['count'];
     }
 
     /**
