@@ -205,6 +205,45 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereContains($expr, $value)
+    {
+        $this->_query->whereContains($expr, $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereStartsWith($expr, $value)
+    {
+        $this->_query->whereStartsWith($expr, $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereEndsWith($expr, $value)
+    {
+        $this->_query->whereEndsWith($expr, $value);
+
+        return $this;
+    }
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>

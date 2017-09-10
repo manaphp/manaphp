@@ -99,6 +99,30 @@ interface CriteriaInterface
     public function whereLike($expr, $like);
 
     /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereContains($expr, $value);
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereStartsWith($expr, $value);
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereEndsWith($expr, $value);
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>
