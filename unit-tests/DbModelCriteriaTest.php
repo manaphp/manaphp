@@ -73,10 +73,20 @@ class DbModelCriteriaTest extends TestCase
             City::criteria()->whereNotIn('city_id', [1])->getSql());
     }
 
-    public function test_whereLike()
+    public function test_whereContains()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_name] LIKE :city_name',
-            City::criteria()->whereLike('city_name', '%A%')->getSql());
+            City::criteria()->whereContains('city_name', 'A')->getSql());
+    }
+
+    public function test_whereStartsWith()
+    {
+        $this->assertEquals(43, City::criteria()->whereStartsWith('city', 'A')->count());
+    }
+
+    public function test_whereEndsWith()
+    {
+        $this->assertEquals(125, City::criteria()->whereEndsWith('city', 'a')->count());
     }
 
     public function test_limit()

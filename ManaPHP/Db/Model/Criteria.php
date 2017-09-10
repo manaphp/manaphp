@@ -193,19 +193,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @param string|array $expr
-     * @param string       $like
-     *
-     * @return static
-     */
-    public function whereLike($expr, $like)
-    {
-        $this->_query->likeWhere($expr, $like);
-
-        return $this;
-    }
-
-    /**
-     * @param string|array $expr
      * @param string       $value
      *
      * @return static

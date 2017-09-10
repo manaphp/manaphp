@@ -646,7 +646,7 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      */
-    public function whereLike($expr, $like)
+    protected function _whereLike($expr, $like)
     {
         if (strpos($like, '%') === false) {
             $like = '%' . $like . '%';
@@ -694,7 +694,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereContains($expr, $value)
     {
-        return $this->whereLike($expr, '%' . $value . '%');
+        return $this->_whereLike($expr, '%' . $value . '%');
     }
 
     /**
@@ -705,7 +705,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereStartsWith($expr, $value)
     {
-        return $this->whereLike($expr, $value . '%');
+        return $this->_whereLike($expr, $value . '%');
     }
 
     /**
@@ -716,7 +716,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereEndsWith($expr, $value)
     {
-        return $this->whereLike($expr, '%' . $value);
+        return $this->_whereLike($expr, '%' . $value);
     }
 
     /**

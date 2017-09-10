@@ -227,13 +227,13 @@ class DbQueryTest extends TestCase
     public function test_likeWhere()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_name] LIKE :city_name',
-            (new Query())->from('city')->whereLike('city_name', '%A%')->getSql());
+            (new Query())->from('city')->whereContains('city_name', 'A')->getSql());
 
         $this->assertEquals('SELECT * FROM [city] AS [c] WHERE [c].[city_name] LIKE :c_city_name',
-            (new Query())->from('city', 'c')->whereLike('c.city_name', '%A%')->getSql());
+            (new Query())->from('city', 'c')->whereContains('c.city_name', 'A')->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE ([city_name] LIKE :city_name OR [country_name] LIKE :country_name)',
-            (new Query())->from('city')->whereLike(['city_name', 'country_name'], '%A%')->getSql());
+            (new Query())->from('city')->whereContains(['city_name', 'country_name'], 'A')->getSql());
     }
 
     public function test_limit()

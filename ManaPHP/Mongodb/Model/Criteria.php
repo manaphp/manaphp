@@ -353,7 +353,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return static
      */
-    public function whereLike($expr, $like)
+    protected function _whereLike($expr, $like)
     {
         if (is_array($expr)) {
             $or = [];
@@ -377,7 +377,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereContains($expr, $value)
     {
-        return $this->whereLike($expr, $value);
+        return $this->_whereLike($expr, $value);
     }
 
     /**
@@ -388,7 +388,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereStartsWith($expr, $value)
     {
-        return $this->whereLike($expr, '^' . $value);
+        return $this->_whereLike($expr, '^' . $value);
     }
 
     /**
@@ -399,7 +399,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereEndsWith($expr, $value)
     {
-        return $this->whereLike($expr, $value . '$');
+        return $this->_whereLike($expr, $value . '$');
     }
 
     /**

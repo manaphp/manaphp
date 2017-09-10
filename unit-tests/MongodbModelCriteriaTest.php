@@ -198,15 +198,25 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertCount(600, $documents);
     }
 
-    public function test_whereLike()
+    public function test_whereContains()
     {
-        $documents = Address::criteria()->whereLike('address', 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains('address', 'as')->fetchAll();
         $this->assertCount(21, $documents);
-        $documents = Address::criteria()->whereLike('district', 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains('district', 'as')->fetchAll();
         $this->assertCount(44, $documents);
 
-        $documents = Address::criteria()->whereLike(['address', 'district'], 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains(['address', 'district'], 'as')->fetchAll();
         $this->assertCount(64, $documents);
+    }
+
+    public function test_whereStartsWith()
+    {
+        $this->assertEquals(38, City::criteria()->whereStartsWith('city', 'A')->count());
+    }
+
+    public function test_whereEndsWith()
+    {
+        $this->assertEquals(125, City::criteria()->whereEndsWith('city', 'a')->count());
     }
 
     public function test_orderBy()

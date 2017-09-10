@@ -92,14 +92,6 @@ interface CriteriaInterface
 
     /**
      * @param string|array $expr
-     * @param string       $like
-     *
-     * @return static
-     */
-    public function whereLike($expr, $like);
-
-    /**
-     * @param string|array $expr
      * @param string       $value
      *
      * @return static
