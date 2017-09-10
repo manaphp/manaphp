@@ -128,13 +128,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function find($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria()->select($fields ?: static::getFields());
-
-        if (isset($filters[0])) {
-            $criteria->whereIn(static::getPrimaryKey()[0], $filters);
-        } else {
-            $criteria->where($filters);
-        }
+        $criteria = static::criteria()->select($fields ?: static::getFields())->where($filters);
 
         if ($options !== null) {
             if (isset($options['distinct'])) {
