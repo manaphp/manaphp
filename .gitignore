@@ -2,13 +2,13 @@
 *.bak
 *.log
 /*.phar
-/unit-tests/Image/Result
-/unit-tests/Image/Adapter
+/tests/Image/Result
+/tests/Image/Adapter
 
 /vendor/
-/Data/
-/Public/test.php
-/unit-tests/FileSystem
+/data/
+/public/test.php
+/tests/FileSystem
 /tests/Image/Adapter
 /tests/Image/Result
 /tests/FileSystem
