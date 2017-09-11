@@ -37,7 +37,7 @@ class Url extends Component implements UrlInterface
     public function __construct($options = [])
     {
         $selfPath = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
-        if ($selfPath !== '/' && preg_match('#(.*)/public$#i', $selfPath, $match) === 1) {
+        if ($selfPath !== '/' && preg_match('#(.*)/public$#', $selfPath, $match) === 1) {
             $selfPath = $match[1];
         } else {
             $selfPath = rtrim($selfPath, '/');

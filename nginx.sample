@@ -1,7 +1,7 @@
 server {
         listen      80;
         server_name localhost.dev;
-        root        /var/www/html/www.manaphp.com/Public;
+        root        /var/www/html/www.manaphp.com/public;
         index       index.php index.html index.htm;
 
         location / {

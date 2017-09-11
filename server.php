@@ -14,7 +14,7 @@ if (PHP_SAPI === 'cli') {
 
     chdir(__DIR__);
 
-    $r = `php -S $_SERVER[SERVER_ADDR]:$_SERVER[SERVER_PORT] -t Public server.php`;
+    $r = `php -S $_SERVER[SERVER_ADDR]:$_SERVER[SERVER_PORT] -t public server.php`;
     return $r;
 }
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
@@ -22,7 +22,7 @@ $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 // built-in PHP web server. This provides a convenient way to test a ManaPHP
 // application without having installed a "real" web server software here.
 if ($uri !== '/') {
-    if (file_exists(__DIR__ . '/Public/' . $uri)
+    if (file_exists(__DIR__ . '/public/' . $uri)
         || preg_match('#(.css|.js|.gif|.png|.jpg|.jpeg|.ttf|.woff|.ico)$#', $uri) === 1
     ) {
         return false;
@@ -30,4 +30,4 @@ if ($uri !== '/') {
 }
 
 $_GET['_url'] = $uri;
-require_once __DIR__ . '/Public/index.php';
+require_once __DIR__ . '/public/index.php';
