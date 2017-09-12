@@ -1,6 +1,7 @@
 <?php
 namespace Application;
 
+use ManaPHP\Mongodb;
 use ManaPHP\Mvc\NotFoundException;
 
 class Application extends \ManaPHP\Mvc\Application
@@ -48,6 +49,7 @@ class Application extends \ManaPHP\Mvc\Application
     {
         $this->registerServices();
 
+        $this->_dependencyInjector->setShared('mongodb',new Mongodb('mongodb://127.0.0.1/manaphp_unit_test'));
         $this->debugger->start();
 
         try {
