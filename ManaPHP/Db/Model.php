@@ -59,11 +59,11 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return array
+     * @return string
      */
     public static function getPrimaryKey()
     {
-        return Di::getDefault()->modelsMetadata->getPrimaryKeyAttributes(get_called_class());
+        return Di::getDefault()->modelsMetadata->getPrimaryKeyAttributes(get_called_class())[0];
     }
 
     /**

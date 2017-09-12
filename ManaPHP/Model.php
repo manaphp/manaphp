@@ -74,8 +74,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         $primaryKey = static::getPrimaryKey();
-        if (count($primaryKey) === 1 && ($pos = strrpos($primaryKey[0], '_'))) {
-            $tryField = substr($primaryKey[0], $pos + 1) . '_name';
+        if ($pos = strrpos($primaryKey, '_')) {
+            $tryField = substr($primaryKey, $pos + 1) . '_name';
 
             if (in_array($tryField, $fields, true)) {
                 return $tryField;
@@ -178,7 +178,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ModelException('invoke :model:findList method must provide displayField', ['model' => get_called_class()]);
             }
-            $keyField = static::getPrimaryKey()[0];
+            $keyField = static::getPrimaryKey();
             $valueField = $field;
 
             foreach ($criteria->select([$keyField, $valueField])->fetchAll() as $v) {
@@ -247,7 +247,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function findOne($filters = [], $fields = null)
     {
         if (is_scalar($filters)) {
-            $filters = [static::getPrimaryKey()[0] => $filters];
+            $filters = [static::getPrimaryKey() => $filters];
         }
 
         return static::criteria()->select($fields ?: static::getFields())->where($filters)->fetchOne();
@@ -263,10 +263,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         if (!is_scalar($id)) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()[0]]);
+            throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
-        return static::criteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey()[0], $id)->fetchOne();
+        return static::criteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey(), $id)->fetchOne();
     }
 
     /**
@@ -278,17 +278,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function exists($filters = null)
     {
         if (is_scalar($filters)) {
-            $primaryKeys = static::getPrimaryKey();
-
-            if (count($primaryKeys) === 0) {
-                throw new ModelException('parameter is scalar, but the primary key of `:model` model is none', ['model' => get_called_class()]);
-            }
-
-            if (count($primaryKeys) !== 1) {
-                throw new ModelException('parameter is scalar, but the primary key of `:model` model has more than one column'/**m0a5878bf7ea49c559*/,
-                    ['model' => get_called_class()]);
-            }
-            $filters = [$primaryKeys[0] => $filters];
+            $filters = [static::getPrimaryKey() => $filters];
         }
 
         return static::criteria()->where($filters)->exists();
@@ -306,7 +296,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(' `:id` must be scalar value.', ['id' => json_encode($id)]);
         }
 
-        return static::exists([static::getPrimaryKey()[0] => $id]);
+        return static::exists([static::getPrimaryKey() => $id]);
     }
 
     /**
@@ -558,18 +548,16 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $conditions = [];
         $primaryKey = static::getPrimaryKey();
 
-        foreach ($primaryKey as $field) {
-            if (!isset($this->{$field})) {
-                throw new ModelException('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
-                    ['model' => get_class($this)]);
-            }
-
-            $conditions[$field] = $this->{$field};
+        if (!isset($this->{$primaryKey})) {
+            throw new ModelException('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
+                ['model' => get_class($this)]);
         }
+
+        $conditions[$primaryKey] = $this->{$primaryKey};
 
         $fieldValues = [];
         foreach (static::getFields() as $field) {
-            if (in_array($field, $primaryKey, true)) {
+            if ($field === $primaryKey) {
                 continue;
             }
 
@@ -608,7 +596,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function updateById($id, $data, $whiteList = null)
     {
         if (!is_scalar($id)) {
-            throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);
+            throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
         $fieldValues = [];
@@ -623,7 +611,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
             $fieldValues[$field] = $data[$field];
         }
-        return static::criteria()->where(static::getPrimaryKey()[0], $id)->update($fieldValues);
+        return static::criteria()->where(static::getPrimaryKey(), $id)->update($fieldValues);
     }
 
     /**
@@ -633,34 +621,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     protected function _exists()
     {
-        $primaryKeys = static::getPrimaryKey();
-        if (count($primaryKeys) === 0) {
+        $primaryKey = static::getPrimaryKey();
+
+        if (!isset($this->{$primaryKey})) {
             return false;
         }
 
-        $conditions = [];
-
-        foreach ($primaryKeys as $field) {
-            if (!isset($this->{$field})) {
-                return false;
-            }
-            $conditions[$field] = $this->{$field};
-        }
-
-        if (is_array($this->_snapshot)) {
-            $primaryKeyEqual = true;
-            foreach ($primaryKeys as $field) {
-                if (!isset($this->_snapshot[$field]) || $this->_snapshot[$field] !== $this->{$field}) {
-                    $primaryKeyEqual = false;
-                }
-            }
-
-            if ($primaryKeyEqual) {
-                return true;
-            }
-        }
-
-        return static::criteria()->where($conditions)->forceUseMaster()->exists();
+        return static::criteria()->where($primaryKey, $this->{$primaryKey})->forceUseMaster()->exists();
     }
 
     /**
@@ -709,26 +676,19 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function delete()
     {
-        $primaryKeys = static::getPrimaryKey();
-
-        if (count($primaryKeys) === 0) {
-            throw new ModelException('`:model` model must define a primary key in order to perform delete operation'/**m0d826d10544f3a078*/,
-                ['model' => get_class($this)]);
-        }
-
         if ($this->_fireEventCancel('beforeDelete') === false) {
             throw new ModelException('`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, ['model' => get_class($this)]);
         }
 
-        $criteria = static::criteria();
-        foreach ($primaryKeys as $field) {
-            if (!isset($this->{$field})) {
-                throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:column` was not set'/**m01dec9cd3b69742a5*/,
-                    ['model' => get_class($this), 'column' => $field]);
-            }
+        $primaryKey = static::getPrimaryKey();
 
-            $criteria->where($field, $this->{$field});
+        $criteria = static::criteria();
+        if (!isset($this->{$primaryKey})) {
+            throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:column` was not set'/**m01dec9cd3b69742a5*/,
+                ['model' => get_class($this), 'column' => $primaryKey]);
         }
+
+        $criteria->where($primaryKey, $this->{$primaryKey});
 
         $r = $criteria->delete();
 
@@ -746,10 +706,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function deleteById($id)
     {
         if (!is_scalar($id)) {
-            throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()[0]]);
+            throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
-        return static::criteria()->where(static::getPrimaryKey()[0], $id)->delete();
+        return static::criteria()->where(static::getPrimaryKey(), $id)->delete();
     }
 
     /**
@@ -917,7 +877,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where($referenceModel::getPrimaryKey()[0], $this->$referenceField)->setFetchType(false);
+        return $referenceModel::criteria()->where($referenceModel::getPrimaryKey(), $this->$referenceField)->setFetchType(false);
     }
 
     /**
@@ -935,7 +895,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where($referenceModel::getPrimaryKey()[0], $this->$referenceField)->setFetchType(false);
+        return $referenceModel::criteria()->where($referenceModel::getPrimaryKey(), $this->$referenceField)->setFetchType(false);
     }
 
     /**
@@ -953,7 +913,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where($referenceField, $this->{static::getPrimaryKey()[0]})->setFetchType(true);
+        return $referenceModel::criteria()->where($referenceField, $this->{static::getPrimaryKey()})->setFetchType(true);
     }
 
     public function __get($name)

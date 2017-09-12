@@ -61,11 +61,11 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return array
+     * @return int
      */
     public static function getPrimaryKey()
     {
-        return ['_id'];
+        return '_id';
     }
 
     /**
