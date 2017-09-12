@@ -61,31 +61,21 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return int
+     * @return string
      */
     public static function getPrimaryKey()
     {
-        return '_id';
+        $autoIncField = static::getAutoIncrementField();
+        if ($autoIncField !== null) {
+            return $autoIncField;
+        } else {
+            return '_id';
+        }
     }
 
-    /**
-     * @param int $step
-     * @param     int
-     */
-    public static function generateAutoIncrementId($step = 1)
+    public static function getAutoIncrementField()
     {
-        $command = [
-            'findAndModify' => 'auto_increment_id',
-            'query' => ['_id' => static::getSource()],
-            'update' => ['$inc' => ['current_id' => 1]],
-            'new' => true,
-            'upsert' => true
-        ];
-
-        $r = static::getConnection()->command($command);
-        $r->setTypeMap(['root' => 'array', 'document' => 'array']);
-        $r = $r->toArray();
-        return $r[0]['value']['current_id'];
+        return null;
     }
 
     /**
@@ -96,28 +86,42 @@ class Model extends \ManaPHP\Model
         return array_keys(static::getFieldTypes());
     }
 
-    public static function getAutoIncrementField()
-    {
-        return null;
-    }
-
     /**
      * ```
      * bool     => Boolean
-     * int      => 32-bit integer
-     * long     => 64-bit integer
+     * integer  => 32-bit integer
      * float    => Double
-     * double   => Double
      * objectid => ObjectId
      * string   => String
      * ```
-     *
      *
      * @return array
      */
     public static function getFieldTypes()
     {
         return ['_id' => 'objectid'];
+    }
+
+    /**
+     * @param int $step
+     * @param     int
+     *
+     * @return int
+     */
+    public static function generateAutoIncrementId($step = 1)
+    {
+        $command = [
+            'findAndModify' => 'auto_increment_id',
+            'query' => ['_id' => static::getSource()],
+            'update' => ['$inc' => ['current_id' => $step]],
+            'new' => true,
+            'upsert' => true
+        ];
+
+        $r = static::getConnection()->command($command);
+        $r->setTypeMap(['root' => 'array', 'document' => 'array']);
+        $r = $r->toArray();
+        return $r[0]['value']['current_id'];
     }
 
     /**
