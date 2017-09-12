@@ -209,6 +209,7 @@ class Mongodb extends Component implements MongodbInterface
         $this->fireEvent('mongodb:beforeExecuteCommand', ['db' => $db ?: $this->_defaultDb, 'command' => $command]);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $r = $this->_getManager()->executeCommand($db ?: $this->_defaultDb, new Command($command));
+        $r->setTypeMap(['root' => 'array', 'document' => 'array']);
         $this->fireEvent('mongodb:afterExecuteCommand');
 
         return $r;

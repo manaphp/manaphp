@@ -4,7 +4,6 @@ namespace ManaPHP\Mongodb\Model;
 use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Mongodb\Model\Criteria\Exception as CriteriaException;
-use MongoDB\Driver\Command;
 
 /**
  * Class ManaPHP\Mongodb\Model\Criteria
@@ -121,7 +120,6 @@ class Criteria extends \ManaPHP\Model\Criteria
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $cursor = $db->command($cmd);
-        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
         $r = $cursor->toArray()[0];
         if (!$r['ok']) {
             throw new CriteriaException('`:distinct` distinct for `:collection` collection failed `:code`: `:msg`',
