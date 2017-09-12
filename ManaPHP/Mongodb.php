@@ -198,8 +198,8 @@ class Mongodb extends Component implements MongodbInterface
     }
 
     /**
-     * @param \Mongodb\Driver\Command $command
-     * @param string                  $db
+     * @param array  $command
+     * @param string $db
      *
      * @return \Mongodb\Driver\Cursor
      * @throws \MongoDB\Driver\Exception\AuthenticationException
@@ -208,7 +208,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $this->fireEvent('mongodb:beforeExecuteCommand', ['db' => $db ?: $this->_defaultDb, 'command' => $command]);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $r = $this->_getManager()->executeCommand($db ?: $this->_defaultDb, $command);
+        $r = $this->_getManager()->executeCommand($db ?: $this->_defaultDb, new Command($command));
         $this->fireEvent('mongodb:afterExecuteCommand');
 
         return $r;

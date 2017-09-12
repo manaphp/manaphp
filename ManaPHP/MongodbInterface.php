@@ -48,8 +48,8 @@ interface MongodbInterface
     public function query($source, $filter = [], $queryOptions = [], $secondaryPreferred = true);
 
     /**
-     * @param \Mongodb\Driver\Command $command
-     * @param string                  $db
+     * @param array  $command
+     * @param string $db
      *
      * @return \Mongodb\Driver\Cursor
      */

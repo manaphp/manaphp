@@ -120,7 +120,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         }
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $cursor = $db->command(new Command($cmd));
+        $cursor = $db->command($cmd);
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
         $r = $cursor->toArray()[0];
         if (!$r['ok']) {
