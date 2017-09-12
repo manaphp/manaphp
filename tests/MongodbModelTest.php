@@ -53,14 +53,12 @@ class MongodbModelTest extends TestCase
         $this->assertSame('manaphp', $dt::getNormalizedValue('string', 'manaphp'));
         $this->assertSame('123', $dt::getNormalizedValue('string', 123));
 
-        $this->assertSame(123, $dt::getNormalizedValue('int', 123));
-        $this->assertSame(123, $dt::getNormalizedValue('int', '123'));
+        $this->assertSame(123, $dt::getNormalizedValue('integer', 123));
+        $this->assertSame(123, $dt::getNormalizedValue('integer', '123'));
 
         $this->assertSame(1.23, $dt::getNormalizedValue('float', 1.23));
         $this->assertSame(1.23, $dt::getNormalizedValue('float', '1.23'));
 
-        $this->assertSame(1.23, $dt::getNormalizedValue('double', 1.23));
-        $this->assertSame(1.23, $dt::getNormalizedValue('double', '1.23'));
 
         $objectId = new ObjectID();
         $this->assertEquals($objectId, $dt::getNormalizedValue('objectid', $objectId));
