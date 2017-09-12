@@ -5,7 +5,6 @@ use ManaPHP\Mongodb\Model;
 
 class CityM extends Model
 {
-    public $_id;
     public $city_id;
     public $city;
     public $country_id;
