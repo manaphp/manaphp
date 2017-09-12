@@ -48,12 +48,12 @@ class Model extends \ManaPHP\Model
      * @param mixed $context
      *
      * @return \ManaPHP\MongodbInterface
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public static function getConnection($context = null)
     {
         $db = static::getDb($context);
         if ($db === false) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException(' db of `:model` model is invalid.', ['model' => get_called_class()]);
         }
 
@@ -66,6 +66,26 @@ class Model extends \ManaPHP\Model
     public static function getPrimaryKey()
     {
         return ['_id'];
+    }
+
+    /**
+     * @param int $step
+     * @param     int
+     */
+    public static function generateAutoIncrementId($step = 1)
+    {
+        $command = [
+            'findAndModify' => 'auto_increment_id',
+            'query' => ['_id' => static::getSource()],
+            'update' => ['$inc' => ['current_id' => 1]],
+            'new' => true,
+            'upsert' => true
+        ];
+
+        $r = static::getConnection()->command($command);
+        $r->setTypeMap(['root' => 'array', 'document' => 'array']);
+        $r = $r->toArray();
+        return $r[0]['value']['current_id'];
     }
 
     /**
@@ -111,9 +131,9 @@ class Model extends \ManaPHP\Model
     {
         if ($type === 'string') {
             return is_string($value) ? $value : (string)$value;
-        } elseif ($type === 'int' || $type === 'integer' || $type === 'long') {
+        } elseif ($type === 'integer') {
             return is_int($value) ? $value : (int)$value;
-        } elseif ($type === 'float' || $type === 'double') {
+        } elseif ($type === 'float') {
             return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -174,6 +194,17 @@ class Model extends \ManaPHP\Model
     {
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
             throw new ModelException('`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, ['model' => get_class($this)]);
+        }
+
+        $autoIncField = static::getAutoIncrementField();
+        if ($autoIncField !== null) {
+            if ($this->{$autoIncField} === null) {
+                $this->{$autoIncField} = static::generateAutoIncrementId();
+            }
+
+            if ($autoIncField !== '_id' && $this->_id === null) {
+                $this->_id = $this->{$autoIncField};
+            }
         }
 
         $columnValues = [];

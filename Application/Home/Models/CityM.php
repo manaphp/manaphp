@@ -6,7 +6,6 @@ use ManaPHP\Mongodb\Model;
 class CityM extends Model
 {
     public $_id;
-    public $id;
     public $city_id;
     public $city;
     public $country_id;
@@ -17,12 +16,19 @@ class CityM extends Model
         return 'city';
     }
 
-    public static function getFieldType($field)
+    public static function getFieldTypes()
     {
-        $types = ['_id' => 'objectid', 'country_id' => 'integer', 'city_id' => 'integer'];
-        if (isset($types[$field])) {
-            return $types[$field];
-        }
-        return parent::getFieldType($field);
+        return [
+            '_id' => 'integer',
+            'city_id' => 'integer',
+            'city' => 'string',
+            'country_id' => 'integer',
+            'last_update' => 'string'
+        ];
+    }
+
+    public static function getAutoIncrementField()
+    {
+        return 'city_id';
     }
 }
