@@ -65,16 +65,38 @@ class Model extends \ManaPHP\Model
      */
     public static function getPrimaryKey()
     {
-        $autoIncField = static::getAutoIncrementField();
-        if ($autoIncField !== null) {
-            return $autoIncField;
-        } else {
-            return '_id';
+        $fieldTypes = static::getFieldTypes();
+        if (isset($fieldTypes['id'])) {
+            return 'id';
         }
+
+        $source = static::getSource();
+        $pos = strrpos($source, '_');
+        $tryField = ($pos === false ? $source : substr($source, $pos + 1)) . '_id';
+        if (isset($fieldTypes[$tryField])) {
+            return $tryField;
+        }
+
+        return '_id';
     }
 
+    /**
+     * @return null|string
+     */
     public static function getAutoIncrementField()
     {
+        $fieldTypes = static::getFieldTypes();
+        if (isset($fieldTypes['id']) && $fieldTypes['id'] === 'integer') {
+            return 'id';
+        }
+
+        $source = static::getSource();
+        $pos = strrpos($source, '_');
+        $tryField = ($pos === false ? $source : substr($source, $pos + 1)) . '_id';
+        if (isset($fieldTypes[$tryField]) && $fieldTypes[$tryField] === 'integer') {
+            return $tryField;
+        }
+
         return null;
     }
 
