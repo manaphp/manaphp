@@ -25,9 +25,4 @@ class CityM extends Model
             'last_update' => 'string'
         ];
     }
-
-    public static function getAutoIncrementField()
-    {
-        return 'city_id';
-    }
 }
