@@ -86,6 +86,11 @@ class Model extends \ManaPHP\Model
     public static function getAutoIncrementField()
     {
         $fieldTypes = static::getFieldTypes();
+
+        if ($fieldTypes['_id'] === 'integer') {
+            return '_id';
+        }
+
         if (isset($fieldTypes['id']) && $fieldTypes['id'] === 'integer') {
             return 'id';
         }
@@ -121,7 +126,8 @@ class Model extends \ManaPHP\Model
      */
     public static function getFieldTypes()
     {
-        return ['_id' => 'objectid'];
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        throw new ModelException('`:model::getFieldTypes`method must implemented', ['model' => get_called_class()]);
     }
 
     /**
@@ -230,6 +236,13 @@ class Model extends \ManaPHP\Model
 
             if ($autoIncField !== '_id' && $this->_id === null) {
                 $this->_id = $this->{$autoIncField};
+            }
+        }
+
+        if ($this->_id === null) {
+            $primaryKey = static::getPrimaryKey();
+            if ($primaryKey !== '_id' && isset($this->{$primaryKey})) {
+                $this->_id = $this->{$primaryKey};
             }
         }
 
