@@ -233,11 +233,11 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
 
             if ($operator === '^=') {
-                $this->_filters[] = [$field => ['$regex' => '^' . $value]];
+                $this->whereStartsWith($field, $value);
             } elseif ($operator === '$=') {
-                $this->_filters[] = [$field => ['$regex' => $value . '$']];
+                $this->whereEndsWith($field, $value);
             } elseif ($operator === '*=') {
-                $this->_filters[] = [$field => ['$regex' => $value]];
+                $this->whereContains($field, $value);
             } elseif ($operator === '~=') {
                 $this->_filters[] = [$field => ['$regex' => $value, '$options' => 'i']];
             } else {

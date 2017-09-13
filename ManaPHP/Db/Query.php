@@ -375,14 +375,11 @@ class Query extends Component implements QueryInterface
                 $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
                 $this->_bind[$bind_key] = $value;
             } elseif ($operator === '^=') {
-                $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
-                $this->_bind[$bind_key] = $value . '%';
+                $this->whereStartsWith($field, $value);
             } elseif ($operator === '$=') {
-                $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
-                $this->_bind[$bind_key] = '%' . $value;
+                $this->whereEndsWith($field, $value);
             } elseif ($operator === '*=') {
-                $this->_conditions[] = $normalizedField . ' LIKE :' . $bind_key;
-                $this->_bind[$bind_key] = '%' . $value . '%';
+                $this->whereContains($field, $value);
             } elseif ($operator === '~=') {
                 $this->_conditions[] = 'LOWER(' . $normalizedField . ')' . ' LIKE :' . $bind_key;
                 $this->_bind[$bind_key] = '%' . strtolower($value) . '%';
