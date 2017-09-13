@@ -529,6 +529,76 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         return $this;
     }
 
+    protected function _preCreate()
+    {
+
+    }
+
+    protected function _postCreate($connection)
+    {
+
+    }
+
+    /**
+     * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
+     * Returning true on success or false otherwise.
+     *
+     *<code>
+     *    //Creating a new robot
+     *    $robot = new Robots();
+     *    $robot->type = 'mechanical';
+     *    $robot->name = 'Boy';
+     *    $robot->year = 1952;
+     *    $robot->create();
+     *
+     *  //Passing an array to create
+     *  $robot = new Robots();
+     *  $robot->create(array(
+     *      'type' => 'mechanical',
+     *      'name' => 'Boy',
+     *      'year' => 1952
+     *  ));
+     *</code>
+     *
+     * @return void
+     * @throws \ManaPHP\Db\Model\Exception
+     */
+    public function create()
+    {
+        $this->_preCreate();
+
+        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
+            throw new ModelException('`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, ['model' => get_class($this)]);
+        }
+
+        $fieldValues = [];
+        foreach (static::getFields() as $field) {
+            if ($this->{$field} !== null) {
+                $fieldValues[$field] = $this->{$field};
+            }
+        }
+
+        if (($db = static::getDb($this)) === false) {
+            throw new ModelException('`:model` model db sharding for insert failed',
+                ['model' => get_called_class(), 'context' => $this]);
+        }
+
+        if (($source = static::getSource($this)) === false) {
+            throw new ModelException('`:model` model table sharding for insert failed',
+                ['model' => get_called_class(), 'context' => $this]);
+        }
+
+        $connection = $this->_dependencyInjector->getShared($db);
+        $connection->insert($source, $fieldValues);
+
+        $this->_postCreate($connection);
+
+        $this->_snapshot = $this->toArray();
+
+        $this->_fireEvent('afterCreate');
+        $this->_fireEvent('afterSave');
+    }
+
     /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
      * Returning true on success or false otherwise.

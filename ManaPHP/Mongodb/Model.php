@@ -198,36 +198,8 @@ class Model extends \ManaPHP\Model
         return Di::getDefault()->get('ManaPHP\Mongodb\Model\Criteria', [get_called_class(), $fields]);
     }
 
-    /**
-     * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
-     * Returning true on success or false otherwise.
-     *
-     *<code>
-     *    //Creating a new robot
-     *    $robot = new Robots();
-     *    $robot->type = 'mechanical';
-     *    $robot->name = 'Boy';
-     *    $robot->year = 1952;
-     *    $robot->create();
-     *
-     *  //Passing an array to create
-     *  $robot = new Robots();
-     *  $robot->create(array(
-     *      'type' => 'mechanical',
-     *      'name' => 'Boy',
-     *      'year' => 1952
-     *  ));
-     *</code>
-     *
-     * @return void
-     * @throws \ManaPHP\Mongodb\Model\Exception
-     */
-    public function create()
+    protected function _preCreate()
     {
-        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
-            throw new ModelException('`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, ['model' => get_class($this)]);
-        }
-
         $autoIncField = static::getAutoIncrementField();
         if ($autoIncField !== null) {
             if ($this->{$autoIncField} === null) {
@@ -243,33 +215,12 @@ class Model extends \ManaPHP\Model
             $primaryKey = static::getPrimaryKey();
             if ($primaryKey !== '_id' && isset($this->{$primaryKey})) {
                 $this->_id = $this->{$primaryKey};
+            } else {
+                $fileTypes = static::getFieldTypes();
+                if ($fileTypes['_id'] === 'objectid') {
+                    $this->_id = (string)new ObjectID();
+                }
             }
         }
-
-        $columnValues = [];
-        foreach (self::getFields() as $field) {
-            if ($this->{$field} !== null) {
-                $columnValues[$field] = $this->getNormalizedFieldValue($field);
-            }
-        }
-
-        if (($db = static::getDb($this)) === false) {
-            throw new ModelException('`:model` model db sharding for insert failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        if (($source = static::getSource($this)) === false) {
-            throw new ModelException('`:model` model table sharding for insert failed',
-                ['model' => get_called_class(), 'context' => $this]);
-        }
-
-        $connection = $this->_dependencyInjector->getShared($db);
-
-        $_id = $connection->insert($source, $columnValues);
-        $this->_id = $_id instanceof ObjectID ? (string)$_id : $_id;
-        $this->_snapshot = $this->toArray();
-
-        $this->_fireEvent('afterCreate');
-        $this->_fireEvent('afterSave');
     }
 }
