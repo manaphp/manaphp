@@ -214,5 +214,9 @@ class Model extends \ManaPHP\Model
                 }
             }
         }
+
+        foreach (static::getFieldTypes() as $field => $type) {
+            $this->{$field} = static::getNormalizedValue($type, $this->{$field});
+        }
     }
 }

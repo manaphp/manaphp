@@ -92,6 +92,9 @@ class MongodbModelCriteriaTest extends TestCase
         $document = City::criteria()->where('city_id', 2)->fetchOne();
         $this->assertEquals(2, $document->city_id);
 
+        $document = City::criteria()->where('city_id', '2')->fetchOne();
+        $this->assertEquals(2, $document->city_id);
+
         $document = City::criteria()->where(['city_id' => 2])->fetchOne();
         $this->assertEquals(2, $document->city_id);
 
@@ -143,7 +146,13 @@ class MongodbModelCriteriaTest extends TestCase
         $documents = City::criteria()->where('city_id', [1, 2, 3, 4])->fetchAll();
         $this->assertCount(4, $documents);
 
+        $documents = City::criteria()->where('city_id', ['1', '2', '3', '4'])->fetchAll();
+        $this->assertCount(4, $documents);
+
         $documents = City::criteria()->where('city_id~=', [1, 4])->fetchAll();
+        $this->assertCount(4, $documents);
+
+        $documents = City::criteria()->where('city_id~=', ['1', '4'])->fetchAll();
         $this->assertCount(4, $documents);
 
         $documents = City::criteria()->where('city_id', [])->fetchAll();
@@ -165,6 +174,9 @@ class MongodbModelCriteriaTest extends TestCase
         $documents = City::criteria()->whereBetween('city_id', 2, 3)->fetchAll();
         $this->assertCount(2, $documents);
 
+        $documents = City::criteria()->whereBetween('city_id', '2', '3')->fetchAll();
+        $this->assertCount(2, $documents);
+
         $documents = City::criteria()->whereBetween('city_id', 2, 2)->fetchAll();
         $this->assertCount(1, $documents);
     }
@@ -172,6 +184,9 @@ class MongodbModelCriteriaTest extends TestCase
     public function test_whereNotBetween()
     {
         $documents = City::criteria()->whereNotBetween('city_id', 100, 600)->fetchAll();
+        $this->assertCount(99, $documents);
+
+        $documents = City::criteria()->whereNotBetween('city_id', '100', '600')->fetchAll();
         $this->assertCount(99, $documents);
 
         $documents = City::criteria()->whereNotBetween('city_id', 50, 200)->whereNotBetween('city_id', 200, 600)->fetchAll();
@@ -183,7 +198,13 @@ class MongodbModelCriteriaTest extends TestCase
         $documents = City::criteria()->whereIn('city_id', [1, 2, 3, 4])->fetchAll();
         $this->assertCount(4, $documents);
 
+        $documents = City::criteria()->whereIn('city_id', ['1', '2', '3', '4'])->fetchAll();
+        $this->assertCount(4, $documents);
+
         $documents = City::criteria()->whereIn('city_id', [1, 2, 3, 4])->whereIn('city_id', [2, 4])->fetchAll();
+        $this->assertCount(2, $documents);
+
+        $documents = City::criteria()->whereIn('city_id', ['1', '2', '3', '4'])->whereIn('city_id', ['2', '4'])->fetchAll();
         $this->assertCount(2, $documents);
 
         $documents = City::criteria()->whereIn('city_id', [])->fetchAll();
@@ -193,6 +214,9 @@ class MongodbModelCriteriaTest extends TestCase
     public function test_whereNotIn()
     {
         $documents = City::criteria()->whereNotIn('city_id', [1, 2, 3, 4])->fetchAll();
+        $this->assertCount(596, $documents);
+
+        $documents = City::criteria()->whereNotIn('city_id', ['1', '2', '3', '4'])->fetchAll();
         $this->assertCount(596, $documents);
 
         $documents = City::criteria()->whereNotIn('city_id', [])->fetchAll();

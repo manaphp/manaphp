@@ -243,7 +243,12 @@ class Criteria extends \ManaPHP\Model\Criteria
             } else {
                 $operator_map = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
                 if (isset($operator_map[$operator])) {
-                    $this->_filters[] = [$field => [$operator_map[$operator] => $value]];
+                    /**
+                     * @var \ManaPHP\Mongodb\Model $modelName
+                     */
+                    $modelName = $this->_modelName;
+                    $fieldTypes = $modelName::getFieldTypes();
+                    $this->_filters[] = [$field => [$operator_map[$operator] => $modelName::getNormalizedValue($fieldTypes[$field], $value)]];
                 } else {
                     throw new CriteriaException('unknown `:where` where filter', ['where' => $filter]);
                 }
@@ -282,6 +287,17 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereBetween($expr, $min, $max)
     {
+        /**
+         * @var \ManaPHP\Mongodb\Model $modelName
+         */
+        $modelName = $this->_modelName;
+
+        $fieldTypes = $modelName::getFieldTypes();
+        $fieldType = $fieldTypes[$expr];
+
+        $min = $modelName::getNormalizedValue($fieldType, $min);
+        $max = $modelName::getNormalizedValue($fieldType, $max);
+
         $this->_filters[] = [$expr => ['$gte' => $min, '$lte' => $max]];
 
         return $this;
@@ -302,6 +318,17 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotBetween($expr, $min, $max)
     {
+        /**
+         * @var \ManaPHP\Mongodb\Model $modelName
+         */
+        $modelName = $this->_modelName;
+
+        $fieldTypes = $modelName::getFieldTypes();
+        $fieldType = $fieldTypes[$expr];
+
+        $min = $modelName::getNormalizedValue($fieldType, $min);
+        $max = $modelName::getNormalizedValue($fieldType, $max);
+
         $this->_filters[] = ['$or' => [[$expr => ['$lt' => $min]], [$expr => ['$gt' => $max]]]];
 
         return $this;
@@ -314,13 +341,30 @@ class Criteria extends \ManaPHP\Model\Criteria
      *    $builder->inWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string                           $expr
-     * @param array|\ManaPHP\Db\QueryInterface $values
+     * @param string $expr
+     * @param array  $values
      *
      * @return static
      */
     public function whereIn($expr, $values)
     {
+        /**
+         * @var \ManaPHP\Mongodb\Model $modelName
+         */
+        $modelName = $this->_modelName;
+
+        $fieldTypes = $modelName::getFieldTypes();
+        $fieldType = $fieldTypes[$expr];
+		
+        if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
+            $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
+            $values = array_map($map[$fieldType], $values);
+        } else {
+            foreach ($values as $k => $value) {
+                $values[$k] = $modelName::getNormalizedValue($fieldType, $value);
+            }
+        }
+
         $this->_filters[] = [$expr => ['$in' => $values]];
 
         return $this;
@@ -333,13 +377,30 @@ class Criteria extends \ManaPHP\Model\Criteria
      *    $builder->notInWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string                           $expr
-     * @param array|\ManaPHP\Db\QueryInterface $values
+     * @param string $expr
+     * @param array  $values
      *
      * @return static
      */
     public function whereNotIn($expr, $values)
     {
+        /**
+         * @var \ManaPHP\Mongodb\Model $modelName
+         */
+        $modelName = $this->_modelName;
+
+        $fieldTypes = $modelName::getFieldTypes();
+        $fieldType = $fieldTypes[$expr];
+		
+        if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
+            $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
+            $values = array_map($map[$fieldType], $values);
+        } else {
+            foreach ($values as $k => $value) {
+                $values[$k] = $modelName::getNormalizedValue($fieldType, $value);
+            }
+        }
+
         $this->_filters[] = [$expr => ['$nin' => $values]];
 
         return $this;

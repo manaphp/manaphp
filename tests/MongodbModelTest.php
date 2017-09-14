@@ -59,7 +59,6 @@ class MongodbModelTest extends TestCase
         $this->assertSame(1.23, $dt::getNormalizedValue('float', 1.23));
         $this->assertSame(1.23, $dt::getNormalizedValue('float', '1.23'));
 
-
         $objectId = new ObjectID();
         $this->assertEquals($objectId, $dt::getNormalizedValue('objectid', $objectId));
 
@@ -130,12 +129,16 @@ class MongodbModelTest extends TestCase
 
         $actor = Actor::findFirst(['actor_id' => 5, 'first_name' => 'JOHNNY']);
         $this->assertEquals(5, $actor->actor_id);
+
+        $this->assertNotFalse(City::findFirst('10'));
     }
 
     public function test_exists()
     {
         $this->assertFalse(Actor::exists(-1));
         $this->assertTrue(Actor::exists(1));
+
+        $this->assertTrue(City::exists('1'));
     }
 
     public function test_findFirst_usage()
@@ -166,6 +169,8 @@ class MongodbModelTest extends TestCase
     {
         $city = City::findById(10);
         $this->assertEquals(10, $city->city_id);
+
+        $this->assertInstanceOf(City::class, City::findById('10'));
     }
 
     public function test_find_usage()
