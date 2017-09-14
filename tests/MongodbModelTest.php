@@ -3,34 +3,15 @@ namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mongodb;
-use ManaPHP\Mongodb\Model;
 use MongoDB\BSON\ObjectID;
 use PHPUnit\Framework\TestCase;
 use Tests\Mongodb\Models\Actor;
 use Tests\Mongodb\Models\City;
+use Tests\Mongodb\Models\City1;
+use Tests\Mongodb\Models\City2;
+use Tests\Mongodb\Models\City3;
 use Tests\Mongodb\Models\DataType;
 use Tests\Mongodb\Models\Student;
-
-class TestCity1 extends Model
-{
-
-}
-
-class TestCity2 extends Model
-{
-    public static function getSource($context = null)
-    {
-        return 'city';
-    }
-}
-
-class TestCity3 extends \ManaPHP\Mvc\Model
-{
-    public static function getSource($context = null)
-    {
-        return 'the_city';
-    }
-}
 
 class MongodbModelTest extends TestCase
 {
@@ -299,15 +280,15 @@ class MongodbModelTest extends TestCase
     public function test_getSource()
     {
         //infer the table name from table name
-        $city = new TestCity1();
-        $this->assertEquals('test_city1', $city::getSource());
+        $city = new City1();
+        $this->assertEquals('city1', $city::getSource());
 
         //use getSource
-        $city = new TestCity2();
+        $city = new City2();
         $this->assertEquals('city', $city::getSource());
 
         //use setSource
-        $city = new TestCity3();
+        $city = new City3();
         $this->assertEquals('the_city', $city::getSource());
     }
 
