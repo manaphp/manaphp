@@ -157,10 +157,13 @@ class Model extends \ManaPHP\Model
      * @param mixed  $value
      *
      * @return bool|float|int|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime|string
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public static function getNormalizedValue($type, $value)
     {
+        if ($value === null) {
+            return null;
+        }
+
         if ($type === 'string') {
             return is_string($value) ? $value : (string)$value;
         } elseif ($type === 'integer') {
@@ -175,17 +178,6 @@ class Model extends \ManaPHP\Model
         } else {
             throw new ModelException('invalid data type');
         }
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return bool|float|int|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime|string
-     * @throws \ManaPHP\Mongodb\Model\Exception
-     */
-    public function getNormalizedFieldValue($field)
-    {
-        return static::getNormalizedValue(static::getFieldTypes()[$field], $this->{$field});
     }
 
     /**
