@@ -87,10 +87,6 @@ class Model extends \ManaPHP\Model
     {
         $fieldTypes = static::getFieldTypes();
 
-        if ($fieldTypes['_id'] === 'integer') {
-            return '_id';
-        }
-
         if (isset($fieldTypes['id']) && $fieldTypes['id'] === 'integer') {
             return 'id';
         }
@@ -100,6 +96,10 @@ class Model extends \ManaPHP\Model
         $tryField = ($pos === false ? $source : substr($source, $pos + 1)) . '_id';
         if (isset($fieldTypes[$tryField]) && $fieldTypes[$tryField] === 'integer') {
             return $tryField;
+        }
+
+        if ($fieldTypes['_id'] === 'integer') {
+            return '_id';
         }
 
         return null;
