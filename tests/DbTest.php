@@ -1,12 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/23
- * Time: 21:36
- */
-defined('UNIT_TESTS_ROOT') || require __DIR__ . '/bootstrap.php';
-
+namespace Tests;
+use PHPUnit\Framework\TestCase;
+use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Di\FactoryDefault;
+use \PDO;
 class DbTest extends TestCase
 {
     /**
@@ -16,10 +13,10 @@ class DbTest extends TestCase
 
     public function setUp()
     {
-        new \ManaPHP\Di\FactoryDefault();
+        new FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
-        $this->db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
+        $this->db = new Mysql($config['mysql']);
         // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
         $this->db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
