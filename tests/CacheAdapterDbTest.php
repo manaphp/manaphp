@@ -8,15 +8,11 @@ use PHPUnit\Framework\TestCase;
 
 class CacheAdapterDbTest extends TestCase
 {
-    protected $_di;
-
     public function setUp()
     {
-        parent::setUp();
+        $di = new FactoryDefault();
 
-        $this->_di = new FactoryDefault();
-
-        $this->_di->setShared('db', function () {
+        $di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Mysql($config['mysql']);
             $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {

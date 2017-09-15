@@ -7,8 +7,16 @@ use PHPUnit\Framework\TestCase;
 
 class CacheAdapterApcTest extends TestCase
 {
+    /**
+     * @requires  extension apc
+     */
     public function test_exists()
     {
+        if (!function_exists('apc_exists')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $cache = new Apc();
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -18,6 +26,11 @@ class CacheAdapterApcTest extends TestCase
 
     public function test_get()
     {
+        if (!function_exists('apc_exists')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $cache = new Apc();
         $cache->delete('var');
 
@@ -28,6 +41,11 @@ class CacheAdapterApcTest extends TestCase
 
     public function test_set()
     {
+        if (!function_exists('apc_exists')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $cache = new Apc();
 
         $cache->set('var', '', 100);
@@ -51,6 +69,11 @@ class CacheAdapterApcTest extends TestCase
 
     public function test_delete()
     {
+        if (!function_exists('apc_exists')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $cache = new Apc();
 
         //exists and delete

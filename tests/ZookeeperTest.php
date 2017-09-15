@@ -17,6 +17,11 @@ class ZookeeperTest extends TestCase
 
     public function test_create()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
@@ -33,6 +38,11 @@ class ZookeeperTest extends TestCase
 
     public function test_createNx()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
@@ -49,6 +59,11 @@ class ZookeeperTest extends TestCase
 
     public function test_delete()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $this->assertInstanceOf('ManaPHP\Zookeeper', $zookeeper->delete('/manaphp'));
@@ -62,6 +77,11 @@ class ZookeeperTest extends TestCase
 
     public function test_setData()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->createNx('/manaphp');
@@ -75,6 +95,11 @@ class ZookeeperTest extends TestCase
 
     public function test_getData()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
@@ -86,6 +111,11 @@ class ZookeeperTest extends TestCase
 
     public function test_getChildren()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
@@ -100,6 +130,11 @@ class ZookeeperTest extends TestCase
 
     public function test_exists()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $zookeeper->delete('/manaphp');
@@ -111,6 +146,11 @@ class ZookeeperTest extends TestCase
 
     public function test_watchData()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $count = 0;
@@ -126,6 +166,11 @@ class ZookeeperTest extends TestCase
 
     public function test_watchChildren()
     {
+        if (!extension_loaded('zookeeper')) {
+            $this->markTestSkipped();
+            return;
+        }
+
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $count = 0;
