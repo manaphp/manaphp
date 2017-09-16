@@ -484,6 +484,19 @@ class Criteria extends \ManaPHP\Model\Criteria
 
     /**
      * @param string $expr
+     * @param string $regex
+     *
+     * @return static
+     */
+    public function whereRegex($expr, $regex)
+    {
+        $this->_filters[] = [$expr => ['$regex' => $regex]];
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
      *
      * @return static
      */
