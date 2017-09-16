@@ -92,6 +92,16 @@ class DbModelCriteriaTest extends TestCase
         $this->assertEquals(125, City::criteria()->whereEndsWith('city', 'a')->count());
     }
 
+    public function test_whereLike()
+    {
+        $this->assertEquals(0, City::criteria()->whereLike('city', 'A')->count());
+        $this->assertEquals(43, City::criteria()->whereLike('city', 'A%')->count());
+        $this->assertEquals(125, City::criteria()->whereLike('city', '%A')->count());
+        $this->assertEquals(450, City::criteria()->whereLike('city', '%A%')->count());
+        $this->assertEquals(4, City::criteria()->whereLike('city', 'A___')->count());
+        $this->assertEquals(83, City::criteria()->whereLike('city', '%A___')->count());
+    }
+
     public function test_whereNull()
     {
         $this->assertEquals(0, City::criteria()->whereNull('city_id')->count());

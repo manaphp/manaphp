@@ -244,6 +244,16 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertEquals(125, City::criteria()->whereEndsWith('city', 'a')->count());
     }
 
+    public function test_whereLike()
+    {
+        $this->assertEquals(0, City::criteria()->whereLike('city', 'a')->count());
+        $this->assertEquals(38, City::criteria()->whereLike('city', 'A%')->count());
+        $this->assertEquals(125, City::criteria()->whereLike('city', '%a')->count());
+        $this->assertEquals(435, City::criteria()->whereLike('city', '%a%')->count());
+        $this->assertEquals(4, City::criteria()->whereLike('city', 'A___')->count());
+        $this->assertEquals(76, City::criteria()->whereLike('city', '%a___')->count());
+    }
+
     public function test_whereNull()
     {
         $this->assertEquals(0, City::criteria()->whereNull('city_id')->count());

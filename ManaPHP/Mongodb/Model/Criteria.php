@@ -355,7 +355,7 @@ class Criteria extends \ManaPHP\Model\Criteria
 
         $fieldTypes = $modelName::getFieldTypes();
         $fieldType = $fieldTypes[$expr];
-		
+
         if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
             $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
             $values = array_map($map[$fieldType], $values);
@@ -391,7 +391,7 @@ class Criteria extends \ManaPHP\Model\Criteria
 
         $fieldTypes = $modelName::getFieldTypes();
         $fieldType = $fieldTypes[$expr];
-		
+
         if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
             $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
             $values = array_map($map[$fieldType], $values);
@@ -459,6 +459,27 @@ class Criteria extends \ManaPHP\Model\Criteria
     public function whereEndsWith($expr, $value)
     {
         return $this->_whereLike($expr, $value . '$');
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereLike($expr, $value)
+    {
+        if ($value[0] !== '%') {
+            $value = '^' . $value;
+        }
+
+        if ($value[strlen($value) - 1] !== '%') {
+            $value .= '$';
+        }
+
+        $value = strtr($value, ['%' => '.*', '_' => '.']);
+
+        return $this->_whereLike($expr, $value);
     }
 
     /**
