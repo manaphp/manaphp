@@ -206,6 +206,11 @@ interface CriteriaInterface
     public function distinctField($field);
 
     /**
+     * @return int
+     */
+    public function count();
+
+    /**
      * @param int $size
      * @param int $page
      *
