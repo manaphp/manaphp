@@ -381,8 +381,7 @@ class Query extends Component implements QueryInterface
             } elseif ($operator === '*=') {
                 $this->whereContains($field, $value);
             } elseif ($operator === '~=') {
-                $this->_conditions[] = 'LOWER(' . $normalizedField . ')' . ' LIKE :' . $bind_key;
-                $this->_bind[$bind_key] = '%' . strtolower($value) . '%';
+                $this->whereLike($field, $value);
             } else {
                 throw new QueryException('unknown `:where` where filter', ['where' => $filter]);
             }
