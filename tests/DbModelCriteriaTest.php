@@ -102,6 +102,15 @@ class DbModelCriteriaTest extends TestCase
         $this->assertEquals(83, City::criteria()->whereLike('city', '%A___')->count());
     }
 
+    public function test_whereRegex()
+    {
+        $this->assertEquals(450, City::criteria()->whereRegex('city', 'A')->count());
+        $this->assertEquals(125, City::criteria()->whereRegex('city', 'A$')->count());
+        $this->assertEquals(43, City::criteria()->whereRegex('city', '^A')->count());
+        $this->assertEquals(287, City::criteria()->whereRegex('city', 'A....')->count());
+        $this->assertEquals(39, City::criteria()->whereRegex('city', '^A....')->count());
+    }
+
     public function test_whereNull()
     {
         $this->assertEquals(0, City::criteria()->whereNull('city_id')->count());

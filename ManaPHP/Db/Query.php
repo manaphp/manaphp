@@ -714,6 +714,21 @@ class Query extends Component implements QueryInterface
 
     /**
      * @param string $expr
+     * @param string $regex
+     *
+     * @return static
+     */
+    public function whereRegex($expr, $regex)
+    {
+        $key = $expr;
+        $this->_conditions[] = $expr . ' REGEXP :' . $key;
+        $this->_bind[$key] = $regex;
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
      *
      * @return static
      */

@@ -250,6 +250,15 @@ class DbQueryTest extends TestCase
         $this->assertEquals(83, (new Query())->from('city')->whereLike('city', '%A___')->count());
     }
 
+    public function test_whereRegex()
+    {
+        $this->assertEquals(450, (new Query())->from('city')->whereRegex('city', 'A')->count());
+        $this->assertEquals(125, (new Query())->from('city')->whereRegex('city', 'A$')->count());
+        $this->assertEquals(43, (new Query())->from('city')->whereRegex('city', '^A')->count());
+        $this->assertEquals(287, (new Query())->from('city')->whereRegex('city', 'A....')->count());
+        $this->assertEquals(39, (new Query())->from('city')->whereRegex('city', '^A....')->count());
+    }
+
     public function test_limit()
     {
         $this->assertEquals('SELECT * FROM [city] LIMIT 10',

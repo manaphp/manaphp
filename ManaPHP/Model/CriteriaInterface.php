@@ -123,6 +123,14 @@ interface CriteriaInterface
     public function whereLike($expr, $value);
 
     /**
+     * @param string $expr
+     * @param string $regex
+     *
+     * @return static
+     */
+    public function whereRegex($expr, $regex);
+    
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>

@@ -220,6 +220,14 @@ interface QueryInterface
 
     /**
      * @param string $expr
+     * @param string $regex
+     *
+     * @return static
+     */
+    public function whereRegex($expr, $regex);
+
+    /**
+     * @param string $expr
      *
      * @return static
      */
