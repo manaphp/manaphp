@@ -5,13 +5,14 @@ namespace Tests;
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Db\Query;
 use ManaPHP\DbInterface;
+use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
 class DbQueryTest extends TestCase
 {
     public function setUp()
     {
-        $di = new \ManaPHP\Di\FactoryDefault();
+        $di = new FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
         $di->db = $db = new Mysql($config['mysql']);
@@ -227,7 +228,7 @@ class DbQueryTest extends TestCase
             (new Query())->from('city')->whereNotIn('DATE(created_time)', [2000, 2001])->getSql());
     }
 
-    public function test_likeWhere()
+    public function test_whereContains()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_name] LIKE :city_name',
             (new Query())->from('city')->whereContains('city_name', 'A')->getSql());
@@ -237,6 +238,16 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city] WHERE ([city_name] LIKE :city_name OR [country_name] LIKE :country_name)',
             (new Query())->from('city')->whereContains(['city_name', 'country_name'], 'A')->getSql());
+    }
+
+    public function test_whereLike()
+    {
+        $this->assertEquals(0, (new Query())->from('city')->whereLike('city', 'A')->count());
+        $this->assertEquals(43, (new Query())->from('city')->whereLike('city', 'A%')->count());
+        $this->assertEquals(125, (new Query())->from('city')->whereLike('city', '%A')->count());
+        $this->assertEquals(450, (new Query())->from('city')->whereLike('city', '%A%')->count());
+        $this->assertEquals(4, (new Query())->from('city')->whereLike('city', 'A___')->count());
+        $this->assertEquals(83, (new Query())->from('city')->whereLike('city', '%A___')->count());
     }
 
     public function test_limit()

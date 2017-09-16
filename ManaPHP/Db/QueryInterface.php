@@ -211,6 +211,14 @@ interface QueryInterface
     public function whereEndsWith($expr, $value);
 
     /**
+     * @param string|array $expr
+     * @param string       $like
+     *
+     * @return static
+     */
+    public function whereLike($expr, $like);
+
+    /**
      * @param string $expr
      *
      * @return static

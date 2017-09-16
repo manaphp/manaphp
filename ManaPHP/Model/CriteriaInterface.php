@@ -115,6 +115,14 @@ interface CriteriaInterface
     public function whereEndsWith($expr, $value);
 
     /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereLike($expr, $value);
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>

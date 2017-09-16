@@ -224,6 +224,19 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereLike($expr, $value)
+    {
+        $this->_query->whereLike($expr, $value);
+
+        return $this;
+    }
+
+    /**
      * @param string $expr
      *
      * @return static
