@@ -3,7 +3,6 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Http\Client\Exception as ClientException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Http\Client
@@ -128,7 +127,16 @@ class Client extends Component implements ClientInterface
     {
         $this->_responseBody = false;
 
-        $url = $this->_buildUrl($url);
+        if (is_array($url)) {
+            if (count($url) > 1) {
+                $uri = $url[0];
+                unset($url[0]);
+                $url = $uri . (strpos($uri, '?') !== false ? '&' : '?') . http_build_query($url);
+            } else {
+                $url = $url[0];
+            }
+        }
+
         if (preg_match('/^http(s)?:\/\//i', $url) !== 1) {
             throw new ClientException('only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, ['url' => $url]);
         }
@@ -321,20 +329,6 @@ class Client extends Component implements ClientInterface
         curl_close($curl);
 
         return $this->_responseCode;
-    }
-
-    /**
-     * @param string|array $url
-     *
-     * @return string
-     */
-    protected function _buildUrl($url)
-    {
-        if (is_string($url)) {
-            return $url;
-        }
-
-        return $url[0] . (Text::contains($url[0], '?') ? '&' : '?') . http_build_query($url[1]);
     }
 
     /**

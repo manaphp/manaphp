@@ -46,19 +46,19 @@ class HttpClientTest extends TestCase
         $httpClient->get('http://www.example.com/?page=1');
         $this->assertEquals('http://www.example.com/?page=1', $httpClient->url);
 
-        $httpClient->get(['http://www.example.com/', ['page' => 1]]);
+        $httpClient->get(['http://www.example.com/', 'page' => 1]);
         $this->assertEquals('http://www.example.com/?page=1', $httpClient->url);
 
         $httpClient->get('http://www.example.com/?page=1&size=10');
         $this->assertEquals('http://www.example.com/?page=1&size=10', $httpClient->url);
 
-        $httpClient->get(['http://www.example.com/', ['page' => 1, 'size' => 10]]);
+        $httpClient->get(['http://www.example.com/', 'page' => 1, 'size' => 10]);
         $this->assertEquals('http://www.example.com/?page=1&size=10', $httpClient->url);
 
-        $httpClient->get(['http://www.example.com/?page=1', ['size' => 10]]);
+        $httpClient->get(['http://www.example.com/?page=1', 'size' => 10]);
         $this->assertEquals('http://www.example.com/?page=1&size=10', $httpClient->url);
 
-        $httpClient->get(['http://www.example.com/', ['keyword' => '中国']]);
+        $httpClient->get(['http://www.example.com/', 'keyword' => '中国']);
         $this->assertEquals('http://www.example.com/?keyword=%E4%B8%AD%E5%9B%BD', $httpClient->url);
     }
 
@@ -66,7 +66,7 @@ class HttpClientTest extends TestCase
     {
         $httpClient = new Client();
 
-        $statusCode = $httpClient->get(['http://apis.juhe.cn/ip/ip2addr', ['ip' => 'www.baidu.com', 'key' => 'appkey']]);
+        $statusCode = $httpClient->get(['http://apis.juhe.cn/ip/ip2addr', 'ip' => 'www.baidu.com', 'key' => 'appkey']);
         $this->assertEquals(200, $statusCode);
         $json = json_decode($httpClient->getResponseBody(), true);
         $this->assertEquals(101, $json['resultcode']);
@@ -76,7 +76,7 @@ class HttpClientTest extends TestCase
     {
         $httpClient = new Client();
 
-        $statusCode = $httpClient->post(['http://lxb.baidu.com/', ['uid' => 0, 'f' => 4]], ['r' => 'www.xxx.com']);
+        $statusCode = $httpClient->post(['http://lxb.baidu.com/', 'uid' => 0, 'f' => 4], ['r' => 'www.xxx.com']);
         $this->assertEquals(200, $statusCode);
     }
 
