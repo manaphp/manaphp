@@ -146,6 +146,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             if (isset($options['index'])) {
                 $criteria->indexBy($options['index']);
             }
+
+            if (isset($options['cache'])) {
+                $criteria->cache($options['cache']);
+            }
         }
 
         return $criteria->fetchAll();
