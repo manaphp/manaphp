@@ -1,7 +1,7 @@
 <style>
     .manaphp_copyright {
         position: fixed;
-        bottom: 200px;
+        bottom: 30px;
         text-align: center;
         width: 100%;
     }
