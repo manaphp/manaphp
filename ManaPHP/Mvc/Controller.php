@@ -56,6 +56,7 @@ use ManaPHP\Component;
  * @property \Elasticsearch\Client                         $elasticsearch
  * @property \ManaPHP\ZookeeperInterface                   $zookeeper
  * @property \ManaPHP\Db\QueryInterface                    $dbQuery
+ * @property \ManaPHP\Mvc\RouterInterface                  $router
  */
 abstract class Controller extends Component implements ControllerInterface
 {
