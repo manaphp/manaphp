@@ -268,4 +268,67 @@ class Router extends Component implements RouterInterface
     {
         return $this->_modules;
     }
+
+    /**
+     * @param string $path
+     * @param array  $params
+     *
+     * @return string
+     */
+    public function createActionUrl($path, $params = [])
+    {
+        if ($path === '') {
+            $ca = $this->_controller . '/' . $this->_action;
+        } elseif (strpos($path, '/') === false) {
+            $ca = $this->_controller . '/' . $path;
+        } elseif ($path === '/') {
+            $ca = '';
+        } elseif ($path[0] === '/') {
+            $pos = strpos($path, '/', 1);
+            if ($pos === false) {
+                $module = substr($path, 1);
+                $ca = '';
+            } else {
+                $module = substr($path, 1, $pos - 1);
+                $ca = rtrim(substr($path, $pos + 1), '/');
+            }
+            $module = Text::camelize($module);
+        } else {
+            $ca = rtrim($path, '/');
+        }
+
+        if (($pos = strrpos($ca, '/index')) !== false && $pos + 6 === strlen($ca)) {
+            $ca = substr($ca, 0, -6);
+        }
+
+        if ($ca === 'index' || $ca === 'index/') {
+            $ca = '';
+        }
+
+        if (!isset($module)) {
+            $module = $this->_module;
+        }
+
+        $url = rtrim($this->_modules[$module], '/') . '/' . lcfirst($ca);
+        if ($url !== '/') {
+            $url = rtrim($url, '/');
+        }
+
+        if ($params !== []) {
+            if (isset($params['#'])) {
+                $fragment = $params['#'];
+                unset($params['#']);
+            }
+
+            /** @noinspection NotOptimalIfConditionsInspection */
+            if ($params !== []) {
+                $url .= '?' . http_build_query($params);
+            }
+            if (isset($fragment)) {
+                $url .= '#' . $fragment;
+            }
+        }
+
+        return $url;
+    }
 }

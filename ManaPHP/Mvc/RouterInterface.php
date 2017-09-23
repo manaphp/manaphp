@@ -97,4 +97,12 @@ interface RouterInterface
      * @return array
      */
     public function getModules();
+
+    /**
+     * @param string $path
+     * @param array  $params
+     *
+     * @return string
+     */
+    public function createActionUrl($path, $params = []);
 }
