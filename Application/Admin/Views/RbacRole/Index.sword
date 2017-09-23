@@ -26,7 +26,7 @@
 <div class="modal fade" id="create_role_dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@url('/rbac_role/create')" class="form-horizontal" method="post">
+            <form action="@action('rbac_role/create')" class="form-horizontal" method="post">
                 <div class="modal-header">
                     <h4 class="modal-title">new role</h4>
                 </div>

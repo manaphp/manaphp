@@ -138,7 +138,7 @@
                                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="@url('/user/logout')" class="btn btn-default btn-flat">Sign out</a>
+                                    <a href="@action('user/logout')" class="btn btn-default btn-flat">Sign out</a>
                                 </div>
                             </li>
                         </ul>
@@ -181,15 +181,15 @@
                         <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="@url('/rbac_user')">User</a></li>
-                        <li><a href="@url('/rbac_role')">Role</a></li>
-                        <li><a href="@url('/rbac_permission')">Permission</a></li>
-                        <li><a href="@url('/rbac_user_role')">User Role</a></li>
-                        <li><a href="@url('/rbac_permission')">Role Permission</a></li>
+                        <li><a href="@action('rbac_user/')">User</a></li>
+                        <li><a href="@action('rbac_role/')">Role</a></li>
+                        <li><a href="@action('rbac_permission/')">Permission</a></li>
+                        <li><a href="@action('rbac_user_role/')">User Role</a></li>
+                        <li><a href="@action('rbac_permission/')">Role Permission</a></li>
                     </ul>
                 </li>
                 <li class="header">HEADER</li>
-                <li><a href="@url('/system_information')">System Information</a></li>
+                <li><a href="@action('system_information/')">System Information</a></li>
                 <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
                 <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
                 <li class="treeview">
@@ -204,7 +204,7 @@
                 <li class="treeview">
                     <a href="#"><span>Log Manager</span></a>
                     <ul class="treeview-menu">
-                        <li><a href="@url('/session_log')">SessionLog</a></li>
+                        <li><a href="@action('session_log/')">SessionLog</a></li>
                     </ul>
                 </li>
             </ul>

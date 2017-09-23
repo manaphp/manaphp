@@ -7,6 +7,6 @@
 </head>
 <body>
 <div>
-    {{-- <a href="@url('/','Admin')">Admin</a> --}}
+    {{-- <a href="@action('/admin')">Admin</a> --}}
     @flash()
 </div>

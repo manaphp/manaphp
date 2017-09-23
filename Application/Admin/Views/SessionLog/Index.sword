@@ -3,7 +3,7 @@
 
     </div>
     <div class="box-body">
-        <form action="@url('/session_log')">
+        <form action="@action('session_log/')">
             <div class="row">
                 <div class="col-md-offset- col-md-3">
                     <div class="form-group form-inline">
@@ -79,7 +79,7 @@
                 },
                 watch: {
                     'login_id': function (id) {
-                        $.getJSON("@url('/session_log/detail')",
+                        $.getJSON("@action('session_log/detail')",
                             {
                                 login_id: id
                             },
