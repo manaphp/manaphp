@@ -756,6 +756,18 @@ class Compiler extends Component
     }
 
     /**
+     * Compile the action statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileAction($expression)
+    {
+        return "<?php echo \$this->router->createActionUrl{$expression} ?>";
+    }
+
+    /**
      * Register a handler for custom directives.
      *
      * @param  string   $name
