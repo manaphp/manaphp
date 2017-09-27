@@ -37,6 +37,11 @@ class Request extends Component implements RequestInterface
     protected $_json;
 
     /**
+     * @var string
+     */
+    protected $_basePath;
+
+    /**
      *
      * @param array  $source
      * @param string $name
@@ -735,5 +740,37 @@ class Request extends Component implements RequestInterface
         }
 
         return null;
+    }
+
+    /**
+     * @param string $basePath
+     *
+     * @return static
+     */
+    public function setBasePath($basePath)
+    {
+        $this->_basePath = $basePath;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBasePath()
+    {
+        if ($this->_basePath === null) {
+            $basePath = dirname($_SERVER['SCRIPT_NAME']);
+            $len = strlen($basePath);
+            if ($len === 1) {
+                $this->_basePath = '';
+            } elseif ($len > 7 && substr($basePath, -7) === '/public') {
+                $this->_basePath = substr($basePath, 0, -7);
+            } else {
+                $this->_basePath = $basePath;
+            }
+        }
+
+        return $this->_basePath;
     }
 }

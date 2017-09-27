@@ -314,4 +314,16 @@ interface RequestInterface
      * @return string|null
      */
     public function getAccessToken();
+
+    /**
+     * @param string $basePath
+     *
+     * @return static
+     */
+    public function setBasePath($basePath);
+
+    /**
+     * @return string
+     */
+    public function getBasePath();
 }
