@@ -564,6 +564,8 @@ class MvcRouterTest extends TestCase
         $router->setControllerName('Article');
         $router->setActionName('list');
 
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
+
         $this->assertEquals('/article/list', $router->createActionUrl(''));
         $this->assertEquals('/article/create', $router->createActionUrl('create'));
         $this->assertEquals('/article', $router->createActionUrl('index'));
