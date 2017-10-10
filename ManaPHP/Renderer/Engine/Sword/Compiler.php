@@ -764,7 +764,11 @@ class Compiler extends Component
      */
     protected function _compileAction($expression)
     {
-        return "<?php echo \$this->router->createActionUrl{$expression} ?>";
+        if ($expression !== "('')" && strpos($expression, ',') === false) {
+            return $this->router->createActionUrl(substr($expression, 2, -2));
+        } else {
+            return "<?php echo \$this->router->createActionUrl{$expression} ?>";
+        }
     }
 
     /**
