@@ -138,6 +138,11 @@ class Url extends Component implements UrlInterface
      */
     public function getAsset($uri)
     {
-        return $this->_assets . $uri;
+        $file = $this->alias->resolve('@root/public' . $uri);
+        if (!is_file($file)) {
+            throw new UrlException('asset file is not found: `:file`', ['file' => $file]);
+        }
+
+        return $this->_assets . $uri . '?v=' . md5($file);
     }
 }
