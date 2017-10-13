@@ -21,3 +21,18 @@ services:
     ports:
       - ${WEB_PORT}:80
     restart: always
+  mysql:
+    image: mysql:5.7.18
+    environment:
+      - MYSQL_ROOT_PASSWORD
+    volumes:
+      - /usr/share/zoneinfo/PRC:/etc/localtime
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/mysql/data:/var/lib/mysql
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/mysql/log:/var/log/mysql
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ./conf:/etc/mysql/conf.d:ro
+      - ./mysql/docker-entrypoint-patch.sh:/docker-entrypoint-patch.sh
+    entrypoint: /docker-entrypoint-patch.sh mysqld
+    ports:
+      - ${MYSQL_PORT}:3306
+    restart: always
