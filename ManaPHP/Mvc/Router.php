@@ -329,6 +329,6 @@ class Router extends Component implements RouterInterface
             }
         }
 
-        return $this->request->getBasePath() . $url;
+        return $this->alias->resolve('@web' . $url);
     }
 }
