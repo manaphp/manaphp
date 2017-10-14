@@ -61,6 +61,11 @@ use ManaPHP\Component;
 abstract class Controller extends Component implements ControllerInterface
 {
     /**
+     * @var array
+     */
+    protected $_actions;
+
+    /**
      * \ManaPHP\Mvc\Controller constructor
      *
      */
@@ -69,5 +74,34 @@ abstract class Controller extends Component implements ControllerInterface
         if (method_exists($this, 'onConstruct')) {
             $this->{'onConstruct'}();
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function actionList()
+    {
+        if ($this->_actions === null) {
+            $this->_actions = [];
+            foreach (get_class_methods($this) as $method) {
+                if ($method[0] !== '_' && ($pos = strrpos($method, 'Action')) !== false && $pos + 6 === strlen($method)) {
+                    $action = substr($method, 0, -6);
+
+                    $this->_actions[] = $action;
+                }
+            }
+        }
+
+        return $this->_actions;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function actionExists($name)
+    {
+        return in_array($name, $this->_actions !== null ? $this->_actions : $this->actionList(), true);
     }
 }

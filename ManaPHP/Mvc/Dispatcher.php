@@ -230,27 +230,14 @@ class Dispatcher extends Component implements DispatcherInterface
                 throw new NotFoundControllerException('`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, ['controller' => $controllerClassName]);
             }
 
+            /**
+             * @var \ManaPHP\Mvc\ControllerInterface $controllerInstance
+             */
             $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
             $this->_controller = $controllerInstance;
-
-            $hasAction = false;
-            $actionMethod = $this->_actionName . 'Action';
-            foreach (get_class_methods($controllerInstance) as $method) {
-                if (strcasecmp($actionMethod, $method) === 0) {
-                    if ($actionMethod !== $method) {
-                        throw new DispatcherException('`:method` of `:controller` is not equal to `:action` '/**m05039932d378d3ede*/,
-                            ['method' => $method, 'action' => $this->_actionName . 'Action', 'controller' => $controllerClassName]);
-                    }
-
-                    $hasAction = true;
-                    $actionMethod = $method;
-                    break;
-                }
-            }
-
-            if (!$hasAction) {
-                throw new NotFoundActionException('`:action` action was not found on `:controller`'/**m061a35fc1c0cd0b6f*/,
-                    ['action' => $actionMethod, 'controller' => $controllerClassName]);
+            if (!$controllerInstance->actionExists($this->_actionName)) {
+                throw new NotFoundActionException('`:controller:::action` is not found, action is case sensitive.'/**m061a35fc1c0cd0b6f*/,
+                    ['action' => $this->_actionName . 'Action', 'controller' => $controllerClassName]);
             }
 
             if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
@@ -279,7 +266,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 $this->_initializedControllers[] = $controllerClassName;
             }
 
-            $this->_returnedValue = $this->_callControllerAction($controllerInstance, $actionMethod);
+            $this->_returnedValue = $this->_callControllerAction($controllerInstance, $this->_actionName . 'Action');
 
             // Call afterDispatch
             $this->fireEvent('dispatcher:afterDispatch');
