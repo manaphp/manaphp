@@ -27,5 +27,5 @@ interface ControllerInterface
      *
      * @return mixed
      */
-    public function actionInvoke($action, $params = []);
+    public function actionExecute($action, $params = []);
 }

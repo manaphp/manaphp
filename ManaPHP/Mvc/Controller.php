@@ -102,7 +102,7 @@ abstract class Controller extends Component implements ControllerInterface
      * @return mixed
      * @throws \ManaPHP\Mvc\Controller\Exception
      */
-    public function actionInvoke($action, $params = [])
+    public function actionExecute($action, $params = [])
     {
         $actionMethod = $action . 'Action';
 
