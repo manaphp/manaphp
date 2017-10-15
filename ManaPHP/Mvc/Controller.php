@@ -67,17 +67,6 @@ abstract class Controller extends Component implements ControllerInterface
     protected $_actions;
 
     /**
-     * \ManaPHP\Mvc\Controller constructor
-     *
-     */
-    final public function __construct()
-    {
-        if (method_exists($this, 'onConstruct')) {
-            $this->{'onConstruct'}();
-        }
-    }
-
-    /**
      * @return array
      */
     public function actionList()
