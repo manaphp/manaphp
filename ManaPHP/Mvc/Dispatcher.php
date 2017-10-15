@@ -266,7 +266,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 $this->_initializedControllers[] = $controllerClassName;
             }
 
-            $this->_returnedValue = $this->_callControllerAction($controllerInstance, $this->_actionName . 'Action');
+            $this->_returnedValue = $controllerInstance->actionInvoke($this->_actionName, $this->_params);
 
             // Call afterDispatch
             $this->fireEvent('dispatcher:afterDispatch');
@@ -293,50 +293,6 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->fireEvent('dispatcher:afterDispatchLoop');
 
         return true;
-    }
-
-    protected function _callControllerAction($controllerInstance, $actionMethod)
-    {
-        $args = [];
-        $missing = [];
-
-        $parameters = (new \ReflectionMethod($controllerInstance, $actionMethod))->getParameters();
-        foreach ($parameters as $parameter) {
-            $name = $parameter->getName();
-            $value = null;
-            $type = $parameter->getClass();
-
-            if ($type !== null && is_subclass_of($type->getName(), Component::class)) {
-                $value = $this->_dependencyInjector->get($type->getName());
-            } elseif (isset($this->_params[$name])) {
-                $value = $this->_params[$name];
-            } elseif ($this->request->has($name)) {
-                $value = $this->request->get($name);
-            } elseif ($this->request->hasJson($name)) {
-                $value = $this->request->getJson($name);
-            } elseif (count($this->_params) === 1 && count($parameters) === 1) {
-                $value = $this->_params[0];
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $value = $parameter->getDefaultValue();
-            }
-
-            if ($value === null) {
-                $missing[] = $name;
-                continue;
-            }
-
-            if ($parameter->isArray()) {
-                $args[] = (array)$value;
-            } else {
-                $args[] = $value;
-            }
-        }
-
-        if (count($missing) !== 0) {
-            throw new DispatcherException('Missing required parameters: `:parameters`', ['parameters' => implode(',', $missing)]);
-        }
-
-        return call_user_func_array([$controllerInstance, $actionMethod], $args);
     }
 
     /**

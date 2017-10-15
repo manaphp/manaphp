@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
+use ManaPHP\Mvc\Controller\Exception as ControllerException;
 
 /**
  * Class ManaPHP\Mvc\Controller
@@ -103,5 +104,58 @@ abstract class Controller extends Component implements ControllerInterface
     public function actionExists($name)
     {
         return in_array($name, $this->_actions !== null ? $this->_actions : $this->actionList(), true);
+    }
+
+    /**
+     * @param string $action
+     * @param array  $params
+     *
+     * @return mixed
+     * @throws \ManaPHP\Mvc\Controller\Exception
+     */
+    public function actionInvoke($action, $params = [])
+    {
+        $actionMethod = $action . 'Action';
+
+        $args = [];
+        $missing = [];
+
+        $parameters = (new \ReflectionMethod($this, $actionMethod))->getParameters();
+        foreach ($parameters as $parameter) {
+            $name = $parameter->getName();
+            $value = null;
+            $type = $parameter->getClass();
+
+            if ($type !== null && is_subclass_of($type->getName(), Component::class)) {
+                $value = $this->_dependencyInjector->get($type->getName());
+            } elseif (isset($params[$name])) {
+                $value = $params[$name];
+            } elseif ($this->request->has($name)) {
+                $value = $this->request->get($name);
+            } elseif ($this->request->hasJson($name)) {
+                $value = $this->request->getJson($name);
+            } elseif (count($params) === 1 && count($parameters) === 1) {
+                $value = $params[0];
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $value = $parameter->getDefaultValue();
+            }
+
+            if ($value === null) {
+                $missing[] = $name;
+                continue;
+            }
+
+            if ($parameter->isArray()) {
+                $args[] = (array)$value;
+            } else {
+                $args[] = $value;
+            }
+        }
+
+        if (count($missing) !== 0) {
+            throw new ControllerException('Missing required parameters: `:parameters`', ['parameters' => implode(',', $missing)]);
+        }
+
+        return call_user_func_array([$this, $actionMethod], $args);
     }
 }
