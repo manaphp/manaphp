@@ -68,11 +68,6 @@ class Dispatcher extends Component implements DispatcherInterface
     protected $_previousActionName;
 
     /**
-     * @var array
-     */
-    protected $_initializedControllers = [];
-
-    /**
      * Gets the module where the controller class is
      *
      * @return string
@@ -257,13 +252,6 @@ class Dispatcher extends Component implements DispatcherInterface
                 if ($this->_finished === false) {
                     continue;
                 }
-            }
-
-            if (!in_array($controllerClassName, $this->_initializedControllers,
-                    true) && method_exists($controllerInstance, 'initialize')
-            ) {
-                $controllerInstance->initialize();
-                $this->_initializedControllers[] = $controllerClassName;
             }
 
             $this->_returnedValue = $controllerInstance->actionInvoke($this->_actionName, $this->_params);
