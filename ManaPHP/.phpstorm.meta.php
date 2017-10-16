@@ -48,3 +48,4 @@ $di = null;
 $request = null;
 unset($view, $renderer);
 
+class_exists('\Elasticsearch\Client') || class_alias('\stdClass', '\Elasticsearch\Client');
