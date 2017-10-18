@@ -44,13 +44,14 @@ abstract class Application extends Component implements ApplicationInterface
         $this->alias->set('@app', $app_dir);
         $this->alias->set('@ns.app', $app_ns);
 
-        if (isset($_SERVER['SCRIPT_NAME'])) {
-            $web = dirname($_SERVER['SCRIPT_NAME']);
+        $web = '';
+        if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) !== 0) {
+            $web = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
             if (substr_compare($web, '/public', -7) === 0) {
                 $web = substr($web, 0, -7);
             }
-            $this->alias->set('@web', ($web === '/' || $web === '\\') ? '' : $web);
         }
+        $this->alias->set('@web', $web);
     }
 
     /**
