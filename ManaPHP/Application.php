@@ -35,45 +35,41 @@ abstract class Application extends Component implements ApplicationInterface
         $this->_dependencyInjector->setShared('loader', $loader);
         $this->_dependencyInjector->setShared('application', $this);
 
-        $namespaces = $this->loader->getRegisteredNamespaces();
-        if (isset($namespaces['Application'])) {
-            $app_dir = $namespaces['Application'];
-        } else {
-            $className = str_replace('\\', '/', get_called_class());
-            if (strpos($className, 'ManaPHP/') !== 0) {
-                foreach (get_included_files() as $file) {
-                    if (DIRECTORY_SEPARATOR === '\\') {
-                        $file = str_replace('\\', '/', $file);
-                    }
+        $app_dir = $this->getAppPath();
+        $app_ns = basename($app_dir);
 
-                    if (strpos($file, $className . '.php') !== false) {
-                        $app_dir = dirname($file);
-                        break;
-                    }
-                }
-            } else {
-                $dir = dirname(get_included_files()[0]);
-                for ($i = 0; $i < 2; $i++) {
-                    if (is_dir($dir . '/Application')) {
-                        $app_dir = $dir . '/Application';
-                        break;
-                    }
-                    $dir = dirname($dir);
-                }
+        $this->loader->registerNamespaces([$app_ns => $app_dir]);
+        $this->alias->set('@root', dirname($app_dir));
+        $this->alias->set('@data', '@root/data');
+        $this->alias->set('@app', $app_dir);
+        $this->alias->set('@ns.app', $app_ns);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppPath()
+    {
+        $className = str_replace('\\', '/', get_called_class());
+        foreach (get_included_files() as $file) {
+            if (DIRECTORY_SEPARATOR === '\\') {
+                $file = str_replace('\\', '/', $file);
+            }
+
+            if (strpos($file, $className . '.php') !== false) {
+                return dirname($file);
             }
         }
 
-        if (isset($app_dir)) {
-            $app_ns = basename($app_dir);
-            if (!isset($namespaces[$app_ns])) {
-                $this->loader->registerNamespaces([$app_ns => $app_dir]);
+        $dir = dirname(get_included_files()[0]);
+        for ($i = 0; $i < 2; $i++) {
+            if (is_dir($dir . '/Application')) {
+                return $dir . '/Application';
             }
-
-            $this->alias->set('@root', dirname($app_dir));
-            $this->alias->set('@data', '@root/data');
-            $this->alias->set('@app', $app_dir);
-            $this->alias->set('@ns.app', $app_ns);
+            $dir = dirname($dir);
         }
+
+        return null;
     }
 
     /**

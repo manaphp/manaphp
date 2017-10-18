@@ -24,6 +24,11 @@ interface ApplicationInterface
     public function getModules();
 
     /**
+     * @return string
+     */
+    public function getAppPath();
+
+    /**
      * @param int    $code
      * @param string $message
      *
