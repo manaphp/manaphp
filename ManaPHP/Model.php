@@ -569,7 +569,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *</code>
      *
      * @return void
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function create()
     {
