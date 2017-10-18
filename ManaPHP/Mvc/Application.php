@@ -86,12 +86,6 @@ class Application extends \ManaPHP\Application
         $this->alias->set('@ns.module', '@ns.app\\' . $moduleName);
         $this->alias->set('@views', '@module/Views');
 
-        $web = dirname($_SERVER['SCRIPT_NAME']);
-        if (substr_compare($web, '/public', -7, 7, true) === 0) {
-            $web = substr($web, 0, -7);
-        }
-        $this->alias->set('@web', ($web === '/' || $web === '\\') ? '' : $web);
-
         $this->alias->set('@messages', '@module/Messages');
         $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
 
