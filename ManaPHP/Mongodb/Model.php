@@ -156,7 +156,7 @@ class Model extends \ManaPHP\Model
      * @param string $type
      * @param mixed  $value
      *
-     * @return bool|float|int|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime|string
+     * @return bool|float|int|string|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
      */
     public static function getNormalizedValue($type, $value)
     {

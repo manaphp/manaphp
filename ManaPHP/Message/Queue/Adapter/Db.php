@@ -35,7 +35,7 @@ class Db extends Component implements QueueInterface
      * @param int    $priority
      *
      * @return void
-     * @throws \ManaPHP\Db\Model\Exception
+     * @throws \ManaPHP\Model\Exception
      */
     public function push($topic, $body, $priority = self::PRIORITY_NORMAL)
     {
