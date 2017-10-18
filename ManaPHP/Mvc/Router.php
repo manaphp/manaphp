@@ -101,11 +101,10 @@ class Router extends Component implements RouterInterface
     public function handle($uri = null, $method = null, $host = null)
     {
         $uri = $this->getRewriteUri($uri);
+        $this->_wasMatched = false;
 
         $this->fireEvent('router:beforeCheckRoutes');
 
-        $module = null;
-        $routeFound = false;
         for ($i = count($this->_groups) - 1; $i >= 0; $i--) {
             $group = &$this->_groups[$i];
 
@@ -139,35 +138,30 @@ class Router extends Component implements RouterInterface
             $groupInstance = $group['groupInstance'];
 
             $parts = $groupInstance->match($handledUri, $method ?: $_SERVER['REQUEST_METHOD']);
-            $routeFound = $parts !== false;
-            if ($routeFound) {
+            if ($parts !== false) {
+                $this->_wasMatched = true;
+                $this->_module = $module;
+                $this->_controller = isset($parts['controller']) ? $parts['controller'] : 'index';
+                $this->_action = isset($parts['action']) ? $parts['action'] : 'index';
+
+                $params = [];
+                if (isset($parts['params'])) {
+                    $params_str = trim($parts['params'], '/');
+                    if ($params_str !== '') {
+                        $params = explode('/', $params_str);
+                    }
+                }
+
+                unset($parts['controller'], $parts['action'], $parts['params']);
+
+                $this->_params = array_merge($params, $parts);
                 break;
             }
         }
 
-        $this->_wasMatched = $routeFound;
-
-        if ($routeFound) {
-            $this->_module = $module;
-            $this->_controller = isset($parts['controller']) ? $parts['controller'] : 'index';
-            $this->_action = isset($parts['action']) ? $parts['action'] : 'index';
-
-            $params = [];
-            if (isset($parts['params'])) {
-                $params_str = trim($parts['params'], '/');
-                if ($params_str !== '') {
-                    $params = explode('/', $params_str);
-                }
-            }
-
-            unset($parts['controller'], $parts['action'], $parts['params']);
-
-            $this->_params = array_merge($params, $parts);
-        }
-
         $this->fireEvent('router:afterCheckRoutes');
 
-        return $routeFound;
+        return $this->_wasMatched;
     }
 
     /**
