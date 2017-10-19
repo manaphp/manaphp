@@ -70,10 +70,6 @@ class Application extends \ManaPHP\Application
      */
     public function handle($uri = null, $method = null)
     {
-        if ($this->fireEvent('application:boot') === false) {
-            return $this->response;
-        }
-
         if (!$this->router->handle($uri, $method)) {
             throw new NotFoundRouteException('router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, ['uri' => $this->router->getRewriteUri($uri)]);
         }
