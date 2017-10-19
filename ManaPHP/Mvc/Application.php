@@ -74,7 +74,7 @@ class Application extends \ManaPHP\Application
             throw new NotFoundRouteException('router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, ['uri' => $this->router->getRewriteUri($uri)]);
         }
 
-        $moduleName = ucfirst($this->router->getModuleName());
+        $moduleName = $this->router->getModuleName();
         $controllerName = $this->router->getControllerName();
         $actionName = $this->router->getActionName();
         $params = $this->router->getParams();
