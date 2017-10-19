@@ -74,7 +74,7 @@ abstract class Controller extends Component implements ControllerInterface
         if ($this->_actions === null) {
             $this->_actions = [];
             foreach (get_class_methods($this) as $method) {
-                if ($method[0] !== '_' && ($pos = strrpos($method, 'Action')) !== false && $pos + 6 === strlen($method)) {
+                if ($method[0] !== '_' && substr_compare($method, 'Action', -6) === 0) {
                     $action = substr($method, 0, -6);
 
                     $this->_actions[] = $action;
