@@ -42,12 +42,17 @@ interface RouterInterface
      *  $router->mount($group,'home');
      * </code>
      *
-     * @param string|\ManaPHP\Mvc\Router\GroupInterface $group
-     * @param string                                    $path
+     * @param string $module
+     * @param string $path
      *
      * @return static
      */
-    public function mount($group, $path = null);
+    public function mount($module, $path = null);
+
+    /**
+     * @return array
+     */
+    public function getMounted();
 
     /**
      * Get rewrite info. This info is read from $_GET['_url'] or _SERVER["REQUEST_URI"].
@@ -92,11 +97,6 @@ interface RouterInterface
      * @return bool
      */
     public function wasMatched();
-
-    /**
-     * @return array
-     */
-    public function getModules();
 
     /**
      * @param string $path

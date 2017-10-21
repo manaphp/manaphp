@@ -40,11 +40,6 @@ class Router extends Component implements RouterInterface
     protected $_groups = [];
 
     /**
-     * @var array
-     */
-    protected $_modules = [];
-
-    /**
      * @var bool
      */
     protected $_wasMatched = false;
@@ -101,57 +96,48 @@ class Router extends Component implements RouterInterface
     public function handle($uri = null, $method = null, $host = null)
     {
         $uri = $this->getRewriteUri($uri);
+
+        if ($method === null) {
+            $method = $_SERVER['REQUEST_METHOD'];
+        }
+
+        if ($host === null && isset($_SERVER['HTTP_HOST'])) {
+            $host = $_SERVER['HTTP_HOST'];
+        }
+
+        $this->_module = null;
+        $this->_controller = null;
+        $this->_action = null;
+        $this->_params = [];
+
         $this->_wasMatched = false;
 
         $this->fireEvent('router:beforeCheckRoutes');
 
-        for ($i = count($this->_groups) - 1; $i >= 0; $i--) {
-            $group = &$this->_groups[$i];
-
-            $path = $group['path'];
-            $module = $group['module'];
-
-            if ($path === '' || $path[0] === '/') {
-                $checkedUri = $uri;
-            } else {
-                $checkedUri = $_SERVER['HTTP_HOST'] . $uri;
+        foreach (array_reverse($this->_groups, true) as $module => $path) {
+            if ($path[0] !== '/') {
+                if (strpos($path, $host) !== 0) {
+                    continue;
+                }
+                $path = $path === $host ? '/' : substr($path, strlen($host));
             }
-
-            /**
-             * strpos('/','')===false NOT true
-             */
-            if ($path !== '' && !Text::startsWith($checkedUri, $path)) {
+            if (strpos($uri, $path) !== 0) {
                 continue;
             }
-
-            /**
-             * substr('a',1)===false NOT ''
-             */
-            $handledUri = strlen($checkedUri) === strlen($path) ? '/' : substr($checkedUri, strlen($path));
+            $handledUri = $path === '/' ? $uri : substr($uri, strlen($path));
 
             /**
              * @var \ManaPHP\Mvc\Router\Group $groupInstance
              */
-            if ($group['groupInstance'] === null) {
-                $group['groupInstance'] = $this->_dependencyInjector->get(class_exists($group['groupClassName']) ? $group['groupClassName'] : 'ManaPHP\Mvc\Router\Group');
-            }
-            $groupInstance = $group['groupInstance'];
+            $groupInstance = $this->_dependencyInjector->getShared($this->alias->resolveNS('@ns.app\\' . $module . '\\RouteGroup'));
 
-            $parts = $groupInstance->match($handledUri, $method ?: $_SERVER['REQUEST_METHOD']);
+            $parts = $groupInstance->match($handledUri, $method);
             if ($parts !== false) {
                 $this->_wasMatched = true;
                 $this->_module = $module;
-                $this->_controller = isset($parts['controller']) ? $parts['controller'] : 'index';
-                $this->_action = isset($parts['action']) ? $parts['action'] : 'index';
-
-                $params = [];
-                if (isset($parts['params'])) {
-                    $params_str = trim($parts['params'], '/');
-                    if ($params_str !== '') {
-                        $params = explode('/', $params_str);
-                    }
-                }
-
+                $this->_controller = $parts['controller'];
+                $this->_action = $parts['action'];
+                $params = $parts['params'];
                 unset($parts['controller'], $parts['action'], $parts['params']);
 
                 $this->_params = array_merge($params, $parts);
@@ -167,42 +153,35 @@ class Router extends Component implements RouterInterface
     /**
      * Mounts a group of routes in the router
      *
-     * @param string|\ManaPHP\Mvc\Router\GroupInterface $group
-     * @param string                                    $path
+     * @param string $module
+     * @param string $path
      *
      * @return static
      */
-    public function mount($group, $path = null)
+    public function mount($module, $path = null)
     {
-        if (is_object($group)) {
-            $groupClassName = get_class($group);
-            $groupInstance = $group;
-        } else {
-            $groupClassName = strrpos($group, '\\') ? $group : $this->alias->resolveNS("@ns.app\\$group\\RouteGroup");
-            $groupInstance = null;
+        if (is_object($module)) {
+            $parts = explode('\\', get_class($module));
+            $this->_dependencyInjector->setShared(get_class($module), $module);
+            $module = $parts[1];
         }
-
-        $parts = explode('\\', $groupClassName);
-        unset($parts[0]);
-        array_pop($parts);
-        $module = implode('\\', $parts);
 
         if ($path === null) {
             $path = '/' . $module;
         }
-
         $path = rtrim($path, '/');
 
-        $this->_groups[] = [
-            'path' => $path,
-            'module' => $module,
-            'groupClassName' => $groupClassName,
-            'groupInstance' => $groupInstance
-        ];
-
-        $this->_modules[$module] = $path ?: '/';
+        $this->_groups[$module] = $path ?: '/';
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMounted()
+    {
+        return $this->_groups;
     }
 
     /**
@@ -253,14 +232,6 @@ class Router extends Component implements RouterInterface
     public function wasMatched()
     {
         return $this->_wasMatched;
-    }
-
-    /**
-     * @return array
-     */
-    public function getModules()
-    {
-        return $this->_modules;
     }
 
     /**

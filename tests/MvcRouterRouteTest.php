@@ -2,7 +2,6 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Mvc\Router;
 use ManaPHP\Mvc\Router\Group;
 use ManaPHP\Mvc\Router\Route;
 use PHPUnit\Framework\TestCase;
@@ -33,29 +32,31 @@ class MvcRouterRouteTest extends TestCase
 
     public function test_params()
     {
-        $router = new Router();
-
         $tests = array(
             array(
                 'uri' => '/some/hattie',
                 'controller' => 'c',
                 'action' => 'a',
-                'name' => 'hattie'
+                'params' => ['name' => 'hattie']
             ),
             array(
                 'uri' => '/some/hattie/100',
                 'controller' => 'c',
                 'action' => 'a',
-                'name' => 'hattie',
-                'id' => 100
+                'params' => [
+                    'name' => 'hattie',
+                    'id' => 100
+                ]
             ),
             array(
                 'uri' => '/some/hattie/100/2011-01-02',
                 'controller' => 'c',
                 'action' => 'a',
-                'name' => 'hattie',
-                'id' => 100,
-                'date' => '2011-01-02'
+                'params' => [
+                    'name' => 'hattie',
+                    'id' => 100,
+                    'date' => '2011-01-02'
+                ]
             ),
         );
         $group = new Group();

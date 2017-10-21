@@ -186,12 +186,25 @@ class Group extends Component implements GroupInterface
      */
     public function match($uri, $method = 'GET')
     {
+        $uri = rtrim($uri, '/');
+        $uri = $uri ?: '/';
+
         for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
             $route = $this->_routes[$i];
-
             $parts = $route->match($uri, $method);
             if ($parts !== false) {
-                return $parts;
+                $controller = isset($parts['controller']) ? $parts['controller'] : 'index';
+                $action = isset($parts['action']) ? $parts['action'] : 'index';
+                $params = isset($parts['params']) ? $parts['params'] : '';
+
+                unset($parts['controller'], $parts['action'], $parts['params']);
+                if ($params !== '') {
+                    $params = trim($params, '/');
+                    if ($params !== '') {
+                        $parts = array_merge($parts, explode('/', $params));
+                    }
+                }
+                return ['controller' => $controller, 'action' => $action, 'params' => $parts];
             }
         }
 

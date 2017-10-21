@@ -53,7 +53,7 @@ class Url extends Component implements UrlInterface
             $host = $this->request->getServer('HTTP_HOST');
             $scheme = $this->request->getScheme();
 
-            foreach ($this->router->getModules() as $module => $path) {
+            foreach ($this->router->getMounted() as $module => $path) {
                 if ($path[0] === '/') {
                     $baseUrl = $scheme . '://' . $host . $selfPath . ($path === '/' ? '' : $path);
                 } else {
