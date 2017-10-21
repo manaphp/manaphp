@@ -86,7 +86,7 @@ class MvcDispatcherTest extends TestCase
             $dispatcher->dispatch('Test', 'test1', 'index');
             $this->fail('why not?');
         } catch (Exception $e) {
-            $this->assertEquals('`indexAction` action was not found on `App\Test\Controllers\Test1Controller`', $e->getMessage());
+            $this->assertEquals('`App\Test\Controllers\Test1Controller::indexAction` is not found, action is case sensitive.', $e->getMessage());
         }
 
         //normal usage without return value
