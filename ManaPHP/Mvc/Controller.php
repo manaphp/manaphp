@@ -104,12 +104,23 @@ abstract class Controller extends Component implements ControllerInterface
      */
     public function actionExecute($action, $params = [])
     {
+        /**
+         * @var \ReflectionParameter[][] $reflectionParameters
+         */
+        static $reflectionParameters = [];
+
         $actionMethod = $action . 'Action';
+
+        if (!isset($reflectionParameters[$action])) {
+            $reflectionParameters[$action] = (new \ReflectionMethod($this, $actionMethod))->getParameters();
+        }
+        $parameters = $reflectionParameters[$action];
+        if ($parameters === []) {
+            return $this->{$actionMethod}();
+        }
 
         $args = [];
         $missing = [];
-
-        $parameters = (new \ReflectionMethod($this, $actionMethod))->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;
