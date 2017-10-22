@@ -195,14 +195,11 @@ class Group extends Component implements GroupInterface
             if ($parts !== false) {
                 $controller = isset($parts['controller']) ? $parts['controller'] : 'index';
                 $action = isset($parts['action']) ? $parts['action'] : 'index';
-                $params = isset($parts['params']) ? $parts['params'] : '';
+                $params = isset($parts['params']) ? trim($parts['params'], '/') : '';
 
                 unset($parts['controller'], $parts['action'], $parts['params']);
                 if ($params !== '') {
-                    $params = trim($params, '/');
-                    if ($params !== '') {
-                        $parts = array_merge($parts, explode('/', $params));
-                    }
+                    $parts = array_merge($parts, explode('/', $params));
                 }
                 return ['controller' => $controller, 'action' => $action, 'params' => $parts];
             }
