@@ -45,33 +45,22 @@ class MvcRouterTest extends TestCase
         $router = new Router();
         $router->setDependencyInjector(new FactoryDefault());
         $router->getDependencyInjector()->alias->set('@ns.app','Test');
-        $group = new \Test\Blog\RouteGroup();
 
-        $group->add('/save', array(
-            'action' => 'save'
-        ));
-
-        $group->add('/edit/{id}', array(
-            'action' => 'edit'
-        ));
-
-        $group->add('/about', 'about::index');
-
-        $router->mount($group, '/blog');
+        $router->mount('Blog3', '/blog');
 
         $routes = array(
             '/blog/save' => array(
-                'module' => 'Blog',
+                'module' => 'Blog3',
                 'controller' => 'index',
                 'action' => 'save',
             ),
             '/blog/edit/1' => array(
-                'module' => 'Blog',
+                'module' => 'Blog3',
                 'controller' => 'index',
                 'action' => 'edit'
             ),
             '/blog/about' => array(
-                'module' => 'Blog',
+                'module' => 'Blog3',
                 'controller' => 'about',
                 'action' => 'index'
             ),
@@ -128,13 +117,9 @@ class MvcRouterTest extends TestCase
         $this->assertEquals('article', $router->getControllerName());
         $this->assertEquals('detail', $router->getActionName());
 
-        $groupPath = new RouteGroup();
-        $groupDomain = new \Test\Domain\RouteGroup();
-        $groupDomainPath = new \Test\DomainPath\RouteGroup();
-
-        $router->mount($groupPath, '/');
-        $router->mount($groupDomain, 'blog.manaphp.com');
-        $router->mount($groupDomainPath, 'www.manaphp.com/blog');
+        $router->mount('Path', '/');
+        $router->mount('Domain', 'blog.manaphp.com');
+        $router->mount('DomainPath', 'www.manaphp.com/blog');
         $_SERVER['HTTP_HOST'] = 'blog.manaphp.com';
         $this->assertTrue($router->handle('/article', 'GET', 'blog.manaphp.com'));
         $this->assertEquals('Domain', $router->getModuleName());

@@ -28,6 +28,26 @@ namespace Test\Blog2 {
     }
 }
 
+namespace Test\Blog3 {
+
+    class RouteGroup extends \ManaPHP\Mvc\Router\Group
+    {
+        public function __construct($useDefaultRoutes = true)
+        {
+            parent::__construct($useDefaultRoutes);
+            $this->add('/save', array(
+                'action' => 'save'
+            ));
+
+            $this->add('/edit/{id}', array(
+                'action' => 'edit'
+            ));
+
+            $this->add('/about', 'about::index');
+        }
+    }
+}
+
 namespace Test\Path {
 
     class RouteGroup extends \ManaPHP\Mvc\Router\Group

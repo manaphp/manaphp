@@ -157,12 +157,6 @@ class Router extends Component implements RouterInterface
      */
     public function mount($module, $path = null)
     {
-        if (is_object($module)) {
-            $parts = explode('\\', get_class($module));
-            $this->_dependencyInjector->setShared(get_class($module), $module);
-            $module = $parts[1];
-        }
-
         if ($path === null) {
             $path = '/' . $module;
         }
