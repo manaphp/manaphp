@@ -137,10 +137,7 @@ class Router extends Component implements RouterInterface
                 $this->_module = $module;
                 $this->_controller = $parts['controller'];
                 $this->_action = $parts['action'];
-                $params = $parts['params'];
-                unset($parts['controller'], $parts['action'], $parts['params']);
-
-                $this->_params = array_merge($params, $parts);
+                $this->_params = $parts['params'];
                 break;
             }
         }
