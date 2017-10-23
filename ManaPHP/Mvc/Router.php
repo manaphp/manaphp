@@ -265,7 +265,7 @@ class Router extends Component implements RouterInterface
             $module = $this->_module;
         }
 
-        $url = rtrim($this->_modules[$module], '/') . '/' . lcfirst($ca);
+        $url = rtrim($this->_groups[$module], '/') . '/' . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }
