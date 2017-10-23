@@ -119,7 +119,6 @@ class Alias extends Component implements AliasInterface
 
         $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
-
             throw new AliasException('`:alias` is not exists for `:path`'/**m0aac421937afe5850*/, ['alias' => $alias, 'path' => $path]);
         }
 
@@ -142,10 +141,9 @@ class Alias extends Component implements AliasInterface
 
         $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
-
             throw new AliasException('`:alias` is not exists for `:namespace`'/**m0aac421937afe5850*/, ['alias' => $alias, 'namespace' => $ns]);
         }
 
-        return str_replace($alias, $this->_aliases[$alias], $ns);
+        return $this->_aliases[$alias] . '\\' . $parts[1];
     }
 }
