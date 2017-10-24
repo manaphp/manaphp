@@ -12,9 +12,9 @@ require __DIR__ . '/Router/Group.php';
 
 class MyRouter extends Router
 {
-    public function setModules($modules)
+    public function setGroups($groups)
     {
-        $this->_modules = $modules;
+        $this->_groups = $groups;
     }
 
     public function setModuleName($module)
@@ -188,7 +188,7 @@ class MvcRouterTest extends TestCase
     public function test_createActionUrl()
     {
         $router = new MyRouter();
-        $router->setModules(['Home' => '/', 'Blog' => '/blog']);
+        $router->setGroups(['Home' => '/', 'Blog' => '/blog']);
 
         $router->setModuleName('Home');
         $router->setControllerName('Article');
