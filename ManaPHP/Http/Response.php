@@ -224,7 +224,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonContent($content, $jsonOptions = null)
     {
-        $this->setContentType('application/json', 'utf-8');
+        $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
         if ($jsonOptions === null) {
             $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
