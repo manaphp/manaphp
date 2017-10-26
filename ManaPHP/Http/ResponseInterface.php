@@ -158,4 +158,9 @@ interface ResponseInterface
      * @return static
      */
     public function setCsvContent($rows, $attachmentName, $columns = null);
+
+    /**
+     * @return array
+     */
+    public function getHeaders();
 }
