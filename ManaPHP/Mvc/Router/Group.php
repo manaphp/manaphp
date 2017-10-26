@@ -186,8 +186,7 @@ class Group extends Component implements GroupInterface
      */
     public function match($uri, $method = 'GET')
     {
-        $uri = rtrim($uri, '/');
-        $uri = $uri ?: '/';
+        $uri = rtrim($uri, '/') ?: '/';
 
         for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
             $route = $this->_routes[$i];
