@@ -192,10 +192,9 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->_moduleName = Text::camelize($module);
         $this->_controllerName = Text::camelize($controller);
         $this->_actionName = lcfirst(Text::camelize($action));
-
         $this->_params = $params;
 
-        if ($this->fireEvent('dispatcher:beforeDispatchLoop') === false) {
+        if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
             return false;
         }
 
@@ -209,14 +208,6 @@ class Dispatcher extends Component implements DispatcherInterface
 
             if ($numberDispatches++ === 32) {
                 throw new DispatcherException('dispatcher has detected a cyclic routing causing stability problems'/**m016bfe7f4f190e087*/);
-            }
-
-            if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
-                return false;
-            }
-
-            if ($this->_finished === false) {
-                continue;
             }
 
             $controllerClassName = $this->alias->resolveNS('@ns.module\Controllers\\' . $this->_controllerName . 'Controller');
@@ -256,9 +247,6 @@ class Dispatcher extends Component implements DispatcherInterface
 
             $this->_returnedValue = $controllerInstance->actionExecute($this->_actionName, $this->_params);
 
-            // Call afterDispatch
-            $this->fireEvent('dispatcher:afterDispatch');
-
             if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
                 return false;
             }
@@ -278,7 +266,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
         }
 
-        $this->fireEvent('dispatcher:afterDispatchLoop');
+        $this->fireEvent('dispatcher:afterDispatch');
 
         return true;
     }
