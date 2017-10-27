@@ -112,7 +112,7 @@ class Router extends Component implements RouterInterface
 
         $this->_wasMatched = false;
 
-        $this->fireEvent('router:beforeCheckRoutes');
+        $this->fireEvent('router:beforeRoute');
 
         foreach (array_reverse($this->_groups, true) as $module => $path) {
             if ($path[0] !== '/') {
@@ -142,7 +142,7 @@ class Router extends Component implements RouterInterface
             }
         }
 
-        $this->fireEvent('router:afterCheckRoutes');
+        $this->fireEvent('router:afterRoute');
 
         return $this->_wasMatched;
     }
