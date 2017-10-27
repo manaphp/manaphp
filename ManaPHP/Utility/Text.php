@@ -75,13 +75,18 @@ class Text
      */
     public static function camelize($str)
     {
-        if (self::contains($str, '_')) {
-            $parts = explode('_', $str);
-            foreach ($parts as $k => $v) {
-                $parts[$k] = ucfirst($v);
-            }
+        if (strpos($str, '_') !== false) {
+            if (PHP_VERSION_ID >= 50516) {
+                //http://php.net/manual/en/function.ucwords.php
+                return str_replace('_', '', ucwords($str, '_'));
+            } else {
+                $parts = explode('_', $str);
+                foreach ($parts as $k => $v) {
+                    $parts[$k] = ucfirst($v);
+                }
 
-            return implode('', $parts);
+                return implode('', $parts);
+            }
         } else {
             return ucfirst($str);
         }
