@@ -55,10 +55,10 @@ class Router extends Component implements RouterInterface
     public function getRewriteUri($uri = null)
     {
         if ($uri === null) {
-            if ($this->request->hasQuery('_url')) {
-                $uri = $this->request->getQuery('_url', 'ignore');
-            } elseif ($this->request->hasServer('PATH_INFO')) {
-                $uri = $this->request->getServer('PATH_INFO');
+            if (isset($_GET['_url'])) {
+                $uri = $_GET['_url'];
+            } elseif ($_SERVER['PATH_INFO']) {
+                $uri = $_SERVER['PATH_INFO'];
             } else {
                 return '/';
             }
