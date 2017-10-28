@@ -162,7 +162,7 @@ class Route implements RouteInterface
         }
 
         if ($this->_compiledPattern[0] !== '#') {
-            return strcasecmp($this->_compiledPattern, $uri) === 0 ? $this->_paths : false;
+            return $this->_compiledPattern === $uri ? $this->_paths : false;
         }
 
         $r = preg_match($this->_compiledPattern, $uri, $matches);
