@@ -189,9 +189,9 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function dispatch($module, $controller, $action, $params = [])
     {
-        $this->_moduleName = Text::camelize($module);
-        $this->_controllerName = Text::camelize($controller);
-        $this->_actionName = lcfirst(Text::camelize($action));
+        $this->_moduleName = strpos($module, '_') === false ? ucfirst($module) : Text::camelize($module);
+        $this->_controllerName = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+        $this->_actionName = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
         $this->_params = $params;
 
         if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
@@ -290,13 +290,13 @@ class Dispatcher extends Component implements DispatcherInterface
         switch (count($parts)) {
             case 1:
                 $this->_previousActionName = $this->_actionName;
-                $this->_actionName = lcfirst(Text::camelize($parts[0]));
+                $this->_actionName = strpos($parts[0], '_') === false ? $parts[0] : lcfirst(Text::camelize($parts[0]));
                 break;
             case 2:
                 $this->_previousControllerName = $this->_controllerName;
-                $this->_controllerName = Text::camelize($parts[0]);
+                $this->_controllerName = strpos($parts[0], '_') === false ? ucfirst($parts[0]) : Text::camelize($parts[0]);
                 $this->_previousActionName = $this->_actionName;
-                $this->_actionName = lcfirst(Text::camelize($parts[1]));
+                $this->_actionName = strpos($parts[1], '_') === false ? $parts[1] : lcfirst(Text::camelize($parts[1]));
                 break;
             default:
                 throw new DispatcherException('`:forward` forward format is invalid'/**m03a65d2ea494b97ba*/, ['forward' => $forward]);
