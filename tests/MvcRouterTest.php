@@ -6,7 +6,6 @@ use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Router;
 use ManaPHP\Mvc\Router\Route;
 use PHPUnit\Framework\TestCase;
-use Test\Path\RouteGroup;
 
 require __DIR__ . '/Router/Group.php';
 
@@ -44,9 +43,9 @@ class MvcRouterTest extends TestCase
     {
         $router = new Router();
         $router->setDependencyInjector(new FactoryDefault());
-        $router->getDependencyInjector()->alias->set('@ns.app','Test');
+        $router->getDependencyInjector()->alias->set('@ns.app', 'Test');
 
-        $router->mount('Blog3', '/blog');
+        $router->mount(['Blog3' => '/blog']);
 
         $routes = array(
             '/blog/save' => array(
@@ -81,8 +80,8 @@ class MvcRouterTest extends TestCase
         //single module usage
         $router = new Router();
         $router->setDependencyInjector(new FactoryDefault());
-        $router->getDependencyInjector()->alias->set('@ns.app','Test');
-        $router->mount('Blog2', '/');
+        $router->getDependencyInjector()->alias->set('@ns.app', 'Test');
+        $router->mount(['Blog2' => '/']);
 
         $router->handle('/article/1', 'GET');
         $this->assertTrue($router->wasMatched());
@@ -91,7 +90,7 @@ class MvcRouterTest extends TestCase
         $this->assertEquals('detail', $router->getActionName());
 
         //multiple module usage with binding to /blog path
-        $router->mount('Blog2', '/blog');
+        $router->mount(['Blog2' => '/blog']);
         $router->handle('/blog/article/1', 'GET');
         $this->assertTrue($router->wasMatched());
         $this->assertEquals('Blog2', $router->getModuleName());
@@ -101,7 +100,7 @@ class MvcRouterTest extends TestCase
         //multiple module usage with binding to domain
 
         $_SERVER['HTTP_HOST'] = 'blog.manaphp.com';
-        $router->mount('Blog2', 'blog.manaphp.com');
+        $router->mount(['Blog2' => 'blog.manaphp.com']);
         $router->handle('/article/1', 'GET', 'blog.manaphp.com');
         $this->assertTrue($router->wasMatched());
         $this->assertEquals('Blog2', $router->getModuleName());
@@ -110,16 +109,15 @@ class MvcRouterTest extends TestCase
 
         //multiple module usage with bind to domain
 
-        $router->mount('Blog2', 'blog.manaphp.com/p1/p2');
+        $router->mount(['Blog2' => 'blog.manaphp.com/p1/p2']);
         $router->handle('/p1/p2/article/1', 'GET', 'blog.manaphp.com');
         $this->assertTrue($router->wasMatched());
         $this->assertEquals('Blog2', $router->getModuleName());
         $this->assertEquals('article', $router->getControllerName());
         $this->assertEquals('detail', $router->getActionName());
 
-        $router->mount('Path', '/');
-        $router->mount('Domain', 'blog.manaphp.com');
-        $router->mount('DomainPath', 'www.manaphp.com/blog');
+        $router->mount(['Path' => '/', 'Domain' => 'blog.manaphp.com', 'DomainPath' => 'www.manaphp.com/blog']);
+
         $_SERVER['HTTP_HOST'] = 'blog.manaphp.com';
         $this->assertTrue($router->handle('/article', 'GET', 'blog.manaphp.com'));
         $this->assertEquals('Domain', $router->getModuleName());

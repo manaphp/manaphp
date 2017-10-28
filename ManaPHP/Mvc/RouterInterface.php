@@ -42,12 +42,11 @@ interface RouterInterface
      *  $router->mount($group,'home');
      * </code>
      *
-     * @param string $module
-     * @param string $path
+     * @param array $modules
      *
      * @return static
      */
-    public function mount($module, $path = null);
+    public function mount($modules);
 
     /**
      * @return array

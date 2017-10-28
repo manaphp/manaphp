@@ -150,19 +150,13 @@ class Router extends Component implements RouterInterface
     /**
      * Mounts a group of routes in the router
      *
-     * @param string $module
-     * @param string $path
+     * @param array $modules
      *
      * @return static
      */
-    public function mount($module, $path = null)
+    public function mount($modules)
     {
-        if ($path === null) {
-            $path = '/' . $module;
-        }
-        $path = rtrim($path, '/');
-
-        $this->_groups[$module] = $path ?: '/';
+        $this->_groups = $modules;
 
         return $this;
     }
