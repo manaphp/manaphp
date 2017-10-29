@@ -57,7 +57,7 @@ class Router extends Component implements RouterInterface
         if ($uri === null) {
             if (isset($_GET['_url'])) {
                 $uri = $_GET['_url'];
-            } elseif ($_SERVER['PATH_INFO']) {
+            } elseif (isset($_SERVER['PATH_INFO'])) {
                 $uri = $_SERVER['PATH_INFO'];
             } else {
                 return '/';
