@@ -3,6 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Http\Cookies\Exception as CookiesException;
 
 /**
  * Class ManaPHP\Http\Cookies
@@ -17,11 +18,6 @@ class Cookies extends Component implements CookiesInterface
      * @var array
      */
     protected $_cookies = [];
-
-    /**
-     * @var array
-     */
-    protected $_deletedCookies = [];
 
     /**
      * @var string
@@ -57,27 +53,23 @@ class Cookies extends Component implements CookiesInterface
      *
      * @return static
      */
-    public function set(
-        $name,
-        $value,
-        $expire = 0,
-        $path = null,
-        $domain = null,
-        $secure = false,
-        $httpOnly = true
-    ) {
-        if (PHP_SAPI !== 'cli' && headers_sent($file, $line)) {
-            trigger_error("Headers has been sent in $file:$line", E_USER_WARNING);
-        }
-
-        if ($expire) {
+    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
+    {
+        if ($expire > 0) {
             $current = time();
             if ($expire < $current) {
                 $expire += $current;
             }
         }
 
-        $cookie = [
+        if ($name[0] === '!') {
+            $name = (string)substr($name, 1);
+            $value = $this->_encrypt($name, $value);
+        }
+
+        $this->_cookies[$name] = [
+            'name' => $name,
+            'value' => $value,
             'expire' => $expire,
             'path' => $path,
             'domain' => $domain,
@@ -85,47 +77,46 @@ class Cookies extends Component implements CookiesInterface
             'httpOnly' => $httpOnly
         ];
 
-        if ($name[0] === '!') {
-            $name = (string)substr($name, 1);
-            $value = $this->_encrypt($value);
-        }
-
-        $cookie['name'] = $name;
-        $cookie['value'] = $value;
-
-        $this->_cookies[$name] = $cookie;
         $_COOKIE[$name] = $value;
-        unset($this->_deletedCookies[$name]);
 
         return $this;
     }
 
     /**
+     * @param string $name
      * @param string $value
      *
      * @return string
+     * @throws \ManaPHP\Http\Cookies\Exception
      */
-    protected function _decrypt($value)
+    protected function _decrypt($name, $value)
     {
         if ($this->_key === null) {
             $this->_key = $this->crypt->getDerivedKey('cookies');
         }
 
-        return $this->crypt->decrypt(base64_decode($value), $this->_key);
+        $data = $this->crypt->decrypt(base64_decode($value), $this->_key . $name);
+        $json = json_decode($data, true);
+        if (!is_array($json) || !isset($json['value'])) {
+            throw new CookiesException('cookie value is corrupted');
+        }
+
+        return $json['value'];
     }
 
     /**
+     * @param string $name
      * @param string $value
      *
      * @return string
      */
-    protected function _encrypt($value)
+    protected function _encrypt($name, $value)
     {
         if ($this->_key === null) {
             $this->_key = $this->crypt->getDerivedKey('cookies');
         }
 
-        return base64_encode($this->crypt->encrypt($value, $this->_key));
+        return base64_encode($this->crypt->encrypt(json_encode(['value' => $value]), $this->_key . $name));
     }
 
     /**
@@ -140,9 +131,8 @@ class Cookies extends Component implements CookiesInterface
         if ($name[0] === '!') {
             $name = (string)substr($name, 1);
             if (isset($_COOKIE[$name])) {
-                return $this->_decrypt($_COOKIE[$name]);
+                return $this->_decrypt($name, $_COOKIE[$name]);
             }
-
         } else {
             if (isset($_COOKIE[$name])) {
                 return $_COOKIE[$name];
@@ -185,8 +175,16 @@ class Cookies extends Component implements CookiesInterface
             $name = (string)substr($name, 1);
         }
 
-        unset($this->_cookies[$name], $_COOKIE[$name]);
-        $this->_deletedCookies[$name] = ['path' => $path, 'domain' => $domain, 'secure' => $secure, 'httpOnly' => $httpOnly];
+        unset($_COOKIE[$name]);
+        $this->_cookies[$name] = [
+            'name' => $name,
+            'value' => 'deleted',
+            'expire' => 1,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httpOnly' => $httpOnly
+        ];
 
         return $this;
     }
@@ -214,10 +212,14 @@ class Cookies extends Component implements CookiesInterface
                 $cookie['httpOnly']);
         }
 
-        foreach ($this->_deletedCookies as $cookie => $param) {
-            setcookie($cookie, '', 0, $param['path'], $param['domain'], $param['secure'], $param['httpOnly']);
-        }
-
         $this->fireEvent('cookies:afterSend');
+    }
+
+    /**
+     * @return array
+     */
+    public function getSent()
+    {
+        return $this->_cookies;
     }
 }

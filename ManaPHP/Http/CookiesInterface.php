@@ -22,15 +22,7 @@ interface CookiesInterface
      *
      * @return static
      */
-    public function set(
-        $name,
-        $value,
-        $expire = 0,
-        $path = null,
-        $domain = null,
-        $secure = false,
-        $httpOnly = true
-    );
+    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true);
 
     /**
      * Gets a cookie from the bag
@@ -68,4 +60,9 @@ interface CookiesInterface
      * Sends the cookies to the client
      */
     public function send();
+
+    /**
+     * @return array
+     */
+    public function getSent();
 }
