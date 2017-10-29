@@ -14,6 +14,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\LoggerInterface          $logger
  * @property \ManaPHP\RendererInterface        $renderer
  * @property \ManaPHP\Security\RandomInterface $random
+ * @property \ManaPHP\Http\ResponseInterface   $response
  */
 class Debugger extends Component implements DebuggerInterface
 {
@@ -46,6 +47,14 @@ class Debugger extends Component implements DebuggerInterface
     protected $_warnings = [];
 
     protected $_events = [];
+
+    public function __construct()
+    {
+        $handler = [$this, '_eventHandlerPeek'];
+        $this->eventsManager->peekEvents($handler);
+
+        $this->attachEvent('dispatcher:beforeDispatch');
+    }
 
     /**
      * @param \ManaPHP\ComponentInterface $source
@@ -135,26 +144,23 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
+    public function onDispatcherBeforeDispatch()
+    {
+        if (isset($_GET['_debugger']) && preg_match('#^[a-zA-Z0-9_/]+\.html$#', $_GET['_debugger'])) {
+            $file = '@data/debugger' . $_GET['_debugger'];
+            if ($this->filesystem->fileExists($file)) {
+                $this->response->setContent($this->filesystem->fileGet($file));
+                return false;
+            }
+        }
+    }
+
     /**
      * @return void
      */
     public function start()
     {
-        if (Text::contains($_SERVER['HTTP_USER_AGENT'], 'ApacheBench')) {
-            return;
-        }
-
-        if (isset($_GET['_debugger']) && preg_match('#^[a-zA-Z0-9_/]+\.html$#', $_GET['_debugger'])) {
-            $file = '@data/debugger' . $_GET['_debugger'];
-            if ($this->filesystem->fileExists($file)) {
-                exit($this->filesystem->fileGet($file));
-            }
-        }
-
         $this->_file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
-
-        $handler = [$this, '_eventHandlerPeek'];
-        $this->eventsManager->peekEvents($handler);
     }
 
     /**
@@ -238,7 +244,7 @@ class Debugger extends Component implements DebuggerInterface
             'execute_time' => round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 4),
             'memory_usage' => (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k',
             'system_time' => date('Y-m-d H:i:s'),
-            'server_ip' => $_SERVER['SERVER_ADDR'],
+            'server_ip' => isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '',
             'client_ip' => $_SERVER['REMOTE_ADDR'],
             'operating_system' => php_uname(),
             'manaphp_version' => Version::get(),
