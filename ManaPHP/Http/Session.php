@@ -275,7 +275,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     {
         $data = (isset($_SESSION) && is_array($_SESSION)) ? $_SESSION : [];
 
-        $data['_internal_'] = ['adapter' => get_class($this->adapter)];
+        $data['_internal_'] = ['adapter' => is_string($this->adapter) ? $this->adapter : get_class($this->adapter)];
         return $data;
     }
 }
