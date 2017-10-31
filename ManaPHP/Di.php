@@ -374,4 +374,13 @@ class Di implements DiInterface
     {
         return get_object_vars($this);
     }
+
+    public function reConstruct()
+    {
+        foreach ($this->_sharedInstances as $k => $v) {
+            if ($v instanceof Component) {
+                $v->reConstruct();
+            }
+        }
+    }
 }

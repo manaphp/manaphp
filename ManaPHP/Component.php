@@ -189,4 +189,12 @@ class Component implements ComponentInterface
 
         return $data;
     }
+
+    /**
+     * @return bool
+     */
+    public function reConstruct()
+    {
+        return true;
+    }
 }

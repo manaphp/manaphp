@@ -56,6 +56,23 @@ class Debugger extends Component implements DebuggerInterface
         $this->attachEvent('dispatcher:beforeDispatch');
     }
 
+    public function reConstruct()
+    {
+        $this->save();
+
+        $this->_file = null;
+        $this->_dump = [];
+        $this->_view = [];
+        $this->_log = [];
+        $this->_sql_prepared = [];
+        $this->_sql_executed = [];
+        $this->_sql_count = 0;
+        $this->_sql_beforeQueryTime = null;
+        $this->_exception = [];
+        $this->_warnings = [];
+        $this->_events = [];
+    }
+
     /**
      * @param \ManaPHP\ComponentInterface $source
      * @param mixed                       $data

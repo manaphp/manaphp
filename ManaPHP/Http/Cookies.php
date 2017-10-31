@@ -40,6 +40,11 @@ class Cookies extends Component implements CookiesInterface
         }
     }
 
+    public function reConstruct()
+    {
+        $this->_cookies = [];
+    }
+
     /**
      * Sets a cookie to be sent at the end of the request
      *

@@ -54,4 +54,9 @@ interface ComponentInterface
      * @return array
      */
     public function dump();
+
+    /**
+     * @return bool
+     */
+    public function reConstruct();
 }
