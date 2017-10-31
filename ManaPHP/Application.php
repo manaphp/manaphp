@@ -45,7 +45,7 @@ abstract class Application extends Component implements ApplicationInterface
         $this->alias->set('@ns.app', $app_ns);
 
         $web = '';
-        if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) !== 0) {
+        if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {
             $web = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
             if (substr_compare($web, '/public', -7) === 0) {
                 $web = substr($web, 0, -7);
