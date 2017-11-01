@@ -14,6 +14,7 @@ use ManaPHP\Utility\Text;
  * @package dispatcher
  * @property \ManaPHP\Http\FilterInterface  $filter
  * @property \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\Mvc\Action\Invoker    $actionInvoker
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -183,6 +184,7 @@ class Dispatcher extends Component implements DispatcherInterface
      * @param array  $params
      *
      * @return bool
+     * @throws \ManaPHP\Mvc\Action\Exception
      * @throws \ManaPHP\Mvc\Dispatcher\Exception
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundActionException
@@ -245,7 +247,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 }
             }
 
-            $this->_returnedValue = $controllerInstance->actionExecute($this->_actionName, $this->_params);
+            $this->_returnedValue = $this->actionInvoker->invokeAction($controllerInstance, $this->_actionName, $this->_params);
 
             if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
                 return false;

@@ -20,12 +20,4 @@ interface ControllerInterface
      * @return bool
      */
     public function actionExists($name);
-
-    /**
-     * @param string $action
-     * @param array  $params
-     *
-     * @return mixed
-     */
-    public function actionExecute($action, $params = []);
 }
