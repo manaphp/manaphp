@@ -223,10 +223,6 @@ class Dispatcher extends Component implements DispatcherInterface
              */
             $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
             $this->_controller = $controllerInstance;
-            if (!$controllerInstance->actionExists($this->_actionName)) {
-                throw new NotFoundActionException('`:controller:::action` is not found, action is case sensitive.'/**m061a35fc1c0cd0b6f*/,
-                    ['action' => $this->_actionName . 'Action', 'controller' => $controllerClassName]);
-            }
 
             if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
                 return false;

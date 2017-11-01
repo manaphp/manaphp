@@ -26,7 +26,7 @@ class Invoker extends Component implements InvokerInterface
      * @return mixed
      * @throws \ManaPHP\Mvc\Action\Exception
      */
-    public function invokeAction($controller, $action, $params)
+    protected function _invokeAction($controller, $action, $params)
     {
         $actionMethod = $action . 'Action';
 
@@ -87,5 +87,24 @@ class Invoker extends Component implements InvokerInterface
             default:
                 return call_user_func_array([$controller, $actionMethod], $args);
         }
+    }
+
+    /**
+     * @param \ManaPHP\Mvc\ControllerInterface $controller
+     * @param string                           $action
+     * @param array                            $params
+     *
+     * @return mixed
+     * @throws \ManaPHP\Mvc\Action\Exception
+     * @throws \ManaPHP\Mvc\Action\NotFoundException
+     */
+    public function invokeAction($controller, $action, $params)
+    {
+        if (!$controller->actionExists($action)) {
+            throw new NotFoundException('`:controller:::action` is not found, action is case sensitive.'/**m061a35fc1c0cd0b6f*/,
+                ['action' => $action . 'Action', 'controller' => get_class($controller)]);
+        }
+		
+        return $this->_invokeAction($controller, $action, $params);
     }
 }
