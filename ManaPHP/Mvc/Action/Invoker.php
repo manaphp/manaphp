@@ -16,7 +16,34 @@ class Invoker extends Component implements InvokerInterface
     /**
      * @var \ReflectionParameter[][][]
      */
-    protected $_reflectionParameters;
+    protected $_actionParameters;
+
+    /**
+     * @var [][]
+     */
+    protected $_actions = [];
+
+    /**
+     * @param \ManaPHP\Mvc\ControllerInterface $controller
+     *
+     * @return array
+     */
+    protected function _getActions($controller)
+    {
+        $controllerName = get_class($controller);
+
+        if (!isset($this->_actions[$controllerName])) {
+            foreach (get_class_methods($controller) as $method) {
+                if ($method[0] !== '_' && substr_compare($method, 'Action', -6) === 0) {
+                    $action = substr($method, 0, -6);
+
+                    $this->_actions[$controllerName][] = $action;
+                }
+            }
+        }
+
+        return $this->_actions[$controllerName];
+    }
 
     /**
      * @param \ManaPHP\Mvc\ControllerInterface $controller
@@ -32,11 +59,11 @@ class Invoker extends Component implements InvokerInterface
 
         $controllerName = get_class($controller);
 
-        if (!isset($this->_reflectionParameters[$controllerName][$action])) {
+        if (!isset($this->_actionParameters[$controllerName][$action])) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $this->_reflectionParameters[$controllerName][$action] = (new \ReflectionMethod($controller, $actionMethod))->getParameters();
+            $this->_actionParameters[$controllerName][$action] = (new \ReflectionMethod($controller, $actionMethod))->getParameters();
         }
-        $parameters = $this->_reflectionParameters[$controllerName][$action];
+        $parameters = $this->_actionParameters[$controllerName][$action];
 
         $args = [];
         $missing = [];
@@ -100,11 +127,13 @@ class Invoker extends Component implements InvokerInterface
      */
     public function invokeAction($controller, $action, $params)
     {
-        if (!$controller->actionExists($action)) {
+        $actions = $this->_getActions($controller);
+
+        if (!in_array($action, $actions, true)) {
             throw new NotFoundException('`:controller:::action` is not found, action is case sensitive.'/**m061a35fc1c0cd0b6f*/,
                 ['action' => $action . 'Action', 'controller' => get_class($controller)]);
         }
-		
+
         return $this->_invokeAction($controller, $action, $params);
     }
 }

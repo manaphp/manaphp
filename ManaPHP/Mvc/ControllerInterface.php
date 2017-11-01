@@ -9,15 +9,5 @@ namespace ManaPHP\Mvc;
  */
 interface ControllerInterface
 {
-    /**
-     * @return array
-     */
-    public function actionList();
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function actionExists($name);
 }
