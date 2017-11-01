@@ -70,9 +70,17 @@ class Invoker extends Component implements InvokerInterface
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;
-            $type = $parameter->getClass();
 
-            if ($type !== null && is_subclass_of($type->getName(), Component::class)) {
+            $type = $parameter->getClass();
+            if ($type !== null) {
+                $type = $type->getName();
+            } else {
+                if ($parameter->isDefaultValueAvailable()) {
+                    $type = gettype($parameter->getDefaultValue());
+                }
+            }
+
+            if ($type !== null && is_subclass_of($type, Component::class)) {
                 $value = $this->_dependencyInjector->get($type->getName());
             } elseif (isset($params[$name])) {
                 $value = $params[$name];
@@ -89,6 +97,24 @@ class Invoker extends Component implements InvokerInterface
             if ($value === null) {
                 $missing[] = $name;
                 continue;
+            }
+
+            switch ($type) {
+                case 'boolean':
+                    $value = (bool)$value;
+                    break;
+                case 'integer':
+                    $value = (int)$value;
+                    break;
+                case 'double':
+                    $value = (float)$value;
+                    break;
+                case 'string':
+                    $value = (string)$value;
+                    break;
+                case 'array':
+                    $value = (array)$value;
+                    break;
             }
 
             if ($parameter->isArray()) {
