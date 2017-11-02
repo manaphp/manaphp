@@ -93,7 +93,7 @@ class Application extends \ManaPHP\Application
 
         $this->fireEvent('application:beforeStartModule');
 
-        $this->_moduleObject = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module');
+        $this->_moduleObject = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module', [$moduleName]);
         $this->_moduleObject->registerServices($this->_dependencyInjector);
 
         $this->fireEvent('application:afterStartModule');
