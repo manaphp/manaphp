@@ -48,6 +48,16 @@ class Configure extends Component implements ConfigureInterface, \ArrayAccess
     protected $_data = [];
 
     /**
+     * @var array
+     */
+    public $components = [];
+
+    /**
+     * @var array
+     */
+    public $modules = ['Home' => '/'];
+
+    /**
      * Configure constructor.
      *
      * @param array $engines
@@ -58,8 +68,7 @@ class Configure extends Component implements ConfigureInterface, \ArrayAccess
             '.php' => 'ManaPHP\Configure\Engine\Php',
             '.json' => 'ManaPHP\Configure\Engine\Json'
         ]
-    )
-    {
+    ) {
         $this->_engines = $engines;
     }
 

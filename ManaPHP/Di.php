@@ -136,7 +136,17 @@ class Di implements DiInterface
      */
     public function setShared($name, $definition)
     {
-        $this->_services[$name] = $definition;
+        if (is_array($definition) && isset($definition['class'])) {
+            $className = $definition['class'];
+            $alias = isset($definition['alias']) ? $definition['alias'] : null;
+            unset($definition['class'], $definition['alias']);
+            $this->_services[$name] = [$className, $definition];
+            if ($alias !== null) {
+                $this->setAliases($name, $alias, false);
+            }
+        } else {
+            $this->_services[$name] = $definition;
+        }
 
         return $this;
     }

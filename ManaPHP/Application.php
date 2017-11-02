@@ -3,7 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Application\AbortException;
-use ManaPHP\Application\Exception as ApplicationException;
 use ManaPHP\Di\FactoryDefault;
 
 /**
@@ -125,33 +124,12 @@ abstract class Application extends Component implements ApplicationInterface
 
         date_default_timezone_set($configure->timezone);
 
+        foreach ($configure->components as $component => $definition) {
+            $this->_dependencyInjector->setShared($component, $definition);
+        }
+
         if (!$this->alias->has('@cli')) {
-            $this->_dependencyInjector->router->mount(isset($configure->modules) ? $configure->modules : ['Home' => '/']);
-        }
-
-        if (isset($configure->redis)) {
-            $this->_dependencyInjector->setShared('redis', ['ManaPHP\Redis', [$configure->redis]]);
-        }
-
-        if (isset($configure->db)) {
-            if (is_string($configure->db)) {
-                $scheme = parse_url($configure->db, PHP_URL_SCHEME);
-                if ($scheme === false) {
-                    throw new ApplicationException('`:db` db config is invalid', ['db' => $configure->db]);
-                }
-
-                $adapter = 'ManaPHP\Db\Adapter\\' . ucfirst($scheme);
-                $config = $configure->db;
-            } else {
-                $config = (array)$configure->db;
-                $adapter = isset($config['adapter']) ? $config['adapter'] : 'ManaPHP\Db\Adapter\Mysql';
-                unset($config['adapter']);
-            }
-            $this->_dependencyInjector->setShared('db', [$adapter, [$config]]);
-        }
-
-        if (isset($configure->mongodb)) {
-            $this->_dependencyInjector->setShared('mongodb', new Mongodb($configure->mongodb));
+            $this->_dependencyInjector->router->mount($configure->modules);
         }
     }
 }

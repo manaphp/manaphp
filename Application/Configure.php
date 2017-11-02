@@ -2,6 +2,9 @@
 
 namespace Application;
 
+use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Redis;
+
 class Configure extends \ManaPHP\Configure
 {
     public function __construct()
@@ -29,12 +32,9 @@ class Configure extends \ManaPHP\Configure
         $this->crypt->setMasterKey('key');
 
         //https://raw.githubusercontent.com/manaphp/download/master/manaphp_unit_test_db.sql
-        $this->db = 'mysql://root:123456@mysql/manaphp?charset=utf8';
+        $this->components['db'] = ['class' => Mysql::class, 'mysql://root@localhost/manaphp_unit_test?charset=utf8'];
+        $this->components['redis'] = ['class' => Redis::class, 'redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth='];
 
-        $this->logger = new \stdClass();
-        $this->logger->file = '@data/logger/' . date('Ymd') . '.log';
-
-        $this->redis = 'redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth=';
         $this->modules = ['Home' => '/', 'Admin' => '/admin', 'Api' => '/api'];
     }
 }
