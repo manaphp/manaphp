@@ -66,7 +66,7 @@ class ModelController extends Controller
 
             $vars = [];
 
-            $vars['columns'] = $this->db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
+            $vars['fields'] = $this->db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
 
             $vars['model_name'] = $modelName;
             $vars['model_namespace'] = $modelNamespace;

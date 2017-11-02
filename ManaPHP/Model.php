@@ -355,7 +355,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * Allows to calculate a summary on a column that match the specified conditions
+     * Allows to calculate a summary on a field that match the specified conditions
      *
      * <code>
      *
@@ -762,8 +762,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $criteria = static::criteria();
         if (!isset($this->{$primaryKey})) {
-            throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:column` was not set'/**m01dec9cd3b69742a5*/,
-                ['model' => get_class($this), 'column' => $primaryKey]);
+            throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:field` was not set'/**m01dec9cd3b69742a5*/,
+                ['model' => get_class($this), 'field' => $primaryKey]);
         }
 
         $criteria->where($primaryKey, $this->{$primaryKey});

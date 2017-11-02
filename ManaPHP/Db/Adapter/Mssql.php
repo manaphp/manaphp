@@ -106,34 +106,34 @@ class Mssql extends Db
         $parts = explode('.', $source);
 
         if (count($parts) === 1) {
-            $columns = $this->fetchAll("exec sp_pkeys '$parts[0]'");
+            $fields = $this->fetchAll("exec sp_pkeys '$parts[0]'");
         } else {
-            $columns = $this->fetchAll("exec sp_pkeys @table_name ='$parts[1]', @table_owner ='$parts[0]'");
+            $fields = $this->fetchAll("exec sp_pkeys @table_name ='$parts[1]', @table_owner ='$parts[0]'");
         }
 
-        $primaryKeys = count($columns) === 1 ? [$columns[0]['COLUMN_NAME']] : [];
+        $primaryKeys = count($fields) === 1 ? [$fields[0]['COLUMN_NAME']] : [];
 
         if (count($parts) === 1) {
-            $columns = $this->fetchAll("exec sp_columns '$parts[0]'");
+            $fields = $this->fetchAll("exec sp_columns '$parts[0]'");
         } else {
-            $columns = $this->fetchAll("exec sp_columns @table_name ='$parts[1]', @table_owner ='$parts[0]'");
+            $fields = $this->fetchAll("exec sp_columns @table_name ='$parts[1]', @table_owner ='$parts[0]'");
         }
 
         $attributes = [];
         $nonPrimaryKeys = [];
         $autoIncrementAttribute = null;
 
-        foreach ($columns as $column) {
-            $columnName = $column['COLUMN_NAME'];
+        foreach ($fields as $field) {
+            $fieldName = $field['COLUMN_NAME'];
 
-            $attributes[] = $columnName;
+            $attributes[] = $fieldName;
 
-            if (!in_array($columnName, $primaryKeys, true)) {
-                $nonPrimaryKeys[] = $columnName;
+            if (!in_array($fieldName, $primaryKeys, true)) {
+                $nonPrimaryKeys[] = $fieldName;
             }
 
-            if ($column['TYPE_NAME'] === 'int identity') {
-                $autoIncrementAttribute = $columnName;
+            if ($field['TYPE_NAME'] === 'int identity') {
+                $autoIncrementAttribute = $fieldName;
             }
         }
 
@@ -141,7 +141,7 @@ class Mssql extends Db
             self::METADATA_ATTRIBUTES => $attributes,
             self::METADATA_PRIMARY_KEY => $primaryKeys,
             self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
-            self::METADATA_IDENTITY_COLUMN => $autoIncrementAttribute
+            self::METADATA_IDENTITY_FIELD => $autoIncrementAttribute
         ];
 
         return $r;
@@ -189,7 +189,7 @@ class Mssql extends Db
     {
         $sql = '';
 
-        if (isset($params['columns'])) {
+        if (isset($params['fields'])) {
 
             $sql .= 'SELECT ';
             if (isset($params['limit']) && !isset($params['offset'])) {
@@ -199,7 +199,7 @@ class Mssql extends Db
                 $sql .= 'DISTINCT ';
             }
 
-            $sql .= $params['columns'];
+            $sql .= $params['fields'];
             if (isset($params['limit'], $params['offset'])) {
                 if (!isset($params['order'])) {
                     throw new MssqlException('if use offset CLAUSE, must provide order CLAUSE.');

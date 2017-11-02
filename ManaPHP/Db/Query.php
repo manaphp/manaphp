@@ -1042,7 +1042,7 @@ class Query extends Component implements QueryInterface
                 $fields .= implode(', ', $selectedFields);
             }
         }
-        $params['columns'] = $fields;
+        $params['fields'] = $fields;
 
         $selectedTables = [];
 

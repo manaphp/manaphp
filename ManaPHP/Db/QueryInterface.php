@@ -20,11 +20,11 @@ interface QueryInterface
     public function distinct($distinct = true);
 
     /**
-     * @param string|array $columns
+     * @param string|array $fields
      *
      * @return static
      */
-    public function select($columns);
+    public function select($fields);
 
     /**
      *
@@ -400,11 +400,11 @@ interface QueryInterface
     public function exists();
 
     /**
-     * @param string $column
+     * @param string $field
      *
      * @return int
      */
-    public function count($column = '*');
+    public function count($field = '*');
 
     /**
      * @return array|false

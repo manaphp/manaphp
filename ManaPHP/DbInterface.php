@@ -68,11 +68,11 @@ interface DbInterface
      * </code>
      *
      * @param    string $table
-     * @param    array  $columnValues
+     * @param    array  $fieldValues
      *
      * @return void
      */
-    public function insert($table, $columnValues);
+    public function insert($table, $fieldValues);
 
     /**
      * Updates data on a table using custom SQL syntax
@@ -84,13 +84,13 @@ interface DbInterface
      * </code>
      *
      * @param    string       $table
-     * @param    array        $columnValues
+     * @param    array        $fieldValues
      * @param    string|array $conditions
      * @param   array         $bind
      *
      * @return    int
      */
-    public function update($table, $columnValues, $conditions, $bind = []);
+    public function update($table, $fieldValues, $conditions, $bind = []);
 
     /**
      * Deletes data from a table using custom SQL syntax
@@ -169,7 +169,7 @@ interface DbInterface
     public function affectedRows();
 
     /**
-     * Returns insert id for the auto_increment column inserted in the last SQL statement
+     * Returns insert id for the auto_increment field inserted in the last SQL statement
      *
      * @return int
      */

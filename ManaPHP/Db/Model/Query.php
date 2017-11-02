@@ -21,14 +21,14 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
     /**
      * alias of select
      *
-     * @param string|array $columns
+     * @param string|array $fields
      *
      * @return static
      * @deprecated
      */
-    public function columns($columns)
+    public function columns($fields)
     {
-        return $this->select($columns);
+        return $this->select($fields);
     }
 
     public function from($model, $alias = null)

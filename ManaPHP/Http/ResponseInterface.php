@@ -153,11 +153,11 @@ interface ResponseInterface
     /**
      * @param array        $rows
      * @param string       $attachmentName
-     * @param array|string $columns
+     * @param array|string $fields
      *
      * @return static
      */
-    public function setCsvContent($rows, $attachmentName, $columns = null);
+    public function setCsvContent($rows, $attachmentName, $fields = null);
 
     /**
      * @return array

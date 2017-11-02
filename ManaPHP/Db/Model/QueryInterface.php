@@ -12,11 +12,11 @@ interface QueryInterface extends \ManaPHP\Db\QueryInterface
     /**
      * Sets the columns to be queried
      *
-     * @param string $columns
+     * @param string $fields
      *
      * @return static
      */
-    public function columns($columns);
+    public function columns($fields);
 
     /**
      * alias of addFrom

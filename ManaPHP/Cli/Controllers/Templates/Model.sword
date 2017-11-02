@@ -6,8 +6,8 @@ namespace {!! $model_namespace !!};
  */
 class {!! $model_name !!} extends {!! $model_extends!!}@eol
 {
-@foreach($columns as $column)
-    public ${!! $column !!};
+@foreach($fields as $field)
+    public ${!! $field !!};
 
 @endforeach
     public function initialize()

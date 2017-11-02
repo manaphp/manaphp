@@ -106,25 +106,25 @@ class Mysql extends Db
      */
     public function getMetadata($source)
     {
-        $columns = $this->fetchAll('DESCRIBE ' . $this->_escapeIdentifier($source), [], \PDO::FETCH_NUM);
+        $fields = $this->fetchAll('DESCRIBE ' . $this->_escapeIdentifier($source), [], \PDO::FETCH_NUM);
 
         $attributes = [];
         $primaryKeys = [];
         $nonPrimaryKeys = [];
         $autoIncrementAttribute = null;
-        foreach ($columns as $column) {
-            $columnName = $column[0];
+        foreach ($fields as $field) {
+            $fieldName = $field[0];
 
-            $attributes[] = $columnName;
+            $attributes[] = $fieldName;
 
-            if ($column[3] === 'PRI') {
-                $primaryKeys[] = $columnName;
+            if ($field[3] === 'PRI') {
+                $primaryKeys[] = $fieldName;
             } else {
-                $nonPrimaryKeys[] = $columnName;
+                $nonPrimaryKeys[] = $fieldName;
             }
 
-            if ($column[5] === 'auto_increment') {
-                $autoIncrementAttribute = $columnName;
+            if ($field[5] === 'auto_increment') {
+                $autoIncrementAttribute = $fieldName;
             }
         }
 
@@ -132,7 +132,7 @@ class Mysql extends Db
             self::METADATA_ATTRIBUTES => $attributes,
             self::METADATA_PRIMARY_KEY => $primaryKeys,
             self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
-            self::METADATA_IDENTITY_COLUMN => $autoIncrementAttribute,
+            self::METADATA_IDENTITY_FIELD => $autoIncrementAttribute,
         ];
 
         return $r;
@@ -211,14 +211,14 @@ class Mysql extends Db
     {
         $sql = '';
 
-        if (isset($params['columns'])) {
+        if (isset($params['fields'])) {
             $sql .= 'SELECT ';
 
             if (isset($params['distinct'])) {
                 $sql .= 'DISTINCT ';
             }
 
-            $sql .= $params['columns'];
+            $sql .= $params['fields'];
         }
 
         if (isset($params['from'])) {

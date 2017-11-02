@@ -52,26 +52,26 @@ class Sqlite extends Db
      */
     public function getMetadata($source)
     {
-        $columns = $this->fetchAll('PRAGMA table_info(' . $this->_escapeIdentifier($source) . ')', null, \PDO::FETCH_ASSOC);
+        $fields = $this->fetchAll('PRAGMA table_info(' . $this->_escapeIdentifier($source) . ')', null, \PDO::FETCH_ASSOC);
 
         $attributes = [];
         $primaryKeys = [];
         $nonPrimaryKeys = [];
         $autoIncrementAttribute = null;
 
-        foreach ($columns as $column) {
-            $columnName = $column['name'];
+        foreach ($fields as $field) {
+            $fieldName = $field['name'];
 
-            $attributes[] = $columnName;
+            $attributes[] = $fieldName;
 
-            if ($column['pk'] === '1') {
-                $primaryKeys[] = $columnName;
+            if ($field['pk'] === '1') {
+                $primaryKeys[] = $fieldName;
             } else {
-                $nonPrimaryKeys[] = $columnName;
+                $nonPrimaryKeys[] = $fieldName;
             }
 
-            if ($column['pk'] === '1' && $column['type'] === 'INTEGER') {
-                $autoIncrementAttribute = $columnName;
+            if ($field['pk'] === '1' && $field['type'] === 'INTEGER') {
+                $autoIncrementAttribute = $fieldName;
             }
         }
 
@@ -79,7 +79,7 @@ class Sqlite extends Db
             self::METADATA_ATTRIBUTES => $attributes,
             self::METADATA_PRIMARY_KEY => $primaryKeys,
             self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
-            self::METADATA_IDENTITY_COLUMN => $autoIncrementAttribute,
+            self::METADATA_IDENTITY_FIELD => $autoIncrementAttribute,
         ];
 
         return $r;
@@ -150,14 +150,14 @@ class Sqlite extends Db
     {
         $sql = '';
 
-        if (isset($params['columns'])) {
+        if (isset($params['fields'])) {
             $sql .= 'SELECT ';
 
             if (isset($params['distinct'])) {
                 $sql .= 'DISTINCT ';
             }
 
-            $sql .= $params['columns'];
+            $sql .= $params['fields'];
         }
 
         if (isset($params['from'])) {

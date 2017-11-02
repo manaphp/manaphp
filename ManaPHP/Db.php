@@ -16,8 +16,8 @@ abstract class Db extends Component implements DbInterface
     const METADATA_ATTRIBUTES = 0;
     const METADATA_PRIMARY_KEY = 1;
     const METADATA_NON_PRIMARY_KEY = 2;
-    const METADATA_IDENTITY_COLUMN = 3;
-    const METADATA_COLUMN_PROPERTIES = 4;
+    const METADATA_IDENTITY_FIELD = 3;
+    const METADATA_FIELD_PROPERTIES = 4;
 
     /**
      * @var string
@@ -397,32 +397,32 @@ abstract class Db extends Component implements DbInterface
      * </code>
      *
      * @param    string $table
-     * @param    array  $columnValues
+     * @param    array  $fieldValues
      *
      * @return void
      * @throws \ManaPHP\Db\Exception
      */
-    public function insert($table, $columnValues)
+    public function insert($table, $fieldValues)
     {
-        if (count($columnValues) === 0) {
+        if (count($fieldValues) === 0) {
             throw new DbException('Unable to insert into :table table without data'/**m07945f8783104be33*/, ['table' => $table]);
         }
 
-        if (array_key_exists(0, $columnValues)) {
-            $insertedValues = rtrim(str_repeat('?,', count($columnValues)), ',');
+        if (array_key_exists(0, $fieldValues)) {
+            $insertedValues = rtrim(str_repeat('?,', count($fieldValues)), ',');
 
             $sql = /** @lang Text */
                 'INSERT INTO ' . $this->_escapeIdentifier($table) . " VALUES ($insertedValues)";
         } else {
-            $columns = array_keys($columnValues);
-            $insertedValues = ':' . implode(',:', $columns);
-            $insertedColumns = '[' . implode('],[', $columns) . ']';
+            $fields = array_keys($fieldValues);
+            $insertedValues = ':' . implode(',:', $fields);
+            $insertedFields = '[' . implode('],[', $fields) . ']';
 
             $sql = /** @lang Text */
-                'INSERT INTO ' . $this->_escapeIdentifier($table) . " ($insertedColumns) VALUES ($insertedValues)";
+                'INSERT INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
         }
 
-        $this->execute($sql, $columnValues);
+        $this->execute($sql, $fieldValues);
     }
 
     /**
@@ -440,16 +440,16 @@ abstract class Db extends Component implements DbInterface
      * </code>
      *
      * @param    string       $table
-     * @param    array        $columnValues
+     * @param    array        $fieldValues
      * @param    string|array $conditions
      * @param    array        $bind
      *
      * @return    int
      * @throws \ManaPHP\Db\Exception
      */
-    public function update($table, $columnValues, $conditions, $bind = [])
+    public function update($table, $fieldValues, $conditions, $bind = [])
     {
-        if (count($columnValues) === 0) {
+        if (count($fieldValues) === 0) {
             throw new DbException('Unable to update :table table without data'/**m07b005f0072d05d71*/, ['table' => $table]);
         }
 
@@ -469,24 +469,24 @@ abstract class Db extends Component implements DbInterface
             }
         }
 
-        $setColumns = [];
-        foreach ($columnValues as $k => $v) {
+        $setFields = [];
+        foreach ($fieldValues as $k => $v) {
             if (is_int($k)) {
-                $setColumns[] = $v;
+                $setFields[] = $v;
             } else {
                 if ($v instanceof AssignmentInterface) {
                     $v->setFieldName($k);
-                    $setColumns[] = $v->getSql();
+                    $setFields[] = $v->getSql();
                     /** @noinspection SlowArrayOperationsInLoopInspection */
                     $bind = array_merge($bind, $v->getBind());
                 } else {
-                    $setColumns[] = "[$k]=:$k";
+                    $setFields[] = "[$k]=:$k";
                     $bind[$k] = $v;
                 }
             }
         }
 
-        $sql = 'UPDATE ' . $this->_escapeIdentifier($table) . ' SET ' . implode(',', $setColumns) . ' WHERE ' . implode(' AND ', $wheres);
+        $sql = 'UPDATE ' . $this->_escapeIdentifier($table) . ' SET ' . implode(',', $setFields) . ' WHERE ' . implode(' AND ', $wheres);
 
         return $this->execute($sql, $bind);
     }
@@ -686,7 +686,7 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * Returns insert id for the auto_increment column inserted in the last SQL statement
+     * Returns insert id for the auto_increment field inserted in the last SQL statement
      *
      * @return int
      * @throws \ManaPHP\Db\Exception

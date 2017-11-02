@@ -61,5 +61,5 @@ interface MetadataInterface
      *
      * @return array
      */
-    public function getColumnProperties($model);
+    public function getFieldProperties($model);
 }

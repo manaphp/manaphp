@@ -223,14 +223,14 @@ class Proxy extends Component implements DbInterface
         }
     }
 
-    public function insert($table, $columnValues)
+    public function insert($table, $fieldValues)
     {
-        $this->getMasterConnection()->insert($table, $columnValues);
+        $this->getMasterConnection()->insert($table, $fieldValues);
     }
 
-    public function update($table, $columnValues, $conditions, $bind = [])
+    public function update($table, $fieldValues, $conditions, $bind = [])
     {
-        return $this->getMasterConnection()->update($table, $columnValues, $conditions, $bind);
+        return $this->getMasterConnection()->update($table, $fieldValues, $conditions, $bind);
     }
 
     public function delete($table, $conditions, $bind = [])

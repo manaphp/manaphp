@@ -381,14 +381,14 @@ class Response extends Component implements ResponseInterface
     /**
      * @param array        $rows
      * @param string       $attachmentName
-     * @param array|string $columns
+     * @param array|string $fields
      *
      * @return static
      */
-    public function setCsvContent($rows, $attachmentName, $columns = null)
+    public function setCsvContent($rows, $attachmentName, $fields = null)
     {
-        if (is_string($columns)) {
-            $columns = explode(',', $columns);
+        if (is_string($fields)) {
+            $fields = explode(',', $fields);
         }
 
         if (pathinfo($attachmentName, PATHINFO_EXTENSION) !== 'csv') {
@@ -401,12 +401,12 @@ class Response extends Component implements ResponseInterface
 
         fprintf($file, "\xEF\xBB\xBF");
 
-        if ($columns !== null) {
-            if (Text::startsWith($columns[0], 'ID')) {
-                $columns[0] = strtolower($columns[0]);
+        if ($fields !== null) {
+            if (Text::startsWith($fields[0], 'ID')) {
+                $fields[0] = strtolower($fields[0]);
             }
 
-            fputcsv($file, $columns);
+            fputcsv($file, $fields);
         }
 
         foreach ($rows as $row) {

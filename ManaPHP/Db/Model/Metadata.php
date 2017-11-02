@@ -56,11 +56,11 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                 $diff = array_diff($properties, $data[Db::METADATA_ATTRIBUTES]);
 
                 if (count($diff) !== 0) {
-                    throw new MetadataException('`:table` table of `:model` model is not contains `:columns` columns'/**m0bb273aae32bfd843*/,
-                        ['table' => $model->getSource(true), 'model' => $modelName, 'columns' => implode(',', $diff)]);
+                    throw new MetadataException('`:table` table of `:model` model is not contains `:fields` fields'/**m0bb273aae32bfd843*/,
+                        ['table' => $model->getSource(true), 'model' => $modelName, 'fields' => implode(',', $diff)]);
                 }
 
-                $data[Db::METADATA_COLUMN_PROPERTIES] = $properties ?: $data[Db::METADATA_ATTRIBUTES];
+                $data[Db::METADATA_FIELD_PROPERTIES] = $properties ?: $data[Db::METADATA_ATTRIBUTES];
 
                 $this->_metadata[$modelName] = $data;
                 $this->write($modelName, $data);
@@ -114,7 +114,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      */
     public function getAutoIncrementAttribute($model)
     {
-        return $this->_readMetaData($model)[Db::METADATA_IDENTITY_COLUMN];
+        return $this->_readMetaData($model)[Db::METADATA_IDENTITY_FIELD];
     }
 
     /**
@@ -154,8 +154,8 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      * @return array
      * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
-    public function getColumnProperties($model)
+    public function getFieldProperties($model)
     {
-        return $this->_readMetaData($model)[Db::METADATA_COLUMN_PROPERTIES];
+        return $this->_readMetaData($model)[Db::METADATA_FIELD_PROPERTIES];
     }
 }
