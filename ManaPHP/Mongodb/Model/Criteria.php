@@ -27,11 +27,6 @@ class Criteria extends \ManaPHP\Model\Criteria
     protected $_aggregate = [];
 
     /**
-     * @var string
-     */
-    protected $_modelName;
-
-    /**
      * @var array
      */
     protected $_filters = [];
@@ -85,11 +80,11 @@ class Criteria extends \ManaPHP\Model\Criteria
     public function __construct($modelName, $fields = null)
     {
         $this->_modelName = $modelName;
+        $this->_dependencyInjector = Di::getDefault();
 
         if ($fields !== null) {
             $this->select($fields);
         }
-        $this->_dependencyInjector = Di::getDefault();
     }
 
     /**
@@ -872,39 +867,6 @@ class Criteria extends \ManaPHP\Model\Criteria
         $this->_forceUseMaster = $forceUseMaster;
 
         return $this;
-    }
-
-    /**
-     * @return \ManaPHP\Mongodb\Model|false
-     */
-    public function fetchOne()
-    {
-        $r = $this->limit(1)->fetchAll();
-        return isset($r[0]) ? $r[0] : false;
-    }
-
-    /**
-     *
-     * @return \ManaPHP\Mongodb\Model[]
-     */
-    public function fetchAll()
-    {
-        $rows = [];
-
-        foreach ($this->execute() as $k => $document) {
-            $rows[$k] = new $this->_modelName($document);
-
-        }
-
-        return $rows;
-    }
-
-    /**
-     * @return array
-     */
-    public function asArray()
-    {
-        return $this->execute();
     }
 
     /**

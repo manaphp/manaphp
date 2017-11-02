@@ -129,7 +129,7 @@ interface CriteriaInterface
      * @return static
      */
     public function whereRegex($expr, $regex);
-    
+
     /**
      * Sets a ORDER BY condition clause
      *
@@ -232,6 +232,11 @@ interface CriteriaInterface
     public function exists();
 
     /**
+     * @return array
+     */
+    public function execute();
+
+    /**
      * @return \ManaPHP\ModelInterface|false
      */
     public function fetchOne();
@@ -240,11 +245,6 @@ interface CriteriaInterface
      * @return array|\ManaPHP\ModelInterface[]
      */
     public function fetchAll();
-
-    /**
-     * @return array
-     */
-    public function asArray();
 
     /**
      * @param $fieldValues

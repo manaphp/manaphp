@@ -7,6 +7,11 @@ use ManaPHP\Model\Criteria\Exception as CriteriaException;
 abstract class Criteria extends Component implements CriteriaInterface, \JsonSerializable
 {
     /**
+     * @var string
+     */
+    protected $_modelName;
+
+    /**
      * @var bool
      */
     protected $_multiple;
@@ -108,6 +113,27 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
 
     public function jsonSerialize()
     {
-        return $this->asArray();
+        return $this->execute();
+    }
+
+    /**
+     * @return \ManaPHP\Model|false
+     */
+    public function fetchOne()
+    {
+        $r = $this->limit(1)->execute();
+        return isset($r[0]) ? new $this->_modelName($r[0]) : false;
+    }
+
+    /**
+     * @return \ManaPHP\Model[]
+     */
+    public function fetchAll()
+    {
+        $models = [];
+        foreach ($this->execute() as $k => $result) {
+            $models[$k] = new $this->_modelName($result);
+        }
+        return $models;
     }
 }

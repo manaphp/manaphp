@@ -12,11 +12,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     protected $_query;
 
     /**
-     * @var string
-     */
-    protected $_modelName;
-
-    /**
      * @var bool
      */
     protected $_modelReplaced = false;
@@ -25,15 +20,16 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * Criteria constructor.
      *
      * @param string|array $modelName
-     * @param string|array $columns
+     * @param string|array $fields
      */
-    public function __construct($modelName, $columns = null)
+    public function __construct($modelName, $fields = null)
     {
         $this->_modelName = $modelName;
+        $this->_dependencyInjector = Di::getDefault();
 
-        $this->_query = Di::getDefault()->get('ManaPHP\Db\Query');
-        if ($columns !== null) {
-            $this->_query->select($columns);
+        $this->_query = $this->_dependencyInjector->get('ManaPHP\Db\Query');
+        if ($fields !== null) {
+            $this->_query->select($fields);
         }
     }
 
@@ -451,31 +447,9 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
-     * @return array|\ManaPHP\Db\Model|false
-     */
-    public function fetchOne()
-    {
-        $r = $this->fetchAll();
-        return isset($r[0]) ? $r[0] : false;
-    }
-
-    /**
-     * @return array|\ManaPHP\Db\Model[]
-     */
-    public function fetchAll()
-    {
-        $rs = $this->_replaceModelInfo()->_query->execute();
-        $models = [];
-        foreach ($rs as $k => $result) {
-            $models[$k] = new $this->_modelName($result);
-        }
-        return $models;
-    }
-
-    /**
      * @return array
      */
-    public function asArray()
+    public function execute()
     {
         return $this->_replaceModelInfo()->_query->execute();
     }
