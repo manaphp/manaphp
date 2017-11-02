@@ -21,7 +21,7 @@ class Query extends Component implements QueryInterface
     /**
      * @var array
      */
-    protected $_columns;
+    protected $_fields;
 
     /**
      * @var array
@@ -174,24 +174,24 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * @param string|array $columns
+     * @param string|array $fields
      *
      * @return static
      */
-    public function select($columns)
+    public function select($fields)
     {
-        if (is_string($columns)) {
-            $columns = str_replace(["\t", "\r", "\n"], '', $columns);
-            if (strpos($columns, '[') === false && strpos($columns, '(') === false) {
-                $columns = preg_replace('#\w+#', '[\\0]', $columns);
-                $columns = str_ireplace('[as]', 'AS', $columns);
-                $columns = preg_replace('#\s+#', ' ', $columns);
+        if (is_string($fields)) {
+            $fields = str_replace(["\t", "\r", "\n"], '', $fields);
+            if (strpos($fields, '[') === false && strpos($fields, '(') === false) {
+                $fields = preg_replace('#\w+#', '[\\0]', $fields);
+                $fields = str_ireplace('[as]', 'AS', $fields);
+                $fields = preg_replace('#\s+#', ' ', $fields);
             }
 
-            $this->_columns = $columns;
+            $this->_fields = $fields;
         } else {
             $r = '';
-            foreach ($columns as $k => $v) {
+            foreach ($fields as $k => $v) {
                 if (strpos($v, '[') === false && strpos($v, '(') === false) {
                     if (is_int($k)) {
                         $r .= preg_replace('#\w+#', '[\\0]', $v) . ', ';
@@ -206,7 +206,7 @@ class Query extends Component implements QueryInterface
                     }
                 }
             }
-            $this->_columns = substr($r, 0, -2);
+            $this->_fields = substr($r, 0, -2);
         }
 
         return $this;
@@ -647,12 +647,12 @@ class Query extends Component implements QueryInterface
         if (is_array($expr)) {
             $conditions = [];
             /** @noinspection ForeachSourceInspection */
-            foreach ($expr as $column) {
-                $key = str_replace('.', '_', $column);
-                if (strpos($column, '.') !== false) {
-                    $conditions[] = '[' . str_replace('.', '].[', $column) . ']' . ' LIKE :' . $key;
+            foreach ($expr as $field) {
+                $key = str_replace('.', '_', $field);
+                if (strpos($field, '.') !== false) {
+                    $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' LIKE :' . $key;
                 } else {
-                    $conditions[] = '[' . $column . '] LIKE :' . $key;
+                    $conditions[] = '[' . $field . '] LIKE :' . $key;
                 }
 
                 $this->_bind[$key] = $like;
@@ -776,9 +776,9 @@ class Query extends Component implements QueryInterface
             foreach ($orderBy as $k => $v) {
                 if (is_int($k)) {
                     $type = 'ASC';
-                    $column = $v;
+                    $field = $v;
                 } else {
-                    $column = $k;
+                    $field = $k;
                     if (is_int($v)) {
                         $type = $v === SORT_ASC ? 'ASC' : 'DESC';
                     } else {
@@ -786,11 +786,11 @@ class Query extends Component implements QueryInterface
                     }
                 }
 
-                if (strpos($column, '[') === false && strpos($column, '(') === false) {
-                    if (strpos($column, '.') !== false) {
-                        $r .= '[' . str_replace('.', '].[', $column) . '] ' . $type . ', ';
+                if (strpos($field, '[') === false && strpos($field, '(') === false) {
+                    if (strpos($field, '.') !== false) {
+                        $r .= '[' . str_replace('.', '].[', $field) . '] ' . $type . ', ';
                     } else {
-                        $r .= '[' . $column . '] ' . $type . ', ';
+                        $r .= '[' . $field . '] ' . $type . ', ';
                     }
                 }
                 $this->_order = substr($r, 0, -2);
@@ -1028,21 +1028,21 @@ class Query extends Component implements QueryInterface
             $params['distinct'] = true;
         }
 
-        if ($this->_columns !== null) {
-            $columns = $this->_columns;
+        if ($this->_fields !== null) {
+            $fields = $this->_fields;
         } else {
             if (count($this->_tables) === 1) {
-                $columns = '*';
+                $fields = '*';
             } else {
-                $columns = '';
-                $selectedColumns = [];
+                $fields = '';
+                $selectedFields = [];
                 foreach ($this->_tables as $alias => $table) {
-                    $selectedColumns[] = '[' . (is_int($alias) ? $table : $alias) . '].*';
+                    $selectedFields[] = '[' . (is_int($alias) ? $table : $alias) . '].*';
                 }
-                $columns .= implode(', ', $selectedColumns);
+                $fields .= implode(', ', $selectedFields);
             }
         }
-        $params['columns'] = $columns;
+        $params['columns'] = $fields;
 
         $selectedTables = [];
 
@@ -1277,23 +1277,23 @@ class Query extends Component implements QueryInterface
      */
     public function aggregate($expr)
     {
-        $columns = '';
+        $fields = '';
 
         foreach ($expr as $k => $v) {
             if (is_int($k)) {
-                $columns .= '[' . $v . '], ';
+                $fields .= '[' . $v . '], ';
             } else {
                 if (preg_match('#^(\w+)\(([\w]+)\)$#', $v, $matches) === 1) {
-                    $columns .= strtoupper($matches[1]) . '([' . $matches[2] . '])';
+                    $fields .= strtoupper($matches[1]) . '([' . $matches[2] . '])';
                 } else {
-                    $columns .= $v;
+                    $fields .= $v;
                 }
 
-                $columns .= ' AS [' . $k . '], ';
+                $fields .= ' AS [' . $k . '], ';
             }
         }
 
-        $this->_columns = substr($columns, 0, -2);
+        $this->_fields = substr($fields, 0, -2);
 
         return $this->execute();
     }
@@ -1308,7 +1308,7 @@ class Query extends Component implements QueryInterface
             throw new QueryException('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
         }
 
-        $this->_columns = 'COUNT(*) as [row_count]';
+        $this->_fields = 'COUNT(*) as [row_count]';
         $this->_limit = null;
         $this->_offset = null;
         $this->_order = null;
@@ -1394,7 +1394,7 @@ class Query extends Component implements QueryInterface
      */
     public function exists()
     {
-        $this->_columns = '1 as [stub]';
+        $this->_fields = '1 as [stub]';
         $this->_limit = 1;
         $this->_offset = 0;
 
@@ -1404,11 +1404,11 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * @param string $column
+     * @param string $field
      *
      * @return int
      */
-    public function count($column = '*')
+    public function count($field = '*')
     {
         return $this->aggregate(['count' => 'COUNT(*)'])[0]['count'];
     }
