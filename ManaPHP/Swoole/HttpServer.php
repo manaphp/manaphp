@@ -62,6 +62,8 @@ class HttpServer extends \ManaPHP\Application
      * @param string $method
      *
      * @return \ManaPHP\Http\ResponseInterface
+     * @throws \ManaPHP\Mvc\Action\NotFoundException
+     * @throws \ManaPHP\Mvc\Action\Exception
      * @throws \ManaPHP\Mvc\Application\Exception
      * @throws \ManaPHP\Event\Exception
      * @throws \ManaPHP\Mvc\Application\NotFoundModuleException

@@ -56,6 +56,8 @@ class Application extends \ManaPHP\Application
      * @param string $method
      *
      * @return \ManaPHP\Http\ResponseInterface
+     * @throws \ManaPHP\Mvc\Action\NotFoundException
+     * @throws \ManaPHP\Mvc\Action\Exception
      * @throws \ManaPHP\Mvc\Application\Exception
      * @throws \ManaPHP\Event\Exception
      * @throws \ManaPHP\Mvc\Application\NotFoundModuleException
@@ -99,8 +101,7 @@ class Application extends \ManaPHP\Application
         $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
         if ($ret !== false) {
             $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue === null || is_string($actionReturnValue)) {
-                $this->view->setContent($actionReturnValue);
+            if ($actionReturnValue === null) {
                 $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
                 $this->response->setContent($this->view->getContent());
             }
