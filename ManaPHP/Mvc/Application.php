@@ -20,36 +20,6 @@ use ManaPHP\Mvc\Router\NotFoundRouteException;
 class Application extends \ManaPHP\Application
 {
     /**
-     * @var \ManaPHP\Mvc\ModuleInterface
-     */
-    protected $_moduleObject;
-
-    public function beforeStartModule()
-    {
-        $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
-        if (isset($this->csrfToken) && !in_array($this->request->getMethod(), $ignoreMethods, true)
-        ) {
-            $this->csrfToken->verify();
-        }
-    }
-
-    /**
-     * @return bool
-     * @throws \ManaPHP\Security\CsrfToken\Exception
-     * @throws \ManaPHP\Http\Request\Exception
-     * @throws \ManaPHP\Security\Crypt\Exception
-     */
-    public function onDispatcherBeforeExecuteRoute()
-    {
-        $r = $this->_moduleObject->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-        if ($r === false || is_object($r)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Handles a MVC request
      *
      * @param string $uri
@@ -87,25 +57,38 @@ class Application extends \ManaPHP\Application
 
         $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
 
-        $this->beforeStartModule();
-
-        $this->attachEvent('dispatcher:beforeExecuteRoute');
-
         $this->fireEvent('application:beforeStartModule');
 
-        $this->_moduleObject = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module', [$moduleName]);
-        $this->_moduleObject->registerServices($this->_dependencyInjector);
+        $moduleInstance = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module', [$moduleName]);
+        $moduleInstance->registerServices($this->_dependencyInjector);
 
         $this->fireEvent('application:afterStartModule');
 
-        $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-        if ($ret !== false) {
-            $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue === null) {
-                $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-                $this->response->setContent($this->view->getContent());
+        do {
+            $r = $moduleInstance->antiCsrf();
+            if ($r !== null && $r !== true) {
+                break;
             }
-        }
+
+            $r = $moduleInstance->authenticate();
+            if ($r !== null && $r !== true) {
+                break;
+            }
+
+            $r = $moduleInstance->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+            if ($r !== null && $r !== true) {
+                break;
+            }
+
+            $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
+            if ($ret !== false) {
+                $actionReturnValue = $this->dispatcher->getReturnedValue();
+                if ($actionReturnValue === null) {
+                    $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+                    $this->response->setContent($this->view->getContent());
+                }
+            }
+        } while (false);
 
         return $this->response;
     }

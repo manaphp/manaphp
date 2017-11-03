@@ -33,6 +33,23 @@ class Module extends Component implements ModuleInterface
 
     }
 
+    /**
+     * @return void
+     */
+    public function antiCsrf()
+    {
+        $ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
+        if (isset($this->csrfToken) && !in_array($this->request->getMethod(), $ignoreMethods, true)
+        ) {
+            $this->csrfToken->verify();
+        }
+    }
+
+    public function authenticate()
+    {
+
+    }
+
     public function authorize($controller, $action)
     {
         //return $this->response->redirect('http://www.baidu.com/');

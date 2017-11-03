@@ -28,6 +28,16 @@ interface ModuleInterface
     public function registerServices($dependencyInjector);
 
     /**
+     * @return void
+     */
+    public function antiCsrf();
+
+    /**
+     * @return void
+     */
+    public function authenticate();
+
+    /**
      * @param string $controller
      * @param string $action
      *
