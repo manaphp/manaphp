@@ -1,21 +1,14 @@
 <?php
 namespace ManaPHP\Swoole;
 
-use ManaPHP\Mvc\Router\NotFoundRouteException;
-
 /**
  * Class ManaPHP\Mvc\Application
  *
  * @package application
  *
- * @property \ManaPHP\Mvc\ViewInterface           $view
- * @property \ManaPHP\Mvc\Dispatcher              $dispatcher
- * @property \ManaPHP\Mvc\RouterInterface         $router
- * @property \ManaPHP\Http\RequestInterface       $request
- * @property \ManaPHP\Http\ResponseInterface      $response
- * @property \ManaPHP\Http\SessionInterface       $session
- * @property \ManaPHP\Security\CsrfTokenInterface $csrfToken
- * @property \ManaPHP\Http\CookiesInterface       $cookies
+ * @property \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\Http\CookiesInterface  $cookies
+ * @property \ManaPHP\Mvc\HandlerInterface   $mvcHandler
  */
 class HttpServer extends \ManaPHP\Application
 {
@@ -28,102 +21,6 @@ class HttpServer extends \ManaPHP\Application
      * @var string
      */
     protected $_listen = 'http://0.0.0.0:9501';
-
-    /**
-     * @var \ManaPHP\Mvc\ModuleInterface[]
-     */
-    protected $_moduleInstances = [];
-
-    /**
-     * @var string
-     */
-    protected $_lastModule = null;
-
-    /**
-     * @return bool
-     * @throws \ManaPHP\Security\CsrfToken\Exception
-     * @throws \ManaPHP\Http\Request\Exception
-     * @throws \ManaPHP\Security\Crypt\Exception
-     */
-    public function onDispatcherBeforeExecuteRoute()
-    {
-        $r = $this->_moduleInstances[$this->_lastModule]->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-        if ($r === false || is_object($r)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Handles a MVC request
-     *
-     * @param string $uri
-     * @param string $method
-     *
-     * @return \ManaPHP\Http\ResponseInterface
-     * @throws \ManaPHP\Mvc\Action\NotFoundException
-     * @throws \ManaPHP\Mvc\Action\Exception
-     * @throws \ManaPHP\Mvc\Application\Exception
-     * @throws \ManaPHP\Event\Exception
-     * @throws \ManaPHP\Mvc\Application\NotFoundModuleException
-     * @throws \ManaPHP\Mvc\Dispatcher\Exception
-     * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
-     * @throws \ManaPHP\Mvc\Dispatcher\NotFoundActionException
-     * @throws \ManaPHP\Mvc\View\Exception
-     * @throws \ManaPHP\Renderer\Exception
-     * @throws \ManaPHP\Alias\Exception
-     * @throws \ManaPHP\Mvc\Router\Exception
-     * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
-     */
-    public function handle($uri = null, $method = null)
-    {
-        for ($i = ob_get_level(); $i > 0; $i--) {
-            ob_end_clean();
-        }
-
-        ob_start();
-        ob_implicit_flush(false);
-
-        $this->debugger->start();
-
-        if (!$this->router->handle($uri, $method)) {
-            throw new NotFoundRouteException('router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, ['uri' => $this->router->getRewriteUri($uri)]);
-        }
-
-        $moduleName = $this->router->getModuleName();
-        $controllerName = $this->router->getControllerName();
-        $actionName = $this->router->getActionName();
-        $params = $this->router->getParams();
-
-        if ($this->_lastModule !== $moduleName) {
-            $this->alias->set('@module', "@app/$moduleName");
-            $this->alias->set('@ns.module', '@ns.app\\' . $moduleName);
-            $this->alias->set('@views', '@module/Views');
-
-            if (!isset($this->_moduleInstances[$moduleName])) {
-                $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
-
-                $this->attachEvent('dispatcher:beforeExecuteRoute');
-
-                $this->_moduleInstances[$moduleName] = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module');
-                $this->_moduleInstances[$moduleName]->registerServices($this->_dependencyInjector);
-            }
-
-            $this->_lastModule = $moduleName;
-        }
-        $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-        $malformed_message = ob_get_clean();
-        if ($ret !== false) {
-            $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue === null) {
-                $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-                $this->response->setContent($malformed_message . $this->view->getContent());
-            }
-        }
-
-        return $this->response;
-    }
 
     /**
      * @param \swoole_http_request $request
@@ -163,6 +60,16 @@ class HttpServer extends \ManaPHP\Application
         $_FILES = $request->files ?: [];
     }
 
+    protected function _beforeRequest()
+    {
+	
+    }
+
+    protected function _afterRequest()
+    {
+
+    }
+
     /**
      * @param \swoole_http_request  $request
      * @param \swoole_http_response $response
@@ -170,9 +77,10 @@ class HttpServer extends \ManaPHP\Application
     public function onRequest($request, $response)
     {
         $this->_prepareGlobals($request);
-        xdebug_start_trace('/home/mark/manaphp/data/traces/' . date('Ymd_His_') . mt_rand(1000, 9999) . '.trace');
+        $this->_beforeRequest();
+
         if (1) {
-            $this->handle();
+            $this->mvcHandler->handle();
             $content = $this->response->getContent();
             //      $this->debugger->save();
         } else {
@@ -190,10 +98,9 @@ class HttpServer extends \ManaPHP\Application
                 $cookie['httpOnly']);
         }
         $this->fireEvent('cookies:afterSend');
-
-        $this->_dependencyInjector->reConstruct();
-        xdebug_stop_trace();
         $response->end($content);
+        $this->_dependencyInjector->reConstruct();
+        $this->_afterRequest();
     }
 
     /**

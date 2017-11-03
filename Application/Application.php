@@ -4,6 +4,11 @@ namespace Application;
 use ManaPHP\Mongodb;
 use ManaPHP\Mvc\NotFoundException;
 
+/**
+ * @property \ManaPHP\Http\RequestInterface  request
+ * @property \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\Mvc\HandlerInterface   $mvcHandler
+ */
 class Application extends \ManaPHP\Mvc\Application
 {
     /**
@@ -49,11 +54,10 @@ class Application extends \ManaPHP\Mvc\Application
     {
         $this->registerServices();
 
-        $this->_dependencyInjector->setShared('mongodb',new Mongodb('mongodb://127.0.0.1/manaphp_unit_test'));
         $this->debugger->start();
 
         try {
-            $this->handle();
+            $this->mvcHandler->handle();
         } catch (NotFoundException $e) {
             $this->notFoundException($e);
         } catch (\ManaPHP\Security\Captcha\Exception $e) {

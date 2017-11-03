@@ -3,6 +3,7 @@
 namespace Application;
 
 use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Mongodb;
 use ManaPHP\Redis;
 
 class Configure extends \ManaPHP\Configure
@@ -34,6 +35,7 @@ class Configure extends \ManaPHP\Configure
         //https://raw.githubusercontent.com/manaphp/download/master/manaphp_unit_test_db.sql
         $this->components['db'] = ['class' => Mysql::class, 'mysql://root@localhost/manaphp_unit_test?charset=utf8'];
         $this->components['redis'] = ['class' => Redis::class, 'redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth='];
+        $this->components['mongodb'] = ['class' => Mongodb::class, 'mongodb://127.0.0.1/manaphp_unit_test'];
 
         $this->modules = ['Home' => '/', 'Admin' => '/admin', 'Api' => '/api'];
     }

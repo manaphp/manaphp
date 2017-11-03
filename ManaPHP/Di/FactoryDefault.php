@@ -22,6 +22,7 @@ class FactoryDefault extends Di
             'eventsManager' => 'ManaPHP\Event\Manager',
             'alias' => 'ManaPHP\Alias',
             'configure' => 'ManaPHP\Configure',
+            'mvcHandler' => 'ManaPHP\Mvc\Handler',
             'router' => 'ManaPHP\Mvc\Router',
             'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
             'actionInvoker' => 'ManaPHP\Mvc\Action\Invoker',
