@@ -40,7 +40,7 @@ class FrameworkController extends Controller
                 continue;
             }
 
-            $file = '@manaphp/' . str_replace('\\', '/', substr($c, strpos($c, '\\'))) . '.php';
+            $file = '@manaphp/' . strtr(substr($c, strpos($c, '\\')), '\\', '/') . '.php';
 
             if (!$this->filesystem->fileExists($file)) {
                 return $this->console->error('`:file` is not missing for `:class` class', ['file' => $file, 'class' => $c]);
@@ -100,7 +100,7 @@ class FrameworkController extends Controller
                 continue;
             }
 
-            $file = str_replace('\\', '/', $dir) . '/' . $file;
+            $file = strtr($dir, '\\', '/') . '/' . $file;
             if (is_dir($file)) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $files = array_merge($files, $this->_getSourceFiles($file));

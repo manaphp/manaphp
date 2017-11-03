@@ -64,7 +64,7 @@ class Renderer extends Component implements RendererInterface
             $file = $this->alias->resolve($template . $extension);
             if (is_file($file)) {
                 if (PHP_EOL !== "\n") {
-                    $realPath = str_replace('\\', '/', realpath($file));
+                    $realPath = strtr(realpath($file), '\\', '/');
                     if ($file !== $realPath) {
                         trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
                     }
@@ -149,7 +149,7 @@ class Renderer extends Component implements RendererInterface
             $file = $this->alias->resolve($template . $extension);
             if (is_file($file)) {
                 if (PHP_EOL !== "\n") {
-                    $realPath = str_replace('\\', '/', realpath($file));
+                    $realPath = strtr(realpath($file), '\\', '/');
                     if ($file !== $realPath) {
                         throw new RendererException('`:real_file` file name does case mismatch for `:wanted_file`', ['real_file' => $realPath, 'wanted_file' => $file]);
                     }

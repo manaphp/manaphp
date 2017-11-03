@@ -46,7 +46,7 @@ class HttpServer extends \ManaPHP\Application
         $_SERVER += $server;
 
         foreach ($request->header ?: [] as $k => $v) {
-            $_SERVER['HTTP_' . strtoupper(str_replace('-', '_', $k))] = $v;
+            $_SERVER['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
         }
 
         $_SERVER['WORKER_ID'] = $this->_swoole->worker_pid;

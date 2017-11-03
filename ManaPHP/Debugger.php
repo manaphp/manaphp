@@ -238,7 +238,7 @@ class Debugger extends Component implements DebuggerInterface
         $this->_dump[] = [
             'name' => $name,
             'value' => $value,
-            'file' => str_replace('\\', '/', $caller['file']),
+            'file' => strtr($caller['file'], '\\', '/'),
             'line' => $caller['line'],
             'base_name' => basename($caller['file'])
         ];

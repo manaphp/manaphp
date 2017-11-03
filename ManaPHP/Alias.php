@@ -107,13 +107,13 @@ class Alias extends Component implements AliasInterface
     public function resolve($path)
     {
         if ($path[0] !== '@') {
-            return str_replace('\\', '/', $path);
+            return strtr($path, '\\', '/');
         }
 
         if (strpos($path, '@ns.') === 0) {
             $parts = explode('\\', $path, 2);
         } else {
-            $path = str_replace('\\', '/', $path);
+            $path = strtr($path, '\\', '/');
             $parts = explode('/', $path, 2);
         }
 

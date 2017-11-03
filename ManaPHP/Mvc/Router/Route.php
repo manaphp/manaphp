@@ -140,7 +140,7 @@ class Route implements RouteInterface
         }
 
         if (isset($routePaths['controller']) && strpos($routePaths['controller'], '\\') !== false) {
-            $routePaths['controller'] = basename(str_replace('\\', '/', $routePaths['controller']), 'Controller');
+            $routePaths['controller'] = basename(strtr($routePaths['controller'], '\\', '/'), 'Controller');
         }
 
         return $routePaths;

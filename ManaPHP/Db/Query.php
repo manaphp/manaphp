@@ -369,7 +369,7 @@ class Query extends Component implements QueryInterface
                 $operator = '=';
             }
 
-            $bind_key = str_replace('.', '_', $field);
+            $bind_key = strtr($field, '.', '_');
             $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
             if (in_array($operator, ['=', '>', '>=', '<', '<=', '!=', '<>'], true)) {
                 $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
@@ -410,7 +410,7 @@ class Query extends Component implements QueryInterface
         if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
 
             if (strpos($expr, '.') !== false) {
-                $id = str_replace('.', '_', $expr);
+                $id = strtr($expr, '.', '_');
                 $expr = '[' . str_replace('.', '].[', $expr) . ']';
 
             } else {
@@ -648,7 +648,7 @@ class Query extends Component implements QueryInterface
             $conditions = [];
             /** @noinspection ForeachSourceInspection */
             foreach ($expr as $field) {
-                $key = str_replace('.', '_', $field);
+                $key = strtr($field, '.', '_');
                 if (strpos($field, '.') !== false) {
                     $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' LIKE :' . $key;
                 } else {
@@ -660,7 +660,7 @@ class Query extends Component implements QueryInterface
 
             $this->where(implode(' OR ', $conditions));
         } else {
-            $key = str_replace('.', '_', $expr);
+            $key = strtr($expr, '.', '_');
 
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
                 if (strpos($expr, '.') !== false) {

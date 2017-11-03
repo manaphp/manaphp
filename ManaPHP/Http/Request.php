@@ -368,7 +368,7 @@ class Request extends Component implements RequestInterface
             /** @noinspection ForeachSourceInspection */
             foreach ($_SERVER as $k => $v) {
                 if (strpos($k, 'HTTP_') === 0) {
-                    $this->_headers[str_replace('_', '-', substr($k, 5))] = $v;
+                    $this->_headers[strtr(substr($k, 5), '_', '-')] = $v;
                 }
             }
         }

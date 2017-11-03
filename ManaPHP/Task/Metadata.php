@@ -82,7 +82,7 @@ class Metadata extends Component implements MetadataInterface
     protected function _formatKey($task, $field)
     {
         if (!isset($this->_taskIds[$task])) {
-            if (preg_match('#^[^/]*/([^/]*)/Tasks/([a-z\d]*)Task$#i', str_replace('\\', '/', $task), $match) === 1) {
+            if (preg_match('#^[^/]*/([^/]*)/Tasks/([a-z\d]*)Task$#i', strtr($task, '\\', '/'), $match) === 1) {
                 $this->_taskIds[$task] = $match[1] . ':' . $match[2];
             } else {
                 $this->_taskIds[$task] = $task;

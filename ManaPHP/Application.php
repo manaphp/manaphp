@@ -58,10 +58,10 @@ abstract class Application extends Component implements ApplicationInterface
      */
     public function getAppPath()
     {
-        $className = str_replace('\\', '/', get_called_class());
+        $className = strtr(get_called_class(), '\\', '/');
         foreach (get_included_files() as $file) {
             if (DIRECTORY_SEPARATOR === '\\') {
-                $file = str_replace('\\', '/', $file);
+                $file = strtr($file, '\\', '/');
             }
 
             if (strpos($file, $className . '.php') !== false) {

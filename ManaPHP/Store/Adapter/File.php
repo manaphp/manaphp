@@ -62,7 +62,7 @@ class File extends Component implements AdapterInterface
     protected function _getFileName($key)
     {
         if ($key[0] === '!') {
-            return $this->alias->resolve($this->_dir . '/' . str_replace(':', '/', substr($key, 1)) . $this->_extension);
+            return $this->alias->resolve($this->_dir . '/' . strtr(substr($key, 1), ':', '/') . $this->_extension);
         }
 
         if (Text::contains($key, '/')) {
@@ -78,7 +78,7 @@ class File extends Component implements AdapterInterface
             $file = $this->_dir . '/' . $key;
         }
 
-        return $this->alias->resolve(str_replace(':', '/', $file . $this->_extension));
+        return $this->alias->resolve(strtr($file . $this->_extension), ':', '/');
     }
 
     /**

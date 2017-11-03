@@ -61,7 +61,7 @@ class File extends Component implements AdapterInterface
      */
     protected function _getFileName($key)
     {
-        $key = str_replace(':', '/', $key);
+        $key = strtr($key, ':', '/');
         $pos = strrpos($key, '/');
 
         if ($pos !== false && strlen($key) - $pos - 1 === 32) {

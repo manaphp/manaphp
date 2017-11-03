@@ -367,7 +367,7 @@ class File extends Component implements FilesystemInterface
 
         if (DIRECTORY_SEPARATOR === '\\') {
             foreach ($r as $k => $v) {
-                $r[$k] = str_replace('\\', '/', $v);
+                $r[$k] = strtr($v, '\\', '/');
             }
         }
 

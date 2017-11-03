@@ -132,7 +132,7 @@ class Logger extends Component implements LoggerInterface
         if (isset($traces[1])) {
             $trace = $traces[1];
             if (isset($trace['file'], $trace['line'])) {
-                $location = str_replace($this->alias->get('@app'), '', str_replace('\\', '/', $trace['file'])) . ':' . $trace['line'];
+                $location = str_replace($this->alias->get('@app'), '', strtr($trace['file'], '\\', '/')) . ':' . $trace['line'];
             }
         }
 

@@ -24,8 +24,7 @@ class Loader
      */
     public function __construct()
     {
-        $this->_namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? str_replace('\\', '/', __DIR__) : __DIR__;
-
+        $this->_namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? strtr(__DIR__, '\\', '/') : __DIR__;
         $al_function = [$this, '_autoload'];
         spl_autoload_register($al_function);
     }
@@ -51,7 +50,7 @@ class Loader
         foreach ($namespaces as $namespace => $path) {
             $path = rtrim($path, '\\/');
             if (DIRECTORY_SEPARATOR === '\\') {
-                $namespaces[$namespace] = str_replace('\\', '/', $path);
+                $namespaces[$namespace] = strtr($path, '\\', '/');
             }
         }
 
@@ -80,7 +79,7 @@ class Loader
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             foreach ($classes as $key => $path) {
-                $classes[$key] = str_replace('\\', '/', $path);
+                $classes[$key] = strtr($path, '\\', '/');
             }
         }
 
@@ -99,7 +98,7 @@ class Loader
     protected function _requireFile($file)
     {
         if (PHP_EOL !== "\n" && strpos($file, 'phar://') !== 0) {
-            $realPath = str_replace('\\', '/', realpath($file));
+            $realPath = strtr(realpath($file), '\\', '/');
             if ($realPath !== $file) {
                 trigger_error("File name ($realPath) case mismatch for .$file", E_USER_ERROR);
             }
@@ -131,7 +130,7 @@ class Loader
                 continue;
             }
 
-            $file = $path . str_replace('\\', '/', substr($className, strlen($namespace))) . '.php';
+            $file = $path . strtr(substr($className, strlen($namespace)), '\\', '/') . '.php';
             if (is_file($file)) {
                 return $this->_requireFile($file);
             }

@@ -32,7 +32,7 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
     public function allow($roleId, $controller, $actions = '*')
     {
         if (strpos($controller, '\\') !== false) {
-            $controller = basename(str_replace('\\', '/', $controller), 'Controller');
+            $controller = basename(strtr($controller, '\\', '/'), 'Controller');
         } else {
             $controller = Text::camelize($controller);
         }

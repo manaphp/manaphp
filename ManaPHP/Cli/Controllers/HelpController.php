@@ -22,7 +22,7 @@ class HelpController extends Controller
 
         foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
             if (preg_match('#/(\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
-                $controllerClassName = 'ManaPHP\\' . str_replace('/', '\\', $matches[1]);
+                $controllerClassName = 'ManaPHP\\' . strtr($matches[1], '/', '\\');
                 if ($controllerClassName === 'ManaPHP\Cli\Controllers\BashCompletionController') {
                     continue;
                 }
@@ -78,7 +78,7 @@ class HelpController extends Controller
      */
     protected function _getCommands($controllerClassName)
     {
-        $controller = Text::underscore(basename(str_replace('\\', '/', $controllerClassName), 'Controller'));
+        $controller = Text::underscore(basename(strtr($controllerClassName, '\\', '/'), 'Controller'));
 
         $commands = [];
         $rc = new \ReflectionClass($controllerClassName);

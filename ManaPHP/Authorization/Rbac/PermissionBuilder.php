@@ -24,7 +24,7 @@ class PermissionBuilder extends Component
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $rc = new \ReflectionClass($controller);
 
-        if (preg_match('#^[^/]*/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $controller), $match) !== 1) {
+        if (preg_match('#^[^/]*/([^/]*)/Controllers/(.*)Controller$#', strtr($controller, '\\', '/'), $match) !== 1) {
             return [];
         }
         $moduleName = $match[1];
@@ -79,7 +79,7 @@ class PermissionBuilder extends Component
 
         foreach ($this->filesystem->glob('@app/' . $module . '/Controllers/*.php') as $file) {
             $file = str_replace(dirname($app) . '/', '', $file);
-            $controller = str_replace('/', '\\', pathinfo($file, PATHINFO_DIRNAME) . '\\' . basename($file, '.php'));
+            $controller = strtr(pathinfo($file, PATHINFO_DIRNAME) . '\\' . basename($file, '.php'), '/', '\\');
             /** @noinspection SlowArrayOperationsInLoopInspection */
             $permissions = array_merge($permissions, $this->getControllerPermissions($controller));
         }
