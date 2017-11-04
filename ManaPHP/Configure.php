@@ -82,13 +82,8 @@ class Configure extends Component implements ConfigureInterface
                 if (strpos($k, ':') !== false) {
                     list($kName, $kEnv) = explode(':', $k);
 
-                    if ($kEnv === $env) {
-                        if (isset($data[$kName])) {
-                            /** @noinspection SlowArrayOperationsInLoopInspection */
-                            $data[$kName] = array_merge($data[$kName], $v);
-                        } else {
-                            $data[$kName] = $v;
-                        }
+                    if (in_array($env, explode(',', $kEnv), true)) {
+                        $data[$kName] = $v;
                     }
 
                     unset($data[$k]);

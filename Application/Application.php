@@ -52,7 +52,7 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
-        $this->configure->load('@app/config.php');
+        $this->configure->load('@app/config.php', 'dev');
 		
         $this->registerServices();
 
