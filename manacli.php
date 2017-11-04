@@ -9,7 +9,7 @@ foreach ([__DIR__, getcwd()] as $dir) {
     if (is_dir($dir . '/Application')) {
         $appDir = $dir . '/Application';
         break;
-    } elseif (is_file($dir . '/Configure.php') || is_file($dir . '/Cli.php')) {
+    } elseif (is_file($dir . '/Cli.php')) {
         $appDir = $dir;
         break;
     }
