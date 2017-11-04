@@ -1,43 +1,17 @@
 <?php
 namespace Application;
 
-use ManaPHP\Mongodb;
-use ManaPHP\Mvc\NotFoundException;
-
 /**
  * @property \ManaPHP\Http\RequestInterface  request
  * @property \ManaPHP\Http\ResponseInterface $response
  * @property \ManaPHP\Mvc\HandlerInterface   $mvcHandler
+ * @property \ManaPHP\ErrorHandlerInterface  $errorHandler
  */
 class Application extends \ManaPHP\Mvc\Application
 {
     /**
-     * @param \ManaPHP\Mvc\NotFoundException $e
-     *
      * @return void
-     * @throws \ManaPHP\Mvc\NotFoundException
-     */
-    protected function notFoundException($e)
-    {
-//            if ($this->request->isAjax()) {
-//                return $this->response->setJsonContent([
-//                    'code' => -1,
-//                    'error' => $e->getMessage(),
-//                    'data' => [
-//                        'exception_trace' => explode('#', $e->getTraceAsString()),
-//                        'exception_class' => get_class($e)
-//                    ]
-//                ]);
-//            } else {
-//                $this->response->redirect('http://www.manaphp.com/?exception_message=' . $e->getMessage())->sendHeaders();
-//            }
-
-        /** @noinspection PhpUnreachableStatementInspection */
-        throw $e;
-    }
-
-    /**
-     * @return void
+     * @throws \ManaPHP\Configure\Exception
      * @throws \ManaPHP\Alias\Exception
      * @throws \ManaPHP\Mvc\Application\Exception
      * @throws \ManaPHP\Mvc\NotFoundException
@@ -53,16 +27,20 @@ class Application extends \ManaPHP\Mvc\Application
     public function main()
     {
         $this->configure->load('@app/config.php', 'dev');
-		
-        $this->registerServices();
 
-        try {
+        if ($this->configure->debug) {
+            $this->registerServices();
             $this->mvcHandler->handle();
-        } catch (NotFoundException $e) {
-            $this->notFoundException($e);
-        } catch (\ManaPHP\Security\Captcha\Exception $e) {
-            if ($this->request->isAjax()) {
-                $this->response->setJsonContent(['code' => __LINE__, 'error' => 'captcha is wrong.']);
+        } else {
+            try {
+                $this->registerServices();
+                $this->mvcHandler->handle();
+            } catch (\ManaPHP\Security\Captcha\Exception $e) {
+                if ($this->request->isAjax()) {
+                    $this->response->setJsonContent(['code' => __LINE__, 'error' => 'captcha is wrong.']);
+                }
+            } catch (\Exception $e) {
+                $this->errorHandler->handleException($e);
             }
         }
 
