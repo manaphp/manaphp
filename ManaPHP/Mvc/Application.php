@@ -11,6 +11,13 @@ namespace ManaPHP\Mvc;
  */
 class Application extends \ManaPHP\Application
 {
+    public function registerServices()
+    {
+        parent::registerServices();
+
+        $this->_dependencyInjector->router->mount($this->configure->modules);
+    }
+
     public function main()
     {
         $this->registerServices();

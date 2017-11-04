@@ -55,6 +55,11 @@ abstract class Application extends Component implements ApplicationInterface
             }
         }
         $this->alias->set('@web', $web);
+
+        $configureClass = $this->alias->resolveNS('@ns.app\\Configure');
+        if (class_exists($configureClass)) {
+            $this->_dependencyInjector->setShared('configure', $configureClass);
+        }
     }
 
     /**
@@ -118,21 +123,12 @@ abstract class Application extends Component implements ApplicationInterface
 
     public function registerServices()
     {
-        $configureClass = $this->alias->resolveNS('@ns.app\\Configure');
-        if (class_exists($configureClass)) {
-            $this->_dependencyInjector->setShared('configure', new $configureClass);
-        }
-
         $configure = $this->configure;
 
         date_default_timezone_set($configure->timezone);
 
         foreach ($configure->components as $component => $definition) {
             $this->_dependencyInjector->setShared($component, $definition);
-        }
-
-        if ($this instanceof \ManaPHP\Mvc\Application) {
-            $this->_dependencyInjector->router->mount($configure->modules);
         }
     }
 }
