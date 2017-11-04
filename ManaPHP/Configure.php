@@ -13,11 +13,6 @@ use ManaPHP\Configure\Exception as ConfigureException;
 class Configure extends Component implements ConfigureInterface
 {
     /**
-     * @var array
-     */
-    protected $_files = [];
-
-    /**
      * @var bool
      */
     public $debug = true;
@@ -26,7 +21,7 @@ class Configure extends Component implements ConfigureInterface
      * @var string
      */
     public $version = '1.0.0';
-    
+
     /**
      * @var string
      */
@@ -69,27 +64,25 @@ class Configure extends Component implements ConfigureInterface
 
     /**
      * @param string $file
-     * @param string $mode
+     * @param string $env
      *
      * @return static
      * @throws \ManaPHP\Configure\Exception
      */
-    public function load($file, $mode = null)
+    public function load($file, $env = null)
     {
-        $this->_files[$file] = true;
-
         /**
          * @var \ManaPHP\Configure\EngineInterface $loader
          */
         $loader = $this->_dependencyInjector->getShared('ManaPHP\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
         $data = $loader->load($this->_dependencyInjector->alias->resolve($file));
 
-        if ($mode !== null) {
+        if ($env !== null) {
             foreach ($data as $k => $v) {
                 if (strpos($k, ':') !== false) {
-                    list($kName, $kMode) = explode(':', $k);
+                    list($kName, $kEnv) = explode(':', $k);
 
-                    if ($kMode === $mode) {
+                    if ($kEnv === $env) {
                         if (isset($data[$kName])) {
                             /** @noinspection SlowArrayOperationsInLoopInspection */
                             $data[$kName] = array_merge($data[$kName], $v);
@@ -106,8 +99,8 @@ class Configure extends Component implements ConfigureInterface
         $properties = array_keys(get_object_vars($this));
 
         foreach ($data as $name => $value) {
-            if (!in_array($name, $properties, true)) {
-                throw new ConfigureException('xx');
+            if ($name[0] === '_' || !in_array($name, $properties, true)) {
+                throw new ConfigureException('`:item` item is not allowed: it must be a public property of `configure` component', ['item' => $name]);
             }
 
             $this->$name = $value;

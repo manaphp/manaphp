@@ -56,8 +56,6 @@ class Application extends \ManaPHP\Mvc\Application
 		
         $this->registerServices();
 
-        $this->debugger->start();
-
         try {
             $this->mvcHandler->handle();
         } catch (NotFoundException $e) {

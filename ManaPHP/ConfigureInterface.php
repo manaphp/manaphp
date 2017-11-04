@@ -13,9 +13,9 @@ interface ConfigureInterface
 {
     /**
      * @param string $file
-     * @param string $mode
+     * @param string $env
      *
      * @return static
      */
-    public function load($file, $mode = null);
+    public function load($file, $env = null);
 }
