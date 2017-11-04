@@ -53,12 +53,10 @@ class Alias extends Component implements AliasInterface
 
         if ($path === '') {
             $this->_aliases[$name] = $path;
+        } elseif ($path[0] !== '@') {
+            $this->_aliases[$name] = (strpos($name, '@ns.') === 0 || DIRECTORY_SEPARATOR === '/') ? $path : strtr($path, '\\', '/');
         } else {
-            if (strpos($name, '@ns.') === 0) {
-                $this->_aliases[$name] = $path[0] === '@' ? $this->resolve($path) : $path;
-            } else {
-                $this->_aliases[$name] = $this->resolve($path);
-            }
+            $this->_aliases[$name] = $this->resolve($path);
         }
 
         return $this->_aliases[$name];
@@ -107,7 +105,7 @@ class Alias extends Component implements AliasInterface
     public function resolve($path)
     {
         if ($path[0] !== '@') {
-            return strtr($path, '\\', '/');
+            return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
         }
 
         if (strpos($path, '@ns.') === 0) {
