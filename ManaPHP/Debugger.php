@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Utility\Text;
@@ -48,8 +49,22 @@ class Debugger extends Component implements DebuggerInterface
 
     protected $_events = [];
 
-    public function __construct()
+    /**
+     * Debugger constructor.
+     * @param string|array $options
+     */
+    public function __construct($options = [])
     {
+        if (is_string($options)) {
+            $options = ['file' => $options];
+        }
+
+        if (!isset($options['file'])) {
+            $options['file'] = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+        }
+
+        $this->_file = $options['file'];
+
         $handler = [$this, '_eventHandlerPeek'];
         $this->eventsManager->peekEvents($handler);
 
@@ -177,7 +192,7 @@ class Debugger extends Component implements DebuggerInterface
      */
     public function start()
     {
-        $this->_file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+
     }
 
     /**
