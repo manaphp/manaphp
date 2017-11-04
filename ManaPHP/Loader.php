@@ -25,8 +25,7 @@ class Loader
     public function __construct()
     {
         $this->_namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? strtr(__DIR__, '\\', '/') : __DIR__;
-        $al_function = [$this, '_autoload'];
-        spl_autoload_register($al_function);
+        spl_autoload_register([$this, '_autoload']);
     }
 
     /**
@@ -118,10 +117,19 @@ class Loader
     public function _autoload($className)
     {
         if (isset($this->_classes[$className])) {
-            if (!is_file($this->_classes[$className])) {
-                trigger_error(strtr('load `:class` class failed: `:file` is not exists.', [':class' => $className, 'file' => $this->_classes[$className]]), E_USER_ERROR);
+            $file = $this->_classes[$className];
+            if (!is_file($file)) {
+                trigger_error(strtr('load `:class` class failed: `:file` is not exists.', [':class' => $className, ':file' => $file]), E_USER_ERROR);
             }
-            return $this->_requireFile($this->_classes[$className]);
+
+            //either linux or phar://
+            if (PHP_EOL === "\n" || $file[0] === 'p') {
+                /** @noinspection PhpIncludeInspection */
+                require $file;
+                return true;
+            } else {
+                return $this->_requireFile($file);
+            }
         }
 
         /** @noinspection LoopWhichDoesNotLoopInspection */
@@ -132,7 +140,14 @@ class Loader
 
             $file = $path . strtr(substr($className, strlen($namespace)), '\\', '/') . '.php';
             if (is_file($file)) {
-                return $this->_requireFile($file);
+                //either linux or phar://
+                if (PHP_EOL === "\n" || $file[0] === 'p') {
+                    /** @noinspection PhpIncludeInspection */
+                    require $file;
+                    return true;
+                } else {
+                    return $this->_requireFile($file);
+                }
             }
         }
 
