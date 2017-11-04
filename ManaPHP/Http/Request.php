@@ -669,23 +669,11 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @param bool $withQuery
-     *
      * @return string
      */
-    public function getUrl($withQuery = false)
+    public function getUrl()
     {
         $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-        if ($withQuery) {
-            $get = $_GET;
-            unset($get['_url']);
-
-            $query = http_build_query($get);
-            if ($query) {
-                $url .= '?' . $query;
-            }
-        }
 
         return strip_tags($url);
     }

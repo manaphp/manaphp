@@ -291,11 +291,10 @@ interface RequestInterface
     /**
      * http://localhost:8080/test/test.jsp
      *
-     * @param bool $withQuery
      *
      * @return string
      */
-    public function getUrl($withQuery = false);
+    public function getUrl();
 
     /**
      *  /test/test.jsp
