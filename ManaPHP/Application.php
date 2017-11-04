@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Application\AbortException;
+use ManaPHP\Application\Exception as ApplicationException;
 use ManaPHP\Di\FactoryDefault;
 
 /**
@@ -26,6 +27,8 @@ abstract class Application extends Component implements ApplicationInterface
      *
      * @param \ManaPHP\Loader      $loader
      * @param \ManaPHP\DiInterface $dependencyInjector
+     *
+     * @throws \ManaPHP\Application\Exception
      */
     public function __construct($loader, $dependencyInjector = null)
     {
@@ -34,14 +37,15 @@ abstract class Application extends Component implements ApplicationInterface
         $this->_dependencyInjector->setShared('loader', $loader);
         $this->_dependencyInjector->setShared('application', $this);
 
-        $app_dir = $this->getAppPath();
-        $app_ns = basename($app_dir);
+        $app_path = $this->getAppPath();
+        $app_ns = basename($app_path);
+        $root_path = dirname($app_path);
 
-        $this->loader->registerNamespaces([$app_ns => $app_dir]);
-        $this->alias->set('@root', dirname($app_dir));
-        $this->alias->set('@data', '@root/data');
-        $this->alias->set('@app', $app_dir);
+        $this->loader->registerNamespaces([$app_ns => $app_path]);
+        $this->alias->set('@root', $root_path);
+        $this->alias->set('@app', $app_path);
         $this->alias->set('@ns.app', $app_ns);
+        $this->alias->set('@data', $root_path . '/data');
 
         $web = '';
         if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {
@@ -55,21 +59,20 @@ abstract class Application extends Component implements ApplicationInterface
 
     /**
      * @return string
+     * @throws \ManaPHP\Application\Exception
      */
     public function getAppPath()
     {
-        $className = strtr(get_called_class(), '\\', '/');
-        foreach (get_included_files() as $file) {
-            if (DIRECTORY_SEPARATOR === '\\') {
-                $file = strtr($file, '\\', '/');
-            }
-
-            if (strpos($file, $className . '.php') !== false) {
+        $className = get_called_class();
+        $included_files = get_included_files();
+        $tested_file = (DIRECTORY_SEPARATOR === '\\' ? $className : strtr($className, '\\', '/')) . '.php';
+        foreach ($included_files as $file) {
+            if (strpos($file, $tested_file) !== false) {
                 return dirname($file);
             }
         }
 
-        $dir = dirname(get_included_files()[0]);
+        $dir = dirname($included_files[0]);
         for ($i = 0; $i < 2; $i++) {
             if (is_dir($dir . '/Application')) {
                 return $dir . '/Application';
@@ -77,7 +80,7 @@ abstract class Application extends Component implements ApplicationInterface
             $dir = dirname($dir);
         }
 
-        return null;
+        throw new ApplicationException('infer appPath failed');
     }
 
     /**
@@ -128,7 +131,7 @@ abstract class Application extends Component implements ApplicationInterface
             $this->_dependencyInjector->setShared($component, $definition);
         }
 
-        if (!$this->alias->has('@cli')) {
+        if ($this instanceof \ManaPHP\Mvc\Application) {
             $this->_dependencyInjector->router->mount($configure->modules);
         }
     }
