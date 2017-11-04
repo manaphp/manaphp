@@ -66,8 +66,10 @@ class Handler extends Component implements HandlerInterface
         }
 
         if (!$this->_loadedModules[$moduleName]) {
+            $moduleServiceName = lcfirst($moduleName) . 'Module';
             $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
-            $moduleInstance = $this->_dependencyInjector->getShared(class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module', [$moduleName]);
+            $this->_dependencyInjector->setShared($moduleServiceName, class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module');
+            $moduleInstance = $this->_dependencyInjector->getShared($moduleServiceName, [$moduleName]);
             $moduleInstance->registerServices($this->_dependencyInjector);
             $this->_loadedModules[$moduleName] = $moduleInstance;
         } else {
