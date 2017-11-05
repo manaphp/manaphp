@@ -6,7 +6,9 @@ use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Model\Criteria;
 use PHPUnit\Framework\TestCase;
+use Tests\Models\Actor;
 use Tests\Models\City;
+use Tests\Models\Payment;
 
 class DbModelCriteriaTest extends TestCase
 {
@@ -150,5 +152,48 @@ class DbModelCriteriaTest extends TestCase
         $this->assertTrue(City::criteria()->exists());
         $this->assertTrue(City::criteria()->where('city_id', 1)->exists());
         $this->assertFalse(City::criteria()->where('city_id', 0)->exists());
+    }
+
+    public function test_count()
+    {
+        $this->assertTrue(is_int(Actor::criteria()->count()));
+
+        $this->assertEquals(200, Actor::criteria()->count());
+
+        $this->assertEquals(1, Actor::criteria()->where(['actor_id' => 1])->count());
+
+        $this->assertEquals(128, Actor::criteria()->count(' DISTINCT first_name'));
+    }
+
+    public function test_sum()
+    {
+        $sum = Payment::criteria()->sum('amount');
+        $this->assertEquals('string', gettype($sum));
+        $this->assertEquals(67417.0, round($sum, 0));
+
+        $sum = Payment::criteria()->where(['customer_id' => 1])->sum('amount');
+        $this->assertEquals('118.68', $sum);
+    }
+
+    public function test_max()
+    {
+        $max = Payment::criteria()->max('amount');
+        $this->assertEquals('string', gettype($max));
+        $this->assertEquals('11.99', $max);
+    }
+
+    public function test_min()
+    {
+        $min = Payment::criteria()->min('amount');
+        $this->assertEquals('string', gettype($min));
+        $this->assertEquals('0.00', $min);
+    }
+
+    public function test_avg()
+    {
+        $avg = Payment::criteria()->avg('amount');
+        $this->assertEquals('double', gettype($avg));
+
+        $this->assertEquals(4.20, round($avg, 2));
     }
 }

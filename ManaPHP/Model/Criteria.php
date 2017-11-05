@@ -102,13 +102,70 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     }
 
     /**
+     * @param string $function
+     * @param string $alias
+     * @param string $field
+     *
+     * @return mixed
+     */
+    protected function _groupResult($function, $alias, $field)
+    {
+        return $this->aggregate([$alias => "$function($field)"])[0][$alias];
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return int|float
+     */
+    public function sum($field)
+    {
+        return $this->_groupResult('SUM', 'summary', $field);
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return int|float
+     */
+    public function max($field)
+    {
+        return $this->_groupResult('MAX', 'maximum', $field);
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return int|float
+     */
+    public function min($field)
+    {
+        return $this->_groupResult('MIN', 'minimum', $field);
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return double
+     */
+    public function avg($field)
+    {
+        return (double)$this->_groupResult('AVG', 'average', $field);
+    }
+
+    /**
+     * @param string $field
+     *
      * @return int
      */
-    public function count()
+    public function count($field = null)
     {
-        $r = $this->aggregate(['count' => 'COUNT(*)']);
+        $r = $this->_groupResult('COUNT', 'row_count', $field ?: '*');
+        if (is_string($r)) {
+            $r = (int)$r;
+        }
 
-        return isset($r[0]) ? $r[0]['count'] : 0;
+        return $r;
     }
 
     public function jsonSerialize()

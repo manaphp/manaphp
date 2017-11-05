@@ -214,9 +214,40 @@ interface CriteriaInterface
     public function distinctField($field);
 
     /**
+     * @param string $field
+     *
      * @return int
      */
-    public function count();
+    public function count($field = null);
+
+    /**
+     *
+     * @param string $field
+     *
+     * @return int|float
+     */
+    public function sum($field);
+
+    /**
+     * @param string $field
+     *
+     * @return int|float
+     */
+    public function max($field);
+
+    /**
+     * @param string $field
+     *
+     * @return int|float
+     */
+    public function min($field);
+
+    /**
+     * @param string $field
+     *
+     * @return double
+     */
+    public function avg($field);
 
     /**
      * @param int $size
