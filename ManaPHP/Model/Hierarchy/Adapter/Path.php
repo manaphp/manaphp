@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Model\Hierarchy\Adapter;
 
+use ManaPHP\Model\CriteriaInterface;
 use ManaPHP\Model\Hierarchy\Exception as HierarchyException;
 use ManaPHP\Utility\Text;
 
@@ -9,7 +10,7 @@ use ManaPHP\Utility\Text;
  * Class ManaPHP\Hierarchy
  *
  * @package ManaPHP
- * @method static \ManaPHP\Model\CriteriaInterface criteria()
+ * @method static CriteriaInterface criteria()
  */
 trait Path
 {
@@ -35,16 +36,6 @@ trait Path
     public static function getHierarchyBase()
     {
         return 36;
-    }
-
-    /**
-     * @param string $code
-     *
-     * @return bool
-     */
-    public static function isHierarchyRoot($code)
-    {
-        return $code === '';
     }
 
     /**
@@ -158,7 +149,6 @@ trait Path
      * @param string $code
      *
      * @return string|false
-     * @throws \ManaPHP\Model\Hierarchy\Exception
      */
     public static function getHierarchyParent($code)
     {
@@ -217,7 +207,6 @@ trait Path
      * @param string $code
      *
      * @return array|false
-     * @throws \ManaPHP\Model\Hierarchy\Exception
      */
     public static function getHierarchySiblings($code)
     {
@@ -234,7 +223,6 @@ trait Path
      * @param string $code
      *
      * @return int|-1
-     * @throws \ManaPHP\Model\Hierarchy\Exception
      */
     public static function getHierarchyChildLength($code)
     {
@@ -263,11 +251,10 @@ trait Path
      * @param string $code
      *
      * @return bool
-     * @throws \ManaPHP\Model\Hierarchy\Exception
      */
-    public static function hierarchyHasChild($code)
+    public static function hierarchyExists($code)
     {
-        return static::criteria()->whereStartsWith(static::getHierarchyField(), $code, static::getHierarchyChildLength($code))->exists();
+        return static::criteria()->where(static::getHierarchyField(), $code)->exists();
     }
 
     /**
@@ -297,6 +284,7 @@ trait Path
 
     /**
      * @param string $code
+     *
      * @return string|false
      */
     public static function getHierarchyNextChild($code)
