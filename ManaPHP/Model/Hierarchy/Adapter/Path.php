@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Model\Hierarchy\Adapter;
 
 use ManaPHP\Model\Hierarchy\Exception as HierarchyException;
@@ -13,11 +14,11 @@ use ManaPHP\Utility\Text;
 trait Path
 {
     /**
-     * @return int
+     * @return string
      */
-    public static function getHierarchyBase()
+    public static function getHierarchyField()
     {
-        return 36;
+        return Text::underscore(basename(strtr(get_called_class(), '\\', '/'))) . '_code';
     }
 
     /**
@@ -29,39 +30,39 @@ trait Path
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public static function getHierarchyField()
+    public static function getHierarchyBase()
     {
-        return Text::underscore(basename(strtr(get_called_class(), '\\', '/'))) . '_code';
+        return 36;
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
      * @return bool
      */
-    public static function isHierarchyRoot($node)
+    public static function isHierarchyRoot($code)
     {
-        return $node === '';
+        return $code === '';
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
      * @return int
      */
-    public static function getHierarchyLevel($node)
+    public static function getHierarchyLevel($code)
     {
-        if ($node === '') {
+        if ($code === '') {
             return 0;
         }
 
         $current_length = 0;
-        $node_length = strlen($node);
+        $code_length = strlen($code);
         foreach (static::getHierarchyLengths() as $i => $length) {
             $current_length += $length;
-            if ($current_length === $node_length) {
+            if ($current_length === $code_length) {
                 return $i + 1;
             }
         }
@@ -105,10 +106,12 @@ trait Path
      */
     public static function getHierarchyCapacities()
     {
+        $base = static::getHierarchyBase();
+
         $capacities = [];
         foreach (static::getHierarchyLengths() as $length) {
             /** @noinspection PowerOperatorCanBeUsedInspection */
-            $capacities[] = pow(static::getHierarchyBase(), $length);
+            $capacities[] = pow($base, $length);
         }
         return $capacities;
     }
@@ -128,20 +131,20 @@ trait Path
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
      * @return int
      */
-    public static function getHierarchyParentLength($node)
+    public static function getHierarchyParentLength($code)
     {
-        if ($node === '') {
+        if ($code === '') {
             return -1;
         }
 
         $current_length = 0;
-        $node_length = strlen($node);
+        $code_length = strlen($code);
         foreach (static::getHierarchyLengths() as $i => $length) {
-            if ($current_length + $length === $node_length) {
+            if ($current_length + $length === $code_length) {
                 return $current_length;
             } else {
                 $current_length += $length;
@@ -152,31 +155,31 @@ trait Path
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
-     * @return bool|string
+     * @return string|false
      * @throws \ManaPHP\Model\Hierarchy\Exception
      */
-    public static function getHierarchyParent($node)
+    public static function getHierarchyParent($code)
     {
-        $parent_length = static::getHierarchyParentLength($node);
+        $parent_length = static::getHierarchyParentLength($code);
         if ($parent_length < 0) {
             return false;
         }
 
-        return substr($node, 0, $parent_length);
+        return substr($code, 0, $parent_length);
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
      * @return array|false
      */
-    public static function getHierarchyParents($node)
+    public static function getHierarchyParents($code)
     {
         $parents = [''];
 
-        $node_length = strlen($node);
+        $node_length = strlen($code);
         $current_length = 0;
 
         foreach (static::getHierarchyLengths() as $length) {
@@ -185,8 +188,8 @@ trait Path
             } elseif ($current_length + $length > $node_length) {
                 return false;
             } else {
-                $parents[] = substr($node, 0, $current_length + $length);
                 $current_length += $length;
+                $parents[] = substr($code, 0, $current_length);
             }
         }
 
@@ -194,56 +197,57 @@ trait Path
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
      * @return string[]
      * @throws \ManaPHP\Model\Hierarchy\Exception
      */
-    public static function getHierarchyChildren($node)
+    public static function getHierarchyChildren($code)
     {
-        $length = static::getHierarchyChildLength($node);
+        $length = static::getHierarchyChildLength($code);
         if ($length < -1) {
             throw new HierarchyException('xxxx');
         }
 
         $hierarchyField = static::getHierarchyField();
-        return static::criteria()->whereLike($hierarchyField, str_pad($node, $length))->distinctField($hierarchyField);
+        return static::criteria()->whereStartsWith($hierarchyField, $code, $length)->distinctField($hierarchyField);
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
      * @return array|false
      * @throws \ManaPHP\Model\Hierarchy\Exception
      */
-    public static function getHierarchySiblings($node)
+    public static function getHierarchySiblings($code)
     {
-        $parent = static::getHierarchyParent($node);
-        if ($parent === false) {
-            return false;
+        if ($code === '') {
+            return [];
         }
+
+        $parent = static::getHierarchyParent($code);
         $hierarchyField = static::getHierarchyField();
-        return static::criteria()->whereLike($hierarchyField, str_pad($parent, strlen($node)))->distinctField($hierarchyField);
+        return static::criteria()->whereStartsWith($hierarchyField, $parent, strlen($code))->distinctField($hierarchyField);
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
      * @return int|-1
      * @throws \ManaPHP\Model\Hierarchy\Exception
      */
-    public static function getHierarchyChildLength($node)
+    public static function getHierarchyChildLength($code)
     {
         $lengths = static::getHierarchyLengths();
-        if ($node === '') {
+        if ($code === '') {
             return $lengths[0];
         }
 
         $current_length = 0;
-        $node_length = strlen($node);
+        $code_length = strlen($code);
         foreach ($lengths as $i => $length) {
             $current_length += $length;
-            if ($current_length === $node_length) {
+            if ($current_length === $code_length) {
                 if ($i >= count($lengths) - 1) {
                     return -1;
                 } else {
@@ -256,14 +260,14 @@ trait Path
     }
 
     /**
-     * @param string $node
+     * @param string $code
      *
      * @return bool
      * @throws \ManaPHP\Model\Hierarchy\Exception
      */
-    public static function hierarchyHasChild($node)
+    public static function hierarchyHasChild($code)
     {
-        return static::criteria()->whereStartsWith(static::getHierarchyField(), $node, static::getHierarchyChildLength($node))->exists();
+        return static::criteria()->whereStartsWith(static::getHierarchyField(), $code, static::getHierarchyChildLength($code))->exists();
     }
 
     /**
@@ -271,7 +275,7 @@ trait Path
      *
      * @return string|false
      */
-    public static function calcHierarchyNextSibling($code)
+    protected static function _calcHierarchyNextChild($code)
     {
         $parent_length = static::getHierarchyParentLength($code);
         if ($parent_length < 0) {
@@ -292,69 +296,22 @@ trait Path
     }
 
     /**
-     * @param string $node
-     *
-     * @return string
-     * @throws \ManaPHP\Model\Hierarchy\Exception
+     * @param string $code
+     * @return string|false
      */
-    public static function getHierarchyMaxSibling($node)
+    public static function getHierarchyNextChild($code)
     {
         $hierarchyField = static::getHierarchyField();
-        return static::criteria()->whereStartsWith($hierarchyField, static::getHierarchyParent($node), strlen($node))->max($hierarchyField);
-    }
+        $child_length = static::getHierarchyChildLength($code);
+        if ($child_length < 0) {
+            return false;
+        }
 
-    /**
-     * @param string $node
-     *
-     * @return false|string
-     * @throws \ManaPHP\Model\Hierarchy\Exception
-     */
-    public static function getHierarchyNextSibling($node)
-    {
-        $max_sibling = static::getHierarchyMaxSibling($node);
-
-        return static::calcHierarchyNextSibling($max_sibling);
-    }
-
-    public static function getHierarchyMaxChild($code)
-    {
-        $hierarchyField = static::getHierarchyField();
-        $max = static::criteria()->whereStartsWith($hierarchyField, $code, static::getHierarchyChildLength($code))->max($hierarchyField);
+        $max = static::criteria()->whereStartsWith($hierarchyField, $code, $child_length)->max($hierarchyField);
         if ($max === null) {
-            $max = $code . str_pad('0', static::getHierarchyChildLength($code) - strlen($code), '0');
-        }
-
-        return $max;
-    }
-
-    /**
-     * @param string $code
-     *
-     * @return string|false
-     */
-    public static function calcHierarchyNextChild($code)
-    {
-        $parent_length = static::getHierarchyParentLength($code);
-        if ($parent_length < 0) {
-            return false;
-        }
-
-        $base = static::getHierarchyBase();
-
-        $self_length = strlen($code) - $parent_length;
-        $sub_node = substr($code, $parent_length, $self_length);
-        $next_node_int = base_convert($sub_node, $base, 10) + 1;
-        /** @noinspection PowerOperatorCanBeUsedInspection */
-        if ($next_node_int >= pow($base, $self_length)) {
-            return false;
+            return $code . str_pad('', $child_length - strlen($code) - 1, '0') . '1';
         } else {
-            return substr($code, 0, $parent_length) . str_pad(base_convert($next_node_int, 10, $base), $self_length, '0', STR_PAD_LEFT);
+            return static::_calcHierarchyNextChild($max);
         }
-    }
-
-    public static function getHierarchyNextChild($node)
-    {
-        $max_child = static::getHierarchyMaxChild($node);
-        return static::calcHierarchyNextChild($max_child);
     }
 }

@@ -76,21 +76,6 @@ class HierarchyTest extends TestCase
         $this->assertEquals(-1, Category::getHierarchyChildLength('1'));
     }
 
-    public function test_calcNextSibling()
-    {
-        $this->assertEquals('02', Category::calcHierarchyNextSibling('01'));
-        $this->assertEquals('99', Category::calcHierarchyNextSibling('98'));
-        $this->assertEquals(false, Category::calcHierarchyNextSibling('zz'));
-        $this->assertEquals('11001', Category::calcHierarchyNextSibling('11000'));
-        $this->assertEquals('11999', Category::calcHierarchyNextSibling('11998'));
-        $this->assertEquals(false, Category::calcHierarchyNextSibling('11zzz'));
-        $this->assertEquals('112229', Category::calcHierarchyNextSibling('112228'));
-        $this->assertEquals(false, Category::calcHierarchyNextSibling('11222z'));
-        $this->assertEquals(false, Category::calcHierarchyNextSibling('1122233'));
-
-        $this->assertEquals(false, Category::calcHierarchyNextSibling('1'));
-    }
-
     public function test_getMaxLength()
     {
         $this->assertEquals(6, Category::getHierarchyMaxLength());
