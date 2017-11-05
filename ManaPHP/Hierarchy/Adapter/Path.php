@@ -116,7 +116,7 @@ class Path extends Component implements HierarchyInterface
         $capacities = [];
         foreach (static::getLengths() as $length) {
             /** @noinspection PowerOperatorCanBeUsedInspection */
-            $capacities = pow(static::getBase(), $length);
+            $capacities[] = pow(static::getBase(), $length);
         }
         return $capacities;
     }
