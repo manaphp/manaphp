@@ -196,12 +196,13 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     /**
      * @param string|array $expr
      * @param string       $value
+     * @param int          $length
      *
      * @return static
      */
-    public function whereStartsWith($expr, $value)
+    public function whereStartsWith($expr, $value, $length = null)
     {
-        $this->_query->whereStartsWith($expr, $value);
+        $this->_query->whereStartsWith($expr, $value, $length);
 
         return $this;
     }
@@ -241,7 +242,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     public function whereRegex($expr, $regex)
     {
         $this->_query->whereRegex($expr, $regex);
-		
+
         return $this;
     }
 

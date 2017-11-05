@@ -87,6 +87,7 @@ class DbModelCriteriaTest extends TestCase
     public function test_whereStartsWith()
     {
         $this->assertEquals(43, City::criteria()->whereStartsWith('city', 'A')->count());
+        $this->assertEquals(4, City::criteria()->whereStartsWith('city', 'A', 4)->count());
     }
 
     public function test_whereEndsWith()

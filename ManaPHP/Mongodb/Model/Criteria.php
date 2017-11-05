@@ -437,12 +437,17 @@ class Criteria extends \ManaPHP\Model\Criteria
     /**
      * @param string|array $expr
      * @param string       $value
+     * @param int          $length
      *
      * @return static
      */
-    public function whereStartsWith($expr, $value)
+    public function whereStartsWith($expr, $value, $length = null)
     {
-        return $this->_whereLike($expr, '^' . $value);
+        if ($length === null) {
+            return $this->_whereLike($expr, '^' . $value);
+        } else {
+            return $this->_whereLike($expr, '^' . str_pad($value, $length, '.') . '$');
+        }
     }
 
     /**

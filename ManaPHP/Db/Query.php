@@ -692,12 +692,13 @@ class Query extends Component implements QueryInterface
     /**
      * @param string|array $expr
      * @param string       $value
+     * @param int          $length
      *
      * @return static
      */
-    public function whereStartsWith($expr, $value)
+    public function whereStartsWith($expr, $value, $length = null)
     {
-        return $this->whereLike($expr, $value . '%');
+        return $this->whereLike($expr, $length === null ? $value . '%' : str_pad($value, $length, '_'));
     }
 
     /**
