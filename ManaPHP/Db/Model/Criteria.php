@@ -82,7 +82,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      *
      * @return static
      */
-    public function where($filter, $value = [])
+    public function where($filter, $value = null)
     {
         $this->_query->where($filter, $value);
 
