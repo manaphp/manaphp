@@ -18,16 +18,18 @@
         margin: 10px auto;
     }
 </style>
-<div class="copyright"> @widget('Copyright') </div>
+<div class="copyright"> @widget('Copyright')</div>
 
 <div class="mana_container">
-    <h1>ManaPHP <sub>v{{ $version }}</sub></h1>
-    {{ $current_time }}
-    {{ $di->router->getModuleName() . ':' . $di->router->getControllerName() . ':' . $di->router->getActionName() }}
-    <p>
-        {{ round(memory_get_usage() / 1024) . ' k/' . round(memory_get_peak_usage() / 1024) . ' k' }}
-        {{ round(memory_get_usage(true) / 1024) . ' k/' . round(memory_get_peak_usage(true) / 1024) . ' k' }}
-    </p>
+    @if($di->configure->params['manaphp_brand_show'])
+        <h1>ManaPHP <sub>v{{ $version }}</sub></h1>
+        {{ $current_time }}
+        {{ $di->router->getModuleName() . ':' . $di->router->getControllerName() . ':' . $di->router->getActionName() }}
+        <p>
+            {{ round(memory_get_usage() / 1024) . ' k/' . round(memory_get_peak_usage() / 1024) . ' k' }}
+            {{ round(memory_get_usage(true) / 1024) . ' k/' . round(memory_get_peak_usage(true) / 1024) . ' k' }}
+        </p>
+    @endif
 </div>
 
 

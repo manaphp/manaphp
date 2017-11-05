@@ -20,4 +20,5 @@ return [
         'mongodb' => ['class' => Mongodb::class, 'mongodb://127.0.0.1/manaphp_unit_test']
     ],
     'bootstraps' => ['debugger'],
+    'params' => ['manaphp_brand_show' => 0]
 ];
