@@ -35,6 +35,11 @@ class Mwt extends Component implements TokenInterface
     protected $_fields = [];
 
     /**
+     * @var int
+     */
+    protected $_exp;
+
+    /**
      * Mwt constructor.
      *
      * @param array $options
@@ -65,8 +70,9 @@ class Mwt extends Component implements TokenInterface
     {
         $data = [];
 
-        $data['SALT'] = mt_rand(0, 2147483647);
+        $data['TTL'] = $this->_ttl;
         $data['EXP'] = $this->_ttl + time();
+
         foreach ($this->_fields as $k => $v) {
             $data[$v] = $this->{is_int($k) ? $v : $k};
         }
@@ -110,16 +116,18 @@ class Mwt extends Component implements TokenInterface
         }
 
         $data = json_decode(base64_decode($payload), true);
-        if (!is_array($data)) {
+        if (!is_array($data) || !isset($data['TTL'], $data['EXP'])) {
             throw new MwtException('payload is not array.'/**m02e36efb31ed0db24*/);
-        }
-
-        if (!isset($data['EXP']) || time() > $data['EXP']) {
-            throw new MwtException('token is expired.'/**m0b57c4265f54099b0*/, Exception::CODE_EXPIRE);
         }
 
         foreach ($this->_fields as $k => $v) {
             $this->{is_int($k) ? $v : $k} = $data[$v];
+        }
+
+        $this->_exp = $data['EXP'];
+
+        if (time() > $this->_exp) {
+            throw new MwtException('token is expired.'/**m0b57c4265f54099b0*/, Exception::CODE_EXPIRE);
         }
 
         return $this;
