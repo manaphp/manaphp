@@ -35,7 +35,7 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
-    public $master_key;
+    public $master_key = '';
 
     /**
      * @var array
