@@ -60,7 +60,6 @@ class Mwt extends Component implements TokenInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Authentication\Token\Adapter\Exception
      */
     public function encode()
     {
@@ -124,5 +123,13 @@ class Mwt extends Component implements TokenInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->encode();
     }
 }
