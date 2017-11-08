@@ -44,7 +44,7 @@ class EventTest extends TestCase
         //use class
         $component = new DummyComponent();
         $listener = new DummyListener($this);
-        $component->attachEvent('dummy', $listener);
+        $component->attachEvent('dummy:do', $listener);
         $component->doAction();
 
         //use closure
