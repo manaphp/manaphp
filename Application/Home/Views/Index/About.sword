@@ -19,7 +19,7 @@
     }
 </style>
 <div class="copyright"> @widget('Copyright')</div>
-
+<div>{{ $baidu_time }}</div>
 <div class="mana_container">
     @if($di->configure->params['manaphp_brand_show'])
         <h1>ManaPHP <sub>v{{ $version }}</sub></h1>
