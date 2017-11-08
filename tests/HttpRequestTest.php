@@ -495,12 +495,7 @@ class HttpRequestTest extends TestCase
 //        $this->assertEquals('https://www.manaphp.com:8080/index.php',$request->getUrl());
 //
         $_SERVER = $base;
-        $this->assertEquals('http://www.manaphp.com/index.php', $request->getUrl(true));
-
-        $_SERVER = $base;
-        $_GET['_url'] = 'abc';
-        $_GET['page'] = 1;
-        $this->assertEquals('http://www.manaphp.com/index.php?page=1', $request->getUrl(true));
+        $this->assertEquals('http://www.manaphp.com/index.php', $request->getUrl());
     }
 
     public function test_getEmptyValue()
