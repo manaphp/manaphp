@@ -50,7 +50,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function __construct($options = [])
     {
-        if (is_string($options)) {
+        if (is_object($options) || is_string($options)) {
             $options = ['adapter' => $options];
         }
 
