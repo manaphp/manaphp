@@ -19,7 +19,7 @@ class LoggerTest extends TestCase
         $logger = new Logger(new Memory());
 
         // To confirm the default level is LEVEL_ALL
-        $this->assertEquals(Logger::LEVEL_ALL, $logger->getLevel());
+        $this->assertEquals(Logger::LEVEL_DEBUG, $logger->getLevel());
 
         $logger->debug('**debug**');
 
@@ -32,8 +32,8 @@ class LoggerTest extends TestCase
 
         // To confirm the level can set correctly
         $logger = new Logger(new Memory());
-        $logger->setLevel(Logger::LEVEL_OFF);
-        $this->assertEquals(Logger::LEVEL_OFF, $logger->getLevel());
+        $logger->setLevel(Logger::LEVEL_ERROR);
+        $this->assertEquals(Logger::LEVEL_ERROR, $logger->getLevel());
 
         $logger->debug('**debug**');
 
