@@ -140,7 +140,7 @@ class Di implements DiInterface
             $className = $definition['class'];
             $alias = isset($definition['alias']) ? $definition['alias'] : null;
             unset($definition['class'], $definition['alias']);
-            $this->_services[$name] = [$className, $definition];
+            $this->_services[$name] = [$className, isset($definition[0]) ? $definition : [$definition]];
             if ($alias !== null) {
                 $this->setAliases($name, $alias, false);
             }
