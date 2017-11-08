@@ -20,12 +20,6 @@ class HierarchyTest extends TestCase
         parent::setUp();
     }
 
-    public function test_isRoot()
-    {
-        $this->assertTrue(Category::isHierarchyRoot(''));
-        $this->assertFalse(Category::isHierarchyRoot('12'));
-    }
-
     public function test_getLevel()
     {
         $this->assertEquals(0, Category::getHierarchyLevel(''));
