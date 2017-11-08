@@ -78,7 +78,7 @@ class File extends Component implements AdapterInterface
             $file = $this->_dir . '/' . $key;
         }
 
-        return $this->alias->resolve(strtr($file . $this->_extension), ':', '/');
+        return $this->alias->resolve(strtr($file, ':', '/') . $this->_extension);
     }
 
     /**
