@@ -211,6 +211,10 @@ class Di implements DiInterface
     {
         $name = (!isset($this->_services[$_name]) && isset($this->_aliases[$_name])) ? $this->_aliases[$_name] : $_name;
 
+        if (isset($this->_sharedInstances[$name])) {
+            return $this->_sharedInstances[$name];
+        }
+
         if (isset($this->_services[$name])) {
             $service = $this->_services[$name];
 
@@ -236,10 +240,6 @@ class Di implements DiInterface
         } else {
             $definition = $name;
             $shared = false;
-        }
-
-        if (isset($this->_sharedInstances[$name])) {
-            return $this->_sharedInstances[$name];
         }
 
 //        if (isset($this->eventsManager)) {
