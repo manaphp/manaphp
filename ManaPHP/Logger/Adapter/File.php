@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Logger\Adapter;
 
 use ManaPHP\Component;
@@ -19,7 +20,7 @@ class File extends Component implements AdapterInterface
     /**
      * @var string
      */
-    protected $_format = '[%date%][%level%][%location%] %message%';
+    protected $_format = '[{date}][{level}][{category}][{location}] {message}';
 
     /**
      * @var bool
@@ -73,14 +74,14 @@ class File extends Component implements AdapterInterface
             $this->_firstLog = false;
         }
 
-        $context['date'] = date('Y-m-d H:i:s', $context['date']);
+        $context['date'] = date('Y-m-d H:i:s', $context['timestamp']);
+
+        $context['message'] = $message . PHP_EOL;
 
         $replaced = [];
         foreach ($context as $k => $v) {
-            $replaced["%$k%"] = $v;
+            $replaced['{' . $k . '}'] = $v;
         }
-
-        $replaced['%message%'] = $message . PHP_EOL;
 
         $log = strtr($this->_format, $replaced);
 

@@ -76,16 +76,16 @@ class LoggerTest extends TestCase
         $this->assertTrue(isset($log['context']));
     }
 
-    public function test_warning()
+    public function test_warn()
     {
         $logger = new Logger(new Memory());
 
-        $logger->warning('**warning**');
+        $logger->warn('**warning**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $logger->adapter->getLogs());
         $log = $logger->adapter->getLogs()[0];
-        $this->assertEquals(Logger::LEVEL_WARNING, $log['level']);
+        $this->assertEquals(Logger::LEVEL_WARN, $log['level']);
         $this->assertContains('**warning**', $log['message']);
         $this->assertTrue(isset($log['context']));
     }

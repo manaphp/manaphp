@@ -23,6 +23,11 @@ interface LoggerInterface
      * @return string
      */
     public function getLevel();
+	
+	/**
+     * @param string $category
+     */
+    public function setCategory($category);
 
     /**
      * @return array
@@ -32,50 +37,50 @@ interface LoggerInterface
     /**
      * Sends/Writes a debug message to the log
      *
-     * @param string $message
-     * @param array  $context
+     * @param string|array $message
+     * @param string       $category
      *
      * @return static
      */
-    public function debug($message, $context = []);
+    public function debug($message, $category = null);
 
     /**
      * Sends/Writes an info message to the log
      *
-     * @param string $message
-     * @param array  $context
+     * @param string|array $message
+     * @param string       $category
      *
      * @return static
      */
-    public function info($message, $context = []);
+    public function info($message, $category = null);
 
     /**
      * Sends/Writes a warning message to the log
      *
-     * @param string $message
-     * @param array  $context
+     * @param string|array $message
+     * @param string       $category
      *
      * @return static
      */
-    public function warning($message, $context = []);
+    public function warn($message, $category = null);
 
     /**
      * Sends/Writes an error message to the log
      *
-     * @param string $message
-     * @param array  $context
+     * @param string|array $message
+     * @param string       $category
      *
      * @return static
      */
-    public function error($message, $context = []);
+    public function error($message, $category = null);
 
     /**
      * Sends/Writes a critical message to the log
      *
-     * @param string $message
-     * @param array  $context
+     * @param string|array $message
+     * @param string       $category
      *
      * @return static
      */
-    public function fatal($message, $context = []);
+    public function fatal($message, $category = null);
 }

@@ -105,7 +105,7 @@ class Debugger extends Component implements DebuggerInterface
                 $micro_date = explode(' ', microtime());
                 $replaces = [
                     '%time%' => date('H:i:s.', $micro_date[1]) . str_pad(ceil($micro_date[0] * 10000), '0', STR_PAD_LEFT),
-                    '%level%' => $data['context']['level'],
+                    '%level%' => $data['level'],
                     '%message%' => $data['message']
                 ];
                 $this->_log[] = [
