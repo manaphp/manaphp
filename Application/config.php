@@ -17,7 +17,13 @@ return [
     'components' => [
         'db' => ['class' => Mysql::class, 'mysql://root@localhost/manaphp_unit_test?charset=utf8'],
         'redis' => ['class' => Redis::class, 'redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth='],
-        'mongodb' => ['class' => Mongodb::class, 'mongodb://127.0.0.1/manaphp_unit_test']
+        'mongodb' => ['class' => Mongodb::class, 'mongodb://127.0.0.1/manaphp_unit_test'],
+        'logger' => [
+            'class' => \ManaPHP\Logger::class,
+            'adapters' => [
+                [['class' => \ManaPHP\Logger\Adapter\File::class], 'level' => 'error', 'categories' => ['*']]
+            ],
+        ]
     ],
     'bootstraps' => ['debugger'],
     'params' => ['manaphp_brand_show' => 0]

@@ -1,9 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2016/3/20
- */
+
 namespace ManaPHP;
 
 use ManaPHP\Logger\Exception as LoggerException;
@@ -27,19 +23,14 @@ class Logger extends Component implements LoggerInterface
     protected $_s2i;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $_level = self::LEVEL_DEBUG;
+    protected $_adapters;
 
     /**
      * @var string
      */
     protected $_category;
-
-    /**
-     * @var \ManaPHP\Logger\AdapterInterface
-     */
-    public $adapter;
 
     /**
      * Logger constructor.
@@ -50,73 +41,45 @@ class Logger extends Component implements LoggerInterface
      */
     public function __construct($options = [])
     {
-        if (is_object($options) || is_string($options)) {
-            $options = ['adapter' => $options];
+        $this->_s2i = array_flip([self::LEVEL_FATAL, self::LEVEL_ERROR, self::LEVEL_WARN, self::LEVEL_INFO, self::LEVEL_DEBUG]);
+
+        if (is_string($options)) {
+            $options = ['adapters' => $options];
         }
 
-        if (isset($options['adapter'])) {
-            $this->adapter = $options['adapter'];
+        if (isset($options['adapters'])) {
+            foreach ($options['adapters'] as $adapter) {
+                $this->_addAdapter($adapter);
+            }
         }
+    }
+
+    /**
+     * @param array $options
+     */
+    protected function _addAdapter($options)
+    {
+        $adapterOptions = isset($options[0]) ? $options[0] : $options['adapter'];
+
+        $className = $adapterOptions['class'];
+        $parameters = $adapterOptions;
+        unset($parameters['class']);
+        $adapter['adapter'] = Di::getDefault()->getShared($className, $parameters);
 
         if (isset($options['level'])) {
-            $this->setLevel($options['level']);
+            $level = strtoupper($options['level']);
+            if (!isset($this->_s2i[$level])) {
+                throw new LoggerException('`:level` level is invalid', ['level' => $options['level']]);
+            } else {
+                $adapter['level'] = $this->_s2i[$level];
+            }
         }
 
-        $this->_s2i = array_flip([self::LEVEL_FATAL, self::LEVEL_ERROR, self::LEVEL_WARN, self::LEVEL_INFO, self::LEVEL_DEBUG]);
-    }
-
-    /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
-     */
-    public function setDependencyInjector($dependencyInjector)
-    {
-        parent::setDependencyInjector($dependencyInjector);
-
-        if (!is_object($this->adapter)) {
-            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+        if (isset($options['categories'])) {
+            $adapter['categories'] = (array)$options['categories'];
         }
 
-        return $this;
-    }
-
-    /**
-     * Filters the logs sent to the handlers to be greater or equals than a specific level
-     *
-     * @param string $level
-     *
-     * @return static
-     * @throws \ManaPHP\Logger\Exception
-     */
-    public function setLevel($level)
-    {
-        if (!isset($this->_s2i[$level])) {
-            throw new LoggerException('`:level` level is not one of `:levels`'/**m0511c3e8c2bcd64c8*/,
-                ['level' => $level, 'levels' => implode(',', array_keys($this->getLevels()))]);
-        }
-
-        $this->_level = $level;
-
-        return $this;
-    }
-
-    /**
-     * Returns the current log level
-     *
-     * @return string
-     */
-    public function getLevel()
-    {
-        return $this->_level;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLevels()
-    {
-        return $this->_s2i;
+        $this->_adapters[] = $adapter;
     }
 
     /**
@@ -125,6 +88,14 @@ class Logger extends Component implements LoggerInterface
     public function setCategory($category)
     {
         $this->_category = $category;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLevels()
+    {
+        return $this->_s2i;
     }
 
     /**
@@ -200,11 +171,20 @@ class Logger extends Component implements LoggerInterface
 
         $this->fireEvent('logger:log', $context);
 
-        if ($this->_s2i[$level] > $this->_s2i[$this->_level]) {
-            return $this;
-        }
+        foreach ($this->_adapters as $adapter) {
+            if (isset($adapter['level']) && $adapter['level'] < $this->_s2i[$level]) {
+                continue;
+            }
 
-        $this->adapter->log($level, $message, $context);
+            if (isset($adapter['categories'])) {
+                foreach ($adapter['categories'] as $cat) {
+                    if (fnmatch($cat, $context['category'])) {
+                        $adapter['adapter']->log($level, $message, $context);
+                        break;
+                    }
+                }
+            }
+        }
 
         return $this;
     }
