@@ -33,11 +33,11 @@ class Invoker extends Component implements InvokerInterface
         $controllerName = get_class($controller);
 
         if (!isset($this->_actions[$controllerName])) {
+            $this->_actions[$controllerName] = [];
+
             foreach (get_class_methods($controller) as $method) {
                 if ($method[0] !== '_' && substr_compare($method, 'Action', -6) === 0) {
-                    $action = substr($method, 0, -6);
-
-                    $this->_actions[$controllerName][] = $action;
+                    $this->_actions[$controllerName][] = substr($method, 0, -6);
                 }
             }
         }
