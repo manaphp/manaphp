@@ -7,7 +7,7 @@ use ManaPHP\Di\Exception as DiException;
 /**
  * Class ManaPHP\Di
  *
- * @package di
+ * @package  di
  *
  * @property \ManaPHP\AliasInterface                       $alias
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
@@ -31,7 +31,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Loader                               $loader
  * @property \ManaPHP\LoggerInterface                      $logger
  * @property \ManaPHP\RendererInterface                    $renderer
- * @property \Application\Configure                        $configure
+ * @property \ManaPHP\Configure|\Application\Configure     $configure
  * @property \ManaPHP\ApplicationInterface                 $application
  * @property \ManaPHP\DebuggerInterface                    $debugger
  * @property \ManaPHP\Authentication\PasswordInterface     $password
@@ -194,18 +194,19 @@ class Di implements DiInterface
     }
 
     /**
-     * @param mixed $definition
-     * @param array $parameters
+     * @param string $name
+     * @param mixed  $definition
+     * @param array  $parameters
      *
      * @return mixed
      * @throws \ReflectionException
      * @throws \ManaPHP\Di\Exception
      */
-    protected function _getInstance($definition, $parameters)
+    protected function _getInstance($name, $definition, $parameters)
     {
         if (is_string($definition)) {
             if (!class_exists($definition)) {
-                throw new DiException('`:name` service cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $_name, 'class' => $definition]);
+                throw new DiException('`:name` service cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $name, 'class' => $definition]);
             }
             $count = count($parameters);
 
@@ -226,7 +227,7 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {
-            throw new DiException('`:name` service cannot be resolved: service implement type is not supported'/**m072d42756355fb069*/, ['name' => $_name]);
+            throw new DiException('`:name` service cannot be resolved: service implement type is not supported'/**m072d42756355fb069*/, ['name' => $name]);
         }
 
         return $instance;
@@ -276,7 +277,7 @@ class Di implements DiInterface
         }
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $instance = $this->_getInstance($definition, $parameters ?: []);
+        $instance = $this->_getInstance($_name, $definition, $parameters ?: []);
 
         if ($shared) {
             $this->_sharedInstances[$name] = $instance;
