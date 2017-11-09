@@ -183,6 +183,8 @@ class Logger extends Component implements LoggerInterface
                         break;
                     }
                 }
+            } else {
+                $adapter['adapter']->log($level, $message, $context);
             }
         }
 
