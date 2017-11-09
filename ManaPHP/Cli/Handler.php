@@ -6,6 +6,7 @@ use ManaPHP\Component;
 
 /**
  * Class Handler
+ *
  * @package ManaPHP\Cli
  *
  * @property \ManaPHP\Cli\RouterInterface  $cliRouter
@@ -20,6 +21,7 @@ class Handler extends Component implements HandlerInterface
 
     /**
      * @param array $args
+     *
      * @return int
      */
     public function handle($args = null)

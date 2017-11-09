@@ -51,6 +51,7 @@ class Debugger extends Component implements DebuggerInterface
 
     /**
      * Debugger constructor.
+     *
      * @param string|array $options
      */
     public function __construct($options = [])

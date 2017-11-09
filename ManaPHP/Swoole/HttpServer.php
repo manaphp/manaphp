@@ -62,7 +62,7 @@ class HttpServer extends \ManaPHP\Application
 
     protected function _beforeRequest()
     {
-	
+
     }
 
     protected function _afterRequest()

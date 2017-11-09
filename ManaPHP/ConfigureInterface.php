@@ -7,7 +7,7 @@ namespace ManaPHP;
  *
  * @package configure
  *
- * @property \ManaPHP\Cli\EnvironmentInterface                             $environment
+ * @property \ManaPHP\Cli\EnvironmentInterface $environment
  */
 interface ConfigureInterface
 {

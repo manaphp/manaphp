@@ -4,7 +4,6 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
 use ManaPHP\Mvc\Dispatcher\Exception as DispatcherException;
-use ManaPHP\Mvc\Dispatcher\NotFoundActionException;
 use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
 use ManaPHP\Utility\Text;
 
