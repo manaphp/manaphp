@@ -61,8 +61,8 @@ interface DiInterface
     /**
      * Resolves a shared service based on their configuration
      *
-     * @param string $name
-     * @param array  $parameters
+     * @param string|array $name
+     * @param array        $parameters
      *
      * @return mixed
      */
