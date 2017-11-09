@@ -170,16 +170,21 @@ class Logger extends Component implements LoggerInterface
             if (isset($adapter['level']) && $adapter['level'] < $this->_s2i[$level]) {
                 continue;
             }
+			
+            /**
+             * @var \ManaPHP\Logger\AdapterInterface $adapter
+             */
+            $adapter = $adapter['adapter'];
 
             if (isset($adapter['categories'])) {
                 foreach ($adapter['categories'] as $cat) {
                     if (fnmatch($cat, $context['category'])) {
-                        $adapter['adapter']->log($level, $message, $context);
+                        $adapter->log($level, $message, $context);
                         break;
                     }
                 }
             } else {
-                $adapter['adapter']->log($level, $message, $context);
+                $adapter->log($level, $message, $context);
             }
         }
 
