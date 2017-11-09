@@ -17,6 +17,8 @@ class Module extends Component implements ModuleInterface
 
     /**
      * Module constructor.
+     *
+     * @param string $moduleName
      */
     public function __construct($moduleName = null)
     {
