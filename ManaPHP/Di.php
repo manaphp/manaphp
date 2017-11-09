@@ -299,6 +299,15 @@ class Di implements DiInterface
      */
     public function getShared($name, $parameters = null)
     {
+        if (is_array($name)) {
+            $parameters = $name;
+            $name = $name['class'];
+            unset($parameters['class']);
+            if (!isset($parameters[0])) {
+                $parameters = [$parameters];
+            }
+        }
+
         if (!isset($this->_sharedInstances[$name])) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_sharedInstances[$name] = $this->get($name, $parameters);

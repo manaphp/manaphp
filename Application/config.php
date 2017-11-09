@@ -14,7 +14,8 @@ return [
         'db' => ['mysql://root@localhost/manaphp_unit_test?charset=utf8'],
         'redis' => ['redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth='],
         'mongodb' => ['mongodb://127.0.0.1/manaphp_unit_test'],
-        'loggers' => ['adapters' => [[['class' => \ManaPHP\Logger\Adapter\File::class], 'level' => 'error', 'categories' => ['*']]],
+        'logger' => [
+            'adapters' => ['file' => ['adapter' => ['class' => \ManaPHP\Logger\Adapter\File::class], 'level' => 'error', 'categories' => ['*']]],
         ]
     ],
     'bootstraps' => ['debugger'],

@@ -59,12 +59,7 @@ class Logger extends Component implements LoggerInterface
      */
     protected function _addAdapter($options)
     {
-        $adapterOptions = isset($options[0]) ? $options[0] : $options['adapter'];
-
-        $className = $adapterOptions['class'];
-        $parameters = $adapterOptions;
-        unset($parameters['class']);
-        $adapter['adapter'] = Di::getDefault()->getShared($className, $parameters);
+        $adapter['adapter'] = Di::getDefault()->getShared(isset($options[0]) ? $options[0] : $options['adapter']);
 
         if (isset($options['level'])) {
             $level = strtoupper($options['level']);
