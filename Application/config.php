@@ -1,9 +1,5 @@
 <?php
 
-use ManaPHP\Db\Adapter\Mysql;
-use ManaPHP\Mongodb;
-use ManaPHP\Redis;
-
 return [
     'debug' => true,
     'version' => '1.1.1',
@@ -15,14 +11,10 @@ return [
     'modules' => ['Home' => '/', 'Admin' => '/admin', 'Api' => '/api'],
     'modules:test,prod' => ['Home' => '/home'],
     'components' => [
-        'db' => ['class' => Mysql::class, 'mysql://root@localhost/manaphp_unit_test?charset=utf8'],
-        'redis' => ['class' => Redis::class, 'redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth='],
-        'mongodb' => ['class' => Mongodb::class, 'mongodb://127.0.0.1/manaphp_unit_test'],
-        'logger' => [
-            'class' => \ManaPHP\Logger::class,
-            'adapters' => [
-                [['class' => \ManaPHP\Logger\Adapter\File::class], 'level' => 'error', 'categories' => ['*']]
-            ],
+        'db' => ['mysql://root@localhost/manaphp_unit_test?charset=utf8'],
+        'redis' => ['redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth='],
+        'mongodb' => ['mongodb://127.0.0.1/manaphp_unit_test'],
+        'loggers' => ['adapters' => [[['class' => \ManaPHP\Logger\Adapter\File::class], 'level' => 'error', 'categories' => ['*']]],
         ]
     ],
     'bootstraps' => ['debugger'],

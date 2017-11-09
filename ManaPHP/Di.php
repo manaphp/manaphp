@@ -136,17 +136,11 @@ class Di implements DiInterface
      */
     public function setShared($name, $definition)
     {
-        if (is_array($definition) && isset($definition['class'])) {
-            $className = $definition['class'];
-            $alias = isset($definition['alias']) ? $definition['alias'] : null;
-            unset($definition['class'], $definition['alias']);
-            $this->_services[$name] = [$className, isset($definition[0]) ? $definition : [$definition]];
-            if ($alias !== null) {
-                $this->setAliases($name, $alias, false);
-            }
-        } else {
-            $this->_services[$name] = $definition;
+        if (isset($this->_services[$name]) && is_array($definition) && !isset($definition['class'])) {
+            $service = $this->_services[$name];
+            $definition['class'] = is_string($service) ? $service : $service['class'];
         }
+        $this->_services[$name] = $definition;
 
         return $this;
     }
@@ -200,55 +194,17 @@ class Di implements DiInterface
     }
 
     /**
-     * Resolves the service based on its configuration
-     *
-     * @param string $_name
-     * @param array  $parameters
+     * @param mixed $definition
+     * @param array $parameters
      *
      * @return mixed
+     * @throws \ReflectionException
+     * @throws \ManaPHP\Di\Exception
      */
-    public function get($_name, $parameters = [])
+    protected function _getInstance($definition, $parameters)
     {
-        $name = (!isset($this->_services[$_name]) && isset($this->_aliases[$_name])) ? $this->_aliases[$_name] : $_name;
-
-        if (isset($this->_sharedInstances[$name])) {
-            return $this->_sharedInstances[$name];
-        }
-
-        if (isset($this->_services[$name])) {
-            $service = $this->_services[$name];
-
-            if (is_string($service)) {
-                $definition = $service;
-                $shared = true;
-            } elseif (is_array($service)) {
-                $definition = $service[0];
-                if (isset($service[1])) {
-                    if (is_bool($service[1])) {
-                        $shared = $service[1];
-                    } else {
-                        $parameters = $service[1];
-                        $shared = isset($service[2]) ? $service[2] : true;
-                    }
-                } else {
-                    $shared = true;
-                }
-            } else {
-                $definition = $service;
-                $shared = false;
-            }
-        } else {
-            $definition = $name;
-            $shared = false;
-        }
-
-//        if (isset($this->eventsManager)) {
-//            $this->eventsManager->fireEvent('di:beforeResolve', $this, ['name' => $_name, 'parameters' => $parameters]);
-//        }
-
         if (is_string($definition)) {
             if (!class_exists($definition)) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new DiException('`:name` service cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $_name, 'class' => $definition]);
             }
             $count = count($parameters);
@@ -262,19 +218,65 @@ class Di implements DiInterface
             } elseif ($count === 3) {
                 $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
             } else {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $reflection = new \ReflectionClass($definition);
                 $instance = $reflection->newInstanceArgs($parameters);
             }
-
         } elseif ($definition instanceof \Closure) {
             $instance = call_user_func_array($definition, $parameters);
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new DiException('`:name` service cannot be resolved: service implement type is not supported'/**m072d42756355fb069*/, ['name' => $_name]);
         }
+
+        return $instance;
+    }
+
+    /**
+     * Resolves the service based on its configuration
+     *
+     * @param string $_name
+     * @param array  $parameters
+     *
+     * @return mixed
+     */
+    public function get($_name, $parameters = null)
+    {
+        $name = (!isset($this->_services[$_name]) && isset($this->_aliases[$_name])) ? $this->_aliases[$_name] : $_name;
+
+        if (isset($this->_sharedInstances[$name])) {
+            return $this->_sharedInstances[$name];
+        }
+
+        if (isset($this->_services[$name])) {
+            $service = $this->_services[$name];
+
+            $shared = $parameters === null;
+            if (is_string($service)) {
+                $definition = $service;
+            } elseif (is_array($service) && isset($service['class'])) {
+                $definition = $service['class'];
+                unset($service['class']);
+
+                if (isset($service['shared'])) {
+                    $shared = $service['shared'];
+                    unset($service['shared']);
+                }
+
+                if ($parameters === null) {
+                    $parameters = isset($service[0]) ? $service : [$service];
+                }
+            } else {
+                $definition = $service;
+                $shared = true;
+            }
+        } else {
+            $definition = $name;
+            $shared = false;
+        }
+
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        $instance = $this->_getInstance($definition, $parameters ?: []);
 
         if ($shared) {
             $this->_sharedInstances[$name] = $instance;
@@ -283,10 +285,6 @@ class Di implements DiInterface
         if ($instance instanceof Component) {
             $instance->setDependencyInjector($this);
         }
-
-//        if (isset($this->eventsManager)) {
-//            $this->eventsManager->fireEvent('di:afterResolve', $this, ['name' => $_name, 'parameters' => $parameters, 'instance' => $instance]);
-//        }
 
         return $instance;
     }
@@ -299,7 +297,7 @@ class Di implements DiInterface
      *
      * @return mixed
      */
-    public function getShared($name, $parameters = [])
+    public function getShared($name, $parameters = null)
     {
         if (!isset($this->_sharedInstances[$name])) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
