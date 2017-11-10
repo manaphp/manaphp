@@ -68,8 +68,6 @@ class Component implements ComponentInterface
         if ($name === 'persistent') {
             $getParameter = [get_class($this), $this->_dependencyInjector];
             return $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', $getParameter);
-        } elseif ($name === 'dbQuery') {
-            return $this->_dependencyInjector->get('dbQuery');
         } else {
             return $this->{$name} = $this->_dependencyInjector->{$name};
         }

@@ -71,7 +71,6 @@ class FactoryDefault extends Di
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
             'environment' => 'ManaPHP\Cli\Environment',
             'netConnectivity' => 'ManaPHP\Net\Connectivity',
-            'dbQuery' => ['class' => 'ManaPHP\Db\Query', 'shared' => false],
             'db' => ['class' => 'ManaPHP\Db\Adapter\Mysql', 'mysql://root@localhost/test?charset=utf8'],
             'redis' => ['class' => 'ManaPHP\Redis', 'redis://localhost:6379/1/test?timeout=3&retry_interval=0&auth='],
             'mongodb' => ['class' => 'ManaPHP\Mongodb', 'mongodb://localhost/test']
