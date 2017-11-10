@@ -267,7 +267,7 @@ class Di implements DiInterface
                     unset($service['shared']);
                 }
 
-                if ($parameters === null) {
+                if ($parameters === null && count($service) !== 0) {
                     $parameters = isset($service[0]) ? $service : [$service];
                 }
             } else {
