@@ -996,12 +996,15 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     public function __get($name)
     {
-        $method = 'get' . $name;
+        $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
-
             return $this->$name = $this->$method()->fetch();
+        } elseif ($this->_dependencyInjector->has($name)) {
+            return $this->{$name} = $this->_dependencyInjector->getShared($name);
         } else {
-            return parent::__get($name);
+            trigger_error(strtr('`:class` does not contain `:field` field: `:fields`',
+                [':class' => get_called_class(), ':field' => $name, ':fields' => implode(',', static::getFields())]), E_USER_WARNING);
+            return null;
         }
     }
 
