@@ -56,6 +56,8 @@ class Logger extends Component implements LoggerInterface
 
     /**
      * @param array $options
+     *
+     * @throws \ManaPHP\Logger\Exception
      */
     protected function _addAdapter($options)
     {
@@ -124,6 +126,8 @@ class Logger extends Component implements LoggerInterface
             $trace = $traces[2];
         } elseif (isset($traces[3])) {
             $trace = $traces[3];
+        } else {
+            return '';
         }
 
         if (isset($trace['class'], $trace['type'], $trace['function'])) {
