@@ -12,12 +12,12 @@ namespace ManaPHP;
  *
  * @package component
  *
- * @property \ManaPHP\AliasInterface                   $alias
- * @property \ManaPHP\Event\ManagerInterface           $eventsManager
- * @property \ManaPHP\FilesystemInterface              $filesystem
- * @property \ManaPHP\LoggerInterface                  $logger
- * @property \ManaPHP\Configure|\Application\Configure $configure
- * @property \ManaPHP\Security\CryptInterface          $crypt
+ * @property \ManaPHP\AliasInterface          $alias
+ * @property \ManaPHP\Event\ManagerInterface  $eventsManager
+ * @property \ManaPHP\FilesystemInterface     $filesystem
+ * @property \ManaPHP\LoggerInterface         $logger
+ * @property \ManaPHP\Configure               $configure
+ * @property \ManaPHP\Security\CryptInterface $crypt
  */
 class Component implements ComponentInterface
 {
