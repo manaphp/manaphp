@@ -114,13 +114,16 @@ class Di implements DiInterface
      */
     public function set($name, $definition)
     {
-        if (!is_array($definition)) {
-            $definition = [$definition, false];
+        if (is_object($definition) && !$definition instanceof \Closure) {
+            $definition = ['class' => $definition, 'shared' => true];
+        } elseif (!is_array($definition)) {
+            $definition = ['class' => $definition, 'shared' => false];
         } else {
-            if (!is_bool($definition[count($definition)] - 1)) {
-                $definition[] = false;
+            if (!isset($definition['shared'])) {
+                $definition['shared'] = false;
             }
         }
+
         $this->_services[$name] = $definition;
 
         return $this;
