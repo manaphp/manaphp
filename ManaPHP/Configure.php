@@ -40,6 +40,16 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var array
      */
+    public $services = [];
+    
+    /**
+     * @var array
+     */
+    public $params = [];
+
+    /**
+     * @var array
+     */
     public $aliases = [];
 
     /**
@@ -56,11 +66,6 @@ class Configure extends Component implements ConfigureInterface
      * @var array
      */
     public $modules = ['Home' => '/'];
-
-    /**
-     * @var array
-     */
-    public $params = [];
 
     /**
      * @param string $file

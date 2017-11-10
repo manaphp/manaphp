@@ -5,6 +5,10 @@ return [
     'version' => '1.1.1',
     'timezone' => 'PRC',
     'master_key' => '',
+    'services' => [
+        'pay' => ['key' => '124', 'secret' => 'abc'],
+    ],
+    'params' => ['manaphp_brand_show' => 1],
     'aliases' => [
         '@xxx' => '@root/xvdfd'
     ],
@@ -18,6 +22,5 @@ return [
             'adapters' => ['file' => ['adapter' => ['class' => \ManaPHP\Logger\Adapter\File::class], 'level' => 'error', 'categories' => ['*']]],
         ]
     ],
-    'bootstraps' => ['debugger'],
-    'params' => ['manaphp_brand_show' => 0]
+    'bootstraps' => ['debugger']
 ];
