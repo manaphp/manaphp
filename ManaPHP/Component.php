@@ -69,17 +69,12 @@ class Component implements ComponentInterface
 
         if ($name === 'persistent') {
             $getParameter = [get_class($this), $this->_dependencyInjector];
-            $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', $getParameter);
+            return $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', $getParameter);
         } elseif ($name === 'dbQuery') {
             return $this->_dependencyInjector->get('dbQuery');
         } else {
-            $this->{$name} = $this->_dependencyInjector->{$name};
-            if ($this->{$name} === null) {
-                throw new ComponentException('Access to undefined property `:name` of `:class`', ['name' => $name, 'class' => get_called_class()]);
-            }
+            return $this->{$name} = $this->_dependencyInjector->{$name};
         }
-
-        return $this->{$name};
     }
 
     /**
