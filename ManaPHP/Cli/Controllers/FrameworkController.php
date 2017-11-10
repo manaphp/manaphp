@@ -142,7 +142,7 @@ class FrameworkController extends Controller
             $dstFile = str_replace($ManaPHPSrcDir, $ManaPHPDstDir, $file);
 
             $content = $this->_minify($this->filesystem->fileGet($file));
-            $lineCount = Text::contains($content, "\r") ? substr_count($content, "\r") : substr_count($content, "\n");
+            $lineCount = substr_count($content, Text::contains($content, "\r") ? "\r" : "\n");
 
             if (Text::contains($file, 'Interface.php')) {
                 $totalInterfaceLines += $lineCount;
