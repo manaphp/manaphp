@@ -130,6 +130,7 @@ class Cookies extends Component implements CookiesInterface
      * @param string $name
      *
      * @return mixed|null
+     * @throws \ManaPHP\Http\Cookies\Exception
      */
     public function get($name)
     {
