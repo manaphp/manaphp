@@ -7,8 +7,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Component\Exception as ComponentException;
-
 /**
  * Class ManaPHP\Component
  *
