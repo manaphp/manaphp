@@ -68,7 +68,7 @@ class File extends Component implements AdapterInterface
             /** @noinspection NotOptimalIfConditionsInspection */
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
                 /** @noinspection ForgottenDebugOutputInspection */
-                error_log('Unable to create \'' . $dir . '\' directory: ' . error_get_last()['message']);
+                trigger_error('Unable to create \'' . $dir . '\' directory: ' . error_get_last()['message'], E_USER_WARNING);
             }
 
             $this->_firstLog = false;
@@ -87,7 +87,7 @@ class File extends Component implements AdapterInterface
 
         if (file_put_contents($this->_file, $log, FILE_APPEND | LOCK_EX) === false) {
             /** @noinspection ForgottenDebugOutputInspection */
-            error_log('Write log to file failed: ' . $this->_file);
+            trigger_error('Write log to file failed: ' . $this->_file, E_USER_WARNING);
         }
     }
 }
