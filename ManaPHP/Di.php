@@ -330,11 +330,7 @@ class Di implements DiInterface
      */
     public function __get($propertyName)
     {
-        if ($this->has($propertyName)) {
-            return $this->getShared($propertyName);
-        }
-
-        return null;
+        return $this->getShared($propertyName);
     }
 
     /**
