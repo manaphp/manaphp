@@ -67,7 +67,7 @@ class Di implements DiInterface
     /**
      * @var array
      */
-    protected $_services = [];
+    protected $_components = [];
 
     /**
      * @var array
@@ -104,7 +104,7 @@ class Di implements DiInterface
     }
 
     /**
-     * Registers a service in the services container
+     * Registers a component in the components container
      *
      * @param string $name
      * @param mixed  $definition
@@ -123,13 +123,13 @@ class Di implements DiInterface
             }
         }
 
-        $this->_services[$name] = $definition;
+        $this->_components[$name] = $definition;
 
         return $this;
     }
 
     /**
-     * Registers an "always shared" service in the services container
+     * Registers an "always shared" component in the components container
      *
      * @param string $name
      * @param mixed  $definition
@@ -138,33 +138,33 @@ class Di implements DiInterface
      */
     public function setShared($name, $definition)
     {
-        if (isset($this->_services[$name]) && is_array($definition) && !isset($definition['class'])) {
-            $service = $this->_services[$name];
-            $definition['class'] = is_string($service) ? $service : $service['class'];
+        if (isset($this->_components[$name]) && is_array($definition) && !isset($definition['class'])) {
+            $component = $this->_components[$name];
+            $definition['class'] = is_string($component) ? $component : $component['class'];
         }
-        $this->_services[$name] = $definition;
+        $this->_components[$name] = $definition;
 
         return $this;
     }
 
     /**
-     * @param string       $service
+     * @param string       $component
      * @param string|array $aliases
      * @param bool         $force
      *
      * @return static
      */
-    public function setAliases($service, $aliases, $force = false)
+    public function setAliases($component, $aliases, $force = false)
     {
         if (is_string($aliases)) {
             if ($force || !isset($this->_aliases[$aliases])) {
-                $this->_aliases[$aliases] = $service;
+                $this->_aliases[$aliases] = $component;
             }
         } else {
             /** @noinspection ForeachSourceInspection */
             foreach ($aliases as $alias) {
                 if ($force || !isset($this->_aliases[$alias])) {
-                    $this->_aliases[$alias] = $service;
+                    $this->_aliases[$alias] = $component;
                 }
             }
         }
@@ -173,7 +173,7 @@ class Di implements DiInterface
     }
 
     /**
-     * Removes a service in the services container
+     * Removes a component in the components container
      *
      * @param string $name
      *
@@ -183,13 +183,13 @@ class Di implements DiInterface
     {
         if (in_array($name, $this->_aliases, true)) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new DiException('`:name` service is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, ['name' => $name]);
+            throw new DiException('`:name` component is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, ['name' => $name]);
         }
 
         if (isset($this->_aliases[$name])) {
             unset($this->_aliases[$name]);
         } else {
-            unset($this->_services[$name], $this->_sharedInstances[$name], $this->{$name});
+            unset($this->_components[$name], $this->_sharedInstances[$name], $this->{$name});
         }
 
         return $this;
@@ -208,7 +208,7 @@ class Di implements DiInterface
     {
         if (is_string($definition)) {
             if (!class_exists($definition)) {
-                throw new DiException('`:name` service cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $name, 'class' => $definition]);
+                throw new DiException('`:name` component cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $name, 'class' => $definition]);
             }
             $count = count($parameters);
 
@@ -229,14 +229,14 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {
-            throw new DiException('`:name` service cannot be resolved: service implement type is not supported'/**m072d42756355fb069*/, ['name' => $name]);
+            throw new DiException('`:name` component cannot be resolved: component implement type is not supported'/**m072d42756355fb069*/, ['name' => $name]);
         }
 
         return $instance;
     }
 
     /**
-     * Resolves the service based on its configuration
+     * Resolves the component based on its configuration
      *
      * @param string $_name
      * @param array  $parameters
@@ -245,32 +245,32 @@ class Di implements DiInterface
      */
     public function get($_name, $parameters = null)
     {
-        $name = (!isset($this->_services[$_name]) && isset($this->_aliases[$_name])) ? $this->_aliases[$_name] : $_name;
+        $name = (!isset($this->_components[$_name]) && isset($this->_aliases[$_name])) ? $this->_aliases[$_name] : $_name;
 
         if (isset($this->_sharedInstances[$name])) {
             return $this->_sharedInstances[$name];
         }
 
-        if (isset($this->_services[$name])) {
-            $service = $this->_services[$name];
+        if (isset($this->_components[$name])) {
+            $component = $this->_components[$name];
 
             $shared = $parameters === null;
-            if (is_string($service)) {
-                $definition = $service;
-            } elseif (is_array($service) && isset($service['class'])) {
-                $definition = $service['class'];
-                unset($service['class']);
+            if (is_string($component)) {
+                $definition = $component;
+            } elseif (is_array($component) && isset($component['class'])) {
+                $definition = $component['class'];
+                unset($component['class']);
 
-                if (isset($service['shared'])) {
-                    $shared = $service['shared'];
-                    unset($service['shared']);
+                if (isset($component['shared'])) {
+                    $shared = $component['shared'];
+                    unset($component['shared']);
                 }
 
-                if ($parameters === null && count($service) !== 0) {
-                    $parameters = isset($service[0]) ? $service : [$service];
+                if ($parameters === null && count($component) !== 0) {
+                    $parameters = isset($component[0]) ? $component : [$component];
                 }
             } else {
-                $definition = $service;
+                $definition = $component;
                 $shared = true;
             }
         } else {
@@ -293,7 +293,7 @@ class Di implements DiInterface
     }
 
     /**
-     * Resolves a service, the resolved service is stored in the DI, subsequent requests for this service will return the same instance
+     * Resolves a component, the resolved component is stored in the DI, subsequent requests for this component will return the same instance
      *
      * @param string|array $name
      * @param array        $parameters
@@ -358,7 +358,7 @@ class Di implements DiInterface
     }
 
     /**
-     * Check whether the DI contains a service by a name
+     * Check whether the DI contains a component by a name
      *
      * @param string $name
      *
@@ -366,11 +366,11 @@ class Di implements DiInterface
      */
     public function has($name)
     {
-        return isset($this->_services[$name]) || isset($this->_aliases[$name]);
+        return isset($this->_components[$name]) || isset($this->_aliases[$name]);
     }
 
     /**
-     * Magic method to get or set services using setters/getters
+     * Magic method to get or set components using setters/getters
      *
      * @param string $method
      * @param array  $arguments

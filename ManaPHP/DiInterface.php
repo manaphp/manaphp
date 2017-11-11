@@ -11,7 +11,7 @@ interface DiInterface
 {
 
     /**
-     * Registers a service in the service container
+     * Registers a component in the component container
      *
      * @param string $name
      * @param mixed  $definition
@@ -21,7 +21,7 @@ interface DiInterface
     public function set($name, $definition);
 
     /**
-     * Registers an "always shared" service in the services container
+     * Registers an "always shared" component in the components container
      *
      * @param string $name
      * @param mixed  $definition
@@ -31,16 +31,16 @@ interface DiInterface
     public function setShared($name, $definition);
 
     /**
-     * @param string       $service
+     * @param string       $component
      * @param string|array $aliases
      * @param bool         $force
      *
      * @return static
      */
-    public function setAliases($service, $aliases, $force = false);
+    public function setAliases($component, $aliases, $force = false);
 
     /**
-     * Removes a service from the service container
+     * Removes a component from the components container
      *
      * @param string $name
      *
@@ -49,7 +49,7 @@ interface DiInterface
     public function remove($name);
 
     /**
-     * Resolves the service based on its configuration
+     * Resolves the component based on its configuration
      *
      * @param string $name
      * @param array  $parameters
@@ -59,7 +59,7 @@ interface DiInterface
     public function get($name, $parameters = null);
 
     /**
-     * Resolves a shared service based on their configuration
+     * Resolves a shared component based on their configuration
      *
      * @param string|array $name
      * @param array        $parameters
@@ -69,7 +69,7 @@ interface DiInterface
     public function getShared($name, $parameters = null);
 
     /**
-     * Check whether the DI contains a service by a name
+     * Check whether the DI contains a component by a name
      *
      * @param string $name
      *
