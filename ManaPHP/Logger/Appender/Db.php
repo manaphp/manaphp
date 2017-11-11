@@ -1,11 +1,11 @@
 <?php
-namespace ManaPHP\Logger\Adapter;
+namespace ManaPHP\Logger\Appender;
 
 use ManaPHP\Component;
-use ManaPHP\Logger\AdapterInterface;
+use ManaPHP\Logger\AppenderInterface;
 
 /**
- * Class ManaPHP\Logger\Adapter\Db
+ * Class ManaPHP\Logger\Appender\Db
  *
  * @package logger
  *
@@ -13,15 +13,15 @@ use ManaPHP\Logger\AdapterInterface;
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\Http\RequestInterface                $request
  */
-class Db extends Component implements AdapterInterface
+class Db extends Component implements AppenderInterface
 {
     /**
      * @var string
      */
-    protected $_model = '\ManaPHP\Logger\Adapter\Db\Model';
+    protected $_model = '\ManaPHP\Logger\Appender\Db\Model';
 
     /**
-     * @var \ManaPHP\Logger\Adapter\Db\Model
+     * @var \ManaPHP\Logger\Appender\Db\Model
      */
     protected $_log;
 
@@ -47,15 +47,13 @@ class Db extends Component implements AdapterInterface
     }
 
     /**
-     * @param string $level
-     * @param string $message
-     * @param array  $context
+     * @param array $logEvent
      *
      * @return void
      * @throws \ManaPHP\Model\Exception
      * @throws \ManaPHP\Db\Model\Exception
      */
-    public function log($level, $message, $context = [])
+    public function append($logEvent)
     {
         if ($this->_nested) {
             return;
@@ -64,10 +62,11 @@ class Db extends Component implements AdapterInterface
         $this->_nested = true;
         if ($this->_log === null) {
             /**
-             * @var \ManaPHP\Logger\Adapter\Db\Model $log
+             * @var \ManaPHP\Logger\Appender\Db\Model $log
              */
             $log = new $this->_model;
-            $log->level = $level;
+
+            $log->level = $logEvent['level'];
             $log->user_id = $this->userIdentity->getId();
             $log->user_name = $this->userIdentity->getName();
             $log->module = $this->dispatcher->getModuleName();
@@ -78,8 +77,8 @@ class Db extends Component implements AdapterInterface
         }
 
         $this->_log->log_id = null;
-        $this->_log->message = $message;
-        $this->_log->created_time = time();
+        $this->_log->message = $logEvent['message'];
+        $this->_log->created_time = $logEvent['timestamp'];
 
         $this->_log->create();
 

@@ -19,7 +19,8 @@ return [
         'redis' => ['redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth='],
         'mongodb' => ['mongodb://127.0.0.1/manaphp_unit_test'],
         'logger' => [
-            'adapters' => ['file' => ['adapter' => ['class' => \ManaPHP\Logger\Adapter\File::class], 'level' => 'error', 'categories' => ['*']]],
+            'filter' => ['level' => 'debug'],
+            'appenders' => ['file' => ['class' => \ManaPHP\Logger\Appender\File::class, 'filter' => ['level' => 'debug', 'categories' => ['*']]]],
         ]
     ],
     'bootstraps' => ['debugger']

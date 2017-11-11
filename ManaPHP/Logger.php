@@ -25,7 +25,7 @@ class Logger extends Component implements LoggerInterface
     /**
      * @var array
      */
-    protected $_adapters;
+    protected $_appenders;
 
     /**
      * @var string
@@ -33,9 +33,14 @@ class Logger extends Component implements LoggerInterface
     protected $_category;
 
     /**
+     * @var array
+     */
+    protected $_filter = [];
+
+    /**
      * Logger constructor.
      *
-     * @param string|array|\ManaPHP\Logger\AdapterInterface $options
+     * @param string|array|\ManaPHP\Logger\AppenderInterface $options
      *
      * @throws \ManaPHP\Logger\Exception
      */
@@ -44,39 +49,49 @@ class Logger extends Component implements LoggerInterface
         $this->_s2i = array_flip([self::LEVEL_FATAL, self::LEVEL_ERROR, self::LEVEL_WARN, self::LEVEL_INFO, self::LEVEL_DEBUG]);
 
         if (is_string($options)) {
-            $options = ['adapters' => [[['class' => $options]]]];
+            $options = ['appenders' => [[['class' => $options]]]];
         }
 
-        if (isset($options['adapters'])) {
-            foreach ($options['adapters'] as $adapter) {
-                $this->_addAdapter($adapter);
+        if (isset($options['appenders'])) {
+            foreach ($options['appenders'] as $name => $appender) {
+                if (isset($appender['filter'])) {
+                    $filter = $this->_normalizeFilter($appender['filter']);
+                    unset($appender['filter']);
+                } else {
+                    $filter = [];
+                }
+
+                $this->_appenders[$name] = ['filter' => $filter, 'appender' => $appender];
             }
+        }
+
+        if (isset($options['filter'])) {
+            $this->_filter = $this->_normalizeFilter($options['filter']);
         }
     }
 
     /**
-     * @param array $options
+     * @param array $filter
      *
+     * @return array
      * @throws \ManaPHP\Logger\Exception
      */
-    protected function _addAdapter($options)
+    protected function _normalizeFilter($filter)
     {
-        $adapter['adapter'] = Di::getDefault()->getShared(isset($options[0]) ? $options[0] : $options['adapter']);
-
-        if (isset($options['level'])) {
-            $level = strtoupper($options['level']);
+        if (isset($filter['level'])) {
+            $level = strtoupper($filter['level']);
             if (!isset($this->_s2i[$level])) {
-                throw new LoggerException('`:level` level is invalid', ['level' => $options['level']]);
+                throw new LoggerException('`:level` level is invalid', ['level' => $filter['level']]);
             } else {
-                $adapter['level'] = $this->_s2i[$level];
+                $filter['level'] = $this->_s2i[$level];
             }
         }
 
-        if (isset($options['categories'])) {
-            $adapter['categories'] = (array)$options['categories'];
+        if (isset($filter['categories'])) {
+            $filter['categories'] = (array)$filter['categories'];
         }
 
-        $this->_adapters[] = $adapter;
+        return $filter;
     }
 
     /**
@@ -133,7 +148,32 @@ class Logger extends Component implements LoggerInterface
         if (isset($trace['class'], $trace['type'], $trace['function'])) {
             return $trace['class'] . $trace['type'] . $trace['function'];
         }
+
         return '';
+    }
+
+    /**
+     * @param array $filter
+     * @param array $logEvent
+     *
+     * @return bool
+     */
+    protected function _IsFiltered($filter, $logEvent)
+    {
+        if (isset($filter['level']) && $filter['level'] < $this->_s2i[$logEvent['level']]) {
+            return true;
+        }
+
+        if (isset($filter['categories'])) {
+            foreach ((array)$filter['categories'] as $category) {
+                if (fnmatch($category, $logEvent['category'])) {
+                    break;
+                }
+            }
+            return false;
+        }
+
+        return false;
     }
 
     /**
@@ -145,7 +185,9 @@ class Logger extends Component implements LoggerInterface
      */
     public function log($level, $message, $category = null)
     {
-        $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
+        if (isset($this->_filter['level']) && $this->_filter['level'] < $this->_s2i[$level]) {
+            return $this;
+        }
 
         if (is_array($message)) {
             $replaces = [];
@@ -159,36 +201,26 @@ class Logger extends Component implements LoggerInterface
             $message = strtr($message[0], $replaces);
         }
 
-        $context = [];
+        $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
-        $context['level'] = $level;
-        $context['message'] = $message;
-        $context['category'] = $category ?: $this->_category;
-        $context['timestamp'] = time();
-        $context['location'] = $this->_getLocation($traces);
-        $context['caller'] = $this->_getCaller($traces);
+        $logEvent = [];
 
-        $this->fireEvent('logger:log', $context);
+        $logEvent['level'] = $level;
+        $logEvent['message'] = $message;
+        $logEvent['category'] = $category ?: $this->_category;
+        $logEvent['timestamp'] = time();
+        $logEvent['location'] = $this->_getLocation($traces);
+        $logEvent['caller'] = $this->_getCaller($traces);
 
-        foreach ($this->_adapters as $adapter) {
-            if (isset($adapter['level']) && $adapter['level'] < $this->_s2i[$level]) {
-                continue;
-            }
+        $this->fireEvent('logger:log', $logEvent);
 
-            /**
-             * @var \ManaPHP\Logger\AdapterInterface $adapter
-             */
-            $adapter = $adapter['adapter'];
-
-            if (isset($adapter['categories'])) {
-                foreach ($adapter['categories'] as $cat) {
-                    if (fnmatch($cat, $context['category'])) {
-                        $adapter->log($level, $message, $context);
-                        break;
-                    }
-                }
-            } else {
-                $adapter->log($level, $message, $context);
+        /**
+         * @var \ManaPHP\Logger\AppenderInterface $appender
+         */
+        foreach ($this->_appenders as $name => $appender_conf) {
+            if (!$this->_IsFiltered($appender_conf['filter'], $logEvent)) {
+                $appender = $this->_dependencyInjector->getShared($appender_conf['appender']);
+                $appender->append($logEvent);
             }
         }
 

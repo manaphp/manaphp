@@ -4,7 +4,7 @@ namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Logger;
-use ManaPHP\Logger\Adapter\Memory;
+use ManaPHP\Logger\Appender\Memory;
 use PHPUnit\Framework\TestCase;
 
 class LoggerTest extends TestCase

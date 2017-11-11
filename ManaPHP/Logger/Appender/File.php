@@ -1,16 +1,16 @@
 <?php
 
-namespace ManaPHP\Logger\Adapter;
+namespace ManaPHP\Logger\Appender;
 
 use ManaPHP\Component;
-use ManaPHP\Logger\AdapterInterface;
+use ManaPHP\Logger\AppenderInterface;
 
 /**
- * Class ManaPHP\Logger\Adapter\File
+ * Class ManaPHP\Logger\Appender\File
  *
  * @package logger
  */
-class File extends Component implements AdapterInterface
+class File extends Component implements AppenderInterface
 {
     /**
      * @var string
@@ -52,13 +52,11 @@ class File extends Component implements AdapterInterface
     }
 
     /**
-     * @param string $level
-     * @param string $message
-     * @param array  $context
+     * @param array $logEvent
      *
      * @return void
      */
-    public function log($level, $message, $context = [])
+    public function append($logEvent)
     {
         if ($this->_firstLog) {
             $this->_file = $this->alias->resolve($this->_file);
@@ -74,18 +72,16 @@ class File extends Component implements AdapterInterface
             $this->_firstLog = false;
         }
 
-        $context['date'] = date('Y-m-d H:i:s', $context['timestamp']);
+        $logEvent['date'] = date('Y-m-d H:i:s', $logEvent['timestamp']);
 
-        $context['message'] = $message . PHP_EOL;
+        $logEvent['message'] .= PHP_EOL;
 
         $replaced = [];
-        foreach ($context as $k => $v) {
+        foreach ($logEvent as $k => $v) {
             $replaced['{' . $k . '}'] = $v;
         }
 
-        $log = strtr($this->_format, $replaced);
-
-        if (file_put_contents($this->_file, $log, FILE_APPEND | LOCK_EX) === false) {
+        if (file_put_contents($this->_file, strtr($this->_format, $replaced), FILE_APPEND | LOCK_EX) === false) {
             /** @noinspection ForgottenDebugOutputInspection */
             trigger_error('Write log to file failed: ' . $this->_file, E_USER_WARNING);
         }

@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Logger\Adapter\Db;
+namespace ManaPHP\Logger\Appender\Db;
 
 /**
- * Class ManaPHP\Logger\Adapter\Db\Model
+ * Class ManaPHP\Logger\Appender\Db\Model
  *
  * @package logger
  */
