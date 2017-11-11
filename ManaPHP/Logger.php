@@ -49,7 +49,7 @@ class Logger extends Component implements LoggerInterface
         $this->_s2i = array_flip([self::LEVEL_FATAL, self::LEVEL_ERROR, self::LEVEL_WARN, self::LEVEL_INFO, self::LEVEL_DEBUG]);
 
         if (is_string($options)) {
-            $options = ['appenders' => [[['class' => $options]]]];
+            $options = ['appenders' => [['class' => $options]]];
         }
 
         if (isset($options['appenders'])) {

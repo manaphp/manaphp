@@ -41,7 +41,7 @@ class FactoryDefault extends Di
             'session' => ['class' => 'ManaPHP\Http\Session', 'ManaPHP\Http\Session\Adapter\File'],
             'sessionBag' => ['class' => 'ManaPHP\Http\Session\Bag', 'shared' => false],
             'view' => 'ManaPHP\Mvc\View',
-            'logger' => ['class' => 'ManaPHP\Logger', 'ManaPHP\Logger\Adapter\File'],
+            'logger' => ['class' => 'ManaPHP\Logger', 'ManaPHP\Logger\Appender\File'],
             'renderer' => 'ManaPHP\Renderer',
             'debugger' => 'ManaPHP\Debugger',
             'password' => 'ManaPHP\Authentication\Password',
