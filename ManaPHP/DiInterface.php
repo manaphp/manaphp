@@ -49,6 +49,17 @@ interface DiInterface
     public function remove($name);
 
     /**
+     * @param mixed  $definition
+     * @param array  $parameters
+     * @param string $name
+     *
+     * @return mixed
+     * @throws \ReflectionException
+     * @throws \ManaPHP\Di\Exception
+     */
+    public function getInstance($definition, $parameters = null, $name = null);
+
+    /**
      * Resolves the component based on its configuration
      *
      * @param string $name
@@ -61,12 +72,11 @@ interface DiInterface
     /**
      * Resolves a shared component based on their configuration
      *
-     * @param string|array $name
-     * @param array        $parameters
+     * @param string $name
      *
      * @return mixed
      */
-    public function getShared($name, $parameters = null);
+    public function getShared($name);
 
     /**
      * Check whether the DI contains a component by a name

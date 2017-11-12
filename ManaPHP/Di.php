@@ -77,7 +77,7 @@ class Di implements DiInterface
     /**
      * @var array
      */
-    protected $_sharedInstances = [];
+    protected $_instances = [];
 
     /**
      * First DI build
@@ -113,14 +113,30 @@ class Di implements DiInterface
      */
     public function set($name, $definition)
     {
-        if (is_object($definition) && !$definition instanceof \Closure) {
-            $definition = ['class' => $definition, 'shared' => true];
-        } elseif (!is_array($definition)) {
+        if (is_string($definition)) {
             $definition = ['class' => $definition, 'shared' => false];
-        } else {
-            if (!isset($definition['shared'])) {
-                $definition['shared'] = false;
+        } elseif (is_array($definition)) {
+            if (!isset($definition['class'])) {
+                if (isset($this->_components[$name])) {
+                    $component = $this->_components[$name];
+                } elseif (isset($this->_aliases[$name])) {
+                    $component = $this->_components[$this->_aliases[$name]];
+                } elseif (strpos($name, '\\') !== false) {
+                    $component = $name;
+                } else {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                    throw new DiException('`:component` component definition is invalid: missing class field', ['component' => $name]);
+                }
+
+                $definition['class'] = is_string($component) ? $component : $component['class'];
             }
+
+            $definition['shared'] = false;
+        } elseif (is_object($definition)) {
+            $definition = ['class' => $definition, 'shared' => !$definition instanceof \Closure];
+        } else {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new DiException('`:component` component definition is unknown', ['component' => $name]);
         }
 
         $this->_components[$name] = $definition;
@@ -138,10 +154,30 @@ class Di implements DiInterface
      */
     public function setShared($name, $definition)
     {
-        if (isset($this->_components[$name]) && is_array($definition) && !isset($definition['class'])) {
-            $component = $this->_components[$name];
-            $definition['class'] = is_string($component) ? $component : $component['class'];
+        if (is_string($definition)) {
+            ;//do nothing
+        } elseif (is_array($definition)) {
+            if (!isset($definition['class'])) {
+                if (isset($this->_components[$name])) {
+                    $component = $this->_components[$name];
+                } elseif (isset($this->_aliases[$name])) {
+                    $component = $this->_components[$this->_aliases[$name]];
+                } elseif (strpos($name, '\\') !== false) {
+                    $component = $name;
+                } else {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                    throw new DiException('`:component` component definition is invalid: missing class field', ['component' => $name]);
+                }
+
+                $definition['class'] = is_string($component) ? $component : $component['class'];
+            }
+        } elseif (is_object($definition)) {
+            $definition = ['class' => $definition];
+        } else {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new DiException('`:component` component definition is unknown', ['component' => $name]);
         }
+
         $this->_components[$name] = $definition;
 
         return $this;
@@ -189,23 +225,39 @@ class Di implements DiInterface
         if (isset($this->_aliases[$name])) {
             unset($this->_aliases[$name]);
         } else {
-            unset($this->_components[$name], $this->_sharedInstances[$name], $this->{$name});
+            unset($this->_components[$name], $this->_instances[$name], $this->{$name});
         }
 
         return $this;
     }
 
     /**
-     * @param string $name
      * @param mixed  $definition
      * @param array  $parameters
+     * @param string $name
      *
      * @return mixed
      * @throws \ReflectionException
      * @throws \ManaPHP\Di\Exception
      */
-    protected function _getInstance($name, $definition, $parameters)
+    public function getInstance($definition, $parameters = null, $name = null)
     {
+        if (is_string($definition)) {
+            $params = [];
+        } else {
+            $params = $definition;
+            $definition = $definition['class'];
+            unset($params['class'], $params['shared']);
+        }
+
+        if ($parameters === null) {
+            if (isset($params[0]) || count($params) === 0) {
+                $parameters = $params;
+            } else {
+                $parameters = [$params];
+            }
+        }
+
         if (is_string($definition)) {
             if (!class_exists($definition)) {
                 throw new DiException('`:name` component cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $name, 'class' => $definition]);
@@ -232,59 +284,6 @@ class Di implements DiInterface
             throw new DiException('`:name` component cannot be resolved: component implement type is not supported'/**m072d42756355fb069*/, ['name' => $name]);
         }
 
-        return $instance;
-    }
-
-    /**
-     * Resolves the component based on its configuration
-     *
-     * @param string $_name
-     * @param array  $parameters
-     *
-     * @return mixed
-     */
-    public function get($_name, $parameters = null)
-    {
-        $name = (!isset($this->_components[$_name]) && isset($this->_aliases[$_name])) ? $this->_aliases[$_name] : $_name;
-
-        if (isset($this->_sharedInstances[$name])) {
-            return $this->_sharedInstances[$name];
-        }
-
-        if (isset($this->_components[$name])) {
-            $component = $this->_components[$name];
-
-            $shared = $parameters === null;
-            if (is_string($component)) {
-                $definition = $component;
-            } elseif (is_array($component) && isset($component['class'])) {
-                $definition = $component['class'];
-                unset($component['class']);
-
-                if (isset($component['shared'])) {
-                    $shared = $component['shared'];
-                    unset($component['shared']);
-                }
-
-                if ($parameters === null && count($component) !== 0) {
-                    $parameters = isset($component[0]) ? $component : [$component];
-                }
-            } else {
-                $definition = $component;
-                $shared = true;
-            }
-        } else {
-            $definition = $name;
-            $shared = false;
-        }
-
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $instance = $this->_getInstance($_name, $definition, $parameters ?: []);
-
-        if ($shared) {
-            $this->_sharedInstances[$name] = $instance;
-        }
-
         if ($instance instanceof Component) {
             $instance->setDependencyInjector($this);
         }
@@ -293,30 +292,73 @@ class Di implements DiInterface
     }
 
     /**
-     * Resolves a component, the resolved component is stored in the DI, subsequent requests for this component will return the same instance
+     * Resolves the component based on its configuration
      *
-     * @param string|array $name
-     * @param array        $parameters
+     * @param string $name
+     * @param array  $parameters
      *
      * @return mixed
+     * @throws \ReflectionException
+     * @throws \ManaPHP\Di\Exception
      */
-    public function getShared($name, $parameters = null)
+    public function get($name, $parameters = null)
     {
-        if (is_array($name)) {
-            $parameters = $name;
-            $name = $name['class'];
-            unset($parameters['class']);
-            if (!isset($parameters[0])) {
-                $parameters = [$parameters];
+        if (isset($this->_instances[$name])) {
+            return $this->_instances[$name];
+        }
+
+        if (isset($this->_aliases[$name], $this->_instances[$this->_aliases[$name]])) {
+            return $this->_instances[$this->_aliases[$name]];
+        }
+
+        if (isset($this->_components[$name])) {
+            $definition = $this->_components[$name];
+        } elseif (isset($this->_aliases[$name])) {
+            $definition = $this->_components[$this->_aliases[$name]];
+        } else {
+            return $this->getInstance($name, $parameters, $name);
+        }
+
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        $instance = $this->getInstance($definition, $parameters, $name);
+
+        if (is_string($definition) || !isset($definition['shared']) || $definition['shared'] === true) {
+            if (isset($this->_components[$name])) {
+                $this->_instances[$name] = $instance;
+            } else {
+                $this->_instances[$this->_aliases[$name]] = $instance;
             }
         }
 
-        if (!isset($this->_sharedInstances[$name])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $this->_sharedInstances[$name] = $this->get($name, $parameters);
+        return $instance;
+    }
+
+    /**
+     * Resolves a component, the resolved component is stored in the DI, subsequent requests for this component will return the same instance
+     *
+     * @param string $name
+     *
+     * @return mixed
+     * @throws \ReflectionException
+     * @throws \ManaPHP\Di\Exception
+     */
+    public function getShared($name)
+    {
+        if (isset($this->_instances[$name])) {
+            return $this->_instances[$name];
         }
 
-        return $this->_sharedInstances[$name];
+        if (isset($this->_aliases[$name], $this->_instances[$this->_aliases[$name]])) {
+            return $this->_instances[$this->_aliases[$name]];
+        }
+
+        if (isset($this->_components[$name])) {
+            return $this->_instances[$name] = $this->getInstance($this->_components[$name], null, $name);
+        } elseif (isset($this->_aliases[$name])) {
+            return $this->_instances[$this->_aliases[$name]] = $this->getInstance($this->_components[$this->_aliases[$name]], null, $name);
+        } else {
+            return $this->_instances[$name] = $this->getInstance($name, null, $name);
+        }
     }
 
     /**
@@ -393,7 +435,7 @@ class Di implements DiInterface
 
     public function reConstruct()
     {
-        foreach ($this->_sharedInstances as $k => $v) {
+        foreach ($this->_instances as $k => $v) {
             if ($v instanceof Component) {
                 $v->reConstruct();
             }

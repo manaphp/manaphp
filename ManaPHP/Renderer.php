@@ -71,7 +71,7 @@ class Renderer extends Component implements RendererInterface
                 }
 
                 if (!isset($this->_resolved[$extension])) {
-                    $this->_resolved[$extension] = $this->_dependencyInjector->getShared($engine, [$this->_dependencyInjector]);
+                    $this->_resolved[$extension] = $this->_dependencyInjector->getShared($engine);
                 }
 
                 $engine = $this->_resolved[$extension];
