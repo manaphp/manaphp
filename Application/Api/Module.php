@@ -3,9 +3,8 @@ namespace Application\Api;
 
 class Module extends \ManaPHP\Mvc\Module
 {
-    public function registerServices($di)
+    public function registerServices()
     {
-        parent::registerServices($di);
         $this->csrfToken->disable();
     }
 }

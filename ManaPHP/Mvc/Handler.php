@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
@@ -69,8 +70,11 @@ class Handler extends Component implements HandlerInterface
             $moduleServiceName = lcfirst($moduleName) . 'Module';
             $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
             $this->_dependencyInjector->setShared($moduleServiceName, ['class' => class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module', $moduleName]);
+            /**
+             * @var \ManaPHP\Mvc\ModuleInterface $moduleInstance
+             */
             $moduleInstance = $this->_dependencyInjector->getShared($moduleServiceName);
-            $moduleInstance->registerServices($this->_dependencyInjector);
+            $moduleInstance->registerServices();
             $this->_loadedModules[$moduleName] = $moduleInstance;
         } else {
             $moduleInstance = $this->_loadedModules[$moduleName];

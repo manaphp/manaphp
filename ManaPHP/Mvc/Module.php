@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
@@ -30,7 +31,7 @@ class Module extends Component implements ModuleInterface
         $this->_moduleName = $moduleName;
     }
 
-    public function registerServices($di)
+    public function registerServices()
     {
 
     }

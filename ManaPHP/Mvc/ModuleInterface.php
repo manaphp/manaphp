@@ -22,18 +22,16 @@ interface ModuleInterface
 {
     /**
      * Registers services related to the module
-     *
-     * @param \ManaPHP\DiInterface $dependencyInjector
      */
-    public function registerServices($dependencyInjector);
+    public function registerServices();
 
     /**
-     * @return void
+     * @return mixed
      */
     public function antiCsrf();
 
     /**
-     * @return void
+     * @return mixed
      */
     public function authenticate();
 

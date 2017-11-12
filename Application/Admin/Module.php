@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Admin;
 
 use ManaPHP\Authentication\UserIdentity;
@@ -7,7 +8,7 @@ use ManaPHP\I18n\Translation;
 
 class Module extends \ManaPHP\Mvc\Module
 {
-    public function registerServices($di)
+    public function registerServices()
     {
         $this->_dependencyInjector->authorization = new Rbac();
         $this->_dependencyInjector->userIdentity = new UserIdentity($this->session->get('admin_auth', []));
