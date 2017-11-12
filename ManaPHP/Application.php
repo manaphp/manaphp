@@ -121,10 +121,7 @@ abstract class Application extends Component implements ApplicationInterface
         $configure = $this->configure;
 
         date_default_timezone_set($configure->timezone);
-
-        if ($configure->master_key !== '') {
-            $this->crypt->setMasterKey($configure->master_key);
-        }
+        $this->_dependencyInjector->setShared('crypt', $configure->master_key);
 
         foreach ($configure->aliases as $alias => $path) {
             $this->_dependencyInjector->alias->set($alias, $path);
