@@ -26,7 +26,7 @@ class Handler extends Component implements HandlerInterface
     /**
      * @var array
      */
-    protected $_loadedModules;
+    protected $_loadedModules = [];
 
     /**
      * Handles a MVC request
@@ -66,7 +66,7 @@ class Handler extends Component implements HandlerInterface
             $this->alias->set('@messages', '@module/Messages');
         }
 
-        if (!$this->_loadedModules[$moduleName]) {
+        if (!isset($this->_loadedModules[$moduleName])) {
             $moduleServiceName = lcfirst($moduleName) . 'Module';
             $moduleClassName = $this->alias->resolveNS('@ns.module\\Module');
             $this->_dependencyInjector->setShared($moduleServiceName, ['class' => class_exists($moduleClassName) ? $moduleClassName : 'ManaPHP\Mvc\Module', $moduleName]);
