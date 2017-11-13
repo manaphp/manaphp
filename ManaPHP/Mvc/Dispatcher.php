@@ -368,4 +368,13 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         return $this->_previousActionName;
     }
+
+    /**
+     * @param string $glue
+     * @return string
+     */
+    public function getMCA($glue = '/')
+    {
+        return Text::underscore($this->_moduleName) . $glue . Text::underscore($this->_controllerName) . $glue . Text::underscore($this->_actionName);
+    }
 }

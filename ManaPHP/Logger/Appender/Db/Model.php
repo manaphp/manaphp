@@ -14,11 +14,6 @@ class Model extends \ManaPHP\Db\Model
     public $log_id;
 
     /**
-     * @var string
-     */
-    public $level;
-
-    /**
      * @var int
      */
     public $user_id;
@@ -31,17 +26,17 @@ class Model extends \ManaPHP\Db\Model
     /**
      * @var string
      */
-    public $module;
+    public $level;
 
     /**
      * @var string
      */
-    public $controller;
+    public $category;
 
     /**
      * @var string
      */
-    public $action;
+    public $location;
 
     /**
      * @var string

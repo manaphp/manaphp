@@ -219,7 +219,12 @@ class Logger extends Component implements LoggerInterface
          */
         foreach ($this->_appenders as $name => $appender_conf) {
             if (!$this->_IsFiltered($appender_conf['filter'], $logEvent)) {
-                $appender = $this->_dependencyInjector->getShared($appender_conf['appender']);
+                if (!isset($appender_conf['instance'])) {
+                    $appender = $this->_appenders[$name]['instance'] = $this->_dependencyInjector->getInstance($appender_conf['appender']);
+                } else {
+                    $appender = $appender_conf['instance'];
+                }
+
                 $appender->append($logEvent);
             }
         }

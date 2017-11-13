@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Logger\Appender;
 
 use ManaPHP\Component;
@@ -66,17 +67,16 @@ class Db extends Component implements AppenderInterface
              */
             $log = new $this->_model;
 
-            $log->level = $logEvent['level'];
             $log->user_id = $this->userIdentity->getId();
             $log->user_name = $this->userIdentity->getName();
-            $log->module = $this->dispatcher->getModuleName();
-            $log->controller = $this->dispatcher->getControllerName();
-            $log->action = $this->dispatcher->getActionName();
             $log->ip = $this->request->getClientAddress();
             $this->_log = $log;
         }
 
         $this->_log->log_id = null;
+        $log->level = $logEvent['level'];
+        $this->_log->category = $logEvent['category'];
+        $this->_log->location = $logEvent['location'];
         $this->_log->message = $logEvent['message'];
         $this->_log->created_time = $logEvent['timestamp'];
 

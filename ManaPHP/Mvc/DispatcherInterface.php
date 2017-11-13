@@ -128,4 +128,10 @@ interface DispatcherInterface
      * @return string
      */
     public function getPreviousActionName();
+
+    /**
+     * @param string $glue
+     * @return string
+     */
+    public function getMCA($glue = '/');
 }
