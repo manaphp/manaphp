@@ -19,8 +19,8 @@ return [
         'redis' => ['redis://localhost:6379/1/test?timeout=2&retry_interval=0&auth='],
         'mongodb' => ['mongodb://127.0.0.1/manaphp_unit_test'],
         'logger' => [
-            'filter' => ['level' => 'debug'],
-            'appenders' => ['file' => ['class' => \ManaPHP\Logger\Appender\File::class, 'filter' => ['level' => 'debug', 'categories' => ['*']]]],
+            'level' => 'debug',
+            'appenders' => ['file' => ['class' => \ManaPHP\Logger\Appender\Db::class, 'filter' => ['level' => 'error', 'category' => '*']]],
         ]
     ],
     'bootstraps' => ['debugger']

@@ -12,7 +12,7 @@ interface LoggerInterface
     /**
      * @param string $category
      */
-    public function setCategory($category);
+    public function setDefaultCategory($category);
 
     /**
      * @return array

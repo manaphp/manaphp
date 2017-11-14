@@ -41,12 +41,17 @@ class Model extends \ManaPHP\Db\Model
     /**
      * @var string
      */
+    public $caller;
+
+    /**
+     * @var string
+     */
     public $message;
 
     /**
      * @var string
      */
-    public $ip;
+    public $client_ip;
 
     /**
      * @var int

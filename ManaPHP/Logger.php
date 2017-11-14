@@ -2,12 +2,12 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Logger\Exception as LoggerException;
-
 /**
  * Class ManaPHP\Logger
  *
  * @package logger
+ * @property \ManaPHP\Http\RequestInterface   $request
+ * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class Logger extends Component implements LoggerInterface
 {
@@ -16,6 +16,11 @@ class Logger extends Component implements LoggerInterface
     const LEVEL_WARN = 'WARN';
     const LEVEL_INFO = 'INFO';
     const LEVEL_DEBUG = 'DEBUG';
+
+    /**
+     * @var string
+     */
+    protected $_level = 'DEBUG';
 
     /**
      * @var array
@@ -30,12 +35,7 @@ class Logger extends Component implements LoggerInterface
     /**
      * @var string
      */
-    protected $_category;
-
-    /**
-     * @var array
-     */
-    protected $_filter = [];
+    protected $_defaultCategory = '';
 
     /**
      * Logger constructor.
@@ -55,7 +55,10 @@ class Logger extends Component implements LoggerInterface
         if (isset($options['appenders'])) {
             foreach ($options['appenders'] as $name => $appender) {
                 if (isset($appender['filter'])) {
-                    $filter = $this->_normalizeFilter($appender['filter']);
+                    $filter = $appender['filter'];
+                    if (isset($filter['level'])) {
+                        $filter['level'] = strtoupper($filter['level']);
+                    }
                     unset($appender['filter']);
                 } else {
                     $filter = [];
@@ -65,41 +68,32 @@ class Logger extends Component implements LoggerInterface
             }
         }
 
-        if (isset($options['filter'])) {
-            $this->_filter = $this->_normalizeFilter($options['filter']);
-        }
-    }
-
-    /**
-     * @param array $filter
-     *
-     * @return array
-     * @throws \ManaPHP\Logger\Exception
-     */
-    protected function _normalizeFilter($filter)
-    {
-        if (isset($filter['level'])) {
-            $level = strtoupper($filter['level']);
-            if (!isset($this->_s2i[$level])) {
-                throw new LoggerException('`:level` level is invalid', ['level' => $filter['level']]);
-            } else {
-                $filter['level'] = $this->_s2i[$level];
-            }
+        if (isset($options['level'])) {
+            $this->_level = strtoupper($options['level']);
         }
 
-        if (isset($filter['categories'])) {
-            $filter['categories'] = (array)$filter['categories'];
+        $mca = $this->dispatcher->getMCA('.');
+
+        if (trim($mca, '.') === 0) {
+            $this->_defaultCategory = $this->configure->appID;
+        } else {
+            $this->_defaultCategory = $this->configure->appID . '.' . $mca;
         }
 
-        return $filter;
+        $this->attachEvent('dispatcher:beforeDispatch', function ($source) {
+            /**
+             * @var \ManaPHP\Mvc\DispatcherInterface $source
+             */
+            $this->_defaultCategory = $this->configure->appID . '.' . $source->getMCA('.');
+        });
     }
 
     /**
      * @param string $category
      */
-    public function setCategory($category)
+    public function setDefaultCategory($category)
     {
-        $this->_category = $category;
+        $this->_defaultCategory = $category;
     }
 
     /**
@@ -160,17 +154,27 @@ class Logger extends Component implements LoggerInterface
      */
     protected function _IsFiltered($filter, $logEvent)
     {
-        if (isset($filter['level']) && $filter['level'] < $this->_s2i[$logEvent['level']]) {
+        if (isset($filter['level']) && $this->_s2i[$filter['level']] < $this->_s2i[$logEvent['level']]) {
             return true;
         }
 
-        if (isset($filter['categories'])) {
-            foreach ((array)$filter['categories'] as $category) {
-                if (fnmatch($category, $logEvent['category'])) {
+        foreach ($filter as $field => $definition) {
+            if ($field === 'level') {
+                continue;
+            }
+
+            $matchNothing = true;
+            foreach (explode(',', $definition) as $pattern) {
+                $value = $logEvent[$field];
+                if ($value === $pattern || fnmatch($pattern, $value)) {
+                    $matchNothing = false;
                     break;
                 }
             }
-            return false;
+
+            if ($matchNothing) {
+                return true;
+            }
         }
 
         return false;
@@ -185,7 +189,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function log($level, $message, $category = null)
     {
-        if (isset($this->_filter['level']) && $this->_filter['level'] < $this->_s2i[$level]) {
+        if ($this->_level !== $level && $this->_s2i[$this->_level] < $this->_s2i[$level]) {
             return $this;
         }
 
@@ -206,11 +210,12 @@ class Logger extends Component implements LoggerInterface
         $logEvent = [];
 
         $logEvent['level'] = $level;
-        $logEvent['message'] = $message;
-        $logEvent['category'] = $category ?: $this->_category;
-        $logEvent['timestamp'] = time();
+        $logEvent['category'] = $category ?: $this->_defaultCategory;
         $logEvent['location'] = $this->_getLocation($traces);
+        $logEvent['message'] = $message;
         $logEvent['caller'] = $this->_getCaller($traces);
+        $logEvent['client_ip'] = $this->request->getClientAddress();
+        $logEvent['timestamp'] = time();
 
         $this->fireEvent('logger:log', $logEvent);
 

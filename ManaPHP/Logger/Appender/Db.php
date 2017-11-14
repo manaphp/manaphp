@@ -11,8 +11,6 @@ use ManaPHP\Logger\AppenderInterface;
  * @package logger
  *
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
- * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
- * @property \ManaPHP\Http\RequestInterface                $request
  */
 class Db extends Component implements AppenderInterface
 {
@@ -20,11 +18,6 @@ class Db extends Component implements AppenderInterface
      * @var string
      */
     protected $_model = '\ManaPHP\Logger\Appender\Db\Model';
-
-    /**
-     * @var \ManaPHP\Logger\Appender\Db\Model
-     */
-    protected $_log;
 
     /**
      * @var bool
@@ -61,26 +54,23 @@ class Db extends Component implements AppenderInterface
         }
 
         $this->_nested = true;
-        if ($this->_log === null) {
-            /**
-             * @var \ManaPHP\Logger\Appender\Db\Model $log
-             */
-            $log = new $this->_model;
 
-            $log->user_id = $this->userIdentity->getId();
-            $log->user_name = $this->userIdentity->getName();
-            $log->ip = $this->request->getClientAddress();
-            $this->_log = $log;
-        }
+        /**
+         * @var \ManaPHP\Logger\Appender\Db\Model $log
+         */
+        $log = new $this->_model;
 
-        $this->_log->log_id = null;
+        $log->user_id = $this->userIdentity->getId();
+        $log->user_name = $this->userIdentity->getName();
         $log->level = $logEvent['level'];
-        $this->_log->category = $logEvent['category'];
-        $this->_log->location = $logEvent['location'];
-        $this->_log->message = $logEvent['message'];
-        $this->_log->created_time = $logEvent['timestamp'];
+        $log->category = $logEvent['category'];
+        $log->location = $logEvent['location'];
+        $log->caller = $logEvent['caller'];
+        $log->message = $logEvent['message'];
+        $log->client_ip = $logEvent['client_ip'];
+        $log->created_time = $logEvent['timestamp'];
 
-        $this->_log->create();
+        $log->create();
 
         $this->_nested = false;
     }
