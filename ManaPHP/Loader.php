@@ -25,7 +25,7 @@ class Loader
     public function __construct()
     {
         $this->_namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? strtr(__DIR__, '\\', '/') : __DIR__;
-        spl_autoload_register([$this, '_autoload']);
+        spl_autoload_register([$this, '_autoload'], true, true);
     }
 
     /**
