@@ -26,7 +26,7 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
-        $this->configure->load('@app/config.php', 'dev');
+        $this->configure->loadFile('@app/config.php', 'dev');
 
         if ($this->configure->debug) {
             $this->registerServices();
