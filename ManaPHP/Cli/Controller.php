@@ -13,7 +13,6 @@ use ManaPHP\Component;
  * @property \ManaPHP\CacheInterface            $cache
  * @property \ManaPHP\DbInterface               $db
  * @property \ManaPHP\Security\CryptInterface   $crypt
- * @property \ManaPHP\Http\Session\BagInterface $persistent
  * @property \ManaPHP\Di|\ManaPHP\DiInterface   $di
  * @property \ManaPHP\LoggerInterface           $logger
  * @property \ManaPHP\Configure                 $configure

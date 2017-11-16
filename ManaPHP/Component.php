@@ -18,6 +18,8 @@ namespace ManaPHP;
  * @property \ManaPHP\LoggerInterface         $logger
  * @property \ManaPHP\Configure               $configure
  * @property \ManaPHP\Security\CryptInterface $crypt
+ * @property \ManaPHP\CacheInterface          $scopedCache
+ * @property \ManaPHP\Http\SessionInterface   $scopedSession
  */
 class Component implements ComponentInterface
 {
@@ -70,9 +72,9 @@ class Component implements ComponentInterface
             $this->_dependencyInjector = Di::getDefault();
         }
 
-        if ($name === 'persistent') {
-            $getParameter = [get_class($this), $this->_dependencyInjector];
-            return $this->{'persistent'} = $this->_dependencyInjector->get('sessionBag', $getParameter);
+        if (strncmp($name, 'scoped', 6) === 0) {
+            $component = lcfirst(substr($name, 6));
+            return $this->{$component}->getScopedClone($this);
         } else {
             return $this->{$name} = $this->_dependencyInjector->{$name};
         }
@@ -100,7 +102,7 @@ class Component implements ComponentInterface
      */
     public function __isset($name)
     {
-        if ($name === 'di' || $name === 'persistent') {
+        if ($name === 'di') {
             return true;
         }
 

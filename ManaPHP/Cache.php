@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Component\ScopedCloneableInterface;
+
 /**
  * Class ManaPHP\Cache
  *
@@ -8,7 +10,7 @@ namespace ManaPHP;
  *
  * @property \ManaPHP\Serializer\AdapterInterface $serializer
  */
-class Cache extends Component implements CacheInterface
+class Cache extends Component implements CacheInterface, ScopedCloneableInterface
 {
     /**
      * @var string
@@ -117,5 +119,17 @@ class Cache extends Component implements CacheInterface
         }
 
         return $r;
+    }
+
+    /**
+     * @param \ManaPHP\Component $scope
+     * @return static
+     */
+    public function getScopedClone($scope)
+    {
+        $cloned = clone $this;
+        $cloned->_prefix = ($this->_prefix ? $this->_prefix . ':' : '') . $scope->getComponentName($this) . ':';
+
+        return $cloned;
     }
 }

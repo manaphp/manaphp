@@ -29,7 +29,6 @@ use ManaPHP\Component;
  * @property \ManaPHP\Http\RequestInterface                $request
  * @property \ManaPHP\Http\ResponseInterface               $response
  * @property \ManaPHP\Security\CryptInterface              $crypt
- * @property \ManaPHP\Http\Session\BagInterface            $persistent
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\LoggerInterface                      $logger
  * @property \ManaPHP\Configure                            $configure

@@ -8,6 +8,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Component\ScopedCloneableInterface;
 use ManaPHP\Http\Session\Exception as SessionException;
 
 /**
@@ -16,7 +17,7 @@ use ManaPHP\Http\Session\Exception as SessionException;
  * @package session
  * @property \ManaPHP\Http\Cookies $cookies
  */
-class Session extends Component implements SessionInterface, \ArrayAccess
+class Session extends Component implements SessionInterface, ScopedCloneableInterface, \ArrayAccess
 {
     /**
      * @var \ManaPHP\Http\Session\AdapterInterface
@@ -277,5 +278,14 @@ class Session extends Component implements SessionInterface, \ArrayAccess
 
         $data['_internal_'] = ['adapter' => is_string($this->adapter) ? $this->adapter : get_class($this->adapter)];
         return $data;
+    }
+
+    /**
+     * @param \ManaPHP\Component $scope
+     * @return static
+     */
+    public function getScopedClone($scope)
+    {
+        return $this->_dependencyInjector->getInstance('ManaPHP\Http\Session\Bag', $scope->getComponentName($this));
     }
 }

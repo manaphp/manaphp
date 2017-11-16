@@ -39,7 +39,6 @@ class FactoryDefault extends Di
             'flash' => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
             'flashSession' => 'ManaPHP\Mvc\View\Flash\Adapter\Session',
             'session' => ['class' => 'ManaPHP\Http\Session', 'ManaPHP\Http\Session\Adapter\File'],
-            'sessionBag' => ['class' => 'ManaPHP\Http\Session\Bag', 'shared' => false],
             'view' => 'ManaPHP\Mvc\View',
             'logger' => ['class' => 'ManaPHP\Logger', 'ManaPHP\Logger\Appender\File'],
             'renderer' => 'ManaPHP\Renderer',
