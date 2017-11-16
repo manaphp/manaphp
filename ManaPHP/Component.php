@@ -74,7 +74,7 @@ class Component implements ComponentInterface
 
         if (strncmp($name, 'scoped', 6) === 0) {
             $component = lcfirst(substr($name, 6));
-            return $this->{$component}->getScopedClone($this);
+            return $this->{$name} = $this->{$component}->getScopedClone($this);
         } else {
             return $this->{$name} = $this->_dependencyInjector->{$name};
         }
