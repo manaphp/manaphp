@@ -22,6 +22,11 @@ namespace ManaPHP;
 class Component implements ComponentInterface
 {
     /**
+     * @var string
+     */
+    protected $_component_name;
+
+    /**
      * @var \ManaPHP\Di
      */
     protected $_dependencyInjector;
@@ -187,5 +192,23 @@ class Component implements ComponentInterface
     public function reConstruct()
     {
         return true;
+    }
+
+    /**
+     * @param \ManaPHP\Component $caller
+     * @return string
+     */
+    public function getComponentName($caller = null)
+    {
+        if ($this->_component_name === null) {
+            $className = get_called_class();
+            if (strpos($className, 'ManaPHP') === 0) {
+                $this->_component_name = lcfirst(substr($className, strrpos($className, '\\') + 1));
+            } else {
+                $this->_component_name = strtr(substr($className, ($pos = strpos($className, '\\')) === false ? 0 : $pos + 1), '\\', '.');
+            }
+        }
+
+        return $this->_component_name;
     }
 }

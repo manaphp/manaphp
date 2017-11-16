@@ -59,4 +59,10 @@ interface ComponentInterface
      * @return bool
      */
     public function reConstruct();
+
+    /**
+     * @param  \ManaPHP\Component $caller
+     * @return string
+     */
+    public function getComponentName($caller = null);
 }
