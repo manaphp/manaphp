@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
@@ -6,13 +7,12 @@ use ManaPHP\Cli\Controller;
 class DateController extends Controller
 {
     /**
-     * @CliCommand sync system time with http server time clock
-     * @CliParam   --url the time original
+     * @param string $url
+     * @param bool   $onlyOnce
+     * @return int|false
      */
-    public function syncCommand()
+    protected function _getRemoteTimestamp($url, $onlyOnce = false)
     {
-        $url = $this->arguments->get('url', 'http://www.baidu.com');
-
         if (strpos($url, '://') === false) {
             $url = 'http://' . $url;
         }
@@ -20,7 +20,8 @@ class DateController extends Controller
         $prev_timestamp = 0;
         do {
             if ($this->httpClient->head($url) !== 200) {
-                return $this->console->writeLn('communication with `:url` failed', ['url' => $url]);
+                $this->console->writeLn('communication with `:url` failed', ['url' => $url]);
+                return false;
             }
             $headers = $this->httpClient->getResponseHeaders();
             $timestamp = strtotime($headers['Date']);
@@ -29,13 +30,61 @@ class DateController extends Controller
             }
 
             $prev_timestamp = $timestamp;
-        } while (true);
+        } while (!$onlyOnce);
 
-        $this->_updateDate($timestamp);
+        return $timestamp;
+    }
 
-        $this->console->write(date('Y-m-d H:i:s'));
+    /**
+     * @CliCommand sync system time with http server time clock
+     * @CliParam   --url the time original
+     */
+    public function syncCommand()
+    {
+        $url = $this->arguments->get('url', 'http://www.baidu.com');
+        $timestamp = $this->_getRemoteTimestamp($url);
+        if ($timestamp === false) {
+            return $this->console->error('fetch remote timestamp failed: `:url`', ['url' => $url]);
+        } else {
+            $this->_updateDate($timestamp);
+            $this->console->write(date('Y-m-d H:i:s'));
+            return 0;
+        }
+    }
 
-        return 0;
+    /**
+     * @CliCommand show remote time
+     * @CliParam   --url the time original
+     */
+    public function remoteCommand()
+    {
+        $url = $this->arguments->get('url', 'http://www.baidu.com');
+        $timestamp = $this->_getRemoteTimestamp($url);
+        if ($timestamp === false) {
+            return $this->console->error('fetch remote timestamp failed: `:url`', ['url' => $url]);
+        } else {
+            $this->console->writeLn(date('Y-m-d H:i:s', $timestamp));
+            return 0;
+        }
+    }
+
+    /**
+     * @CliCommand show local and remote diff
+     * @CliParam   --url the time original
+     */
+    public function diffCommand()
+    {
+        $url = $this->arguments->get('url', 'http://www.baidu.com');
+        $remote_ts = $this->_getRemoteTimestamp($url);
+        $local_ts = time();
+        if ($remote_ts === false) {
+            return $this->console->error('fetch remote timestamp failed: `:url`', ['url' => $url]);
+        } else {
+            $this->console->writeLn(' local: ' . date('Y-m-d H:i:s', $local_ts));
+            $this->console->writeLn('remote: ' . date('Y-m-d H:i:s', $remote_ts));
+            $this->console->writeLn('  diff: ' . ($local_ts - $remote_ts));
+            return 0;
+        }
     }
 
     /**
@@ -48,33 +97,75 @@ class DateController extends Controller
     {
         $arguments = $this->arguments->get();
         if (count($arguments) === 1) {
-            if (preg_match('#^\d+$#', $arguments[0]) === 1) {
-                $date = date('ym') . str_pad($arguments[0], 8, '0');
+            $str = trim(strtr($arguments[0], 'Tt', '  '));
+            if (strpos($str, ' ') === false) {
+                if (strpos($str, ':') !== false) {
+                    $date = null;
+                    $time = $str;
+                } else {
+                    $date = $str;
+                    $time = null;
+                }
             } else {
-                $date = $arguments[0];
+                list($date, $time) = explode(' ', $str);
             }
         } else {
-            $date = str_replace('-', '', $this->arguments->get('date:d', date('ymd'))) . str_replace(':', '', $this->arguments->get('time:t', date('His')));
+            $date = $this->arguments->get('date:d');
+            $time = $this->arguments->get('time:t');
         }
 
-        if (strpos($date, ':') !== false) {
-            $timestamp = strtotime($date);
+        if ($date === null || $date === '') {
+            $date = date('Y-m-d');
         } else {
-            list($year, $month, $day, $hour, $minute, $second) = str_split(str_pad($date, 12, '0'), 2);
-            $timestamp = strtotime("20$year-$month-$day $hour:$minute:$second");
+            $date = strtr($date, '/', '-');
+            $date = trim(trim($date), '-');
+
+            switch (substr_count($date, '-')) {
+                case 0:
+                    $date = date('Y-m-') . $date;
+                    break;
+                case 1:
+                    $date = date('Y-') . $date;
+                    break;
+            }
+            $parts = explode('-', $date);
+            $parts[0] = substr(date('Y'), 0, 4 - strlen($parts[0])) . $parts[0];
+
+            $date = $parts[0] . '-' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
         }
-        if ($timestamp === false) {
-            $this->console->error('time format is invalid.');
-            return 1;
+
+        if ($time === null || $time === '') {
+            $time = date('H:i:s');
+        } else {
+            $time = trim(trim($time), ':');
+            switch (substr_count($time, '-')) {
+                case 0:
+                    $time .= date(':i:s');
+                    break;
+                case 1:
+                    $time .= date(':s');
+                    break;
+            }
+            $parts = explode(':', $time);
+
+            $time = str_pad($parts[0], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[1], 2, '0', STR_PAD_LEFT);
         }
 
-        $this->_updateDate($timestamp);
+        $str = $date . ' ' . $time;
+        $timestamp = strtotime($str);
+        if ($timestamp === false || preg_match('#^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$#', $str) !== 1) {
+            return $this->console->error('`:time` time format is invalid', ['time' => $str]);
+        } else {
+            $this->_updateDate($timestamp);
+            $this->console->writeLn(date('Y-m-d H:i:s'));
 
-        $this->console->writeLn(date('Y-m-d H:i:s'));
-
-        return 0;
+            return 0;
+        }
     }
 
+    /**
+     * @param int $timestamp
+     */
     protected function _updateDate($timestamp)
     {
         if (DIRECTORY_SEPARATOR === '\\') {
