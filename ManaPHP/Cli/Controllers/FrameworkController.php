@@ -16,6 +16,10 @@ class FrameworkController extends Controller
      * @CliCommand build manaphp framework lite php file
      * @CliParam   --config,-c  config file name default:@root/manaphp_lite.json
      * @CliParam   --output,-o  output file name default:@root/manaphp_lite.php
+     * @CliParam   --skip-remove-interfaces
+     * @CliParam   --skip-remove-whitespaces
+     * @CliParam   --skip-add-class-comment
+     * @CliParam   --remove-namespace
      *
      */
     public function liteCommand()
@@ -35,29 +39,49 @@ class FrameworkController extends Controller
 
         $contents = '';
 
-        foreach ($config['classes'] as $c) {
-            if (strpos($c, 'ManaPHP\\') !== 0) {
+        $prevClassNamespace = '';
+        foreach ($config['classes'] as $className) {
+            if (strpos($className, 'ManaPHP\\') !== 0) {
                 continue;
             }
 
-            $file = '@manaphp/' . strtr(substr($c, strpos($c, '\\')), '\\', '/') . '.php';
+            $this->console->writeLn($className . '...');
 
-            if (!$this->filesystem->fileExists($file)) {
-                return $this->console->error('`:file` is not missing for `:class` class', ['file' => $file, 'class' => $c]);
+            $classFile = '@manaphp/' . strtr(substr($className, strpos($className, '\\')), '\\', '/') . '.php';
+
+            if (!$this->filesystem->fileExists($classFile)) {
+                return $this->console->error('`:file` is not missing for `:class` class', ['file' => $classFile, 'class' => $className]);
             }
 
-            $content = $this->filesystem->fileGet($file);
-
-            if (preg_match('#\s+implements\s+.*#', $content, $matches) === 1) {
-                $implements = $matches[0];
-                $implements = preg_replace('#[a-zA-Z]+Interface,?#', '', $implements);
-                if (str_replace([',', ' ', "\r", "\n"], '', $implements) === 'implements') {
-                    $implements = '';
+            $classContent = $this->filesystem->fileGet($classFile);
+            if ($this->arguments->has('remove-namespace')) {
+                if (preg_match('#namespace\s+([^;]+);#', $classContent, $matches) === 1) {
+                    $classNamespace = $matches[1];
+                    if ($classNamespace === $prevClassNamespace) {
+                        $classContent = str_replace($matches[0], '', $classContent);
+                    }
+                    $prevClassNamespace = $classNamespace;
+                } else {
+                    $this->console->writeLn('`:class` class namespace is not found', ['class' => $className]);
                 }
-                $content = str_replace($matches[0], $implements, $content);
             }
 
-            $contents .= '/**' . $c . '*/' . preg_replace('#^\s*<\?php\s*#', '', $this->_strip_whitespace($content), 1) . PHP_EOL;
+            if (!$this->arguments->has('skip-remove-interfaces')) {
+                if (preg_match('#\s+implements\s+.*#', $classContent, $matches) === 1) {
+                    $implements = $matches[0];
+                    $implements = preg_replace('#[a-zA-Z]+Interface,?#', '', $implements);
+                    if (str_replace([',', ' ', "\r", "\n"], '', $implements) === 'implements') {
+                        $implements = '';
+                    }
+                    $classContent = str_replace($matches[0], $implements, $classContent);
+                }
+            }
+
+            if (!$this->arguments->has('skip-remove-whitespaces')) {
+                $classContent = $this->_strip_whitespaces($classContent);
+            }
+
+            $contents .= '/**' . $className . '*/' . preg_replace('#^\s*<\?php\s*#', '', $classContent, 1) . PHP_EOL;
         }
 
         $contents = '<?php' . PHP_EOL . $contents;
@@ -74,7 +98,7 @@ class FrameworkController extends Controller
      *
      * @return string
      */
-    protected function _strip_whitespace($str)
+    protected function _strip_whitespaces($str)
     {
         $this->filesystem->filePut($this->_tmpLiteFile, $str);
         $str = php_strip_whitespace($this->alias->resolve($this->_tmpLiteFile));

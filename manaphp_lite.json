@@ -29,7 +29,7 @@
         "ManaPHP\\Security\\Random",
         "ManaPHP\\Filesystem\\Adapter\\File",
         "ManaPHP\\Logger",
-        "ManaPHP\\Logger\\Adapter\\File",
+        "ManaPHP\\Logger\\Appender\\File",
         "ManaPHP\\Renderer\\Engine\\Php",
         "ManaPHP\\Http\\Response",
         "ManaPHP\\Http\\Cookies"
