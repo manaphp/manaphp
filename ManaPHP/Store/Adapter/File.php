@@ -31,13 +31,11 @@ class File extends Component implements AdapterInterface
     /**
      * File constructor.
      *
-     * @param string|array|\ConfManaPHP\Store\Adapter\File $options
+     * @param string|array $options
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        } elseif (is_string($options)) {
+        if (is_string($options)) {
             $options = ['dir' => $options];
         }
 

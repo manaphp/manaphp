@@ -30,13 +30,11 @@ class File extends Component implements AppenderInterface
     /**
      * \ManaPHP\Logger\Adapter\File constructor.
      *
-     * @param string|array|\ConfManaPHP\Logger\Adapter\File $options
+     * @param string|array $options
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        } elseif (is_string($options)) {
+        if (is_string($options)) {
             $options = ['file' => $options];
         }
 

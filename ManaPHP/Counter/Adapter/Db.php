@@ -26,13 +26,11 @@ class Db implements AdapterInterface
     /**
      * Db constructor.
      *
-     * @param string|array|\ConfManaPHP\Counter\Adapter\Db $options
+     * @param string|array $options
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        } elseif (is_string($options)) {
+        if (is_string($options)) {
             $options = ['model' => $options];
         }
 
