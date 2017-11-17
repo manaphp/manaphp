@@ -1,17 +1,18 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Cache\Engine;
 
-use ManaPHP\Cache\Adapter\Apc\Exception as ApcException;
-use ManaPHP\Cache\AdapterInterface;
+use ManaPHP\Cache\EngineInterface;
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Cache\Adapter\Apc
+ * Class ManaPHP\Cache\Adapter\Redis
  *
  * @package cache\adapter
+ *
+ * @property \Redis $cacheRedis
  */
-class Apc extends Component implements AdapterInterface
+class Redis extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -19,22 +20,12 @@ class Apc extends Component implements AdapterInterface
     protected $_prefix;
 
     /**
-     * Apc constructor.
+     * Redis constructor.
      *
-     * @param string|array $options
-     *
-     * @throws \ManaPHP\Cache\Adapter\Exception
+     * @param string|array|\ConfManaPHP\Cache\Adapter\Redis $options
      */
     public function __construct($options = [])
     {
-        if (!function_exists('apc_exists')) {
-            throw new ApcException('apc extension is not loaded: http://pecl.php.net/package/APCu'/**m097f29c9069e20c50*/);
-        }
-
-        if (!ini_get('apc.enable_cli')) {
-            throw new ApcException('apc.enable_cli=0, please enable it.'/**m03cb046c90f464b79*/);
-        }
-
         if (is_object($options)) {
             $options = (array)$options;
         } elseif (is_string($options)) {
@@ -54,6 +45,8 @@ class Apc extends Component implements AdapterInterface
     public function setDependencyInjector($dependencyInjector)
     {
         parent::setDependencyInjector($dependencyInjector);
+
+        $this->_dependencyInjector->setAliases('redis', 'cacheRedis');
         if ($this->_prefix === null) {
             $this->_prefix = $this->_dependencyInjector->configure->appID . ':cache:';
         }
@@ -76,21 +69,11 @@ class Apc extends Component implements AdapterInterface
     /**
      * @param string $key
      *
-     * @return bool
-     */
-    public function exists($key)
-    {
-        return apc_exists($this->_prefix . $key);
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return mixed
+     * @return string|false
      */
     public function get($key)
     {
-        return apc_fetch($this->_prefix . $key);
+        return $this->cacheRedis->get($this->_prefix . $key);
     }
 
     /**
@@ -98,14 +81,11 @@ class Apc extends Component implements AdapterInterface
      * @param string $value
      * @param int    $ttl
      *
-     * @throws \ManaPHP\Cache\Adapter\Apc\Exception
+     * @return void
      */
     public function set($key, $value, $ttl)
     {
-        $r = apc_store($this->_prefix . $key, $value, $ttl);
-        if (!$r) {
-            throw new ApcException('apc_store failed for `:key` key'/**m044d8697223644728*/, ['key' => $key]);
-        }
+        $this->cacheRedis->set($this->_prefix . $key, $value, $ttl);
     }
 
     /**
@@ -115,6 +95,16 @@ class Apc extends Component implements AdapterInterface
      */
     public function delete($key)
     {
-        apc_delete($this->_prefix . $key);
+        $this->cacheRedis->delete($this->_prefix . $key);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function exists($key)
+    {
+        return $this->cacheRedis->exists($this->_prefix . $key);
     }
 }

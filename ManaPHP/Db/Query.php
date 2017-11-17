@@ -11,7 +11,7 @@ use ManaPHP\Utility\Text;
  *
  * @package queryBuilder
  *
- * @property \ManaPHP\Cache\AdapterInterface  $modelsCache
+ * @property \ManaPHP\Cache\EngineInterface   $modelsCache
  * @property \ManaPHP\Paginator               $paginator
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property \ManaPHP\Http\RequestInterface   $request

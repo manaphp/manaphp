@@ -1,7 +1,7 @@
 <?php
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Cache\Engine;
 
-use ManaPHP\Cache\AdapterInterface;
+use ManaPHP\Cache\EngineInterface;
 use ManaPHP\Component;
 
 /**
@@ -9,12 +9,12 @@ use ManaPHP\Component;
  *
  * @package cache\adapter
  */
-class Db extends Component implements AdapterInterface
+class Db extends Component implements EngineInterface
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Cache\Adapter\Db\Model';
+    protected $_model = 'ManaPHP\Cache\Engine\Db\Model';
 
     /**
      * Db constructor.
@@ -43,7 +43,7 @@ class Db extends Component implements AdapterInterface
     public function exists($key)
     {
         /**
-         * @var \ManaPHP\Cache\Adapter\Db\Model $model
+         * @var \ManaPHP\Cache\Engine\Db\Model $model
          */
         $model = new $this->_model;
         $model = $model::findFirst(['hash' => md5($key)]);
@@ -60,7 +60,7 @@ class Db extends Component implements AdapterInterface
     public function get($key)
     {
         /**
-         * @var \ManaPHP\Cache\Adapter\Db\Model $model
+         * @var \ManaPHP\Cache\Engine\Db\Model $model
          */
         $model = new $this->_model;
         $model = $model::findFirst(['hash' => md5($key)]);
@@ -79,12 +79,12 @@ class Db extends Component implements AdapterInterface
      *
      * @return void
      * @throws \ManaPHP\Model\Exception
-     * @throws \ManaPHP\Cache\Adapter\Exception
+     * @throws \ManaPHP\Cache\Engine\Exception
      */
     public function set($key, $value, $ttl)
     {
         /**
-         * @var \ManaPHP\Cache\Adapter\Db\Model $model
+         * @var \ManaPHP\Cache\Engine\Db\Model $model
          */
         $model = new $this->_model;
 
@@ -105,7 +105,7 @@ class Db extends Component implements AdapterInterface
     public function delete($key)
     {
         /**
-         * @var \ManaPHP\Cache\Adapter\Db\Model $model
+         * @var \ManaPHP\Cache\Engine\Db\Model $model
          */
         $model = new $this->_model;
 

@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Cache\Engine;
 
 /**
  * Class ManaPHP\Cache\Adapter\Exception

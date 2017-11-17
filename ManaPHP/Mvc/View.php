@@ -11,9 +11,9 @@ use ManaPHP\Utility\Text;
  *
  * @package view
  *
- * @property \ManaPHP\RendererInterface      $renderer
- * @property \ManaPHP\Cache\AdapterInterface $viewsCache
- * @property \ManaPHP\Http\RequestInterface  $request
+ * @property \ManaPHP\RendererInterface     $renderer
+ * @property \ManaPHP\Cache\EngineInterface $viewsCache
+ * @property \ManaPHP\Http\RequestInterface $request
  */
 class View extends Component implements ViewInterface
 {

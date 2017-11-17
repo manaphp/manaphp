@@ -9,7 +9,7 @@ use ManaPHP\Db\Model\Query\Exception as QueryException;
  *
  * @package queryBuilder
  *
- * @property \ManaPHP\Cache\AdapterInterface  $modelsCache
+ * @property \ManaPHP\Cache\EngineInterface   $modelsCache
  * @property \ManaPHP\Paginator               $paginator
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */

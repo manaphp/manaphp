@@ -24,7 +24,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\DbInterface                          $db
  * @property \ManaPHP\Security\CryptInterface              $crypt
  * @property \ManaPHP\Db\Model\MetadataInterface           $modelsMetadata
- * @property \ManaPHP\Cache\AdapterInterface               $modelsCache
+ * @property \ManaPHP\Cache\EngineInterface                $modelsCache
  * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
  * @property \ManaPHP\Mvc\ViewInterface                    $view
  * @property \ManaPHP\Loader                               $loader
@@ -38,7 +38,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Serializer\AdapterInterface          $serializer
  * @property \ManaPHP\CacheInterface                       $cache
  * @property \ManaPHP\CounterInterface                     $counter
- * @property \ManaPHP\Cache\AdapterInterface               $viewsCache
+ * @property \ManaPHP\Cache\EngineInterface                $viewsCache
  * @property \ManaPHP\Http\ClientInterface                 $httpClient
  * @property \ManaPHP\AuthorizationInterface               $authorization
  * @property \ManaPHP\Security\CaptchaInterface            $captcha

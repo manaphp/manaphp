@@ -16,7 +16,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Di|\ManaPHP\DiInterface   $di
  * @property \ManaPHP\LoggerInterface           $logger
  * @property \ManaPHP\Configure                 $configure
- * @property \ManaPHP\Cache\AdapterInterface    $viewsCache
+ * @property \ManaPHP\Cache\EngineInterface     $viewsCache
  * @property \ManaPHP\FilesystemInterface       $filesystem
  * @property \ManaPHP\Security\RandomInterface  $random
  * @property \ManaPHP\Message\QueueInterface    $messageQueue

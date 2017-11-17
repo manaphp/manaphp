@@ -35,7 +35,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Http\SessionInterface                $session
  * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken
  * @property \ManaPHP\Paginator                            $paginator
- * @property \ManaPHP\Cache\AdapterInterface               $viewsCache
+ * @property \ManaPHP\Cache\EngineInterface                $viewsCache
  * @property \ManaPHP\FilesystemInterface                  $filesystem
  * @property \ManaPHP\Security\RandomInterface             $random
  * @property \ManaPHP\Message\QueueInterface               $messageQueue

@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Cache\Engine;
 
-use ManaPHP\Cache\Adapter\File\Exception as FileException;
-use ManaPHP\Cache\AdapterInterface;
+use ManaPHP\Cache\Engine\File\Exception as FileException;
+use ManaPHP\Cache\EngineInterface;
 use ManaPHP\Component;
 
 /**
@@ -10,7 +10,7 @@ use ManaPHP\Component;
  *
  * @package cache\adapter
  */
-class File extends Component implements AdapterInterface
+class File extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -116,7 +116,7 @@ class File extends Component implements AdapterInterface
      * @param int    $ttl
      *
      * @return void
-     * @throws \ManaPHP\Cache\Adapter\Exception
+     * @throws \ManaPHP\Cache\Engine\Exception
      */
     public function set($key, $value, $ttl)
     {

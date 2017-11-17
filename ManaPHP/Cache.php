@@ -18,22 +18,22 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
     protected $_prefix = '';
 
     /**
-     * @var \ManaPHP\Cache\AdapterInterface
+     * @var \ManaPHP\Cache\EngineInterface
      */
-    public $adapter;
+    protected $_engine;
 
     /**
      * Cache constructor.
      *
-     * @param string|array|\ManaPHP\Cache\AdapterInterface $options
+     * @param string|array|\ManaPHP\Cache\EngineInterface $options
      */
     public function __construct($options = [])
     {
         if (is_string($options) || is_object($options)) {
-            $options = ['adapter' => $options];
+            $options = ['engine' => $options];
         }
 
-        $this->adapter = $options['adapter'];
+        $this->_engine = $options['engine'];
 
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
@@ -49,8 +49,8 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
     {
         parent::setDependencyInjector($dependencyInjector);
 
-        if (!is_object($this->adapter)) {
-            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+        if (!is_object($this->_engine)) {
+            $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
         }
 
         return $this;
@@ -63,7 +63,7 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function get($key)
     {
-        $data = $this->adapter->get($this->_prefix . $key);
+        $data = $this->_engine->get($this->_prefix . $key);
         if ($data === false) {
             return false;
         } else {
@@ -80,7 +80,7 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function set($key, $value, $ttl)
     {
-        $this->adapter->set($this->_prefix . $key, $this->serializer->serialize($value), $ttl);
+        $this->_engine->set($this->_prefix . $key, $this->serializer->serialize($value), $ttl);
     }
 
     /**
@@ -90,7 +90,7 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function delete($key)
     {
-        $this->adapter->delete($this->_prefix . $key);
+        $this->_engine->delete($this->_prefix . $key);
     }
 
     /**
@@ -100,7 +100,7 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function exists($key)
     {
-        return $this->adapter->exists($this->_prefix . $key);
+        return $this->_engine->exists($this->_prefix . $key);
     }
 
     /**
@@ -123,6 +123,7 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
 
     /**
      * @param \ManaPHP\Component $scope
+     *
      * @return static
      */
     public function getScopedClone($scope)

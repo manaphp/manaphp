@@ -6,7 +6,7 @@ namespace ManaPHP\Cache;
  *
  * @package cache
  */
-interface AdapterInterface
+interface EngineInterface
 {
     /**
      * Checks whether a specified key exists in the cache.
