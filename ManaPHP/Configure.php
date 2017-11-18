@@ -88,6 +88,7 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @param array  $data
      * @param string $env
+     *
      * @return static
      * @throws \ManaPHP\Configure\Exception
      */
@@ -105,7 +106,7 @@ class Configure extends Component implements ConfigureInterface
                         $op = '=';
                     }
 
-                    if ($f_env[0] === '!' ? !in_array($env, explode(',', substr($f_env, 1), true)) : in_array($env, explode(',', $f_env), true)) {
+                    if ($f_env[0] === '!' ? !in_array($env, explode(',', substr($f_env, 1)), true) : in_array($env, explode(',', $f_env), true)) {
                         if ($op === '=') {
                             $data[$f_name] = $value;
                         } elseif ($op === '+') {
