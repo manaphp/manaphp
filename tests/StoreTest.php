@@ -3,7 +3,7 @@ namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Store;
-use ManaPHP\Store\Adapter\File;
+use ManaPHP\Store\Engine\File;
 use PHPUnit\Framework\TestCase;
 
 class StoreTest extends TestCase
@@ -49,10 +49,18 @@ class StoreTest extends TestCase
 
         $this->assertFalse($store->get('var'));
 
-        // false
-        $store->set('var', false);
-        $this->assertEquals(false, $store->get('var'));
-        $this->assertFalse($store->get('val'));
+        //null
+        $store->set('var', null);
+        $this->assertNull($store->get('var'));
+
+        // false not support
+        try {
+            $store->set('var', false);
+            $this->fail('why not?');
+        } catch (\Exception $e) {
+            $this->assertEquals('`var` key store value can not `false` boolean value', $e->getMessage());
+        }
+
         // true
         $store->set('var', true);
         $this->assertTrue($store->get('var'));
@@ -61,27 +69,36 @@ class StoreTest extends TestCase
         $store->set('var', 199);
         $this->assertSame(199, $store->get('var'));
 
+        //float
+        $store->set('var',1.5);
+        $this->assertSame(1.5, $store->get('var'));
+
         //string
         $store->set('var', 'value');
         $this->assertSame('value', $store->get('var'));
+
+        $store->set('var','');
+        $this->assertSame('',$store->get('var'));
+
+        $store->set('var','{');
+        $this->assertSame('{',$store->get('var'));
+
+        $store->set('var','[');
+        $this->assertSame('[',$store->get('var'));
 
         //array
         $store->set('var', [1, 2, 3]);
         $this->assertSame([1, 2, 3], $store->get('var'));
 
+        $store->set('var', ['_wrapper_' => 123]);
+        $this->assertSame(['_wrapper_' => 123], $store->get('var'));
+
         $value = new \stdClass();
         $value->a = 123;
         $value->b = 'bbbb';
 
-        // object and save as object
         $store->set('val', $value);
-        $this->assertEquals($value, $store->get('val'));
-        $this->assertInstanceOf('\stdClass', $store->get('val'));
-
-        // object and save as array
-        $store->set('val', (array)$value);
         $this->assertEquals((array)$value, $store->get('val'));
-        $this->assertTrue(is_array($store->get('val')));
     }
 
     public function test_delete()

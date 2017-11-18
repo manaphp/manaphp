@@ -2,38 +2,33 @@
 
 namespace Tests;
 
-use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Store\Adapter\Db;
+use ManaPHP\Store\Engine\Redis;
 use PHPUnit\Framework\TestCase;
 
-class StoreAdapterDbTest extends TestCase
+class StoreEngineRedisTest extends TestCase
 {
-    protected $_di;
+    public $di;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->_di = new FactoryDefault();
-
-        $this->_di->setShared('db', function () {
-            $config = require __DIR__ . '/config.database.php';
-            $db = new Mysql($config['mysql']);
-            $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
-                //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
-                var_dump($source->getSQL(), $source->getEmulatedSQL(2));
-
-            });
-            return $db;
+        $this->di = new FactoryDefault();
+        $this->di->setShared('redis', function () {
+            $redis = new \Redis();
+            $redis->connect('localhost');
+            return $redis;
         });
     }
 
     public function test_exists()
     {
-        $store = new Db();
+        $store = new Redis();
+        $store->setDependencyInjector($this->di);
 
         $store->delete('var');
+
         $this->assertFalse($store->exists('var'));
         $store->set('var', 'value');
         $this->assertTrue($store->exists('var'));
@@ -41,7 +36,8 @@ class StoreAdapterDbTest extends TestCase
 
     public function test_get()
     {
-        $store = new Db();
+        $store = new Redis();
+        $store->setDependencyInjector($this->di);
 
         $store->delete('var');
 
@@ -52,7 +48,8 @@ class StoreAdapterDbTest extends TestCase
 
     public function test_set()
     {
-        $store = new Db();
+        $store = new Redis();
+        $store->setDependencyInjector($this->di);
 
         $store->set('var', '');
         $this->assertSame('', $store->get('var'));
@@ -66,7 +63,8 @@ class StoreAdapterDbTest extends TestCase
 
     public function test_delete()
     {
-        $store = new Db();
+        $store = new Redis();
+        $store->setDependencyInjector($this->di);
 
         //exists and delete
         $store->set('var', 'value');

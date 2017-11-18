@@ -2,10 +2,10 @@
 
 namespace Tests;
 
-use ManaPHP\Store\Adapter\Memory;
+use ManaPHP\Store\Engine\Memory;
 use PHPUnit\Framework\TestCase;
 
-class StoreAdapterMemoryTest extends TestCase
+class StoreEngineMemoryTest extends TestCase
 {
     public function test_exists()
     {

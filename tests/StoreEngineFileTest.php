@@ -2,10 +2,10 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Store\Adapter\File;
+use ManaPHP\Store\Engine\File;
 use PHPUnit\Framework\TestCase;
 
-class StoreAdapterFileTest extends TestCase
+class StoreEngineFileTest extends TestCase
 {
     protected $_di;
 

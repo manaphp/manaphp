@@ -1,17 +1,16 @@
 <?php
-namespace ManaPHP\Store\Adapter;
+namespace ManaPHP\Store\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Store\Adapter\File\Exception as FileException;
-use ManaPHP\Store\AdapterInterface;
-use ManaPHP\Utility\Text;
+use ManaPHP\Store\Engine\File\Exception as FileException;
+use ManaPHP\Store\EngineInterface;
 
 /**
- * Class ManaPHP\Store\Adapter\File
+ * Class ManaPHP\Store\Engine\File
  *
- * @package store\adapter
+ * @package store\engine
  */
-class File extends Component implements AdapterInterface
+class File extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -19,14 +18,14 @@ class File extends Component implements AdapterInterface
     protected $_dir = '@data/store';
 
     /**
-     * @var string
-     */
-    protected $_extension = '.store';
-
-    /**
      * @var int
      */
     protected $_level = 1;
+
+    /**
+     * @var string
+     */
+    protected $_ext = '.store';
 
     /**
      * File constructor.
@@ -43,12 +42,12 @@ class File extends Component implements AdapterInterface
             $this->_dir = rtrim($options['dir'], '\\/');
         }
 
-        if (isset($options['extension'])) {
-            $this->_extension = $options['extension'];
+        if (isset($options['level'])) {
+            $this->_level = (int)$options['level'];
         }
 
-        if (isset($options['level'])) {
-            $this->_level = $options['level'];
+        if (isset($options['ext'])) {
+            $this->_ext = $options['ext'];
         }
     }
 
@@ -59,24 +58,25 @@ class File extends Component implements AdapterInterface
      */
     protected function _getFileName($key)
     {
-        if ($key[0] === '!') {
-            return $this->alias->resolve($this->_dir . '/' . strtr(substr($key, 1), ':', '/') . $this->_extension);
-        }
+        $key = strtr($key, ':', '/');
+        $pos = strrpos($key, '/');
 
-        if (Text::contains($key, '/')) {
-            $parts = explode('/', $key, 2);
-            $md5 = $parts[1];
-            $file = $this->_dir . '/' . $parts[0] . '/';
+        if ($pos !== false && strlen($key) - $pos - 1 === 32) {
+            $prefix = substr($key, 0, $pos);
+            $md5 = substr($key, $pos + 1);
+            $shard = '';
 
             for ($i = 0; $i < $this->_level; $i++) {
-                $file .= substr($md5, $i + $i, 2) . '/';
+                $shard .= '/' . substr($md5, $i + $i, 2);
             }
-            $file .= $md5;
-        } else {
-            $file = $this->_dir . '/' . $key;
+            $key = $prefix . $shard . '/' . $md5;
         }
 
-        return $this->alias->resolve(strtr($file, ':', '/') . $this->_extension);
+        if ($key[0] !== '/') {
+            $key = '/' . $key;
+        }
+
+        return $this->alias->resolve($this->_dir . $key . $this->_ext);
     }
 
     /**
@@ -112,7 +112,7 @@ class File extends Component implements AdapterInterface
      * @param string $value
      *
      * @return void
-     * @throws \ManaPHP\Store\Adapter\Exception
+     * @throws \ManaPHP\Store\Engine\Exception
      */
     public function set($id, $value)
     {
@@ -124,7 +124,7 @@ class File extends Component implements AdapterInterface
         }
 
         if (file_put_contents($file, $value, LOCK_EX) === false) {
-            throw new FileException('write store `:file` file failed: :last_error_message'/**m0d7c8cf410b1e3a68*/, ['file' => $file]);
+            throw new FileException('write `:file` store file failed: :last_error_message'/**m0d7c8cf410b1e3a68*/, ['file' => $file]);
         }
 
         clearstatcache(true, $file);

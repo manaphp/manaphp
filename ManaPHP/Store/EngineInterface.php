@@ -2,11 +2,11 @@
 namespace ManaPHP\Store;
 
 /**
- * Interface ManaPHP\Store\AdapterInterface
+ * Interface ManaPHP\Store\EngineInterface
  *
  * @package store
  */
-interface AdapterInterface
+interface EngineInterface
 {
 
     /**
