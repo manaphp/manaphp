@@ -17,7 +17,7 @@ class Redis extends Component implements EngineInterface
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $_prefix = 'cache:';
 
     /**
      * Redis constructor.
@@ -33,35 +33,6 @@ class Redis extends Component implements EngineInterface
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
         }
-    }
-
-    /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
-     */
-    public function setDependencyInjector($dependencyInjector)
-    {
-        parent::setDependencyInjector($dependencyInjector);
-
-        $this->_dependencyInjector->setAliases('redis', 'cacheRedis');
-        if ($this->_prefix === null) {
-            $this->_prefix = $this->_dependencyInjector->configure->appID . ':cache:';
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix)
-    {
-        $this->_prefix = $prefix;
-
-        return $this;
     }
 
     /**
