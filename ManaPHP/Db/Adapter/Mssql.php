@@ -9,94 +9,45 @@ class Mssql extends Db
     /**
      * SqlSrv constructor.
      *
-     * @param array|string $options
+     * @param string $uri
      *
      * @throws \ManaPHP\Db\Exception
      * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
-    public function __construct($options)
+    public function __construct($uri)
     {
-        if (is_string($options)) {
-            $url = $options;
+        $parts = parse_url($uri);
 
-            $parts = parse_url($options);
-
-            $options = [];
-
-            if ($parts['scheme'] !== 'mssql') {
-                throw new MssqlException('`:url` is invalid, `:scheme` scheme is not recognized', ['url' => $url, 'scheme' => $parts['scheme']]);
-            }
-
-            if (isset($parts['user'])) {
-                $options['username'] = $parts['user'];
-            }
-
-            if (isset($parts['pass'])) {
-                $options['password'] = $parts['pass'];
-            }
-
-            if (isset($parts['host'])) {
-                $options['host'] = $parts['host'];
-            }
-
-            if (isset($parts['port'])) {
-                $options['port'] = $parts['port'];
-            }
-
-            if (isset($parts['path'])) {
-                $options['database'] = trim($parts['path'], '/');
-            }
-        } elseif (is_object($options)) {
-            $options = (array)$options;
+        if ($parts['scheme'] !== 'mssql') {
+            throw new MssqlException('`:uri` is invalid, `:scheme` scheme is not recognized', ['uri' => $uri, 'scheme' => $parts['scheme']]);
         }
 
-        if (isset($options['options'])) {
-            $this->_options = $options['options'];
+        $this->_username = isset($parts['user']) ? $parts['user'] : null;
+        $this->_password = isset($parts['pass']) ? $parts['pass'] : null;
+
+        $dsn = [];
+        $use_dblib = DIRECTORY_SEPARATOR === '/';
+
+        $host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
+        $port = isset($parts['port']) ? $parts['port'] : '1433';
+
+        $dsn[$use_dblib ? 'host' : 'Server'] = $host . ($use_dblib ? ':' : ',') . $port;
+
+        if (isset($parts['path'])) {
+            $path = trim($parts['path'], '/');
+            if ($path !== '') {
+                $dsn[$use_dblib ? 'dbname' : 'Database'] = $path;
+            }
         }
 
         $this->_options[\PDO::ATTR_STRINGIFY_FETCHES] = true;
 
-        $this->_username = isset($options['username']) ? $options['username'] : null;
-        $this->_password = isset($options['password']) ? $options['password'] : null;
-
-        if (isset($options['dsn'])) {
-            $this->_dsn = $options['dsn'];
-        } else {
-            unset($options['username'], $options['password'], $options['options']);
-            if (DIRECTORY_SEPARATOR === '/') {
-                if (isset($options['server']) && !isset($options['host'])) {
-                    $options['host'] = $options['server'];
-                    unset($options['server']);
-                }
-
-                if (isset($options['database']) && !isset($options['dbname'])) {
-                    $options['dbname'] = $options['database'];
-                    unset($options['database']);
-                }
-            } else {
-                if (isset($options['host']) && !isset($options['server'])) {
-                    $options['server'] = $options['host'];
-                    unset($options['host']);
-                }
-
-                if (isset($options['server'], $options['port'])) {
-                    $options['server'] .= ',' . $options['port'];
-                    unset($options['port']);
-                }
-
-                if (isset($options['dbname']) && !isset($options['database'])) {
-                    $options['database'] = $options['dbname'];
-                    unset($options['dbname']);
-                }
-            }
-
-            $dsn_parts = [];
-            foreach ($options as $k => $v) {
-                $dsn_parts[] = $k . '=' . $v;
-            }
-
-            $this->_dsn = (DIRECTORY_SEPARATOR === '/' ? 'dblib:' : 'sqlsrv:') . implode(';', $dsn_parts);
+        $dsn_parts = [];
+        foreach ($dsn as $k => $v) {
+            $dsn_parts[] = $k . '=' . $v;
         }
+
+        $this->_dsn = ($use_dblib ? 'dblib:' : 'sqlsrv:') . implode(';', $dsn_parts);
 
         parent::__construct();
     }
