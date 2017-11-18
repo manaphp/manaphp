@@ -23,8 +23,9 @@ class CacheEngineRedisTest extends TestCase
 
     public function test_exists()
     {
+        $di = new FactoryDefault();
+
         $cache = new Redis();
-        $cache->setDependencyInjector($this->di);
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -34,8 +35,9 @@ class CacheEngineRedisTest extends TestCase
 
     public function test_get()
     {
+        $di = new FactoryDefault();
+
         $cache = new Redis();
-        $cache->setDependencyInjector($this->di);
 
         $cache->delete('var');
 
@@ -46,8 +48,9 @@ class CacheEngineRedisTest extends TestCase
 
     public function test_set()
     {
+        $di = new FactoryDefault();
+
         $cache = new Redis();
-        $cache->setDependencyInjector($this->di);
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -67,8 +70,9 @@ class CacheEngineRedisTest extends TestCase
 
     public function test_delete()
     {
+        $di = new FactoryDefault();
+
         $cache = new Redis();
-        $cache->setDependencyInjector($this->di);
 
         //exists and delete
         $cache->set('var', 'value', 100);
