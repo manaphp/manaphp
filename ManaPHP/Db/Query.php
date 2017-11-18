@@ -1256,8 +1256,11 @@ class Query extends Component implements QueryInterface
 
             $data = $this->modelsCache->get($cacheOptions['key']);
             if ($data !== false) {
+                $this->fireEvent('modelsCache:hit', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
+
                 return json_decode($data, true)['items'];
             }
+            $this->fireEvent('modelsCache:miss', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
         }
 
         $result = ($this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db)->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
@@ -1360,8 +1363,11 @@ class Query extends Component implements QueryInterface
 
                     $count = $result['count'];
                     $items = $result['items'];
+
+                    $this->fireEvent('modelsCache:hit', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
                     break;
                 }
+                $this->fireEvent('modelsCache:miss', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
             }
 
             /** @noinspection SuspiciousAssignmentsInspection */
