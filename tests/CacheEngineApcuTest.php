@@ -2,22 +2,22 @@
 
 namespace Tests;
 
-use ManaPHP\Cache\Engine\Apc;
+use ManaPHP\Cache\Engine\Apcu;
 use PHPUnit\Framework\TestCase;
 
-class CacheEngineApcTest extends TestCase
+class CacheEngineApcuTest extends TestCase
 {
     /**
      * @requires  extension apc
      */
     public function test_exists()
     {
-        if (!function_exists('apc_exists')) {
+        if (!function_exists('apcu_exists')) {
             $this->markTestSkipped();
             return;
         }
 
-        $cache = new Apc();
+        $cache = new Apcu();
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
         $cache->set('var', 'value', 1000);
@@ -26,12 +26,12 @@ class CacheEngineApcTest extends TestCase
 
     public function test_get()
     {
-        if (!function_exists('apc_exists')) {
+        if (!function_exists('apcu_exists')) {
             $this->markTestSkipped();
             return;
         }
 
-        $cache = new Apc();
+        $cache = new Apcu();
         $cache->delete('var');
 
         $this->assertFalse($cache->get('var'));
@@ -41,12 +41,12 @@ class CacheEngineApcTest extends TestCase
 
     public function test_set()
     {
-        if (!function_exists('apc_exists')) {
+        if (!function_exists('apcu_exists')) {
             $this->markTestSkipped();
             return;
         }
 
-        $cache = new Apc();
+        $cache = new Apcu();
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -69,12 +69,12 @@ class CacheEngineApcTest extends TestCase
 
     public function test_delete()
     {
-        if (!function_exists('apc_exists')) {
+        if (!function_exists('apcu_exists')) {
             $this->markTestSkipped();
             return;
         }
 
-        $cache = new Apc();
+        $cache = new Apcu();
 
         //exists and delete
         $cache->set('var', 'value', 100);
