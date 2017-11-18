@@ -29,7 +29,7 @@ class Mysql extends Db
      *
      * @throws \ManaPHP\Db\Exception
      */
-    public function __construct($uri)
+    public function __construct($uri = 'mysql://root@localhost/test?charset=utf8')
     {
         $parts = parse_url($uri);
 
