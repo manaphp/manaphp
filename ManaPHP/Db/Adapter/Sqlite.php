@@ -2,7 +2,6 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
-use ManaPHP\Db\Adapter\Sqlite\Exception as SqliteException;
 
 /**
  * Class ManaPHP\Db\Adapter\Sqlite
@@ -14,33 +13,13 @@ class Sqlite extends Db
     /**
      * Sqlite constructor.
      *
-     * @param string|array $options
+     * @param string $file
      *
-     * @throws \ManaPHP\Db\Adapter\Sqlite\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function __construct($options)
+    public function __construct($file)
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        } elseif (is_string($options)) {
-            $options = ['file' => $options];
-        }
-
-        if (isset($options['options'])) {
-            $this->_options = $options['options'];
-        }
-
-        if (isset($options['dsn'])) {
-            $this->_dsn = $options['dsn'];
-        } else {
-            if (!isset($options['file'])) {
-                throw new SqliteException('file is not provide to sqlite adapter.'/**m0c03cc731dd915d96*/);
-            }
-
-            $this->_dsn = 'sqlite:' . $options['file'];
-        }
-
+        $this->_dsn = 'sqlite:' . ($file[0] === '@' ? $this->alias->resolve($file) : $file);
         parent::__construct();
     }
 
