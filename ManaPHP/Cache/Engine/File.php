@@ -18,14 +18,14 @@ class File extends Component implements EngineInterface
     protected $_dir = '@data/cache';
 
     /**
-     * @var string
-     */
-    protected $_extension = '.cache';
-
-    /**
      * @var int
      */
     protected $_level = 1;
+
+    /**
+     * @var string
+     */
+    protected $_ext = '.cache';
 
     /**
      * File constructor.
@@ -44,11 +44,11 @@ class File extends Component implements EngineInterface
         }
 
         if (isset($options['level'])) {
-            $this->_level = $options['level'];
+            $this->_level = (int)$options['level'];
         }
 
-        if (isset($options['extension'])) {
-            $this->_extension = $options['extension'];
+        if (isset($options['ext'])) {
+            $this->_ext = $options['ext'];
         }
     }
 
@@ -77,7 +77,7 @@ class File extends Component implements EngineInterface
             $key = '/' . $key;
         }
 
-        return $this->alias->resolve($this->_dir . $key . $this->_extension);
+        return $this->alias->resolve($this->_dir . $key . $this->_ext);
     }
 
     /**
@@ -114,7 +114,6 @@ class File extends Component implements EngineInterface
      * @param int    $ttl
      *
      * @return void
-     * @throws \ManaPHP\Cache\Engine\Exception
      */
     public function set($key, $value, $ttl)
     {
@@ -122,10 +121,12 @@ class File extends Component implements EngineInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new FileException('create `:dir` cache directory failed: :last_error_message'/**m0842502d4c2904242*/, ['dir' => $dir]);
         }
 
         if (file_put_contents($file, $value, LOCK_EX) === false) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new FileException('write `:file` cache file failed: :last_error_message'/**m0f7ee56f71e1ec344*/, ['file' => $file]);
         }
 
