@@ -28,6 +28,8 @@ class Redis extends Component implements EngineInterface
      * Redis constructor.
      *
      * @param string|array $options
+     *
+     * @throws \ManaPHP\Redis\Exception
      */
     public function __construct($options = [])
     {
