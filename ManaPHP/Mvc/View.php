@@ -282,6 +282,7 @@ class View extends Component implements ViewInterface
 
             $content = $this->viewsCache->get($cacheOptions['key']);
             if ($content === false) {
+                $this->fireEvent('viewsCache:miss', ['key' => $cacheOptions['key'], 'view' => $view]);
                 if (is_string($vars)) {
                     $content = $vars;
                 } else {
@@ -290,6 +291,7 @@ class View extends Component implements ViewInterface
 
                 $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
             }
+            $this->fireEvent('viewsCache:hit', ['key' => $cacheOptions['key'], 'view' => $view]);
 
             echo $content;
         } else {
