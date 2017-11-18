@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Component\ScopedCloneableInterface;
 use ManaPHP\Store\Exception as StoreException;
 
 /**
@@ -10,7 +11,7 @@ use ManaPHP\Store\Exception as StoreException;
  *
  * @property \ManaPHP\Serializer\AdapterInterface $serializer
  */
-class Store extends Component implements StoreInterface
+class Store extends Component implements StoreInterface, ScopedCloneableInterface
 {
     /**
      * @var string
