@@ -26,6 +26,11 @@ class Model extends \ManaPHP\Db\Model
     /**
      * @var int
      */
+    public $ttl;
+
+    /**
+     * @var int
+     */
     public $expired_time;
 
     public static function getSource($context = null)

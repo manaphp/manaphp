@@ -23,9 +23,7 @@ class Db extends Component implements EngineInterface
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        } elseif (is_string($options)) {
+        if (is_string($options)) {
             $options = ['model' => $options];
         }
 
@@ -91,6 +89,7 @@ class Db extends Component implements EngineInterface
         $model->hash = md5($key);
         $model->key = $key;
         $model->value = $value;
+        $model->ttl = $ttl;
         $model->expired_time = time() + $ttl;
 
         $model->save();
