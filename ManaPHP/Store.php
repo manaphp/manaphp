@@ -65,8 +65,11 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
     public function get($key)
     {
         if (($data = $this->_engine->get($this->_prefix . $key)) === false) {
+            $this->fireEvent('store:miss', ['key' => $this->_prefix . $key]);
             return false;
         }
+
+        $this->fireEvent('store:hit', ['key' => $this->_prefix . $key]);
 
         if ($data[0] !== '{' && $data[0] !== '[') {
             return $data;
