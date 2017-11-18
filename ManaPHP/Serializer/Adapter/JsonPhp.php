@@ -18,20 +18,22 @@ class JsonPhp implements AdapterInterface
      */
     public function _isCanJsonSafely($data)
     {
-        if (is_scalar($data) || $data === null) {
-            return true;
-        } elseif (is_array($data)) {
+        if (is_array($data)) {
             /** @noinspection ForeachSourceInspection */
             foreach ($data as $v) {
+                if (is_scalar($v) || $v === null || $v instanceof \JsonSerializable) {
+                    continue;
+                }
                 if (!$this->_isCanJsonSafely($v)) {
                     return false;
                 }
             }
+            return true;
+        } elseif (is_scalar($data) || $data === null || $data instanceof \JsonSerializable) {
+            return true;
         } else {
             return false;
         }
-
-        return true;
     }
 
     /**
