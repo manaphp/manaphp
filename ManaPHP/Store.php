@@ -138,17 +138,16 @@ class Store extends Component implements StoreInterface
 
     /**
      * @param string   $key
-     * @param int      $ttl
      * @param callable $callback
      *
      * @return mixed
      */
-    public function remember($key, $ttl, $callback)
+    public function remember($key, $callback)
     {
         $r = $this->get($key);
         if ($r === false) {
             $r = $callback();
-            $this->set($key, $r, $ttl);
+            $this->set($key, $r);
         }
 
         return $r;

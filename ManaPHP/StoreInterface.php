@@ -44,4 +44,12 @@ interface StoreInterface
      * @void
      */
     public function delete($key);
+
+    /**
+     * @param string   $key
+     * @param callable $callback
+     *
+     * @return mixed
+     */
+    public function remember($key, $callback);
 }
