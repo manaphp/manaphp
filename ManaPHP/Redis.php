@@ -36,11 +36,6 @@ class Redis extends \Redis
     protected $_db;
 
     /**
-     * @var string
-     */
-    protected $_prefix;
-
-    /**
      * Redis constructor.
      *
      * @param array|string $options
@@ -69,15 +64,11 @@ class Redis extends \Redis
             }
 
             if (isset($parts['path']) && $parts['path'] !== '/') {
-                $parts2 = explode('/', trim($parts['path'], '/'), 2);
-                if (!is_numeric($parts2[0])) {
-                    throw new RedisException('`:url` url is invalid, `:db` db is not integer', ['url' => $url, 'db' => $parts2[0]]);
+                $path = trim($parts['path'], '/');
+                if (!is_numeric($path)) {
+                    throw new RedisException('`:url` url is invalid, `:db` db is not integer', ['url' => $url, 'db' => $path]);
                 }
-                $options['db'] = $parts2[0];
-
-                if (isset($parts2[1])) {
-                    $options['prefix'] = $parts2[1];
-                }
+                $options['db'] = $path;
             }
 
             if (isset($parts['query'])) {
@@ -104,10 +95,17 @@ class Redis extends \Redis
         $this->_retry_interval = isset($options['retry_interval']) ? (int)$options['retry_interval'] : 0;
         $this->_auth = isset($options['auth']) ? $options['auth'] : '';
         $this->_db = isset($options['db']) ? (int)$options['db'] : 0;
-        $this->_prefix = isset($options['prefix']) ? $options['prefix'] : '';
 
         parent::__construct();
 
+        $this->_connect();
+    }
+
+    /**
+     * @throws \ManaPHP\Redis\Exception
+     */
+    protected function _connect()
+    {
         $this->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval);
 
         if ($this->_auth !== '') {
@@ -117,11 +115,9 @@ class Redis extends \Redis
         }
 
         if ($this->_db !== 0) {
-            $this->select($this->_db);
-        }
-
-        if ($this->_prefix !== '') {
-            parent::_prefix($this->_prefix);
+            if (!$this->select($this->_db)) {
+                throw new RedisException('select `:db` db failed', ['db' => $this->_db]);
+            }
         }
     }
 
@@ -132,21 +128,7 @@ class Redis extends \Redis
     public function reconnect()
     {
         $this->close();
-        $this->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval);
-
-        if ($this->_auth !== '') {
-            if (!$this->auth($this->_auth)) {
-                throw new RedisException('`:auth` auth is wrong.', ['auth' => $this->_auth]);
-            }
-        }
-
-        if ($this->_db !== 0) {
-            $this->select($this->_db);
-        }
-
-        if ($this->_prefix !== '') {
-            parent::_prefix($this->_prefix);
-        }
+        $this->_connect();
 
         return $this;
     }
@@ -163,17 +145,5 @@ class Redis extends \Redis
         } else {
             return parent::dump($key);
         }
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
-    public function _prefix($value)
-    {
-        $this->_prefix = $value;
-
-        return parent::_prefix($value);
     }
 }
