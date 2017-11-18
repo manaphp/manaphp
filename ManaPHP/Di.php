@@ -236,8 +236,6 @@ class Di implements DiInterface
      * @param string $name
      *
      * @return mixed
-     * @throws \ReflectionException
-     * @throws \ManaPHP\Di\Exception
      */
     public function getInstance($definition, $parameters = null, $name = null)
     {
@@ -259,6 +257,7 @@ class Di implements DiInterface
 
         if (is_string($definition)) {
             if (!class_exists($definition)) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new DiException('`:name` component cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $name, 'class' => $definition]);
             }
             $count = count($parameters);
@@ -272,6 +271,7 @@ class Di implements DiInterface
             } elseif ($count === 3) {
                 $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
             } else {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $reflection = new \ReflectionClass($definition);
                 $instance = $reflection->newInstanceArgs($parameters);
             }
@@ -280,6 +280,7 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new DiException('`:name` component cannot be resolved: component implement type is not supported'/**m072d42756355fb069*/, ['name' => $name]);
         }
 
@@ -338,8 +339,6 @@ class Di implements DiInterface
      * @param string $name
      *
      * @return mixed
-     * @throws \ReflectionException
-     * @throws \ManaPHP\Di\Exception
      */
     public function getShared($name)
     {
