@@ -20,80 +20,64 @@ class Mysql extends Db
     /**
      * @var string
      */
-    protected $_charset;
+    protected $_charset = 'UTF8';
 
     /**
      * \ManaPHP\Db\Adapter constructor
      *
-     * @param array|string $options
+     * @param string $uri
      *
      * @throws \ManaPHP\Db\Exception
      */
-    public function __construct($options)
+    public function __construct($uri)
     {
-        if (is_string($options)) {
-            $url = $options;
+        $parts = parse_url($uri);
 
-            $parts = parse_url($options);
-
-            $options = [];
-
-            if ($parts['scheme'] !== 'mysql') {
-                throw new MysqlException('`:url` is invalid, `:scheme` scheme is not recognized', ['url' => $url, 'scheme' => $parts['scheme']]);
-            }
-
-            if (isset($parts['user'])) {
-                $options['username'] = $parts['user'];
-            }
-
-            if (isset($parts['pass'])) {
-                $options['password'] = $parts['pass'];
-            }
-
-            if (isset($parts['host'])) {
-                $options['host'] = $parts['host'];
-            }
-
-            if (isset($parts['port'])) {
-                $options['port'] = $parts['port'];
-            }
-
-            if (isset($parts['path'])) {
-                $options['dbname'] = trim($parts['path'], '/');
-            }
-
-            if (isset($parts['query'])) {
-                parse_str($parts['query'], $parts2);
-                if (isset($parts2['charset'])) {
-                    $options['charset'] = $parts2['charset'];
-                }
-            }
-        } elseif (is_object($options)) {
-            $options = (array)$options;
+        if ($parts['scheme'] !== 'mysql') {
+            throw new MysqlException('`:url` is invalid, `:scheme` scheme is not recognized', ['url' => $uri, 'scheme' => $parts['scheme']]);
         }
 
-        if (isset($options['options'])) {
-            $this->_options = $options['options'];
+        $this->_username = isset($parts['user']) ? $parts['user'] : 'root';
+        $this->_password = isset($parts['pass']) ? $parts['pass'] : '';
+
+        $dsn = [];
+
+        if (isset($parts['host'])) {
+            $dsn['host'] = $parts['host'];
         }
 
-        $this->_charset = isset($options['charset']) ? $options['charset'] : 'UTF8';
-        unset($options['charset']);
+        if (isset($parts['port'])) {
+            $dsn['port'] = $parts['port'];
+        }
+
+        if (isset($parts['path'])) {
+            $db = trim($parts['path'], '/');
+            if ($db !== '') {
+                $dsn['dbname'] = $db;
+            }
+        }
+
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $parts2);
+        } else {
+            $parts2 = [];
+        }
+
+        if (isset($parts2['charset'])) {
+            $this->_charset = $parts2['charset'];
+        }
+
+        if (isset($parts2['persistent'])) {
+            $this->_options[\PDO::ATTR_PERSISTENT] = $parts2['persistent'] === '1';
+        }
+
         $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
 
-        $this->_username = isset($options['username']) ? $options['username'] : 'root';
-        $this->_password = isset($options['password']) ? $options['password'] : '';
-
-        if (isset($options['dsn'])) {
-            $this->_dsn = $options['dsn'];
-        } else {
-            unset($options['username'], $options['password'], $options['options']);
-
-            $dsn_parts = [];
-            foreach ($options as $k => $v) {
-                $dsn_parts[] = $k . '=' . $v;
-            }
-            $this->_dsn = 'mysql:' . implode(';', $dsn_parts);
+        $dsn_parts = [];
+        foreach ($dsn as $k => $v) {
+            $dsn_parts[] = $k . '=' . $v;
         }
+        $this->_dsn = 'mysql:' . implode(';', $dsn_parts);
 
         parent::__construct();
     }
