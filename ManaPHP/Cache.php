@@ -1,14 +1,13 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Cache\Exception as CacheException;
 use ManaPHP\Component\ScopedCloneableInterface;
 
 /**
  * Class ManaPHP\Cache
  *
  * @package cache
- *
- * @property \ManaPHP\Serializer\AdapterInterface $serializer
  */
 class Cache extends Component implements CacheInterface, ScopedCloneableInterface
 {
@@ -63,11 +62,25 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function get($key)
     {
-        $data = $this->_engine->get($this->_prefix . $key);
-        if ($data === false) {
+        if (($data = $this->_engine->get($this->_prefix . $key)) === false) {
             return false;
+        }
+
+        if ($data[0] !== '{' && $data[0] !== '[') {
+            return $data;
+        }
+
+        $json = json_decode($data, true);
+        if ($json === null) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new CacheException('`:key` key cache value json_encode failed: `:code` `:message`',
+                ['key' => $key, 'code' => json_last_error(), 'message' => json_last_error_msg()]);
+        }
+
+        if (count($json) === 1 && key($json) === '_wrapper_') {
+            return $json['_wrapper_'];
         } else {
-            return $this->serializer->deserialize($data);
+            return $json;
         }
     }
 
@@ -77,10 +90,30 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      * @param int    $ttl
      *
      * @return void
+     * @throws \ManaPHP\Cache\Exception
      */
     public function set($key, $value, $ttl)
     {
-        $this->_engine->set($this->_prefix . $key, $this->serializer->serialize($value), $ttl);
+        if ($value === false) {
+            throw new CacheException('`:key` key cache value can not `false` boolean value', ['key' => $key]);
+        } elseif (is_scalar($value) || $value === null) {
+            if (is_string($value) && $value !== '' && $value[0] === '{' && $value[0] === '[') {
+                $data = $value;
+            } else {
+                $data = json_encode(['_wrapper_' => $value], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
+        } elseif (is_array($value) && isset($value['_wrapper_'])) {
+            $data = json_encode(['_wrapper_' => $value], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        } else {
+            $data = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
+        if ($data === false) {
+            throw new CacheException('`:key` key cache value json_encode failed: `:code` `:message`',
+                ['key' => $key, 'code' => json_last_error(), 'message' => json_last_error_msg()]);
+        }
+
+        $this->_engine->set($this->_prefix . $key, $data, $ttl);
     }
 
     /**

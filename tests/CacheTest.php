@@ -50,10 +50,18 @@ class CacheTest extends TestCase
 
         $this->assertFalse($cache->get('var'));
 
-        // false
-        $cache->set('var', false, 100);
-        $this->assertEquals(false, $cache->get('var'));
-        $this->assertSame(false, $cache->get('val'));
+        //null
+        $cache->set('var', null, 100);
+        $this->assertNull($cache->get('var'));
+
+        // false, not support
+        try {
+            $cache->set('var', false, 100);
+            $this->fail('why not!');
+        } catch (\Exception $e) {
+            $this->assertEquals('`var` key cache value can not `false` boolean value', $e->getMessage());
+        }
+
         // true
         $cache->set('var', true, 100);
         $this->assertSame(true, $cache->get('var'));
@@ -62,27 +70,37 @@ class CacheTest extends TestCase
         $cache->set('var', 199, 100);
         $this->assertSame(199, $cache->get('var'));
 
+        // float
+        $cache->set('var', 1.5, 100);
+        $this->assertSame(1.5, $cache->get('var'));
+
         //string
         $cache->set('var', 'value', 100);
         $this->assertSame('value', $cache->get('var'));
+
+        $cache->set('var', '', 100);
+        $this->assertSame('', $cache->get('var'));
+
+        $cache->set('var', '{', 100);
+        $this->assertSame('{', $cache->get('var'));
+
+        $cache->set('var', '[', 100);
+        $this->assertSame('[', $cache->get('var'));
 
         //array
         $cache->set('var', [1, 2, 3], 100);
         $this->assertSame([1, 2, 3], $cache->get('var'));
 
+        $cache->set('var', ['_wrapper_' => 123], 100);
+        $this->assertSame(['_wrapper_' => 123], $cache->get('var'));
+
+        //object
         $value = new \stdClass();
         $value->a = 123;
         $value->b = 'bbbb';
 
-        // object and save as object
         $cache->set('val', $value, 100);
-        $this->assertEquals($value, $cache->get('val'));
-        $this->assertInstanceOf('\stdClass', $cache->get('val'));
-
-        // object and save as array
-        $cache->set('val', (array)$value, 100);
         $this->assertEquals((array)$value, $cache->get('val'));
-        $this->assertTrue(is_array($cache->get('val')));
     }
 
     public function test_delete()
