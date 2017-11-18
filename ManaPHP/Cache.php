@@ -63,8 +63,11 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
     public function get($key)
     {
         if (($data = $this->_engine->get($this->_prefix . $key)) === false) {
+            $this->fireEvent('cache:miss', ['key' => $this->_prefix . $key]);
             return false;
         }
+
+        $this->fireEvent('cache:hit', ['key' => $this->_prefix . $key]);
 
         if ($data[0] !== '{' && $data[0] !== '[') {
             return $data;
