@@ -26,7 +26,7 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      *
      * @param string|array|\ManaPHP\Cache\EngineInterface $options
      */
-    public function __construct($options = [])
+    public function __construct($options = 'ManaPHP\Cache\Engine\File')
     {
         if (is_string($options) || is_object($options)) {
             $options = ['engine' => $options];
