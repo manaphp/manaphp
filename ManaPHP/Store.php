@@ -28,7 +28,7 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
      *
      * @param string|array|\ManaPHP\Cache\EngineInterface $options
      */
-    public function __construct($options = [])
+    public function __construct($options = 'ManaPHP\Store\Engine\File')
     {
         if (is_string($options) || is_object($options)) {
             $options = ['engine' => $options];
