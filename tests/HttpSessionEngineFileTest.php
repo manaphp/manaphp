@@ -39,7 +39,7 @@ class HttpSessionEngineFileTest extends TestCase
         $adapter->open($session_id, '');
         $this->assertEquals('', $adapter->read($session_id));
 
-        $adapter->write($session_id, 'manaphp');
+        $adapter->write($session_id, 'manaphp', 100);
         $this->assertEquals('manaphp', $adapter->read($session_id));
     }
 
@@ -48,10 +48,10 @@ class HttpSessionEngineFileTest extends TestCase
         $session_id = md5(microtime(true) . mt_rand());
         $adapter = new File();
 
-        $adapter->write($session_id, '');
+        $adapter->write($session_id, '', 100);
         $this->assertEquals('', $adapter->read($session_id));
 
-        $adapter->write($session_id, 'manaphp');
+        $adapter->write($session_id, 'manaphp', 100);
         $this->assertEquals('manaphp', $adapter->read($session_id));
     }
 
@@ -61,7 +61,7 @@ class HttpSessionEngineFileTest extends TestCase
         $adapter = new File();
         $this->assertTrue($adapter->destroy($session_id));
 
-        $adapter->write($session_id, 'manaphp');
+        $adapter->write($session_id, 'manaphp', 100);
         $this->assertEquals('manaphp', $adapter->read($session_id));
         $this->assertTrue($adapter->destroy($session_id));
 

@@ -53,7 +53,7 @@ class HttpSessionEngineDbTest extends TestCase
         $adapter->open($session_id, '');
         $this->assertEquals('', $adapter->read($session_id));
 
-        $adapter->write($session_id, 'manaphp');
+        $adapter->write($session_id, 'manaphp', 100);
         $this->assertEquals('manaphp', $adapter->read($session_id));
     }
 
@@ -62,10 +62,10 @@ class HttpSessionEngineDbTest extends TestCase
         $session_id = md5(microtime(true) . mt_rand());
         $adapter = new Db();
 
-        $adapter->write($session_id, '');
+        $adapter->write($session_id, '', 100);
         $this->assertEquals('', $adapter->read($session_id));
 
-        $adapter->write($session_id, 'manaphp');
+        $adapter->write($session_id, 'manaphp', 100);
         $this->assertEquals('manaphp', $adapter->read($session_id));
     }
 
@@ -75,7 +75,7 @@ class HttpSessionEngineDbTest extends TestCase
         $adapter = new Db();
         $this->assertTrue($adapter->destroy($session_id));
 
-        $adapter->write($session_id, 'manaphp');
+        $adapter->write($session_id, 'manaphp', 100);
         $this->assertEquals('manaphp', $adapter->read($session_id));
         $this->assertTrue($adapter->destroy($session_id));
 

@@ -105,12 +105,13 @@ class File extends Component implements EngineInterface
     /**
      * @param string $sessionId
      * @param string $data
+     * @param int    $ttl
      *
      * @return bool
      *
      * @throws \ManaPHP\Http\Session\Exception
      */
-    public function write($sessionId, $data)
+    public function write($sessionId, $data, $ttl)
     {
         $file = $this->_getFileName($sessionId);
         $dir = dirname($file);
@@ -123,7 +124,7 @@ class File extends Component implements EngineInterface
         }
 
         /** @noinspection UsageOfSilenceOperatorInspection */
-        @touch($file, time() + ini_get('session.gc_maxlifetime'));
+        @touch($file, time() + $ttl);
         clearstatcache(true, $file);
 
         return true;

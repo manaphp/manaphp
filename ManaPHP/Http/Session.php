@@ -16,7 +16,12 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     /**
      * @var \ManaPHP\Http\Session\EngineInterface
      */
-    public $_engine;
+    protected $_engine;
+
+    /**
+     * @var int
+     */
+    protected $_ttl;
 
     /**
      * @var bool
@@ -34,6 +39,12 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     {
         if (is_string($options) || is_object($options)) {
             $options = ['engine' => $options];
+        }
+
+        if (isset($options['ttl'])) {
+            $this->_ttl = (int)$options['ttl'];
+        } else {
+            $this->_ttl = (int)ini_get('session.gc_maxlifetime');
         }
 
         $this->_engine = $options['engine'];
@@ -69,6 +80,15 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
         $this->attachEvent('response:beforeSend');
 
         return $this;
+    }
+
+    /**
+     * @param string $session_id
+     * @param string $data
+     */
+    public function _write($session_id, $data)
+    {
+        $this->_engine->write($session_id, $data, $this->_ttl);
     }
 
     public function onResponseBeforeSend()

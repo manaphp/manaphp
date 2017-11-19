@@ -97,12 +97,13 @@ class Redis extends Component implements EngineInterface
     /**
      * @param string $sessionId
      * @param string $data
+     * @param int    $ttl
      *
      * @return bool
      */
-    public function write($sessionId, $data)
+    public function write($sessionId, $data, $ttl)
     {
-        return $this->sessionRedis->set($this->_prefix . $sessionId, $data, (int)ini_get('session.gc_maxlifetime'));
+        return $this->sessionRedis->set($this->_prefix . $sessionId, $data, $ttl);
     }
 
     /**

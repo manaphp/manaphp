@@ -44,10 +44,11 @@ interface EngineInterface
      *
      * @param string $sessionId
      * @param string $data
+     * @param int    $ttl
      *
      * @return string
      */
-    public function write($sessionId, $data);
+    public function write($sessionId, $data, $ttl);
 
     /**
      * This callback is executed when a session is destroyed with session_destroy()

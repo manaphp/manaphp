@@ -74,11 +74,12 @@ class Db extends Component implements EngineInterface
     /**
      * @param string $sessionId
      * @param string $data
+     * @param int    $ttl
      *
      * @return bool
      * @throws \ManaPHP\Model\Exception
      */
-    public function write($sessionId, $data)
+    public function write($sessionId, $data, $ttl)
     {
         /**
          * @var \ManaPHP\Http\Session\Engine\Db\Model $model
@@ -87,8 +88,8 @@ class Db extends Component implements EngineInterface
 
         $model->session_id = $sessionId;
         $model->data = $data;
-        $model->ttl = ini_get('session.gc_maxlifetime');
-        $model->expired_time = time() + $model->ttl;
+        $model->ttl = $ttl;
+        $model->expired_time = time() + $ttl;
 
         $model->save();
 
