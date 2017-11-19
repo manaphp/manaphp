@@ -44,7 +44,7 @@ class Logger extends Component implements LoggerInterface
      *
      * @throws \ManaPHP\Logger\Exception
      */
-    public function __construct($options = [])
+    public function __construct($options = 'ManaPHP\Logger\Appender\File')
     {
         $this->_s2i = array_flip([self::LEVEL_FATAL, self::LEVEL_ERROR, self::LEVEL_WARN, self::LEVEL_INFO, self::LEVEL_DEBUG]);
 
