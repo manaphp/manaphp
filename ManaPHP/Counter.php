@@ -58,54 +58,50 @@ class Counter extends Component implements CounterInterface
 
     /**
      *
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return int
      */
-    public function get($type, $id)
+    public function get($key)
     {
-        return $this->_engine->get($this->_prefix . $type, $id);
+        return $this->_engine->get($this->_prefix . $key);
     }
 
     /**
      * Increments the value of key by a given step.
      *
-     * @param string $type
-     * @param string $id
+     * @param string $key
      * @param int    $step
      *
      * @return int the new value
      */
-    public function increment($type, $id, $step = 1)
+    public function increment($key, $step = 1)
     {
-        return $this->_engine->increment($this->_prefix . $type, $id, $step);
+        return $this->_engine->increment($this->_prefix . $key, $step);
     }
 
     /**
      * Decrements the value of key by a given step.
      *
-     * @param string $type
-     * @param string $id
+     * @param string $key
      * @param int    $step
      *
      * @return int the new value
      */
-    public function decrement($type, $id, $step = 1)
+    public function decrement($key, $step = 1)
     {
-        return $this->_engine->increment($this->_prefix . $type, $id, -$step);
+        return $this->_engine->increment($this->_prefix . $key, -$step);
     }
 
     /**
      * Deletes the key
      *
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return void
      */
-    public function delete($type, $id)
+    public function delete($key)
     {
-        $this->_engine->delete($this->_prefix . $type, $id);
+        $this->_engine->delete($this->_prefix . $key);
     }
 }

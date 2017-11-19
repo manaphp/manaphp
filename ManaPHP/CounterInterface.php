@@ -11,42 +11,38 @@ interface CounterInterface
 {
     /**
      *
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return int
      */
-    public function get($type, $id);
+    public function get($key);
 
     /**
      * Increments the value of key by a given step.
      *
-     * @param string $type
-     * @param string $id
+     * @param string $key
      * @param int    $step
      *
      * @return int the new value
      */
-    public function increment($type, $id, $step = 1);
+    public function increment($key, $step = 1);
 
     /**
      * Decrements the value of key by a given step.
      *
-     * @param string $type
-     * @param string $id
+     * @param string $key
      * @param int    $step
      *
      * @return int the new value
      */
-    public function decrement($type, $id, $step = 1);
+    public function decrement($key, $step = 1);
 
     /**
      * Deletes the key
      *
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return void
      */
-    public function delete($type, $id);
+    public function delete($key);
 }

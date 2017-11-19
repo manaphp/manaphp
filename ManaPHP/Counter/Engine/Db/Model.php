@@ -16,12 +16,7 @@ class Model extends \ManaPHP\Db\Model
     /**
      * @var string
      */
-    public $type;
-
-    /**
-     * @var string
-     */
-    public $id;
+    public $key;
 
     /**
      * @var int

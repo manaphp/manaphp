@@ -40,35 +40,33 @@ class Db implements EngineInterface
     }
 
     /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return int
      * @throws \ManaPHP\Model\Exception
      */
-    public function get($type, $id)
+    public function get($key)
     {
         /**
          * @var \ManaPHP\Counter\Engine\Db\Model $counter
          */
         $counter = new $this->_model;
-        $counter = $counter::findFirst(['hash' => md5($type . ':' . $id)]);
+        $counter = $counter::findFirst(['hash' => md5($key)]);
 
         return $counter === false ? 0 : (int)$counter->value;
     }
 
     /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      * @param int    $step
      *
      * @return int
      * @throws \ManaPHP\Counter\Engine\Db\Exception
      * @throws \ManaPHP\Model\Exception
      */
-    public function increment($type, $id, $step = 1)
+    public function increment($key, $step = 1)
     {
-        $hash = md5($type . ':' . $id);
+        $hash = md5($key);
 
         /**
          * @var \ManaPHP\Counter\Engine\Db\Model $counter
@@ -81,8 +79,7 @@ class Db implements EngineInterface
                 $counter = new $this->_model;
 
                 $counter->hash = $hash;
-                $counter->type = $type;
-                $counter->id = $id;
+                $counter->key = $key;
                 $counter->value = $step;
                 $counter->updated_time = $counter->created_time = time();
 
@@ -107,24 +104,23 @@ class Db implements EngineInterface
             }
         }
 
-        throw new DbException('update `:type`:`:id` counter failed: has been tried :times times.'/**m0a877d4eed799613c*/,
-            ['type' => $type, 'id' => $id, 'times' => $this->_maxTries]);
+        throw new DbException('update `:key` counter failed: has been tried :times times.'/**m0a877d4eed799613c*/,
+            ['key' => $key, 'times' => $this->_maxTries]);
     }
 
     /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return void
      * @throws \ManaPHP\Model\Exception
      */
-    public function delete($type, $id)
+    public function delete($key)
     {
         /**
          * @var \ManaPHP\Counter\Engine\Db\Model $counter
          */
         $counter = new $this->_model;
 
-        $counter::deleteAll(['hash' => md5($type . ':' . $id)]);
+        $counter::deleteAll(['hash' => md5($key)]);
     }
 }

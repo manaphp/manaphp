@@ -9,27 +9,24 @@ namespace ManaPHP\Counter;
 interface EngineInterface
 {
     /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return int
      */
-    public function get($type, $id);
+    public function get($key);
 
     /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      * @param int    $step
      *
      * @return int
      */
-    public function increment($type, $id, $step = 1);
+    public function increment($key, $step = 1);
 
     /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return void
      */
-    public function delete($type, $id);
+    public function delete($key);
 }

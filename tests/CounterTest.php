@@ -26,45 +26,45 @@ class CounterTest extends TestCase
     {
         $counter = new Counter((new Redis())->setDependencyInjector($this->di));
 
-        $counter->delete('c', '1');
+        $counter->delete('c');
 
-        $this->assertEquals(0, $counter->get('c', '1'));
-        $counter->increment('c', '1');
-        $this->assertEquals(1, $counter->get('c', '1'));
+        $this->assertEquals(0, $counter->get('c'));
+        $counter->increment('c');
+        $this->assertEquals(1, $counter->get('c'));
     }
 
     public function test_increment()
     {
         $counter = new Counter((new Redis())->setDependencyInjector($this->di));
 
-        $counter->delete('c', '1');
-        $this->assertEquals(1, $counter->increment('c', '1'));
-        $this->assertEquals(2, $counter->increment('c', '1', 1));
-        $this->assertEquals(22, $counter->increment('c', '1', 20));
-        $this->assertEquals(2, $counter->increment('c', '1', -20));
+        $counter->delete('c');
+        $this->assertEquals(1, $counter->increment('c'));
+        $this->assertEquals(2, $counter->increment('c', 1));
+        $this->assertEquals(22, $counter->increment('c', 20));
+        $this->assertEquals(2, $counter->increment('c', -20));
 
-        $counter->delete('c', 1);
-        $this->assertEquals(0, $counter->get('c', 1));
+        $counter->delete('c');
+        $this->assertEquals(0, $counter->get('c'));
     }
 
     public function test_decrement()
     {
         $counter = new Counter((new Redis())->setDependencyInjector($this->di));
 
-        $counter->delete('c', '1');
-        $this->assertEquals(-1, $counter->decrement('c', '1'));
-        $this->assertEquals(-2, $counter->decrement('c', '1', 1));
-        $this->assertEquals(-22, $counter->decrement('c', '1', 20));
-        $this->assertEquals(-2, $counter->decrement('c', '1', -20));
+        $counter->delete('c');
+        $this->assertEquals(-1, $counter->decrement('c'));
+        $this->assertEquals(-2, $counter->decrement('c', 1));
+        $this->assertEquals(-22, $counter->decrement('c', 20));
+        $this->assertEquals(-2, $counter->decrement('c', -20));
     }
 
     public function test_delete()
     {
         $counter = new Counter((new Redis())->setDependencyInjector($this->di));
-        $counter->delete('c', '1');
+        $counter->delete('c');
 
-        $counter->increment('c', '1');
-        $counter->delete('c', '1');
+        $counter->increment('c');
+        $counter->delete('c');
     }
 
 }

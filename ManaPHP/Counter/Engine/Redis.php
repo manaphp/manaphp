@@ -16,7 +16,7 @@ class Redis extends Component implements EngineInterface
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $_prefix = 'counter:';
 
     /**
      * Redis constructor.
@@ -25,9 +25,7 @@ class Redis extends Component implements EngineInterface
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        } elseif (is_string($options)) {
+        if (is_string($options)) {
             $options = ['prefix' => $options];
         }
 
@@ -46,56 +44,37 @@ class Redis extends Component implements EngineInterface
         parent::setDependencyInjector($dependencyInjector);
         $this->_dependencyInjector->setAliases('redis', 'counterRedis');
 
-        if ($this->_prefix === null) {
-            $this->_prefix = $this->_dependencyInjector->configure->appID . ':counter:';
-        }
-
         return $this;
     }
 
     /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix)
-    {
-        $this->_prefix = $prefix;
-
-        return $this;
-    }
-
-    /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return int
      */
-    public function get($type, $id)
+    public function get($key)
     {
-        return (int)$this->counterRedis->hGet($this->_prefix . $type, $id);
+        return (int)$this->counterRedis->get($this->_prefix . $key);
     }
 
     /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      * @param int    $step
      *
      * @return int
      */
-    public function increment($type, $id, $step = 1)
+    public function increment($key, $step = 1)
     {
-        return $this->counterRedis->hIncrBy($this->_prefix . $type, $id, $step);
+        return $this->counterRedis->incrBy($this->_prefix . $key, $step);
     }
 
     /**
-     * @param string $type
-     * @param string $id
+     * @param string $key
      *
      * @return void
      */
-    public function delete($type, $id)
+    public function delete($key)
     {
-        $this->counterRedis->hDel($this->_prefix . $type, $id);
+        $this->counterRedis->delete($this->_prefix . $key);
     }
 }

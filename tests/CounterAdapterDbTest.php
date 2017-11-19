@@ -34,36 +34,36 @@ class CounterAdapterDbTest extends TestCase
     {
         $counter = new Db();
 
-        $counter->delete('c', '1');
+        $counter->delete('c');
 
-        $this->assertEquals(0, $counter->get('c', '1'));
+        $this->assertEquals(0, $counter->get('c'));
         $counter->increment('c', '1');
-        $this->assertEquals(1, $counter->get('c', '1'));
+        $this->assertEquals(1, $counter->get('c'));
 
         $counter->delete('c', 1);
-        $this->assertEquals(0, $counter->get('c', 1));
+        $this->assertEquals(0, $counter->get('c'));
 
-        $counter->increment('c', 1, 100);
-        $this->assertEquals(100, $counter->get('c', 1));
+        $counter->increment('c', 100);
+        $this->assertEquals(100, $counter->get('c'));
     }
 
     public function test_increment()
     {
         $counter = new Db();
 
-        $counter->delete('c', '1');
-        $this->assertEquals(2, $counter->increment('c', '1', 2));
-        $this->assertEquals(22, $counter->increment('c', '1', 20));
-        $this->assertEquals(2, $counter->increment('c', '1', -20));
+        $counter->delete('c');
+        $this->assertEquals(2, $counter->increment('c', 2));
+        $this->assertEquals(22, $counter->increment('c', 20));
+        $this->assertEquals(2, $counter->increment('c', -20));
     }
 
     public function test_delete()
     {
         $counter = new Db();
 
-        $counter->delete('c', '1');
+        $counter->delete('c');
 
-        $counter->increment('c', '1', 1);
-        $counter->delete('c', '1');
+        $counter->increment('c', 1);
+        $counter->delete('c');
     }
 }
