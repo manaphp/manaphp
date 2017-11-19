@@ -25,7 +25,7 @@ class Counter extends Component implements CounterInterface
      *
      * @param string|array|EngineInterface $options
      */
-    public function __construct($options = [])
+    public function __construct($options = 'ManaPHP\Counter\Engine\Redis')
     {
         if (is_string($options) || is_object($options)) {
             $options = ['engine' => $options];

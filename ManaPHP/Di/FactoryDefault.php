@@ -47,7 +47,7 @@ class FactoryDefault extends Di
             'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
             'cache' => 'ManaPHP\Cache',
             'store' => 'ManaPHP\Store',
-            'counter' => ['class' => 'ManaPHP\Counter', 'ManaPHP\Counter\Adapter\Db'],
+            'counter' => 'ManaPHP\Counter',
             'httpClient' => 'ManaPHP\Http\Client',
             'captcha' => 'ManaPHP\Security\Captcha',
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
