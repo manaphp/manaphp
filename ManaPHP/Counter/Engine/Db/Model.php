@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Counter\Adapter\Db;
+namespace ManaPHP\Counter\Engine\Db;
 
 /**
- * Class ManaPHP\Counter\Adapter\Db\Model
+ * Class ManaPHP\Counter\Engine\Db\Model
  *
- * @package counter\adapter
+ * @package counter\engine
  */
 class Model extends \ManaPHP\Db\Model
 {
@@ -27,6 +27,16 @@ class Model extends \ManaPHP\Db\Model
      * @var int
      */
     public $value;
+
+    /**
+     * @var int
+     */
+    public $created_time;
+
+    /**
+     * @var int
+     */
+    public $updated_time;
 
     public static function getSource($context = null)
     {

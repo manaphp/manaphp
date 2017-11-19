@@ -1,17 +1,17 @@
 <?php
-namespace ManaPHP\Counter\Adapter;
+namespace ManaPHP\Counter\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Counter\AdapterInterface;
+use ManaPHP\Counter\EngineInterface;
 
 /**
- * Class ManaPHP\Counter\Adapter\Redis
+ * Class ManaPHP\Counter\Engine\Redis
  *
  * @package counter\adapter
  *
  * @property \Redis $counterRedis
  */
-class Redis extends Component implements AdapterInterface
+class Redis extends Component implements EngineInterface
 {
     /**
      * @var string

@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Counter\AdapterInterface;
+use ManaPHP\Counter\EngineInterface;
 
 /**
  * Class ManaPHP\Counter
@@ -16,23 +16,23 @@ class Counter extends Component implements CounterInterface
     protected $_prefix = '';
 
     /**
-     * @var \ManaPHP\Counter\AdapterInterface
+     * @var \ManaPHP\Counter\EngineInterface
      */
-    public $adapter;
+    protected $_engine;
 
     /**
      * Counter constructor.
      *
-     * @param string|array|AdapterInterface $options
+     * @param string|array|EngineInterface $options
      */
     public function __construct($options = [])
     {
         if (is_string($options) || is_object($options)) {
-            $options = ['adapter' => $options];
+            $options = ['engine' => $options];
         }
 
-        if (isset($options['adapter'])) {
-            $this->adapter = $options['adapter'];
+        if (isset($options['engine'])) {
+            $this->_engine = $options['engine'];
         }
 
         if (isset($options['prefix'])) {
@@ -49,8 +49,8 @@ class Counter extends Component implements CounterInterface
     {
         parent::setDependencyInjector($dependencyInjector);
 
-        if (!is_object($this->adapter)) {
-            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+        if (!is_object($this->_engine)) {
+            $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
         }
 
         return $this;
@@ -65,7 +65,7 @@ class Counter extends Component implements CounterInterface
      */
     public function get($type, $id)
     {
-        return $this->adapter->get($this->_prefix . $type, $id);
+        return $this->_engine->get($this->_prefix . $type, $id);
     }
 
     /**
@@ -79,7 +79,7 @@ class Counter extends Component implements CounterInterface
      */
     public function increment($type, $id, $step = 1)
     {
-        return $this->adapter->increment($this->_prefix . $type, $id, $step);
+        return $this->_engine->increment($this->_prefix . $type, $id, $step);
     }
 
     /**
@@ -93,7 +93,7 @@ class Counter extends Component implements CounterInterface
      */
     public function decrement($type, $id, $step = 1)
     {
-        return $this->adapter->increment($this->_prefix . $type, $id, -$step);
+        return $this->_engine->increment($this->_prefix . $type, $id, -$step);
     }
 
     /**
@@ -106,6 +106,6 @@ class Counter extends Component implements CounterInterface
      */
     public function delete($type, $id)
     {
-        $this->adapter->delete($this->_prefix . $type, $id);
+        $this->_engine->delete($this->_prefix . $type, $id);
     }
 }

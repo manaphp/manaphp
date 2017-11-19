@@ -2,11 +2,11 @@
 namespace ManaPHP\Counter;
 
 /**
- * Interface ManaPHP\Counter\AdapterInterface
+ * Interface ManaPHP\Counter\EngineInterface
  *
  * @package counter
  */
-interface AdapterInterface
+interface EngineInterface
 {
     /**
      * @param string $type

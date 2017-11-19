@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ManaPHP\Counter\Adapter\Redis;
+use ManaPHP\Counter\Engine\Redis;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 

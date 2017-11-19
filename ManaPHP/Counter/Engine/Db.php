@@ -1,22 +1,22 @@
 <?php
-namespace ManaPHP\Counter\Adapter;
+namespace ManaPHP\Counter\Engine;
 
-use ManaPHP\Counter\Adapter\Db\Exception as DbException;
-use ManaPHP\Counter\AdapterInterface;
+use ManaPHP\Counter\Engine\Db\Exception as DbException;
+use ManaPHP\Counter\EngineInterface;
 
 /**
- * Class ManaPHP\Counter\Adapter\Db
+ * Class ManaPHP\Counter\Engine\Db
  *
  * @package counter\adapter
  *
  * @property \ManaPHP\DbInterface $db
  */
-class Db implements AdapterInterface
+class Db implements EngineInterface
 {
     /**
      * @var string
      */
-    protected $_model = '\ManaPHP\Counter\Adapter\Db\Model';
+    protected $_model = '\ManaPHP\Counter\Engine\Db\Model';
 
     /**
      * @var int
@@ -49,7 +49,7 @@ class Db implements AdapterInterface
     public function get($type, $id)
     {
         /**
-         * @var \ManaPHP\Counter\Adapter\Db\Model $counter
+         * @var \ManaPHP\Counter\Engine\Db\Model $counter
          */
         $counter = new $this->_model;
         $counter = $counter::findFirst(['hash' => md5($type . ':' . $id)]);
@@ -63,7 +63,7 @@ class Db implements AdapterInterface
      * @param int    $step
      *
      * @return int
-     * @throws \ManaPHP\Counter\Adapter\Db\Exception
+     * @throws \ManaPHP\Counter\Engine\Db\Exception
      * @throws \ManaPHP\Model\Exception
      */
     public function increment($type, $id, $step = 1)
@@ -71,7 +71,7 @@ class Db implements AdapterInterface
         $hash = md5($type . ':' . $id);
 
         /**
-         * @var \ManaPHP\Counter\Adapter\Db\Model $counter
+         * @var \ManaPHP\Counter\Engine\Db\Model $counter
          */
         $counter = new $this->_model;
 
@@ -84,6 +84,7 @@ class Db implements AdapterInterface
                 $counter->type = $type;
                 $counter->id = $id;
                 $counter->value = $step;
+                $counter->updated_time = $counter->created_time = time();
 
                 $counter->create();
 
@@ -100,7 +101,7 @@ class Db implements AdapterInterface
             }
 
             $old_value = $counter->value;
-            $r = $counter::updateAll(['value =value + ' . $step], ['hash' => $hash, 'value' => $old_value]);
+            $r = $counter::updateAll(['value =value + ' . $step], ['hash' => $hash, 'value' => $old_value, 'updated_time' => time()]);
             if ($r === 1) {
                 return $old_value + $step;
             }
@@ -120,7 +121,7 @@ class Db implements AdapterInterface
     public function delete($type, $id)
     {
         /**
-         * @var \ManaPHP\Counter\Adapter\Db\Model $counter
+         * @var \ManaPHP\Counter\Engine\Db\Model $counter
          */
         $counter = new $this->_model;
 

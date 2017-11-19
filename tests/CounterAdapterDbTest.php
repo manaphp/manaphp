@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ManaPHP\Counter\Adapter\Db;
+use ManaPHP\Counter\Engine\Db;
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\DbInterface;
 use ManaPHP\Di\FactoryDefault;
