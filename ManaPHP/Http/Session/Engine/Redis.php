@@ -14,54 +14,47 @@ use ManaPHP\Http\Session\EngineInterface;
 class Redis extends Component implements EngineInterface
 {
     /**
+     * @var string|\ManaPHP\Redis
+     */
+    protected $_redis = 'redis';
+
+    /**
      * @var string
      */
-    protected $_prefix;
+    protected $_prefix = 'session:';
 
     /**
      * Redis constructor.
      *
-     * @param array $options
+     * @param string|array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = 'redis')
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        }
+        if (is_string($options)) {
+            $this->_redis = $options;
+        } elseif (is_object($options)) {
+            $this->_redis = $options;
+        } else {
+            if (isset($options['redis'])) {
+                $this->_redis = $options['redis'];
+            }
 
-        if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            if (isset($options['prefix'])) {
+                $this->_prefix = $options['prefix'];
+            }
         }
     }
 
     /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
+     * @return \ManaPHP\Redis
      */
-    public function setDependencyInjector($dependencyInjector)
+    protected function _getRedis()
     {
-        parent::setDependencyInjector($dependencyInjector);
-
-        $this->_dependencyInjector->setAliases('redis', 'sessionRedis');
-
-        if ($this->_prefix === null) {
-            $this->_prefix = $this->_dependencyInjector->configure->appID . ':session:';
+        if (strpos($this->_redis, '/') !== false) {
+            return $this->_redis = $this->_dependencyInjector->getInstance('ManaPHP\Redis', [$this->_redis]);
+        } else {
+            return $this->_redis = $this->_dependencyInjector->getShared($this->_redis);
         }
-
-        return $this;
-    }
-
-    /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix)
-    {
-        $this->_prefix = $prefix;
-
-        return $this;
     }
 
     /**
@@ -90,7 +83,8 @@ class Redis extends Component implements EngineInterface
      */
     public function read($sessionId)
     {
-        $data = $this->sessionRedis->get($this->_prefix . $sessionId);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        $data = $redis->get($this->_prefix . $sessionId);
         return is_string($data) ? $data : '';
     }
 
@@ -103,7 +97,8 @@ class Redis extends Component implements EngineInterface
      */
     public function write($sessionId, $data, $ttl)
     {
-        return $this->sessionRedis->set($this->_prefix . $sessionId, $data, $ttl);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        return $redis->set($this->_prefix . $sessionId, $data, $ttl);
     }
 
     /**
@@ -113,7 +108,8 @@ class Redis extends Component implements EngineInterface
      */
     public function destroy($sessionId)
     {
-        $this->sessionRedis->delete($this->_prefix . $sessionId);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        $redis->delete($this->_prefix . $sessionId);
 
         return true;
     }
