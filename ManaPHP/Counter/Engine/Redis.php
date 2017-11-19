@@ -3,11 +3,12 @@ namespace ManaPHP\Counter\Engine;
 
 use ManaPHP\Component;
 use ManaPHP\Counter\EngineInterface;
+use ManaPHP\Di;
 
 /**
  * Class ManaPHP\Counter\Engine\Redis
  *
- * @package counter\adapter
+ * @package counter\engine
  *
  * @property \Redis $counterRedis
  */
@@ -17,6 +18,11 @@ class Redis extends Component implements EngineInterface
      * @var string
      */
     protected $_prefix = 'counter:';
+
+    /**
+     * @var \ManaPHP\Redis
+     */
+    protected $_redis;
 
     /**
      * Redis constructor.
@@ -32,19 +38,8 @@ class Redis extends Component implements EngineInterface
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
         }
-    }
 
-    /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
-     */
-    public function setDependencyInjector($dependencyInjector)
-    {
-        parent::setDependencyInjector($dependencyInjector);
-        $this->_dependencyInjector->setAliases('redis', 'counterRedis');
-
-        return $this;
+        $this->_redis = Di::getDefault()->getShared(isset($options['redis']) ? $options['redis'] : 'redis');
     }
 
     /**
@@ -54,7 +49,7 @@ class Redis extends Component implements EngineInterface
      */
     public function get($key)
     {
-        return (int)$this->counterRedis->get($this->_prefix . $key);
+        return (int)$this->_redis->get($this->_prefix . $key);
     }
 
     /**
@@ -65,7 +60,7 @@ class Redis extends Component implements EngineInterface
      */
     public function increment($key, $step = 1)
     {
-        return $this->counterRedis->incrBy($this->_prefix . $key, $step);
+        return $this->_redis->incrBy($this->_prefix . $key, $step);
     }
 
     /**
@@ -75,6 +70,6 @@ class Redis extends Component implements EngineInterface
      */
     public function delete($key)
     {
-        $this->counterRedis->delete($this->_prefix . $key);
+        $this->_redis->delete($this->_prefix . $key);
     }
 }
