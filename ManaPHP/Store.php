@@ -101,7 +101,7 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
         if ($value === false) {
             throw new StoreException('`:key` key store value can not `false` boolean value', ['key' => $key]);
         } elseif (is_scalar($value) || $value === null) {
-            if (is_string($value) && $value !== '' && $value[0] === '{' && $value[0] === '[') {
+            if (is_string($value) && $value !== '' && $value[0] !== '{' && $value[0] !== '[') {
                 $data = $value;
             } else {
                 $data = json_encode(['_wrapper_' => $value], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
