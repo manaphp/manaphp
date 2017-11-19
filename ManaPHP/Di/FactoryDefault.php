@@ -70,9 +70,9 @@ class FactoryDefault extends Di
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
             'environment' => 'ManaPHP\Cli\Environment',
             'netConnectivity' => 'ManaPHP\Net\Connectivity',
-            'db' => ['class' => 'ManaPHP\Db\Adapter\Mysql', 'mysql://root@localhost/test?charset=utf8'],
-            'redis' => ['class' => 'ManaPHP\Redis', 'redis://localhost:6379/0?timeout=3&retry_interval=0&auth='],
-            'mongodb' => ['class' => 'ManaPHP\Mongodb', 'mongodb://localhost/test']
+            'db' => 'ManaPHP\Db\Adapter\Mysql',
+            'redis' => 'ManaPHP\Redis',
+            'mongodb' => 'ManaPHP\Mongodb'
         ];
     }
 }
