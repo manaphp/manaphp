@@ -54,10 +54,10 @@ class HttpSessionEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new Redis();
-        $adapter->setDependencyInjector($di);
+        $redis = new Redis();
+        $redis->setDependencyInjector($di);
 
-        $this->assertTrue($adapter->open('', $session_id));
+        $this->assertTrue($redis->open('', $session_id));
     }
 
     public function test_close()
@@ -65,10 +65,10 @@ class HttpSessionEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         md5(microtime(true) . mt_rand());
-        $adapter = new Redis();
-        $adapter->setDependencyInjector($di);
+        $redis = new Redis();
+        $redis->setDependencyInjector($di);
 
-        $this->assertTrue($adapter->close());
+        $this->assertTrue($redis->close());
     }
 
     public function test_read()
@@ -76,14 +76,14 @@ class HttpSessionEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new Redis();
-        $adapter->setDependencyInjector($di);
+        $redis = new Redis();
+        $redis->setDependencyInjector($di);
 
-        $adapter->open($session_id, '');
-        $this->assertEquals('', $adapter->read($session_id));
+        $redis->open($session_id, '');
+        $this->assertEquals('', $redis->read($session_id));
 
-        $adapter->write($session_id, 'manaphp', 100);
-        $this->assertEquals('manaphp', $adapter->read($session_id));
+        $redis->write($session_id, 'manaphp', 100);
+        $this->assertEquals('manaphp', $redis->read($session_id));
     }
 
     public function test_write()
@@ -91,14 +91,14 @@ class HttpSessionEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new Redis();
-        $adapter->setDependencyInjector($di);
+        $redis = new Redis();
+        $redis->setDependencyInjector($di);
 
-        $adapter->write($session_id, '', 100);
-        $this->assertEquals('', $adapter->read($session_id));
+        $redis->write($session_id, '', 100);
+        $this->assertEquals('', $redis->read($session_id));
 
-        $adapter->write($session_id, 'manaphp', 100);
-        $this->assertEquals('manaphp', $adapter->read($session_id));
+        $redis->write($session_id, 'manaphp', 100);
+        $this->assertEquals('manaphp', $redis->read($session_id));
     }
 
     public function test_destory()
@@ -106,16 +106,16 @@ class HttpSessionEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new Redis();
-        $adapter->setDependencyInjector($di);
+        $redis = new Redis();
+        $redis->setDependencyInjector($di);
 
-        $this->assertTrue($adapter->destroy($session_id));
+        $this->assertTrue($redis->destroy($session_id));
 
-        $adapter->write($session_id, 'manaphp', 100);
-        $this->assertEquals('manaphp', $adapter->read($session_id));
-        $this->assertTrue($adapter->destroy($session_id));
+        $redis->write($session_id, 'manaphp', 100);
+        $this->assertEquals('manaphp', $redis->read($session_id));
+        $this->assertTrue($redis->destroy($session_id));
 
-        $this->assertEquals('', $adapter->read($session_id));
+        $this->assertEquals('', $redis->read($session_id));
     }
 
     public function test_gc()
@@ -123,9 +123,9 @@ class HttpSessionEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         md5(microtime(true) . mt_rand());
-        $adapter = new Redis();
-        $adapter->setDependencyInjector($di);
+        $redis = new Redis();
+        $redis->setDependencyInjector($di);
 
-        $this->assertTrue($adapter->gc(100));
+        $this->assertTrue($redis->gc(100));
     }
 }
