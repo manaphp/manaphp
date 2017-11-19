@@ -7,20 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class HttpSessionEngineRedisTest extends TestCase
 {
-    public $di;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->di = new FactoryDefault();
-        $this->di->setShared('redis', function () {
-            $redis = new \Redis();
-            $redis->connect('localhost');
-            return $redis;
-        });
-    }
-
     public function test_construct()
     {
         $di = new FactoryDefault();
@@ -65,27 +51,33 @@ class HttpSessionEngineRedisTest extends TestCase
 
     public function test_open()
     {
+        $di = new FactoryDefault();
+
         $session_id = md5(microtime(true) . mt_rand());
         $adapter = new Redis();
-        $adapter->setDependencyInjector($this->di);
+        $adapter->setDependencyInjector($di);
 
         $this->assertTrue($adapter->open('', $session_id));
     }
 
     public function test_close()
     {
+        $di = new FactoryDefault();
+
         md5(microtime(true) . mt_rand());
         $adapter = new Redis();
-        $adapter->setDependencyInjector($this->di);
+        $adapter->setDependencyInjector($di);
 
         $this->assertTrue($adapter->close());
     }
 
     public function test_read()
     {
+        $di = new FactoryDefault();
+
         $session_id = md5(microtime(true) . mt_rand());
         $adapter = new Redis();
-        $adapter->setDependencyInjector($this->di);
+        $adapter->setDependencyInjector($di);
 
         $adapter->open($session_id, '');
         $this->assertEquals('', $adapter->read($session_id));
@@ -96,9 +88,11 @@ class HttpSessionEngineRedisTest extends TestCase
 
     public function test_write()
     {
+        $di = new FactoryDefault();
+
         $session_id = md5(microtime(true) . mt_rand());
         $adapter = new Redis();
-        $adapter->setDependencyInjector($this->di);
+        $adapter->setDependencyInjector($di);
 
         $adapter->write($session_id, '', 100);
         $this->assertEquals('', $adapter->read($session_id));
@@ -109,9 +103,11 @@ class HttpSessionEngineRedisTest extends TestCase
 
     public function test_destory()
     {
+        $di = new FactoryDefault();
+
         $session_id = md5(microtime(true) . mt_rand());
         $adapter = new Redis();
-        $adapter->setDependencyInjector($this->di);
+        $adapter->setDependencyInjector($di);
 
         $this->assertTrue($adapter->destroy($session_id));
 
@@ -124,9 +120,11 @@ class HttpSessionEngineRedisTest extends TestCase
 
     public function test_gc()
     {
+        $di = new FactoryDefault();
+
         md5(microtime(true) . mt_rand());
         $adapter = new Redis();
-        $adapter->setDependencyInjector($this->di);
+        $adapter->setDependencyInjector($di);
 
         $this->assertTrue($adapter->gc(100));
     }
