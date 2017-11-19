@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/19
- * Time: 15:52
- */
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
@@ -22,7 +16,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     /**
      * @var \ManaPHP\Http\Session\EngineInterface
      */
-    public $adapter;
+    public $_engine;
 
     /**
      * @var bool
@@ -39,10 +33,10 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     public function __construct($options = 'ManaPHP\Http\Session\Adapter\File')
     {
         if (is_string($options) || is_object($options)) {
-            $options = ['adapter' => $options];
+            $options = ['engine' => $options];
         }
 
-        $this->adapter = $options['adapter'];
+        $this->_engine = $options['engine'];
     }
 
     /**
@@ -55,16 +49,16 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     {
         parent::setDependencyInjector($dependencyInjector);
 
-        if (!is_object($this->adapter)) {
-            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+        if (!is_object($this->_engine)) {
+            $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
         }
 
-        $open = [$this->adapter, 'open'];
-        $close = [$this->adapter, 'close'];
-        $read = [$this->adapter, 'read'];
-        $write = [$this->adapter, 'write'];
-        $destroy = [$this->adapter, 'destroy'];
-        $gc = [$this->adapter, 'gc'];
+        $open = [$this->_engine, 'open'];
+        $close = [$this->_engine, 'close'];
+        $read = [$this->_engine, 'read'];
+        $write = [$this->_engine, 'write'];
+        $destroy = [$this->_engine, 'destroy'];
+        $gc = [$this->_engine, 'gc'];
 
         session_set_save_handler($open, $close, $read, $write, $destroy, $gc);
 
@@ -266,7 +260,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
      */
     public function clean()
     {
-        $this->adapter->clean();
+        $this->_engine->clean();
     }
 
     /**
@@ -276,7 +270,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     {
         $data = (isset($_SESSION) && is_array($_SESSION)) ? $_SESSION : [];
 
-        $data['_internal_'] = ['adapter' => is_string($this->adapter) ? $this->adapter : get_class($this->adapter)];
+        $data['_internal_'] = ['adapter' => is_string($this->_engine) ? $this->_engine : get_class($this->_engine)];
         return $data;
     }
 
