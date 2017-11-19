@@ -13,14 +13,14 @@ use ManaPHP\Component;
 class Redis extends Component implements EngineInterface
 {
     /**
-     * @var string
-     */
-    protected $_prefix = 'cache:';
-
-    /**
      * @var string|\ManaPHP\Redis
      */
     protected $_redis = 'redis';
+
+    /**
+     * @var string
+     */
+    protected $_prefix = 'cache:';
 
     /**
      * Redis constructor.
