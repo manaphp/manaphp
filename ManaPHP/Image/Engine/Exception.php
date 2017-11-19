@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Image\Adapter;
+namespace ManaPHP\Image\Engine;
 
 /**
- * Class ManaPHP\Image\Adapter\Exception
+ * Class ManaPHP\Image\Engine\Exception
  *
  * @package image\adapter
  */

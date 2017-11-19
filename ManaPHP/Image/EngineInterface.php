@@ -3,11 +3,11 @@
 namespace ManaPHP\Image;
 
 /**
- * Interface ManaPHP\Image\AdapterInterface
+ * Interface ManaPHP\Image\EngineInterface
  *
  * @package image
  */
-interface AdapterInterface
+interface EngineInterface
 {
     /**
      * Image width

@@ -3,10 +3,10 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Image\Adapter\Gd;
+use ManaPHP\Image\Engine\Gd;
 use PHPUnit\Framework\TestCase;
 
-class ImageAdapterGdTest extends TestCase
+class ImageEngineGdTest extends TestCase
 {
     protected $_originalImage;
     protected $_resultDirectory;
@@ -17,7 +17,7 @@ class ImageAdapterGdTest extends TestCase
 
         new FactoryDefault();
         $this->_originalImage = __DIR__ . '/Image/original.jpg';
-        $this->_resultDirectory = __DIR__ . '/Image/Adapter/Gd/Result';
+        $this->_resultDirectory = __DIR__ . '/Image/Engine/Gd/Result';
         if (!@mkdir($this->_resultDirectory, 0755, true) && !is_dir($this->_resultDirectory)) {
             $this->fail('Create directory failed: ' . $this->_resultDirectory);
         }

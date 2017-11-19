@@ -3,10 +3,10 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Image\Adapter\Imagick;
+use ManaPHP\Image\Engine\Imagick;
 use PHPUnit\Framework\TestCase;
 
-class ImageAdapterImagickTest extends TestCase
+class ImageEngineImagickTest extends TestCase
 {
     protected $_originalImage;
     protected $_resultDirectory;
@@ -18,7 +18,7 @@ class ImageAdapterImagickTest extends TestCase
         new FactoryDefault();
 
         $this->_originalImage = __DIR__ . '/Image/original.jpg';
-        $this->_resultDirectory = __DIR__ . '/Image/Adapter/Imagick/Result';
+        $this->_resultDirectory = __DIR__ . '/Image/Engine/Imagick/Result';
         if (!@mkdir($this->_resultDirectory, 0755, true) && !is_dir($this->_resultDirectory)) {
             $this->fail('Create directory failed: ' . $this->_resultDirectory);
         }

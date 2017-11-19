@@ -1,17 +1,17 @@
 <?php
 
-namespace ManaPHP\Image\Adapter;
+namespace ManaPHP\Image\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Image\Adapter\Imagick\Exception as ImagickException;
-use ManaPHP\Image\AdapterInterface;
+use ManaPHP\Image\Engine\Imagick\Exception as ImagickException;
+use ManaPHP\Image\EngineInterface;
 
 /**
- * Class ManaPHP\Image\Adapter\Imagick
+ * Class ManaPHP\Image\Engine\Imagick
  *
  * @package image\adapter
  */
-class Imagick extends Component implements AdapterInterface
+class Imagick extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -36,7 +36,7 @@ class Imagick extends Component implements AdapterInterface
     /**
      * @param string $file
      *
-     * @throws \ManaPHP\Image\Adapter\Exception
+     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function __construct($file)
     {
@@ -192,7 +192,7 @@ class Imagick extends Component implements AdapterInterface
      * @param float  $opacity
      *
      * @return static
-     * @throws \ManaPHP\Image\Adapter\Exception
+     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
@@ -220,7 +220,7 @@ class Imagick extends Component implements AdapterInterface
      * @param string $file
      * @param int    $quality
      *
-     * @throws \ManaPHP\Image\Adapter\Exception
+     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function save($file, $quality = 80)
     {

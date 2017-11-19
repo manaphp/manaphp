@@ -1,16 +1,16 @@
 <?php
-namespace ManaPHP\Image\Adapter;
+namespace ManaPHP\Image\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Image\Adapter\Gd\Exception as GdException;
-use ManaPHP\Image\AdapterInterface;
+use ManaPHP\Image\Engine\Gd\Exception as GdException;
+use ManaPHP\Image\EngineInterface;
 
 /**
- * Class ManaPHP\Image\Adapter\Gd
+ * Class ManaPHP\Image\Engine\Gd
  *
  * @package image\adapter
  */
-class Gd extends Component implements AdapterInterface
+class Gd extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -35,7 +35,7 @@ class Gd extends Component implements AdapterInterface
     /**
      * @param string $file
      *
-     * @throws \ManaPHP\Image\Adapter\Exception
+     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function __construct($file)
     {
@@ -206,7 +206,7 @@ class Gd extends Component implements AdapterInterface
      * @param float  $opacity
      *
      * @return static
-     * @throws \ManaPHP\Image\Adapter\Exception
+     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
@@ -247,7 +247,7 @@ class Gd extends Component implements AdapterInterface
      * @param string $file
      * @param int    $quality
      *
-     * @throws \ManaPHP\Image\Adapter\Exception
+     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function save($file, $quality = 80)
     {

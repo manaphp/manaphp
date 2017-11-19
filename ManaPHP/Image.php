@@ -2,8 +2,8 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Image\Adapter\Gd;
-use ManaPHP\Image\Adapter\Imagick;
+use ManaPHP\Image\Engine\Gd;
+use ManaPHP\Image\Engine\Imagick;
 use ManaPHP\Image\Exception as ImageException;
 
 /**
@@ -14,9 +14,9 @@ use ManaPHP\Image\Exception as ImageException;
 class Image implements ImageInterface
 {
     /**
-     * @var \ManaPHP\Image\AdapterInterface
+     * @var \ManaPHP\Image\EngineInterface
      */
-    public $adapter;
+    protected $_engine;
 
     /**
      * ImageInterface constructor.
@@ -28,11 +28,11 @@ class Image implements ImageInterface
     public function __construct($file)
     {
         if (extension_loaded('imagick')) {
-            $this->adapter = new Imagick($file);
+            $this->_engine = new Imagick($file);
         } elseif (extension_loaded('gd')) {
-            $this->adapter = new Gd($file);
+            $this->_engine = new Gd($file);
         } else {
-            throw new ImageException('No valid Image Adapter exists.'/**m0e2528a66b81cf976*/);
+            throw new ImageException('No valid Image Engine exists.'/**m0e2528a66b81cf976*/);
         }
     }
 
@@ -43,7 +43,7 @@ class Image implements ImageInterface
      */
     public function getWidth()
     {
-        return $this->adapter->getWidth();
+        return $this->_engine->getWidth();
     }
 
     /**
@@ -53,7 +53,7 @@ class Image implements ImageInterface
      */
     public function getHeight()
     {
-        return $this->adapter->getHeight();
+        return $this->_engine->getHeight();
     }
 
     /**
@@ -66,7 +66,7 @@ class Image implements ImageInterface
      */
     public function crop($width, $height, $offsetX = 0, $offsetY = 0)
     {
-        $this->adapter->crop($width, $height, $offsetX, $offsetY);
+        $this->_engine->crop($width, $height, $offsetX, $offsetY);
 
         return $this;
     }
@@ -79,7 +79,7 @@ class Image implements ImageInterface
      */
     public function resize($width, $height)
     {
-        $this->adapter->resize($width, $height);
+        $this->_engine->resize($width, $height);
 
         return $this;
     }
@@ -94,8 +94,8 @@ class Image implements ImageInterface
      */
     public function resizeCropCenter($width, $height)
     {
-        $_width = $this->adapter->getWidth();
-        $_height = $this->adapter->getHeight();
+        $_width = $this->_engine->getWidth();
+        $_height = $this->_engine->getHeight();
 
         if ($_width / $_height > $width / $height) {
             $crop_height = $_height;
@@ -124,8 +124,8 @@ class Image implements ImageInterface
      */
     public function scale($ratio)
     {
-        $_width = (int)$this->adapter->getWidth();
-        $_height = (int)$this->adapter->getHeight();
+        $_width = (int)$this->_engine->getWidth();
+        $_height = (int)$this->_engine->getHeight();
 
         if ($ratio === 1) {
             return $this;
@@ -134,7 +134,7 @@ class Image implements ImageInterface
         $width = (int)($_width * $ratio);
         $height = (int)($_height * $ratio);
 
-        $this->adapter->resize($width, $height);
+        $this->_engine->resize($width, $height);
 
         return $this;
     }
@@ -148,11 +148,11 @@ class Image implements ImageInterface
      */
     public function scaleFixedWidth($width)
     {
-        $_width = $this->adapter->getWidth();
-        $_height = $this->adapter->getHeight();
+        $_width = $this->_engine->getWidth();
+        $_height = $this->_engine->getHeight();
 
         $height = (int)($_height * $width / $_width);
-        $this->adapter->resize($width, $height);
+        $this->_engine->resize($width, $height);
 
         return $this;
     }
@@ -166,11 +166,11 @@ class Image implements ImageInterface
      */
     public function scaleFixedHeight($height)
     {
-        $_width = $this->adapter->getWidth();
-        $_height = $this->adapter->getHeight();
+        $_width = $this->_engine->getWidth();
+        $_height = $this->_engine->getHeight();
 
         $width = (int)($_width * $height / $_height);
-        $this->adapter->resize($width, $height);
+        $this->_engine->resize($width, $height);
 
         return $this;
     }
@@ -186,7 +186,7 @@ class Image implements ImageInterface
      */
     public function rotate($degrees, $background = 0xffffff, $alpha = 1.0)
     {
-        $this->adapter->rotate($degrees, $background, $alpha);
+        $this->_engine->rotate($degrees, $background, $alpha);
 
         return $this;
     }
@@ -211,7 +211,7 @@ class Image implements ImageInterface
         $size = 12,
         $font_file = null
     ) {
-        $this->adapter->text($text, $offsetX, $offsetY, $opacity, $color, $size, $font_file);
+        $this->_engine->text($text, $offsetX, $offsetY, $opacity, $color, $size, $font_file);
 
         return $this;
     }
@@ -227,7 +227,7 @@ class Image implements ImageInterface
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
-        $this->adapter->watermark($file, $offsetX, $offsetY, $opacity);
+        $this->_engine->watermark($file, $offsetX, $offsetY, $opacity);
 
         return $this;
     }
@@ -240,7 +240,7 @@ class Image implements ImageInterface
      */
     public function save($file, $quality = 80)
     {
-        $this->adapter->save($file, $quality);
+        $this->_engine->save($file, $quality);
 
         return $this;
     }
