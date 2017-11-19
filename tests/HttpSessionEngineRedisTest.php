@@ -2,23 +2,30 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Http\Session\Adapter\File;
+use ManaPHP\Http\Session\Engine\Redis;
 use PHPUnit\Framework\TestCase;
 
-class HttpSessionAdapterFileTest extends TestCase
+class HttpSessionEngineRedisTest extends TestCase
 {
+    public $di;
+
     public function setUp()
     {
         parent::setUp();
 
-        $di = new FactoryDefault();
-        $di->alias->set('@data', sys_get_temp_dir());
+        $this->di = new FactoryDefault();
+        $this->di->setShared('redis', function () {
+            $redis = new \Redis();
+            $redis->connect('localhost');
+            return $redis;
+        });
     }
 
     public function test_open()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new File();
+        $adapter = new Redis();
+        $adapter->setDependencyInjector($this->di);
 
         $this->assertTrue($adapter->open('', $session_id));
     }
@@ -26,7 +33,8 @@ class HttpSessionAdapterFileTest extends TestCase
     public function test_close()
     {
         md5(microtime(true) . mt_rand());
-        $adapter = new File();
+        $adapter = new Redis();
+        $adapter->setDependencyInjector($this->di);
 
         $this->assertTrue($adapter->close());
     }
@@ -34,7 +42,8 @@ class HttpSessionAdapterFileTest extends TestCase
     public function test_read()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new File();
+        $adapter = new Redis();
+        $adapter->setDependencyInjector($this->di);
 
         $adapter->open($session_id, '');
         $this->assertEquals('', $adapter->read($session_id));
@@ -46,7 +55,8 @@ class HttpSessionAdapterFileTest extends TestCase
     public function test_write()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new File();
+        $adapter = new Redis();
+        $adapter->setDependencyInjector($this->di);
 
         $adapter->write($session_id, '');
         $this->assertEquals('', $adapter->read($session_id));
@@ -58,7 +68,9 @@ class HttpSessionAdapterFileTest extends TestCase
     public function test_destory()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new File();
+        $adapter = new Redis();
+        $adapter->setDependencyInjector($this->di);
+
         $this->assertTrue($adapter->destroy($session_id));
 
         $adapter->write($session_id, 'manaphp');
@@ -71,7 +83,9 @@ class HttpSessionAdapterFileTest extends TestCase
     public function test_gc()
     {
         md5(microtime(true) . mt_rand());
-        $adapter = new File();
+        $adapter = new Redis();
+        $adapter->setDependencyInjector($this->di);
+
         $this->assertTrue($adapter->gc(100));
     }
 }

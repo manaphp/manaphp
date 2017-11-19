@@ -1,22 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/19
- * Time: 17:20
- */
-namespace ManaPHP\Http\Session\Adapter;
+namespace ManaPHP\Http\Session\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Session\Adapter\Exception as SessionException;
-use ManaPHP\Http\Session\AdapterInterface;
+use ManaPHP\Http\Session\Engine\Exception as SessionException;
+use ManaPHP\Http\Session\EngineInterface;
 
 /**
- * Class ManaPHP\Http\Session\Adapter\File
+ * Class ManaPHP\Http\Session\Engine\File
  *
- * @package session\adapter
+ * @package session\engine
  */
-class File extends Component implements AdapterInterface
+class File extends Component implements EngineInterface
 {
     /**
      * @var string

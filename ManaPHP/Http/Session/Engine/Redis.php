@@ -1,17 +1,17 @@
 <?php
-namespace ManaPHP\Http\Session\Adapter;
+namespace ManaPHP\Http\Session\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Session\AdapterInterface;
+use ManaPHP\Http\Session\EngineInterface;
 
 /**
- * Class ManaPHP\Http\Session\Adapter\Redis
+ * Class ManaPHP\Http\Session\Engine\Redis
  *
- * @package session\adapter
+ * @package session\engine
  *
  * @property \Redis $sessionRedis
  */
-class Redis extends Component implements AdapterInterface
+class Redis extends Component implements EngineInterface
 {
     /**
      * @var string

@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Http\Session\Adapter\Db;
+namespace ManaPHP\Http\Session\Engine\Db;
 
 /**
- * Class ManaPHP\Http\Session\Adapter\Db\Model
+ * Class ManaPHP\Http\Session\Engine\Db\Model
  *
- * @package session\adapter
+ * @package session\engine
  */
 class Model extends \ManaPHP\Db\Model
 {

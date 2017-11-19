@@ -1,20 +1,20 @@
 <?php
-namespace ManaPHP\Http\Session\Adapter;
+namespace ManaPHP\Http\Session\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Session\AdapterInterface;
+use ManaPHP\Http\Session\EngineInterface;
 
 /**
- * Class ManaPHP\Http\Session\Adapter\Db
+ * Class ManaPHP\Http\Session\Engine\Db
  *
- * @package session\adapter
+ * @package session\engine
  */
-class Db extends Component implements AdapterInterface
+class Db extends Component implements EngineInterface
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Http\Session\Adapter\Db\Model';
+    protected $_model = 'ManaPHP\Http\Session\Engine\Db\Model';
 
     /**
      * Db constructor.
@@ -60,7 +60,7 @@ class Db extends Component implements AdapterInterface
     public function read($sessionId)
     {
         /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
+         * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
         $model = $model::findFirst(['session_id' => $sessionId]);
@@ -81,7 +81,7 @@ class Db extends Component implements AdapterInterface
     public function write($sessionId, $data)
     {
         /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
+         * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
 
@@ -102,7 +102,7 @@ class Db extends Component implements AdapterInterface
     public function destroy($sessionId)
     {
         /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
+         * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
 
@@ -131,7 +131,7 @@ class Db extends Component implements AdapterInterface
     public function clean()
     {
         /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
+         * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
 

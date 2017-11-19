@@ -1,11 +1,11 @@
 <?php
-namespace ManaPHP\Http\Session\Adapter;
+namespace ManaPHP\Http\Session\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Session\Adapter\Cookie\Exception as CookieException;
-use ManaPHP\Http\Session\AdapterInterface;
+use ManaPHP\Http\Session\Engine\Cookie\Exception as CookieException;
+use ManaPHP\Http\Session\EngineInterface;
 
-class Cookie extends Component implements AdapterInterface
+class Cookie extends Component implements EngineInterface
 {
     /**
      * @var string
@@ -83,7 +83,7 @@ class Cookie extends Component implements AdapterInterface
      * @param string $sessionId
      *
      * @return string
-     * @throws \ManaPHP\Http\Session\Adapter\Cookie\Exception
+     * @throws \ManaPHP\Http\Session\Engine\Cookie\Exception
      */
     public function read($sessionId)
     {

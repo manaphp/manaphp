@@ -6,7 +6,7 @@ namespace ManaPHP\Http\Session;
  *
  * @package session
  */
-interface AdapterInterface
+interface EngineInterface
 {
     /**
      * The open callback works like a constructor in classes and is executed when the session is being opened.

@@ -20,7 +20,7 @@ use ManaPHP\Http\Session\Exception as SessionException;
 class Session extends Component implements SessionInterface, ScopedCloneableInterface, \ArrayAccess
 {
     /**
-     * @var \ManaPHP\Http\Session\AdapterInterface
+     * @var \ManaPHP\Http\Session\EngineInterface
      */
     public $adapter;
 
@@ -32,7 +32,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     /**
      * Session constructor.
      *
-     * @param string|array|\ManaPHP\Http\Session\AdapterInterface $options
+     * @param string|array|\ManaPHP\Http\Session\EngineInterface $options
      *
      * @throws \ManaPHP\Http\Session\Exception
      */
