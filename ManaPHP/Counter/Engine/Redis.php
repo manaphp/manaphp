@@ -3,7 +3,6 @@ namespace ManaPHP\Counter\Engine;
 
 use ManaPHP\Component;
 use ManaPHP\Counter\EngineInterface;
-use ManaPHP\Di;
 
 /**
  * Class ManaPHP\Counter\Engine\Redis
@@ -15,31 +14,47 @@ use ManaPHP\Di;
 class Redis extends Component implements EngineInterface
 {
     /**
+     * @var string|\ManaPHP\Redis
+     */
+    protected $_redis = 'redis';
+
+    /**
      * @var string
      */
     protected $_prefix = 'counter:';
-
-    /**
-     * @var \ManaPHP\Redis
-     */
-    protected $_redis;
 
     /**
      * Redis constructor.
      *
      * @param string|array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = 'redis')
     {
         if (is_string($options)) {
-            $options = ['prefix' => $options];
-        }
+            $this->_redis = $options;
+        } elseif (is_object($options)) {
+            $this->_redis = $options;
+        } else {
+            if (isset($options['redis'])) {
+                $this->_redis = $options['redis'];
+            }
 
-        if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            if (isset($options['prefix'])) {
+                $this->_prefix = $options['prefix'];
+            }
         }
+    }
 
-        $this->_redis = Di::getDefault()->getShared(isset($options['redis']) ? $options['redis'] : 'redis');
+    /**
+     * @return \ManaPHP\Redis
+     */
+    protected function _getRedis()
+    {
+        if (strpos($this->_redis, '/') !== false) {
+            return $this->_redis = $this->_dependencyInjector->getInstance('ManaPHP\Redis', [$this->_redis]);
+        } else {
+            return $this->_redis = $this->_dependencyInjector->getShared($this->_redis);
+        }
     }
 
     /**
@@ -49,7 +64,8 @@ class Redis extends Component implements EngineInterface
      */
     public function get($key)
     {
-        return (int)$this->_redis->get($this->_prefix . $key);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        return (int)$redis->get($this->_prefix . $key);
     }
 
     /**
@@ -60,7 +76,8 @@ class Redis extends Component implements EngineInterface
      */
     public function increment($key, $step = 1)
     {
-        return $this->_redis->incrBy($this->_prefix . $key, $step);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        return $redis->incrBy($this->_prefix . $key, $step);
     }
 
     /**
@@ -70,6 +87,7 @@ class Redis extends Component implements EngineInterface
      */
     public function delete($key)
     {
-        $this->_redis->delete($this->_prefix . $key);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        $redis->delete($this->_prefix . $key);
     }
 }
