@@ -87,7 +87,9 @@ class Db extends Component implements EngineInterface
 
         $model->session_id = $sessionId;
         $model->data = $data;
-        $model->expired_time = time() + ini_get('session.gc_maxlifetime');
+        $model->ttl = ini_get('session.gc_maxlifetime');
+        $model->expired_time = time() + $model->ttl;
+
         $model->save();
 
         return true;
