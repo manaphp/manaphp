@@ -113,14 +113,15 @@ class Cookie extends Component implements EngineInterface
     /**
      * @param string $sessionId
      * @param string $data
+     * @param int    $ttl
      *
      * @return bool
      */
-    public function write($sessionId, $data)
+    public function write($sessionId, $data, $ttl)
     {
         $params = session_get_cookie_params();
 
-        $payload = base64_encode(json_encode(['exp' => time() + ini_get('session.gc_maxlifetime'), 'data' => $data]));
+        $payload = base64_encode(json_encode(['exp' => time() + $ttl, 'data' => $data]));
         $this->_dependencyInjector->cookies->set($sessionId, $payload . '.' . md5($payload . $this->_key), $params['lifetime'], $params['path'], $params['domain'],
             $params['secure']);
 
