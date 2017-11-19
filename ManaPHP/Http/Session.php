@@ -36,7 +36,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
      *
      * @throws \ManaPHP\Http\Session\Exception
      */
-    public function __construct($options = [])
+    public function __construct($options = 'ManaPHP\Http\Session\Adapter\File')
     {
         if (is_string($options) || is_object($options)) {
             $options = ['adapter' => $options];
@@ -282,6 +282,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
 
     /**
      * @param \ManaPHP\Component $scope
+     *
      * @return static
      */
     public function getScopedClone($scope)

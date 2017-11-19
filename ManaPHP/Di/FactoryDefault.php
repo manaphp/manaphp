@@ -38,7 +38,7 @@ class FactoryDefault extends Di
             'crypt' => 'ManaPHP\Security\Crypt',
             'flash' => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
             'flashSession' => 'ManaPHP\Mvc\View\Flash\Adapter\Session',
-            'session' => ['class' => 'ManaPHP\Http\Session', 'ManaPHP\Http\Session\Adapter\File'],
+            'session' => 'ManaPHP\Http\Session',
             'view' => 'ManaPHP\Mvc\View',
             'logger' => 'ManaPHP\Logger',
             'renderer' => 'ManaPHP\Renderer',
