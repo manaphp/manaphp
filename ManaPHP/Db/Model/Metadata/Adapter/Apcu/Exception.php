@@ -2,7 +2,7 @@
 namespace ManaPHP\Db\Model\Metadata\Adapter\Apcu;
 
 /**
- * Class ManaPHP\Db\Model\Metadata\Adapter\Apc\Exception
+ * Class ManaPHP\Db\Model\Metadata\Adapter\Apcu\Exception
  *
  * @package modelsMetadata\adapter
  */
