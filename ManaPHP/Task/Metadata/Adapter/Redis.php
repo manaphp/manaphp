@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Task\Metadata\Adapter;
 
 use ManaPHP\Component;
@@ -14,56 +15,47 @@ use ManaPHP\Task\Metadata\AdapterInterface;
 class Redis extends Component implements AdapterInterface
 {
     /**
+     * @var string|\ManaPHP\Redis
+     */
+    protected $_redis = 'redis';
+
+    /**
      * @var string
      */
-    protected $_prefix;
+    protected $_prefix = 'tasks_metadata:';
 
     /**
      * Redis constructor.
      *
      * @param string|array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = 'redis')
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        } elseif (is_string($options)) {
-            $options = ['prefix' => $options];
-        }
+        if (is_string($options)) {
+            $this->_redis = $options;
+        } elseif (is_object($options)) {
+            $this->_redis = $options;
+        } else {
+            if (isset($options['redis'])) {
+                $this->_redis = $options['redis'];
+            }
 
-        if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            if (isset($options['prefix'])) {
+                $this->_prefix = $options['prefix'];
+            }
         }
     }
 
     /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
+     * @return \ManaPHP\Redis
      */
-    public function setDependencyInjector($dependencyInjector)
+    protected function _getRedis()
     {
-        parent::setDependencyInjector($dependencyInjector);
-
-        $this->_dependencyInjector->setAliases('redis', 'taskMetadataRedis');
-
-        if ($this->_prefix === null) {
-            $this->_prefix = $this->_dependencyInjector->configure->appID . ':task_metadata:';
+        if (strpos($this->_redis, '/') !== false) {
+            return $this->_redis = $this->_dependencyInjector->getInstance('ManaPHP\Redis', [$this->_redis]);
+        } else {
+            return $this->_redis = $this->_dependencyInjector->getShared($this->_redis);
         }
-
-        return $this;
-    }
-
-    /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix)
-    {
-        $this->_prefix = $prefix;
-
-        return $this;
     }
 
     /**
@@ -73,7 +65,8 @@ class Redis extends Component implements AdapterInterface
      */
     public function get($key)
     {
-        return $this->taskMetadataRedis->get($this->_prefix . $key);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        return $redis->get($this->_prefix . $key);
     }
 
     /**
@@ -84,7 +77,8 @@ class Redis extends Component implements AdapterInterface
      */
     public function set($key, $value)
     {
-        $this->taskMetadataRedis->set($this->_prefix . $key, $value);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        $redis->set($this->_prefix . $key, $value);
     }
 
     /**
@@ -94,7 +88,8 @@ class Redis extends Component implements AdapterInterface
      */
     public function delete($key)
     {
-        $this->taskMetadataRedis->delete($this->_prefix . $key);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        $redis->delete($this->_prefix . $key);
     }
 
     /**
@@ -104,6 +99,7 @@ class Redis extends Component implements AdapterInterface
      */
     public function exists($key)
     {
-        return $this->taskMetadataRedis->exists($this->_prefix . $key);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        return $redis->exists($this->_prefix . $key);
     }
 }
