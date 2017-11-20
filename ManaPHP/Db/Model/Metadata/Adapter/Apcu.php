@@ -23,7 +23,7 @@ class Apcu extends Metadata
     protected $_ttl = 86400;
 
     /**
-     * Apc constructor.
+     * Apcu constructor.
      *
      * @param string|array $options
      *
