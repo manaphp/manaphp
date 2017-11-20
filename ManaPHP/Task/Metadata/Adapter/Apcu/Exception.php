@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Task\Metadata\Adapter\Apc;
+namespace ManaPHP\Task\Metadata\Adapter\Apcu;
 
 /**
- * Class ManaPHP\Task\Metadata\Adapter\Apc\Exception
+ * Class ManaPHP\Task\Metadata\Adapter\Apcu\Exception
  *
  * @package tasksMetadata\adapter
  */
