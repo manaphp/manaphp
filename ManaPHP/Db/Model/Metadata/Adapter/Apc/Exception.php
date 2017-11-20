@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Db\Model\Metadata\Adapter\Apc;
+namespace ManaPHP\Db\Model\Metadata\Adapter\Apcu;
 
 /**
  * Class ManaPHP\Db\Model\Metadata\Adapter\Apc\Exception
