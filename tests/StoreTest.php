@@ -8,18 +8,77 @@ use PHPUnit\Framework\TestCase;
 
 class StoreTest extends TestCase
 {
-    protected $_di;
-
-    public function setUp()
+    public function test_construct()
     {
-        parent::setUp();
+        //default
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
 
-        $this->_di = new FactoryDefault();
-        $this->_di->alias->set('@data', sys_get_temp_dir());
+        $store = new Store();
+        $store->setDependencyInjector($di);
+
+        $this->assertAttributeSame(File::class, '_engine', $store);
+        $store->get('xxx');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $store);
+        $this->assertAttributeSame('', '_prefix', $store);
+
+        //instance
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
+        $file = new File();
+        $store = new Store($file);
+        $this->assertAttributeSame($file, '_engine', $store);
+        $this->assertAttributeSame('', '_prefix', $store);
+
+        //class name string
+        $file = new File();
+        $store = new Store(File::class);
+        $store->setDependencyInjector($di);
+
+        $this->assertAttributeSame(File::class, '_engine', $store);
+        $store->get('abc');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $store);
+        $this->assertAttributeSame('', '_prefix', $store);
+
+        //component name string
+        $file = new File();
+        $di->setShared('fileStoreEngine', File::class);
+        $store = new Store('fileStoreEngine');
+        $store->setDependencyInjector($di);
+
+        $this->assertAttributeSame('fileStoreEngine', '_engine', $store);
+        $store->get('abc');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $store);
+        $this->assertAttributeSame('', '_prefix', $store);
+
+        //array
+        $file = new File();
+        $store = new Store(['engine' => File::class, 'prefix' => 'AAA']);
+        $store->setDependencyInjector($di);
+
+        $this->assertAttributeSame(File::class, '_engine', $store);
+        $store->get('abc');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $store);
+        $this->assertAttributeSame('AAA', '_prefix', $store);
+
+        //array
+        $file = new File();
+        $store = new Store(['engine' => ['class' => File::class, 'dir' => 'xxx']]);
+        $store->setDependencyInjector($di);
+
+        $this->assertAttributeSame(['class' => File::class, 'dir' => 'xxx'], '_engine', $store);
+        $store->get('abc');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $store);
+
+        $this->assertAttributeSame('', '_prefix', $store);
     }
 
     public function test_exists()
     {
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
         $store = new Store(new File());
 
         $store->delete('country');
@@ -31,6 +90,9 @@ class StoreTest extends TestCase
 
     public function test_get()
     {
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
         $store = new Store(new File());
 
         $store->delete('country');
@@ -42,6 +104,9 @@ class StoreTest extends TestCase
 
     public function test_set()
     {
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
         $store = new Store(new File());
 
         $store->delete('var');
@@ -103,6 +168,9 @@ class StoreTest extends TestCase
 
     public function test_delete()
     {
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
         $store = new Store(new File());
 
         $store->delete('val');

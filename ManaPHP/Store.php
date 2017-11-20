@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Component\ScopedCloneableInterface;
@@ -8,25 +9,23 @@ use ManaPHP\Store\Exception as StoreException;
  * Class ManaPHP\Store
  *
  * @package store
- *
- * @property \ManaPHP\Serializer\AdapterInterface $serializer
  */
 class Store extends Component implements StoreInterface, ScopedCloneableInterface
 {
+    /**
+     * @var string|\ManaPHP\Store\EngineInterface
+     */
+    protected $_engine;
+
     /**
      * @var string
      */
     protected $_prefix = '';
 
     /**
-     * @var \ManaPHP\Store\EngineInterface
-     */
-    protected $_engine;
-
-    /**
      * Store constructor.
      *
-     * @param string|array|\ManaPHP\Cache\EngineInterface $options
+     * @param string|array|\ManaPHP\Store\EngineInterface $options
      */
     public function __construct($options = 'ManaPHP\Store\Engine\File')
     {
@@ -42,19 +41,15 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
     }
 
     /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
+     * @return \ManaPHP\Store\EngineInterface
      */
-    public function setDependencyInjector($dependencyInjector)
+    protected function _getEngine()
     {
-        parent::setDependencyInjector($dependencyInjector);
-
-        if (!is_object($this->_engine)) {
-            $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+        if (is_string($this->_engine)) {
+            return $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+        } else {
+            return $this->_engine = $this->_dependencyInjector->getInstance($this->_engine);
         }
-
-        return $this;
     }
 
     /**
@@ -64,7 +59,8 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
      */
     public function get($key)
     {
-        if (($data = $this->_engine->get($this->_prefix . $key)) === false) {
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        if (($data = $engine->get($this->_prefix . $key)) === false) {
             $this->fireEvent('store:miss', ['key' => $this->_prefix . $key]);
             return false;
         }
@@ -117,7 +113,8 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
                 ['key' => $key, 'code' => json_last_error(), 'message' => json_last_error_msg()]);
         }
 
-        $this->_engine->set($this->_prefix . $key, $data);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        $engine->set($this->_prefix . $key, $data);
     }
 
     /**
@@ -127,7 +124,8 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
      */
     public function delete($key)
     {
-        $this->_engine->delete($this->_prefix . $key);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        $engine->delete($this->_prefix . $key);
     }
 
     /**
@@ -137,7 +135,8 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
      */
     public function exists($key)
     {
-        return $this->_engine->exists($this->_prefix . $key);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        return $engine->exists($this->_prefix . $key);
     }
 
     /**
@@ -164,6 +163,10 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
      */
     public function getScopedClone($scope)
     {
+        if (!is_object($this->_engine)) {
+            $this->_getEngine();
+        }
+
         $cloned = clone $this;
         $cloned->_prefix = ($this->_prefix ? $this->_prefix . ':' : '') . $scope->getComponentName($this) . ':';
 
