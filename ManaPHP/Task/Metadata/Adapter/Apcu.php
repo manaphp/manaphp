@@ -19,7 +19,7 @@ class Apcu extends Component implements AdapterInterface
     protected $_prefix = 'tasks_metadata:';
 
     /**
-     * Apc constructor.
+     * Apcu constructor.
      *
      * @param string|array $options
      *
