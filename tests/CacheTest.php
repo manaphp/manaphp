@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Cache;
@@ -8,21 +9,77 @@ use PHPUnit\Framework\TestCase;
 
 class CacheTest extends TestCase
 {
-    /**
-     * @var \ManaPHP\DiInterface
-     */
-    protected $_di;
-
-    public function setUp()
+    public function test_construct()
     {
-        parent::setUp();
+        //default
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
 
-        $this->_di = new FactoryDefault();
-        $this->_di->alias->set('@data', sys_get_temp_dir());
+        $cache = new Cache();
+        $cache->setDependencyInjector($di);
+
+        $this->assertAttributeSame(File::class, '_engine', $cache);
+        $cache->get('xxx');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $cache);
+        $this->assertAttributeSame('', '_prefix', $cache);
+
+        //instance
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
+        $file = new File();
+        $cache = new Cache($file);
+        $this->assertAttributeSame($file, '_engine', $cache);
+        $this->assertAttributeSame('', '_prefix', $cache);
+
+        //class name string
+        $file = new File();
+        $cache = new Cache(File::class);
+        $cache->setDependencyInjector($di);
+
+        $this->assertAttributeSame(File::class, '_engine', $cache);
+        $cache->get('abc');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $cache);
+        $this->assertAttributeSame('', '_prefix', $cache);
+
+        //component name string
+        $file = new File();
+        $di->setShared('fileCacheEngine', File::class);
+        $cache = new Cache('fileCacheEngine');
+        $cache->setDependencyInjector($di);
+
+        $this->assertAttributeSame('fileCacheEngine', '_engine', $cache);
+        $cache->get('abc');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $cache);
+        $this->assertAttributeSame('', '_prefix', $cache);
+
+        //array
+        $file = new File();
+        $cache = new Cache(['engine' => File::class, 'prefix' => 'AAA']);
+        $cache->setDependencyInjector($di);
+
+        $this->assertAttributeSame(File::class, '_engine', $cache);
+        $cache->get('abc');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $cache);
+        $this->assertAttributeSame('AAA', '_prefix', $cache);
+
+        //array
+        $file = new File();
+        $cache = new Cache(['engine' => ['class' => File::class, 'dir' => 'xxx']]);
+        $cache->setDependencyInjector($di);
+
+        $this->assertAttributeSame(['class' => File::class, 'dir' => 'xxx'], '_engine', $cache);
+        $cache->get('abc');
+        $this->assertAttributeInstanceOf(File::class, '_engine', $cache);
+
+        $this->assertAttributeSame('', '_prefix', $cache);
     }
 
     public function test_exists()
     {
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
         $cache = new Cache(new File());
         $cache->delete('country');
 
@@ -34,6 +91,9 @@ class CacheTest extends TestCase
 
     public function test_get()
     {
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
         $cache = new Cache(new File());
 
         $cache->delete('country');
@@ -45,6 +105,9 @@ class CacheTest extends TestCase
 
     public function test_set()
     {
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
         $cache = new Cache(new File());
         $cache->delete('var');
 
@@ -105,6 +168,9 @@ class CacheTest extends TestCase
 
     public function test_delete()
     {
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp');
+
         $cache = new Cache(new File());
         $cache->delete('val');
 

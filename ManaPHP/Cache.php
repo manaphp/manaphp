@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Cache\Exception as CacheException;
@@ -12,14 +13,14 @@ use ManaPHP\Component\ScopedCloneableInterface;
 class Cache extends Component implements CacheInterface, ScopedCloneableInterface
 {
     /**
+     * @var string|\ManaPHP\Cache\EngineInterface
+     */
+    protected $_engine;
+
+    /**
      * @var string
      */
     protected $_prefix = '';
-
-    /**
-     * @var \ManaPHP\Cache\EngineInterface
-     */
-    protected $_engine;
 
     /**
      * Cache constructor.
@@ -40,19 +41,15 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
     }
 
     /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
+     * @return \ManaPHP\Cache\EngineInterface
      */
-    public function setDependencyInjector($dependencyInjector)
+    protected function _getEngine()
     {
-        parent::setDependencyInjector($dependencyInjector);
-
-        if (!is_object($this->_engine)) {
-            $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+        if (is_string($this->_engine)) {
+            return $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+        } else {
+            return $this->_engine = $this->_dependencyInjector->getInstance($this->_engine);
         }
-
-        return $this;
     }
 
     /**
@@ -62,7 +59,8 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function get($key)
     {
-        if (($data = $this->_engine->get($this->_prefix . $key)) === false) {
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        if (($data = $engine->get($this->_prefix . $key)) === false) {
             $this->fireEvent('cache:miss', ['key' => $this->_prefix . $key]);
             return false;
         }
@@ -116,7 +114,8 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
                 ['key' => $key, 'code' => json_last_error(), 'message' => json_last_error_msg()]);
         }
 
-        $this->_engine->set($this->_prefix . $key, $data, $ttl);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        $engine->set($this->_prefix . $key, $data, $ttl);
     }
 
     /**
@@ -126,7 +125,8 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function delete($key)
     {
-        $this->_engine->delete($this->_prefix . $key);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        $engine->delete($this->_prefix . $key);
     }
 
     /**
@@ -136,7 +136,8 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function exists($key)
     {
-        return $this->_engine->exists($this->_prefix . $key);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        return $engine->exists($this->_prefix . $key);
     }
 
     /**
@@ -164,6 +165,10 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      */
     public function getScopedClone($scope)
     {
+        if (!is_object($this->_engine)) {
+            $this->_getEngine();
+        }
+
         $cloned = clone $this;
         $cloned->_prefix = ($this->_prefix ? $this->_prefix . ':' : '') . $scope->getComponentName($this) . ':';
 
