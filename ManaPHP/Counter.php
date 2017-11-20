@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Counter\EngineInterface;
@@ -41,19 +42,15 @@ class Counter extends Component implements CounterInterface
     }
 
     /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
+     * @return \ManaPHP\Counter\EngineInterface
      */
-    public function setDependencyInjector($dependencyInjector)
+    protected function _getEngine()
     {
-        parent::setDependencyInjector($dependencyInjector);
-
-        if (!is_object($this->_engine)) {
-            $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+        if (is_string($this->_engine)) {
+            return $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+        } else {
+            return $this->_engine = $this->_dependencyInjector->getInstance($this->_engine);
         }
-
-        return $this;
     }
 
     /**
@@ -64,7 +61,8 @@ class Counter extends Component implements CounterInterface
      */
     public function get($key)
     {
-        return $this->_engine->get($this->_prefix . $key);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        return $engine->get($this->_prefix . $key);
     }
 
     /**
@@ -77,7 +75,8 @@ class Counter extends Component implements CounterInterface
      */
     public function increment($key, $step = 1)
     {
-        return $this->_engine->increment($this->_prefix . $key, $step);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        return $engine->increment($this->_prefix . $key, $step);
     }
 
     /**
@@ -90,7 +89,8 @@ class Counter extends Component implements CounterInterface
      */
     public function decrement($key, $step = 1)
     {
-        return $this->_engine->increment($this->_prefix . $key, -$step);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        return $engine->increment($this->_prefix . $key, -$step);
     }
 
     /**
@@ -102,6 +102,7 @@ class Counter extends Component implements CounterInterface
      */
     public function delete($key)
     {
-        $this->_engine->delete($this->_prefix . $key);
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        $engine->delete($this->_prefix . $key);
     }
 }

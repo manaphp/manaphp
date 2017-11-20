@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Counter;
@@ -8,23 +9,71 @@ use PHPUnit\Framework\TestCase;
 
 class CounterTest extends TestCase
 {
-    public $di;
-
-    public function setUp()
+    public function test_construct()
     {
-        parent::setUp();
+        //default
+        $di = new FactoryDefault();
 
-        $this->di = new FactoryDefault();
-        $this->di->setShared('redis', function () {
-            $redis = new \Redis();
-            $redis->connect('localhost');
-            return $redis;
-        });
+        $counter = new Counter();
+        $counter->setDependencyInjector($di);
+
+        $this->assertAttributeSame(Redis::class, '_engine', $counter);
+        $counter->get('xxx');
+        $this->assertAttributeInstanceOf(Redis::class, '_engine', $counter);
+        $this->assertAttributeSame('', '_prefix', $counter);
+
+        //instance
+        $di = new FactoryDefault();
+
+        $redis = new Redis();
+        $counter = new Counter($redis);
+        $this->assertAttributeSame($redis, '_engine', $counter);
+        $this->assertAttributeSame('', '_prefix', $counter);
+
+        //class name string
+        $counter = new Counter(Redis::class);
+        $counter->setDependencyInjector($di);
+
+        $this->assertAttributeSame(Redis::class, '_engine', $counter);
+        $counter->get('abc');
+        $this->assertAttributeInstanceOf(Redis::class, '_engine', $counter);
+        $this->assertAttributeSame('', '_prefix', $counter);
+
+        //component name string
+        $di->setShared('redisCounterEngine', Redis::class);
+        $counter = new Counter('redisCounterEngine');
+        $counter->setDependencyInjector($di);
+
+        $this->assertAttributeSame('redisCounterEngine', '_engine', $counter);
+        $counter->get('abc');
+        $this->assertAttributeInstanceOf(Redis::class, '_engine', $counter);
+        $this->assertAttributeSame('', '_prefix', $counter);
+
+        //array
+        $counter = new Counter(['engine' => Redis::class, 'prefix' => 'AAA']);
+        $counter->setDependencyInjector($di);
+
+        $this->assertAttributeSame(Redis::class, '_engine', $counter);
+        $counter->get('abc');
+        $this->assertAttributeInstanceOf(Redis::class, '_engine', $counter);
+        $this->assertAttributeSame('AAA', '_prefix', $counter);
+
+        //array
+        $counter = new Counter(['engine' => ['class' => Redis::class, 'dir' => 'xxx']]);
+        $counter->setDependencyInjector($di);
+
+        $this->assertAttributeSame(['class' => Redis::class, 'dir' => 'xxx'], '_engine', $counter);
+        $counter->get('abc');
+        $this->assertAttributeInstanceOf(Redis::class, '_engine', $counter);
+
+        $this->assertAttributeSame('', '_prefix', $counter);
     }
 
     public function test_get()
     {
-        $counter = new Counter((new Redis())->setDependencyInjector($this->di));
+        $di = new FactoryDefault();
+
+        $counter = new Counter($di->getShared(Redis::class));
 
         $counter->delete('c');
 
@@ -35,7 +84,9 @@ class CounterTest extends TestCase
 
     public function test_increment()
     {
-        $counter = new Counter((new Redis())->setDependencyInjector($this->di));
+        $di = new FactoryDefault();
+
+        $counter = new Counter($di->getShared(Redis::class));
 
         $counter->delete('c');
         $this->assertEquals(1, $counter->increment('c'));
@@ -49,7 +100,9 @@ class CounterTest extends TestCase
 
     public function test_decrement()
     {
-        $counter = new Counter((new Redis())->setDependencyInjector($this->di));
+        $di = new FactoryDefault();
+
+        $counter = new Counter($di->getShared(Redis::class));
 
         $counter->delete('c');
         $this->assertEquals(-1, $counter->decrement('c'));
@@ -60,11 +113,13 @@ class CounterTest extends TestCase
 
     public function test_delete()
     {
-        $counter = new Counter((new Redis())->setDependencyInjector($this->di));
+        $di = new FactoryDefault();
+
+        $counter = new Counter(Redis::class);
+        $counter->setDependencyInjector($di);
         $counter->delete('c');
 
         $counter->increment('c');
         $counter->delete('c');
     }
-
 }
