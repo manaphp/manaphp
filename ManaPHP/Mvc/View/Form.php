@@ -157,7 +157,7 @@ class Form extends Component implements FormInterface
         $fields = [];
 
         foreach (get_object_vars($this) as $k => $_) {
-            if ($_ !== null && !is_scalar($_) && !$_ instanceof Form) {
+            if ($_ !== null && !is_scalar($_) && !$_ instanceof self) {
                 continue;
             }
 
