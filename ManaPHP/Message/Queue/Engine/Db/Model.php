@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Message\Queue\Adapter\Db;
+namespace ManaPHP\Message\Queue\Engine\Db;
 
 /**
- * Class ManaPHP\Message\Queue\Adapter\Db\Model
+ * Class ManaPHP\Message\Queue\Engine\Db\Model
  *
- * @package messageQueue\adapter
+ * @package messageQueue\engine
  */
 class Model extends \ManaPHP\Db\Model
 {

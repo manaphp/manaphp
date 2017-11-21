@@ -1,18 +1,19 @@
 <?php
-namespace ManaPHP\Message\Queue\Adapter;
+namespace ManaPHP\Message\Queue\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Message\Queue\Adapter\Redis\Exception as RedisException;
-use ManaPHP\Message\QueueInterface;
+use ManaPHP\Message\Queue;
+use ManaPHP\Message\Queue\Engine\Redis\Exception as RedisException;
+use ManaPHP\Message\Queue\EngineInterface;
 
 /**
- * Class ManaPHP\Message\Queue\Adapter\Redis
+ * Class ManaPHP\Message\Queue\Engine\Redis
  *
- * @package messageQueue\adapter
+ * @package messageQueue\engine
  *
  * @property \Redis $messageQueueRedis
  */
-class Redis extends Component implements QueueInterface
+class Redis extends Component implements EngineInterface
 {
     /**
      * @var string|\ManaPHP\Redis
@@ -27,7 +28,7 @@ class Redis extends Component implements QueueInterface
     /**
      * @var int[]
      */
-    protected $_priorities = [self::PRIORITY_HIGHEST, self::PRIORITY_NORMAL, self::PRIORITY_LOWEST];
+    protected $_priorities = [Queue::PRIORITY_HIGHEST, Queue::PRIORITY_NORMAL, Queue::PRIORITY_LOWEST];
 
     /**
      * @var array[]
@@ -77,9 +78,9 @@ class Redis extends Component implements QueueInterface
      * @param string $body
      * @param int    $priority
      *
-     * @throws \ManaPHP\Message\Queue\Adapter\Redis\Exception
+     * @throws \ManaPHP\Message\Queue\Engine\Redis\Exception
      */
-    public function push($topic, $body, $priority = self::PRIORITY_NORMAL)
+    public function push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
         if (!in_array($priority, $this->_priorities, true)) {
             throw new RedisException('`:priority` priority of `:topic is invalid`', ['priority' => $priority, 'topic' => $topic]);

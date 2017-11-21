@@ -1,20 +1,21 @@
 <?php
-namespace ManaPHP\Message\Queue\Adapter;
+namespace ManaPHP\Message\Queue\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Message\QueueInterface;
+use ManaPHP\Message\Queue;
+use ManaPHP\Message\Queue\EngineInterface;
 
 /**
- * Class ManaPHP\Message\Queue\Adapter\Db
+ * Class ManaPHP\Message\Queue\Engine\Db
  *
- * @package messageQueue\adapter
+ * @package messageQueue\engine
  */
-class Db extends Component implements QueueInterface
+class Db extends Component implements EngineInterface
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Message\Queue\Adapter\Db\Model';
+    protected $_model = 'ManaPHP\Message\Queue\Engine\Db\Model';
 
     /**
      *
@@ -37,10 +38,10 @@ class Db extends Component implements QueueInterface
      * @return void
      * @throws \ManaPHP\Model\Exception
      */
-    public function push($topic, $body, $priority = self::PRIORITY_NORMAL)
+    public function push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
         /**
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
+         * @var \ManaPHP\Message\Queue\Engine\Db\Model $model
          */
         $model = new $this->_model();
 
@@ -63,8 +64,8 @@ class Db extends Component implements QueueInterface
     public function pop($topic, $timeout = PHP_INT_MAX)
     {
         /**
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $modelInstance
+         * @var \ManaPHP\Message\Queue\Engine\Db\Model $model
+         * @var \ManaPHP\Message\Queue\Engine\Db\Model $modelInstance
          */
         $modelInstance = new $this->_model();
 
@@ -93,7 +94,7 @@ class Db extends Component implements QueueInterface
     public function delete($topic)
     {
         /**
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
+         * @var \ManaPHP\Message\Queue\Engine\Db\Model $model
          */
         $model = new $this->_model();
 
@@ -110,7 +111,7 @@ class Db extends Component implements QueueInterface
     public function length($topic, $priority = null)
     {
         /**
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
+         * @var \ManaPHP\Message\Queue\Engine\Db\Model $model
          */
         $model = new $this->_model();
 
