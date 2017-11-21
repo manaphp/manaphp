@@ -154,7 +154,7 @@ class Di implements DiInterface
     public function setShared($name, $definition)
     {
         if (is_string($definition)) {
-            ;//do nothing
+            null;//do nothing
         } elseif (is_array($definition)) {
             if (!isset($definition['class'])) {
                 if (isset($this->_components[$name])) {
