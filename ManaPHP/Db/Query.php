@@ -231,7 +231,7 @@ class Query extends Component implements QueryInterface
             $this->_tables[] = $table;
         }
 
-        if ($this->_db === null && $table instanceof Query) {
+        if ($this->_db === null && $table instanceof self) {
             $this->_db = $table->_db;
         }
 
@@ -1430,7 +1430,7 @@ class Query extends Component implements QueryInterface
     {
         if ($this->_db === null) {
             foreach ($queries as $query) {
-                if ($query instanceof Query) {
+                if ($query instanceof self) {
                     $this->_db = $query->_db;
                     break;
                 }
