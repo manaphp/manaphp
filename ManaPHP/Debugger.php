@@ -186,7 +186,7 @@ class Debugger extends Component implements DebuggerInterface
                 return false;
             }
         }
-        
+
         return null;
     }
 
