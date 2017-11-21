@@ -8,23 +8,11 @@ use PHPUnit\Framework\TestCase;
 
 class MessageQueueAdapterRedisTest extends TestCase
 {
-    public $di;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->di = new FactoryDefault();
-        $this->di->setShared('redis', function () {
-            $redis = new \Redis();
-            $redis->connect('localhost');
-            return $redis;
-        });
-    }
-
     public function test_push()
     {
-        $messageQueue = new Redis();
-        $messageQueue->setDependencyInjector($this->di);
+        $di = new FactoryDefault();
+        $messageQueue = $di->getShared(Redis::class);
+
         $messageQueue->delete('test');
         $messageQueue->push('test', 'manaphp');
         $this->assertEquals('manaphp', $messageQueue->pop('test'));
@@ -32,8 +20,9 @@ class MessageQueueAdapterRedisTest extends TestCase
 
     public function test_pop()
     {
-        $messageQueue = new Redis();
-        $messageQueue->setDependencyInjector($this->di);
+
+        $di = new FactoryDefault();
+        $messageQueue = $di->getShared(Redis::class);
 
         $messageQueue->delete('test');
 
@@ -49,8 +38,8 @@ class MessageQueueAdapterRedisTest extends TestCase
 
     public function test_delete()
     {
-        $messageQueue = new Redis();
-        $messageQueue->setDependencyInjector($this->di);
+        $di = new FactoryDefault();
+        $messageQueue = $di->getShared(Redis::class);
 
         $this->assertEquals(0, $messageQueue->length('test'));
         $messageQueue->delete('test');
@@ -63,8 +52,8 @@ class MessageQueueAdapterRedisTest extends TestCase
 
     public function test_length()
     {
-        $messageQueue = new Redis();
-        $messageQueue->setDependencyInjector($this->di);
+        $di = new FactoryDefault();
+        $messageQueue = $di->getShared(Redis::class);
 
         $messageQueue->delete('test');
 
