@@ -247,7 +247,6 @@ class Debugger extends Component implements DebuggerInterface
         if ($name === null) {
             $lines = file($caller['file']);
             $str = $lines[$caller['line'] - 1];
-            $match = null;
             if (preg_match('#->var_dump\((.*)\)\s*;#', $str, $match) === 1) {
                 $name = $match[1];
             }
