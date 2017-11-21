@@ -61,7 +61,7 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
                 $alias = null;
             }
 
-            if ($model instanceof Query) {
+            if ($model instanceof self) {
                 if ($this->_db === null) {
                     $this->_db = $model->_db;
                 }
@@ -86,7 +86,7 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
 
             foreach ($this->_modelJoins as $k => $join) {
                 list($model, $condition, $alias, $type) = $join;
-                if ($model instanceof Query) {
+                if ($model instanceof self) {
                     parent::join($model, $condition, $alias, $type);
                 } else {
                     /**
