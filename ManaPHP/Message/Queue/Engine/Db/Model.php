@@ -14,14 +14,14 @@ class Model extends \ManaPHP\Db\Model
     public $id;
 
     /**
-     * @var bool
-     */
-    public $deleted;
-
-    /**
      * @var string
      */
     public $topic;
+
+    /**
+     * @var int
+     */
+    public $priority;
 
     /**
      * @var string
@@ -31,11 +31,12 @@ class Model extends \ManaPHP\Db\Model
     /**
      * @var int
      */
-    public $priority;
+    public $created_time;
+
     /**
      * @var int
      */
-    public $created_time;
+    public $deleted_time;
 
     public static function getSource($context = null)
     {

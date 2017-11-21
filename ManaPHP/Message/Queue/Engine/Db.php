@@ -45,11 +45,11 @@ class Db extends Component implements EngineInterface
          */
         $model = new $this->_model();
 
-        $model->deleted = 0;
+        $model->priority = $priority;
         $model->topic = $topic;
         $model->body = $body;
-        $model->priority = $priority;
         $model->created_time = time();
+        $model->deleted_time = 0;
 
         $model->create();
     }
@@ -72,10 +72,10 @@ class Db extends Component implements EngineInterface
         $startTime = time();
 
         do {
-            $models = $modelInstance::find(['topic' => $topic, 'deleted' => 0], ['order' => 'priority ASC, id ASC']);
+            $models = $modelInstance::find(['topic' => $topic, 'deleted_time' => 0], ['order' => 'priority ASC, id ASC']);
             $model = count($models) > 0 ? $models[0] : false;
 
-            if ($model && $modelInstance::updateAll(['deleted' => 1], ['id' => $model->id])) {
+            if ($model && $modelInstance::updateAll(['deleted_time' => time()], ['id' => $model->id])) {
                 return $model->body;
             }
 
@@ -116,9 +116,9 @@ class Db extends Component implements EngineInterface
         $model = new $this->_model();
 
         if ($priority === null) {
-            return $model::count(['topic' => $topic, 'deleted' => 0]);
+            return $model::count(['topic' => $topic, 'deleted_time' => 0]);
         } else {
-            return $model::count(['topic' => $topic, 'deleted' => 0, 'priority' => $priority]);
+            return $model::count(['topic' => $topic, 'deleted_time' => 0, 'priority' => $priority]);
         }
     }
 }
