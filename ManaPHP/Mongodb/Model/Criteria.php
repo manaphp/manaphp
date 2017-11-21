@@ -290,7 +290,9 @@ class Criteria extends \ManaPHP\Model\Criteria
         $fieldTypes = $modelName::getFieldTypes();
         $fieldType = $fieldTypes[$expr];
 
+        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $min = $modelName::getNormalizedValue($fieldType, $min);
+        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $max = $modelName::getNormalizedValue($fieldType, $max);
 
         $this->_filters[] = [$expr => ['$gte' => $min, '$lte' => $max]];
@@ -321,7 +323,9 @@ class Criteria extends \ManaPHP\Model\Criteria
         $fieldTypes = $modelName::getFieldTypes();
         $fieldType = $fieldTypes[$expr];
 
+        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $min = $modelName::getNormalizedValue($fieldType, $min);
+        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $max = $modelName::getNormalizedValue($fieldType, $max);
 
         $this->_filters[] = ['$or' => [[$expr => ['$lt' => $min]], [$expr => ['$gt' => $max]]]];
