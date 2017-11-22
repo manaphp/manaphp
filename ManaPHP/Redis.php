@@ -36,13 +36,18 @@ class Redis extends \Redis
     protected $_db = 0;
 
     /**
+     * @var bool
+     */
+    protected $_persistent = false;
+
+    /**
      * Redis constructor.
      *
      * @param string $uri
      *
      * @throws \ManaPHP\Redis\Exception
      */
-    public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=')
+    public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
         $parts = parse_url($uri);
 
@@ -72,7 +77,8 @@ class Redis extends \Redis
         $this->_timeout = isset($parts2['timeout']) ? (float)$parts2['timeout'] : 0.0;
         $this->_retry_interval = isset($parts2['retry_interval']) ? (int)$parts2['retry_interval'] : 0;
         $this->_auth = isset($parts2['auth']) ? $parts2['auth'] : '';
-
+        $this->_persistent = isset($parts2['persistent']) && $parts2['persistent'] === '1';
+		
         parent::__construct();
 
         $this->_connect();
@@ -83,7 +89,11 @@ class Redis extends \Redis
      */
     protected function _connect()
     {
-        $this->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval);
+        if ($this->_persistent) {
+            $this->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db);
+        } else {
+            $this->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval);
+        }
 
         if ($this->_auth !== '' && !$this->auth($this->_auth)) {
             throw new RedisException('`:auth` auth is wrong.', ['auth' => $this->_auth]);
