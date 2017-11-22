@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Security\RateLimiter\Adapter;
 
 use ManaPHP\Security\RateLimiter;
@@ -14,54 +15,47 @@ use ManaPHP\Security\RateLimiter;
 class Redis extends RateLimiter
 {
     /**
+     * @var string|\ManaPHP\Redis
+     */
+    protected $_redis;
+
+    /**
      * @var string
      */
-    protected $_prefix;
+    protected $_prefix = 'rate_limiter:';
 
     /**
      * Redis constructor.
      *
      * @param string|array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = 'redis')
     {
         if (is_string($options)) {
-            $options = ['prefix' => $options];
-        }
+            $this->_redis = $options;
+        } elseif (is_object($options)) {
+            $this->_redis = $options;
+        } else {
+            if (isset($options['redis'])) {
+                $this->_redis = $options['redis'];
+            }
 
-        if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            if (isset($options['prefix'])) {
+                $this->_prefix = $options['prefix'];
+            }
         }
     }
 
     /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
+     * @return \ManaPHP\Redis
      */
-    public function setDependencyInjector($dependencyInjector)
+    protected function _getRedis()
     {
-        parent::setDependencyInjector($dependencyInjector);
-
-        $this->_dependencyInjector->setAliases('redis', 'rateLimiterRedis');
-
-        if ($this->_prefix === null) {
-            $this->_prefix = $this->_dependencyInjector->configure->appID . ':rate_limiter:';
+        if (strpos($this->_redis, '/') !== false) {
+            return $this->_redis = $this->_dependencyInjector->getInstance('ManaPHP\Redis', [$this->_redis]);
+        } else {
+            return $this->_redis = $this->_dependencyInjector->getShared($this->_redis);
         }
-
-        return $this;
-    }
-
-    /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix)
-    {
-        $this->_prefix = $prefix;
-
-        return $this;
     }
 
     /**
@@ -75,9 +69,10 @@ class Redis extends RateLimiter
     protected function _limit($id, $resource, $duration, $times)
     {
         $key = $this->_prefix . $id . ':' . $resource;
-        $current_times = $this->rateLimiterRedis->incr($key);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        $current_times = $redis->incr($key);
         if ($current_times === 1) {
-            $this->rateLimiterRedis->setTimeout($key, $duration);
+            $redis->setTimeout($key, $duration);
         }
 
         return $times >= $current_times;
