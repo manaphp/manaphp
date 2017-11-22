@@ -56,7 +56,7 @@ class FactoryDefault extends Di
             'paginator' => 'ManaPHP\Paginator',
             'filesystem' => 'ManaPHP\Filesystem\Adapter\File',
             'random' => 'ManaPHP\Security\Random',
-            'messageQueue' => 'ManaPHP\Message\Queue\Adapter\Db',
+            'messageQueue' => 'ManaPHP\Message\Queue',
             'crossword' => 'ManaPHP\Text\Crossword',
             'rateLimiter' => 'ManaPHP\Security\RateLimiter\Adapter\Db',
             'linearMeter' => 'ManaPHP\Meter\Linear',
