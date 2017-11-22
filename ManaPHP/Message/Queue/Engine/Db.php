@@ -71,14 +71,19 @@ class Db extends Component implements EngineInterface
 
         $startTime = time();
 
+        $prev_max = null;
         do {
-            $models = $modelInstance::find(['topic' => $topic, 'deleted_time' => 0], ['order' => 'priority ASC, id ASC']);
-            $model = count($models) > 0 ? $models[0] : false;
+            $max_id = $modelInstance::max('id');
+            if ($prev_max !== $max_id) {
+                $prev_max = $max_id;
 
-            if ($model && $modelInstance::updateAll(['deleted_time' => time()], ['id' => $model->id])) {
-                return $model->body;
+                $models = $modelInstance::find(['topic' => $topic, 'deleted_time' => 0], ['order' => 'priority ASC, id ASC', 'limit' => 1]);
+                $model = isset($models[0]) ? $models[0] : false;
+
+                if ($model && $modelInstance::updateAll(['deleted_time' => time()], ['id' => $model->id])) {
+                    return $model->body;
+                }
             }
-
             sleep(1);
         } while (time() - $startTime < $timeout);
 
