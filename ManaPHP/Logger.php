@@ -38,6 +38,11 @@ class Logger extends Component implements LoggerInterface
     protected $_defaultCategory = '';
 
     /**
+     * @var string
+     */
+    protected $_prefix = 'app';
+
+    /**
      * Logger constructor.
      *
      * @param string|array|\ManaPHP\Logger\AppenderInterface $options
@@ -75,16 +80,16 @@ class Logger extends Component implements LoggerInterface
         $mca = $this->dispatcher->getMCA('.');
 
         if (trim($mca, '.') === 0) {
-            $this->_defaultCategory = $this->configure->appID;
+            $this->_defaultCategory = $this->_prefix;
         } else {
-            $this->_defaultCategory = $this->configure->appID . '.' . $mca;
+            $this->_defaultCategory = $this->_prefix . '.' . $mca;
         }
 
         $this->attachEvent('dispatcher:beforeDispatch', function ($source) {
             /**
              * @var \ManaPHP\Mvc\DispatcherInterface $source
              */
-            $this->_defaultCategory = $this->configure->appID . '.' . $source->getMCA('.');
+            $this->_defaultCategory = $this->_prefix . '.' . $source->getMCA('.');
         });
     }
 
@@ -93,7 +98,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function setDefaultCategory($category)
     {
-        $this->_defaultCategory = $category;
+        $this->_defaultCategory = $this->_prefix . $category;
     }
 
     /**
