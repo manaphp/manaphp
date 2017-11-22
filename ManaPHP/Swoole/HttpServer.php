@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP\Swoole;
 
+use ManaPHP\Application;
+
 /**
  * Class ManaPHP\Mvc\Application
  *
@@ -10,7 +12,7 @@ namespace ManaPHP\Swoole;
  * @property \ManaPHP\Http\CookiesInterface  $cookies
  * @property \ManaPHP\Mvc\HandlerInterface   $mvcHandler
  */
-class HttpServer extends \ManaPHP\Application
+class HttpServer extends Application
 {
     /**
      * @var \swoole_http_server
