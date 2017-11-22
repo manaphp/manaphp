@@ -2,7 +2,7 @@
 
 namespace ManaPHP;
 
-class ExitException extends \ManaPHP\Exception
+class ExitException extends Exception
 {
 
 }
