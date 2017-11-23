@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Security\RateLimiter\Adapter\Db;
+namespace ManaPHP\Security\RateLimiter\Engine\Db;
 
 /**
- * Class ManaPHP\Security\RateLimiter\Adapter\Db\Model
+ * Class ManaPHP\Security\RateLimiter\Engine\Db\Model
  *
- * @package rateLimiter\adapter
+ * @package rateLimiter\engine
  */
 class Model extends \ManaPHP\Db\Model
 {
@@ -12,15 +12,16 @@ class Model extends \ManaPHP\Db\Model
      * @var string
      */
     public $hash;
+
+    /**
+     * @var string
+     */
+    public $type;
+
     /**
      * @var string
      */
     public $id;
-
-    /**
-     * @var int
-     */
-    public $resource;
 
     /**
      * @var int

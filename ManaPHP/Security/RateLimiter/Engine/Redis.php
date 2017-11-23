@@ -1,18 +1,16 @@
 <?php
 
-namespace ManaPHP\Security\RateLimiter\Adapter;
+namespace ManaPHP\Security\RateLimiter\Engine;
 
-use ManaPHP\Security\RateLimiter;
+use ManaPHP\Component;
+use ManaPHP\Security\RateLimiter\EngineInterface;
 
 /**
- * Class ManaPHP\Security\RateLimiter\Adapter\Redis
+ * Class ManaPHP\Security\RateLimiter\Engine\Redis
  *
- * @package rateLimiter\adapter
- *
- * @property \Redis                         $rateLimiterRedis
- * @property \ManaPHP\Http\RequestInterface $request
+ * @package rateLimiter\engine
  */
-class Redis extends RateLimiter
+class Redis extends Component implements EngineInterface
 {
     /**
      * @var string|\ManaPHP\Redis
@@ -59,22 +57,21 @@ class Redis extends RateLimiter
     }
 
     /**
+     * @param string $type
      * @param string $id
-     * @param string $resource
      * @param int    $duration
-     * @param int    $times
      *
-     * @return bool
+     * @return int
      */
-    protected function _limit($id, $resource, $duration, $times)
+    public function check($type, $id, $duration)
     {
-        $key = $this->_prefix . $id . ':' . $resource;
+        $key = $this->_prefix . $type . ':' . $id;
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         $current_times = $redis->incr($key);
         if ($current_times === 1) {
             $redis->setTimeout($key, $duration);
         }
 
-        return $times >= $current_times;
+        return $current_times;
     }
 }

@@ -1,19 +1,20 @@
 <?php
-namespace ManaPHP\Security\RateLimiter\Adapter;
+namespace ManaPHP\Security\RateLimiter\Engine;
 
-use ManaPHP\Security\RateLimiter;
+use ManaPHP\Component;
+use ManaPHP\Security\RateLimiter\EngineInterface;
 
 /**
- * Class ManaPHP\Security\RateLimiter\Adapter\Db
+ * Class ManaPHP\Security\RateLimiter\Engine\Db
  *
- * @package rateLimiter\adapter
+ * @package rateLimiter\engine
  */
-class Db extends RateLimiter
+class Db extends Component implements EngineInterface
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Security\RateLimiter\Adapter\Db\Model';
+    protected $_model = 'ManaPHP\Security\RateLimiter\Engine\Db\Model';
 
     /**
      * Db constructor.
@@ -32,31 +33,30 @@ class Db extends RateLimiter
     }
 
     /**
+     * @param string $type
      * @param string $id
-     * @param string $resource
      * @param int    $duration
-     * @param int    $times
      *
-     * @return bool
+     * @return int
      * @throws \ManaPHP\Model\Exception
      */
-    protected function _limit($id, $resource, $duration, $times)
+    public function check($type, $id, $duration)
     {
         /**
-         * @var \ManaPHP\Security\RateLimiter\Adapter\Db\Model $model
-         * @var \ManaPHP\Security\RateLimiter\Adapter\Db\Model $rateLimiter
+         * @var \ManaPHP\Security\RateLimiter\Engine\Db\Model $model
+         * @var \ManaPHP\Security\RateLimiter\Engine\Db\Model $rateLimiter
          */
         $model = new $this->_model();
-
-        $rateLimiter = $model::findFirst(['hash' => md5($id . $resource)]);
+        $hash = md5($type . ':' . $id);
+        $rateLimiter = $model::findFirst(['hash' => $hash]);
         if (!$rateLimiter) {
             $rateLimiter = new $this->_model();
 
-            $rateLimiter->hash = md5($id . $resource);
+            $rateLimiter->hash = $hash;
+            $rateLimiter->type = $type;
             $rateLimiter->id = $id;
-            $rateLimiter->resource = $resource;
-            $rateLimiter->expired_time = time() + $duration;
             $rateLimiter->times = 1;
+            $rateLimiter->expired_time = time() + $duration;
         } else {
             if (time() > $rateLimiter->expired_time) {
                 $rateLimiter->expired_time = time() + $duration;
@@ -65,8 +65,8 @@ class Db extends RateLimiter
                 $rateLimiter->times++;
             }
         }
-
         $rateLimiter->save();
-        return $rateLimiter->times <= $times;
+
+        return $rateLimiter->times;
     }
 }

@@ -9,22 +9,28 @@ namespace ManaPHP\Security;
 interface  RateLimiterInterface
 {
     /**
-     * @param string|array $controllerAction
-     * @param int          $duration
-     * @param int          $ip_times
-     * @param int          $user_times
+     * @param string $type
+     * @param string $id
+     * @param int    $times
+     * @param int    $duration
      *
-     * @return void
+     * @return int
      */
-    public function limit($controllerAction, $duration, $ip_times, $user_times = null);
+    public function limit($type, $id, $times, $duration);
 
     /**
-     * @param string $resource
-     * @param int    $duration
-     * @param int    $ip_times
-     * @param int    $user_times
+     * @param int $times
+     * @param int $duration
      *
-     * @return void
+     * @return int
      */
-    public function limitAny($resource, $duration, $ip_times, $user_times = null);
+    public function limitIp($times, $duration);
+
+    /**
+     * @param int $times
+     * @param int $duration
+     *
+     * @return int
+     */
+    public function limitUser($times, $duration);
 }

@@ -58,7 +58,7 @@ class FactoryDefault extends Di
             'random' => 'ManaPHP\Security\Random',
             'messageQueue' => 'ManaPHP\Message\Queue',
             'crossword' => 'ManaPHP\Text\Crossword',
-            'rateLimiter' => 'ManaPHP\Security\RateLimiter\Adapter\Db',
+            'rateLimiter' => 'ManaPHP\Security\RateLimiter',
             'linearMeter' => 'ManaPHP\Meter\Linear',
             'roundMeter' => 'ManaPHP\Meter\Round',
             'secint' => 'ManaPHP\Security\Secint',

@@ -2,8 +2,6 @@
 namespace ManaPHP\Security;
 
 use ManaPHP\Component;
-use ManaPHP\Security\RateLimiter\Exception as RateLimiterException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Security\RateLimiter
@@ -14,72 +12,93 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\Http\RequestInterface                $request
  */
-abstract class RateLimiter extends Component implements RateLimiterInterface
+class RateLimiter extends Component implements RateLimiterInterface
 {
+
     /**
-     * @param string|array $controllerAction
-     * @param int          $duration
-     * @param int          $ip_times
-     * @param int          $user_times
-     *
-     * @return void
-     * @throws \ManaPHP\Security\RateLimiter\Exception
+     * @var string|\ManaPHP\Security\RateLimiter\EngineInterface
      */
-    public function limit($controllerAction, $duration, $ip_times, $user_times = null)
+    protected $_engine;
+
+    /**
+     * @var string
+     */
+    protected $_prefix = '';
+
+    /**
+     * RateLimiter constructor.
+     *
+     * @param string|array|\ManaPHP\Security\RateLimiter\EngineInterface $options
+     */
+    public function __construct($options = 'ManaPHP\Security\RateLimiter\Engine\Redis')
     {
-        if ($controllerAction === null) {
-            $resource = $this->dispatcher->getControllerName() . ':' . $this->dispatcher->getActionName();
-            $this->limitAny($resource, $duration, $ip_times, $user_times);
+        if (is_string($options) || is_object($options)) {
+            $this->_engine = $options;
         } else {
-            if (is_array($controllerAction)) {
-                $resource = basename($controllerAction[0], 'Controller') . ':' . lcfirst(Text::camelize($controllerAction[1]));
-            } else {
-                $parts = explode(':', $controllerAction);
-                if (count($parts) !== 2) {
-                    throw new RateLimiterException('`:controllerAction` controllerAction is invalid: the correct format is `controller:action`',
-                        ['controllerAction' => $controllerAction]);
-                }
-                $resource = Text::camelize($parts[0]) . ':' . lcfirst(Text::camelize($parts[1]));
+            if (isset($options['engine'])) {
+                $this->_engine = $options['engine'];
             }
 
-            if ($resource === $this->dispatcher->getControllerName() . ':' . $this->dispatcher->getActionName()) {
-                $this->limitAny($controllerAction, $duration, $ip_times, $user_times);
+            if (isset($options['prefix'])) {
+                $this->_prefix = $options['prefix'];
             }
         }
     }
 
     /**
-     * @param string $id
-     * @param string $resource
-     * @param int    $duration
-     * @param int    $times
-     *
-     * @return mixed
+     * @return \ManaPHP\Security\RateLimiter\EngineInterface
      */
-    abstract protected function _limit($id, $resource, $duration, $times);
+    protected function _getEngine()
+    {
+        if (is_string($this->_engine)) {
+            return $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+        } else {
+            return $this->_engine = $this->_dependencyInjector->getInstance($this->_engine);
+        }
+    }
 
     /**
-     * @param string $resource
+     * @param string $type
+     * @param string $id
+     * @param int    $times
      * @param int    $duration
-     * @param int    $ip_times
-     * @param int    $user_times
      *
-     * @return void
-     * @throws \ManaPHP\Security\RateLimiter\Exception
+     * @return int
      */
-    public function limitAny($resource, $duration, $ip_times, $user_times = null)
+    public function limit($type, $id, $times, $duration)
     {
-        $userId = $this->userIdentity->getId();
-        if ($userId) {
-            $id = $userId;
-            $times = $user_times ?: $ip_times;
-        } else {
-            $id = $this->request->getClientAddress();
-            $times = $ip_times;
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        if (($r = $times - $engine->check($this->_prefix . $type, $id, $duration)) < 0) {
+            $this->fireEvent('rateLimiter:exceed', ['type' => $type, 'id' => $id, 'left' => $r]);
         }
 
-        if (!$this->_limit($id, $this->dispatcher->getModuleName() . ':' . $resource, $duration, $times)) {
-            throw new RateLimiterException('rate limit is exceed.', ['resource' => $resource, 'duration' => $duration, 'ip_times' => $ip_times, 'user_times' => $user_times]);
+        return $r;
+    }
+
+    /**
+     * @param int $times
+     * @param int $duration
+     *
+     * @return int
+     */
+    public function limitIp($times, $duration)
+    {
+        return $this->limit('ip', $this->request->getClientAddress(), $times, $duration);
+    }
+
+    /**
+     * @param int $times
+     * @param int $duration
+     *
+     * @return int
+     */
+    public function limitUser($times, $duration)
+    {
+        $userName = $this->userIdentity->getName();
+        if ($userName) {
+            return $this->limit('user', $userName, $times, $duration);
+        } else {
+            return 1;
         }
     }
 }
