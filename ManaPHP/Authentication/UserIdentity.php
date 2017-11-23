@@ -53,6 +53,14 @@ class UserIdentity implements UserIdentityInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isGuest()
+    {
+        return !$this->_userId;
+    }
+
+    /**
      * @return string
      */
     public function getId()

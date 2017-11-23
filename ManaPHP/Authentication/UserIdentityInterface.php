@@ -9,6 +9,11 @@ namespace ManaPHP\Authentication;
 interface UserIdentityInterface
 {
     /**
+     * @return bool
+     */
+    public function isGuest();
+
+    /**
      * @return string
      */
     public function getId();
