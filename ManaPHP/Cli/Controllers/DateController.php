@@ -9,6 +9,7 @@ class DateController extends Controller
     /**
      * @param string $url
      * @param bool   $onlyOnce
+     *
      * @return int|false
      */
     protected function _getRemoteTimestamp($url, $onlyOnce = false)
@@ -137,8 +138,11 @@ class DateController extends Controller
         if ($time === null || $time === '') {
             $time = date('H:i:s');
         } else {
-            $time = trim(trim($time), ':');
-            switch (substr_count($time, '-')) {
+            $time = trim($time);
+            if ($time[0] === ':') {
+                $time = date('H') . $time;
+            }
+            switch (substr_count($time, ':')) {
                 case 0:
                     $time .= date(':i:s');
                     break;
@@ -148,7 +152,7 @@ class DateController extends Controller
             }
             $parts = explode(':', $time);
 
-            $time = str_pad($parts[0], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[1], 2, '0', STR_PAD_LEFT);
+            $time = str_pad($parts[0], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
         }
 
         $str = $date . ' ' . $time;
