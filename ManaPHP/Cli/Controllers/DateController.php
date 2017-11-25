@@ -42,7 +42,7 @@ class DateController extends Controller
      */
     public function syncCommand()
     {
-        $url = $this->arguments->get('url', 'http://www.baidu.com');
+        $url = $this->arguments->getOption('url', 'http://www.baidu.com');
         $timestamp = $this->_getRemoteTimestamp($url);
         if ($timestamp === false) {
             return $this->console->error('fetch remote timestamp failed: `:url`', ['url' => $url]);
@@ -59,7 +59,7 @@ class DateController extends Controller
      */
     public function remoteCommand()
     {
-        $url = $this->arguments->get('url', 'http://www.baidu.com');
+        $url = $this->arguments->getOption('url', 'http://www.baidu.com');
         $timestamp = $this->_getRemoteTimestamp($url);
         if ($timestamp === false) {
             return $this->console->error('fetch remote timestamp failed: `:url`', ['url' => $url]);
@@ -75,7 +75,7 @@ class DateController extends Controller
      */
     public function diffCommand()
     {
-        $url = $this->arguments->get('url', 'http://www.baidu.com');
+        $url = $this->arguments->getOption('url', 'http://www.baidu.com');
         $remote_ts = $this->_getRemoteTimestamp($url);
         $local_ts = time();
         if ($remote_ts === false) {
@@ -96,7 +96,7 @@ class DateController extends Controller
      */
     public function setCommand()
     {
-        $arguments = $this->arguments->get();
+        $arguments = $this->arguments->getValues();
         if (count($arguments) === 1) {
             $str = trim(strtr($arguments[0], 'Tt', '  '));
             if (strpos($str, ' ') === false) {
@@ -111,8 +111,8 @@ class DateController extends Controller
                 list($date, $time) = explode(' ', $str);
             }
         } else {
-            $date = $this->arguments->get('date:d');
-            $time = $this->arguments->get('time:t');
+            $date = $this->arguments->getOption('date:d');
+            $time = $this->arguments->getOption('time:t');
         }
 
         if ($date === null || $date === '') {

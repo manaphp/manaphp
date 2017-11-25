@@ -28,13 +28,13 @@ class FrameworkController extends Controller
             $this->filesystem->fileCopy('@manaphp/manaphp_lite.json', '@root/manaphp_lite.json');
         }
 
-        $jsonFile = $this->arguments->get('input:i', '@root/manaphp_lite.json');
+        $jsonFile = $this->arguments->getOption('input:i', '@root/manaphp_lite.json');
         $config = json_decode($this->filesystem->fileGet($jsonFile), true);
 
         if (isset($config['output'])) {
             $outputFile = $config['output'];
         } else {
-            $outputFile = $this->arguments->get('output:o', '@root/manaphp_lite.php');
+            $outputFile = $this->arguments->getOption('output:o', '@root/manaphp_lite.php');
         }
 
         $contents = '';
@@ -54,7 +54,7 @@ class FrameworkController extends Controller
             }
 
             $classContent = $this->filesystem->fileGet($classFile);
-            if ($this->arguments->has('remove-namespace')) {
+            if ($this->arguments->hasOption('remove-namespace')) {
                 if (preg_match('#namespace\s+([^;]+);#', $classContent, $matches) === 1) {
                     $classNamespace = $matches[1];
                     if ($classNamespace === $prevClassNamespace) {
@@ -66,7 +66,7 @@ class FrameworkController extends Controller
                 }
             }
 
-            if (!$this->arguments->has('skip-remove-interfaces')) {
+            if (!$this->arguments->hasOption('skip-remove-interfaces')) {
                 if (preg_match('#\s+implements\s+.*#', $classContent, $matches) === 1) {
                     $implements = $matches[0];
                     $implements = preg_replace('#[a-zA-Z]+Interface,?#', '', $implements);
@@ -77,7 +77,7 @@ class FrameworkController extends Controller
                 }
             }
 
-            if (!$this->arguments->has('skip-remove-whitespaces')) {
+            if (!$this->arguments->hasOption('skip-remove-whitespaces')) {
                 $classContent = $this->_strip_whitespaces($classContent);
             }
 

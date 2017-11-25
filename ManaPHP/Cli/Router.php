@@ -108,48 +108,60 @@ class Router extends Component implements RouterInterface
         $this->_controllerName = null;
         $this->_actionName = null;
 
-        list(, $controllerName, $actionName) = array_pad($args, 3, null);
-        if ($controllerName === null) {
-            $controllerName = 'help';
-        }
-
-        if ($actionName === null) {
-            $actionName = $controllerName === 'help' ? 'list' : 'help';
-        }
-
-        if ($this->_guessCommand && strlen($controllerName) <= 4) {
-            $controllers = $this->_getControllers();
-            foreach ($controllers as $k => $controller) {
-                $controllers[$k] = Text::underscore($controller);
-            }
-
-            $controllerName = $this->crossword->guess($controllers, $controllerName);
-            if (!$controllerName) {
+        if (count($args) === 2 && $args[1][0] === '/') {
+            $path = parse_url($args[1], PHP_URL_PATH);
+            $parts = explode('/', trim($path, '/'));
+            if (count($parts) !== 2) {
                 return false;
             }
-        }
-        $this->_controllerName = Text::camelize($controllerName);
 
-        if ($actionName === 'help') {
-            null;
-        } elseif ($actionName === null) {
-            $commands = $this->_getCommands($this->_controllerName);
-            if (count($commands) === 1) {
-                $actionName = $commands[0];
-            } else {
-                $actionName = 'help';
-            }
+            list($controllerName, $actionName) = $parts;
+            $this->_controllerName = Text::camelize($controllerName);
         } else {
-            if ($this->_guessCommand) {
-                $commands = $this->_getCommands($this->_controllerName);
-                $actionName = $this->crossword->guess($commands, $actionName);
-                if (!$actionName) {
+            list(, $controllerName, $actionName) = array_pad($args, 3, null);
+            if ($controllerName === null) {
+                $controllerName = 'help';
+            }
+
+            if ($actionName === null) {
+                $actionName = $controllerName === 'help' ? 'list' : 'help';
+            }
+
+            if ($this->_guessCommand && strlen($controllerName) <= 4) {
+                $controllers = $this->_getControllers();
+                foreach ($controllers as $k => $controller) {
+                    $controllers[$k] = Text::underscore($controller);
+                }
+
+                $controllerName = $this->crossword->guess($controllers, $controllerName);
+                if (!$controllerName) {
                     return false;
+                }
+            }
+            $this->_controllerName = Text::camelize($controllerName);
+
+            if ($actionName === 'help') {
+                null;
+            } elseif ($actionName === null) {
+                $commands = $this->_getCommands($this->_controllerName);
+                if (count($commands) === 1) {
+                    $actionName = $commands[0];
+                } else {
+                    $actionName = 'help';
+                }
+            } else {
+                if ($this->_guessCommand) {
+                    $commands = $this->_getCommands($this->_controllerName);
+                    $actionName = $this->crossword->guess($commands, $actionName);
+                    if (!$actionName) {
+                        return false;
+                    }
                 }
             }
         }
 
         $this->_actionName = lcfirst(Text::camelize($actionName));
+
         return true;
     }
 }

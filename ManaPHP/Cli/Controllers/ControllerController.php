@@ -25,10 +25,10 @@ class ControllerController extends Controller
      */
     public function createCommand()
     {
-        $module = $this->arguments->get('module:m', 'Home');
-        $controller = $this->arguments->get('controller:c', '');
-        $force = $this->arguments->has('force');
-        $api = $this->arguments->has('api');
+        $module = $this->arguments->getOption('module:m', 'Home');
+        $controller = $this->arguments->getOption('controller:c', '');
+        $force = $this->arguments->hasOption('force');
+        $api = $this->arguments->hasOption('api');
 
         if (!$controller) {
             return $this->console->error('please use --controller assign in the controller name');
@@ -48,7 +48,7 @@ class ControllerController extends Controller
             return $this->console->error('`:controller` controller exists already', ['controller' => $controllerNamespace . '\\' . $controller]);
         }
         $actions = [];
-        foreach (explode(',', $this->arguments->get('action:a', 'list,create,detail,update,delete')) as $action) {
+        foreach (explode(',', $this->arguments->getOption('action:a', 'list,create,detail,update,delete')) as $action) {
             $action = trim($action);
             $action = lcfirst(Text::camelize($action));
 

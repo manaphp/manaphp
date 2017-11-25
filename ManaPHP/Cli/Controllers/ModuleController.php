@@ -34,11 +34,11 @@ class ModuleController extends Controller
      */
     public function createCommand()
     {
-        $module = $this->arguments->get('module:m');
-        $api = $this->arguments->has('api');
+        $module = $this->arguments->getOption('module:m');
+        $api = $this->arguments->hasOption('api');
         if (!$module) {
-            $arguments = $this->arguments->get();
-            if ($arguments[0] !== '-') {
+            $arguments = $this->arguments->getValues();
+            if ($arguments[0] !== 0) {
                 $module = $arguments[0];
             } else {
                 return $this->console->error('please use --module assign in the module name');

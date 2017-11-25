@@ -161,7 +161,7 @@ class BashCompletionController extends Controller
      */
     public function completeCommand()
     {
-        $arguments = $this->arguments->get();
+        $arguments = $this->arguments->getValues();
         $position = (int)$arguments[0];
 
         $arguments = array_slice($arguments, 1);

@@ -12,11 +12,11 @@ class KeyController extends Controller
      */
     public function generateCommand()
     {
-        $length = $this->arguments->get('length:l', 32);
+        $length = $this->arguments->getOption('length:l', 32);
 
         $key = $this->random->getBase($length);
 
-        if ($this->arguments->has('lowercase')) {
+        if ($this->arguments->hasOption('lowercase')) {
             $key = strtolower($key);
         }
 

@@ -24,11 +24,11 @@ class ModelController extends Controller
      */
     public function createCommand()
     {
-        $module = $this->arguments->get('module:m');
+        $module = $this->arguments->getOption('module:m');
         if ($module) {
             $module = $this->crossword->guess($this->application->getModules(), $module);
             if (!$module) {
-                return $this->console->error('invalid `:module` module', ['module' => $this->arguments->get('module:m')]);
+                return $this->console->error('invalid `:module` module', ['module' => $this->arguments->getOption('module:m')]);
             }
         }
 
@@ -41,12 +41,12 @@ class ModelController extends Controller
         }
         $modelExtends = $this->filesystem->fileExists("$modelDirectory/ModelBase.php") ? 'ModelBase' : '\ManaPHP\Mvc\Model';
 
-        $force = $this->arguments->has('force:f');
+        $force = $this->arguments->hasOption('force:f');
 
         $templateFile = '@manaphp/Cli/Controllers/Templates/Model';
-        $tables = $this->arguments->get('table:t');
+        $tables = $this->arguments->getOption('table:t');
         $tables = $tables ? explode(',', $tables) : $this->db->getTables();
-        $pattern = $this->arguments->get('pattern:p');
+        $pattern = $this->arguments->getOption('pattern:p');
 
         foreach ($tables as $table) {
             if ($pattern && !fnmatch($pattern, $table)) {
@@ -107,7 +107,7 @@ class ModelController extends Controller
         $tables = $this->db->getTables();
         sort($tables);
 
-        $pattern = $this->arguments->get('pattern:p');
+        $pattern = $this->arguments->getOption('pattern:p');
         $line = 0;
         foreach ($tables as $table) {
             if ($pattern && !fnmatch($pattern, $table)) {
