@@ -75,6 +75,16 @@ interface ClientInterface
     public function head($url, $data = [], $headers = [], $options = []);
 
     /**
+     * @param string|array $url
+     * @param string       $file
+     * @param array        $headers
+     * @param array        $options
+     *
+     * @return string|false
+     */
+    public function downloadFile($url, $file, $headers = [], $options = []);
+
+    /**
      * @return int
      */
     public function getResponseCode();
