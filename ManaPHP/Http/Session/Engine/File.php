@@ -52,25 +52,6 @@ class File extends Component implements EngineInterface
     }
 
     /**
-     * @param string $savePath
-     * @param string $sessionName
-     *
-     * @return bool
-     */
-    public function open($savePath, $sessionName)
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function close()
-    {
-        return true;
-    }
-
-    /**
      * @param string $sessionId
      *
      * @return string
@@ -87,13 +68,13 @@ class File extends Component implements EngineInterface
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      *
      * @return string
      */
-    public function read($sessionId)
+    public function read($session_id)
     {
-        $file = $this->_getFileName($sessionId);
+        $file = $this->_getFileName($session_id);
 
         if (file_exists($file) && filemtime($file) >= time()) {
             return file_get_contents($file);
@@ -103,17 +84,17 @@ class File extends Component implements EngineInterface
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      * @param string $data
-     * @param int    $ttl
+     * @param array  $context
      *
      * @return bool
      *
      * @throws \ManaPHP\Http\Session\Exception
      */
-    public function write($sessionId, $data, $ttl)
+    public function write($session_id, $data, $context)
     {
-        $file = $this->_getFileName($sessionId);
+        $file = $this->_getFileName($session_id);
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new SessionException('create `:dir` session directory failed: :last_error_message'/**m0842502d4c2904242*/, ['dir' => $dir]);
@@ -123,20 +104,20 @@ class File extends Component implements EngineInterface
             trigger_error(strtr('write `:file` session file failed: :last_error_message'/**m0f7ee56f71e1ec344*/, [':file' => $file]));
         }
 
-        @touch($file, time() + $ttl);
+        @touch($file, time() + $context['ttl']);
         clearstatcache(true, $file);
 
         return true;
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      *
      * @return bool
      */
-    public function destroy($sessionId)
+    public function destroy($session_id)
     {
-        $file = $this->_getFileName($sessionId);
+        $file = $this->_getFileName($session_id);
 
         if (file_exists($file)) {
             @unlink($file);
@@ -152,7 +133,10 @@ class File extends Component implements EngineInterface
      */
     public function gc($ttl)
     {
-        $this->clean();
+        $dir = $this->alias->resolve($this->_dir);
+        if (is_dir($dir)) {
+            $this->_clean($dir);
+        }
 
         return true;
     }
@@ -177,17 +161,6 @@ class File extends Component implements EngineInterface
             } else {
                 $this->_clean($path);
             }
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function clean()
-    {
-        $dir = $this->alias->resolve($this->_dir);
-        if (is_dir($dir)) {
-            $this->_clean($dir);
         }
     }
 }

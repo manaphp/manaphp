@@ -49,28 +49,6 @@ class HttpSessionEngineRedisTest extends TestCase
         $this->assertAttributeSame('session:', '_prefix', $session);
     }
 
-    public function test_open()
-    {
-        $di = new FactoryDefault();
-
-        $session_id = md5(microtime(true) . mt_rand());
-        $redis = new Redis();
-        $redis->setDependencyInjector($di);
-
-        $this->assertTrue($redis->open('', $session_id));
-    }
-
-    public function test_close()
-    {
-        $di = new FactoryDefault();
-
-        md5(microtime(true) . mt_rand());
-        $redis = new Redis();
-        $redis->setDependencyInjector($di);
-
-        $this->assertTrue($redis->close());
-    }
-
     public function test_read()
     {
         $di = new FactoryDefault();
@@ -79,10 +57,9 @@ class HttpSessionEngineRedisTest extends TestCase
         $redis = new Redis();
         $redis->setDependencyInjector($di);
 
-        $redis->open($session_id, '');
         $this->assertEquals('', $redis->read($session_id));
 
-        $redis->write($session_id, 'manaphp', 100);
+        $redis->write($session_id, 'manaphp', ['ttl' => 100]);
         $this->assertEquals('manaphp', $redis->read($session_id));
     }
 
@@ -94,10 +71,10 @@ class HttpSessionEngineRedisTest extends TestCase
         $redis = new Redis();
         $redis->setDependencyInjector($di);
 
-        $redis->write($session_id, '', 100);
+        $redis->write($session_id, '', ['ttl' => 100]);
         $this->assertEquals('', $redis->read($session_id));
 
-        $redis->write($session_id, 'manaphp', 100);
+        $redis->write($session_id, 'manaphp', ['ttl' => 100]);
         $this->assertEquals('manaphp', $redis->read($session_id));
     }
 
@@ -111,7 +88,7 @@ class HttpSessionEngineRedisTest extends TestCase
 
         $this->assertTrue($redis->destroy($session_id));
 
-        $redis->write($session_id, 'manaphp', 100);
+        $redis->write($session_id, 'manaphp', ['ttl' => 100]);
         $this->assertEquals('manaphp', $redis->read($session_id));
         $this->assertTrue($redis->destroy($session_id));
 

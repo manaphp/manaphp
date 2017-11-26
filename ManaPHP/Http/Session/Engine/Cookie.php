@@ -19,75 +19,32 @@ class Cookie extends Component implements EngineInterface
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        }
-
         if (is_string($options)) {
-            $options = ['key' => $options];
+            $this->_key = $options;
+        } else {
+            if (isset($options['key'])) {
+                $this->_key = $options['key'];
+            }
         }
-
-        if (isset($options['key'])) {
-            $this->_key = $options['key'];
-        }
     }
 
     /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
+     * @return string
      */
-    public function setDependencyInjector($dependencyInjector)
+    protected function _getKey()
     {
-        parent::setDependencyInjector($dependencyInjector);
-
-        if ($this->_key === null) {
-            $this->_key = $this->_dependencyInjector->crypt->getDerivedKey('cookieSession');
-        }
-
-        return $this;
+        return $this->_key = $this->crypt->getDerivedKey('cookieSession');
     }
 
     /**
-     * @param string $key
-     *
-     * @return static
-     */
-    public function setKey($key)
-    {
-        $this->_key = $key;
-
-        return $this;
-    }
-
-    /**
-     * @param string $savePath
-     * @param string $sessionName
-     *
-     * @return bool
-     */
-    public function open($savePath, $sessionName)
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function close()
-    {
-        return true;
-    }
-
-    /**
-     * @param string $sessionId
+     * @param string $session_id
      *
      * @return string
      * @throws \ManaPHP\Http\Session\Engine\Cookie\Exception
      */
-    public function read($sessionId)
+    public function read($session_id)
     {
-        $data = $this->_dependencyInjector->cookies->get($sessionId) ?: '';
+        $data = $this->_dependencyInjector->cookies->get($session_id) ?: '';
         if ($data === '') {
             return '';
         }
@@ -98,11 +55,16 @@ class Cookie extends Component implements EngineInterface
             throw new CookieException('format invalid: `:cookie`', ['cookie' => $data]);
         }
 
-        if (md5($parts[0] . $this->_key) !== $parts[1]) {
+        $key = $this->_key ?: $this->_getKey();
+        if (md5($parts[0] . $key) !== $parts[1]) {
             throw new CookieException('hash invalid: `:cookie`', ['cookie' => $data]);
         }
 
         $payload = json_decode(base64_decode($parts[0]), true);
+        if (!is_array($payload)) {
+            throw new CookieException('payload invalid: `:cookie`', ['cookie' => $data]);
+        }
+
         if (time() > $payload['exp']) {
             return '';
         }
@@ -111,31 +73,32 @@ class Cookie extends Component implements EngineInterface
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      * @param string $data
-     * @param int    $ttl
+     * @param array  $context
      *
      * @return bool
      */
-    public function write($sessionId, $data, $ttl)
+    public function write($session_id, $data, $context)
     {
         $params = session_get_cookie_params();
 
-        $payload = base64_encode(json_encode(['exp' => time() + $ttl, 'data' => $data]));
-        $this->_dependencyInjector->cookies->set($sessionId, $payload . '.' . md5($payload . $this->_key), $params['lifetime'], $params['path'], $params['domain'],
+        $key = $this->_key ?: $this->_getKey();
+        $payload = base64_encode(json_encode(['exp' => time() + $context['ttl'], 'data' => $data]));
+        $this->_dependencyInjector->cookies->set($session_id, $payload . '.' . md5($payload . $key), $params['lifetime'], $params['path'], $params['domain'],
             $params['secure']);
 
         return true;
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      *
      * @return bool
      */
-    public function destroy($sessionId)
+    public function destroy($session_id)
     {
-        $this->_dependencyInjector->cookies->delete($sessionId);
+        $this->_dependencyInjector->cookies->delete($session_id);
 
         return true;
     }
@@ -147,16 +110,6 @@ class Cookie extends Component implements EngineInterface
      */
     public function gc($ttl)
     {
-        $this->clean();
-
         return true;
-    }
-
-    /**
-     * @return void
-     */
-    public function clean()
-    {
-
     }
 }

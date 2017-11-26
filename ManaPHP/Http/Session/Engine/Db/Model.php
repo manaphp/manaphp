@@ -8,11 +8,20 @@ namespace ManaPHP\Http\Session\Engine\Db;
  */
 class Model extends \ManaPHP\Db\Model
 {
-
     /**
      * @var int
      */
     public $session_id;
+
+    /**
+     * @var int
+     */
+    public $user_id;
+
+    /**
+     * @var string
+     */
+    public $client_ip;
 
     /**
      * @var string
@@ -22,7 +31,7 @@ class Model extends \ManaPHP\Db\Model
     /**
      * @var int
      */
-    public $ttl;
+    public $updated_time;
 
     /**
      * @var int

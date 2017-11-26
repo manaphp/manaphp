@@ -29,31 +29,14 @@ class HttpSessionEngineDbTest extends TestCase
         });
     }
 
-    public function test_open()
-    {
-        $session_id = md5(microtime(true) . mt_rand());
-        $adapter = new Db(['ttl' => 3600]);
-
-        $this->assertTrue($adapter->open('', $session_id));
-    }
-
-    public function test_close()
-    {
-        md5(microtime(true) . mt_rand());
-        $adapter = new Db(['ttl' => 3600]);
-
-        $this->assertTrue($adapter->close());
-    }
-
     public function test_read()
     {
         $session_id = md5(microtime(true) . mt_rand());
         $adapter = new Db();
 
-        $adapter->open($session_id, '');
         $this->assertEquals('', $adapter->read($session_id));
 
-        $adapter->write($session_id, 'manaphp', 100);
+        $adapter->write($session_id, 'manaphp', ['ttl' => 100, 'user_id' => 0, 'client_ip' => '0.0.0.0']);
         $this->assertEquals('manaphp', $adapter->read($session_id));
     }
 
@@ -62,10 +45,10 @@ class HttpSessionEngineDbTest extends TestCase
         $session_id = md5(microtime(true) . mt_rand());
         $adapter = new Db();
 
-        $adapter->write($session_id, '', 100);
+        $adapter->write($session_id, '', ['ttl' => 100, 'user_id' => 0, 'client_ip' => '0.0.0.0']);
         $this->assertEquals('', $adapter->read($session_id));
 
-        $adapter->write($session_id, 'manaphp', 100);
+        $adapter->write($session_id, 'manaphp', ['ttl' => 100, 'user_id' => 0, 'client_ip' => '0.0.0.0']);
         $this->assertEquals('manaphp', $adapter->read($session_id));
     }
 
@@ -75,7 +58,7 @@ class HttpSessionEngineDbTest extends TestCase
         $adapter = new Db();
         $this->assertTrue($adapter->destroy($session_id));
 
-        $adapter->write($session_id, 'manaphp', 100);
+        $adapter->write($session_id, 'manaphp', ['ttl' => 100, 'user_id' => 0, 'client_ip' => '0.0.0.0']);
         $this->assertEquals('manaphp', $adapter->read($session_id));
         $this->assertTrue($adapter->destroy($session_id));
 

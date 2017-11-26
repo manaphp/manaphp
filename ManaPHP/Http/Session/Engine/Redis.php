@@ -30,9 +30,7 @@ class Redis extends Component implements EngineInterface
      */
     public function __construct($options = 'redis')
     {
-        if (is_string($options)) {
-            $this->_redis = $options;
-        } elseif (is_object($options)) {
+        if (is_string($options) || is_object($options)) {
             $this->_redis = $options;
         } else {
             if (isset($options['redis'])) {
@@ -58,58 +56,39 @@ class Redis extends Component implements EngineInterface
     }
 
     /**
-     * @param string $savePath
-     * @param string $sessionName
-     *
-     * @return bool
-     */
-    public function open($savePath, $sessionName)
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function close()
-    {
-        return true;
-    }
-
-    /**
-     * @param string $sessionId
+     * @param string $session_id
      *
      * @return string
      */
-    public function read($sessionId)
+    public function read($session_id)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        $data = $redis->get($this->_prefix . $sessionId);
+        $data = $redis->get($this->_prefix . $session_id);
         return is_string($data) ? $data : '';
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      * @param string $data
-     * @param int    $ttl
+     * @param array  $context
      *
      * @return bool
      */
-    public function write($sessionId, $data, $ttl)
+    public function write($session_id, $data, $context)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        return $redis->set($this->_prefix . $sessionId, $data, $ttl);
+        return $redis->set($this->_prefix . $session_id, $data, $context['ttl']);
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      *
      * @return bool
      */
-    public function destroy($sessionId)
+    public function destroy($session_id)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        $redis->delete($this->_prefix . $sessionId);
+        $redis->delete($this->_prefix . $session_id);
 
         return true;
     }
@@ -121,16 +100,6 @@ class Redis extends Component implements EngineInterface
      */
     public function gc($ttl)
     {
-        $this->clean();
-
         return true;
-    }
-
-    /**
-     * @return void
-     */
-    public function clean()
-    {
-
     }
 }

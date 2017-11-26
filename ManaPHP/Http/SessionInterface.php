@@ -10,11 +10,6 @@ namespace ManaPHP\Http;
 interface SessionInterface
 {
     /**
-     * @return static
-     */
-    public function start();
-
-    /**
      * Gets a session variable from an application context
      *
      * @param string $name
@@ -49,11 +44,13 @@ interface SessionInterface
     public function remove($name);
 
     /**
-     * Destroys the active session
+     * Destroys the active session or assigned session
+     *
+     * @param string $session_id
      *
      * @return void
      */
-    public function destroy();
+    public function destroy($session_id = null);
 
     /**
      * @return string
@@ -80,7 +77,9 @@ interface SessionInterface
     public function setName($name);
 
     /**
-     * @return void
+     * Force the session to be saved and closed.
+     *
+     * This method is generally not required for real sessions as the session will be automatically saved at the end of code execution.
      */
-    public function clean();
+    public function save();
 }

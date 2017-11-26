@@ -9,14 +9,15 @@ use ManaPHP\Http\Session\Exception as SessionException;
  * Class ManaPHP\Http\Session
  *
  * @package session
- * @property \ManaPHP\Http\Cookies $cookies
+ * @property \ManaPHP\Http\Cookies          $cookies
+ * @property \ManaPHP\Http\RequestInterface $request
  */
 class Session extends Component implements SessionInterface, ScopedCloneableInterface, \ArrayAccess
 {
     /**
      * @var \ManaPHP\Http\Session\EngineInterface
      */
-    protected $_engine;
+    protected $_engine = 'ManaPHP\Http\Session\Engine\File';
 
     /**
      * @var int
@@ -29,77 +30,158 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     protected $_started = false;
 
     /**
+     * @var string
+     */
+    protected $_session_name;
+
+    /**
      * Session constructor.
      *
      * @param string|array|\ManaPHP\Http\Session\EngineInterface $options
      *
      * @throws \ManaPHP\Http\Session\Exception
      */
-    public function __construct($options = 'ManaPHP\Http\Session\Adapter\File')
+    public function __construct($options = 'ManaPHP\Http\Session\Engine\File')
     {
         if (is_string($options) || is_object($options)) {
-            $options = ['engine' => $options];
+            $this->_engine = $options;
+        } else {
+            if (isset($options['ttl'])) {
+                $this->_ttl = (int)$options['ttl'];
+            }
+            if (isset($options['engine'])) {
+                $this->_engine = $options['engine'];
+            }
+
+            if (isset($options['session_name'])) {
+                $this->_session_name = $options['session_name'];
+                $this->setName($this->_session_name);
+            }
         }
 
-        if (isset($options['ttl'])) {
-            $this->_ttl = (int)$options['ttl'];
-        } else {
+        if (!is_int($this->_ttl)) {
             $this->_ttl = (int)ini_get('session.gc_maxlifetime');
         }
 
-        $this->_engine = $options['engine'];
-    }
-
-    /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @return static
-     * @throws \ManaPHP\Http\Session\Exception
-     */
-    public function setDependencyInjector($dependencyInjector)
-    {
-        parent::setDependencyInjector($dependencyInjector);
-
-        if (!is_object($this->_engine)) {
-            $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
-        }
-
-        $open = [$this->_engine, 'open'];
-        $close = [$this->_engine, 'close'];
-        $read = [$this->_engine, 'read'];
-        $write = [$this->_engine, 'write'];
-        $destroy = [$this->_engine, 'destroy'];
-        $gc = [$this->_engine, 'gc'];
-
-        session_set_save_handler($open, $close, $read, $write, $destroy, $gc);
+        session_set_save_handler(
+            [$this, '_handler_open'], [$this, '_handler_close'],
+            [$this, '_handler_read'], [$this, '_handler_write'],
+            [$this, '_handler_destroy'], [$this, '_handler_gc']);
 
         if (session_status() === PHP_SESSION_ACTIVE) {
-            throw new SessionException('please call $this->session->start(), NOT session_start()');
+            throw new SessionException('session_start() has been called, use session component is too late');
         }
 
         $this->attachEvent('response:beforeSend');
-
-        return $this;
     }
 
     /**
-     * @param string $session_id
-     * @param string $data
+     * @ignore
      */
-    public function _write($session_id, $data)
-    {
-        $this->_engine->write($session_id, $data, $this->_ttl);
-    }
-
     public function onResponseBeforeSend()
     {
-        PHP_SAPI !== 'cli' && $this->_started && session_write_close();
+        $this->save();
     }
 
     /**
-     * @return static
+     * @return \ManaPHP\Http\Session\EngineInterface
      */
-    public function start()
+    protected function _getEngine()
+    {
+        if (is_string($this->_engine)) {
+            return $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+        } else {
+            return $this->_engine = $this->_dependencyInjector->getInstance($this->_engine);
+        }
+    }
+
+    /**
+     * @ignore
+     *
+     * @param string $save_path
+     * @param string $session_name
+     *
+     * @return bool
+     */
+    public function _handler_open($save_path, $session_name)
+    {
+        $save_path && $session_name;
+        return true;
+    }
+
+    /**
+     * @ignore
+     *
+     * @return bool
+     */
+    public function _handler_close()
+    {
+        return true;
+    }
+
+    /**
+     * @ignore
+     *
+     * @param string $session_id
+     *
+     * @return string
+     */
+    public function _handler_read($session_id)
+    {
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        return $engine->read($session_id);
+    }
+
+    /**
+     * @ignore
+     *
+     * @param $session_id
+     * @param $data
+     *
+     * @return bool
+     */
+    public function _handler_write($session_id, $data)
+    {
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+
+        $context = [];
+        $context['ttl'] = $this->_ttl;
+        $context['client_ip'] = $this->request->getClientAddress();
+        $context['user_id'] = $this->userIdentity->getId();
+
+        return $engine->write($session_id, $data, $context);
+    }
+
+    /**
+     * @ignore
+     *
+     * @param string $session_id
+     *
+     * @return bool
+     */
+    public function _handler_destroy($session_id)
+    {
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        return $engine->destroy($session_id);
+    }
+
+    /**
+     * @ignore
+     *
+     * @param int $ttl
+     *
+     * @return bool
+     */
+    public function _handler_gc($ttl)
+    {
+        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+        return $engine->gc($ttl);
+    }
+
+    /**
+     * @return void
+     */
+    protected function _start()
     {
         if (!$this->_started) {
             if (PHP_SAPI !== 'cli' && session_status() !== PHP_SESSION_ACTIVE && !session_start()) {
@@ -109,8 +191,6 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
 
             $this->_started = true;
         }
-
-        return $this;
     }
 
     /**
@@ -123,7 +203,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
      */
     public function get($name = null, $defaultValue = null)
     {
-        $this->_started || $this->start();
+        $this->_started || $this->_start();
 
         if ($name === null) {
             return $_SESSION;
@@ -142,7 +222,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
      */
     public function set($name, $value)
     {
-        $this->_started || $this->start();
+        $this->_started || $this->_start();
 
         $_SESSION[$name] = $value;
     }
@@ -156,7 +236,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
      */
     public function has($name)
     {
-        $this->_started || $this->start();
+        $this->_started || $this->_start();
 
         return isset($_SESSION[$name]);
     }
@@ -168,7 +248,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
      */
     public function remove($name)
     {
-        $this->_started || $this->start();
+        $this->_started || $this->_start();
 
         unset($_SESSION[$name]);
     }
@@ -178,7 +258,7 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
      */
     public function getId()
     {
-        $this->_started || $this->start();
+        $this->_started || $this->_start();
 
         return session_id();
     }
@@ -192,12 +272,12 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     public function setId($id)
     {
         if ($this->_started) {
-            throw new SessionException('session_id($id) needs to be called before session_start()');
+            throw new SessionException('setId($id) needs to be called before session_start()');
         }
 
         session_id($id);
 
-        $this->_started || $this->start();
+        $this->_started || $this->_start();
     }
 
     /**
@@ -219,22 +299,29 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     }
 
     /**
-     * Destroys the active session
+     * Destroys the active session or assigned session
+     *
+     * @param string $session_id
      *
      * @return void
      * @throws \ManaPHP\Http\Session\Exception
      */
-    public function destroy()
+    public function destroy($session_id = null)
     {
-        $this->_started || $this->start();
+        if ($session_id) {
+            $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
+            $engine->destroy($session_id);
+        } else {
+            $this->_started || $this->_start();
 
-        if (PHP_SAPI !== 'cli' && !session_destroy()) {
-            throw new SessionException('destroy session failed: :last_error_message'/**m08409465b2b90d8a8*/);
-        }
+            if (PHP_SAPI !== 'cli' && !session_destroy()) {
+                throw new SessionException('destroy session failed: :last_error_message'/**m08409465b2b90d8a8*/);
+            }
 
-        if (ini_get('session.use_cookies')) {
-            $params = session_get_cookie_params();
-            $this->cookies->delete(session_name(), $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+            if (ini_get('session.use_cookies')) {
+                $params = session_get_cookie_params();
+                $this->cookies->delete(session_name(), $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+            }
         }
     }
 
@@ -276,11 +363,16 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     }
 
     /**
-     * @return void
+     * Force the session to be saved and closed.
+     *
+     * This method is generally not required for real sessions as the session will be automatically saved at the end of code execution.
      */
-    public function clean()
+    public function save()
     {
-        $this->_engine->clean();
+        if ($this->_started) {
+            $this->_started = false;
+            session_write_close();
+        }
     }
 
     /**
@@ -288,9 +380,12 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
      */
     public function __debugInfo()
     {
-        $data = (isset($_SESSION) && is_array($_SESSION)) ? $_SESSION : [];
+        $this->_started || $this->_start();
 
-        $data['_internal_'] = ['adapter' => is_string($this->_engine) ? $this->_engine : get_class($this->_engine)];
+        $data = (array)$_SESSION;
+
+        $data['_internal_'] = ['engine' => get_class($this->_engine)];
+
         return $data;
     }
 
@@ -303,4 +398,5 @@ class Session extends Component implements SessionInterface, ScopedCloneableInte
     {
         return $this->_dependencyInjector->getInstance('ManaPHP\Http\Session\Bag', $scope->getComponentName($this));
     }
+
 }

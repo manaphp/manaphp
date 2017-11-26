@@ -33,37 +33,18 @@ class Db extends Component implements EngineInterface
     }
 
     /**
-     * @param string $savePath
-     * @param string $sessionName
-     *
-     * @return bool
-     */
-    public function open($savePath, $sessionName)
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function close()
-    {
-        return true;
-    }
-
-    /**
-     * @param string $sessionId
+     * @param string $session_id
      *
      * @return string
      * @throws \ManaPHP\Model\Exception
      */
-    public function read($sessionId)
+    public function read($session_id)
     {
         /**
          * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
-        $model = $model::findFirst(['session_id' => $sessionId]);
+        $model = $model::findFirst(['session_id' => $session_id]);
         if ($model !== false && $model->expired_time > time()) {
             return $model->data;
         } else {
@@ -72,24 +53,26 @@ class Db extends Component implements EngineInterface
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      * @param string $data
-     * @param int    $ttl
+     * @param array  $context
      *
      * @return bool
      * @throws \ManaPHP\Model\Exception
      */
-    public function write($sessionId, $data, $ttl)
+    public function write($session_id, $data, $context)
     {
         /**
          * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
 
-        $model->session_id = $sessionId;
+        $model->session_id = $session_id;
+        $model->user_id = $context['user_id'];
+        $model->client_ip = $context['client_ip'];
         $model->data = $data;
-        $model->ttl = $ttl;
-        $model->expired_time = time() + $ttl;
+        $model->updated_time = time();
+        $model->expired_time = $model->updated_time + $context['ttl'];
 
         $model->save();
 
@@ -97,19 +80,19 @@ class Db extends Component implements EngineInterface
     }
 
     /**
-     * @param string $sessionId
+     * @param string $session_id
      *
      * @return bool
      * @throws \ManaPHP\Model\Exception
      */
-    public function destroy($sessionId)
+    public function destroy($session_id)
     {
         /**
          * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
 
-        $model::deleteAll(['session_id' => $sessionId]);
+        $model::deleteAll(['session_id' => $session_id]);
 
         return true;
     }
@@ -122,22 +105,13 @@ class Db extends Component implements EngineInterface
      */
     public function gc($ttl)
     {
-        $this->clean();
-
-        return true;
-    }
-
-    /**
-     * @return void
-     * @throws \ManaPHP\Model\Exception
-     */
-    public function clean()
-    {
         /**
          * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
 
         $model::deleteAll(['expired_time<=' => time()]);
+
+        return true;
     }
 }
