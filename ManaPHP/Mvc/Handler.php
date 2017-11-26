@@ -28,6 +28,26 @@ class Handler extends Component implements HandlerInterface
      */
     protected $_loadedModules = [];
 
+    public function __construct()
+    {
+        $this->attachEvent('dispatcher:beforeDispatch');
+    }
+
+    public function onDispatcherBeforeDispatch()
+    {
+        $moduleInstance = $this->_loadedModules[$this->_lastModule];
+
+        $r = $moduleInstance->authenticate();
+        if ($r !== null && $r !== true) {
+            return false;
+        }
+
+        $r = $moduleInstance->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+        if ($r !== null && $r !== true) {
+            return false;
+        }
+    }
+
     /**
      * Handles a MVC request
      *
@@ -76,35 +96,16 @@ class Handler extends Component implements HandlerInterface
             $moduleInstance = $this->_dependencyInjector->getShared($moduleServiceName);
             $moduleInstance->registerServices();
             $this->_loadedModules[$moduleName] = $moduleInstance;
-        } else {
-            $moduleInstance = $this->_loadedModules[$moduleName];
         }
 
-        do {
-            $r = $moduleInstance->antiCsrf();
-            if ($r !== null && $r !== true) {
-                break;
+        $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
+        if ($ret !== false) {
+            $actionReturnValue = $this->dispatcher->getReturnedValue();
+            if ($actionReturnValue === null) {
+                $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+                $this->response->setContent($this->view->getContent());
             }
-
-            $r = $moduleInstance->authenticate();
-            if ($r !== null && $r !== true) {
-                break;
-            }
-
-            $r = $moduleInstance->authorize($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-            if ($r !== null && $r !== true) {
-                break;
-            }
-
-            $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-            if ($ret !== false) {
-                $actionReturnValue = $this->dispatcher->getReturnedValue();
-                if ($actionReturnValue === null) {
-                    $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-                    $this->response->setContent($this->view->getContent());
-                }
-            }
-        } while (false);
+        }
 
         return $this->response;
     }
