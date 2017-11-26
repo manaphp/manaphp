@@ -12,14 +12,15 @@ namespace ManaPHP;
  *
  * @package component
  *
- * @property \ManaPHP\AliasInterface          $alias
- * @property \ManaPHP\Event\ManagerInterface  $eventsManager
- * @property \ManaPHP\FilesystemInterface     $filesystem
- * @property \ManaPHP\LoggerInterface         $logger
- * @property \ManaPHP\Configure               $configure
- * @property \ManaPHP\Security\CryptInterface $crypt
- * @property \ManaPHP\CacheInterface          $scopedCache
- * @property \ManaPHP\Http\SessionInterface   $scopedSession
+ * @property \ManaPHP\AliasInterface                       $alias
+ * @property \ManaPHP\Event\ManagerInterface               $eventsManager
+ * @property \ManaPHP\FilesystemInterface                  $filesystem
+ * @property \ManaPHP\LoggerInterface                      $logger
+ * @property \ManaPHP\Configure                            $configure
+ * @property \ManaPHP\Security\CryptInterface              $crypt
+ * @property \ManaPHP\CacheInterface                       $scopedCache
+ * @property \ManaPHP\Http\SessionInterface                $scopedSession
+ * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  */
 class Component implements ComponentInterface
 {
@@ -198,6 +199,7 @@ class Component implements ComponentInterface
 
     /**
      * @param \ManaPHP\Component $caller
+     *
      * @return string
      */
     public function getComponentName($caller = null)
