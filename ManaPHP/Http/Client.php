@@ -198,7 +198,7 @@ class Client extends Component implements ClientInterface
             $hasFiles = false;
             /** @noinspection ForeachSourceInspection */
             foreach ($data as $k => $v) {
-                if (is_string($v) && $v[0] === '@') {
+                if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && is_file(substr($v, 1))) {
                     $hasFiles = true;
                     if (class_exists('CURLFile')) {
                         $file = substr($v, 1);
