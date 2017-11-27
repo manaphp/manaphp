@@ -78,8 +78,8 @@ class Manager implements ManagerInterface
                 $ret = $handler[0]->{$handler[1]}($source, $data, $event);
             }
 
-            if ($ret === false && $i !== count($this->_events[$event]) - 1) {
-                throw new ManagerException('`:event` event is canceled  too early'/**m034048b6f1b217155*/, ['event' => $event]);
+            if ($ret === false) {
+                return false;
             }
         }
 
