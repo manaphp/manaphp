@@ -225,7 +225,7 @@ class Filter extends Component implements FilterInterface
             $bind['attribute'] = isset($this->_attributes[$attribute]) ? $this->_attributes[$attribute] : $attribute;
             $bind['value'] = $srcValue;
             foreach ($parameters as $k => $parameter) {
-                $bind['parameter[' . $k . ']'] = $parameter;
+                $bind['parameters[' . $k . ']'] = $parameter;
             }
 
             throw new FilterException($message, $bind);
