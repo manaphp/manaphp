@@ -588,28 +588,6 @@ class Filter extends Component implements FilterInterface
 
     /**
      * @param string $value
-     * @param array  $parameters
-     *
-     * @return string|null
-     */
-    protected function _filter_in($value, $parameters)
-    {
-        return in_array($value, $parameters, false) ? $value : null;
-    }
-
-    /**
-     * @param string $value
-     * @param array  $parameters
-     *
-     * @return string|null
-     */
-    protected function _filter_not_in($value, $parameters)
-    {
-        return in_array($value, $parameters, false) ? null : $value;
-    }
-
-    /**
-     * @param string $value
      *
      * @return string|null
      */
