@@ -245,16 +245,6 @@ class Filter extends Component implements FilterInterface
     }
 
     /**
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    protected function _filter_ignore($value)
-    {
-        return $value;
-    }
-
-    /**
      * @param string $value
      * @param array  $parameters
      *
