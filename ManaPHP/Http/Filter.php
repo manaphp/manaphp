@@ -157,7 +157,7 @@ class Filter extends Component implements FilterInterface
 
         $filters = $this->_parseRule($rule);
 
-        if ($value === null && !isset($filters['default'])) {
+        if ($value === null) {
             $this->_sanitize($attribute, 'required', [], null);
         }
 
@@ -242,17 +242,6 @@ class Filter extends Component implements FilterInterface
     protected function _filter_required($value)
     {
         return $value === '' ? null : $value;
-    }
-
-    /**
-     * @param mixed $value
-     * @param array $parameters
-     *
-     * @return mixed
-     */
-    protected function _filter_default($value, $parameters)
-    {
-        return $value === '' || $value === null ? $parameters[0] : $value;
     }
 
     /**
