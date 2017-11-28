@@ -274,20 +274,6 @@ class HttpFilterTest extends TestCase
         }
     }
 
-    public function test_json()
-    {
-        $this->assertEquals('1', $this->filter->sanitize('ids', 'json', '1'));
-        $this->assertEquals([], $this->filter->sanitize('ids', 'json', '{}'));
-        $this->assertEquals([1, 2], $this->filter->sanitize('ids', 'json', '[1,2]'));
-
-        try {
-            $this->filter->sanitize('ids', 'json', '[');
-            $this->assertFalse('why not?');
-        } catch (\Exception $e) {
-
-        }
-    }
-
     public function test_url()
     {
         $this->assertEquals('http://www.baidu.com/', $this->filter->sanitize('from', 'url', 'http://www.baidu.com/'));

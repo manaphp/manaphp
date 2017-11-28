@@ -621,23 +621,6 @@ class Filter extends Component implements FilterInterface
     /**
      * @param string $value
      *
-     * @return mixed|null
-     */
-    protected function _filter_json($value)
-    {
-        if (is_scalar($value)) {
-            $a = json_decode($value, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $a;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $value
-     *
      * @return string|null
      */
     protected function _filter_mobile($value)
