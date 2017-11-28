@@ -627,6 +627,17 @@ class Filter extends Component implements FilterInterface
     }
 
     /**
+     * @param string $value
+     * @param array  $parameters
+     *
+     * @return string
+     */
+    public function _filter_escape($value, $parameters)
+    {
+        return htmlspecialchars($value);
+    }
+
+    /**
      * @return array
      */
     public function dump()
