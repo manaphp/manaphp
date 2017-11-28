@@ -157,10 +157,6 @@ class Filter extends Component implements FilterInterface
 
         $filters = $this->_parseRule($rule);
 
-        if ($value === null) {
-            $this->_sanitize($attribute, 'required', [], null);
-        }
-
         if (is_int($value)) {
             $value = (string)$value;
         } elseif (is_bool($value)) {
