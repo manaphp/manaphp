@@ -145,49 +145,9 @@ class HttpRequestTest extends TestCase
         $request = new Request();
         $this->assertEquals('1.2.3.4', $request->getClientAddress());
 
-        //client address is public ip, we not trust the HTTP_X_FORWARDED_FOR
-
-        $_SERVER['REMOTE_ADDR'] = '1.2.3.4';
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '5.6.7.8';
+        $_SERVER['HTTP_X_REAL_IP'] = '10.20.30.40';
         $request = new Request();
-        $this->assertEquals('1.2.3.4', $request->getClientAddress());
-
-        //client address is lookBack ip, we trust the HTTP_X_FORWARDED_FOR
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '5.6.7.8';
-        $request = new Request();
-        $this->assertEquals('5.6.7.8', $request->getClientAddress());
-        //client address is private ip, we trust the HTTP_X_FORWARDED_FOR
-        $_SERVER['REMOTE_ADDR'] = '192.168.1.1';
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '5.6.7.8';
-        $request = new Request();
-        $this->assertEquals('5.6.7.8', $request->getClientAddress());
-
-        //client address is private ip, we trust the HTTP_X_FORWARDED_FOR
-        $_SERVER['REMOTE_ADDR'] = '10.0.1.2';
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '5.6.7.8';
-        $request = new Request();
-        $this->assertEquals('5.6.7.8', $request->getClientAddress());
-
-        $request = new Request();
-        $request->setClientAddress('10.20.30.40');
         $this->assertEquals('10.20.30.40', $request->getClientAddress());
-    }
-
-    public function test_setClientAddress()
-    {
-        $request = new Request();
-
-        $_SERVER['REMOTE_ADDR'] = '1.2.3.4';
-        $this->assertEquals('1.2.3.4', $request->getClientAddress());
-
-        $request->setClientAddress('4.3.2.1');
-        $this->assertEquals('4.3.2.1', $request->getClientAddress());
-
-        $request->setClientAddress(function () {
-            return '6.7.8.9';
-        });
-        $this->assertEquals('6.7.8.9', $request->getClientAddress());
     }
 
     public function test_getUserAgent()
