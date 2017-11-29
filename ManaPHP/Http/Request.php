@@ -21,11 +21,6 @@ class Request extends Component implements RequestInterface
      */
     protected $_put;
 
-    /**
-     * @var array
-     */
-    protected $_headers;
-
     public function __construct()
     {
         if (isset($_SERVER['REQUEST_METHOD'])
@@ -318,61 +313,54 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @return void
-     */
-    protected function _initHeaders()
-    {
-        if (function_exists('apache_request_headers')) {
-            $this->_headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
-        } else {
-            /** @noinspection ForeachSourceInspection */
-            foreach ($_SERVER as $k => $v) {
-                if (strpos($k, 'HTTP_') === 0) {
-                    $this->_headers[strtr(substr($k, 5), '_', '-')] = $v;
-                }
-            }
-        }
-    }
-
-    /**
      * @param string $name
      *
      * @return bool
      */
     public function hasHeader($name)
     {
-        if ($this->_headers === null) {
-            $this->_initHeaders();
+        $name = strtoupper($name);
+        if (strpos($name, '-') !== false) {
+            $name = strtr($name, '-', '_');
         }
 
-        if (isset($this->_headers[$name])) {
-            return true;
-        }
-
-        return isset($this->_headers[strtoupper($name)]);
+        /** @noinspection UnSafeIsSetOverArrayInspection */
+        return isset($_SERVER[$name]) || isset($_SERVER['HTTP_' . $name]);
     }
 
     /**
      * @param string $name
-     * @param string $default
+     * @param string $defaultValue
      *
      * @return array|string|null
      */
-    public function getHeader($name = null, $default = null)
+    public function getHeader($name = null, $defaultValue = '')
     {
-        if ($this->_headers === null) {
-            $this->_initHeaders();
-        }
-
-        if ($name === null) {
-            return $this->_headers;
-        } else {
-            if (isset($this->_headers[$name])) {
-                return $this->_headers[$name];
+        if ($name !== null) {
+            $name = strtoupper($name);
+            if (strpos($name, '-') !== false) {
+                $name = strtr($name, '-', '_');
             }
 
-            $ucName = strtoupper($name);
-            return isset($this->_headers[$ucName]) ? $this->_headers[$ucName] : $default;
+            if (isset($_SERVER[$name])) {
+                return $_SERVER[$name];
+            }
+
+            /** @noinspection UnSafeIsSetOverArrayInspection */
+            if (isset($_SERVER['HTTP_' . $name])) {
+                return $_SERVER['HTTP_' . $name];
+            }
+
+            return $defaultValue;
+        } else {
+            $headers = [];
+            foreach ($_SERVER as $k => $v) {
+                if (strpos($k, 'HTTP_') === 0) {
+                    $headers[$k] = $v;
+                }
+            }
+
+            return $headers;
         }
     }
 

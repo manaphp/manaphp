@@ -148,11 +148,11 @@ interface RequestInterface
 
     /**
      * @param string $name
-     * @param string $default
+     * @param string $defaultValue
      *
      * @return string|null
      */
-    public function getHeader($name = null, $default = null);
+    public function getHeader($name = null, $defaultValue = '');
 
     /**
      * Gets HTTP schema (http/https)
