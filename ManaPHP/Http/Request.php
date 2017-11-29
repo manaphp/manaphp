@@ -359,14 +359,8 @@ class Request extends Component implements RequestInterface
     {
         if (isset($_SERVER['REQUEST_SCHEME'])) {
             return $_SERVER['REQUEST_SCHEME'];
-        } elseif (isset($_SERVER['HTTPS'])) {
-            if ($_SERVER['HTTPS'] === 'on') {
-                return 'https';
-            } else {
-                return 'http';
-            }
         } else {
-            return 'http';
+            return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
         }
     }
 
