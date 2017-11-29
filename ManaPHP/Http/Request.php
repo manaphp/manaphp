@@ -693,7 +693,7 @@ class Request extends Component implements RequestInterface
     {
         if ($this->has('access_token')) {
             return true;
-        } elseif ($this->hasHeader('X_ACCESS_TOKEN')) {
+        } elseif (isset($_SERVER['HTTP_X_ACCESS_TOKEN'])) {
             return true;
         } elseif ($this->hasHeader('Authorization')) {
             return true;
@@ -704,21 +704,17 @@ class Request extends Component implements RequestInterface
 
     /**
      * @return string|null
-     * @throws \ManaPHP\Http\Request\Exception
      */
     public function getAccessToken()
     {
         if ($this->has('access_token')) {
             return $this->get('access_token');
-        } elseif ($this->hasHeader('X_ACCESS_TOKEN')) {
-            return $this->getHeader('X_ACCESS_TOKEN');
-        } else {
-            $authorization = $this->getHeader('Authorization');
-            if ($authorization) {
-                $parts = explode(' ', $authorization, 2);
-                if ($parts[0] === 'Bearer' && count($parts) === 2) {
-                    return $parts[1];
-                }
+        } elseif (isset($_SERVER['HTTP_X_ACCESS_TOKEN'])) {
+            return $_SERVER['HTTP_X_ACCESS_TOKEN'];
+        } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $parts = explode(' ', $_SERVER['HTTP_AUTHORIZATION'], 2);
+            if ($parts[0] === 'Bearer' && count($parts) === 2) {
+                return $parts[1];
             }
         }
 
