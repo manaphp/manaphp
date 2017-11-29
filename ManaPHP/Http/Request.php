@@ -16,11 +16,6 @@ use ManaPHP\Utility\Text;
  */
 class Request extends Component implements RequestInterface
 {
-    /**
-     * @var array
-     */
-    protected $_put;
-
     public function __construct()
     {
         if (isset($_SERVER['REQUEST_METHOD'])
@@ -190,15 +185,10 @@ class Request extends Component implements RequestInterface
      * @param mixed  $defaultValue
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Request\Exception
      */
     public function getPut($name = null, $rule = null, $defaultValue = '')
     {
-        if ($this->_put === null && $this->isPut()) {
-            parse_str($this->getRawBody(), $this->_put);
-        }
-
-        return $this->_getHelper($this->_put, $name, $rule, $defaultValue);
+        return $this->_getHelper($_POST, $name, $rule, $defaultValue);
     }
 
     /**
@@ -273,11 +263,7 @@ class Request extends Component implements RequestInterface
      */
     public function hasPut($name)
     {
-        if ($this->_put === null && $this->isPut()) {
-            parse_str($this->getRawBody(), $this->_put);
-        }
-
-        return isset($this->_put[$name]);
+        return isset($_POST[$name]);
     }
 
     /**
