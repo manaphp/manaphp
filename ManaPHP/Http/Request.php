@@ -46,7 +46,6 @@ class Request extends Component implements RequestInterface
      * @param mixed  $defaultValue
      *
      * @return array|string|null
-     * @throws \ManaPHP\Http\Request\Exception
      */
     protected function _getHelper($source, $name = null, $rule = null, $defaultValue = '')
     {
@@ -95,7 +94,6 @@ class Request extends Component implements RequestInterface
      * @param mixed  $defaultValue
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Request\Exception
      */
     public function get($name = null, $rule = null, $defaultValue = '')
     {
@@ -122,7 +120,6 @@ class Request extends Component implements RequestInterface
      * @param mixed  $defaultValue
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Request\Exception
      */
     public function getGet($name = null, $rule = null, $defaultValue = '')
     {
@@ -146,7 +143,6 @@ class Request extends Component implements RequestInterface
      * @param mixed  $defaultValue
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Request\Exception
      */
     public function getPost($name = null, $rule = null, $defaultValue = '')
     {
@@ -160,7 +156,6 @@ class Request extends Component implements RequestInterface
      * @param mixed  $defaultValue
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Request\Exception
      */
     public function getServer($name = null, $defaultValue = '')
     {
@@ -211,7 +206,6 @@ class Request extends Component implements RequestInterface
      * @param mixed  $defaultValue
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Request\Exception
      */
     public function getQuery($name = null, $rule = null, $defaultValue = '')
     {
