@@ -217,8 +217,8 @@ class Response extends Component implements ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"), JSON_NUMERIC_CHECK);
      *</code>
      *
-     * @param array $content
-     * @param int   $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
+     * @param array|\Serializable $content
+     * @param int                 $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
      *
      * @return static
      */
