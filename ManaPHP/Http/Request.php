@@ -22,11 +22,6 @@ class Request extends Component implements RequestInterface
     protected $_put;
 
     /**
-     * @var string
-     */
-    protected $_clientAddress;
-
-    /**
      * @var array
      */
     protected $_headers;
@@ -457,45 +452,17 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Gets most possible client IPv4 Address. This method search in $_SERVER['REMOTE_ADDR'] and optionally in $_SERVER['HTTP_X_FORWARDED_FOR']
+     * Gets most possible client IPv4 Address. This method search in $_SERVER['REMOTE_ADDR'] and optionally in $_SERVER['HTTP_X_REAL_IP']
      *
      * @return string
      */
     public function getClientAddress()
     {
-        if ($this->_clientAddress === null) {
-            if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $this->_clientAddress = $_SERVER['REMOTE_ADDR'];
-            } else {
-                $client_address = $_SERVER['REMOTE_ADDR'];
-                if (Text::startsWith($client_address, '192.168.') || Text::startsWith($client_address, '10.') || Text::startsWith($client_address, '127.')
-                ) {
-                    $this->_clientAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                } else {
-                    $this->_clientAddress = $client_address;
-                }
-            }
-        }
-
-        return $this->_clientAddress;
-    }
-
-    /**
-     * set the client address for getClientAddress method
-     *
-     * @param string|callable $address
-     *
-     * @return static
-     */
-    public function setClientAddress($address)
-    {
-        if (is_string($address)) {
-            $this->_clientAddress = $address;
+        if (isset($_SERVER['HTTP_X_REAL_IP'])) {
+            return $_SERVER['HTTP_X_REAL_IP'];
         } else {
-            $this->_clientAddress = $address();
+            return $_SERVER['REMOTE_ADDR'];
         }
-
-        return $this;
     }
 
     /**

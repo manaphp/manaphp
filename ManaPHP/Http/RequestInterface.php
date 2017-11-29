@@ -198,15 +198,6 @@ interface RequestInterface
     public function getClientAddress();
 
     /**
-     * set the client address for getClientAddress method
-     *
-     * @param string|callable $address
-     *
-     * @return static
-     */
-    public function setClientAddress($address);
-
-    /**
      * Gets HTTP user agent used to made the request
      *
      * @return string
