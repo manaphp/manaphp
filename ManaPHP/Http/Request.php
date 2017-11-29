@@ -31,6 +31,28 @@ class Request extends Component implements RequestInterface
      */
     protected $_json;
 
+    public function __construct()
+    {
+        if (isset($_SERVER['REQUEST_METHOD'])
+            && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)
+            && count($_POST) === 0) {
+            $data = file_get_contents('php://input');
+
+            if (isset($_SERVER['CONTENT_TYPE'])
+                && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                $_POST = json_decode($data, true, 16);
+            } else {
+                parse_str($data, $_POST);
+            }
+
+            if (is_array($_POST)) {
+                $_REQUEST = array_merge($_GET, $_POST);
+            } else {
+                $_POST = [];
+            }
+        }
+    }
+
     /**
      *
      * @param array  $source
