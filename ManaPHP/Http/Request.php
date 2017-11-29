@@ -3,9 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Request\Exception as RequestException;
 use ManaPHP\Http\Request\File;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Http\Request
@@ -50,7 +48,7 @@ class Request extends Component implements RequestInterface
     protected function _getHelper($source, $name = null, $rule = null, $defaultValue = '')
     {
         if ($name === null) {
-            if ($rule === false || $rule === 'ignore') {
+            if ($rule === '') {
                 return $source;
             }
 
@@ -61,18 +59,23 @@ class Request extends Component implements RequestInterface
 
             return $data;
         } else {
-            if ($rule === false || $rule === 'ignore') {
-                return isset($source[$name]) ? $source[$name] : $defaultValue;
-            }
-
             if (isset($source[$name])) {
-                if (is_array($source[$name])) {
-                    return $this->_getHelper($source[$name]);
-                } else {
-                    return $this->filter->sanitize($name, $rule, $source[$name] !== '' ? $source[$name] : $defaultValue);
+                $value = $source[$name];
+                if (is_string($value) && $value === '') {
+                    $value = $defaultValue;
                 }
             } else {
-                return $this->filter->sanitize($name, $rule, $defaultValue);
+                $value = $defaultValue;
+            }
+
+            if ($rule === '') {
+                return $value;
+            }
+
+            if (is_array($value)) {
+                return $this->_getHelper($value);
+            } else {
+                return $this->filter->sanitize($name, $rule, $value);
             }
         }
     }
