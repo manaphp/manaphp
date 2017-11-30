@@ -352,6 +352,13 @@ class Query extends Component implements QueryInterface
                 if (count($value) !== 2 || !isset($value[0], $value[1])) {
                     throw new QueryException('`:filter` filter is valid: value is not a two elements array', ['filter' => $filter]);
                 }
+
+                if (is_string($value[0]) && is_string($value[1]) && strpos($value[0], '-') !== false && strpos($value[1], '-') !== false) {
+                    if (preg_match('#^\d{4}-\d{2}-\d{2}$#', $value[0]) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $value[1])) {
+                        $value[0] = strtotime($value[0]);
+                        $value[1] = strtotime($value[1] . 'next day') - 1;
+                    }
+                }
                 $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif (isset($value[0]) || count($value) === 0) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
@@ -390,6 +397,38 @@ class Query extends Component implements QueryInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @param array $fields
+     *
+     * @return static
+     */
+    public function whereRequest($fields)
+    {
+        foreach ($fields as $k => $v) {
+            if (strpos($v, '.') === false) {
+                $field = $v;
+            } else {
+                $parts = explode('.', $v);
+                $field = $parts[1];
+            }
+            $value = $this->request->get(rtrim($field, '=!<>~*^$'));
+            if ($value === null) {
+                continue;
+            } elseif (is_string($value)) {
+                $value = trim($value);
+                if ($value === '') {
+                    continue;
+                }
+            } elseif (is_array($value)) {
+                if (count($value) === 1 && trim($value[0]) === '') {
+                    continue;
+                }
+            }
+
+            $this->where($v, $value);
+        }
     }
 
     /**

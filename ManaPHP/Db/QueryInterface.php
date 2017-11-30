@@ -121,6 +121,13 @@ interface QueryInterface
     public function where($filter, $value = null);
 
     /**
+     * @param array $fields
+     *
+     * @return static
+     */
+    public function whereRequest($fields);
+
+    /**
      * @param string $filter
      * @param array  $bind
      *
