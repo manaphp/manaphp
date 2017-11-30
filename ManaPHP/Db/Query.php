@@ -928,8 +928,8 @@ class Query extends Component implements QueryInterface
      */
     public function page($size, $page = null)
     {
-        if ($page === null && $this->request->has('page')) {
-            $page = $this->request->get('page', 'int');
+        if ($page === null) {
+            $page = $this->request->get('page', 'int', 1);
         }
 
         $this->limit($size, $page ? ($page - 1) * $size : null);
@@ -1381,8 +1381,8 @@ class Query extends Component implements QueryInterface
      */
     public function paginate($size, $page = null)
     {
-        if ($page === null && $this->request->has('page')) {
-            $page = $this->request->get('page', 'int');
+        if ($page === null) {
+            $page = $this->request->get('page', 'int', 1);
         }
 
         $this->page($size, $page);
