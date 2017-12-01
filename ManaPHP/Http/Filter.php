@@ -536,7 +536,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_account($value)
     {
-        return preg_match('#^[a-z][a-z_\d]{1,15}$#', $value) ? $value : null;
+        return preg_match('#^[a-z][a-z_\d]{1,15}$#', $value) ? strtolower($value) : null;
     }
 
     /**
