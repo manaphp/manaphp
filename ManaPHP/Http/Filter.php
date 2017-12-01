@@ -131,6 +131,10 @@ class Filter extends Component implements FilterInterface
                 continue;
             }
 
+            if ($filter === '*') {
+                $filter = 'required';
+            }
+
             $filters[$filter] = $parameters;
         }
 
@@ -469,7 +473,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _filter_regex($value, $parameters)
     {
-        return preg_match($parameters[0], $value) ? $value : null;
+        return ($value === '' || preg_match($parameters[0], $value)) ? $value : null;
     }
 
     /**
@@ -480,7 +484,7 @@ class Filter extends Component implements FilterInterface
     protected function _filter_alpha($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
-        return preg_match('#^[a-zA-Z]+$#', $value) ? $value : null;
+        return preg_match('#^[a-zA-Z]*$#', $value) ? $value : null;
     }
 
     /**
@@ -491,7 +495,7 @@ class Filter extends Component implements FilterInterface
     protected function _filter_digit($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
-        return preg_match('#^\d+$#', $value) ? $value : null;
+        return preg_match('#^\d*$#', $value) ? $value : null;
     }
 
     /**
@@ -502,7 +506,7 @@ class Filter extends Component implements FilterInterface
     protected function _filter_alnum($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
-        return preg_match('#^[a-zA-Z0-9]+$#', $value) ? $value : null;
+        return preg_match('#^[a-zA-Z0-9]*$#', $value) ? $value : null;
     }
 
     /**
@@ -556,7 +560,7 @@ class Filter extends Component implements FilterInterface
     {
         $value = trim($value);
 
-        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false ? $value : null;
+        return ($value === '' || filter_var($value, FILTER_VALIDATE_EMAIL) !== false) ? $value : null;
     }
 
     /**
@@ -567,6 +571,10 @@ class Filter extends Component implements FilterInterface
     protected function _filter_url($value)
     {
         $value = trim($value);
+
+        if ($value === '') {
+            return '';
+        }
 
         if (filter_var($value, FILTER_VALIDATE_URL) !== false) {
             $parts = explode('://', $value, 2);
@@ -591,7 +599,7 @@ class Filter extends Component implements FilterInterface
     {
         $value = trim($value);
 
-        return preg_match('#^1[3-8]\d{9}$#', $value) ? $value : null;
+        return ($value === '' || preg_match('#^1[3-8]\d{9}$#', $value)) ? $value : null;
     }
 
     /**
@@ -603,7 +611,7 @@ class Filter extends Component implements FilterInterface
     {
         $value = trim($value);
 
-        return filter_var($value, FILTER_VALIDATE_IP) !== false ? $value : null;
+        return ($value === '' || filter_var($value, FILTER_VALIDATE_IP) !== false) ? $value : null;
     }
 
     /**
