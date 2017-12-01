@@ -560,7 +560,7 @@ class Filter extends Component implements FilterInterface
     {
         $value = trim($value);
 
-        return ($value === '' || filter_var($value, FILTER_VALIDATE_EMAIL) !== false) ? $value : null;
+        return ($value === '' || filter_var($value, FILTER_VALIDATE_EMAIL) !== false) ? strtolower($value) : null;
     }
 
     /**
