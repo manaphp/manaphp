@@ -109,15 +109,15 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      *    $builder->betweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereBetween($expr, $min, $max)
+    public function whereBetween($field, $min, $max)
     {
-        $this->_query->whereBetween($expr, $min, $max);
+        $this->_query->whereBetween($field, $min, $max);
 
         return $this;
     }
@@ -129,15 +129,15 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      *    $builder->notBetweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereNotBetween($expr, $min, $max)
+    public function whereNotBetween($field, $min, $max)
     {
-        $this->_query->whereNotBetween($expr, $min, $max);
+        $this->_query->whereNotBetween($field, $min, $max);
 
         return $this;
     }

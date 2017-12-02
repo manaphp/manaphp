@@ -275,13 +275,13 @@ class Criteria extends \ManaPHP\Model\Criteria
      *    $builder->betweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereBetween($expr, $min, $max)
+    public function whereBetween($field, $min, $max)
     {
         /**
          * @var \ManaPHP\Mongodb\Model $modelName
@@ -289,14 +289,14 @@ class Criteria extends \ManaPHP\Model\Criteria
         $modelName = $this->_modelName;
 
         $fieldTypes = $modelName::getFieldTypes();
-        $fieldType = $fieldTypes[$expr];
+        $fieldType = $fieldTypes[$field];
 
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $min = $modelName::getNormalizedValue($fieldType, $min);
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $max = $modelName::getNormalizedValue($fieldType, $max);
 
-        $this->_filters[] = [$expr => ['$gte' => $min, '$lte' => $max]];
+        $this->_filters[] = [$field => ['$gte' => $min, '$lte' => $max]];
 
         return $this;
     }
@@ -308,13 +308,13 @@ class Criteria extends \ManaPHP\Model\Criteria
      *    $builder->notBetweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereNotBetween($expr, $min, $max)
+    public function whereNotBetween($field, $min, $max)
     {
         /**
          * @var \ManaPHP\Mongodb\Model $modelName
@@ -322,14 +322,14 @@ class Criteria extends \ManaPHP\Model\Criteria
         $modelName = $this->_modelName;
 
         $fieldTypes = $modelName::getFieldTypes();
-        $fieldType = $fieldTypes[$expr];
+        $fieldType = $fieldTypes[$field];
 
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $min = $modelName::getNormalizedValue($fieldType, $min);
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $max = $modelName::getNormalizedValue($fieldType, $max);
 
-        $this->_filters[] = ['$or' => [[$expr => ['$lt' => $min]], [$expr => ['$gt' => $max]]]];
+        $this->_filters[] = ['$or' => [[$field => ['$lt' => $min]], [$field => ['$gt' => $max]]]];
 
         return $this;
     }

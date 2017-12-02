@@ -46,13 +46,13 @@ interface CriteriaInterface
      *    $builder->betweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereBetween($expr, $min, $max);
+    public function whereBetween($field, $min, $max);
 
     /**
      * Appends a NOT BETWEEN condition to the current conditions
@@ -61,13 +61,13 @@ interface CriteriaInterface
      *    $builder->notBetweenWhere('price', 100.25, 200.50);
      *</code>
      *
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereNotBetween($expr, $min, $max);
+    public function whereNotBetween($field, $min, $max);
 
     /**
      * Appends an IN condition to the current conditions
