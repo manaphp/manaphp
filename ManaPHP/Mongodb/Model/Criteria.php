@@ -4,6 +4,7 @@ namespace ManaPHP\Mongodb\Model;
 use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Mongodb\Model\Criteria\Exception as CriteriaException;
+use MongoDB\BSON\Regex;
 
 /**
  * Class ManaPHP\Mongodb\Model\Criteria
@@ -495,6 +496,19 @@ class Criteria extends \ManaPHP\Model\Criteria
     public function whereRegex($expr, $regex)
     {
         $this->_filters[] = [$expr => ['$regex' => $regex]];
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
+     * @param string $regex
+     *
+     * @return static
+     */
+    public function whereNotRegex($expr, $regex)
+    {
+        $this->_filters[] = [$expr => ['$not'=>new Regex($regex)]];
 
         return $this;
     }

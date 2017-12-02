@@ -235,6 +235,14 @@ interface QueryInterface
 
     /**
      * @param string $expr
+     * @param string $regex
+     *
+     * @return static
+     */
+    public function whereNotRegex($expr, $regex);
+
+    /**
+     * @param string $expr
      *
      * @return static
      */

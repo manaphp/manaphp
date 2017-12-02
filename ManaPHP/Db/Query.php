@@ -770,6 +770,21 @@ class Query extends Component implements QueryInterface
 
     /**
      * @param string $expr
+     * @param string $regex
+     *
+     * @return static
+     */
+    public function whereNotRegex($expr, $regex)
+    {
+        $key = $expr;
+        $this->_conditions[] = $expr . ' NOT REGEXP :' . $key;
+        $this->_bind[$key] = $regex;
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
      *
      * @return static
      */

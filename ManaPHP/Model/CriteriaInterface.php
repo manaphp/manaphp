@@ -139,6 +139,14 @@ interface CriteriaInterface
     public function whereRegex($expr, $regex);
 
     /**
+     * @param string $expr
+     * @param string $regex
+     *
+     * @return static
+     */
+    public function whereNotRegex($expr, $regex);
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>

@@ -264,6 +264,15 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertEquals(34, City::criteria()->whereRegex('city', '^A....')->count());
     }
 
+    public function test_whereNotRegex()
+    {
+        $this->assertEquals(554, City::criteria()->whereNotRegex('city', 'A')->count());
+        $this->assertEquals(475, City::criteria()->whereNotRegex('city', 'a$')->count());
+        $this->assertEquals(562, City::criteria()->whereNotRegex('city', '^A')->count());
+        $this->assertEquals(338, City::criteria()->whereNotRegex('city', 'a....')->count());
+        $this->assertEquals(566, City::criteria()->whereNotRegex('city', '^A....')->count());
+    }
+
     public function test_whereNull()
     {
         $this->assertEquals(0, City::criteria()->whereNull('city_id')->count());
