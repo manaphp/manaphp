@@ -429,6 +429,8 @@ class Query extends Component implements QueryInterface
 
             $this->where($v, $value);
         }
+
+        return $this;
     }
 
     /**
