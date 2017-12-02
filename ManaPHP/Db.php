@@ -366,7 +366,7 @@ abstract class Db extends Component implements DbInterface
         $result = $this->query($sql, $bind, $fetchMode);
 
         if ($indexBy === null) {
-            return $result->fetchAll();
+            return $result->fetchAll($fetchMode);
         } elseif (is_scalar($indexBy)) {
             $rows = [];
             while ($row = $result->fetch($fetchMode)) {
@@ -375,7 +375,7 @@ abstract class Db extends Component implements DbInterface
             return $rows;
         } else {
             $rows = [];
-            while ($row = $result->fetch()) {
+            while ($row = $result->fetch($fetchMode)) {
                 $rows[$indexBy($row)] = $row;
             }
 
