@@ -106,21 +106,21 @@ interface CriteriaInterface
     public function whereContains($expr, $value);
 
     /**
-     * @param string|array $expr
+     * @param string|array $field
      * @param string       $value
      * @param int          $length
      *
      * @return static
      */
-    public function whereStartsWith($expr, $value, $length = null);
+    public function whereStartsWith($field, $value, $length = null);
 
     /**
-     * @param string|array $expr
+     * @param string|array $field
      * @param string       $value
      *
      * @return static
      */
-    public function whereEndsWith($expr, $value);
+    public function whereEndsWith($field, $value);
 
     /**
      * @param string|array $expr
