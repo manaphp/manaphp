@@ -406,6 +406,21 @@ class DbModelQueryTest extends TestCase
         $this->assertArrayHasKey('5', $rows);
 
         $query = Address::query()
+            ->select('address_id, address')
+            ->where('address_id >=', 5)
+            ->indexBy(['address_id' => 'address'])
+            ->limit(1);
+        $rows = $query->execute();
+        $this->assertEquals([5 => '1913 Hanoi Way'], $rows);
+
+        $query = Address::query()
+            ->where('address_id >=', 5)
+            ->indexBy(['address_id' => 'address'])
+            ->limit(1);
+        $rows = $query->execute();
+        $this->assertEquals([5 => '1913 Hanoi Way'], $rows);
+
+        $query = Address::query()
             ->select('address_id')
             ->where('address_id >=', 5)
             ->indexBy(function ($row) {
