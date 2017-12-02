@@ -340,6 +340,16 @@ class MongodbModelCriteriaTest extends TestCase
 
     public function test_indexBy()
     {
+        $cities = City::criteria()->indexBy('city_id')->limit(1)->fetchAll();
+        $this->assertArrayHasKey(1,$cities);
+        $cities = City::criteria()->indexBy(['city_id'=>'city'])->limit(1)->execute();
+        $this->assertEquals([1=>'A Corua (La Corua)'],$cities);
+
+        $cities = City::criteria()->indexBy(function ($row){
+            return 'city_id_'.$row['city_id'];
+        })->limit(1)->execute();
+        $this->assertArrayHasKey('city_id_1',$cities);
+
         $this->assertArrayHasKey('s', City::criteria()->groupBy('substr(city, 1, 1)')->indexBy('city')->aggregate(['count' => 'COUNT(*)']));
         $this->assertArrayHasKey(600, City::criteria()->indexBy('city_id')->fetchAll());
     }

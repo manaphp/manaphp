@@ -644,12 +644,16 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param callable|string $indexBy
+     * @param callable|string|array $indexBy
      *
      * @return static
      */
     public function indexBy($indexBy)
     {
+        if (is_array($indexBy)) {
+            $this->select([key($indexBy), current($indexBy)]);
+        }
+
         $this->_index = $indexBy;
 
         return $this;
@@ -701,17 +705,6 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
 
             $r = $db->query($source, $this->_filters ? ['$and' => $this->_filters] : [], $options, !$this->_forceUseMaster);
-            if ($this->_index === null) {
-                return $r;
-            } else {
-                $index = $this->_index;
-                $rows = [];
-                foreach ($r as $v) {
-                    $rows[is_scalar($index) ? $v[$index] : $index($v)] = $v;
-                }
-
-                return $rows;
-            }
         } else {
             $pipeline = [];
             if (count($this->_filters) !== 0) {
@@ -735,26 +728,42 @@ class Criteria extends \ManaPHP\Model\Criteria
             $r = $db->pipeline($source, $pipeline);
 
             if ($this->_group !== null) {
-                foreach ($r as $k => $v) {
-                    if ($v['_id'] !== null) {
-                        $v += $v['_id'];
+                foreach ($r as $k => $row) {
+                    if ($row['_id'] !== null) {
+                        $row += $row['_id'];
                     }
-                    unset($v['_id']);
-                    $r[$k] = $v;
+                    unset($row['_id']);
+                    $r[$k] = $row;
                 }
-            }
-            if ($this->_index === null) {
-                return $r;
-            } else {
-                $index = $this->_index;
-                $rows = [];
-                foreach ($r as $v) {
-                    $rows[is_scalar($index) ? $v[$index] : $index($v)] = $v;
-                }
-
-                return $rows;
             }
         }
+
+        if ($this->_index === null) {
+            return $r;
+        }
+
+        $indexBy = $this->_index;
+        if (is_scalar($indexBy)) {
+            $rows = [];
+            foreach ($r as $row) {
+                $rows[$row[$indexBy]] = $row;
+            }
+        } elseif (is_array($indexBy)) {
+            $k = key($indexBy);
+            $v = current($indexBy);
+
+            $rows = [];
+            foreach ($r as $row) {
+                $rows[$row[$k]] = $row[$v];
+            }
+        } else {
+            $rows = [];
+            foreach ($r as $row) {
+                $rows[$indexBy($row)] = $row;
+            }
+        }
+
+        return $rows;
     }
 
     /**
