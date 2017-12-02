@@ -188,12 +188,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
             $keyField = static::getPrimaryKey();
             $valueField = $field;
-
-            foreach ($criteria->select([$keyField, $valueField])->fetchAll() as $v) {
-                $list[$v->{$keyField}] = $v->{$valueField};
-            }
+            return $criteria->select([$keyField, $valueField])->indexBy([$keyField => $valueField])->orderBy($keyField)->execute();
         } elseif (is_string($field)) {
-            $list = $criteria->distinctField($field);
+            return $criteria->distinctField($field);
         } else {
             $keyField = key($field);
             $valueField = current($field);
@@ -208,11 +205,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                     $list[$keyValue] = [$list[$keyValue], $v->{$valueField}];
                 }
             }
+
+            return $list;
         }
-
-        ksort($list);
-
-        return $list;
     }
 
     /**
