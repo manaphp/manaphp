@@ -418,11 +418,11 @@ class Criteria extends \ManaPHP\Model\Criteria
             $or = [];
             /** @noinspection ForeachSourceInspection */
             foreach ($expr as $v) {
-                $or[] = [$v => ['$regex' => $like]];
+                $or[] = [$v => ['$regex' => $like, '$options' => 'i']];
             }
             $this->_filters[] = ['$or' => $or];
         } else {
-            $this->_filters[] = [$expr => ['$regex' => $like]];
+            $this->_filters[] = [$expr => ['$regex' => $like, '$options' => 'i']];
         }
 
         return $this;
@@ -440,11 +440,11 @@ class Criteria extends \ManaPHP\Model\Criteria
             $and = [];
             /** @noinspection ForeachSourceInspection */
             foreach ($expr as $v) {
-                $and[] = [$v => ['$not' => new Regex($like)]];
+                $and[] = [$v => ['$not' => new Regex($like, 'i')]];
             }
             $this->_filters[] = ['$and' => $and];
         } else {
-            $this->_filters[] = [$expr => ['$not' => new Regex($like)]];
+            $this->_filters[] = [$expr => ['$not' => new Regex($like, 'i')]];
         }
 
         return $this;

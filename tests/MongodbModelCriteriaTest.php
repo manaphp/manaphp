@@ -226,34 +226,34 @@ class MongodbModelCriteriaTest extends TestCase
     public function test_whereContains()
     {
         $documents = Address::criteria()->whereContains('address', 'as')->fetchAll();
-        $this->assertCount(21, $documents);
+        $this->assertCount(24, $documents);
         $documents = Address::criteria()->whereContains('district', 'as')->fetchAll();
-        $this->assertCount(44, $documents);
+        $this->assertCount(48, $documents);
 
         $documents = Address::criteria()->whereContains(['address', 'district'], 'as')->fetchAll();
-        $this->assertCount(64, $documents);
+        $this->assertCount(71, $documents);
     }
 
     public function test_whereNotContains()
     {
         $documents = Address::criteria()->whereNotContains('address', 'as')->fetchAll();
-        $this->assertCount(582, $documents);
+        $this->assertCount(579, $documents);
         $documents = Address::criteria()->whereNotContains('district', 'as')->fetchAll();
-        $this->assertCount(559, $documents);
+        $this->assertCount(555, $documents);
 
         $documents = Address::criteria()->whereNotContains(['address', 'district'], 'as')->fetchAll();
-        $this->assertCount(539, $documents);
+        $this->assertCount(532, $documents);
     }
 
     public function test_whereStartsWith()
     {
-        $this->assertEquals(38, City::criteria()->whereStartsWith('city', 'A')->count());
+        $this->assertEquals(43, City::criteria()->whereStartsWith('city', 'A')->count());
         $this->assertEquals(4, City::criteria()->whereStartsWith('city', 'A', 4)->count());
     }
 
     public function test_whereNotStartsWith()
     {
-        $this->assertEquals(562, City::criteria()->whereNotStartsWith('city', 'A')->count());
+        $this->assertEquals(557, City::criteria()->whereNotStartsWith('city', 'A')->count());
         $this->assertEquals(596, City::criteria()->whereNotStartsWith('city', 'A', 4)->count());
     }
 
@@ -269,22 +269,22 @@ class MongodbModelCriteriaTest extends TestCase
 
     public function test_whereLike()
     {
-        $this->assertEquals(0, City::criteria()->whereLike('city', 'a')->count());
-        $this->assertEquals(38, City::criteria()->whereLike('city', 'A%')->count());
+        $this->assertEquals(0, City::criteria()->whereLike('city', 'A')->count());
+        $this->assertEquals(43, City::criteria()->whereLike('city', 'A%')->count());
         $this->assertEquals(125, City::criteria()->whereLike('city', '%a')->count());
-        $this->assertEquals(435, City::criteria()->whereLike('city', '%a%')->count());
+        $this->assertEquals(450, City::criteria()->whereLike('city', '%a%')->count());
         $this->assertEquals(4, City::criteria()->whereLike('city', 'A___')->count());
-        $this->assertEquals(76, City::criteria()->whereLike('city', '%a___')->count());
+        $this->assertEquals(83, City::criteria()->whereLike('city', '%a___')->count());
     }
 
     public function test_whereNotLike()
     {
         $this->assertEquals(600, City::criteria()->whereNotLike('city', 'a')->count());
-        $this->assertEquals(562, City::criteria()->whereNotLike('city', 'A%')->count());
+        $this->assertEquals(557, City::criteria()->whereNotLike('city', 'A%')->count());
         $this->assertEquals(475, City::criteria()->whereNotLike('city', '%a')->count());
-        $this->assertEquals(165, City::criteria()->whereNotLike('city', '%a%')->count());
+        $this->assertEquals(150, City::criteria()->whereNotLike('city', '%a%')->count());
         $this->assertEquals(596, City::criteria()->whereNotLike('city', 'A___')->count());
-        $this->assertEquals(524, City::criteria()->whereNotLike('city', '%a___')->count());
+        $this->assertEquals(517, City::criteria()->whereNotLike('city', '%a___')->count());
     }
 
     public function test_whereRegex()
