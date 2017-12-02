@@ -98,12 +98,12 @@ interface CriteriaInterface
     public function whereNotIn($expr, $values);
 
     /**
-     * @param string|array $expr
+     * @param string|array $field
      * @param string       $value
      *
      * @return static
      */
-    public function whereContains($expr, $value);
+    public function whereContains($field, $value);
 
     /**
      * @param string|array $field

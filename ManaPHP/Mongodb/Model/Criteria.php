@@ -429,14 +429,14 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $field
      * @param string       $value
      *
      * @return static
      */
-    public function whereContains($expr, $value)
+    public function whereContains($field, $value)
     {
-        return $this->_whereLike($expr, $value);
+        return $this->_whereLike($field, $value);
     }
 
     /**

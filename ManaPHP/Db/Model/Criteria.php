@@ -181,14 +181,14 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $field
      * @param string       $value
      *
      * @return static
      */
-    public function whereContains($expr, $value)
+    public function whereContains($field, $value)
     {
-        $this->_query->whereContains($expr, $value);
+        $this->_query->whereContains($field, $value);
 
         return $this;
     }
