@@ -341,12 +341,12 @@ class Criteria extends \ManaPHP\Model\Criteria
      *    $builder->inWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string $expr
+     * @param string $field
      * @param array  $values
      *
      * @return static
      */
-    public function whereIn($expr, $values)
+    public function whereIn($field, $values)
     {
         /**
          * @var \ManaPHP\Mongodb\Model $modelName
@@ -354,7 +354,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         $modelName = $this->_modelName;
 
         $fieldTypes = $modelName::getFieldTypes();
-        $fieldType = $fieldTypes[$expr];
+        $fieldType = $fieldTypes[$field];
 
         if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
             $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
@@ -365,7 +365,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
         }
 
-        $this->_filters[] = [$expr => ['$in' => $values]];
+        $this->_filters[] = [$field => ['$in' => $values]];
 
         return $this;
     }
@@ -377,12 +377,12 @@ class Criteria extends \ManaPHP\Model\Criteria
      *    $builder->notInWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string $expr
+     * @param string $field
      * @param array  $values
      *
      * @return static
      */
-    public function whereNotIn($expr, $values)
+    public function whereNotIn($field, $values)
     {
         /**
          * @var \ManaPHP\Mongodb\Model $modelName
@@ -390,7 +390,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         $modelName = $this->_modelName;
 
         $fieldTypes = $modelName::getFieldTypes();
-        $fieldType = $fieldTypes[$expr];
+        $fieldType = $fieldTypes[$field];
 
         if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
             $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
@@ -401,7 +401,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
         }
 
-        $this->_filters[] = [$expr => ['$nin' => $values]];
+        $this->_filters[] = [$field => ['$nin' => $values]];
 
         return $this;
     }

@@ -76,12 +76,12 @@ interface CriteriaInterface
      *    $builder->inWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string                           $expr
+     * @param string                           $field
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
      * @return static
      */
-    public function whereIn($expr, $values);
+    public function whereIn($field, $values);
 
     /**
      * Appends a NOT IN condition to the current conditions
@@ -90,12 +90,12 @@ interface CriteriaInterface
      *    $builder->notInWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string                           $expr
+     * @param string                           $field
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
      * @return static
      */
-    public function whereNotIn($expr, $values);
+    public function whereNotIn($field, $values);
 
     /**
      * @param string|array $field

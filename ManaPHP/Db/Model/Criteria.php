@@ -149,14 +149,14 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      *    $builder->inWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string                           $expr
+     * @param string                           $field
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
      * @return static
      */
-    public function whereIn($expr, $values)
+    public function whereIn($field, $values)
     {
-        $this->_query->whereIn($expr, $values);
+        $this->_query->whereIn($field, $values);
 
         return $this;
     }
@@ -168,14 +168,14 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      *    $builder->notInWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string                           $expr
+     * @param string                           $field
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
      * @return static
      */
-    public function whereNotIn($expr, $values)
+    public function whereNotIn($field, $values)
     {
-        $this->_query->whereNotIn($expr, $values);
+        $this->_query->whereNotIn($field, $values);
 
         return $this;
     }
