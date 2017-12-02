@@ -140,6 +140,14 @@ interface ModelInterface
     public static function existsById($id);
 
     /**
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return array
+     */
+    public static function distinctField($field, $filters = null);
+
+    /**
      * Allows to count how many records match the specified conditions
      *
      * <code>

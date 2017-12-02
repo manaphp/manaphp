@@ -303,6 +303,17 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return array
+     */
+    public static function distinctField($field, $filters = null)
+    {
+        return static::criteria()->where($filters)->distinctField($field);
+    }
+
+    /**
      * Generate a SQL SELECT statement for an aggregate
      *
      * @param string $function
