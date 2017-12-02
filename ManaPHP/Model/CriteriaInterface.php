@@ -76,8 +76,8 @@ interface CriteriaInterface
      *    $builder->inWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string                           $field
-     * @param array|\ManaPHP\Db\QueryInterface $values
+     * @param string $field
+     * @param array  $values
      *
      * @return static
      */
@@ -90,8 +90,8 @@ interface CriteriaInterface
      *    $builder->notInWhere('id', [1, 2, 3]);
      *</code>
      *
-     * @param string                           $field
-     * @param array|\ManaPHP\Db\QueryInterface $values
+     * @param string $field
+     * @param array  $values
      *
      * @return static
      */
