@@ -353,10 +353,10 @@ abstract class Db extends Component implements DbInterface
      *    }
      *</code>
      *
-     * @param string          $sql
-     * @param array           $bind
-     * @param int             $fetchMode
-     * @param string|callable $indexBy
+     * @param string                $sql
+     * @param array                 $bind
+     * @param int                   $fetchMode
+     * @param string|callable|array $indexBy
      *
      * @throws \ManaPHP\Db\Exception
      * @return array
@@ -366,21 +366,27 @@ abstract class Db extends Component implements DbInterface
         $result = $this->query($sql, $bind, $fetchMode);
 
         if ($indexBy === null) {
-            return $result->fetchAll($fetchMode);
+            $rows = $result->fetchAll($fetchMode);
         } elseif (is_scalar($indexBy)) {
             $rows = [];
             while ($row = $result->fetch($fetchMode)) {
                 $rows[$row[$indexBy]] = $row;
             }
-            return $rows;
+        } elseif (is_array($indexBy)) {
+            $rows = [];
+            $k = key($indexBy);
+            $v = current($indexBy);
+            while ($row = $result->fetch($fetchMode)) {
+                $rows[$row[$k]] = $row[$v];
+            }
         } else {
             $rows = [];
             while ($row = $result->fetch($fetchMode)) {
                 $rows[$indexBy($row)] = $row;
             }
-
-            return $rows;
         }
+
+        return $rows;
     }
 
     /**

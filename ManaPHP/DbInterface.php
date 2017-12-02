@@ -50,10 +50,10 @@ interface DbInterface
      *  $db->fetchAll('SELECT * FROM city WHERE city_id <:city_id',['city_id'=>5]);
      * </code>
      *
-     * @param string          $sql
-     * @param array           $bind
-     * @param int             $fetchMode
-     * @param string|callable $indexBy
+     * @param string                $sql
+     * @param array                 $bind
+     * @param int                   $fetchMode
+     * @param string|callable|array $indexBy
      *
      * @return array
      */
