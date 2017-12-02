@@ -112,6 +112,9 @@ class DbModelCriteriaTest extends TestCase
         $this->assertEquals(38, City::criteria()->whereRegex('city', '^A')->count());
         $this->assertEquals(262, City::criteria()->whereRegex('city', 'a....')->count());
         $this->assertEquals(34, City::criteria()->whereRegex('city', '^A....')->count());
+
+        $this->assertEquals(450, City::criteria()->whereRegex('city', 'a', 'i')->count());
+        $this->assertEquals(450, City::criteria()->whereRegex('city', 'A', 'i')->count());
     }
 
     public function test_whereNotRegex()
@@ -121,6 +124,9 @@ class DbModelCriteriaTest extends TestCase
         $this->assertEquals(562, City::criteria()->whereNotRegex('city', '^A')->count());
         $this->assertEquals(338, City::criteria()->whereNotRegex('city', 'a....')->count());
         $this->assertEquals(566, City::criteria()->whereNotRegex('city', '^A....')->count());
+
+        $this->assertEquals(150, City::criteria()->whereNotRegex('city', 'a', 'i')->count());
+        $this->assertEquals(150, City::criteria()->whereNotRegex('city', 'A', 'i')->count());
     }
 
     public function test_whereNull()

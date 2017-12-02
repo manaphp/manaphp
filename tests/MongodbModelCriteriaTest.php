@@ -262,6 +262,9 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertEquals(38, City::criteria()->whereRegex('city', '^A')->count());
         $this->assertEquals(262, City::criteria()->whereRegex('city', 'a....')->count());
         $this->assertEquals(34, City::criteria()->whereRegex('city', '^A....')->count());
+
+        $this->assertEquals(450, City::criteria()->whereRegex('city', 'a', 'i')->count());
+        $this->assertEquals(450, City::criteria()->whereRegex('city', 'A', 'i')->count());
     }
 
     public function test_whereNotRegex()
@@ -271,6 +274,9 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertEquals(562, City::criteria()->whereNotRegex('city', '^A')->count());
         $this->assertEquals(338, City::criteria()->whereNotRegex('city', 'a....')->count());
         $this->assertEquals(566, City::criteria()->whereNotRegex('city', '^A....')->count());
+
+        $this->assertEquals(150, City::criteria()->whereNotRegex('city', 'a', 'i')->count());
+        $this->assertEquals(150, City::criteria()->whereNotRegex('city', 'A', 'i')->count());
     }
 
     public function test_whereNull()
@@ -350,14 +356,14 @@ class MongodbModelCriteriaTest extends TestCase
     public function test_indexBy()
     {
         $cities = City::criteria()->indexBy('city_id')->limit(1)->fetchAll();
-        $this->assertArrayHasKey(1,$cities);
-        $cities = City::criteria()->indexBy(['city_id'=>'city'])->limit(1)->execute();
-        $this->assertEquals([1=>'A Corua (La Corua)'],$cities);
+        $this->assertArrayHasKey(1, $cities);
+        $cities = City::criteria()->indexBy(['city_id' => 'city'])->limit(1)->execute();
+        $this->assertEquals([1 => 'A Corua (La Corua)'], $cities);
 
-        $cities = City::criteria()->indexBy(function ($row){
-            return 'city_id_'.$row['city_id'];
+        $cities = City::criteria()->indexBy(function ($row) {
+            return 'city_id_' . $row['city_id'];
         })->limit(1)->execute();
-        $this->assertArrayHasKey('city_id_1',$cities);
+        $this->assertArrayHasKey('city_id_1', $cities);
 
         $this->assertArrayHasKey('s', City::criteria()->groupBy('substr(city, 1, 1)')->indexBy('city')->aggregate(['count' => 'COUNT(*)']));
         $this->assertArrayHasKey(600, City::criteria()->indexBy('city_id')->fetchAll());

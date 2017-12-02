@@ -228,18 +228,20 @@ interface QueryInterface
     /**
      * @param string $expr
      * @param string $regex
+     * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex);
+    public function whereRegex($expr, $regex, $flags = '');
 
     /**
      * @param string $expr
      * @param string $regex
+     * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex);
+    public function whereNotRegex($expr, $regex, $flags = '');
 
     /**
      * @param string $expr

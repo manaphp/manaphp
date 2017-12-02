@@ -236,12 +236,13 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     /**
      * @param string $expr
      * @param string $regex
+     * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex)
+    public function whereRegex($expr, $regex, $flags = '')
     {
-        $this->_query->whereRegex($expr, $regex);
+        $this->_query->whereRegex($expr, $regex, $flags);
 
         return $this;
     }
@@ -249,12 +250,13 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     /**
      * @param string $expr
      * @param string $regex
+     * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex)
+    public function whereNotRegex($expr, $regex, $flags = '')
     {
-        $this->_query->whereNotRegex($expr, $regex);
+        $this->_query->whereNotRegex($expr, $regex, $flags);
 
         return $this;
     }

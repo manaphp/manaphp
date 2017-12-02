@@ -490,12 +490,13 @@ class Criteria extends \ManaPHP\Model\Criteria
     /**
      * @param string $expr
      * @param string $regex
+     * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex)
+    public function whereRegex($expr, $regex, $flags = '')
     {
-        $this->_filters[] = [$expr => ['$regex' => $regex]];
+        $this->_filters[] = [$expr => ['$regex' => $regex, '$options' => $flags]];
 
         return $this;
     }
@@ -503,12 +504,13 @@ class Criteria extends \ManaPHP\Model\Criteria
     /**
      * @param string $expr
      * @param string $regex
+     * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex)
+    public function whereNotRegex($expr, $regex, $flags = '')
     {
-        $this->_filters[] = [$expr => ['$not'=>new Regex($regex)]];
+        $this->_filters[] = [$expr => ['$not' => new Regex($regex, $flags)]];
 
         return $this;
     }

@@ -756,13 +756,14 @@ class Query extends Component implements QueryInterface
     /**
      * @param string $expr
      * @param string $regex
+     * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex)
+    public function whereRegex($expr, $regex, $flags = '')
     {
         $key = $expr;
-        $this->_conditions[] = $expr . ' REGEXP BINARY :' . $key;
+        $this->_conditions[] = $expr . ' REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
@@ -771,13 +772,14 @@ class Query extends Component implements QueryInterface
     /**
      * @param string $expr
      * @param string $regex
+     * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex)
+    public function whereNotRegex($expr, $regex, $flags = '')
     {
         $key = $expr;
-        $this->_conditions[] = $expr . ' NOT REGEXP BINARY :' . $key;
+        $this->_conditions[] = $expr . ' NOT REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
