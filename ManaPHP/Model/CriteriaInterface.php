@@ -182,7 +182,7 @@ interface CriteriaInterface
     public function groupBy($groupBy);
 
     /**
-     * @param callable|string $indexBy
+     * @param callable|string|array $indexBy
      *
      * @return static
      */

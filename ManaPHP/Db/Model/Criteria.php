@@ -354,7 +354,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
-     * @param callable|string $indexBy
+     * @param callable|string|array $indexBy
      *
      * @return static
      */
