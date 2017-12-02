@@ -131,22 +131,22 @@ interface CriteriaInterface
     public function whereLike($expr, $value);
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex, $flags = '');
+    public function whereRegex($field, $regex, $flags = '');
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex, $flags = '');
+    public function whereNotRegex($field, $regex, $flags = '');
 
     /**
      * Sets a ORDER BY condition clause

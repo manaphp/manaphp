@@ -234,29 +234,29 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex, $flags = '')
+    public function whereRegex($field, $regex, $flags = '')
     {
-        $this->_query->whereRegex($expr, $regex, $flags);
+        $this->_query->whereRegex($field, $regex, $flags);
 
         return $this;
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex, $flags = '')
+    public function whereNotRegex($field, $regex, $flags = '')
     {
-        $this->_query->whereNotRegex($expr, $regex, $flags);
+        $this->_query->whereNotRegex($field, $regex, $flags);
 
         return $this;
     }

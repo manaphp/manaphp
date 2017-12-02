@@ -488,29 +488,29 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex, $flags = '')
+    public function whereRegex($field, $regex, $flags = '')
     {
-        $this->_filters[] = [$expr => ['$regex' => $regex, '$options' => $flags]];
+        $this->_filters[] = [$field => ['$regex' => $regex, '$options' => $flags]];
 
         return $this;
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex, $flags = '')
+    public function whereNotRegex($field, $regex, $flags = '')
     {
-        $this->_filters[] = [$expr => ['$not' => new Regex($regex, $flags)]];
+        $this->_filters[] = [$field => ['$not' => new Regex($regex, $flags)]];
 
         return $this;
     }
