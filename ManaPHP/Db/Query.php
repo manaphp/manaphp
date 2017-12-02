@@ -364,7 +364,7 @@ class Query extends Component implements QueryInterface
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
-                    $this->whereIn($filter, $value);
+                    $this->whereIn(rtrim($filter, '='), $value);
                 }
             } else {
                 $this->_conditions[] = $filter;
