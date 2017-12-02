@@ -150,7 +150,8 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
      */
     protected function _groupResult($function, $alias, $field)
     {
-        return $this->aggregate([$alias => "$function($field)"])[0][$alias];
+        $r = $this->aggregate([$alias => "$function($field)"]);
+        return isset($r[0]) ? $r[0][$alias] : 0;
     }
 
     /**
