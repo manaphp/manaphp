@@ -721,6 +721,48 @@ class Query extends Component implements QueryInterface
 
     /**
      * @param string|array $expr
+     * @param string       $like
+     *
+     * @return static
+     */
+    public function whereNotLike($expr, $like)
+    {
+        if (is_array($expr)) {
+            $conditions = [];
+            /** @noinspection ForeachSourceInspection */
+            foreach ($expr as $field) {
+                $key = strtr($field, '.', '_');
+                if (strpos($field, '.') !== false) {
+                    $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' NOT LIKE :' . $key;
+                } else {
+                    $conditions[] = '[' . $field . '] NOT LIKE :' . $key;
+                }
+
+                $this->_bind[$key] = $like;
+            }
+
+            $this->where(implode(' AND ', $conditions));
+        } else {
+            $key = strtr($expr, '.', '_');
+
+            if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
+                if (strpos($expr, '.') !== false) {
+                    $expr = '[' . str_replace('.', '].[', $expr) . ']';
+                } else {
+                    $expr = '[' . $expr . ']';
+                }
+            }
+
+            $this->_conditions[] = $expr . ' NOT LIKE :' . $key;
+
+            $this->_bind[$key] = $like;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $expr
      * @param string       $value
      *
      * @return static
@@ -728,6 +770,17 @@ class Query extends Component implements QueryInterface
     public function whereContains($expr, $value)
     {
         return $this->whereLike($expr, '%' . $value . '%');
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotContains($expr, $value)
+    {
+        return $this->whereNotLike($expr, '%' . $value . '%');
     }
 
     /**
@@ -745,12 +798,35 @@ class Query extends Component implements QueryInterface
     /**
      * @param string|array $expr
      * @param string       $value
+     * @param int          $length
+     *
+     * @return static
+     */
+    public function whereNotStartsWith($expr, $value, $length = null)
+    {
+        return $this->whereNotLike($expr, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
      *
      * @return static
      */
     public function whereEndsWith($expr, $value)
     {
         return $this->whereLike($expr, '%' . $value);
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotEndsWith($expr, $value)
+    {
+        return $this->whereNotLike($expr, '%' . $value);
     }
 
     /**

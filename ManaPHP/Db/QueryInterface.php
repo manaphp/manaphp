@@ -207,7 +207,23 @@ interface QueryInterface
      *
      * @return static
      */
+    public function whereNotContains($expr, $value);
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
     public function whereStartsWith($expr, $value);
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotStartsWith($expr, $value);
 
     /**
      * @param string|array $expr
@@ -219,11 +235,27 @@ interface QueryInterface
 
     /**
      * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotEndsWith($expr, $value);
+
+    /**
+     * @param string|array $expr
      * @param string       $like
      *
      * @return static
      */
     public function whereLike($expr, $like);
+
+    /**
+     * @param string|array $expr
+     * @param string       $like
+     *
+     * @return static
+     */
+    public function whereNotLike($expr, $like);
 
     /**
      * @param string $expr

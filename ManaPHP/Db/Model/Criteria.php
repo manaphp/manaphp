@@ -196,6 +196,19 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     /**
      * @param string|array $field
      * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotContains($field, $value)
+    {
+        $this->_query->whereNotContains($field, $value);
+		
+		return $this;
+    }
+
+    /**
+     * @param string|array $field
+     * @param string       $value
      * @param int          $length
      *
      * @return static
@@ -203,6 +216,20 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     public function whereStartsWith($field, $value, $length = null)
     {
         $this->_query->whereStartsWith($field, $value, $length);
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $field
+     * @param string       $value
+     * @param int          $length
+     *
+     * @return static
+     */
+    public function whereNotStartsWith($field, $value, $length = null)
+    {
+        $this->_query->whereNotStartsWith($field, $value, $length);
 
         return $this;
     }
@@ -221,6 +248,19 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
+     * @param string|array $field
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotEndsWith($field, $value)
+    {
+        $this->_query->whereNotEndsWith($field, $value);
+
+        return $this;
+    }
+
+    /**
      * @param string|array $expr
      * @param string       $value
      *
@@ -229,6 +269,19 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     public function whereLike($expr, $value)
     {
         $this->_query->whereLike($expr, $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotLike($expr, $value)
+    {
+        $this->_query->whereNotLike($expr, $value);
 
         return $this;
     }

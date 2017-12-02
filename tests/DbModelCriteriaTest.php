@@ -84,15 +84,32 @@ class DbModelCriteriaTest extends TestCase
             City::criteria()->whereContains('city_name', 'A')->getSql());
     }
 
+    public function test_whereNotContains()
+    {
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_name] NOT LIKE :city_name',
+            City::criteria()->whereNotContains('city_name', 'A')->getSql());
+    }
+
     public function test_whereStartsWith()
     {
         $this->assertEquals(43, City::criteria()->whereStartsWith('city', 'A')->count());
         $this->assertEquals(4, City::criteria()->whereStartsWith('city', 'A', 4)->count());
     }
 
+    public function test_whereNotStartsWith()
+    {
+        $this->assertEquals(557, City::criteria()->whereNotStartsWith('city', 'A')->count());
+        $this->assertEquals(596, City::criteria()->whereNotStartsWith('city', 'A', 4)->count());
+    }
+
     public function test_whereEndsWith()
     {
         $this->assertEquals(125, City::criteria()->whereEndsWith('city', 'a')->count());
+    }
+
+    public function test_whereNotEndsWith()
+    {
+        $this->assertEquals(475, City::criteria()->whereNotEndsWith('city', 'a')->count());
     }
 
     public function test_whereLike()
@@ -103,6 +120,16 @@ class DbModelCriteriaTest extends TestCase
         $this->assertEquals(450, City::criteria()->whereLike('city', '%A%')->count());
         $this->assertEquals(4, City::criteria()->whereLike('city', 'A___')->count());
         $this->assertEquals(83, City::criteria()->whereLike('city', '%A___')->count());
+    }
+
+    public function test_whereNotLike()
+    {
+        $this->assertEquals(600, City::criteria()->whereNotLike('city', 'A')->count());
+        $this->assertEquals(557, City::criteria()->whereNotLike('city', 'A%')->count());
+        $this->assertEquals(475, City::criteria()->whereNotLike('city', '%A')->count());
+        $this->assertEquals(150, City::criteria()->whereNotLike('city', '%A%')->count());
+        $this->assertEquals(596, City::criteria()->whereNotLike('city', 'A___')->count());
+        $this->assertEquals(517, City::criteria()->whereNotLike('city', '%A___')->count());
     }
 
     public function test_whereRegex()

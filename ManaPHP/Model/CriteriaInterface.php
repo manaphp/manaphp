@@ -108,11 +108,28 @@ interface CriteriaInterface
     /**
      * @param string|array $field
      * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotContains($field, $value);
+
+    /**
+     * @param string|array $field
+     * @param string       $value
      * @param int          $length
      *
      * @return static
      */
     public function whereStartsWith($field, $value, $length = null);
+
+    /**
+     * @param string|array $field
+     * @param string       $value
+     * @param int          $length
+     *
+     * @return static
+     */
+    public function whereNotStartsWith($field, $value, $length = null);
 
     /**
      * @param string|array $field
@@ -123,12 +140,28 @@ interface CriteriaInterface
     public function whereEndsWith($field, $value);
 
     /**
+     * @param string|array $field
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotEndsWith($field, $value);
+
+    /**
      * @param string|array $expr
      * @param string       $value
      *
      * @return static
      */
     public function whereLike($expr, $value);
+
+    /**
+     * @param string|array $expr
+     * @param string       $value
+     *
+     * @return static
+     */
+    public function whereNotLike($expr, $value);
 
     /**
      * @param string $field
