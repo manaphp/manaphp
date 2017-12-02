@@ -762,7 +762,7 @@ class Query extends Component implements QueryInterface
     public function whereRegex($expr, $regex)
     {
         $key = $expr;
-        $this->_conditions[] = $expr . ' REGEXP :' . $key;
+        $this->_conditions[] = $expr . ' REGEXP BINARY :' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
@@ -777,7 +777,7 @@ class Query extends Component implements QueryInterface
     public function whereNotRegex($expr, $regex)
     {
         $key = $expr;
-        $this->_conditions[] = $expr . ' NOT REGEXP :' . $key;
+        $this->_conditions[] = $expr . ' NOT REGEXP BINARY :' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
