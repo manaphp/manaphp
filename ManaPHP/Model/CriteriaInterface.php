@@ -33,6 +33,13 @@ interface CriteriaInterface
     public function where($filter, $value = null);
 
     /**
+     * @param array $fields
+     *
+     * @return static
+     */
+    public function whereRequest($fields);
+
+    /**
      * Appends a BETWEEN condition to the current conditions
      *
      *<code>

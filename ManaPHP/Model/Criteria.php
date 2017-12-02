@@ -4,6 +4,12 @@ namespace ManaPHP\Model;
 use ManaPHP\Component;
 use ManaPHP\Model\Criteria\Exception as CriteriaException;
 
+/**
+ * Class ManaPHP\Model\Criteria
+ *
+ * @package ManaPHP\Model
+ * @property \ManaPHP\Http\RequestInterface $request
+ */
 abstract class Criteria extends Component implements CriteriaInterface, \JsonSerializable
 {
     /**
@@ -15,6 +21,40 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
      * @var bool
      */
     protected $_multiple;
+
+    /**
+     * @param array $fields
+     *
+     * @return static
+     */
+    public function whereRequest($fields)
+    {
+        foreach ($fields as $k => $v) {
+            if (strpos($v, '.') === false) {
+                $field = $v;
+            } else {
+                $parts = explode('.', $v);
+                $field = $parts[1];
+            }
+            $value = $this->request->get(rtrim($field, '=!<>~*^$'));
+            if ($value === null) {
+                continue;
+            } elseif (is_string($value)) {
+                $value = trim($value);
+                if ($value === '') {
+                    continue;
+                }
+            } elseif (is_array($value)) {
+                if (count($value) === 1 && trim($value[0]) === '') {
+                    continue;
+                }
+            }
+
+            $this->where($v, $value);
+        }
+
+        return $this;
+    }
 
     /**
      * alias of whereBetween
