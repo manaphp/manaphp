@@ -273,6 +273,17 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return array
+     */
+    public static function distinctField($field, $filters = null)
+    {
+        return static::criteria()->where($filters)->distinctField($field);
+    }
+
+    /**
      * @param int|string|array $filters
      *
      * @return bool
@@ -300,17 +311,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         return static::exists([static::getPrimaryKey() => $id]);
-    }
-
-    /**
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return array
-     */
-    public static function distinctField($field, $filters = null)
-    {
-        return static::criteria()->where($filters)->distinctField($field);
     }
 
     /**

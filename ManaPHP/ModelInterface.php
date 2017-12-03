@@ -126,6 +126,14 @@ interface ModelInterface
     public static function findById($id, $fields = null);
 
     /**
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return array
+     */
+    public static function distinctField($field, $filters = null);
+
+    /**
      * @param string|array $filters
      *
      * @return bool
@@ -138,14 +146,6 @@ interface ModelInterface
      * @return bool
      */
     public static function existsById($id);
-
-    /**
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return array
-     */
-    public static function distinctField($field, $filters = null);
 
     /**
      * Allows to count how many records match the specified conditions
