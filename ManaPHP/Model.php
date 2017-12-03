@@ -141,6 +141,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
             if (isset($options['limit'])) {
                 $criteria->limit($options['limit'], isset($options['offset']) ? $options['offset'] : null);
+            } elseif (isset($options['size'])) {
+                $criteria->page($options['size'], isset($options['page']) ? $options['page'] : null);
             }
 
             if (isset($options['index'])) {
