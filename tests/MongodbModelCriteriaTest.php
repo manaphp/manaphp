@@ -26,10 +26,10 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertEquals(['_id', 'city_id', 'city'], array_keys(array_filter($document->toArray())));
     }
 
-    public function test_distinctField()
+    public function test_distinctValues()
     {
-        $this->assertCount(600, City::criteria()->distinctField('city_id'));
-        $this->assertCount(3, City::criteria()->where('country_id', 2)->distinctField('city_id'));
+        $this->assertCount(600, City::criteria()->distinctValues('city_id'));
+        $this->assertCount(3, City::criteria()->where('country_id', 2)->distinctValues('city_id'));
     }
 
     public function test_select()

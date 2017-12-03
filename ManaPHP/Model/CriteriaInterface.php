@@ -262,7 +262,7 @@ interface CriteriaInterface
      *
      * @return array
      */
-    public function distinctField($field);
+    public function distinctValues($field);
 
     /**
      * @param string $field

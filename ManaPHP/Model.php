@@ -192,7 +192,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $valueField = $field;
             return $criteria->select([$keyField, $valueField])->indexBy([$keyField => $valueField])->orderBy($keyField)->execute();
         } elseif (is_string($field)) {
-            return $criteria->distinctField($field);
+            return $criteria->distinctValues($field);
         } else {
             $keyField = key($field);
             $valueField = current($field);
@@ -312,7 +312,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 $criteria->orderBy($options['order']);
             }
         }
-        return $criteria->distinctField($field);
+        return $criteria->distinctValues($field);
     }
 
     /**
