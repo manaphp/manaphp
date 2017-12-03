@@ -512,7 +512,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function distinctValues($field)
     {
-        return $this->_replaceModelInfo()->_query->distinctField($field);
+        return $this->_replaceModelInfo()->_query->distinctValues($field);
     }
 
     /**
