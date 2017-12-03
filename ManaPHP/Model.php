@@ -294,12 +294,25 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @param string $field
      * @param array  $filters
+     * @param array  $options
      *
      * @return array
      */
-    public static function distinctField($field, $filters = null)
+    public static function findDistinctValues($field, $filters = null, $options = null)
     {
-        return static::criteria()->where($filters)->distinctField($field);
+        $criteria = static::criteria()->where($filters);
+        if (is_array($options)) {
+            if (isset($options['limit'])) {
+                $criteria->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
+            } elseif (isset($options['size'])) {
+                $criteria->page($options['size'], isset($options['page']) ? $options['page'] : null);
+            }
+
+            if (isset($options['order'])) {
+                $criteria->orderBy($options['order']);
+            }
+        }
+        return $criteria->distinctField($field);
     }
 
     /**

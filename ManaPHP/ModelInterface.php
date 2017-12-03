@@ -137,10 +137,11 @@ interface ModelInterface
     /**
      * @param string $field
      * @param array  $filters
+     * @param array  $options
      *
      * @return array
      */
-    public static function distinctField($field, $filters = null);
+    public static function findDistinctValues($field, $filters = null, $options = null);
 
     /**
      * @param string|array $filters

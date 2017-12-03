@@ -122,7 +122,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 ['distinct' => $field, 'code' => $r['code'], 'msg' => $r['errmsg'], 'collection' => $source]);
         }
 
-        return $r['values'];
+        return $this->_limit ? array_slice($r['values'], $this->_offset, $this->_limit) : $r['values'];
     }
 
     /**

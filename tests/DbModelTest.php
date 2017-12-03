@@ -171,6 +171,15 @@ class DbModelTest extends TestCase
         $this->assertCount(3, City::findList(['country_id' => 2], ['city_id' => 'city']));
     }
 
+    public function test_findDistinctValues()
+    {
+        $cities = City::findDistinctValues('city', [], ['size' => 10]);
+        $this->assertCount(10, $cities);
+
+        $cities = City::findDistinctValues('city', [], ['size' => 10, 'page' => 100000]);
+        $this->assertCount(0, $cities);
+    }
+
     public function test_findById()
     {
         $city = City::findById(10);
