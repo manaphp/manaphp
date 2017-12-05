@@ -62,7 +62,6 @@ class Zookeeper
     const NOTHING = -117;
     const SESSIONMOVED = -118;
 
-
     /**
      * Create a handle to used communicate with zookeeper. * if the host is provided, attempt to connect.
      *

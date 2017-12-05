@@ -131,6 +131,7 @@ interface DispatcherInterface
 
     /**
      * @param string $glue
+     *
      * @return string
      */
     public function getMCA($glue = '/');

@@ -62,6 +62,7 @@ interface ComponentInterface
 
     /**
      * @param  \ManaPHP\Component $caller
+     *
      * @return string
      */
     public function getComponentName($caller = null);

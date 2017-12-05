@@ -202,8 +202,8 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     public function whereNotContains($field, $value)
     {
         $this->_query->whereNotContains($field, $value);
-		
-		return $this;
+
+        return $this;
     }
 
     /**

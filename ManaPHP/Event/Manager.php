@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Event;
 
-use ManaPHP\Event\Manager\Exception as ManagerException;
-
 /**
  * Class ManaPHP\Event\Manager
  *

@@ -78,7 +78,7 @@ class Redis extends \Redis
         $this->_retry_interval = isset($parts2['retry_interval']) ? (int)$parts2['retry_interval'] : 0;
         $this->_auth = isset($parts2['auth']) ? $parts2['auth'] : '';
         $this->_persistent = isset($parts2['persistent']) && $parts2['persistent'] === '1';
-		
+
         parent::__construct();
 
         $this->_connect();

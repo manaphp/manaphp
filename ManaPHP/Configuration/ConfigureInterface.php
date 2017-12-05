@@ -20,6 +20,7 @@ interface ConfigureInterface
     /**
      * @param array  $data
      * @param string $env
+     *
      * @return static
      * @throws \ManaPHP\Configuration\Configure\Exception
      */
