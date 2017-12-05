@@ -6,7 +6,7 @@ namespace ManaPHP\Configuration\Configure;
  *
  * @package configure
  */
-class Exception extends \ManaPHP\Exception
+class Exception extends \ManaPHP\Configuration\Exception
 {
 
 }

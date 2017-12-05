@@ -17,6 +17,7 @@ namespace ManaPHP;
  * @property \ManaPHP\FilesystemInterface                  $filesystem
  * @property \ManaPHP\LoggerInterface                      $logger
  * @property \ManaPHP\Configuration\Configure              $configure
+ * @property \ManaPHP\Configuration\SettingsInterface      $settings
  * @property \ManaPHP\Security\CryptInterface              $crypt
  * @property \ManaPHP\CacheInterface                       $scopedCache
  * @property \ManaPHP\Http\SessionInterface                $scopedSession

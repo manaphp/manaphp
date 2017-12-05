@@ -31,6 +31,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\LoggerInterface                      $logger
  * @property \ManaPHP\RendererInterface                    $renderer
  * @property \ManaPHP\Configuration\Configure              $configure
+ * @property \ManaPHP\Configuration\SettingsInterface      $settings
  * @property \ManaPHP\ApplicationInterface                 $application
  * @property \ManaPHP\DebuggerInterface                    $debugger
  * @property \ManaPHP\Authentication\PasswordInterface     $password
