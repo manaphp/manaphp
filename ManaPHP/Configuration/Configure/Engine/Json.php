@@ -1,11 +1,11 @@
 <?php
-namespace ManaPHP\Configure\Engine;
+namespace ManaPHP\Configuration\Configure\Engine;
 
-use ManaPHP\Configure\Engine\Json\Exception as JsonException;
-use ManaPHP\Configure\EngineInterface;
+use ManaPHP\Configuration\Configure\Engine\Json\Exception as JsonException;
+use ManaPHP\Configuration\Configure\EngineInterface;
 
 /**
- * Class ManaPHP\Configure\Engine\Json
+ * Class ManaPHP\Configuration\Configure\Engine\Json
  *
  * @package configure\engine
  */
@@ -15,7 +15,7 @@ class Json implements EngineInterface
      * @param string $file
      *
      * @return array
-     * @throws \ManaPHP\Configure\Engine\Json\Exception
+     * @throws \ManaPHP\Configuration\Configure\Engine\Json\Exception
      */
     public function load($file)
     {

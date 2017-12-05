@@ -2,10 +2,10 @@
 
 namespace Tests;
 
-use ManaPHP\Configure;
+use ManaPHP\Configuration\Configure;
 use PHPUnit\Framework\TestCase;
 
-class ConfigureTest extends TestCase
+class ConfigurationConfigureTest extends TestCase
 {
     public function test_loadData()
     {

@@ -1,11 +1,12 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Configuration;
 
-use ManaPHP\Configure\Exception as ConfigureException;
+use ManaPHP\Component;
+use ManaPHP\Configuration\Configure\Exception as ConfigureException;
 
 /**
- * Class ManaPHP\Configure
+ * Class ManaPHP\Configuration\Configure
  *
  * @package configure
  *
@@ -72,14 +73,14 @@ class Configure extends Component implements ConfigureInterface
      * @param string $env
      *
      * @return static
-     * @throws \ManaPHP\Configure\Exception
+     * @throws \ManaPHP\Configuration\Configure\Exception
      */
     public function loadFile($file, $env = null)
     {
         /**
-         * @var \ManaPHP\Configure\EngineInterface $loader
+         * @var \ManaPHP\Configuration\Configure\EngineInterface $loader
          */
-        $loader = $this->_dependencyInjector->getShared('ManaPHP\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
+        $loader = $this->_dependencyInjector->getShared('ManaPHP\Configuration\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
         $data = $loader->load($this->_dependencyInjector->alias->resolve($file));
 
         return $this->loadData($data, $env);
@@ -90,7 +91,7 @@ class Configure extends Component implements ConfigureInterface
      * @param string $env
      *
      * @return static
-     * @throws \ManaPHP\Configure\Exception
+     * @throws \ManaPHP\Configuration\Configure\Exception
      */
     public function loadData($data, $env = null)
     {

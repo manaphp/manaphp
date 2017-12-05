@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Configuration;
 
 /**
- * Interface ManaPHP\ConfigureInterface
+ * Interface ManaPHP\Configuration\ConfigureInterface
  *
  * @package configure
  */
@@ -21,7 +21,7 @@ interface ConfigureInterface
      * @param array  $data
      * @param string $env
      * @return static
-     * @throws \ManaPHP\Configure\Exception
+     * @throws \ManaPHP\Configuration\Configure\Exception
      */
     public function loadData($data, $env = null);
 }

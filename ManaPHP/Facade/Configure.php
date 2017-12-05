@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Facade;
 
-use ManaPHP\ConfigureInterface;
+use ManaPHP\Configuration\ConfigureInterface;
 use ManaPHP\Facade;
 
 /**

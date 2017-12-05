@@ -15,7 +15,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Security\CryptInterface   $crypt
  * @property \ManaPHP\Di|\ManaPHP\DiInterface   $di
  * @property \ManaPHP\LoggerInterface           $logger
- * @property \ManaPHP\Configure                 $configure
+ * @property \ManaPHP\Configuration\Configure   $configure
  * @property \ManaPHP\Cache\EngineInterface     $viewsCache
  * @property \ManaPHP\FilesystemInterface       $filesystem
  * @property \ManaPHP\Security\RandomInterface  $random

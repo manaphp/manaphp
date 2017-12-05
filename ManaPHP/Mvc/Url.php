@@ -10,7 +10,7 @@ use ManaPHP\Utility\Text;
  *
  * @package url
  *
- * @property \ManaPHP\Configure               $configure
+ * @property \ManaPHP\Configuration\Configure $configure
  * @property \ManaPHP\Http\RequestInterface   $request
  * @property \ManaPHP\Mvc\RouterInterface     $router
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher

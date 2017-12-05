@@ -31,7 +31,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Security\CryptInterface              $crypt
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\LoggerInterface                      $logger
- * @property \ManaPHP\Configure                            $configure
+ * @property \ManaPHP\Configuration\Configure              $configure
  * @property \ManaPHP\Http\SessionInterface                $session
  * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken
  * @property \ManaPHP\Paginator                            $paginator

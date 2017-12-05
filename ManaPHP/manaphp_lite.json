@@ -8,7 +8,7 @@
         "ManaPHP\\Di",
         "ManaPHP\\Di\\FactoryDefault",
         "ManaPHP\\Alias",
-        "ManaPHP\\Configure",
+        "ManaPHP\\Configuration\\Configure",
         "ManaPHP\\Mvc\\Router",
         "ManaPHP\\Event\\Manager",
         "ManaPHP\\Http\\Request",

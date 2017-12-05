@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Configure\Engine;
+namespace ManaPHP\Configuration\Configure\Engine;
 
-use ManaPHP\Configure\EngineInterface;
+use ManaPHP\Configuration\Configure\EngineInterface;
 
 /**
- * Class ManaPHP\Configure\Engine\Php
+ * Class ManaPHP\Configuration\Configure\Engine\Php
  *
  * @package configure\engine
  */

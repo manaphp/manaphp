@@ -1,11 +1,11 @@
 <?php
-namespace ManaPHP\Configure\Engine;
+namespace ManaPHP\Configuration\Configure\Engine;
 
-use ManaPHP\Configure\Engine\Ini\Exception as IniException;
-use ManaPHP\Configure\EngineInterface;
+use ManaPHP\Configuration\Configure\Engine\Ini\Exception as IniException;
+use ManaPHP\Configuration\Configure\EngineInterface;
 
 /**
- * Class ManaPHP\Configure\Engine\Ini
+ * Class ManaPHP\Configuration\Configure\Engine\Ini
  *
  * @package configure\engine
  */
@@ -15,7 +15,7 @@ class Ini implements EngineInterface
      * @param string $file
      *
      * @return array
-     * @throws \ManaPHP\Configure\Engine\Ini\Exception
+     * @throws \ManaPHP\Configuration\Configure\Engine\Ini\Exception
      */
     public function load($file)
     {
