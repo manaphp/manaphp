@@ -132,7 +132,7 @@ interface ModelInterface
      *
      * @return int|double|string|null
      */
-    public static function findValue($filters, $field, $defaultValue = null);
+    public static function findValue($filters, $field, $defaultValue = '');
 
     /**
      * @param string $field
