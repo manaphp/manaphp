@@ -15,7 +15,7 @@ interface PasswordInterface
      *
      * @return string
      */
-    public function salt($length = 8);
+    public function salt($length = 16);
 
     /**
      * @param string $pwd

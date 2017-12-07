@@ -17,7 +17,7 @@ class Password extends Component implements PasswordInterface
      *
      * @return string
      */
-    public function salt($length = 8)
+    public function salt($length = 16)
     {
         $base64 = base64_encode(md5(mt_rand() . microtime(), true));
         if ($length > 22) {
