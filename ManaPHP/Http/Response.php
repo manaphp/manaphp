@@ -214,23 +214,17 @@ class Response extends Component implements ResponseInterface
      * Sets HTTP response body. The parameter is automatically converted to JSON
      *<code>
      *    $response->setJsonContent(array("status" => "OK"));
-     *    $response->setJsonContent(array("status" => "OK"), JSON_NUMERIC_CHECK);
+     *    $response->setJsonContent(array("status" => "OK"));
      *</code>
      *
      * @param array|\Serializable $content
-     * @param int                 $jsonOptions consisting on http://www.php.net/manual/en/json.constants.php
      *
      * @return static
      */
-    public function setJsonContent($content, $jsonOptions = null)
+    public function setJsonContent($content)
     {
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
-
-        if ($jsonOptions === null) {
-            $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
-        }
-
-        $this->_content = json_encode($content, $jsonOptions, 512);
+        $this->_content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
         return $this;
     }

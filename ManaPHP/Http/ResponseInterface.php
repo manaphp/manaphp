@@ -97,11 +97,10 @@ interface ResponseInterface
      *</code>
      *
      * @param array|\Serializable $content
-     * @param int                 $jsonOptions
      *
      * @return static
      */
-    public function setJsonContent($content, $jsonOptions = null);
+    public function setJsonContent($content);
 
     /**
      * Appends a string to the HTTP response body
