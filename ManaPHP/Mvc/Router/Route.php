@@ -71,7 +71,7 @@ class Route implements RouteInterface
 
             if (preg_match('#{\d#', $pattern) === 1) {
                 $need_restore_token = true;
-                $pattern = preg_replace('#{([\d,]+)}#', '@\1@', $pattern);
+                $pattern = (string)preg_replace('#{([\d,]+)}#', '@\1@', $pattern);
             }
 
             $matches = [];
@@ -84,7 +84,7 @@ class Route implements RouteInterface
             }
 
             if ($need_restore_token) {
-                $pattern = preg_replace('#@([\d,]+)@#', '{\1}', $pattern);
+                $pattern = (string)preg_replace('#@([\d,]+)@#', '{\1}', $pattern);
             }
 
             return '#^' . $pattern . '$#i';

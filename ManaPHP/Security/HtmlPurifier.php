@@ -112,7 +112,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
      */
     public function purify($html, $allowedTags = null, $allowedAttributes = null)
     {
-        $html = preg_replace('#<script.*>.*</script>#isU', '', $html);
+        $html = (string)preg_replace('#<script.*>.*</script>#isU', '', $html);
         if ($html === '') {
             return '';
         }

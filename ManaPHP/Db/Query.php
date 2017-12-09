@@ -183,9 +183,9 @@ class Query extends Component implements QueryInterface
         if (is_string($fields)) {
             $fields = str_replace(["\t", "\r", "\n"], '', $fields);
             if (strpos($fields, '[') === false && strpos($fields, '(') === false) {
-                $fields = preg_replace('#\w+#', '[\\0]', $fields);
-                $fields = str_ireplace('[as]', 'AS', $fields);
-                $fields = preg_replace('#\s+#', ' ', $fields);
+                $fields = (string)preg_replace('#\w+#', '[\\0]', $fields);
+                $fields = (string)str_ireplace('[as]', 'AS', $fields);
+                $fields = (string)preg_replace('#\s+#', ' ', $fields);
             }
 
             $this->_fields = $fields;
@@ -258,7 +258,7 @@ class Query extends Component implements QueryInterface
     public function join($table, $condition = null, $alias = null, $type = null)
     {
         if (strpos($condition, '[') === false && strpos($condition, '(') === false) {
-            $condition = preg_replace('#\w+#', '[\\0]', $condition);
+            $condition = (string)preg_replace('#\w+#', '[\\0]', $condition);
         }
 
         $this->_joins[] = [$table, $condition, $alias, $type];
@@ -901,7 +901,7 @@ class Query extends Component implements QueryInterface
     {
         if (is_string($orderBy)) {
             if (strpos($orderBy, '[') === false && strpos($orderBy, '(') === false) {
-                $orderBy = preg_replace('#\w+#', '[\\0]', $orderBy);
+                $orderBy = (string)preg_replace('#\w+#', '[\\0]', $orderBy);
                 $orderBy = str_ireplace(['[ASC]', '[DESC]'], ['ASC', 'DESC'], $orderBy);
             }
             $this->_order = $orderBy;
