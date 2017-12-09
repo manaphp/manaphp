@@ -40,8 +40,6 @@ class Queue extends Component implements QueueInterface
      * @param string $topic
      * @param string $body
      * @param int    $priority
-     *
-     * @throws \ManaPHP\Message\Queue\Engine\Redis\Exception
      */
     public function push($topic, $body, $priority = self::PRIORITY_NORMAL)
     {

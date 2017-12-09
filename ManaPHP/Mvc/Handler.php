@@ -54,16 +54,8 @@ class Handler extends Component implements HandlerInterface
      * @return \ManaPHP\Http\ResponseInterface
      * @throws \ManaPHP\Mvc\Action\NotFoundException
      * @throws \ManaPHP\Mvc\Action\Exception
-     * @throws \ManaPHP\Mvc\Application\Exception
-     * @throws \ManaPHP\Event\Exception
-     * @throws \ManaPHP\Mvc\Application\NotFoundModuleException
      * @throws \ManaPHP\Mvc\Dispatcher\Exception
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
-     * @throws \ManaPHP\Mvc\Dispatcher\NotFoundActionException
-     * @throws \ManaPHP\Mvc\View\Exception
-     * @throws \ManaPHP\Renderer\Exception
-     * @throws \ManaPHP\Alias\Exception
-     * @throws \ManaPHP\Mvc\Router\Exception
      * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
      */
     public function handle()

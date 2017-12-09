@@ -334,7 +334,6 @@ class Response extends Component implements ResponseInterface
      * @param string $attachmentName
      *
      * @return static
-     * @throws \ManaPHP\Http\Response\Exception
      */
     public function setFileToSend($file, $attachmentName = null)
     {

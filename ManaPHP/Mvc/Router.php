@@ -50,7 +50,6 @@ class Router extends Component implements RouterInterface
      * @param string $uri
      *
      * @return string
-     * @throws \ManaPHP\Mvc\Router\Exception
      */
     public function getRewriteUri($uri = null)
     {
@@ -89,9 +88,6 @@ class Router extends Component implements RouterInterface
      * @param string $host
      *
      * @return bool
-     * @throws \ManaPHP\Di\Exception
-     * @throws \ManaPHP\Mvc\Router\Exception
-     * @throws \ManaPHP\Mvc\Router\NotFoundRouteException
      */
     public function handle($uri = null, $method = null, $host = null)
     {

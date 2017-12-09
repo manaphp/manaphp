@@ -19,8 +19,6 @@ class Php extends Component implements EngineInterface
      * @param array  $vars
      *
      * @return void
-     *
-     * @throws \ManaPHP\Renderer\Engine\Exception
      */
     public function render($file, $vars = [])
     {

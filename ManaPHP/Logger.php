@@ -47,7 +47,6 @@ class Logger extends Component implements LoggerInterface
      *
      * @param string|array|\ManaPHP\Logger\AppenderInterface $options
      *
-     * @throws \ManaPHP\Logger\Exception
      */
     public function __construct($options = 'ManaPHP\Logger\Appender\File')
     {

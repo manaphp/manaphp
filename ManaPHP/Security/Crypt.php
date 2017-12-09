@@ -57,7 +57,6 @@ class Crypt extends Component implements CryptInterface
      * @param string $key
      *
      * @return string
-     * @throws \ManaPHP\Security\Crypt\Exception
      */
     public function encrypt($text, $key)
     {

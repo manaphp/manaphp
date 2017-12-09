@@ -28,7 +28,6 @@ class Redis extends Component implements EngineInterface
      *
      * @param string|array $options
      *
-     * @throws \ManaPHP\Redis\Exception
      */
     public function __construct($options = [])
     {
@@ -65,7 +64,6 @@ class Redis extends Component implements EngineInterface
      * @param string $id
      *
      * @return string|false
-     * @throws \ManaPHP\Store\Engine\Exception
      */
     public function get($id)
     {
@@ -80,7 +78,6 @@ class Redis extends Component implements EngineInterface
      * @param string $value
      *
      * @return void
-     * @throws \ManaPHP\Store\Engine\Exception
      */
     public function set($id, $value)
     {
@@ -94,7 +91,6 @@ class Redis extends Component implements EngineInterface
      * @param string $id
      *
      * @void
-     * @throws \ManaPHP\Store\Engine\Exception
      */
     public function delete($id)
     {
@@ -108,7 +104,6 @@ class Redis extends Component implements EngineInterface
      * @param string $id
      *
      * @return bool
-     * @throws \ManaPHP\Store\Engine\Exception
      */
     public function exists($id)
     {

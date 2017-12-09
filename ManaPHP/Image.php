@@ -223,7 +223,6 @@ class Image implements ImageInterface
      * @param float  $opacity
      *
      * @return static
-     * @throws \ManaPHP\Image\Exception
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {

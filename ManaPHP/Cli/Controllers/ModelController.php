@@ -20,7 +20,6 @@ class ModelController extends Controller
      * @CliParam   --module,-m  the module name
      * @CliParam   --pattern,-p filter the tables with fnmatch
      * @CliParam   --table,-t   which table to create model
-     * @throws \ManaPHP\Db\Exception
      */
     public function createCommand()
     {
@@ -84,7 +83,6 @@ class ModelController extends Controller
      * @param string $arg_name
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function createCompletion($arg_name)
     {
@@ -100,7 +98,6 @@ class ModelController extends Controller
      * @CliParam   --pattern,-p  filter tables with fnmatch
      *
      * @return void
-     * @throws \ManaPHP\Db\Exception
      */
     public function tablesCommand()
     {

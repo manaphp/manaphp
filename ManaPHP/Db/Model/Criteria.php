@@ -395,8 +395,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param int $page
      *
      * @return \ManaPHP\Paginator
-     * @throws \ManaPHP\Paginator\Exception
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function paginate($size, $page = null)
     {

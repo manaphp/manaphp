@@ -59,7 +59,6 @@ class Db extends Component implements EngineInterface
      * @param int    $timeout
      *
      * @return string|false
-     * @throws \ManaPHP\Model\Exception
      */
     public function pop($topic, $timeout = PHP_INT_MAX)
     {
@@ -94,7 +93,6 @@ class Db extends Component implements EngineInterface
      * @param string $topic
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function delete($topic)
     {
@@ -111,7 +109,6 @@ class Db extends Component implements EngineInterface
      * @param int    $priority
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public function length($topic, $priority = null)
     {

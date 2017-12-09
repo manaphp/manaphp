@@ -37,8 +37,6 @@ class Route implements RouteInterface
      * @param string       $pattern
      * @param string|array $paths
      * @param string       $method
-     *
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function __construct($pattern, $paths = null, $method = null)
     {
@@ -101,7 +99,6 @@ class Route implements RouteInterface
      * @param string|array $paths
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function _getRoutePaths($paths = [])
     {

@@ -15,7 +15,6 @@ class Manager extends Component implements ManagerInterface
      * alias of createQuery
      *
      * @return \ManaPHP\Db\Model\QueryInterface
-     * @throws \ManaPHP\Di\Exception
      * @deprecated
      */
     public function createBuilder()

@@ -14,7 +14,6 @@ class HelpController extends Controller
     /**
      * @CliCommand list all commands
      * @return int
-     * @throws \ReflectionException
      */
     public function listCommand()
     {
@@ -71,7 +70,6 @@ class HelpController extends Controller
      * @param string $controllerClassName
      *
      * @return array
-     * @throws \ReflectionException
      */
     protected function _getCommands($controllerClassName)
     {

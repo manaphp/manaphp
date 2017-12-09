@@ -332,7 +332,6 @@ class Debugger extends Component implements DebuggerInterface
     }
 
     /**
-     * @throws \ManaPHP\Debugger\Exception
      */
     public function save()
     {

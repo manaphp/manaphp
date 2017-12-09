@@ -20,8 +20,6 @@ class Group extends Component implements GroupInterface
      * Group constructor.
      *
      * @param bool $useDefaultRoutes
-     *
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function __construct($useDefaultRoutes = true)
     {
@@ -38,7 +36,6 @@ class Group extends Component implements GroupInterface
      * @param string       $httpMethod
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     protected function _addRoute($pattern, $paths = null, $httpMethod = null)
     {
@@ -60,7 +57,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $httpMethod
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function add($pattern, $paths = null, $httpMethod = null)
     {
@@ -74,7 +70,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addGet($pattern, $paths = null)
     {
@@ -88,7 +83,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addPost($pattern, $paths = null)
     {
@@ -102,7 +96,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addPut($pattern, $paths = null)
     {
@@ -116,7 +109,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addPatch($pattern, $paths = null)
     {
@@ -130,7 +122,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addDelete($pattern, $paths = null)
     {
@@ -144,7 +135,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addOptions($pattern, $paths = null)
     {
@@ -158,7 +148,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addHead($pattern, $paths = null)
     {
@@ -170,7 +159,6 @@ class Group extends Component implements GroupInterface
      * @param string|array $paths
      *
      * @return \ManaPHP\Mvc\Router\RouteInterface
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function addRest($pattern, $paths = null)
     {
@@ -182,7 +170,6 @@ class Group extends Component implements GroupInterface
      * @param string $method
      *
      * @return array|false
-     * @throws \ManaPHP\Mvc\Router\Exception
      */
     public function match($uri, $method = 'GET')
     {

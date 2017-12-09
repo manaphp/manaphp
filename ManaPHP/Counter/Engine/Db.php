@@ -43,7 +43,6 @@ class Db implements EngineInterface
      * @param string $key
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public function get($key)
     {
@@ -62,7 +61,6 @@ class Db implements EngineInterface
      *
      * @return int
      * @throws \ManaPHP\Counter\Engine\Db\Exception
-     * @throws \ManaPHP\Model\Exception
      */
     public function increment($key, $step = 1)
     {
@@ -112,7 +110,6 @@ class Db implements EngineInterface
      * @param string $key
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function delete($key)
     {

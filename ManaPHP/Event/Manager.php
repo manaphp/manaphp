@@ -51,7 +51,6 @@ class Manager implements ManagerInterface
      * @param array                          $data
      *
      * @return bool|null
-     * @throws \ManaPHP\Event\Manager\Exception
      */
     public function fireEvent($event, $source, $data = [])
     {

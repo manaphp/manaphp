@@ -299,8 +299,6 @@ class Di implements DiInterface
      * @param array  $parameters
      *
      * @return mixed
-     * @throws \ReflectionException
-     * @throws \ManaPHP\Di\Exception
      */
     public function get($name, $parameters = null)
     {
@@ -366,7 +364,6 @@ class Di implements DiInterface
      * @param string $propertyName
      *
      * @return mixed
-     * @throws \ManaPHP\Di\Exception
      */
     public function __get($propertyName)
     {

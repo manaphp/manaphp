@@ -319,7 +319,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param int|string|array $filters
      *
      * @return bool
-     * @throws \ManaPHP\Model\Exception
      */
     public static function exists($filters = null)
     {
@@ -354,7 +353,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array  $filters
      *
      * @return mixed
-     * @throws \ManaPHP\Model\Exception
      */
     protected static function _groupResult($function, $alias, $field, $filters)
     {
@@ -380,7 +378,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $field
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public static function count($filters = null, $field = null)
     {
@@ -411,7 +408,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array  $filters
      *
      * @return int|float
-     * @throws \ManaPHP\Model\Exception
      */
     public static function sum($field, $filters = null)
     {
@@ -437,7 +433,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array  $filters
      *
      * @return int|float
-     * @throws \ManaPHP\Model\Exception
      */
     public static function max($field, $filters = null)
     {
@@ -463,7 +458,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array  $filters
      *
      * @return int|float
-     * @throws \ManaPHP\Model\Exception
      */
     public static function min($field, $filters = null)
     {
@@ -489,7 +483,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array  $filters
      *
      * @return double
-     * @throws \ManaPHP\Model\Exception
      */
     public static function avg($field, $filters = null)
     {
@@ -833,7 +826,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array $filters
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public static function updateAll($fieldValues, $filters)
     {
@@ -844,7 +836,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array $filters
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public static function deleteAll($filters)
     {

@@ -22,8 +22,6 @@ class Apcu extends Component implements EngineInterface
      * Apcu constructor.
      *
      * @param string|array $options
-     *
-     * @throws \ManaPHP\Cache\Engine\Exception
      */
     public function __construct($options = [])
     {

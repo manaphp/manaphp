@@ -14,8 +14,6 @@ class Sqlite extends Db
      * Sqlite constructor.
      *
      * @param string $file
-     *
-     * @throws \ManaPHP\Db\Exception
      */
     public function __construct($file)
     {

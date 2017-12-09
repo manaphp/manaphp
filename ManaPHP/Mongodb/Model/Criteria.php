@@ -903,8 +903,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param int $page
      *
      * @return \ManaPHP\PaginatorInterface
-     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
-     * @throws \ManaPHP\Paginator\Exception
      */
     public function paginate($size, $page = null)
     {

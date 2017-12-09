@@ -1415,7 +1415,6 @@ class Query extends Component implements QueryInterface
      * @param array $expr
      *
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function aggregate($expr)
     {
@@ -1475,7 +1474,6 @@ class Query extends Component implements QueryInterface
      * @param int $page
      *
      * @return \ManaPHP\Paginator
-     * @throws \ManaPHP\Paginator\Exception
      * @throws \ManaPHP\Db\Query\Exception
      */
     public function paginate($size, $page = null)
@@ -1535,7 +1533,6 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return bool
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function exists()
     {
@@ -1601,7 +1598,6 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return array|false
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function fetchOne()
     {

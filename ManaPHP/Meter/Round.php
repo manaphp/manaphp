@@ -59,7 +59,6 @@ class Round extends Component implements RoundInterface
      * @param int    $duration
      *
      * @return static
-     * @throws \ManaPHP\Model\Exception
      */
     public function record($type, $id, $duration)
     {
@@ -100,7 +99,6 @@ class Round extends Component implements RoundInterface
      * @param string $id
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function flush($type, $id = null)
     {
@@ -147,7 +145,6 @@ class Round extends Component implements RoundInterface
      * @param int    $count
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     protected function _save($type, $id, $begin_time, $duration, $count)
     {

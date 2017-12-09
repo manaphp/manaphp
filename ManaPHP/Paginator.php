@@ -87,7 +87,6 @@ class Paginator extends Component implements PaginatorInterface
      * @param int $page
      *
      * @return static
-     * @throws \ManaPHP\Paginator\Exception
      */
     public function paginate($count, $size, $page)
     {

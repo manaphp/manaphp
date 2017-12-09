@@ -36,7 +36,6 @@ class Db extends Component implements EngineInterface
      * @param string $session_id
      *
      * @return string
-     * @throws \ManaPHP\Model\Exception
      */
     public function read($session_id)
     {
@@ -83,7 +82,6 @@ class Db extends Component implements EngineInterface
      * @param string $session_id
      *
      * @return bool
-     * @throws \ManaPHP\Model\Exception
      */
     public function destroy($session_id)
     {
@@ -101,7 +99,6 @@ class Db extends Component implements EngineInterface
      * @param int $ttl
      *
      * @return bool
-     * @throws \ManaPHP\Model\Exception
      */
     public function gc($ttl)
     {

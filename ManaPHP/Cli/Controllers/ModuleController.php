@@ -29,8 +29,6 @@ class ModuleController extends Controller
      * @CliCommand create a new module
      * @CliParam   --module,-m  the module name
      * @CliParam   --api        skip create view related files
-     * @throws \ManaPHP\Filesystem\Adapter\Exception
-     * @throws \ManaPHP\Cli\Controllers\Exception
      */
     public function createCommand()
     {

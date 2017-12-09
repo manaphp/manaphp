@@ -45,7 +45,6 @@ class Db extends Component implements AppenderInterface
      *
      * @return void
      * @throws \ManaPHP\Model\Exception
-     * @throws \ManaPHP\Db\Model\Exception
      */
     public function append($logEvent)
     {

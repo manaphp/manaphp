@@ -36,7 +36,6 @@ class Db extends Component implements EngineInterface
      * @param string $key
      *
      * @return bool
-     * @throws \ManaPHP\Model\Exception
      */
     public function exists($key)
     {
@@ -52,7 +51,6 @@ class Db extends Component implements EngineInterface
      * @param string $key
      *
      * @return string|false
-     * @throws \ManaPHP\Model\Exception
      */
     public function get($key)
     {
@@ -71,7 +69,6 @@ class Db extends Component implements EngineInterface
      *
      * @return void
      * @throws \ManaPHP\Model\Exception
-     * @throws \ManaPHP\Store\Engine\Exception
      */
     public function set($key, $value)
     {
@@ -92,7 +89,6 @@ class Db extends Component implements EngineInterface
      * @param string $key
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function delete($key)
     {

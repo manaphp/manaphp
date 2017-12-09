@@ -31,8 +31,6 @@ class Url extends Component implements UrlInterface
      * Url constructor.
      *
      * @param array $options
-     *
-     * @throws \ManaPHP\Mvc\Url\Exception
      */
     public function __construct($options = [])
     {

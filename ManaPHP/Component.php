@@ -65,8 +65,6 @@ class Component implements ComponentInterface
      * @param string $name
      *
      * @return mixed
-     * @throws \ManaPHP\Di\Exception
-     * @throws \ManaPHP\Component\Exception
      */
     public function __get($name)
     {
