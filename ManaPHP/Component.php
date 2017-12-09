@@ -168,6 +168,9 @@ class Component implements ComponentInterface
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
+            if ($k === '_component_name' && $v === null) {
+                continue;
+            }
 
             if (is_scalar($v) || $v === null) {
                 $data[$k] = $v;
