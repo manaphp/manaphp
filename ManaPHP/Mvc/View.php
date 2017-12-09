@@ -25,7 +25,7 @@ class View extends Component implements ViewInterface
     /**
      * @var array
      */
-    protected $_viewVars = [];
+    protected $_vars = [];
 
     /**
      * @var false|string|null
@@ -68,7 +68,7 @@ class View extends Component implements ViewInterface
      */
     public function setVar($name, $value)
     {
-        $this->_viewVars[$name] = $value;
+        $this->_vars[$name] = $value;
 
         return $this;
     }
@@ -82,7 +82,7 @@ class View extends Component implements ViewInterface
      */
     public function setVars($vars)
     {
-        $this->_viewVars = array_merge($this->_viewVars, $vars);
+        $this->_vars = array_merge($this->_vars, $vars);
 
         return $this;
     }
@@ -97,9 +97,9 @@ class View extends Component implements ViewInterface
     public function getVar($name = null)
     {
         if ($name === null) {
-            return $this->_viewVars;
+            return $this->_vars;
         } else {
-            return isset($this->_viewVars[$name]) ? $this->_viewVars[$name] : null;
+            return isset($this->_vars[$name]) ? $this->_vars[$name] : null;
         }
     }
 
@@ -110,7 +110,7 @@ class View extends Component implements ViewInterface
      */
     public function hasVar($name)
     {
-        return isset($this->_viewVars[$name]);
+        return isset($this->_vars[$name]);
     }
 
     /**
@@ -182,10 +182,10 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:beforeRender');
 
-        $this->_content = $this->_render("@views/{$this->_controllerName}/" . ucfirst($this->_actionName), $this->_viewVars, false);
+        $this->_content = $this->_render("@views/{$this->_controllerName}/" . ucfirst($this->_actionName), $this->_vars, false);
 
         if ($this->_layout !== false) {
-            $this->_content = $this->_render('@layouts/' . ucfirst($this->_layout ?: $this->_controllerName), $this->_viewVars, false);
+            $this->_content = $this->_render('@layouts/' . ucfirst($this->_layout ?: $this->_controllerName), $this->_vars, false);
         }
 
         $this->fireEvent('view:afterRender');
@@ -239,7 +239,6 @@ class View extends Component implements ViewInterface
      * @param array  $vars
      *
      * @throws \ManaPHP\Mvc\View\Exception
-     * @throws \ManaPHP\Renderer\Exception
      */
     public function partial($path, $vars = [])
     {
@@ -256,7 +255,6 @@ class View extends Component implements ViewInterface
      * @param int|array $cacheOptions
      *
      * @throws \ManaPHP\Mvc\View\Exception
-     * @throws \ManaPHP\Di\Exception
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
