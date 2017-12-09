@@ -11,18 +11,7 @@ class Application extends \ManaPHP\Mvc\Application
 {
     /**
      * @return void
-     * @throws \ManaPHP\Configure\Exception
-     * @throws \ManaPHP\Alias\Exception
-     * @throws \ManaPHP\Mvc\Application\Exception
-     * @throws \ManaPHP\Mvc\NotFoundException
-     * @throws \ManaPHP\Di\Exception
-     * @throws \ManaPHP\Db\Exception
-     * @throws \ManaPHP\Mvc\Application\NotFoundModuleException
-     * @throws \ManaPHP\Mvc\View\Exception
-     * @throws \ManaPHP\Renderer\Exception
-     * @throws \ManaPHP\Mvc\Dispatcher\Exception
-     * @throws \ManaPHP\Mvc\Router\Exception
-     * @throws \ManaPHP\Event\Exception
+     * @throws \ManaPHP\Configuration\Configure\Exception
      */
     public function main()
     {
@@ -35,10 +24,6 @@ class Application extends \ManaPHP\Mvc\Application
             try {
                 $this->registerServices();
                 $this->mvcHandler->handle();
-            } catch (\ManaPHP\Security\Captcha\Exception $e) {
-                if ($this->request->isAjax()) {
-                    $this->response->setJsonContent(['code' => __LINE__, 'error' => 'captcha is wrong.']);
-                }
             } catch (\Exception $e) {
                 $this->errorHandler->handleException($e);
             }

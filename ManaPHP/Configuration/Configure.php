@@ -101,6 +101,7 @@ class Configure extends Component implements ConfigureInterface
                     list($f_name, $f_value) = explode(':', $field);
                     if (preg_match('#^(.*)([+-=])$#', $f_value, $match) === 1) {
                         $f_env = $match[1];
+                        /** @noinspection MultiAssignmentUsageInspection */
                         $op = $match[2];
                     } else {
                         $f_env = $f_value;
