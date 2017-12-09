@@ -43,6 +43,11 @@ class View extends Component implements ViewInterface
     protected $_actionName;
 
     /**
+     * @var string
+     */
+    protected $_pickedView;
+
+    /**
      * @param false|string $layout
      *
      * @return static
@@ -172,20 +177,32 @@ class View extends Component implements ViewInterface
      */
     public function render($controller, $action)
     {
-        if ($this->_controllerName === null) {
+        if ($this->_pickedView) {
+            $parts = explode('/', $this->_pickedView);
+            if (count($parts) === 1) {
+                $this->_controllerName = $controller;
+                $this->_actionName = $parts[0];
+            } else {
+                $this->_controllerName = $parts[0];
+                $this->_actionName = $parts[1];
+            }
+        } else {
             $this->_controllerName = $controller;
-        }
-
-        if ($this->_actionName === null) {
             $this->_actionName = $action;
         }
 
         $this->fireEvent('view:beforeRender');
 
-        $this->_content = $this->_render("@views/{$this->_controllerName}/" . ucfirst($this->_actionName), $this->_vars, false);
+        $view = "@views/{$this->_controllerName}/" . ucfirst($this->_actionName);
+        $this->_content = $this->_render($view, $this->_vars, false);
 
         if ($this->_layout !== false) {
-            $this->_content = $this->_render('@layouts/' . ucfirst($this->_layout ?: $this->_controllerName), $this->_vars, false);
+            if ($this->_layout[0] === '@') {
+                $layout = $this->_layout;
+            } else {
+                $layout = '@layouts/' . ucfirst($this->_layout ?: $this->_controllerName);
+            }
+            $this->_content = $this->_render($layout, $this->_vars, false);
         }
 
         $this->fireEvent('view:afterRender');
@@ -217,7 +234,7 @@ class View extends Component implements ViewInterface
      */
     public function pick($view)
     {
-        list($this->_controllerName, $this->_actionName) = array_pad(explode('/', $view), -2, null);
+        $this->_pickedView = $view;
 
         return $this;
     }
