@@ -328,7 +328,7 @@ class Debugger extends Component implements DebuggerInterface
 
         $template = Text::contains($this->_template, '/') ? $this->_template : ('@manaphp/Debugger/Template/' . $this->_template);
 
-        return $this->renderer->render($this->alias->resolve($template), ['data' => $data], false);
+        return $this->renderer->render($template, ['data' => $data], false);
     }
 
     /**

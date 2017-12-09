@@ -31,6 +31,11 @@ class Renderer extends Component implements RendererInterface
     protected $_sectionStack = [];
 
     /**
+     * @var string
+     */
+    protected $_current_template;
+
+    /**
      * Renderer constructor.
      *
      * @param array $engines
@@ -59,6 +64,16 @@ class Renderer extends Component implements RendererInterface
     {
         $notExists = true;
         $content = null;
+
+        if ($template[0] !== '@') {
+            if (strpos($template, '/') !== false) {
+                throw new RendererException('`:template` template can not contains relative path', ['template' => $template]);
+            }
+
+            $template = dirname($this->_current_template) . '/' . $template;
+        }
+
+        $this->_current_template = $template;
 
         foreach ($this->_engines as $extension => $engine) {
             $file = $this->alias->resolve($template . $extension);

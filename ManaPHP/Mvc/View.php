@@ -4,7 +4,6 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
 use ManaPHP\Mvc\View\Exception as ViewException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Mvc\View
@@ -46,6 +45,11 @@ class View extends Component implements ViewInterface
      * @var string
      */
     protected $_pickedView;
+
+    /**
+     * @var string
+     */
+    protected $_current_template;
 
     /**
      * @param false|string $layout
@@ -148,6 +152,15 @@ class View extends Component implements ViewInterface
      */
     public function _render($template, $vars, $directOutput)
     {
+        if ($template[0] !== '@') {
+            if (strpos($template, '/') !== false) {
+                throw new ViewException('`:template` template can not contains relative path', ['template' => $template]);
+            }
+
+            $template = dirname($this->_current_template) . '/' . $template;
+        }
+        $this->_current_template = $template;
+
         if (isset($vars['view'])) {
             throw new ViewException('variable `view` is reserved for view'/**m0662b55555fc72f7d*/);
         }
@@ -259,11 +272,7 @@ class View extends Component implements ViewInterface
      */
     public function partial($path, $vars = [])
     {
-        if (!Text::contains($path, '/')) {
-            $path = $this->_controllerName . '/' . $path;
-        }
-
-        $this->_render($path[0] === '@' ? $path : "@views/$path", $vars, true);
+        $this->_render($path, $vars, true);
     }
 
     /**

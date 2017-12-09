@@ -1,3 +1,3 @@
-@partial('@layouts/_Header')
+@partial('_Header')
 @content()
-@partial('@layouts/_Footer')
+@partial('_Footer')
