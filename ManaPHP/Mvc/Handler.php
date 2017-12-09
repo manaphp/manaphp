@@ -83,6 +83,7 @@ class Handler extends Component implements HandlerInterface
             $this->alias->set('@module', "@app/$moduleName");
             $this->alias->set('@ns.module', '@ns.app\\' . $moduleName);
             $this->alias->set('@views', '@module/Views');
+            $this->alias->set('@layouts', '@views/Layouts');
             $this->alias->set('@messages', '@module/Messages');
         }
 

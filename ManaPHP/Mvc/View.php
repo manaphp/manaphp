@@ -185,7 +185,7 @@ class View extends Component implements ViewInterface
         $this->_content = $this->_render("@views/{$this->_controllerName}/" . ucfirst($this->_actionName), $this->_viewVars, false);
 
         if ($this->_layout !== false) {
-            $this->_content = $this->_render('@views/Layouts/' . ucfirst($this->_layout ?: $this->_controllerName), $this->_viewVars, false);
+            $this->_content = $this->_render('@layouts/' . ucfirst($this->_layout ?: $this->_controllerName), $this->_viewVars, false);
         }
 
         $this->fireEvent('view:afterRender');
