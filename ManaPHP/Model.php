@@ -18,6 +18,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     final public function __construct($data = [])
     {
+        $this->_dependencyInjector = Di::getDefault();
+
         if (count($data) !== 0) {
             $this->_snapshot = $data;
             foreach ($data as $field => $value) {
@@ -28,7 +30,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 $this->afterFetch();
             }
         }
-        $this->_dependencyInjector = Di::getDefault();
     }
 
     /**
