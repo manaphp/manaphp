@@ -8,6 +8,8 @@ class TimeController extends ControllerBase
     {
         $data = [];
         $data['current_time'] = date('Y-m-d H:i:s');
+        $data['memory_usage'] = round(memory_get_usage(false) / 1024) . 'KB';
+        $data['process_time'] = sprintf('%.03f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
         return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $data]);
     }
 
