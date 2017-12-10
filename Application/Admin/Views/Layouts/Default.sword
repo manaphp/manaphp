@@ -1,4 +1,4 @@
-@partial('Shared/Header')
+@partial('_Header')
 {{--
 |---------------------------------------------------------|
 |LAYOUT OPTIONS | fixed                                   |
@@ -285,4 +285,4 @@
     <div class="control-sidebar-bg"></div>
 </div>
 
-@partial('Shared/Footer')
+@partial('_Footer')
