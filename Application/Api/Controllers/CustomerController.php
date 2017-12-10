@@ -7,7 +7,7 @@ class CustomerController extends ControllerBase
 {
     public function listAction()
     {
-        $customers = Customer::findAll(['', 'limit' => 10, 'offset' => 10 * $this->request->getQuery('page', 'int', 1)]);
+        $customers = Customer::findAll([], ['size' => 10]);
 
         return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => ['customers' => $customers]]);
     }
