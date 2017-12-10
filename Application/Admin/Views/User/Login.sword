@@ -1,6 +1,6 @@
 @layout(false)
 
-@partial('Shared/Header')
+@partial('@layouts/_Header')
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
@@ -81,4 +81,4 @@
         });
     </script>
 @append
-@partial('Shared/Footer')
+@partial('@layouts/_Footer')
