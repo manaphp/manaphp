@@ -18,11 +18,6 @@ use ManaPHP\Di\FactoryDefault;
 abstract class Application extends Component implements ApplicationInterface
 {
     /**
-     * @var array
-     */
-    protected $_modules;
-
-    /**
      * Application constructor.
      *
      * @param \ManaPHP\Loader      $loader
@@ -38,11 +33,12 @@ abstract class Application extends Component implements ApplicationInterface
         $this->_dependencyInjector->setShared('application', $this);
 
         $app_path = $this->getAppPath();
-        $app_ns = basename($app_path);
-        $root_path = dirname($app_path);
+        $app_ns = dirname(get_called_class());
+        $root_path = dirname(dirname($app_path));
 
         $this->loader->registerNamespaces([$app_ns => $app_path]);
         $this->alias->set('@root', $root_path);
+        $this->alias->set('@apps', dirname($app_path));
         $this->alias->set('@app', $app_path);
         $this->alias->set('@ns.app', $app_ns);
         $this->alias->set('@data', $root_path . '/data');
@@ -55,6 +51,11 @@ abstract class Application extends Component implements ApplicationInterface
             }
         }
         $this->alias->set('@web', $web);
+
+        $router = $app_ns . '\Router';
+        if (class_exists($router)) {
+            $this->_dependencyInjector->setShared('router', $router);
+        }
     }
 
     /**
@@ -81,28 +82,6 @@ abstract class Application extends Component implements ApplicationInterface
         }
 
         throw new ApplicationException('infer appPath failed');
-    }
-
-    /**
-     * @return array
-     */
-    public function getModules()
-    {
-        if ($this->_modules === null) {
-            $modules = [];
-            foreach (glob($this->alias->resolve('@app/*'), GLOB_ONLYDIR) as $dir) {
-                if (is_dir($dir . '/Controllers')) {
-                    $module = basename($dir);
-                    if ($module !== 'Cli') {
-                        $modules[] = $module;
-                    }
-                }
-            }
-
-            $this->_modules = $modules;
-        }
-
-        return $this->_modules;
     }
 
     /**

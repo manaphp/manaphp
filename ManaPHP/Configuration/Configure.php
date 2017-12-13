@@ -16,7 +16,7 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var bool
      */
-    public $debug = true;
+    public $debug = false;
 
     /**
      * @var string
@@ -27,11 +27,6 @@ class Configure extends Component implements ConfigureInterface
      * @var string
      */
     public $timezone = 'UTC';
-
-    /**
-     * @var string
-     */
-    public $appID = 'manaphp';
 
     /**
      * @var string
@@ -62,11 +57,6 @@ class Configure extends Component implements ConfigureInterface
      * @var array
      */
     public $bootstraps = [];
-
-    /**
-     * @var array
-     */
-    public $modules = ['Home' => '/'];
 
     /**
      * @param string $file

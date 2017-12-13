@@ -12,7 +12,6 @@ return [
     'aliases' => [
         '@xxx' => '@root/xvdfd'
     ],
-    'modules' => ['Home' => '/', 'Admin' => '/admin', 'Api' => '/api'],
     'modules:test,prod' => ['Home' => '/home'],
     'components' => [
         'db' => ['mysql://root@localhost/manaphp_unit_test?charset=utf8'],
@@ -21,7 +20,8 @@ return [
         'logger' => [
             'level' => 'debug',
             'appenders' => ['file' => ['class' => \ManaPHP\Logger\Appender\Db::class, 'filter' => ['level' => 'error', 'category' => '*']]],
-        ]
+        ],
+        'translation' => ['language' => 'zh-CN,en']
     ],
     'bootstraps' => ['debugger']
 ];

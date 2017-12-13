@@ -1,0 +1,24 @@
+.debugger {
+    position: fixed;
+    right: 80px;
+    top: 80px;
+    z-index: 1000000;
+    min-width: 80px;
+    text-align: center;
+    border: 1px solid blue;
+    border-radius: 3px;
+}
+
+.debugger a {
+    display: block;
+    color: red;
+    text-decoration: none;
+}
+
+.table a {
+    cursor: pointer;
+}
+
+body {
+    overflow-y: scroll;
+}

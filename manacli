@@ -9,7 +9,7 @@ foreach ([__DIR__, getcwd()] as $dir) {
     if (is_dir($dir . '/Application')) {
         $appDir = $dir . '/Application';
         break;
-    } elseif (is_file($dir . '/Cli.php')) {
+    } elseif (is_file($dir . '/Cli/Application.php')) {
         $appDir = $dir;
         break;
     }
@@ -21,9 +21,9 @@ if (!isset($appDir)) {
 
 $loader->registerNamespaces(['Application' => $appDir]);
 
-if (is_file($appDir . '/Cli.php')) {
-    require $appDir . '/Cli.php';
-    $cli = new \Application\Cli($loader);
+if (is_file($appDir . '/Cli/Application.php')) {
+    require $appDir . '/Cli/Application.php';
+    $cli = new \Application\Cli\Application($loader);
 } else {
     $cli = new \ManaPHP\Cli\Application($loader);
 }

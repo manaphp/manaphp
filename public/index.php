@@ -6,8 +6,6 @@ define('ROOT_PATH', dirname(__DIR__));
 
 require ROOT_PATH . '/ManaPHP/Loader.php';
 $loader = new \ManaPHP\Loader();
-
-require ROOT_PATH . '/Application/Application.php';
-$application = new \Application\Application($loader);
-
-$application->main();
+require ROOT_PATH . '/Application/Apps.php';
+$apps = new \Application\Apps($loader);
+$apps->main();

@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Swoole;
 
-use ManaPHP\Application;
+use ManaPHP\Mvc\Application;
 
 /**
  * Class ManaPHP\Mvc\Application
@@ -10,7 +10,6 @@ use ManaPHP\Application;
  *
  * @property \ManaPHP\Http\ResponseInterface $response
  * @property \ManaPHP\Http\CookiesInterface  $cookies
- * @property \ManaPHP\Mvc\HandlerInterface   $mvcHandler
  */
 class HttpServer extends Application
 {
@@ -82,7 +81,7 @@ class HttpServer extends Application
         $this->_beforeRequest();
 
         if (1) {
-            $this->mvcHandler->handle();
+            $this->handle();
             $content = $this->response->getContent();
             //      $this->debugger->save();
         } else {

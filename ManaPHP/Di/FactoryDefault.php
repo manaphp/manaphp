@@ -23,7 +23,6 @@ class FactoryDefault extends Di
             'alias' => 'ManaPHP\Alias',
             'configure' => 'ManaPHP\Configuration\Configure',
             'settings' => 'ManaPHP\Configuration\Settings',
-            'mvcHandler' => 'ManaPHP\Mvc\Handler',
             'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
             'router' => 'ManaPHP\Mvc\Router',
             'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
@@ -73,7 +72,8 @@ class FactoryDefault extends Di
             'netConnectivity' => 'ManaPHP\Net\Connectivity',
             'db' => 'ManaPHP\Db\Adapter\Mysql',
             'redis' => 'ManaPHP\Redis',
-            'mongodb' => 'ManaPHP\Mongodb'
+            'mongodb' => 'ManaPHP\Mongodb',
+            'translation' => 'ManaPHP\I18n\Translation'
         ];
     }
 }

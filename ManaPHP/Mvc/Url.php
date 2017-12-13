@@ -2,7 +2,6 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
-use ManaPHP\Mvc\Url\Exception as UrlException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -18,14 +17,14 @@ use ManaPHP\Utility\Text;
 class Url extends Component implements UrlInterface
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $_baseUrls = [];
+    protected $_assets;
 
     /**
      * @var string
      */
-    protected $_assets;
+    protected $_prefix;
 
     /**
      * Url constructor.
@@ -41,32 +40,12 @@ class Url extends Component implements UrlInterface
             $selfPath = rtrim($selfPath, '/');
         }
 
-        if (isset($options['baseUrls'])) {
-            /** @noinspection ForeachSourceInspection */
-            foreach ($options['baseUrls'] as $module => $baseUrl) {
-                $this->_baseUrls[$module] = rtrim($baseUrl, '/');
-            }
-
-        } else {
-            $host = $this->request->getServer('HTTP_HOST');
-            $scheme = $this->request->getScheme();
-
-            foreach ($this->router->getMounted() as $module => $path) {
-                if ($path[0] === '/') {
-                    $baseUrl = $scheme . '://' . $host . $selfPath . ($path === '/' ? '' : $path);
-                } else {
-                    $baseUrl = (strpos($path, '://') ? '' : $scheme . '://') . $path;
-                }
-
-                $this->_baseUrls[$module] = $baseUrl;
-            }
-
-            if (!isset($this->_baseUrls[''])) {
-                $this->_baseUrls[''] = $this->_baseUrls[$this->dispatcher->getModuleName()];
-            }
+        $this->_prefix = $this->router->getPrefix();
+        if ($this->_prefix[0] === '/') {
+            $this->_prefix = $selfPath . $this->_prefix;
         }
 
-        $this->_assets = isset($options['assets']) ? rtrim($options['assets'], '/') : $selfPath;
+        $this->_assets = $selfPath . (isset($options['assets']) ? rtrim($options['assets'], '/') : '');
     }
 
     /**
@@ -74,7 +53,6 @@ class Url extends Component implements UrlInterface
      * @param string       $module
      *
      * @return string
-     * @throws \ManaPHP\Mvc\Url\Exception
      */
     public function get($args = [], $module = null)
     {
@@ -92,19 +70,10 @@ class Url extends Component implements UrlInterface
             }
         }
 
-        if (!isset($this->_baseUrls[$module])) {
-            if (isset($this->_baseUrls[ucfirst($module)])) {
-                throw new UrlException('module name is case-sensitive: `:module`', ['module' => $module]);
-            } else {
-                throw new UrlException('`:module` is not exists', ['module' => $module]);
-            }
-        }
-
         if ($uri === '' || $uri[0] !== '/') {
-            $baseUrl = $this->_baseUrls[$module];
-            $strUrl = (strpos($baseUrl, '://') ? parse_url($baseUrl, PHP_URL_PATH) : $baseUrl) . '/' . $uri;
+            $strUrl = (strpos($this->_prefix, '://') ? parse_url($this->_prefix, PHP_URL_PATH) : $this->_prefix) . '/' . $uri;
         } else {
-            $strUrl = $this->_baseUrls[$module] . $uri;
+            $strUrl = ($this->_prefix === '/' ? '' : rtrim($this->_prefix, '/')) . $uri;
         }
 
         if (Text::contains($strUrl, ':')) {
@@ -117,6 +86,7 @@ class Url extends Component implements UrlInterface
                 }
             }
         }
+
         if (count($args) !== 0) {
             $strUrl .= (Text::contains($strUrl, '?') ? '&' : '?') . http_build_query($args);
         }
@@ -132,19 +102,13 @@ class Url extends Component implements UrlInterface
      * @param string $uri
      *
      * @return string
-     * @throws \ManaPHP\Mvc\Url\Exception
      */
     public function getAsset($uri)
     {
         if ($uri[0] !== '/') {
-            $uri = '/assets/' . Text::underscore($this->router->getModuleName()) . '/' . $uri;
+            $module = $this->router->getModuleName();
+            $uri = ($module ? '/' . Text::underscore($module) : '/') . $uri;
         }
-
-        $file = $this->alias->resolve('@root/public' . $uri);
-        if (!is_file($file)) {
-            throw new UrlException('asset file is not found: `:file`', ['file' => $file]);
-        }
-
-        return $this->_assets . $uri . '?v=' . md5($file);
+        return $this->_assets . $uri;
     }
 }

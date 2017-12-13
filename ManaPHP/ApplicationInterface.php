@@ -19,11 +19,6 @@ interface ApplicationInterface
     public function main();
 
     /**
-     * @return array
-     */
-    public function getModules();
-
-    /**
      * @return string
      */
     public function getAppPath();

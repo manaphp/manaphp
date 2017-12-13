@@ -21,15 +21,15 @@ class Sword extends Component implements EngineInterface
      */
     public function render($file, $vars = [])
     {
-        if (strpos($file, $this->alias->get('@app')) === 0) {
-            $_compiledFile = $this->alias->resolve('@data/sword' . str_replace($this->alias->get('@app'), '', $file));
+        if (strpos($file, $this->alias->get('@apps')) === 0) {
+            $_compiledFile = $this->alias->resolve('@data/sword' . str_replace($this->alias->get('@apps'), '', $file));
         } elseif (strpos($file, $this->alias->get('@manaphp')) === 0) {
             $_compiledFile = $this->alias->resolve('@data/sword/manaphp/' . str_replace($this->alias->get('@manaphp'), '', $file));
         } else {
             $_compiledFile = $this->alias->resolve('@data/sword/mixed/' . md5($file));
         }
 
-        if (!file_exists($_compiledFile) || filemtime($file) > filemtime($_compiledFile)) {
+        if ($this->configure->debug || !file_exists($_compiledFile) || filemtime($file) > filemtime($_compiledFile)) {
             $dir = dirname($_compiledFile);
 
             /** @noinspection NotOptimalIfConditionsInspection */

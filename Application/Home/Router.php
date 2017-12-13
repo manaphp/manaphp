@@ -2,13 +2,12 @@
 namespace Application\Home;
 
 use Application\Home\Controllers\IndexController;
-use ManaPHP\Mvc\Router\Group;
 
-class RouteGroup extends Group
+class Router extends \ManaPHP\Mvc\Router
 {
     public function __construct()
     {
-        parent::__construct(true);
+        parent::__construct();
         $this->add('/about', 'Index::about');
         $this->addGet('/about1', 'Index::about');
         $this->addGet('/about2', [IndexController::class, 'about']);

@@ -10,6 +10,111 @@ namespace ManaPHP\Mvc;
 interface RouterInterface
 {
     /**
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function setPrefix($prefix);
+
+    /**
+     * @return string
+     */
+    public function getPrefix();
+
+    /**
+     * Adds a route to the router on any HTTP method
+     *
+     *<code>
+     * router->add('/about', 'About::index');
+     *</code>
+     *
+     * @param string       $pattern
+     * @param string|array $paths
+     * @param string       $httpMethod
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function add($pattern, $paths = null, $httpMethod = null);
+
+    /**
+     * Adds a route to the router that only match if the HTTP method is GET
+     *
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addGet($pattern, $paths = null);
+
+    /**
+     * Adds a route to the router that only match if the HTTP method is POST
+     *
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addPost($pattern, $paths = null);
+
+    /**
+     * Adds a route to the router that only match if the HTTP method is PUT
+     *
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addPut($pattern, $paths = null);
+
+    /**
+     * Adds a route to the router that only match if the HTTP method is PATCH
+     *
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addPatch($pattern, $paths = null);
+
+    /**
+     * Adds a route to the router that only match if the HTTP method is DELETE
+     *
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addDelete($pattern, $paths = null);
+
+    /**
+     * Add a route to the router that only match if the HTTP method is OPTIONS
+     *
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addOptions($pattern, $paths = null);
+
+    /**
+     * Adds a route to the router that only match if the HTTP method is HEAD
+     *
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addHead($pattern, $paths = null);
+
+    /**
+     * @param string       $pattern
+     * @param string|array $paths
+     *
+     * @return \ManaPHP\Mvc\Router\RouteInterface
+     */
+    public function addRest($pattern, $paths = null);
+
+    /**
      * Handles routing information received from the rewrite engine
      *
      * <code>
@@ -28,30 +133,6 @@ interface RouterInterface
      * @return bool
      */
     public function handle($uri = null, $method = null, $host = null);
-
-    /**
-     * Mounts a group of routes in the router
-     *
-     * <code>
-     *  $group=new \ManaPHP\Mvc\Router\Group();
-     *
-     *  $group->addGet('/blog','blog::list');
-     *  $group->addGet('/blog/{id:\d+}','blog::detail')
-     *
-     *  $router=new \ManaPHP\Mvc\Router();
-     *  $router->mount($group,'home');
-     * </code>
-     *
-     * @param array $modules
-     *
-     * @return static
-     */
-    public function mount($modules);
-
-    /**
-     * @return array
-     */
-    public function getMounted();
 
     /**
      * Get rewrite info. This info is read from $_GET['_url'] or _SERVER["REQUEST_URI"].
