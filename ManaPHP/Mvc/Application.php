@@ -19,7 +19,16 @@ class Application extends \ManaPHP\Application
     public function __construct($loader, $dependencyInjector = null)
     {
         parent::__construct($loader, $dependencyInjector);
+        $this->alias->set('@data', '@root/data/' . $this->getAppName());
         $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppName()
+    {
+        return basename($this->alias->resolveNS('@ns.app'));
     }
 
     public function authenticate()

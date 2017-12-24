@@ -485,7 +485,7 @@ class Compiler extends Component
      */
     protected function _compileInclude($expression)
     {
-        return "<?php isset(\$view) ? \$view->partial{$expression} : \$renderer->partial{$expression}; ?>";
+        return "<?php \$renderer->partial{$expression} ?>";
     }
 
     /**
@@ -768,8 +768,8 @@ class Compiler extends Component
      */
     protected function _compileAction($expression)
     {
-        if ($expression !== "('')" && strpos($expression, ',') === false) {
-            return $this->router->createActionUrl(substr($expression, 2, -2));
+        if (preg_match('#^\\(([/_a-z\d]+)\\)$#i', $expression, $match)) {
+            return $this->router->createActionUrl($match[1]);
         } else {
             return "<?php echo \$this->router->createActionUrl{$expression} ?>";
         }

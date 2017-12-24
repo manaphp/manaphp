@@ -3,6 +3,7 @@ namespace Application\Admin;
 
 use ManaPHP\Authentication\UserIdentity;
 use ManaPHP\Authorization\Rbac;
+require ROOT_PATH.'/ManaPHP/Mvc/Url/helpers.php';
 
 class Application extends \ManaPHP\Mvc\Application
 {
@@ -29,7 +30,7 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
-        $this->configure->loadFile('@apps/config.php', 'dev');
+        $this->configure->loadFile('@app/../config.php', 'dev');
         $this->alias->set('@messages', '@app/Messages');
         if ($this->configure->debug) {
             $this->handle();

@@ -21,9 +21,29 @@ class UserRole extends Model
     public $user_id;
 
     /**
+     * @var string
+     */
+    public $user_name;
+
+    /**
      * @var int
      */
     public $role_id;
+
+    /**
+     * @var string
+     */
+    public $role_name;
+
+    /**
+     * @var int
+     */
+    public $creator_id;
+
+    /**
+     * @var string
+     */
+    public $creator_name;
 
     /**
      * @var int

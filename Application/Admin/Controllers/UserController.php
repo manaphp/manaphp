@@ -1,9 +1,9 @@
 <?php
 namespace Application\Admin\Controllers;
 
-use Application\Admin\Models\Admin;
 use Application\Admin\Models\AdminDetail;
-use Application\Admin\Models\AdminLogin;
+use Application\Admin\Models\AdminLoginLog;
+use Application\Admin\Models\Admin;
 
 class UserController extends ControllerBase
 {
@@ -15,44 +15,55 @@ class UserController extends ControllerBase
     public function loginAction()
     {
         if ($this->request->isPost()) {
-            $user_name = $this->request->get('user_name');
-            $password = $this->request->get('password');
-            $code = $this->request->get('code');
+            try {
+                $user_name = $this->request->get('user_name', '*|account');
+                $password = $this->request->get('password', '*');
+                $code = $this->request->get('code', '*');
+            } catch (\Exception $e) {
+                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+            }
 
-            $this->captcha->verify($code);
+            try {
+                $this->captcha->verify($code);
+            } catch (\Exception $e) {
+                return $this->response->setJsonContent(['code' => 2, 'message' => $e->getMessage()]);
+            }
 
             if ($this->request->has('remember_me')) {
-                $this->cookies->set('user_name', $user_name, strtotime('2 year'));
+                $this->cookies->set('user_name', $user_name, strtotime('1 year'));
             } else {
                 $this->cookies->delete('user_name');
             }
 
             $admin = Admin::findFirst(['admin_name' => $user_name]);
             if (!$admin || !$this->password->verify($password, $admin->password, $admin->salt)) {
-                return $this->response->setJsonContent(['code' => __LINE__, 'error' => 'account or password is wrong.']);
+                return $this->response->setJsonContent(['code' => 3, 'message' => 'account or password is wrong.']);
             }
 
-            $udid = $this->cookies->has('udid') ? $this->cookies->get('udid') : '';
-            if (strlen($udid) !== 16) {
-                $udid = $this->random->getBase(16);
-                $this->cookies->set('udid', $udid, strtotime('5 year'), '/');
+            $admin->login_ip = $this->request->getClientAddress();
+            $admin->login_time = time();
+            $admin->update();
+
+            $udid = $this->cookies->get('CLIENT_UDID', '');
+            if (!$udid) {
+                $udid = $this->random->getBase(32);
+                $this->cookies->set('CLIENT_UDID', $udid, strtotime('10 year'), '/');
             }
 
-            $adminLogin = new AdminLogin();
+            $adminLoginLog = new AdminLoginLog();
 
-            $adminLogin->admin_id = $admin->admin_id;
-            $adminLogin->ip = $this->request->getClientAddress();
-            $adminLogin->udid = $udid;
-            $adminLogin->user_agent = $this->request->getUserAgent();
-            $adminLogin->login_time = time();
-            $adminLogin->logout_time = 0;
+            $adminLoginLog->admin_id = $admin->admin_id;
+            $adminLoginLog->admin_name = $user_name;
+            $adminLoginLog->client_ip = $this->request->getClientAddress();
+            $adminLoginLog->client_udid = $udid;
+            $adminLoginLog->user_agent = $this->request->getUserAgent();
+            $adminLoginLog->created_time = time();
 
-            $adminLogin->create();
+            $adminLoginLog->create();
 
             $this->session->set('admin_auth', ['userId' => $admin->admin_id, 'userName' => $admin->admin_name]);
-            $this->session->set('login_id', $adminLogin->login_id);
 
-            return $this->response->setJsonContent(['code' => 0, 'error' => '']);
+            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
         } else {
             $this->view->setVar('redirect', $this->request->get('redirect', null, '/'));
             $this->view->setVar('user_name', $this->cookies->has('user_name') ? $this->cookies->get('user_name') : '');
@@ -61,15 +72,6 @@ class UserController extends ControllerBase
 
     public function logoutAction()
     {
-        $login_id = $this->session->get('login_id');
-        if ($login_id) {
-            $adminLogin = AdminLogin::findFirst(['login_id' => $login_id]);
-            if ($adminLogin && !$adminLogin->logout_time) {
-                $adminLogin->logout_time = time();
-                $adminLogin->update();
-            }
-        }
-
         $this->session->destroy();
 
         return $this->response->redirect(['/', 'Home']);
@@ -78,44 +80,43 @@ class UserController extends ControllerBase
     public function registerAction()
     {
         if ($this->request->isAjax()) {
-            $user_name = $this->request->get('user_name', 'account');
-            $email = $this->request->get('email', 'email');
-            $password = $this->request->get('password', 'password');
-            $code = $this->request->get('code');
+            try {
+                $user_name = $this->request->get('user_name', '*|account');
+                $email = $this->request->get('email', '*|email');
+                $password = $this->request->get('password', '*|password');
+                $code = $this->request->get('code');
+            } catch (\Exception $e) {
+                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+            }
 
-            $this->captcha->verify($code);
+            try {
+                $this->captcha->verify($code);
+            } catch (\Exception $e) {
+                return $this->response->setJsonContent(['code' => 2, 'message' => $e->getMessage()]);
+            }
 
             if (Admin::exists(['admin_name' => $user_name])) {
-                return $this->response->setJsonContent(['code' => __LINE__, 'error' => 'account already exists.']);
+                return $this->response->setJsonContent(['code' => 3, 'message' => 'account already exists.']);
             }
 
-            if (AdminDetail::exists(['email' => $email])) {
-                return $this->response->setJsonContent(['code' => __LINE__, 'error' => 'email already exists.']);
+            if (Admin::exists(['email' => $email])) {
+                return $this->response->setJsonContent(['code' => 3, 'message' => 'email already exists.']);
             }
-
-            $current_time = time();
 
             $admin = new Admin();
 
             $admin->admin_name = $user_name;
+            $admin->email = $email;
+            $admin->status = Admin::STATUS_ACTIVE;
+            $admin->login_ip = '';
+            $admin->login_time = 0;
             $admin->salt = $this->password->salt();
             $admin->password = $this->password->hash($password, $admin->salt);
-            $admin->created_time = $current_time;
-            $admin->updated_time = $current_time;
+            $admin->updated_time = $admin->created_time = time();
 
             $admin->create();
 
-            $adminDetail = new AdminDetail();
-
-            $adminDetail->admin_id = $admin->admin_id;
-            $adminDetail->admin_name = $admin->admin_name;
-            $adminDetail->email = $email;
-            $adminDetail->created_time = $current_time;
-            $adminDetail->updated_time = $current_time;
-
-            $adminDetail->create();
-
-            return $this->response->setJsonContent(['code' => 0, 'error' => '']);
+            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
         }
     }
 }

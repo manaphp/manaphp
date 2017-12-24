@@ -358,13 +358,21 @@ class Router extends Component implements RouterInterface
     }
 
     /**
-     * @param string $path
-     * @param array  $params
+     * @param array|string $args
      *
      * @return string
      */
-    public function createActionUrl($path, $params = [])
+    public function createActionUrl($args)
     {
+        if (is_string($args)) {
+            $path = $args;
+            $params = [];
+        } else {
+            $path = $args[0];
+            unset($args[0]);
+            $params = $args;
+        }
+
         if ($path === '') {
             $ca = $this->_controller . '/' . $this->_action;
         } elseif (strpos($path, '/') === false) {
@@ -397,7 +405,7 @@ class Router extends Component implements RouterInterface
             $module = $this->_module;
         }
 
-        $url = $this->_prefix . '/' . $module . '/' . lcfirst($ca);
+        $url = $this->_prefix . '/' . ($module ? $module . '/' : '') . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }
@@ -417,7 +425,7 @@ class Router extends Component implements RouterInterface
             }
         }
 
-        return $this->alias->resolve('@web' . $url);
+        return $url;
     }
 
     /**

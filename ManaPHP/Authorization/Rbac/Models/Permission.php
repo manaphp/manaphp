@@ -29,17 +29,22 @@ class Permission extends Model
     /**
      * @var string
      */
-    public $module;
+    public $app_name;
 
     /**
      * @var string
      */
-    public $controller;
+    public $module_name;
 
     /**
      * @var string
      */
-    public $action;
+    public $controller_name;
+
+    /**
+     * @var string
+     */
+    public $action_name;
 
     /**
      * @var string

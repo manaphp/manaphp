@@ -21,9 +21,28 @@ class RolePermission extends Model
     public $role_id;
 
     /**
+     * @var string
+     */
+    public $role_name;
+    /**
      * @var int
      */
     public $permission_id;
+
+    /**
+     * @var string
+     */
+    public $permission_description;
+
+    /**
+     * @var int
+     */
+    public $creator_id;
+
+    /**
+     * @var string
+     */
+    public $creator_name;
 
     /**
      * @var int

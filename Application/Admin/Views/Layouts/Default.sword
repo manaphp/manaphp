@@ -1,288 +1,105 @@
-@partial('_Header')
-{{--
-|---------------------------------------------------------|
-|LAYOUT OPTIONS | fixed                                   |
-|               | layout-boxed                            |
-|               | layout-top-nav                          |
-|               | sidebar-collapse                        |
-|               | sidebar-mini                            |
-|---------------------------------------------------------|
---}}
-<body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
-    <header class="main-header">
-        <a href="/" class="logo">
-            {{-- mini logo for sidebar mini 50x50 pixels --}}
-            <span class="logo-mini"><b>MA</b></span>
-            {{-- logo for regular state and mobile devices --}}
-            <span class="logo-lg"><b>Mana</b>Admin</span>
-        </a>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ManaPHP Admin</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="@asset('/assets/app/css/manaphp.css')">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.0.5/theme-chalk/index.css">
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .el-dialog label {
+            font-weight: 700;
+        }
 
-        <nav class="navbar navbar-static-top" role="navigation">
-            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                <span class="sr-only">Toggle navigation</span>
-            </a>
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown messages-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-envelope-o"></i>
-                            <span class="label label-success">4</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 4 messages</li>
-                            <li>
-                                <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <!-- User Image -->
-                                                <img src="@asset('img/avatar.jpg')" class="img-circle"
-                                                     alt="User Image">
-                                            </div>
-                                            <h4>
-                                                Support Team
-                                                <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                                            </h4>
-                                            <p>Why not buy a new awesome theme?</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">See All Messages</a></li>
-                        </ul>
-                    </li>
+        .el-pagination {
+            text-align: center;
+        }
 
-                    <li class="dropdown notifications-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-bell-o"></i>
-                            <span class="label label-warning">10</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 10 notifications</li>
-                            <li>
-                                <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">View all</a></li>
-                        </ul>
-                    </li>
+        .el-submenu .el-menu-item {
+            height: 30px;
+            line-height: 30px;
+        }
 
-                    <li class="dropdown tasks-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-flag-o"></i>
-                            <span class="label label-danger">9</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 9 tasks</li>
-                            <li>
-                                <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <h3>
-                                                Design some buttons
-                                                <small class="pull-right">20%</small>
-                                            </h3>
-                                            <div class="progress xs">
-                                                {{-- Change the css width attribute to simulate progress --}}
-                                                <div class="progress-bar progress-bar-aqua" style="width: 20%"
-                                                     role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                                                     aria-valuemax="100">
-                                                    <span class="sr-only">20% Complete</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="footer">
-                                <a href="#">View all tasks</a>
-                            </li>
-                        </ul>
-                    </li>
+        .el-menu-item, .el-submenu__title {
+            height: 35px;
+            line-height: 35px;
+        }
 
-                    <li class="dropdown user user-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="@asset(img/avatar.jpg)" class="user-image" alt="User Image">
-                            {{-- hidden-xs hides the username on small devices so only the image appears. --}}
-                            <span class="hidden-xs">{{$di->userIdentity->getName()}}</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="user-header">
-                                <img src="@asset('img/avatar.jpg')" class="img-circle" alt="User Image">
-                                <p>Alexander Pierce - Web Developer
-                                    <small>Member since Nov. 2012</small>
-                                </p>
-                            </li>
+        .el-table--small td, .el-table--small th {
+            padding: 2px 0;
+        }
 
-                            <li class="user-body">
-                                <div class="row">
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Followers</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Sales</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Friends</a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="user-footer">
-                                <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                </div>
-                                <div class="pull-right">
-                                    <a href="@action('user/logout')" class="btn btn-default btn-flat">Sign out</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+        .el-dialog {
+            width: 30%;
+        }
 
-    <aside class="main-sidebar">
-        <section class="sidebar">
-            <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="@asset('img/avatar.jpg')" class="img-circle" alt="User Image">
-                </div>
-                <div class="pull-left info">
-                    <p>{{$di->userIdentity->getName()}}</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-                </div>
-            </div>
-            {{--
-            <!-- search form (Optional) -->
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
-                    <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
-                </div>
-            </form>
-            <!-- /.search form -->
-            --}}
-            <ul class="sidebar-menu">
-                <li class="treeview">
-                    <a href="#"><i class="fa fa-link"></i> <span>Right Manager</span>
-                        <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="@action('rbac_user/')">User</a></li>
-                        <li><a href="@action('rbac_role/')">Role</a></li>
-                        <li><a href="@action('rbac_permission/')">Permission</a></li>
-                        <li><a href="@action('rbac_user_role/')">User Role</a></li>
-                        <li><a href="@action('rbac_permission/')">Role Permission</a></li>
-                    </ul>
-                </li>
-                <li class="header">HEADER</li>
-                <li><a href="@action('system_information/')">System Information</a></li>
-                <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
-                <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
-                <li class="treeview">
-                    <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
-                        <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#">Link in level 2</a></li>
-                        <li><a href="#">Link in level 2</a></li>
-                    </ul>
-                </li>
-                <li class="treeview">
-                    <a href="#"><span>Log Manager</span></a>
-                    <ul class="treeview-menu">
-                        <li><a href="@action('session_log/')">SessionLog</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-    </aside>
-    <div class="content-wrapper">
-        <section class="content-header">
-            @yield('header')
-        </section>
-        <section class="content">
-            @content()
-        </section>
-    </div>
-
-    <footer class="main-footer">
-        <div class="pull-right hidden-xs">Version:{{ \ManaPHP\Version::get() }}</div>
-        <strong>Powered By <a href="https://github.com/manaphp/manaphp" target="_blank">ManaPHP</a>.</strong>
-    </footer>
-
-    <aside class="control-sidebar control-sidebar-dark">
-        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-            <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="control-sidebar-home-tab">
-                <h3 class="control-sidebar-heading">Recent Activity</h3>
-                <ul class="control-sidebar-menu">
-                    <li>
-                        <a href="javascript:">
-                            <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-                            <div class="menu-info">
-                                <h4 class="control-sidebar-subheading">Mark's Birthday</h4>
-                                <p>Will be 23 on April 24th</p>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-
-                <h3 class="control-sidebar-heading">Tasks Progress</h3>
-                <ul class="control-sidebar-menu">
-                    <li>
-                        <a href="javascript:">
-                            <h4 class="control-sidebar-subheading">
-                                Custom Template Design
-                                <span class="pull-right-container">
-                                <span class="label label-danger pull-right">70%</span>
-                </span>
-                            </h4>
-                            <div class="progress progress-xxs">
-                                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-
-            <div class="tab-pane" id="control-sidebar-settings-tab">
-                <form method="post">
-                    <h3 class="control-sidebar-heading">General Settings</h3>
-                    <div class="form-group">
-                        <label class="control-sidebar-subheading">
-                            Report panel usage
-                            <input type="checkbox" class="pull-right" checked>
-                        </label>
-                        <p>Some information about this general settings option</p>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-    </aside>
-    {{-- Add the sidebar's background. This div must be placed
-         immediately after the control sidebar --}}
-    <div class="control-sidebar-bg"></div>
+        .el-range-editor{
+            width: 200px !important;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>@include('_Header')</el-header>
+        <el-container>
+            <el-aside width="200px">@include('_Aside')</el-aside>
+            <el-main>@content()</el-main>
+        </el-container>
+    </el-container>
 </div>
-
-@partial('_Footer')
+<script src="https://cdn.bootcss.com/vue/2.5.9/vue.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/2.0.5/index.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.17.1/axios.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.19.3/moment.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+<script src="https://cdn.bootcss.com/lodash.js/4.17.4/lodash.js"></script>
+<script>
+    Vue.prototype.$axios = axios;
+    Vue.prototype.$moment = moment;
+    Vue.prototype.$qs = Qs;
+    Vue.prototype._ = _;
+    axios.defaults.baseURL = 'http://www.manaphp.com';
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    axios.interceptors.response.use(function (res) {
+            return res;
+        },
+        function (error) {
+            switch (error.response.status) {
+                case 401:
+                    window.location.href = '@action(user/login)';
+            }
+        });
+    Vue.mixin({
+        methods: {
+            load_table_data: function () {
+                var qs = this.$qs.stringify(this.list.request);
+                window.history.replaceState(null, null, qs ? ('?' + qs) : '');
+                this.list.response = [];
+                this.$axios.get(document.location.href).then(function (res) {
+                    this.list.response = res.data.data;
+                }.bind(this));
+            },
+            formatter_date: function (row, column, value) {
+                return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
+            }
+        },
+        created: function () {
+            var qs = this.$qs.parse(document.location.search.substr(1));
+            if (this.list.request) {
+                for (var k in qs) {
+                    this.list.request[k] = qs[k];
+                }
+            }
+        }
+    });
+</script>
+@yield('script')
+@debugger()
+</body>
+</html>

@@ -16,24 +16,34 @@ class Role extends Model
     public $role_id;
 
     /**
-     * @var int
-     */
-    public $enabled;
-
-    /**
      * @var string
      */
     public $role_name;
 
     /**
+     * @var int
+     */
+    public $enabled;
+
+    /**
+     * @var int
+     */
+    public $creator_id;
+
+    /**
      * @var string
      */
-    public $description;
+    public $creator_name;
 
     /**
      * @var int
      */
     public $created_time;
+
+    /**
+     * @var int
+     */
+    public $updated_time;
 
     public static function getSource($context = null)
     {

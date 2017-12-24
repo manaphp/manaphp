@@ -1,0 +1,32 @@
+<el-menu
+        default-active="<?=action('')?>"
+        class="el-menu-vertical-demo">
+    <el-submenu index="right_manager">
+        <template slot="title">
+            <span>Right Manager</span>
+        </template>
+        <el-menu-item index="<?=action('rbac_user/')?>"><a href="<?=action('rbac_user/')?>">User</a></el-menu-item>
+        <el-menu-item index="<?=action('rbac_role/')?>"><a href="<?=action('rbac_role/')?>">Role</a></el-menu-item>
+        <el-menu-item index="<?=action('rbac_permission/')?>"><a href="<?=action('rbac_permission/')?>">Permission</a>
+        </el-menu-item>
+        <el-menu-item index="<?=action('rbac_user_role/')?>"><a href="<?=action('rbac_user_role/')?>">User Role</a>
+        </el-menu-item>
+        <el-menu-item index="<?=action('rbac_role_permission/')?>"><a href="<?=action('rbac_role_permission/')?>">Role
+                Permission</a>
+        </el-menu-item>
+    </el-submenu>
+    <el-submenu>
+        <template slot="title" index="system_information">
+            <span>System Information</span>
+        </template>
+        <el-menu-item index="<?=action('system_information/')?>"><a href="<?=action('system_information/')?>">System
+                Information</a></el-menu-item>
+    </el-submenu>
+    <el-submenu index="log_manager">
+        <template slot="title">
+            <span>Log Manager</span>
+        </template>
+        <el-menu-item index="<?=action('session_log/')?>"><a href="<?=action('session_log/')?>">SessionLog</a>
+        </el-menu-item>
+    </el-submenu>
+</el-menu>

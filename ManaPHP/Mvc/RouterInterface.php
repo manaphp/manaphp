@@ -179,10 +179,9 @@ interface RouterInterface
     public function wasMatched();
 
     /**
-     * @param string $path
-     * @param array  $params
+     * @param array|string $args
      *
      * @return string
      */
-    public function createActionUrl($path, $params = []);
+    public function createActionUrl($args);
 }

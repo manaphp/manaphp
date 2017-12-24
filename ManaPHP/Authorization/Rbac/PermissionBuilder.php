@@ -14,23 +14,56 @@ use ManaPHP\Component;
 class PermissionBuilder extends Component
 {
     /**
-     * @param string $controller
+     * @return array
+     */
+    public function getModules()
+    {
+        if ($this->filesystem->dirExists('@app/Controllers')) {
+            return [''];
+        } else {
+            $modules = [];
+            foreach ($this->filesystem->glob('@app/*', GLOB_ONLYDIR) as $dir) {
+                if ($this->filesystem->dirExists($dir . '/Controllers')) {
+                    $modules[] = $dir;
+                }
+            }
+
+            return $modules;
+        }
+    }
+
+    /**
+     * @param string $moduleName
      *
      * @return array
-     * @throws \ManaPHP\Authorization\Rbac\PermissionBuilder\Exception
      */
-    public function getControllerPermissions($controller)
+    public function getControllers($moduleName)
     {
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $rc = new \ReflectionClass($controller);
-
-        if (preg_match('#^[^/]*/([^/]*)/Controllers/(.*)Controller$#', strtr($controller, '\\', '/'), $match) !== 1) {
-            return [];
+        $controllers = [];
+        if ($moduleName) {
+            foreach (glob($this->alias->resolve("@app/$moduleName/Controllers/*Controller.php")) as $item) {
+                $controllers[] = $this->alias->resolveNS("@ns.app\\$moduleName\\Controllers\\" . basename($item, '.php'));
+            }
+        } else {
+            foreach (glob($this->alias->resolve('@app/Controllers/*Controller.php')) as $item) {
+                $controllers[] = $this->alias->resolveNS('@ns.app\\Controllers\\' . basename($item, '.php'));
+            }
         }
-        $moduleName = $match[1];
-        $controllerName = $match[2];
 
-        $permissions = [];
+        return $controllers;
+    }
+
+    /**
+     * @param string $controllerName
+     *
+     * @return array
+     */
+    public function getActions($controllerName)
+    {
+        $actions = [];
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        $rc = new \ReflectionClass($controllerName);
+
         foreach ($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
 
@@ -50,40 +83,9 @@ class PermissionBuilder extends Component
                     ['controller' => $rc->getName(), 'action' => $methodName]);
             }
 
-            $permissions[] = [
-                'module' => $moduleName,
-                'controller' => $controllerName,
-                'action' => $actionName,
-                'description' => $moduleName . '::' . $controllerName . '::' . $actionName
-            ];
+            $actions[$actionName] = $actionName;
         }
 
-        return $permissions;
-    }
-
-    /**
-     * @param string $module
-     *
-     * @return array
-     * @throws \ManaPHP\Authorization\Rbac\PermissionBuilder\Exception
-     */
-    public function getModulePermissions($module)
-    {
-        $app = $this->alias->get('@app');
-
-        $permissions = [];
-
-        if (!$this->filesystem->dirExists('@app/' . $module)) {
-            throw new PermissionBuilderException('`:module_dir` module directory is not exists.', ['module_dir' => $this->alias->resolve('@app/' . $module)]);
-        }
-
-        foreach ($this->filesystem->glob('@app/' . $module . '/Controllers/*.php') as $file) {
-            $file = str_replace(dirname($app) . '/', '', $file);
-            $controller = strtr(pathinfo($file, PATHINFO_DIRNAME) . '\\' . basename($file, '.php'), '/', '\\');
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $permissions = array_merge($permissions, $this->getControllerPermissions($controller));
-        }
-
-        return $permissions;
+        return $actions;
     }
 }

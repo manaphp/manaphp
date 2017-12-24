@@ -38,10 +38,8 @@ abstract class Application extends Component implements ApplicationInterface
 
         $this->loader->registerNamespaces([$app_ns => $app_path]);
         $this->alias->set('@root', $root_path);
-        $this->alias->set('@apps', dirname($app_path));
         $this->alias->set('@app', $app_path);
         $this->alias->set('@ns.app', $app_ns);
-        $this->alias->set('@data', $root_path . '/data');
 
         $web = '';
         if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {

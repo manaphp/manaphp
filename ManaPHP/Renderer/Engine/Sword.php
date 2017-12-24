@@ -21,8 +21,8 @@ class Sword extends Component implements EngineInterface
      */
     public function render($file, $vars = [])
     {
-        if (strpos($file, $this->alias->get('@apps')) === 0) {
-            $_compiledFile = $this->alias->resolve('@data/sword' . str_replace($this->alias->get('@apps'), '', $file));
+        if (strpos($file, $this->alias->get('@app')) === 0) {
+            $_compiledFile = $this->alias->resolve('@data/sword' . str_replace($this->alias->get('@app'), '', $file));
         } elseif (strpos($file, $this->alias->get('@manaphp')) === 0) {
             $_compiledFile = $this->alias->resolve('@data/sword/manaphp/' . str_replace($this->alias->get('@manaphp'), '', $file));
         } else {

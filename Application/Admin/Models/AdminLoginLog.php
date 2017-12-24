@@ -8,7 +8,7 @@ namespace Application\Admin\Models;
  *
  * @method static $this findFirstByLoginId($id)
  */
-class AdminLogin extends ModelBase
+class AdminLoginLog extends ModelBase
 {
     /**
      * @var int
@@ -23,12 +23,17 @@ class AdminLogin extends ModelBase
     /**
      * @var string
      */
-    public $ip;
+    public $admin_name;
 
     /**
      * @var string
      */
-    public $udid;
+    public $client_ip;
+
+    /**
+     * @var string
+     */
+    public $client_udid;
 
     /**
      * @var string
@@ -38,10 +43,5 @@ class AdminLogin extends ModelBase
     /**
      * @var int
      */
-    public $login_time;
-
-    /**
-     * @var int
-     */
-    public $logout_time;
+    public $created_time;
 }

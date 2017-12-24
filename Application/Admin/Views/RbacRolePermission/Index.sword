@@ -1,0 +1,120 @@
+<div class="search-box">
+    <el-row>
+        <el-col :span="2">
+            <el-select v-model="list.request.role_id" size="small" clearable @change="load_table_data">
+                <el-option v-for="(role_name, role_id) in roles" :key="role_name" :label="role_name"
+                           :value="role_id"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :span="2">
+            <el-button @click="editVisible=true" type="primary" round size="small" icon="el-icon-edit">edit</el-button>
+        </el-col>
+    </el-row>
+</div>
+<el-dialog title="edit" :visible.sync="editVisible">
+    <el-form :model="edit" label-width="200px" ref="edit">
+        <el-checkbox-group v-model="role_permissions">
+            <el-checkbox v-for="permission in permissions" :label="permission.permission_id"
+                         :key="permission.permission_id" style="width: 30%; text-align: left">
+                @{{permission.description}}
+            </el-checkbox>
+        </el-checkbox-group>
+    </el-form>
+    <div slot="footer">
+        <el-button type="primary" @click="do_save">save</el-button>
+        <el-button @click="editVisible=false">cancel</el-button>
+    </div>
+</el-dialog>
+<div class="result-box">
+    <el-table :data="list.response" border size="small" align="left">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="permission_id" label="id" width="50"></el-table-column>
+        <el-table-column prop="permission_description" label="description"></el-table-column>
+        <el-table-column prop="creator_id" label="creator_id" width="120"></el-table-column>
+        <el-table-column prop="creator_name" label="creator_name" width="120"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" :formatter="formatter_date"
+                         width="150"></el-table-column>
+        <el-table-column fixed="right" label="operation" width="200">
+            <template slot-scope="scope">
+                <el-button @click="" size="mini" icon="el-icon-edit" plain round>edit</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                list: {
+                    request: {},
+                    response: []
+                },
+
+                roles: [],
+                editVisible: false,
+                edit: {
+                    user_id: '',
+                    user_name: '',
+                    role_ids: []
+                },
+
+                detailVisible: false,
+                detail: [],
+                permissions: [],
+                module_names: [],
+                controller_names: [],
+                role_permissions: []
+            },
+            computed: {
+                role_permissions: function () {
+
+                }
+            },
+            mounted: function () {
+                this.$axios.get('@action(list)').then(function (res) {
+                    this.roles = res.data.data;
+                    if (!this.request.role_id) {
+                        this.request.role_id = this._.find(this.roles);
+                    }
+                }.bind(this));
+                this.$axios.get('@action(list)').then(function (res) {
+                    this.permissions = res.data.data;
+                }.bind(this));
+
+                this.load_table_data();
+            },
+            methods: {
+                show_edit: function (row) {
+                    this.editVisible = true;
+
+                    this.edit.user_id = row.admin_id;
+                    this.edit.user_name = row.admin_name;
+                    this.edit.email = row.email;
+                    this.edit.role_ids = this._.keys(row.roles);
+                },
+                do_edit: function () {
+                    this.$axios.post('@action(edit)', this.edit).then(function (res) {
+                        this.editVisible = false;
+                        this.load_table_data();
+                    }.bind(this));
+                },
+                do_save: function () {
+                    this.$axios.post('@action(save)', {
+                        role_id: this.request.role_id,
+                        permissions: this.role_permissions
+                    }).then(function (res) {
+                        this.editVisible = false;
+                        this.load_table_data();
+                    }.bind(this));
+                }
+            },
+            'watch': {
+                response: function () {
+                    this.role_permissions = this._.map(this.response, 'permission_id');
+                }
+            }
+        });
+    </script>
+@append

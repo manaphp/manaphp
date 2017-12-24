@@ -8,6 +8,10 @@ namespace Application\Admin\Models;
  */
 class Admin extends ModelBase
 {
+    const STATUS_INIT = 0;
+    const STATUS_ACTIVE = 1;
+    const STATUS_LOCKED = 2;
+
     /**
      * @var int
      */
@@ -17,6 +21,16 @@ class Admin extends ModelBase
      * @var string
      */
     public $admin_name;
+
+    /**
+     * @var string
+     */
+    public $email;
+
+    /**
+     * @var int
+     */
+    public $status;
 
     /**
      * @var string
@@ -31,10 +45,35 @@ class Admin extends ModelBase
     /**
      * @var int
      */
+    public $login_time;
+
+    /**
+     * @var string
+     */
+    public $login_ip;
+
+    /**
+     * @var int
+     */
+    public $creator_id;
+
+    /**
+     * @var string
+     */
+    public $creator_name;
+
+    /**
+     * @var int
+     */
     public $created_time;
 
     /**
      * @var int
      */
     public $updated_time;
+
+    public static function getSource($context = null)
+    {
+        return 'admin';
+    }
 }
