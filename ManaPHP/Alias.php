@@ -142,6 +142,6 @@ class Alias extends Component implements AliasInterface
             throw new AliasException('`:alias` is not exists for `:namespace`'/**m0aac421937afe5850*/, ['alias' => $alias, 'namespace' => $ns]);
         }
 
-        return $this->_aliases[$alias] . '\\' . $parts[1];
+        return $this->_aliases[$alias] . (isset($parts[1]) ? '\\' . $parts[1] : '');
     }
 }
