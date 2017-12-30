@@ -1,5 +1,5 @@
 <?php
-namespace Application\Cli\Controllers;
+namespace App\Cli\Controllers;
 
 class TestController extends \ManaPHP\Cli\Controller
 {

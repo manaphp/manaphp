@@ -1,5 +1,5 @@
 <?php
-namespace Application\Cli\Controllers;
+namespace App\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 use ManaPHP\Db;
