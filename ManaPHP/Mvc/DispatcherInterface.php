@@ -82,7 +82,7 @@ interface DispatcherInterface
      * @param string $action
      * @param array  $params
      *
-     * @return false|\ManaPHP\Mvc\ControllerInterface
+     * @return bool
      */
     public function dispatch($module, $controller, $action, $params = []);
 

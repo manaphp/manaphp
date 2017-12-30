@@ -211,7 +211,11 @@ class Dispatcher extends Component implements DispatcherInterface
                 throw new DispatcherException('dispatcher has detected a cyclic routing causing stability problems'/**m016bfe7f4f190e087*/);
             }
 
-            $controllerClassName = $this->alias->resolveNS('@ns.module\Controllers\\' . $this->_controllerName . 'Controller');
+            if ($module) {
+                $controllerClassName = $this->alias->resolveNS("@ns.app\\{$this->_moduleName}\\Controllers\\{$this->_controllerName}Controller");
+            } else {
+                $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\{$this->_controllerName}Controller");
+            }
 
             if (!class_exists($controllerClassName) && !$this->_dependencyInjector->has($controllerClassName)) {
                 throw new NotFoundControllerException('`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, ['controller' => $controllerClassName]);
