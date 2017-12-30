@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Di\FactoryDefault;
+
 /**
  * Class ManaPHP\Cli\Application
  *
@@ -11,19 +13,40 @@ namespace ManaPHP\Cli;
  */
 class Application extends \ManaPHP\Application
 {
+    /** @noinspection MagicMethodsValidityInspection */
+    /** @noinspection PhpMissingParentConstructorInspection */
     /**
      * Application constructor.
      *
      * @param \ManaPHP\Loader      $loader
      * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @throws \ManaPHP\Application\Exception
      */
     public function __construct($loader, $dependencyInjector = null)
     {
-        parent::__construct($loader, $dependencyInjector);
+        if (get_called_class() === __CLASS__) {
+            $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
 
-        foreach (['@app/Cli/Controllers', '@app/Controllers', '@app'] as $dir) {
+            $this->_dependencyInjector->setShared('loader', $loader);
+            $this->_dependencyInjector->setShared('application', $this);
+
+            $appDir = dirname(get_included_files()[0]) . '/app';
+            $appFile = $appDir . '/Application.php';
+            if (is_file($appFile)) {
+                $str = file_get_contents($appFile);
+                if (preg_match('#namespace\s+([\w\\\\]+);#', $str, $match)) {
+                    $this->loader->registerNamespaces([$match[1] => $appDir]);
+
+                    $this->alias->set('@root', dirname($appDir));
+                    $this->alias->set('@data', '@root/data');
+                    $this->alias->set('@app', $appDir);
+                    $this->alias->set('@ns.app', $match[1]);
+                }
+            }
+        } else {
+            parent::__construct($loader, $dependencyInjector);
+        }
+
+        foreach (['@app/Cli/Controllers'] as $dir) {
             if ($this->filesystem->dirExists($dir)) {
                 $this->alias->set('@cli', $this->alias->resolve($dir));
                 $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr($dir, ['@app' => '@ns.app', '/' => '\\'])));
@@ -34,6 +57,8 @@ class Application extends \ManaPHP\Application
 
     public function registerServices()
     {
+        $this->configure->bootstraps = array_diff($this->configure->bootstraps, ['debugger']);
+
         parent::registerServices();
 
         $this->_dependencyInjector->setShared('cliHandler', 'ManaPHP\Cli\Handler');
@@ -44,6 +69,10 @@ class Application extends \ManaPHP\Application
 
     public function main()
     {
+        if ($this->configFile) {
+            $this->configure->loadFile($this->configFile, $this->env);
+        }
+
         $this->registerServices();
 
         exit($this->cliHandler->handle());
