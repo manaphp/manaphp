@@ -10,11 +10,10 @@ interface UrlInterface
 {
     /**
      * @param string|array $args
-     * @param string       $module
      *
      * @return string
      */
-    public function get($args, $module = null);
+    public function get($args);
 
     /**
      * @param string $uri

@@ -50,11 +50,10 @@ class Url extends Component implements UrlInterface
 
     /**
      * @param string|array $args
-     * @param string       $module
      *
      * @return string
      */
-    public function get($args = [], $module = null)
+    public function get($args = [])
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         if (is_string($args)) {
