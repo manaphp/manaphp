@@ -19,11 +19,6 @@ interface ApplicationInterface
     public function main();
 
     /**
-     * @return string
-     */
-    public function getAppPath();
-
-    /**
      * @param int    $code
      * @param string $message
      *
