@@ -284,7 +284,24 @@ class View extends Component implements ViewInterface
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
-        $widgetClassName = $this->alias->resolveNS("@ns.module\\Widgets\\{$widget}Widget");
+        if ($widget[0] === '/') {
+            $parts = explode('/', substr($widget, 1));
+            switch (count($parts)) {
+                case 1:
+                    $widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$parts[0]}Widget");
+                    $view = '@app/Views/Widgets' . $widget;
+                    break;
+                case 2:
+                    $widgetClassName = $this->alias->resolveNS("@ns.app\\{$parts[0]}\\Widgets\\{$parts[1]}Widget");
+                    $view = "@app/{$parts[0]}/Views/Widgets/{$parts[1]}";
+                    break;
+                default:
+                    throw new ViewException('`:widget` widget has too many parts', ['widget' => $widget]);
+            }
+        } else {
+            $widgetClassName = $this->alias->resolveNS("@ns.module\\Widgets\\{$widget}Widget");
+            $view = '@module/Views/Widgets/' . $widget;
+        }
 
         if (!class_exists($widgetClassName)) {
             throw new ViewException('`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, ['widget' => $widget, 'class' => $widgetClassName]);
@@ -295,8 +312,6 @@ class View extends Component implements ViewInterface
          */
         $widgetInstance = $this->_dependencyInjector->get($widgetClassName);
         $vars = $widgetInstance->run($options);
-
-        $view = '@views/Widgets/' . $widget;
 
         if ($cacheOptions !== null) {
             $cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
@@ -331,7 +346,7 @@ class View extends Component implements ViewInterface
      * Externally sets the view content
      *
      *<code>
-     *    $this->view->setContent("<h1>hello</h1>");
+     *    $this->view->setContent(" < h1>hello </h1 > ");
      *</code>
      *
      * @param string $content
