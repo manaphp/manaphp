@@ -345,7 +345,7 @@ class Debugger extends Component implements DebuggerInterface
      */
     public function getUrl()
     {
-        return $this->url->get('/?_debugger=' . $this->_file);
+        return $this->router->createActionUrl('/?_debugger=' . $this->_file, true);
     }
 
     public function __destruct()
