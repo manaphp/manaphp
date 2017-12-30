@@ -19,8 +19,10 @@ class BashCompletionController extends Controller
                 $controllers[] = Text::underscore(basename($file, 'Controller.php'));
             }
 
-            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
-                $controllers[] = Text::underscore(basename($file, 'Controller.php'));
+            if ($this->alias->has('@cli')) {
+                foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
+                    $controllers[] = Text::underscore(basename($file, 'Controller.php'));
+                }
             }
         } catch (\Exception $e) {
 
@@ -38,13 +40,10 @@ class BashCompletionController extends Controller
     {
         $commands = [];
         try {
-            $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . Text::camelize($controller)) . 'Controller';
+            $controllerClassName = $this->_getControllerClassName($controller);
+
             if (!class_exists($controllerClassName)) {
-                $controllerClassName = 'ManaPHP\\Cli\\Controllers\\' . Text::camelize($controller) . 'Controller';
-                /** @noinspection NotOptimalIfConditionsInspection */
-                if (!class_exists($controllerClassName)) {
-                    return [];
-                }
+                return [];
             }
 
             foreach ((new \ReflectionClass($controllerClassName))->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
@@ -67,13 +66,9 @@ class BashCompletionController extends Controller
      */
     protected function _getArgumentNames($controller, $command)
     {
-        $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . Text::camelize($controller)) . 'Controller';
+        $controllerClassName = $this->_getControllerClassName($controller);
         if (!class_exists($controllerClassName)) {
-            $controllerClassName = 'ManaPHP\\Cli\\Controllers\\' . Text::camelize($controller) . 'Controller';
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (!class_exists($controllerClassName)) {
-                return [];
-            }
+            return [];
         }
 
         $command = Text::camelize($command) . 'Command';
@@ -105,6 +100,23 @@ class BashCompletionController extends Controller
     }
 
     /**
+     * @param string $controllerName
+     *
+     * @return string
+     */
+    protected function _getControllerClassName($controllerName)
+    {
+        if ($this->alias->has('@ns.cli')) {
+            $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . Text::camelize($controllerName)) . 'Controller';
+            if (class_exists($controllerClassName)) {
+                return $controllerClassName;
+            }
+        }
+
+        return 'ManaPHP\\Cli\\Controllers\\' . Text::camelize($controllerName) . 'Controller';
+    }
+
+    /**
      * @param string $controller
      * @param string $command
      * @param string $argumentName
@@ -113,13 +125,10 @@ class BashCompletionController extends Controller
      */
     protected function _getArgumentValues($controller, $command, $argumentName)
     {
-        $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . Text::camelize($controller)) . 'Controller';
+
+        $controllerClassName = $this->_getControllerClassName($controller);
         if (!class_exists($controllerClassName)) {
-            $controllerClassName = 'ManaPHP\\Cli\\Controllers\\' . Text::camelize($controller) . 'Controller';
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (!class_exists($controllerClassName)) {
-                return [];
-            }
+            return [];
         }
 
         $argument_values = [];
