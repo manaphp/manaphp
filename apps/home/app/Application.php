@@ -1,5 +1,5 @@
 <?php
-namespace Application\Home;
+namespace App\Home;
 
 class Application extends \ManaPHP\Mvc\Application
 {
@@ -9,7 +9,13 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
-        $this->configure->loadFile('@root/Application/config.php', 'dev');
+        $this->env = 'test';
+
+        $this->configure->loadFile($this->configFile, $this->env);
+
+        $this->registerServices();
+
+        $this->debugger->start();
         if ($this->configure->debug) {
             $this->handle();
         } else {

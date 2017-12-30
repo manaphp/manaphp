@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Home\Models;
+namespace App\Home\Models;
 
 use ManaPHP\Mvc\Model;
 

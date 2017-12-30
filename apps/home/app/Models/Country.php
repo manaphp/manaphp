@@ -1,12 +1,12 @@
 <?php
-namespace Application\Home\Models;
+namespace App\Home\Models;
 
 /**
- * Class Application\Home\Models\Country
+ * Class App\Home\Models\Country
  *
- * @package Application\Home\Models
+ * @package App\Home\Models
  *
- * @property \Application\Home\Models\City $cities
+ * @property \App\Home\Models\City $cities
  */
 class Country extends ModelBase
 {
