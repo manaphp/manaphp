@@ -180,8 +180,9 @@ interface RouterInterface
 
     /**
      * @param array|string $args
+     * @param bool         $absolute
      *
      * @return string
      */
-    public function createActionUrl($args);
+    public function createActionUrl($args, $absolute = false);
 }

@@ -58,9 +58,10 @@ class Route implements RouteInterface
         // If a pattern contains ':', maybe there are placeholders to replace
         if (strpos($pattern, ':') !== false) {
             $tr = [
-                ':controller' => '{controller:[a-z\d_-]+}',
-                ':action' => '{action:[a-z\d_-]+}',
-                ':params' => '{params:.+}',
+                '/:module' => '/({module:[a-z\d_-]*})?',
+                '/:controller' => '(/{controller:[a-z\d_-]*})?',
+                '/:action' => '(/{action:[a-z\d_-]*})?',
+                '/:params' => '(/{params:.*})?',
                 ':int' => ':\d+',
             ];
             $pattern = strtr($pattern, $tr);

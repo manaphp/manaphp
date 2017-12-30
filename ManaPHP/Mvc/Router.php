@@ -58,7 +58,7 @@ class Router extends Component implements RouterInterface
     public function __construct($useDefaultRoutes = true)
     {
         if ($useDefaultRoutes) {
-            $this->add('/(:controller)?(/:action)?(/:params)?');
+            $this->add('/:controller/:action/:params');
         }
     }
 
@@ -359,14 +359,20 @@ class Router extends Component implements RouterInterface
 
     /**
      * @param array|string $args
+     * @param bool         $absolute
      *
      * @return string
      */
-    public function createActionUrl($args)
+    public function createActionUrl($args, $absolute = false)
     {
         if (is_string($args)) {
-            $path = $args;
-            $params = [];
+            if (($pos = strpos($args, '?')) !== false) {
+                $path = substr($args, 0, $pos);
+                 parse_str(substr($args, $pos + 1), $params);
+            } else {
+                $path = $args;
+                $params = [];
+            }
         } else {
             $path = $args[0];
             unset($args[0]);
@@ -388,7 +394,7 @@ class Router extends Component implements RouterInterface
                 $module = substr($path, 1, $pos - 1);
                 $ca = rtrim(substr($path, $pos + 1), '/');
             }
-            $module = Text::camelize($module);
+            $module = Text::underscore($module);
         } else {
             $ca = rtrim($path, '/');
         }
@@ -402,10 +408,10 @@ class Router extends Component implements RouterInterface
         }
 
         if (!isset($module)) {
-            $module = $this->_module;
+            $module = Text::underscore($this->_module);
         }
 
-        $url = $this->_prefix . '/' . ($module ? $module . '/' : '') . lcfirst($ca);
+        $url = $this->alias->get('@web') . '/' . ($module ? $module . '/' : '') . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }
@@ -425,6 +431,10 @@ class Router extends Component implements RouterInterface
             }
         }
 
+        if ($absolute) {
+            $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $url;
+        }
+
         return $url;
     }
 
@@ -442,9 +452,9 @@ class Router extends Component implements RouterInterface
             $route = $this->_routes[$i];
             $parts = $route->match($uri, $method);
             if ($parts !== false) {
-                $module = isset($parts['module']) ? $parts['module'] : '';
-                $controller = isset($parts['controller']) ? $parts['controller'] : 'index';
-                $action = isset($parts['action']) ? $parts['action'] : 'index';
+                $module = isset($parts['module']) ? ($parts['module'] ?: 'index') : '';
+                $controller = isset($parts['controller']) && $parts['controller'] !== '' ? $parts['controller'] : 'index';
+                $action = isset($parts['action']) && $parts['action'] !== '' ? $parts['action'] : 'index';
                 $params = isset($parts['params']) ? trim($parts['params'], '/') : '';
 
                 unset($parts['controller'], $parts['action'], $parts['params']);
