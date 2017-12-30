@@ -13,6 +13,7 @@ use ManaPHP\Utility\Text;
  *
  * @property \ManaPHP\Http\CookiesInterface $cookies
  * @property \ManaPHP\Mvc\UrlInterface      $url
+ * @property \ManaPHP\Mvc\RouterInterface   $router
  */
 class Response extends Component implements ResponseInterface
 {
@@ -194,6 +195,27 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * Redirect by HTTP to another action or URL
+     *
+     * @param string|array $action
+     * @param bool         $temporarily
+     *
+     * @return static
+     */
+    public function redirectToAction($action, $temporarily = true)
+    {
+        if ($temporarily) {
+            $this->setStatusCode(302, 'Temporarily Moved');
+        } else {
+            $this->setStatusCode(301, 'Permanently Moved');
+        }
+
+        $this->setHeader('Location', $this->router->createActionUrl($action, true));
+
+        return $this;
+    }
+
+    /**
      * Sets HTTP response body
      *<code>
      *    $response->setContent("<h1>Hello!</h1>");
@@ -227,6 +249,44 @@ class Response extends Component implements ResponseInterface
         $this->_content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
         return $this;
+    }
+
+    /**
+     * @param array $content
+     *
+     * @return static
+     */
+    public function setXmlContent($content)
+    {
+        $this->setContentType('text/xml');
+
+        $writer = new \XMLWriter();
+
+        $writer->openMemory();
+        $writer->startDocument();
+        $this->_toXml($writer, (count($content) !== 1) ? ['xml' => $content] : $content);
+        $this->_content = $writer->outputMemory();
+
+        return $this;
+    }
+
+    /**
+     * @param \XMLWriter $writer
+     * @param            $data
+     */
+    protected function _toXml($writer, $data)
+    {
+        if (is_array($data)) {
+            foreach ($data as $k => $v) {
+                if (is_array($v)) {
+                    $writer->startElement($k);
+                    $this->_toXml($writer, $v);
+                    $writer->endElement();
+                } else {
+                    $writer->writeElement($k, $v);
+                }
+            }
+        }
     }
 
     /**
