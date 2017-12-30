@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Mvc;
 
+use ManaPHP\Utility\Text;
+
 /**
  * Class ManaPHP\Mvc\Application
  *
@@ -19,7 +21,6 @@ class Application extends \ManaPHP\Application
     public function __construct($loader, $dependencyInjector = null)
     {
         parent::__construct($loader, $dependencyInjector);
-        $this->alias->set('@data', '@root/data/' . $this->getAppName());
         $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
     }
 
@@ -50,8 +51,6 @@ class Application extends \ManaPHP\Application
      */
     public function handle()
     {
-        $this->registerServices();
-
         $this->authenticate();
 
         if (!$this->router->handle()) {
@@ -63,10 +62,10 @@ class Application extends \ManaPHP\Application
         $actionName = $this->router->getActionName();
         $params = $this->router->getParams();
 
-        $this->alias->set('@module', '@app' . ($moduleName ? '/' . $moduleName : ''));
-        $this->alias->set('@ns.module', '@ns.app' . ($moduleName ? '\\' . $moduleName : ''));
+        $this->alias->set('@module', '@app' . ($moduleName ? '/' . Text::camelize($moduleName) : ''));
+        $this->alias->set('@ns.module', '@ns.app' . ($moduleName ? '\\' . Text::camelize($moduleName) : ''));
         $this->alias->set('@views', '@module/Views');
-        $this->alias->set('@layouts', '@module/Views/Layouts');
+        $this->alias->set('@layouts', '@app/Views/Layouts');
 
         $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
         if ($ret !== false) {
@@ -82,6 +81,8 @@ class Application extends \ManaPHP\Application
 
     public function main()
     {
+        $this->registerServices();
+
         if ($this->configure->debug) {
             $this->handle();
         } else {
