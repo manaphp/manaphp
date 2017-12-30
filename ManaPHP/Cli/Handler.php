@@ -38,11 +38,17 @@ class Handler extends Component implements HandlerInterface
 
         $controllerClassName = null;
 
-        foreach (['@ns.cli', 'ManaPHP\\Cli\\Controllers'] as $prefix) {
-            $class = $this->alias->resolveNS($prefix . '\\' . $controllerName . 'Controller');
+        if ($this->alias->has('@ns.cli')) {
+            $namespaces = ['@ns.cli', 'ManaPHP\\Cli\\Controllers'];
+        } else {
+            $namespaces = ['ManaPHP\\Cli\\Controllers'];
+        }
+		
+        foreach ($namespaces as $prefix) {
+            $className = $this->alias->resolveNS($prefix . '\\' . $controllerName . 'Controller');
 
-            if (class_exists($class)) {
-                $controllerClassName = $class;
+            if (class_exists($className)) {
+                $controllerClassName = $className;
                 break;
             }
         }
