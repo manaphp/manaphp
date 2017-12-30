@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Api\Controllers;
+namespace App\Api\Controllers;
 
 class TimeController extends ControllerBase
 {
@@ -15,12 +15,9 @@ class TimeController extends ControllerBase
 
     public function timestampAction()
     {
-        if (!$this->request->hasQuery('access_token')) {
-            return $this->response->setJsonContent(['code' => __LINE__, 'message' => 'access_token is missing.']);
-        }
-        $access_token = $this->request->getQuery('access_token');
+        $access_token = $this->request->getAccessToken();
         if ($access_token !== 'manaphp') {
-            return $this->response->setJsonContent(['code' => __LINE__, 'message' => 'access_token is wrong.']);
+            return $this->response->setJsonContent(['code' => __LINE__, 'message' => $access_token === '' ? 'access_token is missing.' : 'access_token is wrong.']);
         }
 
         $time = time();

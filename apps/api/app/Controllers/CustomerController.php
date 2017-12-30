@@ -1,7 +1,7 @@
 <?php
-namespace Application\Api\Controllers;
+namespace App\Api\Controllers;
 
-use Application\Api\Models\Customer;
+use App\Api\Models\Customer;
 
 class CustomerController extends ControllerBase
 {
@@ -24,7 +24,7 @@ class CustomerController extends ControllerBase
             $customer->first_name = $first_name;
             $customer->last_name = $last_name;
 
-            //$customer->create();
+            $customer->create();
 
             return $this->response->setJsonContent(['code' => 0, 'message' => '']);
         }

@@ -1,0 +1,58 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "4ece5756418745b98ccdcdca71d73dc1",
+    "content-hash": "0f51be7f450f647ed169171dd55f7429",
+    "packages": [
+        {
+            "name": "manaphp/framework",
+            "version": "v0.8.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/manaphp/framework.git",
+                "reference": "c0c1ca34a7651332465f11a54c5a9697bec3a367"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/manaphp/framework/c0c1ca34a7651332465f11a54c5a9697bec3a367.zip",
+                "reference": "c0c1ca34a7651332465f11a54c5a9697bec3a367",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ManaPHP\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ManaPHP Mark",
+                    "email": "manaphp@qq.com"
+                }
+            ],
+            "description": "The ManaPHP Framework",
+            "homepage": "https://github.com/manaphp/framework",
+            "keywords": [
+                "di",
+                "framework",
+                "manaphp"
+            ],
+            "time": "2017-07-09 06:32:49"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

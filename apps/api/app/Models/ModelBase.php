@@ -1,5 +1,5 @@
 <?php
-namespace Application\Api\Models;
+namespace App\Api\Models;
 
 use ManaPHP\Mvc\Model;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Api\Controllers;
+namespace App\Api\Controllers;
 
 use ManaPHP\Mvc\Controller;
 
