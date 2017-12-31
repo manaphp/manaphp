@@ -1,0 +1,167 @@
+<div class="search-box">
+    <el-row>
+        <el-col :span="2">
+            <el-input v-model="list.request.keyword" placeholder="keyword" size="small"
+                      @keyup.enter.native="load_table_data"></el-input>
+        </el-col>
+        <el-col :span="3">
+            <el-button round size="small" @click="load_table_data" type="primary" icon="el-icon-search">search
+            </el-button>
+            <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">create</el-button>
+        </el-col>
+    </el-row>
+</div>
+<el-dialog title="create new user" :visible.sync="createVisible">
+    <el-form :model="create" ref="create">
+        <el-form-item label="user name:" prop="admin_name">
+            <el-input v-model="create.admin_name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="email:" prop="email">
+            <el-input v-model="create.email" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="password:" prop="password">
+            <el-input v-model="create.password" auto-complete="off"></el-input>
+        </el-form-item>
+    </el-form>
+    <span slot="footer">
+        <el-button type="primary" @click="do_create">create</el-button>
+        <el-button @click="createVisible = false; $refs.create.resetFields()">cancel</el-button>
+    </span>
+</el-dialog>
+<el-dialog title="edit user" :visible.sync="editVisible">
+    <el-form :model="edit">
+        <el-form-item label="admin_name:">
+            <span text-align="left">@{{ edit.admin_name }}</span>
+
+        </el-form-item>
+        <el-form-item label="email:">
+            <el-input v-model="edit.email" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="password:">
+            <el-input v-model="edit.password" auto-complete="off"></el-input>
+        </el-form-item>
+    </el-form>
+    <div slot="footer">
+        <el-button type="primary" @click="do_edit">save</el-button>
+        <el-button @click="editVisible=false">cancel</el-button>
+    </div>
+</el-dialog>
+<div class="result-box">
+    <el-table :data="list.response.items" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="admin_id" label="admin_id" width="100"></el-table-column>
+        <el-table-column prop="admin_name" label="admin_name" width="100"></el-table-column>
+        <el-table-column prop="email" label="email"></el-table-column>
+        <el-table-column prop="status" :formatter="formatter_user_status" label="status" width="100"></el-table-column>
+        <el-table-column prop="login_ip" label="login_ip" width="120"></el-table-column>
+        <el-table-column prop="login_time" label="login_time" :formatter="formatter_date" width="150"></el-table-column>
+        <el-table-column prop="updated_time" label="updated_time" :formatter="formatter_date"
+                         width="150"></el-table-column>
+        <el-table-column prop="creator_name" label="creator_name" width="120"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" :formatter="formatter_date"
+                         width="150"></el-table-column>
+        <el-table-column fixed="right" label="operation" width="200">
+            <template slot-scope="scope">
+                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>
+                    edit
+                </el-button>
+                <el-button v-if="scope.row.status==1" @click.native.prevent="do_lock(scope.row)" size="mini" plain
+                           round>
+                    lock
+                </el-button>
+                <el-button v-if="scope.row.status!==1" @click.native.prevent="do_active(scope.row)" size="mini" plain
+                           round>
+                    active
+                </el-button>
+
+            </template>
+        </el-table-column>
+    </el-table>
+    <el-pagination @current-change="load_table_data" :current-page.sync="list.request.page"
+                   :page-size="list.response.size"
+                   :total="list.response.count" layout="total, prev, pager, next"></el-pagination>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                list: {
+                    request: {},
+                    response: []
+                },
+                createVisible: false,
+                create: {
+                    admin_name: '',
+                    email: '',
+                    password: ''
+                },
+
+                editVisible: false,
+                edit: {
+                    admin_id: '',
+                    email: '',
+                    password: '',
+                }
+            },
+            mounted: function () {
+                this.load_table_data();
+            },
+            methods: {
+                do_lock: function (row) {
+                    this.$axios.post('@action(lock)', {admin_id: row.admin_id}).then(function (res) {
+                        if (res.data.code === 0) {
+                            row.status = 2;
+                        } else {
+                            this.$alert(res.data.message);
+                        }
+                    });
+                },
+                do_active: function (row) {
+                    this.$axios.post('@action(active)', {admin_id: row.admin_id}).then(function (res) {
+                        if (res.data.code === 0) {
+                            row.status = 1;
+                        } else {
+                            this.$alert(res.data.message);
+                        }
+                    });
+                },
+
+                formatter_user_status: function (row, column, value) {
+                    return ['init', 'active', 'locked'][value];
+                },
+
+                do_create: function () {
+                    this.$axios.post('@action(create)', this.create).then(function (res) {
+                        if (res.data.code === 0) {
+                            this.createVisible = false;
+                            this.$refs.create.resetFields();
+                            this.load_table_data();
+                        } else {
+                            this.$alert(res.data.message);
+                        }
+                    }.bind(this));
+                },
+                show_edit: function (row) {
+                    this.edit.admin_id = row.admin_id;
+                    this.edit.admin_name = row.admin_name;
+                    this.edit.email = row.email;
+                    this.edit.password = '';
+
+                    this.editVisible = true;
+                },
+                do_edit: function () {
+                    this.$axios.post('@action(edit)', this.edit).then(function (res) {
+                        if (res.data.code === 0) {
+                            this.editVisible = false;
+                            this.load_table_data();
+                        } else {
+                            this.$alert(res.data.message);
+                        }
+                    }.bind(this));
+                }
+            }
+        });
+    </script>
+@append

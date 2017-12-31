@@ -1,0 +1,15 @@
+<el-menu
+        default-active="<?=action('')?>"
+        class="el-menu-vertical-demo">
+    @foreach($menu as $submenu)
+        <el-submenu index="{{$submenu['group_name']}}">
+            <template slot="title">
+                <span>{{$submenu['group_name']}}</span>
+            </template>
+            @foreach($submenu['items'] as $item)
+                <el-menu-item index="<?=action($item['action'])?>"><a
+                        href="<?=action($item['action'])?>">{{$item['item_name']}}</a></el-menu-item>
+            @endforeach
+        </el-submenu>
+    @endforeach
+</el-menu>

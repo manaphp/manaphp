@@ -24,7 +24,7 @@ class PermissionBuilder extends Component
             $modules = [];
             foreach ($this->filesystem->glob('@app/*', GLOB_ONLYDIR) as $dir) {
                 if ($this->filesystem->dirExists($dir . '/Controllers')) {
-                    $modules[] = $dir;
+                    $modules[] = basename($dir);
                 }
             }
 

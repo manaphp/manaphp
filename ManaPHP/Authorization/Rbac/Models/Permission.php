@@ -56,6 +56,11 @@ class Permission extends Model
      */
     public $created_time;
 
+    /**
+     * @var int
+     */
+    public $updated_time;
+
     public static function getSource($context = null)
     {
         return 'rbac_permission';

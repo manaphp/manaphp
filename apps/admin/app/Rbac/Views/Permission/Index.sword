@@ -1,0 +1,173 @@
+<div class="search-box">
+    <el-row>
+        <el-col :span="2">
+            <el-select v-model="responseFilters.module_name" size="small" clearable>
+                <el-option v-for="module_name in module_names" :key="module_name" :label="module_name"
+                           :value="module_name"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :span="2">
+            <el-select v-model="responseFilters.controller_name" size="small" clearable>
+                <el-option v-for="controller_name in controller_names" :key="controller_name" :label="controller_name"
+                           :value="controller_name"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :span="2">
+            <el-select v-model="responseFilters.permission_type" size="small" clearable>
+                <el-option v-for="(name, id) in permission_types" :key="id" :label="name"
+                           :value="id"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :span="3">
+            <el-button round size="small" @click="load_table_data" type="primary" icon="el-icon-search">search
+            </el-button>
+            <el-button round size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh">rebuild</el-button>
+        </el-col>
+    </el-row>
+</div>
+<el-dialog title="edit" :visible.sync="editVisible">
+    <el-form :model="edit" ref="edit" v-if="editVisible">
+        <el-form-item label="permission id:">
+            <div>@{{edit.permission_id}}</div>
+        </el-form-item>
+        <el-form-item label="mca:">
+            <div>@{{[row.module_name, row.controller_name, row.action_name].join(':') }}</div>
+        </el-form-item>
+        <el-form-item label="type">
+            <el-select v-model="edit.type">
+                <el-option
+                        v-for="(name, id) in permission_types"
+                        :key="id"
+                        :label="name"
+                        :value="id"
+                ></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="description:">
+            <el-input v-model="edit.description"></el-input>
+        </el-form-item>
+    </el-form>
+    <div slot="footer">
+        <el-button type="primary" @click="do_edit">save</el-button>
+        <el-button @click="editVisible=false">cancel</el-button>
+    </div>
+</el-dialog>
+<div class="result-box">
+    <el-table :data="filteredResponse" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="permission_id" label="id" width="50"></el-table-column>
+        <el-table-column prop="permission_type" label="type" width="100">
+            <template slot-scope="scope">@{{permission_types[scope.row.permission_type]}}</template>
+        </el-table-column>
+        <el-table-column prop="module_name" label="module_name" width="120"></el-table-column>
+        <el-table-column prop="controller_name" label="controller_name" width="150"></el-table-column>
+        <el-table-column prop="action_name" label="action_name" width="100"></el-table-column>
+        <el-table-column prop="description" label="description" width="250"></el-table-column>
+        <el-table-column label="roles">
+            <template slot-scope="scope">
+                <el-tag size="small" v-for="role in scope.row.roles">@{{role.role_name}}</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column prop="updated_time" label="updated_time" :formatter="formatter_date"
+                         width="150"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" :formatter="formatter_date"
+                         width="150"></el-table-column>
+        <el-table-column fixed="right" label="operation" width="200">
+            <template slot-scope="scope">
+                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>
+                    edit
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                list: {
+                    request: {},
+                    response: []
+                },
+
+                editVisible: false,
+                edit: {},
+                row: {},
+                detailVisible: false,
+                roles: [],
+                module_names: [],
+                controller_names: [],
+                responseFilters: {
+                    module_name: '',
+                    controller_name: '',
+                    permission_type: ''
+                },
+                permission_types: ['pending', 'public', 'internal', 'private', 'disabled']
+            },
+            computed: {
+                filteredResponse: function () {
+                    var filters = this.responseFilters;
+                    if (!filters.module_name) {
+                        delete filters.module_name;
+                    }
+                    if (!filters.controller_name) {
+                        delete filters.controller_name;
+                    }
+
+                    if (filters.permission_type === '') {
+                        delete filters.permission_type;
+                    }
+                    return this._.filter(this.list.response, filters);
+                }
+            },
+            mounted: function () {
+                this.load_table_data();
+            },
+            methods: {
+                show_edit: function (row) {
+                    this.editVisible = true;
+                    this.row = row;
+                    this.edit.permission_id = row.permission_id;
+                    this.edit.description = row.description;
+                    this.edit.type = row.permission_type;
+                },
+                do_edit: function () {
+                    this.$axios.post('@action(edit)', this.edit).then(function (res) {
+                        if (res.data.code === 0) {
+                            this.editVisible = false;
+                            this.load_table_data();
+                        } else {
+                            this.$alert(res.data.message);
+                        }
+                    }.bind(this));
+                },
+                show_detail: function (row) {
+                    this.detailVisible = true;
+                    this.$axios.post('@action(detail)', {user_id: row.admin_id}).then(function (res) {
+                        this.detail = res.data.data;
+                    }.bind(this));
+                },
+                do_rebuild: function () {
+                    this.$axios.post('@action(rebuild)').then(function (res) {
+                        if (res.data.code === 0) {
+                            this.load_table_data();
+                        } else {
+                            this.$alert(res.data.message);
+                        }
+                    }.bind(this));
+                }
+            },
+            watch: {
+                'list.response': function (v) {
+                    this.module_names = this._.uniq(this._.map(this.list.response, 'module_name'));
+                },
+                'responseFilters.module_name': function () {
+                    this.controller_names = this._.uniq(this._.map(this._.filter(this.list.response, {module_name: this.responseFilters.module_name}), 'controller_name'));
+                    this.responseFilters.controller_name = '';
+                }
+            },
+        });
+    </script>
+@append
