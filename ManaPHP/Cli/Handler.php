@@ -43,7 +43,7 @@ class Handler extends Component implements HandlerInterface
         } else {
             $namespaces = ['ManaPHP\\Cli\\Controllers'];
         }
-		
+
         foreach ($namespaces as $prefix) {
             $className = $this->alias->resolveNS($prefix . '\\' . $controllerName . 'Controller');
 

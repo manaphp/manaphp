@@ -84,8 +84,7 @@ class HttpStats extends Component
     {
         $stats = $this->_stats;
         $swoole_stats = $this->_swoole->stats();
-            $stats['start time'] = $swoole_stats['start_time'];
-
+        $stats['start time'] = $swoole_stats['start_time'];
 
         return [
             'pid' => $this->_swoole->worker_pid,
@@ -120,7 +119,7 @@ class HttpStats extends Component
         }
 
         $start_time = microtime(true);
-        while ($this->_stats_ready !== $this->_worker_num+1 && microtime(true) - $start_time < 0.1) {
+        while ($this->_stats_ready !== $this->_worker_num + 1 && microtime(true) - $start_time < 0.1) {
             usleep(100);
         }
 

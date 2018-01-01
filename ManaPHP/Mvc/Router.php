@@ -368,7 +368,7 @@ class Router extends Component implements RouterInterface
         if (is_string($args)) {
             if (($pos = strpos($args, '?')) !== false) {
                 $path = substr($args, 0, $pos);
-                 parse_str(substr($args, $pos + 1), $params);
+                parse_str(substr($args, $pos + 1), $params);
             } else {
                 $path = $args;
                 $params = [];
