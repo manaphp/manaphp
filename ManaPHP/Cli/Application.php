@@ -46,11 +46,13 @@ class Application extends \ManaPHP\Application
             parent::__construct($loader, $dependencyInjector);
         }
 
-        foreach (['@app/Cli/Controllers'] as $dir) {
-            if ($this->filesystem->dirExists($dir)) {
-                $this->alias->set('@cli', $this->alias->resolve($dir));
-                $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr($dir, ['@app' => '@ns.app', '/' => '\\'])));
-                break;
+        if ($this->alias->has('@app')) {
+            foreach (['@app/Cli/Controllers'] as $dir) {
+                if ($this->filesystem->dirExists($dir)) {
+                    $this->alias->set('@cli', $this->alias->resolve($dir));
+                    $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr($dir, ['@app' => '@ns.app', '/' => '\\'])));
+                    break;
+                }
             }
         }
     }

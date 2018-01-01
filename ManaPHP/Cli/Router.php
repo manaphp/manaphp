@@ -52,9 +52,11 @@ class Router extends Component implements RouterInterface
     {
         $controllers = [];
 
-        foreach ($this->filesystem->glob('@app/Cli/Controllers/*Controller.php') as $file) {
-            if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
-                $controllers[] = $matches[1];
+        if ($this->alias->has('@app')) {
+            foreach ($this->filesystem->glob('@app/Cli/Controllers/*Controller.php') as $file) {
+                if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
+                    $controllers[] = $matches[1];
+                }
             }
         }
 
@@ -80,13 +82,18 @@ class Router extends Component implements RouterInterface
     {
         $commands = [];
 
-        $controllerClassName = $this->alias->resolveNS('@ns.app\\Cli\Controllers\\' . $controller . 'Controller');
-        if (!class_exists($controllerClassName)) {
-            $controllerClassName = 'ManaPHP\Cli\Controllers\\' . $controller . 'Controller';
-            /** @noinspection NotOptimalIfConditionsInspection */
+        if ($this->alias->has('@ns.app')) {
+            $controllerClassName = $this->alias->resolveNS('@ns.app\\Cli\Controllers\\' . $controller . 'Controller');
             if (!class_exists($controllerClassName)) {
-                return [];
+                $controllerClassName = 'ManaPHP\Cli\Controllers\\' . $controller . 'Controller';
             }
+        } else {
+            $controllerClassName = 'ManaPHP\Cli\Controllers\\' . $controller . 'Controller';
+        }
+
+        /** @noinspection NotOptimalIfConditionsInspection */
+        if (!class_exists($controllerClassName)) {
+            return [];
         }
 
         foreach (get_class_methods($controllerClassName) as $method) {
