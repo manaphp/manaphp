@@ -122,6 +122,19 @@ class Arguments extends Component implements ArgumentsInterface
             }
         }
 
+        if ($defaultValue === null) {
+            $options = [];
+            foreach (explode(':', $name) as $opt) {
+                if (strlen($opt) === 1) {
+                    $options[] = '-' . $opt;
+                } else {
+                    $options[] = '--' . $opt;
+                }
+            }
+            
+            throw new ArgumentsException('missing required options `' . implode('` or `', $options) . '` option');
+        }
+
         return $defaultValue;
     }
 

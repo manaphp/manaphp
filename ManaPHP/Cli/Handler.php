@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Cli\Arguments\Exception as ArgumentsException;
 use ManaPHP\Component;
 
 /**
@@ -66,7 +67,11 @@ class Handler extends Component implements HandlerInterface
             return 1;
         }
 
-        $r = $controllerInstance->$actionMethod();
+        try {
+            $r = $controllerInstance->$actionMethod();
+        } catch (ArgumentsException $e) {
+            return $this->console->error($e->getMessage());
+        }
 
         return is_int($r) ? $r : 0;
     }
