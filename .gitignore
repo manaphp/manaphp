@@ -9,9 +9,6 @@
 /data/
 /public/test.php
 /tests/FileSystem
-/tests/Image/Adapter
-/tests/Image/Result
-/tests/FileSystem
 /manaphp_lite.tmp
 /tests/Image/Engine
 /ManaPHP/.idea
