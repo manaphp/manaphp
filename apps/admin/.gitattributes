@@ -1,1 +1,2 @@
 *.sword linguist-language=Blade
+*.sh text eol=lf
