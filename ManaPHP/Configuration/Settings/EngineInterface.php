@@ -15,7 +15,7 @@ interface EngineInterface
      * @param string|array $key
      * @param string       $value
      *
-     * @return mixed
+     * @return void
      */
     public function set($section, $key, $value = null);
 
