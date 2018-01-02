@@ -40,7 +40,7 @@ class CounterAdapterDbTest extends TestCase
         $counter->increment('c', '1');
         $this->assertEquals(1, $counter->get('c'));
 
-        $counter->delete('c', 1);
+        $counter->delete('c');
         $this->assertEquals(0, $counter->get('c'));
 
         $counter->increment('c', 100);
