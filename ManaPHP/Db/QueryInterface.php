@@ -212,10 +212,11 @@ interface QueryInterface
     /**
      * @param string|array $expr
      * @param string       $value
+     * @param int          $length
      *
      * @return static
      */
-    public function whereStartsWith($expr, $value);
+    public function whereStartsWith($expr, $value, $length = null);
 
     /**
      * @param string|array $expr
