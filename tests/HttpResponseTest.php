@@ -141,8 +141,7 @@ class HttpResponseTest extends TestCase
         $response->setJsonContent(['code' => 0, 'message' => 'OK']);
         $this->assertEquals(['code' => 0, 'message' => 'OK'], json_decode($response->getContent(), true));
 
-        $response->setJsonContent(['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国'],
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $response->setJsonContent(['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国']);
         $this->assertEquals(['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国'],
             json_decode($response->getContent(), true));
     }
