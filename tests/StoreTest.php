@@ -32,7 +32,6 @@ class StoreTest extends TestCase
         $this->assertAttributeSame('', '_prefix', $store);
 
         //class name string
-        $file = new File();
         $store = new Store(File::class);
         $store->setDependencyInjector($di);
 
@@ -42,7 +41,6 @@ class StoreTest extends TestCase
         $this->assertAttributeSame('', '_prefix', $store);
 
         //component name string
-        $file = new File();
         $di->setShared('fileStoreEngine', File::class);
         $store = new Store('fileStoreEngine');
         $store->setDependencyInjector($di);
@@ -53,7 +51,6 @@ class StoreTest extends TestCase
         $this->assertAttributeSame('', '_prefix', $store);
 
         //array
-        $file = new File();
         $store = new Store(['engine' => File::class, 'prefix' => 'AAA']);
         $store->setDependencyInjector($di);
 
@@ -63,7 +60,6 @@ class StoreTest extends TestCase
         $this->assertAttributeSame('AAA', '_prefix', $store);
 
         //array
-        $file = new File();
         $store = new Store(['engine' => ['class' => File::class, 'dir' => 'xxx']]);
         $store->setDependencyInjector($di);
 
