@@ -23,19 +23,7 @@ class Alias extends Component implements AliasInterface
      */
     public function __construct()
     {
-        if (strpos(__FILE__, 'Alias.php') !== false) {
-            $path = __DIR__;
-        } else {
-            if (is_file(__DIR__ . '/ManaPHP/Alias.php')) {
-                $path = __DIR__ . '/ManaPHP';
-            } elseif (is_file(__DIR__ . '/vendor/manaphp/framework/Alias.php')) {
-                $path = __DIR__ . '/vendor/manaphp/framework';
-            }
-        }
-
-        if (isset($path)) {
-            $this->set('@manaphp', $path);
-        }
+        $this->set('@manaphp', __DIR__);
     }
 
     /**
