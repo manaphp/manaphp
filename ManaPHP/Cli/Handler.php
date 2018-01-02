@@ -69,7 +69,8 @@ class Handler extends Component implements HandlerInterface
 
         try {
             $r = $controllerInstance->$actionMethod();
-        } catch (ArgumentsException $e) {
+        } /** @noinspection PhpRedundantCatchClauseInspection */
+        catch (ArgumentsException $e) {
             return $this->console->error($e->getMessage());
         }
 
