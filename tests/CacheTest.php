@@ -33,7 +33,6 @@ class CacheTest extends TestCase
         $this->assertAttributeSame('', '_prefix', $cache);
 
         //class name string
-        $file = new File();
         $cache = new Cache(File::class);
         $cache->setDependencyInjector($di);
 
@@ -43,7 +42,6 @@ class CacheTest extends TestCase
         $this->assertAttributeSame('', '_prefix', $cache);
 
         //component name string
-        $file = new File();
         $di->setShared('fileCacheEngine', File::class);
         $cache = new Cache('fileCacheEngine');
         $cache->setDependencyInjector($di);
@@ -54,7 +52,6 @@ class CacheTest extends TestCase
         $this->assertAttributeSame('', '_prefix', $cache);
 
         //array
-        $file = new File();
         $cache = new Cache(['engine' => File::class, 'prefix' => 'AAA']);
         $cache->setDependencyInjector($di);
 
@@ -64,7 +61,6 @@ class CacheTest extends TestCase
         $this->assertAttributeSame('AAA', '_prefix', $cache);
 
         //array
-        $file = new File();
         $cache = new Cache(['engine' => ['class' => File::class, 'dir' => 'xxx']]);
         $cache->setDependencyInjector($di);
 
