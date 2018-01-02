@@ -197,4 +197,33 @@ class FrameworkController extends Controller
 
         return 0;
     }
+
+    /**
+     * @CliCommand genereate manaphp_lite.json file
+     */
+    public function genJsonCommand()
+    {
+        $source_file = $this->alias->resolve($this->arguments->getOption('source:s'));
+
+        $classNames = [];
+        foreach (require $source_file as $className) {
+            if (preg_match('#^ManaPHP\\\\.*$#', $className)) {
+                $classNames[] = $className;
+            }
+        }
+
+        $output = __DIR__ . '/manaphp_lite.json';
+        if ($this->filesystem->fileExists($output)) {
+            $data = json_encode($this->filesystem->fileGet($output));
+        } else {
+            $data = [
+                'output' => '@root/manaphp.lite'
+            ];
+        }
+
+        $data['classes'] = $classNames;
+
+        $this->filesystem->filePut($output, json_encode($data, JSON_PRETTY_PRINT));
+        $this->console->writeLn(json_encode($classNames, JSON_PRETTY_PRINT));
+    }
 }
