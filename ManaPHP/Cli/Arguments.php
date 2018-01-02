@@ -131,7 +131,7 @@ class Arguments extends Component implements ArgumentsInterface
                     $options[] = '--' . $opt;
                 }
             }
-            
+
             throw new ArgumentsException('missing required options `' . implode('` or `', $options) . '` option');
         }
 
