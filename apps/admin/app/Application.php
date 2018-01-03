@@ -38,6 +38,8 @@ class Application extends \ManaPHP\Mvc\Application
         if (!$this->userIdentity->getId()) {
             return $this->response->redirect(['/user/session/login?redirect=' . $this->request->get('redirect', null, $this->request->getUrl())]);
         }
+
+        return null;
     }
 
     /**
