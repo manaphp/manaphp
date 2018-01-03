@@ -22,6 +22,7 @@ class Random extends Component implements RandomInterface
         }
 
         if (function_exists('random_bytes')) {
+            /** @noinspection PhpUnhandledExceptionInspection */
             return random_bytes($length);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             /** @noinspection CryptographicallySecureRandomnessInspection */
