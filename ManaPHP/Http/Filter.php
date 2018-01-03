@@ -113,7 +113,7 @@ class Filter extends Component implements FilterInterface
      */
     protected function _parseRule($rule)
     {
-        $parts = (array)explode('|', $rule);
+        $parts = explode('|', $rule);
 
         $filters = [];
         foreach ($parts as $part) {
