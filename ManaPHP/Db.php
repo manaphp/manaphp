@@ -597,7 +597,7 @@ abstract class Db extends Component implements DbInterface
                 $replaces[':' . $key] = $this->_parseBindValue($value, $preservedStrLength);
             }
 
-            return (string)strtr($this->_sql, $replaces);
+            return strtr($this->_sql, $replaces);
         }
     }
 
