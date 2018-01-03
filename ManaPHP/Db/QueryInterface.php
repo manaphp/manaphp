@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Db;
 
 interface QueryInterface
@@ -221,10 +222,11 @@ interface QueryInterface
     /**
      * @param string|array $expr
      * @param string       $value
+     * @param int          $length
      *
      * @return static
      */
-    public function whereNotStartsWith($expr, $value);
+    public function whereNotStartsWith($expr, $value, $length = null);
 
     /**
      * @param string|array $expr
