@@ -54,8 +54,6 @@ interface DiInterface
      * @param string $name
      *
      * @return mixed
-     * @throws \ReflectionException
-     * @throws \ManaPHP\Di\Exception
      */
     public function getInstance($definition, $parameters = null, $name = null);
 
