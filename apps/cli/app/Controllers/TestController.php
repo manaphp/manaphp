@@ -1,7 +1,9 @@
 <?php
 namespace App\Cli\Controllers;
 
-class TestController extends \ManaPHP\Cli\Controller
+use ManaPHP\Cli\Controller;
+
+class TestController extends Controller
 {
     /**
      * @CliCommand demo for cli write
