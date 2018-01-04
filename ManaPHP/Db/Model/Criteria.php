@@ -63,6 +63,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param array $expr
      *
      * @return array
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function aggregate($expr)
     {
@@ -395,6 +396,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param int $page
      *
      * @return \ManaPHP\Paginator
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function paginate($size, $page = null)
     {
@@ -431,6 +433,10 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
+     */
     protected function _replaceModelInfo()
     {
         if ($this->_modelReplaced) {
@@ -460,6 +466,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @return string
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function getSql()
     {
@@ -507,6 +514,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param string $field
      *
      * @return array
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function distinctValues($field)
     {
@@ -515,6 +523,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @return array
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function execute()
     {
@@ -535,6 +544,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @return bool
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function exists()
     {
@@ -546,11 +556,16 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function __toString()
     {
-        return $this->getSql();
+        try {
+            return $this->getSql();
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 
     /**
      * @return int
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function delete()
     {
@@ -561,6 +576,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param $fieldValues
      *
      * @return int
+     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function update($fieldValues)
     {
