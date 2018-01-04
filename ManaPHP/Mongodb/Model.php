@@ -48,12 +48,12 @@ class Model extends \ManaPHP\Model
      * @param mixed $context
      *
      * @return \ManaPHP\MongodbInterface
+     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public static function getConnection($context = null)
     {
         $db = static::getDb($context);
         if ($db === false) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException(' db of `:model` model is invalid.', ['model' => get_called_class()]);
         }
 
@@ -110,6 +110,7 @@ class Model extends \ManaPHP\Model
      */
     public static function getFields()
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
         return array_keys(static::getFieldTypes());
     }
 
@@ -127,6 +128,7 @@ class Model extends \ManaPHP\Model
     public static function getFieldTypes()
     {
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         throw new ModelException('`:model::getFieldTypes`method must implemented', ['model' => get_called_class()]);
     }
 
@@ -135,6 +137,7 @@ class Model extends \ManaPHP\Model
      * @param     int
      *
      * @return int
+     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public static function generateAutoIncrementId($step = 1)
     {
@@ -157,6 +160,7 @@ class Model extends \ManaPHP\Model
      * @param mixed  $value
      *
      * @return bool|float|int|string|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
+     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public static function getNormalizedValue($type, $value)
     {
@@ -190,6 +194,9 @@ class Model extends \ManaPHP\Model
         return Di::getDefault()->get('ManaPHP\Mongodb\Model\Criteria', [get_called_class(), $fields]);
     }
 
+    /**
+     * @throws \ManaPHP\Mongodb\Model\Exception
+     */
     protected function _preCreate()
     {
         $autoIncField = static::getAutoIncrementField();
