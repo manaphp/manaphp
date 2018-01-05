@@ -354,6 +354,7 @@ class Query extends Component implements QueryInterface
                 }
 
                 if (is_string($value[0]) && is_string($value[1]) && strpos($value[0], '-') !== false && strpos($value[1], '-') !== false) {
+                    /** @noinspection NestedPositiveIfStatementsInspection */
                     if (preg_match('#^\d{4}-\d{2}-\d{2}$#', $value[0]) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $value[1])) {
                         $value[0] = strtotime($value[0]);
                         $value[1] = strtotime($value[1] . 'next day') - 1;
