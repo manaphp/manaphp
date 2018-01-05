@@ -175,11 +175,15 @@ class Settings extends Component implements \ArrayAccess, SettingsInterface
 
     public function offsetSet($offset, $value)
     {
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         throw new SettingsException('not support offsetUnset method');
     }
 
     public function offsetUnset($offset)
     {
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         throw new SettingsException('not support offsetUnset method');
     }
 
