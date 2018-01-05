@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Component;
@@ -18,17 +19,17 @@ class Proxy extends Component implements DbInterface
     protected $_slaves = [];
 
     /**
-     * @var \ManaPHP\DbInterface
+     * @var \ManaPHP\Db\Adapter\Proxy
      */
     protected $_masterConnection;
 
     /**
-     * @var \ManaPHP\DbInterface
+     * @var \ManaPHP\Db\Adapter\Proxy
      */
     protected $_slaveConnection;
 
     /**
-     * @var \ManaPHP\DbInterface
+     * @var \ManaPHP\Db\Adapter\Proxy
      */
     protected $_currentConnection;
 
@@ -117,7 +118,7 @@ class Proxy extends Component implements DbInterface
     }
 
     /**
-     * @return \ManaPHP\DbInterface
+     * @return static
      * @throws \ManaPHP\Db\Exception
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      */
@@ -144,7 +145,7 @@ class Proxy extends Component implements DbInterface
     }
 
     /**
-     * @return \ManaPHP\DbInterface
+     * @return static
      * @throws \ManaPHP\Db\Exception
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      */
@@ -171,13 +172,21 @@ class Proxy extends Component implements DbInterface
     }
 
     /**
-     * @return \ManaPHP\DbInterface
+     * @return static
      */
     public function getCurrentConnection()
     {
         return $this->_currentConnection;
     }
 
+    /**
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @return \PDOStatement
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
         if ($this->isUnderTransaction()) {
@@ -195,16 +204,34 @@ class Proxy extends Component implements DbInterface
         return $this->_dependencyInjector->get('ManaPHP\Db\Query', [$this]);
     }
 
+    /**
+     * @param string $sql
+     * @param array  $bind
+     * @return int
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function execute($sql, $bind = [])
     {
         return $this->getMasterConnection()->execute($sql, $bind);
     }
 
+    /**
+     * @return int
+     */
     public function affectedRows()
     {
         return $this->_currentConnection->affectedRows();
     }
 
+    /**
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @return array|false
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
         if ($this->isUnderTransaction()) {
@@ -214,6 +241,15 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    /**
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @param null   $indexBy
+     * @return array
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
         if ($this->isUnderTransaction()) {
@@ -223,16 +259,39 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    /**
+     * @param string $table
+     * @param array  $fieldValues
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function insert($table, $fieldValues)
     {
         $this->getMasterConnection()->insert($table, $fieldValues);
     }
 
+    /**
+     * @param string       $table
+     * @param array        $fieldValues
+     * @param array|string $conditions
+     * @param array        $bind
+     * @return int
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function update($table, $fieldValues, $conditions, $bind = [])
     {
         return $this->getMasterConnection()->update($table, $fieldValues, $conditions, $bind);
     }
 
+    /**
+     * @param string       $table
+     * @param array|string $conditions
+     * @param array        $bind
+     * @return int
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function delete($table, $conditions, $bind = [])
     {
         return $this->getMasterConnection()->delete($table, $conditions, $bind);
@@ -253,6 +312,10 @@ class Proxy extends Component implements DbInterface
         return $this->_currentConnection->getBind();
     }
 
+    /**
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function begin()
     {
         $this->getMasterConnection()->begin();
@@ -260,11 +323,17 @@ class Proxy extends Component implements DbInterface
         $this->_transactionLevel++;
     }
 
+    /**
+     * @return bool
+     */
     public function isUnderTransaction()
     {
         return $this->_transactionLevel > 0;
     }
 
+    /**
+     * @return void
+     */
     public function rollback()
     {
         $this->_currentConnection->rollback();
@@ -272,6 +341,9 @@ class Proxy extends Component implements DbInterface
         $this->_transactionLevel--;
     }
 
+    /**
+     * @return void
+     */
     public function commit()
     {
         $this->_currentConnection->commit();
@@ -279,11 +351,20 @@ class Proxy extends Component implements DbInterface
         $this->_transactionLevel--;
     }
 
+    /**
+     * @return int
+     */
     public function lastInsertId()
     {
         return $this->_currentConnection->lastInsertId();
     }
 
+    /**
+     * @param $source
+     * @return array
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function getMetadata($source)
     {
         if ($this->_masterConnection !== null) {
@@ -293,16 +374,34 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    /**
+     * @param string $source
+     * @return static
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function truncateTable($source)
     {
         return $this->getMasterConnection()->truncateTable($source);
     }
 
+    /**
+     * @param string $source
+     * @return static
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function dropTable($source)
     {
         return $this->getMasterConnection()->dropTable($source);
     }
 
+    /**
+     * @param null $schema
+     * @return array
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function getTables($schema = null)
     {
         if ($this->_masterConnection !== null) {
@@ -312,6 +411,12 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    /**
+     * @param string $source
+     * @return bool
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function tableExists($source)
     {
         if ($this->_masterConnection !== null) {
@@ -321,6 +426,12 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    /**
+     * @param array $params
+     * @return string
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function buildSql($params)
     {
         if ($this->_masterConnection !== null) {
@@ -330,6 +441,12 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    /**
+     * @param string $sql
+     * @return string
+     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
+     * @throws \ManaPHP\Db\Exception
+     */
     public function replaceQuoteCharacters($sql)
     {
         if ($this->_masterConnection !== null) {
@@ -339,6 +456,9 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
         if ($this->_masterConnection !== null) {
