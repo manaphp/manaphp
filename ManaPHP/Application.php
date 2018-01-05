@@ -31,8 +31,6 @@ abstract class Application extends Component implements ApplicationInterface
      *
      * @param \ManaPHP\Loader      $loader
      * @param \ManaPHP\DiInterface $dependencyInjector
-     *
-     * @throws \ManaPHP\Application\Exception
      */
     public function __construct($loader, $dependencyInjector = null)
     {
@@ -42,6 +40,8 @@ abstract class Application extends Component implements ApplicationInterface
         $this->_dependencyInjector->setShared('application', $this);
 
         $className = get_called_class();
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $fileName = (new \ReflectionClass($className))->getFileName();
 
         $app_path = dirname($fileName);
