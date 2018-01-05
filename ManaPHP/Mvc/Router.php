@@ -452,6 +452,7 @@ class Router extends Component implements RouterInterface
             $route = $this->_routes[$i];
             $parts = $route->match($uri, $method);
             if ($parts !== false) {
+                /** @noinspection NestedTernaryOperatorInspection */
                 $module = isset($parts['module']) ? ($parts['module'] ?: 'index') : '';
                 $controller = isset($parts['controller']) && $parts['controller'] !== '' ? $parts['controller'] : 'index';
                 $action = isset($parts['action']) && $parts['action'] !== '' ? $parts['action'] : 'index';
