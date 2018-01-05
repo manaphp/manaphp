@@ -62,6 +62,7 @@ class Mongodb extends Component implements MongodbInterface
         for ($i = $this->_manager ? 0 : 1; $i < 2; $i++) {
             try {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                /** @noinspection NullPointerExceptionInspection */
                 $cursor = $this->_getManager()->executeCommand('admin', new Command(['ping' => 1]));
                 $cursor->setTypeMap(['root' => 'array']);
                 $r = $cursor->toArray()[0];
@@ -208,6 +209,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $this->fireEvent('mongodb:beforeExecuteCommand', ['db' => $db ?: $this->_defaultDb, 'command' => $command]);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection NullPointerExceptionInspection */
         $r = $this->_getManager()->executeCommand($db ?: $this->_defaultDb, new Command($command));
         $r->setTypeMap(['root' => 'array', 'document' => 'array']);
         $this->fireEvent('mongodb:afterExecuteCommand');
@@ -230,6 +232,7 @@ class Mongodb extends Component implements MongodbInterface
         try {
             $this->fireEvent('mongodb:beforePipeline', ['namespace' => strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source)]);
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection NullPointerExceptionInspection */
             $cursor = $this->_getManager()->executeCommand(count($parts) === 2 ? $parts[0] : $this->_defaultDb, new Command([
                 'aggregate' => count($parts) === 2 ? $parts[1] : $parts[0],
                 'pipeline' => $pipeline
