@@ -47,6 +47,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
 
                 $properties = [];
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                /** @noinspection PhpUnhandledExceptionInspection */
                 foreach ((new \ReflectionClass($model))->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
                     if (!$property->isStatic()) {
                         $properties[] = $property->getName();
