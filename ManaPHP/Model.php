@@ -177,6 +177,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $field
      *
      * @return array
+     * @throws \ManaPHP\Model\Exception
      */
     public static function findList($filters = [], $field = null)
     {
@@ -186,7 +187,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($field === null) {
             $field = static::getDisplayField();
             if ($field === null) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ModelException('invoke :model:findList method must provide displayField', ['model' => get_called_class()]);
             }
             $keyField = static::getPrimaryKey();
@@ -264,11 +264,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return static|false
+     * @throws \ManaPHP\Model\Exception
      */
     public static function findById($id, $fields = null)
     {
         if (!is_scalar($id)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
@@ -537,6 +537,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array $whiteList
      *
      * @return static
+     * @throws \ManaPHP\Model\Exception
      */
     public function assign($data, $whiteList = null)
     {
@@ -545,7 +546,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if ($whiteList === null) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model do not define accessible fields.', ['model' => get_called_class()]);
         }
 
@@ -554,7 +554,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($whiteList !== []) {
             $blackList = array_diff(array_intersect($fields, array_keys($data)), $whiteList);
             if ($blackList !== []) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ModelException('`:blacklist` fields is not in accessible fields: `:whitelist`',
                     ['blacklist' => implode(',', $blackList), 'whitelist' => implode(',', $whiteList)]);
             }
@@ -935,6 +934,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $serialized
      *
      * @return void
+     * @throws \ManaPHP\Model\Exception
      */
     public function unserialize($serialized)
     {
@@ -947,6 +947,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $model
      *
      * @return string
+     * @throws \ManaPHP\Model\Exception
      */
     protected function _inferReferenceField($model)
     {
@@ -966,7 +967,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         throw new ModelException('infer referenceField from `:model` failed.', ['model' => $model]);
     }
 
@@ -975,6 +975,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface|false
+     * @throws \ManaPHP\Model\Exception
      */
     public function hasOne($referenceModel, $referenceField = null)
     {
@@ -993,6 +994,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface|false
+     * @throws \ManaPHP\Model\Exception
      */
     public function belongsTo($referenceModel, $referenceField = null)
     {
@@ -1011,6 +1013,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface
+     * @throws \ManaPHP\Model\Exception
      */
     public function hasMany($referenceModel, $referenceField = null)
     {
