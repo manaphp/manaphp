@@ -35,6 +35,7 @@ class Arguments extends Component implements ArgumentsInterface
             if (isset($GLOBALS['argv'][1]) && $GLOBALS['argv'][1][0] === '/') {
                 $arguments = [$GLOBALS['argv'][1]];
             } else {
+                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                 $arguments = array_slice($GLOBALS['argv'], 3);
             }
         }
