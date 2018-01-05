@@ -61,6 +61,7 @@ class Invoker extends Component implements InvokerInterface
 
         if (!isset($this->_actionParameters[$controllerName][$action])) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             $this->_actionParameters[$controllerName][$action] = (new \ReflectionMethod($controller, $actionMethod))->getParameters();
         }
         $parameters = $this->_actionParameters[$controllerName][$action];
