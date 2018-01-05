@@ -1,5 +1,5 @@
 <?php
-namespace Swoole;
+namespace ManaPHP\Swoole;
 
 class Exception extends \ManaPHP\Exception
 {

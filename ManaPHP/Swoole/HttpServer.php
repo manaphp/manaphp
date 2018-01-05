@@ -1,9 +1,10 @@
 <?php
+
 namespace ManaPHP\Swoole;
 
 use ManaPHP\Application;
 use ManaPHP\Utility\Text;
-use Swoole\Exception as SwooleException;
+use ManaPHP\Swoole\Exception as SwooleException;
 
 /**
  * Class ManaPHP\Swoole\HttpServer
@@ -49,6 +50,12 @@ abstract class HttpServer extends Application
      */
     protected $_listen = 'http://0.0.0.0:9501';
 
+    /**
+     * HttpServer constructor.
+     * @param  \ManaPHP\Loader     $loader
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @throws \ManaPHP\Application\Exception
+     */
     public function __construct($loader, $dependencyInjector = null)
     {
         parent::__construct($loader, $dependencyInjector);
@@ -141,6 +148,7 @@ abstract class HttpServer extends Application
     /**
      * @param \swoole_http_request  $request
      * @param \swoole_http_response $response
+     * @throws \ManaPHP\Swoole\Exception
      */
     public function onRequest($request, $response)
     {
