@@ -18,6 +18,12 @@ use ManaPHP\Utility\Text;
  */
 class Application extends \ManaPHP\Application
 {
+    /**
+     * Application constructor.
+     * @param \ManaPHP\Loader      $loader
+     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @throws \ManaPHP\Application\Exception
+     */
     public function __construct($loader, $dependencyInjector = null)
     {
         parent::__construct($loader, $dependencyInjector);
