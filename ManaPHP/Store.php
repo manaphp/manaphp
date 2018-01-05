@@ -56,6 +56,7 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
      * @param string $key
      *
      * @return mixed|false
+     * @throws \ManaPHP\Store\Exception
      */
     public function get($key)
     {
@@ -144,6 +145,7 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
      * @param callable $callback
      *
      * @return mixed
+     * @throws \ManaPHP\Store\Exception
      */
     public function remember($key, $callback)
     {
