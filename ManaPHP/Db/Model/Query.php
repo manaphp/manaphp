@@ -54,6 +54,11 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
         return $this;
     }
 
+    /**
+     * @return string
+     * @throws \ManaPHP\Db\Model\Query\Exception
+     * @throws \ManaPHP\Db\Query\Exception
+     */
     protected function _buildSql()
     {
         foreach ($this->_models as $alias => $model) {
@@ -115,6 +120,7 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
      * @deprecated
      *
      * @return static
+     * @throws \ManaPHP\Db\Query\Exception
      */
     public function andWhere($condition, $bind = [])
     {
