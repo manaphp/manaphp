@@ -79,6 +79,7 @@ class HelpController extends Controller
 
         $commands = [];
         /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $rc = new \ReflectionClass($controllerClassName);
         foreach (get_class_methods($controllerClassName) as $method) {
             if (preg_match('#^(.*)Command$#', $method, $match) !== 1) {
