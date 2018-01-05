@@ -57,11 +57,13 @@ class PermissionBuilder extends Component
      * @param string $controllerName
      *
      * @return array
+     * @throws \ManaPHP\Authorization\Rbac\PermissionBuilder\Exception
      */
     public function getActions($controllerName)
     {
         $actions = [];
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $rc = new \ReflectionClass($controllerName);
 
         foreach ($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
