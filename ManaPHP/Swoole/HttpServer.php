@@ -54,7 +54,6 @@ abstract class HttpServer extends Application
      * HttpServer constructor.
      * @param  \ManaPHP\Loader     $loader
      * @param \ManaPHP\DiInterface $dependencyInjector
-     * @throws \ManaPHP\Application\Exception
      */
     public function __construct($loader, $dependencyInjector = null)
     {
