@@ -87,8 +87,6 @@ class Invoker extends Component implements InvokerInterface
                 $value = $params[$name];
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name);
-            } elseif ($this->request->hasJson($name)) {
-                $value = $this->request->getJson($name);
             } elseif (count($params) === 1 && count($parameters) === 1) {
                 $value = $params[0];
             } elseif ($parameter->isDefaultValueAvailable()) {
