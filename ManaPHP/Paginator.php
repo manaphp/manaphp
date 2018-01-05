@@ -182,7 +182,10 @@ class Paginator extends Component implements PaginatorInterface
 
     public function __toString()
     {
-        /** @noinspection MagicMethodsValidityInspection */
-        return $this->renderAsHtml();
+        try {
+            return $this->renderAsHtml();
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 }
