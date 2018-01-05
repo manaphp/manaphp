@@ -125,6 +125,7 @@ class Di implements DiInterface
                     $component = $name;
                 } else {
                     /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                    /** @noinspection PhpUnhandledExceptionInspection */
                     throw new DiException('`:component` component definition is invalid: missing class field', ['component' => $name]);
                 }
 
@@ -136,6 +137,7 @@ class Di implements DiInterface
             $definition = ['class' => $definition, 'shared' => !$definition instanceof \Closure];
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw new DiException('`:component` component definition is unknown', ['component' => $name]);
         }
 
@@ -166,6 +168,7 @@ class Di implements DiInterface
                     $component = $name;
                 } else {
                     /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                    /** @noinspection PhpUnhandledExceptionInspection */
                     throw new DiException('`:component` component definition is invalid: missing class field', ['component' => $name]);
                 }
 
@@ -175,6 +178,7 @@ class Di implements DiInterface
             $definition = ['class' => $definition];
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw new DiException('`:component` component definition is unknown', ['component' => $name]);
         }
 
@@ -219,6 +223,7 @@ class Di implements DiInterface
     {
         if (in_array($name, $this->_aliases, true)) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw new DiException('`:name` component is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, ['name' => $name]);
         }
 
@@ -259,6 +264,7 @@ class Di implements DiInterface
         if (is_string($definition)) {
             if (!class_exists($definition)) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                /** @noinspection PhpUnhandledExceptionInspection */
                 throw new DiException('`:name` component cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $name, 'class' => $definition]);
             }
             $count = count($parameters);
@@ -273,6 +279,7 @@ class Di implements DiInterface
                 $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
             } else {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                /** @noinspection PhpUnhandledExceptionInspection */
                 $reflection = new \ReflectionClass($definition);
                 $instance = $reflection->newInstanceArgs($parameters);
             }
@@ -282,6 +289,7 @@ class Di implements DiInterface
             $instance = $definition;
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw new DiException('`:name` component cannot be resolved: component implement type is not supported'/**m072d42756355fb069*/, ['name' => $name]);
         }
 
