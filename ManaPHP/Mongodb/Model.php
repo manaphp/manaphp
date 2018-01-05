@@ -217,6 +217,7 @@ class Model extends \ManaPHP\Model
             } else {
                 $fileTypes = static::getFieldTypes();
                 if ($fileTypes['_id'] === 'objectid') {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     $this->_id = (string)new ObjectID();
                 }
             }
