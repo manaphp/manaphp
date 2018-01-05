@@ -197,6 +197,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return static
      * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
+     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function where($filter, $value = null)
     {
@@ -280,6 +281,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param int|float|string $max
      *
      * @return static
+     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function whereBetween($field, $min, $max)
     {
@@ -313,6 +315,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param int|float|string $max
      *
      * @return static
+     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function whereNotBetween($field, $min, $max)
     {
@@ -345,6 +348,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param array  $values
      *
      * @return static
+     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function whereIn($field, $values)
     {
@@ -381,6 +385,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param array  $values
      *
      * @return static
+     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function whereNotIn($field, $values)
     {
@@ -990,6 +995,10 @@ class Criteria extends \ManaPHP\Model\Criteria
         return $this->select(['_id'])->fetchOne() !== false;
     }
 
+    /**
+     * @return int
+     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
+     */
     public function delete()
     {
         /**
@@ -1009,6 +1018,11 @@ class Criteria extends \ManaPHP\Model\Criteria
         return $this->_dependencyInjector->getShared($db)->delete($source, $this->_filters ? ['$and' => $this->_filters] : []);
     }
 
+    /**
+     * @param $fieldValues
+     * @return int
+     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
+     */
     public function update($fieldValues)
     {
         /**
