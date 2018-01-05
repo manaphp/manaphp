@@ -321,7 +321,6 @@ class Client extends Component implements ClientInterface
             } else {
                 fseek($tmp_fp, 0, SEEK_SET);
 
-                @mkdir(dirname($file), 0755, true);
                 $this->filesystem->dirCreate(dirname($file));
                 $dst_fp = fopen($this->alias->resolve($file), 'wb');
 
