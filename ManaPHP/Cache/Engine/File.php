@@ -114,6 +114,7 @@ class File extends Component implements EngineInterface
      * @param int    $ttl
      *
      * @return void
+     * @throws \ManaPHP\Cache\Engine\File\Exception
      */
     public function set($key, $value, $ttl)
     {
