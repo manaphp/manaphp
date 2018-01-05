@@ -190,6 +190,7 @@ class Filter extends Component implements FilterInterface
         $srcValue = $value;
 
         if (isset($this->_filters[$filter])) {
+            /** @noinspection VariableFunctionsUsageInspection */
             $value = call_user_func_array($this->_filters[$filter], [$value, $parameters]);
         } elseif (function_exists($filter)) {
             $value = call_user_func_array($filter, array_merge([$value], $parameters));
