@@ -69,6 +69,9 @@ class Application extends \ManaPHP\Application
         $this->_dependencyInjector->setShared('cliRouter', 'ManaPHP\Cli\Router');
     }
 
+    /**
+     * @throws \ManaPHP\Configuration\Configure\Exception
+     */
     public function main()
     {
         if ($this->configFile) {
