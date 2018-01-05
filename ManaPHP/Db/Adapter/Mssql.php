@@ -52,6 +52,11 @@ class Mssql extends Db
         parent::__construct();
     }
 
+    /**
+     * @param $source
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
     public function getMetadata($source)
     {
         $parts = explode('.', $source);
@@ -121,21 +126,42 @@ class Mssql extends Db
         return $this;
     }
 
+    /**
+     * @param string $source
+     * @return void|static
+     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
+     */
     public function dropTable($source)
     {
         throw new MssqlException('not implement');
     }
 
+    /**
+     * @param null $schema
+     * @return array|void
+     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
+     */
     public function getTables($schema = null)
     {
         throw new MssqlException('not implement');
     }
 
+    /**
+     * @param string $table
+     * @param null   $schema
+     * @return bool|void
+     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
+     */
     public function tableExists($table, $schema = null)
     {
         throw new MssqlException('not implement');
     }
 
+    /**
+     * @param array $params
+     * @return string
+     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
+     */
     public function buildSql($params)
     {
         $sql = '';
