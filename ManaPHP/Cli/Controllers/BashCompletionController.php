@@ -78,6 +78,7 @@ class BashCompletionController extends Controller
 
         $arguments = [];
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $docs = (new \ReflectionMethod($controllerClassName, $command))->getDocComment();
         $lines = explode("\n", $docs);
         foreach ($lines as $line) {
