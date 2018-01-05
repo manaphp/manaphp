@@ -99,6 +99,8 @@ class Imagick extends Component implements EngineInterface
      */
     public function resize($width, $height)
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $this->_image->scaleImage($width, $height);
 
         $this->_width = $this->_image->getImageWidth();
