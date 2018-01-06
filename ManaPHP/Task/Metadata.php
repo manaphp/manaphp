@@ -111,6 +111,7 @@ class Metadata extends Component implements MetadataInterface
     public function getAll($task)
     {
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $rc = new \ReflectionClass($this);
 
         $data = [];
@@ -203,6 +204,7 @@ class Metadata extends Component implements MetadataInterface
     public function reset($task)
     {
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $rc = new \ReflectionClass($this);
 
         foreach ($rc->getConstants() as $n => $field) {
