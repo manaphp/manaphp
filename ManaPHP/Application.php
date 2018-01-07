@@ -35,6 +35,7 @@ abstract class Application extends Component implements ApplicationInterface
     public function __construct($loader, $dependencyInjector = null)
     {
         $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
+        $GLOBALS['DI'] = $this->_dependencyInjector;
 
         $this->_dependencyInjector->setShared('loader', $loader);
         $this->_dependencyInjector->setShared('application', $this);
