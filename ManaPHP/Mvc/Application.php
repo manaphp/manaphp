@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Mvc;
 
+use ManaPHP\Mvc\Router\NotFoundRouteException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -59,7 +60,7 @@ class Application extends \ManaPHP\Application
         $this->authenticate();
 
         if (!$this->router->handle()) {
-            throw new Exception('router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, ['uri' => $this->router->getRewriteUri()]);
+            throw new NotFoundRouteException('router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, ['uri' => $this->router->getRewriteUri()]);
         }
 
         $moduleName = $this->router->getModuleName();
