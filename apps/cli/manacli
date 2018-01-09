@@ -1,31 +1,9 @@
 #!/usr/bin/env php
 <?php
-error_reporting(E_ALL);
+//require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../ManaPHP/Loader.php';
 
-require __DIR__ . '/ManaPHP/Loader.php';
 $loader = new \ManaPHP\Loader();
-
-foreach ([__DIR__, getcwd()] as $dir) {
-    if (is_dir($dir . '/Application')) {
-        $appDir = $dir . '/Application';
-        break;
-    } elseif (is_file($dir . '/Cli/Application.php')) {
-        $appDir = $dir;
-        break;
-    }
-}
-
-if (!isset($appDir)) {
-    $appDir = getcwd();
-}
-
-$loader->registerNamespaces(['Application' => $appDir]);
-
-if (is_file($appDir . '/Cli/Application.php')) {
-    require $appDir . '/Cli/Application.php';
-    $cli = new \Application\Cli\Application($loader);
-} else {
-    $cli = new \ManaPHP\Cli\Application($loader);
-}
-
-$cli->main();
+require __DIR__ . '/app/Application.php';
+$app = new \App\Cli\Application($loader);
+$app->main();
