@@ -14,6 +14,11 @@ use ManaPHP\Configuration\Configure\Exception as ConfigureException;
 class Configure extends Component implements ConfigureInterface
 {
     /**
+     * @var string
+     */
+    public $env = 'prod';
+
+    /**
      * @var bool
      */
     public $debug = false;

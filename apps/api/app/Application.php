@@ -9,7 +9,7 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
-        $this->configure->loadFile($this->configFile, $this->env);
+        $this->configure->loadFile('@app/config.php');
 
         $this->registerServices();
 

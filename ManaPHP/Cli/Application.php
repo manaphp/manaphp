@@ -74,10 +74,6 @@ class Application extends \ManaPHP\Application
      */
     public function main()
     {
-        if ($this->configFile) {
-            $this->configure->loadFile($this->configFile, $this->env);
-        }
-
         $this->registerServices();
 
         exit($this->cliHandler->handle());
