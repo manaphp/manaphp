@@ -92,40 +92,41 @@ class Configure extends Component implements ConfigureInterface
      */
     public function loadData($data)
     {
+        $properties = get_object_vars($this);
+
         foreach ($data as $field => $value) {
+            $f_value = null;
             if (strpos($field, ':') !== false) {
-                list($f_name, $f_value) = explode(':', $field);
+                list($field, $f_value) = explode(':', $field);
+            }
+
+            if (!isset($properties[$field])) {
+                throw new ConfigureException('`:item` item is not allowed: it must be a public property of `configure` component', ['item' => $field]);
+            }
+
+            if ($f_value) {
                 if (preg_match('#^(.*)([+-=])$#', $f_value, $match) === 1) {
                     $f_env = $match[1];
                     /** @noinspection MultiAssignmentUsageInspection */
-                    $op = $match[2];
+                    $f_op = $match[2];
                 } else {
                     $f_env = $f_value;
-                    $op = '=';
+                    $f_op = '=';
                 }
 
                 if ($f_env[0] === '!' ? !in_array($this->env, explode(',', substr($f_env, 1)), true) : in_array($this->env, explode(',', $f_env), true)) {
-                    if ($op === '=') {
-                        $data[$f_name] = $value;
-                    } elseif ($op === '+') {
-                        $data[$f_name] = array_merge(isset($data[$f_name]) ? $data[$f_name] : [], $value);
-                    } elseif ($op === '-') {
-                        $data[$f_name] = isset($data[$f_name][0]) ? array_diff($data[$f_name], $value) : array_diff_key($data[$f_name], array_flip($value));
+                    if ($f_op === '=') {
+                        null;
+                    } elseif ($f_op === '+') {
+                        /** @noinspection SlowArrayOperationsInLoopInspection */
+                        $value = array_merge($this->$field, $value);
+                    } elseif ($f_op === '-') {
+                        $value = isset($this->$field[0]) ? array_diff($this->$field, $value) : array_diff_key($this->$field, array_flip($value));
                     }
                 }
-
-                unset($data[$field]);
-            }
-        }
-
-        $properties = array_keys(get_object_vars($this));
-
-        foreach ($data as $name => $value) {
-            if ($name[0] === '_' || !in_array($name, $properties, true)) {
-                throw new ConfigureException('`:item` item is not allowed: it must be a public property of `configure` component', ['item' => $name]);
             }
 
-            $this->$name = $value;
+            $this->$field = $value;
         }
 
         return $this;
