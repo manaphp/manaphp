@@ -10,12 +10,12 @@ namespace ManaPHP\Configuration;
 interface ConfigureInterface
 {
     /**
-     * @param string $file
-     * @param string $env
+     * @param string|array $files
+     * @param string       $env
      *
      * @return static
      */
-    public function loadFile($file, $env = null);
+    public function loadFile($files, $env = null);
 
     /**
      * @param array  $data

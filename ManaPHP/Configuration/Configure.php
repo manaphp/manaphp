@@ -64,21 +64,25 @@ class Configure extends Component implements ConfigureInterface
     public $bootstraps = [];
 
     /**
-     * @param string $file
-     * @param string $env
+     * @param string|array $files
+     * @param string       $env
      *
      * @return static
      * @throws \ManaPHP\Configuration\Configure\Exception
      */
-    public function loadFile($file, $env = null)
+    public function loadFile($files, $env = null)
     {
-        /**
-         * @var \ManaPHP\Configuration\Configure\EngineInterface $loader
-         */
-        $loader = $this->_dependencyInjector->getShared('ManaPHP\Configuration\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
-        $data = $loader->load($this->_dependencyInjector->alias->resolve($file));
+        foreach ((array)$files as $file) {
+            /**
+             * @var \ManaPHP\Configuration\Configure\EngineInterface $loader
+             */
+            $loader = $this->_dependencyInjector->getShared('ManaPHP\Configuration\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
+            $data = $loader->load($this->_dependencyInjector->alias->resolve($file));
 
-        return $this->loadData($data, $env);
+            $this->loadData($data, $env);
+        }
+
+        return $this;
     }
 
     /**
