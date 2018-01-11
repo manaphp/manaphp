@@ -65,12 +65,11 @@ class Configure extends Component implements ConfigureInterface
 
     /**
      * @param string|array $files
-     * @param string       $env
      *
      * @return static
      * @throws \ManaPHP\Configuration\Configure\Exception
      */
-    public function loadFile($files, $env = null)
+    public function loadFile($files)
     {
         foreach ((array)$files as $file) {
             /**
@@ -79,46 +78,43 @@ class Configure extends Component implements ConfigureInterface
             $loader = $this->_dependencyInjector->getShared('ManaPHP\Configuration\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
             $data = $loader->load($this->_dependencyInjector->alias->resolve($file));
 
-            $this->loadData($data, $env);
+            $this->loadData($data);
         }
 
         return $this;
     }
 
     /**
-     * @param array  $data
-     * @param string $env
+     * @param array $data
      *
      * @return static
      * @throws \ManaPHP\Configuration\Configure\Exception
      */
-    public function loadData($data, $env = null)
+    public function loadData($data)
     {
-        if ($env !== null) {
-            foreach ($data as $field => $value) {
-                if (strpos($field, ':') !== false) {
-                    list($f_name, $f_value) = explode(':', $field);
-                    if (preg_match('#^(.*)([+-=])$#', $f_value, $match) === 1) {
-                        $f_env = $match[1];
-                        /** @noinspection MultiAssignmentUsageInspection */
-                        $op = $match[2];
-                    } else {
-                        $f_env = $f_value;
-                        $op = '=';
-                    }
-
-                    if ($f_env[0] === '!' ? !in_array($env, explode(',', substr($f_env, 1)), true) : in_array($env, explode(',', $f_env), true)) {
-                        if ($op === '=') {
-                            $data[$f_name] = $value;
-                        } elseif ($op === '+') {
-                            $data[$f_name] = array_merge(isset($data[$f_name]) ? $data[$f_name] : [], $value);
-                        } elseif ($op === '-') {
-                            $data[$f_name] = isset($data[$f_name][0]) ? array_diff($data[$f_name], $value) : array_diff_key($data[$f_name], array_flip($value));
-                        }
-                    }
-
-                    unset($data[$field]);
+        foreach ($data as $field => $value) {
+            if (strpos($field, ':') !== false) {
+                list($f_name, $f_value) = explode(':', $field);
+                if (preg_match('#^(.*)([+-=])$#', $f_value, $match) === 1) {
+                    $f_env = $match[1];
+                    /** @noinspection MultiAssignmentUsageInspection */
+                    $op = $match[2];
+                } else {
+                    $f_env = $f_value;
+                    $op = '=';
                 }
+
+                if ($f_env[0] === '!' ? !in_array($this->env, explode(',', substr($f_env, 1)), true) : in_array($this->env, explode(',', $f_env), true)) {
+                    if ($op === '=') {
+                        $data[$f_name] = $value;
+                    } elseif ($op === '+') {
+                        $data[$f_name] = array_merge(isset($data[$f_name]) ? $data[$f_name] : [], $value);
+                    } elseif ($op === '-') {
+                        $data[$f_name] = isset($data[$f_name][0]) ? array_diff($data[$f_name], $value) : array_diff_key($data[$f_name], array_flip($value));
+                    }
+                }
+
+                unset($data[$field]);
             }
         }
 

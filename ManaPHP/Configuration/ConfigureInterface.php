@@ -11,18 +11,16 @@ interface ConfigureInterface
 {
     /**
      * @param string|array $files
-     * @param string       $env
      *
      * @return static
      */
-    public function loadFile($files, $env = null);
+    public function loadFile($files);
 
     /**
      * @param array  $data
-     * @param string $env
      *
      * @return static
      * @throws \ManaPHP\Configuration\Configure\Exception
      */
-    public function loadData($data, $env = null);
+    public function loadData($data);
 }
