@@ -239,13 +239,26 @@ class Response extends Component implements ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"));
      *</code>
      *
-     * @param array|\Serializable $content
+     * @param array|\Serializable|int|string $content
      *
      * @return static
      */
     public function setJsonContent($content)
     {
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
+
+        if (is_array($content)) {
+            if (!isset($content['data']) && !isset($content['code'])) {
+                $content = ['code' => 0, 'message' => '', 'data' => $content];
+            }
+        } elseif ($content instanceof \Serializable) {
+            $content = ['code' => 0, 'message' => '', 'data' => $content];
+        } elseif (is_string($content)) {
+            $content = ['code' => 1, 'message' => $content];
+        } elseif (is_int($content)) {
+            $content = ['code' => $content];
+        }
+
         $this->_content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
         return $this;
