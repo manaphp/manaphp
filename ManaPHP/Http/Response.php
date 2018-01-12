@@ -256,7 +256,7 @@ class Response extends Component implements ResponseInterface
         } elseif (is_string($content)) {
             $content = ['code' => 1, 'message' => $content];
         } elseif (is_int($content)) {
-            $content = ['code' => $content];
+            $content = ['code' => $content, 'message' => ''];
         }
 
         $this->_content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
