@@ -382,19 +382,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param int $size
      * @param int $page
      *
-     * @return static
-     */
-    public function page($size = null, $page = null)
-    {
-        $this->_query->page($size, $page);
-
-        return $this;
-    }
-
-    /**
-     * @param int $size
-     * @param int $page
-     *
      * @return \ManaPHP\Paginator
      * @throws \ManaPHP\Db\Model\Criteria\Exception
      */

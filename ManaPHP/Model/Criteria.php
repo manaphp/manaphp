@@ -115,6 +115,27 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     }
 
     /**
+     * @param int $size
+     * @param int $page
+     *
+     * @return static
+     */
+    public function page($size = null, $page = null)
+    {
+        if ($size === null) {
+            $size = $this->request->get('size', 'int', 10);
+        }
+
+        if ($page === null) {
+            $page = $this->request->get('page', 'int', 1);
+        }
+
+        $this->limit($size, ($page - 1) * $size);
+
+        return $this;
+    }
+
+    /**
      * @param bool $multiple
      *
      * @return static

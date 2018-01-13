@@ -688,27 +688,6 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param int $size
-     * @param int $page
-     *
-     * @return static
-     */
-    public function page($size = null, $page = null)
-    {
-        if ($size === null) {
-            $size = $this->request->get('size', 'int', 10);
-        }
-
-        if ($page === null) {
-            $page = $this->request->get('page', 'int', 1);
-        }
-
-        $this->limit($size, $page ? ($page - 1) * $size : null);
-
-        return $this;
-    }
-
-    /**
      * Sets a GROUP BY clause
      *
      *<code>
