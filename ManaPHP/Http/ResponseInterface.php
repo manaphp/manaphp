@@ -106,7 +106,7 @@ interface ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"));
      *</code>
      *
-     * @param array|\Serializable|int|string $content
+     * @param array|\JsonSerializable|int|string $content
      *
      * @return static
      */

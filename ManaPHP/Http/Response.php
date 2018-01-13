@@ -239,7 +239,7 @@ class Response extends Component implements ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"));
      *</code>
      *
-     * @param array|\Serializable|int|string $content
+     * @param array|\JsonSerializable|int|string $content
      *
      * @return static
      */
@@ -251,7 +251,7 @@ class Response extends Component implements ResponseInterface
             if (!isset($content['code']) && !isset($content['data'])) {
                 $content = ['code' => 0, 'message' => '', 'data' => $content];
             }
-        } elseif ($content instanceof \Serializable) {
+        } elseif ($content instanceof \JsonSerializable) {
             $content = ['code' => 0, 'message' => '', 'data' => $content];
         } elseif (is_string($content)) {
             $content = ['code' => 1, 'message' => $content];
