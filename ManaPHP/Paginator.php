@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Paginator\Exception as PaginatorException;
@@ -10,7 +11,7 @@ use ManaPHP\Paginator\Exception as PaginatorException;
  *
  * @property \ManaPHP\Http\RequestInterface $request
  */
-class Paginator extends Component implements PaginatorInterface
+class Paginator extends Component implements \JsonSerializable, PaginatorInterface
 {
     /**
      * @var int
@@ -91,9 +92,9 @@ class Paginator extends Component implements PaginatorInterface
     public function paginate($count, $size, $page)
     {
         $this->count = (int)$count;
-        $this->size = (int)$size;
-        $this->page = (int)$page;
-        $this->pages = (int)ceil($this->count / $size);
+        $this->size = (int)($size ?: $this->request->get('size', 'int', 10));
+        $this->page = (int)($page ?: $this->request->get('page', 'int', 1));
+        $this->pages = (int)ceil($this->count / $this->size);
         $this->prev = ($this->page <= $this->pages && $this->page > 1) ? $this->page - 1 : -1;
         $this->next = $this->page < $this->pages ? $this->page + 1 : -1;
 
@@ -180,6 +181,9 @@ class Paginator extends Component implements PaginatorInterface
         return $str;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         try {
@@ -187,5 +191,13 @@ class Paginator extends Component implements PaginatorInterface
         } catch (\Exception $e) {
             return '';
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->renderAsArray();
     }
 }
