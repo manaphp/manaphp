@@ -174,6 +174,38 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * @param array        $filters
+     * @param array        $options
+     * @param string|array $fields
+     *
+     * @return  \ManaPHP\PaginatorInterface
+     */
+    public static function paginate($filters = [], $options = null, $fields = null)
+    {
+        $criteria = static::criteria()->select($fields ?: static::getFields())->where($filters);
+
+        if ($options !== null) {
+            if (isset($options['distinct'])) {
+                $criteria->distinct($options['distinct']);
+            }
+
+            if (isset($options['order'])) {
+                $criteria->orderBy($options['order']);
+            }
+
+            if (isset($options['index'])) {
+                $criteria->indexBy($options['index']);
+            }
+
+            if (isset($options['cache'])) {
+                $criteria->cache($options['cache']);
+            }
+        }
+
+        return $criteria->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
+    }
+
+    /**
+     * @param array        $filters
      * @param string|array $field
      *
      * @return array
