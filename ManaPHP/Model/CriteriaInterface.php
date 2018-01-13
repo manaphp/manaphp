@@ -216,7 +216,7 @@ interface CriteriaInterface
      *
      * @return static
      */
-    public function page($size, $page = null);
+    public function page($size = null, $page = null);
 
     /**
      * Sets a GROUP BY clause
@@ -306,7 +306,7 @@ interface CriteriaInterface
      *
      * @return \ManaPHP\Paginator
      */
-    public function paginate($size, $page = null);
+    public function paginate($size = null, $page = null);
 
     /**
      * @return bool

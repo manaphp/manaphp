@@ -354,7 +354,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function page($size, $page = null);
+    public function page($size = null, $page = null);
 
     /**
      * Sets a GROUP BY clause
@@ -444,7 +444,7 @@ interface QueryInterface
      *
      * @return \ManaPHP\PaginatorInterface
      */
-    public function paginate($size, $page = null);
+    public function paginate($size = null, $page = null);
 
     /**
      * @return bool

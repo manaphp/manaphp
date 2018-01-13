@@ -693,10 +693,14 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return static
      */
-    public function page($size, $page = null)
+    public function page($size = null, $page = null)
     {
-        if ($page === null && $this->request->has('page')) {
-            $page = $this->request->get('page', 'int');
+        if ($size === null) {
+            $size = $this->request->get('size', 'int', 10);
+        }
+
+        if ($page === null) {
+            $page = $this->request->get('page', 'int', 1);
         }
 
         $this->limit($size, $page ? ($page - 1) * $size : null);
@@ -909,11 +913,8 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return \ManaPHP\PaginatorInterface
      */
-    public function paginate($size, $page = null)
+    public function paginate($size = null, $page = null)
     {
-        if ($page === null && $this->request->has('page')) {
-            $page = $this->request->get('page', 'int');
-        }
         $this->page($size, $page);
 
         do {
@@ -951,7 +952,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         } while (false);
 
         $this->paginator->items = $items;
-        return $this->paginator->paginate($count, $size, $page);
+        return $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
     }
 
     /**

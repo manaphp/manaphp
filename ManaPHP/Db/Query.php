@@ -1035,8 +1035,12 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      */
-    public function page($size, $page = null)
+    public function page($size = null, $page = null)
     {
+        if ($size === null) {
+            $size = $this->request->get('size', 'int', 10);
+        }
+
         if ($page === null) {
             $page = $this->request->get('page', 'int', 1);
         }
@@ -1493,12 +1497,8 @@ class Query extends Component implements QueryInterface
      * @return \ManaPHP\Paginator
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function paginate($size, $page = null)
+    public function paginate($size = null, $page = null)
     {
-        if ($page === null) {
-            $page = $this->request->get('page', 'int', 1);
-        }
-
         $this->page($size, $page);
 
         $this->_hiddenParamNumber = 0;
@@ -1545,7 +1545,7 @@ class Query extends Component implements QueryInterface
 
         $this->paginator->items = $items;
 
-        return $this->paginator->paginate($count, $size, $page);
+        return $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
     }
 
     /**

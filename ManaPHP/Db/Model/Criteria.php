@@ -384,7 +384,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      *
      * @return static
      */
-    public function page($size, $page = null)
+    public function page($size = null, $page = null)
     {
         $this->_query->page($size, $page);
 
@@ -398,7 +398,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @return \ManaPHP\Paginator
      * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
-    public function paginate($size, $page = null)
+    public function paginate($size = null, $page = null)
     {
         return $this->_replaceModelInfo()->_query->paginate($size, $page);
     }
