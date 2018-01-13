@@ -89,7 +89,7 @@ class Paginator extends Component implements \JsonSerializable, PaginatorInterfa
      *
      * @return static
      */
-    public function paginate($count, $size, $page)
+    public function paginate($count, $size = null, $page = null)
     {
         $this->count = (int)$count;
         $this->size = (int)($size ?: $this->request->get('size', 'int', 10));

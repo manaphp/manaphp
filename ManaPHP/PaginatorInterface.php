@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 /**
@@ -24,12 +25,12 @@ interface PaginatorInterface
 
     /**
      * @param int $count
-     * @param int $page
      * @param int $size
+     * @param int $page
      *
      * @return static
      */
-    public function paginate($count, $page, $size);
+    public function paginate($count, $size = null, $page = null);
 
     /**
      * @param  false|string $itemsName
