@@ -170,7 +170,6 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
 
     /**
      * @return \ManaPHP\Model[]|\ManaPHP\Model|false
-     * @throws \ManaPHP\Model\Criteria\Exception
      */
     public function fetch()
     {
@@ -179,6 +178,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
         } elseif ($this->_multiple === false) {
             return $this->fetchOne();
         } else {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new CriteriaException('xxx');
         }
     }
