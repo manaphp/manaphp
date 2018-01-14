@@ -69,7 +69,19 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public static function getFields()
     {
-        return Di::getDefault()->modelsMetadata->getAttributes(get_called_class());
+        static $fields = [];
+
+        $className = get_called_class();
+
+        if (!isset($fields[$className])) {
+            $properties = array_keys(get_class_vars($className));
+            $attributes = Di::getDefault()->modelsMetadata->getAttributes($className);
+            $intersect = array_intersect($properties, $attributes);
+
+            $fields[$className] = $intersect ?: $attributes;
+        }
+
+        return $fields[$className];
     }
 
     /**
