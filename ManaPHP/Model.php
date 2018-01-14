@@ -1129,6 +1129,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return $this->$name = $this->$method()->fetch();
         } elseif ($this->_dependencyInjector->has($name)) {
             return $this->{$name} = $this->_dependencyInjector->getShared($name);
+        } elseif ($relation = $this->_inferRelation($method)) {
+            return $relation->fetch();
         } else {
             trigger_error(strtr('`:class` does not contain `:field` field: `:fields`',
                 [':class' => get_called_class(), ':field' => $name, ':fields' => implode(',', static::getFields())]), E_USER_WARNING);
@@ -1136,24 +1138,54 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
     }
 
-    public function __call($name, $arguments)
+    /**
+     * @param string $name
+     *
+     * @return false|\ManaPHP\Model\CriteriaInterface
+     */
+    protected function _inferRelation($name)
     {
-        if (strpos($name, 'get') === 0) {
+        if (in_array(Text::underscore(substr($name, 3)) . '_id', static::getFields(), true)) {
             $calledClassName = get_called_class();
 
-            $pos = strrpos($calledClassName, '\\');
-            $plainClassName = Text::camelize(substr($name, 3));
-            if ($pos !== false) {
+            if (($pos = strrpos($calledClassName, '\\')) !== false) {
+                $className = substr($calledClassName, 0, $pos + 1) . substr($name, 3);
+            } else {
+                $className = substr($name, 3);
+            }
+
+            if (class_exists($className)) {
+                return $this->hasOne($className);
+            }
+        }
+
+        if (preg_match('#^(.*)(ies|es|s)$#', substr($name, 3), $match)) {
+            if ($match[2] === 'ies') {
+                $plainClassName = $match[1] . 'y';
+            } else {
+                $plainClassName = $match[1];
+            }
+
+            $calledClassName = get_called_class();
+            if (($pos = strrpos($calledClassName, '\\')) !== false) {
                 $className = substr($calledClassName, 0, $pos + 1) . $plainClassName;
             } else {
                 $className = $plainClassName;
             }
 
             if (class_exists($className)) {
-                $field = Text::underscore($plainClassName);
-                if (in_array($field . '_id', static::getFields(), true)) {
-                    return $this->hasOne($className);
-                }
+                return $this->hasMany($className);
+            }
+        }
+
+        return false;
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (strpos($name, 'get') === 0) {
+            if ($relation = $this->_inferRelation($name)) {
+                return $relation;
             }
         }
 
