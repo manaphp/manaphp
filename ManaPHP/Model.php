@@ -13,6 +13,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     protected $_snapshot = [];
 
     /**
+     * @var array
+     */
+    protected $_with = [];
+
+    /**
      * \ManaPHP\Model constructor
      *
      * @param array $data
@@ -251,23 +256,25 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @param array        $filters
      * @param string|array $fields
+     * @param array        $options
      *
      * @return false|static
      */
-    public static function findFirst($filters = [], $fields = null)
+    public static function findFirst($filters = [], $fields = null, $options = null)
     {
-        return static::findOne($filters, $fields);
+        return static::findOne($filters, $fields, $options);
     }
 
     /**
      * @param int|string|array $filters
      * @param string|array     $fields
+     * @param array            $options
      *
      * @return static
      */
-    public static function firstOrFail($filters = [], $fields = null)
+    public static function firstOrFail($filters = [], $fields = null, $options = null)
     {
-        if (($r = static::findFirst($filters, $fields)) === false) {
+        if (($r = static::findFirst($filters, $fields, $options)) === false) {
             $exception = new NotFoundException('No query results for `:model` model with `:criteria` criteria', ['model' => static::class, 'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)]);
             $exception->model = static::class;
             $exception->filters = $filters;
@@ -299,16 +306,17 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @param string|array $filters
      * @param string|array $fields
+     * @param array        $options
      *
      * @return static|false
      */
-    public static function findOne($filters = [], $fields = null)
+    public static function findOne($filters = [], $fields = null, $options = null)
     {
         if (is_scalar($filters)) {
             $filters = [static::getPrimaryKey() => $filters];
         }
 
-        return static::criteria()->select($fields ?: static::getFields())->where($filters)->fetchOne();
+        return static::criteria()->select($fields ?: static::getFields())->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
     }
 
     /**
@@ -621,6 +629,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
+        if (count($data) === 1) {
+            $field = key($data);
+            method_exists($this, 'get' . ucfirst($field));
+            $this->_with[$field] = $data[$field];
+        }
+
         return $this;
     }
 
@@ -927,6 +941,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $data[$field] = isset($this->{$field}) ? $this->{$field} : null;
         }
 
+        if ($this->_with) {
+            $data = array_merge($data, $this->_with);
+        }
+
         return $data;
     }
 
@@ -1097,6 +1115,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     public function __get($name)
     {
+        if (isset($this->_with[$name])) {
+            return $this->_with[$name];
+        }
+
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();

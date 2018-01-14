@@ -23,6 +23,11 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     protected $_multiple;
 
     /**
+     * @var array
+     */
+    protected $_with = [];
+
+    /**
      * @param array $fields
      *
      * @return static
@@ -112,6 +117,22 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     public function notInWhere($expr, $values)
     {
         return $this->whereNotIn($expr, $values);
+    }
+
+    /**
+     * @param string|array $with
+     *
+     * @return static
+     */
+    public function with($with)
+    {
+        if (is_string($with)) {
+            $this->_with[] = $with;
+        } else {
+            $this->_with = array_merge($this->_with, $with);
+        }
+
+        return $this;
     }
 
     /**
@@ -236,12 +257,46 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     }
 
     /**
+     * @param \ManaPHP\Model $instance
+     *
+     * @return \ManaPHP\Model
+     */
+    protected function _with($instance)
+    {
+        foreach ($this->_with as $k => $v) {
+            if (is_int($k)) {
+                $method = 'get' . ucfirst($v);
+                $instance->assign([$v => $instance->$method()->fetch()], []);
+            } else {
+                $method = 'get' . ucfirst($k);
+                if (is_array($v)) {
+                    $instance->assign([$k => $instance->$method()->select($v)->fetch()], []);
+                } else {
+                    if (is_callable($v)) {
+                        $instance->assign([$k => $v($instance->$method())->fetch()]);
+                    }
+                }
+            }
+        }
+
+        return $instance;
+    }
+
+    /**
      * @return \ManaPHP\Model|false
      */
     public function fetchOne()
     {
+        /**
+         * @var \ManaPHP\Model $r
+         */
         $r = $this->limit(1)->execute();
-        return isset($r[0]) ? new $this->_modelName($r[0]) : false;
+        $r = isset($r[0]) ? new $this->_modelName($r[0]) : false;
+        if ($r && $this->_with) {
+            $this->_with($r);
+        }
+
+        return $r;
     }
 
     /**
@@ -252,7 +307,11 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
         $models = [];
         foreach ($this->execute() as $k => $result) {
             $models[$k] = new $this->_modelName($result);
+            if ($this->_with) {
+                $this->_with($models[$k]);
+            }
         }
+
         return $models;
     }
 }

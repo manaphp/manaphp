@@ -182,6 +182,13 @@ interface CriteriaInterface
     public function whereNotRegex($field, $regex, $flags = '');
 
     /**
+     * @param string|array $with
+     *
+     * @return static
+     */
+    public function with($with);
+
+    /**
      * Sets a ORDER BY condition clause
      *
      *<code>
