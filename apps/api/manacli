@@ -28,4 +28,6 @@ if (is_file($appDir . '/Cli/Application.php')) {
     $cli = new \ManaPHP\Cli\Application($loader);
 }
 
+$cli->configure->loadFile('@app/config.php');
+
 $cli->main();
