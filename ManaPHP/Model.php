@@ -275,7 +275,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function firstOrFail($filters = [], $fields = null, $options = null)
     {
         if (($r = static::findFirst($filters, $fields, $options)) === false) {
-            $exception = new NotFoundException('No query results for `:model` model with `:criteria` criteria', ['model' => static::class, 'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)]);
+            $exception = new NotFoundException('No query results for `:model` model with `:criteria` criteria',
+                ['model' => static::class, 'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)]);
             $exception->model = static::class;
             $exception->filters = $filters;
 
