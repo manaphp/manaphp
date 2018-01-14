@@ -1187,6 +1187,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             if ($relation = $this->_inferRelation($name)) {
                 return $relation;
             }
+
+            trigger_error(strtr('`:class` model does not define `:method` relation', [':class' => get_called_class(), ':method' => $name]), E_USER_ERROR);
         }
 
         trigger_error(strtr('`:class` does not contain `:method` method', [':class' => get_called_class(), ':method' => $name]), E_USER_ERROR);
