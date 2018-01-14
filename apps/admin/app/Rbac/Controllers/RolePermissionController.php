@@ -30,11 +30,8 @@ class RolePermissionController extends ControllerBase
                 return $this->response->setJsonContent($e);
             }
 
-            $role = Role::findById($role_id);
-            if (!$role) {
-                return $this->response->setJsonContent('role not exists');
-            }
-
+            $role = Role::firstOrFail($role_id);
+			
             $old_permissions = RolePermission::findDistinctValues('permission_id', ['role_id' => $role_id]);
 
             RolePermission::deleteAll(['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permissions))]);

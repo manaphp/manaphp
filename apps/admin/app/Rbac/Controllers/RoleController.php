@@ -63,11 +63,8 @@ class RoleController extends ControllerBase
                 return $this->response->setJsonContent($e);
             }
 
-            $rbacRole = Role::findById($role_id);
-            if (!$rbacRole) {
-                return $this->response->setJsonContent('role not exists');
-            }
-
+            $rbacRole = Role::firstOrFail($role_id);
+			
             if ($rbacRole->role_name !== $role_name) {
                 if (Role::exists(['role_name' => $role_name])) {
                     return $this->response->setJsonContent('role name is exists');
@@ -89,11 +86,8 @@ class RoleController extends ControllerBase
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
-            $rbacRole = Role::findById($role_id);
-            if (!$rbacRole) {
-                return $this->response->setJsonContent('role is not exists');
-            }
-
+            $rbacRole = Role::firstOrFail($role_id);
+			
             $rbacRole->enabled = 0;
             $rbacRole->updated_time = time();
 
@@ -111,11 +105,8 @@ class RoleController extends ControllerBase
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
-            $rbacRole = Role::findById($role_id);
-            if (!$rbacRole) {
-                return $this->response->setJsonContent('role is not exists');
-            }
-
+            $rbacRole = Role::firstOrFail($role_id);
+			
             $rbacRole->enabled = 1;
             $rbacRole->updated_time = time();
 

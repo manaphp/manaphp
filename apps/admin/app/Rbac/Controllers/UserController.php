@@ -30,16 +30,13 @@ class UserController extends ControllerBase
     {
         if ($this->request->isPost()) {
             $admin_id = $this->request->get('admin_id');
-            $admin = Admin::findById($admin_id);
-            if (!$admin) {
-                return $this->response->setJsonContent('user is not exists');
-            } else {
-                $admin->status = Admin::STATUS_LOCKED;
-                $admin->updated_time = time();
-                $admin->update();
+            $admin = Admin::firstOrFail($admin_id);
 
-                return $this->response->setJsonContent(0);
-            }
+            $admin->status = Admin::STATUS_LOCKED;
+            $admin->updated_time = time();
+            $admin->update();
+
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -47,16 +44,13 @@ class UserController extends ControllerBase
     {
         if ($this->request->isPost()) {
             $admin_id = $this->request->get('admin_id');
-            $admin = Admin::findById($admin_id);
-            if (!$admin) {
-                return $this->response->setJsonContent('user is not exists');
-            } else {
-                $admin->status = Admin::STATUS_ACTIVE;
-                $admin->updated_time = time();
-                $admin->update();
+            $admin = Admin::firstOrFail($admin_id);
 
-                return $this->response->setJsonContent(0);
-            }
+            $admin->status = Admin::STATUS_ACTIVE;
+            $admin->updated_time = time();
+            $admin->update();
+
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -106,11 +100,8 @@ class UserController extends ControllerBase
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
-            $admin = Admin::findById($admin_id);
-            if (!$admin) {
-                return $this->response->setJsonContent('user is not exists');
-            }
-
+            $admin = Admin::firstOrFail($admin_id);
+			
             if ($email !== '') {
                 $admin->email = $email;
             }

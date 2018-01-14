@@ -52,11 +52,8 @@ class UserRoleController extends ControllerBase
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
-            $adminUser = Admin::findById($user_id);
-            if (!$adminUser) {
-                return $this->response->setJsonContent('user is not exists');
-            }
-
+            $adminUser = Admin::firstOrFail($user_id);
+			
             $old_roles = UserRole::findDistinctValues('role_id', ['user_id' => $user_id]);
             UserRole::deleteAll(['role_id' => array_values(array_diff($old_roles, $new_roles))]);
 
@@ -66,7 +63,7 @@ class UserRoleController extends ControllerBase
                 $userRole->user_id = $adminUser->admin_id;
                 $userRole->user_name = $adminUser->admin_name;
                 $userRole->role_id = $role_id;
-                $userRole->role_name = Role::findById($role_id)->role_name;
+                $userRole->role_name = Role::firstOrFail($role_id)->role_name;
                 $userRole->creator_id = $this->userIdentity->getId();
                 $userRole->creator_name = $this->userIdentity->getName();
                 $userRole->created_time = time();

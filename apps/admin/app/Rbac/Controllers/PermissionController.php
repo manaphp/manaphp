@@ -82,10 +82,7 @@ class PermissionController extends ControllerBase
                 return $this->response->setJsonContent($e);
             }
 
-            $permission = Permission::findById($permission_id);
-            if (!$permission) {
-                return $this->response->setJsonContent('permission not exists');
-            }
+            $permission = Permission::firstOrFail($permission_id);
 
             $permission->description = $description;
             $permission->permission_type = $permission_type;

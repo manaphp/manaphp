@@ -65,11 +65,8 @@ class GroupController extends Controller
                 return $this->response->setJsonContent($e);
             }
 
-            $group = Group::findById($group_id);
-            if (!$group) {
-                return $this->response->setJsonContent('group is not exists');
-            }
-
+            $group = Group::firstOrFail($group_id);
+			
             if ($group->group_name !== $group_name && Group::exists(['group_name' => $group_name])) {
                 return $this->response->setJsonContent('group name is exists');
             }
@@ -93,11 +90,8 @@ class GroupController extends Controller
                 return $this->response->setJsonContent($e);
             }
 
-            $group = Group::findById($group_id);
-            if (!$group) {
-                return $this->response->setJsonContent('group is not exists');
-            }
-
+            $group = Group::firstOrFail($group_id);
+			
             if (Item::exists(['group_id' => $group_id])) {
                 return $this->response->setJsonContent('this group has item');
             }

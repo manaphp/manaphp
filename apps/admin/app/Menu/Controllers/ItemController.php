@@ -69,11 +69,8 @@ class ItemController extends Controller
                 return $this->response->setJsonContent($e);
             }
 
-            $item = Item::findById($item_id);
-            if (!$item) {
-                return $this->response->setJsonContent('menu item is not exists');
-            }
-
+            $item = Item::firstOrFail($item_id);
+			
             $item->delete();
 
             return $this->response->setJsonContent(0);
