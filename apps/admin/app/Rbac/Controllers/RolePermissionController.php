@@ -13,10 +13,10 @@ class RolePermissionController extends ControllerBase
             try {
                 $role_id = $this->request->get('role_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => RolePermission::find(['role_id' => $role_id])]);
+            return $this->response->setJsonContent(RolePermission::find(['role_id' => $role_id]));
         }
     }
 
@@ -27,12 +27,12 @@ class RolePermissionController extends ControllerBase
                 $role_id = $this->request->get('role_id');
                 $permissions = $this->request->get('permissions');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             $role = Role::findById($role_id);
             if (!$role) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'role not exists']);
+                return $this->response->setJsonContent('role not exists');
             }
 
             $old_permissions = RolePermission::findDistinctValues('permission_id', ['role_id' => $role_id]);
@@ -52,7 +52,7 @@ class RolePermissionController extends ControllerBase
                 $rolePermission->create();
             }
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 }

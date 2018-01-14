@@ -14,14 +14,14 @@ class GroupController extends Controller
                 ->whereRequest(['group_id'])
                 ->orderBy('display_order DESC, group_id ASC')
                 ->execute();
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => ['items' => $groups]]);
+            return $this->response->setJsonContent(['items' => $groups]);
         }
     }
 
     public function listAction()
     {
         if ($this->request->isAjax()) {
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => Group::findList([], ['group_id' => 'group_name'])]);
+            return $this->response->setJsonContent(Group::findList([], ['group_id' => 'group_name']));
         }
     }
 
@@ -32,12 +32,12 @@ class GroupController extends Controller
                 $group_name = $this->request->get('group_name', '*');
                 $display_order = $this->request->get('display_order', 'int', 0);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             $group = Group::findFirst(['group_name' => $group_name]);
             if ($group) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'group is exists']);
+                return $this->response->setJsonContent('group is exists');
             }
 
             $group = new Group();
@@ -50,7 +50,7 @@ class GroupController extends Controller
 
             $group->create();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -62,16 +62,16 @@ class GroupController extends Controller
                 $group_name = $this->request->get('group_name', '*');
                 $display_order = $this->request->get('display_order', 'int', 0);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             $group = Group::findById($group_id);
             if (!$group) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'group is not exists']);
+                return $this->response->setJsonContent('group is not exists');
             }
 
             if ($group->group_name !== $group_name && Group::exists(['group_name' => $group_name])) {
-                return $this->response->setJsonContent(['code' => 3, 'message' => 'group name is exists']);
+                return $this->response->setJsonContent('group name is exists');
             }
 
             $group->group_name = $group_name;
@@ -80,7 +80,7 @@ class GroupController extends Controller
 
             $group->update();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -90,21 +90,21 @@ class GroupController extends Controller
             try {
                 $group_id = $this->request->get('group_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             $group = Group::findById($group_id);
             if (!$group) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'group is not exists']);
+                return $this->response->setJsonContent('group is not exists');
             }
 
             if (Item::exists(['group_id' => $group_id])) {
-                return $this->response->setJsonContent(['code' => 3, 'message' => 'this group has item']);
+                return $this->response->setJsonContent('this group has item');
             }
 
             $group->delete();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 }

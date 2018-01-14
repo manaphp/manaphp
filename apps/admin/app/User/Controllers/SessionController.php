@@ -1,9 +1,9 @@
 <?php
 namespace App\Admin\User\Controllers;
 
+use App\Admin\Models\Admin;
 use App\Admin\Models\AdminLoginLog;
 use ManaPHP\Mvc\Controller;
-use App\Admin\Models\Admin;
 
 class SessionController extends Controller
 {
@@ -20,13 +20,13 @@ class SessionController extends Controller
                 $password = $this->request->get('password', '*');
                 $code = $this->request->get('code', '*');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             try {
                 $this->captcha->verify($code);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             if ($this->request->has('remember_me')) {
@@ -37,7 +37,7 @@ class SessionController extends Controller
 
             $admin = Admin::findFirst(['admin_name' => $user_name]);
             if (!$admin || !$this->password->verify($password, $admin->password, $admin->salt)) {
-                return $this->response->setJsonContent(['code' => 3, 'message' => 'account or password is wrong.']);
+                return $this->response->setJsonContent('account or password is wrong.');
             }
 
             $admin->login_ip = $this->request->getClientAddress();
@@ -63,7 +63,7 @@ class SessionController extends Controller
 
             $this->session->set('admin_auth', ['userId' => $admin->admin_id, 'userName' => $admin->admin_name]);
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         } else {
             $this->view->setVar('redirect', $this->request->get('redirect', null, '/'));
             $this->view->setVar('user_name', $this->cookies->has('user_name') ? $this->cookies->get('user_name') : '');
@@ -86,7 +86,7 @@ class SessionController extends Controller
 
             $builder->whereRequest(['admin_id', 'admin_name*=', 'client_ip', 'created_time~=']);
             $builder->paginate(15);
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $this->paginator]);
+            return $this->response->setJsonContent($this->paginator);
         }
     }
 }

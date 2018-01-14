@@ -22,24 +22,22 @@ class PermissionController extends ControllerBase
                 $permissions[] = array_merge($permission->toArray(),
                     ['roles' => RolePermission::find(['permission_id' => $permission->permission_id], ['role_id', 'role_name'])]);
             }
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $permissions]);
+            return $this->response->setJsonContent($permissions);
         }
     }
 
     public function listAction()
     {
         if ($this->request->isAjax()) {
-            return $this->response->setJsonContent([
-                'code' => 0,
-                'message' => '',
-                'data' => Permission::criteria([
+            return $this->response->setJsonContent(
+                Permission::criteria([
                     'permission_id',
                     'module_name',
                     'controller_name',
                     'action_name',
                     'description'
                 ])->where(['app_name' => $this->application->getAppName()])->indexBy('permission_id')->execute()
-            ]);
+            );
         }
     }
 
@@ -69,7 +67,7 @@ class PermissionController extends ControllerBase
                 }
             }
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -81,12 +79,12 @@ class PermissionController extends ControllerBase
                 $permission_type = $this->request->get('type', '*|int');
                 $description = $this->request->get('description', '*');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             $permission = Permission::findById($permission_id);
             if (!$permission) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'permission not exists']);
+                return $this->response->setJsonContent('permission not exists');
             }
 
             $permission->description = $description;
@@ -95,7 +93,7 @@ class PermissionController extends ControllerBase
 
             $permission->update();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 }

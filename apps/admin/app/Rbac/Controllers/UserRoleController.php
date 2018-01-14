@@ -13,7 +13,7 @@ class UserRoleController extends ControllerBase
             try {
                 $role_id = $this->request->get('role_id', 'int', 0);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             $criteria = Admin::criteria(['admin_id', 'admin_name', 'email', 'created_time'])
@@ -27,7 +27,7 @@ class UserRoleController extends ControllerBase
                 $this->paginator->items[$k]['roles'] = UserRole::findList(['user_id' => $user['admin_id']], ['role_id' => 'role_name']);
             }
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $this->paginator]);
+            return $this->response->setJsonContent($this->paginator);
         }
     }
 
@@ -37,9 +37,9 @@ class UserRoleController extends ControllerBase
             try {
                 $user_id = $this->request->get('user_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => UserRole::find(['user_id' => $user_id])]);
+            return $this->response->setJsonContent(UserRole::find(['user_id' => $user_id]));
         }
     }
 
@@ -50,11 +50,11 @@ class UserRoleController extends ControllerBase
                 $user_id = $this->request->get('user_id', '*|int');
                 $new_roles = $this->request->get('role_ids', '*');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
             $adminUser = Admin::findById($user_id);
             if (!$adminUser) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'user is not exists']);
+                return $this->response->setJsonContent('user is not exists');
             }
 
             $old_roles = UserRole::findDistinctValues('role_id', ['user_id' => $user_id]);
@@ -74,7 +74,7 @@ class UserRoleController extends ControllerBase
                 $userRole->create();
             }
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 }

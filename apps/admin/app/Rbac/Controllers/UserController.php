@@ -22,7 +22,7 @@ class UserController extends ControllerBase
             }
 
             $builder->paginate(15);
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $this->paginator]);
+            return $this->response->setJsonContent($this->paginator);
         }
     }
 
@@ -32,13 +32,13 @@ class UserController extends ControllerBase
             $admin_id = $this->request->get('admin_id');
             $admin = Admin::findById($admin_id);
             if (!$admin) {
-                return $this->response->setJsonContent(['code' => 0, 'message' => 'user is not exists']);
+                return $this->response->setJsonContent('user is not exists');
             } else {
                 $admin->status = Admin::STATUS_LOCKED;
                 $admin->updated_time = time();
                 $admin->update();
 
-                return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+                return $this->response->setJsonContent(0);
             }
         }
     }
@@ -49,13 +49,13 @@ class UserController extends ControllerBase
             $admin_id = $this->request->get('admin_id');
             $admin = Admin::findById($admin_id);
             if (!$admin) {
-                return $this->response->setJsonContent(['code' => 0, 'message' => 'user is not exists']);
+                return $this->response->setJsonContent('user is not exists');
             } else {
                 $admin->status = Admin::STATUS_ACTIVE;
                 $admin->updated_time = time();
                 $admin->update();
 
-                return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+                return $this->response->setJsonContent(0);
             }
         }
     }
@@ -68,15 +68,15 @@ class UserController extends ControllerBase
                 $email = $this->request->get('email', '*|trim|email');
                 $password = $this->request->get('password', '*|trim|password');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             if (Admin::exists(['admin_name' => $admin_name])) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'user is exists']);
+                return $this->response->setJsonContent('user is exists');
             }
 
             if (Admin::exists(['email' => $email])) {
-                return $this->response->setJsonContent(['code' => 3, 'message' => 'email is exists']);
+                return $this->response->setJsonContent('email is exists');
             }
 
             $admin = new Admin();
@@ -92,7 +92,7 @@ class UserController extends ControllerBase
 
             $admin->create();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -104,11 +104,11 @@ class UserController extends ControllerBase
                 $email = $this->request->get('email', 'email');
                 $password = $this->request->get('password', 'password');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
             $admin = Admin::findById($admin_id);
             if (!$admin) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'user is not exists']);
+                return $this->response->setJsonContent('user is not exists');
             }
 
             if ($email !== '') {
@@ -124,7 +124,7 @@ class UserController extends ControllerBase
 
             $admin->update();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 }

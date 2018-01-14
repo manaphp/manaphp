@@ -16,13 +16,13 @@ class RoleController extends ControllerBase
             $query->whereRequest(['role_id', 'role_name'])
                 ->orderBy('role_id desc');
             $query->paginate(15);
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $this->paginator]);
+            return $this->response->setJsonContent($this->paginator);
         }
     }
 
     public function listAction()
     {
-        return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => Role::findList([], ['role_id' => 'role_name'])]);
+        return $this->response->setJsonContent(Role::findList([], ['role_id' => 'role_name']));
     }
 
     public function createAction()
@@ -32,11 +32,11 @@ class RoleController extends ControllerBase
                 $role_name = $this->request->get('role_name', '*');
                 $enabled = $this->request->get('enabled', 'int', 1);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             if (Role::exists(['role_name' => $role_name])) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'role exists']);
+                return $this->response->setJsonContent('role exists');
             }
 
             $rbacRole = new Role();
@@ -49,7 +49,7 @@ class RoleController extends ControllerBase
 
             $rbacRole->create();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -60,7 +60,7 @@ class RoleController extends ControllerBase
                 $role_id = $this->request->get('role_id', '*|int');
                 $role_name = $this->request->get('role_name', '*');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             $rbacRole = Role::findById($role_id);
@@ -77,7 +77,7 @@ class RoleController extends ControllerBase
                 $rbacRole->update();
             }
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $rbacRole]);
+            return $this->response->setJsonContent($rbacRole);
         }
     }
 
@@ -87,11 +87,11 @@ class RoleController extends ControllerBase
             try {
                 $role_id = $this->request->get('role_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
             $rbacRole = Role::findById($role_id);
             if (!$rbacRole) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'role is not exists']);
+                return $this->response->setJsonContent('role is not exists');
             }
 
             $rbacRole->enabled = 0;
@@ -99,7 +99,7 @@ class RoleController extends ControllerBase
 
             $rbacRole->update();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -109,11 +109,11 @@ class RoleController extends ControllerBase
             try {
                 $role_id = $this->request->get('role_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
             $rbacRole = Role::findById($role_id);
             if (!$rbacRole) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'role is not exists']);
+                return $this->response->setJsonContent('role is not exists');
             }
 
             $rbacRole->enabled = 1;
@@ -121,7 +121,7 @@ class RoleController extends ControllerBase
 
             $rbacRole->update();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 }

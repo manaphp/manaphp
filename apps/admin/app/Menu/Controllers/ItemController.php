@@ -16,7 +16,7 @@ class ItemController extends Controller
                 ->orderBy('group_id ASC, display_order DESC, item_id ASC')
                 ->execute();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => ['items' => $items]]);
+            return $this->response->setJsonContent(['items' => $items]);
         }
     }
 
@@ -29,19 +29,19 @@ class ItemController extends Controller
                 $display_order = $this->request->get('display_order', '*|int');
                 $permission_id = $this->request->get('permission_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             if (!Group::existsById($group_id)) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'group is not exists']);
+                return $this->response->setJsonContent('group is not exists');
             }
 
             if (Item::exists(['group_id' => $group_id, 'item_name' => $item_name])) {
-                return $this->response->setJsonContent(['code' => 3, 'message' => 'item name is exists']);
+                return $this->response->setJsonContent('item name is exists');
             }
 
             if (!Permission::existsById($permission_id)) {
-                return $this->response->setJsonContent(['code' => 4, 'message' => 'permission is not exists']);
+                return $this->response->setJsonContent('permission is not exists');
             }
 
             $item = new Item();
@@ -56,7 +56,7 @@ class ItemController extends Controller
 
             $item->create();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -66,17 +66,17 @@ class ItemController extends Controller
             try {
                 $item_id = $this->request->get('item_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 0, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             $item = Item::findById($item_id);
             if (!$item) {
-                return $this->response->setJsonContent(['code' => 0, 'message' => 'menu item is not exists']);
+                return $this->response->setJsonContent('menu item is not exists');
             }
 
             $item->delete();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 }

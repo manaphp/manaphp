@@ -16,21 +16,21 @@ class AccountController extends Controller
                 $password = $this->request->get('password', '*|password');
                 $code = $this->request->get('code');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 1, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             try {
                 $this->captcha->verify($code);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => $e->getMessage()]);
+                return $this->response->setJsonContent($e->getMessage());
             }
 
             if (Admin::exists(['admin_name' => $user_name])) {
-                return $this->response->setJsonContent(['code' => 3, 'message' => 'account already exists.']);
+                return $this->response->setJsonContent('account already exists.');
             }
 
             if (Admin::exists(['email' => $email])) {
-                return $this->response->setJsonContent(['code' => 3, 'message' => 'email already exists.']);
+                return $this->response->setJsonContent('email already exists.');
             }
 
             $admin = new Admin();
@@ -46,7 +46,7 @@ class AccountController extends Controller
 
             $admin->create();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 }
