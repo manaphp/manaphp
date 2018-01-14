@@ -20,13 +20,13 @@ class SessionController extends Controller
                 $password = $this->request->get('password', '*');
                 $code = $this->request->get('code', '*');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             try {
                 $this->captcha->verify($code);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             if ($this->request->has('remember_me')) {

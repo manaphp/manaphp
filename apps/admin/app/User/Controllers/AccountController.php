@@ -16,13 +16,13 @@ class AccountController extends Controller
                 $password = $this->request->get('password', '*|password');
                 $code = $this->request->get('code');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             try {
                 $this->captcha->verify($code);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             if (Admin::exists(['admin_name' => $user_name])) {

@@ -32,7 +32,7 @@ class RoleController extends ControllerBase
                 $role_name = $this->request->get('role_name', '*');
                 $enabled = $this->request->get('enabled', 'int', 1);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             if (Role::exists(['role_name' => $role_name])) {
@@ -60,17 +60,17 @@ class RoleController extends ControllerBase
                 $role_id = $this->request->get('role_id', '*|int');
                 $role_name = $this->request->get('role_name', '*');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             $rbacRole = Role::findById($role_id);
             if (!$rbacRole) {
-                return $this->response->setJsonContent(['code' => 2, 'message' => 'role not exists']);
+                return $this->response->setJsonContent('role not exists');
             }
 
             if ($rbacRole->role_name !== $role_name) {
                 if (Role::exists(['role_name' => $role_name])) {
-                    return $this->response->setJsonContent(['code' => 3, 'message' => 'role name is exists']);
+                    return $this->response->setJsonContent('role name is exists');
                 }
                 $rbacRole->role_name = $role_name;
                 $rbacRole->updated_time = time();
@@ -87,7 +87,7 @@ class RoleController extends ControllerBase
             try {
                 $role_id = $this->request->get('role_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
             $rbacRole = Role::findById($role_id);
             if (!$rbacRole) {
@@ -109,7 +109,7 @@ class RoleController extends ControllerBase
             try {
                 $role_id = $this->request->get('role_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
             $rbacRole = Role::findById($role_id);
             if (!$rbacRole) {

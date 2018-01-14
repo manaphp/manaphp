@@ -68,7 +68,7 @@ class UserController extends ControllerBase
                 $email = $this->request->get('email', '*|trim|email');
                 $password = $this->request->get('password', '*|trim|password');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             if (Admin::exists(['admin_name' => $admin_name])) {
@@ -104,7 +104,7 @@ class UserController extends ControllerBase
                 $email = $this->request->get('email', 'email');
                 $password = $this->request->get('password', 'password');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
             $admin = Admin::findById($admin_id);
             if (!$admin) {

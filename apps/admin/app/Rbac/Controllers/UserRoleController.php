@@ -13,7 +13,7 @@ class UserRoleController extends ControllerBase
             try {
                 $role_id = $this->request->get('role_id', 'int', 0);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             $criteria = Admin::criteria(['admin_id', 'admin_name', 'email', 'created_time'])
@@ -37,7 +37,7 @@ class UserRoleController extends ControllerBase
             try {
                 $user_id = $this->request->get('user_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
             return $this->response->setJsonContent(UserRole::find(['user_id' => $user_id]));
         }
@@ -50,7 +50,7 @@ class UserRoleController extends ControllerBase
                 $user_id = $this->request->get('user_id', '*|int');
                 $new_roles = $this->request->get('role_ids', '*');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
             $adminUser = Admin::findById($user_id);
             if (!$adminUser) {

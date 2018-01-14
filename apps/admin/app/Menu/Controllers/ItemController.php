@@ -29,7 +29,7 @@ class ItemController extends Controller
                 $display_order = $this->request->get('display_order', '*|int');
                 $permission_id = $this->request->get('permission_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             if (!Group::existsById($group_id)) {
@@ -66,7 +66,7 @@ class ItemController extends Controller
             try {
                 $item_id = $this->request->get('item_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             $item = Item::findById($item_id);

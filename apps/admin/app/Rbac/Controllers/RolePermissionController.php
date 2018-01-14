@@ -13,7 +13,7 @@ class RolePermissionController extends ControllerBase
             try {
                 $role_id = $this->request->get('role_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             return $this->response->setJsonContent(RolePermission::find(['role_id' => $role_id]));
@@ -27,7 +27,7 @@ class RolePermissionController extends ControllerBase
                 $role_id = $this->request->get('role_id');
                 $permissions = $this->request->get('permissions');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             $role = Role::findById($role_id);

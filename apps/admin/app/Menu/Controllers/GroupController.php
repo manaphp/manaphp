@@ -32,7 +32,7 @@ class GroupController extends Controller
                 $group_name = $this->request->get('group_name', '*');
                 $display_order = $this->request->get('display_order', 'int', 0);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             $group = Group::findFirst(['group_name' => $group_name]);
@@ -62,7 +62,7 @@ class GroupController extends Controller
                 $group_name = $this->request->get('group_name', '*');
                 $display_order = $this->request->get('display_order', 'int', 0);
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             $group = Group::findById($group_id);
@@ -90,7 +90,7 @@ class GroupController extends Controller
             try {
                 $group_id = $this->request->get('group_id', '*|int');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             $group = Group::findById($group_id);

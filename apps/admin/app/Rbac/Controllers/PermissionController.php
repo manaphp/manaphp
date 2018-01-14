@@ -79,7 +79,7 @@ class PermissionController extends ControllerBase
                 $permission_type = $this->request->get('type', '*|int');
                 $description = $this->request->get('description', '*');
             } catch (\Exception $e) {
-                return $this->response->setJsonContent($e->getMessage());
+                return $this->response->setJsonContent($e);
             }
 
             $permission = Permission::findById($permission_id);
