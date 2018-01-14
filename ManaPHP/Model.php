@@ -296,11 +296,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $fields
      *
      * @return static|false
-     * @throws \ManaPHP\Model\Exception
      */
     public static function findById($id, $fields = null)
     {
         if (!is_scalar($id)) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
@@ -569,7 +570,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array $whiteList
      *
      * @return static
-     * @throws \ManaPHP\Model\Exception
      */
     public function assign($data, $whiteList = null)
     {
@@ -578,6 +578,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if ($whiteList === null) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model do not define accessible fields.', ['model' => get_called_class()]);
         }
 
@@ -586,6 +588,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($whiteList !== []) {
             $blackList = array_diff(array_intersect($fields, array_keys($data)), $whiteList);
             if ($blackList !== []) {
+                /** @noinspection PhpUnhandledExceptionInspection */
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ModelException('`:blacklist` fields is not in accessible fields: `:whitelist`',
                     ['blacklist' => implode(',', $blackList), 'whitelist' => implode(',', $whiteList)]);
             }
@@ -632,13 +636,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *</code>
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function create()
     {
         $this->_preCreate();
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, ['model' => get_class($this)]);
         }
 
@@ -650,11 +655,15 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if (($db = static::getDb($this)) === false) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model db sharding for insert failed',
                 ['model' => get_called_class(), 'context' => $this]);
         }
 
         if (($source = static::getSource($this)) === false) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model table sharding for insert failed',
                 ['model' => get_called_class(), 'context' => $this]);
         }
@@ -682,7 +691,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *</code>
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function update()
     {
@@ -690,6 +698,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $primaryKey = static::getPrimaryKey();
 
         if (!isset($this->{$primaryKey})) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
                 ['model' => get_class($this)]);
         }
@@ -715,6 +725,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, ['model' => get_class($this)]);
         }
 
@@ -732,11 +744,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param array      $whiteList
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public static function updateById($id, $data, $whiteList = null)
     {
         if (!is_scalar($id)) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
@@ -789,7 +802,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *</code>
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function save()
     {
@@ -813,11 +825,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * </code>
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public function delete()
     {
         if ($this->_fireEventCancel('beforeDelete') === false) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, ['model' => get_class($this)]);
         }
 
@@ -825,6 +838,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $criteria = static::criteria();
         if (!isset($this->{$primaryKey})) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:field` was not set'/**m01dec9cd3b69742a5*/,
                 ['model' => get_class($this), 'field' => $primaryKey]);
         }
@@ -842,11 +857,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param int|string $id
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public static function deleteById($id)
     {
         if (!is_scalar($id)) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
