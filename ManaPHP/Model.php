@@ -280,6 +280,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $exception->model = static::class;
             $exception->filters = $filters;
 
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw $exception;
         }
 
@@ -1038,7 +1039,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $model
      *
      * @return string
-     * @throws \ManaPHP\Model\Exception
      */
     protected function _inferReferenceField($model)
     {
@@ -1058,6 +1058,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         throw new ModelException('infer referenceField from `:model` failed.', ['model' => $model]);
     }
 
@@ -1066,7 +1067,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface|false
-     * @throws \ManaPHP\Model\Exception
      */
     public function hasOne($referenceModel, $referenceField = null)
     {
@@ -1085,7 +1085,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface|false
-     * @throws \ManaPHP\Model\Exception
      */
     public function belongsTo($referenceModel, $referenceField = null)
     {
@@ -1104,7 +1103,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $referenceField
      *
      * @return \ManaPHP\Model\CriteriaInterface
-     * @throws \ManaPHP\Model\Exception
      */
     public function hasMany($referenceModel, $referenceField = null)
     {
@@ -1192,6 +1190,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         trigger_error(strtr('`:class` does not contain `:method` method', [':class' => get_called_class(), ':method' => $name]), E_USER_ERROR);
+
+        return null;
     }
 
     public function __debugInfo()
