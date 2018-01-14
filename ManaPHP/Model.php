@@ -1136,6 +1136,31 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
     }
 
+    public function __call($name, $arguments)
+    {
+        if (strpos($name, 'get') === 0) {
+            $calledClassName = get_called_class();
+
+            $pos = strrpos($calledClassName, '\\');
+            $plainClassName = Text::camelize(substr($name, 3));
+            if ($pos !== false) {
+                $className = substr($calledClassName, 0, $pos + 1) . $plainClassName;
+            } else {
+                $className = $plainClassName;
+            }
+
+            if (class_exists($className)) {
+                $field = ($pos = strrpos($className, '\\')) !== false ? substr($className, $pos + 1) : $className;
+                $field = Text::underscore($field);
+                if (in_array($field . '_id', static::getFields(), true)) {
+                    return $this->hasOne($className);
+                }
+            }
+        }
+
+        trigger_error(strtr('`:class` does not contain `:method` method', [':class' => get_called_class(), ':method' => $name]), E_USER_ERROR);
+    }
+
     public function __debugInfo()
     {
         $data = $this->toArray();
