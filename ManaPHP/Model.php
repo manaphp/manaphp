@@ -1150,8 +1150,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
 
             if (class_exists($className)) {
-                $field = ($pos = strrpos($className, '\\')) !== false ? substr($className, $pos + 1) : $className;
-                $field = Text::underscore($field);
+                $field = Text::underscore($plainClassName);
                 if (in_array($field . '_id', static::getFields(), true)) {
                     return $this->hasOne($className);
                 }
