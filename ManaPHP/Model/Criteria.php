@@ -253,7 +253,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
 
     public function jsonSerialize()
     {
-        return $this->execute();
+        return $this->fetch();
     }
 
     /**
