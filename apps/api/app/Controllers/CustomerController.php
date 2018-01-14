@@ -30,7 +30,7 @@ class CustomerController extends ControllerBase
 
     public function detailAction($id)
     {
-        return $this->response->setJsonContent(Customer::firstOrFail($id));
+        return $this->response->setJsonContent(Customer::firstOrFail($id, '*', ['with' => ['address']]));
     }
 
     public function updateAction($id)
