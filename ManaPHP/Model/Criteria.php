@@ -272,7 +272,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
                 if (is_array($v) || is_string($v)) {
                     $instance->assign([$k => $instance->$method()->select($v)->fetch()], []);
                 } elseif (is_callable($v)) {
-                    $instance->assign([$k => $v($instance->$method())->fetch()]);
+                    $instance->assign([$k => $v($instance->$method())->fetch()], []);
                 }
             }
         }
