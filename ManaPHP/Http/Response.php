@@ -3,6 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Http\Filter\Exception as FilterException;
 use ManaPHP\Http\Response\Exception as ResponseException;
 use ManaPHP\Utility\Text;
 
@@ -239,7 +240,7 @@ class Response extends Component implements ResponseInterface
      *    $response->setJsonContent(array("status" => "OK"));
      *</code>
      *
-     * @param array|\JsonSerializable|int|string $content
+     * @param array|\JsonSerializable|int|string|\Exception $content
      *
      * @return static
      */
@@ -257,6 +258,10 @@ class Response extends Component implements ResponseInterface
             $content = ['code' => 1, 'message' => $content];
         } elseif (is_int($content)) {
             $content = ['code' => $content, 'message' => ''];
+        } elseif ($content instanceof FilterException) {
+            $content = ['code' => -1, 'message' => $content->getMessage()];
+        } elseif ($content instanceof \Exception) {
+            $content = ['code' => -2, 'message' => $content->getMessage()];
         }
 
         $this->_content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
