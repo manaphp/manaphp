@@ -932,14 +932,18 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * print_r($robot->toArray());
      *</code>
      *
+     * @param bool $ignoreNull
+     *
      * @return array
      */
-    public function toArray()
+    public function toArray($ignoreNull = false)
     {
         $data = [];
 
         foreach (static::getFields() as $field) {
-            $data[$field] = isset($this->{$field}) ? $this->{$field} : null;
+            if (!$ignoreNull || isset($this->{$field})) {
+                $data[$field] = $this->{$field};
+            }
         }
 
         if ($this->_with) {
@@ -1006,7 +1010,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function jsonSerialize()
     {
-        return $this->toArray();
+        return $this->toArray(true);
     }
 
     /**
