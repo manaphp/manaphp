@@ -30,12 +30,7 @@ class CustomerController extends ControllerBase
 
     public function detailAction($id)
     {
-        $customer = Customer::findFirst((int)$id);
-        if ($customer) {
-            return $this->response->setJsonContent($customer->toArray());
-        } else {
-            return $this->response->setJsonContent("DETAIL FAILED: `[$id]` customer is not exists");
-        }
+        return $this->response->setJsonContent(Customer::firstOrFail($id));
     }
 
     public function updateAction($id)
