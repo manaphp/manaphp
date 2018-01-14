@@ -7,9 +7,7 @@ class CustomerController extends ControllerBase
 {
     public function listAction()
     {
-        $customers = Customer::findAll([], ['size' => 10]);
-
-        return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => ['customers' => $customers]]);
+        return $this->response->setJsonContent(Customer::paginate($this->request->get('filters', null, [])));
     }
 
     public function createAction()
@@ -18,7 +16,7 @@ class CustomerController extends ControllerBase
         $last_name = $this->request->get('last_name', 'maxLength:12');
 
         if (Customer::exists(['first_name' => $first_name, 'last_name' => $last_name])) {
-            return $this->response->setJsonContent(['code' => __LINE__, 'message' => "CREATE FAILED: `$first_name-$last_name` customer is exists already."]);
+            return $this->response->setJsonContent("CREATE FAILED: `$first_name-$last_name` customer is exists already.");
         } else {
             $customer = new Customer();
             $customer->first_name = $first_name;
@@ -26,7 +24,7 @@ class CustomerController extends ControllerBase
 
             $customer->create();
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => '']);
+            return $this->response->setJsonContent(0);
         }
     }
 
@@ -34,9 +32,9 @@ class CustomerController extends ControllerBase
     {
         $customer = Customer::findFirst((int)$id);
         if ($customer) {
-            return $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $customer->toArray()]);
+            return $this->response->setJsonContent($customer->toArray());
         } else {
-            return $this->response->setJsonContent(['code' => __LINE__, 'message' => "DETAIL FAILED: `[$id]` customer is not exists"]);
+            return $this->response->setJsonContent("DETAIL FAILED: `[$id]` customer is not exists");
         }
     }
 
@@ -44,9 +42,9 @@ class CustomerController extends ControllerBase
     {
         $customer = Customer::findFirst((int)$id);
         if ($customer) {
-            return $this->response->setJsonContent(['code' => 0, 'message' => 'UPDATE SUCCESS', 'data' => $customer->toArray()]);
+            return $this->response->setJsonContent($customer->toArray());
         } else {
-            return $this->response->setJsonContent(['code' => __LINE__, 'message' => "UPDATE FAILED: `[$id]` customer is not exists"]);
+            return $this->response->setJsonContent("UPDATE FAILED: `[$id]` customer is not exists");
         }
     }
 
@@ -55,9 +53,9 @@ class CustomerController extends ControllerBase
         $customer = Customer::findFirst((int)$id);
         if ($customer) {
             //$customer->delete();
-            return $this->response->setJsonContent(['code' => 0, 'message' => 'DELETE SUCCESS']);
+            return $this->response->setJsonContent(0);
         } else {
-            return $this->response->setJsonContent(['code' => __LINE__, 'message' => "DELETE FAILED: `[$id]` customer is not exists"]);
+            return $this->response->setJsonContent("DELETE FAILED: `[$id]` customer is not exists");
         }
     }
 }
