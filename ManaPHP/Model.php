@@ -2,6 +2,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Model\Exception as ModelException;
+use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
 
 abstract class Model extends Component implements ModelInterface, \JsonSerializable, \Serializable
@@ -256,6 +257,25 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function findFirst($filters = [], $fields = null)
     {
         return static::findOne($filters, $fields);
+    }
+
+    /**
+     * @param int|string|array $filters
+     * @param string|array     $fields
+     *
+     * @return static
+     */
+    public static function firstOrFail($filters = [], $fields = null)
+    {
+        if (($r = static::findFirst($filters, $fields)) === false) {
+            $exception = new NotFoundException('No query results for `:model` model with `:criteria` criteria', ['model' => static::class, 'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)]);
+            $exception->model = static::class;
+            $exception->filters = $filters;
+
+            throw $exception;
+        }
+
+        return $r;
     }
 
     /**
