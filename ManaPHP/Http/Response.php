@@ -259,9 +259,9 @@ class Response extends Component implements ResponseInterface
         } elseif (is_int($content)) {
             $content = ['code' => $content, 'message' => ''];
         } elseif ($content instanceof FilterException) {
-            $content = ['code' => -1, 'message' => $content->getMessage()];
-        } elseif ($content instanceof \Exception) {
             $content = ['code' => -2, 'message' => $content->getMessage()];
+        } elseif ($content instanceof \Exception) {
+            $content = ['code' => -1, 'message' => $content->getMessage()];
         }
 
         $this->_content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
