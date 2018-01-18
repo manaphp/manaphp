@@ -276,7 +276,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array     $fields
      * @param array            $options
      *
-     * @return static
+     * @return static|false
      */
     public static function first($filters = [], $fields = null, $options = null)
     {
