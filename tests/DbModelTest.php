@@ -163,12 +163,12 @@ class DbModelTest extends TestCase
         $this->assertEquals(483, $cities[0]->city_id);
     }
 
-    public function test_findList()
+    public function test_lists()
     {
-        $this->assertCount(600, City::findList());
-        $this->assertCount(599, City::findList([], 'city'));
-        $this->assertCount(3, City::findList(['country_id' => 2], 'city'));
-        $this->assertCount(3, City::findList(['country_id' => 2], ['city_id' => 'city']));
+        $this->assertCount(600, City::lists());
+        $this->assertCount(599, City::lists([], 'city'));
+        $this->assertCount(3, City::lists(['country_id' => 2], 'city'));
+        $this->assertCount(3, City::lists(['country_id' => 2], ['city_id' => 'city']));
     }
 
     public function test_values()

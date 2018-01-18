@@ -203,7 +203,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @return array
      * @throws \ManaPHP\Model\Exception
      */
-    public static function findList($filters = [], $field = null)
+    public static function lists($filters = [], $field = null)
     {
         $criteria = static::criteria()->where($filters);
 

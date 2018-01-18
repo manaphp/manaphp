@@ -96,7 +96,7 @@ interface ModelInterface
      *
      * @return mixed
      */
-    public static function findList($filters = [], $field = null);
+    public static function lists($filters = [], $field = null);
 
     /**
      * alias of first

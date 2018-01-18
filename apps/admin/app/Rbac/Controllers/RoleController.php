@@ -22,7 +22,7 @@ class RoleController extends ControllerBase
 
     public function listAction()
     {
-        return $this->response->setJsonContent(Role::findList([], ['role_id' => 'role_name']));
+        return $this->response->setJsonContent(Role::lists([], ['role_id' => 'role_name']));
     }
 
     public function createAction()

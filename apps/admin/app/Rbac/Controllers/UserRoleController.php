@@ -19,12 +19,12 @@ class UserRoleController extends ControllerBase
             $criteria = Admin::criteria(['admin_id', 'admin_name', 'email', 'created_time'])
                 ->whereRequest(['admin_name*=']);
             if ($role_id) {
-                $criteria->whereIn('admin_id', UserRole::findList(['role_id' => $role_id], 'user_id'));
+                $criteria->whereIn('admin_id', UserRole::lists(['role_id' => $role_id], 'user_id'));
             }
 
             $criteria->paginate(15);
             foreach ($this->paginator->items as $k => $user) {
-                $this->paginator->items[$k]['roles'] = UserRole::findList(['user_id' => $user['admin_id']], ['role_id' => 'role_name']);
+                $this->paginator->items[$k]['roles'] = UserRole::lists(['user_id' => $user['admin_id']], ['role_id' => 'role_name']);
             }
 
             return $this->response->setJsonContent($this->paginator);

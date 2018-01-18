@@ -21,7 +21,7 @@ class GroupController extends Controller
     public function listAction()
     {
         if ($this->request->isAjax()) {
-            return $this->response->setJsonContent(Group::findList([], ['group_id' => 'group_name']));
+            return $this->response->setJsonContent(Group::lists([], ['group_id' => 'group_name']));
         }
     }
 
