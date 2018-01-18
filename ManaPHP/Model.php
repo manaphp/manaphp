@@ -332,12 +332,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function findValue($filters, $field, $defaultValue = '')
     {
-        $r = static::criteria([$field])->where($filters)->limit(1)->execute();
-        if (!$r) {
-            return $defaultValue;
-        } else {
-            return $r[0][$field];
-        }
+        $r = static::first($filters, [$field]);
+        return $r ? $r->{$field} : $defaultValue;
     }
 
     /**
