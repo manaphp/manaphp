@@ -96,7 +96,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @return array
      * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
-    public function distinctValues($field)
+    public function values($field)
     {
         /**
          * @var \ManaPHP\ModelInterface $modelName

@@ -200,7 +200,7 @@ trait Path
         }
 
         $hierarchyField = static::getHierarchyField();
-        return static::criteria()->whereStartsWith($hierarchyField, $code, $length)->distinctValues($hierarchyField);
+        return static::criteria()->whereStartsWith($hierarchyField, $code, $length)->values($hierarchyField);
     }
 
     /**
@@ -216,7 +216,7 @@ trait Path
 
         $parent = static::getHierarchyParent($code);
         $hierarchyField = static::getHierarchyField();
-        return static::criteria()->whereStartsWith($hierarchyField, $parent, strlen($code))->distinctValues($hierarchyField);
+        return static::criteria()->whereStartsWith($hierarchyField, $parent, strlen($code))->values($hierarchyField);
     }
 
     /**

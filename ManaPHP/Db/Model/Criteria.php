@@ -503,7 +503,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @return array
      * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
-    public function distinctValues($field)
+    public function values($field)
     {
         return $this->_replaceModelInfo()->_query->distinctValues($field);
     }
