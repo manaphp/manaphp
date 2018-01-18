@@ -201,7 +201,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array $field
      *
      * @return array
-     * @throws \ManaPHP\Model\Exception
      */
     public static function lists($filters = [], $field = null)
     {
@@ -211,6 +210,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($field === null) {
             $field = static::getDisplayField();
             if ($field === null) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ModelException('invoke :model:findList method must provide displayField', ['model' => get_called_class()]);
             }
             $keyField = static::getPrimaryKey();

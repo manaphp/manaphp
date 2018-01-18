@@ -94,7 +94,7 @@ interface ModelInterface
      * @param array        $filters
      * @param string|array $field
      *
-     * @return mixed
+     * @return array
      */
     public static function lists($filters = [], $field = null);
 
