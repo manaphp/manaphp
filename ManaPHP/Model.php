@@ -320,11 +320,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
-        return static::criteria()
-            ->select($fields ?: static::getFields())
-            ->where(static::getPrimaryKey(), $id)
-            ->with(isset($options['with']) ? $options['with'] : [])
-            ->fetchOne();
+        return static::first([static::getPrimaryKey() => $id], $fields, $options);
     }
 
     /**
