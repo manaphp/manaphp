@@ -99,14 +99,7 @@ interface ModelInterface
     public static function findList($filters = [], $field = null);
 
     /**
-     * Allows to query the first record that match the specified conditions
-     *
-     * <code>
-     *  $city=City::findFirst(10);
-     *  $city=City::findFirst(['city_id'=>10]);
-     *  $city=City::findFirst(['conditions'=>['city_id'=>10]]);
-     *  $city=City::findFirst(['conditions'=>'city_id =:city_id','bind'=>['city_id'=>10]]);
-     * </code>
+     * alias of first
      *
      * @param int|string|array $filters
      * @param string|array     $fields
@@ -117,6 +110,15 @@ interface ModelInterface
     public static function findFirst($filters = [], $fields = null, $options = null);
 
     /**
+     * Allows to query the first record that match the specified conditions
+     *
+     * <code>
+     *  $city=City::first(10);
+     *  $city=City::first(['city_id'=>10]);
+     *  $city=City::first(['conditions'=>['city_id'=>10]]);
+     *  $city=City::first(['conditions'=>'city_id =:city_id','bind'=>['city_id'=>10]]);
+     * </code>
+     *
      * @param int|string|array $filters
      * @param string|array     $fields
      * @param array            $options
