@@ -165,20 +165,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * alias of find
-     *
-     * @param array        $filters
-     * @param array        $options
-     * @param string|array $fields
-     *
-     * @return  static[]
-     */
-    final public static function findAll($filters = [], $options = null, $fields = null)
-    {
-        return static::find($filters, $options, $fields);
-    }
-
-    /**
      * @param array        $filters
      * @param array        $options
      * @param string|array $fields

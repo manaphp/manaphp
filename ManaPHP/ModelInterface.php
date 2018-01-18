@@ -82,17 +82,6 @@ interface ModelInterface
     public static function find($filters = [], $options = null, $fields = null);
 
     /**
-     * alias of find
-     *
-     * @param array        $filters
-     * @param array        $options
-     * @param string|array $fields
-     *
-     * @return  static[]
-     */
-    public static function findAll($filters = [], $options = null, $fields = null);
-
-    /**
      * @param array        $filters
      * @param array        $options
      * @param string|array $fields

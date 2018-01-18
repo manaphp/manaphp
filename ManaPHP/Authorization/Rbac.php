@@ -93,7 +93,7 @@ class Rbac extends Component implements AuthorizationInterface
          */
         $model = new $this->_rolePermissionModel;
         $roles = [];
-        foreach ($model::findAll(['permission_id' => $permissionId]) as $item) {
+        foreach ($model::find(['permission_id' => $permissionId]) as $item) {
             $roles[] = $item->role_id;
         }
 
@@ -112,7 +112,7 @@ class Rbac extends Component implements AuthorizationInterface
          */
         $model = new $this->_userRoleModel();
         $roles = [];
-        foreach ($model::findAll(['user_id' => $userId]) as $item) {
+        foreach ($model::find(['user_id' => $userId]) as $item) {
             $roles[] = $item->role_id;
         }
 
