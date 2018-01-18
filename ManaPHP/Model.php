@@ -264,6 +264,18 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function findFirst($filters = [], $fields = null, $options = null)
     {
+        return static::first($filters, $fields, $options);
+    }
+
+    /**
+     * @param int|string|array $filters
+     * @param string|array     $fields
+     * @param array            $options
+     *
+     * @return static|false
+     */
+    public static function first($filters = [], $fields = null, $options = null)
+    {
         if (is_scalar($filters)) {
             $filters = [static::getPrimaryKey() => $filters];
         }
@@ -276,23 +288,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string|array     $fields
      * @param array            $options
      *
-     * @return static|false
-     */
-    public static function first($filters = [], $fields = null, $options = null)
-    {
-        return static::findFirst($filters, $fields, $options);
-    }
-
-    /**
-     * @param int|string|array $filters
-     * @param string|array     $fields
-     * @param array            $options
-     *
      * @return static
      */
     public static function firstOrFail($filters = [], $fields = null, $options = null)
     {
-        if (($r = static::findFirst($filters, $fields, $options)) === false) {
+        if (($r = static::first($filters, $fields, $options)) === false) {
             $exception = new NotFoundException('No query results for `:model` model with `:criteria` criteria',
                 ['model' => static::class, 'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)]);
             $exception->model = static::class;
