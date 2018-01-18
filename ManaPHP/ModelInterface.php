@@ -134,6 +134,15 @@ interface ModelInterface
      *
      * @return static
      */
+    public static function first($filters = [], $fields = null, $options = null);
+
+    /**
+     * @param int|string|array $filters
+     * @param string|array     $fields
+     * @param array            $options
+     *
+     * @return static
+     */
     public static function firstOrFail($filters = [], $fields = null, $options = null);
 
     /**
