@@ -324,10 +324,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @param int|string   $id
      * @param string|array $fields
+     * @param array        $options
      *
      * @return static|false
      */
-    public static function findById($id, $fields = null)
+    public static function findById($id, $fields = null, $options = null)
     {
         if (!is_scalar($id)) {
             /** @noinspection PhpUnhandledExceptionInspection */
@@ -335,7 +336,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()]);
         }
 
-        return static::criteria()->select($fields ?: static::getFields())->where(static::getPrimaryKey(), $id)->fetchOne();
+        return static::criteria()
+            ->select($fields ?: static::getFields())
+            ->where(static::getPrimaryKey(), $id)
+            ->with(isset($options['with']) ? $options['with'] : [])
+            ->fetchOne();
     }
 
     /**

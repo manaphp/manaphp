@@ -121,26 +121,29 @@ interface ModelInterface
      *
      * @param int|string|array $filters
      * @param string|array     $fields
+     * @param array            $options
      *
      * @return static|false
      */
-    public static function findFirst($filters = [], $fields = null);
+    public static function findFirst($filters = [], $fields = null, $options = null);
 
     /**
      * @param int|string|array $filters
      * @param string|array     $fields
+     * @param array            $options
      *
      * @return static
      */
-    public static function firstOrFail($filters = [], $fields = null);
+    public static function firstOrFail($filters = [], $fields = null, $options = null);
 
     /**
      * @param int|string   $id
      * @param string|array $fields
+     * @param array        $options
      *
      * @return static|false
      */
-    public static function findById($id, $fields = null);
+    public static function findById($id, $fields = null, $options = null);
 
     /**
      * @param array  $filters
