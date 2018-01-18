@@ -42,7 +42,7 @@ class CustomerController extends ControllerBase
 
     public function deleteAction($id)
     {
-        $customer = Customer::findFirst((int)$id);
+        $customer = Customer::first((int)$id);
         if ($customer) {
             //$customer->delete();
             return $this->response->setJsonContent(0);

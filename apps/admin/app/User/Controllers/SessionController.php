@@ -35,7 +35,7 @@ class SessionController extends Controller
                 $this->cookies->delete('user_name');
             }
 
-            $admin = Admin::findFirst(['admin_name' => $user_name]);
+            $admin = Admin::first(['admin_name' => $user_name]);
             if (!$admin || !$this->password->verify($password, $admin->password, $admin->salt)) {
                 return $this->response->setJsonContent('account or password is wrong.');
             }

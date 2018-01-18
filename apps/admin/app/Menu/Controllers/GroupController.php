@@ -35,7 +35,7 @@ class GroupController extends Controller
                 return $this->response->setJsonContent($e);
             }
 
-            $group = Group::findFirst(['group_name' => $group_name]);
+            $group = Group::first(['group_name' => $group_name]);
             if ($group) {
                 return $this->response->setJsonContent('group is exists');
             }
