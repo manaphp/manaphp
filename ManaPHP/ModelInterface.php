@@ -161,7 +161,7 @@ interface ModelInterface
      *
      * @return array
      */
-    public static function findDistinctValues($field, $filters = null, $options = null);
+    public static function values($field, $filters = null, $options = null);
 
     /**
      * @param string|array $filters

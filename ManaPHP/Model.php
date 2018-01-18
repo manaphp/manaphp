@@ -347,7 +347,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @return array
      */
-    public static function findDistinctValues($field, $filters = null, $options = null)
+    public static function values($field, $filters = null, $options = null)
     {
         $criteria = static::criteria()->where($filters);
         if (is_array($options)) {

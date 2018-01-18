@@ -154,12 +154,12 @@ class MongodbModelTest extends TestCase
         $this->assertInstanceOf(City::class, City::findById('10'));
     }
 
-    public function test_findDistinctValues()
+    public function test_values()
     {
-        $cities = City::findDistinctValues('city', [], ['size' => 10]);
+        $cities = City::values('city', [], ['size' => 10]);
         $this->assertCount(10, $cities);
 
-        $cities = City::findDistinctValues('city', [], ['size' => 10, 'page' => 100000]);
+        $cities = City::values('city', [], ['size' => 10, 'page' => 100000]);
         $this->assertCount(0, $cities);
     }
 

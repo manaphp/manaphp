@@ -32,7 +32,7 @@ class RolePermissionController extends ControllerBase
 
             $role = Role::firstOrFail($role_id);
 			
-            $old_permissions = RolePermission::findDistinctValues('permission_id', ['role_id' => $role_id]);
+            $old_permissions = RolePermission::values('permission_id', ['role_id' => $role_id]);
 
             RolePermission::deleteAll(['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permissions))]);
 

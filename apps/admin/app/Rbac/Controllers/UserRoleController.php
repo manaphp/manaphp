@@ -54,7 +54,7 @@ class UserRoleController extends ControllerBase
             }
             $adminUser = Admin::firstOrFail($user_id);
 			
-            $old_roles = UserRole::findDistinctValues('role_id', ['user_id' => $user_id]);
+            $old_roles = UserRole::values('role_id', ['user_id' => $user_id]);
             UserRole::deleteAll(['role_id' => array_values(array_diff($old_roles, $new_roles))]);
 
             foreach (array_diff($new_roles, $old_roles) as $role_id) {
