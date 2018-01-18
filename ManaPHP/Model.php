@@ -238,17 +238,37 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * alias of findFirst
+     * Allows to query the first record that match the specified conditions
      *
-     * @param array        $filters
+     * <code>
+     *
+     * //What's the first robot in robots table?
+     * $robot = Robots::findFirst();
+     * echo "The robot name is ", $robot->name;
+     *
+     * //What's the first mechanical robot in robots table?
+     * $robot = Robots::findFirst("type='mechanical'");
+     * echo "The first mechanical robot name is ", $robot->name;
+     *
+     * //Get first virtual robot ordered by name
+     * $robot = Robots::findFirst(array("type='virtual'", "order" => "name"));
+     * echo "The first virtual robot name is ", $robot->name;
+     *
+     * </code>
+     *
+     * @param string|array $filters
      * @param string|array $fields
      * @param array        $options
      *
-     * @return false|static
+     * @return static|false
      */
     public static function findFirst($filters = [], $fields = null, $options = null)
     {
-        return static::findOne($filters, $fields, $options);
+        if (is_scalar($filters)) {
+            $filters = [static::getPrimaryKey() => $filters];
+        }
+
+        return static::criteria()->select($fields ?: static::getFields())->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
     }
 
     /**
@@ -283,40 +303,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         return $r;
-    }
-
-    /**
-     * Allows to query the first record that match the specified conditions
-     *
-     * <code>
-     *
-     * //What's the first robot in robots table?
-     * $robot = Robots::findFirst();
-     * echo "The robot name is ", $robot->name;
-     *
-     * //What's the first mechanical robot in robots table?
-     * $robot = Robots::findFirst("type='mechanical'");
-     * echo "The first mechanical robot name is ", $robot->name;
-     *
-     * //Get first virtual robot ordered by name
-     * $robot = Robots::findFirst(array("type='virtual'", "order" => "name"));
-     * echo "The first virtual robot name is ", $robot->name;
-     *
-     * </code>
-     *
-     * @param string|array $filters
-     * @param string|array $fields
-     * @param array        $options
-     *
-     * @return static|false
-     */
-    public static function findOne($filters = [], $fields = null, $options = null)
-    {
-        if (is_scalar($filters)) {
-            $filters = [static::getPrimaryKey() => $filters];
-        }
-
-        return static::criteria()->select($fields ?: static::getFields())->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
     }
 
     /**
