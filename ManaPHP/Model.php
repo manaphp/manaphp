@@ -324,16 +324,20 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param array  $filters
-     * @param string $field
-     * @param mixed  $defaultValue
+     * @param int|string|array $filters
+     * @param string           $field
+     * @param mixed            $defaultValue
      *
      * @return int|double|string|null
      */
-    public static function findValue($filters, $field, $defaultValue = '')
+    public static function value($filters, $field, $defaultValue = null)
     {
-        $r = static::first($filters, [$field]);
-        return $r ? $r->{$field} : $defaultValue;
+        if ($defaultValue === null) {
+            return static::firstOrFail($filters, [$field])->{$field};
+        } else {
+            $r = static::first($filters, [$field])->{$field};
+            return $r ? $r->{$field} : $defaultValue;
+        }
     }
 
     /**

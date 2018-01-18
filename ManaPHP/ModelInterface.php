@@ -146,13 +146,13 @@ interface ModelInterface
     public static function findById($id, $fields = null, $options = null);
 
     /**
-     * @param array  $filters
-     * @param string $field
-     * @param mixed  $defaultValue
+     * @param int|string|array $filters
+     * @param string           $field
+     * @param mixed            $defaultValue
      *
      * @return int|double|string|null
      */
-    public static function findValue($filters, $field, $defaultValue = '');
+    public static function value($filters, $field, $defaultValue = null);
 
     /**
      * @param string $field
