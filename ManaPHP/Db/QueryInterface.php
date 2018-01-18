@@ -473,7 +473,7 @@ interface QueryInterface
      *
      * @return array
      */
-    public function distinctValues($field);
+    public function values($field);
 
     /**
      * @return int

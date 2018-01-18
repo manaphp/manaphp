@@ -1646,7 +1646,7 @@ class Query extends Component implements QueryInterface
      * @return array
      * @throws \ManaPHP\Db\Query\Exception
      */
-    public function distinctValues($field)
+    public function values($field)
     {
         $values = [];
         foreach ($this->distinct()->select($field)->fetchAll() as $v) {
