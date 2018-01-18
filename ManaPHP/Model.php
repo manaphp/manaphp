@@ -369,7 +369,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @return bool
      */
-    public static function exists($filters = null)
+    public static function exists($filters)
     {
         if (is_scalar($filters)) {
             $filters = [static::getPrimaryKey() => $filters];

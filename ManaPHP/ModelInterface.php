@@ -168,7 +168,7 @@ interface ModelInterface
      *
      * @return bool
      */
-    public static function exists($filters = null);
+    public static function exists($filters);
 
     /**
      * @param int|string $id
