@@ -33,7 +33,6 @@ class UserController extends ControllerBase
             $admin = Admin::firstOrFail($admin_id);
 
             $admin->status = Admin::STATUS_LOCKED;
-            $admin->updated_time = time();
             $admin->update();
 
             return $this->response->setJsonContent(0);
@@ -47,7 +46,6 @@ class UserController extends ControllerBase
             $admin = Admin::firstOrFail($admin_id);
 
             $admin->status = Admin::STATUS_ACTIVE;
-            $admin->updated_time = time();
             $admin->update();
 
             return $this->response->setJsonContent(0);
@@ -82,7 +80,6 @@ class UserController extends ControllerBase
             $admin->password = $this->password->hash($password, $admin->salt);
             $admin->creator_id = $this->userIdentity->getId();
             $admin->creator_name = $this->userIdentity->getName();
-            $admin->created_time = $admin->updated_time = time();
 
             $admin->create();
 
@@ -110,8 +107,6 @@ class UserController extends ControllerBase
                 $admin->salt = $this->password->salt();
                 $admin->password = $this->password->hash($password, $admin->salt);
             }
-
-            $admin->updated_time = time();
 
             $admin->update();
 

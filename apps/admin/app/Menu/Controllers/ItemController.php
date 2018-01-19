@@ -52,7 +52,6 @@ class ItemController extends Controller
             $item->display_order = $display_order;
             $item->creator_id = $this->userIdentity->getId();
             $item->creator_name = $this->userIdentity->getName();
-            $item->updated_time = $item->created_time = time();
 
             $item->create();
 

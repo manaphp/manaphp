@@ -46,7 +46,6 @@ class GroupController extends Controller
             $group->display_order = $display_order;
             $group->creator_id = $this->userIdentity->getId();
             $group->creator_name = $this->userIdentity->getName();
-            $group->updated_time = $group->created_time = time();
 
             $group->create();
 
@@ -73,7 +72,6 @@ class GroupController extends Controller
 
             $group->group_name = $group_name;
             $group->display_order = $display_order;
-            $group->updated_time = time();
 
             $group->update();
 

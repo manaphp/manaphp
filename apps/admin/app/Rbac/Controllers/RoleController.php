@@ -45,7 +45,6 @@ class RoleController extends ControllerBase
             $rbacRole->enabled = $enabled;
             $rbacRole->creator_id = $this->userIdentity->getId();
             $rbacRole->creator_name = $this->userIdentity->getName();
-            $rbacRole->updated_time = $rbacRole->created_time = time();
 
             $rbacRole->create();
 
@@ -70,7 +69,6 @@ class RoleController extends ControllerBase
                     return $this->response->setJsonContent('role name is exists');
                 }
                 $rbacRole->role_name = $role_name;
-                $rbacRole->updated_time = time();
                 $rbacRole->update();
             }
 
@@ -89,7 +87,6 @@ class RoleController extends ControllerBase
             $rbacRole = Role::firstOrFail($role_id);
 			
             $rbacRole->enabled = 0;
-            $rbacRole->updated_time = time();
 
             $rbacRole->update();
 
@@ -108,7 +105,6 @@ class RoleController extends ControllerBase
             $rbacRole = Role::firstOrFail($role_id);
 			
             $rbacRole->enabled = 1;
-            $rbacRole->updated_time = time();
 
             $rbacRole->update();
 

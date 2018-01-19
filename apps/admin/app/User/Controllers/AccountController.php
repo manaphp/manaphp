@@ -42,7 +42,6 @@ class AccountController extends Controller
             $admin->login_time = 0;
             $admin->salt = $this->password->salt();
             $admin->password = $this->password->hash($password, $admin->salt);
-            $admin->updated_time = $admin->created_time = time();
 
             $admin->create();
 

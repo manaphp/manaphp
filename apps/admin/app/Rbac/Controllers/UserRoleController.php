@@ -66,7 +66,6 @@ class UserRoleController extends ControllerBase
                 $userRole->role_name = Role::firstOrFail($role_id)->role_name;
                 $userRole->creator_id = $this->userIdentity->getId();
                 $userRole->creator_name = $this->userIdentity->getName();
-                $userRole->created_time = time();
 
                 $userRole->create();
             }

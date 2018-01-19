@@ -59,7 +59,6 @@ class PermissionController extends ControllerBase
                             $permission->controller_name = $controllerName;
                             $permission->action_name = $actionName;
                             $permission->description = implode(':', [$module, $controllerName, $actionName]);
-                            $permission->updated_time = $permission->created_time = time();
 
                             $permission->create();
                         }
@@ -86,7 +85,6 @@ class PermissionController extends ControllerBase
 
             $permission->description = $description;
             $permission->permission_type = $permission_type;
-            $permission->updated_time = time();
 
             $permission->update();
 

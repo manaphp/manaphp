@@ -44,7 +44,6 @@ class RolePermissionController extends ControllerBase
                 $rolePermission->permission_description = Permission::value($permission_id, 'description');
                 $rolePermission->creator_id = $this->userIdentity->getId();
                 $rolePermission->creator_name = $this->userIdentity->getName();
-                $rolePermission->created_time = time();
 
                 $rolePermission->create();
             }
