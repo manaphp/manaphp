@@ -15,8 +15,8 @@ class RoleController extends ControllerBase
             }
             $query->whereRequest(['role_id', 'role_name'])
                 ->orderBy('role_id desc');
-            $query->paginate(15);
-            return $this->response->setJsonContent($this->paginator);
+
+            return $this->response->setJsonContent($query->paginate(15));
         }
     }
 

@@ -21,8 +21,7 @@ class UserController extends ControllerBase
                 }
             }
 
-            $builder->paginate(15);
-            return $this->response->setJsonContent($this->paginator);
+            return $this->response->setJsonContent($builder->paginate(15));
         }
     }
 

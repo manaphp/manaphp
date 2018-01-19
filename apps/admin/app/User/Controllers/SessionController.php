@@ -84,8 +84,8 @@ class SessionController extends Controller
                 ->orderBy('login_id DESC');
 
             $builder->whereRequest(['admin_id', 'admin_name*=', 'client_ip', 'created_time~=']);
-            $builder->paginate(15);
-            return $this->response->setJsonContent($this->paginator);
+
+            return $this->response->setJsonContent($builder->paginate(15));
         }
     }
 }
