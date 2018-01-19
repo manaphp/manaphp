@@ -1,6 +1,8 @@
 <?php
 namespace App\Admin\Models;
 
+use App\Admin\Rbac\Models\UserRole;
+
 /**
  * Class Admin
  *
@@ -75,5 +77,13 @@ class Admin extends ModelBase
     public static function getSource($context = null)
     {
         return 'admin';
+    }
+
+    /**
+     * @return \ManaPHP\Model\CriteriaInterface
+     */
+    public function getRoles()
+    {
+        return $this->hasMany(UserRole::class, ['user_id' => 'admin_id']);
     }
 }
