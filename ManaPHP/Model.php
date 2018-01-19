@@ -102,6 +102,43 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @return array
+     */
+    protected static function _getCrudTimestampFields()
+    {
+        static $cached = [];
+
+        $calledClass = get_called_class();
+
+        if (!isset($cached[$calledClass])) {
+            $timestampFields = [];
+            $fields = static::getFields();
+
+            $intersect = array_intersect(['created_time', 'created_at'], $fields);
+            if (isset($intersect[0])) {
+                $timestampFields['create'] = $intersect[0];
+            }
+
+            $intersect = array_intersect(['updated_time', 'updated_at'], $fields);
+            if (isset($intersect[0])) {
+                $timestampFields['update'] = $intersect[0];
+            }
+
+            return $cached[$calledClass] = $timestampFields;
+        }
+
+        return $cached[$calledClass];
+    }
+
+    /**
+     * @return int|string
+     */
+    protected static function _getCurrentTimestamp()
+    {
+        return time();
+    }
+
+    /**
      * Allows to query a set of records that match the specified conditions
      *
      * <code>
@@ -636,6 +673,39 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param bool $isCreate
+     *
+     * @return bool|string
+     */
+    protected function _maintainCrudTimestamp($isCreate)
+    {
+        $currentTimestamp = static::_getCurrentTimestamp();
+        $timestampFields = static::_getCrudTimestampFields();
+
+        if ($isCreate && isset($timestampFields['create'])) {
+            $createTsField = $timestampFields['create'];
+
+            if ($this->{$createTsField} !== null) {
+                return false;
+            }
+            $this->$createTsField = $currentTimestamp;
+        }
+
+        if (isset($timestampFields['update'])) {
+            $updateTsField = $timestampFields['update'];
+
+            if ($this->$updateTsField === null
+                || (isset($this->_snapshot[$updateTsField]) && $this->$updateTsField === $this->_snapshot[$updateTsField])) {
+                $this->$updateTsField = $currentTimestamp;
+
+                return $updateTsField;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
@@ -660,6 +730,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function create()
     {
+        $this->_maintainCrudTimestamp(true);
+
         $this->_preCreate();
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
@@ -743,6 +815,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         if (count($fieldValues) === 0) {
             return;
+        }
+
+        if ($updateTsField = $this->_maintainCrudTimestamp(false)) {
+            $fieldValues[$updateTsField] = $this->$updateTsField;
         }
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
