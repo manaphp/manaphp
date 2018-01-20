@@ -901,6 +901,20 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
+        if (is_array($whiteList)) {
+            foreach ($whiteList as $k => $v) {
+                if (is_string($k)) {
+                    if (isset($data[$k])) {
+                        $data[$v] = $data[$k];
+                        unset($data[$k]);
+                    }
+
+                    $whiteList[] = $v;
+                    unset($whiteList[$k]);
+                }
+            }
+        }
+
         $instance = static::firstOrFail([$pkName => $pkValue]);
         $instance->assign(array_intersect_key($data, array_flip(static::getFields())), $whiteList);
         $instance->save();
