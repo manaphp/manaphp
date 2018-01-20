@@ -73,20 +73,7 @@ class PermissionController extends ControllerBase
     public function editAction()
     {
         if ($this->request->isPost()) {
-            try {
-                $permission_id = $this->request->get('permission_id', '*|int');
-                $permission_type = $this->request->get('type', '*|int');
-                $description = $this->request->get('description', '*');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-
-            $permission = Permission::firstOrFail($permission_id);
-
-            $permission->description = $description;
-            $permission->permission_type = $permission_type;
-
-            $permission->update();
+            Permission::updateOrFail(['type' => 'permission_type', 'description']);
 
             return $this->response->setJsonContent(0);
         }

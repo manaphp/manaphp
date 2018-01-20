@@ -28,11 +28,7 @@ class UserController extends ControllerBase
     public function lockAction()
     {
         if ($this->request->isPost()) {
-            $admin_id = $this->request->get('admin_id');
-            $admin = Admin::firstOrFail($admin_id);
-
-            $admin->status = Admin::STATUS_LOCKED;
-            $admin->update();
+            Admin::updateOrFail([], ['status' => Admin::STATUS_LOCKED]);
 
             return $this->response->setJsonContent(0);
         }
@@ -41,11 +37,7 @@ class UserController extends ControllerBase
     public function activeAction()
     {
         if ($this->request->isPost()) {
-            $admin_id = $this->request->get('admin_id');
-            $admin = Admin::firstOrFail($admin_id);
-
-            $admin->status = Admin::STATUS_ACTIVE;
-            $admin->update();
+            Admin::updateOrFail([], ['status' => Admin::STATUS_ACTIVE]);
 
             return $this->response->setJsonContent(0);
         }

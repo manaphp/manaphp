@@ -55,40 +55,14 @@ class RoleController extends ControllerBase
     public function editAction()
     {
         if ($this->request->isPost()) {
-            try {
-                $role_id = $this->request->get('role_id', '*|int');
-                $role_name = $this->request->get('role_name', '*');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-
-            $rbacRole = Role::firstOrFail($role_id);
-			
-            if ($rbacRole->role_name !== $role_name) {
-                if (Role::exists(['role_name' => $role_name])) {
-                    return $this->response->setJsonContent('role name is exists');
-                }
-                $rbacRole->role_name = $role_name;
-                $rbacRole->update();
-            }
-
-            return $this->response->setJsonContent($rbacRole);
+            return $this->response->setJsonContent(Role::updateOrFail('role_name'));
         }
     }
 
     public function disableAction()
     {
         if ($this->request->isPost()) {
-            try {
-                $role_id = $this->request->get('role_id', '*|int');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-            $rbacRole = Role::firstOrFail($role_id);
-			
-            $rbacRole->enabled = 0;
-
-            $rbacRole->update();
+            Role::updateOrFail(['enabled']);
 
             return $this->response->setJsonContent(0);
         }
@@ -97,17 +71,7 @@ class RoleController extends ControllerBase
     public function enableAction()
     {
         if ($this->request->isPost()) {
-            try {
-                $role_id = $this->request->get('role_id', '*|int');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-            $rbacRole = Role::firstOrFail($role_id);
-			
-            $rbacRole->enabled = 1;
-
-            $rbacRole->update();
-
+            Role::updateOrFail(['enabled']);
             return $this->response->setJsonContent(0);
         }
     }
