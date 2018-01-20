@@ -269,6 +269,14 @@ interface ModelInterface
     public function update();
 
     /**
+     * @param array $whiteList
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function updateOrFail($whiteList = null, $data = null);
+
+    /**
      * @param int|string $id
      * @param array      $data
      * @param array      $whiteList

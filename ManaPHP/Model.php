@@ -866,6 +866,42 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param array $whiteList
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function updateOrFail($whiteList = null, $data = null)
+    {
+        $di = Di::getDefault();
+
+        if ($data === null) {
+            $data = $di->request->get();
+        }
+
+        $pkName = static::getPrimaryKey();
+
+        if (isset($data[$pkName])) {
+            $pkValue = $data[$pkName];
+            unset($pkName);
+        } else {
+            $params = $di->dispatcher->getParams();
+            if (count($params) === 1) {
+                $pkValue = current($params);
+            } else {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                throw new ModelException('missing primary key value');
+            }
+        }
+
+        $instance = static::firstOrFail([$pkName => $pkValue]);
+        $instance->assign($data, $whiteList);
+        $instance->save();
+
+        return $instance;
+    }
+
+    /**
      * Checks if the current record already exists or not
      *
      * @return bool
