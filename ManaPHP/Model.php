@@ -801,16 +801,23 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $fieldValues = [];
         foreach (static::getFields() as $field) {
-            if ($field === $primaryKey) {
+            if ($field === $primaryKey || $this->{$field} === null) {
                 continue;
             }
 
-            if (isset($this->{$field})) {
-                /** @noinspection NestedPositiveIfStatementsInspection */
-                if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
-                    $fieldValues[$field] = $this->{$field};
+            if (isset($this->_snapshot[$field])) {
+                if (is_int($this->_snapshot[$field])) {
+                    if ($this->_snapshot[$field] == $this->{$field}) {
+                        continue;
+                    }
+                } else {
+                    if ($this->_snapshot[$field] === $this->{$field}) {
+                        continue;
+                    }
                 }
             }
+
+            $fieldValues[$field] = $this->{$field};
         }
 
         if (count($fieldValues) === 0) {
