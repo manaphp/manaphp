@@ -96,6 +96,8 @@ class Mysql extends Db
         $primaryKeys = [];
         $nonPrimaryKeys = [];
         $autoIncrementAttribute = null;
+        $intTypes = [];
+
         foreach ($fields as $field) {
             $fieldName = $field[0];
 
@@ -110,6 +112,11 @@ class Mysql extends Db
             if ($field[5] === 'auto_increment') {
                 $autoIncrementAttribute = $fieldName;
             }
+
+            $type = $field[1];
+            if (strpos($type, 'int') !== false) {
+                $intTypes[] = $fieldName;
+            }
         }
 
         $r = [
@@ -117,6 +124,7 @@ class Mysql extends Db
             self::METADATA_PRIMARY_KEY => $primaryKeys,
             self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
             self::METADATA_IDENTITY_FIELD => $autoIncrementAttribute,
+            self::METADATA_INT_TYPE_ATTRIBUTES => $intTypes,
         ];
 
         return $r;

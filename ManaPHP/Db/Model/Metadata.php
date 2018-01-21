@@ -159,4 +159,14 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     {
         return $this->_readMetaData($model)[Db::METADATA_FIELD_PROPERTIES];
     }
+
+    /**
+     * @param string $model
+     *
+     * @return array
+     */
+    public function getIntTypeAttributes($model)
+    {
+        return $this->_readMetaData($model)[Db::METADATA_INT_TYPE_ATTRIBUTES];
+    }
 }

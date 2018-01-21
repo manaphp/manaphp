@@ -62,4 +62,11 @@ interface MetadataInterface
      * @return array
      */
     public function getFieldProperties($model);
+
+    /**
+     * @param string $model
+     *
+     * @return array
+     */
+    public function getIntTypeAttributes($model);
 }
