@@ -137,15 +137,6 @@ interface ModelInterface
     public static function firstOrFail($filters = null, $fields = null, $options = null);
 
     /**
-     * @param int|string   $id
-     * @param string|array $fields
-     * @param array        $options
-     *
-     * @return static|false
-     */
-    public static function findById($id, $fields = null, $options = null);
-
-    /**
      * @param int|string|array $filters
      * @param string           $field
      * @param mixed            $defaultValue

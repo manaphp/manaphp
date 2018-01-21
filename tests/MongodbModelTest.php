@@ -146,14 +146,6 @@ class MongodbModelTest extends TestCase
         $this->assertEquals(483, $cities[0]->city_id);
     }
 
-    public function test_findById()
-    {
-        $city = City::findById(10);
-        $this->assertEquals(10, $city->city_id);
-
-        $this->assertInstanceOf(City::class, City::findById('10'));
-    }
-
     public function test_values()
     {
         $cities = City::values('city', [], ['size' => 10]);

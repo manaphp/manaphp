@@ -361,24 +361,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param int|string   $id
-     * @param string|array $fields
-     * @param array        $options
-     *
-     * @return static|false
-     */
-    public static function findById($id, $fields = null, $options = null)
-    {
-        if (!is_scalar($id)) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:primaryKey` primaryKey must be a scalar value.', ['primaryKey' => static::getPrimaryKey()]);
-        }
-
-        return static::first([static::getPrimaryKey() => $id], $fields, $options);
-    }
-
-    /**
      * @param int|string|array $filters
      * @param string           $field
      * @param mixed            $defaultValue
@@ -859,7 +841,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $this->_fireEvent('afterUpdate');
         $this->_fireEvent('afterSave');
     }
-    
+
     /**
      * @param array $whiteList
      * @param array $data

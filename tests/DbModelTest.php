@@ -180,12 +180,6 @@ class DbModelTest extends TestCase
         $this->assertCount(0, $cities);
     }
 
-    public function test_findById()
-    {
-        $city = City::findById(10);
-        $this->assertEquals(10, $city->city_id);
-    }
-
     public function test_find_usage()
     {
         $this->assertCount(3, City::find(['country_id' => 2]));
