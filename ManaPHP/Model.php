@@ -873,6 +873,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
+        if (!is_scalar($pkValue)) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new ModelException('primary key value is not scalar');
+        }
+
         if (is_array($whiteList)) {
             foreach ($whiteList as $k => $v) {
                 if (is_string($k)) {
