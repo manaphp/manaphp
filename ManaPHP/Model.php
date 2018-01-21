@@ -143,7 +143,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     protected static function _getCurrentTimestamp()
     {
-        return time();
+        $intTypeFields = static::getIntTypeFields();
+
+        if ($intTypeFields !== null && !array_intersect(static::_getCrudTimestampFields(), $intTypeFields)) {
+            return date('Y-m-d H:i:s');
+        } else {
+            return time();
+        }
     }
 
     /**
