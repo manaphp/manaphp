@@ -861,6 +861,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if (isset($data[$pkName])) {
             $pkValue = $data[$pkName];
             unset($pkName);
+        } elseif ($di->dispatcher->hasParam($pkName)) {
+            $pkValue = $di->dispatcher->getParam($pkName);
         } else {
             $params = $di->dispatcher->getParams();
             if (count($params) === 1) {
