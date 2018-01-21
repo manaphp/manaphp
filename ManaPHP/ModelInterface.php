@@ -162,13 +162,6 @@ interface ModelInterface
     public static function exists($filters);
 
     /**
-     * @param int|string $id
-     *
-     * @return bool
-     */
-    public static function existsById($id);
-
-    /**
      * Allows to count how many records match the specified conditions
      *
      * <code>

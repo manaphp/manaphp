@@ -418,21 +418,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param int|string $id
-     *
-     * @return bool
-     * @throws \ManaPHP\Model\Exception
-     */
-    public static function existsById($id)
-    {
-        if (!is_scalar($id)) {
-            throw new ModelException(' `:id` must be scalar value.', ['id' => json_encode($id)]);
-        }
-
-        return static::exists([static::getPrimaryKey() => $id]);
-    }
-
-    /**
      * Generate a SQL SELECT statement for an aggregate
      *
      * @param string $function
