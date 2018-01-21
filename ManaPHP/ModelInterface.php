@@ -107,7 +107,7 @@ interface ModelInterface
      *
      * @return static|false
      */
-    public static function findFirst($filters = [], $fields = null, $options = null);
+    public static function findFirst($filters = null, $fields = null, $options = null);
 
     /**
      * Allows to query the first record that match the specified conditions
@@ -125,7 +125,7 @@ interface ModelInterface
      *
      * @return static|false
      */
-    public static function first($filters = [], $fields = null, $options = null);
+    public static function first($filters = null, $fields = null, $options = null);
 
     /**
      * @param int|string|array $filters
@@ -134,7 +134,7 @@ interface ModelInterface
      *
      * @return static
      */
-    public static function firstOrFail($filters = [], $fields = null, $options = null);
+    public static function firstOrFail($filters = null, $fields = null, $options = null);
 
     /**
      * @param int|string   $id

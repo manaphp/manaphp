@@ -283,7 +283,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @return static|false
      */
-    public static function findFirst($filters = [], $fields = null, $options = null)
+    public static function findFirst($filters = null, $fields = null, $options = null)
     {
         return static::first($filters, $fields, $options);
     }
@@ -311,9 +311,27 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @return static|false
      */
-    public static function first($filters = [], $fields = null, $options = null)
+    public static function first($filters = null, $fields = null, $options = null)
     {
-        if (is_scalar($filters)) {
+        if ($filters === null) {
+            $di = Di::getDefault();
+
+            $pkName = static::getPrimaryKey();
+
+            if ($di->request->has($pkName)) {
+                $pkValue = $di->request->get($pkName);
+            } elseif ($di->dispatcher->hasParam($pkName)) {
+                $pkValue = $di->dispatcher->getParam($pkName);
+            } else {
+                throw new ModelException('missing key value for query');
+            }
+
+            if (!is_scalar($pkValue)) {
+                throw new ModelException('first key value is not scalar');
+            }
+
+            $filters = [$pkName => $pkValue];
+        } elseif (is_scalar($filters)) {
             $filters = [static::getPrimaryKey() => $filters];
         }
 
@@ -327,7 +345,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @return static
      */
-    public static function firstOrFail($filters = [], $fields = null, $options = null)
+    public static function firstOrFail($filters = null, $fields = null, $options = null)
     {
         if (($r = static::first($filters, $fields, $options)) === false) {
             $exception = new NotFoundException('No query results for `:model` model with `:criteria` criteria',
