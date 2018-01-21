@@ -323,7 +323,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             } elseif ($di->dispatcher->hasParam($pkName)) {
                 $pkValue = $di->dispatcher->getParam($pkName);
             } else {
-                throw new ModelException('missing key value for query');
+                throw new ModelException('missing filters');
             }
 
             if (!is_scalar($pkValue)) {
