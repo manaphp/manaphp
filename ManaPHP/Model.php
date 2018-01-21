@@ -323,10 +323,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             } elseif ($di->dispatcher->hasParam($pkName)) {
                 $pkValue = $di->dispatcher->getParam($pkName);
             } else {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ModelException('missing filters');
             }
 
             if (!is_scalar($pkValue)) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ModelException('first key value is not scalar');
             }
 
@@ -812,7 +814,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        $instance = (new static());
+        $instance = new static();
 
         $instance->assign(array_intersect_key($data, array_flip(static::getFields())), $whiteList);
 
@@ -854,6 +856,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
             if (isset($this->_snapshot[$field])) {
                 if (is_int($this->_snapshot[$field])) {
+                    /** @noinspection TypeUnsafeComparisonInspection */
                     if ($this->_snapshot[$field] == $this->{$field}) {
                         continue;
                     }
