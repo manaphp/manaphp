@@ -1073,7 +1073,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             if ($di->request->has($pkName)) {
                 $id = $di->request->get($pkName);
             } elseif ($di->dispatcher->hasParam($pkName)) {
-                $id = $di->dispatcher->getParam($pkName)
+                $id = $di->dispatcher->getParam($pkName);
             } else {
                 $params = $di->dispatcher->getParams();
                 if (count($params) === 1) {
