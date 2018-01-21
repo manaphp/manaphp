@@ -780,6 +780,20 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function createOrFail($whiteList = null, $data = null)
     {
+        $instance = static::newOrFail($whiteList, $data);
+        $instance->create();
+
+        return $instance;
+    }
+
+    /**
+     * @param array $whiteList
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function newOrFail($whiteList = null, $data = null)
+    {
         if ($data === null) {
             $data = Di::getDefault()->request->get();
         }
@@ -801,7 +815,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $instance = (new static());
 
         $instance->assign(array_intersect_key($data, array_flip(static::getFields())), $whiteList);
-        $instance->create();
 
         return $instance;
     }
