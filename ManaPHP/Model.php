@@ -859,37 +859,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $this->_fireEvent('afterUpdate');
         $this->_fireEvent('afterSave');
     }
-
-    /**
-     * @param int|string $id
-     * @param array      $data
-     * @param array      $whiteList
-     *
-     * @return int
-     */
-    public static function updateById($id, $data, $whiteList = null)
-    {
-        if (!is_scalar($id)) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()]);
-        }
-
-        $fieldValues = [];
-        foreach (static::getFields() as $field) {
-            if (!isset($data[$field])) {
-                continue;
-            }
-
-            if ($whiteList !== null && !in_array($field, $whiteList, true)) {
-                continue;
-            }
-
-            $fieldValues[$field] = $data[$field];
-        }
-        return static::criteria()->where(static::getPrimaryKey(), $id)->update($fieldValues);
-    }
-
+    
     /**
      * @param array $whiteList
      * @param array $data

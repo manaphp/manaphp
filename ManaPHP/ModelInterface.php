@@ -277,15 +277,6 @@ interface ModelInterface
     public static function updateOrFail($whiteList = null, $data = null);
 
     /**
-     * @param int|string $id
-     * @param array      $data
-     * @param array      $whiteList
-     *
-     * @return int
-     */
-    public static function updateById($id, $data, $whiteList = null);
-
-    /**
      * @param array $fieldValues
      * @param array $filters
      *
