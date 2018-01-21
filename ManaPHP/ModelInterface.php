@@ -47,6 +47,11 @@ interface ModelInterface
     public static function getAccessibleFields();
 
     /**
+     * @return array|null
+     */
+    public static function getIntTypeFields();
+
+    /**
      * @return string
      */
     public static function getAutoIncrementField();

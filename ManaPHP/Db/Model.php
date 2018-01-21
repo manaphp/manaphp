@@ -85,6 +85,14 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
+     * @return array|null
+     */
+    public static function getIntTypeFields()
+    {
+        return Di::getDefault()->modelsMetadata->getIntTypeAttributes(get_called_class());
+    }
+
+    /**
      * @return string
      */
     public static function getAutoIncrementField()

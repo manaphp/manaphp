@@ -70,6 +70,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @return array|null
+     */
+    public static function getIntTypeFields()
+    {
+        return null;
+    }
+
+    /**
      * @return string|null
      */
     public static function getDisplayField()
