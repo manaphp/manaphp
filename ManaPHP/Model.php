@@ -978,22 +978,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param int|string $id
-     *
-     * @return int
-     */
-    public static function deleteById($id)
-    {
-        if (!is_scalar($id)) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:primaryKey` primaryKey must be a scalar value for delete.', ['primaryKey' => static::getPrimaryKey()]);
-        }
-
-        return static::criteria()->where(static::getPrimaryKey(), $id)->delete();
-    }
-
-    /**
      * @param array $fieldValues
      * @param array $filters
      *

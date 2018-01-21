@@ -283,13 +283,6 @@ interface ModelInterface
     public function delete();
 
     /**
-     * @param int|string $id
-     *
-     * @return void
-     */
-    public static function deleteById($id);
-
-    /**
      * @param array $filters
      *
      * @return int
