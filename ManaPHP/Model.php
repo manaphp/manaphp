@@ -978,6 +978,46 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param array $whiteList
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function saveOrFail($whiteList = null, $data = null)
+    {
+        $di = Di::getDefault();
+
+        if ($data === null) {
+            $data = $di->request->get();
+        }
+
+        $pkName = static::getPrimaryKey();
+
+        $pkValue = null;
+
+        if (isset($data[$pkName])) {
+            $pkValue = $data[$pkName];
+        } elseif ($di->dispatcher->hasParam($pkName)) {
+            $pkValue = $di->dispatcher->getParam($pkName);
+        } else {
+            $params = $di->dispatcher->getParams();
+            if (count($params) === 1) {
+                $pkValue = current($params);
+            }
+        }
+
+        if ($pkValue === null) {
+            return static::createOrFail($whiteList, $data);
+        } else {
+            if (!isset($data[$pkName])) {
+                $data[$pkName] = $pkValue;
+            }
+
+            return static::updateOrFail($whiteList, $data);
+        }
+    }
+
+    /**
      * Deletes a model instance. Returning true on success or false otherwise.
      *
      * <code>

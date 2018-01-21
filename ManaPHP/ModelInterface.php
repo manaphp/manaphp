@@ -244,6 +244,14 @@ interface ModelInterface
     public function save();
 
     /**
+     * @param array $whiteList
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function saveOrFail($whiteList = null, $data = null);
+
+    /**
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
