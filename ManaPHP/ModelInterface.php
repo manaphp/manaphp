@@ -299,6 +299,13 @@ interface ModelInterface
     public function delete();
 
     /**
+     * @param int|string $id
+     *
+     * @return static
+     */
+    public static function deleteOrFail($id = null);
+
+    /**
      * @param array $filters
      *
      * @return int
