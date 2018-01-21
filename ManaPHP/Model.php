@@ -997,13 +997,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $di = Di::getDefault();
 
             if ($di->request->has($pkName)) {
-                $pkValue = $di->request->get($pkName);
+                $id = $di->request->get($pkName);
             } elseif ($di->dispatcher->hasParam($pkName)) {
-                $pkValue = $di->dispatcher->getParam($pkName)
+                $id = $di->dispatcher->getParam($pkName)
             } else {
                 $params = $di->dispatcher->getParams();
                 if (count($params) === 1) {
-                    $pkValue = current($params);
+                    $id = current($params);
                 } else {
                     /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     throw new ModelException('missing primary key value');
@@ -1016,7 +1016,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('primary key value is not scalar');
         }
 
-        $instance = static::firstOrFail([$pkName => $pkValue]);
+        $instance = static::firstOrFail([$pkName => $id]);
         $instance->delete();
 
         return $instance;
