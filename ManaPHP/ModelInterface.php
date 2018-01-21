@@ -252,6 +252,14 @@ interface ModelInterface
     public function create();
 
     /**
+     * @param array $whiteList
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function createOrFail($whiteList = null, $data = null);
+
+    /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *

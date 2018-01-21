@@ -773,6 +773,40 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param array $whiteList
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function createOrFail($whiteList = null, $data = null)
+    {
+        if ($data === null) {
+            $data = Di::getDefault()->request->get();
+        }
+
+        if (is_array($whiteList)) {
+            foreach ($whiteList as $k => $v) {
+                if (is_string($k)) {
+                    if (isset($data[$k])) {
+                        $data[$v] = $data[$k];
+                        unset($data[$k]);
+                    }
+
+                    $whiteList[] = $v;
+                    unset($whiteList[$k]);
+                }
+            }
+        }
+
+        $instance = (new static());
+
+        $instance->assign(array_intersect_key($data, array_flip(static::getFields())), $whiteList);
+        $instance->create();
+
+        return $instance;
+    }
+
+    /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
