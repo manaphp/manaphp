@@ -32,7 +32,7 @@ class ItemController extends Controller
                 return $this->response->setJsonContent($e);
             }
 
-            if (!Group::existsById($group_id)) {
+            if (!Group::exists($group_id)) {
                 return $this->response->setJsonContent('group is not exists');
             }
 
@@ -40,7 +40,7 @@ class ItemController extends Controller
                 return $this->response->setJsonContent('item name is exists');
             }
 
-            if (!Permission::existsById($permission_id)) {
+            if (!Permission::exists($permission_id)) {
                 return $this->response->setJsonContent('permission is not exists');
             }
 
