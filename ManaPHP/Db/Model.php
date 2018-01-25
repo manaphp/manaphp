@@ -9,23 +9,6 @@ use ManaPHP\Di;
  *
  * @package model
  *
- * @method void initialize()
- * @method void onConstruct()
- *
- * method beforeCreate()
- * method afterCreate()
- *
- * method beforeSave()
- * method afterSave()
- *
- * method afterFetch()
- *
- * method beforeUpdate()
- * method afterUpdate()
- *
- * method beforeDelete()
- * method afterDelete()
- *
  */
 class Model extends \ManaPHP\Model implements ModelInterface
 {

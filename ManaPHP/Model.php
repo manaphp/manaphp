@@ -5,6 +5,25 @@ use ManaPHP\Model\Exception as ModelException;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
 
+/**
+ * Class ManaPHP\Model
+ *
+ * @package ManaPHP
+ *
+ * method beforeCreate()
+ * method afterCreate()
+ *
+ * method beforeSave()
+ * method afterSave()
+ *
+ * method afterFetch()
+ *
+ * method beforeUpdate()
+ * method afterUpdate()
+ *
+ * method beforeDelete()
+ * method afterDelete()
+ */
 abstract class Model extends Component implements ModelInterface, \JsonSerializable, \Serializable
 {
     /**

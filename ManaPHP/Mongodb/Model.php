@@ -7,26 +7,10 @@ use ManaPHP\Mongodb\Model\Exception as ModelException;
 use MongoDB\BSON\ObjectID;
 
 /**
- * Class ManaPHP\Mvc\Model
+ * Class ManaPHP\Mongodb\Model
  *
  * @package model
  *
- * @method void initialize()
- * @method void onConstruct()
- *
- * method beforeCreate()
- * method afterCreate()
- *
- * method beforeSave()
- * method afterSave()
- *
- * method afterFetch()
- *
- * method beforeUpdate()
- * method afterUpdate()
- *
- * method beforeDelete()
- * method afterDelete()
  */
 class Model extends \ManaPHP\Model
 {
