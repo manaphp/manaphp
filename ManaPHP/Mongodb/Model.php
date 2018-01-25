@@ -14,6 +14,9 @@ use MongoDB\BSON\ObjectID;
  */
 class Model extends \ManaPHP\Model
 {
+    /**
+     * @var \MongoDB\BSON\ObjectId
+     */
     public $_id;
 
     /**
