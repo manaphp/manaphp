@@ -94,7 +94,7 @@ class MongodbModelTest extends TestCase
 
     public function test_findFirst()
     {
-        $actor = Actor::findFirst();
+        $actor = Actor::findFirst([]);
         $this->assertTrue(is_object($actor));
         $this->assertInstanceOf(get_class(new Actor()), $actor);
         $this->assertInstanceOf('ManaPHP\Mongodb\Model', $actor);
