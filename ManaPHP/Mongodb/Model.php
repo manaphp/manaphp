@@ -52,19 +52,28 @@ class Model extends \ManaPHP\Model
      */
     public static function getPrimaryKey()
     {
-        $fieldTypes = static::getFieldTypes();
-        if (isset($fieldTypes['id'])) {
-            return 'id';
+        static $cached = [];
+
+        $calledClass = get_called_class();
+
+        if (!isset($cached[$calledClass])) {
+            $fields = static::getFields();
+
+            if (in_array('id', $fields, true)) {
+                return $cached[$calledClass] = 'id';
+            }
+
+            $source = static::getSource();
+            $pos = strrpos($source, '_');
+            $tryField = ($pos === false ? $source : substr($source, $pos + 1)) . '_id';
+            if (in_array($tryField, $fields, true)) {
+                return $cached[$calledClass] = $tryField;
+            }
+
+            return $cached[$calledClass] = '_id';
         }
 
-        $source = static::getSource();
-        $pos = strrpos($source, '_');
-        $tryField = ($pos === false ? $source : substr($source, $pos + 1)) . '_id';
-        if (isset($fieldTypes[$tryField])) {
-            return $tryField;
-        }
-
-        return '_id';
+        return $cached[$calledClass];
     }
 
     /**
@@ -72,24 +81,9 @@ class Model extends \ManaPHP\Model
      */
     public static function getAutoIncrementField()
     {
-        $fieldTypes = static::getFieldTypes();
+        $primaryKey = static::getPrimaryKey();
 
-        if (isset($fieldTypes['id']) && $fieldTypes['id'] === 'integer') {
-            return 'id';
-        }
-
-        $source = static::getSource();
-        $pos = strrpos($source, '_');
-        $tryField = ($pos === false ? $source : substr($source, $pos + 1)) . '_id';
-        if (isset($fieldTypes[$tryField]) && $fieldTypes[$tryField] === 'integer') {
-            return $tryField;
-        }
-
-        if ($fieldTypes['_id'] === 'integer') {
-            return '_id';
-        }
-
-        return null;
+        return $primaryKey !== '_id' ? $primaryKey : null;
     }
 
     /**
@@ -97,16 +91,38 @@ class Model extends \ManaPHP\Model
      */
     public static function getFields()
     {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        return array_keys(static::getFieldTypes());
+        static $cached = [];
+
+        $calledClass = get_called_class();
+
+        if (!isset($cached[$calledClass])) {
+            return $cached[$calledClass] = array_keys(static::getFieldTypes());
+        }
+
+        return $cached[$calledClass];
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public static function getIntTypeFields()
     {
-        return null;
+        static $cached = [];
+
+        $calledClass = get_called_class();
+
+        if (!isset($cached[$calledClass])) {
+            $fields = [];
+            foreach (static::getFieldTypes() as $field => $type) {
+                if ($type === 'integer') {
+                    $fields[] = $field;
+                }
+            }
+
+            return $cached[$calledClass] = $fields;
+        }
+
+        return $cached[$calledClass];
     }
 
     /**
@@ -194,32 +210,23 @@ class Model extends \ManaPHP\Model
      */
     protected function _preCreate()
     {
-        $autoIncField = static::getAutoIncrementField();
-        if ($autoIncField !== null) {
-            if ($this->{$autoIncField} === null) {
-                $this->{$autoIncField} = static::generateAutoIncrementId();
-            }
-
-            if ($autoIncField !== '_id' && $this->_id === null) {
-                $this->_id = $this->{$autoIncField};
-            }
+        if ($this->_id === null) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $this->_id = new ObjectID();
+        } elseif (!is_object($this->_id)) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $this->_id = new ObjectID($this->_id);
         }
 
-        if ($this->_id === null) {
-            $primaryKey = static::getPrimaryKey();
-            if ($primaryKey !== '_id' && isset($this->{$primaryKey})) {
-                $this->_id = $this->{$primaryKey};
-            } else {
-                $fileTypes = static::getFieldTypes();
-                if ($fileTypes['_id'] === 'objectid') {
-                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    $this->_id = (string)new ObjectID();
-                }
-            }
+        $autoIncField = static::getAutoIncrementField();
+        if ($autoIncField !== null && $this->{$autoIncField} === null) {
+            $this->{$autoIncField} = static::generateAutoIncrementId();
         }
 
         foreach (static::getFieldTypes() as $field => $type) {
-            $this->{$field} = static::getNormalizedValue($type, $this->{$field});
+            if ($field !== '_id' && $this->$field !== null) {
+                $this->{$field} = static::getNormalizedValue($type, $this->{$field});
+            }
         }
     }
 }
