@@ -191,6 +191,7 @@ class Model extends \ManaPHP\Model
         } elseif ($type === 'bool') {
             return is_bool($value) ? $value : (bool)$value;
         } else {
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw new ModelException('invalid data type');
         }
     }
