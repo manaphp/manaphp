@@ -115,6 +115,14 @@ class Model extends \ManaPHP\Model
     }
 
     /**
+     * @return array|null
+     */
+    public static function getIntTypeFields()
+    {
+        return null;
+    }
+
+    /**
      * ```
      * bool     => Boolean
      * integer  => 32-bit integer
