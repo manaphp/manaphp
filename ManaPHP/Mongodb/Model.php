@@ -144,6 +144,31 @@ class Model extends \ManaPHP\Model
     }
 
     /**
+     * @return bool
+     */
+    protected static function _createAutoIncrementIndex()
+    {
+        $autoIncField = static::getAutoIncrementField();
+
+        $command = [
+            'createIndexes' => static::getSource(),
+            'indexes' => [
+                [
+                    'key' => [
+                        $autoIncField => 1
+                    ],
+                    'unique' => true,
+                    'name' => $autoIncField
+                ]
+            ]
+        ];
+
+        static::getConnection()->command($command);
+
+        return true;
+    }
+
+    /**
      * @param int $step
      * @param     int
      *
@@ -163,7 +188,13 @@ class Model extends \ManaPHP\Model
         $r = static::getConnection()->command($command);
         $r->setTypeMap(['root' => 'array', 'document' => 'array']);
         $r = $r->toArray();
-        return $r[0]['value']['current_id'];
+        $id = $r[0]['value']['current_id'];
+
+        if ($id === $step) {
+            static::_createAutoIncrementIndex();
+        }
+		
+        return $id;
     }
 
     /**
