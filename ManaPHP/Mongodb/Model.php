@@ -269,7 +269,7 @@ class Model extends \ManaPHP\Model
             return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            return is_object($type) ? $value : new ObjectID($value);
+            return is_scalar($type) ? new ObjectID($value) : $value;
         } elseif ($type === 'bool') {
             return is_bool($value) ? $value : (bool)$value;
         } else {
