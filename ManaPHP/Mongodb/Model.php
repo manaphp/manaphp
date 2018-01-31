@@ -138,9 +138,60 @@ class Model extends \ManaPHP\Model
      */
     public static function getFieldTypes()
     {
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        throw new ModelException('`:model::getFieldTypes`method must implemented', ['model' => get_called_class()]);
+        static $cached = [];
+
+        $calledClass = get_called_class();
+
+        if (!isset($cached[$calledClass])) {
+            $fieldTypes = [];
+            $rc = new \ReflectionClass(get_called_class());
+
+            foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $rp) {
+                if ($rp->isStatic()) {
+                    continue;
+                }
+
+                $phpdoc = $rp->getDocComment();
+                if (!$phpdoc) {
+                    throw new ModelException('`:property` property does not contain phpdoc', ['property' => $rp->getName()]);
+                }
+
+                if (!preg_match('#@var ([^\s]+)#', $phpdoc, $match)) {
+                    throw new ModelException('`:property` property phpdoc does not contain data type defintion: `:phpdoc`',
+                        ['property' => $rp->getName(), 'phpdoc' => $phpdoc]);
+                }
+
+                switch ($match[1]) {
+                    case 'string':
+                        $type = 'string';
+                        break;
+                    case 'int':
+                    case 'integer':
+                        $type = 'integer';
+                        break;
+                    case 'float':
+                        $type = 'float';
+                        break;
+                    case 'bool':
+                    case 'boolean':
+                        $type = 'bool';
+                        break;
+                    case '\MongoDB\BSON\ObjectId':
+                    case 'ObjectId':
+                        $type = 'objectid';
+                        break;
+                    default:
+                        throw new ModelException('`:property` property `:type` type unsupported',
+                            ['property' => $rp->getName(), 'type' => $match[1]]);
+                }
+
+                $fieldTypes[$rp->getName()] = $type;
+            }
+
+            return $cached[$calledClass] = $fieldTypes;
+        }
+
+        return $cached[$calledClass];
     }
 
     /**
