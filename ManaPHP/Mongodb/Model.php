@@ -223,7 +223,7 @@ class Model extends \ManaPHP\Model
             return is_bool($value) ? $value : (bool)$value;
         } else {
             /** @noinspection PhpUnhandledExceptionInspection */
-            throw new ModelException('invalid data type');
+            throw new ModelException('unsupported `:type` type', ['type' => $type]);
         }
     }
 
