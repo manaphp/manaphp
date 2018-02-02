@@ -69,4 +69,14 @@ interface MongodbInterface
      * @return static
      */
     public function truncateTable($source);
+
+    /**
+     * @return array
+     */
+    public function listDatabases();
+
+    /**
+     * @return array
+     */
+    public function listCollections($db = null);
 }

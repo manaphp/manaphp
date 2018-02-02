@@ -281,4 +281,33 @@ class Mongodb extends Component implements MongodbInterface
         }
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function listDatabases()
+    {
+        $databases = [];
+        $r = $this->command(['listDatabases' => 1],'admin')->toArray();
+        foreach ($r[0]['databases'] as $database) {
+            $databases[] = $database['name'];
+        }
+
+        return $databases;
+    }
+
+    /**
+     * @return array
+     */
+    public function listCollections($db = null)
+    {
+        $collections = [];
+        $r = $this->command(['listCollections' => 1], $db)->toArray();
+        foreach ($r as $collection) {
+            $collections[] = $collection['name'];
+        }
+
+        return $collections;
+    }
+
 }
