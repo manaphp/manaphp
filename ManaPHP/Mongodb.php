@@ -179,7 +179,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param array    $queryOptions
      * @param bool|int $secondaryPreferred
      *
-     * @return array
+     * @return array[]
      */
     public function query($source, $filter = [], $queryOptions = [], $secondaryPreferred = true)
     {
