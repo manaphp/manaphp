@@ -14,7 +14,7 @@ class MongodbController extends Controller
             $modelName = 'App\\Models\\' . ucfirst($modelName);
         }
 
-        $fieldTypes = $this->_interFieldTypes($input);
+        $fieldTypes = $this->_inferFieldTypes($input);
         $model = $this->_genModel($fieldTypes, $modelName);
         $file = '@data/models/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         $this->filesystem->filePut($file, $model);
@@ -35,7 +35,7 @@ class MongodbController extends Controller
             if (!isset($lines[0])) {
                 continue;
             }
-            $fieldTypes = $this->_interFieldTypes($lines[0]);
+            $fieldTypes = $this->_inferFieldTypes($lines[0]);
             $fileName = basename($file, '.json');
             $plainClass = Text::camelize($fileName);
             $modelClass = $ns . '\\' . $plainClass;
@@ -50,8 +50,9 @@ class MongodbController extends Controller
      * @param string $str
      *
      * @return array
+     * @throws \ManaPHP\Cli\Controllers\Exception
      */
-    protected function _interFieldTypes($str)
+    protected function _inferFieldTypes($str)
     {
         $json = json_decode('[' . $str . ']', true);
         if (!$json) {
@@ -159,6 +160,7 @@ class MongodbController extends Controller
             $str .= '    }' . PHP_EOL;
         }
 
+        $primaryKey = null;
         if ($optimized && ($primaryKey = $this->_inferPrimaryKey($fieldTypes, $modelName))) {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
