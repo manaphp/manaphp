@@ -20,7 +20,7 @@ class MongodbController extends Controller
         }
 
         $fieldTypes = $this->_inferFieldTypes($input);
-        $model = $this->_genModel($fieldTypes, $modelName);
+        $model = $this->_renderModel($fieldTypes, $modelName);
         $file = '@data/tmp/mongodb/model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         $this->filesystem->filePut($file, $model);
 
@@ -51,7 +51,7 @@ class MongodbController extends Controller
             $plainClass = Text::camelize($fileName);
             $modelClass = $ns . '\\' . $plainClass;
 
-            $model = $this->_genModel($fieldTypes, $modelClass);
+            $model = $this->_renderModel($fieldTypes, $modelClass);
 
             $this->filesystem->filePut("@data/tmp/mongodb/models/$plainClass.php", $model);
         }
@@ -100,7 +100,7 @@ class MongodbController extends Controller
      *
      * @return string
      */
-    protected function _genModel($fieldTypes, $modelName)
+    protected function _renderModel($fieldTypes, $modelName)
     {
         $optimized = $this->arguments->hasOption('optimized');
 
