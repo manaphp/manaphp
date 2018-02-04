@@ -230,4 +230,94 @@ class MongodbController extends Controller
 
         return false;
     }
+
+    /**
+     * @CliCommand export mongodb data to csv files
+     * @CliParam   --service:-s  explicit the mongodb service name
+     * @CliParam   --collection:-c export these collections only
+     */
+    public function csvCommand()
+    {
+        /**
+         * @var \ManaPHP\Mongodb $mongodb
+         */
+        $mongodb = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'mongodb'));
+
+        $collections = $this->arguments->getOption('collection:c', '');
+
+        foreach ($mongodb->listCollections() as $collection) {
+            if ($collections && strpos($collections, $collection) === false) {
+                continue;
+            }
+
+            $fileName = "@data/tmp/mongodb/csv/$collection.csv";
+
+            $this->console->writeLn('`:collection` processing...', ['collection' => $collection]);
+
+            $this->filesystem->dirCreate(dirname($fileName));
+            $file = fopen($this->alias->resolve($fileName), 'wb');
+
+            $docs = $mongodb->query($collection);
+            $columns = [];
+
+            $linesCount = 0;
+            $startTime = microtime(true);
+            if (count($docs) !== 0) {
+                foreach ((array)$docs[0] as $k => $v) {
+                    if ($k === '_id' && is_object($v)) {
+                        continue;
+                    }
+                    $columns[] = $k;
+                }
+
+                fputcsv($file, $columns);
+                foreach ($docs as $doc) {
+                    $line = [];
+                    foreach ((array)$doc as $k => $v) {
+                        if ($k === '_id' && is_object($v)) {
+                            continue;
+                        }
+                        $line[] = $v;
+                    }
+
+                    $linesCount++;
+                    fputcsv($file, $line);
+                }
+            }
+
+            fclose($file);
+
+            $this->console->writeLn('write to `:file` success: :count [:time]', ['file' => $fileName, 'count' => $linesCount, 'time' => round(microtime(true) - $startTime, 4)]);
+            /** @noinspection DisconnectedForeachInstructionInspection */
+            $this->console->writeLn();
+        }
+    }
+
+    /**
+     * @CliCommand list databases and collections
+     * @CliParam   --service:-s  explicit the mongodb service name
+     * @CliParam   --database:-d list collections in these database only
+     */
+    public function listCommand()
+    {
+        /**
+         * @var \ManaPHP\Mongodb $mongodb
+         */
+        $mongodb = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'mongodb'));
+
+        $databases = $mongodb->listDatabases();
+        $filterDatabases = $this->arguments->getOption('database:d', '');
+        sort($databases);
+        foreach ($databases as $database) {
+            if ($filterDatabases && strpos($filterDatabases, $database) === false) {
+                continue;
+            }
+            $collections = $mongodb->listCollections($database);
+            sort($collections);
+            $this->console->writeLn(':database[:count]', ['database' => $database, 'count' => count($collections)]);
+            foreach ($collections as $collection) {
+                $this->console->writeLn('    :collection', ['collection' => $collection]);
+            }
+        }
+    }
 }
