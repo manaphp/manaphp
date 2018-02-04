@@ -6,6 +6,11 @@ use ManaPHP\Utility\Text;
 
 class MongodbController extends Controller
 {
+    /**
+     * @CliCommand generate model file from base64 encoded string
+     * @CliParam   --input:-i the base64 encoded json string
+     * @throws \ManaPHP\Cli\Controllers\Exception
+     */
     public function modelCommand()
     {
         $input = base64_decode($this->arguments->getOption('input:i'));
@@ -16,12 +21,18 @@ class MongodbController extends Controller
 
         $fieldTypes = $this->_inferFieldTypes($input);
         $model = $this->_genModel($fieldTypes, $modelName);
-        $file = '@data/models/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
+        $file = '@data/tmp/mongodb/model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         $this->filesystem->filePut($file, $model);
 
         $this->console->writeLn('write model to :file', ['file' => $file]);
     }
 
+    /**
+     * @CliCommand generate models file from data files or online data
+     * @CliParam   --service:-s  explicit the mongodb service name
+     * @CliParam   --dir the data file directory name
+     * @throws \ManaPHP\Cli\Controllers\Exception
+     */
     public function modelsCommand()
     {
         $dir = $this->arguments->getOption('dir');
@@ -42,7 +53,7 @@ class MongodbController extends Controller
 
             $model = $this->_genModel($fieldTypes, $modelClass);
 
-            $this->filesystem->filePut("@data/models/$plainClass.php", $model);
+            $this->filesystem->filePut("@data/tmp/mongodb/models/$plainClass.php", $model);
         }
     }
 
@@ -60,7 +71,7 @@ class MongodbController extends Controller
         }
         $fieldTypes = [];
 
-        foreach ($json[0] as $k => $v) {
+        foreach ((array)$json[0] as $k => $v) {
             if ($v === null) {
                 $fieldTypes[$k] = 'string|int';
             } elseif (is_array($v)) {
@@ -84,7 +95,8 @@ class MongodbController extends Controller
     }
 
     /**
-     * @param $fieldTypes
+     * @param array  $fieldTypes
+     * @param string $modelName
      *
      * @return string
      */
@@ -188,12 +200,17 @@ class MongodbController extends Controller
         return $str;
     }
 
+    /**
+     * @param array  $fieldTypes
+     * @param string $modelName
+     *
+     * @return bool|string
+     */
     protected function _inferPrimaryKey($fieldTypes, $modelName)
     {
         if (isset($fieldTypes['id'])) {
             return 'id';
         }
-
 
         $plainClass = substr($modelName, strrpos($modelName, '\\'));
 
