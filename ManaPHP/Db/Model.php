@@ -76,7 +76,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public static function getAutoIncrementField()
     {

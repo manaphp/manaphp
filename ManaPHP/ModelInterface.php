@@ -52,7 +52,7 @@ interface ModelInterface
     public static function getIntTypeFields();
 
     /**
-     * @return string
+     * @return string|null
      */
     public static function getAutoIncrementField();
 
