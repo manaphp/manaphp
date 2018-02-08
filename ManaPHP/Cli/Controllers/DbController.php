@@ -45,13 +45,7 @@ class DbController extends Controller
          * @var \ManaPHP\Db $db
          */
         $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
-        $table = $this->arguments->getOption('table:t', '');
-        if (!$table) {
-            $values = $this->arguments->getValues();
-            if ($values) {
-                $table = $values[0];
-            }
-        }
+        $table = $this->arguments->getOption('table:t');
 
         $tables = $db->getTables();
         if (!in_array($table, $tables, true)) {
