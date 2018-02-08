@@ -1,0 +1,229 @@
+<?php
+namespace ManaPHP\Cli\Controllers;
+
+use ManaPHP\Cli\Controller;
+use ManaPHP\Db;
+use ManaPHP\Utility\Text;
+
+class DbController extends Controller
+{
+    /**
+     * @CliCommand list databases and collections
+     * @CliParam   --service:-s  explicit the mongodb service name
+     * @CliParam   --filter:-f filter the tables with fnmath method
+     */
+    public function listCommand()
+    {
+        /**
+         * @var \ManaPHP\Db $db
+         */
+        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+
+        $tables = $db->getTables();
+        sort($tables);
+
+        $filter = $this->arguments->getOption('filter:f', '');
+        $line = 0;
+        foreach ($tables as $table) {
+            if ($filter && !fnmatch($filter, $table)) {
+                continue;
+            }
+
+            $this->console->writeLn(sprintf('%-3d ', $line++) . $table);
+        }
+    }
+
+    /**
+     * @CliCommand list databases and collections
+     * @CliParam   --service:-s  explicit the mongodb service name
+     * @CliParam   --table:-t table name
+     * @throws \ManaPHP\Cli\Controllers\Exception
+     */
+    public function modelCommand()
+    {
+        /**
+         * @var \ManaPHP\Db $db
+         */
+        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $table = $this->arguments->getOption('table:t', '');
+        if (!$table) {
+            $values = $this->arguments->getValues();
+            if ($values) {
+                $table = $values[0];
+            }
+        }
+
+        $tables = $db->getTables();
+        if (!in_array($table, $tables, true)) {
+            throw new Exception('`:table` is not exists: :tables`', ['table' => $table, 'tables' => implode($tables, ', ')]);
+        }
+
+        $filter = $this->arguments->getOption('filter:f', '');
+        foreach ($tables as $table) {
+            if ($filter && !fnmatch($filter, $table)) {
+                continue;
+            }
+
+            $plainClass = Text::camelize($table);
+            $model = $this->_renderModel($db, $table);
+            $this->filesystem->filePut("@data/tmp/db/model/$plainClass.php", $model);
+        }
+    }
+
+    /**
+     * @CliCommand list databases and collections
+     * @CliParam   --service:-s  explicit the mongodb service name
+     * @CliParam   --filter:-f filter the tables with fnmath method
+     */
+    public function modelsCommand()
+    {
+        /**
+         * @var \ManaPHP\Db $db
+         */
+        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $tables = $db->getTables();
+        sort($tables);
+
+        $filter = $this->arguments->getOption('filter:f', '');
+        foreach ($tables as $table) {
+            if ($filter && !fnmatch($filter, $table)) {
+                continue;
+            }
+
+            $plainClass = Text::camelize($table);
+            $model = $this->_renderModel($db, $table);
+            $this->filesystem->filePut("@data/tmp/db/models/$plainClass.php", $model);
+        }
+    }
+
+    /**
+     * @param \ManaPHP\Db $db
+     * @param string      $table
+     *
+     * @return string
+     */
+    protected function _renderModel($db, $table)
+    {
+        $optimized = $this->arguments->hasOption('optimized');
+
+        $fields = (array)$db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
+
+        $plainClass = Text::camelize($table);
+        $modelName = $this->arguments->getOption('ns', 'App\Models') . '\\' . $plainClass;
+
+        $str = '<?php' . PHP_EOL;
+        $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
+        $str .= PHP_EOL;
+
+        $str .= 'class ' . substr($modelName, strrpos($modelName, '\\') + 1) . ' extends \ManaPHP\Db\Model' . PHP_EOL;
+        $str .= '{';
+        $str .= PHP_EOL;
+        foreach ($fields as $field) {
+            $str .= '    public $' . $field . ';' . PHP_EOL;
+        }
+
+        if ($optimized) {
+            $str .= PHP_EOL;
+            $str .= '    /** Returns table name mapped in the model' . PHP_EOL;
+            $str .= '     *' . PHP_EOL;
+            $str .= '     * @param mixed $context' . PHP_EOL;
+            $str .= '     *' . PHP_EOL;
+            $str .= '     * @return string|false' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public static function getSource($context = null)' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= "        return '$table';" . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        if ($optimized) {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return array' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public static function getFields()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= '        return [' . PHP_EOL;
+            foreach ($fields as $field) {
+                $str .= "            '$field'," . PHP_EOL;
+            }
+            $str .= '        ];' . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
+        if ($optimized && $primaryKey) {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public static function getPrimaryKey()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= "        return '$primaryKey[0]';" . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        $autoIncField = $db->getMetadata($table)[Db::METADATA_IDENTITY_FIELD];
+        if ($optimized) {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public static function getAutoIncrementField()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            if ($autoIncField) {
+                $str .= "        return '$autoIncField';" . PHP_EOL;
+            } else {
+                $str .= '        return null;' . PHP_EOL;
+            }
+            $str .= '    }' . PHP_EOL;
+        }
+
+        if ($optimized) {
+            $intTypeFields = (array)$db->getMetadata($table)[Db::METADATA_INT_TYPE_ATTRIBUTES];
+
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return array' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public static function getIntTypeFields()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= '        return [' . PHP_EOL;
+            foreach ($intTypeFields as $field) {
+                $str .= "            '$field'," . PHP_EOL;
+            }
+            $str .= '        ];' . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        $crudTimestampFields = [];
+        $intersect = array_intersect(['created_time', 'created_at'], $fields);
+        if ($intersect) {
+            $crudTimestampFields['create'] = $intersect[0];
+        }
+
+        $intersect = array_intersect(['updated_time', 'updated_at'], $fields);
+        if ($intersect) {
+            $crudTimestampFields['update'] = $intersect[0];
+        }
+
+        if ($optimized && $crudTimestampFields) {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return array' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    protected static function _getCrudTimestampFields()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= '        return [' . PHP_EOL;
+            foreach ($crudTimestampFields as $name => $field) {
+                $str .= "            '$name' => '$field'," . PHP_EOL;
+            }
+            $str .= '        ];' . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        $str .= '}';
+
+        return $str;
+    }
+}
