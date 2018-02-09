@@ -261,6 +261,7 @@ class MongodbController extends Controller
      * @CliCommand export mongodb data to csv files
      * @CliParam   --service:-s  explicit the mongodb service name
      * @CliParam   --collection:-c export these collections only
+     * @CliParam   --bom  contains BOM or not (default: 0)
      */
     public function csvCommand()
     {
@@ -269,6 +270,7 @@ class MongodbController extends Controller
          */
         $mongodb = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'mongodb'));
 
+        $bom = $this->arguments->getOption('bom', 0);
         $collections = $this->arguments->getOption('collection:c', '');
 
         foreach ($mongodb->listCollections() as $collection) {
@@ -281,14 +283,17 @@ class MongodbController extends Controller
             $this->console->writeLn('`:collection` processing...', ['collection' => $collection]);
 
             $this->filesystem->dirCreate(dirname($fileName));
+
             $file = fopen($this->alias->resolve($fileName), 'wb');
 
-            $docs = $mongodb->query($collection);
-            $columns = [];
+            if ($bom) {
+                fprintf($file, "\xEF\xBB\xBF");
+            }
 
-            $linesCount = 0;
-            $startTime = microtime(true);
-            if (count($docs) !== 0) {
+            $docs = $mongodb->query($collection);
+
+            if ($docs) {
+                $columns = [];
                 foreach ((array)$docs[0] as $k => $v) {
                     if ($k === '_id' && is_object($v)) {
                         continue;
@@ -297,6 +302,11 @@ class MongodbController extends Controller
                 }
 
                 fputcsv($file, $columns);
+            }
+
+            $linesCount = 0;
+            $startTime = microtime(true);
+            if (count($docs) !== 0) {
                 foreach ($docs as $doc) {
                     $line = [];
                     foreach ((array)$doc as $k => $v) {
