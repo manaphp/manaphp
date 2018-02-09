@@ -94,7 +94,6 @@ class Mysql extends Db
 
         $attributes = [];
         $primaryKeys = [];
-        $nonPrimaryKeys = [];
         $autoIncrementAttribute = null;
         $intTypes = [];
 
@@ -105,8 +104,6 @@ class Mysql extends Db
 
             if ($field[3] === 'PRI') {
                 $primaryKeys[] = $fieldName;
-            } else {
-                $nonPrimaryKeys[] = $fieldName;
             }
 
             if ($field[5] === 'auto_increment') {
@@ -122,7 +119,6 @@ class Mysql extends Db
         $r = [
             self::METADATA_ATTRIBUTES => $attributes,
             self::METADATA_PRIMARY_KEY => $primaryKeys,
-            self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
             self::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute,
             self::METADATA_INT_TYPE_ATTRIBUTES => $intTypes,
         ];

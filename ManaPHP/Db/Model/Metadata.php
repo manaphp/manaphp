@@ -119,19 +119,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     }
 
     /**
-     * Returns an array of fields which are not part of the primary key
-     *
-     * @param string|\ManaPHP\Db\ModelInterface $model
-     *
-     * @return    array
-     * @throws \ManaPHP\Db\Model\Metadata\Exception
-     */
-    public function getNonPrimaryKeyAttributes($model)
-    {
-        return $this->_readMetaData($model)[Db::METADATA_NON_PRIMARY_KEY];
-    }
-
-    /**
      * Check if a model has certain attribute
      *
      *<code>

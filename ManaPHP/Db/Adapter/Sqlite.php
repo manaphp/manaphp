@@ -33,7 +33,6 @@ class Sqlite extends Db
 
         $attributes = [];
         $primaryKeys = [];
-        $nonPrimaryKeys = [];
         $autoIncrementAttribute = null;
 
         foreach ($fields as $field) {
@@ -43,8 +42,6 @@ class Sqlite extends Db
 
             if ($field['pk'] === '1') {
                 $primaryKeys[] = $fieldName;
-            } else {
-                $nonPrimaryKeys[] = $fieldName;
             }
 
             if ($field['pk'] === '1' && $field['type'] === 'INTEGER') {
@@ -55,7 +52,6 @@ class Sqlite extends Db
         $r = [
             self::METADATA_ATTRIBUTES => $attributes,
             self::METADATA_PRIMARY_KEY => $primaryKeys,
-            self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
             self::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute,
         ];
 
