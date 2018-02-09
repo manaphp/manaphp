@@ -212,4 +212,97 @@ class DbController extends Controller
 
         return $str;
     }
+
+    /**
+     * @CliCommand export db data to csv files
+     * @CliParam   --service:-s  explicit the db service name
+     * @CliParam   --table:-t export these tables only
+     */
+    public function jsonCommand()
+    {
+        /**
+         * @var \ManaPHP\Db $db
+         */
+        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $tables = $db->getTables();
+        sort($tables);
+
+        $filterTables = $this->arguments->getOption('table:t', '');
+
+        foreach ($tables as $table) {
+            if ($filterTables && strpos($filterTables, $table) === false) {
+                continue;
+            }
+
+            $fileName = "@data/tmp/db/json/$table.json";
+
+            $this->console->writeLn('`:table` processing...', ['table' => $table]);
+
+            $this->filesystem->dirCreate(dirname($fileName));
+            $rows = $db->fetchAll("SELECT * FROM [$table]");
+            $file = fopen($this->alias->resolve($fileName), 'wb');
+
+            $startTime = microtime(true);
+            foreach ($rows as $row) {
+                fwrite($file, json_encode($row) . PHP_EOL);
+            }
+            fclose($file);
+
+            $this->console->writeLn('write to `:file` success: :count [:time]', ['file' => $fileName, 'count' => count($rows), 'time' => round(microtime(true) - $startTime, 4)]);
+            /** @noinspection DisconnectedForeachInstructionInspection */
+            $this->console->writeLn();
+        }
+    }
+
+    /**
+     * @CliCommand export db data to csv files
+     * @CliParam   --service:-s  explicit the db service name
+     * @CliParam   --table:-t export these tables only
+     * @CliParam   --bom  contains BOM or not (default: 0)
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function csvCommand()
+    {
+        /**
+         * @var \ManaPHP\Db $db
+         */
+        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $tables = $db->getTables();
+        sort($tables);
+
+        $bom = $this->arguments->getOption('bom', 0);
+        $filterTables = $this->arguments->getOption('table:t', '');
+        foreach ($tables as $table) {
+            if ($filterTables && strpos($filterTables, $table) === false) {
+                continue;
+            }
+
+            $fileName = "@data/tmp/db/csv/$table.csv";
+
+            $this->console->writeLn('`:table` processing...', ['table' => $table]);
+
+            $this->filesystem->dirCreate(dirname($fileName));
+            $rows = $db->fetchAll("SELECT * FROM [$table]");
+
+            $file = fopen($this->alias->resolve($fileName), 'wb');
+
+            if ($bom) {
+                fprintf($file, "\xEF\xBB\xBF");
+            }
+
+            if ($rows) {
+                fputcsv($file, array_keys($rows[0]));
+            }
+
+            $startTime = microtime(true);
+            foreach ($rows as $row) {
+                fputcsv($file, $row);
+            }
+            fclose($file);
+
+            $this->console->writeLn('write to `:file` success: :count [:time]', ['file' => $fileName, 'count' => count($rows), 'time' => round(microtime(true) - $startTime, 4)]);
+            /** @noinspection DisconnectedForeachInstructionInspection */
+            $this->console->writeLn();
+        }
+    }
 }
