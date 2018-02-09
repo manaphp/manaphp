@@ -38,16 +38,6 @@ interface MetadataInterface
     public function getAutoIncrementAttribute($model);
 
     /**
-     * Check if a model has certain attribute
-     *
-     * @param string|\ManaPHP\Db\ModelInterface $model
-     * @param string                            $attribute
-     *
-     * @return bool
-     */
-    public function hasAttribute($model, $attribute);
-
-    /**
      * @param string $model
      *
      * @return array

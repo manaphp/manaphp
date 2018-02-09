@@ -117,24 +117,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     }
 
     /**
-     * Check if a model has certain attribute
-     *
-     *<code>
-     *    var_dump($metaData->hasAttribute(new Robots(), 'name'));
-     *</code>
-     *
-     * @param string|\ManaPHP\Db\ModelInterface $model
-     * @param string                            $attribute
-     *
-     * @return bool
-     * @throws \ManaPHP\Db\Model\Metadata\Exception
-     */
-    public function hasAttribute($model, $attribute)
-    {
-        return isset($this->_readMetaData($model)[Db::METADATA_ATTRIBUTES][$attribute]);
-    }
-
-    /**
      * @param string $model
      *
      * @return array
