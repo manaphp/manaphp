@@ -196,12 +196,12 @@ class MongodbController extends Controller
         }
 
         $crudTimestampFields = [];
-        $intersect = array_intersect(['created_time', 'created_at'], $fields);
+        $intersect = array_intersect(['created_time', 'created_at'], array_keys($fieldTypes));
         if ($intersect) {
             $crudTimestampFields['create'] = $intersect[0];
         }
 
-        $intersect = array_intersect(['updated_time', 'updated_at'], $fields);
+        $intersect = array_intersect(['updated_time', 'updated_at'], array_keys($fieldTypes));
         if ($intersect) {
             $crudTimestampFields['update'] = $intersect[0];
         }
