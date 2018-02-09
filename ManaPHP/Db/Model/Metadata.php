@@ -115,7 +115,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      */
     public function getAutoIncrementAttribute($model)
     {
-        return $this->_readMetaData($model)[Db::METADATA_IDENTITY_FIELD];
+        return $this->_readMetaData($model)[Db::METADATA_AUTO_INCREMENT_KEY];
     }
 
     /**

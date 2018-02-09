@@ -157,7 +157,7 @@ class DbController extends Controller
             $str .= '    }' . PHP_EOL;
         }
 
-        $autoIncField = $db->getMetadata($table)[Db::METADATA_IDENTITY_FIELD];
+        $autoIncField = $db->getMetadata($table)[Db::METADATA_AUTO_INCREMENT_KEY];
         if ($optimized) {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;

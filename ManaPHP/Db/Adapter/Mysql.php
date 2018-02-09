@@ -123,7 +123,7 @@ class Mysql extends Db
             self::METADATA_ATTRIBUTES => $attributes,
             self::METADATA_PRIMARY_KEY => $primaryKeys,
             self::METADATA_NON_PRIMARY_KEY => $nonPrimaryKeys,
-            self::METADATA_IDENTITY_FIELD => $autoIncrementAttribute,
+            self::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute,
             self::METADATA_INT_TYPE_ATTRIBUTES => $intTypes,
         ];
 
