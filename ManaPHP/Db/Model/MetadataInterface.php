@@ -29,15 +29,6 @@ interface MetadataInterface
     public function getPrimaryKeyAttributes($model);
 
     /**
-     * Returns an array of fields which are not part of the primary key
-     *
-     * @param string|\ManaPHP\Db\ModelInterface $model
-     *
-     * @return    array
-     */
-    public function getNonPrimaryKeyAttributes($model);
-
-    /**
      * Returns attribute which is auto increment or null
      *
      * @param string|\ManaPHP\Db\ModelInterface $model
