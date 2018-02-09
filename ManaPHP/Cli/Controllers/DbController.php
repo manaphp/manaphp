@@ -34,9 +34,8 @@ class DbController extends Controller
     }
 
     /**
-     * @CliCommand list databases and collections
+     * @CliCommand generate model file in online
      * @CliParam   --service:-s  explicit the mongodb service name
-     * @CliParam   --table:-t table name
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
     public function modelCommand()
@@ -52,20 +51,13 @@ class DbController extends Controller
             throw new Exception('`:table` is not exists: :tables`', ['table' => $table, 'tables' => implode($tables, ', ')]);
         }
 
-        $filter = $this->arguments->getOption('filter:f', '');
-        foreach ($tables as $table) {
-            if ($filter && !fnmatch($filter, $table)) {
-                continue;
-            }
-
-            $plainClass = Text::camelize($table);
-            $model = $this->_renderModel($db, $table);
-            $this->filesystem->filePut("@data/tmp/db/model/$plainClass.php", $model);
-        }
+        $plainClass = Text::camelize($table);
+        $model = $this->_renderModel($db, $table);
+        $this->filesystem->filePut("@data/tmp/db/model/$plainClass.php", $model);
     }
 
     /**
-     * @CliCommand list databases and collections
+     * @CliCommand generate models file in online
      * @CliParam   --service:-s  explicit the mongodb service name
      * @CliParam   --filter:-f filter the tables with fnmath method
      */
