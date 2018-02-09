@@ -16,7 +16,6 @@ abstract class Db extends Component implements DbInterface
     const METADATA_ATTRIBUTES = 0;
     const METADATA_PRIMARY_KEY = 1;
     const METADATA_AUTO_INCREMENT_KEY = 3;
-    const METADATA_FIELD_PROPERTIES = 4;
     const METADATA_INT_TYPE_ATTRIBUTES = 5;
 
     /**

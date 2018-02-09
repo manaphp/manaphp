@@ -61,8 +61,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                         ['table' => $model->getSource(true), 'model' => $modelName, 'fields' => implode(',', $diff)]);
                 }
 
-                $data[Db::METADATA_FIELD_PROPERTIES] = $properties ?: $data[Db::METADATA_ATTRIBUTES];
-
                 $this->_metadata[$modelName] = $data;
                 $this->write($modelName, $data);
             }
@@ -134,17 +132,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     public function hasAttribute($model, $attribute)
     {
         return isset($this->_readMetaData($model)[Db::METADATA_ATTRIBUTES][$attribute]);
-    }
-
-    /**
-     * @param string|\ManaPHP\Db\ModelInterface $model
-     *
-     * @return array
-     * @throws \ManaPHP\Db\Model\Metadata\Exception
-     */
-    public function getFieldProperties($model)
-    {
-        return $this->_readMetaData($model)[Db::METADATA_FIELD_PROPERTIES];
     }
 
     /**

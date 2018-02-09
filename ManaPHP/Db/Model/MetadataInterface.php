@@ -57,13 +57,6 @@ interface MetadataInterface
     public function hasAttribute($model, $attribute);
 
     /**
-     * @param string|\ManaPHP\Db\ModelInterface $model
-     *
-     * @return array
-     */
-    public function getFieldProperties($model);
-
-    /**
      * @param string $model
      *
      * @return array
