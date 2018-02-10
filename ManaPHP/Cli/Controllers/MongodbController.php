@@ -104,6 +104,8 @@ class MongodbController extends Controller
     {
         $optimized = $this->arguments->hasOption('optimized');
 
+        $fields = array_keys($fieldTypes);
+
         $hasPendingType = false;
         foreach ($fieldTypes as $type) {
             if (strpos($type, '|') !== false) {
@@ -146,7 +148,7 @@ class MongodbController extends Controller
             $str .= '    public static function getFields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
-            foreach ($fieldTypes as $field => $type) {
+            foreach ($fields as $field) {
                 $str .= "            '$field'," . PHP_EOL;
             }
             $str .= '        ];' . PHP_EOL;
@@ -196,12 +198,12 @@ class MongodbController extends Controller
         }
 
         $crudTimestampFields = [];
-        $intersect = array_intersect(['created_time', 'created_at'], array_keys($fieldTypes));
+        $intersect = array_intersect(['created_time', 'created_at'], $fields);
         if ($intersect) {
             $crudTimestampFields['create'] = $intersect[0];
         }
 
-        $intersect = array_intersect(['updated_time', 'updated_at'], array_keys($fieldTypes));
+        $intersect = array_intersect(['updated_time', 'updated_at'], $fields);
         if ($intersect) {
             $crudTimestampFields['update'] = $intersect[0];
         }
