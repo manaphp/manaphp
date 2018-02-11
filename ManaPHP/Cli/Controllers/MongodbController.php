@@ -68,13 +68,22 @@ class MongodbController extends Controller
             foreach ($mongodb->listCollections() as $collection) {
                 $docs = $mongodb->query($collection, [], ['limit' => 1]);
                 if ($docs) {
-                    $fieldTypes = $this->_inferFieldTypes(json_encode($docs[0]));
                     $plainClass = Text::camelize($collection);
+                    $fileName = "@data/tmp/mongodb/models/$plainClass.php";
+
+                    $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
+
+                    $fieldTypes = $this->_inferFieldTypes(json_encode($docs[0]));
                     $modelClass = $ns . '\\' . $plainClass;
-
                     $model = $this->_renderModel($fieldTypes, $modelClass);
+                    $this->filesystem->filePut($fileName, $model);
 
-                    $this->filesystem->filePut("@data/tmp/mongodb/models/$plainClass.php", $model);
+                    $this->console->progress([
+                        ' `:model` model for `:collection` collection saved to `:file`',
+                        'model' => $plainClass,
+                        'collection' => $collection,
+                        'file' => $fileName
+                    ]);
                 }
             }
         }
