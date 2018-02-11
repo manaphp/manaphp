@@ -90,8 +90,18 @@ class DbController extends Controller
             }
 
             $plainClass = Text::camelize($table);
+            $fileName = "@data/tmp/db/models/$plainClass.php";
+            $this->console->progress(['`:table` processing...', 'table' => $table], '');
+
             $model = $this->_renderModel($db, $table);
-            $this->filesystem->filePut("@data/tmp/db/models/$plainClass.php", $model);
+            $this->filesystem->filePut($fileName, $model);
+
+            $this->console->progress([
+                ' `:model` model for `:table` table saved to `:file`',
+                'model' => $plainClass,
+                'table' => $table,
+                'file' => $fileName
+            ]);
         }
     }
 
