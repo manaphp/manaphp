@@ -124,7 +124,7 @@ class MongodbController extends Controller
      */
     protected function _renderModel($fieldTypes, $modelName)
     {
-        $optimized = $this->arguments->hasOption('optimized:o');
+        $optimized = $this->arguments->getOption('optimized:o', 0);
 
         $fields = array_keys($fieldTypes);
 
