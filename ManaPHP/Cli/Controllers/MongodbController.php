@@ -25,7 +25,7 @@ class MongodbController extends Controller
         $file = '@data/tmp/mongodb/model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         $this->filesystem->filePut($file, $model);
 
-        $this->console->writeLn('write model to :file', ['file' => $file]);
+        $this->console->writeLn(['write model to :file', 'file' => $file]);
     }
 
     /**
@@ -309,7 +309,7 @@ class MongodbController extends Controller
 
             $fileName = "@data/tmp/mongodb/csv/$collection.csv";
 
-            $this->console->writeLn('`:collection` processing...', ['collection' => $collection]);
+            $this->console->writeLn(['`:collection` processing...', 'collection' => $collection]);
 
             $this->filesystem->dirCreate(dirname($fileName));
 
@@ -352,7 +352,7 @@ class MongodbController extends Controller
 
             fclose($file);
 
-            $this->console->writeLn('write to `:file` success: :count [:time]', ['file' => $fileName, 'count' => $linesCount, 'time' => round(microtime(true) - $startTime, 4)]);
+            $this->console->writeLn(['write to `:file` success: :count [:time]', 'file' => $fileName, 'count' => $linesCount, 'time' => round(microtime(true) - $startTime, 4)]);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->console->writeLn();
         }
@@ -379,9 +379,9 @@ class MongodbController extends Controller
             }
             $collections = $mongodb->listCollections($database);
             sort($collections);
-            $this->console->writeLn(':database[:count]', ['database' => $database, 'count' => count($collections)]);
+            $this->console->writeLn([':database[:count]', 'database' => $database, 'count' => count($collections)]);
             foreach ($collections as $collection) {
-                $this->console->writeLn('    :collection', ['collection' => $collection]);
+                $this->console->writeLn(['    :collection', 'collection' => $collection]);
             }
         }
     }

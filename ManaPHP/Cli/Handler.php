@@ -55,7 +55,7 @@ class Handler extends Component implements HandlerInterface
         }
 
         if (!$controllerClassName) {
-            $this->console->writeLn('``:command` command is not exists'/**m0d7fa39c3a64b91e0*/, ['command' => lcfirst($controllerName) . ':' . $actionName]);
+            $this->console->writeLn(['`:command` command is not exists'/**m0d7fa39c3a64b91e0*/, 'command' => lcfirst($controllerName) . ':' . $actionName]);
             return 1;
         }
 
@@ -63,7 +63,7 @@ class Handler extends Component implements HandlerInterface
 
         $actionMethod = $actionName . 'Command';
         if (!method_exists($controllerInstance, $actionMethod)) {
-            $this->console->writeLn('`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, ['command' => lcfirst($controllerName) . ':' . $actionName]);
+            $this->console->writeLn(['`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, 'command' => lcfirst($controllerName) . ':' . $actionName]);
             return 1;
         }
 

@@ -239,7 +239,7 @@ class DbController extends Controller
 
             $fileName = "@data/tmp/db/json/$table.json";
 
-            $this->console->writeLn('`:table` processing...', ['table' => $table]);
+            $this->console->writeLn(['`:table` processing...', 'table' => $table]);
 
             $this->filesystem->dirCreate(dirname($fileName));
             $rows = $db->fetchAll("SELECT * FROM [$table]");
@@ -251,7 +251,7 @@ class DbController extends Controller
             }
             fclose($file);
 
-            $this->console->writeLn('write to `:file` success: :count [:time]', ['file' => $fileName, 'count' => count($rows), 'time' => round(microtime(true) - $startTime, 4)]);
+            $this->console->writeLn(['write to `:file` success: :count [:time]', 'file' => $fileName, 'count' => count($rows), 'time' => round(microtime(true) - $startTime, 4)]);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->console->writeLn();
         }
@@ -282,7 +282,7 @@ class DbController extends Controller
 
             $fileName = "@data/tmp/db/csv/$table.csv";
 
-            $this->console->writeLn('`:table` processing...', ['table' => $table]);
+            $this->console->writeLn(['`:table` processing...', 'table' => $table]);
 
             $this->filesystem->dirCreate(dirname($fileName));
             $rows = $db->fetchAll("SELECT * FROM [$table]");
@@ -303,7 +303,7 @@ class DbController extends Controller
             }
             fclose($file);
 
-            $this->console->writeLn('write to `:file` success: :count [:time]', ['file' => $fileName, 'count' => count($rows), 'time' => round(microtime(true) - $startTime, 4)]);
+            $this->console->writeLn(['write to `:file` success: :count [:time]', 'file' => $fileName, 'count' => count($rows), 'time' => round(microtime(true) - $startTime, 4)]);
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->console->writeLn();
         }

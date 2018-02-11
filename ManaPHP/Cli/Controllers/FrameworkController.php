@@ -62,7 +62,7 @@ class FrameworkController extends Controller
                     }
                     $prevClassNamespace = $classNamespace;
                 } else {
-                    $this->console->writeLn('`:class` class namespace is not found', ['class' => $className]);
+                    $this->console->writeLn(['`:class` class namespace is not found', 'class' => $className]);
                 }
             }
 
@@ -88,7 +88,7 @@ class FrameworkController extends Controller
 
         $this->filesystem->filePut($outputFile, $contents);
 
-        $this->console->writeLn('lite file generated in `:output` successfully ', ['output' => $outputFile]);
+        $this->console->writeLn(['lite file generated in `:output` successfully ', 'output' => $outputFile]);
 
         return 0;
     }

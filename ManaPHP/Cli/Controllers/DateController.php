@@ -21,7 +21,7 @@ class DateController extends Controller
         $prev_timestamp = 0;
         do {
             if ($this->httpClient->head($url) !== 200) {
-                $this->console->writeLn('communication with `:url` failed', ['url' => $url]);
+                $this->console->writeLn(['communication with `:url` failed', 'url' => $url]);
                 return false;
             }
             $headers = $this->httpClient->getResponseHeaders();
