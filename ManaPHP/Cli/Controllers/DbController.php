@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Cli\Controllers;
 
+use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
 use ManaPHP\Db;
 use ManaPHP\Utility\Text;
@@ -23,14 +24,23 @@ class DbController extends Controller
         sort($tables);
 
         $filter = $this->arguments->getOption('filter:f', '');
-        $line = 0;
         foreach ($tables as $table) {
             if ($filter && !fnmatch($filter, $table)) {
                 continue;
             }
 
-            $this->console->writeLn(sprintf('%-3d ', $line++) . $table);
+            $columns = $db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
+            $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
+            foreach ($columns as $i => $column) {
+                if ($primaryKey && $column === $primaryKey[0]) {
+                    $columns[$i] = $this->console->colorize($column, Console::FC_RED);
+                }
+            }
+            $this->console->writeLn($this->console->colorize($table, Console::FC_GREEN) . ('(' . implode($columns, ', ') . ')'));
         }
+
+        $this->console->writeLn();
+        $this->console->writeLn(['total `:count` tables', 'count' => count($tables)]);
     }
 
     /**
