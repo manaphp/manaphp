@@ -35,7 +35,7 @@ use ManaPHP\Component;
 abstract class Controller extends Component implements ControllerInterface
 {
     /**
-     * @CliCommand show the help information
+     * @CliCommand show this help information
      */
     public function helpCommand()
     {
@@ -50,6 +50,7 @@ abstract class Controller extends Component implements ControllerInterface
             $command = $controller . ':' . basename($method, 'Command');
             $params = [];
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             $rm = new \ReflectionMethod($this, $method);
             $lines = explode("\n", $rm->getDocComment());
             foreach ($lines as $line) {
