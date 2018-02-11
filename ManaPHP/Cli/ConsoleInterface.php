@@ -9,27 +9,66 @@ namespace ManaPHP\Cli;
 interface ConsoleInterface
 {
     /**
-     * @param string|array $str
-     * @param array        $context
+     * @param string $text
+     * @param int    $options
      *
-     * @return static
+     * @return string
      */
-    public function write($str, $context = []);
+    public function colorize($text, $options = 0);
+
+    /**
+     * @return void
+     */
+    public function sampleColorizer();
 
     /**
      * @param string|array $str
-     * @param array        $context
+     * @param int          $options
      *
      * @return static
      */
-    public function writeLn($str = '', $context = []);
+    public function write($str, $options = 0);
 
     /**
      * @param string|array $str
-     * @param array        $context
+     * @param int          $options
+     *
+     * @return static
+     */
+    public function writeLn($str = '', $options = 0);
+
+    /**
+     * @param string|array $message
+     *
+     * @return void
+     */
+    public function info($message);
+
+    /**
+     * @param string|array $message
+     *
+     * @return void
+     */
+    public function warn($message);
+
+    /**
+     * @param string|array $message
+     *
+     * @return void
+     */
+    public function success($message);
+
+    /**
+     * @param string|array $message
      * @param int          $code
      *
      * @return int
      */
-    public function error($str, $context = [], $code = 1);
+    public function error($message, $code = 1);
+
+    /**
+     * @param  string|array    $message
+     * @param int|float|string $value
+     */
+    public function progress($message, $value = null);
 }
