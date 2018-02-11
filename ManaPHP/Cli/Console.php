@@ -255,6 +255,9 @@ class Console extends Component implements ConsoleInterface
             if ($k === 'count') {
                 $v = $this->colorize($v, self::FC_GREEN);
             }
+            if (strpos($message, "\033[") !== false || strpos($message, "`:$k`") !== false) {
+                $message = strtr($message, ["`:$k`" => $this->colorize("`:$k`", self::FC_CYAN)]);
+            }
             $replaces[':' . $k] = $v;
         }
 
