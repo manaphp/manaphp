@@ -122,7 +122,7 @@ class Console extends Component implements ConsoleInterface
             $replaces = [];
 
             foreach ($context as $k => $v) {
-                $replaces[':' . $k] = (strpos($v, "\033[") !== false || strpos($str, "`:$k`") === false) ? $v : $this->colorize($v, self::FC_CYAN);
+                $replaces[':' . $k] = ($options || strpos($v, "\033[") !== false || strpos($str, "`:$k`") === false) ? $v : $this->colorize($v, self::FC_CYAN);
             }
 
             echo $this->colorize(strtr($str, $replaces), $options);
@@ -161,7 +161,7 @@ class Console extends Component implements ConsoleInterface
                     $headers[] = 'Console::' . $fc_name;
                 }
 
-                echo str_pad(implode('|', $headers), 40), static::colorize('http://www.manaphp.com/ ManaPHP 0123456789', $bc_value | $fc_value), PHP_EOL;
+                echo str_pad(implode('|', $headers), 40), $this->colorize('ManaPHP http://www.manaphp.com/', $bc_value | $fc_value), PHP_EOL;
             }
         }
 
