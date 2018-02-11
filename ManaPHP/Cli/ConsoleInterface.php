@@ -9,6 +9,11 @@ namespace ManaPHP\Cli;
 interface ConsoleInterface
 {
     /**
+     * @return bool
+     */
+    public function isSupportColor();
+
+    /**
      * @param string $text
      * @param int    $options
      *

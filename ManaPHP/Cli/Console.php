@@ -40,6 +40,18 @@ class Console extends Component implements ConsoleInterface
     const AT_INVERSE = 0x100000;
 
     /**
+     * @return bool
+     */
+    public function isSupportColor()
+    {
+        if (DIRECTORY_SEPARATOR === '/') {
+            return true;
+        }
+
+        return false !== \getenv('ANSICON') || 'ON' === \getenv('ConEmuANSI') || 'xterm' === \getenv('TERM');
+    }
+
+    /**
      * @param string $text
      * @param int    $options
      *
@@ -73,7 +85,7 @@ class Console extends Component implements ConsoleInterface
             self::FC_WHITE => "\033[37m",
         ];
 
-        if (DIRECTORY_SEPARATOR === '\\') {
+        if (!$this->isSupportColor()) {
             return $text;
         }
 
