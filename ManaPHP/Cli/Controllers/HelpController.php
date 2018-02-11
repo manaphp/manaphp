@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Cli\Controllers;
 
+use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
 use ManaPHP\Utility\Text;
 
@@ -17,55 +18,53 @@ class HelpController extends Controller
      */
     public function listCommand()
     {
-        $commands = [];
-
+        $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
             if (preg_match('#/(\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
                 $controllerClassName = 'ManaPHP\\' . strtr($matches[1], '/', '\\');
 
-                /** @noinspection SlowArrayOperationsInLoopInspection */
-                $commands = array_merge($commands, $this->_getCommands($controllerClassName));
-            }
-        }
-        $this->_list('manaphp commands: ', $commands);
+                $commands = $this->_getCommands($controllerClassName);
+                ksort($commands);
 
-        $commands = [];
+                if (!$commands) {
+                    continue;
+                }
 
-        if ($this->alias->has('@cli')) {
-            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
-                if (preg_match('#(\w+)Controller\.php$#', $file, $matches)) {
-                    $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . $matches[1] . 'Controller');
-                    /** @noinspection SlowArrayOperationsInLoopInspection */
-                    $commands = array_merge($commands, $this->_getCommands($controllerClassName));
+                $first = true;
+                $maxLength = max(max(array_map('strlen', array_keys($commands))), 16);
+                foreach ($commands as $command => $description) {
+                    $cmd = str_pad($command, $maxLength + 1);
+                    $this->console->writeLn('  ' . (!$first ? $cmd : $this->console->colorize($cmd, Console::FC_CYAN)) . ' ' . $description);
+                    $first = false;
                 }
             }
         }
 
-        $this->_list('application commands: ', $commands);
+        $this->console->writeLn('application commands: ', Console::FC_GREEN | Console::AT_BOLD);
+        if ($this->alias->has('@cli')) {
+            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
+                if (preg_match('#(\w+)Controller\.php$#', $file, $matches)) {
+                    $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . $matches[1] . 'Controller');
+                    $commands = $this->_getCommands($controllerClassName);
+
+                    ksort($commands);
+
+                    if (!$commands) {
+                        continue;
+                    }
+
+                    $first = true;
+                    $maxLength = max(max(array_map('strlen', array_keys($commands))), 16);
+                    foreach ($commands as $command => $description) {
+                        $cmd = str_pad($command, $maxLength + 1);
+                        $this->console->writeLn('  ' . (!$first ? $cmd : $this->console->colorize($cmd, Console::FC_CYAN)) . ' ' . $description);
+                        $first = false;
+                    }
+                }
+            }
+        }
 
         return 0;
-    }
-
-    /**
-     * @param string $title
-     * @param array  $commands
-     */
-    protected function _list($title, $commands)
-    {
-        $this->console->writeLn('');
-        $this->console->writeLn($title);
-
-        if (count($commands) === 0) {
-            return;
-        }
-
-        ksort($commands);
-
-        $maxLength = max(max(array_map('strlen', array_keys($commands))), 16);
-
-        foreach ($commands as $command => $description) {
-            $this->console->writeLn('  ' . str_pad($command, $maxLength + 1, ' ') . ' ' . $description);
-        }
     }
 
     /**
