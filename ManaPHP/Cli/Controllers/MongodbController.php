@@ -32,6 +32,7 @@ class MongodbController extends Controller
      * @CliCommand generate models file from data files or online data
      * @CliParam   --service:-s  explicit the mongodb service name
      * @CliParam   --dir the data file directory name
+     * @CliParam   --ns namespaces of models
      * @CliParam   --optimized:-o output as more methods as possible (default: 0)
      * @throws \ManaPHP\Cli\Controllers\Exception
      */

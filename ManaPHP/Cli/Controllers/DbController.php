@@ -61,6 +61,7 @@ class DbController extends Controller
      * @CliCommand generate models file in online
      * @CliParam   --service:-s  explicit the mongodb service name
      * @CliParam   --filter:-f filter the tables with fnmath method
+     * @CliParam   --ns namespaces of models
      * @CliParam   --optimized:-o output as more methods as possible (default: 0)
      */
     public function modelsCommand()
