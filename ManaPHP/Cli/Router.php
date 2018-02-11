@@ -128,6 +128,9 @@ class Router extends Component implements RouterInterface
             list(, $controllerName, $actionName) = array_pad($args, 3, null);
             if ($controllerName === null) {
                 $controllerName = 'help';
+            } elseif ($controllerName === 'help' && $actionName !== null) {
+                $controllerName = $actionName;
+                $actionName = 'help';
             }
 
             if ($actionName === null) {
