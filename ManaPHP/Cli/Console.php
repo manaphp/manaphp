@@ -122,7 +122,7 @@ class Console extends Component implements ConsoleInterface
             $replaces = [];
 
             foreach ($context as $k => $v) {
-                $replaces[':' . $k] = $v;
+                $replaces[':' . $k] = (strpos($v, "\033[") !== false || strpos($str, "`:$k`") === false) ? $v : $this->colorize($v, self::FC_CYAN);
             }
 
             echo $this->colorize(strtr($str, $replaces), $options);
