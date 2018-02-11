@@ -9,6 +9,7 @@ class MongodbController extends Controller
     /**
      * @CliCommand generate model file from base64 encoded string
      * @CliParam   --input:-i the base64 encoded json string
+     * @CliParam   --optimized:-o output more methods as possible (default: 0)
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
     public function modelCommand()
@@ -31,6 +32,7 @@ class MongodbController extends Controller
      * @CliCommand generate models file from data files or online data
      * @CliParam   --service:-s  explicit the mongodb service name
      * @CliParam   --dir the data file directory name
+     * @CliParam   --optimized:-o output more methods as possible (default: 0)
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
     public function modelsCommand()
@@ -122,7 +124,7 @@ class MongodbController extends Controller
      */
     protected function _renderModel($fieldTypes, $modelName)
     {
-        $optimized = $this->arguments->hasOption('optimized');
+        $optimized = $this->arguments->hasOption('optimized:o');
 
         $fields = array_keys($fieldTypes);
 
@@ -145,7 +147,7 @@ class MongodbController extends Controller
             if ($field === '_id' && $type === 'objectid') {
                 continue;
             }
-			
+
             $str .= '    public $' . $field . ';' . PHP_EOL;
         }
 
