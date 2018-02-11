@@ -36,7 +36,7 @@ class DbController extends Controller
     /**
      * @CliCommand generate model file in online
      * @CliParam   --service:-s  explicit the mongodb service name
-     * @CliParam   --optimized:-o output more methods as possible (default: 0)
+     * @CliParam   --optimized:-o output as more methods as possible (default: 0)
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
     public function modelCommand()
@@ -61,7 +61,7 @@ class DbController extends Controller
      * @CliCommand generate models file in online
      * @CliParam   --service:-s  explicit the mongodb service name
      * @CliParam   --filter:-f filter the tables with fnmath method
-     * @CliParam   --optimized:-o output more methods as possible (default: 0)
+     * @CliParam   --optimized:-o output as more methods as possible (default: 0)
      */
     public function modelsCommand()
     {

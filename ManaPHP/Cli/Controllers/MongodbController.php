@@ -9,7 +9,7 @@ class MongodbController extends Controller
     /**
      * @CliCommand generate model file from base64 encoded string
      * @CliParam   --input:-i the base64 encoded json string
-     * @CliParam   --optimized:-o output more methods as possible (default: 0)
+     * @CliParam   --optimized:-o output as more methods as possible (default: 0)
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
     public function modelCommand()
@@ -32,7 +32,7 @@ class MongodbController extends Controller
      * @CliCommand generate models file from data files or online data
      * @CliParam   --service:-s  explicit the mongodb service name
      * @CliParam   --dir the data file directory name
-     * @CliParam   --optimized:-o output more methods as possible (default: 0)
+     * @CliParam   --optimized:-o output as more methods as possible (default: 0)
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
     public function modelsCommand()
