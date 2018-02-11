@@ -112,7 +112,7 @@ class Arguments extends Component implements ArgumentsInterface
             throw new ArgumentsException('please remove `-` characters for `:argument` argument', ['argument' => $name]);
         }
 
-        foreach (explode(':', $name) as $o) {
+        foreach (explode(strpos($name, '|') !== false ? '|' : ':', $name) as $o) {
             if (isset($this->_options[$o])) {
                 $v = $this->_options[$o];
                 if (is_int($v)) {
@@ -125,7 +125,7 @@ class Arguments extends Component implements ArgumentsInterface
 
         if ($defaultValue === null) {
             $options = [];
-            foreach (explode(':', $name) as $opt) {
+            foreach (explode(strpos($name, '|') !== false ? '|' : ':', $name) as $opt) {
                 if (strlen($opt) === 1) {
                     $options[] = '-' . $opt;
                 } else {
@@ -146,7 +146,7 @@ class Arguments extends Component implements ArgumentsInterface
      */
     public function hasOption($name)
     {
-        foreach (explode(':', $name) as $p) {
+        foreach (explode(strpos($name, '|') !== false ? '|' : ':', $name) as $p) {
             if (isset($this->_options[$p])) {
                 return true;
             }
