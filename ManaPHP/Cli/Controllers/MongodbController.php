@@ -35,25 +35,45 @@ class MongodbController extends Controller
      */
     public function modelsCommand()
     {
-        $dir = $this->arguments->getOption('dir');
-        if (!$this->filesystem->dirExists($dir)) {
-            throw new Exception('`:dir` dir is not exists', ['dir' => $dir]);
-        }
+        $dir = $this->arguments->getOption('dir', '');
         $ns = $this->arguments->getOption('ns', 'App\Models');
 
-        foreach ($this->filesystem->glob($dir . '/*.json') as $file) {
-            $lines = file($file);
-            if (!isset($lines[0])) {
-                continue;
+        if ($dir) {
+            if (!$this->filesystem->dirExists($dir)) {
+                throw new Exception('`:dir` dir is not exists', ['dir' => $dir]);
             }
-            $fieldTypes = $this->_inferFieldTypes($lines[0]);
-            $fileName = basename($file, '.json');
-            $plainClass = Text::camelize($fileName);
-            $modelClass = $ns . '\\' . $plainClass;
 
-            $model = $this->_renderModel($fieldTypes, $modelClass);
+            foreach ($this->filesystem->glob($dir . '/*.json') as $file) {
+                $lines = file($file);
+                if (!isset($lines[0])) {
+                    continue;
+                }
+                $fieldTypes = $this->_inferFieldTypes($lines[0]);
+                $fileName = basename($file, '.json');
+                $plainClass = Text::camelize($fileName);
+                $modelClass = $ns . '\\' . $plainClass;
 
-            $this->filesystem->filePut("@data/tmp/mongodb/models/$plainClass.php", $model);
+                $model = $this->_renderModel($fieldTypes, $modelClass);
+
+                $this->filesystem->filePut("@data/tmp/mongodb/models/$plainClass.php", $model);
+            }
+        } else {
+            /**
+             * @var \ManaPHP\Mongodb $mongodb
+             */
+            $mongodb = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'mongodb'));
+            foreach ($mongodb->listCollections() as $collection) {
+                $docs = $mongodb->query($collection, [], ['limit' => 1]);
+                if ($docs) {
+                    $fieldTypes = $this->_inferFieldTypes(json_encode($docs[0]));
+                    $plainClass = Text::camelize($collection);
+                    $modelClass = $ns . '\\' . $plainClass;
+
+                    $model = $this->_renderModel($fieldTypes, $modelClass);
+
+                    $this->filesystem->filePut("@data/tmp/mongodb/models/$plainClass.php", $model);
+                }
+            }
         }
     }
 
