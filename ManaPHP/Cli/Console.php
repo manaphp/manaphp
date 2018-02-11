@@ -245,9 +245,17 @@ class Console extends Component implements ConsoleInterface
         if (is_array($message)) {
             $context = $message;
             $message = $message[0];
-            unset($message[0]);
+            unset($context[0]);
         } else {
             $context = [];
+        }
+
+        $replaces = [];
+        foreach ($context as $k => $v) {
+            if ($k === 'count') {
+                $v = $this->colorize($v, self::FC_GREEN);
+            }
+            $replaces[':' . $k] = $v;
         }
 
         if ($value !== null) {
@@ -256,14 +264,14 @@ class Console extends Component implements ConsoleInterface
             } else {
                 $percent = $value;
             }
-            $context = [':value' => $this->colorize($percent, self::FC_GREEN)];
+            $replaces[':value'] = $this->colorize($percent, self::FC_GREEN);
         }
 
-        $str = str_pad("\r", $this->_width) . "\r" . strtr($message, $context);
+        $str = str_pad("\r", $this->_width) . "\r" . strtr($message, $replaces);
 
         $this->write($str);
 
-        if ($value === '' || $value === null) {
+        if ($value === null) {
             $this->write(PHP_EOL);
         }
     }
