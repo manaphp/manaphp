@@ -97,8 +97,7 @@ class DbController extends Controller
             $this->filesystem->filePut($fileName, $model);
 
             $this->console->progress([
-                ' `:model` model for `:table` table saved to `:file`',
-                'model' => $plainClass,
+                '`:table` table saved to `:file`',
                 'table' => $table,
                 'file' => $fileName
             ]);
@@ -324,7 +323,7 @@ class DbController extends Controller
             fclose($file);
 
             $this->console->progress([
-                ' `:table` table imported to `:file`: :count [:time]',
+                ' `:table` imported to `:file`: :count [:time]',
                 'table' => $table,
                 'file' => $fileName,
                 'count' => count($rows),
