@@ -134,7 +134,14 @@ class Console extends Component implements ConsoleInterface
             $replaces = [];
 
             foreach ($context as $k => $v) {
-                $replaces[':' . $k] = ($options || strpos($v, "\033[") !== false || strpos($str, "`:$k`") === false) ? $v : $this->colorize($v, self::FC_CYAN);
+                if (!$options && strpos($v, "\033[") === false) {
+                    if (is_int($v) || is_float($v)) {
+                        $v = $this->colorize($v, self::FC_GREEN);
+                    } elseif (strpos($str, "`:$k`") !== false) {
+                        $v = $this->colorize($v, self::FC_CYAN);
+                    }
+                }
+                $replaces[':' . $k] = $v;
             }
 
             echo $this->colorize(strtr($str, $replaces), $options);
@@ -254,37 +261,23 @@ class Console extends Component implements ConsoleInterface
      */
     public function progress($message, $value = null)
     {
-        if (is_array($message)) {
-            $context = $message;
-            $message = $message[0];
-            unset($context[0]);
-        } else {
-            $context = [];
-        }
-
-        $replaces = [];
-        foreach ($context as $k => $v) {
-            if ($k === 'count') {
-                $v = $this->colorize($v, self::FC_GREEN);
-            }
-            if (strpos($message, "\033[") !== false || strpos($message, "`:$k`") !== false) {
-                $message = strtr($message, ["`:$k`" => $this->colorize("`:$k`", self::FC_CYAN)]);
-            }
-            $replaces[':' . $k] = $v;
-        }
-
         if ($value !== null) {
             if (is_int($value) || is_float($value)) {
                 $percent = sprintf('%2.2f', $value) . '%';
             } else {
                 $percent = $value;
             }
-            $replaces[':value'] = $this->colorize($percent, self::FC_GREEN);
+
+            if (is_array($message)) {
+                $message['value'] = $this->colorize($percent, self::FC_GREEN);
+            } else {
+                $message = [$message, 'value' => $this->colorize($percent, self::FC_GREEN)];
+            }
         }
 
-        $str = str_pad("\r", $this->_width) . "\r" . strtr($message, $replaces);
-
-        $this->write($str);
+        $this->write(str_pad("\r", $this->_width));
+        $this->write("\r");
+        $this->write($message);
 
         if ($value === null) {
             $this->write(PHP_EOL);
