@@ -38,6 +38,7 @@ class Application extends \ManaPHP\Application
 
                     $this->alias->set('@root', dirname($appDir));
                     $this->alias->set('@data', '@root/data');
+                    $this->alias->set('@tmp', '@root/data/tmp');
                     $this->alias->set('@app', $appDir);
                     $this->alias->set('@ns.app', $match[1]);
                 }

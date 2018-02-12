@@ -64,7 +64,7 @@ class DbController extends Controller
 
         $plainClass = Text::camelize($table);
         $model = $this->_renderModel($db, $table);
-        $this->filesystem->filePut("@data/tmp/db/model/$plainClass.php", $model);
+        $this->filesystem->filePut("@tmp/db/model/$plainClass.php", $model);
     }
 
     /**
@@ -90,7 +90,7 @@ class DbController extends Controller
             }
 
             $plainClass = Text::camelize($table);
-            $fileName = "@data/tmp/db/models/$plainClass.php";
+            $fileName = "@tmp/db/models/$plainClass.php";
             $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
             $model = $this->_renderModel($db, $table);
@@ -257,7 +257,7 @@ class DbController extends Controller
                 continue;
             }
 
-            $fileName = "@data/tmp/db/json/$table.json";
+            $fileName = "@tmp/db/json/$table.json";
 
             $this->console->writeLn(['`:table` processing...', 'table' => $table]);
 
@@ -300,7 +300,7 @@ class DbController extends Controller
                 continue;
             }
 
-            $fileName = "@data/tmp/db/csv/$table.csv";
+            $fileName = "@tmp/db/csv/$table.csv";
 
             $this->console->progress(['`:table` processing...', 'table' => $table], '');
 

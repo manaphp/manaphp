@@ -22,7 +22,7 @@ class MongodbController extends Controller
 
         $fieldTypes = $this->_inferFieldTypes($input);
         $model = $this->_renderModel($fieldTypes, $modelName);
-        $file = '@data/tmp/mongodb/model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
+        $file = '@tmp/mongodb/model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         $this->filesystem->filePut($file, $model);
 
         $this->console->writeLn(['write model to :file', 'file' => $file]);
@@ -58,7 +58,7 @@ class MongodbController extends Controller
 
                 $model = $this->_renderModel($fieldTypes, $modelClass);
 
-                $this->filesystem->filePut("@data/tmp/mongodb/models/$plainClass.php", $model);
+                $this->filesystem->filePut("@tmp/mongodb/models/$plainClass.php", $model);
             }
         } else {
             /**
@@ -69,7 +69,7 @@ class MongodbController extends Controller
                 $docs = $mongodb->query($collection, [], ['limit' => 1]);
                 if ($docs) {
                     $plainClass = Text::camelize($collection);
-                    $fileName = "@data/tmp/mongodb/models/$plainClass.php";
+                    $fileName = "@tmp/mongodb/models/$plainClass.php";
 
                     $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 
@@ -316,7 +316,7 @@ class MongodbController extends Controller
                 continue;
             }
 
-            $fileName = "@data/tmp/mongodb/csv/$collection.csv";
+            $fileName = "@tmp/mongodb/csv/$collection.csv";
 
             $this->console->writeLn(['`:collection` processing...', 'collection' => $collection]);
 
