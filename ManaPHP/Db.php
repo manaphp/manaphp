@@ -72,6 +72,11 @@ abstract class Db extends Component implements DbInterface
     protected $_affectedRows;
 
     /**
+     * @var int
+     */
+    protected $_timeout = 3;
+
+    /**
      * \ManaPHP\Db\Adapter constructor
      *
      */
@@ -79,6 +84,7 @@ abstract class Db extends Component implements DbInterface
     {
         $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
         $this->_options[\PDO::ATTR_EMULATE_PREPARES] = false;
+        $this->_options[\PDO::ATTR_TIMEOUT] = $this->_timeout;
     }
 
     /**
