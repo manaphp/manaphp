@@ -138,7 +138,7 @@ class Client extends Component implements ClientInterface
         }
 
         if (preg_match('/^http(s)?:\/\//i', $url) !== 1) {
-            throw new ClientException('only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, ['url' => $url]);
+            throw new ClientException(['only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, 'url' => $url]);
         }
 
         $headers = array_merge($this->_headers, $headers);
@@ -211,7 +211,7 @@ class Client extends Component implements ClientInterface
                             $file = $parts[0];
                             $types = explode('=', $parts[1]);
                             if ($types[0] !== 'type' || count($types) !== 2) {
-                                throw new ClientException('`:file` file name format is invalid'/**m05efb8755481bd2eb*/, ['file' => $v]);
+                                throw new ClientException(['`:file` file name format is invalid'/**m05efb8755481bd2eb*/, 'file' => $v]);
                             } else {
                                 $data[$k] = new \CURLFile($file, $types[1]);
                             }
@@ -280,7 +280,7 @@ class Client extends Component implements ClientInterface
             } elseif ($scheme === 'sock5') {
                 curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
             } else {
-                throw new ClientException('`:scheme` scheme of `:proxy` proxy is unknown', ['scheme' => $scheme, 'proxy' => $this->_proxy]);
+                throw new ClientException(['`:scheme` scheme of `:proxy` proxy is unknown', 'scheme' => $scheme, 'proxy' => $this->_proxy]);
             }
 
             curl_setopt($curl, CURLOPT_PROXYPORT, $parts['port']);
@@ -310,14 +310,14 @@ class Client extends Component implements ClientInterface
             $file = $options['download_file'];
             $tmp_file = tempnam(sys_get_temp_dir(), 'manaphp_http_client_');
             if (($tmp_fp = fopen($tmp_file, 'w+b')) === false) {
-                throw new ClientException('create tmp file failed for download `:file` file from `:url`', ['file' => $file, 'url' => $url]);
+                throw new ClientException(['create tmp file failed for download `:file` file from `:url`', 'file' => $file, 'url' => $url]);
             }
             curl_setopt($curl, CURLOPT_FILE, $tmp_fp);
             curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
             if (curl_exec($curl) === false) {
                 fclose($tmp_fp);
                 unlink($tmp_file);
-                throw new ClientException('cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, ['url' => $url, 'message' => curl_error($curl)]);
+                throw new ClientException(['cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, 'url' => $url, 'message' => curl_error($curl)]);
             } else {
                 fseek($tmp_fp, 0, SEEK_SET);
 
@@ -330,7 +330,7 @@ class Client extends Component implements ClientInterface
                 while (!feof($tmp_fp)) {
                     $buf = fread($tmp_fp, 8192);
                     if (fwrite($dst_fp, $buf, strlen($buf)) === false) {
-                        throw new ClientException('write downloaded data to `:file` file failed from `:url`', ['file' => $file, 'url' => $url]);
+                        throw new ClientException(['write downloaded data to `:file` file failed from `:url`', 'file' => $file, 'url' => $url]);
                     }
                 }
                 fclose($dst_fp);
@@ -347,7 +347,7 @@ class Client extends Component implements ClientInterface
             }
 
             if (curl_errno($curl)) {
-                throw new ClientException('cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, ['url' => $url, 'message' => curl_error($curl)]);
+                throw new ClientException(['cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, 'url' => $url, 'message' => curl_error($curl)]);
             }
 
             $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);

@@ -49,14 +49,14 @@ class Connectivity extends Component implements ConnectivityInterface
         if (strpos($url, '://') === false) {
             $parts = explode(':', $url, 2);
             if (count($parts) !== 2) {
-                throw new ConnectivityException('`:url` url is invalid.', ['url' => $url]);
+                throw new ConnectivityException(['`:url` url is invalid.', 'url' => $url]);
             }
             $host = $parts[0];
             $port = $parts[1];
         } else {
             $parts = parse_url($url);
             if (!isset($parts['host'])) {
-                throw new ConnectivityException('`:url` url is not contains host part.', ['url' => $url]);
+                throw new ConnectivityException(['`:url` url is not contains host part.', 'url' => $url]);
             }
             $host = $parts['host'];
             if (isset($parts['port'])) {
@@ -69,14 +69,14 @@ class Connectivity extends Component implements ConnectivityInterface
                 }
 
                 if ($port === false) {
-                    throw new ConnectivityException('`:scheme` scheme of `:url` url is unknown.', ['scheme' => $scheme, 'url' => $url]);
+                    throw new ConnectivityException(['`:scheme` scheme of `:url` url is unknown.', 'scheme' => $scheme, 'url' => $url]);
                 }
             }
         }
 
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if ($socket === false) {
-            throw new ConnectivityException('test `:url` url failed: `:socket_error`', ['url' => $url, '']);
+            throw new ConnectivityException(['test `:url` url failed: `:socket_error`', 'url' => $url, '']);
         }
         $r = @socket_connect($socket, $host, $port);
         socket_close($socket);

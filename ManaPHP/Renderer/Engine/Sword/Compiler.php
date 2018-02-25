@@ -740,7 +740,7 @@ class Compiler extends Component
             case 2:
                 return "<?php if(isset(\$_REQUEST[$parts[0]])) echo \$renderer->escape(\$_REQUEST[$parts[0]]); else echo $parts[1]; ?>";
             default:
-                throw new SwordException('bad expression: `:expression`', ['expression' => "@request($expression)"]);
+                throw new SwordException(['bad expression: `:expression`', 'expression' => "@request($expression)"]);
         }
     }
 

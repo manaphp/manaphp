@@ -41,7 +41,7 @@ class Model extends \ManaPHP\Model
     {
         $db = static::getDb($context);
         if ($db === false) {
-            throw new ModelException(' db of `:model` model is invalid.', ['model' => get_called_class()]);
+            throw new ModelException(['db of `:model` model is invalid.', 'model' => get_called_class()]);
         }
 
         return Di::getDefault()->getShared($db);
@@ -153,12 +153,12 @@ class Model extends \ManaPHP\Model
 
                 $phpdoc = $rp->getDocComment();
                 if (!$phpdoc) {
-                    throw new ModelException('`:property` property does not contain phpdoc', ['property' => $rp->getName()]);
+                    throw new ModelException(['`:property` property does not contain phpdoc', 'property' => $rp->getName()]);
                 }
 
                 if (!preg_match('#@var ([^\s]+)#', $phpdoc, $match)) {
-                    throw new ModelException('`:property` property phpdoc does not contain data type defintion: `:phpdoc`',
-                        ['property' => $rp->getName(), 'phpdoc' => $phpdoc]);
+                    throw new ModelException(['`:property` property phpdoc does not contain data type defintion: `:phpdoc`',
+                        'property' => $rp->getName(), 'phpdoc' => $phpdoc]);
                 }
 
                 switch ($match[1]) {
@@ -181,8 +181,8 @@ class Model extends \ManaPHP\Model
                         $type = 'objectid';
                         break;
                     default:
-                        throw new ModelException('`:property` property `:type` type unsupported',
-                            ['property' => $rp->getName(), 'type' => $match[1]]);
+                        throw new ModelException(['`:property` property `:type` type unsupported',
+                            'property' => $rp->getName(), 'type' => $match[1]]);
                 }
 
                 $fieldTypes[$rp->getName()] = $type;
@@ -274,7 +274,7 @@ class Model extends \ManaPHP\Model
             return is_bool($value) ? $value : (bool)$value;
         } else {
             /** @noinspection PhpUnhandledExceptionInspection */
-            throw new ModelException('unsupported `:type` type', ['type' => $type]);
+            throw new ModelException(['unsupported `:type` type', 'type' => $type]);
         }
     }
 

@@ -52,7 +52,7 @@ class Redis extends \Redis
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'redis') {
-            throw new RedisException('`:url` is invalid, `:scheme` scheme is not recognized', ['url' => $uri, 'scheme' => $parts['scheme']]);
+            throw new RedisException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
@@ -62,7 +62,7 @@ class Redis extends \Redis
             $path = trim($parts['path'], '/');
             if ($path !== '') {
                 if (!is_numeric($path)) {
-                    throw new RedisException('`:url` url is invalid, `:db` db is not integer', ['url' => $uri, 'db' => $path]);
+                    throw new RedisException(['`:url` url is invalid, `:db` db is not integer', 'url' => $uri, 'db' => $path]);
                 }
             }
             $this->_db = (int)$path;
@@ -96,11 +96,11 @@ class Redis extends \Redis
         }
 
         if ($this->_auth !== '' && !$this->auth($this->_auth)) {
-            throw new RedisException('`:auth` auth is wrong.', ['auth' => $this->_auth]);
+            throw new RedisException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
         }
 
         if ($this->_db !== 0 && !$this->select($this->_db)) {
-            throw new RedisException('select `:db` db failed', ['db' => $this->_db]);
+            throw new RedisException(['select `:db` db failed', 'db' => $this->_db]);
         }
     }
 

@@ -34,7 +34,7 @@ class Mysql extends Db
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mysql') {
-            throw new MysqlException('`:url` is invalid, `:scheme` scheme is not recognized', ['url' => $uri, 'scheme' => $parts['scheme']]);
+            throw new MysqlException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_username = isset($parts['user']) ? $parts['user'] : 'root';

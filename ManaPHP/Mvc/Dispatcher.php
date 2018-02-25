@@ -134,7 +134,7 @@ class Dispatcher extends Component implements DispatcherInterface
     public function getParam($param, $rule = null)
     {
         if (!isset($this->_params[$param])) {
-            throw new DispatcherException('`:param` param is not exists', ['param' => $param]);
+            throw new DispatcherException(['`:param` param is not exists', 'param' => $param]);
         }
 
         return $rule ? $this->filter->sanitize($param, $rule, $this->_params[$param]) : $this->_params[$param];
@@ -218,7 +218,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
 
             if (!class_exists($controllerClassName) && !$this->_dependencyInjector->has($controllerClassName)) {
-                throw new NotFoundControllerException('`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, ['controller' => $controllerClassName]);
+                throw new NotFoundControllerException(['`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, 'controller' => $controllerClassName]);
             }
 
             /**
@@ -303,7 +303,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 $this->_actionName = strpos($parts[1], '_') === false ? $parts[1] : lcfirst(Text::camelize($parts[1]));
                 break;
             default:
-                throw new DispatcherException('`:forward` forward format is invalid'/**m03a65d2ea494b97ba*/, ['forward' => $forward]);
+                throw new DispatcherException(['`:forward` forward format is invalid'/**m03a65d2ea494b97ba*/, 'forward' => $forward]);
         }
 
         $this->_params = array_merge($this->_params, $params);

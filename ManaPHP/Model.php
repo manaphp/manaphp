@@ -273,7 +273,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $field = static::getDisplayField();
             if ($field === null) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new ModelException('invoke :model:findList method must provide displayField', ['model' => get_called_class()]);
+                throw new ModelException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
             }
             $keyField = static::getPrimaryKey();
             $valueField = $field;
@@ -375,8 +375,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function firstOrFail($filters = null, $fields = null, $options = null)
     {
         if (($r = static::first($filters, $fields, $options)) === false) {
-            $exception = new NotFoundException('No query results for `:model` model with `:criteria` criteria',
-                ['model' => static::class, 'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)]);
+            $exception = new NotFoundException(['No query results for `:model` model with `:criteria` criteria',
+                'model' => static::class, 'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)]);
             $exception->model = static::class;
             $exception->filters = $filters;
 
@@ -644,7 +644,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($whiteList === null) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:model` model do not define accessible fields.', ['model' => get_called_class()]);
+            throw new ModelException(['`:model` model do not define accessible fields.', 'model' => get_called_class()]);
         }
 
         $fields = static::getFields();
@@ -654,8 +654,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             if ($blackList !== []) {
                 /** @noinspection PhpUnhandledExceptionInspection */
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new ModelException('`:blacklist` fields is not in accessible fields: `:whitelist`',
-                    ['blacklist' => implode(',', $blackList), 'whitelist' => implode(',', $whiteList)]);
+                throw new ModelException(['`:blacklist` fields is not in accessible fields: `:whitelist`',
+                    'blacklist' => implode(',', $blackList), 'whitelist' => implode(',', $whiteList)]);
             }
         }
 
@@ -749,7 +749,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, ['model' => get_class($this)]);
+            throw new ModelException(['`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, 'model' => get_class($this)]);
         }
 
         $fieldValues = [];
@@ -762,15 +762,15 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if (($db = static::getDb($this)) === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:model` model db sharding for insert failed',
-                ['model' => get_called_class(), 'context' => $this]);
+            throw new ModelException(['`:model` model db sharding for insert failed',
+                'model' => get_called_class(), 'context' => $this]);
         }
 
         if (($source = static::getSource($this)) === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:model` model table sharding for insert failed',
-                ['model' => get_called_class(), 'context' => $this]);
+            throw new ModelException(['`:model` model table sharding for insert failed',
+                'model' => get_called_class(), 'context' => $this]);
         }
 
         $connection = $this->_dependencyInjector->getShared($db);
@@ -852,8 +852,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if (!isset($this->{$primaryKey})) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
-                ['model' => get_class($this)]);
+            throw new ModelException(['`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
+                'model' => get_class($this)]);
         }
 
         $conditions[$primaryKey] = $this->{$primaryKey};
@@ -891,7 +891,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, ['model' => get_class($this)]);
+            throw new ModelException(['`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, 'model' => get_class($this)]);
         }
 
         static::criteria()->where($conditions)->update($fieldValues);
@@ -1062,7 +1062,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($this->_fireEventCancel('beforeDelete') === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, ['model' => get_class($this)]);
+            throw new ModelException(['`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, 'model' => get_class($this)]);
         }
 
         $primaryKey = static::getPrimaryKey();
@@ -1071,8 +1071,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if (!isset($this->{$primaryKey})) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('`:model` model cannot be deleted because the primary key attribute: `:field` was not set'/**m01dec9cd3b69742a5*/,
-                ['model' => get_class($this), 'field' => $primaryKey]);
+            throw new ModelException(['`:model` model cannot be deleted because the primary key attribute: `:field` was not set'/**m01dec9cd3b69742a5*/,
+                'model' => get_class($this), 'field' => $primaryKey]);
         }
 
         $criteria->where($primaryKey, $this->{$primaryKey});
@@ -1276,7 +1276,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        throw new ModelException('infer referenceField from `:model` failed.', ['model' => $model]);
+        throw new ModelException(['infer referenceField from `:model` failed.', 'model' => $model]);
     }
 
     /**

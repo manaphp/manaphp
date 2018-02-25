@@ -69,7 +69,7 @@ class Arguments extends Component implements ArgumentsInterface
 
             if ($o[1] === '-') {
                 if (strlen($o) < 3) {
-                    throw new ArgumentsException('long `:option` option is too short', ['option' => $o]);
+                    throw new ArgumentsException(['long `:option` option is too short', 'option' => $o]);
                 }
                 if (count($args) >= 1 && $args[0] !== '-') {
                     $r[substr($o, 2)] = array_shift($args);
@@ -109,7 +109,7 @@ class Arguments extends Component implements ArgumentsInterface
         }
 
         if (strpos($name, '-') !== false) {
-            throw new ArgumentsException('please remove `-` characters for `:argument` argument', ['argument' => $name]);
+            throw new ArgumentsException(['please remove `-` characters for `:argument` argument', 'argument' => $name]);
         }
 
         foreach (explode(strpos($name, '|') !== false ? '|' : ':', $name) as $o) {

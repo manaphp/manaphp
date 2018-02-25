@@ -45,7 +45,7 @@ class Gd extends Component implements EngineInterface
 
         $this->_file = realpath($this->alias->resolve($file));
         if (!$this->_file) {
-            throw new GdException('`:file` file is not exists'/**m028d68547edc10000*/, ['file' => $file]);
+            throw new GdException(['`:file` file is not exists'/**m028d68547edc10000*/, 'file' => $file]);
         }
 
         list($this->_width, $this->_height, $type) = getimagesize($this->_file);
@@ -260,7 +260,7 @@ class Gd extends Component implements EngineInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new GdException('create `:dir` image directory failed: :message'/**m0798bf2f57ec615b2*/, ['dir' => $dir, 'message' => error_get_last()['message']]);
+            throw new GdException(['create `:dir` image directory failed: :message'/**m0798bf2f57ec615b2*/, 'dir' => $dir, 'message' => error_get_last()['message']]);
         }
         if ($ext === 'gif') {
             imagegif($this->_image, $file);
@@ -269,7 +269,7 @@ class Gd extends Component implements EngineInterface
         } elseif ($ext === 'png') {
             imagepng($this->_image, $file);
         } else {
-            throw new GdException('`:extension` is not supported by Installed GD'/**m0e69270218b72270a*/, ['extension' => $ext]);
+            throw new GdException(['`:extension` is not supported by Installed GD'/**m0e69270218b72270a*/, 'extension' => $ext]);
         }
     }
 

@@ -19,7 +19,7 @@ class Mssql extends Db
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mssql') {
-            throw new MssqlException('`:uri` is invalid, `:scheme` scheme is not recognized', ['uri' => $uri, 'scheme' => $parts['scheme']]);
+            throw new MssqlException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_username = isset($parts['user']) ? $parts['user'] : null;

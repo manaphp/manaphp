@@ -118,8 +118,8 @@ class Criteria extends \ManaPHP\Model\Criteria
         $cursor = $db->command($cmd);
         $r = $cursor->toArray()[0];
         if (!$r['ok']) {
-            throw new CriteriaException('`:distinct` distinct for `:collection` collection failed `:code`: `:msg`',
-                ['distinct' => $field, 'code' => $r['code'], 'msg' => $r['errmsg'], 'collection' => $source]);
+            throw new CriteriaException(['`:distinct` distinct for `:collection` collection failed `:code`: `:msg`',
+                'distinct' => $field, 'code' => $r['code'], 'msg' => $r['errmsg'], 'collection' => $source]);
         }
 
         return $this->_limit ? array_slice($r['values'], $this->_offset, $this->_limit) : $r['values'];
@@ -156,7 +156,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
 
             if (preg_match('#^(\w+)\((.*)\)$#', $v, $match) !== 1) {
-                throw new CriteriaException('`:aggregate` aggregate is invalid.', ['aggregate' => $v]);
+                throw new CriteriaException(['`:aggregate` aggregate is invalid.', 'aggregate' => $v]);
             }
 
             $accumulator = strtolower($match[1]);
@@ -173,11 +173,11 @@ class Criteria extends \ManaPHP\Model\Criteria
                     $sub_operand2 = is_numeric($match2[3]) ? (double)$match2[3] : ('$' . $match2[3]);
                     $this->_aggregate[$k] = ['$' . $accumulator => [$sub_operand => [$sub_operand1, $sub_operand2]]];
                 } else {
-                    throw new CriteriaException('unknown `:operand` operand of `:aggregate` aggregate', ['operand' => $operand, 'aggregate' => $v]);
+                    throw new CriteriaException(['unknown `:operand` operand of `:aggregate` aggregate', 'operand' => $operand, 'aggregate' => $v]);
                 }
             } else {
-                throw new CriteriaException('unknown `:accumulator` accumulator of `:aggregate` aggregate',
-                    ['accumulator' => $accumulator, 'aggregate' => $v]);
+                throw new CriteriaException(['unknown `:accumulator` accumulator of `:aggregate` aggregate',
+                    'accumulator' => $accumulator, 'aggregate' => $v]);
             }
         }
 
@@ -211,7 +211,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         } elseif (is_array($value)) {
             if (strpos($filter, '~=')) {
                 if (count($value) !== 2 || !isset($value[0], $value[1])) {
-                    throw new CriteriaException('`:filter` filter is valid: value is not a two elements array', ['filter' => $filter]);
+                    throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
                 }
                 $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif (isset($value[0]) || count($value) === 0) {
@@ -247,11 +247,11 @@ class Criteria extends \ManaPHP\Model\Criteria
                     $fieldTypes = $modelName::getFieldTypes();
                     $this->_filters[] = [$field => [$operator_map[$operator] => $modelName::getNormalizedValue($fieldTypes[$field], $value)]];
                 } else {
-                    throw new CriteriaException('unknown `:where` where filter', ['where' => $filter]);
+                    throw new CriteriaException(['unknown `:where` where filter', 'where' => $filter]);
                 }
             }
         } else {
-            throw new CriteriaException('unknown mongodb criteria `filter` filter', ['filter' => $filter]);
+            throw new CriteriaException(['unknown mongodb criteria `filter` filter', 'filter' => $filter]);
         }
 
         return $this;
@@ -643,7 +643,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         if (is_string($orderBy)) {
             foreach (explode(',', $orderBy) as $item) {
                 if (preg_match('#^\s*([\w\.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
-                    throw new CriteriaException('unknown `:order` order by for `:model` model', ['order' => $orderBy, 'model' => $this->_modelName]);
+                    throw new CriteriaException(['unknown `:order` order by for `:model` model', 'order' => $orderBy, 'model' => $this->_modelName]);
                 }
                 $this->_order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? 1 : -1;
             }
@@ -709,12 +709,12 @@ class Criteria extends \ManaPHP\Model\Criteria
                         $parts = explode(',', $match[2]);
 
                         if ($parts[1] === '0') {
-                            throw new CriteriaException('`:group` substr index is 1-based', ['group' => $groupBy]);
+                            throw new CriteriaException(['`:group` substr index is 1-based', 'group' => $groupBy]);
                         }
                         $this->_group[$parts[0]] = ['$substr' => ['$' . $parts[0], $parts[1] - 1, (int)$parts[2]]];
                     }
                 } else {
-                    throw new CriteriaException('`:group` group is not supported. ', ['group' => $groupBy]);
+                    throw new CriteriaException(['`:group` group is not supported. ', 'group' => $groupBy]);
                 }
             } else {
                 foreach (explode(',', str_replace(' ', '', $groupBy)) as $field) {
@@ -986,13 +986,13 @@ class Criteria extends \ManaPHP\Model\Criteria
          */
         $modelName = $this->_modelName;
         if (($db = $modelName::getDb($this)) === false) {
-            throw new CriteriaException('`:model` model db sharding for update failed',
-                ['model' => $modelName, 'context' => $this]);
+            throw new CriteriaException(['`:model` model db sharding for update failed',
+                'model' => $modelName, 'context' => $this]);
         }
 
         if (($source = $modelName::getSource($this)) === false) {
-            throw new CriteriaException('`:model` model table sharding for update failed',
-                ['model' => $modelName, 'context' => $this]);
+            throw new CriteriaException(['`:model` model table sharding for update failed',
+                'model' => $modelName, 'context' => $this]);
         }
 
         return $this->_dependencyInjector->getShared($db)->delete($source, $this->_filters ? ['$and' => $this->_filters] : []);
@@ -1010,13 +1010,13 @@ class Criteria extends \ManaPHP\Model\Criteria
          */
         $modelName = $this->_modelName;
         if (($db = $modelName::getDb($this)) === false) {
-            throw new CriteriaException('`:model` model db sharding for update failed',
-                ['model' => $modelName, 'context' => $this]);
+            throw new CriteriaException(['`:model` model db sharding for update failed',
+                'model' => $modelName, 'context' => $this]);
         }
 
         if (($source = $modelName::getSource($this)) === false) {
-            throw new CriteriaException('`:model` model table sharding for update failed',
-                ['model' => $modelName, 'context' => $this]);
+            throw new CriteriaException(['`:model` model table sharding for update failed',
+                'model' => $modelName, 'context' => $this]);
         }
 
         return $this->_dependencyInjector->getShared($db)->update($source, $fieldValues, $this->_filters ? ['$and' => $this->_filters] : []);

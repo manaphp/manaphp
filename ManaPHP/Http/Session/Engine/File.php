@@ -97,7 +97,7 @@ class File extends Component implements EngineInterface
         $file = $this->_getFileName($session_id);
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new SessionException('create `:dir` session directory failed: :last_error_message'/**m0842502d4c2904242*/, ['dir' => $dir]);
+            throw new SessionException(['create `:dir` session directory failed: :last_error_message'/**m0842502d4c2904242*/, 'dir' => $dir]);
         }
 
         if (file_put_contents($file, $data, LOCK_EX) === false) {

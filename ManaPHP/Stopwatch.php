@@ -40,11 +40,11 @@ class Stopwatch extends Component implements StopwatchInterface
     public function stop($name)
     {
         if (!isset($this->_recorders[$name])) {
-            throw new StopwatchException('`:name` name is not started.', ['name' => $name]);
+            throw new StopwatchException(['`:name` name is not started.', 'name' => $name]);
         }
 
         if (isset($this->_recorders[$name]['time_stop'])) {
-            throw new StopwatchException('`:name` name is stopped.', ['name' => $name]);
+            throw new StopwatchException(['`:name` name is stopped.', 'name' => $name]);
         }
 
         $this->_recorders[$name]['time_stop'] = microtime(true);
@@ -72,7 +72,7 @@ class Stopwatch extends Component implements StopwatchInterface
     public function getElapsedTime($name)
     {
         if (!isset($this->_recorders[$name])) {
-            throw new StopwatchException('`:name` name is not started.', ['name' => $name]);
+            throw new StopwatchException(['`:name` name is not started.', 'name' => $name]);
         }
 
         $start = $this->_recorders[$name]['time_start'];
@@ -90,7 +90,7 @@ class Stopwatch extends Component implements StopwatchInterface
     public function getUsedMemory($name)
     {
         if (!isset($this->_recorders[$name])) {
-            throw new StopwatchException('`:name` name is not started.', ['name' => $name]);
+            throw new StopwatchException(['`:name` name is not started.', 'name' => $name]);
         }
 
         $start = $this->_recorders[$name]['memory_start'];

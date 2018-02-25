@@ -24,7 +24,7 @@ class StringType implements AdapterInterface
         } elseif ($data === false || $data === null) {
             return '';
         } else {
-            throw new StringTypeException('data is not a string: `:data`'/**m0302aa8f9d395d68a*/, ['data' => json_encode(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+            throw new StringTypeException(['data is not a string: `:data`'/**m0302aa8f9d395d68a*/, 'data' => json_encode(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
         }
     }
 

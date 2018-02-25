@@ -134,7 +134,7 @@ class Crypt extends Component implements CryptInterface
     public function getDerivedKey($type)
     {
         if ($this->_masterKey === null) {
-            throw new CryptException('getDerivedKey for `:type` type Failed: master key is not set', ['type' => $type]);
+            throw new CryptException(['getDerivedKey for `:type` type Failed: master key is not set', 'type' => $type]);
         }
 
         return md5($this->_masterKey . ':' . $type);

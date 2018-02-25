@@ -83,7 +83,7 @@ class Redis extends Component implements EngineInterface
     public function push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
         if (!in_array($priority, $this->_priorities, true)) {
-            throw new RedisException('`:priority` priority of `:topic is invalid`', ['priority' => $priority, 'topic' => $topic]);
+            throw new RedisException(['`:priority` priority of `:topic is invalid`', 'priority' => $priority, 'topic' => $topic]);
         }
 
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();

@@ -145,7 +145,7 @@ class Paginator extends Component implements \JsonSerializable, PaginatorInterfa
         }
 
         if (strpos($urlTemplate, '{page}') === false) {
-            throw new PaginatorException('`:template` url template is invalid: it must contain {page} pattern'/**m0b85431254175cf7a*/, ['template' => $urlTemplate]);
+            throw new PaginatorException(['`:template` url template is invalid: it must contain {page} pattern'/**m0b85431254175cf7a*/, 'template' => $urlTemplate]);
         }
 
         $str = PHP_EOL . '<ul class="pagination">' . PHP_EOL;

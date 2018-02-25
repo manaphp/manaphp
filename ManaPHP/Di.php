@@ -126,7 +126,7 @@ class Di implements DiInterface
                 } else {
                     /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     /** @noinspection PhpUnhandledExceptionInspection */
-                    throw new DiException('`:component` component definition is invalid: missing class field', ['component' => $name]);
+                    throw new DiException(['`:component` component definition is invalid: missing class field', 'component' => $name]);
                 }
 
                 $definition['class'] = is_string($component) ? $component : $component['class'];
@@ -138,7 +138,7 @@ class Di implements DiInterface
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             /** @noinspection PhpUnhandledExceptionInspection */
-            throw new DiException('`:component` component definition is unknown', ['component' => $name]);
+            throw new DiException(['`:component` component definition is unknown', 'component' => $name]);
         }
 
         $this->_components[$name] = $definition;
@@ -169,7 +169,7 @@ class Di implements DiInterface
                 } else {
                     /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     /** @noinspection PhpUnhandledExceptionInspection */
-                    throw new DiException('`:component` component definition is invalid: missing class field', ['component' => $name]);
+                    throw new DiException(['`:component` component definition is invalid: missing class field', 'component' => $name]);
                 }
 
                 $definition['class'] = is_string($component) ? $component : $component['class'];
@@ -179,7 +179,7 @@ class Di implements DiInterface
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             /** @noinspection PhpUnhandledExceptionInspection */
-            throw new DiException('`:component` component definition is unknown', ['component' => $name]);
+            throw new DiException(['`:component` component definition is unknown', 'component' => $name]);
         }
 
         $this->_components[$name] = $definition;
@@ -224,7 +224,7 @@ class Di implements DiInterface
         if (in_array($name, $this->_aliases, true)) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             /** @noinspection PhpUnhandledExceptionInspection */
-            throw new DiException('`:name` component is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, ['name' => $name]);
+            throw new DiException(['`:name` component is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, 'name' => $name]);
         }
 
         if (isset($this->_aliases[$name])) {
@@ -265,7 +265,7 @@ class Di implements DiInterface
             if (!class_exists($definition)) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 /** @noinspection PhpUnhandledExceptionInspection */
-                throw new DiException('`:name` component cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, ['name' => $name, 'class' => $definition]);
+                throw new DiException(['`:name` component cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, 'name' => $name, 'class' => $definition]);
             }
             $count = count($parameters);
 
@@ -290,7 +290,7 @@ class Di implements DiInterface
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             /** @noinspection PhpUnhandledExceptionInspection */
-            throw new DiException('`:name` component cannot be resolved: component implement type is not supported'/**m072d42756355fb069*/, ['name' => $name]);
+            throw new DiException(['`:name` component cannot be resolved: component implement type is not supported'/**m072d42756355fb069*/, 'name' => $name]);
         }
 
         if ($instance instanceof Component) {
@@ -426,7 +426,7 @@ class Di implements DiInterface
      */
     public function __call($method, $arguments = [])
     {
-        throw new DiException('Call to undefined method `:method`'/**m06946faf1ec42dea1*/, ['method' => $method]);
+        throw new DiException(['Call to undefined method `:method`'/**m06946faf1ec42dea1*/, 'method' => $method]);
     }
 
     /**

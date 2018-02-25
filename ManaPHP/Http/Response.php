@@ -381,7 +381,7 @@ class Response extends Component implements ResponseInterface
 
         if ($this->_file) {
             if (!$this->filesystem->fileExists($this->_file)) {
-                throw new ResponseException('Sent file is not exists: `:file`'/**m0ff2d0759014d7170*/, ['file' => $this->_file]);
+                throw new ResponseException(['Sent file is not exists: `:file`'/**m0ff2d0759014d7170*/, 'file' => $this->_file]);
             }
             $this->setHeader('Content-Length', $this->filesystem->fileSize($this->_file));
         }

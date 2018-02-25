@@ -93,7 +93,7 @@ class Mwt extends Component implements TokenInterface
     {
         $parts = explode('.', strtr($str, '-_', '+/'));
         if (count($parts) !== 3) {
-            throw new MwtException('`:token` is not contain 3 parts'/**m0b5ce4741348c3747*/, ['token' => $str]);
+            throw new MwtException(['`:token` is not contain 3 parts'/**m0b5ce4741348c3747*/, 'token' => $str]);
         }
         list($type, $payload, $hash) = $parts;
 
@@ -107,12 +107,12 @@ class Mwt extends Component implements TokenInterface
         }
 
         if (!$success) {
-            throw new MwtException('hash is not corrected: :hash'/**m0f1ae3ea6eeb35939*/, ['hash' => $hash]);
+            throw new MwtException(['hash is not corrected: :hash'/**m0f1ae3ea6eeb35939*/, 'hash' => $hash]);
         }
 
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($type != $this->_type) {
-            throw new MwtException('type is not correct: :type'/**m09537eea529cf24a6*/, ['type' => $type]);
+            throw new MwtException(['type is not correct: :type'/**m09537eea529cf24a6*/, 'type' => $type]);
         }
 
         $data = json_decode(base64_decode($payload), true);

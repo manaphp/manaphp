@@ -67,7 +67,7 @@ class Renderer extends Component implements RendererInterface
 
         if ($template[0] !== '@') {
             if (strpos($template, '/') !== false) {
-                throw new RendererException('`:template` template can not contains relative path', ['template' => $template]);
+                throw new RendererException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
             $template = dirname($this->_current_template) . '/' . $template;
@@ -133,8 +133,8 @@ class Renderer extends Component implements RendererInterface
         }
 
         if ($notExists) {
-            throw new RendererException('`:template` with `:extensions` extension file was not found'/**m0312a7f5d4bc76939*/,
-                ['template' => $template, 'extensions' => implode(', or ', array_keys($this->_engines))]);
+            throw new RendererException(['`:template` with `:extensions` extension file was not found'/**m0312a7f5d4bc76939*/,
+                'template' => $template, 'extensions' => implode(', or ', array_keys($this->_engines))]);
         }
 
         return $content;
@@ -166,7 +166,7 @@ class Renderer extends Component implements RendererInterface
                 if (PHP_EOL !== "\n") {
                     $realPath = strtr(realpath($file), '\\', '/');
                     if ($file !== $realPath) {
-                        throw new RendererException('`:real_file` file name does case mismatch for `:wanted_file`', ['real_file' => $realPath, 'wanted_file' => $file]);
+                        throw new RendererException(['`:real_file` file name does case mismatch for `:wanted_file`', 'real_file' => $realPath, 'wanted_file' => $file]);
                     }
                 }
                 return true;

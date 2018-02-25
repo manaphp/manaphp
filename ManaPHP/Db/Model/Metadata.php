@@ -57,8 +57,8 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                 $diff = array_diff($properties, $data[Db::METADATA_ATTRIBUTES]);
 
                 if (count($diff) !== 0) {
-                    throw new MetadataException('`:table` table of `:model` model is not contains `:fields` fields'/**m0bb273aae32bfd843*/,
-                        ['table' => $model->getSource(true), 'model' => $modelName, 'fields' => implode(',', $diff)]);
+                    throw new MetadataException(['`:table` table of `:model` model is not contains `:fields` fields'/**m0bb273aae32bfd843*/,
+                        'table' => $model->getSource(true), 'model' => $modelName, 'fields' => implode(',', $diff)]);
                 }
 
                 $this->_metadata[$modelName] = $data;

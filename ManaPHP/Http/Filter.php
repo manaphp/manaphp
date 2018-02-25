@@ -195,7 +195,7 @@ class Filter extends Component implements FilterInterface
         } elseif (function_exists($filter)) {
             $value = call_user_func_array($filter, array_merge([$value], $parameters));
         } else {
-            throw new FilterException('`:name` filter is not be recognized'/**m09d0e9938a3a49e27*/, ['name' => $filter]);
+            throw new FilterException(['`:name` filter is not be recognized'/**m09d0e9938a3a49e27*/, 'name' => $filter]);
         }
 
         if ($value === null) {
@@ -207,7 +207,7 @@ class Filter extends Component implements FilterInterface
                 }
 
                 if (!$this->filesystem->fileExists($file)) {
-                    throw new FilterException('`:file` filter message template file is not exists'/**m08523be1bf26d3984*/, ['file' => $file]);
+                    throw new FilterException(['`:file` filter message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
                 }
 
                 /** @noinspection PhpIncludeInspection */
@@ -215,21 +215,19 @@ class Filter extends Component implements FilterInterface
             }
 
             if (isset($this->_messages[$filter])) {
-                $message = $this->_messages[$filter];
+                $message = [$this->_messages[$filter]];
             } else {
-                $message = $this->_defaultMessage;
+                $message = [$this->_defaultMessage];
             }
 
-            $bind = [];
-
-            $bind['filter'] = $filter;
-            $bind['attribute'] = isset($this->_attributes[$attribute]) ? $this->_attributes[$attribute] : $attribute;
-            $bind['value'] = $srcValue;
+            $message['filter'] = $filter;
+            $message['attribute'] = isset($this->_attributes[$attribute]) ? $this->_attributes[$attribute] : $attribute;
+            $message['value'] = $srcValue;
             foreach ($parameters as $k => $parameter) {
-                $bind['parameters[' . $k . ']'] = $parameter;
+                $message['parameters[' . $k . ']'] = $parameter;
             }
 
-            throw new FilterException($message, $bind);
+            throw new FilterException($message);
         }
 
         return $value;

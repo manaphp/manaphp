@@ -82,7 +82,7 @@ class ZooKeeper extends Component implements ZookeeperInterface
                     /** @noinspection NotOptimalIfConditionsInspection */
                     /** @noinspection NestedPositiveIfStatementsInspection */
                     if (!$this->exists($parentPath)) {
-                        throw new ZookeeperException('create `:path` path failed', ['path' => $parentPath]);
+                        throw new ZookeeperException(['create `:path` path failed', 'path' => $parentPath]);
                     }
                 }
             }
@@ -92,7 +92,7 @@ class ZooKeeper extends Component implements ZookeeperInterface
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_zookeeper->create($path, $value, $acl, $flags);
         } catch (\ZookeeperNoNodeException $e) {
-            throw new ZookeeperException('`:path` path is exists', ['path' => $path]);
+            throw new ZookeeperException(['`:path` path is exists', 'path' => $path]);
         }
 
         return $this;
@@ -358,7 +358,7 @@ class ZooKeeper extends Component implements ZookeeperInterface
     public function watchData($paths, $callback, $onlyOnce = false)
     {
         if (!is_callable($callback)) {
-            throw new ZookeeperException('watch data failed: the callback of `:path` is not callable.', ['path' => implode(', ', (array)$paths)]);
+            throw new ZookeeperException(['watch data failed: the callback of `:path` is not callable.', 'path' => implode(', ', (array)$paths)]);
         }
 
         foreach ((array)$paths as $name => $path) {
@@ -459,7 +459,7 @@ class ZooKeeper extends Component implements ZookeeperInterface
     public function watchChildren($paths, $callback, $onlyOnce = false)
     {
         if (!is_callable($callback)) {
-            throw new ZookeeperException('watch children failed: the callback of `:path` is not callable.', ['path' => implode(', ', (array)$paths)]);
+            throw new ZookeeperException(['watch children failed: the callback of `:path` is not callable.', 'path' => implode(', ', (array)$paths)]);
         }
 
         foreach ((array)$paths as $name => $path) {

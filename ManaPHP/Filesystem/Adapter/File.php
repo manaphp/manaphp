@@ -44,7 +44,7 @@ class File extends Component implements FilesystemInterface
     {
         foreach ($this->files($file) as $f) {
             if (!unlink($f) && $this->fileExists($f)) {
-                throw new FileException('delete `:file` failed: :last_error_message', ['file' => $f]);
+                throw new FileException(['delete `:file` failed: :last_error_message', 'file' => $f]);
             }
         }
     }
@@ -61,7 +61,7 @@ class File extends Component implements FilesystemInterface
     {
         /** @noinspection NotOptimalIfConditionsInspection */
         if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {
-            throw new FileException('create `:dir` directory failed: :last_error_message'/**m0d79ea0fd2e396837*/, ['dir' => $dir]);
+            throw new FileException(['create `:dir` directory failed: :last_error_message'/**m0d79ea0fd2e396837*/, 'dir' => $dir]);
         }
     }
 
@@ -89,7 +89,7 @@ class File extends Component implements FilesystemInterface
 
         $this->_dirCreate(dirname($file));
         if (file_put_contents($file, $data, LOCK_EX) === false) {
-            throw new FileException('write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, ['file' => $file]);
+            throw new FileException(['write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, 'file' => $file]);
         }
     }
 
@@ -107,7 +107,7 @@ class File extends Component implements FilesystemInterface
         $this->_dirCreate(dirname($file));
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
-            throw new FileException('write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, ['file' => $file]);
+            throw new FileException(['write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, 'file' => $file]);
         }
     }
 
@@ -129,11 +129,11 @@ class File extends Component implements FilesystemInterface
         }
 
         if (!$overwrite && is_file($dst)) {
-            throw new FileException('move `:src` to `:dst` failed: file exists already', ['src' => $src, 'dst' => $dst]);
+            throw new FileException(['move `:src` to `:dst` failed: file exists already', 'src' => $src, 'dst' => $dst]);
         }
 
         if (!rename($src, $dst)) {
-            throw new FileException('move `:src` to `:dst` failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
+            throw new FileException(['move `:src` to `:dst` failed: :last_error_message', 'src' => $src, 'dst' => $dst]);
         }
     }
 
@@ -158,7 +158,7 @@ class File extends Component implements FilesystemInterface
             $this->_dirCreate(dirname($dst));
 
             if (!copy($src, $dst)) {
-                throw new FileException('move `:src` to `:dst` failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
+                throw new FileException(['move `:src` to `:dst` failed: :last_error_message', 'src' => $src, 'dst' => $dst]);
             }
         }
     }
@@ -188,7 +188,7 @@ class File extends Component implements FilesystemInterface
             $path = $dir . '/' . $item;
             if (is_file($path)) {
                 if (!unlink($path)) {
-                    throw new FileException('delete `:file` file failed: :last_error_message', ['file' => $path]);
+                    throw new FileException(['delete `:file` file failed: :last_error_message', 'file' => $path]);
                 }
             } elseif (is_dir($path)) {
                 $this->_dirDelete($path);
@@ -198,7 +198,7 @@ class File extends Component implements FilesystemInterface
         }
 
         if (!rmdir($dir)) {
-            throw new FileException('delete `:dir` directory failed: :last_error_message', ['dir' => $dir]);
+            throw new FileException(['delete `:dir` directory failed: :last_error_message', 'dir' => $dir]);
         }
     }
 
@@ -261,11 +261,11 @@ class File extends Component implements FilesystemInterface
         $dst = $this->alias->resolve($dst);
 
         if (!$overwrite && is_dir($dst)) {
-            throw new FileException('move `:src` to `:dst` failed: destination directory is exists already', ['src' => $src, 'dst' => $dst]);
+            throw new FileException(['move `:src` to `:dst` failed: destination directory is exists already', 'src' => $src, 'dst' => $dst]);
         }
 
         if (!rename($src, $dst)) {
-            throw new FileException('move `:src` directory to `:dst` directory failed: :last_error_message', ['src' => $src, 'dst' => $dst]);
+            throw new FileException(['move `:src` directory to `:dst` directory failed: :last_error_message', 'src' => $src, 'dst' => $dst]);
         }
     }
 
@@ -290,7 +290,7 @@ class File extends Component implements FilesystemInterface
                 if ($overwrite || !file_exists($dstPath)) {
 
                     if (!copy($srcPath, $dstPath)) {
-                        throw new FileException('copy `:src` file to `:dst` file failed: :last_error_message', ['src' => $srcPath, 'dst' => $dstPath]);
+                        throw new FileException(['copy `:src` file to `:dst` file failed: :last_error_message', 'src' => $srcPath, 'dst' => $dstPath]);
                     }
                 }
             } elseif (is_dir($srcPath)) {
@@ -318,7 +318,7 @@ class File extends Component implements FilesystemInterface
         $dst = $this->alias->resolve($dst);
 
         if (!is_dir($src)) {
-            throw new FileException('copy `:src` directory to `:dst` directory failed: source directory is not exists', ['src' => $src, 'dst' => $dst]);
+            throw new FileException(['copy `:src` directory to `:dst` directory failed: source directory is not exists', 'src' => $src, 'dst' => $dst]);
         }
         $this->_dirCreate($dst);
         $this->_dirCopy($src, $dst, $overwrite);
@@ -385,7 +385,7 @@ class File extends Component implements FilesystemInterface
     {
         $r = @scandir($this->alias->resolve($dir), $sorting_order);
         if ($r === false) {
-            throw new FileException('scandir `:dir` directory failed: :last_error_message', ['dir' => $dir]);
+            throw new FileException(['scandir `:dir` directory failed: :last_error_message', 'dir' => $dir]);
         }
 
         $items = [];
@@ -447,7 +447,7 @@ class File extends Component implements FilesystemInterface
     public function chmod($file, $mode)
     {
         if (!chmod($this->alias->resolve($file), $mode)) {
-            throw new FileException('chmod `:file` file to `:mode` mode failed: :last_error_message', ['file' => $file, 'mode' => $mode]);
+            throw new FileException(['chmod `:file` file to `:mode` mode failed: :last_error_message', 'file' => $file, 'mode' => $mode]);
         }
     }
 }

@@ -101,7 +101,7 @@ class Configure extends Component implements ConfigureInterface
             }
 
             if (!isset($properties[$field])) {
-                throw new ConfigureException('`:item` item is not allowed: it must be a public property of `configure` component', ['item' => $field]);
+                throw new ConfigureException(['`:item` item is not allowed: it must be a public property of `configure` component', 'item' => $field]);
             }
 
             if ($f_value) {

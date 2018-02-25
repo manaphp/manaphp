@@ -99,7 +99,7 @@ abstract class Db extends Component implements DbInterface
                 $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
                 $this->fireEvent('db:afterConnect');
             } catch (\PDOException $e) {
-                throw new DbException(':exception_message: :dsn', ['exception_message' => $e->getMessage(), 'dsn' => $this->_dsn]);
+                throw new DbException([':exception_message: :dsn', 'exception_message' => $e->getMessage(), 'dsn' => $this->_dsn]);
             }
         }
 
@@ -182,14 +182,14 @@ abstract class Db extends Component implements DbInterface
             } elseif (is_float($value)) {
                 $type = \PDO::PARAM_STR;
             } else {
-                throw new DbException('The `:type` type of `:parameter` parameter is not support'/**m06d8e38e608d5556f*/, ['parameter' => $parameter, 'type' => gettype($value)]);
+                throw new DbException(['The `:type` type of `:parameter` parameter is not support'/**m06d8e38e608d5556f*/, 'parameter' => $parameter, 'type' => gettype($value)]);
             }
 
             if (is_int($parameter)) {
                 $statement->bindValue($parameter + 1, $value, $type);
             } else {
                 if ($parameter[0] === ':') {
-                    throw new DbException('Bind does not require started with `:` for `:parameter` parameter'/**m0bcf77bf172de6825*/, ['parameter' => $parameter]);
+                    throw new DbException(['Bind does not require started with `:` for `:parameter` parameter'/**m0bcf77bf172de6825*/, 'parameter' => $parameter]);
                 }
 
                 $statement->bindValue(':' . $parameter, $value, $type);
@@ -236,8 +236,7 @@ abstract class Db extends Component implements DbInterface
             $this->_affectedRows = $statement->rowCount();
             $statement->setFetchMode($fetchMode);
         } catch (\PDOException $e) {
-            throw new DbException(':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                [
+            throw new DbException([':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
                     'message' => $e->getMessage(),
                     'sql' => $this->_sql,
                     'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
@@ -289,8 +288,7 @@ abstract class Db extends Component implements DbInterface
                 $this->_affectedRows = $this->_getPdo()->exec($this->_sql);
             }
         } catch (\PDOException $e) {
-            throw new DbException(':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                [
+            throw new DbException([':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
                     'message' => $e->getMessage(),
                     'sql' => $this->_sql,
                     'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
@@ -415,7 +413,7 @@ abstract class Db extends Component implements DbInterface
     public function insert($table, $fieldValues)
     {
         if (count($fieldValues) === 0) {
-            throw new DbException('Unable to insert into :table table without data'/**m07945f8783104be33*/, ['table' => $table]);
+            throw new DbException(['Unable to insert into :table table without data'/**m07945f8783104be33*/, 'table' => $table]);
         }
 
         if (array_key_exists(0, $fieldValues)) {
@@ -460,7 +458,7 @@ abstract class Db extends Component implements DbInterface
     public function update($table, $fieldValues, $conditions, $bind = [])
     {
         if (count($fieldValues) === 0) {
-            throw new DbException('Unable to update :table table without data'/**m07b005f0072d05d71*/, ['table' => $table]);
+            throw new DbException(['Unable to update :table table without data'/**m07b005f0072d05d71*/, 'table' => $table]);
         }
 
         if (is_string($conditions)) {

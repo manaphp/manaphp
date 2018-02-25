@@ -59,7 +59,7 @@ class DbController extends Controller
 
         $tables = $db->getTables();
         if (!in_array($table, $tables, true)) {
-            throw new Exception('`:table` is not exists: :tables`', ['table' => $table, 'tables' => implode($tables, ', ')]);
+            throw new Exception(['`:table` is not exists: :tables`', 'table' => $table, 'tables' => implode($tables, ', ')]);
         }
 
         $plainClass = Text::camelize($table);

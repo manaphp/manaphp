@@ -154,7 +154,7 @@ class View extends Component implements ViewInterface
     {
         if ($template[0] !== '@') {
             if (strpos($template, '/') !== false) {
-                throw new ViewException('`:template` template can not contains relative path', ['template' => $template]);
+                throw new ViewException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
             $template = dirname($this->_current_template) . '/' . $template;
@@ -296,7 +296,7 @@ class View extends Component implements ViewInterface
                     $view = "@app/{$parts[0]}/Views/Widgets/{$parts[1]}";
                     break;
                 default:
-                    throw new ViewException('`:widget` widget has too many parts', ['widget' => $widget]);
+                    throw new ViewException(['`:widget` widget has too many parts', 'widget' => $widget]);
             }
         } else {
             $widgetClassName = $this->alias->resolveNS("@ns.module\\Widgets\\{$widget}Widget");
@@ -304,7 +304,7 @@ class View extends Component implements ViewInterface
         }
 
         if (!class_exists($widgetClassName)) {
-            throw new ViewException('`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, ['widget' => $widget, 'class' => $widgetClassName]);
+            throw new ViewException(['`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, 'widget' => $widget, 'class' => $widgetClassName]);
         }
 
         /**

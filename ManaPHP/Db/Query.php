@@ -350,7 +350,7 @@ class Query extends Component implements QueryInterface
         } elseif (is_array($value)) {
             if (strpos($filter, '~=')) {
                 if (count($value) !== 2 || !isset($value[0], $value[1])) {
-                    throw new QueryException('`:filter` filter is valid: value is not a two elements array', ['filter' => $filter]);
+                    throw new QueryException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
                 }
 
                 if (is_string($value[0]) && is_string($value[1]) && strpos($value[0], '-') !== false && strpos($value[1], '-') !== false) {
@@ -391,10 +391,10 @@ class Query extends Component implements QueryInterface
             } elseif ($operator === '~=') {
                 $this->whereLike($field, $value);
             } else {
-                throw new QueryException('unknown `:where` where filter', ['where' => $filter]);
+                throw new QueryException(['unknown `:where` where filter', 'where' => $filter]);
             }
         } else {
-            throw new QueryException('unknown `:filter` filter', ['filter' => $filter]);
+            throw new QueryException(['unknown `:filter` filter', 'filter' => $filter]);
         }
 
         return $this;
@@ -1365,7 +1365,7 @@ class Query extends Component implements QueryInterface
         $cacheOptions = is_array($this->_cacheOptions) ? $this->_cacheOptions : ['ttl' => $this->_cacheOptions];
         if (!isset($cacheOptions['key'])) {
             if ($cacheOptions['key'][0] === '/') {
-                throw new QueryException('modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, ['key' => $cacheOptions['key']]);
+                throw new QueryException(['modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, 'key' => $cacheOptions['key']]);
             }
 
             $cacheOptions['key'] = md5($this->_sql . serialize($this->_bind));

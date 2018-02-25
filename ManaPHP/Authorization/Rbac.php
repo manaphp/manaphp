@@ -75,7 +75,7 @@ class Rbac extends Component implements AuthorizationInterface
                 list($module, $controller, $action) = $parts;
                 break;
             default:
-                throw new RbacException('`:permission` has too many parts'/**m059345500bb0de141*/, ['permission' => $permissionName]);
+                throw new RbacException(['`:permission` has too many parts'/**m059345500bb0de141*/, 'permission' => $permissionName]);
         }
 
         return [$module, $controller, $action];
@@ -148,12 +148,12 @@ class Rbac extends Component implements AuthorizationInterface
 
         $permission = $this->_getPermissionByName($permissionName);
         if (!$permission) {
-            throw new RbacException('`:permission` permission is not exists'/**m06ab9af781c2de7f2*/, ['permission' => $permissionName]);
+            throw new RbacException(['`:permission` permission is not exists'/**m06ab9af781c2de7f2*/, 'permission' => $permissionName]);
         }
 
         switch ($permission->permission_type) {
             case Permission::TYPE_PENDING:
-                throw new RbacException('`:permission` type is not assigned'/**m0ac1449c071933ff6*/, ['permission' => $permission->description]);
+                throw new RbacException(['`:permission` type is not assigned'/**m0ac1449c071933ff6*/, 'permission' => $permission->description]);
             case Permission::TYPE_PUBLIC:
                 return true;
             case Permission::TYPE_INTERNAL:
@@ -166,7 +166,7 @@ class Rbac extends Component implements AuthorizationInterface
 
                 return count(array_intersect($rolesByPermissionId, $rolesByUserId)) !== 0;
             default:
-                throw new RbacException('`:permission` type is not recognized', ['permission' => $permissionName]);
+                throw new RbacException(['`:permission` type is not recognized', 'permission' => $permissionName]);
         }
     }
 }

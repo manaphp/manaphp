@@ -34,7 +34,7 @@ EOD;
             if (strpos($match[1], '\\') === false) {
                 $interfaceName = $match[1];
                 if (preg_match('#use\s+(.*' . $interfaceName . ')#', $lines, $match) !== 1) {
-                    throw new Exception('`:interface` interface is not invalid.', ['interface' => $interfaceName]);
+                    throw new Exception(['`:interface` interface is not invalid.', 'interface' => $interfaceName]);
                 }
 
                 $interfaceName = ($match[1] === '\\' ? '' : '\\') . $match[1];

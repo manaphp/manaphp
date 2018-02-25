@@ -52,17 +52,17 @@ class Cookie extends Component implements EngineInterface
         $parts = explode('.', $data, 2);
 
         if (count($parts) !== 2) {
-            throw new CookieException('format invalid: `:cookie`', ['cookie' => $data]);
+            throw new CookieException(['format invalid: `:cookie`', 'cookie' => $data]);
         }
 
         $key = $this->_key ?: $this->_getKey();
         if (md5($parts[0] . $key) !== $parts[1]) {
-            throw new CookieException('hash invalid: `:cookie`', ['cookie' => $data]);
+            throw new CookieException(['hash invalid: `:cookie`', 'cookie' => $data]);
         }
 
         $payload = json_decode(base64_decode($parts[0]), true);
         if (!is_array($payload)) {
-            throw new CookieException('payload invalid: `:cookie`', ['cookie' => $data]);
+            throw new CookieException(['payload invalid: `:cookie`', 'cookie' => $data]);
         }
 
         if (time() > $payload['exp']) {

@@ -239,14 +239,14 @@ class Mongodb extends Component implements MongodbInterface
             ]));
             $this->fireEvent('mongodb:afterPipeline');
         } catch (RuntimeException $e) {
-            throw new MongodbException('`:pipeline` pipeline for `:collection` collection failed: :msg',
-                ['pipeline' => json_encode($pipeline), 'collection' => $source, 'msg' => $e->getMessage()]);
+            throw new MongodbException(['`:pipeline` pipeline for `:collection` collection failed: :msg',
+                'pipeline' => json_encode($pipeline), 'collection' => $source, 'msg' => $e->getMessage()]);
         }
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
         $r = $cursor->toArray()[0];
         if (!$r['ok']) {
-            throw new MongodbException('`:pipeline` pipeline for `:collection` collection failed `:code`: `:msg`',
-                ['code' => $r['code'], 'msg' => $r['errmsg'], 'collection' => $source]);
+            throw new MongodbException(['`:pipeline` pipeline for `:collection` collection failed `:code`: `:msg`',
+                'code' => $r['code'], 'msg' => $r['errmsg'], 'collection' => $source]);
         }
 
         return $r['result'];
@@ -277,7 +277,7 @@ class Mongodb extends Component implements MongodbInterface
         $cursor->setTypeMap(['root' => 'array']);
         $r = $cursor->toArray();
         if (!$r[0]['ok']) {
-            throw new MongodbException('drop `:collection` collection of `:db` db failed: ', ['collection' => $collection, 'db' => $db, 'msg' => $r[0]['errmsg']]);
+            throw new MongodbException(['drop `:collection` collection of `:db` db failed: ', 'collection' => $collection, 'db' => $db, 'msg' => $r[0]['errmsg']]);
         }
         return $this;
     }

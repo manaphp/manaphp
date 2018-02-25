@@ -76,13 +76,13 @@ class PermissionBuilder extends Component
             $actionName = $match[1];
 
             if ($match[2] !== 'Action') {
-                throw new PermissionBuilderException('`:action` action of `:controller` is not suffix with `Action`'/**m05bcf1d580ad9945f*/,
-                    ['controller' => $rc->getName(), 'action' => $methodName]);
+                throw new PermissionBuilderException(['`:action` action of `:controller` is not suffix with `Action`'/**m05bcf1d580ad9945f*/,
+                    'controller' => $rc->getName(), 'action' => $methodName]);
             }
 
             if (!$method->isPublic()) {
-                throw new PermissionBuilderException('`:action` action of `:controller` does not have public visibility.'/**m096584b24a62a55aa*/,
-                    ['controller' => $rc->getName(), 'action' => $methodName]);
+                throw new PermissionBuilderException(['`:action` action of `:controller` does not have public visibility.'/**m096584b24a62a55aa*/,
+                    'controller' => $rc->getName(), 'action' => $methodName]);
             }
 
             $actions[$actionName] = $actionName;

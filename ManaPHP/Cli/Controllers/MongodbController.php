@@ -43,7 +43,7 @@ class MongodbController extends Controller
 
         if ($dir) {
             if (!$this->filesystem->dirExists($dir)) {
-                throw new Exception('`:dir` dir is not exists', ['dir' => $dir]);
+                throw new Exception(['`:dir` dir is not exists', 'dir' => $dir]);
             }
 
             foreach ($this->filesystem->glob($dir . '/*.json') as $file) {
@@ -110,7 +110,7 @@ class MongodbController extends Controller
                 if (isset($v['$oid'])) {
                     $fieldTypes[$k] = 'objectid';
                 } else {
-                    throw new Exception('unsupported `:data` data expression for `:property` property', ['data' => $v, 'propery' => $k]);
+                    throw new Exception(['unsupported `:data` data expression for `:property` property', 'data' => $v, 'propery' => $k]);
                 }
             } elseif (is_int($v)) {
                 $fieldTypes[$k] = 'integer';
@@ -119,7 +119,7 @@ class MongodbController extends Controller
             } elseif (is_float($v)) {
                 $fieldTypes[$k] = 'float';
             } else {
-                throw new Exception('unsupported `:data` data expression for `:property` property', ['data' => $v, 'propery' => $k]);
+                throw new Exception(['unsupported `:data` data expression for `:property` property', 'data' => $v, 'propery' => $k]);
             }
         }
 
