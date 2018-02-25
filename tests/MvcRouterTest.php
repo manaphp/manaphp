@@ -194,27 +194,27 @@ class MvcRouterTest extends TestCase
 
         Di::getDefault()->alias->set('@web', '');
 
-        $this->assertEquals('/article/list', $router->createActionUrl(''));
-        $this->assertEquals('/article/create', $router->createActionUrl('create'));
-        $this->assertEquals('/article', $router->createActionUrl('index'));
-        $this->assertEquals('/news/detail', $router->createActionUrl('news/detail'));
-        $this->assertEquals('/news', $router->createActionUrl('news/index'));
-        $this->assertEquals('/news', $router->createActionUrl('news/'));
-        $this->assertEquals('/', $router->createActionUrl('/'));
-        $this->assertEquals('/', $router->createActionUrl('index/index'));
+        $this->assertEquals('/article/list', $router->createUrl(''));
+        $this->assertEquals('/article/create', $router->createUrl('create'));
+        $this->assertEquals('/article', $router->createUrl('index'));
+        $this->assertEquals('/news/detail', $router->createUrl('news/detail'));
+        $this->assertEquals('/news', $router->createUrl('news/index'));
+        $this->assertEquals('/news', $router->createUrl('news/'));
+        $this->assertEquals('/', $router->createUrl('/'));
+        $this->assertEquals('/', $router->createUrl('index/index'));
 
-        $this->assertEquals('/blog', $router->createActionUrl('/blog'));
-        $this->assertEquals('/blog', $router->createActionUrl('/blog/'));
-        $this->assertEquals('/blog', $router->createActionUrl('/blog/index'));
-        $this->assertEquals('/blog', $router->createActionUrl('/blog/index/index'));
-        $this->assertEquals('/blog/post', $router->createActionUrl('/blog/post'));
-        $this->assertEquals('/blog/post', $router->createActionUrl('/blog/post/'));
-        $this->assertEquals('/blog/post', $router->createActionUrl('/blog/post/index'));
-        $this->assertEquals('/blog/post/detail', $router->createActionUrl('/blog/post/detail'));
+        $this->assertEquals('/blog', $router->createUrl('/blog'));
+        $this->assertEquals('/blog', $router->createUrl('/blog/'));
+        $this->assertEquals('/blog', $router->createUrl('/blog/index'));
+        $this->assertEquals('/blog', $router->createUrl('/blog/index/index'));
+        $this->assertEquals('/blog/post', $router->createUrl('/blog/post'));
+        $this->assertEquals('/blog/post', $router->createUrl('/blog/post/'));
+        $this->assertEquals('/blog/post', $router->createUrl('/blog/post/index'));
+        $this->assertEquals('/blog/post/detail', $router->createUrl('/blog/post/detail'));
 
-        $this->assertEquals('/article/list', $router->createActionUrl('list', []));
-        $this->assertEquals('/article/list#hot', $router->createActionUrl('list', ['#' => 'hot']));
-        $this->assertEquals('/article/list?q=hello', $router->createActionUrl('list', ['q' => 'hello']));
-        $this->assertEquals('/article/list?q=hello#hot', $router->createActionUrl('list', ['q' => 'hello', '#' => 'hot']));
+        $this->assertEquals('/article/list', $router->createUrl('list', []));
+        $this->assertEquals('/article/list#hot', $router->createUrl('list', ['#' => 'hot']));
+        $this->assertEquals('/article/list?q=hello', $router->createUrl('list', ['q' => 'hello']));
+        $this->assertEquals('/article/list?q=hello#hot', $router->createUrl('list', ['q' => 'hello', '#' => 'hot']));
     }
 }

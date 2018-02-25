@@ -363,7 +363,7 @@ class Router extends Component implements RouterInterface
      *
      * @return string
      */
-    public function createActionUrl($args, $absolute = false)
+    public function createUrl($args, $absolute = false)
     {
         if (is_string($args)) {
             if (($pos = strpos($args, '?')) !== false) {

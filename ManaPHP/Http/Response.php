@@ -211,7 +211,7 @@ class Response extends Component implements ResponseInterface
             $this->setStatusCode(301, 'Permanently Moved');
         }
 
-        $this->setHeader('Location', $this->router->createActionUrl($action, true));
+        $this->setHeader('Location', $this->router->createUrl($action, true));
 
         return $this;
     }

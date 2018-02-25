@@ -184,5 +184,5 @@ interface RouterInterface
      *
      * @return string
      */
-    public function createActionUrl($args, $absolute = false);
+    public function createUrl($args, $absolute = false);
 }

@@ -9,6 +9,6 @@ if (!function_exists('action')) {
         if (!$router) {
             $router = Di::getDefault()->router;
         }
-        return $router->createActionUrl($args);
+        return $router->createUrl($args);
     }
 }
