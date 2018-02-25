@@ -76,6 +76,8 @@ interface MongodbInterface
     public function listDatabases();
 
     /**
+     * @param string $db
+     *
      * @return array
      */
     public function listCollections($db = null);

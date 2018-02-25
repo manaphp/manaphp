@@ -288,7 +288,7 @@ class Mongodb extends Component implements MongodbInterface
     public function listDatabases()
     {
         $databases = [];
-        $r = $this->command(['listDatabases' => 1],'admin')->toArray();
+        $r = $this->command(['listDatabases' => 1], 'admin')->toArray();
         foreach ($r[0]['databases'] as $database) {
             $databases[] = $database['name'];
         }
@@ -297,6 +297,8 @@ class Mongodb extends Component implements MongodbInterface
     }
 
     /**
+     * @param string $db
+     *
      * @return array
      */
     public function listCollections($db = null)
