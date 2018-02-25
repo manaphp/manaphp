@@ -12,24 +12,23 @@ class Exception extends \Exception
     /**
      * @var array
      */
-    protected $_bind;
+    protected $_bind = [];
 
     /**
      * Exception constructor.
      *
-     * @param string     $message
-     * @param int|array  $code
-     * @param \Exception $previous
+     * @param string|array $message
+     * @param int          $code
+     * @param \Exception   $previous
      */
     public function __construct($message = '', $code = 0, \Exception $previous = null)
     {
         $tr = [];
 
-        if (is_array($code)) {
-            $this->_bind = $code;
-            $code = 0;
-        } else {
-            $this->_bind = [];
+        if (is_array($message)) {
+            $this->_bind = $message;
+            $message = $message[0];
+            unset($this->_bind[0]);
         }
 
         if (!isset($this->_bind['last_error_message'])) {
