@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Rbac\Models;
+namespace App\Admin\Areas\Rbac\Models;
 
 class Permission extends \ManaPHP\Authorization\Rbac\Models\Permission
 {

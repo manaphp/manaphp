@@ -21,6 +21,7 @@ class Application extends \ManaPHP\Application
 {
     /**
      * Application constructor.
+     *
      * @param \ManaPHP\Loader      $loader
      * @param \ManaPHP\DiInterface $dependencyInjector
      */
@@ -63,17 +64,11 @@ class Application extends \ManaPHP\Application
             throw new NotFoundRouteException(['router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, 'uri' => $this->router->getRewriteUri()]);
         }
 
-        $moduleName = $this->router->getModuleName();
         $controllerName = $this->router->getControllerName();
         $actionName = $this->router->getActionName();
         $params = $this->router->getParams();
 
-        $this->alias->set('@module', '@app' . ($moduleName ? '/' . Text::camelize($moduleName) : ''));
-        $this->alias->set('@ns.module', '@ns.app' . ($moduleName ? '\\' . Text::camelize($moduleName) : ''));
-        $this->alias->set('@views', '@module/Views');
-        $this->alias->set('@layouts', '@app/Views/Layouts');
-
-        $ret = $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
+        $ret = $this->dispatcher->dispatch($controllerName, $actionName, $params);
         if ($ret !== false) {
             $actionReturnValue = $this->dispatcher->getReturnedValue();
             if ($actionReturnValue === null) {

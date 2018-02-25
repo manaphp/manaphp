@@ -206,14 +206,26 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:beforeRender');
 
-        $view = "@views/{$this->_controllerName}/" . ucfirst($this->_actionName);
+        if (($pos = strpos($this->_controllerName, '/')) !== false) {
+            $view = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/' . substr($this->_controllerName, $pos + 1) . '/' . ucfirst($this->_actionName);
+        } else {
+            $view = "@app/Views/{$this->_controllerName}/" . ucfirst($this->_actionName);
+        }
+
         $this->_content = $this->_render($view, $this->_vars, false);
 
         if ($this->_layout !== false) {
             if ($this->_layout[0] === '@') {
                 $layout = $this->_layout;
             } else {
-                $layout = '@layouts/' . ucfirst($this->_layout ?: $this->_controllerName);
+                if ($pos !== false) {
+                    $layout = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Layouts' . substr($this->_controllerName, $pos);
+                    if (!$this->filesystem->dirExists(dirname($layout))) {
+                        $layout = '@app/Views/Layouts/' . ucfirst($this->_layout ?: 'Default');
+                    }
+                } else {
+                    $layout = '@app/Views/Layouts/' . ucfirst($this->_layout ?: $this->_controllerName);
+                }
             }
             $this->_content = $this->_render($layout, $this->_vars, false);
         }
@@ -284,23 +296,22 @@ class View extends Component implements ViewInterface
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
-        if ($widget[0] === '/') {
-            $parts = explode('/', substr($widget, 1));
-            switch (count($parts)) {
-                case 1:
-                    $widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$parts[0]}Widget");
-                    $view = '@app/Views/Widgets' . $widget;
-                    break;
-                case 2:
-                    $widgetClassName = $this->alias->resolveNS("@ns.app\\{$parts[0]}\\Widgets\\{$parts[1]}Widget");
-                    $view = "@app/{$parts[0]}/Views/Widgets/{$parts[1]}";
-                    break;
-                default:
-                    throw new ViewException(['`:widget` widget has too many parts', 'widget' => $widget]);
+        if (($pos = strpos($widget, '/')) === false) {
+            $widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$widget}Widget");
+            $view = '@app/Views/Widgets/' . $widget;
+
+            if (!class_exists($widgetClassName) && ($pos = strpos($this->_controllerName, '/')) !== false) {
+                $widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($this->_controllerName, 0, $pos) . "\\Widgets\\{$widget}Widget");
+                $view = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Widgets/' . $widget;
             }
         } else {
-            $widgetClassName = $this->alias->resolveNS("@ns.module\\Widgets\\{$widget}Widget");
-            $view = '@module/Views/Widgets/' . $widget;
+            if ($pos === 0) {
+                $widgetClassName = $this->alias->resolveNS('@ns.app\\Widgets\\' . substr($widget, 1) . 'Widget');
+                $view = '@app/Views/Widgets/' . substr($widget, 1);
+            } else {
+                $widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($widget, 0, $pos) . '\\Widgets\\' . substr($widget, $pos + 1) . 'Widget');
+                $view = '@app/Areas/' . substr($widget, 0, $pos) . '/Views/Widgets/' . substr($widget, $pos + 1);
+            }
         }
 
         if (!class_exists($widgetClassName)) {

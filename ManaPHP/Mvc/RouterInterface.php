@@ -22,6 +22,18 @@ interface RouterInterface
     public function getPrefix();
 
     /**
+     * @param array $areas
+     *
+     * @return static
+     */
+    public function setAreas($areas);
+
+    /**
+     * @return array
+     */
+    public function getAreas();
+
+    /**
      * Adds a route to the router on any HTTP method
      *
      *<code>
@@ -142,13 +154,6 @@ interface RouterInterface
      * @return string
      */
     public function getRewriteUri($uri = null);
-
-    /**
-     * Returns processed module name
-     *
-     * @return string
-     */
-    public function getModuleName();
 
     /**
      * Returns processed controller name

@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\User\Controllers;
+namespace App\Admin\Areas\User\Controllers;
 
 use App\Admin\Models\Admin;
 use App\Admin\Models\AdminLoginLog;

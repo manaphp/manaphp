@@ -105,9 +105,9 @@ class Url extends Component implements UrlInterface
     public function getAsset($uri)
     {
         if ($uri[0] !== '/') {
-            $module = $this->router->getModuleName();
-            $uri = ($module ? '/' . Text::underscore($module) : '/') . $uri;
+            $uri = '/' . $uri;
         }
+
         return $this->_assets . $uri;
     }
 }

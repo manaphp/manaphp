@@ -29,7 +29,7 @@ class Application extends \ManaPHP\Mvc\Application
             return true;
         }
 
-        if ($dispatcher->getModuleName() === 'User') {
+        if (strpos('User/', $dispatcher->getControllerName()) === 0) {
             if (in_array($dispatcher->getControllerName(), ['Session', 'User'], true)) {
                 return true;
             }
@@ -53,6 +53,8 @@ class Application extends \ManaPHP\Mvc\Application
         $this->registerServices();
         $this->alias->set('@messages', '@app/Messages');
         $this->view->setLayout();
+
+        $this->router->setAreas(['Menu', 'Rbac', 'User']);
 
         if ($this->configure->debug) {
             $this->response->setHeader('X-DEBUGGER', $this->debugger->getUrl());

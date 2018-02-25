@@ -30,11 +30,6 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @var string
      */
-    protected $_moduleName;
-
-    /**
-     * @var string
-     */
     protected $_controllerName;
 
     /**
@@ -66,16 +61,6 @@ class Dispatcher extends Component implements DispatcherInterface
      * @var string
      */
     protected $_previousActionName;
-
-    /**
-     * Gets the module where the controller class is
-     *
-     * @return string
-     */
-    public function getModuleName()
-    {
-        return $this->_moduleName;
-    }
 
     /**
      * Gets the latest dispatched action name
@@ -177,7 +162,6 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * Dispatches a handle action taking into account the routing parameters
      *
-     * @param string $module
      * @param string $controller
      * @param string $action
      * @param array  $params
@@ -188,10 +172,14 @@ class Dispatcher extends Component implements DispatcherInterface
      * @throws \ManaPHP\Mvc\Dispatcher\Exception
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
      */
-    public function dispatch($module, $controller, $action, $params = [])
+    public function dispatch($controller, $action, $params = [])
     {
-        $this->_moduleName = strpos($module, '_') === false ? ucfirst($module) : Text::camelize($module);
-        $this->_controllerName = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+        if (($pos = strpos($controller, '/')) !== false) {
+            $this->_controllerName = Text::camelize(substr($controller, 0, $pos + 1)) . Text::camelize(substr($controller, $pos + 1));
+        } else {
+            $this->_controllerName = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+        }
+
         $this->_actionName = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
         $this->_params = $params;
 
@@ -211,8 +199,10 @@ class Dispatcher extends Component implements DispatcherInterface
                 throw new DispatcherException('dispatcher has detected a cyclic routing causing stability problems'/**m016bfe7f4f190e087*/);
             }
 
-            if ($module) {
-                $controllerClassName = $this->alias->resolveNS("@ns.app\\{$this->_moduleName}\\Controllers\\{$this->_controllerName}Controller");
+            if (($pos = strpos($this->_controllerName, '/')) !== false) {
+                $areaName = substr($this->_controllerName, 0, $pos);
+                $controllerName = substr($this->_controllerName, $pos + 1);
+                $controllerClassName = $this->alias->resolveNS("@ns.app\\Areas\\$areaName\\Controllers\\{$controllerName}Controller");
             } else {
                 $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\{$this->_controllerName}Controller");
             }
@@ -379,6 +369,6 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getMCA($glue = '/')
     {
-        return Text::underscore($this->_moduleName) . $glue . Text::underscore($this->_controllerName) . $glue . Text::underscore($this->_actionName);
+        return Text::underscore($this->_controllerName) . $glue . Text::underscore($this->_actionName);
     }
 }

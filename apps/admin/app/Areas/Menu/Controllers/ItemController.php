@@ -1,9 +1,9 @@
 <?php
-namespace App\Admin\Menu\Controllers;
+namespace App\Admin\Areas\Menu\Controllers;
 
-use App\Admin\Menu\Models\Group;
-use App\Admin\Menu\Models\Item;
-use App\Admin\Rbac\Models\Permission;
+use App\Admin\Areas\Menu\Models\Group;
+use App\Admin\Areas\Menu\Models\Item;
+use App\Admin\Areas\Rbac\Models\Permission;
 use ManaPHP\Mvc\Controller;
 
 class ItemController extends Controller
@@ -69,7 +69,7 @@ class ItemController extends Controller
             }
 
             $item = Item::firstOrFail($item_id);
-			
+
             $item->delete();
 
             return $this->response->setJsonContent(0);

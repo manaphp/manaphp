@@ -271,7 +271,7 @@ class Debugger extends Component implements DebuggerInterface
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
         $r = [
-            'mvc' => $this->router->getModuleName() . '::' . $this->router->getControllerName() . '::' . $this->router->getActionName(),
+            'mvc' =>$this->router->getControllerName() . '::' . $this->router->getActionName(),
             'request_method' => $_SERVER['REQUEST_METHOD'],
             'request_url' => $this->request->getUrl(),
             'query_count' => $this->_sql_count,

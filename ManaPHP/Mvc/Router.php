@@ -16,9 +16,9 @@ use ManaPHP\Utility\Text;
 class Router extends Component implements RouterInterface
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $_module;
+    protected $_areas = [];
 
     /**
      * @var string
@@ -80,6 +80,26 @@ class Router extends Component implements RouterInterface
     public function getPrefix()
     {
         return $this->_prefix;
+    }
+
+    /**
+     * @param array $areas
+     *
+     * @return static
+     */
+    public function setAreas($areas)
+    {
+        $this->_areas = $areas;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAreas()
+    {
+        return $this->_areas;
     }
 
     /**
@@ -276,7 +296,6 @@ class Router extends Component implements RouterInterface
             $host = $_SERVER['HTTP_HOST'];
         }
 
-        $this->_module = null;
         $this->_controller = null;
         $this->_action = null;
         $this->_params = [];
@@ -291,12 +310,27 @@ class Router extends Component implements RouterInterface
         }
 
         if (strpos($uri, $prefix) === 0) {
+            $area = null;
             $handledUri = $prefix === '/' ? $uri : substr($uri, strlen($prefix));
+
+            if ($handledUri !== '/' && $this->_areas) {
+                if (substr_count($handledUri, '/') < 2) {
+                    $handledUri .= '/';
+                }
+
+                $pos = strpos($handledUri, '/', 1);
+                $area = Text::camelize(substr($handledUri, 1, $pos - 1));
+                if (in_array($area, $this->_areas, true)) {
+                    $handledUri = substr($handledUri, $pos);
+                } else {
+                    $area = null;
+                }
+            }
+
             $parts = $this->matchRoute($handledUri, $method);
             if ($parts !== false) {
                 $this->_wasMatched = true;
-                $this->_module = $parts['module'];
-                $this->_controller = $parts['controller'];
+                $this->_controller = $area ? (Text::underscore($area) . '/' . $parts['controller']) : $parts['controller'];
                 $this->_action = $parts['action'];
                 $this->_params = $parts['params'];
             }
@@ -305,16 +339,6 @@ class Router extends Component implements RouterInterface
         $this->fireEvent('router:afterRoute');
 
         return $this->_wasMatched;
-    }
-
-    /**
-     * Returns the processed module name
-     *
-     * @return string
-     */
-    public function getModuleName()
-    {
-        return $this->_module;
     }
 
     /**
@@ -386,32 +410,20 @@ class Router extends Component implements RouterInterface
         } elseif ($path === '/') {
             $ca = '';
         } elseif ($path[0] === '/') {
-            $pos = strpos($path, '/', 1);
-            if ($pos === false) {
-                $module = substr($path, 1);
-                $ca = '';
-            } else {
-                $module = substr($path, 1, $pos - 1);
-                $ca = rtrim(substr($path, $pos + 1), '/');
-            }
-            $module = Text::underscore($module);
+            $ca = substr($path, 1);
         } else {
-            $ca = rtrim($path, '/');
+            if (($pos = strpos($this->_controller, '/')) !== false) {
+                $ca = substr($this->_controller, 0, $pos + 1) . $path;
+            } else {
+                $ca = rtrim($path, '/');
+            }
         }
 
-        if (($pos = strrpos($ca, '/index')) !== false && $pos + 6 === strlen($ca)) {
-            $ca = substr($ca, 0, -6);
+        while (($pos = strrpos($ca, '/index')) !== false && $pos + 6 === strlen($ca)) {
+            $ca = substr($ca, 0, $pos);
         }
 
-        if ($ca === 'index' || $ca === 'index/') {
-            $ca = '';
-        }
-
-        if (!isset($module)) {
-            $module = Text::underscore($this->_module);
-        }
-
-        $url = $this->alias->get('@web') . '/' . ($module ? $module . '/' : '') . lcfirst($ca);
+        $url = $this->alias->get('@web') . '/' . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }
@@ -453,7 +465,6 @@ class Router extends Component implements RouterInterface
             $parts = $route->match($uri, $method);
             if ($parts !== false) {
                 /** @noinspection NestedTernaryOperatorInspection */
-                $module = isset($parts['module']) ? ($parts['module'] ?: 'index') : '';
                 $controller = isset($parts['controller']) && $parts['controller'] !== '' ? $parts['controller'] : 'index';
                 $action = isset($parts['action']) && $parts['action'] !== '' ? $parts['action'] : 'index';
                 $params = isset($parts['params']) ? trim($parts['params'], '/') : '';
@@ -462,7 +473,7 @@ class Router extends Component implements RouterInterface
                 if ($params !== '') {
                     $parts = array_merge($parts, explode('/', $params));
                 }
-                return ['module' => $module, 'controller' => $controller, 'action' => $action, 'params' => $parts];
+                return ['controller' => isset($parts['area']) ? ("$parts[area]/$controller") : $controller, 'action' => $action, 'params' => $parts];
             }
         }
 

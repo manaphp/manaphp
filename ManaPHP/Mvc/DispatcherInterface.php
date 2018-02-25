@@ -10,13 +10,6 @@ namespace ManaPHP\Mvc;
 interface DispatcherInterface
 {
     /**
-     * Gets the module where the controller class is
-     *
-     * @return string
-     */
-    public function getModuleName();
-
-    /**
      * Gets last dispatched action name
      *
      * @return string
@@ -77,14 +70,13 @@ interface DispatcherInterface
     /**
      * Dispatches a handle action taking into account the routing parameters
      *
-     * @param string $module
      * @param string $controller
      * @param string $action
      * @param array  $params
      *
      * @return bool
      */
-    public function dispatch($module, $controller, $action, $params = []);
+    public function dispatch($controller, $action, $params = []);
 
     /**
      * Forwards the execution flow to another controller/action

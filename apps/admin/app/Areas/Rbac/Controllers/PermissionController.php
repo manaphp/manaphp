@@ -1,8 +1,8 @@
 <?php
-namespace App\Admin\Rbac\Controllers;
+namespace App\Admin\Areas\Rbac\Controllers;
 
-use App\Admin\Rbac\Models\Permission;
-use App\Admin\Rbac\Models\RolePermission;
+use App\Admin\Areas\Rbac\Models\Permission;
+use App\Admin\Areas\Rbac\Models\RolePermission;
 use ManaPHP\Authorization\Rbac\PermissionBuilder;
 
 /**
