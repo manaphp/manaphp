@@ -15,7 +15,7 @@ class Redis extends Component implements EngineInterface
     /**
      * @var string|\ManaPHP\Redis
      */
-    protected $_redis;
+    protected $_redis = 'redis';
 
     /**
      * @var string
@@ -25,13 +25,11 @@ class Redis extends Component implements EngineInterface
     /**
      * Redis constructor.
      *
-     * @param string|array $options
+     * @param string|\ManaPHP\Redis|array $options
      */
     public function __construct($options = 'redis')
     {
-        if (is_string($options)) {
-            $this->_redis = $options;
-        } elseif (is_object($options)) {
+        if (is_string($options) || is_object($options)) {
             $this->_redis = $options;
         } else {
             if (isset($options['redis'])) {

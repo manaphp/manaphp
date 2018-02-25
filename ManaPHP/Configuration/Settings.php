@@ -29,17 +29,18 @@ class Settings extends Component implements \ArrayAccess, SettingsInterface
     /**
      * Settings constructor.
      *
-     * @param string|array $options
+     * @param string|array|\ManaPHP\Configuration\Settings\EngineInterface $options
      */
     public function __construct($options = 'ManaPHP\Configuration\Settings\Engine\Redis')
     {
         if (is_string($options) || is_object($options)) {
-            $options = ['engine' => $options];
-        }
-        $this->_engine = $options['engine'];
+            $this->_engine = $options;
+        } else {
+            $this->_engine = $options['engine'];
 
-        if (isset($options['ttl'])) {
-            $this->_ttl = (int)$options['ttl'];
+            if (isset($options['ttl'])) {
+                $this->_ttl = (int)$options['ttl'];
+            }
         }
     }
 

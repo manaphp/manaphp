@@ -23,10 +23,6 @@ class Db extends Component implements EngineInterface
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        }
-
         if (isset($options['model'])) {
             $this->_model = $options['model'];
         }

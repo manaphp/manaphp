@@ -34,10 +34,6 @@ class File extends Component implements EngineInterface
      */
     public function __construct($options = [])
     {
-        if (is_object($options)) {
-            $options = (array)$options;
-        }
-
         if (isset($options['dir'])) {
             $this->_dir = ltrim($options['dir'], '\\/');
         }

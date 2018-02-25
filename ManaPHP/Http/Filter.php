@@ -58,10 +58,6 @@ class Filter extends Component implements FilterInterface
             }
         }
 
-        if (is_object($options)) {
-            $options = (array)$options;
-        }
-
         if (isset($options['messages'])) {
             $this->_messages = $options['messages'];
         }
