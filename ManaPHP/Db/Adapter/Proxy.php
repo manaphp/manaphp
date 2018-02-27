@@ -183,6 +183,7 @@ class Proxy extends Component implements DbInterface
      * @param string $sql
      * @param array  $bind
      * @param int    $fetchMode
+     *
      * @return \PDOStatement
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -207,6 +208,7 @@ class Proxy extends Component implements DbInterface
     /**
      * @param string $sql
      * @param array  $bind
+     *
      * @return int
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -228,6 +230,7 @@ class Proxy extends Component implements DbInterface
      * @param string $sql
      * @param array  $bind
      * @param int    $fetchMode
+     *
      * @return array|false
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -246,6 +249,7 @@ class Proxy extends Component implements DbInterface
      * @param array  $bind
      * @param int    $fetchMode
      * @param null   $indexBy
+     *
      * @return array
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -262,6 +266,7 @@ class Proxy extends Component implements DbInterface
     /**
      * @param string $table
      * @param array  $fieldValues
+     *
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
@@ -275,6 +280,7 @@ class Proxy extends Component implements DbInterface
      * @param array        $fieldValues
      * @param array|string $conditions
      * @param array        $bind
+     *
      * @return int
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -288,6 +294,7 @@ class Proxy extends Component implements DbInterface
      * @param string       $table
      * @param array|string $conditions
      * @param array        $bind
+     *
      * @return int
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -361,6 +368,7 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @param $source
+     *
      * @return array
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -376,6 +384,7 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @param string $source
+     *
      * @return static
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -387,6 +396,7 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @param string $source
+     *
      * @return static
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -398,6 +408,7 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @param null $schema
+     *
      * @return array
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -413,6 +424,7 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @param string $source
+     *
      * @return bool
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -428,6 +440,7 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @param array $params
+     *
      * @return string
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
@@ -443,6 +456,7 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @param string $sql
+     *
      * @return string
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception

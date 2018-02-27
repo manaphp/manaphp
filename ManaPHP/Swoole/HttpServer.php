@@ -41,6 +41,7 @@ abstract class HttpServer extends Application
 
     /**
      * HttpServer constructor.
+     *
      * @param  \ManaPHP\Loader     $loader
      * @param \ManaPHP\DiInterface $dependencyInjector
      */
@@ -136,6 +137,7 @@ abstract class HttpServer extends Application
     /**
      * @param \swoole_http_request  $request
      * @param \swoole_http_response $response
+     *
      * @throws \ManaPHP\Swoole\Exception
      */
     public function onRequest($request, $response)

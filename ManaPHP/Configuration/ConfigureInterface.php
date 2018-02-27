@@ -17,7 +17,7 @@ interface ConfigureInterface
     public function loadFile($files);
 
     /**
-     * @param array  $data
+     * @param array $data
      *
      * @return static
      * @throws \ManaPHP\Configuration\Configure\Exception

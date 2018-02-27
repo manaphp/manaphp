@@ -54,6 +54,7 @@ class Mssql extends Db
 
     /**
      * @param $source
+     *
      * @return array
      * @throws \ManaPHP\Db\Exception
      */
@@ -126,6 +127,7 @@ class Mssql extends Db
 
     /**
      * @param string $source
+     *
      * @return void|static
      * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
@@ -136,6 +138,7 @@ class Mssql extends Db
 
     /**
      * @param null $schema
+     *
      * @return array|void
      * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
@@ -147,6 +150,7 @@ class Mssql extends Db
     /**
      * @param string $table
      * @param null   $schema
+     *
      * @return bool|void
      * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
@@ -157,6 +161,7 @@ class Mssql extends Db
 
     /**
      * @param array $params
+     *
      * @return string
      * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */

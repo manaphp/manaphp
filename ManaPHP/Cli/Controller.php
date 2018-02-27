@@ -62,7 +62,7 @@ abstract class Controller extends Component implements ControllerInterface
                 list($tag, $description) = $parts;
                 $description = trim($description);
                 if ($tag === '@CliCommand') {
-                    $command = $this->console->colorize(str_pad(basename($method, 'Command'), 10),Console::FC_YELLOW) . ' ' . $description;
+                    $command = $this->console->colorize(str_pad(basename($method, 'Command'), 10), Console::FC_YELLOW) . ' ' . $description;
                 } elseif ($tag === '@CliParam') {
                     $parts = explode(' ', $description, 2);
                     $params[trim($parts[0])] = isset($parts[1]) ? trim($parts[1]) : '';
