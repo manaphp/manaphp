@@ -155,8 +155,11 @@ class Invoker extends Component implements InvokerInterface
         $actions = $this->_getActions($controller);
 
         if (!in_array($action, $actions, true)) {
-            throw new NotFoundException(['`:controller:::action` is not found, action is case sensitive.'/**m061a35fc1c0cd0b6f*/,
-                'action' => $action . 'Action', 'controller' => get_class($controller)]);
+            throw new NotFoundException([
+                '`:controller:::action` is not found, action is case sensitive.'/**m061a35fc1c0cd0b6f*/,
+                'action' => $action . 'Action',
+                'controller' => get_class($controller)
+            ]);
         }
 
         return $this->_invokeAction($controller, $action, $params);

@@ -241,11 +241,12 @@ abstract class Db extends Component implements DbInterface
         } catch (\PDOException $e) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new DbException([':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                    'message' => $e->getMessage(),
-                    'sql' => $this->_sql,
-                    'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-                ]);
+            throw new DbException([
+                ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+                'message' => $e->getMessage(),
+                'sql' => $this->_sql,
+                'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+            ]);
         }
 
         $this->fireEvent('db:afterQuery');
@@ -293,11 +294,12 @@ abstract class Db extends Component implements DbInterface
                 $this->_affectedRows = $this->_getPdo()->exec($this->_sql);
             }
         } catch (\PDOException $e) {
-            throw new DbException([':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                    'message' => $e->getMessage(),
-                    'sql' => $this->_sql,
-                    'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-                ]);
+            throw new DbException([
+                ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+                'message' => $e->getMessage(),
+                'sql' => $this->_sql,
+                'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+            ]);
         }
 
         if (is_int($this->_affectedRows)) {

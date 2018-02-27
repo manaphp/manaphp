@@ -102,8 +102,11 @@ class Db implements EngineInterface
             }
         }
 
-        throw new DbException(['update `:key` counter failed: has been tried :times times.'/**m0a877d4eed799613c*/,
-            'key' => $key, 'times' => $this->_maxTries]);
+        throw new DbException([
+            'update `:key` counter failed: has been tried :times times.'/**m0a877d4eed799613c*/,
+            'key' => $key,
+            'times' => $this->_maxTries
+        ]);
     }
 
     /**

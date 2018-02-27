@@ -118,8 +118,13 @@ class Criteria extends \ManaPHP\Model\Criteria
         $cursor = $db->command($cmd);
         $r = $cursor->toArray()[0];
         if (!$r['ok']) {
-            throw new CriteriaException(['`:distinct` distinct for `:collection` collection failed `:code`: `:msg`',
-                'distinct' => $field, 'code' => $r['code'], 'msg' => $r['errmsg'], 'collection' => $source]);
+            throw new CriteriaException([
+                '`:distinct` distinct for `:collection` collection failed `:code`: `:msg`',
+                'distinct' => $field,
+                'code' => $r['code'],
+                'msg' => $r['errmsg'],
+                'collection' => $source
+            ]);
         }
 
         return $this->_limit ? array_slice($r['values'], $this->_offset, $this->_limit) : $r['values'];
@@ -176,8 +181,11 @@ class Criteria extends \ManaPHP\Model\Criteria
                     throw new CriteriaException(['unknown `:operand` operand of `:aggregate` aggregate', 'operand' => $operand, 'aggregate' => $v]);
                 }
             } else {
-                throw new CriteriaException(['unknown `:accumulator` accumulator of `:aggregate` aggregate',
-                    'accumulator' => $accumulator, 'aggregate' => $v]);
+                throw new CriteriaException([
+                    'unknown `:accumulator` accumulator of `:aggregate` aggregate',
+                    'accumulator' => $accumulator,
+                    'aggregate' => $v
+                ]);
             }
         }
 
@@ -986,13 +994,19 @@ class Criteria extends \ManaPHP\Model\Criteria
          */
         $modelName = $this->_modelName;
         if (($db = $modelName::getDb($this)) === false) {
-            throw new CriteriaException(['`:model` model db sharding for update failed',
-                'model' => $modelName, 'context' => $this]);
+            throw new CriteriaException([
+                '`:model` model db sharding for update failed',
+                'model' => $modelName,
+                'context' => $this
+            ]);
         }
 
         if (($source = $modelName::getSource($this)) === false) {
-            throw new CriteriaException(['`:model` model table sharding for update failed',
-                'model' => $modelName, 'context' => $this]);
+            throw new CriteriaException([
+                '`:model` model table sharding for update failed',
+                'model' => $modelName,
+                'context' => $this
+            ]);
         }
 
         return $this->_dependencyInjector->getShared($db)->delete($source, $this->_filters ? ['$and' => $this->_filters] : []);
@@ -1000,6 +1014,7 @@ class Criteria extends \ManaPHP\Model\Criteria
 
     /**
      * @param $fieldValues
+     *
      * @return int
      * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
@@ -1010,13 +1025,19 @@ class Criteria extends \ManaPHP\Model\Criteria
          */
         $modelName = $this->_modelName;
         if (($db = $modelName::getDb($this)) === false) {
-            throw new CriteriaException(['`:model` model db sharding for update failed',
-                'model' => $modelName, 'context' => $this]);
+            throw new CriteriaException([
+                '`:model` model db sharding for update failed',
+                'model' => $modelName,
+                'context' => $this
+            ]);
         }
 
         if (($source = $modelName::getSource($this)) === false) {
-            throw new CriteriaException(['`:model` model table sharding for update failed',
-                'model' => $modelName, 'context' => $this]);
+            throw new CriteriaException([
+                '`:model` model table sharding for update failed',
+                'model' => $modelName,
+                'context' => $this
+            ]);
         }
 
         return $this->_dependencyInjector->getShared($db)->update($source, $fieldValues, $this->_filters ? ['$and' => $this->_filters] : []);

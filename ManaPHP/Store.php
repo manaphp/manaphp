@@ -75,8 +75,12 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
         $json = json_decode($data, true);
         if ($json === null) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new StoreException(['`:key` key store value json_encode failed: `:code` `:message`',
-                'key' => $key, 'code' => json_last_error(), 'message' => json_last_error_msg()]);
+            throw new StoreException([
+                '`:key` key store value json_encode failed: `:code` `:message`',
+                'key' => $key,
+                'code' => json_last_error(),
+                'message' => json_last_error_msg()
+            ]);
         }
 
         if (count($json) === 1 && key($json) === '_wrapper_') {
@@ -110,8 +114,12 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
         }
 
         if ($data === false) {
-            throw new StoreException(['`:key` key store value json_encode failed: `:code` `:message`',
-                'key' => $key, 'code' => json_last_error(), 'message' => json_last_error_msg()]);
+            throw new StoreException([
+                '`:key` key store value json_encode failed: `:code` `:message`',
+                'key' => $key,
+                'code' => json_last_error(),
+                'message' => json_last_error_msg()
+            ]);
         }
 
         $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();

@@ -75,8 +75,12 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
         $json = json_decode($data, true);
         if ($json === null) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new CacheException(['`:key` key cache value json_encode failed: `:code` `:message`',
-                'key' => $key, 'code' => json_last_error(), 'message' => json_last_error_msg()]);
+            throw new CacheException([
+                '`:key` key cache value json_encode failed: `:code` `:message`',
+                'key' => $key,
+                'code' => json_last_error(),
+                'message' => json_last_error_msg()
+            ]);
         }
 
         if (count($json) === 1 && key($json) === '_wrapper_') {
@@ -111,8 +115,12 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
         }
 
         if ($data === false) {
-            throw new CacheException(['`:key` key cache value json_encode failed: `:code` `:message`',
-                'key' => $key, 'code' => json_last_error(), 'message' => json_last_error_msg()]);
+            throw new CacheException([
+                '`:key` key cache value json_encode failed: `:code` `:message`',
+                'key' => $key,
+                'code' => json_last_error(),
+                'message' => json_last_error_msg()
+            ]);
         }
 
         $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
