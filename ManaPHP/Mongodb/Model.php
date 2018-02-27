@@ -144,6 +144,8 @@ class Model extends \ManaPHP\Model
 
         if (!isset($cached[$calledClass])) {
             $fieldTypes = [];
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $rc = new \ReflectionClass(get_called_class());
 
             foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $rp) {
