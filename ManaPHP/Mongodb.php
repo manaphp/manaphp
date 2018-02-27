@@ -25,7 +25,7 @@ class Mongodb extends Component implements MongodbInterface
     protected $_defaultDb;
 
     /**
-     * @var \MongoDB\Driver\Manager;
+     * @var \MongoDB\Driver\Manager
      */
     protected $_manager;
 
@@ -289,7 +289,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $databases = [];
         $r = $this->command(['listDatabases' => 1], 'admin')->toArray();
-        foreach ($r[0]['databases'] as $database) {
+        foreach ((array)$r[0]['databases'] as $database) {
             $databases[] = $database['name'];
         }
 
