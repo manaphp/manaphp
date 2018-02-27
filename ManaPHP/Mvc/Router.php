@@ -473,7 +473,7 @@ class Router extends Component implements RouterInterface
                 if ($params !== '') {
                     $parts = array_merge($parts, explode('/', $params));
                 }
-                return ['controller' => isset($parts['area']) ? ("$parts[area]/$controller") : $controller, 'action' => $action, 'params' => $parts];
+                return ['controller' => isset($parts['area']) ? "$parts[area]/$controller" : $controller, 'action' => $action, 'params' => $parts];
             }
         }
 
