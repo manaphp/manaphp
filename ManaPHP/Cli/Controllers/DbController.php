@@ -31,7 +31,7 @@ class DbController extends Controller
 
             $columns = $db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
             $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
-            foreach ($columns as $i => $column) {
+            foreach ((array)$columns as $i => $column) {
                 if ($primaryKey && $column === $primaryKey[0]) {
                     $columns[$i] = $this->console->colorize($column, Console::FC_RED);
                 }
