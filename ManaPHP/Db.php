@@ -89,7 +89,6 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * @return \PDO
-     * @throws \ManaPHP\Db\Exception
      */
     protected function _getPdo()
     {
@@ -99,6 +98,8 @@ abstract class Db extends Component implements DbInterface
                 $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
                 $this->fireEvent('db:afterConnect');
             } catch (\PDOException $e) {
+                /** @noinspection PhpUnhandledExceptionInspection */
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new DbException([':exception_message: :dsn', 'exception_message' => $e->getMessage(), 'dsn' => $this->_dsn]);
             }
         }
@@ -166,7 +167,6 @@ abstract class Db extends Component implements DbInterface
      * @param array         $bind
      *
      * @return \PDOStatement
-     * @throws \ManaPHP\Db\Exception
      */
     protected function _executePrepared($statement, $bind)
     {
@@ -182,6 +182,8 @@ abstract class Db extends Component implements DbInterface
             } elseif (is_float($value)) {
                 $type = \PDO::PARAM_STR;
             } else {
+                /** @noinspection PhpUnhandledExceptionInspection */
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new DbException(['The `:type` type of `:parameter` parameter is not support'/**m06d8e38e608d5556f*/, 'parameter' => $parameter, 'type' => gettype($value)]);
             }
 
@@ -189,6 +191,8 @@ abstract class Db extends Component implements DbInterface
                 $statement->bindValue($parameter + 1, $value, $type);
             } else {
                 if ($parameter[0] === ':') {
+                    /** @noinspection PhpUnhandledExceptionInspection */
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     throw new DbException(['Bind does not require started with `:` for `:parameter` parameter'/**m0bcf77bf172de6825*/, 'parameter' => $parameter]);
                 }
 
@@ -215,7 +219,6 @@ abstract class Db extends Component implements DbInterface
      * @param int    $fetchMode
      *
      * @return \PdoStatement
-     * @throws \ManaPHP\Db\Exception
      */
     public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
@@ -236,6 +239,8 @@ abstract class Db extends Component implements DbInterface
             $this->_affectedRows = $statement->rowCount();
             $statement->setFetchMode($fetchMode);
         } catch (\PDOException $e) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new DbException([':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
                     'message' => $e->getMessage(),
                     'sql' => $this->_sql,
@@ -360,7 +365,6 @@ abstract class Db extends Component implements DbInterface
      * @param int                   $fetchMode
      * @param string|callable|array $indexBy
      *
-     * @throws \ManaPHP\Db\Exception
      * @return array
      */
     public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
@@ -697,7 +701,6 @@ abstract class Db extends Component implements DbInterface
      * Returns insert id for the auto_increment field inserted in the last SQL statement
      *
      * @return int
-     * @throws \ManaPHP\Db\Exception
      */
     public function lastInsertId()
     {
