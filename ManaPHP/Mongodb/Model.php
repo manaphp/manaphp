@@ -35,12 +35,13 @@ class Model extends \ManaPHP\Model
      * @param mixed $context
      *
      * @return \ManaPHP\MongodbInterface
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public static function getConnection($context = null)
     {
         $db = static::getDb($context);
         if ($db === false) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException(['db of `:model` model is invalid.', 'model' => get_called_class()]);
         }
 
@@ -155,12 +156,19 @@ class Model extends \ManaPHP\Model
 
                 $phpdoc = $rp->getDocComment();
                 if (!$phpdoc) {
+                    /** @noinspection PhpUnhandledExceptionInspection */
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     throw new ModelException(['`:property` property does not contain phpdoc', 'property' => $rp->getName()]);
                 }
 
                 if (!preg_match('#@var ([^\s]+)#', $phpdoc, $match)) {
-                    throw new ModelException(['`:property` property phpdoc does not contain data type defintion: `:phpdoc`',
-                        'property' => $rp->getName(), 'phpdoc' => $phpdoc]);
+                    /** @noinspection PhpUnhandledExceptionInspection */
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                    throw new ModelException([
+                        '`:property` property phpdoc does not contain data type defintion: `:phpdoc`',
+                        'property' => $rp->getName(),
+                        'phpdoc' => $phpdoc
+                    ]);
                 }
 
                 switch ($match[1]) {
@@ -183,8 +191,10 @@ class Model extends \ManaPHP\Model
                         $type = 'objectid';
                         break;
                     default:
-                        throw new ModelException(['`:property` property `:type` type unsupported',
-                            'property' => $rp->getName(), 'type' => $match[1]]);
+                        /** @noinspection PhpUnhandledExceptionInspection */
+                        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                        throw new ModelException(['`:property` property `:type` type unsupported', 'property' => $rp->getName(), 'type' => $match[1]]);
+                        break;
                 }
 
                 $fieldTypes[$rp->getName()] = $type;
@@ -246,7 +256,7 @@ class Model extends \ManaPHP\Model
         if ($id === $step) {
             static::_createAutoIncrementIndex();
         }
-		
+
         return $id;
     }
 
