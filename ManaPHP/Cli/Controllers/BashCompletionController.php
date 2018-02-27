@@ -232,7 +232,7 @@ EOT;
             $this->filesystem->filePut($file, PHP_EOL === '\n' ? $content : str_replace("\r", '', $content));
             $this->filesystem->chmod($file, 0755);
         } catch (\Exception $e) {
-            return $this->console->error('write bash completion script failed: ', $e->getMessage());
+            return $this->console->error('write bash completion script failed: '. $e->getMessage());
         }
 
         $this->console->writeLn('install bash completion script successfully');

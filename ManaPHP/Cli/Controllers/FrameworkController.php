@@ -50,7 +50,7 @@ class FrameworkController extends Controller
             $classFile = '@manaphp/' . strtr(substr($className, strpos($className, '\\')), '\\', '/') . '.php';
 
             if (!$this->filesystem->fileExists($classFile)) {
-                return $this->console->error('`:file` is not missing for `:class` class', ['file' => $classFile, 'class' => $className]);
+                return $this->console->error(['`:file` is not missing for `:class` class', 'file' => $classFile, 'class' => $className]);
             }
 
             $classContent = $this->filesystem->fileGet($classFile);

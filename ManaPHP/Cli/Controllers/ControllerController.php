@@ -36,7 +36,7 @@ class ControllerController extends Controller
 
         $moduleName = Text::camelize($this->crossword->guess($this->application->getModules(), $module));
         if (!$moduleName) {
-            return $this->console->error('module name is unknown: `:module`', ['module' => $module]);
+            return $this->console->error(['module name is unknown: `:module`', 'module' => $module]);
         }
         $controller = Text::camelize($controller);
         $controllerName = $controller . 'Controller';
@@ -45,7 +45,7 @@ class ControllerController extends Controller
         $controllerNamespace = $this->alias->resolveNS('@ns.app' . '\\' . $moduleName . '\\Controllers');
 
         if (!$force && $this->filesystem->fileExists($controllerFile)) {
-            return $this->console->error('`:controller` controller exists already', ['controller' => $controllerNamespace . '\\' . $controller]);
+            return $this->console->error(['`:controller` controller exists already', 'controller' => $controllerNamespace . '\\' . $controller]);
         }
         $actions = [];
         foreach (explode(',', $this->arguments->getOption('action:a', 'list,create,detail,update,delete')) as $action) {
