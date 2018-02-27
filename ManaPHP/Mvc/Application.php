@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Mvc\Router\NotFoundRouteException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Mvc\Application
