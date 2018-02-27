@@ -40,7 +40,7 @@ class FrameworkController extends Controller
         $contents = '';
 
         $prevClassNamespace = '';
-        foreach ($config['classes'] as $className) {
+        foreach ((array)$config['classes'] as $className) {
             if (strpos($className, 'ManaPHP\\') !== 0) {
                 continue;
             }
@@ -206,6 +206,8 @@ class FrameworkController extends Controller
         $source_file = $this->alias->resolve($this->arguments->getOption('source:s'));
 
         $classNames = [];
+        /** @noinspection ForeachSourceInspection */
+        /** @noinspection PhpIncludeInspection */
         foreach (require $source_file as $className) {
             if (preg_match('#^ManaPHP\\\\.*$#', $className)) {
                 $classNames[] = $className;
