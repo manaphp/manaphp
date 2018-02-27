@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Model;
 
-class NotFoundException extends \ManaPHP\Model\Exception
+class NotFoundException extends Exception
 {
     /**
      * @var string
