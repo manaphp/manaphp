@@ -57,7 +57,7 @@ class Logger extends Component implements LoggerInterface
         }
 
         if (isset($options['appenders'])) {
-            foreach ($options['appenders'] as $name => $appender) {
+            foreach ((array)$options['appenders'] as $name => $appender) {
                 if (isset($appender['filter'])) {
                     $filter = $appender['filter'];
                     if (isset($filter['level'])) {
