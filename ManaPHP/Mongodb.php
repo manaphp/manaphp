@@ -63,6 +63,7 @@ class Mongodb extends Component implements MongodbInterface
             try {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 /** @noinspection NullPointerExceptionInspection */
+                /** @noinspection PhpUnhandledExceptionInspection */
                 $cursor = $this->_getManager()->executeCommand('admin', new Command(['ping' => 1]));
                 $cursor->setTypeMap(['root' => 'array']);
                 $r = $cursor->toArray()[0];
@@ -192,6 +193,7 @@ class Mongodb extends Component implements MongodbInterface
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $this->fireEvent('mongodb:beforeQuery', ['namespace' => $ns]);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $cursor = $this->_getManager()->executeQuery($ns, new Query($filter, $queryOptions), new ReadPreference($readPreference));
         $this->fireEvent('mongodb:afterQuery');
         $cursor->setTypeMap(['root' => 'array']);
@@ -203,13 +205,13 @@ class Mongodb extends Component implements MongodbInterface
      * @param string $db
      *
      * @return \Mongodb\Driver\Cursor
-     * @throws \MongoDB\Driver\Exception\AuthenticationException
      */
     public function command($command, $db = null)
     {
         $this->fireEvent('mongodb:beforeExecuteCommand', ['db' => $db ?: $this->_defaultDb, 'command' => $command]);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         /** @noinspection NullPointerExceptionInspection */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $r = $this->_getManager()->executeCommand($db ?: $this->_defaultDb, new Command($command));
         $r->setTypeMap(['root' => 'array', 'document' => 'array']);
         $this->fireEvent('mongodb:afterExecuteCommand');
@@ -266,6 +268,7 @@ class Mongodb extends Component implements MongodbInterface
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         try {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             $cursor = $this->_getManager()->executeCommand($db, new Command(['drop' => $collection]), new ReadPreference(ReadPreference::RP_PRIMARY));
         } /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */ catch (RuntimeException $e) {
             if ($e->getMessage() === 'ns not found') {
