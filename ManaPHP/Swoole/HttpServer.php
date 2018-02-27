@@ -3,7 +3,6 @@
 namespace ManaPHP\Swoole;
 
 use ManaPHP\Application;
-use ManaPHP\Utility\Text;
 use ManaPHP\Swoole\Exception as SwooleException;
 
 /**
@@ -33,17 +32,7 @@ abstract class HttpServer extends Application
     /**
      * @var bool
      */
-    protected $_useModule = false;
-
-    /**
-     * @var bool
-     */
     protected $_useCookie = true;
-
-    /**
-     * @var bool
-     */
-    protected $_useView = true;
 
     /**
      * @var string
@@ -165,24 +154,11 @@ abstract class HttpServer extends Application
             }
 
             $router = $this->router;
-            if ($this->_useModule) {
-                $moduleName = $router->getModuleName();
-                $controllerName = $router->getControllerName();
-                $actionName = $router->getActionName();
-                $params = $router->getParams();
 
-                $this->alias->set('@module', '@app' . ($moduleName ? '/' . Text::camelize($moduleName) : ''));
-                $this->alias->set('@ns.module', '@ns.app' . ($moduleName ? '\\' . Text::camelize($moduleName) : ''));
-                $this->dispatcher->dispatch($moduleName, $controllerName, $actionName, $params);
-            } else {
-                $this->dispatcher->dispatch('', $router->getControllerName(), $router->getActionName(), $router->getParams());
-            }
+            $this->dispatcher->dispatch($router->getControllerName(), $router->getActionName(), $router->getParams());
 
             $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue === null && $this->_useView) {
-                $this->alias->set('@views', '@module/Views');
-                $this->alias->set('@layouts', '@app/Views/Layouts');
-
+            if ($actionReturnValue === null) {
                 $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
                 $this->response->setContent($this->view->getContent());
             }
