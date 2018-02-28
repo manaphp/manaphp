@@ -2,7 +2,7 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Mvc\Router\Group;
+use ManaPHP\Mvc\Router;
 use ManaPHP\Mvc\Router\Route;
 use PHPUnit\Framework\TestCase;
 
@@ -59,13 +59,13 @@ class MvcRouterRouteTest extends TestCase
                 ]
             ),
         );
-        $group = new Group();
+        $group = new Router();
         $group->add('/some/{name}', 'c::a');
         $group->add('/some/{name}/{id:[0-9]+}', 'c::a');
         $group->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
-            $this->assertEquals($test, array_merge(['uri' => $test['uri']], $group->match($test['uri'])));
+            $this->assertEquals($test, array_merge(['uri' => $test['uri']], $group->matchRoute($test['uri'])));
         }
     }
 
