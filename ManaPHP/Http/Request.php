@@ -391,7 +391,7 @@ class Request extends Component implements RequestInterface
         if (isset($_SERVER['HTTP_X_REAL_IP'])) {
             return $_SERVER['HTTP_X_REAL_IP'];
         } else {
-            return $_SERVER['REMOTE_ADDR'];
+            return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
         }
     }
 
