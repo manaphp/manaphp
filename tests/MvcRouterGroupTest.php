@@ -8,13 +8,13 @@ class MvcRouterGroupTest extends TestCase
 {
     public function test_construct()
     {
-        $group = new Router();
+        $router = new Router();
 
-        $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => []], $group->matchRoute('/'));
-        $this->assertEquals(['controller' => 'a', 'action' => 'index', 'params' => []], $group->matchRoute('/a'));
-        $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => []], $group->matchRoute('/a/b'));
-        $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => ['c']], $group->matchRoute('/a/b/c'));
-        $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => ['c', 'd', 'e']], $group->matchRoute('/a/b/c/d/e'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => []], $router->matchRoute('/'));
+        $this->assertEquals(['controller' => 'a', 'action' => 'index', 'params' => []], $router->matchRoute('/a'));
+        $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => []], $router->matchRoute('/a/b'));
+        $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => ['c']], $router->matchRoute('/a/b/c'));
+        $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => ['c', 'd', 'e']], $router->matchRoute('/a/b/c/d/e'));
     }
 
     public function test_router()
@@ -124,33 +124,33 @@ class MvcRouterGroupTest extends TestCase
             ),
         );
 
-        $group = new Router();
-        $group->add('/', 'index::index');
+        $router = new Router();
+        $router->add('/', 'index::index');
 
-        $group->add('/system/:controller/a/:action/:params');
+        $router->add('/system/:controller/a/:action/:params');
 
-        $group->add('/{language:[a-z]{2}}/:controller');
+        $router->add('/{language:[a-z]{2}}/:controller');
 
-        $group->add('/admin/:controller/:action/{id:\d+}');
+        $router->add('/admin/:controller/:action/{id:\d+}');
 
-        $group->add('/posts/{year:\d{4}}/{month:\d{2}}/{day:\d{2}}/:params', 'posts::show');
+        $router->add('/posts/{year:\d{4}}/{month:\d{2}}/{day:\d{2}}/:params', 'posts::show');
 
-        $group->add('/manual/{language:[a-z]{2}}/{file:[a-z\.]+}\.html', 'manual::show');
+        $router->add('/manual/{language:[a-z]{2}}/{file:[a-z\.]+}\.html', 'manual::show');
 
-        $group->add('/named-manual/{language:([a-z]{2})}/{file:[a-z\.]+}\.html', 'manual::show');
+        $router->add('/named-manual/{language:([a-z]{2})}/{file:[a-z\.]+}\.html', 'manual::show');
 
-        $group->add('/very/static/route', 'static::route');
+        $router->add('/very/static/route', 'static::route');
 
-        $group->add('/feed/{lang:[a-z]+}/blog/{blog:[a-z\-]+}\.{type:[a-z\-]+}', 'feed::get');
+        $router->add('/feed/{lang:[a-z]+}/blog/{blog:[a-z\-]+}\.{type:[a-z\-]+}', 'feed::get');
 
-        $group->add('/posts/{year:[0-9]+}/s/{title:[a-z\-]+}', 'posts::show');
+        $router->add('/posts/{year:[0-9]+}/s/{title:[a-z\-]+}', 'posts::show');
 
-        $group->add('/posts/delete/{id}', 'posts::delete');
+        $router->add('/posts/delete/{id}', 'posts::delete');
 
-        $group->add('/show/{id:video([0-9]+)}/{title:[a-z\-]+}', 'videos::show');
+        $router->add('/show/{id:video([0-9]+)}/{title:[a-z\-]+}', 'videos::show');
 
         foreach ($tests as $n => $test) {
-            $parts = $group->matchRoute($test['uri']);
+            $parts = $router->matchRoute($test['uri']);
             $this->assertNotFalse($parts);
             $this->assertEquals($test['controller'], $parts['controller'], 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $parts['action'], 'Testing ' . $test['uri']);
@@ -212,23 +212,23 @@ class MvcRouterGroupTest extends TestCase
             ),
         );
 
-        $group = new Router();
-        $group->add('/docs/index', 'documentation2::index');
+        $router = new Router();
+        $router->add('/docs/index', 'documentation2::index');
 
-        $group->addPost('/docs/index', 'documentation3::index');
+        $router->addPost('/docs/index', 'documentation3::index');
 
-        $group->addGet('/docs/index', 'documentation4::index');
+        $router->addGet('/docs/index', 'documentation4::index');
 
-        $group->addPut('/docs/index', 'documentation5::index');
+        $router->addPut('/docs/index', 'documentation5::index');
 
-        $group->addDelete('/docs/index', 'documentation6::index');
+        $router->addDelete('/docs/index', 'documentation6::index');
 
-        $group->addOptions('/docs/index', 'documentation7::index');
+        $router->addOptions('/docs/index', 'documentation7::index');
 
-        $group->addHead('/docs/index', 'documentation8::index');
+        $router->addHead('/docs/index', 'documentation8::index');
 
         foreach ($tests as $n => $test) {
-            $parts = $group->matchRoute($test['uri'], $test['method'] ?: 'GET');
+            $parts = $router->matchRoute($test['uri'], $test['method'] ?: 'GET');
             $this->assertEquals($test['controller'], $parts['controller'], 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $parts['action'], 'Testing ' . $test['uri']);
             $this->assertEquals($test['params'], $parts['params'], 'Testing ' . $test['uri']);
@@ -237,11 +237,11 @@ class MvcRouterGroupTest extends TestCase
 
     public function test_add_usage()
     {
-        $group = new Router();
+        $router = new Router();
 
-        $group->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params', 'posts::show');
+        $router->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params', 'posts::show');
 
-        $parts = $group->matchRoute('/news/2016/03/12/china');
+        $parts = $router->matchRoute('/news/2016/03/12/china');
         $this->assertNotFalse($parts);
         $this->assertEquals('posts', $parts['controller']);
         $this->assertEquals('show', $parts['action']);
@@ -276,13 +276,13 @@ class MvcRouterGroupTest extends TestCase
                 'params' => array('name' => 'hattie', 'id' => 100, 'date' => '2011-01-02')
             ),
         );
-        $group = new Router();
-        $group->add('/some/{name}', 'c::a');
-        $group->add('/some/{name}/{id:[0-9]+}', 'c::a');
-        $group->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
+        $router = new Router();
+        $router->add('/some/{name}', 'c::a');
+        $router->add('/some/{name}/{id:[0-9]+}', 'c::a');
+        $router->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
-            $parts = $group->matchRoute($test['uri'], $test['method'] ?: 'GET');
+            $parts = $router->matchRoute($test['uri'], $test['method'] ?: 'GET');
             $this->assertEquals($test['controller'], $parts['controller'], 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $parts['action'], 'Testing ' . $test['uri']);
             $this->assertEquals($test['params'], $parts['params'], 'Testing ' . $test['uri']);
@@ -305,9 +305,9 @@ class MvcRouterGroupTest extends TestCase
                 'action' => 'edit'
             ),
         );
-        $group = new Router();
+        $router = new Router();
         foreach ($routes as $route => $paths) {
-            $parts = $group->matchRoute($route, 'GET');
+            $parts = $router->matchRoute($route, 'GET');
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->assertNotFalse($parts);
             $this->assertEquals($paths['controller'], $parts['controller']);
@@ -317,24 +317,24 @@ class MvcRouterGroupTest extends TestCase
 
     public function test_shortPaths_usage()
     {
-        $group = new Router();
-        $group->add('/', 'user::list');
+        $router = new Router();
+        $router->add('/', 'user::list');
 
-        $parts = $group->matchRoute('/', 'GET');
+        $parts = $router->matchRoute('/', 'GET');
         $this->assertNotFalse($parts);
         $this->assertEquals('user', $parts['controller']);
         $this->assertEquals('list', $parts['action']);
 
-        $group = new Router();
-        $group->add('/', 'user::list');
-        $parts = $group->matchRoute('/', 'GET');
+        $router = new Router();
+        $router->add('/', 'user::list');
+        $parts = $router->matchRoute('/', 'GET');
         $this->assertNotFalse($parts);
         $this->assertEquals('user', $parts['controller']);
         $this->assertEquals('list', $parts['action']);
 
-        $group = new Router();
-        $group->add('/', 'user');
-        $parts = $group->matchRoute('/', 'GET');
+        $router = new Router();
+        $router->add('/', 'user');
+        $parts = $router->matchRoute('/', 'GET');
         $this->assertNotFalse($parts);
         $this->assertEquals('user', $parts['controller']);
         $this->assertEquals('index', $parts['action']);

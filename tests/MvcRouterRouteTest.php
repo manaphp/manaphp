@@ -59,13 +59,13 @@ class MvcRouterRouteTest extends TestCase
                 ]
             ),
         );
-        $group = new Router();
-        $group->add('/some/{name}', 'c::a');
-        $group->add('/some/{name}/{id:[0-9]+}', 'c::a');
-        $group->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
+        $router = new Router();
+        $router->add('/some/{name}', 'c::a');
+        $router->add('/some/{name}/{id:[0-9]+}', 'c::a');
+        $router->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
-            $this->assertEquals($test, array_merge(['uri' => $test['uri']], $group->matchRoute($test['uri'])));
+            $this->assertEquals($test, array_merge(['uri' => $test['uri']], $router->matchRoute($test['uri'])));
         }
     }
 
