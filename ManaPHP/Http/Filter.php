@@ -542,7 +542,8 @@ class Filter extends Component implements FilterInterface
     protected function _filter_password($value)
     {
         $value = trim($value);
-        return $value;
+
+        return $value !== '' ? $value : null;
     }
 
     /**
