@@ -228,7 +228,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setContent($content)
     {
-        $this->_content = $content;
+        $this->_content = (string)$content;
 
         return $this;
     }
