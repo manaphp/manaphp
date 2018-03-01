@@ -1449,11 +1449,22 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         return null;
     }
 
+    /**
+     * @return array
+     */
     public function __debugInfo()
     {
         $data = $this->toArray();
         $data['*changed_fields*'] = $this->getChangedFields();
 
         return $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return json_encode($this->toArray(true), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 }
