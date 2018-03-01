@@ -1241,6 +1241,27 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param array $fields
+     *
+     * @return static
+     */
+    public function refresh($fields = null)
+    {
+        $primaryKey = static::getPrimaryKey();
+
+        $r = static::criteria($fields)->where($primaryKey, $this->{$primaryKey})->execute();
+        if (!$r[0]) {
+            throw new ModelException(['`:model` model refresh failed: record is not exists now!', 'model' => get_called_class()]);
+        }
+
+        $this->assign($r[0], []);
+
+        $this->_snapshot = array_merge($this->_snapshot, $r[0]);
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize()

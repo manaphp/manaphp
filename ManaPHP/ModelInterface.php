@@ -356,6 +356,13 @@ interface ModelInterface
     public function hasChanged($fields);
 
     /**
+     * @param array $fields
+     *
+     * @return static
+     */
+    public function refresh($fields = null);
+
+    /**
      * @param string       $referenceModel
      * @param array|string $referenceField
      *
