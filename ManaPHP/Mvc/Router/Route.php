@@ -106,20 +106,17 @@ class Route implements RouteInterface
         $routePaths = [];
 
         if (is_string($paths)) {
-            $parts = explode('::', $paths);
-            if (count($parts) === 2) {
-                $routePaths['controller'] = $parts[0];
-                /** @noinspection MultiAssignmentUsageInspection */
-                $routePaths['action'] = $parts[1];
+            if (($pos = strpos($paths, '::')) !== false) {
+                $routePaths['controller'] = substr($paths, 0, $pos);
+                $routePaths['action'] = substr($paths, $pos + 2);
             } else {
-                $routePaths['controller'] = $parts[0];
+                $routePaths['controller'] = $paths;
             }
         } elseif (is_array($paths)) {
             if (isset($paths[0])) {
-                if (strpos($paths[0], '::')) {
-                    $parts = explode('::', $paths[0]);
-                    $routePaths['controller'] = $parts[0];
-                    $routePaths['action'] = $parts[1];
+                if (($pos = strpos($paths[0], '::')) !== false) {
+                    $routePaths['controller'] = substr($paths[0], 0, $pos);
+                    $routePaths['action'] = substr($paths[0], $pos + 2);
                 } else {
                     $routePaths['controller'] = $paths[0];
                 }
@@ -138,7 +135,13 @@ class Route implements RouteInterface
         }
 
         if (isset($routePaths['controller']) && strpos($routePaths['controller'], '\\') !== false) {
-            $routePaths['controller'] = basename(strtr($routePaths['controller'], '\\', '/'), 'Controller');
+            $controller = $routePaths['controller'];
+            $routePaths['controller'] = basename(strtr($controller, '\\', '/'), 'Controller');
+            if (($pos = strpos($controller, '\Areas\\')) !== false) {
+                $pos2 = strpos($controller, '\\', $pos + 7);
+
+                $routePaths['controller'] = substr($controller, $pos + 7, $pos2 - $pos - 7) . '/' . $routePaths['controller'];
+            }
         }
 
         return $routePaths;
