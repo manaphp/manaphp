@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Db\AssignmentInterface;
+use ManaPHP\Db\ConnectionException;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Utility\Text;
 
@@ -100,7 +101,7 @@ abstract class Db extends Component implements DbInterface
             } catch (\PDOException $e) {
                 /** @noinspection PhpUnhandledExceptionInspection */
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new DbException([':exception_message: :dsn', 'exception_message' => $e->getMessage(), 'dsn' => $this->_dsn]);
+                throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode());
             }
         }
 
