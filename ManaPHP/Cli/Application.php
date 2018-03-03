@@ -23,7 +23,9 @@ class Application extends \ManaPHP\Application
      */
     public function __construct($loader, $dependencyInjector = null)
     {
-        if (get_called_class() === __CLASS__) {
+        $calledClass = get_called_class();
+		
+        if ($calledClass === __CLASS__) {
             $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
 
             $this->_dependencyInjector->setShared('loader', $loader);
@@ -47,14 +49,12 @@ class Application extends \ManaPHP\Application
             parent::__construct($loader, $dependencyInjector);
         }
 
-        if ($this->alias->has('@app')) {
-            foreach (['@app/Cli/Controllers', '@app/Controllers'] as $dir) {
-                if ($this->filesystem->dirExists($dir)) {
-                    $this->alias->set('@cli', $this->alias->resolve($dir));
-                    $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr($dir, ['@app' => '@ns.app', '/' => '\\'])));
-                    break;
-                }
-            }
+        if ($this->filesystem->dirExists('@app/Cli/Controllers')) {
+            $this->alias->set('@cli', $this->alias->resolve('@app/Cli/Controllers'));
+            $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr('@app/Cli/Controllers', ['@app' => '@ns.app', '/' => '\\'])));
+        } elseif ($calledClass !== __CLASS__ && $this->filesystem->dirExists('@app/Controllers')) {
+            $this->alias->set('@cli', $this->alias->resolve('@app/Controllers'));
+            $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr('@app/Controllers', ['@app' => '@ns.app', '/' => '\\'])));
         }
     }
 

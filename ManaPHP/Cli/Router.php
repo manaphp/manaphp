@@ -52,8 +52,8 @@ class Router extends Component implements RouterInterface
     {
         $controllers = [];
 
-        if ($this->alias->has('@app')) {
-            foreach ($this->filesystem->glob('@app/Cli/Controllers/*Controller.php') as $file) {
+        if ($this->alias->has('@cli')) {
+            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
                 if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
                     $controllers[] = $matches[1];
                 }
