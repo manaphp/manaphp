@@ -73,7 +73,8 @@ class FactoryDefault extends Di
             'db' => 'ManaPHP\Db\Adapter\Mysql',
             'redis' => 'ManaPHP\Redis',
             'mongodb' => 'ManaPHP\Mongodb',
-            'translation' => 'ManaPHP\I18n\Translation'
+            'translation' => 'ManaPHP\I18n\Translation',
+            'rabbitmq' => 'ManaPHP\Amqp'
         ];
     }
 }
