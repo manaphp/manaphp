@@ -72,7 +72,7 @@ class SelectorList implements \Iterator
      */
     public function css($css)
     {
-        return $this->xpath((new CssToXpath())->transform($css));
+        return $this->xpath((new CssToXPath())->transform($css));
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Dom;
 
-class CssToXpath
+class CssToXPath
 {
     /**
      * Transform CSS expression to XPath

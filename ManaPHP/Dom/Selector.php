@@ -67,7 +67,7 @@ class Selector
     public function css($css)
     {
         $this->_css = $css;
-        return $this->xpath((new CssToXpath())->transform($css));
+        return $this->xpath((new CssToXPath())->transform($css));
     }
 
     /**

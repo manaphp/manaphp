@@ -1,13 +1,13 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Dom\CssToXpath;
+use ManaPHP\Dom\CssToXPath;
 
-class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
+class DomCssToXPathTest extends \PHPUnit_Framework_TestCase
 {
     public function test_transform()
     {
-        $cssToXpath = new CssToXpath();
+        $cssToXpath = new CssToXPath();
         $css_xpaths = [
 
             //all selector

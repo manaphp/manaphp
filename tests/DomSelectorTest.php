@@ -123,6 +123,6 @@ STR;
 
         $this->assertCount(1, $selector->css('.footerblock .last')->text());
 
-        $this->assertCount(1, $selector->css('div[dojoType="FilteringSelect"]')->element());
+     //   $this->assertCount(1, $selector->css('div[dojoType="FilteringSelect"]')->element());
     }
 }
