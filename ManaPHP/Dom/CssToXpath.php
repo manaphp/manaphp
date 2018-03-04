@@ -6,14 +6,14 @@ class CssToXpath
     /**
      * Transform CSS expression to XPath
      *
-     * @param  string $path
+     * @param  string $path_src
      *
      * @return string
      */
-    public function transform($path)
+    public function transform($path_src)
     {
-        $path = (string)$path;
-        if (strstr($path, ',')) {
+        $path = (string)$path_src;
+        if (strpos($path, ',') !== false) {
             $paths = explode(',', $path);
             $expressions = [];
             foreach ($paths as $path) {
@@ -21,6 +21,7 @@ class CssToXpath
                 if (is_string($xpath)) {
                     $expressions[] = $xpath;
                 } elseif (is_array($xpath)) {
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
                     $expressions = array_merge($expressions, $xpath);
                 }
             }
@@ -32,7 +33,7 @@ class CssToXpath
         $segments = preg_split('/\s+/', $path);
         foreach ($segments as $key => $segment) {
             $pathSegment = static::_tokenize($segment);
-            if (0 == $key) {
+            if (0 === $key) {
                 if (0 === strpos($pathSegment, '[contains(')) {
                     $paths[0] .= '*' . ltrim($pathSegment, '*');
                 } else {
@@ -52,7 +53,7 @@ class CssToXpath
             }
         }
 
-        if (1 == count($paths)) {
+        if (1 === count($paths)) {
             return $paths[0];
         }
         return implode('|', $paths);
@@ -61,14 +62,14 @@ class CssToXpath
     /**
      * Tokenize CSS expressions to XPath
      *
-     * @param  string $expression
+     * @param  string $expression_src
      *
      * @return string
      */
-    protected static function _tokenize($expression)
+    protected static function _tokenize($expression_src)
     {
         // Child selectors
-        $expression = str_replace('>', '/', $expression);
+        $expression = str_replace('>', '/', $expression_src);
 
         // IDs
         $expression = preg_replace('|#([a-z][a-z0-9_-]*)|i', '[@id=\'$1\']', $expression);
@@ -97,14 +98,14 @@ class CssToXpath
         $expression = preg_replace_callback(
             '|\[([a-z0-9_-]+)\*=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
-                return "[contains(@" . strtolower($matches[1]) . ", '"
+                return '[contains(@' . strtolower($matches[1]) . ", '"
                     . $matches[2] . "')]";
             },
             $expression
         );
 
         // Classes
-        if (false === strpos($expression, "[@")) {
+        if (false === strpos($expression, '[@')) {
             $expression = preg_replace(
                 '|\.([a-z][a-z0-9_-]*)|i',
                 "[contains(concat(' ', normalize-space(@class), ' '), ' \$1 ')]",
