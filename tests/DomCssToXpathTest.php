@@ -42,16 +42,17 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
             'div[bar^="baz|xyz"]' => "//div[starts-with(@bar, 'baz') or starts-with(@bar, 'xyz')]",//starts with
             'div[bar$="baz"]' => "//div[ends-with(@bar, 'baz')]",//ends with
             'div[bar$="baz|xyz"]' => "//div[ends-with(@bar, 'baz') or ends-with(@bar, 'xyz')]",//ends with
+
             //has attributes
             'div[bar]' => '//div[@bar]',//has bar attributes
             'div[!bar]' => '//div[not(@bar)]',//do not has bar attributes
 
             'div[="baz"]' => "//div[text()='baz']",//exact match
             'div[="baz|xyz"]' => "//div[text()='baz' or text()='xyz']",//exact match
-//            'div[bar~="baz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ')]",//word match
-//            'div[bar*="baz"]' => "//div[contains(@bar, 'baz')]",//substring match
-//            'div[bar^="baz"]' => "//div[starts-with(@bar, 'baz')]",//starts with
-//            'div[bar$="baz"]' => "//div[ends-with(@bar, 'baz')]",//ends with
+            'div[~="baz"]' => "//div[contains(concat(' ', normalize-space(text()), ' '), ' baz ')]",//word match
+            'div[*="baz"]' => "//div[contains(text(), 'baz')]",//substring match
+            'div[^="baz"]' => "//div[starts-with(text(), 'baz')]",//starts with
+            'div[$="baz"]' => "//div[ends-with(text(), 'baz')]",//ends with
 
             //direct descendents
             'div > span' => '//div/span',
@@ -73,7 +74,8 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
         ];
 
         foreach ($css_xpaths as $css => $xpath) {
-            $this->assertEquals($xpath, $cssToXpath->transform($css), json_encode(['css'=>$css,'xpath'=>$xpath], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT));
+            $this->assertEquals($xpath, $cssToXpath->transform($css),
+                json_encode(['css' => $css, 'xpath' => $xpath], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         }
     }
 }

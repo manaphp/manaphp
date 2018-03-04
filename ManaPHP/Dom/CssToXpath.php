@@ -90,9 +90,9 @@ class CssToXpath
 
         // arbitrary attribute contains full word
         $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)~=[\'"]([^\'"]+)[\'"]\]|i',
+            '|\[([a-z0-9_-]*)~=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
-                return "[contains(concat(' ', normalize-space(@" . strtolower($matches[1]) . "), ' '), ' "
+                return "[contains(concat(' ', normalize-space(" . ($matches[1] === '' ? 'text()' : '@' . strtolower($matches[1])) . "), ' '), ' "
                     . $matches[2] . " ')]";
             },
             $expression
@@ -100,16 +100,20 @@ class CssToXpath
 
         // arbitrary attribute contains specified content
         $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)([\*\^\$])=[\'"]([^\'"]+)[\'"]\]|i',
+            '|\[([a-z0-9_-]*)([\*\^\$])=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
 
                 $items = [];
                 $op = strpos($matches[3], '|') !== false ? '|' : '&';
                 foreach (explode($op, $matches[3]) as $word) {
-                    $items[] = ['*' => 'contains', '^' => 'starts-with', '$' => 'ends-with'][$matches[2]] . '(@' . strtolower($matches[1]) . ", '"
+                    $items[] = [
+                            '*' => 'contains',
+                            '^' => 'starts-with',
+                            '$' => 'ends-with'
+                        ][$matches[2]] . '(' . ($matches[1] === '' ? 'text()' : '@' . strtolower($matches[1])) . ", '"
                         . $word . "')";
                 }
-                return '[' . implode($op === '|' ? ' or ' : ' and ', $items).']';
+                return '[' . implode($op === '|' ? ' or ' : ' and ', $items) . ']';
             },
             $expression
         );
