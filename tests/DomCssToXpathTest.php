@@ -30,11 +30,28 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
 
             //arbitrary attributes
             'div[bar="baz"]' => "//div[@bar='baz']",//exact match
-            'div[bar~="baz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ')]",//word match
-            'div[bar*="baz"]' => "//div[contains(@bar, 'baz')]",//substring match
+            'div[bar="baz|xyz"]' => "//div[@bar='baz' or @bar='xyz']",//exact match
 
+            'div[bar~="baz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ')]",//word match
+
+            'div[bar*="baz"]' => "//div[contains(@bar, 'baz')]",//substring match
+            'div[bar*="baz|xyz"]' => "//div[contains(@bar, 'baz') or contains(@bar, 'xyz')]",//substring match
+            'div[bar*="baz&xyz"]' => "//div[contains(@bar, 'baz') and contains(@bar, 'xyz')]",//substring match
+
+            'div[bar^="baz"]' => "//div[starts-with(@bar, 'baz')]",//starts with
+            'div[bar^="baz|xyz"]' => "//div[starts-with(@bar, 'baz') or starts-with(@bar, 'xyz')]",//starts with
+            'div[bar$="baz"]' => "//div[ends-with(@bar, 'baz')]",//ends with
+            'div[bar$="baz|xyz"]' => "//div[ends-with(@bar, 'baz') or ends-with(@bar, 'xyz')]",//ends with
             //has attributes
-        //    'div[bar]' => '//div[@bar]',//has bar attributes
+            'div[bar]' => '//div[@bar]',//has bar attributes
+            'div[!bar]' => '//div[not(@bar)]',//do not has bar attributes
+
+            'div[="baz"]' => "//div[text()='baz']",//exact match
+            'div[="baz|xyz"]' => "//div[text()='baz' or text()='xyz']",//exact match
+//            'div[bar~="baz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ')]",//word match
+//            'div[bar*="baz"]' => "//div[contains(@bar, 'baz')]",//substring match
+//            'div[bar^="baz"]' => "//div[starts-with(@bar, 'baz')]",//starts with
+//            'div[bar$="baz"]' => "//div[ends-with(@bar, 'baz')]",//ends with
 
             //direct descendents
             'div > span' => '//div/span',

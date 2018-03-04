@@ -77,9 +77,13 @@ class CssToXpath
 
         // arbitrary attribute strict equality
         $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]+)=[\'"]([^\'"]+)[\'"]\]|i',
+            '|\[@?([a-z0-9_-]*)=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
-                return '[@' . strtolower($matches[1]) . "='" . $matches[2] . "']";
+                $items = [];
+                foreach (explode('|', $matches[2]) as $word) {
+                    $items[] = ($matches[1] === '' ? 'text()' : ('@' . strtolower($matches[1]))) . "='" . $word . "'";
+                }
+                return '[' . implode(' or ', $items) . ']';
             },
             $expression
         );
@@ -96,14 +100,27 @@ class CssToXpath
 
         // arbitrary attribute contains specified content
         $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)\*=[\'"]([^\'"]+)[\'"]\]|i',
+            '|\[([a-z0-9_-]+)([\*\^\$])=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
-                return '[contains(@' . strtolower($matches[1]) . ", '"
-                    . $matches[2] . "')]";
+
+                $items = [];
+                $op = strpos($matches[3], '|') !== false ? '|' : '&';
+                foreach (explode($op, $matches[3]) as $word) {
+                    $items[] = ['*' => 'contains', '^' => 'starts-with', '$' => 'ends-with'][$matches[2]] . '(@' . strtolower($matches[1]) . ", '"
+                        . $word . "')";
+                }
+                return '[' . implode($op === '|' ? ' or ' : ' and ', $items).']';
             },
             $expression
         );
-
+        //attribute contains specified content
+        $expression = preg_replace_callback(
+            '|\[(!?)([a-z0-9_-]+)\]|i',
+            function ($matches) {
+                return $matches[1] === '!' ? "[not(@$matches[2])]" : "[@$matches[2]]";
+            },
+            $expression
+        );
         // Classes
         if (false === strpos($expression, '[@')) {
             $expression = preg_replace(
