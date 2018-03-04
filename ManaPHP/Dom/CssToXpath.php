@@ -80,10 +80,10 @@ class CssToXpath
             '|\[@?([a-z0-9_-]*)=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
                 $items = [];
-                foreach (explode('|', $matches[2]) as $word) {
+                foreach (explode(strpos($matches[2], '|') !== false ? '|' : '&', $matches[2]) as $word) {
                     $items[] = ($matches[1] === '' ? 'text()' : ('@' . strtolower($matches[1]))) . "='" . $word . "'";
                 }
-                return '[' . implode(' or ', $items) . ']';
+                return '[' . implode(strpos($matches[2], '|') !== false ? ' or ' : ' and ', $items) . ']';
             },
             $expression
         );
@@ -92,8 +92,13 @@ class CssToXpath
         $expression = preg_replace_callback(
             '|\[([a-z0-9_-]*)~=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
-                return "[contains(concat(' ', normalize-space(" . ($matches[1] === '' ? 'text()' : '@' . strtolower($matches[1])) . "), ' '), ' "
-                    . $matches[2] . " ')]";
+                $items = [];
+                foreach (explode(strpos($matches[2], '|') !== false ? '|' : '&', $matches[2]) as $word) {
+                    $items[] = "contains(concat(' ', normalize-space(" . ($matches[1] === '' ? 'text()' : '@' . strtolower($matches[1])) . "), ' '), ' "
+                        . $word . " ')";
+                }
+
+                return '[' . implode(strpos($matches[2], '|') !== false ? ' or ' : ' and ', $items) . ']';
             },
             $expression
         );
