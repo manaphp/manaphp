@@ -32,19 +32,15 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
             'div[bar]' => '//div[@bar]',//has bar attributes
             'div[bar|xyz]' => '//div[@bar or @xyz]',//has bar attributes
             'div[bar&xyz]' => '//div[@bar and @xyz]',//has bar attributes
-            
+
             //arbitrary attributes
             'div[bar="baz"]' => "//div[@bar='baz']",//exact match
             'div[bar="baz|xyz"]' => "//div[@bar='baz' or @bar='xyz']",//exact match
+            'div[bar="baz&xyz"]' => "//div[@bar='baz' and @bar='xyz']",//exact match
 
             'div[bar~="baz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ')]",//word match
             'div[bar~="baz|xyz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ') or contains(concat(' ', normalize-space(@bar), ' '), ' xyz ')]",//word match
             'div[bar~="baz&xyz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ') and contains(concat(' ', normalize-space(@bar), ' '), ' xyz ')]",//word match
-
-            'div[bar*="baz"]' => "//div[contains(@bar, 'baz')]",//substring match
-            'div[bar*="baz|xyz"]' => "//div[contains(@bar, 'baz') or contains(@bar, 'xyz')]",//substring match
-            'div[bar*="baz&xyz"]' => "//div[contains(@bar, 'baz') and contains(@bar, 'xyz')]",//substring match
-
             'div[bar^="baz"]' => "//div[starts-with(@bar, 'baz')]",//starts with
             'div[bar^="baz|xyz"]' => "//div[starts-with(@bar, 'baz') or starts-with(@bar, 'xyz')]",//starts with
             'div[bar^="baz&xyz"]' => "//div[starts-with(@bar, 'baz') and starts-with(@bar, 'xyz')]",//starts with
@@ -53,6 +49,10 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
             'div[bar$="baz|xyz"]' => "//div[ends-with(@bar, 'baz') or ends-with(@bar, 'xyz')]",//ends with
             'div[bar$="baz&xyz"]' => "//div[ends-with(@bar, 'baz') and ends-with(@bar, 'xyz')]",//ends with
 
+            'div[bar*="baz"]' => "//div[contains(@bar, 'baz')]",//substring match
+            'div[bar*="baz|xyz"]' => "//div[contains(@bar, 'baz') or contains(@bar, 'xyz')]",//substring match
+            'div[bar*="baz&xyz"]' => "//div[contains(@bar, 'baz') and contains(@bar, 'xyz')]",//substring match
+
             'div[="baz"]' => "//div[text()='baz']",//exact match
             'div[="baz|xyz"]' => "//div[text()='baz' or text()='xyz']",//exact match
             'div[="baz&xyz"]' => "//div[text()='baz' and text()='xyz']",//exact match
@@ -60,10 +60,6 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
             'div[~="baz"]' => "//div[contains(concat(' ', normalize-space(text()), ' '), ' baz ')]",//word match
             'div[~="baz|xyz"]' => "//div[contains(concat(' ', normalize-space(text()), ' '), ' baz ') or contains(concat(' ', normalize-space(text()), ' '), ' xyz ')]",//word match
             'div[~="baz&xyz"]' => "//div[contains(concat(' ', normalize-space(text()), ' '), ' baz ') and contains(concat(' ', normalize-space(text()), ' '), ' xyz ')]",//word match
-            'div[*="baz"]' => "//div[contains(text(), 'baz')]",//substring match
-            'div[*="baz|xyz"]' => "//div[contains(text(), 'baz') or contains(text(), 'xyz')]",//substring match
-            'div[*="baz&xyz"]' => "//div[contains(text(), 'baz') and contains(text(), 'xyz')]",//substring match
-
             'div[^="baz"]' => "//div[starts-with(text(), 'baz')]",//starts with
             'div[^="baz|xyz"]' => "//div[starts-with(text(), 'baz') or starts-with(text(), 'xyz')]",//starts with
             'div[^="baz&xyz"]' => "//div[starts-with(text(), 'baz') and starts-with(text(), 'xyz')]",//starts with
@@ -71,6 +67,10 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
             'div[$="baz"]' => "//div[ends-with(text(), 'baz')]",//ends with
             'div[$="baz|xyz"]' => "//div[ends-with(text(), 'baz') or ends-with(text(), 'xyz')]",//ends with
             'div[$="baz&xyz"]' => "//div[ends-with(text(), 'baz') and ends-with(text(), 'xyz')]",//ends with
+
+            'div[*="baz"]' => "//div[contains(text(), 'baz')]",//substring match
+            'div[*="baz|xyz"]' => "//div[contains(text(), 'baz') or contains(text(), 'xyz')]",//substring match
+            'div[*="baz&xyz"]' => "//div[contains(text(), 'baz') and contains(text(), 'xyz')]",//substring match
 
             //direct descendents
             'div > span' => '//div/span',
