@@ -50,6 +50,8 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
 
             //has attributes
             'div[bar]' => '//div[@bar]',//has bar attributes
+            'div[bar|xyz]' => '//div[@bar or @xyz]',//has bar attributes
+            'div[bar&xyz]' => '//div[@bar and @xyz]',//has bar attributes
 
             'div[="baz"]' => "//div[text()='baz']",//exact match
             'div[="baz|xyz"]' => "//div[text()='baz' or text()='xyz']",//exact match

@@ -124,9 +124,16 @@ class CssToXpath
         );
         //attribute contains specified content
         $expression = preg_replace_callback(
-            '|\[(!?)([a-z0-9_-]+)\]|i',
+            '|\[(!?)([a-z0-9_-\|&]+)\]|i',
             function ($matches) {
-                return $matches[1] === '!' ? "[not(@$matches[2])]" : "[@$matches[2]]";
+                $op = strpos($matches[2], '|') !== false ? '|' : '&';
+                $items = [];
+                foreach (explode($op, $matches[2]) as $word) {
+                    $items[] = '@' . $word;
+                }
+
+                $r = '[' . implode($op === '|' ? ' or ' : ' and ', $items) . ']';
+                return $matches[1] === '!' ? "not($r)" : $r;
             },
             $expression
         );
