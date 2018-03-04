@@ -28,6 +28,11 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
             '#content' => "//*[@id='content']",
             'div#nav' => "//div[@id='nav']",
 
+            //has attributes
+            'div[bar]' => '//div[@bar]',//has bar attributes
+            'div[bar|xyz]' => '//div[@bar or @xyz]',//has bar attributes
+            'div[bar&xyz]' => '//div[@bar and @xyz]',//has bar attributes
+            
             //arbitrary attributes
             'div[bar="baz"]' => "//div[@bar='baz']",//exact match
             'div[bar="baz|xyz"]' => "//div[@bar='baz' or @bar='xyz']",//exact match
@@ -47,11 +52,6 @@ class DomCssToXpathTest extends \PHPUnit_Framework_TestCase
             'div[bar$="baz"]' => "//div[ends-with(@bar, 'baz')]",//ends with
             'div[bar$="baz|xyz"]' => "//div[ends-with(@bar, 'baz') or ends-with(@bar, 'xyz')]",//ends with
             'div[bar$="baz&xyz"]' => "//div[ends-with(@bar, 'baz') and ends-with(@bar, 'xyz')]",//ends with
-
-            //has attributes
-            'div[bar]' => '//div[@bar]',//has bar attributes
-            'div[bar|xyz]' => '//div[@bar or @xyz]',//has bar attributes
-            'div[bar&xyz]' => '//div[@bar and @xyz]',//has bar attributes
 
             'div[="baz"]' => "//div[text()='baz']",//exact match
             'div[="baz|xyz"]' => "//div[text()='baz' or text()='xyz']",//exact match
