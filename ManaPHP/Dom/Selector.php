@@ -4,7 +4,12 @@ namespace ManaPHP\Dom;
 class Selector
 {
     /**
-     * @var \SimpleXMLElement
+     * @var \ManaPHP\Dom\Query
+     */
+    protected $_query;
+
+    /**
+     * @var \DOMNode
      */
     protected $_node;
 
@@ -21,14 +26,15 @@ class Selector
     /**
      * Selector constructor.
      *
-     * @param string|\SimpleXMLElement $text
+     * @param string|\ManaPHP\Dom\Document|\DOMNode $docOrNode
      */
-    public function __construct($text)
+    public function __construct($docOrNode)
     {
-        if (is_string($text)) {
-            $this->_node = new \SimpleXMLElement($text);
-        } else {
-            $this->_node = $text;
+        if ($docOrNode instanceof Document) {
+            $this->_node = $docOrNode->getDom();
+            $this->_query = new Query($this->_node);
+        } elseif ($docOrNode instanceof \DOMNode) {
+            $this->_node = $docOrNode;
         }
     }
 
@@ -53,8 +59,11 @@ class Selector
         $this->_xpath = $query;
 
         $selectors = [];
-        foreach ($this->_node->xpath($query) as $element) {
-            $selectors[] = new Selector($element);
+        foreach ($this->_query->xpath($query, $this->_node) as $element) {
+            $selector = new Selector($element);
+            $selector->_query = $this->_query;
+
+            $selectors[] = $selector;
         }
         return new SelectorList($selectors);
     }
@@ -85,8 +94,8 @@ class Selector
     {
         $data = [];
 
-        foreach ($this->_node->attributes() as $attribute) {
-            $data[$attribute->getName()] = (string)$attribute;
+        foreach ($this->_node->attributes as $attribute) {
+            $data[$attribute->name] = $attribute->value;
         }
 
         return $data;
@@ -97,7 +106,7 @@ class Selector
      */
     public function text()
     {
-        return (string)$this->_node;
+        return (string)$this->_node->textContent;
     }
 
     /**@param bool $as_string
@@ -106,7 +115,7 @@ class Selector
      */
     public function element($as_string = false)
     {
-        return $as_string ? $this->_node->asXML() : ['html' => $this->_node->asXML(), 'name' => $this->_node->getName(), 'text' => $this->text(), 'attr' => $this->attr()];
+        return $as_string ? $this->html() : ['name' => $this->_node->nodeName, 'html' => $this->html(), 'text' => $this->text(), 'attr' => $this->attr(), 'xpath' => $this->_node->getNodePath()];
     }
 
     /**
@@ -114,6 +123,19 @@ class Selector
      */
     public function html()
     {
-        return $this->_node->asXML();
+        /**
+         * @var \DOMNode $node
+         */
+        $node = $this->_node;
+
+        return $node->ownerDocument->saveHTML($node);
+    }
+
+    /**
+     * @return \DOMNode
+     */
+    public function node()
+    {
+        return $this->_node;
     }
 }

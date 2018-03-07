@@ -150,6 +150,19 @@ class SelectorList implements \Iterator
     }
 
     /**
+     * @return \DOMNode[]
+     */
+    public function node()
+    {
+        $data = [];
+        foreach ($this->_selectors as $selector) {
+            $data[] = $selector->node();
+        }
+
+        return $data;
+    }
+
+    /**
      * @param string $regex
      * @param string $default
      *
