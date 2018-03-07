@@ -133,10 +133,6 @@ class Router extends Component implements RouterInterface
                 $actionName = 'help';
             }
 
-            if ($actionName === null) {
-                $actionName = $controllerName === 'help' ? 'list' : 'help';
-            }
-
             if ($this->_guessCommand && strlen($controllerName) <= 4) {
                 $controllers = $this->_getControllers();
                 foreach ($controllers as $k => $controller) {
