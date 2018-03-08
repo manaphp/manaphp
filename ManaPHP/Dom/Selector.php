@@ -80,10 +80,16 @@ class Selector
      *
      * @return array|string
      */
-    public function attr($attr, $defaultValue = null)
+    public function attr($attr = null, $defaultValue = null)
     {
+        if ($this->_node instanceof \DOMElement) {
+            $attributes = $this->_node->attributes;
+        } else {
+            $attributes = [];
+        }
+
         if (is_string($attr)) {
-            foreach ($this->_node->attributes as $attribute) {
+            foreach ($attributes as $attribute) {
                 if ($attribute->name === $attr) {
                     return $attribute->value;
                 }
@@ -94,7 +100,7 @@ class Selector
 
         $data = [];
 
-        foreach ($this->_node->attributes as $attribute) {
+        foreach ($attributes as $attribute) {
             $data[$attribute->name] = $attribute->value;
         }
 
@@ -115,7 +121,17 @@ class Selector
      */
     public function element($as_string = false)
     {
-        return $as_string ? $this->html() : ['name' => $this->_node->nodeName, 'html' => $this->html(), 'text' => $this->text(), 'attr' => $this->attr(), 'xpath' => $this->_node->getNodePath()];
+        if ($as_string) {
+            return $this->html();
+        }
+
+        $data = ['name' => $this->_node->nodeName,
+            'html' => $this->html(),
+            'text' => $this->text(),
+            'attr' => $this->attr(),
+            'xpath' => $this->_node->getNodePath()];
+
+        return $data;
     }
 
     /**
@@ -137,5 +153,20 @@ class Selector
     public function node()
     {
         return $this->_node;
+    }
+
+    /**
+     * @return \ManaPHP\Dom\SelectorList
+     */
+    public function children()
+    {
+        $selectors = [];
+        foreach ($this->_node->childNodes as $node) {
+            $selector = new Selector($node);
+            $selector->_query = $this->_query;
+            $selectors[] = $selector;
+        }
+
+        return new SelectorList($selectors, []);
     }
 }

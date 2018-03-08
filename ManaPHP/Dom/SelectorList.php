@@ -150,6 +150,49 @@ class SelectorList implements \Iterator
     }
 
     /**
+     * @param int $offset
+     * @param int $length
+     *
+     * @return static
+     */
+    public function slice($offset, $length = null)
+    {
+        $new_selectors = array_slice($this->_selectors, $offset, $length);
+        return new SelectorList($new_selectors, $this->_full_xpath);
+    }
+
+    /**
+     * @return static
+     */
+    public function children()
+    {
+        $new_selectors = [];
+        foreach ($this->_selectors as $selector) {
+            /** @noinspection SlowArrayOperationsInLoopInspection */
+            $new_selectors = array_merge($new_selectors, $selector->children()->_selectors);
+        }
+
+        return new SelectorList($new_selectors, array_merge($this->_full_xpath, []));
+    }
+
+    /**
+     * @param callable $func
+     *
+     * @return static
+     */
+    public function each($func)
+    {
+        foreach ($this->_selectors as $selector) {
+            $r = $func($selector);
+            if ($r !== null) {
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $regex
      *
      * @return array
