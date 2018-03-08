@@ -87,7 +87,16 @@ class SelectorList implements \Iterator, \Countable
             return clone $this;
         }
 
-        return $this->xpath((new CssToXPath())->transform($css));
+        $new_selectors = [];
+        foreach ($this->_selectors as $selector) {
+            $r = $selector->css($css);
+            if ($r) {
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $new_selectors = array_merge($new_selectors, $r->_selectors);
+            }
+        }
+
+        return new SelectorList($new_selectors, array_merge($this->_full_xpath, []));
     }
 
     /**
@@ -161,18 +170,161 @@ class SelectorList implements \Iterator, \Countable
         return new SelectorList($new_selectors, $this->_full_xpath);
     }
 
+    /**@param string $css
+     *
+     * @return static
+     */
+    public function children($css = null)
+    {
+        return $this->css('child::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function parent($css = null)
+    {
+        if ($css === '') {
+            return clone  $this;
+        }
+
+        return $this->css('parent::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function parents($css = null)
+    {
+        return $this->css('ancestor::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function closest($css = null)
+    {
+        return $this->css('ancestor-or-self::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function find($css = null)
+    {
+        return $this->css('descendant::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param int $index
+     *
+     * @return static
+     */
+    public function eq($index)
+    {
+        if ($index < 0) {
+            $index = count($this->_selectors) + $index;
+        }
+
+        return new SelectorList(isset($this->_selectors[$index]) ? [$this->_selectors[$index]] : [], $this->_full_xpath);
+    }
+
     /**
      * @return static
      */
-    public function children()
+    public function first()
     {
-        $new_selectors = [];
-        foreach ($this->_selectors as $selector) {
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $new_selectors = array_merge($new_selectors, $selector->children()->_selectors);
-        }
+        return $this->eq(0);
+    }
 
-        return new SelectorList($new_selectors, array_merge($this->_full_xpath, []));
+    /**
+     * @return static
+     */
+    public function last()
+    {
+        return $this->eq(-1);
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function next($css = null)
+    {
+        return $this->css('following-sibling::' . ($css === null ? '*' : $css) . '[1]');
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function nextAll($css = null)
+    {
+        return $this->css('following-sibling::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function prev($css = null)
+    {
+        return $this->css('preceding-sibling::' . ($css === null ? '*' : $css) . '[1]');
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function prevAll($css = null)
+    {
+        return $this->css('preceding-sibling::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function siblings($css)
+    {
+        $r1 = $this->prevAll($css);
+        $r2 = $this->nextAll($css);
+
+        return new SelectorList(array_merge($r1->_selectors, $r2->_selectors), array_merge($this->_full_xpath, []));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function has($css)
+    {
+        return $this->css('child::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return bool
+     */
+    public function is($css)
+    {
+        $r = $this->css('self::' . ($css === null ? '*' : $css) . '[1]');
+        return count($r->_selectors) > 0;
     }
 
     /**
@@ -206,6 +358,21 @@ class SelectorList implements \Iterator, \Countable
             } else {
                 $data[] = null;
             }
+        }
+
+        return $data;
+    }
+
+    /**
+     *
+     * @return string[]|string
+     */
+    public function name()
+    {
+        $data = [];
+
+        foreach ($this->_selectors as $selector) {
+            $data[] = $selector->name();
         }
 
         return $data;
