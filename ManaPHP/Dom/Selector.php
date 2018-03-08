@@ -53,7 +53,7 @@ class Selector
             $selector->_query = $this->_query;
             $selectors[] = $selector;
         }
-        return new SelectorList($selectors, [$query]);
+        return new SelectorList($selectors);
     }
 
     /**
@@ -170,20 +170,5 @@ class Selector
     public function node()
     {
         return $this->_node;
-    }
-
-    /**
-     * @return \ManaPHP\Dom\SelectorList
-     */
-    public function children()
-    {
-        $selectors = [];
-        foreach ($this->_node->childNodes as $node) {
-            $selector = new Selector($node);
-            $selector->_query = $this->_query;
-            $selectors[] = $selector;
-        }
-
-        return new SelectorList($selectors, []);
     }
 }

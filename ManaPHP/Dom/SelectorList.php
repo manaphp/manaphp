@@ -19,15 +19,20 @@ class SelectorList implements \Iterator, \Countable
     protected $_position = 0;
 
     /**
+     * @var static
+     */
+    protected $_prev;
+
+    /**
      * SelectorList constructor.
      *
      * @param \ManaPHP\Dom\Selector[] $selectors
-     * @param array                   $xpaths
+     * @param static                  $prev
      */
-    public function __construct($selectors, $xpaths)
+    public function __construct($selectors, $prev = null)
     {
         $this->_selectors = $selectors;
-        $this->_full_xpath = $xpaths;
+        $this->_prev = $prev;
     }
 
     /**
@@ -73,7 +78,7 @@ class SelectorList implements \Iterator, \Countable
             }
         }
 
-        return new SelectorList($new_selectors, array_merge($this->_full_xpath, [$path]));
+        return new SelectorList($new_selectors, $this);
     }
 
     /**
@@ -96,7 +101,7 @@ class SelectorList implements \Iterator, \Countable
             }
         }
 
-        return new SelectorList($new_selectors, array_merge($this->_full_xpath, []));
+        return new SelectorList($new_selectors, $this);
     }
 
     /**
@@ -155,7 +160,7 @@ class SelectorList implements \Iterator, \Countable
             }
         }
 
-        return new SelectorList($new_selectors, $this->_full_xpath);
+        return new SelectorList($new_selectors, $this);
     }
 
     /**
@@ -167,7 +172,7 @@ class SelectorList implements \Iterator, \Countable
     public function slice($offset, $length = null)
     {
         $new_selectors = array_slice($this->_selectors, $offset, $length);
-        return new SelectorList($new_selectors, $this->_full_xpath);
+        return new SelectorList($new_selectors, $this);
     }
 
     /**@param string $css
@@ -234,7 +239,7 @@ class SelectorList implements \Iterator, \Countable
             $index = count($this->_selectors) + $index;
         }
 
-        return new SelectorList(isset($this->_selectors[$index]) ? [$this->_selectors[$index]] : [], $this->_full_xpath);
+        return new SelectorList(isset($this->_selectors[$index]) ? [$this->_selectors[$index]] : [], $this);
     }
 
     /**
@@ -303,7 +308,7 @@ class SelectorList implements \Iterator, \Countable
         $r1 = $this->prevAll($css);
         $r2 = $this->nextAll($css);
 
-        return new SelectorList(array_merge($r1->_selectors, $r2->_selectors), array_merge($this->_full_xpath, []));
+        return new SelectorList(array_merge($r1->_selectors, $r2->_selectors), $this);
     }
 
     /**
@@ -314,6 +319,14 @@ class SelectorList implements \Iterator, \Countable
     public function has($css)
     {
         return $this->css('child::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @return static
+     */
+    public function end()
+    {
+        return $this->_prev ?: new SelectorList([], $this);
     }
 
     /**
