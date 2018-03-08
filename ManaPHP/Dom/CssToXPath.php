@@ -124,7 +124,7 @@ class CssToXPath
         );
         //attribute contains specified content
         $expression = preg_replace_callback(
-            '|\[(!?)([a-z0-9_-\|&]+)\]|i',
+            '|\[(!?)([a-z][a-z0-9_-\|&]*)\]|i',
             function ($matches) {
                 $op = strpos($matches[2], '|') !== false ? '|' : '&';
                 $items = [];
