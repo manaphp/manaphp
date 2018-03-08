@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Dom;
 
-class SelectorList implements \Iterator
+class SelectorList implements \Iterator, \Countable
 {
     /**
      * @var array
@@ -317,6 +317,11 @@ class SelectorList implements \Iterator
     public function valid()
     {
         return isset($this->_selectors[$this->_position]);
+    }
+
+    public function count()
+    {
+        return count($this->_selectors);
     }
 
     public function __toString()
