@@ -134,7 +134,7 @@ class SelectorList implements \Iterator
             }
 
             if ($func === null) {
-                $r = $value !== null;
+                $r = $value !== '';
             } elseif (is_string($func)) {
                 $r = $is_preg ? preg_match($func, $value) : strpos($value, $func) !== false;
             } else {
