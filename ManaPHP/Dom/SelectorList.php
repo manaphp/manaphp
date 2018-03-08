@@ -4,6 +4,11 @@ namespace ManaPHP\Dom;
 class SelectorList implements \Iterator
 {
     /**
+     * @var array
+     */
+    protected $_full_xpath = [];
+
+    /**
      * @var \ManaPHP\Dom\Selector[]
      */
     protected $_selectors;
@@ -18,9 +23,10 @@ class SelectorList implements \Iterator
      *
      * @param \ManaPHP\Dom\Selector[] $selectors
      */
-    public function __construct($selectors)
+    public function __construct($selectors, $xpaths)
     {
         $this->_selectors = $selectors;
+        $this->_full_xpath = $xpaths;
     }
 
     /**
@@ -53,6 +59,10 @@ class SelectorList implements \Iterator
      */
     public function xpath($path)
     {
+        if ($path === '') {
+            return $this;
+        }
+
         $new_selectors = [];
         foreach ($this->_selectors as $selector) {
             $r = $selector->xpath($path);
@@ -62,7 +72,7 @@ class SelectorList implements \Iterator
             }
         }
 
-        return new SelectorList($new_selectors);
+        return new SelectorList($new_selectors, array_merge($this->_full_xpath, [$path]));
     }
 
     /**
@@ -72,6 +82,10 @@ class SelectorList implements \Iterator
      */
     public function css($css)
     {
+        if ($css === '') {
+            return $this;
+        }
+
         return $this->xpath((new CssToXPath())->transform($css));
     }
 
@@ -203,4 +217,5 @@ class SelectorList implements \Iterator
     {
         return json_encode($this->extract(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
+
 }

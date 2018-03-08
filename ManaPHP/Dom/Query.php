@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP\Dom;
 
+use ManaPHP\Dom\Query\Exception as QueryException;
+
 class Query
 {
     /**
@@ -40,7 +42,13 @@ class Query
      */
     public function xpath($expression, $context)
     {
-        return $this->_xpath->query($expression, $context);
+        $r = @$this->_xpath->query($expression, $context);
+        if ($r === false) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new QueryException(['`:xpath` xpath is invalid expression', 'xpath' => $expression]);
+        }
+
+        return $r;
     }
 
     /**

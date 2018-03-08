@@ -14,16 +14,6 @@ class Selector
     protected $_node;
 
     /**
-     * @var string
-     */
-    protected $_xpath;
-
-    /**
-     * @var string
-     */
-    protected $_css;
-
-    /**
      * Selector constructor.
      *
      * @param string|\ManaPHP\Dom\Document|\DOMNode $docOrNode
@@ -56,16 +46,14 @@ class Selector
             $query = strtr($query[0], $tr);
         }
 
-        $this->_xpath = $query;
-
         $selectors = [];
+
         foreach ($this->_query->xpath($query, $this->_node) as $element) {
             $selector = new Selector($element);
             $selector->_query = $this->_query;
-
             $selectors[] = $selector;
         }
-        return new SelectorList($selectors);
+        return new SelectorList($selectors, [$query]);
     }
 
     /**
@@ -75,7 +63,6 @@ class Selector
      */
     public function css($css)
     {
-        $this->_css = $css;
         return $this->xpath((new CssToXPath())->transform($css));
     }
 
