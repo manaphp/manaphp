@@ -258,7 +258,7 @@ class SelectorList implements \Iterator, \Countable
      *
      * @return static
      */
-    public function next($css = null)
+    public function nexts($css = null)
     {
         return $this->css('following-sibling::' . ($css === null ? '*' : $css) . '[1]');
     }
