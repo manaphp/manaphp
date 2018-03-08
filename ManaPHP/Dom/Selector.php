@@ -63,7 +63,14 @@ class Selector
      */
     public function css($css)
     {
-        return $this->xpath((new CssToXPath())->transform($css));
+        if ($pos = strpos($css, '::')) {
+            $xpath = (new CssToXPath())->transform(substr($css, $pos + 2));
+            $xpath = substr($css, 0, $pos + 2) . substr($xpath, 2);
+        } else {
+            $xpath = (new CssToXPath())->transform($css);
+        }
+
+        return $this->xpath($xpath);
     }
 
     /**
@@ -125,13 +132,23 @@ class Selector
             return $this->html();
         }
 
-        $data = ['name' => $this->_node->nodeName,
+        $data = [
+            'name' => $this->_node->nodeName,
             'html' => $this->html(),
             'text' => $this->text(),
             'attr' => $this->attr(),
-            'xpath' => $this->_node->getNodePath()];
+            'xpath' => $this->_node->getNodePath()
+        ];
 
         return $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function name()
+    {
+        return $this->_node->nodeName;
     }
 
     /**
