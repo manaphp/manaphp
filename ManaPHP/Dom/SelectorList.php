@@ -91,6 +91,65 @@ class SelectorList implements \Iterator
     }
 
     /**
+     * @param string          $field
+     * @param callable|string $func
+     *
+     * @return static
+     */
+    public function filter($field = null, $func = null)
+    {
+        if ($field === '') {
+            return clone $this;
+        }
+
+        if ($field !== null && $field[0] === '!') {
+            $field = substr($field, 1);
+            $not = true;
+        } else {
+            $not = false;
+        }
+
+        if (is_string($func)) {
+            $is_preg = in_array($func[0], ['@', '#'], true) && substr_count($func, $func[0]) >= 2;
+        }
+
+        $new_selectors = [];
+        foreach ($this->_selectors as $selector) {
+            if ($field === null) {
+                $value = $selector;
+            } elseif (strpos($field, '()') !== false) {
+                if ($field === 'text()') {
+                    $value = $selector->text();
+                } elseif
+                ($field === 'html()') {
+                    $value = $selector->html();
+                } elseif
+                ($field === 'node()') {
+                    $value = $selector->node();
+                } else {
+                    throw new Exception('invalid field');
+                }
+            } else {
+                $value = $selector->attr($field);
+            }
+
+            if ($func === null) {
+                $r = $value !== null;
+            } elseif (is_string($func)) {
+                $r = $is_preg ? preg_match($func, $value) : strpos($value, $func) !== false;
+            } else {
+                $r = $func($value);
+            }
+
+            if (($not && !$r) || (!$not && $r)) {
+                $new_selectors[] = $selector;
+            }
+        }
+
+        return new SelectorList($new_selectors, $this->_full_xpath);
+    }
+
+    /**
      * @param string $regex
      *
      * @return array
