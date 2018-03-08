@@ -40,11 +40,12 @@ class Query
      *
      * @return \DOMNodeList
      */
-    public function xpath($expression, $context)
+    public function xpath($expression, $context = null)
     {
         $r = @$this->_xpath->query($expression, $context);
         if ($r === false) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw new QueryException(['`:xpath` xpath is invalid expression', 'xpath' => $expression]);
         }
 
@@ -57,7 +58,7 @@ class Query
      *
      * @return \DOMNodeList
      */
-    public function css($expression, $context)
+    public function css($expression, $context = null)
     {
         $xpath = $this->_cssToXPath->transform($expression);
         return $this->xpath($xpath, $context);
