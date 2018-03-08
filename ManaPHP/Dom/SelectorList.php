@@ -22,6 +22,7 @@ class SelectorList implements \Iterator
      * SelectorList constructor.
      *
      * @param \ManaPHP\Dom\Selector[] $selectors
+     * @param array                   $xpaths
      */
     public function __construct($selectors, $xpaths)
     {
@@ -60,7 +61,7 @@ class SelectorList implements \Iterator
     public function xpath($path)
     {
         if ($path === '') {
-            return $this;
+            return clone $this;
         }
 
         $new_selectors = [];
@@ -83,7 +84,7 @@ class SelectorList implements \Iterator
     public function css($css)
     {
         if ($css === '') {
-            return $this;
+            return clone $this;
         }
 
         return $this->xpath((new CssToXPath())->transform($css));
@@ -109,14 +110,17 @@ class SelectorList implements \Iterator
     }
 
     /**
+     * @param string $attr
+     * @param string $defaultValue
+     *
      * @return string[][]
      */
-    public function attr()
+    public function attr($attr = null, $defaultValue = null)
     {
         $data = [];
 
         foreach ($this->_selectors as $selector) {
-            $data[] = $selector->attr();
+            $data[] = $selector->attr($attr, $defaultValue);
         }
 
         return $data;

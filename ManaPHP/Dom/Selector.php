@@ -75,10 +75,23 @@ class Selector
     }
 
     /**
-     * @return array
+     * @param string|array $attr
+     * @param string       $defaultValue
+     *
+     * @return array|string
      */
-    public function attr()
+    public function attr($attr, $defaultValue = null)
     {
+        if (is_string($attr)) {
+            foreach ($this->_node->attributes as $attribute) {
+                if ($attribute->name === $attr) {
+                    return $attribute->value;
+                }
+            }
+
+            return $defaultValue;
+        }
+
         $data = [];
 
         foreach ($this->_node->attributes as $attribute) {
