@@ -25,6 +25,11 @@ class Selector
             $this->_query = new Query($this->_node);
         } elseif ($docOrNode instanceof \DOMNode) {
             $this->_node = $docOrNode;
+        } else {
+            $document = new Document();
+            $document->load($docOrNode);
+            $this->_node = $document->getDom();
+            $this->_query = new Query($this->_node);
         }
     }
 
@@ -53,7 +58,7 @@ class Selector
             $selector->_query = $this->_query;
             $selectors[] = $selector;
         }
-        return new SelectorList($selectors);
+        return new SelectorList($selectors, $this);
     }
 
     /**
@@ -63,6 +68,13 @@ class Selector
      */
     public function css($css)
     {
+        if ($css !== '' && $css[0] === '!') {
+            $is_not = true;
+            $css = substr($css, 1);
+        } else {
+            $is_not = false;
+        }
+
         if ($pos = strpos($css, '::')) {
             $xpath = (new CssToXPath())->transform(substr($css, $pos + 2));
             $xpath = substr($css, 0, $pos + 2) . substr($xpath, 2);
@@ -70,7 +82,17 @@ class Selector
             $xpath = (new CssToXPath())->transform($css);
         }
 
-        return $this->xpath($xpath);
+        return $this->xpath($is_not ? "not($xpath)" : $xpath);
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return \ManaPHP\Dom\SelectorList
+     */
+    public function find($css = null)
+    {
+        return $this->css('descendant::' . ($css === null ? '*' : $css));
     }
 
     /**
@@ -170,5 +192,13 @@ class Selector
     public function node()
     {
         return $this->_node;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->_node->getNodePath();
     }
 }
