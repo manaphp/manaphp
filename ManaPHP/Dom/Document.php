@@ -48,6 +48,24 @@ class Document extends Component
     }
 
     /**
+     * @param string $str
+     *
+     * @return static
+     */
+    public function load($str)
+    {
+        if (preg_match('#https?://#', $str)) {
+            $this->loadUrl($str);
+        } elseif ($str[0] === '@' || $str[0] === '/' || $str[1] === ':') {
+            $this->loadFile($str);
+        } else {
+            $this->loadString($str);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $file
      *
      * @return static
@@ -80,6 +98,8 @@ class Document extends Component
      */
     public function loadString($str)
     {
+        $this->_str = $str;
+
         $this->_dom = new \DOMDocument();
         libxml_clear_errors();
         $old_use_internal_errors = libxml_use_internal_errors(true);
@@ -107,11 +127,13 @@ class Document extends Component
     }
 
     /**
+     * @return bool $raw
+     *
      * @return string
      */
-    public function getString()
+    public function getString($raw = true)
     {
-        return $this->_dom->saveHTML($this->_dom->documentElement);
+        return $raw ? $this->_str : $this->_dom->saveHTML($this->_dom->documentElement);
     }
 
     /**
