@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Dom;
 
-class SelectorList implements \Iterator, \Countable
+class SelectorList implements \IteratorAggregate, \Countable
 {
     /**
      * @var array
@@ -14,25 +14,24 @@ class SelectorList implements \Iterator, \Countable
     protected $_selectors;
 
     /**
-     * @var int
+     * @var \ManaPHP\Dom\Selector
      */
-    protected $_position = 0;
-
-    /**
-     * @var static
-     */
-    protected $_prev;
+    protected $_root;
 
     /**
      * SelectorList constructor.
      *
-     * @param \ManaPHP\Dom\Selector[] $selectors
-     * @param static                  $prev
+     * @param \ManaPHP\Dom\Selector[]                         $selectors
+     * @param \ManaPHP\Dom\Selector|\ManaPHP\Dom\SelectorList $root
      */
-    public function __construct($selectors, $prev = null)
+    public function __construct($selectors, $root)
     {
         $this->_selectors = $selectors;
-        $this->_prev = $prev;
+        if ($root instanceof SelectorList) {
+            $this->_root = $root->_root;
+        } else {
+            $this->_root = $root;
+        }
     }
 
     /**
@@ -105,6 +104,78 @@ class SelectorList implements \Iterator, \Countable
     }
 
     /**
+     * @param string|static $selectors
+     *
+     * @return static
+     */
+    public function add($selectors)
+    {
+        if (is_string($selectors)) {
+            $selectors = $this->_root->find($selectors);
+        }
+
+        if (!$selectors->_selectors) {
+            return clone $this;
+        }
+
+        if (!$this->_selectors) {
+            return clone $selectors;
+        }
+
+        return new SelectorList(array_unique(array_merge($this->_selectors, $selectors->_selectors)), $this);
+    }
+
+    /**@param string $css
+     *
+     * @return static
+     */
+    public function children($css = null)
+    {
+        return $this->css('child::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function closest($css = null)
+    {
+        return $this->css('ancestor-or-self::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param callable $func
+     *
+     * @return static
+     */
+    public function each($func)
+    {
+        foreach ($this->_selectors as $index => $selector) {
+            $r = $func($selector, $index);
+            if ($r !== null) {
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $index
+     *
+     * @return static
+     */
+    public function eq($index)
+    {
+        if ($index < 0) {
+            $index = count($this->_selectors) + $index;
+        }
+
+        return new SelectorList(isset($this->_selectors[$index]) ? [$this->_selectors[$index]] : [], $this);
+    }
+
+    /**
      * @param string          $field
      * @param callable|string $func
      *
@@ -164,24 +235,72 @@ class SelectorList implements \Iterator, \Countable
     }
 
     /**
-     * @param int $offset
-     * @param int $length
+     * @param string $css
      *
      * @return static
      */
-    public function slice($offset, $length = null)
+    public function find($css = null)
     {
-        $new_selectors = array_slice($this->_selectors, $offset, $length);
-        return new SelectorList($new_selectors, $this);
+        return $this->css('descendant::' . ($css === null ? '*' : $css));
     }
 
-    /**@param string $css
+    /**
+     * @return static
+     */
+    public function first()
+    {
+        return $this->eq(0);
+    }
+
+    /**
+     * @param string $css
      *
      * @return static
      */
-    public function children($css = null)
+    public function has($css)
     {
         return $this->css('child::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return bool
+     */
+    public function is($css)
+    {
+        $r = $this->css('self::' . ($css === null ? '*' : $css) . '[1]');
+        return count($r->_selectors) > 0;
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function next($css = null)
+    {
+        return $this->css('following-sibling::' . ($css === null ? '*' : $css) . '[1]');
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function nextAll($css = null)
+    {
+        return $this->css('following-sibling::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function not($css)
+    {
+        return $this->css('!self::' . ($css === null ? '*' : $css));
     }
 
     /**
@@ -213,76 +332,6 @@ class SelectorList implements \Iterator, \Countable
      *
      * @return static
      */
-    public function closest($css = null)
-    {
-        return $this->css('ancestor-or-self::' . ($css === null ? '*' : $css));
-    }
-
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function find($css = null)
-    {
-        return $this->css('descendant::' . ($css === null ? '*' : $css));
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return static
-     */
-    public function eq($index)
-    {
-        if ($index < 0) {
-            $index = count($this->_selectors) + $index;
-        }
-
-        return new SelectorList(isset($this->_selectors[$index]) ? [$this->_selectors[$index]] : [], $this);
-    }
-
-    /**
-     * @return static
-     */
-    public function first()
-    {
-        return $this->eq(0);
-    }
-
-    /**
-     * @return static
-     */
-    public function last()
-    {
-        return $this->eq(-1);
-    }
-
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function nexts($css = null)
-    {
-        return $this->css('following-sibling::' . ($css === null ? '*' : $css) . '[1]');
-    }
-
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function nextAll($css = null)
-    {
-        return $this->css('following-sibling::' . ($css === null ? '*' : $css));
-    }
-
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
     public function prev($css = null)
     {
         return $this->css('preceding-sibling::' . ($css === null ? '*' : $css) . '[1]');
@@ -303,58 +352,38 @@ class SelectorList implements \Iterator, \Countable
      *
      * @return static
      */
-    public function siblings($css)
+    public function siblings($css = null)
     {
-        $r1 = $this->prevAll($css);
-        $r2 = $this->nextAll($css);
-
-        return new SelectorList(array_merge($r1->_selectors, $r2->_selectors), $this);
-    }
-
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function has($css)
-    {
-        return $this->css('child::' . ($css === null ? '*' : $css));
-    }
-
-    /**
-     * @return static
-     */
-    public function end()
-    {
-        return $this->_prev ?: new SelectorList([], $this);
-    }
-
-    /**
-     * @param string $css
-     *
-     * @return bool
-     */
-    public function is($css)
-    {
-        $r = $this->css('self::' . ($css === null ? '*' : $css) . '[1]');
-        return count($r->_selectors) > 0;
-    }
-
-    /**
-     * @param callable $func
-     *
-     * @return static
-     */
-    public function each($func)
-    {
+        $new_selectors = [];
         foreach ($this->_selectors as $selector) {
-            $r = $func($selector);
-            if ($r !== null) {
-                break;
+            $r = $selector->css('parent::' . ($css ?: '*'));
+            if ($r) {
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $new_selectors = array_merge($new_selectors, array_diff($r->_selectors, [$selector]));
             }
         }
 
-        return $this;
+        return new SelectorList(array_unique($new_selectors), $this);
+    }
+
+    /**
+     * @param int $offset
+     * @param int $length
+     *
+     * @return static
+     */
+    public function slice($offset, $length = null)
+    {
+        $new_selectors = array_slice($this->_selectors, $offset, $length);
+        return new SelectorList($new_selectors, $this);
+    }
+
+    /**
+     * @return static
+     */
+    public function last()
+    {
+        return $this->eq(-1);
     }
 
     /**
@@ -474,39 +503,32 @@ class SelectorList implements \Iterator, \Countable
         return $r ? $r[0] : $default;
     }
 
-    public function rewind()
+    /**
+     * @return \ArrayIterator|\Traversable
+     */
+    public function getIterator()
     {
-        $this->_position = 0;
+        return new \ArrayIterator($this->_selectors);
     }
 
-    public function current()
-    {
-        return new Selector($this->_selectors[0]);
-    }
-
-    public function key()
-    {
-        return $this->_position;
-    }
-
-    public function next()
-    {
-        $this->_position++;
-    }
-
-    public function valid()
-    {
-        return isset($this->_selectors[$this->_position]);
-    }
-
+    /**
+     * @return int
+     */
     public function count()
     {
         return count($this->_selectors);
+    }
+
+    /**
+     * @return \ManaPHP\Dom\Selector[]
+     */
+    public function toArray()
+    {
+        return $this->_selectors;
     }
 
     public function __toString()
     {
         return json_encode($this->extract(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
-
 }
