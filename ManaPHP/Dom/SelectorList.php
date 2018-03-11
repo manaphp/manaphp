@@ -468,6 +468,20 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * @return array
+     */
+    public function links()
+    {
+        $data = [];
+
+        foreach ($this->_nodes as $node) {
+            $data[] = (new Selector($node))->links();
+        }
+
+        return $data;
+    }
+
+    /**
      * @return \DOMNode[]
      */
     public function node()
