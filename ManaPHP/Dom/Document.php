@@ -6,6 +6,7 @@ use ManaPHP\Dom\Document\Exception as DocumentException;
 
 /**
  * Class Document
+ *
  * @package ManaPHP\Dom
  *
  * @property \ManaPHP\Http\Client $httpClient
@@ -103,6 +104,8 @@ class Document extends Component
         $this->_str = $str;
 
         $this->_dom = new \DOMDocument();
+        $this->_dom->strictErrorChecking = false;
+		
         libxml_clear_errors();
         $old_use_internal_errors = libxml_use_internal_errors(true);
         $old_disable_entity_loader = libxml_disable_entity_loader(true);
@@ -126,7 +129,7 @@ class Document extends Component
         }
 
         $this->_query = new Query($this->_dom);
-		
+
         return $this;
     }
 
@@ -166,5 +169,13 @@ class Document extends Component
     public function getQuery()
     {
         return $this->_query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->_source;
     }
 }
