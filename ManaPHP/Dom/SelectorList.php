@@ -387,25 +387,6 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * @param string $regex
-     *
-     * @return array
-     */
-    public function re($regex)
-    {
-        $data = [];
-        foreach ($this->_selectors as $element) {
-            if (preg_match($regex, $element->extract(), $match)) {
-                $data[] = $match[1];
-            } else {
-                $data[] = null;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      *
      * @return string[]|string
      */
@@ -489,18 +470,6 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         }
 
         return $data;
-    }
-
-    /**
-     * @param string $regex
-     * @param string $default
-     *
-     * @return string
-     */
-    public function re_first($regex, $default = null)
-    {
-        $r = $this->re($regex);
-        return $r ? $r[0] : $default;
     }
 
     /**
