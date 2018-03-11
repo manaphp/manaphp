@@ -114,6 +114,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             return clone $selectors;
         }
 
+        /** @noinspection AdditionOperationOnArraysInspection */
         return new SelectorList($this->_nodes + $selectors->_nodes, $this);
     }
 
@@ -139,15 +140,13 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @param callable $func
      *
-     * @return static
+     * @return array
      */
     public function each($func)
     {
+        $data = [];
         foreach ($this->_nodes as $index => $selector) {
-            $r = $func($selector, $index);
-            if ($r !== null) {
-                break;
-            }
+            $data[$index] = $func($selector, $index);
         }
 
         return $this;
@@ -498,7 +497,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-        // TODO: Implement offsetSet() method.
+
     }
 
     public function offsetGet($offset)
