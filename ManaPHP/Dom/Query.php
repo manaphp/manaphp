@@ -35,13 +35,24 @@ class Query
     }
 
     /**
-     * @param string   $expression
-     * @param \DOMNode $context
+     * @param string|array $expression
+     * @param \DOMNode     $context
      *
      * @return \DOMNodeList
      */
     public function xpath($expression, $context = null)
     {
+        if (is_array($expression)) {
+            $tr = [];
+
+            /** @noinspection ForeachSourceInspection */
+            foreach ($expression as $k => $v) {
+                $tr['$' . $k] = is_int($v) ? $v : "'$v'";
+            }
+
+            $expression = strtr($expression[0], $tr);
+        }
+
         $r = @$this->_xpath->query($expression, $context);
         if ($r === false) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -53,14 +64,27 @@ class Query
     }
 
     /**
-     * @param string   $expression
-     * @param \DOMNode $context
+     * @param string|array $css
+     * @param \DOMNode     $context
      *
      * @return \DOMNodeList
      */
-    public function css($expression, $context = null)
+    public function css($css, $context = null)
     {
-        $xpath = $this->_cssToXPath->transform($expression);
-        return $this->xpath($xpath, $context);
+        if ($css !== '' && $css[0] === '!') {
+            $is_not = true;
+            $css = substr($css, 1);
+        } else {
+            $is_not = false;
+        }
+
+        if ($pos = strpos($css, '::')) {
+            $xpath = $this->_cssToXPath->transform(substr($css, $pos + 2));
+            $xpath = substr($css, 0, $pos + 2) . substr($xpath, 2);
+        } else {
+            $xpath = $this->_cssToXPath->transform($css);
+        }
+
+        return $this->xpath($is_not ? "not($xpath)" : $xpath, $context);
     }
 }

@@ -28,9 +28,9 @@ class Document extends Component
     protected $_dom;
 
     /**
-     * @var \DOMXPath
+     * @var \ManaPHP\Dom\Query
      */
-    protected $_xpath;
+    protected $_query;
 
     /**
      * @var array
@@ -38,13 +38,15 @@ class Document extends Component
     protected $_domErrors = [];
 
     /**
-     * @var \ManaPHP\Dom\CssToXPath
+     * Document constructor.
+     *
+     * @param string $str
      */
-    protected $_cssToXPath;
-
-    public function __construct()
+    public function __construct($str = null)
     {
-        $this->_cssToXPath = new CssToXPath();
+        if ($str !== null) {
+            $this->load($str);
+        }
     }
 
     /**
@@ -111,7 +113,6 @@ class Document extends Component
         } else {
             $r = $this->_dom->loadHTML($str);
         }
-        $this->_xpath = new \DOMXPath($this->_dom);
 
         $this->_domErrors = libxml_get_errors();
         libxml_clear_errors();
@@ -124,6 +125,8 @@ class Document extends Component
             throw new DocumentException('xx');
         }
 
+        $this->_query = new Query($this->_dom);
+		
         return $this;
     }
 
@@ -158,33 +161,10 @@ class Document extends Component
     }
 
     /**
-     * @param string   $xpath
-     * @param \DOMNode $context
-     *
-     * @return \DOMNodeList
+     * @return \ManaPHP\Dom\Query
      */
-    public function queryXPath($xpath, $context)
+    public function getQuery()
     {
-        return $this->_xpath->query($xpath, $context);
-    }
-
-    /**
-     * @param string   $css
-     * @param \DOMNode $context
-     *
-     * @return \DOMNodeList
-     */
-    public function queryCss($css, $context)
-    {
-        $xpath = $this->_cssToXPath->transform($css);
-        return $this->_xpath->query($xpath, $context);
-    }
-
-    /***
-     * @return \DOMDocument
-     */
-    public function getDom()
-    {
-        return $this->_dom;
+        return $this->_query;
     }
 }

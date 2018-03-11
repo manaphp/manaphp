@@ -26,7 +26,7 @@ class Selector
         }
 
         $this->_document = $document;
-        $this->_node = $node ?: $document->getDom()->ownerDocument;
+        $this->_node = $node;
     }
 
     /**
@@ -52,49 +52,31 @@ class Selector
      */
     public function xpath($query)
     {
-        if (is_array($query)) {
-            $tr = [];
-
-            /** @noinspection ForeachSourceInspection */
-            foreach ($query as $k => $v) {
-                $tr['$' . $k] = is_int($v) ? $v : "'$v'";
-            }
-
-            $query = strtr($query[0], $tr);
-        }
-
         $nodes = [];
         /**
          * @var \DOMNode $node
          */
-        foreach ($this->_document->queryXPath($query, $this->_node) as $node) {
+        foreach ($this->_document->getQuery()->xpath($query, $this->_node) as $node) {
             $nodes[$node->getNodePath()] = $node;
         }
         return new SelectorList($this->_document, $nodes);
     }
 
     /**
-     * @param string $css
+     * @param string|array $css
      *
      * @return \ManaPHP\Dom\SelectorList
      */
     public function css($css)
     {
-        if ($css !== '' && $css[0] === '!') {
-            $is_not = true;
-            $css = substr($css, 1);
-        } else {
-            $is_not = false;
+        $nodes = [];
+        /**
+         * @var \DOMNode $node
+         */
+        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+            $nodes[$node->getNodePath()] = $node;
         }
-
-        if ($pos = strpos($css, '::')) {
-            $xpath = (new CssToXPath())->transform(substr($css, $pos + 2));
-            $xpath = substr($css, 0, $pos + 2) . substr($xpath, 2);
-        } else {
-            $xpath = (new CssToXPath())->transform($css);
-        }
-
-        return $this->xpath($is_not ? "not($xpath)" : $xpath);
+        return new SelectorList($this->_document, $nodes);
     }
 
     /**
@@ -210,7 +192,7 @@ class Selector
         /**
          * @var \DOMNode $node
          */
-        foreach ($this->_document->queryXPath('descendant::a[@href]', $this->_node) as $node) {
+        foreach ($this->_document->getQuery()->xpath('descendant::a[@href]', $this->_node) as $node) {
             $attributes = $node->attributes;
 
             $href = $attributes['href'];

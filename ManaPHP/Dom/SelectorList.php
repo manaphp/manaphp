@@ -35,13 +35,14 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         if ($path === '') {
             return clone $this;
         }
+        $query = $this->_document->getQuery();
 
         $nodes = [];
         foreach ($this->_nodes as $node) {
             /**
              * @var \DOMNode $node2
              */
-            foreach ($this->_document->queryXPath($path, $node) as $node2) {
+            foreach ($query->xpath($path, $node) as $node2) {
                 $nodes[$node2->getNodePath()] = $node2;
             }
         }
@@ -60,26 +61,13 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             return clone $this;
         }
 
-        if ($css !== '' && $css[0] === '!') {
-            $is_not = true;
-            $css = substr($css, 1);
-        } else {
-            $is_not = false;
-        }
-
-        if ($pos = strpos($css, '::')) {
-            $xpath = (new CssToXPath())->transform(substr($css, $pos + 2));
-            $xpath = substr($css, 0, $pos + 2) . substr($xpath, 2);
-        } else {
-            $xpath = (new CssToXPath())->transform($css);
-        }
-
+        $query = $this->_document->getQuery();
         $nodes = [];
         foreach ($this->_nodes as $node) {
             /**
              * @var \DOMNode $node2
              */
-            foreach ($this->_document->queryXPath($is_not ? "not($xpath)" : $xpath, $node) as $node2) {
+            foreach ($query->css($css, $node) as $node2) {
                 $nodes[$node2->getNodePath()] = $node2;
             }
         }
@@ -345,10 +333,12 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function siblings($css = null)
     {
+        $query = $this->_document->getQuery();
+
         $nodes = [];
         foreach ($this->_nodes as $node) {
             $cur_xpath = $node->getNodePath();
-            foreach ($this->_document->queryCss('parent::' . ($css ?: '*'), $node) as $node2) {
+            foreach ($query->css('parent::' . ($css ?: '*'), $node) as $node2) {
                 /**
                  * @var \DOMNode $node2
                  */
