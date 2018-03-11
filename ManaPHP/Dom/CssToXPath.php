@@ -119,10 +119,10 @@ class CssToXPath
 
         // arbitrary attribute strict equality
         $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]*)=[\'"]([^\'"]+)[\'"]\]|i',
+            '|\[@?([a-z0-9_-]*)=([^\[]+)\]|i',
             function ($matches) {
                 $attr = $matches[1];
-                $val = $matches[2];
+                $val = trim($matches[2], "'\" \t");
 
                 $items = [];
                 foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
@@ -135,10 +135,10 @@ class CssToXPath
 
         // arbitrary attribute contains full word
         $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]*)~=[\'"]([^\'"]+)[\'"]\]|i',
+            '|\[([a-z0-9_-]*)~=([^\[]+)\]|i',
             function ($matches) {
                 $attr = $matches[1];
-                $val = $matches[2];
+                $val = trim($matches[2], "\"' \t");
 
                 $items = [];
                 foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
@@ -153,11 +153,11 @@ class CssToXPath
 
         // arbitrary attribute contains specified content
         $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]*)([\*\^\$])=[\'"]([^\'"]+)[\'"]\]|i',
+            '|\[([a-z0-9_-]*)([\*\^\$])=([^\[]+)\]|i',
             function ($matches) {
                 $attr = $matches[1];
                 $type = $matches[2];
-                $val = $matches[3];
+                $val = trim($matches[3], "'\" \t");
 
                 $items = [];
                 $op = strpos($val, '|') !== false ? '|' : '&';
@@ -179,7 +179,7 @@ class CssToXPath
             function ($matches) {
                 $val = $matches[2];
                 $op = strpos($val, '|') !== false ? '|' : '&';
-				
+
                 $items = [];
                 foreach (explode($op, $val) as $word) {
                     $items[] = '@' . $word;
