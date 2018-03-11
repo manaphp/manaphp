@@ -9,7 +9,7 @@ class Selector
     public $_query;
 
     /**
-     * @var \DOMNode
+     * @var \DOMElement
      */
     protected $_node;
 
@@ -149,6 +149,16 @@ class Selector
     }
 
     /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasAttr($name)
+    {
+        return $this->_node->hasAttribute($name);
+    }
+
+    /**
      * @return string
      */
     public function text()
@@ -196,6 +206,26 @@ class Selector
         $node = $this->_node;
 
         return $node->ownerDocument->saveHTML($node);
+    }
+
+    /**
+     * @return array
+     */
+    public function links()
+    {
+        $data = [];
+
+        /**
+         * @var \DOMNode $node
+         */
+        foreach ($this->_query->xpath('descendant::a[@href]', $this->_node) as $node) {
+            $attributes = $node->attributes;
+
+            $href = $attributes['href'];
+            $data[$node->nodeValue] = $node->textContent;
+        }
+
+        return $data;
     }
 
     /**
