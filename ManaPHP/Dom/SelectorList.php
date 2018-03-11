@@ -234,7 +234,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function first()
     {
-        return isset($this->_nodes[0]) ? new Selector($this->_nodes[0], $this->_root) : null;
+        return isset($this->_nodes[0]) ? new Selector($this->_nodes[0]) : null;
     }
 
     /**
