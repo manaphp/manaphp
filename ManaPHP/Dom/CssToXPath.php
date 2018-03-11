@@ -119,7 +119,7 @@ class CssToXPath
 
         // arbitrary attribute strict equality
         $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]*)([~\*\^\$])?=([^\[]+)\]|i',
+            '|\[@?([a-z0-9_-]*)([~\*\^\$\|])?=([^\[]+)\]|i',
             function ($matches) {
                 $attr = strtolower($matches[1]);
                 $type = $matches[2];
@@ -133,6 +133,8 @@ class CssToXPath
                         $items[] = "$field='$word'";
                     } elseif ($type === '~') {
                         $items[] = "contains(concat(' ', normalize-space($field), ' '), ' $word ')";
+                    } elseif ($type === '|') {
+                        $items[] = "($field ='$word' or starts-with($field,'$word-'))";
                     } else {
                         $items[] = ['*' => 'contains', '^' => 'starts-with', '$' => 'ends-with'][$type] . "($field, '$word')";
                     }

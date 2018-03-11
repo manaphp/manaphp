@@ -45,6 +45,11 @@ class DomCssToXPathTest extends \PHPUnit_Framework_TestCase
             'div[bar~="baz|xyz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ') or contains(concat(' ', normalize-space(@bar), ' '), ' xyz ')]",//word match
             'div[bar~="baz&xyz"]' => "//div[contains(concat(' ', normalize-space(@bar), ' '), ' baz ') and contains(concat(' ', normalize-space(@bar), ' '), ' xyz ')]",//word match
 
+            'div[bar|=baz]' => "//div[(@bar ='baz' or starts-with(@bar,'baz-'))]",
+            'div[bar|="baz"]' => "//div[(@bar ='baz' or starts-with(@bar,'baz-'))]",
+            'div[bar|="baz|xyz"]' => "//div[(@bar ='baz' or starts-with(@bar,'baz-')) or (@bar ='xyz' or starts-with(@bar,'xyz-'))]",
+            'div[bar|="baz&xyz"]' => "//div[(@bar ='baz' or starts-with(@bar,'baz-')) and (@bar ='xyz' or starts-with(@bar,'xyz-'))]",
+
             'div[bar^=baz]' => "//div[starts-with(@bar, 'baz')]",//starts with
             'div[bar^="baz"]' => "//div[starts-with(@bar, 'baz')]",//starts with
             'div[bar^="baz|xyz"]' => "//div[starts-with(@bar, 'baz') or starts-with(@bar, 'xyz')]",//starts with
