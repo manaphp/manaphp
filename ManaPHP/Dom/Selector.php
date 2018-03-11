@@ -6,7 +6,7 @@ class Selector
     /**
      * @var \ManaPHP\Dom\Query
      */
-    protected $_query;
+    public $_query;
 
     /**
      * @var \DOMNode
@@ -25,6 +25,7 @@ class Selector
             $this->_query = new Query($this->_node);
         } elseif ($docOrNode instanceof \DOMNode) {
             $this->_node = $docOrNode;
+            $this->_query = new Query($this->_node->ownerDocument);
         } else {
             $document = new Document();
             $document->load($docOrNode);
@@ -62,14 +63,7 @@ class Selector
             $query = strtr($query[0], $tr);
         }
 
-        $selectors = [];
-
-        foreach ($this->_query->xpath($query, $this->_node) as $element) {
-            $selector = new Selector($element);
-            $selector->_query = $this->_query;
-            $selectors[] = $selector;
-        }
-        return new SelectorList($selectors, $this);
+        return new SelectorList($this->_query->xpath($query, $this->_node), $this);
     }
 
     /**
