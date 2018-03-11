@@ -23,7 +23,7 @@ class DomCssToXPathTest extends \PHPUnit_Framework_TestCase
             '.error' => "//*[contains(concat(' ', normalize-space(@class), ' '), ' error ')]",
             'div.error' => "//div[contains(concat(' ', normalize-space(@class), ' '), ' error ')]",
             'label.required' => "//label[contains(concat(' ', normalize-space(@class), ' '), ' required ')]",
-
+            'label.error.required' => "//label[contains(concat(' ', normalize-space(@class), ' '), ' error ')][contains(concat(' ', normalize-space(@class), ' '), ' required ')]",
             //id attributes
             '#content' => "//*[@id='content']",
             'div#nav' => "//div[@id='nav']",
@@ -90,6 +90,31 @@ class DomCssToXPathTest extends \PHPUnit_Framework_TestCase
             'a[rel="include"]' => "//a[@rel='include']",
             "a[rel='include']" => "//a[@rel='include']",
 
+            'p:first' => '//p[first()]',
+            'p:last' => '//p[last()]',
+            'p:even' => '//p[position() mod 2 = 0]',
+            'p:odd' => '//p[position() mod 2 = 1]',
+
+            'p:eq(0)' => '//p[1]',
+            'p:eq(1)' => '//p[2]',
+            'p:eq(-1)' => '//p[last()-1]',
+
+            'p:gt(0)' => '//p[position()>1]',
+            'p:gt(1)' => '//p[position()>2]',
+            'p:gt(-1)' => '//p[position()>last()-1]',
+
+            'p:lt(0)' => '//p[position()<1]',
+            'p:lt(1)' => '//p[position()<2]',
+            'p:lt(-1)' => '//p[position()<last()-1]',
+
+            ':not(li[href="#"])' => "//not(li[@href='#'])",
+
+            ':header'=>'//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]',
+            ':contains("manaphp")'=>"//[contains(.,'manaphp')]",
+            ':empty'=>'//[not(* or text())]',
+            'p:only-child' => '//p[last()=1]',
+            'p:first-child' => '//p[position()=1]',
+            'p:last-child' => '//p[position()=last()]'
         ];
 
         foreach ($css_xpaths as $css => $xpath) {

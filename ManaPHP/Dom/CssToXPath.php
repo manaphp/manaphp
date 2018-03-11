@@ -3,6 +3,47 @@ namespace ManaPHP\Dom;
 
 class CssToXPath
 {
+    public function transform($path)
+    {
+        $path = $this->_transform($path);
+        if (strpos($path, ':') !== false) {
+
+            $path = preg_replace_callback('#:(eq|gt|lt)\((-?\d+)\)#', function ($match) {
+                $word = $match[1];
+                if ($word === 'eq') {
+                    if ($match[2] >= 0) {
+                        return '[' . ($match[2] + 1) . ']';
+                    } else {
+                        return "[last()$match[2]]";
+                    }
+                } elseif ($word === 'gt' || $word === 'lt') {
+                    if ($match[2] >= 0) {
+                        return '[position()' . ($word === 'gt' ? '>' : '<') . ($match[2] + 1) . ']';
+                    } else {
+                        return '[position()' . ($word === 'gt' ? '>' : '<') . "last()$match[2]]";
+                    }
+                }
+            }, $path);
+
+            $path = preg_replace(['#:contains\((["\'])([^\'"]+)\\1\)#'], ["[contains(.,'\\2')]"], $path);
+            $path = strtr($path, [
+                ':header' => '*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]',
+                ':first' => '[first()]',
+                ':last' => '[last()]',
+                ':even' => '[position() mod 2 = 0]',
+                ':odd' => '[position() mod 2 = 1]',
+                ':contains(' => 'contains(.,',
+                ':not(' => 'not(',
+                ':empty' => '[not(* or text())]',
+                ':only-child' => '[last()=1]',
+                ':first-child' => '[position()=1]',
+                ':last-child' => '[position()=last()]'
+            ]);
+        }
+
+        return $path;
+    }
+
     /**
      * Transform CSS expression to XPath
      *
@@ -10,9 +51,10 @@ class CssToXPath
      *
      * @return string
      */
-    public function transform($path_src)
+    protected function _transform($path_src)
     {
         $path = (string)$path_src;
+
         if (strpos($path, ',') !== false) {
             $paths = explode(',', $path);
             $expressions = [];
