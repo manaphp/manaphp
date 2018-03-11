@@ -200,7 +200,7 @@ class Selector
                 continue;
             }
 
-            $data[$node->getNodePath()] = $href;
+            $data[$node->getNodePath()] = ['href' => $href, 'text' => $node->textContent];
         }
 
         return $data;

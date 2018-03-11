@@ -461,7 +461,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
                     continue;
                 }
 
-                $data[$node->getNodePath()] = $href;
+                $data[$node->getNodePath()] = ['href' => $href, 'text' => $node->textContent];
             } else {
                 foreach ($query->xpath('descendant::a[@href]', $node) as $node2) {
                     $href = $document->absolutizeUrl($node2->getAttribute('href'));
@@ -470,7 +470,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
                         continue;
                     }
 
-                    $data[$node2->getNodePath()] = $href;
+                    $data[$node2->getNodePath()] = ['href' => $href, 'text' => $node2->textContent];
                 }
             }
         }
