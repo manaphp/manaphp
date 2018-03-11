@@ -203,6 +203,44 @@ class Selector
     }
 
     /**
+     * @param string $regex
+     * @param string attr
+     *
+     * @return array
+     */
+    public function images($regex = null, $attr = 'src')
+    {
+        $source = $this->_document->getSource();
+
+        if ($source && preg_match('#^https?://#', $source)) {
+            $source = substr($source, 0, strpos($source, '/', 10));
+        }
+
+        $data = [];
+        foreach ($this->_document->getQuery()->xpath("descendant::img[@$attr]", $this->_node) as $node) {
+            /**
+             * @var \DOMElement $node
+             */
+            $src = $node->getAttribute($attr);
+            if ($src === '') {
+                continue;
+            }
+
+            if ($src[0] === '/') {
+                $src = $source . $src;
+            }
+
+            if ($regex && !preg_match($regex, $src)) {
+                continue;
+            }
+
+            $data[] = $src;
+        }
+
+        return $data;
+    }
+
+    /**
      * @return \DOMNode
      */
     public function node()

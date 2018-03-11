@@ -4,7 +4,7 @@ namespace ManaPHP\Dom;
 class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 {
     /**
-     * @var \DOMNode[]
+     * @var \DOMElement[]
      */
     protected $_nodes;
 
@@ -447,6 +447,48 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
         foreach ($this->_nodes as $node) {
             $data[] = (new Selector($node))->links();
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $regex
+     * @param string $attr
+     *
+     * @return array
+     */
+    public function images($regex = null, $attr = 'src')
+    {
+        $data = [];
+
+        $source = $this->_document->getSource();
+
+        if ($source && preg_match('#^https?://#', $source)) {
+            $source = substr($source, 0, strpos($source, '/', 10));
+        }
+
+        $query = $this->_document->getQuery();
+        foreach ($this->_nodes as $node) {
+            foreach ($query->xpath("descendant::img[@$attr]", $node) as $node2) {
+                /**
+                 * @var \DOMElement $node2
+                 */
+                $src = $node2->getAttribute($attr);
+                if ($src === '') {
+                    continue;
+                }
+
+                if ($src[0] === '/') {
+                    $src = $source . $src;
+                }
+
+                if ($regex && !preg_match($regex, $src)) {
+                    continue;
+                }
+
+                $data[] = $src;
+            }
         }
 
         return $data;
