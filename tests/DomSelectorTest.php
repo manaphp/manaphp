@@ -134,7 +134,7 @@ STR;
 
     public function test_construct()
     {
-        $selector = new Selector('http://www.baidu.com/s?wd=manaphp');
+        $selector = new Selector('http://m.baidu.com');
         $this->assertGreaterThan(10, $selector->css('a')->count());
 
         $selector = new Selector(self::SAMPLE_FILE);
