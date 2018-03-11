@@ -439,14 +439,47 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * @param string $regex
+     *
      * @return array
      */
-    public function links()
+    public function links($regex = null)
     {
         $data = [];
 
+        $source = $this->_document->getSource();
+
+        if ($source && preg_match('#^https?://#', $source)) {
+            $host = substr($source, 0, strpos($source, '/', 10));
+            $base = substr($source, 0, strrpos($source, '/') + 1);
+        } else {
+            $host = null;
+            $base = null;
+        }
+
+        $query = $this->_document->getQuery();
         foreach ($this->_nodes as $node) {
-            $data[] = (new Selector($node))->links();
+            foreach ($query->xpath('descendant::a[@href]', $node) as $node2) {
+                /**
+                 * @var \DOMElement $node
+                 */
+                $href = $node2->getAttribute('href');
+                if ($href === '' || $href === '#' || strpos($href, 'javascript:') === 0) {
+                    continue;
+                }
+
+                if ($href[0] === '/') {
+                    $href = $host . $href;
+                } elseif (!preg_match('#^https?://#', $href)) {
+                    $href = $base . $href;
+                }
+
+                if ($regex && !preg_match($regex, $href)) {
+                    continue;
+                }
+
+                $data[] = $href;
+            }
         }
 
         return $data;

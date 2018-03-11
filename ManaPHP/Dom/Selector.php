@@ -183,20 +183,44 @@ class Selector
     }
 
     /**
+     * @param string $regex
+     *
      * @return array
      */
-    public function links()
+    public function links($regex = null)
     {
         $data = [];
 
-        /**
-         * @var \DOMNode $node
-         */
-        foreach ($this->_document->getQuery()->xpath('descendant::a[@href]', $this->_node) as $node) {
-            $attributes = $node->attributes;
+        $source = $this->_document->getSource();
 
-            $href = $attributes['href'];
-            $data[$node->nodeValue] = $node->textContent;
+        if ($source && preg_match('#^https?://#', $source)) {
+            $host = substr($source, 0, strpos($source, '/', 10));
+            $base = substr($source, 0, strrpos($source, '/') + 1);
+        } else {
+            $host = null;
+            $base = null;
+        }
+
+        foreach ($this->_document->getQuery()->xpath('descendant::a[@href]', $this->_node) as $node) {
+            /**
+             * @var \DOMElement $node
+             */
+            $href = $node->getAttribute('href');
+            if ($href === '' || $href === '#' || strpos($href, 'javascript:') === 0) {
+                continue;
+            }
+
+            if ($href[0] === '/') {
+                $href = $host . $href;
+            } elseif (!preg_match('#^https?://#', $href)) {
+                $href = $base . $href;
+            }
+
+            if ($regex && !preg_match($regex, $href)) {
+                continue;
+            }
+
+            $data[] = $href;
         }
 
         return $data;
