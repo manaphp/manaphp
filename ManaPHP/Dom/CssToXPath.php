@@ -119,60 +119,33 @@ class CssToXPath
 
         // arbitrary attribute strict equality
         $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]*)=([^\[]+)\]|i',
+            '|\[@?([a-z0-9_-]*)([~\*\^\$])?=([^\[]+)\]|i',
             function ($matches) {
-                $attr = $matches[1];
-                $val = trim($matches[2], "'\" \t");
-
-                $items = [];
-                foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
-                    $items[] = ($attr === '' ? 'text()' : ('@' . strtolower($attr))) . "='" . $word . "'";
-                }
-                return '[' . implode(strpos($val, '|') !== false ? ' or ' : ' and ', $items) . ']';
-            },
-            $expression
-        );
-
-        // arbitrary attribute contains full word
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]*)~=([^\[]+)\]|i',
-            function ($matches) {
-                $attr = $matches[1];
-                $val = trim($matches[2], "\"' \t");
-
-                $items = [];
-                foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
-                    $items[] = "contains(concat(' ', normalize-space(" . ($attr === '' ? 'text()' : '@' . strtolower($attr)) . "), ' '), ' "
-                        . $word . " ')";
-                }
-
-                return '[' . implode(strpos($val, '|') !== false ? ' or ' : ' and ', $items) . ']';
-            },
-            $expression
-        );
-
-        // arbitrary attribute contains specified content
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]*)([\*\^\$])=([^\[]+)\]|i',
-            function ($matches) {
-                $attr = $matches[1];
+                $attr = strtolower($matches[1]);
                 $type = $matches[2];
                 $val = trim($matches[3], "'\" \t");
 
                 $items = [];
-                $op = strpos($val, '|') !== false ? '|' : '&';
-                foreach (explode($op, $val) as $word) {
-                    $items[] = [
-                            '*' => 'contains',
-                            '^' => 'starts-with',
-                            '$' => 'ends-with'
-                        ][$type] . '(' . ($attr === '' ? 'text()' : '@' . strtolower($attr)) . ", '"
-                        . $word . "')";
+                foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
+                    if ($type === '') {
+                        $items[] = ($attr === '' ? 'text()' : ('@' . $attr)) . "='" . $word . "'";
+                    } elseif ($type === '~') {
+                        $items[] = "contains(concat(' ', normalize-space(" . ($attr === '' ? 'text()' : '@' . $attr) . "), ' '), ' "
+                            . $word . " ')";
+                    } else {
+                        $items[] = [
+                                '*' => 'contains',
+                                '^' => 'starts-with',
+                                '$' => 'ends-with'
+                            ][$type] . '(' . ($attr === '' ? 'text()' : '@' . $attr) . ", '"
+                            . $word . "')";
+                    }
                 }
-                return '[' . implode($op === '|' ? ' or ' : ' and ', $items) . ']';
+                return '[' . implode(strpos($val, '|') !== false ? ' or ' : ' and ', $items) . ']';
             },
             $expression
         );
+
         //attribute contains specified content
         $expression = preg_replace_callback(
             '|\[(!?)([a-z][a-z0-9_-\|&]*)\]|i',
