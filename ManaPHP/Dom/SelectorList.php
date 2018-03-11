@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Dom;
 
-class SelectorList implements \IteratorAggregate, \Countable
+class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 {
     /**
      * @var array
@@ -519,12 +519,24 @@ class SelectorList implements \IteratorAggregate, \Countable
         return count($this->_selectors);
     }
 
-    /**
-     * @return \ManaPHP\Dom\Selector[]
-     */
-    public function toArray()
+    public function offsetSet($offset, $value)
     {
-        return $this->_selectors;
+        // TODO: Implement offsetSet() method.
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->_selectors[$offset];
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->_selectors[$offset]);
+    }
+
+    public function offsetUnset($offset)
+    {
+
     }
 
     public function __toString()
