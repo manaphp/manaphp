@@ -391,7 +391,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
         foreach ($this->_nodes as $node) {
             $selector = new Selector($this->_document, $node);
-            $data[] = $selector->attr($attr, $defaultValue);
+            $data[$node->getNodePath()] = $selector->attr($attr, $defaultValue);
         }
 
         return $data;
@@ -445,40 +445,33 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function links($regex = null)
     {
-        $data = [];
-
-        $source = $this->_document->getSource();
-
-        if ($source && preg_match('#^https?://#', $source)) {
-            $host = substr($source, 0, strpos($source, '/', 10));
-            $base = substr($source, 0, strrpos($source, '/') + 1);
-        } else {
-            $host = null;
-            $base = null;
-        }
-
+        /**
+         * @var \DOMElement $node
+         * @var \DOMElement $node2
+         */
         $query = $this->_document->getQuery();
-        foreach ($this->_nodes as $node) {
-            foreach ($query->xpath('descendant::a[@href]', $node) as $node2) {
-                /**
-                 * @var \DOMElement $node
-                 */
-                $href = $node2->getAttribute('href');
-                if ($href === '' || $href === '#' || strpos($href, 'javascript:') === 0) {
-                    continue;
-                }
+        $document = $this->_document;
 
-                if ($href[0] === '/') {
-                    $href = $host . $href;
-                } elseif (!preg_match('#^https?://#', $href)) {
-                    $href = $base . $href;
-                }
+        $data = [];
+        foreach ($this->_nodes as $node) {
+            if ($node->nodeName === 'a') {
+                $href = $document->absolutizeUrl($node->getAttribute('href'));
 
                 if ($regex && !preg_match($regex, $href)) {
                     continue;
                 }
 
-                $data[] = $href;
+                $data[$node->getNodePath()] = $href;
+            } else {
+                foreach ($query->xpath('descendant::a[@href]', $node) as $node2) {
+                    $href = $document->absolutizeUrl($node2->getAttribute('href'));
+
+                    if ($regex && !preg_match($regex, $href)) {
+                        continue;
+                    }
+
+                    $data[$node2->getNodePath()] = $href;
+                }
             }
         }
 
@@ -493,34 +486,33 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function images($regex = null, $attr = 'src')
     {
-        $data = [];
-
-        $source = $this->_document->getSource();
-
-        if ($source && preg_match('#^https?://#', $source)) {
-            $source = substr($source, 0, strpos($source, '/', 10));
-        }
-
+        /**
+         * @var \DOMElement $node
+         * @var \DOMElement $node2
+         */
         $query = $this->_document->getQuery();
-        foreach ($this->_nodes as $node) {
-            foreach ($query->xpath("descendant::img[@$attr]", $node) as $node2) {
-                /**
-                 * @var \DOMElement $node2
-                 */
-                $src = $node2->getAttribute($attr);
-                if ($src === '') {
-                    continue;
-                }
+        $document = $this->_document;
 
-                if ($src[0] === '/') {
-                    $src = $source . $src;
-                }
+        $data = [];
+        foreach ($this->_nodes as $node) {
+            if ($node->nodeName === 'img') {
+                $src = $document->absolutizeUrl($node->getAttribute($attr));
 
                 if ($regex && !preg_match($regex, $src)) {
                     continue;
                 }
 
-                $data[] = $src;
+                $data[$node->getNodePath()] = $src;
+            } else {
+                foreach ($query->xpath("descendant::img[@$attr]", $node) as $node2) {
+                    $src = $document->absolutizeUrl($node2->getAttribute($attr));
+
+                    if ($regex && !preg_match($regex, $src)) {
+                        continue;
+                    }
+
+                    $data[$node2->getNodePath()] = $src;
+                }
             }
         }
 

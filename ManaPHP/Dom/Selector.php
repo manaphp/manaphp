@@ -189,38 +189,18 @@ class Selector
      */
     public function links($regex = null)
     {
+        /**
+         * @var \DOMElement $node
+         */
         $data = [];
-
-        $source = $this->_document->getSource();
-
-        if ($source && preg_match('#^https?://#', $source)) {
-            $host = substr($source, 0, strpos($source, '/', 10));
-            $base = substr($source, 0, strrpos($source, '/') + 1);
-        } else {
-            $host = null;
-            $base = null;
-        }
-
         foreach ($this->_document->getQuery()->xpath('descendant::a[@href]', $this->_node) as $node) {
-            /**
-             * @var \DOMElement $node
-             */
-            $href = $node->getAttribute('href');
-            if ($href === '' || $href === '#' || strpos($href, 'javascript:') === 0) {
-                continue;
-            }
-
-            if ($href[0] === '/') {
-                $href = $host . $href;
-            } elseif (!preg_match('#^https?://#', $href)) {
-                $href = $base . $href;
-            }
+            $href = $this->_document->absolutizeUrl($node->getAttribute('href'));
 
             if ($regex && !preg_match($regex, $href)) {
                 continue;
             }
 
-            $data[] = $href;
+            $data[$node->getNodePath()] = $href;
         }
 
         return $data;
@@ -234,31 +214,19 @@ class Selector
      */
     public function images($regex = null, $attr = 'src')
     {
-        $source = $this->_document->getSource();
-
-        if ($source && preg_match('#^https?://#', $source)) {
-            $source = substr($source, 0, strpos($source, '/', 10));
-        }
-
+        /**
+         * @var \DOMElement $node
+         */
+        $document = $this->_document;
         $data = [];
-        foreach ($this->_document->getQuery()->xpath("descendant::img[@$attr]", $this->_node) as $node) {
-            /**
-             * @var \DOMElement $node
-             */
-            $src = $node->getAttribute($attr);
-            if ($src === '') {
-                continue;
-            }
-
-            if ($src[0] === '/') {
-                $src = $source . $src;
-            }
+        foreach ($document->getQuery()->xpath("descendant::img[@$attr]", $this->_node) as $node) {
+            $src = $document->absolutizeUrl($node->getAttribute($attr));
 
             if ($regex && !preg_match($regex, $src)) {
                 continue;
             }
 
-            $data[] = $src;
+            $data[$node->getNodePath()] = $src;
         }
 
         return $data;
