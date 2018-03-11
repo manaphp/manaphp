@@ -9,24 +9,20 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     protected $_nodes;
 
     /**
-     * @var \ManaPHP\Dom\Selector
+     * @var \ManaPHP\Dom\Document
      */
-    protected $_root;
+    protected $_document;
 
     /**
      * SelectorList constructor.
      *
+     * @param \ManaPHP\Dom\Document|\ManaPHP\Dom\SelectorList $document
      * @param \DOMNode[]                                      $nodes
-     * @param \ManaPHP\Dom\Selector|\ManaPHP\Dom\SelectorList $root
      */
-    public function __construct($nodes, $root)
+    public function __construct($document, $nodes)
     {
+        $this->_document = $document instanceof self ? $document->_document : $document;
         $this->_nodes = $nodes;
-        if ($root instanceof self) {
-            $this->_root = $root->_root;
-        } else {
-            $this->_root = $root;
-        }
     }
 
     /**
@@ -40,19 +36,17 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             return clone $this;
         }
 
-        $query = $this->_root->_query;
-
         $nodes = [];
         foreach ($this->_nodes as $node) {
             /**
              * @var \DOMNode $node2
              */
-            foreach ($query->xpath($path, $node) as $node2) {
+            foreach ($this->_document->queryXPath($path, $node) as $node2) {
                 $nodes[$node2->getNodePath()] = $node2;
             }
         }
 
-        return new SelectorList($nodes, $this);
+        return new SelectorList($this, $nodes);
     }
 
     /**
@@ -80,30 +74,28 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             $xpath = (new CssToXPath())->transform($css);
         }
 
-        $query = $this->_root->_query;
-
         $nodes = [];
         foreach ($this->_nodes as $node) {
             /**
              * @var \DOMNode $node2
              */
-            foreach ($query->xpath($is_not ? "not($xpath)" : $xpath, $node) as $node2) {
+            foreach ($this->_document->queryXPath($is_not ? "not($xpath)" : $xpath, $node) as $node2) {
                 $nodes[$node2->getNodePath()] = $node2;
             }
         }
 
-        return new SelectorList($nodes, $this);
+        return new SelectorList($this, $nodes);
     }
 
     /**
-     * @param string|static $selectors
+     * @param string|\ManaPHP\Dom\SelectorList $selectors
      *
      * @return static
      */
     public function add($selectors)
     {
         if (is_string($selectors)) {
-            $selectors = $this->_root->find($selectors);
+            $selectors = (new Selector($this->_document))->find($selectors);
         }
 
         if (!$selectors->_nodes) {
@@ -115,7 +107,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         }
 
         /** @noinspection AdditionOperationOnArraysInspection */
-        return new SelectorList($this->_nodes + $selectors->_nodes, $this);
+        return new SelectorList($this, $this->_nodes + $selectors->_nodes);
     }
 
     /**@param string $css
@@ -149,7 +141,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             $data[$index] = $func($selector, $index);
         }
 
-        return $this;
+        return $data;
     }
 
     /**
@@ -160,7 +152,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     public function eq($index)
     {
         if ($index === 0) {
-            return new SelectorList(count($this->_nodes) > 0 ? [current($this->_nodes)] : [], $this);
+            return new SelectorList($this, count($this->_nodes) > 0 ? [current($this->_nodes)] : []);
         }
 
         if ($index < 0) {
@@ -168,10 +160,10 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         }
 
         if ($index < 0 || $index >= count($this->_nodes)) {
-            return new SelectorList([], $this);
+            return new SelectorList($this, []);
         } else {
             $keys = array_keys($this->_nodes);
-            return new SelectorList([$this->_nodes[$keys[$index]]], $this);
+            return new SelectorList($this, [$this->_nodes[$keys[$index]]]);
         }
     }
 
@@ -206,11 +198,9 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             } elseif (strpos($field, '()') !== false) {
                 if ($field === 'text()') {
                     $value = $selector->text();
-                } elseif
-                ($field === 'html()') {
+                } elseif ($field === 'html()') {
                     $value = $selector->html();
-                } elseif
-                ($field === 'node()') {
+                } elseif ($field === 'node()') {
                     $value = $node;
                 } else {
                     throw new Exception('invalid field');
@@ -232,7 +222,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-        return new SelectorList($nodes, $this);
+        return new SelectorList($this, $nodes);
     }
 
     /**
@@ -250,7 +240,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function first()
     {
-        return count($this->_nodes) > 0 ? new Selector(current($this->_nodes)) : null;
+        return count($this->_nodes) > 0 ? new Selector($this->_document, current($this->_nodes)) : null;
     }
 
     /**
@@ -356,10 +346,9 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     public function siblings($css = null)
     {
         $nodes = [];
-        $query = $this->_root->_query;
         foreach ($this->_nodes as $node) {
             $cur_xpath = $node->getNodePath();
-            foreach ($query->css('parent::' . ($css ?: '*'), $node) as $node2) {
+            foreach ($this->_document->queryCss('parent::' . ($css ?: '*'), $node) as $node2) {
                 /**
                  * @var \DOMNode $node2
                  */
@@ -370,7 +359,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-        return new SelectorList($nodes, $this);
+        return new SelectorList($this, $nodes);
     }
 
     /**
@@ -382,7 +371,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     public function slice($offset, $length = null)
     {
         $nodes = array_slice($this->_nodes, $offset, $length);
-        return new SelectorList($nodes, $this);
+        return new SelectorList($this, $nodes);
     }
 
     /**
@@ -419,7 +408,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         $data = [];
 
         foreach ($this->_nodes as $node) {
-            $selector = new Selector($node);
+            $selector = new Selector($this->_document, $node);
             $data[] = $selector->attr($attr, $defaultValue);
         }
 
@@ -496,7 +485,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         $selectors = [];
         foreach ($this->_nodes as $node) {
-            $selectors[] = new Selector($node);
+            $selectors[] = new Selector($this->_document, $node);
         }
         return new \ArrayIterator($selectors);
     }
@@ -516,7 +505,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
     public function offsetGet($offset)
     {
-        return new Selector($this->_nodes[$offset]);
+        return new Selector($this->_document, $this->_nodes[$offset]);
     }
 
     public function offsetExists($offset)

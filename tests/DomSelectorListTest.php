@@ -63,7 +63,7 @@ class DomSelectorListTest extends \PHPUnit_Framework_TestCase
     {
         $selector = new Selector(self::SAMPLE_FILE);
 
-        $this->assertCount(60, $selector->find());
+        $this->assertCount(59, $selector->find());
         $this->assertCount(18, $selector->find('ul')->find());
         $this->assertCount(7, $selector->find('a'));
         $this->assertCount(4, $selector->find('a[href="#"]'));

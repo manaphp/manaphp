@@ -4,9 +4,9 @@ namespace ManaPHP\Dom;
 class Selector
 {
     /**
-     * @var \ManaPHP\Dom\Query
+     * @var \ManaPHP\Dom\Document
      */
-    public $_query;
+    protected $_document;
 
     /**
      * @var \DOMElement
@@ -16,22 +16,17 @@ class Selector
     /**
      * Selector constructor.
      *
-     * @param string|\ManaPHP\Dom\Document|\DOMNode $docOrNode
+     * @param string|\ManaPHP\Dom\Document $document
+     * @param \DOMNode                     $node
      */
-    public function __construct($docOrNode)
+    public function __construct($document, $node = null)
     {
-        if ($docOrNode instanceof Document) {
-            $this->_node = $docOrNode->getDom();
-            $this->_query = new Query($this->_node);
-        } elseif ($docOrNode instanceof \DOMNode) {
-            $this->_node = $docOrNode;
-            $this->_query = new Query($this->_node->ownerDocument);
-        } else {
-            $document = new Document();
-            $document->load($docOrNode);
-            $this->_node = $document->getDom();
-            $this->_query = new Query($this->_node);
+        if (is_string($document)) {
+            $document = (new Document())->load($document);
         }
+
+        $this->_document = $document;
+        $this->_node = $node ?: $document->getDom()->ownerDocument;
     }
 
     /**
@@ -39,10 +34,15 @@ class Selector
      */
     public function root()
     {
-        $selector = new Selector($this->_node->ownerDocument);
-        $selector->_query = $this->_query;
+        return new Selector($this->_document);
+    }
 
-        return $selector;
+    /**
+     * @return \ManaPHP\Dom\Document
+     */
+    public function document()
+    {
+        return $this->_document;
     }
 
     /**
@@ -67,10 +67,10 @@ class Selector
         /**
          * @var \DOMNode $node
          */
-        foreach ($this->_query->xpath($query, $this->_node) as $node) {
+        foreach ($this->_document->queryXPath($query, $this->_node) as $node) {
             $nodes[$node->getNodePath()] = $node;
         }
-        return new SelectorList($nodes, $this);
+        return new SelectorList($this->_document, $nodes);
     }
 
     /**
@@ -105,14 +105,6 @@ class Selector
     public function find($css = null)
     {
         return $this->css('descendant::' . ($css === null ? '*' : $css));
-    }
-
-    /**
-     * @return string
-     */
-    public function extract()
-    {
-        return (string)$this->_node;
     }
 
     /**
@@ -218,7 +210,7 @@ class Selector
         /**
          * @var \DOMNode $node
          */
-        foreach ($this->_query->xpath('descendant::a[@href]', $this->_node) as $node) {
+        foreach ($this->_document->queryXPath('descendant::a[@href]', $this->_node) as $node) {
             $attributes = $node->attributes;
 
             $href = $attributes['href'];

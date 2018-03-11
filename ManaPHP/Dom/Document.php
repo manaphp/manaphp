@@ -111,6 +111,7 @@ class Document extends Component
         } else {
             $r = $this->_dom->loadHTML($str);
         }
+        $this->_xpath = new \DOMXPath($this->_dom);
 
         $this->_domErrors = libxml_get_errors();
         libxml_clear_errors();
