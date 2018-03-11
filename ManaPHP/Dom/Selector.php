@@ -34,6 +34,17 @@ class Selector
     }
 
     /**
+     * @return static
+     */
+    public function root()
+    {
+        $selector = new Selector($this->_node->ownerDocument);
+        $selector->_query = $this->_query;
+
+        return $selector;
+    }
+
+    /**
      * @param string|array $query
      *
      * @return \ManaPHP\Dom\SelectorList
