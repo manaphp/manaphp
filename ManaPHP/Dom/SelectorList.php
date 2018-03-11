@@ -16,12 +16,12 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * SelectorList constructor.
      *
-     * @param \DOMNode[] |\DOMNodeList                        $nodes
+     * @param \DOMNode[]                                      $nodes
      * @param \ManaPHP\Dom\Selector|\ManaPHP\Dom\SelectorList $root
      */
     public function __construct($nodes, $root)
     {
-        $this->_nodes = $nodes instanceof \DOMNodeList ? iterator_to_array($nodes) : $nodes;
+        $this->_nodes = $nodes;
         if ($root instanceof self) {
             $this->_root = $root->_root;
         } else {
@@ -44,8 +44,12 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $nodes = [];
         foreach ($this->_nodes as $node) {
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $nodes = array_merge($nodes, iterator_to_array($query->xpath($path, $node)));
+            /**
+             * @var \DOMNode $node2
+             */
+            foreach ($query->xpath($path, $node) as $node2) {
+                $nodes[$node2->getNodePath()] = $node2;
+            }
         }
 
         return new SelectorList($nodes, $this);
@@ -80,8 +84,12 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $nodes = [];
         foreach ($this->_nodes as $node) {
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $nodes = array_merge($nodes, iterator_to_array($query->xpath($is_not ? "not($xpath)" : $xpath, $node)));
+            /**
+             * @var \DOMNode $node2
+             */
+            foreach ($query->xpath($is_not ? "not($xpath)" : $xpath, $node) as $node2) {
+                $nodes[$node2->getNodePath()] = $node2;
+            }
         }
 
         return new SelectorList($nodes, $this);
@@ -106,7 +114,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             return clone $selectors;
         }
 
-        return new SelectorList(array_merge($this->_nodes, $selectors->_nodes), $this);
+        return new SelectorList($this->_nodes + $selectors->_nodes, $this);
     }
 
     /**@param string $css
@@ -152,11 +160,20 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function eq($index)
     {
+        if ($index === 0) {
+            return new SelectorList(count($this->_nodes) > 0 ? [current($this->_nodes)] : [], $this);
+        }
+
         if ($index < 0) {
             $index = count($this->_nodes) + $index;
         }
 
-        return new SelectorList(isset($this->_nodes[$index]) ? [$this->_nodes[$index]] : [], $this);
+        if ($index < 0 || $index >= count($this->_nodes)) {
+            return new SelectorList([], $this);
+        } else {
+            $keys = array_keys($this->_nodes);
+            return new SelectorList([$this->_nodes[$keys[$index]]], $this);
+        }
     }
 
     /**
@@ -183,7 +200,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         }
 
         $nodes = [];
-        foreach ($this->_nodes as $node) {
+        foreach ($this->_nodes as $path => $node) {
             $selector = new Selector($node);
             if ($field === null) {
                 $value = $selector;
@@ -212,7 +229,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             }
 
             if (($not && !$r) || (!$not && $r)) {
-                $nodes[] = $node;
+                $nodes[$path] = $node;
             }
         }
 
@@ -234,7 +251,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function first()
     {
-        return isset($this->_nodes[0]) ? new Selector($this->_nodes[0]) : null;
+        return count($this->_nodes) > 0 ? new Selector(current($this->_nodes)) : null;
     }
 
     /**
@@ -342,14 +359,19 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         $nodes = [];
         $query = $this->_root->_query;
         foreach ($this->_nodes as $node) {
-            $r = $query->css('parent::' . ($css ?: '*'), $node);
-            if ($r) {
+            $cur_xpath = $node->getNodePath();
+            foreach ($query->css('parent::' . ($css ?: '*'), $node) as $node2) {
+                /**
+                 * @var \DOMNode $node2
+                 */
                 /** @noinspection SlowArrayOperationsInLoopInspection */
-                $nodes = array_merge($nodes, array_diff($r->_nodes, [$node]));
+                if ($node2->getNodePath() !== $cur_xpath) {
+                    $nodes[$node2->getNodePath()] = $node2;
+                }
             }
         }
 
-        return new SelectorList(array_unique($nodes), $this);
+        return new SelectorList($nodes, $this);
     }
 
     /**

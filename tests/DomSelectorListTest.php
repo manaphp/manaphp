@@ -27,7 +27,7 @@ class DomSelectorListTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(2, $selector->find('li.current'));
         $this->assertCount(14, $selector->find('li'));
-      //  $this->assertCount(14, $selector->find('li.current')->add($selector->find('li')));
+        //  $this->assertCount(14, $selector->find('li.current')->add($selector->find('li')));
 //        $this->assertCount(14, $selector->find('li.current')->add('li'));
     }
 
@@ -105,7 +105,7 @@ class DomSelectorListTest extends \PHPUnit_Framework_TestCase
     {
         $selector = new Selector(self::SAMPLE_FILE);
 
-        $this->assertCount(3, $selector->find('li.foo')->nextAll());
+        $this->assertCount(2, $selector->find('li.foo')->nextAll());
         $this->assertCount(1, $selector->find('li.foo')->nextAll('.current'));
     }
 
@@ -120,7 +120,7 @@ class DomSelectorListTest extends \PHPUnit_Framework_TestCase
     {
         $selector = new Selector(self::SAMPLE_FILE);
 
-        $this->assertCount(7, $selector->find('a')->parent());
+        $this->assertCount(6, $selector->find('a')->parent());
         $this->assertCount(4, $selector->find('a')->parent('li'));
     }
 
@@ -128,7 +128,7 @@ class DomSelectorListTest extends \PHPUnit_Framework_TestCase
     {
         $selector = new Selector(self::SAMPLE_FILE);
 
-        $this->assertCount(28, $selector->find('a')->parents());
+        $this->assertCount(11, $selector->find('a')->parents());
         $this->assertCount(4, $selector->find('a')->parents('li'));
     }
 

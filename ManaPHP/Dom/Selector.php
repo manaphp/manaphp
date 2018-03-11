@@ -63,7 +63,14 @@ class Selector
             $query = strtr($query[0], $tr);
         }
 
-        return new SelectorList($this->_query->xpath($query, $this->_node), $this);
+        $nodes = [];
+        /**
+         * @var \DOMNode $node
+         */
+        foreach ($this->_query->xpath($query, $this->_node) as $node) {
+            $nodes[$node->getNodePath()] = $node;
+        }
+        return new SelectorList($nodes, $this);
     }
 
     /**
