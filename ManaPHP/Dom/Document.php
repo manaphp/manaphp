@@ -54,7 +54,7 @@ class Document extends Component
      */
     public function load($str)
     {
-        if (preg_match('#https?://#', $str)) {
+        if (preg_match('#^https?://#', $str)) {
             $this->loadUrl($str);
         } elseif ($str[0] === '@' || $str[0] === '/' || $str[1] === ':') {
             $this->loadFile($str);
