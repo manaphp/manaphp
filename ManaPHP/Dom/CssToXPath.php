@@ -125,20 +125,16 @@ class CssToXPath
                 $type = $matches[2];
                 $val = trim($matches[3], "'\" \t");
 
+                $field = ($attr === '' ? 'text()' : '@' . $attr);
+
                 $items = [];
                 foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
                     if ($type === '') {
-                        $items[] = ($attr === '' ? 'text()' : ('@' . $attr)) . "='" . $word . "'";
+                        $items[] = "$field='$word'";
                     } elseif ($type === '~') {
-                        $items[] = "contains(concat(' ', normalize-space(" . ($attr === '' ? 'text()' : '@' . $attr) . "), ' '), ' "
-                            . $word . " ')";
+                        $items[] = "contains(concat(' ', normalize-space($field), ' '), ' $word ')";
                     } else {
-                        $items[] = [
-                                '*' => 'contains',
-                                '^' => 'starts-with',
-                                '$' => 'ends-with'
-                            ][$type] . '(' . ($attr === '' ? 'text()' : '@' . $attr) . ", '"
-                            . $word . "')";
+                        $items[] = ['*' => 'contains', '^' => 'starts-with', '$' => 'ends-with'][$type] . "($field, '$word')";
                     }
                 }
                 return '[' . implode(strpos($val, '|') !== false ? ' or ' : ' and ', $items) . ']';
