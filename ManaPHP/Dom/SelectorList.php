@@ -245,11 +245,11 @@ class SelectorList implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return static
+     * @return \ManaPHP\Dom\Selector|null
      */
     public function first()
     {
-        return $this->eq(0);
+        return isset($this->_selectors[0]) ? $this->_selectors[0] : null;
     }
 
     /**
