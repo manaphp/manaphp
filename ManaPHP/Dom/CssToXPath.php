@@ -114,18 +114,21 @@ class CssToXPath
         $expression = str_replace('>', '/', $expression_src);
 
         // IDs
-        $expression = preg_replace('|#([a-z][a-z0-9_-]*)|i', '[@id=\'$1\']', $expression);
+        $expression = preg_replace('|#([a-z][a-z0-9_-]*)|i', "[@id='$1']", $expression);
         $expression = preg_replace('|(?<![a-z0-9_-])(\[@id=)|i', '*$1', $expression);
 
         // arbitrary attribute strict equality
         $expression = preg_replace_callback(
             '|\[@?([a-z0-9_-]*)=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
+                $attr = $matches[1];
+                $val = $matches[2];
+
                 $items = [];
-                foreach (explode(strpos($matches[2], '|') !== false ? '|' : '&', $matches[2]) as $word) {
-                    $items[] = ($matches[1] === '' ? 'text()' : ('@' . strtolower($matches[1]))) . "='" . $word . "'";
+                foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
+                    $items[] = ($attr === '' ? 'text()' : ('@' . strtolower($attr))) . "='" . $word . "'";
                 }
-                return '[' . implode(strpos($matches[2], '|') !== false ? ' or ' : ' and ', $items) . ']';
+                return '[' . implode(strpos($val, '|') !== false ? ' or ' : ' and ', $items) . ']';
             },
             $expression
         );
@@ -134,13 +137,16 @@ class CssToXPath
         $expression = preg_replace_callback(
             '|\[([a-z0-9_-]*)~=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
+                $attr = $matches[1];
+                $val = $matches[2];
+
                 $items = [];
-                foreach (explode(strpos($matches[2], '|') !== false ? '|' : '&', $matches[2]) as $word) {
-                    $items[] = "contains(concat(' ', normalize-space(" . ($matches[1] === '' ? 'text()' : '@' . strtolower($matches[1])) . "), ' '), ' "
+                foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
+                    $items[] = "contains(concat(' ', normalize-space(" . ($attr === '' ? 'text()' : '@' . strtolower($attr)) . "), ' '), ' "
                         . $word . " ')";
                 }
 
-                return '[' . implode(strpos($matches[2], '|') !== false ? ' or ' : ' and ', $items) . ']';
+                return '[' . implode(strpos($val, '|') !== false ? ' or ' : ' and ', $items) . ']';
             },
             $expression
         );
@@ -149,15 +155,18 @@ class CssToXPath
         $expression = preg_replace_callback(
             '|\[([a-z0-9_-]*)([\*\^\$])=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
+                $attr = $matches[1];
+                $type = $matches[2];
+                $val = $matches[3];
 
                 $items = [];
-                $op = strpos($matches[3], '|') !== false ? '|' : '&';
-                foreach (explode($op, $matches[3]) as $word) {
+                $op = strpos($val, '|') !== false ? '|' : '&';
+                foreach (explode($op, $val) as $word) {
                     $items[] = [
                             '*' => 'contains',
                             '^' => 'starts-with',
                             '$' => 'ends-with'
-                        ][$matches[2]] . '(' . ($matches[1] === '' ? 'text()' : '@' . strtolower($matches[1])) . ", '"
+                        ][$type] . '(' . ($attr === '' ? 'text()' : '@' . strtolower($attr)) . ", '"
                         . $word . "')";
                 }
                 return '[' . implode($op === '|' ? ' or ' : ' and ', $items) . ']';
@@ -168,9 +177,11 @@ class CssToXPath
         $expression = preg_replace_callback(
             '|\[(!?)([a-z][a-z0-9_-\|&]*)\]|i',
             function ($matches) {
-                $op = strpos($matches[2], '|') !== false ? '|' : '&';
+                $val = $matches[2];
+                $op = strpos($val, '|') !== false ? '|' : '&';
+				
                 $items = [];
-                foreach (explode($op, $matches[2]) as $word) {
+                foreach (explode($op, $val) as $word) {
                     $items[] = '@' . $word;
                 }
 
