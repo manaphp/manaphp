@@ -365,14 +365,6 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * @return static
-     */
-    public function last()
-    {
-        return $this->eq(-1);
-    }
-
-    /**
      *
      * @return string[]|string
      */
