@@ -4,11 +4,6 @@ namespace ManaPHP\Dom;
 class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 {
     /**
-     * @var array
-     */
-    protected $_full_xpath = [];
-
-    /**
      * @var \ManaPHP\Dom\Selector[]
      */
     protected $_selectors;
@@ -32,29 +27,6 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         } else {
             $this->_root = $root;
         }
-    }
-
-    /**
-     * @return string[]
-     */
-    public function extract()
-    {
-        $data = [];
-        foreach ($this->_selectors as $node) {
-            $data[] = $node->extract();
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param string $default
-     *
-     * @return string
-     */
-    public function extract_first($default = null)
-    {
-        return $this->_selectors ? $this->_selectors[0]->extract() : $default;
     }
 
     /**
@@ -510,6 +482,6 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
     public function __toString()
     {
-        return json_encode($this->extract(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return json_encode($this->text(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 }

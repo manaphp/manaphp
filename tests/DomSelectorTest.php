@@ -49,7 +49,7 @@ STR;
         $this->assertEquals(['Example website'], $selector->xpath('//title')->text());
         $this->assertEquals('Example website', $selector->xpath('//title')->first()->text());
         $this->assertNull($selector->xpath('//div[@id="not-exists"]')->first());
-        $this->assertEquals('not-found', $selector->xpath('//div[@id="not-exists"]/text()')->extract_first('not-found'));
+        $this->assertCount(0, $selector->xpath('//div[@id="not-exists"]'));
 
         //   $this->assertEquals('' . $selector->css('title::text') . extract());
 
