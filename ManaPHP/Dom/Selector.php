@@ -117,6 +117,58 @@ class Selector
     }
 
     /**
+     * @param  string      $css
+     * @param string|array $attr
+     *
+     * @return static
+     */
+    public function removeAttr($css, $attr = null)
+    {
+        if (is_string($attr)) {
+            $attr = preg_split('#[\s,]+#', $attr);
+        }
+
+        /**
+         * @var \DOMElement $node
+         */
+        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+            foreach ($node->attributes as $attribute) {
+                if (!$attr || in_array($attribute->name, $attr, true)) {
+                    $node->removeAttribute($attribute->name);
+                }
+            }
+        }
+
+        return $this;
+    }
+    
+    /**
+     * @param  string      $css
+     * @param string|array $attr
+     *
+     * @return static
+     */
+    public function retainAttr($css, $attr)
+    {
+        if (is_string($attr)) {
+            $attr = preg_split('#[\s,]+#', $attr);
+        }
+
+        /**
+         * @var \DOMElement $node
+         */
+        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+            foreach ($node->attributes as $attribute) {
+                if (!in_array($attribute->name, $attr, true)) {
+                    $node->removeAttribute($attribute->name);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $css
      *
      * @return static

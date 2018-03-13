@@ -385,6 +385,64 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * @param  string $css
+     * @param string  $attr
+     *
+     * @return static
+     */
+    public function removeAttr($css, $attr = null)
+    {
+        if ($attr) {
+            $attr = preg_split('#[\s,]+#', $attr);
+        }
+
+        /**
+         * @var \DOMElement $node
+         */
+        $query = $this->_document->getQuery();
+        foreach ($this->_nodes as $node_0) {
+            foreach ($query->css($css, $node_0) as $node) {
+                foreach ($node->attributes as $attribute) {
+                    if (!$attr || in_array($attribute->name, $attr, true)) {
+                        $node->removeAttribute($attribute->name);
+                    }
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param  string      $css
+     * @param string|array $attr
+     *
+     * @return static
+     */
+    public function retainAttr($css, $attr)
+    {
+        if (is_string($attr)) {
+            $attr = preg_split('#[\s,]+#', $attr);
+        }
+
+        /**
+         * @var \DOMElement $node
+         */
+        $query = $this->_document->getQuery();
+        foreach ($this->_nodes as $node_0) {
+            foreach ($query->css($css, $node_0) as $node) {
+                foreach ($node->attributes as $attribute) {
+                    if (!in_array($attribute->name, $attr, true)) {
+                        $node->removeAttribute($attribute->name);
+                    }
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $css
      *
      * @return static
