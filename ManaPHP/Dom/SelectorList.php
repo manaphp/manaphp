@@ -376,8 +376,28 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
          */
         $query = $this->_document->getQuery();
         foreach ($this->_nodes as $node) {
-            foreach ($query->xpath($css, $node) as $node2) {
+            foreach ($query->css($css, $node) as $node2) {
                 $node2->parentNode->removeChild($node2);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function strip($css)
+    {
+        /**
+         * @var \DOMNode $node
+         */
+        $query = $this->_document->getQuery();
+        foreach ($this->_nodes as $node) {
+            foreach ($query->css($css, $node) as $node2) {
+                $node2->parentNode->replaceChild(new \DOMText($node2->textContent), $node2);
             }
         }
 

@@ -148,7 +148,7 @@ STR;
     {
         $selector = new Selector(self::SAMPLE_FILE);
 
-      //  $this->assertEquals($selector, $selector->css('a')->first()->root());
+        //  $this->assertEquals($selector, $selector->css('a')->first()->root());
     }
 
     public function test_find()
@@ -165,5 +165,71 @@ STR;
         $selector = new Selector(self::SAMPLE_FILE);
 
         $this->assertEquals('/html/body/div[1]/h1/a', (string)$selector->css('a')->first());
+    }
+
+    public function test_remove()
+    {
+        $html = <<<STR
+    <div id="demo">
+        xxx
+        <span class="tt">yyy</span>
+        <span>zzz</span>
+        <p>nnn</p>
+    </div>
+STR;
+        $selector = new Selector($html);
+
+        $this->assertNotEmpty($selector->find('span'));
+        $this->assertNotEmpty($selector->find('p'));
+        $selector->remove('span');
+        $this->assertEmpty($selector->find('span'));
+        $selector->remove('p');
+        $this->assertEmpty($selector->find('p'));
+    }
+
+    public function test_strip()
+    {
+        $html = <<<STR
+    <div id="demo">
+        xxx
+        <span class="tt">yyy</span>
+        <span>zzz</span>
+        <p>nnn</p>
+    </div>
+STR;
+        $selector = new Selector($html);
+        $this->assertNotEmpty($selector->find('span'));
+        $this->assertNotEmpty($selector->find('p'));
+        $selector->strip('span');
+        $this->assertEmpty($selector->find('span'));
+        $this->assertNotEmpty($selector->find('*:contains("yyy")'));
+        $selector->strip('p');
+        $this->assertNotEmpty($selector->find('*:contains("nnn")'));
+        $this->assertEmpty($selector->find('p'));
+
+        $html = <<<STR
+    <div id="demo">
+        xxx
+        <span class="tt">yyy</span>
+        <span>zzz</span>
+        <p>nnn</p>
+    </div>
+STR;
+        $selector = new Selector($html);
+        $selector->remove('span')->remove('p');
+        $this->assertEquals('xxx', trim($selector->find('#demo')->first()->text()));
+
+        $selector = new Selector($html);
+        $selector->strip('p');
+
+        $this->assertEquals(<<<XXX
+<div id="demo">
+        xxx
+        <span class="tt">yyy</span>
+        <span>zzz</span>
+        nnn
+    </div>
+XXX
+, $selector->find('#demo')->first()->html());
     }
 }

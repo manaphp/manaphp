@@ -109,8 +109,25 @@ class Selector
         /**
          * @var \DOMNode $node
          */
-        foreach ($this->_document->getQuery()->xpath($css, $this->_node) as $node) {
+        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
             $node->parentNode->removeChild($node);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function strip($css)
+    {
+        /**
+         * @var \DOMNode $node
+         */
+        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+            $node->parentNode->replaceChild(new \DOMText($node->textContent), $node);
         }
 
         return $this;
@@ -201,12 +218,7 @@ class Selector
      */
     public function html()
     {
-        /**
-         * @var \DOMNode $node
-         */
-        $node = $this->_node;
-
-        return $node->ownerDocument->saveHTML($node);
+        return $this->_document->saveHtml($this->_node);
     }
 
     /**

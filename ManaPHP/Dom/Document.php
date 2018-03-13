@@ -118,7 +118,7 @@ class Document extends Component
         if (substr($str, 0, 5) === '<?xml') {
             $r = $this->_dom->loadXML($str);
         } else {
-            $r = $this->_dom->loadHTML($str);
+            $r = $this->_dom->loadHTML($str, LIBXML_HTML_NODEFDTD);
         }
 
         $this->_domErrors = libxml_get_errors();
@@ -215,7 +215,7 @@ class Document extends Component
         if ($node) {
             return $node->ownerDocument->saveHTML($node);
         } else {
-            return $this->_dom->saveHTML($node);
+            return $this->_dom->saveHTML($this->_dom);
         }
     }
 
