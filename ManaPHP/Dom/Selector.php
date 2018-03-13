@@ -90,6 +90,33 @@ class Selector
     }
 
     /**
+     * @param string $css
+     *
+     * @return \ManaPHP\Dom\SelectorList
+     */
+    public function has($css)
+    {
+        return $this->css('child::' . ($css === null ? '*' : $css));
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function remove($css)
+    {
+        /**
+         * @var \DOMNode $node
+         */
+        foreach ($this->_document->getQuery()->xpath($css, $this->_node) as $node) {
+            $node->parentNode->removeChild($node);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string|array $attr
      * @param string       $defaultValue
      *

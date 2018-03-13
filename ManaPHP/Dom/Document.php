@@ -206,6 +206,20 @@ class Document extends Component
     }
 
     /**
+     * @param \DOMElement $node
+     *
+     * @return string
+     */
+    public function saveHtml($node = null)
+    {
+        if ($node) {
+            return $node->ownerDocument->saveHTML($node);
+        } else {
+            return $this->_dom->saveHTML($node);
+        }
+    }
+
+    /**
      * @param string $url
      *
      * @return string

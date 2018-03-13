@@ -365,6 +365,26 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * @param string $css
+     *
+     * @return static
+     */
+    public function remove($css)
+    {
+        /**
+         * @var \DOMNode $node
+         */
+        $query = $this->_document->getQuery();
+        foreach ($this->_nodes as $node) {
+            foreach ($query->xpath($css, $node) as $node2) {
+                $node2->parentNode->removeChild($node2);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      *
      * @return string[]|string
      */
@@ -513,6 +533,25 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
                     $data[$node2->getNodePath()] = $src;
                 }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $rules
+     *
+     * @return array
+     */
+    public function extract($rules)
+    {
+        $extractor = new Extractor($this->_document);
+
+        $data = [];
+        foreach ($rules as $name => $rule) {
+            foreach ($this->_nodes as $node) {
+                $data[$name] = $extractor->extract($rule, $node);
             }
         }
 
