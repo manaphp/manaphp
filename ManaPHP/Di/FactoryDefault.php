@@ -48,7 +48,7 @@ class FactoryDefault extends Di
             'cache' => 'ManaPHP\Cache',
             'store' => 'ManaPHP\Store',
             'counter' => 'ManaPHP\Counter',
-            'httpClient' => 'ManaPHP\Http\Client',
+            'httpClient' => 'ManaPHP\Curl\Easy',
             'captcha' => 'ManaPHP\Security\Captcha',
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
             'authorization' => 'ManaPHP\Authorization\Bypass',

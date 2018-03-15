@@ -40,7 +40,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\CacheInterface                       $cache
  * @property \ManaPHP\CounterInterface                     $counter
  * @property \ManaPHP\Cache\EngineInterface                $viewsCache
- * @property \ManaPHP\Http\ClientInterface                 $httpClient
+ * @property \ManaPHP\Curl\EasyInterface                   $httpClient
  * @property \ManaPHP\AuthorizationInterface               $authorization
  * @property \ManaPHP\Security\CaptchaInterface            $captcha
  * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken

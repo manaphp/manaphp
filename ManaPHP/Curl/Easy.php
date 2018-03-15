@@ -1,15 +1,15 @@
 <?php
-namespace ManaPHP\Http;
+namespace ManaPHP\Curl;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Client\Exception as ClientException;
+use ManaPHP\Curl\Exception as ClientException;
 
 /**
- * Class ManaPHP\Http\Client
+ * Class ManaPHP\Curl\Easy
  *
- * @package httpClient
+ * @package Curl
  */
-class Client extends Component implements ClientInterface
+class Easy extends Component implements EasyInterface
 {
     /**
      * @var array
@@ -73,7 +73,7 @@ class Client extends Component implements ClientInterface
      * - `User-Agent`: User Agent to send to the server
      *   (string, default: php-requests/$version)
      *
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function __construct($options = [], $headers = [])
     {
@@ -85,7 +85,7 @@ class Client extends Component implements ClientInterface
             'timeout' => 10,
             'max_redirects' => 10,
             'proxy' => '',
-            'ssl_certificates' => '@manaphp/Http/Client/ca.pem',
+            'ssl_certificates' => '@manaphp/Curl/https/ca.pem',
             'verify_host' => true,
         ];
         $this->_options = array_merge($defaultOptions, $options);
@@ -121,7 +121,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return int
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     protected function request($type, $url, $data, $headers, $options)
     {
@@ -168,7 +168,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return int
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function _request($type, $url, $data, $headers, $options)
     {
@@ -371,7 +371,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return int
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function get($url, $headers = [], $options = [])
     {
@@ -385,7 +385,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function post($url, $data = [], $headers = [], $options = [])
     {
@@ -398,7 +398,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return int
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function delete($url, $headers = [], $options = [])
     {
@@ -412,7 +412,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return int
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function put($url, $data = [], $headers = [], $options = [])
     {
@@ -426,7 +426,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return int
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function patch($url, $data = [], $headers = [], $options = [])
     {
@@ -440,7 +440,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return int
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function head($url, $data = [], $headers = [], $options = [])
     {
@@ -454,7 +454,7 @@ class Client extends Component implements ClientInterface
      * @param array        $options
      *
      * @return string|false
-     * @throws \ManaPHP\Http\Client\Exception
+     * @throws \ManaPHP\Curl\Exception
      */
     public function downloadFile($url, $file, $headers = [], $options = [])
     {

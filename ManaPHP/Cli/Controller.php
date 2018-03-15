@@ -8,7 +8,7 @@ use ManaPHP\Component;
  *
  * @package controller
  *
- * @property \ManaPHP\Http\ClientInterface            $httpClient
+ * @property \ManaPHP\Curl\EasyInterface              $httpClient
  * @property \ManaPHP\CounterInterface                $counter
  * @property \ManaPHP\CacheInterface                  $cache
  * @property \ManaPHP\DbInterface                     $db

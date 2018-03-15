@@ -13,7 +13,7 @@ namespace ManaPHP\Mvc;
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
  * @property \ManaPHP\Configuration\Configure              $configure
  * @property \ManaPHP\Configuration\SettingsInterface      $settings
- * @property \ManaPHP\Http\ClientInterface                 $httpClient
+ * @property \ManaPHP\Curl\EasyInterface                   $httpClient
  * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\AuthorizationInterface               $authorization

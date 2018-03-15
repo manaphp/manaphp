@@ -1,12 +1,12 @@
 <?php
-namespace ManaPHP\Http;
+namespace ManaPHP\Curl;
 
 /**
- * Interface ManaPHP\Http\ClientInterface
+ * Interface ManaPHP\Curl\EasyInterface
  *
  * @package httpClient
  */
-interface ClientInterface
+interface EasyInterface
 {
     /**
      * @param string $proxy

@@ -19,7 +19,7 @@ use ManaPHP\Component;
  * @property \ManaPHP\Mvc\View\FlashInterface              $flash
  * @property \ManaPHP\Mvc\View\FlashInterface              $flashSession
  * @property \ManaPHP\Security\CaptchaInterface            $captcha
- * @property \ManaPHP\Http\ClientInterface                 $httpClient
+ * @property \ManaPHP\Curl\EasyInterface                   $httpClient
  * @property \ManaPHP\Authentication\PasswordInterface     $password
  * @property \ManaPHP\Http\CookiesInterface                $cookies
  * @property \ManaPHP\CounterInterface                     $counter
