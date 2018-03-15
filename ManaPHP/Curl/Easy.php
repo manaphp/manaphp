@@ -57,8 +57,6 @@ class Easy extends Component implements EasyInterface
      * @param array $options
      *    - `timeout`: How long should we wait for a response?
      *    (integer, seconds, default: 10)
-     *    - `max_redirects`: How many times should we redirect 3xx before error?
-     *    (integer, default: 10)
      *    (string, default: '')
      *    - `ssl_certificates`: Should we verify SSL certificates? Allows passing in a custom
      *    certificate file as a string. (Using true uses the system-wide root
@@ -81,17 +79,14 @@ class Easy extends Component implements EasyInterface
             throw new ClientException('curl extension is not loaded: http://php.net/curl'/**m01df15300bf1482df*/);
         }
 
-        $defaultOptions = [
-            'timeout' => 10,
-            'max_redirects' => 10,
-            'proxy' => '',
-            'ssl_certificates' => '@manaphp/Curl/https/ca.pem',
-            'verify_host' => true,
-        ];
-        $this->_options = array_merge($defaultOptions, $options);
+        $this->_options = $options + [
+                'timeout' => 10,
+                'proxy' => '',
+                'ssl_certificates' => '@manaphp/Curl/https/ca.pem',
+                'verify_host' => true,
+            ];
 
-        $defaultHeaders = ['User-Agent' => 'ManaPHP/httpClient'];
-        $this->_headers = array_merge($defaultHeaders, $headers);
+        $this->_headers = $headers + ['User-Agent' => 'ManaPHP/httpClient'];
     }
 
     /**
@@ -183,12 +178,8 @@ class Easy extends Component implements EasyInterface
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_AUTOREFERER, true);
 
-        if ($options['max_redirects'] > 0) {
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($curl, CURLOPT_MAXREDIRS, $options['max_redirects']);
-        } else {
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, false);
-        }
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 8);
 
         if (isset($headers['Cookie'])) {
             curl_setopt($curl, CURLOPT_COOKIE, $headers['Cookie']);
@@ -306,57 +297,22 @@ class Easy extends Component implements EasyInterface
 
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options['verify_host'] ? 2 : 0);
 
-        if (isset($options['download_file'])) {
-            $file = $options['download_file'];
-            $tmp_file = tempnam(sys_get_temp_dir(), 'manaphp_http_client_');
-            if (($tmp_fp = fopen($tmp_file, 'w+b')) === false) {
-                throw new ClientException(['create tmp file failed for download `:file` file from `:url`', 'file' => $file, 'url' => $url]);
-            }
-            curl_setopt($curl, CURLOPT_FILE, $tmp_fp);
-            curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
-            if (curl_exec($curl) === false) {
-                fclose($tmp_fp);
-                unlink($tmp_file);
-                throw new ClientException(['cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, 'url' => $url, 'message' => curl_error($curl)]);
-            } else {
-                fseek($tmp_fp, 0, SEEK_SET);
+        $content = curl_exec($curl);
 
-                $this->filesystem->dirCreate(dirname($file));
-                $dst_fp = fopen($this->alias->resolve($file), 'wb');
-
-                $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-                $response_headers = fread($tmp_fp, $header_length - 4);
-                fread($tmp_fp, 4);
-                while (!feof($tmp_fp)) {
-                    $buf = fread($tmp_fp, 8192);
-                    if (fwrite($dst_fp, $buf, strlen($buf)) === false) {
-                        throw new ClientException(['write downloaded data to `:file` file failed from `:url`', 'file' => $file, 'url' => $url]);
-                    }
-                }
-                fclose($dst_fp);
-                fclose($tmp_fp);
-                unlink($tmp_file);
-            }
-        } else {
-            $response = curl_exec($curl);
-
-            $err = curl_errno($curl);
-            if ($err === 23 || $err === 61) {
-                curl_setopt($curl, CURLOPT_ENCODING, 'none');
-                $response = curl_exec($curl);
-            }
-
-            if (curl_errno($curl)) {
-                throw new ClientException(['cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, 'url' => $url, 'message' => curl_error($curl)]);
-            }
-
-            $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-            $response_headers = substr($response, 0, $header_length - 4);
-            $this->_responseBody = substr($response, $header_length);
+        $err = curl_errno($curl);
+        if ($err === 23 || $err === 61) {
+            curl_setopt($curl, CURLOPT_ENCODING, 'none');
+            $content = curl_exec($curl);
         }
 
+        if (curl_errno($curl)) {
+            throw new ClientException(['cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, 'url' => $url, 'message' => curl_error($curl)]);
+        }
+
+        $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         $this->_responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $this->_responseHeaders = explode("\r\n", $response_headers);
+        $this->_responseBody = substr($content, $header_length);
+        $this->_responseHeaders = explode("\r\n", substr($content, 0, $header_length - 4));
 
         $this->_curlInfo = curl_getinfo($curl);
 
@@ -448,27 +404,57 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param string|array $url
-     * @param string       $file
-     * @param array        $headers
-     * @param array        $options
+     * @param string $url
+     * @param string $file
+     * @param array  $options
      *
-     * @return string|false
+     * @return static
      * @throws \ManaPHP\Curl\Exception
      */
-    public function downloadFile($url, $file, $headers = [], $options = [])
+    public function downloadFile($url, $file, $options = [])
     {
-        if (!isset($headers['Referer'])) {
-            $headers['Referer'] = is_string($url) ? $url : $url[0];
+        $file = $this->alias->resolve($file);
+        if (!is_file($file)) {
+            $this->filesystem->dirCreate(dirname($file));
+
+            $curl = curl_init();
+
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_TIMEOUT, isset($options['timeout']) ? $options['timeout'] : 3);
+            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, isset($options['timeout']) ? $options['timeout'] : 3);
+            curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko');
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+
+            /** @noinspection CurlSslServerSpoofingInspection */
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            /** @noinspection CurlSslServerSpoofingInspection */
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            if (($fp = fopen($file, 'wb+')) === false) {
+                curl_close($curl);
+                throw new ClientException(['open download `:file` file failed for `:url`', 'file' => $file, 'url' => $url]);
+            }
+
+            curl_setopt($curl, CURLOPT_FILE, $fp);
+            curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
+
+            foreach ($options as $k => $v) {
+                if (is_int($k)) {
+                    curl_setopt($curl, $k, $v);
+                }
+            }
+
+            curl_exec($curl);
+            fclose($fp);
+            if (curl_errno($curl)) {
+                curl_close($curl);
+                throw new ClientException(['cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, 'url' => $url, 'message' => curl_error($curl)]);
+            }
+
+            curl_close($curl);
         }
 
-        if (!isset($headers['User-Agent'])) {
-            $headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
-        }
-
-        $options['download_file'] = $this->alias->resolve($file);
-        $r = $this->get($url, $headers, $options);
-        return $r === 200 ? $file : false;
+        return $this;
     }
 
     /**

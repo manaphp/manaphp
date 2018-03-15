@@ -77,12 +77,11 @@ interface EasyInterface
     /**
      * @param string|array $url
      * @param string       $file
-     * @param array        $headers
      * @param array        $options
      *
-     * @return string|false
+     * @return static
      */
-    public function downloadFile($url, $file, $headers = [], $options = []);
+    public function downloadFile($url, $file, $options = []);
 
     /**
      * @return int
