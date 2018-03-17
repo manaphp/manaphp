@@ -388,66 +388,12 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param string $url
-     * @param string $file
-     * @param array  $options
-     *
-     * @return static
-     * @throws \ManaPHP\Curl\Exception
-     */
-    public function downloadFile($url, $file, $options = [])
-    {
-        $file = $this->alias->resolve($file);
-        if (!is_file($file)) {
-            $this->filesystem->dirCreate(dirname($file));
-
-            $curl = curl_init();
-
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_TIMEOUT, isset($options['timeout']) ? $options['timeout'] : 3);
-            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, isset($options['timeout']) ? $options['timeout'] : 3);
-            curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko');
-            curl_setopt($curl, CURLOPT_HEADER, 0);
-
-            /** @noinspection CurlSslServerSpoofingInspection */
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            /** @noinspection CurlSslServerSpoofingInspection */
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-            if (($fp = fopen($file, 'wb+')) === false) {
-                curl_close($curl);
-                throw new ClientException(['open download `:file` file failed for `:url`', 'file' => $file, 'url' => $url]);
-            }
-
-            curl_setopt($curl, CURLOPT_FILE, $fp);
-            curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
-
-            foreach ($options as $k => $v) {
-                if (is_int($k)) {
-                    curl_setopt($curl, $k, $v);
-                }
-            }
-
-            curl_exec($curl);
-            fclose($fp);
-            if (curl_errno($curl)) {
-                curl_close($curl);
-                throw new ClientException(['cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, 'url' => $url, 'message' => curl_error($curl)]);
-            }
-
-            curl_close($curl);
-        }
-
-        return $this;
-    }
-
-    /**
      * @param array            $files
      * @param int|string|array $options
      *
      * @return array
      */
-    public function downloadFiles($files, $options = [])
+    public function download($files, $options = [])
     {
         if (is_int($options)) {
             $options = ['concurrent' => $options];

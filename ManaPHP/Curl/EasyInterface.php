@@ -75,19 +75,10 @@ interface EasyInterface
     public function head($url, $body = [], $headers = [], $options = []);
 
     /**
-     * @param string|array $url
-     * @param string       $file
-     * @param array        $options
-     *
-     * @return static
-     */
-    public function downloadFile($url, $file, $options = []);
-
-    /**
      * @param array $files
      * @param array $options
      *
      * @return array
      */
-    public function downloadFiles($files, $options = []);
+    public function download($files, $options = []);
 }
