@@ -82,4 +82,12 @@ interface EasyInterface
      * @return static
      */
     public function downloadFile($url, $file, $options = []);
+
+    /**
+     * @param array $files
+     * @param array $options
+     *
+     * @return array
+     */
+    public function downloadFiles($files, $options = []);
 }
