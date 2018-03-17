@@ -21,6 +21,8 @@ class HelpController extends Controller
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
             if (preg_match('#/(\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
+                $this->console->writeLn('- ' . $this->console->colorize(Text::underscore($matches[2]), Console::FC_YELLOW));
+
                 $controllerClassName = 'ManaPHP\\' . strtr($matches[1], '/', '\\');
 
                 $commands = $this->_getCommands($controllerClassName);
@@ -30,12 +32,10 @@ class HelpController extends Controller
                     continue;
                 }
 
-                $first = true;
                 $maxLength = max(max(array_map('strlen', array_keys($commands))), 16);
                 foreach ($commands as $command => $description) {
                     $cmd = str_pad($command, $maxLength + 1);
-                    $this->console->writeLn('  ' . (!$first ? $cmd : $this->console->colorize($cmd, Console::FC_CYAN)) . ' ' . $description);
-                    $first = false;
+                    $this->console->writeLn('    ' . $this->console->colorize($cmd, Console::FC_CYAN) . ' ' . $description);
                 }
             }
         }
@@ -44,6 +44,8 @@ class HelpController extends Controller
         if ($this->alias->has('@cli')) {
             foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
                 if (preg_match('#(\w+)Controller\.php$#', $file, $matches)) {
+                    $this->console->writeLn('- ' . $this->console->colorize(Text::underscore($matches[1]), Console::FC_YELLOW));
+
                     $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . $matches[1] . 'Controller');
                     $commands = $this->_getCommands($controllerClassName);
 
@@ -53,12 +55,10 @@ class HelpController extends Controller
                         continue;
                     }
 
-                    $first = true;
                     $maxLength = max(max(array_map('strlen', array_keys($commands))), 16);
                     foreach ($commands as $command => $description) {
                         $cmd = str_pad($command, $maxLength + 1);
-                        $this->console->writeLn('  ' . (!$first ? $cmd : $this->console->colorize($cmd, Console::FC_CYAN)) . ' ' . $description);
-                        $first = false;
+                        $this->console->writeLn('  ' . $this->console->colorize($cmd, Console::FC_CYAN) . ' ' . $description);
                     }
                 }
             }
