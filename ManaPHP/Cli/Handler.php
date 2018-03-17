@@ -39,6 +39,34 @@ class Handler extends Component implements HandlerInterface
     }
 
     /**
+     * @param string $controllerName
+     * @param string $keyword
+     *
+     * @return string|false
+     */
+    protected function _guessCommand($controllerName, $keyword)
+    {
+        $commands = $this->_getCommands($controllerName);
+
+        $guessed = [];
+        foreach ($commands as $command) {
+            if (stripos($command, $keyword) === 0) {
+                $guessed[] = $command;
+            }
+        }
+
+        if (!$guessed) {
+            foreach ($commands as $command) {
+                if (stripos($command, $keyword) !== false) {
+                    $guessed[] = $command;
+                }
+            }
+        }
+
+        return count($guessed) === 1 ? $guessed[0] : false;
+    }
+
+    /**
      * @param array $args
      *
      * @return int
@@ -93,7 +121,12 @@ class Handler extends Component implements HandlerInterface
 
         $commandMethod = $commandName . 'Command';
         if (!method_exists($controllerInstance, $commandMethod)) {
-            return $this->console->error(['`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
+            $guessed = $this->_guessCommand($controllerClassName, $commandName);
+            if (!$guessed) {
+                return $this->console->error(['`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
+            } else {
+                $commandMethod = $guessed . 'Command';
+            }
         }
 
         try {
