@@ -2,6 +2,7 @@
 namespace ManaPHP\Curl;
 
 use ManaPHP\Component;
+use ManaPHP\Curl\Easy\Response;
 use ManaPHP\Curl\Exception as ClientException;
 
 /**
@@ -20,26 +21,6 @@ class Easy extends Component implements EasyInterface
      * @var array
      */
     protected $_options = [];
-
-    /**
-     * @var int
-     */
-    protected $_responseCode;
-
-    /**
-     * @var array
-     */
-    protected $_responseHeaders;
-
-    /**
-     * @var string
-     */
-    protected $_responseBody;
-
-    /**
-     * @var array
-     */
-    protected $_curlInfo;
 
     /**
      * @var bool
@@ -115,13 +96,11 @@ class Easy extends Component implements EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
     protected function request($type, $url, $data, $headers, $options)
     {
-        $this->_responseBody = false;
-
         if (is_array($url)) {
             if (count($url) > 1) {
                 $uri = $url[0];
@@ -141,18 +120,17 @@ class Easy extends Component implements EasyInterface
 
         $eventData = ['type' => $type, 'url' => &$url, 'headers' => &$headers, 'data' => &$data, 'options' => &$options];
         $this->fireEvent('httpClient:beforeRequest', $eventData);
-        $httpCode = $this->_request($type, $url, $data, $headers, $options);
+        $response = $this->_request($type, $url, $data, $headers, $options);
         $eventData = [
             'type' => $type,
             'url' => $url,
             'headers' => $headers,
             'data' => $data,
             'options' => $options,
-            'httpCode' => &$httpCode,
-            'responseBody' => &$this->_responseBody
+            'response' => $response
         ];
         $this->fireEvent('httpClient:afterResponse', $eventData);
-        return $httpCode;
+        return $response;
     }
 
     /**
@@ -162,17 +140,11 @@ class Easy extends Component implements EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
     public function _request($type, $url, $data, $headers, $options)
     {
-        $this->_responseCode = null;
-        $this->_responseHeaders = null;
-        $this->_responseBody = null;
-
-        $this->_curlInfo = [];
-
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -297,6 +269,8 @@ class Easy extends Component implements EasyInterface
 
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options['verify_host'] ? 2 : 0);
 
+        $start_time = microtime(true);
+
         $content = curl_exec($curl);
 
         $err = curl_errno($curl);
@@ -310,15 +284,19 @@ class Easy extends Component implements EasyInterface
         }
 
         $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-        $this->_responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $this->_responseBody = substr($content, $header_length);
-        $this->_responseHeaders = explode("\r\n", substr($content, 0, $header_length - 4));
 
-        $this->_curlInfo = curl_getinfo($curl);
+        $response = new Response();
+
+        $response->url = $url;
+        $response->http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $response->headers = explode("\r\n", substr($content, 0, $header_length - 4));
+        $response->process_time = round(microtime(true) - $start_time, 6);
+        $response->content_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+        $response->body = substr($content, $header_length);
 
         curl_close($curl);
 
-        return $this->_responseCode;
+        return $response;
     }
 
     /**
@@ -326,7 +304,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
     public function get($url, $headers = [], $options = [])
@@ -340,7 +318,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return mixed
+     * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
     public function post($url, $data = [], $headers = [], $options = [])
@@ -353,7 +331,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
     public function delete($url, $headers = [], $options = [])
@@ -367,7 +345,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
     public function put($url, $data = [], $headers = [], $options = [])
@@ -381,7 +359,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
     public function patch($url, $data = [], $headers = [], $options = [])
@@ -395,7 +373,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
     public function head($url, $data = [], $headers = [], $options = [])
@@ -455,54 +433,5 @@ class Easy extends Component implements EasyInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getResponseCode()
-    {
-        return $this->_responseCode;
-    }
-
-    /**
-     * @param bool $assoc
-     *
-     * @return array
-     */
-    public function getResponseHeaders($assoc = true)
-    {
-        if (!$assoc) {
-            return $this->_responseHeaders;
-        }
-
-        $headers = [];
-        foreach ($this->_responseHeaders as $i => $header) {
-            if ($i === 0) {
-                continue;
-            }
-
-            list($name, $value) = explode(': ', $header, 2);
-            if (isset($headers[$name])) {
-                if (!is_array($headers[$name])) {
-                    $headers[$name] = [$headers[$name]];
-                }
-
-                $headers[$name][] = $value;
-
-            } else {
-                $headers[$name] = $value;
-            }
-        }
-
-        return $headers;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResponseBody()
-    {
-        return $this->_responseBody;
     }
 }

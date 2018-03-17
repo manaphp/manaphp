@@ -4,7 +4,7 @@ namespace ManaPHP\Curl;
 /**
  * Interface ManaPHP\Curl\EasyInterface
  *
- * @package httpClient
+ * @package curl
  */
 interface EasyInterface
 {
@@ -21,7 +21,7 @@ interface EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      */
     public function get($url, $headers = [], $options = []);
 
@@ -31,7 +31,7 @@ interface EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      */
     public function post($url, $data = [], $headers = [], $options = []);
 
@@ -40,7 +40,7 @@ interface EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      */
     public function delete($url, $headers = [], $options = []);
 
@@ -50,7 +50,7 @@ interface EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      */
     public function put($url, $data = [], $headers = [], $options = []);
 
@@ -60,7 +60,7 @@ interface EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      */
     public function patch($url, $data = [], $headers = [], $options = []);
 
@@ -70,7 +70,7 @@ interface EasyInterface
      * @param array        $headers
      * @param array        $options
      *
-     * @return int
+     * @return \ManaPHP\Curl\Easy\Response
      */
     public function head($url, $data = [], $headers = [], $options = []);
 
@@ -82,22 +82,4 @@ interface EasyInterface
      * @return static
      */
     public function downloadFile($url, $file, $options = []);
-
-    /**
-     * @return int
-     */
-    public function getResponseCode();
-
-    /**
-     * @param bool $assoc
-     *
-     * @return array
-     */
-    public function getResponseHeaders($assoc = true);
-
-    /**
-     * @return string
-     */
-    public function getResponseBody();
-
 }

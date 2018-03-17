@@ -66,18 +66,17 @@ class HttpClientTest extends TestCase
     {
         $easy = new Easy();
 
-        $statusCode = $easy->get(['http://apis.juhe.cn/ip/ip2addr', 'ip' => 'www.baidu.com', 'key' => 'appkey']);
-        $this->assertEquals(200, $statusCode);
-        $json = json_decode($easy->getResponseBody(), true);
-        $this->assertEquals(101, $json['resultcode']);
+        $response = $easy->get(['http://apis.juhe.cn/ip/ip2addr', 'ip' => 'www.baidu.com', 'key' => 'appkey']);
+        $this->assertEquals(200, $response->http_code);
+        $this->assertEquals(101, $response->getJsonBody()['resultcode']);
     }
 
     public function test_post()
     {
         $easy = new Easy();
 
-        $statusCode = $easy->post(['http://lxb.baidu.com/', 'uid' => 0, 'f' => 4], ['r' => 'www.xxx.com']);
-        $this->assertEquals(200, $statusCode);
+        $response = $easy->post(['http://lxb.baidu.com/', 'uid' => 0, 'f' => 4], ['r' => 'www.xxx.com']);
+        $this->assertEquals(200, $response->http_code);
     }
 
     public function test_delete()
