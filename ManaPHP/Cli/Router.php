@@ -133,7 +133,7 @@ class Router extends Component implements RouterInterface
                 $actionName = 'help';
             }
 
-            if ($this->_guessCommand && strlen($controllerName) <= 4) {
+            if ($this->_guessCommand && strlen($controllerName) <= 3) {
                 $controllers = $this->_getControllers();
                 foreach ($controllers as $k => $controller) {
                     $controllers[$k] = Text::underscore($controller);
@@ -156,7 +156,7 @@ class Router extends Component implements RouterInterface
                     $actionName = 'help';
                 }
             } else {
-                if ($this->_guessCommand) {
+                if ($this->_guessCommand && strlen($actionName) <= 3) {
                     $commands = $this->_getCommands($this->_controllerName);
                     $actionName = $this->crossword->guess($commands, $actionName);
                     if (!$actionName) {
