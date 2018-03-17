@@ -141,7 +141,7 @@ class Document extends Component
     }
 
     /**
-     * @return bool $raw
+     * @param  bool $raw
      *
      * @return string
      */
@@ -261,7 +261,7 @@ class Document extends Component
                 if ($item->nodeName === 'a') {
                     $item->setAttribute('href', $this->absolutizeUrl($item->getAttribute('href')));
                 } else {
-                    $this->absolutizeAhref(null, $item);
+                    $this->absolutizeAHref(null, $item);
                 }
             }
         } else {
@@ -269,6 +269,8 @@ class Document extends Component
                 $item->setAttribute('href', $this->absolutizeUrl($item->getAttribute('href')));
             }
         }
+
+        return $this;
     }
 
     /**
@@ -288,7 +290,7 @@ class Document extends Component
                 if ($item->nodeName === 'a') {
                     $item->setAttribute($attr, $this->absolutizeUrl($item->getAttribute($attr)));
                 } else {
-                    $this->absolutizeAhref(null, $item);
+                    $this->absolutizeImgSrc(null, $item);
                 }
             }
         } else {
@@ -296,5 +298,7 @@ class Document extends Component
                 $item->setAttribute($attr, $this->absolutizeUrl($item->getAttribute($attr)));
             }
         }
+
+        return $this;
     }
 }
