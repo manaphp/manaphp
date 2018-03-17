@@ -21,6 +21,47 @@ class Handler extends Component implements HandlerInterface
     protected $_args;
 
     /**
+     * @param string $keyword
+     *
+     * @return string|false
+     */
+    protected function _guessController($keyword)
+    {
+        $controllers = [];
+
+        foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
+            if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
+                $controllers[$matches[1]] = "ManaPHP\\Cli\Controllers\\{$matches[1]}Controller";
+            }
+        }
+
+        if ($this->alias->has('@cli')) {
+            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
+                if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
+                    $controllers[$matches[1]] = $this->alias->resolve("@ns.cli\\{$matches[1]}Controller");
+                }
+            }
+        }
+
+        $guessed = [];
+        foreach ($controllers as $name => $className) {
+            if (stripos($name, $keyword) === 0) {
+                $guessed[] = $className;
+            }
+        }
+
+        if (!$guessed) {
+            foreach ($controllers as $name => $className) {
+                if (stripos($name, $keyword) !== false) {
+                    $guessed[] = $className;
+                }
+            }
+        }
+
+        return count($guessed) === 1 ? $guessed[0] : false;
+    }
+
+    /**
      * @param string $controllerName
      *
      * @return array
@@ -104,7 +145,13 @@ class Handler extends Component implements HandlerInterface
         }
 
         if (!$controllerClassName) {
-            return $this->console->error(['`:command` command is not exists'/**m0d7fa39c3a64b91e0*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
+            $guessed = $this->_guessController($controllerName);
+            if ($guessed) {
+                $controllerClassName = $guessed;
+                $controllerName = basename(substr($controllerClassName, strrpos($controllerClassName, '\\')), 'Controller');
+            } else {
+                return $this->console->error(['`:command` command is not exists'/**m0d7fa39c3a64b91e0*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
+            }
         }
 
         $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
