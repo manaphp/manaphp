@@ -269,6 +269,12 @@ class Easy extends Component implements EasyInterface
 
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options['verify_host'] ? 2 : 0);
 
+        foreach ($options as $k => $v) {
+            if (is_int($k)) {
+                curl_setopt($curl, $k, $v);
+            }
+        }
+
         $start_time = microtime(true);
 
         $content = curl_exec($curl);
