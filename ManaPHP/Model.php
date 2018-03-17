@@ -100,6 +100,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         $primaryKey = static::getPrimaryKey();
+        if (preg_match('#^(.*)_id$#', $primaryKey, $match)) {
+            $tryField = $match[1] . '_name';
+            if (in_array($tryField, $fields, true)) {
+                return $tryField;
+            }
+        }
+
         if ($pos = strrpos($primaryKey, '_')) {
             $tryField = substr($primaryKey, $pos + 1) . '_name';
 
