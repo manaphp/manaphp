@@ -92,14 +92,14 @@ class Easy extends Component implements EasyInterface
     /**
      * @param string       $type
      * @param string|array $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
-    protected function request($type, $url, $data, $headers, $options)
+    protected function request($type, $url, $body, $headers, $options)
     {
         if (is_array($url)) {
             if (count($url) > 1) {
@@ -118,14 +118,14 @@ class Easy extends Component implements EasyInterface
         $headers = array_merge($this->_headers, $headers);
         $options = array_merge($this->_options, $options);
 
-        $eventData = ['type' => $type, 'url' => &$url, 'headers' => &$headers, 'data' => &$data, 'options' => &$options];
+        $eventData = ['type' => $type, 'url' => &$url, 'headers' => &$headers, 'body' => &$body, 'options' => &$options];
         $this->fireEvent('httpClient:beforeRequest', $eventData);
-        $response = $this->_request($type, $url, $data, $headers, $options);
+        $response = $this->_request($type, $url, $body, $headers, $options);
         $eventData = [
             'type' => $type,
             'url' => $url,
             'headers' => $headers,
-            'data' => $data,
+            'body' => $body,
             'options' => $options,
             'response' => $response
         ];
@@ -136,14 +136,14 @@ class Easy extends Component implements EasyInterface
     /**
      * @param string       $type
      * @param string       $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
-    public function _request($type, $url, $data, $headers, $options)
+    public function _request($type, $url, $body, $headers, $options)
     {
         $curl = curl_init();
 
@@ -157,10 +157,10 @@ class Easy extends Component implements EasyInterface
             curl_setopt($curl, CURLOPT_COOKIE, $headers['Cookie']);
         }
 
-        if (is_array($data)) {
+        if (is_array($body)) {
             $hasFiles = false;
             /** @noinspection ForeachSourceInspection */
-            foreach ($data as $k => $v) {
+            foreach ($body as $k => $v) {
                 if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && is_file(substr($v, 1))) {
                     $hasFiles = true;
                     if (class_exists('CURLFile')) {
@@ -169,14 +169,14 @@ class Easy extends Component implements EasyInterface
                         $parts = explode(';', $file);
 
                         if (count($parts) === 1) {
-                            $data[$k] = new \CURLFile($file);
+                            $body[$k] = new \CURLFile($file);
                         } else {
                             $file = $parts[0];
                             $types = explode('=', $parts[1]);
                             if ($types[0] !== 'type' || count($types) !== 2) {
                                 throw new ClientException(['`:file` file name format is invalid'/**m05efb8755481bd2eb*/, 'file' => $v]);
                             } else {
-                                $data[$k] = new \CURLFile($file, $types[1]);
+                                $body[$k] = new \CURLFile($file, $types[1]);
                             }
                         }
                     }
@@ -186,7 +186,7 @@ class Easy extends Component implements EasyInterface
             }
 
             if (!$hasFiles) {
-                $data = http_build_query($data);
+                $body = http_build_query($body);
             }
         }
 
@@ -195,15 +195,15 @@ class Easy extends Component implements EasyInterface
                 break;
             case 'POST':
                 curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
                 break;
             case 'PATCH':
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PATCH');
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
                 break;
             case 'PUT':
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
                 break;
             case 'DELETE':
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
@@ -314,16 +314,16 @@ class Easy extends Component implements EasyInterface
 
     /**
      * @param array|string $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
-    public function post($url, $data = [], $headers = [], $options = [])
+    public function post($url, $body = [], $headers = [], $options = [])
     {
-        return $this->request('POST', $url, $data, $headers, $options);
+        return $this->request('POST', $url, $body, $headers, $options);
     }
 
     /**
@@ -341,44 +341,44 @@ class Easy extends Component implements EasyInterface
 
     /**
      * @param array|string $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
-    public function put($url, $data = [], $headers = [], $options = [])
+    public function put($url, $body = [], $headers = [], $options = [])
     {
-        return $this->request('PUT', $url, $data, $headers, $options);
+        return $this->request('PUT', $url, $body, $headers, $options);
     }
 
     /**
      * @param array|string $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
-    public function patch($url, $data = [], $headers = [], $options = [])
+    public function patch($url, $body = [], $headers = [], $options = [])
     {
-        return $this->request('PATCH', $url, $data, $headers, $options);
+        return $this->request('PATCH', $url, $body, $headers, $options);
     }
 
     /**
      * @param array|string $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\Exception
      */
-    public function head($url, $data = [], $headers = [], $options = [])
+    public function head($url, $body = [], $headers = [], $options = [])
     {
-        return $this->request('HEAD', $url, $data, $headers, $options);
+        return $this->request('HEAD', $url, $body, $headers, $options);
     }
 
     /**

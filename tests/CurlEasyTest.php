@@ -14,11 +14,11 @@ class DummyEasy extends Easy
     public $options;
     public $httpCode = 200;
 
-    public function _request($type, $url, $data, $headers, $options)
+    public function _request($type, $url, $body, $headers, $options)
     {
         $this->type = $type;
         $this->url = $url;
-        $this->data = $data;
+        $this->data = $body;
         $this->headers = $headers;
         $this->options = $options;
         return $this->httpCode;

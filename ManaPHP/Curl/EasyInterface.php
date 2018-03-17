@@ -27,13 +27,13 @@ interface EasyInterface
 
     /**
      * @param string|array $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      */
-    public function post($url, $data = [], $headers = [], $options = []);
+    public function post($url, $body = [], $headers = [], $options = []);
 
     /**
      * @param string|array $url
@@ -46,33 +46,33 @@ interface EasyInterface
 
     /**
      * @param string|array $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      */
-    public function put($url, $data = [], $headers = [], $options = []);
+    public function put($url, $body = [], $headers = [], $options = []);
 
     /**
      * @param string|array $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      */
-    public function patch($url, $data = [], $headers = [], $options = []);
+    public function patch($url, $body = [], $headers = [], $options = []);
 
     /**
      * @param string|array $url
-     * @param string|array $data
+     * @param string|array $body
      * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      */
-    public function head($url, $data = [], $headers = [], $options = []);
+    public function head($url, $body = [], $headers = [], $options = []);
 
     /**
      * @param string|array $url
