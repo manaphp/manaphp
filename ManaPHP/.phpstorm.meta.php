@@ -23,7 +23,7 @@ namespace PHPSTORM_META {                                // we want to avoid the
             'flash' instanceof \ManaPHP\Mvc\View\FlashInterface,
             'flashSession' instanceof \ManaPHP\Mvc\View\FlashInterface,
             'captcha' instanceof \ManaPHP\Security\CaptchaInterface,
-            'httpClient' instanceof \ManaPHP\Http\ClientInterface,
+            'httpClient' instanceof \ManaPHP\Curl\EasyInterface,
             'password' instanceof \ManaPHP\Authentication\PasswordInterface,
             'counter' instanceof \ManaPHP\CounterInterface,
             'cache' instanceof \ManaPHP\CacheInterface,
