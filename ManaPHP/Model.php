@@ -661,22 +661,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(['`:model` model do not define accessible fields.', 'model' => get_called_class()]);
         }
 
-        $fields = static::getFields();
-
-        if ($whiteList !== []) {
-            $blackList = array_diff(array_intersect($fields, array_keys($data)), $whiteList);
-            if ($blackList !== []) {
-                /** @noinspection PhpUnhandledExceptionInspection */
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new ModelException([
-                    '`:blacklist` fields is not in accessible fields: `:whitelist`',
-                    'blacklist' => implode(',', $blackList),
-                    'whitelist' => implode(',', $whiteList)
-                ]);
-            }
-        }
-
-        foreach ($fields as $field) {
+        foreach ($whiteList ?: static::getFields() as $field) {
             if (isset($data[$field])) {
                 $this->{$field} = $data[$field];
             }
