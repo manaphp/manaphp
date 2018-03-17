@@ -24,7 +24,6 @@ use ManaPHP\Component;
  * @property \ManaPHP\Cli\ConsoleInterface            $console
  * @property \ManaPHP\Cli\ArgumentsInterface          $arguments
  * @property \ManaPHP\Text\CrosswordInterface         $crossword
- * @property \ManaPHP\Cli\RouterInterface             $cliRouter
  * @property \ManaPHP\Redis                           $redis
  * @property \ManaPHP\Cli\EnvironmentInterface        $environment
  * @property \ManaPHP\Net\ConnectivityInterface       $netConnectivity

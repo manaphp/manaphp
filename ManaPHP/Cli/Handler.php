@@ -4,13 +4,13 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Arguments\Exception as ArgumentsException;
 use ManaPHP\Component;
+use ManaPHP\Utility\Text;
 
 /**
  * Class Handler
  *
  * @package ManaPHP\Cli
  *
- * @property \ManaPHP\Cli\RouterInterface  $cliRouter
  * @property \ManaPHP\Cli\ConsoleInterface $console
  */
 class Handler extends Component implements HandlerInterface
@@ -21,6 +21,24 @@ class Handler extends Component implements HandlerInterface
     protected $_args;
 
     /**
+     * @param string $controllerName
+     *
+     * @return array
+     */
+    protected function _getCommands($controllerName)
+    {
+        $commands = [];
+
+        foreach (get_class_methods($controllerName) as $method) {
+            if (preg_match('#^(.*)Command$#', $method, $match) === 1 && $match[1] !== 'help') {
+                $commands[] = $match[1];
+            }
+        }
+
+        return $commands;
+    }
+
+    /**
      * @param array $args
      *
      * @return int
@@ -29,13 +47,16 @@ class Handler extends Component implements HandlerInterface
     {
         $this->_args = $args !== null ? $args : $GLOBALS['argv'];
 
-        if (!$this->cliRouter->route($this->_args)) {
-            $this->console->writeLn('command name is invalid: ' . implode(' ', $this->_args));
-            return 1;
+        list(, $controllerName, $commandName) = array_pad($this->_args, 3, null);
+        if ($controllerName === null) {
+            $controllerName = 'help';
+        } elseif ($controllerName === 'help' && $commandName !== null) {
+            $controllerName = $commandName;
+            $commandName = 'help';
         }
 
-        $controllerName = $this->cliRouter->getControllerName();
-        $actionName = lcfirst($this->cliRouter->getActionName());
+        $controllerName = Text::camelize($controllerName);
+        $commandName = lcfirst(Text::camelize($commandName));
 
         $controllerClassName = null;
 
@@ -55,20 +76,28 @@ class Handler extends Component implements HandlerInterface
         }
 
         if (!$controllerClassName) {
-            $this->console->writeLn(['`:command` command is not exists'/**m0d7fa39c3a64b91e0*/, 'command' => lcfirst($controllerName) . ':' . $actionName]);
-            return 1;
+            return $this->console->error(['`:command` command is not exists'/**m0d7fa39c3a64b91e0*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
         }
 
         $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
+        if ($commandName === '') {
+            $commands = $this->_getCommands($controllerClassName);
+            if (count($commands) === 1) {
+                $commandName = $commands[0];
+            } elseif (in_array('default', $commands, true)) {
+                $commandName = 'default';
+            } else {
+                return $this->console->error('[sub-command is not provided');
+            }
+        }
 
-        $actionMethod = $actionName . 'Command';
-        if (!method_exists($controllerInstance, $actionMethod)) {
-            $this->console->writeLn(['`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, 'command' => lcfirst($controllerName) . ':' . $actionName]);
-            return 1;
+        $commandMethod = $commandName . 'Command';
+        if (!method_exists($controllerInstance, $commandMethod)) {
+            return $this->console->error(['`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
         }
 
         try {
-            $r = $controllerInstance->$actionMethod();
+            $r = $controllerInstance->$commandMethod();
         } /** @noinspection PhpRedundantCatchClauseInspection */
         catch (ArgumentsException $e) {
             return $this->console->error($e->getMessage());
