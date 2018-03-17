@@ -92,8 +92,7 @@ class Document extends Component
      */
     public function loadUrl($url)
     {
-        $this->httpClient->get($url);
-        $str = $this->httpClient->getResponseBody();
+        $str = $this->httpClient->get($url)->body;
         return $this->loadString($str, $url);
     }
 
