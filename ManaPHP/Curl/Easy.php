@@ -115,22 +115,8 @@ class Easy extends Component implements EasyInterface
             throw new ClientException(['only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, 'url' => $url]);
         }
 
-        $headers = array_merge($this->_headers, $headers);
-        $options = array_merge($this->_options, $options);
-
-        $eventData = ['type' => $type, 'url' => &$url, 'headers' => &$headers, 'body' => &$body, 'options' => &$options];
-        $this->fireEvent('httpClient:beforeRequest', $eventData);
-        $response = $this->_request($type, $url, $body, $headers, $options);
-        $eventData = [
-            'type' => $type,
-            'url' => $url,
-            'headers' => $headers,
-            'body' => $body,
-            'options' => $options,
-            'response' => $response
-        ];
-        $this->fireEvent('httpClient:afterResponse', $eventData);
-        return $response;
+        /** @noinspection AdditionOperationOnArraysInspection */
+        return $this->_request($type, $url, $body, $headers + $this->_headers, $options + $this->_options);
     }
 
     /**
