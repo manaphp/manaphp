@@ -273,6 +273,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $field = static::getDisplayField();
             if ($field === null) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                /** @noinspection PhpUnhandledExceptionInspection */
                 throw new ModelException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
             }
             $keyField = static::getPrimaryKey();
@@ -349,11 +350,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 $pkValue = $di->dispatcher->getParam($pkName);
             } else {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                /** @noinspection PhpUnhandledExceptionInspection */
                 throw new ModelException('missing filters');
             }
 
             if (!is_scalar($pkValue)) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                /** @noinspection PhpUnhandledExceptionInspection */
                 throw new ModelException('first key value is not scalar');
             }
 
@@ -384,6 +387,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $exception->filters = $filters;
 
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw $exception;
         }
 
@@ -943,12 +947,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 $pkValue = current($params);
             } else {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                /** @noinspection PhpUnhandledExceptionInspection */
                 throw new ModelException('missing primary key value');
             }
         }
 
         if (!is_scalar($pkValue)) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw new ModelException('primary key value is not scalar');
         }
 
