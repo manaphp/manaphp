@@ -49,7 +49,7 @@ class RolePermission extends Model
      */
     public $created_time;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'rbac_role_permission';
     }

@@ -45,7 +45,7 @@ class Role extends Model
      */
     public $updated_time;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'rbac_role';
     }

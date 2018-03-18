@@ -11,7 +11,7 @@ class StudentShardTable extends Model
     public $age;
     public $name;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         if ($context === true) {
             return '_student';

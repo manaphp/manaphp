@@ -53,7 +53,7 @@ class ZookeeperTest extends TestCase
         $this->assertInstanceOf('ManaPHP\Zookeeper', $zookeeper->createNx('/manaphp/a/b/c'));
         $this->assertEquals('', $zookeeper->getData('/manaphp/a/b/c'));
 
-        $this->assertTrue(is_array($zookeeper->exists('/manaphp')));
+        $this->assertInternalType('array', $zookeeper->exists('/manaphp'));
         $this->assertInstanceOf('ManaPHP\Zookeeper', $zookeeper->createNx('/manaphp'));
     }
 
@@ -70,7 +70,7 @@ class ZookeeperTest extends TestCase
         $this->assertFalse($zookeeper->exists('/manaphp'));
 
         $zookeeper->create('/manaphp');
-        $this->assertTrue(is_array($zookeeper->exists('/manaphp')));
+        $this->assertInternalType('array', $zookeeper->exists('/manaphp'));
 
         $this->assertInstanceOf('ManaPHP\Zookeeper', $zookeeper->delete('/manaphp/a/b/c'));
     }
@@ -141,7 +141,7 @@ class ZookeeperTest extends TestCase
         $this->assertFalse($zookeeper->exists('/manaphp'));
 
         $zookeeper->create('/manaphp');
-        $this->assertTrue(is_array($zookeeper->exists('/manaphp')));
+        $this->assertInternalType('array', $zookeeper->exists('/manaphp'));
     }
 
     public function test_watchData()

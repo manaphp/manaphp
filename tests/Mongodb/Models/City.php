@@ -10,7 +10,7 @@ class City extends Model
     public $country_id;
     public $last_update;
 
-    public static function getFieldTypes()
+    public function getFieldTypes()
     {
         return [
             '_id' => 'integer',

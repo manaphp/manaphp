@@ -4,7 +4,6 @@ namespace Tests;
 
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Mvc\Model\Criteria;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\Actor;
 use Tests\Models\City;
@@ -199,7 +198,7 @@ class DbModelCriteriaTest extends TestCase
 
     public function test_count()
     {
-        $this->assertTrue(is_int(Actor::criteria()->count()));
+        $this->assertInternalType('int', Actor::criteria()->count());
 
         $this->assertEquals(200, Actor::criteria()->count());
 

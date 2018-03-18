@@ -31,28 +31,28 @@ class MongodbModelTest extends TestCase
     public function test_getConsistentValue()
     {
         $dt = new DataType();
-        $this->assertSame('manaphp', $dt::getNormalizedValue('string', 'manaphp'));
-        $this->assertSame('123', $dt::getNormalizedValue('string', 123));
+        $this->assertSame('manaphp', $dt->getNormalizedValue('string', 'manaphp'));
+        $this->assertSame('123', $dt->getNormalizedValue('string', 123));
 
-        $this->assertSame(123, $dt::getNormalizedValue('integer', 123));
-        $this->assertSame(123, $dt::getNormalizedValue('integer', '123'));
+        $this->assertSame(123, $dt->getNormalizedValue('integer', 123));
+        $this->assertSame(123, $dt->getNormalizedValue('integer', '123'));
 
-        $this->assertSame(1.23, $dt::getNormalizedValue('float', 1.23));
-        $this->assertSame(1.23, $dt::getNormalizedValue('float', '1.23'));
+        $this->assertSame(1.23, $dt->getNormalizedValue('float', 1.23));
+        $this->assertSame(1.23, $dt->getNormalizedValue('float', '1.23'));
 
         $objectId = new ObjectID();
-        $this->assertEquals($objectId, $dt::getNormalizedValue('objectid', $objectId));
+        $this->assertEquals($objectId, $dt->getNormalizedValue('objectid', $objectId));
 
-        $this->assertEquals(new ObjectID('123456789012345678901234'), $dt::getNormalizedValue('objectid', '123456789012345678901234'));
+        $this->assertEquals(new ObjectID('123456789012345678901234'), $dt->getNormalizedValue('objectid', '123456789012345678901234'));
 
-        $this->assertTrue($dt::getNormalizedValue('bool', true));
-        $this->assertTrue($dt::getNormalizedValue('bool', 1));
-        $this->assertFalse($dt::getNormalizedValue('bool', 0));
+        $this->assertTrue($dt->getNormalizedValue('bool', true));
+        $this->assertTrue($dt->getNormalizedValue('bool', 1));
+        $this->assertFalse($dt->getNormalizedValue('bool', 0));
     }
 
     public function test_count()
     {
-        $this->assertTrue(is_int(City::count()));
+        $this->assertInternalType('int', City::count());
 
         $this->assertEquals(600, City::count());
         $this->assertEquals(3, City::count(['country_id' => 2]));
@@ -172,7 +172,7 @@ class MongodbModelTest extends TestCase
          * @var \ManaPHP\Db $db
          */
         $db = $this->di->getShared('mongodb');
-        $db->truncateTable($model::getSource());
+        $db->truncateTable($model->getSource());
     }
 
     public function test_create()
@@ -282,15 +282,15 @@ class MongodbModelTest extends TestCase
     {
         //infer the table name from table name
         $city = new City1();
-        $this->assertEquals('city1', $city::getSource());
+        $this->assertEquals('city1', $city->getSource());
 
         //use getSource
         $city = new City2();
-        $this->assertEquals('city', $city::getSource());
+        $this->assertEquals('city', $city->getSource());
 
         //use setSource
         $city = new City3();
-        $this->assertEquals('the_city', $city::getSource());
+        $this->assertEquals('the_city', $city->getSource());
     }
 
     public function test_getSnapshotData()

@@ -28,7 +28,7 @@ class Model extends \ManaPHP\Db\Model
      */
     public $updated_time;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'manaphp_store';
     }

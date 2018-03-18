@@ -33,7 +33,7 @@ class Model extends \ManaPHP\Db\Model
      */
     public $expired_time;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'manaphp_rate_limiter';
     }

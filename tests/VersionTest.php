@@ -9,7 +9,7 @@ class VersionTest extends TestCase
     public function test_get()
     {
         $version = Version::get();
-        $this->assertTrue(is_string($version));
+        $this->assertInternalType('string', $version);
         $this->assertRegExp('/\d+\.\d+\.\d+/', $version);
     }
 }

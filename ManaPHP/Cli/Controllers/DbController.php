@@ -138,7 +138,7 @@ class DbController extends Controller
             $str .= '     *' . PHP_EOL;
             $str .= '     * @return string|false' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public static function getSource($context = null)' . PHP_EOL;
+            $str .= '    public function getSource($context = null)' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$table';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -149,7 +149,7 @@ class DbController extends Controller
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return array' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public static function getFields()' . PHP_EOL;
+            $str .= '    public function getFields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fields as $field) {
@@ -165,7 +165,7 @@ class DbController extends Controller
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public static function getPrimaryKey()' . PHP_EOL;
+            $str .= '    public function getPrimaryKey()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$primaryKey[0]';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -177,7 +177,7 @@ class DbController extends Controller
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public static function getAutoIncrementField()' . PHP_EOL;
+            $str .= '    public function getAutoIncrementField()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             if ($autoIncField) {
                 $str .= "        return '$autoIncField';" . PHP_EOL;
@@ -194,7 +194,7 @@ class DbController extends Controller
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return array' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public static function getIntTypeFields()' . PHP_EOL;
+            $str .= '    public function getIntTypeFields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($intTypeFields as $field) {
@@ -220,7 +220,7 @@ class DbController extends Controller
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return array' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    protected static function _getCrudTimestampFields()' . PHP_EOL;
+            $str .= '    protected function _getCrudTimestampFields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($crudTimestampFields as $name => $field) {

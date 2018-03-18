@@ -14,7 +14,7 @@ interface ModelInterface extends \ManaPHP\ModelInterface
      *
      * @return \ManaPHP\DbInterface|false
      */
-    public static function getConnection($context = null);
+    public function getConnection($context = null);
 
     /**
      * Create a criteria for a specific model

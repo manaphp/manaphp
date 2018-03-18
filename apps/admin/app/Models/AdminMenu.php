@@ -43,7 +43,7 @@ class AdminMenu extends ModelBase
      */
     public $created_time;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'admin_menu';
     }

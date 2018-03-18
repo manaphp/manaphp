@@ -50,7 +50,7 @@ class Item extends Model
      */
     public $updated_time;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'menu_item';
     }

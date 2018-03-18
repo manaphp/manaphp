@@ -4,6 +4,11 @@ namespace ManaPHP\Model;
 interface CriteriaInterface
 {
     /**
+     * @return \ManaPHP\Model
+     */
+    public function getModel();
+
+    /**
      * @param string|array $fields
      *
      * @return static

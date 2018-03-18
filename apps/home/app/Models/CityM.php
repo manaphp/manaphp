@@ -10,12 +10,12 @@ class CityM extends Model
     public $country_id;
     public $last_update;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'city';
     }
 
-    public static function getFieldTypes()
+    public function getFieldTypes()
     {
         return [
             '_id' => 'integer',

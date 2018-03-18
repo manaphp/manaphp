@@ -13,9 +13,9 @@ use ManaPHP\Model\Criteria\Exception as CriteriaException;
 abstract class Criteria extends Component implements CriteriaInterface, \JsonSerializable
 {
     /**
-     * @var string
+     * @var \ManaPHP\Model
      */
-    protected $_modelName;
+    protected $_model;
 
     /**
      * @var bool
@@ -26,6 +26,14 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
      * @var array
      */
     protected $_with = [];
+
+    /**
+     * @return \ManaPHP\Model
+     */
+    public function getModel()
+    {
+        return $this->_model;
+    }
 
     /**
      * @param array $fields
@@ -285,11 +293,13 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
      */
     public function fetchOne()
     {
+        $modelName = get_class($this->_model);
+
         /**
          * @var \ManaPHP\Model $r
          */
         $r = $this->limit(1)->execute();
-        $r = isset($r[0]) ? new $this->_modelName($r[0]) : false;
+        $r = isset($r[0]) ? new $modelName($r[0]) : false;
         if ($r && $this->_with) {
             $this->_with($r);
         }
@@ -302,9 +312,11 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
      */
     public function fetchAll()
     {
+        $modelName = get_class($this->_model);
+
         $models = [];
         foreach ($this->execute() as $k => $result) {
-            $models[$k] = new $this->_modelName($result);
+            $models[$k] = new $modelName($result);
             if ($this->_with) {
                 $this->_with($models[$k]);
             }

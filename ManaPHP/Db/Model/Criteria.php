@@ -4,6 +4,12 @@ namespace ManaPHP\Db\Model;
 use ManaPHP\Db\Model\Criteria\Exception as CriteriaException;
 use ManaPHP\Di;
 
+/**
+ * Class ManaPHP\Db\Model\Criteria
+ *
+ * @package ManaPHP\Db\Model
+ * @property \ManaPHP\Db\Model $_model
+ */
 class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 {
     /**
@@ -19,12 +25,12 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     /**
      * Criteria constructor.
      *
-     * @param string|array $modelName
-     * @param string|array $fields
+     * @param string|\ManaPHP\Db\Model $model
+     * @param string|array             $fields
      */
-    public function __construct($modelName, $fields = null)
+    public function __construct($model, $fields = null)
     {
-        $this->_modelName = $modelName;
+        $this->_model = is_string($model) ? new $model : $model;
         $this->_dependencyInjector = Di::getDefault();
 
         $this->_query = $this->_dependencyInjector->get('ManaPHP\Db\Query');
@@ -431,24 +437,20 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
         }
         $this->_modelReplaced = true;
 
-        /**
-         * @var \ManaPHP\ModelInterface $modelName
-         */
-        $modelName = $this->_modelName;
         $bind = $this->_query->getBind();
-        if (($db = $modelName::getDb($bind)) === false) {
+        if (($db = $this->_model->getDb($bind)) === false) {
             throw new CriteriaException([
                 '`:model` model db sharding for query',
-                'model' => $this->_modelName,
+                'model' => get_class($this->_model),
                 'context' => $bind
             ]);
         }
         $this->_query->setDb($this->_dependencyInjector->getShared($db));
 
-        if (($source = $modelName::getSource($bind)) === false) {
+        if (($source = $this->_model->getSource($bind)) === false) {
             throw new CriteriaException([
                 '`:model` model table sharding for query',
-                'model' => $this->_modelName,
+                'model' => get_class($this->_model),
                 'context' => $bind
             ]);
         }

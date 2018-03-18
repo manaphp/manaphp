@@ -13,7 +13,7 @@ interface ModelInterface
      *
      * @return string|false
      */
-    public static function getSource($context = null);
+    public function getSource($context = null);
 
     /**
      * Gets internal database connection
@@ -22,44 +22,44 @@ interface ModelInterface
      *
      * @return string|false
      */
-    public static function getDb($context = null);
+    public function getDb($context = null);
 
     /**
      * @return string
      */
-    public static function getPrimaryKey();
+    public function getPrimaryKey();
 
     /**
      * @return array
      */
-    public static function getFields();
+    public function getFields();
 
     /**
      * @param string $field
      *
      * @return bool
      */
-    public static function hasField($field);
+    public function hasField($field);
 
     /**
      * @return array|null
      */
-    public static function getAccessibleFields();
+    public function getAccessibleFields();
 
     /**
      * @return array|null
      */
-    public static function getIntTypeFields();
+    public function getIntTypeFields();
 
     /**
      * @return string|null
      */
-    public static function getAutoIncrementField();
+    public function getAutoIncrementField();
 
     /**
      * @return string|null
      */
-    public static function getDisplayField();
+    public function getDisplayField();
 
     /**
      * @param string|array $fields

@@ -19,7 +19,7 @@ class Payment extends Model
     public $payment_date;
     public $last_update;
 
-    public static function getFieldTypes()
+    public function getFieldTypes()
     {
         return [
             '_id' => 'integer',

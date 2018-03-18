@@ -14,7 +14,7 @@ class Address extends Model
     public $phone;
     public $last_update;
 
-    public static function getFieldTypes()
+    public function getFieldTypes()
     {
         return [
             'address_id' => 'integer',

@@ -10,12 +10,12 @@ class StudentShardDb extends Model
     public $age;
     public $name;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return '_student';
     }
 
-    public static function getDb($context = null)
+    public function getDb($context = null)
     {
         if ($context === true) {
             return 'db';

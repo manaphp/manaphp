@@ -1,9 +1,11 @@
 <?php
 namespace Tests;
-use PHPUnit\Framework\TestCase;
+
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Di\FactoryDefault;
-use \PDO;
+use PDO;
+use PHPUnit\Framework\TestCase;
+
 class DbTest extends TestCase
 {
     /**
@@ -61,7 +63,7 @@ class DbTest extends TestCase
         $rows = $this->db->query('SELECT city_id, city, country_id, last_update FROM city LIMIT 5', null,
             PDO::FETCH_ASSOC);
         $row = $rows->fetch();
-        $this->assertTrue(is_array($row));
+        $this->assertInternalType('array', $row);
         $this->assertCount(4, $row);
         $this->assertFalse(isset($row[0]));
         $this->assertTrue(isset($row['city']));

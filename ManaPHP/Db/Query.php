@@ -189,7 +189,7 @@ class Query extends Component implements QueryInterface
             }
 
             $this->_fields = $fields;
-        } else {
+        } elseif (is_array($fields)) {
             $r = '';
             foreach ($fields as $k => $v) {
                 if (strpos($v, '[') === false && strpos($v, '(') === false) {

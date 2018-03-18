@@ -64,7 +64,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @return string|false
      */
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         $modelName = get_called_class();
         return Text::underscore(($pos = strrpos($modelName, '\\')) === false ? $modelName : substr($modelName, $pos + 1));
@@ -75,15 +75,15 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @return bool
      */
-    public static function hasField($field)
+    public function hasField($field)
     {
-        return in_array($field, static::getFields(), true);
+        return in_array($field, $this->getFields(), true);
     }
 
     /**
      * @return array|null
      */
-    public static function getAccessibleFields()
+    public function getAccessibleFields()
     {
         return null;
     }
@@ -91,15 +91,15 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @return string|null
      */
-    public static function getDisplayField()
+    public function getDisplayField()
     {
-        $fields = static::getFields();
+        $fields = $this->getFields();
 
         if (in_array('name', $fields, true)) {
             return 'name';
         }
 
-        $primaryKey = static::getPrimaryKey();
+        $primaryKey = $this->getPrimaryKey();
         if (preg_match('#^(.*)_id$#', $primaryKey, $match)) {
             $tryField = $match[1] . '_name';
             if (in_array($tryField, $fields, true)) {
@@ -130,7 +130,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @return array
      */
-    protected static function _getCrudTimestampFields()
+    protected function _getCrudTimestampFields()
     {
         static $cached = [];
 
@@ -138,7 +138,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         if (!isset($cached[$calledClass])) {
             $timestampFields = [];
-            $fields = static::getFields();
+            $fields = $this->getFields();
 
             $intersect = array_intersect(['created_time', 'created_at'], $fields);
             if (isset($intersect[0])) {
@@ -159,11 +159,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @return int|string
      */
-    protected static function _getCurrentTimestamp()
+    protected function _getCurrentTimestamp()
     {
-        $intTypeFields = static::getIntTypeFields();
+        $intTypeFields = $this->getIntTypeFields();
 
-        if ($intTypeFields !== null && !array_intersect(static::_getCrudTimestampFields(), $intTypeFields)) {
+        if ($intTypeFields !== null && !array_intersect($this->_getCrudTimestampFields(), $intTypeFields)) {
             return date('Y-m-d H:i:s');
         } else {
             return time();
@@ -204,7 +204,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function find($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria()->select($fields ?: static::getFields())->where($filters);
+        $criteria = static::criteria()->select($fields ?: (new static)->getFields())->where($filters);
 
         if ($options !== null) {
             if (isset($options['distinct'])) {
@@ -242,7 +242,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function paginate($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria()->select($fields ?: static::getFields())->where($filters);
+        $criteria = static::criteria()->select($fields ?: (new static)->getFields())->where($filters);
 
         if ($options !== null) {
             if (isset($options['distinct'])) {
@@ -273,17 +273,19 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function lists($filters = [], $field = null)
     {
+        $model = new static;
+
         $criteria = static::criteria()->where($filters);
 
         $list = [];
         if ($field === null) {
-            $field = static::getDisplayField();
+            $field = $model->getDisplayField();
             if ($field === null) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 /** @noinspection PhpUnhandledExceptionInspection */
                 throw new ModelException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
             }
-            $keyField = static::getPrimaryKey();
+            $keyField = $model->getPrimaryKey();
             $valueField = $field;
             return $criteria->select([$keyField, $valueField])->indexBy([$keyField => $valueField])->orderBy($keyField)->execute();
         } elseif (is_string($field)) {
@@ -346,10 +348,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function first($filters = null, $fields = null, $options = null)
     {
+        $model = new static;
+
         if ($filters === null) {
             $di = Di::getDefault();
 
-            $pkName = static::getPrimaryKey();
+            $pkName = $model->getPrimaryKey();
 
             if ($di->request->has($pkName)) {
                 $pkValue = $di->request->get($pkName);
@@ -369,10 +373,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
             $filters = [$pkName => $pkValue];
         } elseif (is_scalar($filters)) {
-            $filters = [static::getPrimaryKey() => $filters];
+            $filters = [$model->getPrimaryKey() => $filters];
         }
 
-        return static::criteria()->select($fields ?: static::getFields())->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+        return static::criteria()->select($fields ?: $model->getFields())->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
     }
 
     /**
@@ -450,7 +454,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function exists($filters)
     {
         if (is_scalar($filters)) {
-            $filters = [static::getPrimaryKey() => $filters];
+            $filters = [(new static)->getPrimaryKey() => $filters];
         }
 
         return static::criteria()->where($filters)->exists();
@@ -652,7 +656,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function assign($data, $whiteList = null)
     {
         if ($whiteList === null) {
-            $whiteList = static::getAccessibleFields();
+            $whiteList = $this->getAccessibleFields();
         }
 
         if ($whiteList === null) {
@@ -661,7 +665,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(['`:model` model do not define accessible fields.', 'model' => get_called_class()]);
         }
 
-        foreach ($whiteList ?: static::getFields() as $field) {
+        foreach ($whiteList ?: $this->getFields() as $field) {
             if (isset($data[$field])) {
                 $this->{$field} = $data[$field];
             }
@@ -693,8 +697,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     protected function _maintainCrudTimestamp($isCreate)
     {
-        $currentTimestamp = static::_getCurrentTimestamp();
-        $timestampFields = static::_getCrudTimestampFields();
+        $currentTimestamp = $this->_getCurrentTimestamp();
+        $timestampFields = $this->_getCrudTimestampFields();
 
         if ($isCreate && isset($timestampFields['create'])) {
             $createTsField = $timestampFields['create'];
@@ -755,13 +759,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         $fieldValues = [];
-        foreach (static::getFields() as $field) {
+        foreach ($this->getFields() as $field) {
             if ($this->{$field} !== null) {
                 $fieldValues[$field] = $this->{$field};
             }
         }
 
-        if (($db = static::getDb($this)) === false) {
+        if (($db = $this->getDb($this)) === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException([
@@ -771,7 +775,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             ]);
         }
 
-        if (($source = static::getSource($this)) === false) {
+        if (($source = $this->getSource($this)) === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException([
@@ -834,7 +838,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $instance = new static();
 
-        $instance->assign(array_intersect_key($data, array_flip(static::getFields())), $whiteList);
+        $instance->assign(array_intersect_key($data, array_flip($instance->getFields())), $whiteList);
 
         return $instance;
     }
@@ -855,7 +859,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function update()
     {
         $conditions = [];
-        $primaryKey = static::getPrimaryKey();
+        $primaryKey = $this->getPrimaryKey();
 
         if (!isset($this->{$primaryKey})) {
             /** @noinspection PhpUnhandledExceptionInspection */
@@ -869,7 +873,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $conditions[$primaryKey] = $this->{$primaryKey};
 
         $fieldValues = [];
-        foreach (static::getFields() as $field) {
+        foreach ($this->getFields() as $field) {
             if ($field === $primaryKey || $this->{$field} === null) {
                 continue;
             }
@@ -920,13 +924,15 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function updateOrFail($whiteList = null, $data = null)
     {
+        $model = new static;
+
         $di = Di::getDefault();
 
         if ($data === null) {
             $data = $di->request->get();
         }
 
-        $pkName = static::getPrimaryKey();
+        $pkName = $model->getPrimaryKey();
 
         if (isset($data[$pkName])) {
             $pkValue = $data[$pkName];
@@ -965,7 +971,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         $instance = static::firstOrFail([$pkName => $pkValue]);
-        $instance->assign(array_intersect_key($data, array_flip(static::getFields())), $whiteList);
+        $instance->assign(array_intersect_key($data, array_flip($model->getFields())), $whiteList);
         $instance->update();
 
         return $instance;
@@ -978,7 +984,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     protected function _exists()
     {
-        $primaryKey = static::getPrimaryKey();
+        $primaryKey = $this->getPrimaryKey();
 
         if (!isset($this->{$primaryKey})) {
             return false;
@@ -1029,7 +1035,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $data = $di->request->get();
         }
 
-        $pkName = static::getPrimaryKey();
+        $pkName = (new static)->getPrimaryKey();
 
         $pkValue = null;
 
@@ -1077,7 +1083,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(['`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, 'model' => get_class($this)]);
         }
 
-        $primaryKey = static::getPrimaryKey();
+        $primaryKey = $this->getPrimaryKey();
 
         $criteria = static::criteria();
         if (!isset($this->{$primaryKey})) {
@@ -1106,7 +1112,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function deleteOrFail($id = null)
     {
-        $pkName = static::getPrimaryKey();
+        $pkName = (new static)->getPrimaryKey();
 
         if ($id === null) {
             $di = Di::getDefault();
@@ -1173,7 +1179,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $data = [];
 
-        foreach (static::getFields() as $field) {
+        foreach ($this->getFields() as $field) {
             if (!$ignoreNull || isset($this->{$field})) {
                 $data[$field] = $this->{$field};
             }
@@ -1205,7 +1211,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $changed = [];
 
-        foreach (static::getFields() as $field) {
+        foreach ($this->getFields() as $field) {
             if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
                 $changed[] = $field;
             }
@@ -1245,7 +1251,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function refresh($fields = null)
     {
-        $primaryKey = static::getPrimaryKey();
+        $primaryKey = $this->getPrimaryKey();
 
         $r = static::criteria($fields)->where($primaryKey, $this->{$primaryKey})->execute();
         if (!$r[0]) {
@@ -1301,7 +1307,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
          */
         $modelTail = ($pos = strrpos($model, '\\')) !== false ? substr($model, $pos + 1) : $model;
         $tryField = lcfirst($modelTail) . '_id';
-        $fields = $model::getFields();
+        $fields = $this->getFields();
         if (in_array($tryField, $fields, true)) {
             return $tryField;
         } elseif (preg_match('#([A-Z][a-z]*)$#', $modelTail, $match) === 1) {
@@ -1331,7 +1337,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where($referenceModel::getPrimaryKey(), $this->$referenceField)->setFetchType(false);
+        return $referenceModel::criteria()->where((new $referenceModel)->getPrimaryKey(), $this->$referenceField)->setFetchType(false);
     }
 
     /**
@@ -1349,7 +1355,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where($referenceModel::getPrimaryKey(), $this->$referenceField)->setFetchType(false);
+        return $referenceModel::criteria()->where((new $referenceModel)->getPrimaryKey(), $this->$referenceField)->setFetchType(false);
     }
 
     /**
@@ -1367,7 +1373,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where($referenceField, $this->{static::getPrimaryKey()})->indexBy($referenceModel::getPrimaryKey())->setFetchType(true);
+        return $referenceModel::criteria()->where($referenceField, $this->{static::getPrimaryKey()})->indexBy((new $referenceModel)->getPrimaryKey())->setFetchType(true);
     }
 
     public function __get($name)
@@ -1385,7 +1391,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return $relation->fetch();
         } else {
             trigger_error(strtr('`:class` does not contain `:field` field: `:fields`',
-                [':class' => get_called_class(), ':field' => $name, ':fields' => implode(',', static::getFields())]), E_USER_WARNING);
+                [':class' => get_called_class(), ':field' => $name, ':fields' => implode(',', $this->getFields())]), E_USER_WARNING);
             return null;
         }
     }
@@ -1397,7 +1403,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     protected function _inferRelation($name)
     {
-        if (in_array(Text::underscore(substr($name, 3)) . '_id', static::getFields(), true)) {
+        if (in_array(Text::underscore(substr($name, 3)) . '_id', $this->getFields(), true)) {
             $calledClassName = get_called_class();
 
             if (($pos = strrpos($calledClassName, '\\')) !== false) {

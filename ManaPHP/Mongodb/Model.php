@@ -26,7 +26,7 @@ class Model extends \ManaPHP\Model
      *
      * @return string|false
      */
-    public static function getDb($context = null)
+    public function getDb($context = null)
     {
         return 'mongodb';
     }
@@ -36,9 +36,9 @@ class Model extends \ManaPHP\Model
      *
      * @return \ManaPHP\MongodbInterface
      */
-    public static function getConnection($context = null)
+    public function getConnection($context = null)
     {
-        $db = static::getDb($context);
+        $db = $this->getDb($context);
         if ($db === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -51,20 +51,20 @@ class Model extends \ManaPHP\Model
     /**
      * @return string
      */
-    public static function getPrimaryKey()
+    public function getPrimaryKey()
     {
         static $cached = [];
 
         $calledClass = get_called_class();
 
         if (!isset($cached[$calledClass])) {
-            $fields = static::getFields();
+            $fields = $this->getFields();
 
             if (in_array('id', $fields, true)) {
                 return $cached[$calledClass] = 'id';
             }
 
-            $source = static::getSource();
+            $source = $this->getSource();
             $pos = strrpos($source, '_');
             $tryField = ($pos === false ? $source : substr($source, $pos + 1)) . '_id';
             if (in_array($tryField, $fields, true)) {
@@ -80,9 +80,9 @@ class Model extends \ManaPHP\Model
     /**
      * @return null|string
      */
-    public static function getAutoIncrementField()
+    public function getAutoIncrementField()
     {
-        $primaryKey = static::getPrimaryKey();
+        $primaryKey = $this->getPrimaryKey();
 
         return $primaryKey !== '_id' ? $primaryKey : null;
     }
@@ -90,14 +90,14 @@ class Model extends \ManaPHP\Model
     /**
      * @return array
      */
-    public static function getFields()
+    public function getFields()
     {
         static $cached = [];
 
         $calledClass = get_called_class();
 
         if (!isset($cached[$calledClass])) {
-            return $cached[$calledClass] = array_keys(static::getFieldTypes());
+            return $cached[$calledClass] = array_keys($this->getFieldTypes());
         }
 
         return $cached[$calledClass];
@@ -106,7 +106,7 @@ class Model extends \ManaPHP\Model
     /**
      * @return array
      */
-    public static function getIntTypeFields()
+    public function getIntTypeFields()
     {
         static $cached = [];
 
@@ -114,7 +114,7 @@ class Model extends \ManaPHP\Model
 
         if (!isset($cached[$calledClass])) {
             $fields = [];
-            foreach (static::getFieldTypes() as $field => $type) {
+            foreach ($this->getFieldTypes() as $field => $type) {
                 if ($type === 'integer') {
                     $fields[] = $field;
                 }
@@ -137,7 +137,7 @@ class Model extends \ManaPHP\Model
      *
      * @return array
      */
-    public static function getFieldTypes()
+    public function getFieldTypes()
     {
         static $cached = [];
 
@@ -209,12 +209,12 @@ class Model extends \ManaPHP\Model
     /**
      * @return bool
      */
-    protected static function _createAutoIncrementIndex()
+    protected function _createAutoIncrementIndex()
     {
-        $autoIncField = static::getAutoIncrementField();
+        $autoIncField = $this->getAutoIncrementField();
 
         $command = [
-            'createIndexes' => static::getSource(),
+            'createIndexes' => $this->getSource(),
             'indexes' => [
                 [
                     'key' => [
@@ -226,7 +226,7 @@ class Model extends \ManaPHP\Model
             ]
         ];
 
-        static::getConnection()->command($command);
+        $this->getConnection()->command($command);
 
         return true;
     }
@@ -238,23 +238,23 @@ class Model extends \ManaPHP\Model
      * @return int
      * @throws \ManaPHP\Mongodb\Model\Exception
      */
-    public static function generateAutoIncrementId($step = 1)
+    public function generateAutoIncrementId($step = 1)
     {
         $command = [
             'findAndModify' => 'auto_increment_id',
-            'query' => ['_id' => static::getSource()],
+            'query' => ['_id' => $this->getSource()],
             'update' => ['$inc' => ['current_id' => $step]],
             'new' => true,
             'upsert' => true
         ];
 
-        $r = static::getConnection()->command($command);
+        $r = $this->getConnection()->command($command);
         $r->setTypeMap(['root' => 'array', 'document' => 'array']);
         $r = $r->toArray();
         $id = $r[0]['value']['current_id'];
 
         if ($id === $step) {
-            static::_createAutoIncrementIndex();
+            $this->_createAutoIncrementIndex();
         }
 
         return $id;
@@ -267,7 +267,7 @@ class Model extends \ManaPHP\Model
      * @return bool|float|int|string|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
      * @throws \ManaPHP\Mongodb\Model\Exception
      */
-    public static function getNormalizedValue($type, $value)
+    public function getNormalizedValue($type, $value)
     {
         if ($value === null) {
             return null;
@@ -313,17 +313,17 @@ class Model extends \ManaPHP\Model
             $this->_id = new ObjectID($this->_id);
         }
 
-        $autoIncField = static::getAutoIncrementField();
+        $autoIncField = $this->getAutoIncrementField();
         if ($autoIncField !== null && $this->{$autoIncField} === null) {
-            $this->{$autoIncField} = static::generateAutoIncrementId();
+            $this->{$autoIncField} = $this->generateAutoIncrementId();
         }
 
-        foreach (static::getFieldTypes() as $field => $type) {
+        foreach ($this->getFieldTypes() as $field => $type) {
             if ($field === '_id') {
                 continue;
             }
 
-            $this->{$field} = static::getNormalizedValue($type, $this->{$field} !== null ? $this->{$field} : '');
+            $this->{$field} = $this->getNormalizedValue($type, $this->{$field} !== null ? $this->{$field} : '');
         }
     }
 }

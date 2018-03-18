@@ -19,7 +19,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      *
      * @return string|false
      */
-    public static function getDb($context = null)
+    public function getDb($context = null)
     {
         return 'db';
     }
@@ -29,9 +29,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
      *
      * @return \ManaPHP\DbInterface|false
      */
-    public static function getConnection($context = null)
+    public function getConnection($context = null)
     {
-        $db = static::getDb($context);
+        $db = $this->getDb($context);
         if ($db === false) {
             return false;
         }
@@ -42,7 +42,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     /**
      * @return string
      */
-    public static function getPrimaryKey()
+    public function getPrimaryKey()
     {
         return Di::getDefault()->modelsMetadata->getPrimaryKeyAttributes(get_called_class())[0];
     }
@@ -50,7 +50,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     /**
      * @return array
      */
-    public static function getFields()
+    public function getFields()
     {
         static $fields = [];
 
@@ -70,7 +70,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     /**
      * @return array|null
      */
-    public static function getIntTypeFields()
+    public function getIntTypeFields()
     {
         return Di::getDefault()->modelsMetadata->getIntTypeAttributes(get_called_class());
     }
@@ -78,7 +78,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     /**
      * @return string|null
      */
-    public static function getAutoIncrementField()
+    public function getAutoIncrementField()
     {
         return Di::getDefault()->modelsMetadata->getAutoIncrementAttribute(get_called_class());
     }
@@ -107,12 +107,12 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
     protected function _postCreate($connection)
     {
-        $autoIncrementAttribute = static::getAutoIncrementField();
-        if ($autoIncrementAttribute !== null) {
+        $autoIncrementField = $this->getAutoIncrementField();
+        if ($autoIncrementField !== null) {
             /**
              * @var \ManaPHP\DbInterface $connection
              */
-            $this->{$autoIncrementAttribute} = $connection->lastInsertId();
+            $this->{$autoIncrementField} = $connection->lastInsertId();
         }
     }
 
@@ -131,10 +131,12 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $table = static::getSource($bind);
+        $model = new static;
+		
+        $table = $model->getSource($bind);
         /** @noinspection SqlDialectInspection */
         /** @noinspection SqlNoDataSourceInspection */
-        return static::getConnection($bind)->getMasterConnection()->execute("INSERT INTO [$table] " . $sql, $bind);
+        return $model->getConnection($bind)->getMasterConnection()->execute("INSERT INTO [$table] " . $sql, $bind);
     }
 
     /**
@@ -152,10 +154,12 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $table = static::getSource($bind);
+        $model = new static;
+		
+        $table = $model->getSource($bind);
         /** @noinspection SqlDialectInspection */
         /** @noinspection SqlNoDataSourceInspection */
-        return static::getConnection($bind)->getMasterConnection()->execute("DELETE FROM [$table] WHERE " . $sql, $bind);
+        return $model->getConnection($bind)->getMasterConnection()->execute("DELETE FROM [$table] WHERE " . $sql, $bind);
     }
 
     /**
@@ -173,8 +177,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $table = static::getSource($bind);
+        $model = new static;
+
+        $table = $model->getSource($bind);
         /** @noinspection SqlNoDataSourceInspection */
-        return static::getConnection($bind)->getMasterConnection()->execute("UPDATE [$table] SET " . $sql, $bind);
+        return $model->getConnection($bind)->getMasterConnection()->execute("UPDATE [$table] SET " . $sql, $bind);
     }
 }

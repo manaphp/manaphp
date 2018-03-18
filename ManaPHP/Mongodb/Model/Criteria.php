@@ -14,6 +14,7 @@ use MongoDB\BSON\Regex;
  * @property \ManaPHP\Paginator             $paginator
  * @property \ManaPHP\CacheInterface        $modelsCache
  * @property \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\Mongodb\Model         $_model
  */
 class Criteria extends \ManaPHP\Model\Criteria
 {
@@ -75,12 +76,12 @@ class Criteria extends \ManaPHP\Model\Criteria
     /**
      * Criteria constructor.
      *
-     * @param string       $modelName
-     * @param string|array $fields
+     * @param string|\ManaPHP\Mongodb\Model $model
+     * @param string|array                  $fields
      */
-    public function __construct($modelName, $fields = null)
+    public function __construct($model, $fields = null)
     {
-        $this->_modelName = $modelName;
+        $this->_model = is_string($model) ? new $model : $model;
         $this->_dependencyInjector = Di::getDefault();
 
         if ($fields !== null) {
@@ -98,16 +99,12 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function values($field)
     {
-        /**
-         * @var \ManaPHP\ModelInterface $modelName
-         */
-        $modelName = $this->_modelName;
-        $source = $modelName::getSource();
+        $source = $this->_model->getSource();
 
         /**
          * @var \ManaPHP\MongodbInterface $db
          */
-        $db = $this->_dependencyInjector->getShared($modelName::getDb());
+        $db = $this->_dependencyInjector->getShared($this->_model->getDb());
 
         $cmd = ['distinct' => $source, 'key' => $field];
         if (count($this->_filters) !== 0) {
@@ -248,12 +245,8 @@ class Criteria extends \ManaPHP\Model\Criteria
             } else {
                 $operator_map = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
                 if (isset($operator_map[$operator])) {
-                    /**
-                     * @var \ManaPHP\Mongodb\Model $modelName
-                     */
-                    $modelName = $this->_modelName;
-                    $fieldTypes = $modelName::getFieldTypes();
-                    $this->_filters[] = [$field => [$operator_map[$operator] => $modelName::getNormalizedValue($fieldTypes[$field], $value)]];
+                    $fieldTypes = $this->_model->getFieldTypes();
+                    $this->_filters[] = [$field => [$operator_map[$operator] => $this->_model->getNormalizedValue($fieldTypes[$field], $value)]];
                 } else {
                     throw new CriteriaException(['unknown `:where` where filter', 'where' => $filter]);
                 }
@@ -293,18 +286,13 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereBetween($field, $min, $max)
     {
-        /**
-         * @var \ManaPHP\Mongodb\Model $modelName
-         */
-        $modelName = $this->_modelName;
-
-        $fieldTypes = $modelName::getFieldTypes();
+        $fieldTypes = $this->_model->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $min = $modelName::getNormalizedValue($fieldType, $min);
+        $min = $this->_model->getNormalizedValue($fieldType, $min);
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $max = $modelName::getNormalizedValue($fieldType, $max);
+        $max = $this->_model->getNormalizedValue($fieldType, $max);
 
         $this->_filters[] = [$field => ['$gte' => $min, '$lte' => $max]];
 
@@ -327,18 +315,13 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotBetween($field, $min, $max)
     {
-        /**
-         * @var \ManaPHP\Mongodb\Model $modelName
-         */
-        $modelName = $this->_modelName;
-
-        $fieldTypes = $modelName::getFieldTypes();
+        $fieldTypes = $this->_model->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $min = $modelName::getNormalizedValue($fieldType, $min);
+        $min = $this->_model->getNormalizedValue($fieldType, $min);
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $max = $modelName::getNormalizedValue($fieldType, $max);
+        $max = $this->_model->getNormalizedValue($fieldType, $max);
 
         $this->_filters[] = ['$or' => [[$field => ['$lt' => $min]], [$field => ['$gt' => $max]]]];
 
@@ -360,12 +343,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereIn($field, $values)
     {
-        /**
-         * @var \ManaPHP\Mongodb\Model $modelName
-         */
-        $modelName = $this->_modelName;
-
-        $fieldTypes = $modelName::getFieldTypes();
+        $fieldTypes = $this->_model->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
         if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
@@ -373,7 +351,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $values = array_map($map[$fieldType], $values);
         } else {
             foreach ($values as $k => $value) {
-                $values[$k] = $modelName::getNormalizedValue($fieldType, $value);
+                $values[$k] = $this->_model->getNormalizedValue($fieldType, $value);
             }
         }
 
@@ -397,12 +375,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotIn($field, $values)
     {
-        /**
-         * @var \ManaPHP\Mongodb\Model $modelName
-         */
-        $modelName = $this->_modelName;
-
-        $fieldTypes = $modelName::getFieldTypes();
+        $fieldTypes = $this->_model->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
         if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
@@ -410,7 +383,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $values = array_map($map[$fieldType], $values);
         } else {
             foreach ($values as $k => $value) {
-                $values[$k] = $modelName::getNormalizedValue($fieldType, $value);
+                $values[$k] = $this->_model->getNormalizedValue($fieldType, $value);
             }
         }
 
@@ -651,7 +624,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         if (is_string($orderBy)) {
             foreach (explode(',', $orderBy) as $item) {
                 if (preg_match('#^\s*([\w\.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
-                    throw new CriteriaException(['unknown `:order` order by for `:model` model', 'order' => $orderBy, 'model' => $this->_modelName]);
+                    throw new CriteriaException(['unknown `:order` order by for `:model` model', 'order' => $orderBy, 'model' => get_class($this->_model)]);
                 }
                 $this->_order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? 1 : -1;
             }
@@ -769,15 +742,11 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     protected function _execute()
     {
-        /**
-         * @var \ManaPHP\ModelInterface $modelName
-         */
-        $modelName = $this->_modelName;
-        $source = $modelName::getSource();
+        $source = $this->_model->getSource();
         /**
          * @var \ManaPHP\MongodbInterface $db
          */
-        $db = Di::getDefault()->getShared($modelName::getDb());
+        $db = Di::getDefault()->getShared($this->_model->getDb());
         if (count($this->_aggregate) === 0) {
             $options = [];
 
@@ -989,22 +958,18 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function delete()
     {
-        /**
-         * @var \ManaPHP\ModelInterface $modelName
-         */
-        $modelName = $this->_modelName;
-        if (($db = $modelName::getDb($this)) === false) {
+        if (($db = $this->_model->getDb($this)) === false) {
             throw new CriteriaException([
                 '`:model` model db sharding for update failed',
-                'model' => $modelName,
+                'model' => get_class($this->_model),
                 'context' => $this
             ]);
         }
 
-        if (($source = $modelName::getSource($this)) === false) {
+        if (($source = $this->_model->getSource($this)) === false) {
             throw new CriteriaException([
                 '`:model` model table sharding for update failed',
-                'model' => $modelName,
+                'model' => get_class($this->_model),
                 'context' => $this
             ]);
         }
@@ -1020,22 +985,18 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function update($fieldValues)
     {
-        /**
-         * @var \ManaPHP\ModelInterface $modelName
-         */
-        $modelName = $this->_modelName;
-        if (($db = $modelName::getDb($this)) === false) {
+        if (($db = $this->_model->getDb($this)) === false) {
             throw new CriteriaException([
                 '`:model` model db sharding for update failed',
-                'model' => $modelName,
+                'model' => get_class($this->_model),
                 'context' => $this
             ]);
         }
 
-        if (($source = $modelName::getSource($this)) === false) {
+        if (($source = $this->_model->getSource($this)) === false) {
             throw new CriteriaException([
                 '`:model` model table sharding for update failed',
-                'model' => $modelName,
+                'model' => get_class($this->_model),
                 'context' => $this
             ]);
         }

@@ -39,11 +39,9 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
             if ($data !== false) {
                 $this->_metadata[$modelName] = $data;
             } else {
-                if (is_string($model)) {
-                    $model = new $model();
-                }
+                $modelInstance = is_string($model) ? new $model : $model;
 
-                $data = $this->_dependencyInjector->getShared($model->getDb(true))->getMetadata($model->getSource(true));
+                $data = $this->_dependencyInjector->getShared($modelInstance->getDb(true))->getMetadata($modelInstance->getSource(true));
 
                 $properties = [];
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -59,7 +57,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                 if (count($diff) !== 0) {
                     throw new MetadataException([
                         '`:table` table of `:model` model is not contains `:fields` fields'/**m0bb273aae32bfd843*/,
-                        'table' => $model->getSource(true),
+                        'table' => $modelInstance->getSource(true),
                         'model' => $modelName,
                         'fields' => implode(',', $diff)
                     ]);

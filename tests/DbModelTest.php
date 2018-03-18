@@ -29,7 +29,7 @@ class TestCity1 extends Model
 
 class TestCity2 extends Model
 {
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'city';
     }
@@ -37,7 +37,7 @@ class TestCity2 extends Model
 
 class TestCity3 extends Model
 {
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'the_city';
     }
@@ -72,7 +72,7 @@ class DbModelTest extends TestCase
 
     public function test_count()
     {
-        $this->assertTrue(is_int(Actor::count()));
+        $this->assertInternalType('int', Actor::count());
 
         $this->assertEquals(200, Actor::count());
 
@@ -148,7 +148,7 @@ class DbModelTest extends TestCase
     public function test_find()
     {
         $actors = Actor::find();
-        $this->assertTrue(is_array($actors));
+        $this->assertInternalType('array', $actors);
         $this->assertCount(200, $actors);
         $this->assertInstanceOf(get_class(new Actor()), $actors[0]);
         $this->assertInstanceOf('ManaPHP\Mvc\Model', $actors[0]);
@@ -197,7 +197,7 @@ class DbModelTest extends TestCase
          * @var \ManaPHP\Db $db
          */
         $db = $this->di->getShared('db');
-        $db->truncateTable($model::getSource());
+        $db->truncateTable($model->getSource());
     }
 
     public function test_create()
@@ -341,15 +341,15 @@ class DbModelTest extends TestCase
     {
         //infer the table name from table name
         $city = new TestCity1();
-        $this->assertEquals('test_city1', $city::getSource());
+        $this->assertEquals('test_city1', $city->getSource());
 
         //use getSource
         $city = new TestCity2();
-        $this->assertEquals('city', $city::getSource());
+        $this->assertEquals('city', $city->getSource());
 
         //use setSource
         $city = new TestCity3();
-        $this->assertEquals('the_city', $city::getSource());
+        $this->assertEquals('the_city', $city->getSource());
     }
 
     public function test_getSnapshotData()

@@ -74,7 +74,7 @@ class Admin extends ModelBase
      */
     public $updated_time;
 
-    public static function getSource($context = null)
+    public function getSource($context = null)
     {
         return 'admin';
     }
