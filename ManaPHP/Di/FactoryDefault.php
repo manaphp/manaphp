@@ -30,6 +30,7 @@ class FactoryDefault extends Di
             'url' => 'ManaPHP\Mvc\Url',
             'modelsManager' => 'ManaPHP\Db\Model\Manager',
             'modelsMetadata' => 'ManaPHP\Db\Model\Metadata\Adapter\Memory',
+            'modelsValidator' => 'ManaPHP\Model\Validator',
             'queryBuilder' => ['class' => 'ManaPHP\Db\Model\Query', 'shared' => false],
             'response' => 'ManaPHP\Http\Response',
             'cookies' => 'ManaPHP\Http\Cookies',

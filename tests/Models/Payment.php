@@ -18,4 +18,9 @@ class Payment extends Model
     public $amount;
     public $payment_date;
     public $last_update;
+
+    public function rules()
+    {
+        return ['amount' => 'float'];
+    }
 }

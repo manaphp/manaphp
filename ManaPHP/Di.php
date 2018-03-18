@@ -25,6 +25,7 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Security\CryptInterface              $crypt
  * @property \ManaPHP\Db\Model\MetadataInterface           $modelsMetadata
  * @property \ManaPHP\Cache\EngineInterface                $modelsCache
+ * @property \ManaPHP\Model\ValidatorInterface             $modelsValidator
  * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
  * @property \ManaPHP\Mvc\ViewInterface                    $view
  * @property \ManaPHP\Loader                               $loader

@@ -15,4 +15,14 @@ class City extends Model
     public $city;
     public $country_id;
     public $last_update;
+
+    public function rules()
+    {
+        return [
+            'city' => ['required', 'unique'],
+            'city_id' => 'int',
+            'country_id' => 'exists',
+            'last_update' => 'date'
+        ];
+    }
 }

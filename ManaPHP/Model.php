@@ -10,6 +10,8 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP
  *
+ * @property \ManaPHP\Model\ValidatorInterface $modelsValidator
+ *
  * method beforeCreate()
  * method afterCreate()
  *
@@ -168,6 +170,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         } else {
             return time();
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [];
     }
 
     /**
@@ -681,6 +691,16 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         return $this;
     }
 
+    /**
+     * @param string|array $fields
+     *
+     * @return void
+     */
+    public function validate($fields = null)
+    {
+        $this->modelsValidator->validate($this, $fields ?: $this->getChangedFields());
+    }
+
     protected function _preCreate()
     {
 
@@ -749,6 +769,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function create()
     {
+        $fields = $this->getFields();
+        $this->validate($fields);
+
         $this->_maintainCrudTimestamp(true);
 
         $this->_preCreate();
@@ -760,7 +783,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         $fieldValues = [];
-        foreach ($this->getFields() as $field) {
+        foreach ($fields as $field) {
             if ($this->{$field} !== null) {
                 $fieldValues[$field] = $this->{$field};
             }
@@ -872,6 +895,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         $conditions[$primaryKey] = $this->{$primaryKey};
+
+        $this->validate($this->getChangedFields());
 
         $fieldValues = [];
         foreach ($this->getFields() as $field) {

@@ -20,4 +20,9 @@ class Customer extends Model
     public $active;
     public $create_date;
     public $last_update;
+
+    public function rules()
+    {
+        return ['active' => 'bool'];
+    }
 }

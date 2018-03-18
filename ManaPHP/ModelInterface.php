@@ -62,6 +62,11 @@ interface ModelInterface
     public function getDisplayField();
 
     /**
+     * @return array
+     */
+    public function rules();
+
+    /**
      * @param string|array   $fields
      * @param \ManaPHP\Model $model
      *
@@ -234,6 +239,13 @@ interface ModelInterface
      * @return static
      */
     public function assign($data, $whiteList = null);
+
+    /**
+     * @param string|array $fields
+     *
+     * @return void
+     */
+    public function validate($fields = null);
 
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
