@@ -291,13 +291,14 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param string|array $fields
+     * @param string|array           $fields
+     * @param \ManaPHP\Mongodb\Model $model
      *
      * @return \ManaPHP\Mongodb\Model\Criteria
      */
-    public static function criteria($fields = null)
+    public static function criteria($fields = null, $model = null)
     {
-        return Di::getDefault()->get('ManaPHP\Mongodb\Model\Criteria', [get_called_class(), $fields]);
+        return Di::getDefault()->get('ManaPHP\Mongodb\Model\Criteria', [$model ?: get_called_class(), $fields]);
     }
 
     /**

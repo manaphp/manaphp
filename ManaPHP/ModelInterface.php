@@ -62,11 +62,12 @@ interface ModelInterface
     public function getDisplayField();
 
     /**
-     * @param string|array $fields
+     * @param string|array   $fields
+     * @param \ManaPHP\Model $model
      *
      * @return \ManaPHP\Db\Model\CriteriaInterface
      */
-    public static function criteria($fields = null);
+    public static function criteria($fields = null, $model = null);
 
     /**
      * Allows to query a set of records that match the specified conditions

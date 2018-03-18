@@ -84,13 +84,14 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param string|array $fields
+     * @param string|array      $fields
+     * @param \ManaPHP\Db\Model $model
      *
      * @return \ManaPHP\Db\Model\CriteriaInterface
      */
-    public static function criteria($fields = null)
+    public static function criteria($fields = null, $model = null)
     {
-        return Di::getDefault()->get('ManaPHP\Db\Model\Criteria', [get_called_class(), $fields]);
+        return Di::getDefault()->get('ManaPHP\Db\Model\Criteria', [$model ?: get_called_class(), $fields]);
     }
 
     /**
@@ -132,7 +133,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         $model = new static;
-		
+
         $table = $model->getSource($bind);
         /** @noinspection SqlDialectInspection */
         /** @noinspection SqlNoDataSourceInspection */
@@ -155,7 +156,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         $model = new static;
-		
+
         $table = $model->getSource($bind);
         /** @noinspection SqlDialectInspection */
         /** @noinspection SqlNoDataSourceInspection */

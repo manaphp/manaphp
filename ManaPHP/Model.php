@@ -275,7 +275,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $model = new static;
 
-        $criteria = static::criteria()->where($filters);
+        $criteria = static::criteria(null, $model)->where($filters);
 
         $list = [];
         if ($field === null) {
@@ -376,7 +376,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $filters = [$model->getPrimaryKey() => $filters];
         }
 
-        return static::criteria($fields)->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+        return static::criteria($fields, $model)->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
     }
 
     /**
@@ -454,10 +454,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function exists($filters)
     {
         if (is_scalar($filters)) {
-            $filters = [(new static)->getPrimaryKey() => $filters];
+            $model = new static;
+            return static::criteria(null, $model)->where($model->getPrimaryKey(), $filters)->exists();
+        } else {
+            return static::criteria()->where($filters)->exists();
         }
-
-        return static::criteria()->where($filters)->exists();
     }
 
     /**
