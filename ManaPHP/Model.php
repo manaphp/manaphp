@@ -204,7 +204,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function find($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria()->select($fields ?: (new static)->getFields())->where($filters);
+        $criteria = static::criteria($fields)->where($filters);
 
         if ($options !== null) {
             if (isset($options['distinct'])) {
@@ -242,7 +242,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function paginate($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria()->select($fields ?: (new static)->getFields())->where($filters);
+        $criteria = static::criteria($fields)->where($filters);
 
         if ($options !== null) {
             if (isset($options['distinct'])) {
@@ -376,7 +376,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $filters = [$model->getPrimaryKey() => $filters];
         }
 
-        return static::criteria()->select($fields ?: $model->getFields())->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+        return static::criteria($fields)->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
     }
 
     /**
