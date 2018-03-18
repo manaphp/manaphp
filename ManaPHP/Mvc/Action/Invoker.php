@@ -18,26 +18,15 @@ class Invoker extends Component implements InvokerInterface
      * @param string                           $action
      * @param array                            $params
      *
-     * @return mixed
+     * @return array
      * @throws \ManaPHP\Mvc\Action\Exception
-     * @throws \ManaPHP\Mvc\Action\NotFoundException
      */
-    public function invoke($controller, $action, $params)
+    protected function _buildArgs($controller, $action, $params)
     {
-        $actionMethod = $action . 'Action';
-
-        if (!method_exists($controller, $actionMethod)) {
-            throw new NotFoundException([
-                '`:controller:::action` is not found'/**m061a35fc1c0cd0b6f*/,
-                'action' => $actionMethod,
-                'controller' => get_class($controller)
-            ]);
-        }
-
         $args = [];
         $missing = [];
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $parameters = (new \ReflectionMethod($controller, $actionMethod))->getParameters();
+        $parameters = (new \ReflectionMethod($controller, $action . 'Action'))->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;
@@ -96,6 +85,32 @@ class Invoker extends Component implements InvokerInterface
         if (count($missing) !== 0) {
             throw new ActionException(['Missing required parameters: `:parameters`', 'parameters' => implode(',', $missing)]);
         }
+
+        return $args;
+    }
+
+    /**
+     * @param \ManaPHP\Mvc\ControllerInterface $controller
+     * @param string                           $action
+     * @param array                            $params
+     *
+     * @return mixed
+     * @throws \ManaPHP\Mvc\Action\Exception
+     * @throws \ManaPHP\Mvc\Action\NotFoundException
+     */
+    public function invoke($controller, $action, $params)
+    {
+        $actionMethod = $action . 'Action';
+
+        if (!method_exists($controller, $actionMethod)) {
+            throw new NotFoundException([
+                '`:controller:::action` is not found'/**m061a35fc1c0cd0b6f*/,
+                'action' => $actionMethod,
+                'controller' => get_class($controller)
+            ]);
+        }
+
+        $args = $this->_buildArgs($controller, $action, $params);
 
         switch (count($args)) {
             case 0:
