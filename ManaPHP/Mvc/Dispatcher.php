@@ -236,7 +236,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 }
             }
 
-            $this->_returnedValue = $this->actionInvoker->invokeAction($controllerInstance, $this->_actionName, $this->_params);
+            $this->_returnedValue = $this->actionInvoker->invoke($controllerInstance, $this->_actionName, $this->_params);
             if ($this->_finished === false) {
                 continue;
             }

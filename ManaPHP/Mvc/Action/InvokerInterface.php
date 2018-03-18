@@ -10,5 +10,5 @@ interface InvokerInterface
      *
      * @return mixed
      */
-    public function invokeAction($controller, $action, $params);
+    public function invoke($controller, $action, $params);
 }
