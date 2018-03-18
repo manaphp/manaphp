@@ -19,33 +19,6 @@ class Invoker extends Component implements InvokerInterface
     protected $_actionParameters;
 
     /**
-     * @var [][]
-     */
-    protected $_actions = [];
-
-    /**
-     * @param \ManaPHP\Mvc\ControllerInterface $controller
-     *
-     * @return array
-     */
-    protected function _getActions($controller)
-    {
-        $controllerName = get_class($controller);
-
-        if (!isset($this->_actions[$controllerName])) {
-            $this->_actions[$controllerName] = [];
-
-            foreach (get_class_methods($controller) as $method) {
-                if ($method[0] !== '_' && substr_compare($method, 'Action', -6) === 0) {
-                    $this->_actions[$controllerName][] = substr($method, 0, -6);
-                }
-            }
-        }
-
-        return $this->_actions[$controllerName];
-    }
-
-    /**
      * @param \ManaPHP\Mvc\ControllerInterface $controller
      * @param string                           $action
      * @param array                            $params
@@ -56,17 +29,15 @@ class Invoker extends Component implements InvokerInterface
      */
     public function invoke($controller, $action, $params)
     {
-        $actions = $this->_getActions($controller);
+        $actionMethod = $action . 'Action';
 
-        if (!in_array($action, $actions, true)) {
+        if (!method_exists($controller, $actionMethod)) {
             throw new NotFoundException([
-                '`:controller:::action` is not found, action is case sensitive.'/**m061a35fc1c0cd0b6f*/,
-                'action' => $action . 'Action',
+                '`:controller:::action` is not found'/**m061a35fc1c0cd0b6f*/,
+                'action' => $actionMethod,
                 'controller' => get_class($controller)
             ]);
         }
-
-        $actionMethod = $action . 'Action';
 
         $controllerName = get_class($controller);
 
