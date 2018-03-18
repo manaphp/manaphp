@@ -25,9 +25,14 @@ class Validator extends Component implements ValidatorInterface
     protected $_field;
 
     /**
-     * @var array|string
+     * @var string
      */
-    protected $_templates = 'en';
+    protected $templates_dir = '@manaphp/Models/Validator/Messages';
+
+    /**
+     * @var array
+     */
+    protected $_templates;
 
     /**
      * @var array
@@ -41,45 +46,29 @@ class Validator extends Component implements ValidatorInterface
      */
     public function __construct($options = [])
     {
+        if (isset($options['templates_dir'])) {
+            $this->templates_dir = $options['templates_dir'];
+        }
+
         if (isset($options['templates'])) {
             $this->_templates = $options['templates'];
+            $this->templates_dir = null;
         }
     }
 
     /**
-     * @param string $name
-     * @param array  $parameters
-     * @param string $template
-     *
-     * @return void
-     *
-     * @throws \ManaPHP\Model\Validator\Exception
+     * @return array
      */
-    protected function _addMessage($name, $parameters, $template = null)
+    protected function _loadTemplates()
     {
-        if (!$template) {
-            if (is_array($this->_templates)) {
-                $templates = $this->_templates;
-            } else {
-                if (strpos($this->_templates, '.') === false) {
-                    $file = __DIR__ . "/Validator/Messages/{$this->_templates}.php";
-                } else {
-                    $file = $this->_templates;
-                }
-
-                if (!$this->filesystem->fileExists($file)) {
-                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    throw new ValidatorException(['`:file` validator message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
-                }
-
-                /** @noinspection PhpIncludeInspection */
-                $templates = require $this->alias->resolve($file);
-            }
-
-            $template = isset($templates[$name]) ? $templates[$name] : $templates['default'];
+        $languages = explode(',', $this->configure->language);
+        $file = "{$this->templates_dir}/$languages[0].php";
+        if (!$this->filesystem->fileExists($file)) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new ValidatorException(['`:file` validator message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
         }
-
-        $this->appendMessage(new Message($template, $this->_model, $this->_field, $parameters));
+        /** @noinspection PhpIncludeInspection */
+        return $this->_templates = require $this->alias->resolve($file);
     }
 
     /**
@@ -135,17 +124,20 @@ class Validator extends Component implements ValidatorInterface
             foreach ((array)$rules[$field] as $k => $v) {
                 if (is_int($k)) {
                     $name = $v;
-                    $params = null;
+                    $parameters = null;
                 } else {
                     $name = $k;
-                    $params = (array)$v;
+                    $parameters = (array)$v;
                 }
 
-                $value = $this->_validate($model->$field, $name, $params);
+                $value = $this->_validate($model->$field, $name, $parameters);
                 if ($value === null) {
-                    $this->_addMessage($name, $params);
+                    $templates = $this->_templates ?: $this->_loadTemplates();
+                    $template = isset($templates[$name]) ? $templates[$name] : $templates['default'];
+                    $this->appendMessage(new Message($template, $this->_model, $this->_field, $parameters));
+                } else {
+                    $model->$field = $value;
                 }
-                $model->$field = $value;
             }
         }
 
@@ -492,5 +484,12 @@ class Validator extends Component implements ValidatorInterface
          */
         $model = new $className;
         return $className::exists([$model->getPrimaryKey() => $value]) ? $value : null;
+    }
+
+    public function reConstruct()
+    {
+        if ($this->templates_dir && strpos($this->configure->language, ',') !== false) {
+            $this->_templates = null;
+        }
     }
 }
