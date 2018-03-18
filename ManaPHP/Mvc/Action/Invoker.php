@@ -14,11 +14,6 @@ use ManaPHP\Mvc\Action\Exception as ActionException;
 class Invoker extends Component implements InvokerInterface
 {
     /**
-     * @var \ReflectionParameter[][][]
-     */
-    protected $_actionParameters;
-
-    /**
      * @param \ManaPHP\Mvc\ControllerInterface $controller
      * @param string                           $action
      * @param array                            $params
@@ -39,17 +34,10 @@ class Invoker extends Component implements InvokerInterface
             ]);
         }
 
-        $controllerName = get_class($controller);
-
-        if (!isset($this->_actionParameters[$controllerName][$action])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $this->_actionParameters[$controllerName][$action] = (new \ReflectionMethod($controller, $actionMethod))->getParameters();
-        }
-        $parameters = $this->_actionParameters[$controllerName][$action];
-
         $args = [];
         $missing = [];
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        $parameters = (new \ReflectionMethod($controller, $actionMethod))->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;
