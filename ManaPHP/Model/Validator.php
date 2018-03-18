@@ -27,7 +27,7 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @var string
      */
-    protected $templates_dir = '@manaphp/Models/Validator/Messages';
+    protected $templates_dir = '@manaphp/Model/Validator/Messages';
 
     /**
      * @var array
