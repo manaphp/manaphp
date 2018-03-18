@@ -165,7 +165,7 @@ class Model extends \ManaPHP\Model
                     /** @noinspection PhpUnhandledExceptionInspection */
                     /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     throw new ModelException([
-                        '`:property` property phpdoc does not contain data type defintion: `:phpdoc`',
+                        '`:property` property phpdoc does not contain data type definition: `:phpdoc`',
                         'property' => $rp->getName(),
                         'phpdoc' => $phpdoc
                     ]);
