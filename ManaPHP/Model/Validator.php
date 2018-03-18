@@ -3,6 +3,7 @@ namespace ManaPHP\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Model\Validator\Exception as ValidatorException;
+use ManaPHP\Model\Validator\Message;
 use ManaPHP\Utility\Text;
 
 /**
@@ -26,7 +27,12 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @var array|string
      */
-    protected $_messages = 'en';
+    protected $_templates = 'en';
+
+    /**
+     * @var array
+     */
+    protected $_messages;
 
     /**
      * Validator constructor.
@@ -35,8 +41,70 @@ class Validator extends Component implements ValidatorInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['messages'])) {
-            $this->_messages = $options['messages'];
+        if (isset($options['templates'])) {
+            $this->_templates = $options['templates'];
+        }
+    }
+
+    /**
+     * @param string $name
+     * @param array  $parameters
+     * @param string $template
+     *
+     * @return void
+     *
+     * @throws \ManaPHP\Model\Validator\Exception
+     */
+    protected function _addMessage($name, $parameters, $template = null)
+    {
+        if (!$template) {
+            if (is_array($this->_templates)) {
+                $templates = $this->_templates;
+            } else {
+                if (strpos($this->_templates, '.') === false) {
+                    $file = __DIR__ . "/Validator/Messages/{$this->_templates}.php";
+                } else {
+                    $file = $this->_templates;
+                }
+
+                if (!$this->filesystem->fileExists($file)) {
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                    throw new ValidatorException(['`:file` validator message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
+                }
+
+                /** @noinspection PhpIncludeInspection */
+                $templates = require $this->alias->resolve($file);
+            }
+
+            $template = isset($templates[$name]) ? $templates[$name] : $templates['default'];
+        }
+
+        $this->appendMessage(new Message($template, $this->_model, $this->_field, $parameters));
+    }
+
+    /**
+     * @param \ManaPHP\Model\Validator\Message $message
+     *
+     * @return static
+     */
+    public function appendMessage($message)
+    {
+        $this->_messages[$message->field][] = $message;
+
+        return $this;
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return \ManaPHP\Model\Validator\Message[]
+     */
+    public function getMessages($field = null)
+    {
+        if ($field) {
+            return isset($this->_messages[$field]) ? $this->_messages[$field] : [];
+        } else {
+            return $this->_messages;
         }
     }
 
@@ -45,9 +113,12 @@ class Validator extends Component implements ValidatorInterface
      * @param array          $fields
      *
      * @return void
+     * @throws \ManaPHP\Model\Validator\Exception
      */
     public function validate($model, $fields = [])
     {
+        $this->_messages = [];
+
         if (!$rules = $model->rules()) {
             return;
         }
@@ -72,39 +143,14 @@ class Validator extends Component implements ValidatorInterface
 
                 $value = $this->_validate($model->$field, $name, $params);
                 if ($value === null) {
-                    if (!$templates) {
-                        if (strpos($this->_messages, '.') === false) {
-                            $file = __DIR__ . "/Validator/Messages/{$this->_messages}.php";
-                        } else {
-                            $file = $this->_messages;
-                        }
-
-                        if (!$this->filesystem->fileExists($file)) {
-                            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                            throw new ValidatorException(['`:file` validator message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
-                        }
-
-                        /** @noinspection PhpIncludeInspection */
-                        $templates = require $this->alias->resolve($file);
-                    }
-
-                    $message = [
-                        isset($templates[$name]) ? $templates[$name] : $templates['default'],
-                        'field' => $field,
-                        'value' => $model->$field
-                    ];
-
-                    if (is_array($params)) {
-                        foreach ($params as $z => $param) {
-                            $message['parameters[' . $z . ']'] = $param;
-                        }
-                    }
-
-                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    throw new ValidatorException($message);
+                    $this->_addMessage($name, $params);
                 }
                 $model->$field = $value;
             }
+        }
+
+        if ($this->_messages) {
+            throw new ValidatorException('validate failed: ' . json_encode($this->_messages));
         }
     }
 
