@@ -24,4 +24,25 @@ interface ModelInterface extends \ManaPHP\ModelInterface
      * @return \ManaPHP\Db\Model\QueryInterface
      */
     public static function query($alias = null);
+
+    /**
+     * @param array|string $sql
+     *
+     * @return int
+     */
+    public static function insertBySql($sql);
+
+    /**
+     * @param array|string $sql
+     *
+     * @return int
+     */
+    public static function deleteBySql($sql);
+
+    /**
+     * @param string|array $sql
+     *
+     * @return int
+     */
+    public static function updateBySql($sql);
 }

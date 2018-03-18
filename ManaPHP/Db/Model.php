@@ -115,4 +115,66 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $this->{$autoIncrementAttribute} = $connection->lastInsertId();
         }
     }
+
+    /**
+     * @param array|string $sql
+     *
+     * @return int
+     */
+    public static function insertBySql($sql)
+    {
+        if (is_array($sql)) {
+            $bind = $sql;
+            unset($bind[0]);
+            $sql = $sql[0];
+        } else {
+            $bind = [];
+        }
+
+        $table = static::getSource($bind);
+        /** @noinspection SqlDialectInspection */
+        /** @noinspection SqlNoDataSourceInspection */
+        return static::getConnection($bind)->getMasterConnection()->execute("INSERT INTO [$table] " . $sql, $bind);
+    }
+
+    /**
+     * @param array|string $sql
+     *
+     * @return int
+     */
+    public static function deleteBySql($sql)
+    {
+        if (is_array($sql)) {
+            $bind = $sql;
+            unset($bind[0]);
+            $sql = $sql[0];
+        } else {
+            $bind = [];
+        }
+
+        $table = static::getSource($bind);
+        /** @noinspection SqlDialectInspection */
+        /** @noinspection SqlNoDataSourceInspection */
+        return static::getConnection($bind)->getMasterConnection()->execute("DELETE FROM [$table] WHERE " . $sql, $bind);
+    }
+
+    /**
+     * @param array|string $sql
+     *
+     * @return int
+     */
+    public static function updateBySql($sql)
+    {
+        if (is_array($sql)) {
+            $bind = $sql;
+            unset($bind[0]);
+            $sql = $sql[0];
+        } else {
+            $bind = [];
+        }
+
+        $table = static::getSource($bind);
+        /** @noinspection SqlNoDataSourceInspection */
+        return static::getConnection($bind)->getMasterConnection()->execute("UPDATE [$table] SET " . $sql, $bind);
+    }
 }
