@@ -1402,7 +1402,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         /**
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where($referenceField, $this->{static::getPrimaryKey()})->indexBy((new $referenceModel)->getPrimaryKey())->setFetchType(true);
+        return $referenceModel::criteria()->where($referenceField, $this->{$this->getPrimaryKey()})->indexBy((new $referenceModel)->getPrimaryKey())->setFetchType(true);
     }
 
     public function __get($name)
