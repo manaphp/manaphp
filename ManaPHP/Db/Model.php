@@ -27,7 +27,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     /**
      * @param mixed $context
      *
-     * @return \ManaPHP\DbInterface|false
+     * @return \ManaPHP\DbInterface
      */
     public function getConnection($context = null)
     {
