@@ -686,7 +686,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function validate($fields = null)
     {
-        $this->modelsValidator->validate($this, $fields ?: $this->getChangedFields());
+        $this->_dependencyInjector->modelsValidator->validate($this, $fields ?: $this->getChangedFields());
     }
 
     protected function _preCreate()
