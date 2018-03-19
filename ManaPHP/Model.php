@@ -922,7 +922,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(['`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, 'model' => get_class($this)]);
         }
 
-        static::criteria()->where($conditions)->update($fieldValues);
+        static::criteria(null, $this)->where($conditions)->update($fieldValues);
 
         $this->_snapshot = $this->toArray();
 
@@ -1004,7 +1004,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return false;
         }
 
-        return static::criteria()->where($primaryKey, $this->{$primaryKey})->forceUseMaster()->exists();
+        return static::criteria(null, $this)->where($primaryKey, $this->{$primaryKey})->forceUseMaster()->exists();
     }
 
     /**
@@ -1099,7 +1099,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $primaryKey = $this->getPrimaryKey();
 
-        $criteria = static::criteria();
+        $criteria = static::criteria(null, $this);
         if (!isset($this->{$primaryKey})) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -1282,7 +1282,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $primaryKey = $this->getPrimaryKey();
 
-        $r = static::criteria($fields)->where($primaryKey, $this->{$primaryKey})->execute();
+        $r = static::criteria($fields, $this)->where($primaryKey, $this->{$primaryKey})->execute();
         if (!$r[0]) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ModelException(['`:model` model refresh failed: record is not exists now!', 'model' => get_called_class()]);
