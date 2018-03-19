@@ -114,23 +114,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        if ($pos = strrpos($primaryKey, '_')) {
-            $tryField = substr($primaryKey, $pos + 1) . '_name';
-
-            if (in_array($tryField, $fields, true)) {
-                return $tryField;
-            }
-        }
-
-        $modelName = get_called_class();
-        if ($pos = strrpos($modelName, '\\')) {
-            $tryField = lcfirst(substr($modelName, $pos + 1));
-
-            if (in_array($tryField, $fields, true)) {
-                return $tryField;
-            }
-        }
-
         return null;
     }
 
