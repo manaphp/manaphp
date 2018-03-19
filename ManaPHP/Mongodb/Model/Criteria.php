@@ -966,13 +966,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             ]);
         }
 
-        if (($source = $this->_model->getSource($this)) === false) {
-            throw new CriteriaException([
-                '`:model` model table sharding for update failed',
-                'model' => get_class($this->_model),
-                'context' => $this
-            ]);
-        }
+       $source = $this->_model->getSource($this);
 
         return $this->_dependencyInjector->getShared($db)->delete($source, $this->_filters ? ['$and' => $this->_filters] : []);
     }
@@ -993,13 +987,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             ]);
         }
 
-        if (($source = $this->_model->getSource($this)) === false) {
-            throw new CriteriaException([
-                '`:model` model table sharding for update failed',
-                'model' => get_class($this->_model),
-                'context' => $this
-            ]);
-        }
+        $source = $this->_model->getSource($this);
 
         return $this->_dependencyInjector->getShared($db)->update($source, $fieldValues, $this->_filters ? ['$and' => $this->_filters] : []);
     }

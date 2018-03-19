@@ -11,7 +11,7 @@ interface ModelInterface
      *
      * @param mixed $context
      *
-     * @return string|false
+     * @return string
      */
     public function getSource($context = null);
 

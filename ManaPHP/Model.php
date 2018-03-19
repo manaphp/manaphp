@@ -64,7 +64,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @param mixed $context
      *
-     * @return string|false
+     * @return string
      */
     public function getSource($context = null)
     {
@@ -799,15 +799,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             ]);
         }
 
-        if (($source = $this->getSource($this)) === false) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException([
-                '`:model` model table sharding for insert failed',
-                'model' => get_called_class(),
-                'context' => $this
-            ]);
-        }
+        $source = $this->getSource($this);
 
         $connection = $this->_dependencyInjector->getShared($db);
         $connection->insert($source, $fieldValues);

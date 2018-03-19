@@ -447,13 +447,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
         }
         $this->_query->setDb($this->_dependencyInjector->getShared($db));
 
-        if (($source = $this->_model->getSource($bind)) === false) {
-            throw new CriteriaException([
-                '`:model` model table sharding for query',
-                'model' => get_class($this->_model),
-                'context' => $bind
-            ]);
-        }
+        $source = $this->_model->getSource($bind);
         $this->_query->from($source);
 
         return $this;
