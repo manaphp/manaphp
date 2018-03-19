@@ -746,7 +746,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         /**
          * @var \ManaPHP\MongodbInterface $db
          */
-        $db = Di::getDefault()->getShared($this->_model->getDb());
+        $db = $this->_dependencyInjector->getShared($this->_model->getDb());
         if (count($this->_aggregate) === 0) {
             $options = [];
 
