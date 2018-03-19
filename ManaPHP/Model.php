@@ -39,6 +39,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     protected $_with = [];
 
     /**
+     * @var float
+     */
+    protected $_last_refresh;
+
+    /**
      * \ManaPHP\Model constructor
      *
      * @param array $data
@@ -1254,12 +1259,27 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param float $interval
      * @param array $fields
      *
      * @return static
      */
-    public function refresh($fields = null)
+    public function refresh($interval, $fields = null)
     {
+        if ($interval > 0) {
+            $current = microtime(true);
+
+            if ($this->_last_refresh > 0) {
+                if ($current - $this->_last_refresh < $interval) {
+                    return $this;
+                }
+                $this->_last_refresh = $current;
+            } else {
+                $this->_last_refresh = $current;
+                return $this;
+            }
+        }
+
         $primaryKey = $this->getPrimaryKey();
 
         $r = static::criteria($fields)->where($primaryKey, $this->{$primaryKey})->execute();

@@ -369,11 +369,12 @@ interface ModelInterface
     public function hasChanged($fields);
 
     /**
+     * @param float $interval
      * @param array $fields
      *
      * @return static
      */
-    public function refresh($fields = null);
+    public function refresh($interval, $fields = null);
 
     /**
      * @param string       $referenceModel
