@@ -438,13 +438,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
         $this->_modelReplaced = true;
 
         $bind = $this->_query->getBind();
-        if (($db = $this->_model->getDb($bind)) === false) {
-            throw new CriteriaException([
-                '`:model` model db sharding for query',
-                'model' => get_class($this->_model),
-                'context' => $bind
-            ]);
-        }
+        $db = $this->_model->getDb($bind);
         $this->_query->setDb($this->_dependencyInjector->getShared($db));
 
         $source = $this->_model->getSource($bind);

@@ -958,15 +958,8 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function delete()
     {
-        if (($db = $this->_model->getDb($this)) === false) {
-            throw new CriteriaException([
-                '`:model` model db sharding for update failed',
-                'model' => get_class($this->_model),
-                'context' => $this
-            ]);
-        }
-
-       $source = $this->_model->getSource($this);
+        $db = $this->_model->getDb($this);
+        $source = $this->_model->getSource($this);
 
         return $this->_dependencyInjector->getShared($db)->delete($source, $this->_filters ? ['$and' => $this->_filters] : []);
     }
@@ -979,14 +972,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function update($fieldValues)
     {
-        if (($db = $this->_model->getDb($this)) === false) {
-            throw new CriteriaException([
-                '`:model` model db sharding for update failed',
-                'model' => get_class($this->_model),
-                'context' => $this
-            ]);
-        }
-
+        $db = $this->_model->getDb($this);
         $source = $this->_model->getSource($this);
 
         return $this->_dependencyInjector->getShared($db)->update($source, $fieldValues, $this->_filters ? ['$and' => $this->_filters] : []);

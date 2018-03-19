@@ -789,16 +789,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        if (($db = $this->getDb($this)) === false) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException([
-                '`:model` model db sharding for insert failed',
-                'model' => get_called_class(),
-                'context' => $this
-            ]);
-        }
-
+        $db = $this->getDb($this);
         $source = $this->getSource($this);
 
         $connection = $this->_dependencyInjector->getShared($db);

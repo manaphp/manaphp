@@ -76,16 +76,9 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
                  * @var \ManaPHP\Db\Model $modelInstance
                  */
                 $modelInstance = new $model;
-				
+
                 if ($this->_db === null) {
-                    if (($db = $modelInstance->getDb($this)) === false) {
-                        throw new QueryException([
-                            '`:query` query db sharding failed',
-                            'query' => get_called_class(),
-                            'context' => $this
-                        ]);
-                    }
-                    $this->_db = $db;
+                    $this->_db = $modelInstance->getDb($this);
                 }
 
                 $source = $modelInstance->getSource($this);

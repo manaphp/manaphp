@@ -39,12 +39,6 @@ class Model extends \ManaPHP\Model
     public function getConnection($context = null)
     {
         $db = $this->getDb($context);
-        if ($db === false) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException(['db of `:model` model is invalid.', 'model' => get_called_class()]);
-        }
-
         return Di::getDefault()->getShared($db);
     }
 

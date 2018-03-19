@@ -32,10 +32,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
     public function getConnection($context = null)
     {
         $db = $this->getDb($context);
-        if ($db === false) {
-            return false;
-        }
-
         return Di::getDefault()->getShared($db);
     }
 
