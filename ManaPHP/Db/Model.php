@@ -35,6 +35,26 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
+     * @param mixed $context
+     *
+     * @return \ManaPHP\DbInterface
+     */
+    public function getMasterConnection($context = null)
+    {
+        return $this->getConnection($context)->getMasterConnection();
+    }
+
+    /**
+     * @param mixed $context
+     *
+     * @return \ManaPHP\DbInterface
+     */
+    public function getSlaveConnection($context = null)
+    {
+        return $this->getConnection($context)->getMasterConnection();
+    }
+
+    /**
      * @return string
      */
     public function getPrimaryKey()
@@ -132,7 +152,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $table = $model->getSource($bind);
         /** @noinspection SqlDialectInspection */
         /** @noinspection SqlNoDataSourceInspection */
-        return $model->getConnection($bind)->getMasterConnection()->execute("INSERT INTO [$table] " . $sql, $bind);
+        return $model->getMasterConnection($bind)->execute("INSERT INTO [$table] " . $sql, $bind);
     }
 
     /**
@@ -155,7 +175,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $table = $model->getSource($bind);
         /** @noinspection SqlDialectInspection */
         /** @noinspection SqlNoDataSourceInspection */
-        return $model->getConnection($bind)->getMasterConnection()->execute("DELETE FROM [$table] WHERE " . $sql, $bind);
+        return $model->getMasterConnection($bind)->execute("DELETE FROM [$table] WHERE " . $sql, $bind);
     }
 
     /**
@@ -177,6 +197,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $table = $model->getSource($bind);
         /** @noinspection SqlNoDataSourceInspection */
-        return $model->getConnection($bind)->getMasterConnection()->execute("UPDATE [$table] SET " . $sql, $bind);
+        return $model->getMasterConnection($bind)->execute("UPDATE [$table] SET " . $sql, $bind);
     }
 }
