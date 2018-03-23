@@ -340,7 +340,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @param int|string|array $filters
      * @param string|array     $fields
-     * @param array            $options
+     * @param array|int|float  $options
      *
      * @return static|false
      */
@@ -348,11 +348,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $model = new static;
 
+        $pkName = $model->getPrimaryKey();
+        $pkValue = null;
+
         if ($filters === null) {
             $di = Di::getDefault();
-
-            $pkName = $model->getPrimaryKey();
-
             if ($di->request->has($pkName)) {
                 $pkValue = $di->request->get($pkName);
             } elseif ($di->dispatcher->hasParam($pkName)) {
@@ -368,13 +368,45 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 /** @noinspection PhpUnhandledExceptionInspection */
                 throw new ModelException('first key value is not scalar');
             }
-
             $filters = [$pkName => $pkValue];
         } elseif (is_scalar($filters)) {
-            $filters = [$model->getPrimaryKey() => $filters];
+            $pkValue = $filters;
+            $filters = [$pkName => $pkValue];
+        } elseif (count($filters) === 1 && isset($filters[$pkName])) {
+            $pkValue = $filters[$pkName];
         }
 
-        return static::criteria($fields, $model)->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+        $interval = null;
+        if (is_float($options)) {
+            $interval = $options;
+            $max = 10;
+        } elseif (is_array($options) && count($options) === 1 && is_int($max = key($options))) {
+            $interval = $options[$max];
+        }
+
+        if ($pkValue === null || $interval === null) {
+            return static::criteria($fields, $model)->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+        }
+
+        static $cached = [];
+
+        $current = microtime(true);
+        $className = get_class($model);
+        if (isset($cached[$className][$pkValue])) {
+            $cache = $cached[$className][$pkValue];
+            if ($current - $cache[0] < $interval) {
+                return $cache[1];
+            } else {
+                unset($cached[$className][$pkValue]);
+            }
+        }
+        $r = static::criteria($fields, $model)->where($pkName, $pkValue)->fetchOne();
+        $cached[$className][$pkValue] = [$current + $interval, $r];
+        /** @noinspection PhpUndefinedVariableInspection */
+        if (count($cached[$className]) > $max) {
+            unset($cached[$className][key($cached[$className])]);
+        }
+        return $r;
     }
 
     /**
