@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Db\Model;
 
-use ManaPHP\Db\Model\Criteria\Exception as CriteriaException;
 use ManaPHP\Di;
 
 /**

@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Db\Model;
 
-use ManaPHP\Db\Model\Query\Exception as QueryException;
-
 /**
  * Class ManaPHP\Mvc\Model\QueryBuilder
  *
@@ -56,7 +54,6 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Model\Query\Exception
      * @throws \ManaPHP\Db\Query\Exception
      */
     protected function _buildSql()
