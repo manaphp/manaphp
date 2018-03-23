@@ -1479,10 +1479,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $referenceField = $this->_inferReferenceField($referenceModel);
         }
 
+        $reference = new $referenceModel;
         /**
+         * @var \ManaPHP\Model $reference
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where((new $referenceModel)->getPrimaryKey(), $this->$referenceField)->setFetchType(false);
+        return $referenceModel::criteria()->where($reference->getPrimaryKey(), $this->$referenceField)->setFetchType(false);
     }
 
     /**
@@ -1497,10 +1499,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $referenceField = $this->_inferReferenceField($referenceModel);
         }
 
+        $reference = new $referenceModel;
         /**
+         * @var \ManaPHP\Model $reference
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where((new $referenceModel)->getPrimaryKey(), $this->$referenceField)->setFetchType(false);
+        return $referenceModel::criteria()->where($reference->getPrimaryKey(), $this->$referenceField)->setFetchType(false);
     }
 
     /**
@@ -1515,10 +1519,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $referenceField = $this->_inferReferenceField(get_called_class());
         }
 
+        $reference = new $referenceModel;
         /**
+         * @var \ManaPHP\Model $reference
          * @var \ManaPHP\Model $referenceModel
          */
-        return $referenceModel::criteria()->where($referenceField, $this->{$this->getPrimaryKey()})->indexBy((new $referenceModel)->getPrimaryKey())->setFetchType(true);
+        return $referenceModel::criteria()->where($referenceField, $this->{$this->getPrimaryKey()})->indexBy($reference->getPrimaryKey())->setFetchType(true);
     }
 
     public function __get($name)
