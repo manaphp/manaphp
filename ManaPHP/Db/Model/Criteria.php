@@ -23,6 +23,11 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     protected $_modelReplaced = false;
 
     /**
+     * @var string|array
+     */
+    protected $_columns;
+
+    /**
      * Criteria constructor.
      *
      * @param string|\ManaPHP\Db\Model $model
@@ -35,6 +40,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
         $this->_query = $this->_dependencyInjector->get('ManaPHP\Db\Query');
         if ($fields !== null) {
+            $this->_columns = $fields;
             $this->_query->select($fields);
         }
     }
@@ -61,6 +67,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     public function select($fields)
     {
         $this->_query->select($fields);
+        $this->_columns = $fields;
 
         return $this;
     }
@@ -510,6 +517,9 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function execute()
     {
+        if ($this->_columns === null) {
+            $this->select($this->_model->getFields());
+        }
         return $this->_replaceModelInfo()->_query->execute();
     }
 
