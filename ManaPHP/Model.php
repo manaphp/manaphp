@@ -472,6 +472,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $max = 100;
         } elseif (is_array($interval) && count($interval) === 0 && is_int($max = key($interval))) {
             $interval = (float)$interval[$max];
+        } else {
+            throw new ModelException(['`:interval` interval is not recognized', 'interval' => json_encode($interval, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
         }
 
         static $cached = [];
