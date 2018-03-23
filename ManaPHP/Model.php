@@ -53,7 +53,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $this->_dependencyInjector = Di::getDefault();
 
         if (count($data) !== 0) {
-            $this->_snapshot = $data;
+            if ($this->_snapshot !== false) {
+                $this->_snapshot = $data;
+            }
             foreach ($data as $field => $value) {
                 $this->{$field} = $value;
             }
@@ -400,7 +402,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 unset($cached[$className][$pkValue]);
             }
         }
+        /**
+         * @var \ManaPHP\Model $r
+         */
         $r = static::criteria($fields, $model)->where($pkName, $pkValue)->fetchOne();
+        $r->_snapshot = false;
         $cached[$className][$pkValue] = [$current + $interval, $r];
         /** @noinspection PhpUndefinedVariableInspection */
         if (count($cached[$className]) > $max) {
@@ -885,6 +891,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function update()
     {
+        if ($this->_snapshot === false) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new ModelException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+        }
+
         $conditions = [];
         $primaryKey = $this->getPrimaryKey();
 
@@ -1228,7 +1240,21 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function getSnapshotData()
     {
+        if ($this->_snapshot === false) {
+            throw new ModelException(['getSnapshotData failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+        }
+
         return $this->_snapshot;
+    }
+
+    /**
+     * @return static
+     */
+    public function disableSnapshot()
+    {
+        $this->_snapshot = false;
+
+        return $this;
     }
 
     /**
@@ -1238,6 +1264,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function getChangedFields()
     {
+        if ($this->_snapshot === false) {
+            throw new ModelException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+        }
+
         $changed = [];
 
         foreach ($this->getFields() as $field) {
@@ -1259,6 +1289,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function hasChanged($fields)
     {
+        if ($this->_snapshot === false) {
+            throw new ModelException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+        }
+
         if (is_string($fields)) {
             $fields = [$fields];
         }
@@ -1305,7 +1339,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $this->assign($r[0], []);
 
-        $this->_snapshot = array_merge($this->_snapshot, $r[0]);
+        if ($this->_snapshot !== false) {
+            $this->_snapshot = array_merge($this->_snapshot, $r[0]);
+        }
 
         return $this;
     }
@@ -1335,7 +1371,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function unserialize($serialized)
     {
         $unserialized = unserialize($serialized);
-        $this->_snapshot = $unserialized;
+        if ($this->_snapshot !== false) {
+            $this->_snapshot = $unserialized;
+        }
         $this->assign($unserialized);
     }
 
@@ -1504,7 +1542,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function __debugInfo()
     {
         $data = $this->toArray();
-        $data['*changed_fields*'] = $this->getChangedFields();
+
+        if ($this->_snapshot !== false) {
+            $data['*changed_fields*'] = $this->getChangedFields();
+        }
 
         return $data;
     }
