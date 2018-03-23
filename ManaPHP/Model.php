@@ -48,7 +48,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @param array $data
      */
-    final public function __construct($data = [])
+    public function __construct($data = [])
     {
         $this->_dependencyInjector = Di::getDefault();
 
