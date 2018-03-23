@@ -1421,7 +1421,8 @@ class Query extends Component implements QueryInterface
             $this->fireEvent('modelsCache:miss', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
         }
 
-        $result = ($this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db)->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
+        $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
+        $result = $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
         if (isset($cacheOptions)) {
             $this->modelsCache->set($cacheOptions['key'],
                 json_encode($this->_buildCacheData($result, -1), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
