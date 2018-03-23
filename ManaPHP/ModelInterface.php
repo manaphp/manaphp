@@ -150,11 +150,20 @@ interface ModelInterface
     /**
      * @param int|string|array $filters
      * @param string           $field
-     * @param mixed            $defaultValue
+     * @param int|float|array  $interval
      *
-     * @return int|double|string|null
+     * @return int|double|string|false
      */
-    public static function value($filters, $field, $defaultValue = null);
+    public static function value($filters, $field, $interval = null);
+
+    /**
+     * @param int|string|array $filters
+     * @param string           $field
+     * @param int|float|array  $interval
+     *
+     * @return int|double|string
+     */
+    public static function valueOrFail($filters, $field, $interval = null);
 
     /**
      * @param string $field

@@ -444,17 +444,78 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @param int|string|array $filters
      * @param string           $field
-     * @param mixed            $defaultValue
+     * @param int|float|array  $interval
      *
-     * @return int|double|string|null
+     * @return int|double|string|false
      */
-    public static function value($filters, $field, $defaultValue = null)
+    public static function value($filters, $field, $interval = null)
     {
-        if ($defaultValue === null) {
-            return static::firstOrFail($filters, [$field])->{$field};
+        $model = new static;
+        $pkName = $model->getPrimaryKey();
+
+        $pkValue = null;
+        if (is_scalar($filters)) {
+            $pkValue = $filters;
+        } elseif (is_array($filters)) {
+            if (count($filters) === 1 && isset($filters[$pkName])) {
+                $pkValue = $filters[$pkName];
+            }
+        }
+
+        if ($interval === null || $pkValue === null) {
+            $rs = static::criteria([$field], $model)->where($filters)->limit(1)->execute();
+            return $rs ? $rs[0][$field] : false;
+        }
+
+        if (is_numeric($interval)) {
+            $interval = (float)$interval;
+            $max = 100;
+        } elseif (is_array($interval) && count($interval) === 0 && is_int($max = key($interval))) {
+            $interval = (float)$interval[$max];
+        }
+
+        static $cached = [];
+
+        $current = microtime(true);
+        $className = get_called_class();
+
+        if (isset($cached[$className][$field][$pkValue])) {
+            $cache = $cached[$className][$field][$pkValue];
+            if ($current - $cache[0] < $interval) {
+                return $cache[1];
+            }
+            unset($cached[$className][$field][$pkValue]);
+        }
+
+        $rs = static::criteria([$field], $model)->where($pkName, $pkValue)->limit(1)->execute();
+        if (!$rs) {
+            return false;
+        }
+
+        $value = $rs[0][$field];
+
+        $cached[$className][$field][$pkValue] = [$current + $interval, $value];
+        if (count($cached[$className][$field]) > $max) {
+            unset($cached[$className][$field][key($cached[$className][$field])]);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param int|string|array $filters
+     * @param string           $field
+     * @param int|float|array  $interval
+     *
+     * @return int|double|string
+     */
+    public static function valueOrFail($filters, $field, $interval = null)
+    {
+        $value = static::value($filters, $field, $interval);
+        if ($value === false) {
+            throw new ModelException(['valueOrFail failed: `:model` record is not exists', 'model' => get_called_class()]);
         } else {
-            $r = static::first($filters, [$field])->{$field};
-            return $r ? $r->{$field} : $defaultValue;
+            return $value;
         }
     }
 
