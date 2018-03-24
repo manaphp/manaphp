@@ -400,6 +400,10 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     protected function _whereLike($expr, $like)
     {
+        if ($like === '') {
+            return $this;
+        }
+
         if (is_array($expr)) {
             $or = [];
             /** @noinspection ForeachSourceInspection */
@@ -422,6 +426,10 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     protected function _whereNotLike($expr, $like)
     {
+        if ($like === '') {
+            return $this;
+        }
+
         if (is_array($expr)) {
             $and = [];
             /** @noinspection ForeachSourceInspection */
@@ -444,7 +452,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereContains($field, $value)
     {
-        return $this->_whereLike($field, $value);
+        return $value === '' ? $this : $this->_whereLike($field, $value);
     }
 
     /**
@@ -455,7 +463,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotContains($field, $value)
     {
-        return $this->_whereNotLike($field, $value);
+        return $value === '' ? $this : $this->_whereNotLike($field, $value);
     }
 
     /**
@@ -467,6 +475,10 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereStartsWith($field, $value, $length = null)
     {
+        if ($value === '') {
+            return $this;
+        }
+
         if ($length === null) {
             return $this->_whereLike($field, '^' . $value);
         } else {
@@ -483,6 +495,10 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotStartsWith($field, $value, $length = null)
     {
+        if ($value === '') {
+            return $this;
+        }
+
         if ($length === null) {
             return $this->_whereNotLike($field, '^' . $value);
         } else {
@@ -498,7 +514,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereEndsWith($field, $value)
     {
-        return $this->_whereLike($field, $value . '$');
+        return $value === '' ? $this : $this->_whereLike($field, $value . '$');
     }
 
     /**
@@ -509,7 +525,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotEndsWith($field, $value)
     {
-        return $this->_whereNotLike($field, $value . '$');
+        return $value === '' ? $this : $this->_whereNotLike($field, $value . '$');
     }
 
     /**
@@ -520,6 +536,10 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereLike($expr, $value)
     {
+        if ($value === '') {
+            return $this;
+        }
+
         if ($value[0] !== '%') {
             $value = '^' . $value;
         }
@@ -541,6 +561,10 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotLike($expr, $value)
     {
+        if ($value === '') {
+            return $this;
+        }
+
         if ($value[0] !== '%') {
             $value = '^' . $value;
         }

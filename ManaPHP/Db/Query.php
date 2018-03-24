@@ -692,6 +692,10 @@ class Query extends Component implements QueryInterface
      */
     public function whereLike($expr, $like)
     {
+        if ($like === '') {
+            return $this;
+        }
+
         if (is_array($expr)) {
             $conditions = [];
             /** @noinspection ForeachSourceInspection */
@@ -735,6 +739,10 @@ class Query extends Component implements QueryInterface
      */
     public function whereNotLike($expr, $like)
     {
+        if ($like === '') {
+            return $this;
+        }
+
         if (is_array($expr)) {
             $conditions = [];
             /** @noinspection ForeachSourceInspection */
@@ -778,7 +786,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereContains($expr, $value)
     {
-        return $this->whereLike($expr, '%' . $value . '%');
+        return $value === '' ? $this : $this->whereLike($expr, '%' . $value . '%');
     }
 
     /**
@@ -790,7 +798,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereNotContains($expr, $value)
     {
-        return $this->whereNotLike($expr, '%' . $value . '%');
+        return $value === '' ? $this : $this->whereNotLike($expr, '%' . $value . '%');
     }
 
     /**
@@ -803,7 +811,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereStartsWith($expr, $value, $length = null)
     {
-        return $this->whereLike($expr, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+        return $value === '' ? $this : $this->whereLike($expr, $length === null ? $value . '%' : str_pad($value, $length, '_'));
     }
 
     /**
@@ -816,7 +824,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereNotStartsWith($expr, $value, $length = null)
     {
-        return $this->whereNotLike($expr, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+        return $value === '' ? $this : $this->whereNotLike($expr, $length === null ? $value . '%' : str_pad($value, $length, '_'));
     }
 
     /**
@@ -828,7 +836,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereEndsWith($expr, $value)
     {
-        return $this->whereLike($expr, '%' . $value);
+        return $value === '' ? $this : $this->whereLike($expr, '%' . $value);
     }
 
     /**
@@ -840,7 +848,7 @@ class Query extends Component implements QueryInterface
      */
     public function whereNotEndsWith($expr, $value)
     {
-        return $this->whereNotLike($expr, '%' . $value);
+        return $value === '' ? $this : $this->whereNotLike($expr, '%' . $value);
     }
 
     /**
