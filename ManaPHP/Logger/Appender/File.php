@@ -20,7 +20,7 @@ class File extends Component implements AppenderInterface
     /**
      * @var string
      */
-    protected $_format = '[{date}][{level}][{category}][{location}] {message}';
+    protected $_format = '[:date][:level][:category][:location] :message';
 
     /**
      * @var bool
@@ -76,7 +76,7 @@ class File extends Component implements AppenderInterface
 
         $replaced = [];
         foreach ($logEvent as $k => $v) {
-            $replaced['{' . $k . '}'] = $v;
+            $replaced[":$k"] = $v;
         }
 
         if (file_put_contents($this->_file, strtr($this->_format, $replaced), FILE_APPEND | LOCK_EX) === false) {

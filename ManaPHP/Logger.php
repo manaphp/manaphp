@@ -202,7 +202,7 @@ class Logger extends Component implements LoggerInterface
             /** @noinspection ForeachSourceInspection */
             foreach ($message as $k => $v) {
                 if ($k !== 0) {
-                    $replaces['{' . $k . '}'] = $v;
+                    $replaces[":$k"] = $v;
                 }
             }
 
@@ -218,7 +218,6 @@ class Logger extends Component implements LoggerInterface
         $logEvent['location'] = $this->_getLocation($traces);
         $logEvent['message'] = $message;
         $logEvent['caller'] = $this->_getCaller($traces);
-        $logEvent['client_ip'] = $this->request->getClientAddress();
         $logEvent['timestamp'] = time();
 
         $this->fireEvent('logger:log', $logEvent);
