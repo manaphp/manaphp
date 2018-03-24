@@ -281,21 +281,20 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $pkValue = null;
 
         if ($filters === null) {
-            $di = Di::getDefault();
-            if ($di->request->has($pkName)) {
-                $pkValue = $di->request->get($pkName);
-            } elseif ($di->dispatcher->hasParam($pkName)) {
-                $pkValue = $di->dispatcher->getParam($pkName);
+            if ($model->_dependencyInjector->request->has($pkName)) {
+                $pkValue = $model->_dependencyInjector->request->get($pkName);
+            } elseif ($model->_dependencyInjector->dispatcher->hasParam($pkName)) {
+                $pkValue = $model->_dependencyInjector->dispatcher->getParam($pkName);
             } else {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 /** @noinspection PhpUnhandledExceptionInspection */
-                throw new ModelException('missing filters');
+                throw new ModelException('missing filters condition for Model::first method');
             }
 
             if (!is_scalar($pkValue)) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 /** @noinspection PhpUnhandledExceptionInspection */
-                throw new ModelException('first key value is not scalar');
+                throw new ModelException('Model::first primary key value is not scalar');
             }
             $filters = [$pkName => $pkValue];
         } elseif (is_scalar($filters)) {
