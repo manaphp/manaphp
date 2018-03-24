@@ -305,7 +305,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         $interval = null;
-        if (is_float($options)) {
+        if ($options === null) {
+            null;
+        } elseif (is_float($options)) {
             $interval = $options;
             $max = 10;
         } elseif (is_array($options) && count($options) === 1 && is_int($max = key($options))) {
