@@ -11,6 +11,7 @@ use ManaPHP\Utility\Text;
  * @package ManaPHP
  *
  * @property \ManaPHP\Model\ValidatorInterface $modelsValidator
+ * @property \ManaPHP\Http\RequestInterface    $request
  *
  * method beforeCreate()
  * method afterCreate()
@@ -747,29 +748,17 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function newOrFail($data = null, $whiteList = null)
     {
+        $model = new static();
+
         if ($data === null) {
-            $data = Di::getDefault()->request->get();
+            $data = $model->_dependencyInjector->request->get();
         }
 
-        if (is_array($whiteList)) {
-            foreach ($whiteList as $k => $v) {
-                if (is_string($k)) {
-                    if (isset($data[$k])) {
-                        $data[$v] = $data[$k];
-                        unset($data[$k]);
-                    }
+        unset($data[$model->getPrimaryKey()]);
 
-                    $whiteList[] = $v;
-                    unset($whiteList[$k]);
-                }
-            }
-        }
+        $model->assign($data, $whiteList);
 
-        $instance = new static();
-
-        $instance->assign(array_intersect_key($data, array_flip($instance->getFields())), $whiteList);
-
-        return $instance;
+        return $model;
     }
 
     /**
@@ -861,10 +850,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $model = new static;
 
-        $di = Di::getDefault();
-
         if ($data === null) {
-            $data = $di->request->get();
+            $data = $model->_dependencyInjector->request->get();
         }
 
         $pkName = $model->getPrimaryKey();
@@ -872,10 +859,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if (isset($data[$pkName])) {
             $pkValue = $data[$pkName];
             unset($data[$pkName]);
-        } elseif ($di->dispatcher->hasParam($pkName)) {
-            $pkValue = $di->dispatcher->getParam($pkName);
+        } elseif ($model->_dependencyInjector->dispatcher->hasParam($pkName)) {
+            $pkValue = $model->_dependencyInjector->dispatcher->getParam($pkName);
         } else {
-            $params = $di->dispatcher->getParams();
+            $params = $model->_dependencyInjector->dispatcher->getParams();
             if (count($params) === 1) {
                 $pkValue = current($params);
             } else {
@@ -889,20 +876,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             /** @noinspection PhpUnhandledExceptionInspection */
             throw new ModelException('primary key value is not scalar');
-        }
-
-        if (is_array($whiteList)) {
-            foreach ($whiteList as $k => $v) {
-                if (is_string($k)) {
-                    if (isset($data[$k])) {
-                        $data[$v] = $data[$k];
-                        unset($data[$k]);
-                    }
-
-                    $whiteList[] = $v;
-                    unset($whiteList[$k]);
-                }
-            }
         }
 
         $instance = static::firstOrFail([$pkName => $pkValue]);
@@ -950,35 +923,35 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function saveOrFail($data = null, $whiteList = null)
     {
-        $di = Di::getDefault();
+        $model = new static();
 
         if ($data === null) {
-            $data = $di->request->get();
+            $data = $model->_dependencyInjector->request->get();
         }
 
-        $pkName = (new static)->getPrimaryKey();
+        $pkName = $model->getPrimaryKey();
 
         $pkValue = null;
 
         if (isset($data[$pkName])) {
             $pkValue = $data[$pkName];
-        } elseif ($di->dispatcher->hasParam($pkName)) {
-            $pkValue = $di->dispatcher->getParam($pkName);
+        } elseif ($model->_dependencyInjector->dispatcher->hasParam($pkName)) {
+            $pkValue = $model->_dependencyInjector->dispatcher->getParam($pkName);
         } else {
-            $params = $di->dispatcher->getParams();
+            $params = $model->_dependencyInjector->dispatcher->getParams();
             if (count($params) === 1) {
                 $pkValue = current($params);
             }
         }
 
         if ($pkValue === null) {
-            return static::createOrFail($data, $whiteList);
+            return $model->assign($data, $whiteList)->create();
+        } elseif (is_scalar($pkValue)) {
+            return static::firstOrFail($pkValue)->assign($data, $whiteList)->update();
         } else {
-            if (!isset($data[$pkName])) {
-                $data[$pkName] = $pkValue;
-            }
-
-            return static::updateOrFail($data, $whiteList);
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
+            throw new ModelException('primary key value is not scalar');
         }
     }
 
