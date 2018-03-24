@@ -46,8 +46,13 @@ class Message implements \JsonSerializable
     {
         $tr = [':field' => $this->field, ':value' => $this->model->{$this->field}];
 
-        foreach ((array)$this->parameters as $z => $parameter) {
-            $tr[':parameters[' . $z . ']'] = $parameter;
+        if (is_array($this->parameters)) {
+            foreach ($this->parameters as $z => $parameter) {
+                $tr[':parameters[' . $z . ']'] = $parameter;
+            }
+        } else {
+            $tr[':parameter'] = $this->parameters;
+            $tr[':parameters[0]'] = $this->parameters;
         }
 
         return strtr($this->template, $tr);

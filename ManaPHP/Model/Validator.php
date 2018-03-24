@@ -127,7 +127,7 @@ class Validator extends Component implements ValidatorInterface
                     $parameters = null;
                 } else {
                     $name = $k;
-                    $parameters = (array)$v;
+                    $parameters = $v;
                 }
 
                 $value = $this->_validate($model->$field, $name, $parameters);
@@ -147,21 +147,21 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string|int $value
-     * @param string     $name
-     * @param array      $params
+     * @param string|int   $value
+     * @param string       $name
+     * @param string|array $parameters
      *
      * @return mixed
      */
-    protected function _validate($value, $name, $params)
+    protected function _validate($value, $name, $parameters)
     {
         $method = "_validate_$name";
         if (method_exists($this, $method)) {
-            return $params === null ? $this->$method($value) : $this->$method($value, $params);
+            return $parameters === null ? $this->$method($value) : $this->$method($value, $parameters);
         }
 
         if (function_exists($name)) {
-            return $params === null ? $name($value) : $name($value, $params);
+            return $parameters === null ? $name($value) : $name($value, $parameters);
         }
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -239,11 +239,11 @@ class Validator extends Component implements ValidatorInterface
 
     /**
      * @param string $value
-     * @param array  $parameters
+     * @param string $parameter
      *
      * @return int|null
      */
-    protected function _validate_date($value, $parameters = [])
+    protected function _validate_date($value, $parameter = null)
     {
         $timestamp = is_numeric($value) ? (int)$value : strtotime($value);
         if ($timestamp === false) {
@@ -253,7 +253,7 @@ class Validator extends Component implements ValidatorInterface
         if (in_array($this->_field, $this->_model->getIntTypeFields(), true)) {
             return $timestamp;
         } else {
-            $format = isset($parameters[0]) ? $parameters[0] : 'Y-m-d H:i:s';
+            $format = $parameter ?: 'Y-m-d H:i:s';
 
             $r = date($format, $timestamp);
             return $r !== false ? $r : null;
@@ -262,90 +262,90 @@ class Validator extends Component implements ValidatorInterface
 
     /**
      * @param int|double $value
-     * @param array      $parameters
+     * @param string     $parameter
      *
      * @return int|double|null
      */
-    protected function _validate_range($value, $parameters)
+    protected function _validate_range($value, $parameter)
     {
-        if (preg_match('#^(-?[\.\d]+)-(-?[\d\.]+)$#', $parameters[0], $match)) {
+        if (preg_match('#^(-?[\.\d]+)-(-?[\d\.]+)$#', $parameter, $match)) {
             return $value >= $match[1] && $value <= $match[2] ? $value : null;
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ValidatorException(['range validator `:parameters` parameters is not {min}-{max} format', 'parameters' => $parameters[0]]);
+            throw new ValidatorException(['range validator `:parameter` parameters is not {min}-{max} format', 'parameter' => $parameter]);
         }
     }
 
     /**
      * @param int|double $value
-     * @param array      $parameters
+     * @param int|float  $parameter
      *
      * @return int|double|null
      */
-    protected function _validate_min($value, $parameters)
+    protected function _validate_min($value, $parameter)
     {
-        return $value < $parameters[0] ? null : $value;
+        return $value < $parameter ? null : $value;
     }
 
     /**
      * @param int|double $value
-     * @param array      $parameters
+     * @param int|double $parameter
      *
      * @return int|double|null
      */
-    protected function _validate_max($value, $parameters)
+    protected function _validate_max($value, $parameter)
     {
-        return $value > $parameters[0] ? null : $value;
+        return $value > $parameter ? null : $value;
     }
 
     /**
      * @param int|double $value
-     * @param array      $parameters
+     * @param string     $parameter
      *
      * @return int|double|null
      */
-    protected function _validate_length($value, $parameters)
+    protected function _validate_length($value, $parameter)
     {
         $len = mb_strlen($value);
-        if (preg_match('#^(\d+)-(\d+)$#', $parameters[0], $match)) {
+        if (preg_match('#^(\d+)-(\d+)$#', $parameter, $match)) {
             return $len >= $match[1] && $len <= $match[2] ? $value : null;
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ValidatorException(['length validator `:parameters` parameters is not {minLength}-{maxLength} format', 'parameters' => $parameters[0]]);
+            throw new ValidatorException(['length validator `:parameter` parameters is not {minLength}-{maxLength} format', 'parameter' => $parameter]);
         }
     }
 
     /**
      * @param string|int $value
-     * @param array      $parameters
+     * @param string     $parameter
      *
      * @return string|int
      */
-    protected function _validate_in($value, $parameters)
+    protected function _validate_in($value, $parameter)
     {
-        return in_array($value, preg_split('#[\s,]+#', $parameters[0]), false) ? $value : null;
+        return in_array($value, preg_split('#[\s,]+#', $parameter), false) ? $value : null;
     }
 
     /**
      * @param string|int $value
-     * @param array      $parameters
+     * @param string     $parameter
      *
      * @return string|int
      */
-    protected function _validate_not_in($value, $parameters)
+    protected function _validate_not_in($value, $parameter)
     {
-        return !in_array($value, preg_split('#[\s,]+#', $parameters[0]), false) ? $value : null;
+        return !in_array($value, preg_split('#[\s,]+#', $parameter), false) ? $value : null;
     }
 
     /**
      * @param string $value
-     * @param array  $parameters
+     * @param string $parameter
      *
      * @return string|null
      */
-    protected function _validate_regex($value, $parameters)
+    protected function _validate_regex($value, $parameter)
     {
-        return ($value === '' || preg_match($parameters[0], $value)) ? $value : null;
+        return ($value === '' || preg_match($parameter, $value)) ? $value : null;
     }
 
     /**
@@ -402,18 +402,18 @@ class Validator extends Component implements ValidatorInterface
 
     /**
      * @param string $value
-     * @param array  $parameters
+     * @param string $parameter
      *
      * @return null|string
      */
-    protected function _validate_ext($value, $parameters)
+    protected function _validate_ext($value, $parameter)
     {
         if ($value === '') {
             return '';
         }
 
         $ext = pathinfo($value, PATHINFO_EXTENSION);
-        return in_array(strtolower($ext), preg_split('#[\s,]+#', $parameters[0]), true) ? $value : null;
+        return in_array(strtolower($ext), preg_split('#[\s,]+#', $parameter), true) ? $value : null;
     }
 
     /**
@@ -471,18 +471,18 @@ class Validator extends Component implements ValidatorInterface
 
     /**
      * @param string $value
-     * @param array  $parameters
+     * @param string $parameter
      *
      * @return string|null
      */
-    protected function _validate_exists($value, $parameters = [])
+    protected function _validate_exists($value, $parameter = null)
     {
         if (!$value) {
             return $value;
         }
         $field = $this->_field;
-        if ($parameters) {
-            $className = $parameters[0];
+        if ($parameter) {
+            $className = $parameter;
         } else {
             $modelName = get_class($this->_model);
             if (preg_match('#^(.*)_id$#', $field, $match)) {
@@ -503,6 +503,7 @@ class Validator extends Component implements ValidatorInterface
 
         /**
          * @var \ManaPHP\Model $model
+         * @var \ManaPHP\Model $className
          */
         $model = new $className;
         return $className::exists([$model->getPrimaryKey() => $value]) ? $value : null;
