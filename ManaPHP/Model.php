@@ -893,26 +893,26 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param array $whiteList
      * @param array $data
+     * @param array $whiteList
      *
      * @return static
      */
-    public static function createOrFail($whiteList = null, $data = null)
+    public static function createOrFail($data = null, $whiteList = null)
     {
-        $instance = static::newOrFail($whiteList, $data);
+        $instance = static::newOrFail($data, $whiteList);
         $instance->create();
 
         return $instance;
     }
 
     /**
-     * @param array $whiteList
      * @param array $data
+     * @param array $whiteList
      *
      * @return static
      */
-    public static function newOrFail($whiteList = null, $data = null)
+    public static function newOrFail($data = null, $whiteList = null)
     {
         if ($data === null) {
             $data = Di::getDefault()->request->get();
@@ -1021,12 +1021,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param array $whiteList
      * @param array $data
+     * @param array $whiteList
      *
      * @return static
      */
-    public static function updateOrFail($whiteList = null, $data = null)
+    public static function updateOrFail($data = null, $whiteList = null)
     {
         $model = new static;
 
@@ -1126,12 +1126,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param array $whiteList
      * @param array $data
+     * @param array $whiteList
      *
      * @return static
      */
-    public static function saveOrFail($whiteList = null, $data = null)
+    public static function saveOrFail($data = null, $whiteList = null)
     {
         $di = Di::getDefault();
 
@@ -1155,13 +1155,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if ($pkValue === null) {
-            return static::createOrFail($whiteList, $data);
+            return static::createOrFail($data, $whiteList);
         } else {
             if (!isset($data[$pkName])) {
                 $data[$pkName] = $pkValue;
             }
 
-            return static::updateOrFail($whiteList, $data);
+            return static::updateOrFail($data, $whiteList);
         }
     }
 

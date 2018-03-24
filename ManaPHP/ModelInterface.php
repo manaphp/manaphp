@@ -264,12 +264,12 @@ interface ModelInterface
     public function save();
 
     /**
-     * @param array $whiteList
      * @param array $data
+     * @param array $whiteList
      *
      * @return static
      */
-    public static function saveOrFail($whiteList = null, $data = null);
+    public static function saveOrFail($data = null, $whiteList = null);
 
     /**
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
@@ -280,20 +280,20 @@ interface ModelInterface
     public function create();
 
     /**
-     * @param array $whiteList
      * @param array $data
+     * @param array $whiteList
      *
      * @return static
      */
-    public static function createOrFail($whiteList = null, $data = null);
+    public static function createOrFail($data = null, $whiteList = null);
 
     /**
-     * @param array $whiteList
      * @param array $data
+     * @param array $whiteList
      *
      * @return static
      */
-    public static function newOrFail($whiteList = null, $data = null);
+    public static function newOrFail($data = null, $whiteList = null);
 
     /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
@@ -304,12 +304,12 @@ interface ModelInterface
     public function update();
 
     /**
-     * @param array $whiteList
      * @param array $data
+     * @param array $whiteList
      *
      * @return static
      */
-    public static function updateOrFail($whiteList = null, $data = null);
+    public static function updateOrFail($data = null, $whiteList = null);
 
     /**
      * @param array $fieldValues
