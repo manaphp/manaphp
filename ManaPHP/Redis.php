@@ -123,10 +123,6 @@ class Redis extends \Redis
      */
     public function dump($key = null)
     {
-        if ($key === null) {
-            return get_object_vars($this);
-        } else {
-            return parent::dump($key);
-        }
+        return $key === null ? get_object_vars($this) : parent::dump($key);
     }
 }
