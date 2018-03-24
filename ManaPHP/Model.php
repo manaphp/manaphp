@@ -128,49 +128,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @return array
      */
-    protected function _getCrudTimeFields()
-    {
-        static $cached = [];
-
-        $calledClass = get_called_class();
-
-        if (!isset($cached[$calledClass])) {
-            $timeFields = [];
-            $fields = $this->getFields();
-
-            $intersect = array_intersect(['created_time', 'created_at'], $fields);
-            if (isset($intersect[0])) {
-                $timeFields[self::OP_CREATE] = $intersect[0];
-            }
-
-            $intersect = array_intersect(['updated_time', 'updated_at'], $fields);
-            if (isset($intersect[0])) {
-                $timeFields[self::OP_UPDATE] = $intersect[0];
-            }
-
-            return $cached[$calledClass] = $timeFields;
-        }
-
-        return $cached[$calledClass];
-    }
-
-    /**
-     * @return int|string
-     */
-    protected function _getCurrentTime()
-    {
-        $intTypeFields = $this->getIntTypeFields();
-
-        if ($intTypeFields !== null && !array_intersect($this->_getCrudTimeFields(), $intTypeFields)) {
-            return date('Y-m-d H:i:s');
-        } else {
-            return time();
-        }
-    }
-
-    /**
-     * @return array
-     */
     public function rules()
     {
         return [];
@@ -809,34 +766,27 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @param int $opMode
      *
-     * @return bool|string
+     * @return  array
      */
-    protected function _maintainCrudTime($opMode)
+    protected function _getAutoFilledData($opMode)
     {
-        $currentTime = $this->_getCurrentTime();
-        $timeFields = $this->_getCrudTimeFields();
+        $ts = time();
+        $time = date('Y-m-d H:i:s');
+        $intTypeFields = $this->getIntTypeFields();
 
-        if ($opMode === self::OP_CREATE && isset($timeFields[self::OP_CREATE])) {
-            $createTsField = $timeFields[self::OP_CREATE];
-
-            if ($this->{$createTsField} !== null) {
-                return false;
-            }
-            $this->$createTsField = $currentTime;
+        $data = [];
+        if ($opMode === self::OP_CREATE) {
+            $data['created_time'] = $data['created_at'] = in_array('created_time', $intTypeFields, true) || in_array('created_at', $intTypeFields, true) ? $ts : $time;
+            $data['creator_id'] = $data['updator_id'] = $this->userIdentity->getId();
+            $data['creator_name'] = $data['updator_name'] = $this->userIdentity->getName();
+            $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intTypeFields, true) || in_array('updated_at', $intTypeFields, true) ? $ts : $time;
+        } elseif ($opMode === self::OP_UPDATE) {
+            $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intTypeFields, true) || in_array('updated_at', $intTypeFields, true) ? $ts : $time;
+            $data['updator_id'] = $this->userIdentity->getId();
+            $data['updator_name'] = $this->userIdentity->getId();
         }
 
-        if (isset($timeFields[self::OP_UPDATE])) {
-            $updateTimeField = $timeFields[self::OP_UPDATE];
-
-            if ($this->$updateTimeField === null
-                || (isset($this->_snapshot[$updateTimeField]) && $this->$updateTimeField === $this->_snapshot[$updateTimeField])) {
-                $this->$updateTimeField = $currentTime;
-
-                return $updateTimeField;
-            }
-        }
-
-        return false;
+        return $data;
     }
 
     /**
@@ -865,9 +815,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function create()
     {
         $fields = $this->getFields();
-        $this->validate($fields);
+        foreach ($this->_getAutoFilledData(self::OP_CREATE) as $field => $value) {
+            if (!in_array($field, $fields, true) || $this->$field !== null) {
+                continue;
+            }
+            $this->$field = $value;
+        }
 
-        $this->_maintainCrudTime(self::OP_CREATE);
+        $this->validate($fields);
 
         $this->_preCreate();
 
@@ -968,7 +923,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
-        $conditions = [];
         $primaryKey = $this->getPrimaryKey();
 
         if (!isset($this->{$primaryKey})) {
@@ -980,12 +934,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             ]);
         }
 
-        $conditions[$primaryKey] = $this->{$primaryKey};
-
-        $this->validate($this->getChangedFields());
-
         $fieldValues = [];
-        foreach ($this->getFields() as $field) {
+
+        $fields = $this->getFields();
+        foreach ($fields as $field) {
             if ($field === $primaryKey || $this->{$field} === null) {
                 continue;
             }
@@ -1010,9 +962,16 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return $this;
         }
 
-        if ($updateTsField = $this->_maintainCrudTime(self::OP_UPDATE)) {
-            $fieldValues[$updateTsField] = $this->$updateTsField;
+        foreach ($this->_getAutoFilledData(self::OP_UPDATE) as $field => $value) {
+            if (!in_array($field, $fields, true)) {
+                continue;
+            }
+
+            $this->$field = $value;
+            $fieldValues[$field] = $value;
         }
+
+        $this->validate(array_keys($fieldValues));
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
             /** @noinspection PhpUnhandledExceptionInspection */
@@ -1020,7 +979,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(['`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, 'model' => get_class($this)]);
         }
 
-        static::criteria(null, $this)->where($conditions)->update($fieldValues);
+        static::criteria(null, $this)->where($primaryKey, $this->$primaryKey)->update($fieldValues);
 
         $this->_snapshot = $this->toArray();
 
