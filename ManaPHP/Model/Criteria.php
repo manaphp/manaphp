@@ -270,17 +270,23 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     protected function _with($instance)
     {
         foreach ($this->_with as $k => $v) {
+            $method = 'get' . ucfirst(is_string($k) ? $k : $v);
+
             if (is_int($k)) {
-                $method = 'get' . ucfirst($v);
-                $instance->assign([$v => $instance->$method()->fetch()], []);
+                $data = $instance->$method()->fetch();
             } else {
-                $method = 'get' . ucfirst($k);
-                if (is_array($v) || is_string($v)) {
-                    $instance->assign([$k => $instance->$method()->select($v)->fetch()], []);
+                if (is_string($v) || is_array($v)) {
+                    $data = $instance->$method()->select($v)->fetch();
                 } elseif (is_callable($v)) {
-                    $instance->assign([$k => $v($instance->$method())->fetch()], []);
+                    $data = $v($instance->$method());
+                    if ($data instanceof Criteria) {
+                        $data = $data->fetch();
+                    }
+                } else {
+                    throw new CriteriaException(['`:with` with is invalid', 'with' => $k]);
                 }
             }
+            $instance->{is_string($k) ? $k : $v} = $data;
         }
     }
 
@@ -291,16 +297,15 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     {
         $modelName = get_class($this->_model);
 
-        /**
-         * @var \ManaPHP\Model $r
-         */
-        $r = $this->limit(1)->execute();
-        $r = isset($r[0]) ? new $modelName($r[0]) : false;
-        if ($r && $this->_with) {
-            $this->_with($r);
+        if ($r = $this->limit(1)->execute()) {
+            $model = new $modelName($r[0]);
+            if ($this->_with) {
+                $this->_with($model);
+            }
+            return $model;
+        } else {
+            return false;
         }
-
-        return $r;
     }
 
     /**

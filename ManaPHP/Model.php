@@ -627,12 +627,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        if (count($data) === 1) {
-            $field = key($data);
-            method_exists($this, 'get' . ucfirst($field));
-            $this->_with[$field] = $data[$field];
-        }
-
         return $this;
     }
 
@@ -1246,7 +1240,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($this->_snapshot !== false) {
             $this->_snapshot = $unserialized;
         }
-		
+
         foreach ($unserialized as $field => $value) {
             $this->$field = $value;
         }
@@ -1380,7 +1374,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
         }
 
-        if (preg_match('#^(.*)(ies|es|s)$#', substr($name, 3), $match)) {
+        if (preg_match('#^(.*?)(ies|es|s)$#', substr($name, 3), $match)) {
             if ($match[2] === 'ies') {
                 $plainClassName = $match[1] . 'y';
             } else {
