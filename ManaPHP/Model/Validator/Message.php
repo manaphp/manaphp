@@ -29,9 +29,9 @@ class Message implements \JsonSerializable
      * @param string         $template
      * @param \ManaPHP\Model $model
      * @param string         $field
-     * @param array          $parameters
+     * @param string|array   $parameters
      */
-    public function __construct($template, $model, $field, $parameters = [])
+    public function __construct($template, $model, $field, $parameters = null)
     {
         $this->template = $template;
         $this->model = $model;
