@@ -1207,7 +1207,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(['`:model` model refresh failed: record is not exists now!', 'model' => get_called_class()]);
         }
 
-        $this->assign($r[0], []);
+        foreach ($r[0] as $field => $value) {
+            $this->$field = $value;
+        }
 
         if ($this->_snapshot !== false) {
             $this->_snapshot = array_merge($this->_snapshot, $r[0]);
@@ -1244,7 +1246,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($this->_snapshot !== false) {
             $this->_snapshot = $unserialized;
         }
-        $this->assign($unserialized);
+		
+        foreach ($unserialized as $field => $value) {
+            $this->$field = $value;
+        }
     }
 
     /**
@@ -1440,7 +1445,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 }
             }
         }
-		
+
         return $data;
     }
 
