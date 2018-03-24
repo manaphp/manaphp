@@ -266,8 +266,6 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
 
     /**
      * @param \ManaPHP\Model $instance
-     *
-     * @return \ManaPHP\Model
      */
     protected function _with($instance)
     {
@@ -284,8 +282,6 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
                 }
             }
         }
-
-        return $instance;
     }
 
     /**
@@ -316,10 +312,12 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
 
         $models = [];
         foreach ($this->execute() as $k => $result) {
-            $models[$k] = new $modelName($result);
+            $model = new $modelName($result);
             if ($this->_with) {
-                $this->_with($models[$k]);
+                $this->_with($model);
             }
+
+            $models[$k] = $model;
         }
 
         return $models;
