@@ -147,14 +147,18 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string|int   $value
-     * @param string       $name
-     * @param string|array $parameters
+     * @param string|int|object $value
+     * @param string            $name
+     * @param string|array      $parameters
      *
      * @return mixed
      */
     protected function _validate($value, $name, $parameters)
     {
+        if (is_object($value)) {
+            return $value;
+        }
+
         $method = "_validate_$name";
         if (method_exists($this, $method)) {
             return $parameters === null ? $this->$method($value) : $this->$method($value, $parameters);
