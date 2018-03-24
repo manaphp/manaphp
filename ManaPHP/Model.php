@@ -136,29 +136,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * <code>
-     *
-     * //How many robots are there?
-     * $robots = Robots::find();
-     * echo "There are ", count($robots), "\n";
-     *
-     * //How many mechanical robots are there?
-     * $robots = Robots::find("type='mechanical'");
-     * echo "There are ", count($robots), "\n";
-     *
-     * //Get and print virtual robots ordered by name
-     * $robots = Robots::find(array("type='virtual'", "order" => "name"));
-     * foreach ($robots as $robot) {
-     *       echo $robot->name, "\n";
-     * }
-     *
-     * //Get first 100 virtual robots ordered by name
-     * $robots = Robots::find(array("type='virtual'", "order" => "name", "limit" => 100));
-     * foreach ($robots as $robot) {
-     *       echo $robot->name, "\n";
-     * }
-     * </code>
-     *
      * @param array        $filters
      * @param array        $options
      * @param string|array $fields
@@ -288,20 +265,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * Allows to query the first record that match the specified conditions
-     *
-     * <code>
-     * //What's the first robot in robots table?
-     * $robot = Robots::first();
-     * echo "The robot name is ", $robot->name;
-     *
-     * //What's the first mechanical robot in robots table?
-     * $robot = Robots::first("type='mechanical'");
-     * echo "The first mechanical robot name is ", $robot->name;
-     *
-     * //Get first virtual robot ordered by name
-     * $robot = Robots::first(array("type='virtual'", "order" => "name"));
-     * echo "The first virtual robot name is ", $robot->name;
-     * </code>
      *
      * @param int|string|array $filters
      * @param string|array     $fields
@@ -541,18 +504,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * Allows to count how many records match the specified conditions
      *
-     * <code>
-     *
-     * //How many robots are there?
-     * $number = Robots::count();
-     * echo "There are ", $number, "\n";
-     *
-     * //How many mechanical robots are there?
-     * $number = Robots::count("type='mechanical'");
-     * echo "There are ", $number, " mechanical robots\n";
-     *
-     * </code>
-     *
      * @param array  $filters
      * @param string $field
      *
@@ -571,18 +522,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * Allows to calculate a summary on a field that match the specified conditions
      *
-     * <code>
-     *
-     * //How much are all robots?
-     * $sum = Robots::sum(array('column' => 'price'));
-     * echo "The total price of robots is ", $sum, "\n";
-     *
-     * //How much are mechanical robots?
-     * $sum = Robots::sum(array("type='mechanical'", 'column' => 'price'));
-     * echo "The total price of mechanical robots is  ", $sum, "\n";
-     *
-     * </code>
-     *
      * @param string $field
      * @param array  $filters
      *
@@ -595,18 +534,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * Allows to get the max value of a column that match the specified conditions
-     *
-     * <code>
-     *
-     * //What is the max robot id?
-     * $id = Robots::max(array('column' => 'id'));
-     * echo "The max robot id is: ", $id, "\n";
-     *
-     * //What is the max id of mechanical robots?
-     * $sum = Robots::max(array("type='mechanical'", 'column' => 'id'));
-     * echo "The max robot id of mechanical robots is ", $id, "\n";
-     *
-     * </code>
      *
      * @param string $field
      * @param array  $filters
@@ -621,17 +548,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * Allows to get the min value of a column that match the specified conditions
      *
-     * <code>
-     *
-     * //What is the min robot id?
-     * $id = Robots::min(array('column' => 'id'));
-     * echo "The min robot id is: ", $id;
-     *
-     * //What is the min id of mechanical robots?
-     * $sum = Robots::min(array("type='mechanical'", 'column' => 'id'));
-     * echo "The min robot id of mechanical robots is ", $id;
-     *
-     * </code>
      *
      * @param string $field
      * @param array  $filters
@@ -645,18 +561,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * Allows to calculate the average value on a column matching the specified conditions
-     *
-     * <code>
-     *
-     * //What's the average price of robots?
-     * $average = Robots::average(array('column' => 'price'));
-     * echo "The average price is ", $average, "\n";
-     *
-     * //What's the average price of mechanical robots?
-     * $average = Robots::average(array("type='mechanical'", 'column' => 'price'));
-     * echo "The average price of mechanical robots is ", $average, "\n";
-     *
-     * </code>
      *
      * @param string $field
      * @param array  $filters
@@ -702,17 +606,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * Assigns values to a model from an array
-     *
-     *<code>
-     *$robot->assign(array(
-     *  'type' => 'mechanical',
-     *  'name' => 'Boy',
-     *  'year' => 1952
-     *));
-     *</code>
-     *
-     * @param array $data
-     * @param array $whiteList
      *
      * @return static
      */
@@ -791,24 +684,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
-     * Returning true on success or false otherwise.
-     *
-     *<code>
-     *    //Creating a new robot
-     *    $robot = new Robots();
-     *    $robot->type = 'mechanical';
-     *    $robot->name = 'Boy';
-     *    $robot->year = 1952;
-     *    $robot->create();
-     *
-     *  //Passing an array to create
-     *  $robot = new Robots();
-     *  $robot->create(array(
-     *      'type' => 'mechanical',
-     *      'name' => 'Boy',
-     *      'year' => 1952
-     *  ));
-     *</code>
      *
      * @return static
      */
@@ -904,14 +779,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
-     * Returning true on success or false otherwise.
-     *
-     *<code>
-     *    //Updating a robot name
-     *    $robot = Robots::findFirst("id=100");
-     *    $robot->name = "Biomass";
-     *    $robot->update();
-     *</code>
      *
      * @return static
      */
@@ -1123,15 +990,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * Deletes a model instance. Returning true on success or false otherwise.
      *
-     * <code>
-     *$robot = Robots::findFirst("id=100");
-     *$robot->delete();
-     *
-     *foreach (Robots::find("type = 'mechanical'") as $robot) {
-     *   $robot->delete();
-     *}
-     * </code>
-     *
      * @return static
      */
     public function delete()
@@ -1223,10 +1081,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     /**
      * Returns the instance as an array representation
-     *
-     *<code>
-     * print_r($robot->toArray());
-     *</code>
      *
      * @param bool $ignoreNull
      *
