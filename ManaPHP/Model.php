@@ -655,7 +655,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *
      * @return  array
      */
-    protected function _getAutoFilledData($opMode)
+    public function getAutoFilledData($opMode)
     {
         $ts = time();
         $time = date('Y-m-d H:i:s');
@@ -684,7 +684,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function create()
     {
         $fields = $this->getFields();
-        foreach ($this->_getAutoFilledData(self::OP_CREATE) as $field => $value) {
+        foreach ($this->getAutoFilledData(self::OP_CREATE) as $field => $value) {
             if (!in_array($field, $fields, true) || $this->$field !== null) {
                 continue;
             }
@@ -823,7 +823,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return $this;
         }
 
-        foreach ($this->_getAutoFilledData(self::OP_UPDATE) as $field => $value) {
+        foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
             if (!in_array($field, $fields, true)) {
                 continue;
             }
