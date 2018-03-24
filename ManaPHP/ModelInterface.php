@@ -275,7 +275,7 @@ interface ModelInterface
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
-     * @return void
+     * @return static
      */
     public function create();
 
@@ -299,7 +299,7 @@ interface ModelInterface
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
-     * @return void
+     * @return static
      */
     public function update();
 

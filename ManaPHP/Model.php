@@ -854,7 +854,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *  ));
      *</code>
      *
-     * @return void
+     * @return static
      */
     public function create()
     {
@@ -890,6 +890,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $this->_fireEvent('afterCreate');
         $this->_fireEvent('afterSave');
+
+        return $this;
     }
 
     /**
@@ -950,7 +952,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *    $robot->update();
      *</code>
      *
-     * @return void
+     * @return static
      */
     public function update()
     {
@@ -999,7 +1001,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if (count($fieldValues) === 0) {
-            return;
+            return $this;
         }
 
         if ($updateTsField = $this->_maintainCrudTimestamp(false)) {
@@ -1018,6 +1020,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $this->_fireEvent('afterUpdate');
         $this->_fireEvent('afterSave');
+
+        return $this;
     }
 
     /**
