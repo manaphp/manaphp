@@ -259,7 +259,7 @@ interface ModelInterface
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
-     * @return void
+     * @return static
      */
     public function save();
 

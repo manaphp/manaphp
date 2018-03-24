@@ -1069,28 +1069,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
-     *<code>
-     *    //Creating a new robot
-     *    $robot = new Robots();
-     *    $robot->type = 'mechanical';
-     *    $robot->name = 'Boy';
-     *    $robot->year = 1952;
-     *    $robot->save();
-     *
-     *    //Updating a robot name
-     *    $robot = Robots::findFirst("id=100");
-     *    $robot->name = "Biomass";
-     *    $robot->save();
-     *</code>
-     *
-     * @return void
+     * @return static
      */
     public function save()
     {
         if ($this->_exists()) {
-            $this->update();
+            return $this->update();
         } else {
-            $this->create();
+            return $this->create();
         }
     }
 
