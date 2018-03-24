@@ -44,7 +44,7 @@ interface ModelInterface
     /**
      * @return array|null
      */
-    public function getAccessibleFields();
+    public function getSafeFields();
 
     /**
      * @return array|null

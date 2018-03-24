@@ -92,7 +92,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @return array|null
      */
-    public function getAccessibleFields()
+    public function getSafeFields()
     {
         return null;
     }
@@ -756,7 +756,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function assign($data, $whiteList = null)
     {
         if ($whiteList === null) {
-            $whiteList = $this->getAccessibleFields();
+            $whiteList = $this->getSafeFields();
         }
 
         if ($whiteList === null) {
