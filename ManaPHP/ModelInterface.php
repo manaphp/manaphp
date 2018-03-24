@@ -322,7 +322,7 @@ interface ModelInterface
     /**
      * Deletes a model instance. Returning true on success or false otherwise.
      *
-     * @return int
+     * @return static
      */
     public function delete();
 

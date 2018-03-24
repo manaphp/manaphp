@@ -1181,7 +1181,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      *}
      * </code>
      *
-     * @return int
+     * @return static
      */
     public function delete()
     {
@@ -1204,13 +1204,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             ]);
         }
 
-        $criteria->where($primaryKey, $this->{$primaryKey});
-
-        $r = $criteria->delete();
+        $criteria->where($primaryKey, $this->{$primaryKey})->delete();
 
         $this->_fireEvent('afterDelete');
 
-        return $r;
+        return $this;
     }
 
     /**
