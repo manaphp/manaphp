@@ -22,12 +22,12 @@ interface CaptchaInterface
      *
      * @return void
      */
-    public function verify($code);
+    public function verify($code = null);
 
     /**
      * @param string $code
      *
      * @return void
      */
-    public function tryVerify($code);
+    public function tryVerify($code = null);
 }

@@ -10,6 +10,7 @@ use ManaPHP\Security\Captcha\Exception as CaptchaException;
  * @package captcha
  *
  * @property \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\Http\RequestInterface  $request
  * @property \ManaPHP\Http\SessionInterface  $session
  */
 class Captcha extends Component implements CaptchaInterface
@@ -250,6 +251,10 @@ class Captcha extends Component implements CaptchaInterface
      */
     protected function _verify($code, $isTry)
     {
+        if ($code === null) {
+            $code = $this->request->get('code');
+        }
+
         if (!$this->session->has($this->_sessionVar)) {
             throw new CaptchaException('captcha is not exist in server'/**m040995605d314e3ab*/);
         }
@@ -287,7 +292,7 @@ class Captcha extends Component implements CaptchaInterface
      * @return void
      * @throws \ManaPHP\Security\Captcha\Exception
      */
-    public function verify($code)
+    public function verify($code = null)
     {
         $this->_verify($code, false);
     }
@@ -298,7 +303,7 @@ class Captcha extends Component implements CaptchaInterface
      * @return void
      * @throws \ManaPHP\Security\Captcha\Exception
      */
-    public function tryVerify($code)
+    public function tryVerify($code = null)
     {
         $this->_verify($code, true);
     }
