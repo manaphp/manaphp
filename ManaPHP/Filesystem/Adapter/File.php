@@ -337,7 +337,7 @@ class File extends Component implements FilesystemInterface
         if (strpos($pattern, 'phar://') === 0) {
             $dir = dirname($pattern);
 
-            if (!$this->filesystem->dirExists($dir)) {
+            if (!$this->dirExists($dir)) {
                 return [];
             }
 
