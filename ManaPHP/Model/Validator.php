@@ -268,7 +268,12 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_range($value, $parameters)
     {
-        return $value > $parameters[0] && $value < $parameters[1] ? $value : null;
+        if (preg_match('#^(-?[\.\d]+)-(-?[\d\.]+)$#', $parameters[0], $match)) {
+            return $value >= $match[1] && $value <= $match[2] ? $value : null;
+        } else {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new ValidatorException(['range validator `:parameters` parameters is not {min}-{max} format', 'parameters' => $parameters[0]]);
+        }
     }
 
     /**
@@ -291,6 +296,23 @@ class Validator extends Component implements ValidatorInterface
     protected function _validate_max($value, $parameters)
     {
         return $value > $parameters[0] ? null : $value;
+    }
+
+    /**
+     * @param int|double $value
+     * @param array      $parameters
+     *
+     * @return int|double|null
+     */
+    protected function _validate_length($value, $parameters)
+    {
+        $len = mb_strlen($value);
+        if (preg_match('#^(\d+)-(\d+)$#', $parameters[0], $match)) {
+            return $len >= $match[1] && $len <= $match[2] ? $value : null;
+        } else {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new ValidatorException(['length validator `:parameters` parameters is not {minLength}-{maxLength} format', 'parameters' => $parameters[0]]);
+        }
     }
 
     /**

@@ -215,7 +215,7 @@ class ModelValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new Validator();
 
         $city = $this->createMock(City::class);
-        $city->method('rules')->willReturn(['city_id' => ['range' => [0, 100]]]);
+        $city->method('rules')->willReturn(['city_id' => ['range' => '3-100']]);
 
         $city->city_id = 0;
         try {
@@ -225,21 +225,35 @@ class ModelValidatorTest extends \PHPUnit_Framework_TestCase
 
         }
 
-        $city->city_id = 1;
+        $city->city_id = 3;
         $validator->validate($city, ['city_id']);
-        $this->assertSame(1, $city->city_id);
+        $this->assertSame(3, $city->city_id);
 
-        $city->city_id = 99;
+        $city->city_id = 10;
         $validator->validate($city, ['city_id']);
-        $this->assertSame(99, $city->city_id);
+        $this->assertSame(10, $city->city_id);
 
         $city->city_id = 100;
+        $validator->validate($city, ['city_id']);
+        $this->assertSame(100, $city->city_id);
+
+        $city->city_id = 101;
         try {
             $validator->validate($city, ['city_id']);
             $this->fail('why not?');
         } catch (ValidatorException $e) {
 
         }
+
+        $city = $this->createMock(City::class);
+        $city->city_id = -1;
+        $city->method('rules')->willReturn(['city_id' => ['range' => '-10.0-100.13']]);
+        $this->assertSame(-1, $city->city_id);
+
+        $city = $this->createMock(City::class);
+        $city->city_id = -11;
+        $city->method('rules')->willReturn(['city_id' => ['range' => '-100--10']]);
+        $this->assertSame(-11, $city->city_id);
     }
 
     public function test_min()
@@ -279,6 +293,42 @@ class ModelValidatorTest extends \PHPUnit_Framework_TestCase
         $city->city_id = 10;
         $validator->validate($city, ['city_id']);
         $this->assertSame(10, $city->city_id);
+    }
+
+    public function test_length()
+    {
+        $validator = new Validator();
+
+        $city = $this->createMock(City::class);
+        $city->method('rules')->willReturn(['city' => ['length' => '3-100']]);
+
+        $city->city = 'm';
+        try {
+            $validator->validate($city, ['city']);
+            $this->fail('why not?');
+        } catch (ValidatorException $e) {
+
+        }
+
+        $city->city = '123';
+        $validator->validate($city, ['city']);
+        $this->assertSame('123', $city->city);
+
+        $city->city = 'manaphp';
+        $validator->validate($city, ['city']);
+        $this->assertSame('manaphp', $city->city);
+
+        $city->city = str_repeat('a', 100);
+        $validator->validate($city, ['city']);
+        $this->assertSame(str_repeat('a', 100), $city->city);
+
+        $city->city = str_repeat('a', 101);
+        try {
+            $validator->validate($city, ['city']);
+            $this->fail('why not?');
+        } catch (ValidatorException $e) {
+
+        }
     }
 
     public function test_in()
