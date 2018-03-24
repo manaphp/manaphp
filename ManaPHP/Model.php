@@ -623,7 +623,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         foreach ($whiteList ?: $this->getFields() as $field) {
             if (isset($data[$field])) {
-                $this->{$field} = $data[$field];
+                $value = $data[$field];
+                $this->{$field} = is_string($value) ? trim($value) : $value;
             }
         }
 

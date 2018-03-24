@@ -399,8 +399,6 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_email($value)
     {
-        $value = trim($value);
-
         return ($value === '' || filter_var($value, FILTER_VALIDATE_EMAIL) !== false) ? strtolower($value) : null;
     }
 
@@ -427,8 +425,6 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_url($value)
     {
-        $value = trim($value);
-
         if ($value === '') {
             return '';
         }
@@ -447,8 +443,6 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_ip($value)
     {
-        $value = trim($value);
-
         return ($value === '' || filter_var($value, FILTER_VALIDATE_IP) !== false) ? $value : null;
     }
 
