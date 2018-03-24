@@ -1419,10 +1419,28 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $data = $this->toArray();
 
-        if ($this->_snapshot !== false) {
+        if ($this->_snapshot) {
             $data['*changed_fields*'] = $this->getChangedFields();
         }
 
+        foreach ($this->getFields() as $field) {
+            $value = $this->$field;
+
+            if (is_int($value)) {
+                if ($value > 100000000 /**1973/3/3 17:46:40*/ && strpos($field, '_id') === false) {
+                    $data['*human_time*'][$field] = date('Y-m-d H:i:s', $value);
+                }
+            }
+
+            if (is_numeric($value)) {
+                foreach ((new \ReflectionClass(get_called_class()))->getConstants() as $cName => $cValue) {
+                    if ($cValue == $value && strpos($cName, strtoupper($field)) === 0) {
+                        $data['*human_const*'][$field] = $cName;
+                    }
+                }
+            }
+        }
+		
         return $data;
     }
 
