@@ -28,6 +28,12 @@ use ManaPHP\Utility\Text;
  */
 abstract class Model extends Component implements ModelInterface, \JsonSerializable, \Serializable
 {
+    const OP_NONE = 0;
+    const OP_CREATE = 1;
+    const OP_READ = 2;
+    const OP_UPDATE = 3;
+    const OP_DELETE = 4;
+
     /**
      * @var array
      */
@@ -122,27 +128,27 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @return array
      */
-    protected function _getCrudTimestampFields()
+    protected function _getCrudTimeFields()
     {
         static $cached = [];
 
         $calledClass = get_called_class();
 
         if (!isset($cached[$calledClass])) {
-            $timestampFields = [];
+            $timeFields = [];
             $fields = $this->getFields();
 
             $intersect = array_intersect(['created_time', 'created_at'], $fields);
             if (isset($intersect[0])) {
-                $timestampFields['create'] = $intersect[0];
+                $timeFields[self::OP_CREATE] = $intersect[0];
             }
 
             $intersect = array_intersect(['updated_time', 'updated_at'], $fields);
             if (isset($intersect[0])) {
-                $timestampFields['update'] = $intersect[0];
+                $timeFields[self::OP_UPDATE] = $intersect[0];
             }
 
-            return $cached[$calledClass] = $timestampFields;
+            return $cached[$calledClass] = $timeFields;
         }
 
         return $cached[$calledClass];
@@ -151,11 +157,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @return int|string
      */
-    protected function _getCurrentTimestamp()
+    protected function _getCurrentTime()
     {
         $intTypeFields = $this->getIntTypeFields();
 
-        if ($intTypeFields !== null && !array_intersect($this->_getCrudTimestampFields(), $intTypeFields)) {
+        if ($intTypeFields !== null && !array_intersect($this->_getCrudTimeFields(), $intTypeFields)) {
             return date('Y-m-d H:i:s');
         } else {
             return time();
@@ -801,32 +807,32 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param bool $isCreate
+     * @param int $opMode
      *
      * @return bool|string
      */
-    protected function _maintainCrudTimestamp($isCreate)
+    protected function _maintainCrudTime($opMode)
     {
-        $currentTimestamp = $this->_getCurrentTimestamp();
-        $timestampFields = $this->_getCrudTimestampFields();
+        $currentTime = $this->_getCurrentTime();
+        $timeFields = $this->_getCrudTimeFields();
 
-        if ($isCreate && isset($timestampFields['create'])) {
-            $createTsField = $timestampFields['create'];
+        if ($opMode === self::OP_CREATE && isset($timeFields[self::OP_CREATE])) {
+            $createTsField = $timeFields[self::OP_CREATE];
 
             if ($this->{$createTsField} !== null) {
                 return false;
             }
-            $this->$createTsField = $currentTimestamp;
+            $this->$createTsField = $currentTime;
         }
 
-        if (isset($timestampFields['update'])) {
-            $updateTsField = $timestampFields['update'];
+        if (isset($timeFields[self::OP_UPDATE])) {
+            $updateTimeField = $timeFields[self::OP_UPDATE];
 
-            if ($this->$updateTsField === null
-                || (isset($this->_snapshot[$updateTsField]) && $this->$updateTsField === $this->_snapshot[$updateTsField])) {
-                $this->$updateTsField = $currentTimestamp;
+            if ($this->$updateTimeField === null
+                || (isset($this->_snapshot[$updateTimeField]) && $this->$updateTimeField === $this->_snapshot[$updateTimeField])) {
+                $this->$updateTimeField = $currentTime;
 
-                return $updateTsField;
+                return $updateTimeField;
             }
         }
 
@@ -861,7 +867,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $fields = $this->getFields();
         $this->validate($fields);
 
-        $this->_maintainCrudTimestamp(true);
+        $this->_maintainCrudTime(self::OP_CREATE);
 
         $this->_preCreate();
 
@@ -1004,7 +1010,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return $this;
         }
 
-        if ($updateTsField = $this->_maintainCrudTimestamp(false)) {
+        if ($updateTsField = $this->_maintainCrudTime(self::OP_UPDATE)) {
             $fieldValues[$updateTsField] = $this->$updateTsField;
         }
 
