@@ -7,10 +7,12 @@
  */
 namespace Tests\Models;
 
+use ManaPHP\Model\Relation;
 use ManaPHP\Mvc\Model;
 
 /**
  * Class Country
+ *
  * @package Tests\Models
  * @property \Tests\Models\City[] $cities
  * @property \Tests\Models\City[] $citiesExplicit
@@ -22,8 +24,8 @@ class Country extends Model
     public $country;
     public $last_update;
 
-    public function getCitiesExplicit()
+    public function relations()
     {
-        return $this->hasMany(City::class);
+        return ['citiesExplicit' => [Relation::TYPE_HAS_MANY, City::class]];
     }
 }

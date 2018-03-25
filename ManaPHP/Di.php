@@ -62,10 +62,10 @@ use ManaPHP\Di\Exception as DiException;
  * @property \ManaPHP\Cli\EnvironmentInterface             $environment
  * @property \ManaPHP\Net\ConnectivityInterface            $netConnectivity
  * @property \ManaPHP\AmqpInterface                        $rabbitmq
+ * @property \ManaPHP\Model\Relation\Manager               $relationsManager
  */
 class Di implements DiInterface
 {
-
     /**
      * @var array
      */

@@ -389,28 +389,4 @@ interface ModelInterface
      * @return static
      */
     public function refresh($interval, $fields = null);
-
-    /**
-     * @param string       $referenceModel
-     * @param array|string $referenceField
-     *
-     * @return \ManaPHP\Model\CriteriaInterface|false
-     */
-    public function hasOne($referenceModel, $referenceField = null);
-
-    /**
-     * @param string $referenceModel
-     * @param string $referenceField
-     *
-     * @return \ManaPHP\Model\CriteriaInterface|false
-     */
-    public function belongsTo($referenceModel, $referenceField = null);
-
-    /**
-     * @param string $referenceModel
-     * @param string $referenceField
-     *
-     * @return \ManaPHP\Model\CriteriaInterface
-     */
-    public function hasMany($referenceModel, $referenceField = null);
 }

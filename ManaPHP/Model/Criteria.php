@@ -284,12 +284,13 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
                     $data = $instance->$method()->select($v)->fetch();
                 } elseif (is_callable($v)) {
                     $data = $v($instance->$method());
-                    if ($data instanceof Criteria) {
-                        $data = $data->fetch();
-                    }
                 } else {
                     throw new CriteriaException(['`:with` with is invalid', 'with' => $k]);
                 }
+            }
+
+            if ($data instanceof Criteria) {
+                $data = $data->fetch();
             }
             $instance->{is_string($k) ? $k : $v} = $data;
         }

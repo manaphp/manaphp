@@ -7,10 +7,12 @@
  */
 namespace Tests\Models;
 
+use ManaPHP\Model\Relation;
 use ManaPHP\Mvc\Model;
 
 /**
  * Class City
+ *
  * @package Tests\Models
  * @property \Tests\Models\Country|false $country
  * @property \Tests\Models\Country|false $countryExplicit
@@ -33,12 +35,9 @@ class City extends Model
         ];
     }
 
-    /**
-     * @return false|\ManaPHP\Model\Criteria
-     */
-    public function getCountryExplicit()
+    public function relations()
     {
-        return $this->hasOne(Country::class);
+        return ['countryExplicit' => [Relation::TYPE_HAS_ONE, Country::class]];
     }
 
     public function getDisplayField()

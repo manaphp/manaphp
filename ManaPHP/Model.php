@@ -1236,108 +1236,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
-     * @param string $model
-     *
-     * @return string
+     * @return array
      */
-    protected function _inferReferenceField($model)
+    public function relations()
     {
-        /**
-         * @var \ManaPHP\ModelInterface $model
-         */
-        $modelTail = ($pos = strrpos($model, '\\')) !== false ? substr($model, $pos + 1) : $model;
-        $tryField = lcfirst($modelTail) . '_id';
-        $fields = $this->getFields();
-        if (in_array($tryField, $fields, true)) {
-            return $tryField;
-        } elseif (preg_match('#([A-Z][a-z]*)$#', $modelTail, $match) === 1) {
-            $tryField = $match[1] . '_id';
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (in_array($tryField, $fields, true)) {
-                return $tryField;
-            }
-        }
-
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        throw new ModelException(['infer referenceField from `:model` failed.', 'model' => $model]);
-    }
-
-    /**
-     * @param string $referenceModel
-     * @param string $referenceField
-     *
-     * @return \ManaPHP\Model\CriteriaInterface|false
-     */
-    public function hasOne($referenceModel, $referenceField = null)
-    {
-        if ($referenceField === null) {
-            $referenceField = $this->_inferReferenceField($referenceModel);
-        }
-
-        $reference = new $referenceModel;
-        /**
-         * @var \ManaPHP\Model $reference
-         * @var \ManaPHP\Model $referenceModel
-         */
-        return $referenceModel::criteria()->where($reference->getPrimaryKey(), $this->$referenceField)->setFetchType(false);
-    }
-
-    /**
-     * @param string $referenceModel
-     * @param string $referenceField
-     *
-     * @return \ManaPHP\Model\CriteriaInterface|false
-     */
-    public function belongsTo($referenceModel, $referenceField = null)
-    {
-        if ($referenceField === null) {
-            $referenceField = $this->_inferReferenceField($referenceModel);
-        }
-
-        $reference = new $referenceModel;
-        /**
-         * @var \ManaPHP\Model $reference
-         * @var \ManaPHP\Model $referenceModel
-         */
-        return $referenceModel::criteria()->where($reference->getPrimaryKey(), $this->$referenceField)->setFetchType(false);
-    }
-
-    /**
-     * @param string $referenceModel
-     * @param string $referenceField
-     *
-     * @return \ManaPHP\Model\CriteriaInterface
-     */
-    public function hasMany($referenceModel, $referenceField = null)
-    {
-        if ($referenceField === null) {
-            $referenceField = $this->_inferReferenceField(get_called_class());
-        }
-
-        $reference = new $referenceModel;
-        /**
-         * @var \ManaPHP\Model $reference
-         * @var \ManaPHP\Model $referenceModel
-         */
-        return $referenceModel::criteria()->where($referenceField, $this->{$this->getPrimaryKey()})->indexBy($reference->getPrimaryKey())->setFetchType(true);
-    }
-
-    /**
-     * @param string $referenceModel
-     * @param string $referenceField
-     *
-     * @return \ManaPHP\Model\CriteriaInterface
-     */
-    public function hasManyToMany($referenceModel, $referenceField = null)
-    {
-        if ($referenceField === null) {
-            $referenceField = $this->_inferReferenceField(get_called_class());
-        }
-
-        /**
-         * @var \ManaPHP\Model $referenceModel
-         */
-        return $referenceModel::criteria()->where($referenceField, $this->{$this->getPrimaryKey()})->setFetchType(true);
+        return [];
     }
 
     /**
@@ -1397,8 +1300,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return $this->$name = $this->$method()->fetch();
         } elseif ($this->_dependencyInjector->has($name)) {
             return $this->{$name} = $this->_dependencyInjector->getShared($name);
-        } elseif ($relation = $this->_inferRelation($method)) {
-            return $relation->fetch();
+        } elseif ($criteria = $this->_dependencyInjector->relationsManager->getCriteria($this, $name)) {
+            return $criteria->fetch();
         } else {
             trigger_error(strtr('`:class` does not contain `:field` field: `:fields`',
                 [':class' => get_called_class(), ':field' => $name, ':fields' => implode(',', $this->getFields())]), E_USER_WARNING);
@@ -1406,54 +1309,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
     }
 
-    /**
-     * @param string $name
-     *
-     * @return false|\ManaPHP\Model\CriteriaInterface
-     */
-    protected function _inferRelation($name)
-    {
-        if (in_array(Text::underscore(substr($name, 3)) . '_id', $this->getFields(), true)) {
-            $calledClassName = get_called_class();
-
-            if (($pos = strrpos($calledClassName, '\\')) !== false) {
-                $className = substr($calledClassName, 0, $pos + 1) . substr($name, 3);
-            } else {
-                $className = substr($name, 3);
-            }
-
-            if (class_exists($className)) {
-                return $this->hasOne($className);
-            }
-        }
-
-        if (preg_match('#^(.*?)(ies|es|s)$#', substr($name, 3), $match)) {
-            if ($match[2] === 'ies') {
-                $plainClassName = $match[1] . 'y';
-            } else {
-                $plainClassName = $match[1];
-            }
-
-            $calledClassName = get_called_class();
-            if (($pos = strrpos($calledClassName, '\\')) !== false) {
-                $className = substr($calledClassName, 0, $pos + 1) . $plainClassName;
-            } else {
-                $className = $plainClassName;
-            }
-
-            if (class_exists($className)) {
-                return $this->hasMany($className);
-            }
-        }
-
-        return false;
-    }
-
     public function __call($name, $arguments)
     {
         if (strpos($name, 'get') === 0) {
-            if ($relation = $this->_inferRelation($name)) {
-                return $relation;
+            if ($criteria = $this->_dependencyInjector->relationsManager->getCriteria($this, lcfirst(substr($name, 3)))) {
+                return $criteria;
             }
 
             trigger_error(strtr('`:class` model does not define `:method` relation', [':class' => get_called_class(), ':method' => $name]), E_USER_ERROR);
