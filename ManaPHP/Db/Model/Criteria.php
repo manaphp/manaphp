@@ -427,6 +427,8 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function indexBy($indexBy)
     {
+        $this->_index = $indexBy;
+
         $this->_query->indexBy($indexBy);
 
         return $this;

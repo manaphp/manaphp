@@ -39,11 +39,6 @@ class Criteria extends \ManaPHP\Model\Criteria
     protected $_order;
 
     /**
-     * @var string|callable
-     */
-    protected $_index;
-
-    /**
      * @var int
      */
     protected $_limit;

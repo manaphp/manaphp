@@ -28,6 +28,11 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     protected $_with = [];
 
     /**
+     * @var string|callable
+     */
+    protected $_index;
+
+    /**
      * @return \ManaPHP\Model
      */
     public function getModel()
