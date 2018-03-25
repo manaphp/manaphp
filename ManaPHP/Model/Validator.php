@@ -185,12 +185,12 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @param string|bool $value
      *
-     * @return bool|null
+     * @return int|null
      */
     protected function _validate_bool($value)
     {
         if (is_bool($value)) {
-            return $value;
+            return (int)$value;
         }
 
         $trueValues = ['1', 'true', 'on'];
@@ -199,9 +199,9 @@ class Validator extends Component implements ValidatorInterface
         $value = strtolower($value);
 
         if (in_array($value, $trueValues, true)) {
-            return true;
+            return 1;
         } elseif (in_array($value, $falseValues, true)) {
-            return false;
+            return 0;
         } else {
             return null;
         }
@@ -521,6 +521,26 @@ class Validator extends Component implements ValidatorInterface
         } else {
             return ($r = array_search($value, $constants, true)) !== false ? $r : null;
         }
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    public function _validate_lower($value)
+    {
+        return strtolower($value);
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    public function _validate_upper($value)
+    {
+        return strtoupper($value);
     }
 
     public function reConstruct()

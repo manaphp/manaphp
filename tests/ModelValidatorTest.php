@@ -57,35 +57,35 @@ class ModelValidatorTest extends \PHPUnit_Framework_TestCase
 
         $customer->active = true;
         $validator->validate($customer, ['active']);
-        $this->assertTrue($customer->active);
+        $this->assertSame(1, $customer->active);
 
         $customer->active = '1';
         $validator->validate($customer, ['active']);
-        $this->assertTrue($customer->active);
+        $this->assertSame(1, $customer->active);
 
         $customer->city = 'active';
         $validator->validate($customer, ['active']);
-        $this->assertTrue($customer->active);
+        $this->assertSame(1, $customer->active);
 
         $customer->active = 'on';
         $validator->validate($customer, ['active']);
-        $this->assertTrue($customer->active);
+        $this->assertSame(1, $customer->active);
 
         $customer->active = false;
         $validator->validate($customer, ['active']);
-        $this->assertFalse($customer->active);
+        $this->assertSame(0, $customer->active);
 
         $customer->active = '0';
         $validator->validate($customer, ['active']);
-        $this->assertFalse($customer->active);
+        $this->assertSame(0, $customer->active);
 
         $customer->active = 'false';
         $validator->validate($customer, ['active']);
-        $this->assertFalse($customer->active);
+        $this->assertSame(0, $customer->active);
 
         $customer->active = 'off';
         $validator->validate($customer, ['active']);
-        $this->assertFalse($customer->active);
+        $this->assertSame(0, $customer->active);
 
         $customer->active = 'xxx';
         try {
