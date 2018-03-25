@@ -1320,6 +1320,24 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @param string $referenceModel
+     * @param string $referenceField
+     *
+     * @return \ManaPHP\Model\CriteriaInterface
+     */
+    public function hasManyToMany($referenceModel, $referenceField = null)
+    {
+        if ($referenceField === null) {
+            $referenceField = $this->_inferReferenceField(get_called_class());
+        }
+
+        /**
+         * @var \ManaPHP\Model $referenceModel
+         */
+        return $referenceModel::criteria()->where($referenceField, $this->{$this->getPrimaryKey()})->setFetchType(true);
+    }
+
+    /**
      * @param string $name
      *
      * @return array
@@ -1337,7 +1355,33 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if (!$constants) {
-            throw new ModelException(['`:constants` constants is not exists in `:model` model', 'constants' => $name, 'model' => get_called_class()]);
+            throw new ModelException(['starts with `:constants` constants is not exists in `:model` model ', 'constants' => $name, 'model' => get_class($this)]);
+        }
+
+        return $constants;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return array
+     * @throws \ManaPHP\Model\Exception
+     * @throws \ReflectionException
+     */
+    public static function consts($name)
+    {
+        $name = strtoupper($name) . '_';
+        $constants = [];
+        $rc = new \ReflectionClass(get_called_class());
+
+        foreach ($rc->getConstants() as $cName => $cValue) {
+            if (strpos($cName, $name) === 0) {
+                $constants[$cValue] = strtolower(substr($cName, strlen($name)));
+            }
+        }
+
+        if (!$constants) {
+            throw new ModelException(['starts with `:constants` constants is not exists in `:model` model', 'constants' => $name, 'model' => get_called_class()]);
         }
 
         return $constants;
