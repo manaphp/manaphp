@@ -776,6 +776,16 @@ class Compiler extends Component
     }
 
     /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compileUse($expression)
+    {
+        return '<?php use ' . substr($expression, 1, -1) . ';?>';
+    }
+
+    /**
      * Register a handler for custom directives.
      *
      * @param  string   $name
