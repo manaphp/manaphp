@@ -1300,8 +1300,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             return $this->$name = $this->$method()->fetch();
         } elseif ($this->_dependencyInjector->has($name)) {
             return $this->{$name} = $this->_dependencyInjector->getShared($name);
-        } elseif ($criteria = $this->_dependencyInjector->relationsManager->getCriteria($this, $name)) {
-            return $criteria->fetch();
+        } elseif ($relation = $this->_dependencyInjector->relationsManager->get($this, $name)) {
+            return $relation->criteria($this)->fetch();
         } else {
             trigger_error(strtr('`:class` does not contain `:field` field: `:fields`',
                 [':class' => get_called_class(), ':field' => $name, ':fields' => implode(',', $this->getFields())]), E_USER_WARNING);
@@ -1312,8 +1312,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function __call($name, $arguments)
     {
         if (strpos($name, 'get') === 0) {
-            if ($criteria = $this->_dependencyInjector->relationsManager->getCriteria($this, lcfirst(substr($name, 3)))) {
-                return $criteria;
+            if ($relation = $this->_dependencyInjector->relationsManager->get($this, lcfirst(substr($name, 3)))) {
+                return $relation->criteria($this);
             }
 
             trigger_error(strtr('`:class` model does not define `:method` relation', [':class' => get_called_class(), ':method' => $name]), E_USER_ERROR);
