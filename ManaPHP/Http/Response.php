@@ -255,7 +255,7 @@ class Response extends Component implements ResponseInterface
         } elseif ($content instanceof \JsonSerializable) {
             $content = ['code' => 0, 'message' => '', 'data' => $content];
         } elseif (is_string($content)) {
-            $content = ['code' => 1, 'message' => $content];
+            null;
         } elseif (is_int($content)) {
             $content = ['code' => $content, 'message' => ''];
         } elseif ($content instanceof FilterException) {
@@ -264,7 +264,7 @@ class Response extends Component implements ResponseInterface
             $content = ['code' => -1, 'message' => $content->getMessage()];
         }
 
-        $this->_content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $this->_content = is_string($content) ? $content : json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
         return $this;
     }
