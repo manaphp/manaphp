@@ -610,6 +610,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * Assigns values to a model from an array
      *
+     * @param array $data
+     * @param array $whiteList
+     *
      * @return static
      */
     public function assign($data, $whiteList = null)
@@ -689,6 +692,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $fields = $this->getFields();
         foreach ($this->getAutoFilledData(self::OP_CREATE) as $field => $value) {
+            /** @noinspection NotOptimalIfConditionsInspection */
             if (!in_array($field, $fields, true) || $this->$field !== null) {
                 continue;
             }
@@ -1184,7 +1188,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException(['`:model` model refresh failed: record is not exists now!', 'model' => get_called_class()]);
         }
 
-        foreach ($r[0] as $field => $value) {
+        foreach ((array)$r[0] as $field => $value) {
             $this->$field = $value;
         }
 
@@ -1215,7 +1219,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $serialized
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function unserialize($serialized)
     {
