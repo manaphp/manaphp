@@ -9,7 +9,7 @@ class Manager extends Component
     /**
      * @var array
      */
-    protected $_definitions;
+    protected $_relations;
 
     /**
      * @param \ManaPHP\Model $model
@@ -19,7 +19,7 @@ class Manager extends Component
      */
     public function has($model, $name)
     {
-
+        return $this->get($model, $name) !== false;
     }
 
     /**
@@ -71,22 +71,22 @@ class Manager extends Component
     {
         $modelName = get_class($model);
 
-        if (!isset($this->_definitions[$modelName])) {
-            $this->_definitions[$modelName] = $model->relations();
+        if (!isset($this->_relations[$modelName])) {
+            $this->_relations[$modelName] = $model->relations();
         }
 
-        if (!isset($this->_definitions[$modelName][$name])) {
-            if ($definition = $this->_inferRelation($model, $name)) {
-                $this->_definitions[$modelName][$name] = $definition;
+        if (!isset($this->_relations[$modelName][$name])) {
+            if ($relation = $this->_inferRelation($model, $name)) {
+                $this->_relations[$modelName][$name] = $relation;
             }
         }
 
-        if (isset($this->_definitions[$modelName][$name])) {
-            $definition = $this->_definitions[$modelName][$name];
-            if (is_object($definition)) {
-                return $definition;
+        if (isset($this->_relations[$modelName][$name])) {
+            $relation = $this->_relations[$modelName][$name];
+            if ($relation instanceof Relation) {
+                return $relation;
             } else {
-                return $this->_definitions[$modelName][$name] = new Relation($model, $definition);
+                return $this->_relations[$modelName][$name] = new Relation($model, $relation);
             }
         }
         return false;

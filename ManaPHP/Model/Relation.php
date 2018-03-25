@@ -1,9 +1,9 @@
 <?php
 namespace ManaPHP\Model;
 
-use ManaPHP\Component;
+use ManaPHP\Model\Relation\Exception as RelationException;
 
-class Relation extends Component implements RelationInterface
+class Relation implements RelationInterface
 {
     const TYPE_BELONGS_TO = 1;
     const TYPE_HAS_MANY = 2;
@@ -70,11 +70,13 @@ class Relation extends Component implements RelationInterface
                 $this->keyField = $referenceField ?: $this->_inferReferenceField($model, get_class($model));
                 $this->valueField = $model->getPrimaryKey();
                 $this->indexField = $reference->getPrimaryKey();
-            } elseif ($type == self::TYPE_HAS_MANY_TO_MANY) {
+            } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
                 $reference = new $referenceModel;
                 $this->keyField = $referenceField ?: $this->_inferReferenceField($model, get_class($model));
                 $this->valueField = $model->getPrimaryKey();
                 $this->indexField = $reference->getPrimaryKey();
+            } else {
+                throw  new RelationException(['unknown relation type: :type', 'type' => $type]);
             }
         }
     }
@@ -125,6 +127,8 @@ class Relation extends Component implements RelationInterface
             return $referenceModel::criteria()->where($this->keyField, $model->$valueField)->indexBy($this->indexField)->setFetchType(true);
         } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
             return $referenceModel::criteria()->where($this->keyField, $model->$valueField)->indexBy($this->indexField)->setFetchType(true);
+        } else {
+            throw  new RelationException(['unknown relation type: :type', 'type' => $type]);
         }
     }
 }
