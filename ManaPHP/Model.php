@@ -890,7 +890,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         $instance = static::firstOrFail([$pkName => $pkValue]);
-        $instance->assign(array_intersect_key($data, array_flip($model->getFields())), $whiteList);
+        $instance->assign($data, $whiteList);
         $instance->update();
 
         return $instance;
