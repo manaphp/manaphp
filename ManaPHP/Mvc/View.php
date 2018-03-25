@@ -207,9 +207,15 @@ class View extends Component implements ViewInterface
         $this->fireEvent('view:beforeRender');
 
         if (($pos = strpos($this->_controllerName, '/')) !== false) {
-            $view = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/' . substr($this->_controllerName, $pos + 1) . '/' . ucfirst($this->_actionName);
+            $dir = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/' . substr($this->_controllerName, $pos + 1);
         } else {
-            $view = "@app/Views/{$this->_controllerName}/" . ucfirst($this->_actionName);
+            $dir = "@app/Views/{$this->_controllerName}";
+        }
+
+        if ($this->filesystem->dirExists($dir)) {
+            $view = $dir . '/' . ucfirst($this->_actionName);
+        } else {
+            $view = $dir;
         }
 
         $this->_content = $this->_render($view, $this->_vars, false);
