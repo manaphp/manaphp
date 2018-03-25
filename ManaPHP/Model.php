@@ -276,15 +276,16 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function first($filters = null, $fields = null, $options = null)
     {
         $model = new static;
+        $di = $model->_dependencyInjector;
 
         $pkName = $model->getPrimaryKey();
         $pkValue = null;
 
         if ($filters === null) {
-            if ($model->_dependencyInjector->request->has($pkName)) {
-                $pkValue = $model->_dependencyInjector->request->get($pkName);
-            } elseif ($model->_dependencyInjector->dispatcher->hasParam($pkName)) {
-                $pkValue = $model->_dependencyInjector->dispatcher->getParam($pkName);
+            if ($di->request->has($pkName)) {
+                $pkValue = $di->request->get($pkName);
+            } elseif ($di->dispatcher->hasParam($pkName)) {
+                $pkValue = $di->dispatcher->getParam($pkName);
             } else {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 /** @noinspection PhpUnhandledExceptionInspection */
@@ -850,9 +851,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function updateOrFail($data = null, $whiteList = null)
     {
         $model = new static;
+        $di = $model->_dependencyInjector;
 
         if ($data === null) {
-            $data = $model->_dependencyInjector->request->get();
+            $data = $di->request->get();
+        } else {
+            $data += $di->request->get();
         }
 
         $pkName = $model->getPrimaryKey();
@@ -860,10 +864,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if (isset($data[$pkName])) {
             $pkValue = $data[$pkName];
             unset($data[$pkName]);
-        } elseif ($model->_dependencyInjector->dispatcher->hasParam($pkName)) {
-            $pkValue = $model->_dependencyInjector->dispatcher->getParam($pkName);
+        } elseif ($di->request->has($pkName)) {
+            $pkValue = $di->request->get($pkName);
+        } elseif ($di->dispatcher->hasParam($pkName)) {
+            $pkValue = $di->dispatcher->getParam($pkName);
         } else {
-            $params = $model->_dependencyInjector->dispatcher->getParams();
+            $params = $di->dispatcher->getParams();
             if (count($params) === 1) {
                 $pkValue = current($params);
             } else {
@@ -924,10 +930,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function saveOrFail($data = null, $whiteList = null)
     {
-        $model = new static();
+        $model = new static;
+        $di = $model->_dependencyInjector;
 
         if ($data === null) {
-            $data = $model->_dependencyInjector->request->get();
+            $data = $di->request->get();
         }
 
         $pkName = $model->getPrimaryKey();
@@ -936,10 +943,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         if (isset($data[$pkName])) {
             $pkValue = $data[$pkName];
-        } elseif ($model->_dependencyInjector->dispatcher->hasParam($pkName)) {
-            $pkValue = $model->_dependencyInjector->dispatcher->getParam($pkName);
+        } elseif ($di->dispatcher->hasParam($pkName)) {
+            $pkValue = $di->dispatcher->getParam($pkName);
         } else {
-            $params = $model->_dependencyInjector->dispatcher->getParams();
+            $params = $di->dispatcher->getParams();
             if (count($params) === 1) {
                 $pkValue = current($params);
             }
@@ -996,11 +1003,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function deleteOrFail($id = null)
     {
-        $pkName = (new static)->getPrimaryKey();
+        $model = new static;
+        $di = $model->_dependencyInjector;
+
+        $pkName = $model->getPrimaryKey();
 
         if ($id === null) {
-            $di = Di::getDefault();
-
             if ($di->request->has($pkName)) {
                 $id = $di->request->get($pkName);
             } elseif ($di->dispatcher->hasParam($pkName)) {
