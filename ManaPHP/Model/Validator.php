@@ -507,6 +507,22 @@ class Validator extends Component implements ValidatorInterface
         return $className::exists([$model->getPrimaryKey() => $value]) ? $value : null;
     }
 
+    /**
+     * @param string $value
+     * @param string $parameter
+     *
+     * @return int|string|null
+     */
+    protected function _validate_const($value, $parameter = null)
+    {
+        $constants = $this->_model->getConstants($parameter ?: $this->_field);
+        if (isset($constants[$value])) {
+            return $value;
+        } else {
+            return ($r = array_search($value, $constants, true)) !== false ? $r : null;
+        }
+    }
+
     public function reConstruct()
     {
         if ($this->templates_dir && strpos($this->configure->language, ',') !== false) {

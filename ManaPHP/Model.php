@@ -1319,6 +1319,30 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         return $referenceModel::criteria()->where($referenceField, $this->{$this->getPrimaryKey()})->indexBy($reference->getPrimaryKey())->setFetchType(true);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
+    public function getConstants($name)
+    {
+        $name = strtoupper($name) . '_';
+        $constants = [];
+        $rc = new \ReflectionClass($this);
+
+        foreach ($rc->getConstants() as $cName => $cValue) {
+            if (strpos($cName, $name) === 0) {
+                $constants[$cValue] = strtolower(substr($cName, strlen($name)));
+            }
+        }
+
+        if (!$constants) {
+            throw new ModelException(['`:constants` constants is not exists in `:model` model', 'constants' => $name, 'model' => get_called_class()]);
+        }
+
+        return $constants;
+    }
+
     public function __get($name)
     {
         if (isset($this->_with[$name])) {
