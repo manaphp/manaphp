@@ -677,7 +677,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         } elseif ($opMode === self::OP_UPDATE) {
             $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intTypeFields, true) || in_array('updated_at', $intTypeFields, true) ? $ts : $time;
             $data['updator_id'] = $this->userIdentity->getId();
-            $data['updator_name'] = $this->userIdentity->getId();
+            $data['updator_name'] = $this->userIdentity->getName();
         }
 
         return $data;
