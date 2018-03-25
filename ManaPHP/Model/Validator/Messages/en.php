@@ -14,7 +14,7 @@ return [
     'max' => 'The :field must be not great than :parameters[0].',
     'minLength' => 'The :field must be at least :parameters[0] characters.',
     'maxLength' => 'The :field must be shorter than :parameters[0] characters.',
-    'length' => 'The :field must be between :parameters[0] and :parameters[1] characters.',
+    'length' => 'The :field must be between :parameter characters.',
     'equal' => 'The :field must equal :parameters[0].',
     //  'regex' => 'The :field format is invalid.',
     'alpha' => 'The :field may only contain letters.',
