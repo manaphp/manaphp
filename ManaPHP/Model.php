@@ -41,11 +41,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     protected $_snapshot = [];
 
     /**
-     * @var array
-     */
-    protected $_with = [];
-
-    /**
      * @var float
      */
     protected $_last_refresh;
@@ -169,6 +164,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             if (isset($options['cache'])) {
                 $criteria->cache($options['cache']);
             }
+
+            if (isset($options['with'])) {
+                $criteria->with($options['with']);
+            }
         }
 
         return $criteria->fetchAll();
@@ -200,6 +199,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
             if (isset($options['cache'])) {
                 $criteria->cache($options['cache']);
+            }
+
+            if (isset($options['with'])) {
+                $criteria->with($options['with']);
             }
         }
 
@@ -1071,14 +1074,14 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $data = [];
 
-        foreach ($this->getFields() as $field) {
-            if (!$ignoreNull || isset($this->{$field})) {
-                $data[$field] = $this->{$field};
+        foreach (get_object_vars($this) as $field => $value) {
+            if ($field[0] === '_') {
+                continue;
             }
-        }
 
-        if ($this->_with) {
-            $data = array_merge($data, $this->_with);
+            if (!$ignoreNull || $value !== null) {
+                $data[$field] = $value;
+            }
         }
 
         return $data;
@@ -1389,10 +1392,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
     public function __get($name)
     {
-        if (isset($this->_with[$name])) {
-            return $this->_with[$name];
-        }
-
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
