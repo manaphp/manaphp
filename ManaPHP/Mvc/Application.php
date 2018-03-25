@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Mvc;
 
+use ManaPHP\Http\Response;
 use ManaPHP\Mvc\Router\NotFoundRouteException;
 
 /**
@@ -70,9 +71,13 @@ class Application extends \ManaPHP\Application
         $ret = $this->dispatcher->dispatch($controllerName, $actionName, $params);
         if ($ret !== false) {
             $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue === null) {
+            if ($actionReturnValue === null || $actionReturnValue instanceof View) {
                 $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
                 $this->response->setContent($this->view->getContent());
+            } elseif ($actionReturnValue instanceof Response) {
+                null;
+            } else {
+                $this->response->setJsonContent($actionReturnValue);
             }
         }
 
