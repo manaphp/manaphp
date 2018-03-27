@@ -47,7 +47,7 @@ class Crossword
             }
         }
 
-        if (count($words) === 0) {
+        if (!$words) {
             return false;
         } elseif (count($words) === 1) {
             return array_values($words)[0];

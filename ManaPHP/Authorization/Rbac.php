@@ -164,7 +164,7 @@ class Rbac extends Component implements AuthorizationInterface
                 $rolesByPermissionId = $this->_getRolesByPermissionId($permission->permission_id);
                 $rolesByUserId = $this->_getRolesByUserId($userId);
 
-                return count(array_intersect($rolesByPermissionId, $rolesByUserId)) !== 0;
+                return (bool)array_intersect($rolesByPermissionId, $rolesByUserId);
             default:
                 throw new RbacException(['`:permission` type is not recognized', 'permission' => $permissionName]);
         }

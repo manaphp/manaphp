@@ -54,7 +54,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $this->_di = Di::getDefault();
 
-        if (count($data) !== 0) {
+        if ($data) {
             if ($this->_snapshot !== false) {
                 $this->_snapshot = $data;
             }
@@ -402,7 +402,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if (is_numeric($interval)) {
             $interval = (float)$interval;
             $max = 100;
-        } elseif (is_array($interval) && count($interval) === 0 && is_int($max = key($interval))) {
+        } elseif (is_array($interval) && !$interval && is_int($max = key($interval))) {
             $interval = (float)$interval[$max];
         } else {
             throw new ModelException(['`:interval` interval is not recognized', 'interval' => json_encode($interval, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
@@ -818,7 +818,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             $fieldValues[$field] = $this->{$field};
         }
 
-        if (count($fieldValues) === 0) {
+        if (!$fieldValues) {
             return $this;
         }
 

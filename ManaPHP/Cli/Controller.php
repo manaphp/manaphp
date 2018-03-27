@@ -70,7 +70,7 @@ abstract class Controller extends Component implements ControllerInterface
             }
 
             $this->console->writeLn($command);
-            if (count($params) !== 0) {
+            if ($params) {
                 $this->console->writeLn('  Options:');
 
                 foreach ($params as $name => $value) {

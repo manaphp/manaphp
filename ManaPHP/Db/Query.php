@@ -361,7 +361,7 @@ class Query extends Component implements QueryInterface
                     }
                 }
                 $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-            } elseif (isset($value[0]) || count($value) === 0) {
+            } elseif (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
@@ -562,7 +562,7 @@ class Query extends Component implements QueryInterface
             $this->where($expr . ' IN (' . $values->getSql() . ')');
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } else {
-            if (count($values) === 0) {
+            if (!$values) {
                 $this->_conditions[] = '1=2';
             } else {
                 if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
@@ -642,7 +642,7 @@ class Query extends Component implements QueryInterface
             $this->where($expr . ' NOT IN (' . $values->getSql() . ')');
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } else {
-            if (count($values) !== 0) {
+            if ($values) {
                 if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
                     if (strpos($expr, '.') !== false) {
                         $expr = '[' . str_replace('.', '].[', $expr) . ']';
@@ -986,7 +986,7 @@ class Query extends Component implements QueryInterface
             $this->_having = $having;
         }
 
-        if (count($bind) !== 0) {
+        if ($bind) {
             $this->_bind = array_merge($this->_bind, $bind);
         }
 
@@ -1181,11 +1181,11 @@ class Query extends Component implements QueryInterface
             $this->_db = $this->_di->getShared($this->_db ?: 'db');
         }
 
-        if (count($this->_union) !== 0) {
+        if ($this->_union) {
             return $this->_getUnionSql();
         }
 
-        if (count($this->_tables) === 0) {
+        if (!$this->_tables) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new QueryException('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
         }
@@ -1275,7 +1275,7 @@ class Query extends Component implements QueryInterface
             $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
         }
 
-        if (count($wheres) !== 0) {
+        if ($wheres) {
             $params['where'] = implode(' AND ', $wheres);
         }
 
@@ -1475,7 +1475,7 @@ class Query extends Component implements QueryInterface
      */
     protected function _getTotalRows()
     {
-        if (count($this->_union) !== 0) {
+        if ($this->_union) {
             throw new QueryException('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
         }
 
@@ -1636,7 +1636,7 @@ class Query extends Component implements QueryInterface
     {
         $r = $this->limit(1)->fetchAll();
 
-        return count($r) === 0 ? false : $r[0];
+        return $r ? $r[0] : false;
     }
 
     /**

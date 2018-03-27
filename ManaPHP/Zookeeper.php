@@ -134,7 +134,7 @@ class ZooKeeper extends Component implements ZookeeperInterface
 
         if ($this->exists($path)) {
             $nodes = $this->getChildren($path);
-            if (count($nodes) !== 0) {
+            if ($nodes) {
                 foreach ($nodes as $node) {
                     $this->delete($path . '/' . $node, -1);
                 }
@@ -421,7 +421,7 @@ class ZooKeeper extends Component implements ZookeeperInterface
             }
         }
 
-        if (count($this->watchDataCallbacks[$path]) === 0) {
+        if (!$this->watchDataCallbacks[$path]) {
             unset($this->watchDataCallbacks[$path]);
 
             $this->getData($path);
@@ -440,7 +440,7 @@ class ZooKeeper extends Component implements ZookeeperInterface
     {
         if (isset($this->watchDataCallbacks[$path][$name])) {
             unset($this->watchDataCallbacks[$path][$name]);
-            if (count($this->watchDataCallbacks[$path]) === 0) {
+            if (!$this->watchDataCallbacks[$path]) {
                 unset($this->watchDataCallbacks[$path]);
                 $this->getData($path);
             }
@@ -525,7 +525,7 @@ class ZooKeeper extends Component implements ZookeeperInterface
             }
         }
 
-        if (count($this->_watchChildrenCallbacks[$path]) === 0) {
+        if (!$this->_watchChildrenCallbacks[$path]) {
             unset($this->_watchChildrenCallbacks[$path]);
 
             $this->getChildren($path);

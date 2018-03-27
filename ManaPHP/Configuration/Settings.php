@@ -134,7 +134,7 @@ class Settings extends Component implements \ArrayAccess, SettingsInterface
         }
 
         if ($key === null) {
-            return count($this->_settings[$section]) !== 0;
+            return (bool)$this->_settings[$section];
         } else {
             return isset($this->_settings[$section][$key]);
         }

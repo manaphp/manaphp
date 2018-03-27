@@ -230,7 +230,7 @@ abstract class Db extends Component implements DbInterface
         $this->fireEvent('db:beforeQuery');
 
         try {
-            if (count($bind) !== 0) {
+            if ($bind) {
                 $statement = $this->_getPdo()->prepare($this->_sql);
                 $statement = $this->_executePrepared($statement, $bind);
             } else {
@@ -288,7 +288,7 @@ abstract class Db extends Component implements DbInterface
         $this->fireEvent('db:beforeQuery');
 
         try {
-            if (count($bind) !== 0) {
+            if ($bind) {
                 $statement = $this->_executePrepared($this->_getPdo()->prepare($this->_sql), $bind);
                 $this->_affectedRows = $statement->rowCount();
             } else {
@@ -419,7 +419,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function insert($table, $fieldValues)
     {
-        if (count($fieldValues) === 0) {
+        if (!$fieldValues) {
             throw new DbException(['Unable to insert into :table table without data'/**m07945f8783104be33*/, 'table' => $table]);
         }
 
@@ -464,7 +464,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function update($table, $fieldValues, $conditions, $bind = [])
     {
-        if (count($fieldValues) === 0) {
+        if (!$fieldValues) {
             throw new DbException(['Unable to update :table table without data'/**m07b005f0072d05d71*/, 'table' => $table]);
         }
 
@@ -594,7 +594,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function getEmulatedSQL($preservedStrLength = -1)
     {
-        if (count($this->_bind) === 0) {
+        if (!$this->_bind) {
             return (string)$this->_sql;
         }
 

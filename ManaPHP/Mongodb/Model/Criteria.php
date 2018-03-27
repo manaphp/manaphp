@@ -102,7 +102,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         $db = $this->_di->getShared($this->_model->getDb());
 
         $cmd = ['distinct' => $source, 'key' => $field];
-        if (count($this->_filters) !== 0) {
+        if ($this->_filters) {
             $cmd['query'] = ['$and' => $this->_filters];
         }
 
@@ -214,7 +214,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                     throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
                 }
                 $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-            } elseif (isset($value[0]) || count($value) === 0) {
+            } elseif (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
@@ -766,7 +766,7 @@ class Criteria extends \ManaPHP\Model\Criteria
          * @var \ManaPHP\MongodbInterface $db
          */
         $db = $this->_di->getShared($this->_model->getDb());
-        if (count($this->_aggregate) === 0) {
+        if (!$this->_aggregate) {
             $options = [];
 
             if ($this->_projection !== null) {
@@ -788,7 +788,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $r = $db->query($source, $this->_filters ? ['$and' => $this->_filters] : [], $options, !$this->_forceUseMaster);
         } else {
             $pipeline = [];
-            if (count($this->_filters) !== 0) {
+            if ($this->_filters) {
                 $pipeline[] = ['$match' => ['$and' => $this->_filters]];
             }
 

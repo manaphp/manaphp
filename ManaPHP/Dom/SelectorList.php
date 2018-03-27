@@ -140,7 +140,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     public function eq($index)
     {
         if ($index === 0) {
-            return new SelectorList($this, count($this->_nodes) > 0 ? [current($this->_nodes)] : []);
+            return new SelectorList($this, $this->_nodes ? [current($this->_nodes)] : []);
         }
 
         if ($index < 0) {
@@ -249,7 +249,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     public function is($css)
     {
         $r = $this->css('self::' . ($css === null ? '*' : $css) . '[1]');
-        return count($r->_nodes) > 0;
+        return (bool)$r->_nodes;
     }
 
     /**

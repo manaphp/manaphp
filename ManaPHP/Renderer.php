@@ -225,7 +225,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function stopSection($overwrite = false)
     {
-        if (count($this->_sectionStack) === 0) {
+        if (!$this->_sectionStack) {
             throw new RendererException('cannot stop a section without first starting session'/**m0005e5105f6b924c8*/);
         }
 
@@ -243,7 +243,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function appendSection()
     {
-        if (count($this->_sectionStack) === 0) {
+        if (!$this->_sectionStack) {
             throw new RendererException('Cannot append a section without first starting one:'/**m0612bf4d28a6f9d36*/);
         }
 
