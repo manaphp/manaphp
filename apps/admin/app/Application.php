@@ -14,8 +14,8 @@ class Application extends \ManaPHP\Mvc\Application
 {
     public function authenticate()
     {
-        $this->_dependencyInjector->authorization = new Rbac();
-        $this->_dependencyInjector->userIdentity = new UserIdentity($this->session->get('admin_auth', []));
+        $this->_di->authorization = new Rbac();
+        $this->_di->userIdentity = new UserIdentity($this->session->get('admin_auth', []));
     }
 
     /**
