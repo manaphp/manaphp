@@ -110,7 +110,7 @@ class Relation implements RelationInterface
     }
 
     /**
-     * @param \ManaPHP\Model $model
+     * @param \ManaPHP\Model|array $model
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
@@ -120,13 +120,13 @@ class Relation implements RelationInterface
         $referenceModel = $this->referenceModel;
         $valueField = $this->valueField;
         if ($type === self::TYPE_HAS_ONE) {
-            return $referenceModel::criteria()->where($this->keyField, $model->$valueField)->setFetchType(false);
+            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(false);
         } elseif ($type === self::TYPE_BELONGS_TO) {
-            return $referenceModel::criteria()->where($this->keyField, $model->$valueField)->setFetchType(false);
+            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(false);
         } elseif ($type === self::TYPE_HAS_MANY) {
-            return $referenceModel::criteria()->where($this->keyField, $model->$valueField)->indexBy($this->indexField)->setFetchType(true);
+            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->indexBy($this->indexField)->setFetchType(true);
         } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
-            return $referenceModel::criteria()->where($this->keyField, $model->$valueField)->indexBy($this->indexField)->setFetchType(true);
+            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->indexBy($this->indexField)->setFetchType(true);
         } else {
             throw  new RelationException(['unknown relation type: :type', 'type' => $type]);
         }
