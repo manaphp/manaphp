@@ -7,7 +7,7 @@ use ManaPHP\Model\Relation;
 class Manager extends Component
 {
     /**
-     * @var array
+     * @var array[]
      */
     protected $_relations;
 
@@ -105,9 +105,15 @@ class Manager extends Component
 
         if (!isset($this->_relations[$modelName])) {
             $this->_relations[$modelName] = $model->relations();
+            foreach ($this->_relations[$modelName] as $k => $v) {
+                if (is_int($k)) {
+                    $this->_relations[$modelName][$v] = [];
+                    unset($this->_relations[$modelName][$k]);
+                }
+            }
         }
 
-        if (!isset($this->_relations[$modelName][$name])) {
+        if (!isset($this->_relations[$modelName][$name]) || !$this->_relations[$modelName][$name]) {
             if ($relation = $this->_inferRelation($model, $name)) {
                 $this->_relations[$modelName][$name] = $relation;
             }
@@ -118,12 +124,17 @@ class Manager extends Component
             if ($relation instanceof Relation) {
                 return $relation;
             } else {
+                if (is_string($relation)) {
+                    $relation = [$relation];
+                }
+
                 if (!isset($relation[1])) {
                     $relation[1] = $this->_isPlural($name) ? Relation::TYPE_HAS_MANY : Relation::TYPE_HAS_ONE;
                 }
                 return $this->_relations[$modelName][$name] = new Relation($model, $relation);
             }
         }
+
         return false;
     }
 }
