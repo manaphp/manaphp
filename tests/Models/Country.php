@@ -26,6 +26,6 @@ class Country extends Model
 
     public function relations()
     {
-        return ['citiesExplicit' => [Relation::TYPE_HAS_MANY, City::class]];
+        return ['citiesExplicit' => [City::class, Relation::TYPE_HAS_MANY]];
     }
 }

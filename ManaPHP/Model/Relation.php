@@ -44,8 +44,8 @@ class Relation implements RelationInterface
     public function __construct($model, $definition = null)
     {
         if (count($definition) >= 4) {
-            $this->type = $definition[0];
-            $this->referenceModel = $definition[1];
+            $this->referenceModel = $definition[0];
+            $this->type = $definition[1];
             $this->keyField = $definition[2];
             $this->valueField = $definition[3];
             $this->indexField = isset($definition[3]) ? $definition[3] : null;
@@ -54,8 +54,8 @@ class Relation implements RelationInterface
              * @var \ManaPHP\Model $reference
              * @var \ManaPHP\Model $referenceModel
              */
-            $this->type = $type = $definition[0];
-            $this->referenceModel = $referenceModel = $definition[1];
+            $this->referenceModel = $referenceModel = $definition[0];
+            $this->type = $type = $definition[1];
             $referenceField = isset($definition[2]) ? $definition[2] : null;
             if ($type === self::TYPE_BELONGS_TO) {
                 $reference = new $referenceModel;

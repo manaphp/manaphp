@@ -18,11 +18,10 @@ class City extends Model
     public $last_update;
     public $country;
 
-
     public function relations()
     {
         return [
-            'cousntry' => [Relation::TYPE_HAS_ONE, Country::class]
+            'country' => [Country::class, Relation::TYPE_HAS_ONE]
         ];
     }
 }

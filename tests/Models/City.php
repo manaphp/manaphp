@@ -37,7 +37,7 @@ class City extends Model
 
     public function relations()
     {
-        return ['countryExplicit' => [Relation::TYPE_HAS_ONE, Country::class]];
+        return ['countryExplicit' => [Country::class, Relation::TYPE_HAS_ONE]];
     }
 
     public function getDisplayField()

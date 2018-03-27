@@ -40,7 +40,7 @@ class Manager extends Component
             }
 
             if (class_exists($className)) {
-                return [Relation::TYPE_HAS_ONE, $className];
+                return [$className, Relation::TYPE_HAS_ONE];
             }
         } elseif (preg_match('#^(.*?)(ies|es|s)$#', $name, $match)) {
             if ($match[2] === 'ies') {
@@ -55,7 +55,7 @@ class Manager extends Component
                 $className = ucfirst($plainClassName);
             }
 
-            return [Relation::TYPE_HAS_MANY, $className];
+            return [$className, Relation::TYPE_HAS_MANY];
         }
 
         return false;
