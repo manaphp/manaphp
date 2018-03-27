@@ -41,7 +41,7 @@ class Invoker extends Component implements InvokerInterface
             }
 
             if ($type !== null && is_subclass_of($type, Component::class)) {
-                $value = $this->_dependencyInjector->get($type->getName());
+                $value = $this->_di->get($type->getName());
             } elseif (isset($params[$name])) {
                 $value = $params[$name];
             } elseif ($this->request->has($name)) {

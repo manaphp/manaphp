@@ -296,7 +296,7 @@ class Di implements DiInterface
         }
 
         if ($instance instanceof Component) {
-            $instance->setDependencyInjector($this);
+            $instance->setDi($this);
         }
 
         return $instance;

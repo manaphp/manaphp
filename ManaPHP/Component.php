@@ -28,18 +28,18 @@ class Component implements ComponentInterface
     /**
      * @var \ManaPHP\Di
      */
-    protected $_dependencyInjector;
+    protected $_di;
 
     /**
      * Sets the dependency injector
      *
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param \ManaPHP\DiInterface $di
      *
      * @return static
      */
-    public function setDependencyInjector($dependencyInjector)
+    public function setDi($di)
     {
-        $this->_dependencyInjector = $dependencyInjector;
+        $this->_di = $di;
 
         return $this;
     }
@@ -49,9 +49,9 @@ class Component implements ComponentInterface
      *
      * @return \ManaPHP\Di
      */
-    public function getDependencyInjector()
+    public function getDi()
     {
-        return $this->_dependencyInjector;
+        return $this->_di;
     }
 
     /**
@@ -63,15 +63,15 @@ class Component implements ComponentInterface
      */
     public function __get($name)
     {
-        if ($this->_dependencyInjector === null) {
-            $this->_dependencyInjector = Di::getDefault();
+        if ($this->_di === null) {
+            $this->_di = Di::getDefault();
         }
 
         if (strncmp($name, 'scoped', 6) === 0) {
             $component = lcfirst(substr($name, 6));
             return $this->{$name} = $this->{$component}->getScopedClone($this);
         } else {
-            return $this->{$name} = $this->_dependencyInjector->{$name};
+            return $this->{$name} = $this->_di->{$name};
         }
     }
 
@@ -101,11 +101,11 @@ class Component implements ComponentInterface
             return true;
         }
 
-        if ($this->_dependencyInjector === null) {
-            $this->_dependencyInjector = Di::getDefault();
+        if ($this->_di === null) {
+            $this->_di = Di::getDefault();
         }
 
-        return $this->_dependencyInjector->has($name);
+        return $this->_di->has($name);
     }
 
     /**
@@ -143,7 +143,7 @@ class Component implements ComponentInterface
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_dependencyInjector' && ($v === null || $v === Di::getDefault())) {
+            if ($k === '_di' && ($v === null || $v === Di::getDefault())) {
                 continue;
             }
 

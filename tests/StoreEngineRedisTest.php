@@ -14,38 +14,38 @@ class StoreEngineRedisTest extends TestCase
 
         //default
         $store = new Redis();
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $store);
         $this->assertAttributeSame('store:', '_prefix', $store);
 
         //string redis
         $store = new Redis('abc');
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
         $this->assertAttributeSame('abc', '_redis', $store);
         $this->assertAttributeSame('store:', '_prefix', $store);
 
         //array redis
         $store = new Redis(['redis' => 'xxx']);
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
         $this->assertAttributeSame('xxx', '_redis', $store);
         $this->assertAttributeSame('store:', '_prefix', $store);
 
         //array prefix
         $store = new Redis(['prefix' => 'ppp:']);
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $store);
         $this->assertAttributeSame('ppp:', '_prefix', $store);
 
         //array redis and prefix
         $store = new Redis(['redis' => 'xx', 'prefix' => 'yy:']);
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
         $this->assertAttributeSame('xx', '_redis', $store);
         $this->assertAttributeSame('yy:', '_prefix', $store);
 
         //object redis
         $redis = new \ManaPHP\Redis();
         $store = new Redis($redis);
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
         $this->assertAttributeSame($redis, '_redis', $store);
         $this->assertAttributeSame('store:', '_prefix', $store);
     }
@@ -55,7 +55,7 @@ class StoreEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $store = new Redis();
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
 
         $store->delete('var');
 
@@ -69,7 +69,7 @@ class StoreEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $store = new Redis();
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
 
         $store->delete('var');
 
@@ -83,7 +83,7 @@ class StoreEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $store = new Redis();
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
 
         $store->set('var', '');
         $this->assertSame('', $store->get('var'));
@@ -100,7 +100,7 @@ class StoreEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $store = new Redis();
-        $store->setDependencyInjector($di);
+        $store->setDi($di);
 
         //exists and delete
         $store->set('var', 'value');

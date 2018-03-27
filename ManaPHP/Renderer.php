@@ -86,7 +86,7 @@ class Renderer extends Component implements RendererInterface
                 }
 
                 if (!isset($this->_resolved[$extension])) {
-                    $this->_resolved[$extension] = $this->_dependencyInjector->getShared($engine);
+                    $this->_resolved[$extension] = $this->_di->getShared($engine);
                 }
 
                 $engine = $this->_resolved[$extension];
@@ -102,7 +102,7 @@ class Renderer extends Component implements RendererInterface
                 if (isset($vars['di'])) {
                     throw new RendererException('variable `di` is reserved for renderer'/**m0351d1318ca365b9b*/);
                 }
-                $vars['di'] = $this->_dependencyInjector;
+                $vars['di'] = $this->_di;
 
                 if (isset($vars['url'])) {
                     throw new RendererException('variable `url` is reserved for renderer'/**m0394e70537f32f733*/);

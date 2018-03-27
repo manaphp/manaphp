@@ -20,15 +20,15 @@ abstract class Application extends Component implements ApplicationInterface
      * Application constructor.
      *
      * @param \ManaPHP\Loader      $loader
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param \ManaPHP\DiInterface $di
      */
-    public function __construct($loader, $dependencyInjector = null)
+    public function __construct($loader, $di = null)
     {
-        $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
-        $GLOBALS['DI'] = $this->_dependencyInjector;
+        $this->_di = $di ?: new FactoryDefault();
+        $GLOBALS['DI'] = $this->_di;
 
-        $this->_dependencyInjector->setShared('loader', $loader);
-        $this->_dependencyInjector->setShared('application', $this);
+        $this->_di->setShared('loader', $loader);
+        $this->_di->setShared('application', $this);
 
         $className = get_called_class();
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -56,7 +56,7 @@ abstract class Application extends Component implements ApplicationInterface
 
         $router = $app_ns . '\Router';
         if (class_exists($router)) {
-            $this->_dependencyInjector->setShared('router', $router);
+            $this->_di->setShared('router', $router);
         }
     }
 
@@ -76,18 +76,18 @@ abstract class Application extends Component implements ApplicationInterface
         $configure = $this->configure;
 
         date_default_timezone_set($configure->timezone);
-        $this->_dependencyInjector->setShared('crypt', [$configure->master_key]);
+        $this->_di->setShared('crypt', [$configure->master_key]);
 
         foreach ($configure->aliases as $alias => $path) {
-            $this->_dependencyInjector->alias->set($alias, $path);
+            $this->_di->alias->set($alias, $path);
         }
 
         foreach ($configure->components as $component => $definition) {
-            $this->_dependencyInjector->setShared($component, $definition);
+            $this->_di->setShared($component, $definition);
         }
 
         foreach ($configure->bootstraps as $bootstrap) {
-            $this->_dependencyInjector->getShared($bootstrap);
+            $this->_di->getShared($bootstrap);
         }
     }
 }

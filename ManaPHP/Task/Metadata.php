@@ -58,16 +58,16 @@ class Metadata extends Component implements MetadataInterface
     }
 
     /**
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param \ManaPHP\DiInterface $di
      *
      * @return static
      */
-    public function setDependencyInjector($dependencyInjector)
+    public function setDi($di)
     {
-        parent::setDependencyInjector($dependencyInjector);
+        parent::setDi($di);
 
         if (!is_object($this->adapter)) {
-            $this->adapter = $this->_dependencyInjector->getShared($this->adapter);
+            $this->adapter = $this->_di->getShared($this->adapter);
         }
 
         return $this;

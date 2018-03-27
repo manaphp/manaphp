@@ -17,18 +17,18 @@ interface ComponentInterface
     /**
      * Sets the dependency injector
      *
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param \ManaPHP\DiInterface $di
      *
      * @return static
      */
-    public function setDependencyInjector($dependencyInjector);
+    public function setDi($di);
 
     /**
      * Returns the internal dependency injector
      *
      * @return \ManaPHP\Di
      */
-    public function getDependencyInjector();
+    public function getDi();
 
     /**
      * Attach a listener to the events manager

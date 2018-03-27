@@ -87,7 +87,7 @@ class HttpResponseTest extends TestCase
     public function test_redirect()
     {
         $response = new Response();
-        $response->setDependencyInjector(new Di());
+        $response->setDi(new Di());
 
         $response->redirect('some/local/url');
         $this->assertEquals([
@@ -96,7 +96,7 @@ class HttpResponseTest extends TestCase
         ], $response->getHeaders());
 
         $response = new Response();
-        $response->setDependencyInjector(new Di());
+        $response->setDi(new Di());
 
         $response->redirect('http://www.manaphp.com');
         $this->assertEquals([
@@ -105,7 +105,7 @@ class HttpResponseTest extends TestCase
         ], $response->getHeaders());
 
         $response = new Response();
-        $response->setDependencyInjector(new Di());
+        $response->setDi(new Di());
 
         $response->redirect('http://www.manaphp.com', false);
         $this->assertEquals([
@@ -114,7 +114,7 @@ class HttpResponseTest extends TestCase
         ], $response->getHeaders());
 
         $response = new Response();
-        $response->setDependencyInjector(new Di());
+        $response->setDi(new Di());
 
         $response->redirect('http://www.manaphp.com', false);
         $this->assertEquals([

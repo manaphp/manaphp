@@ -110,6 +110,6 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
     {
         $this->_acl = json_decode($serialized, true);
 
-        $this->_dependencyInjector = Di::getDefault();
+        $this->_di = Di::getDefault();
     }
 }

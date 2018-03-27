@@ -16,38 +16,38 @@ class CounterAdapterRedisTest extends TestCase
 
         //default
         $counter = new Redis();
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $counter);
         $this->assertAttributeSame('counter:', '_prefix', $counter);
 
         //string redis
         $counter = new Redis('abc');
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
         $this->assertAttributeSame('abc', '_redis', $counter);
         $this->assertAttributeSame('counter:', '_prefix', $counter);
 
         //array redis
         $counter = new Redis(['redis' => 'xxx']);
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
         $this->assertAttributeSame('xxx', '_redis', $counter);
         $this->assertAttributeSame('counter:', '_prefix', $counter);
 
         //array prefix
         $counter = new Redis(['prefix' => 'ppp:']);
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $counter);
         $this->assertAttributeSame('ppp:', '_prefix', $counter);
 
         //array redis and prefix
         $counter = new Redis(['redis' => 'xx', 'prefix' => 'yy:']);
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
         $this->assertAttributeSame('xx', '_redis', $counter);
         $this->assertAttributeSame('yy:', '_prefix', $counter);
 
         //object redis
         $redis = new \ManaPHP\Redis();
         $counter = new Redis($redis);
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
         $this->assertAttributeSame($redis, '_redis', $counter);
         $this->assertAttributeSame('counter:', '_prefix', $counter);
     }
@@ -57,7 +57,7 @@ class CounterAdapterRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $counter = new Redis();
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
 
         $counter->delete('c');
 
@@ -71,7 +71,7 @@ class CounterAdapterRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $counter = new Redis();
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
 
         $counter->delete('c');
         $this->assertEquals(2, $counter->increment('c', 2));
@@ -84,7 +84,7 @@ class CounterAdapterRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $counter = new Redis();
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
 
         $counter->delete('c');
 

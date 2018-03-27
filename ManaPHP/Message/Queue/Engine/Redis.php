@@ -65,9 +65,9 @@ class Redis extends Component implements EngineInterface
     protected function _getRedis()
     {
         if (strpos($this->_redis, '/') !== false) {
-            return $this->_redis = $this->_dependencyInjector->getInstance('ManaPHP\Redis', [$this->_redis]);
+            return $this->_redis = $this->_di->getInstance('ManaPHP\Redis', [$this->_redis]);
         } else {
-            return $this->_redis = $this->_dependencyInjector->getShared($this->_redis);
+            return $this->_redis = $this->_di->getShared($this->_redis);
         }
     }
 

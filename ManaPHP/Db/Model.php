@@ -31,7 +31,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function getConnection($context = null)
     {
-        return $this->_dependencyInjector->getShared($this->getDb($context));
+        return $this->_di->getShared($this->getDb($context));
     }
 
     /**
@@ -59,7 +59,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function getPrimaryKey()
     {
-        return $this->_dependencyInjector->modelsMetadata->getPrimaryKeyAttributes($this)[0];
+        return $this->_di->modelsMetadata->getPrimaryKeyAttributes($this)[0];
     }
 
     /**
@@ -73,7 +73,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         if (!isset($fields[$className])) {
             $properties = array_keys(get_class_vars($className));
-            $attributes = $this->_dependencyInjector->modelsMetadata->getAttributes($className);
+            $attributes = $this->_di->modelsMetadata->getAttributes($className);
             $intersect = array_intersect($properties, $attributes);
 
             $fields[$className] = $intersect ?: $attributes;
@@ -87,7 +87,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function getIntTypeFields()
     {
-        return $this->_dependencyInjector->modelsMetadata->getIntTypeAttributes($this);
+        return $this->_di->modelsMetadata->getIntTypeAttributes($this);
     }
 
     /**
@@ -95,7 +95,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function getAutoIncrementField()
     {
-        return $this->_dependencyInjector->modelsMetadata->getAutoIncrementAttribute($this);
+        return $this->_di->modelsMetadata->getAutoIncrementAttribute($this);
     }
 
     /**

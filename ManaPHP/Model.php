@@ -52,7 +52,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function __construct($data = [])
     {
-        $this->_dependencyInjector = Di::getDefault();
+        $this->_di = Di::getDefault();
 
         if (count($data) !== 0) {
             if ($this->_snapshot !== false) {
@@ -279,7 +279,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function first($filters = null, $fields = null, $options = null)
     {
         $model = new static;
-        $di = $model->_dependencyInjector;
+        $di = $model->_di;
 
         $pkName = $model->getPrimaryKey();
         $pkValue = null;
@@ -647,7 +647,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function validate($fields = null)
     {
-        $this->_dependencyInjector->modelsValidator->validate($this, $fields ?: $this->getChangedFields());
+        $this->_di->modelsValidator->validate($this, $fields ?: $this->getChangedFields());
     }
 
     protected function _preCreate()
@@ -722,7 +722,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $db = $this->getDb($this);
         $source = $this->getSource($this);
 
-        $connection = $this->_dependencyInjector->getShared($db);
+        $connection = $this->_di->getShared($db);
         $connection->insert($source, $fieldValues);
 
         $this->_postCreate($connection);
@@ -760,7 +760,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $model = new static();
 
         if ($data === null) {
-            $data = $model->_dependencyInjector->request->get();
+            $data = $model->_di->request->get();
         }
 
         unset($data[$model->getPrimaryKey()]);
@@ -858,7 +858,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function updateOrFail($data = null, $whiteList = null)
     {
         $model = new static;
-        $di = $model->_dependencyInjector;
+        $di = $model->_di;
 
         if ($data === null) {
             $data = $di->request->get();
@@ -938,7 +938,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function saveOrFail($data = null, $whiteList = null)
     {
         $model = new static;
-        $di = $model->_dependencyInjector;
+        $di = $model->_di;
 
         if ($data === null) {
             $data = $di->request->get();
@@ -1011,7 +1011,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public static function deleteOrFail($id = null)
     {
         $model = new static;
-        $di = $model->_dependencyInjector;
+        $di = $model->_di;
 
         $pkName = $model->getPrimaryKey();
 
@@ -1298,9 +1298,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
-        } elseif ($this->_dependencyInjector->has($name)) {
-            return $this->{$name} = $this->_dependencyInjector->getShared($name);
-        } elseif ($relation = $this->_dependencyInjector->relationsManager->get($this, $name)) {
+        } elseif ($this->_di->has($name)) {
+            return $this->{$name} = $this->_di->getShared($name);
+        } elseif ($relation = $this->_di->relationsManager->get($this, $name)) {
             return $relation->criteria($this)->fetch();
         } else {
             trigger_error(strtr('`:class` does not contain `:field` field: `:fields`',
@@ -1312,7 +1312,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function __call($name, $arguments)
     {
         if (strpos($name, 'get') === 0) {
-            if ($relation = $this->_dependencyInjector->relationsManager->get($this, lcfirst(substr($name, 3)))) {
+            if ($relation = $this->_di->relationsManager->get($this, lcfirst(substr($name, 3)))) {
                 return $relation->criteria($this);
             }
 

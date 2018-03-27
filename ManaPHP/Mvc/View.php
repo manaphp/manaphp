@@ -327,7 +327,7 @@ class View extends Component implements ViewInterface
         /**
          * @var \ManaPHP\Mvc\WidgetInterface $widgetInstance
          */
-        $widgetInstance = $this->_dependencyInjector->get($widgetClassName);
+        $widgetInstance = $this->_di->get($widgetClassName);
         $vars = $widgetInstance->run($options);
 
         if ($cacheOptions !== null) {

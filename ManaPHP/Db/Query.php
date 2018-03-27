@@ -144,7 +144,7 @@ class Query extends Component implements QueryInterface
     {
         $this->_db = $db;
 
-        $this->_dependencyInjector = Di::getDefault();
+        $this->_di = Di::getDefault();
     }
 
     /**
@@ -1178,7 +1178,7 @@ class Query extends Component implements QueryInterface
     protected function _buildSql()
     {
         if ($this->_db === null || is_string($this->_db)) {
-            $this->_db = $this->_dependencyInjector->getShared($this->_db ?: 'db');
+            $this->_db = $this->_di->getShared($this->_db ?: 'db');
         }
 
         if (count($this->_union) !== 0) {

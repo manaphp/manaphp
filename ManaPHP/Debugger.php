@@ -312,7 +312,7 @@ class Debugger extends Component implements DebuggerInterface
         $data['events'] = $this->_events;
 
         /** @noinspection ForeachSourceInspection */
-        foreach ($this->_dependencyInjector->__debugInfo()['_instances'] as $k => $v) {
+        foreach ($this->_di->__debugInfo()['_instances'] as $k => $v) {
             if ($k === 'configure') {
                 continue;
             }

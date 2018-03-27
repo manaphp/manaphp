@@ -23,11 +23,11 @@ class Application extends \ManaPHP\Application
      * Application constructor.
      *
      * @param \ManaPHP\Loader      $loader
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param \ManaPHP\DiInterface $di
      */
-    public function __construct($loader, $dependencyInjector = null)
+    public function __construct($loader, $di = null)
     {
-        parent::__construct($loader, $dependencyInjector);
+        parent::__construct($loader, $di);
         $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
     }
 

@@ -43,11 +43,11 @@ abstract class HttpServer extends Application
      * HttpServer constructor.
      *
      * @param  \ManaPHP\Loader     $loader
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param \ManaPHP\DiInterface $di
      */
-    public function __construct($loader, $dependencyInjector = null)
+    public function __construct($loader, $di = null)
     {
-        parent::__construct($loader, $dependencyInjector);
+        parent::__construct($loader, $di);
         $this->_createSwooleServer();
 
     }
@@ -71,7 +71,7 @@ abstract class HttpServer extends Application
 
         $this->_swoole->set(['worker_num' => $this->_worker_num]);
 
-        $this->_dependencyInjector->setShared('httpStats', new HttpStats(['swoole' => $this->_swoole]));
+        $this->_di->setShared('httpStats', new HttpStats(['swoole' => $this->_swoole]));
         $this->_prepareSwoole();
 
         $this->_swoole->on('request', [$this, 'onRequest']);
@@ -183,7 +183,7 @@ abstract class HttpServer extends Application
 
         $content = $this->response->getContent();
         $response->end($content);
-        $this->_dependencyInjector->reConstruct();
+        $this->_di->reConstruct();
 
         $this->_afterRequest();
     }

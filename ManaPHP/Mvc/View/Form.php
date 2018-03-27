@@ -29,9 +29,9 @@ class Form extends Component implements FormInterface
      */
     protected $_isSubmitted;
 
-    public function setDependencyInjector($dependencyInjector)
+    public function setDi($di)
     {
-        parent::setDependencyInjector($dependencyInjector);
+        parent::setDi($di);
 
         if ($this->isSubmitted()) {
             $this->loadForAction();

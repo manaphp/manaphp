@@ -14,7 +14,7 @@ class SecurityRateLimiterTest extends TestCase
         $di->alias->set('@data', __DIR__ . '/tmp');
 
         $rateLimiter = new RateLimiter();
-        $rateLimiter->setDependencyInjector($di);
+        $rateLimiter->setDi($di);
 
         $this->assertAttributeSame(RateLimiter\Engine\Redis::class, '_engine', $rateLimiter);
         $rateLimiter->limit('xx', 1, 10, 1);
@@ -32,7 +32,7 @@ class SecurityRateLimiterTest extends TestCase
 
         //class name string
         $rateLimiter = new RateLimiter(RateLimiter\Engine\Redis::class);
-        $rateLimiter->setDependencyInjector($di);
+        $rateLimiter->setDi($di);
 
         $this->assertAttributeSame(RateLimiter\Engine\Redis::class, '_engine', $rateLimiter);
         $rateLimiter->limit('xx', 1, 10, 1);
@@ -42,7 +42,7 @@ class SecurityRateLimiterTest extends TestCase
         //component name string
         $di->setShared('rateLimiterEngine', RateLimiter\Engine\Redis::class);
         $rateLimiter = new RateLimiter('rateLimiterEngine');
-        $rateLimiter->setDependencyInjector($di);
+        $rateLimiter->setDi($di);
 
         $this->assertAttributeSame('rateLimiterEngine', '_engine', $rateLimiter);
         $rateLimiter->limit('xx', 1, 10, 1);
@@ -51,7 +51,7 @@ class SecurityRateLimiterTest extends TestCase
 
         //array
         $rateLimiter = new RateLimiter(['engine' => RateLimiter\Engine\Redis::class, 'prefix' => 'AAA']);
-        $rateLimiter->setDependencyInjector($di);
+        $rateLimiter->setDi($di);
 
         $this->assertAttributeSame(RateLimiter\Engine\Redis::class, '_engine', $rateLimiter);
         $rateLimiter->limit('xx', 1, 10, 1);
@@ -60,7 +60,7 @@ class SecurityRateLimiterTest extends TestCase
 
         //array
         $rateLimiter = new RateLimiter(['engine' => ['class' => RateLimiter\Engine\Redis::class]]);
-        $rateLimiter->setDependencyInjector($di);
+        $rateLimiter->setDi($di);
 
         $this->assertAttributeSame(['class' => RateLimiter\Engine\Redis::class], '_engine', $rateLimiter);
         $rateLimiter->limit('xx', 1, 10, 1);

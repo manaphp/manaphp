@@ -19,17 +19,17 @@ class Application extends \ManaPHP\Application
      * Application constructor.
      *
      * @param \ManaPHP\Loader      $loader
-     * @param \ManaPHP\DiInterface $dependencyInjector
+     * @param \ManaPHP\DiInterface $di
      */
-    public function __construct($loader, $dependencyInjector = null)
+    public function __construct($loader, $di = null)
     {
         $calledClass = get_called_class();
-		
-        if ($calledClass === __CLASS__) {
-            $this->_dependencyInjector = $dependencyInjector ?: new FactoryDefault();
 
-            $this->_dependencyInjector->setShared('loader', $loader);
-            $this->_dependencyInjector->setShared('application', $this);
+        if ($calledClass === __CLASS__) {
+            $this->_di = $di ?: new FactoryDefault();
+
+            $this->_di->setShared('loader', $loader);
+            $this->_di->setShared('application', $this);
 
             $appDir = dirname(get_included_files()[0]) . '/app';
             $appFile = $appDir . '/Application.php';
@@ -46,7 +46,7 @@ class Application extends \ManaPHP\Application
                 }
             }
         } else {
-            parent::__construct($loader, $dependencyInjector);
+            parent::__construct($loader, $di);
         }
 
         if ($this->filesystem->dirExists('@app/Cli/Controllers')) {
@@ -64,9 +64,9 @@ class Application extends \ManaPHP\Application
 
         parent::registerServices();
 
-        $this->_dependencyInjector->setShared('cliHandler', 'ManaPHP\Cli\Handler');
-        $this->_dependencyInjector->setShared('console', 'ManaPHP\Cli\Console');
-        $this->_dependencyInjector->setShared('arguments', 'ManaPHP\Cli\Arguments');
+        $this->_di->setShared('cliHandler', 'ManaPHP\Cli\Handler');
+        $this->_di->setShared('console', 'ManaPHP\Cli\Console');
+        $this->_di->setShared('arguments', 'ManaPHP\Cli\Arguments');
     }
 
     /**

@@ -35,9 +35,9 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     public function __construct($model, $fields = null)
     {
         $this->_model = is_string($model) ? new $model : $model;
-        $this->_dependencyInjector = Di::getDefault();
+        $this->_di = Di::getDefault();
 
-        $this->_query = $this->_dependencyInjector->get('ManaPHP\Db\Query');
+        $this->_query = $this->_di->get('ManaPHP\Db\Query');
         if ($fields !== null) {
             $this->_columns = $fields;
             $this->_query->select($fields);
@@ -447,7 +447,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
         $bind = $this->_query->getBind();
         $db = $this->_model->getDb($bind);
-        $this->_query->setDb($this->_dependencyInjector->getShared($db));
+        $this->_query->setDb($this->_di->getShared($db));
 
         $source = $this->_model->getSource($bind);
         $this->_query->from($source);

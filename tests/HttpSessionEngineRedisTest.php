@@ -13,38 +13,38 @@ class HttpSessionEngineRedisTest extends TestCase
 
         //default
         $session = new Redis();
-        $session->setDependencyInjector($di);
+        $session->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $session);
         $this->assertAttributeSame('session:', '_prefix', $session);
 
         //string redis
         $session = new Redis('abc');
-        $session->setDependencyInjector($di);
+        $session->setDi($di);
         $this->assertAttributeSame('abc', '_redis', $session);
         $this->assertAttributeSame('session:', '_prefix', $session);
 
         //array redis
         $session = new Redis(['redis' => 'xxx']);
-        $session->setDependencyInjector($di);
+        $session->setDi($di);
         $this->assertAttributeSame('xxx', '_redis', $session);
         $this->assertAttributeSame('session:', '_prefix', $session);
 
         //array prefix
         $session = new Redis(['prefix' => 'ppp:']);
-        $session->setDependencyInjector($di);
+        $session->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $session);
         $this->assertAttributeSame('ppp:', '_prefix', $session);
 
         //array redis and prefix
         $session = new Redis(['redis' => 'xx', 'prefix' => 'yy:']);
-        $session->setDependencyInjector($di);
+        $session->setDi($di);
         $this->assertAttributeSame('xx', '_redis', $session);
         $this->assertAttributeSame('yy:', '_prefix', $session);
 
         //object redis
         $redis = new \ManaPHP\Redis();
         $session = new Redis($redis);
-        $session->setDependencyInjector($di);
+        $session->setDi($di);
         $this->assertAttributeSame($redis, '_redis', $session);
         $this->assertAttributeSame('session:', '_prefix', $session);
     }
@@ -55,7 +55,7 @@ class HttpSessionEngineRedisTest extends TestCase
 
         $session_id = md5(microtime(true) . mt_rand());
         $redis = new Redis();
-        $redis->setDependencyInjector($di);
+        $redis->setDi($di);
 
         $this->assertEquals('', $redis->read($session_id));
 
@@ -69,7 +69,7 @@ class HttpSessionEngineRedisTest extends TestCase
 
         $session_id = md5(microtime(true) . mt_rand());
         $redis = new Redis();
-        $redis->setDependencyInjector($di);
+        $redis->setDi($di);
 
         $redis->write($session_id, '', ['ttl' => 100]);
         $this->assertEquals('', $redis->read($session_id));
@@ -84,7 +84,7 @@ class HttpSessionEngineRedisTest extends TestCase
 
         $session_id = md5(microtime(true) . mt_rand());
         $redis = new Redis();
-        $redis->setDependencyInjector($di);
+        $redis->setDi($di);
 
         $this->assertTrue($redis->destroy($session_id));
 
@@ -101,7 +101,7 @@ class HttpSessionEngineRedisTest extends TestCase
 
         md5(microtime(true) . mt_rand());
         $redis = new Redis();
-        $redis->setDependencyInjector($di);
+        $redis->setDi($di);
 
         $this->assertTrue($redis->gc(100));
     }

@@ -41,7 +41,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
             } else {
                 $modelInstance = is_string($model) ? new $model : $model;
 
-                $data = $this->_dependencyInjector->getShared($modelInstance->getDb(true))->getMetadata($modelInstance->getSource(true));
+                $data = $this->_di->getShared($modelInstance->getDb(true))->getMetadata($modelInstance->getSource(true));
 
                 $this->_metadata[$modelName] = $data;
                 $this->write($modelName, $data);

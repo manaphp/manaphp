@@ -15,7 +15,7 @@ class CounterTest extends TestCase
         $di = new FactoryDefault();
 
         $counter = new Counter();
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
 
         $this->assertAttributeSame(Redis::class, '_engine', $counter);
         $counter->get('xxx');
@@ -32,7 +32,7 @@ class CounterTest extends TestCase
 
         //class name string
         $counter = new Counter(Redis::class);
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
 
         $this->assertAttributeSame(Redis::class, '_engine', $counter);
         $counter->get('abc');
@@ -42,7 +42,7 @@ class CounterTest extends TestCase
         //component name string
         $di->setShared('redisCounterEngine', Redis::class);
         $counter = new Counter('redisCounterEngine');
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
 
         $this->assertAttributeSame('redisCounterEngine', '_engine', $counter);
         $counter->get('abc');
@@ -51,7 +51,7 @@ class CounterTest extends TestCase
 
         //array
         $counter = new Counter(['engine' => Redis::class, 'prefix' => 'AAA']);
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
 
         $this->assertAttributeSame(Redis::class, '_engine', $counter);
         $counter->get('abc');
@@ -60,7 +60,7 @@ class CounterTest extends TestCase
 
         //array
         $counter = new Counter(['engine' => ['class' => Redis::class, 'dir' => 'xxx']]);
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
 
         $this->assertAttributeSame(['class' => Redis::class, 'dir' => 'xxx'], '_engine', $counter);
         $counter->get('abc');
@@ -116,7 +116,7 @@ class CounterTest extends TestCase
         $di = new FactoryDefault();
 
         $counter = new Counter(Redis::class);
-        $counter->setDependencyInjector($di);
+        $counter->setDi($di);
         $counter->delete('c');
 
         $counter->increment('c');

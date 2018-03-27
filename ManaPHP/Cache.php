@@ -46,9 +46,9 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
     protected function _getEngine()
     {
         if (is_string($this->_engine)) {
-            return $this->_engine = $this->_dependencyInjector->getShared($this->_engine);
+            return $this->_engine = $this->_di->getShared($this->_engine);
         } else {
-            return $this->_engine = $this->_dependencyInjector->getInstance($this->_engine);
+            return $this->_engine = $this->_di->getInstance($this->_engine);
         }
     }
 

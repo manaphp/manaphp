@@ -18,7 +18,7 @@ class DbController extends Controller
         /**
          * @var \ManaPHP\Db $db
          */
-        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $db = $this->_di->getShared($this->arguments->getOption('service:s', 'db'));
 
         $tables = $db->getTables();
         sort($tables);
@@ -54,7 +54,7 @@ class DbController extends Controller
         /**
          * @var \ManaPHP\Db $db
          */
-        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $db = $this->_di->getShared($this->arguments->getOption('service:s', 'db'));
         $table = $this->arguments->getOption('table:t');
 
         $tables = $db->getTables();
@@ -79,7 +79,7 @@ class DbController extends Controller
         /**
          * @var \ManaPHP\Db $db
          */
-        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $db = $this->_di->getShared($this->arguments->getOption('service:s', 'db'));
         $tables = $db->getTables();
         sort($tables);
 
@@ -245,7 +245,7 @@ class DbController extends Controller
         /**
          * @var \ManaPHP\Db $db
          */
-        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $db = $this->_di->getShared($this->arguments->getOption('service:s', 'db'));
         $tables = $db->getTables();
         sort($tables);
 
@@ -288,7 +288,7 @@ class DbController extends Controller
         /**
          * @var \ManaPHP\Db $db
          */
-        $db = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'db'));
+        $db = $this->_di->getShared($this->arguments->getOption('service:s', 'db'));
         $tables = $db->getTables();
         sort($tables);
 

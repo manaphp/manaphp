@@ -19,7 +19,7 @@ class HttpFilterTest extends TestCase
         parent::setUp();
         $this->_di = new FactoryDefault();
         $this->filter = new Filter();
-        $this->filter->setDependencyInjector($this->_di);
+        $this->filter->setDi($this->_di);
     }
 
     public function test_bool()

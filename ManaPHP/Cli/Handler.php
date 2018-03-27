@@ -154,7 +154,7 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
+        $controllerInstance = $this->_di->getShared($controllerClassName);
         if ($commandName === '') {
             $commands = $this->_getCommands($controllerClassName);
             if (count($commands) === 1) {

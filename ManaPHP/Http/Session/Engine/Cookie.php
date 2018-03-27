@@ -44,7 +44,7 @@ class Cookie extends Component implements EngineInterface
      */
     public function read($session_id)
     {
-        $data = $this->_dependencyInjector->cookies->get($session_id) ?: '';
+        $data = $this->_di->cookies->get($session_id) ?: '';
         if ($data === '') {
             return '';
         }
@@ -85,7 +85,7 @@ class Cookie extends Component implements EngineInterface
 
         $key = $this->_key ?: $this->_getKey();
         $payload = base64_encode(json_encode(['exp' => time() + $context['ttl'], 'data' => $data]));
-        $this->_dependencyInjector->cookies->set($session_id, $payload . '.' . md5($payload . $key), $params['lifetime'], $params['path'], $params['domain'],
+        $this->_di->cookies->set($session_id, $payload . '.' . md5($payload . $key), $params['lifetime'], $params['path'], $params['domain'],
             $params['secure']);
 
         return true;
@@ -98,7 +98,7 @@ class Cookie extends Component implements EngineInterface
      */
     public function destroy($session_id)
     {
-        $this->_dependencyInjector->cookies->delete($session_id);
+        $this->_di->cookies->delete($session_id);
 
         return true;
     }

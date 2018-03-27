@@ -64,7 +64,7 @@ class MongodbController extends Controller
             /**
              * @var \ManaPHP\Mongodb $mongodb
              */
-            $mongodb = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'mongodb'));
+            $mongodb = $this->_di->getShared($this->arguments->getOption('service:s', 'mongodb'));
             foreach ($mongodb->listCollections() as $collection) {
                 $docs = $mongodb->query($collection, [], ['limit' => 1]);
                 if ($docs) {
@@ -306,7 +306,7 @@ class MongodbController extends Controller
         /**
          * @var \ManaPHP\Mongodb $mongodb
          */
-        $mongodb = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'mongodb'));
+        $mongodb = $this->_di->getShared($this->arguments->getOption('service:s', 'mongodb'));
 
         $bom = $this->arguments->getOption('bom', 0);
         $collections = $this->arguments->getOption('collection:c', '');
@@ -377,7 +377,7 @@ class MongodbController extends Controller
         /**
          * @var \ManaPHP\Mongodb $mongodb
          */
-        $mongodb = $this->_dependencyInjector->getShared($this->arguments->getOption('service:s', 'mongodb'));
+        $mongodb = $this->_di->getShared($this->arguments->getOption('service:s', 'mongodb'));
 
         $databases = $mongodb->listDatabases();
         $filterDatabases = $this->arguments->getOption('database:d', '');

@@ -202,7 +202,7 @@ class Proxy extends Component implements DbInterface
      */
     public function createQuery()
     {
-        return $this->_dependencyInjector->get('ManaPHP\Db\Query', [$this]);
+        return $this->_di->get('ManaPHP\Db\Query', [$this]);
     }
 
     /**

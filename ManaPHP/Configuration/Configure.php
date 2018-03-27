@@ -80,8 +80,8 @@ class Configure extends Component implements ConfigureInterface
             /**
              * @var \ManaPHP\Configuration\Configure\EngineInterface $loader
              */
-            $loader = $this->_dependencyInjector->getShared('ManaPHP\Configuration\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
-            $data = $loader->load($this->_dependencyInjector->alias->resolve($file));
+            $loader = $this->_di->getShared('ManaPHP\Configuration\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
+            $data = $loader->load($this->_di->alias->resolve($file));
 
             $this->loadData($data);
         }

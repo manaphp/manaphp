@@ -13,38 +13,38 @@ class CacheEngineRedisTest extends TestCase
 
         //default
         $cache = new Redis();
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $cache);
         $this->assertAttributeSame('cache:', '_prefix', $cache);
 
         //string redis
         $cache = new Redis('abc');
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
         $this->assertAttributeSame('abc', '_redis', $cache);
         $this->assertAttributeSame('cache:', '_prefix', $cache);
 
         //array redis
         $cache = new Redis(['redis' => 'xxx']);
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
         $this->assertAttributeSame('xxx', '_redis', $cache);
         $this->assertAttributeSame('cache:', '_prefix', $cache);
 
         //array prefix
         $cache = new Redis(['prefix' => 'ppp:']);
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $cache);
         $this->assertAttributeSame('ppp:', '_prefix', $cache);
 
         //array redis and prefix
         $cache = new Redis(['redis' => 'xx', 'prefix' => 'yy:']);
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
         $this->assertAttributeSame('xx', '_redis', $cache);
         $this->assertAttributeSame('yy:', '_prefix', $cache);
 
         //object redis
         $redis = new \ManaPHP\Redis();
         $cache = new Redis($redis);
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
         $this->assertAttributeSame($redis, '_redis', $cache);
         $this->assertAttributeSame('cache:', '_prefix', $cache);
     }
@@ -54,7 +54,7 @@ class CacheEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $cache = new Redis();
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -67,7 +67,7 @@ class CacheEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $cache = new Redis();
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
 
         $cache->delete('var');
 
@@ -81,7 +81,7 @@ class CacheEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $cache = new Redis();
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -104,7 +104,7 @@ class CacheEngineRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $cache = new Redis();
-        $cache->setDependencyInjector($di);
+        $cache->setDi($di);
 
         //exists and delete
         $cache->set('var', 'value', 100);

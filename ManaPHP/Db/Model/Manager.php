@@ -29,6 +29,6 @@ class Manager extends Component implements ManagerInterface
      */
     public function createQuery()
     {
-        return $this->_dependencyInjector->get('queryBuilder');
+        return $this->_di->get('queryBuilder');
     }
 }

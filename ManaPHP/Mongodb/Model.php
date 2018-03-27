@@ -39,7 +39,7 @@ class Model extends \ManaPHP\Model
     public function getConnection($context = null)
     {
         $db = $this->getDb($context);
-        return $this->_dependencyInjector->getShared($db);
+        return $this->_di->getShared($db);
     }
 
     /**

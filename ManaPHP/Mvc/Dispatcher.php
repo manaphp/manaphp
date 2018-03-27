@@ -207,14 +207,14 @@ class Dispatcher extends Component implements DispatcherInterface
                 $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\{$this->_controllerName}Controller");
             }
 
-            if (!class_exists($controllerClassName) && !$this->_dependencyInjector->has($controllerClassName)) {
+            if (!class_exists($controllerClassName) && !$this->_di->has($controllerClassName)) {
                 throw new NotFoundControllerException(['`:controller` class cannot be loaded'/**m0d7fa39c3a64b91e0*/, 'controller' => $controllerClassName]);
             }
 
             /**
              * @var \ManaPHP\Mvc\ControllerInterface $controllerInstance
              */
-            $controllerInstance = $this->_dependencyInjector->getShared($controllerClassName);
+            $controllerInstance = $this->_di->getShared($controllerClassName);
             $this->_controller = $controllerInstance;
 
             if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {

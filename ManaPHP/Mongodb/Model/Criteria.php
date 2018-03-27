@@ -77,7 +77,7 @@ class Criteria extends \ManaPHP\Model\Criteria
     public function __construct($model, $fields = null)
     {
         $this->_model = is_string($model) ? new $model : $model;
-        $this->_dependencyInjector = Di::getDefault();
+        $this->_di = Di::getDefault();
 
         if ($fields !== null) {
             $this->select($fields);
@@ -99,7 +99,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         /**
          * @var \ManaPHP\MongodbInterface $db
          */
-        $db = $this->_dependencyInjector->getShared($this->_model->getDb());
+        $db = $this->_di->getShared($this->_model->getDb());
 
         $cmd = ['distinct' => $source, 'key' => $field];
         if (count($this->_filters) !== 0) {
@@ -765,7 +765,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         /**
          * @var \ManaPHP\MongodbInterface $db
          */
-        $db = $this->_dependencyInjector->getShared($this->_model->getDb());
+        $db = $this->_di->getShared($this->_model->getDb());
         if (count($this->_aggregate) === 0) {
             $options = [];
 
@@ -980,7 +980,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         $db = $this->_model->getDb($this);
         $source = $this->_model->getSource($this);
 
-        return $this->_dependencyInjector->getShared($db)->delete($source, $this->_filters ? ['$and' => $this->_filters] : []);
+        return $this->_di->getShared($db)->delete($source, $this->_filters ? ['$and' => $this->_filters] : []);
     }
 
     /**
@@ -994,6 +994,6 @@ class Criteria extends \ManaPHP\Model\Criteria
         $db = $this->_model->getDb($this);
         $source = $this->_model->getSource($this);
 
-        return $this->_dependencyInjector->getShared($db)->update($source, $fieldValues, $this->_filters ? ['$and' => $this->_filters] : []);
+        return $this->_di->getShared($db)->update($source, $fieldValues, $this->_filters ? ['$and' => $this->_filters] : []);
     }
 }
