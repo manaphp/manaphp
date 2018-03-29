@@ -208,13 +208,19 @@ class Criteria extends \ManaPHP\Model\Criteria
             foreach ($filter as $k => $v) {
                 $this->where($k, $v);
             }
+        } elseif ($value === null) {
+            $this->_filters[] = $filter;
+        } elseif (strpos($filter, '~=')) {
+            if (count($value) !== 2) {
+                throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
+            }
+            $this->whereBetween(rtrim(substr($filter, 0, -2)), $value[0], $value[1]);
+        } elseif (strpos($filter, '@=')) {
+            $field = rtrim(substr($filter, 0, -2));
+            $times = $this->_normalizeTimeBetween($field, $value);
+            $this->whereBetween($field, $times[0], $times[1]);
         } elseif (is_array($value)) {
-            if (strpos($filter, '~=')) {
-                if (count($value) !== 2 || !isset($value[0], $value[1])) {
-                    throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
-                }
-                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-            } elseif (isset($value[0]) || !$value) {
+            if (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
