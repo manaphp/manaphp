@@ -347,25 +347,14 @@ class Query extends Component implements QueryInterface
             }
         } elseif ($value === null) {
             $this->_conditions[] = $filter;
+        } elseif (strpos($filter, '~=')) {
+            $this->whereBetween(rtrim(substr($filter, 0, -2)), $value[0], $value[1]);
         } elseif (is_array($value)) {
-            if (strpos($filter, '~=')) {
-                if (count($value) !== 2 || !isset($value[0], $value[1])) {
-                    throw new QueryException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
-                }
-
-                if (is_string($value[0]) && is_string($value[1]) && strpos($value[0], '-') !== false && strpos($value[1], '-') !== false) {
-                    /** @noinspection NestedPositiveIfStatementsInspection */
-                    if (preg_match('#^\d{4}-\d{2}-\d{2}$#', $value[0]) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $value[1])) {
-                        $value[0] = strtotime($value[0]);
-                        $value[1] = strtotime($value[1] . 'next day') - 1;
-                    }
-                }
-                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-            } elseif (isset($value[0]) || !$value) {
+            if (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
-                    $this->whereNotIn(substr($filter, 0, -2), $value);
+                    $this->whereNotIn(rtrim(substr($filter, 0, -2)), $value);
                 } else {
-                    $this->whereIn(rtrim($filter, '='), $value);
+                    $this->whereIn(rtrim(substr($filter, 0, -1)), $value);
                 }
             } else {
                 $this->_conditions[] = $filter;
