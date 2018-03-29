@@ -168,7 +168,7 @@ class DbQueryTest extends TestCase
         $this->assertCount(0, $result);
     }
 
-    public function test_betweenWhere()
+    public function test_whereBetween()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',
             (new Query())->from('city')->whereBetween('city_id', 1, 10)->getSql());
@@ -182,7 +182,7 @@ class DbQueryTest extends TestCase
         $this->assertCount(20, (new Query)->from('city')->whereBetween('city_id', 1, 20)->fetchAll());
     }
 
-    public function test_notBetweenWhere()
+    public function test_whereNotBetween()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT BETWEEN :_min_0 AND :_max_0',
             (new Query())->from('city')->whereNotBetween('city_id', 1, 10)->getSql());
@@ -196,7 +196,7 @@ class DbQueryTest extends TestCase
         $this->assertCount(580, (new Query)->from('city')->whereNotBetween('city_id', 1, 20)->fetchAll());
     }
 
-    public function test_inWhere()
+    public function test_whereIn()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE 1=2',
             (new Query())->from('city')->whereIn('city_id', [])->getSql());
@@ -211,7 +211,7 @@ class DbQueryTest extends TestCase
             (new Query())->from('city')->whereIn('DATE(created_time)', [2000, 2001])->getSql());
     }
 
-    public function test_notInWhere()
+    public function test_whereNotIn()
     {
         $this->assertEquals('SELECT * FROM [city]',
             (new Query())->from('city')->whereNotIn('city_id', [])->getSql());
