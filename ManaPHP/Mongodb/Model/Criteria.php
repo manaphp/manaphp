@@ -279,6 +279,12 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereBetween($field, $min, $max)
     {
+        if ($min === null || $min === '') {
+            return $max === null || $max === '' ? $this : $this->where($field . '<=', $max);
+        } elseif ($max === null || $max === '') {
+            return $min === null || $min === '' ? $this : $this->where($field . '>=', $min);
+        }
+
         $fieldTypes = $this->_model->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
@@ -308,6 +314,12 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotBetween($field, $min, $max)
     {
+        if ($min === null || $min === '') {
+            return $max === null || $max === '' ? $this : $this->where($field . '>', $max);
+        } elseif ($max === null || $max === '') {
+            return $min === null || $min === '' ? $this : $this->where($field . '<', $min);
+        }
+
         $fieldTypes = $this->_model->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 

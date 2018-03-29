@@ -303,17 +303,20 @@ class DbModelQueryTest extends TestCase
 
     public function test_whereBetween()
     {
-        $query = Address::query()
-            ->whereBetween('address_id', 51, 100);
-        $this->assertCount(50, $query->execute());
+        $this->assertCount(50, Address::query()->whereBetween('address_id', 51, 100)->execute());
+        $this->assertCount(100, Address::query()->whereBetween('address_id', null, 100)->execute());
+        $this->assertCount(100, Address::query()->whereBetween('address_id', '', 100)->execute());
+        $this->assertCount(504, Address::query()->whereBetween('address_id', 100, null)->execute());
+        $this->assertCount(504, Address::query()->whereBetween('address_id', 100, '')->execute());
     }
 
     public function test_whereNotBetween()
     {
-        $query = Address::query()
-            ->whereNotBetween('address_id', 51, 1000000);
-        $this->assertCount(50, $query->execute());
-
+        $this->assertCount(553, Address::query()->whereNotBetween('address_id', 51, 100)->execute());
+        $this->assertCount(503, Address::query()->whereNotBetween('address_id', null, 100)->execute());
+        $this->assertCount(503, Address::query()->whereNotBetween('address_id', '', 100)->execute());
+        $this->assertCount(50, Address::query()->whereNotBetween('address_id', 51, null)->execute());
+        $this->assertCount(50, Address::query()->whereNotBetween('address_id', 51, '')->execute());
         $query = Address::query()
             ->whereNotBetween('address_id', 51, 1000000)
             ->whereNotBetween('address_id', 71, 7000000);
