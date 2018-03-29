@@ -235,8 +235,6 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $this->whereEndsWith($field, $value);
             } elseif ($operator === '*=') {
                 $this->whereContains($field, $value);
-            } elseif ($operator === '~=') {
-                $this->whereLike($field, $value);
             } else {
                 $operator_map = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
                 if (isset($operator_map[$operator])) {

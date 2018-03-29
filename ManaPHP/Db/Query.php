@@ -388,8 +388,6 @@ class Query extends Component implements QueryInterface
                 $this->whereEndsWith($field, $value);
             } elseif ($operator === '*=') {
                 $this->whereContains($field, $value);
-            } elseif ($operator === '~=') {
-                $this->whereLike($field, $value);
             } else {
                 throw new QueryException(['unknown `:where` where filter', 'where' => $filter]);
             }
