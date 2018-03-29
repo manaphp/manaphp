@@ -214,9 +214,9 @@ class Criteria extends \ManaPHP\Model\Criteria
             if (count($value) !== 2) {
                 throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
             }
-            $this->whereBetween(rtrim(substr($filter, 0, -2)), $value[0], $value[1]);
+            $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
         } elseif (strpos($filter, '@=')) {
-            $field = rtrim(substr($filter, 0, -2));
+            $field = substr($filter, 0, -2);
             $times = $this->_normalizeTimeBetween($field, $value);
             $this->whereBetween($field, $times[0], $times[1]);
         } elseif (is_array($value)) {

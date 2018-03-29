@@ -351,19 +351,19 @@ class Query extends Component implements QueryInterface
             if (count($value) !== 2) {
                 throw new QueryException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
             }
-            $this->whereBetween(rtrim(substr($filter, 0, -2)), $value[0], $value[1]);
+            $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
         } elseif (is_array($value)) {
             if (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
-                    $this->whereNotIn(rtrim(substr($filter, 0, -2)), $value);
+                    $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
-                    $this->whereIn(rtrim(substr($filter, 0, -1)), $value);
+                    $this->whereIn(rtrim($filter, '='), $value);
                 }
             } else {
                 $this->_conditions[] = $filter;
                 $this->_bind = array_merge($this->_bind, $value);
             }
-        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $filter, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)([<>=!^$*~]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
             if ($operator === '') {
                 $operator = '=';
