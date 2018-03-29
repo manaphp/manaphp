@@ -348,6 +348,9 @@ class Query extends Component implements QueryInterface
         } elseif ($value === null) {
             $this->_conditions[] = $filter;
         } elseif (strpos($filter, '~=')) {
+            if (count($value) !== 2) {
+                throw new QueryException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
+            }
             $this->whereBetween(rtrim(substr($filter, 0, -2)), $value[0], $value[1]);
         } elseif (is_array($value)) {
             if (isset($value[0]) || !$value) {
