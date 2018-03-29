@@ -41,6 +41,31 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
     }
 
     /**
+     * @param string $field
+     * @param array  $value
+     *
+     * @return array
+     */
+    protected function _normalizeTimeBetween($field, $value)
+    {
+        $left = $value[0];
+        if ($left && is_string($left)) {
+            $left = strtotime($left[0] === '-' || $left[0] === '+' ? date('Y-m-d', strtotime($left)) : $left);
+        }
+
+        $right = $value[1];
+        if ($right && is_string($right)) {
+            $right = strtotime($right[0] === '-' || $right[0] === '+' ? date('Y-m-d 23:59:59', strtotime($right)) : $right);
+        }
+
+        if (in_array($field, $this->_model->getIntTypeFields(), true)) {
+            return [$left ? $left : null, $right ? $right : null];
+        } else {
+            return [$left ? date('Y-m-d H:i:s', $left) : null, $right ? date('Y-m-d H:i:s', $right) : null];
+        }
+    }
+
+    /**
      * @param array $fields
      *
      * @return static
