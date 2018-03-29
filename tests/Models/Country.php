@@ -17,6 +17,7 @@ use ManaPHP\Mvc\Model;
  * @property \Tests\Models\City[] $cities
  * @property \Tests\Models\City[] $citiesExplicit
  * @method  \ManaPHP\Model\Criteria getCities
+ * @method  \ManaPHP\Model\Criteria getCitiesExplicit
  */
 class Country extends Model
 {

@@ -31,11 +31,6 @@ class Relation implements RelationInterface
     public $valueField;
 
     /**
-     * @var string
-     */
-    public $indexField;
-
-    /**
      * Relation constructor.
      *
      * @param \ManaPHP\Model $model
@@ -48,7 +43,6 @@ class Relation implements RelationInterface
             $this->type = $definition[1];
             $this->keyField = $definition[2];
             $this->valueField = $definition[3];
-            $this->indexField = isset($definition[3]) ? $definition[3] : null;
         } else {
             /**
              * @var \ManaPHP\Model $reference
@@ -66,15 +60,11 @@ class Relation implements RelationInterface
                 $this->keyField = $reference->getPrimaryKey();
                 $this->valueField = $referenceField ?: $this->_inferReferenceField($model, $referenceModel);
             } elseif ($type === self::TYPE_HAS_MANY) {
-                $reference = new $referenceModel;
                 $this->keyField = $referenceField ?: $this->_inferReferenceField($model, get_class($model));
                 $this->valueField = $model->getPrimaryKey();
-                $this->indexField = $reference->getPrimaryKey();
             } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
-                $reference = new $referenceModel;
                 $this->keyField = $referenceField ?: $this->_inferReferenceField($model, get_class($model));
                 $this->valueField = $model->getPrimaryKey();
-                $this->indexField = $reference->getPrimaryKey();
             } else {
                 throw  new RelationException(['unknown relation type: :type', 'type' => $type]);
             }
@@ -124,9 +114,9 @@ class Relation implements RelationInterface
         } elseif ($type === self::TYPE_BELONGS_TO) {
             return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(false);
         } elseif ($type === self::TYPE_HAS_MANY) {
-            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->indexBy($this->indexField)->setFetchType(true);
+            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(true);
         } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
-            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->indexBy($this->indexField)->setFetchType(true);
+            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(true);
         } else {
             throw  new RelationException(['unknown relation type: :type', 'type' => $type]);
         }
