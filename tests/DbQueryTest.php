@@ -147,7 +147,7 @@ class DbQueryTest extends TestCase
             (new Query())->from('city')->where('c.city_id', 1)->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id]>=:c_city_id',
-            (new Query())->from('city')->where('c.city_id >=', 1)->getSql());
+            (new Query())->from('city')->where('c.city_id>=', 1)->getSql());
 
         $result = (new Query())->from('city')->where('city^=', 'Ab')->fetchAll();
         $this->assertCount(2, $result);
@@ -156,9 +156,6 @@ class DbQueryTest extends TestCase
         $this->assertCount(125, $result);
 
         $result = (new Query())->from('city')->where('city*=', 'a')->fetchAll();
-        $this->assertCount(450, $result);
-
-        $result = (new Query())->from('city')->where('city~=', 'a')->fetchAll();
         $this->assertCount(450, $result);
 
         $result = (new Query())->from('city')->where('city_id', [1, 2, 3, 4])->fetchAll();
@@ -252,11 +249,16 @@ class DbQueryTest extends TestCase
 
     public function test_whereRegex()
     {
-        $this->assertEquals(450, (new Query())->from('city')->whereRegex('city', 'A')->count());
-        $this->assertEquals(125, (new Query())->from('city')->whereRegex('city', 'A$')->count());
-        $this->assertEquals(43, (new Query())->from('city')->whereRegex('city', '^A')->count());
-        $this->assertEquals(287, (new Query())->from('city')->whereRegex('city', 'A....')->count());
-        $this->assertEquals(39, (new Query())->from('city')->whereRegex('city', '^A....')->count());
+        $this->assertEquals(46, (new Query())->from('city')->whereRegex('city', 'A')->count());
+        $this->assertEquals(450, (new Query())->from('city')->whereRegex('city', 'A', 'i')->count());
+        $this->assertEquals(0, (new Query())->from('city')->whereRegex('city', 'A$')->count());
+        $this->assertEquals(125, (new Query())->from('city')->whereRegex('city', 'A$', 'i')->count());
+        $this->assertEquals(38, (new Query())->from('city')->whereRegex('city', '^A')->count());
+        $this->assertEquals(43, (new Query())->from('city')->whereRegex('city', '^A', 'i')->count());
+        $this->assertEquals(38, (new Query())->from('city')->whereRegex('city', 'A....')->count());
+        $this->assertEquals(287, (new Query())->from('city')->whereRegex('city', 'A....', 'i')->count());
+        $this->assertEquals(34, (new Query())->from('city')->whereRegex('city', '^A....')->count());
+        $this->assertEquals(39, (new Query())->from('city')->whereRegex('city', '^A....', 'i')->count());
     }
 
     public function test_limit()
