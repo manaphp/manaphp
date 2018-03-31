@@ -77,7 +77,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param array $expr
      *
      * @return array
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function aggregate($expr)
     {
@@ -489,7 +488,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @return $this
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     protected function _replaceModelInfo()
     {
@@ -510,7 +508,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function getSql()
     {
@@ -558,7 +555,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param string $field
      *
      * @return array
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function values($field)
     {
@@ -567,7 +563,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @return array
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function execute()
     {
@@ -591,7 +586,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @return bool
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function exists()
     {
@@ -612,7 +606,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
     /**
      * @return int
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function delete()
     {
@@ -623,7 +616,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param $fieldValues
      *
      * @return int
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function update($fieldValues)
     {
