@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Db\Model;
 
-use ManaPHP\Di;
 use ManaPHP\Db\Model\Criteria\Exception as CriteriaException;
+use ManaPHP\Di;
 
 /**
  * Class ManaPHP\Db\Model\Criteria
@@ -449,7 +449,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
                 $item[$name] = $data;
             }
         }
-		
+
         return $paginator;
     }
 

@@ -77,7 +77,6 @@ class Extractor
         $selector = $rule[0];
         $attr = isset($rule[1]) ? $rule[1] : 'html';
 
-
         $attr = strtr($attr, [' ' => '', "\t" => '']);
         $attr = trim($attr, ',');
         $attr = explode(',', $attr);

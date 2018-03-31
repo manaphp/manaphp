@@ -32,5 +32,5 @@ return [
     //'mobile' => 'The mobile format is invalid.',
     'ip' => 'The :field must be a valid IP address.',
     'unique' => 'The :field must be not duplicate.',
-    'const'=>'the :field value is not in allowed list.'
+    'const' => 'the :field value is not in allowed list.'
 ];

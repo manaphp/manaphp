@@ -141,7 +141,7 @@ class Selector
 
         return $this;
     }
-    
+
     /**
      * @param  string      $css
      * @param string|array $attr

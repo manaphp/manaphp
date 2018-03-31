@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Facade;
 
-use ManaPHP\Facade;
 use ManaPHP\Curl\EasyInterface;
+use ManaPHP\Facade;
 
 /**
  * Class ManaPHP\Facade\HttpClient

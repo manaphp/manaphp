@@ -132,7 +132,7 @@ class Document extends Component
         }
 
         $this->_query = new Query($this->_dom);
-		
+
         $this->_sourceUrl = $url;
         $this->_baseUrl = $this->_getBaseUrl() ?: $this->_sourceUrl;
 

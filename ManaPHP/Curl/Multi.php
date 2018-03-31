@@ -340,7 +340,7 @@ class Multi extends Component implements MultiInterface, \Countable
 
                 curl_multi_remove_handle($this->_mh, $curl);
                 curl_close($curl);
-				
+
                 unset($request, $response, $error, $callbacks, $info, $curl);
             }
         }

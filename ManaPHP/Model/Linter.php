@@ -6,6 +6,7 @@ use ManaPHP\Db\Model as DbModel;
 
 /**
  * Class Linter
+ *
  * @package ManaPHP\Model
  * @property \ManaPHP\Db\Model\MetadataInterface $modelsMetadata
  */

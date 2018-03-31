@@ -4,7 +4,6 @@ namespace ManaPHP\Db\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Db;
-use ManaPHP\Db\Model\Metadata\Exception as MetadataException;
 
 /**
  * Class ManaPHP\Mvc\Model\Metadata
