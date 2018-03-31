@@ -140,7 +140,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public static function find($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria($fields)->where($filters);
+        $criteria = static::criteria($fields ?: null)->where($filters);
 
         if ($options !== null) {
             if (isset($options['distinct'])) {
@@ -319,7 +319,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if ($pkValue === null || $interval === null) {
-            return static::criteria($fields, $model)->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+            return static::criteria($fields ?: null, $model)->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
         }
 
         static $cached = [];
