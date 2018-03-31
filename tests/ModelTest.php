@@ -212,17 +212,19 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $rental = Rental::first(10, null, ['with' => ['inventory']]);
         $this->assertSame(1824, $rental->inventory->inventory_id);
 
-        $rental = Rental::first(10, null, ['with' => ['customer']]);
-        $this->assertSame(399, $rental->customer->customer_id);
-
         $rental = Rental::first(10, null, ['with' => ['inventories']]);
         $this->assertCount(21, $rental->inventories);
 
+        $rental = Rental::first(10, null, ['with' => ['inventoriesOfCustomer']]);
+        $this->assertCount(21, $rental->inventoriesOfCustomer);
+
+        $rental = Rental::first(10, null, ['with' => ['customer']]);
+        $this->assertSame(399, $rental->customer->customer_id);
+
         $rental = Rental::first(10, null, ['with' => ['customers']]);
-        $this->assertCount(21, $rental->customers);
-//        $this->assertSame(10, $rental->rental_id);
-//        $this->assertSame(1824, $rental->inventory->inventory_id);
-//        $this->assertSame(399, $rental->customer->customer_id);
-        //$this->assertSame(1824, $rental->inventories);
+        $this->assertCount(5, $rental->customers);
+
+        $rental = Rental::first(10, null, ['with' => ['customersOfInventory']]);
+        $this->assertCount(5, $rental->customersOfInventory);
     }
 }

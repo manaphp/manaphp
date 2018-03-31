@@ -14,8 +14,10 @@ use ManaPHP\Mvc\Model;
  * @package Tests\Models
  * @property \Tests\Models\Inventory   $inventory
  * @property \Tests\Models\Inventory[] $inventories
+ * @property \Tests\Models\Inventory[] $inventoriesOfCustomer
  * @property \Tests\Models\Customer    $customer
  * @property \Tests\Models\Customer[]  $customers
+ * @property \Tests\Models\Customer[]  $customersOfInventory
  */
 class Rental extends Model
 {
