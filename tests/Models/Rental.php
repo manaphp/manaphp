@@ -9,6 +9,14 @@ namespace Tests\Models;
 
 use ManaPHP\Mvc\Model;
 
+/**
+ * Class Rental
+ * @package Tests\Models
+ * @property \Tests\Models\Inventory   $inventory
+ * @property \Tests\Models\Inventory[] $inventories
+ * @property \Tests\Models\Customer    $customer
+ * @property \Tests\Models\Customer[]  $customers
+ */
 class Rental extends Model
 {
     public $rental_id;
@@ -18,4 +26,9 @@ class Rental extends Model
     public $return_date;
     public $staff_id;
     public $last_update;
+
+    public function getForeignKeys()
+    {
+        return ['inventory_id', 'customer_id'];
+    }
 }

@@ -7,6 +7,7 @@ use ManaPHP\Model\Criteria;
 use Tests\Models\City;
 use ManaPHP\Di\FactoryDefault;
 use Tests\Models\Country;
+use Tests\Models\Rental;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -204,5 +205,24 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             return $criteria->select(['city_id', 'city'])->fetch();
         }]]);
         $this->assertCount(2, $country->citiesExplicit[8]->toArray(true));
+    }
+
+    public function test_hasManyToMany()
+    {
+        $rental = Rental::first(10, null, ['with' => ['inventory']]);
+        $this->assertSame(1824, $rental->inventory->inventory_id);
+
+        $rental = Rental::first(10, null, ['with' => ['customer']]);
+        $this->assertSame(399, $rental->customer->customer_id);
+
+        $rental = Rental::first(10, null, ['with' => ['inventories']]);
+        $this->assertCount(21, $rental->inventories);
+
+        $rental = Rental::first(10, null, ['with' => ['customers']]);
+        $this->assertCount(21, $rental->customers);
+//        $this->assertSame(10, $rental->rental_id);
+//        $this->assertSame(1824, $rental->inventory->inventory_id);
+//        $this->assertSame(399, $rental->customer->customer_id);
+        //$this->assertSame(1824, $rental->inventories);
     }
 }

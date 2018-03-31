@@ -70,9 +70,47 @@ class Manager extends Component
      */
     protected function _inferRelation($model, $name)
     {
+        if (preg_match('#^(.+[a-z\d])Of([A-Z].*)$#', $name, $match)) {
+            if (!$singular = $this->_pluralToSingular($match[1])) {
+                return false;
+            }
+
+            if (!$className = $this->_inferClassName($model, $singular)) {
+                return false;
+            }
+
+            $valueField = lcfirst($match[2]) . '_id';
+            if (in_array($valueField, $model->getForeignKeys(), true)) {
+                /**
+                 * @var \ManaPHP\Model $reference
+                 */
+                $reference = new $className;
+                return [$className, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), $valueField];
+            } else {
+                return false;
+            }
+        }
+
         if ($singular = $this->_pluralToSingular($name)) {
-            $className = $this->_inferClassName($model, $singular);
-            return $className ? [$className, Relation::TYPE_HAS_MANY] : false;
+            if (!$className = $this->_inferClassName($model, $singular)) {
+                return false;
+            }
+
+            /**
+             * @var \ManaPHP\Model $reference
+             */
+            $reference = new $className;
+
+            $keys = $model->getForeignKeys();
+            if (count($keys) === 2) {
+                $foreignKey = $singular . '_id';
+                if (in_array($foreignKey, $keys, true)) {
+                    $keys = array_flip($keys);
+                    unset($keys[$foreignKey]);
+                    return [$className, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), key($keys)];
+                }
+            }
+            return [$className, Relation::TYPE_HAS_MANY];
         } else {
             if (in_array($name . '_id', $model->getFields(), true)) {
                 $className = $this->_inferClassName($model, $name);
