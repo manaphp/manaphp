@@ -210,15 +210,6 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
         } elseif ($value === null) {
             $this->_filters[] = $filter;
-        } elseif (strpos($filter, '~=')) {
-            if (count($value) !== 2) {
-                throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
-            }
-            $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-        } elseif (strpos($filter, '@=')) {
-            $field = substr($filter, 0, -2);
-            $times = $this->_normalizeTimeBetween($field, $value);
-            $this->whereBetween($field, $times[0], $times[1]);
         } elseif (is_array($value)) {
             if (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
@@ -229,12 +220,21 @@ class Criteria extends \ManaPHP\Model\Criteria
             } else {
                 $this->_filters[] = [$filter => $value];
             }
-        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $filter, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~@]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
 
             if ($operator === '' || $operator === '=') {
                 $fieldTypes = $this->_model->getFieldTypes();
                 $this->_filters[] = [$field => $this->_model->getNormalizedValue($fieldTypes[$field], $value)];
+            } elseif ($operator === '~=') {
+                if (count($value) !== 2) {
+                    throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
+                }
+                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
+            } elseif ($operator === '@=') {
+                $field = substr($filter, 0, -2);
+                $times = $this->_normalizeTimeBetween($field, $value);
+                $this->whereBetween($field, $times[0], $times[1]);
             } elseif ($operator === '^=') {
                 $this->whereStartsWith($field, $value);
             } elseif ($operator === '$=') {

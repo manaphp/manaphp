@@ -347,11 +347,6 @@ class Query extends Component implements QueryInterface
             }
         } elseif ($value === null) {
             $this->_conditions[] = $filter;
-        } elseif (strpos($filter, '~=')) {
-            if (count($value) !== 2) {
-                throw new QueryException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
-            }
-            $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
         } elseif (is_array($value)) {
             if (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
@@ -370,6 +365,11 @@ class Query extends Component implements QueryInterface
             if ($operator === '' || $operator === '=') {
                 $this->_conditions[] = $normalizedField . '=:' . $bind_key;
                 $this->_bind[$bind_key] = $value;
+            } elseif ($operator === '~=') {
+                if (count($value) !== 2) {
+                    throw new QueryException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
+                }
+                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif (in_array($operator, ['>', '>=', '<', '<=', '!=', '<>'], true)) {
                 $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
                 $this->_bind[$bind_key] = $value;
