@@ -20,10 +20,10 @@ class MongodbModelCriteriaTest extends TestCase
     public function test_construct()
     {
         $document = City::criteria()->fetchOne();
-        $this->assertEquals(['_id', 'city_id', 'city', 'country_id', 'last_update'], array_keys($document->toArray()));
+        $this->assertEquals(['city_id', 'city', 'country_id', 'last_update'], array_keys($document->toArray()));
 
         $document = City::criteria(['city_id', 'city'])->fetchOne();
-        $this->assertEquals(['_id', 'city_id', 'city'], array_keys(array_filter($document->toArray())));
+        $this->assertEquals(['city_id', 'city'], array_keys(array_filter($document->toArray())));
     }
 
     public function test_values()
@@ -36,15 +36,15 @@ class MongodbModelCriteriaTest extends TestCase
     {
         $documents = City::criteria()->limit(1)->fetchAll();
         $this->assertCount(1, $documents);
-        $this->assertEquals(['_id', 'city_id', 'city', 'country_id', 'last_update'], array_keys($documents[0]->toArray()));
+        $this->assertEquals(['city_id', 'city', 'country_id', 'last_update'], array_keys($documents[0]->toArray()));
 
         $documents = City::criteria()->select('_id, city_id, city')->limit(1)->fetchAll();
         $this->assertCount(1, $documents);
-        $this->assertEquals(['_id', 'city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
+        $this->assertEquals(['city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
 
         $documents = City::criteria()->select(['_id', 'city_id', 'city'])->limit(1)->fetchAll();
         $this->assertCount(1, $documents);
-        $this->assertEquals(['_id', 'city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
+        $this->assertEquals(['city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
     }
 
     public function test_aggregate()
@@ -138,9 +138,6 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertCount(125, $documents);
 
         $documents = City::criteria()->where('city*=', 'a')->fetchAll();
-        $this->assertCount(435, $documents);
-
-        $documents = City::criteria()->where('city~=', 'a')->fetchAll();
         $this->assertCount(450, $documents);
 
         $documents = City::criteria()->where('city_id', [1, 2, 3, 4])->fetchAll();
