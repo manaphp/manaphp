@@ -231,18 +231,18 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
         } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
-            if ($operator === '') {
-                $operator = '=';
-            }
 
-            if ($operator === '^=') {
+            if ($operator === '' || $operator === '=') {
+                $fieldTypes = $this->_model->getFieldTypes();
+                $this->_filters[] = [$field => $this->_model->getNormalizedValue($fieldTypes[$field], $value)];
+            } elseif ($operator === '^=') {
                 $this->whereStartsWith($field, $value);
             } elseif ($operator === '$=') {
                 $this->whereEndsWith($field, $value);
             } elseif ($operator === '*=') {
                 $this->whereContains($field, $value);
             } else {
-                $operator_map = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
+                $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
                 if (isset($operator_map[$operator])) {
                     $fieldTypes = $this->_model->getFieldTypes();
                     $this->_filters[] = [$field => [$operator_map[$operator] => $this->_model->getNormalizedValue($fieldTypes[$field], $value)]];

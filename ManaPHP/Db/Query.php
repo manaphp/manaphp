@@ -365,13 +365,12 @@ class Query extends Component implements QueryInterface
             }
         } elseif (preg_match('#^([\w\.]+)([<>=!^$*~]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
-            if ($operator === '') {
-                $operator = '=';
-            }
-
             $bind_key = strtr($field, '.', '_');
             $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
-            if (in_array($operator, ['=', '>', '>=', '<', '<=', '!=', '<>'], true)) {
+            if ($operator === '' || $operator === '=') {
+                $this->_conditions[] = $normalizedField . '=:' . $bind_key;
+                $this->_bind[$bind_key] = $value;
+            } elseif (in_array($operator, ['>', '>=', '<', '<=', '!=', '<>'], true)) {
                 $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
                 $this->_bind[$bind_key] = $value;
             } elseif ($operator === '^=') {
