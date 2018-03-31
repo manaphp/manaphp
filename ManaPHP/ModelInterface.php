@@ -32,6 +32,11 @@ interface ModelInterface
     /**
      * @return array
      */
+    public function getForeignKeys();
+
+    /**
+     * @return array
+     */
     public function getFields();
 
     /**

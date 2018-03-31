@@ -69,6 +69,27 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     }
 
     /**
+     * @return array
+     */
+    public function getForeignKeys()
+    {
+        $primaryKey = $this->getPrimaryKey();
+
+        $keys = [];
+        foreach ($this->getFields() as $field) {
+            if ($field === $primaryKey) {
+                continue;
+            }
+
+            if (($pos = strpos($field, '_id', 1)) && $pos + 3 === strlen($field)) {
+                $keys[] = $field;
+            }
+        }
+
+        return $keys;
+    }
+
+    /**
      * Returns table name mapped in the model
      *
      * @param mixed $context
