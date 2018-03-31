@@ -243,12 +243,11 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $this->whereContains($field, $value);
             } else {
                 $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
-                if (isset($operator_map[$operator])) {
-                    $fieldTypes = $this->_model->getFieldTypes();
-                    $this->_filters[] = [$field => [$operator_map[$operator] => $this->_model->getNormalizedValue($fieldTypes[$field], $value)]];
-                } else {
+                if (!isset($operator_map[$operator])) {
                     throw new CriteriaException(['unknown `:where` where filter', 'where' => $filter]);
                 }
+                $fieldTypes = $this->_model->getFieldTypes();
+                $this->_filters[] = [$field => [$operator_map[$operator] => $this->_model->getNormalizedValue($fieldTypes[$field], $value)]];
             }
         } else {
             throw new CriteriaException(['unknown mongodb criteria `filter` filter', 'filter' => $filter]);
