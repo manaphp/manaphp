@@ -34,9 +34,9 @@ class Manager extends Component
         }
 
         //https://github.com/UlvHare/PHPixie-demo/blob/d000d8f11e6ab7c522feeb4457da5a802ca3e0bc/vendor/phpixie/orm/src/PHPixie/ORM/Configs/Inflector.php
-        if (preg_match('#^(.*?us)|(.*?[sxz])es|(.*?[^aeioudgkprt]h)es$#', $str, $match)) {
+        if (preg_match('#^(.*?us)$|(.*?[sxz])es$|(.*?[^aeioudgkprt]h)es$#', $str, $match)) {
             return $match[1];
-        } elseif (preg_match('#^(.*?[^aeiou])ies#', $str, $match)) {
+        } elseif (preg_match('#^(.*?[^aeiou])ies$#', $str, $match)) {
             return $match[1] . 'y';
         } else {
             return substr($str, 0, -1);
