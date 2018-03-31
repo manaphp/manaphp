@@ -295,10 +295,10 @@ class MongodbModelTest extends TestCase
 
     public function test_getSnapshotData()
     {
-        $actor = Actor::findFirst(1);
+        $actor = Actor::first(1);
         $snapshot = $actor->getSnapshotData();
-
-        $this->assertEquals($snapshot, $actor->toArray());
+        unset($snapshot['_id']);
+        $this->assertSame($snapshot, $actor->toArray());
     }
 
     public function test_getChangedFields()
