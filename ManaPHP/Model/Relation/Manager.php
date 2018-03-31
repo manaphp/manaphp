@@ -45,33 +45,38 @@ class Manager extends Component
 
     /**
      * @param \ManaPHP\Model $model
+     * @param string         $plainName
+     *
+     * @return string|false
+     */
+    protected function _inferClassName($model, $plainName)
+    {
+        $modelName = get_class($model);
+
+        if (($pos = strrpos($modelName, '\\')) !== false) {
+            $className = substr($modelName, 0, $pos + 1) . ucfirst($plainName);
+        } else {
+            $className = ucfirst($plainName);
+        }
+
+        return class_exists($className) ? $className : false;
+    }
+
+    /**
+     * @param \ManaPHP\Model $model
      * @param string         $name
      *
      * @return  array|false
      */
     protected function _inferRelation($model, $name)
     {
-        $modelName = get_class($model);
-
         if ($singular = $this->_pluralToSingular($name)) {
-            if (($pos = strrpos($modelName, '\\')) !== false) {
-                $className = substr($modelName, 0, $pos + 1) . ucfirst($singular);
-            } else {
-                $className = ucfirst($singular);
-            }
-
-            return [$className, Relation::TYPE_HAS_MANY];
+            $className = $this->_inferClassName($model, $singular);
+            return $className ? [$className, Relation::TYPE_HAS_MANY] : false;
         } else {
             if (in_array($name . '_id', $model->getFields(), true)) {
-                if (($pos = strrpos($modelName, '\\')) !== false) {
-                    $className = substr($modelName, 0, $pos + 1) . ucfirst($name);
-                } else {
-                    $className = ucfirst($name);
-                }
-
-                if (class_exists($className)) {
-                    return [$className, Relation::TYPE_HAS_ONE];
-                }
+                $className = $this->_inferClassName($model, $name);
+                return $className ? [$className, Relation::TYPE_HAS_ONE] : false;
             }
         }
 
