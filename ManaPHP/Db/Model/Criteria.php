@@ -104,14 +104,16 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
             $times = $this->_normalizeTimeBetween($field, $value);
             $this->_query->whereBetween($field, $times[0], $times[1]);
         } elseif (is_array($filter)) {
-            foreach ($filter as $k => $v) {
+            $query = $this->_query;
+            foreach ((array)$filter as $k => $v) {
                 if (strpos($k, '@=')) {
                     $field = substr($filter, 0, -2);
-                    $filter[$field] = $this->_normalizeTimeBetween($field, $v);
-                    unset($filter[$k]);
+                    $times = $this->_normalizeTimeBetween($field, $v);
+                    $query->whereBetween($field, $times[0], $times[1]);
+                } else {
+                    $query->where($k, $v);
                 }
             }
-            $this->_query->where($filter, $value);
         } else {
             $this->_query->where($filter, $value);
         }
