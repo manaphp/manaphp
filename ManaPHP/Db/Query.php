@@ -358,7 +358,7 @@ class Query extends Component implements QueryInterface
                 $this->_conditions[] = $filter;
                 $this->_bind = array_merge($this->_bind, $value);
             }
-        } elseif (preg_match('#^([\w\.]+)([<>=!^$*~]*)$#', $filter, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)([<>=!^$*~,]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
             $bind_key = strtr($field, '.', '_');
             $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
@@ -379,6 +379,8 @@ class Query extends Component implements QueryInterface
                 $this->whereEndsWith($field, $value);
             } elseif ($operator === '*=') {
                 $this->whereContains($field, $value);
+            } elseif ($operator === ',=') {
+                $this->whereInset($field, $value);
             } else {
                 throw new QueryException(['unknown `:where` where filter', 'where' => $filter]);
             }
@@ -682,6 +684,36 @@ class Query extends Component implements QueryInterface
     public function notInWhere($expr, $values)
     {
         return $this->whereNotIn($expr, $values);
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return static
+     */
+    public function whereInset($field, $value)
+    {
+        $key = strtr($field, '.', '_');
+        $this->_conditions[] = 'FIND_IN_SET(:' . $key . ', ' . '[' . str_replace('.', '].[', $field) . '])>0';
+        $this->_bind[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return static
+     */
+    public function whereNotInset($field, $value)
+    {
+        $key = strtr($field, '.', '_');
+        $this->_conditions[] = 'FIND_IN_SET(:' . $key . ', ' . '[' . str_replace('.', '].[', $field) . '])=0';
+        $this->_bind[$key] = $value;
+
+        return $this;
     }
 
     /**

@@ -212,6 +212,32 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return static
+     */
+    public function whereInset($field, $value)
+    {
+        $this->_query->whereInset($field, $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return static
+     */
+    public function whereNotInset($field, $value)
+    {
+        $this->_query->whereNotInset($field, $value);
+
+        return $this;
+    }
+
+    /**
      * @param string|array $field
      * @param string       $value
      *

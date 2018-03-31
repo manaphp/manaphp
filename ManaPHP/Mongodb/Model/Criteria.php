@@ -220,7 +220,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             } else {
                 $this->_filters[] = [$filter => $value];
             }
-        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~@]*)$#', $filter, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~@,]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
 
             if ($operator === '' || $operator === '=') {
@@ -241,6 +241,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $this->whereEndsWith($field, $value);
             } elseif ($operator === '*=') {
                 $this->whereContains($field, $value);
+            } elseif ($operator === ',=') {
+                $this->whereInset($field, $value);
             } else {
                 $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
                 if (!isset($operator_map[$operator])) {
@@ -400,6 +402,28 @@ class Criteria extends \ManaPHP\Model\Criteria
         $this->_filters[] = [$field => ['$nin' => $values]];
 
         return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return static
+     */
+    public function whereInset($field, $value)
+    {
+        return $this->whereRegex($field, '\b' . $value . '\b');
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return static
+     */
+    public function whereNotInset($field, $value)
+    {
+        return $this->whereNotRegex($field, '\b' . $value . '\b');
     }
 
     /**

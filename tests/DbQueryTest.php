@@ -168,6 +168,18 @@ class DbQueryTest extends TestCase
         $this->assertCount(0, $result);
     }
 
+    public function test_whereInset()
+    {
+        $this->assertEquals('SELECT * FROM [city] WHERE FIND_IN_SET(:city_id, [city_id])>0',
+            (new Query())->from('city')->whereInset('city_id', 1)->getSql());
+    }
+
+    public function test_whereNotInset()
+    {
+        $this->assertEquals('SELECT * FROM [city] WHERE FIND_IN_SET(:city_id, [city_id])=0',
+            (new Query())->from('city')->whereNotInset('city_id', 1)->getSql());
+    }
+
     public function test_whereBetween()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',

@@ -103,6 +103,22 @@ interface CriteriaInterface
     public function whereNotIn($field, $values);
 
     /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return static
+     */
+    public function whereInset($field, $value);
+
+    /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return static
+     */
+    public function whereNotInset($field, $value);
+
+    /**
      * @param string|array $field
      * @param string       $value
      *
