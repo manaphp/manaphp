@@ -358,8 +358,8 @@ class Criteria extends \ManaPHP\Model\Criteria
         $fieldTypes = $this->_model->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
-        if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
-            $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
+        $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
+        if (isset($map[$fieldType])) {
             $values = array_map($map[$fieldType], $values);
         } else {
             foreach ($values as $k => $value) {
@@ -390,8 +390,8 @@ class Criteria extends \ManaPHP\Model\Criteria
         $fieldTypes = $this->_model->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
-        if (in_array($fieldType, ['integer', 'float', 'string'], true)) {
-            $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
+        $map = ['integer' => 'intval', 'float' => 'floatval', 'string' => 'strval'];
+        if (isset($map[$fieldType])) {
             $values = array_map($map[$fieldType], $values);
         } else {
             foreach ($values as $k => $value) {
