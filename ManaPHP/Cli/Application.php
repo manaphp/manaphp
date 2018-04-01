@@ -13,6 +13,11 @@ use ManaPHP\Di\FactoryDefault;
  */
 class Application extends \ManaPHP\Application
 {
+    /**
+     * @var string
+     */
+    public $configFile = '@app/config.php';
+
     /** @noinspection MagicMethodsValidityInspection */
     /** @noinspection PhpMissingParentConstructorInspection */
     /**
@@ -74,7 +79,15 @@ class Application extends \ManaPHP\Application
      */
     public function main()
     {
+        if ($this->configFile) {
+            $this->configure->loadFile($this->configFile);
+        }
+
         $this->registerServices();
+
+        if (!$this->alias->has('@tmp')) {
+            $this->alias->set('@tmp', '@data/tmp');
+        }
 
         exit($this->cliHandler->handle());
     }
