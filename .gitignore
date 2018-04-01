@@ -1,6 +1,7 @@
 /.idea
 *.bak
 *.log
+/tmp
 /*.phar
 /tests/Image/Result
 /tests/Image/Adapter
