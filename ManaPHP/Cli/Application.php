@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Di\FactoryDefault;
-
 /**
  * Class ManaPHP\Cli\Application
  *
@@ -28,38 +26,18 @@ class Application extends \ManaPHP\Application
      */
     public function __construct($loader, $di = null)
     {
-        $calledClass = get_called_class();
+        parent::__construct($loader, $di);
 
-        if ($calledClass === __CLASS__) {
-            $this->_di = $di ?: new FactoryDefault();
-
-            $this->_di->setShared('loader', $loader);
-            $this->_di->setShared('application', $this);
-
-            $appDir = dirname(get_included_files()[0]) . '/app';
-            $appFile = $appDir . '/Application.php';
-            if (is_file($appFile)) {
-                $str = file_get_contents($appFile);
-                if (preg_match('#namespace\s+([\w\\\\]+);#', $str, $match)) {
-                    $this->loader->registerNamespaces([$match[1] => $appDir]);
-
-                    $this->alias->set('@root', dirname($appDir));
-                    $this->alias->set('@data', '@root/data');
-                    $this->alias->set('@tmp', '@root/data/tmp');
-                    $this->alias->set('@app', $appDir);
-                    $this->alias->set('@ns.app', $match[1]);
+        if ($appDir = $this->alias->get('@app')) {
+            if (is_dir("$appDir/Cli")) {
+                $this->alias->set('@cli', "$appDir/Cli/Controllers");
+                if ($appNamespace = $this->alias->get('@ns.app')) {
+                    $this->alias->set('@ns.cli', "$appNamespace/Cli/Controllers");
                 }
+            } elseif (($calledClass = get_called_class()) !== __CLASS__) {
+                $this->alias->set('@cli', "$appDir/Controllers");
+                $this->alias->set('@ns.cli', substr($calledClass, 0, strrpos($calledClass, '\\')));
             }
-        } else {
-            parent::__construct($loader, $di);
-        }
-
-        if ($this->filesystem->dirExists('@app/Cli/Controllers')) {
-            $this->alias->set('@cli', $this->alias->resolve('@app/Cli/Controllers'));
-            $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr('@app/Cli/Controllers', ['@app' => '@ns.app', '/' => '\\'])));
-        } elseif ($calledClass !== __CLASS__ && $this->filesystem->dirExists('@app/Controllers')) {
-            $this->alias->set('@cli', $this->alias->resolve('@app/Controllers'));
-            $this->alias->set('@ns.cli', $this->alias->resolveNS(strtr('@app/Controllers', ['@app' => '@ns.app', '/' => '\\'])));
         }
     }
 
@@ -84,10 +62,6 @@ class Application extends \ManaPHP\Application
         }
 
         $this->registerServices();
-
-        if (!$this->alias->has('@tmp')) {
-            $this->alias->set('@tmp', '@data/tmp');
-        }
 
         exit($this->cliHandler->handle());
     }

@@ -30,33 +30,46 @@ abstract class Application extends Component implements ApplicationInterface
         $this->_di->setShared('loader', $loader);
         $this->_di->setShared('application', $this);
 
-        $className = get_called_class();
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $fileName = (new \ReflectionClass($className))->getFileName();
+        if ($appDir = $this->alias->has('@app')) {
+            $rootDir = dirname($appDir);
+            $this->loader->registerNamespaces([$this->alias->resolveNS('@ns.app') => $appDir]);
+        } else {
+            $rootDir = null;
+            $appDir = null;
+            $appNamespace = null;
 
-        $app_path = dirname($fileName);
-        $app_ns = substr($className, 0, strrpos($className, '\\'));
-        $root_path = dirname($app_path);
+            $calledClass = get_called_class();
+            if (strpos($calledClass, 'ManaPHP\\') !== 0) {
+                $calledFile = (new \ReflectionClass($calledClass))->getFileName();
 
-        $this->loader->registerNamespaces([$app_ns => $app_path]);
-        $this->alias->set('@root', $root_path);
-        $this->alias->set('@app', $app_path);
-        $this->alias->set('@ns.app', $app_ns);
-        $this->alias->set('@data', $root_path . '/data');
+                $appDir = dirname($calledFile);
+                $rootDir = dirname($appDir);
+                $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
+            } else {
+                $entryPointDir = dirname(get_included_files()[0]);
+                if (is_dir($entryPointDir . '/app')) {
+                    $rootDir = $entryPointDir;
+                    $appDir = $rootDir . '/app';
+                } elseif ($pos = strrpos($entryPointDir, DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR)) {
+                    $rootDir = substr($entryPointDir, 0, $pos);
+                    $appDir = $rootDir . '/app';
+                }
+            }
 
-        $web = '';
-        if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {
-            $web = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
-            if (substr_compare($web, '/public', -7) === 0) {
-                $web = substr($web, 0, -7);
+            if ($appDir) {
+                $this->alias->set('@app', $appDir);
+            }
+
+            if ($appNamespace) {
+                $this->alias->set('@ns.app', $appNamespace);
+                $this->loader->registerNamespaces([$appNamespace => $appDir]);
             }
         }
-        $this->alias->set('@web', $web);
 
-        $router = $app_ns . '\Router';
-        if (class_exists($router)) {
-            $this->_di->setShared('router', $router);
+        if ($rootDir) {
+            $this->alias->set('@root', $rootDir);
+            $this->alias->set('@data', $rootDir . '/data');
+            $this->alias->set('@tmp', $rootDir . '/tmp');
         }
     }
 

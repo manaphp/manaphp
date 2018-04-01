@@ -28,6 +28,21 @@ class Application extends \ManaPHP\Application
     public function __construct($loader, $di = null)
     {
         parent::__construct($loader, $di);
+
+        $web = '';
+        if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {
+            $web = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
+            if (substr_compare($web, '/public', -7) === 0) {
+                $web = substr($web, 0, -7);
+            }
+        }
+        $this->alias->set('@web', $web);
+
+        $routerClass = $this->alias->resolveNS('@ns.app\Router');
+        if (class_exists($routerClass)) {
+            $this->_di->setShared('router', $routerClass);
+        }
+
         $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
     }
 
