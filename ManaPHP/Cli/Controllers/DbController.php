@@ -63,8 +63,23 @@ class DbController extends Controller
         }
 
         $plainClass = Text::camelize($table);
-        $model = $this->_renderModel($db, $table);
+        $model = $this->_renderModel($db, 'db', $table);
         $this->filesystem->filePut("@tmp/db/model/$plainClass.php", $model);
+    }
+
+    /**
+     * @return array
+     */
+    protected function _getAllDbNames()
+    {
+        $dbNames = [];
+        foreach ($this->configure->components as $name => $config) {
+            $config = json_encode($config, JSON_UNESCAPED_SLASHES);
+            if (preg_match('#(mysql://)#', $config)) {
+                $dbNames[] = $name;
+            }
+        }
+        return $dbNames;
     }
 
     /**
@@ -76,41 +91,50 @@ class DbController extends Controller
      */
     public function modelsCommand()
     {
-        /**
-         * @var \ManaPHP\Db $db
-         */
-        $db = $this->_di->getShared($this->arguments->getOption('service:s', 'db'));
-        $tables = $db->getTables();
-        sort($tables);
+        if ($this->arguments->hasOption('service:s')) {
+            $dbNames = $this->arguments->getOption('service:s');
+        } else {
+            $dbNames = $this->_getAllDbNames();
+        }
 
-        $filter = $this->arguments->getOption('filter:f', '');
-        foreach ($tables as $table) {
-            if ($filter && !fnmatch($filter, $table)) {
-                continue;
+        foreach ($dbNames as $dbName) {
+            /**
+             * @var \ManaPHP\Db $db
+             */
+            $db = $this->_di->getShared($dbName);
+            $tables = $db->getTables();
+            sort($tables);
+
+            $filter = $this->arguments->getOption('filter:f', '');
+            foreach ($tables as $table) {
+                if ($filter && !fnmatch($filter, $table)) {
+                    continue;
+                }
+
+                $plainClass = Text::camelize($table);
+                $fileName = "@tmp/db/models/$plainClass.php";
+                $this->console->progress(['`:table` processing...', 'table' => $table], '');
+
+                $model = $this->_renderModel($db, $dbName, $table);
+                $this->filesystem->filePut($fileName, $model);
+
+                $this->console->progress([
+                    '`:table` table saved to `:file`',
+                    'table' => $table,
+                    'file' => $fileName
+                ]);
             }
-
-            $plainClass = Text::camelize($table);
-            $fileName = "@tmp/db/models/$plainClass.php";
-            $this->console->progress(['`:table` processing...', 'table' => $table], '');
-
-            $model = $this->_renderModel($db, $table);
-            $this->filesystem->filePut($fileName, $model);
-
-            $this->console->progress([
-                '`:table` table saved to `:file`',
-                'table' => $table,
-                'file' => $fileName
-            ]);
         }
     }
 
     /**
      * @param \ManaPHP\Db $db
+     * @param string      $dbName
      * @param string      $table
      *
      * @return string
      */
-    protected function _renderModel($db, $table)
+    protected function _renderModel($db, $dbName, $table)
     {
         $optimized = $this->arguments->getOption('optimized:o', 0);
 
@@ -134,13 +158,26 @@ class DbController extends Controller
             $str .= '    public $' . $field . ';' . PHP_EOL;
         }
 
-        if ($optimized) {
+        if ($dbName !== 'db') {
             $str .= PHP_EOL;
-            $str .= '    /** Returns table name mapped in the model' . PHP_EOL;
-            $str .= '     *' . PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
             $str .= '     * @param mixed $context' . PHP_EOL;
             $str .= '     *' . PHP_EOL;
-            $str .= '     * @return string|false' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public function getDb($context = null)' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= "        return '$dbName';" . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        if ($optimized) {
+            $str .= PHP_EOL;
+
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @param mixed $context' . PHP_EOL;
+            $str .= '     *' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
             $str .= '    public function getSource($context = null)' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
