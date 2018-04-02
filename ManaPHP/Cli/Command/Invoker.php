@@ -69,7 +69,7 @@ class Invoker extends Component implements InvokerInterface
                 $value = $this->arguments->getOption($name);
             } elseif (isset($shortNames[$name]) && $this->arguments->hasOption($shortNames[$name])) {
                 $value = $this->arguments->getOption($shortNames[$name]);
-            } elseif (count($this->arguments->getOption()) === 1) {
+            } elseif (count($this->arguments->getValues()) === 1) {
                 $value = $this->arguments->getValues()[0];
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
@@ -91,7 +91,7 @@ class Invoker extends Component implements InvokerInterface
                     $value = (string)$value;
                     break;
                 case 'array':
-                    $value = (array)$value;
+                    $value = is_string($value) ? explode(',', $value) : (array)$value;
                     break;
             }
 
