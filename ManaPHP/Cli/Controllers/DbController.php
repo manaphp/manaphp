@@ -200,20 +200,14 @@ class DbController extends Controller
     }
 
     /**
-     * @CliCommand list databases and collections
-     * @CliParam   --services:-s  explicit the mongodb services name
-     * @CLiParam   --tables:-t table name
+     * list databases and tables
+     *
+     * @param array  $services services name list
+     * @param string $tables tables name list
      */
-    public function listCommand()
+    public function listCommand($services = [], $tables = '')
     {
-        if ($this->arguments->hasOption('services:s')) {
-            $services = explode(',', $this->arguments->getOption('services:s'));
-        } else {
-            $services = $this->_getDbServices();
-        }
-        $tables = $this->arguments->getOption('tables:t', '');
-
-        foreach ($services as $service) {
+        foreach ($services ?: $this->_getDbServices() as $service) {
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
 
             foreach ($this->_getTables($service, $tables) as $row => $table) {
@@ -239,24 +233,23 @@ class DbController extends Controller
     }
 
     /**
-     * @CliCommand generate model file in online
-     * @CliParam   --service:-s  explicit the mongodb service name
-     * @CliParam   --table:-t table name
-     * @CliParam   --optimized:-o output as more methods as possible (default: 0)
+     * generate model file in online
+     *
+     * @param string $service service name
+     * @param string $table table name
+     * @param string $namespace
+     * @param int optimized output as more methods as possible (default: 0)
+     *
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
-    public function modelCommand()
+    public function modelCommand($service = '', $table, $namespace = 'App\Models', $optimized = 0)
     {
         /**
          * @var \ManaPHP\DbInterface $db
          */
-        $table = $this->arguments->getOption('table:t');
-
-        if ($this->arguments->hasOption('service:s')) {
-            $service = $this->arguments->getOption('service:s');
+        if ($service) {
             $db = $this->_di->getShared($service);
-            $tables = $db->getTables();
-            if (!in_array($table, $tables, true)) {
+            if (!in_array($table, $db->getTables(), true)) {
                 throw new Exception(['`:table` is not exists', 'table' => $table]);
             }
         } else {
@@ -277,36 +270,29 @@ class DbController extends Controller
 
         $plainClass = Text::camelize($table);
         $fileName = "@tmp/db_model/$service/$plainClass.php";
-        $model_str = $this->_renderModel($service, $table);
+        $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
         $this->filesystem->filePut($fileName, $model_str);
 
         $this->console->progress(['`:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
     }
 
     /**
-     * @CliCommand generate models file in online
-     * @CliParam   --services:-s  explicit the mongodb services name
-     * @CliParam   --tables:-t  tables with fnmatch method
-     * @CliParam   --ns namespaces of models
-     * @CliParam   --optimized:-o output as more methods as possible (default: 0)
+     * generate models file in online
+     *
+     * @param array  $services services name list
+     * @param string $tables tables name list
+     * @param string $namespace namespace of models
+     * @param int    $optimized output as more methods as possible (default: 0)
      */
-    public function modelsCommand()
+    public function modelsCommand($services = [], $tables = '', $namespace = 'App\Models', $optimized = 0)
     {
-        if ($this->arguments->hasOption('services:s')) {
-            $services = explode(',', $this->arguments->getOption('services:s'));
-        } else {
-            $services = $this->_getDbServices();
-        }
-        $tables = $this->arguments->getOption('tables:t', '');
-        $optimized = $this->arguments->getOption('optimized:o', 0);
-        $modelsNamespace = $this->arguments->getOption('ns', 'App\Models');
-        foreach ($services as $service) {
+        foreach ($services ?: $this->_getDbServices() as $service) {
             foreach ($this->_getTables($service, $tables) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $plainClass = Text::camelize($table);
                 $fileName = "@tmp/db_models/$service/$plainClass.php";
-                $model_str = $this->_renderModel($service, $table, $modelsNamespace, $optimized);
+                $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
                 $this->filesystem->filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
@@ -315,20 +301,14 @@ class DbController extends Controller
     }
 
     /**
-     * @CliCommand export db data to csv files
-     * @CliParam   --services:-s  explicit the db services name
-     * @CliParam   --tables:-t export these tables only
+     * export db data to csv files
+     *
+     * @param array  $services services name list
+     * @param string $tables tables name list
      */
-    public function jsonCommand()
+    public function jsonCommand($services = [], $tables = '')
     {
-        if ($this->arguments->hasOption('services:s')) {
-            $services = explode(',', $this->arguments->getOption('services:s'));
-        } else {
-            $services = $this->_getDbServices();
-        }
-        $tables = $this->arguments->getOption('tables:t', '');
-
-        foreach ($services as $service) {
+        foreach ($services ?: $this->_getDbServices() as $service) {
             /**
              * @var \ManaPHP\DbInterface $db
              */
@@ -359,24 +339,15 @@ class DbController extends Controller
     }
 
     /**
-     * @CliCommand export db data to csv files
-     * @CliParam   --service:-s  explicit the db service name
-     * @CliParam   --tables:-t export these tables only
-     * @CliParam   --bom  contains BOM or not (default: 0)
-     * @throws \ManaPHP\Db\Exception
+     * export db data to csv files
+     *
+     * @param array  $services services name list
+     * @param string $tables tables name list
+     * @param int    $bom contains BOM or not (default: 0)
      */
-    public function csvCommand()
+    public function csvCommand($services = [], $tables = '', $bom = 0)
     {
-        if ($this->arguments->hasOption('services:s')) {
-            $services = explode(',', $this->arguments->getOption('services:s'));
-        } else {
-            $services = $this->_getDbServices();
-        }
-
-        $tables = $this->arguments->getOption('tables:t', '');
-        $bom = $this->arguments->getOption('bom', 0);
-
-        foreach ($services as $service) {
+        foreach ($services ?: $this->_getDbServices() as $service) {
             /**
              * @var \ManaPHP\Db $db
              */
