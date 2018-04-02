@@ -11,7 +11,8 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP\Cli
  *
- * @property \ManaPHP\Cli\ConsoleInterface $console
+ * @property \ManaPHP\Cli\ConsoleInterface         $console
+ * @property \ManaPHP\Cli\Command\InvokerInterface $commandInvoker
  */
 class Handler extends Component implements HandlerInterface
 {
@@ -166,18 +167,17 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        $commandMethod = $commandName . 'Command';
-        if (!method_exists($controllerInstance, $commandMethod)) {
+        if (!method_exists($controllerInstance, $commandName . 'Command')) {
             $guessed = $this->_guessCommand($controllerClassName, $commandName);
             if (!$guessed) {
                 return $this->console->error(['`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
             } else {
-                $commandMethod = $guessed . 'Command';
+                $commandName = $guessed;
             }
         }
 
         try {
-            $r = $controllerInstance->$commandMethod();
+            $r = $this->commandInvoker->invoke($controllerInstance, $commandName);
         } /** @noinspection PhpRedundantCatchClauseInspection */
         catch (ArgumentsException $e) {
             return $this->console->error($e->getMessage());

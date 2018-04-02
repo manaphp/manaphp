@@ -50,6 +50,7 @@ class Application extends \ManaPHP\Application
         $this->_di->setShared('cliHandler', 'ManaPHP\Cli\Handler');
         $this->_di->setShared('console', 'ManaPHP\Cli\Console');
         $this->_di->setShared('arguments', 'ManaPHP\Cli\Arguments');
+        $this->_di->setShared('commandInvoker', 'ManaPHP\Cli\Command\Invoker');
     }
 
     /**
