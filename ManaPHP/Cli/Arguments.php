@@ -114,12 +114,7 @@ class Arguments extends Component implements ArgumentsInterface
 
         foreach (explode(strpos($name, '|') !== false ? '|' : ':', $name) as $o) {
             if (isset($this->_options[$o])) {
-                $v = $this->_options[$o];
-                if (is_int($v)) {
-                    throw new ArgumentsException('xxx');
-                } else {
-                    return $v;
-                }
+                return $this->_options[$o];
             }
         }
 
