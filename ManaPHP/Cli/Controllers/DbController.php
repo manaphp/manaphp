@@ -208,14 +208,13 @@ class DbController extends Controller
     public function listCommand($services = [], $tables = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
+            /**
+             * @var \ManaPHP\DbInterface $db
+             */
+            $db = $this->_di->getShared($service);
+
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
-
             foreach ($this->_getTables($service, $tables) as $row => $table) {
-                /**
-                 * @var \ManaPHP\DbInterface $db
-                 */
-                $db = $this->_di->getShared($service);
-
                 $columns = (array)$db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
                 $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
                 foreach ($columns as $i => $column) {
