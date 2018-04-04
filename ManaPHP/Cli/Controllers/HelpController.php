@@ -13,7 +13,7 @@ use ManaPHP\Utility\Text;
 class HelpController extends Controller
 {
     /**
-     * @CliCommand list all commands
+     * list all commands
      * @return int
      */
     public function listCommand()
