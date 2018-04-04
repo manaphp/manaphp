@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
@@ -6,20 +7,14 @@ use ManaPHP\Cli\Controller;
 class KeyController extends Controller
 {
     /**
-     * @CliCommand generate random key
-     * @CliParam   --length,-l length of key(default is 32 characters)
-     * @CliParam   --lowercase
+     * generate random key
+     *
+     * @param int $length length of key(default is 32 characters)
+     * @param int $lowercase
      */
-    public function generateCommand()
+    public function generateCommand($length = 32, $lowercase = 0)
     {
-        $length = $this->arguments->getOption('length:l', 32);
-
         $key = $this->random->getBase($length);
-
-        if ($this->arguments->hasOption('lowercase')) {
-            $key = strtolower($key);
-        }
-
-        $this->console->writeLn($key);
+        $this->console->writeLn($lowercase ? strtolower($key) : $key);
     }
 }
