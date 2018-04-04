@@ -3,7 +3,6 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Cli\Controller
@@ -37,61 +36,76 @@ use ManaPHP\Utility\Text;
 abstract class Controller extends Component implements ControllerInterface
 {
     /**
-     * @CliCommand show this help information
+     * show this help information
      */
     public function helpCommand()
     {
-        $className = get_called_class();
-        $controller = Text::underscore(basename(substr($className, strrpos($className, '\\')), 'Controller'));
-
         foreach (get_class_methods($this) as $method) {
-            if (preg_match('#^.*Command$#', $method) !== 1) {
+            if (!preg_match('#^[a-z].*Command$#', $method)) {
+                continue;
+            }
+            $rm = new \ReflectionMethod($this, $method);
+            if (!$rm->isPublic()) {
                 continue;
             }
 
-            $command = $controller . ':' . basename($method, 'Command');
-            $params = [];
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $rm = new \ReflectionMethod($this, $method);
-            $lines = explode("\n", $rm->getDocComment());
+            $lines = [];
+            foreach (explode("\n", $rm->getDocComment()) as $line) {
+                $lines[] = trim($line, "\t /*\r\n");
+            }
+
+            $description = '';
             foreach ($lines as $line) {
-                $line = trim($line, ' \t*');
-                $parts = explode(' ', $line, 2);
-                if (count($parts) !== 2) {
-                    continue;
+                if (strpos($line, '@')) {
+                    break;
                 }
-                list($tag, $description) = $parts;
-                $description = trim($description);
-                if ($tag === '@CliCommand') {
-                    $command = $this->console->colorize(str_pad(basename($method, 'Command'), 10), Console::FC_YELLOW) . ' ' . $description;
-                } elseif ($tag === '@CliParam') {
-                    $parts = explode(' ', $description, 2);
-                    $params[trim($parts[0])] = isset($parts[1]) ? trim($parts[1]) : '';
+                if ($line) {
+                    $description = $line;
+                    break;
                 }
             }
 
+            $command = $this->console->colorize(str_pad(basename($method, 'Command'), 10), Console::FC_YELLOW) . ' ' . $description;
             $this->console->writeLn($command);
+
+            $params = [];
+            foreach ($lines as $line) {
+                if (strpos($line, '@param') === false) {
+                    continue;
+                }
+
+                $parts = preg_split('#\s+#', $line, 4);
+                if (count($parts) !== 4 && $parts[0] !== '@param') {
+                    continue;
+                }
+                $params[substr($parts[2], 1)] = trim($parts[3]);
+            }
+
             if ($params) {
+                $shortNames = [];
+                foreach ($params as $name => $description) {
+                    $short = $name[0];
+                    if (isset($shortNames[$short])) {
+                        $shortNames[$short] = false;
+                    } else {
+                        $shortNames[$short] = $name;
+                    }
+                }
+                $shortNames = array_flip(array_filter($shortNames));
+
+                $maxLength = 1;
+                foreach ($params as $name => $description) {
+                    $maxLength = max($maxLength, strlen($name) + 2 + (isset($shortNames[$name]) ? 4 : 0));
+                }
                 $this->console->writeLn('  Options:');
 
                 foreach ($params as $name => $value) {
-                    $parts = explode(',', $name);
-                    if (count($parts) === 2) {
-                        $option = strlen($parts[0]) > strlen($parts[1]) ? ($parts[1] . ',' . $parts[0]) : ($parts[0] . ',' . $parts[1]);
-                    } else {
-                        $option = '   ' . $name;
+                    $option = '--' . $name;
+                    if (isset($shortNames[$name])) {
+                        $option .= ', -' . $shortNames[$name];
                     }
-
-                    if ($option !== $name) {
-                        $params[$option] = $value;
-                        unset($params[$name]);
-                    }
-                }
-
-                $maxLength = max(max(array_map('strlen', array_keys($params))), 1);
-                foreach ($params as $name => $value) {
-                    $this->console->writeLn($this->console->colorize(' ' . str_pad($name, $maxLength + 1, ' '), Console::FC_CYAN) . ' ' . $value);
+                    $option = str_pad($option, $maxLength + 1, ' ');
+                    $this->console->writeLn('    ' . $this->console->colorize($option, Console::FC_CYAN) . ($value ? "  $value" : ''));
                 }
             }
         }
