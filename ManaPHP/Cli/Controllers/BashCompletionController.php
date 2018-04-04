@@ -165,7 +165,7 @@ class BashCompletionController extends Controller
     }
 
     /**
-     * @CliCommand complete for bash
+     * complete for bash
      *
      * @return int
      */
@@ -208,7 +208,7 @@ class BashCompletionController extends Controller
     }
 
     /**
-     * @CliCommand install bash completion script
+     * install bash completion script
      */
     public function installCommand()
     {
