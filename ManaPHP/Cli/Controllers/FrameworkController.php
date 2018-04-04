@@ -13,28 +13,31 @@ class FrameworkController extends Controller
     protected $_tmpLiteFile = '@root/manaphp_lite.tmp';
 
     /**
-     * @CliCommand build manaphp framework lite php file
-     * @CliParam   --config,-c  config file name default:@root/manaphp_lite.json
-     * @CliParam   --output,-o  output file name default:@root/manaphp_lite.php
-     * @CliParam   --skip-remove-interfaces
-     * @CliParam   --skip-remove-whitespaces
-     * @CliParam   --skip-add-class-comment
-     * @CliParam   --remove-namespace
+     * build manaphp framework lite php file
      *
+     * @param string $input input file name
+     * @param string $output output file name
+     * @param int    $interfaces_keep
+     * @param int    $whitespaces_keep
+     * @param int    $namespace_keep
+     *
+     * @return int
      */
-    public function liteCommand()
-    {
+    public function liteCommand(
+        $input = '@root/manaphp_lite.json',
+        $output = '@root/manaphp_lite.php',
+        $interfaces_keep = 0,
+        $whitespaces_keep = 0,
+        $namespace_keep = 0
+    ) {
         if (!$this->filesystem->fileExists('@root/manaphp_lite.json')) {
             $this->filesystem->fileCopy('@manaphp/manaphp_lite.json', '@root/manaphp_lite.json');
         }
 
-        $jsonFile = $this->arguments->getOption('input:i', '@root/manaphp_lite.json');
-        $config = json_decode($this->filesystem->fileGet($jsonFile), true);
+        $config = json_decode($this->filesystem->fileGet($input), true);
 
         if (isset($config['output'])) {
-            $outputFile = $config['output'];
-        } else {
-            $outputFile = $this->arguments->getOption('output:o', '@root/manaphp_lite.php');
+            $output = $config['output'];
         }
 
         $contents = '';
@@ -54,7 +57,7 @@ class FrameworkController extends Controller
             }
 
             $classContent = $this->filesystem->fileGet($classFile);
-            if ($this->arguments->hasOption('remove-namespace')) {
+            if ($namespace_keep) {
                 if (preg_match('#namespace\s+([^;]+);#', $classContent, $matches) === 1) {
                     $classNamespace = $matches[1];
                     if ($classNamespace === $prevClassNamespace) {
@@ -66,7 +69,7 @@ class FrameworkController extends Controller
                 }
             }
 
-            if (!$this->arguments->hasOption('skip-remove-interfaces')) {
+            if (!$interfaces_keep) {
                 if (preg_match('#\s+implements\s+.*#', $classContent, $matches) === 1) {
                     $implements = $matches[0];
                     $implements = preg_replace('#[a-zA-Z]+Interface,?#', '', $implements);
@@ -77,7 +80,7 @@ class FrameworkController extends Controller
                 }
             }
 
-            if (!$this->arguments->hasOption('skip-remove-whitespaces')) {
+            if (!$whitespaces_keep) {
                 $classContent = $this->_strip_whitespaces($classContent);
             }
 
@@ -86,9 +89,9 @@ class FrameworkController extends Controller
 
         $contents = '<?php' . PHP_EOL . $contents;
 
-        $this->filesystem->filePut($outputFile, $contents);
+        $this->filesystem->filePut($output, $contents);
 
-        $this->console->writeLn(['lite file generated in `:output` successfully ', 'output' => $outputFile]);
+        $this->console->writeLn(['lite file generated in `:output` successfully ', 'output' => $output]);
 
         return 0;
     }
@@ -150,7 +153,7 @@ class FrameworkController extends Controller
     }
 
     /**
-     * @CliCommand minify framework source code
+     * minify framework source code
      * @return int
      */
     public function minifyCommand()
@@ -199,16 +202,16 @@ class FrameworkController extends Controller
     }
 
     /**
-     * @CliCommand genereate manaphp_lite.json file
+     * generate manaphp_lite.json file
+     *
+     * @param string $source
      */
-    public function genJsonCommand()
+    public function genJsonCommand($source)
     {
-        $source_file = $this->alias->resolve($this->arguments->getOption('source:s'));
-
         $classNames = [];
         /** @noinspection ForeachSourceInspection */
         /** @noinspection PhpIncludeInspection */
-        foreach (require $source_file as $className) {
+        foreach (require $source as $className) {
             if (preg_match('#^ManaPHP\\\\.*$#', $className)) {
                 $classNames[] = $className;
             }
