@@ -6,7 +6,7 @@ use ManaPHP\Cli\Controller;
 class PharController extends Controller
 {
     /**
-     * @CliCommand create manacli.phar file
+     * create manacli.phar file
      */
     public function manacliCommand()
     {
