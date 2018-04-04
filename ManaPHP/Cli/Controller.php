@@ -1,7 +1,9 @@
 <?php
+
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
+use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Cli\Controller
@@ -39,8 +41,8 @@ abstract class Controller extends Component implements ControllerInterface
      */
     public function helpCommand()
     {
-        $parts = explode('\\', get_class($this));
-        $controller = strtolower(basename(end($parts), 'Controller'));
+        $className = get_called_class();
+        $controller = Text::underscore(basename(substr($className, strrpos($className, '\\')), 'Controller'));
 
         foreach (get_class_methods($this) as $method) {
             if (preg_match('#^.*Command$#', $method) !== 1) {
