@@ -32,12 +32,14 @@ class DateController extends Controller
     }
 
     /**
-     * @CliCommand sync system time with http server time clock
-     * @CliParam   --url the time original
+     * sync system time with http server time clock
+     *
+     * @param string $url the time original
+     *
+     * @return  int
      */
-    public function syncCommand()
+    public function syncCommand($url = 'http://www.baidu.com')
     {
-        $url = $this->arguments->getOption('url', 'http://www.baidu.com');
         $timestamp = $this->_getRemoteTimestamp($url);
         if ($timestamp === false) {
             return $this->console->error(['fetch remote timestamp failed: `:url`', 'url' => $url]);
@@ -49,12 +51,14 @@ class DateController extends Controller
     }
 
     /**
-     * @CliCommand show remote time
-     * @CliParam   --url the time original
+     * show remote time
+     *
+     * @param string $url the time original
+     *
+     * @return int
      */
-    public function remoteCommand()
+    public function remoteCommand($url = 'http://www.baidu.com')
     {
-        $url = $this->arguments->getOption('url', 'http://www.baidu.com');
         $timestamp = $this->_getRemoteTimestamp($url);
         if ($timestamp === false) {
             return $this->console->error(['fetch remote timestamp failed: `:url`', 'url' => $url]);
@@ -65,12 +69,14 @@ class DateController extends Controller
     }
 
     /**
-     * @CliCommand show local and remote diff
-     * @CliParam   --url the time original
+     *  show local and remote diff
+     *
+     * @param string $url the time original
+     *
+     * @return string
      */
-    public function diffCommand()
+    public function diffCommand($url = 'http://www.baidu.com')
     {
-        $url = $this->arguments->getOption('url', 'http://www.baidu.com');
         $remote_ts = $this->_getRemoteTimestamp($url);
         $local_ts = time();
         if ($remote_ts === false) {
@@ -84,12 +90,14 @@ class DateController extends Controller
     }
 
     /**
-     * @CliCommand set the system time
-     * @CliParam   --time:-t time
-     * @CliParam   --date:-d date
+     * set the system time
+     *
+     * @param string $time time
+     * @param string $date date
+     *
      * @return int
      */
-    public function setCommand()
+    public function setCommand($date, $time)
     {
         $arguments = $this->arguments->getValues();
         if (count($arguments) === 1) {
@@ -105,9 +113,6 @@ class DateController extends Controller
             } else {
                 list($date, $time) = explode(' ', $str);
             }
-        } else {
-            $date = $this->arguments->getOption('date:d');
-            $time = $this->arguments->getOption('time:t');
         }
 
         if ($date === null || $date === '') {
