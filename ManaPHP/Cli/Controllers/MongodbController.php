@@ -1,46 +1,86 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
+use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
 use ManaPHP\Utility\Text;
 
 class MongodbController extends Controller
 {
     /**
-     * @CliCommand generate model file from base64 encoded string
-     * @CliParam   --input:-i the base64 encoded json string
-     * @CliParam   --optimized:-o output as more methods as possible (default: 0)
-     * @throws \ManaPHP\Cli\Controllers\Exception
+     * @return array
      */
-    public function modelCommand()
+    protected function _getDbServices()
     {
-        $input = base64_decode($this->arguments->getOption('input:i'));
-        $modelName = $this->arguments->getOption('name:n', 'App\\Models\\Model');
-        if (strpos($modelName, '\\') === false) {
-            $modelName = 'App\\Models\\' . ucfirst($modelName);
+        $services = [];
+        foreach ($this->configure->components as $service => $config) {
+            $config = json_encode($config, JSON_UNESCAPED_SLASHES);
+            if (preg_match('#mongodb://#', $config)) {
+                $services[] = $service;
+            }
+        }
+        return $services;
+    }
+
+    /**
+     * @param string $service
+     * @param string $pattern
+     *
+     * @return array
+     */
+    protected function _getTables($service, $pattern = null)
+    {
+        /**
+         * @var \ManaPHP\MongodbInterface $mongodb
+         */
+        $mongodb = $this->_di->getShared($service);
+        $tables = [];
+        foreach ($mongodb->listCollections() as $table) {
+            if ($pattern && !fnmatch($pattern, $table)) {
+                continue;
+            }
+            $tables[] = $table;
+        }
+
+        sort($tables);
+
+        return $tables;
+    }
+
+    /**
+     * generate model file from base64 encoded string
+     *
+     * @param string $input the base64 encoded json string
+     * @param string $name
+     * @param int    $optimized output as more methods as possible (default: 0)
+     */
+    public function modelCommand($input, $name, $optimized = 0)
+    {
+        if (strpos($name, '\\') === false) {
+            $modelName = 'App\\Models\\' . ucfirst($name);
+        } else {
+            $modelName = $name;
         }
 
         $fieldTypes = $this->_inferFieldTypes($input);
-        $model = $this->_renderModel($fieldTypes, $modelName);
-        $file = '@tmp/mongodb/model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
+        $model = $this->_renderModel($fieldTypes, $modelName, $optimized);
+        $file = '@tmp/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         $this->filesystem->filePut($file, $model);
 
         $this->console->writeLn(['write model to :file', 'file' => $file]);
     }
 
     /**
-     * @CliCommand generate models file from data files or online data
-     * @CliParam   --service:-s  explicit the mongodb service name
-     * @CliParam   --dir the data file directory name
-     * @CliParam   --ns namespaces of models
-     * @CliParam   --optimized:-o output as more methods as possible (default: 0)
-     * @throws \ManaPHP\Cli\Controllers\Exception
+     * generate models file from data files or online data
+     *
+     * @param array  $services explicit the mongodb service name
+     * @param string $dir the data file directory name
+     * @param string $namespace namespaces of models
+     * @param int    $optimized output as more methods as possible (default: 0)
      */
-    public function modelsCommand()
+    public function modelsCommand($services = [], $dir = '', $namespace = 'App\Models', $optimized = 0)
     {
-        $dir = $this->arguments->getOption('dir', '');
-        $ns = $this->arguments->getOption('ns', 'App\Models');
-
         if ($dir) {
             if (!$this->filesystem->dirExists($dir)) {
                 throw new Exception(['`:dir` dir is not exists', 'dir' => $dir]);
@@ -54,36 +94,36 @@ class MongodbController extends Controller
                 $fieldTypes = $this->_inferFieldTypes($lines[0]);
                 $fileName = basename($file, '.json');
                 $plainClass = Text::camelize($fileName);
-                $modelClass = $ns . '\\' . $plainClass;
+                $modelClass = $namespace . '\\' . $plainClass;
 
                 $model = $this->_renderModel($fieldTypes, $modelClass);
 
                 $this->filesystem->filePut("@tmp/mongodb/models/$plainClass.php", $model);
             }
         } else {
-            /**
-             * @var \ManaPHP\Mongodb $mongodb
-             */
-            $mongodb = $this->_di->getShared($this->arguments->getOption('service:s', 'mongodb'));
-            foreach ($mongodb->listCollections() as $collection) {
-                $docs = $mongodb->query($collection, [], ['limit' => 1]);
-                if ($docs) {
-                    $plainClass = Text::camelize($collection);
-                    $fileName = "@tmp/mongodb/models/$plainClass.php";
+            foreach ($services ?: $this->_getDbServices() as $service) {
+                /**
+                 * @var \ManaPHP\Mongodb $mongodb
+                 */
+                $mongodb = $this->_di->getShared($service);
+                foreach ($mongodb->listCollections() as $collection) {
+                    $docs = $mongodb->query($collection, [], ['limit' => 1]);
+                    if ($docs) {
+                        $plainClass = Text::camelize($collection);
+                        $fileName = "@tmp/mongodb_models/$service/$plainClass.php";
 
-                    $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
+                        $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 
-                    $fieldTypes = $this->_inferFieldTypes(json_encode($docs[0]));
-                    $modelClass = $ns . '\\' . $plainClass;
-                    $model = $this->_renderModel($fieldTypes, $modelClass);
-                    $this->filesystem->filePut($fileName, $model);
+                        $fieldTypes = $this->_inferFieldTypes(json_encode($docs[0]));
+                        $modelClass = $namespace . '\\' . $plainClass;
+                        $model = $this->_renderModel($fieldTypes, $modelClass);
+                        $this->filesystem->filePut($fileName, $model);
 
-                    $this->console->progress([
-                        ' `:model` model for `:collection` collection saved to `:file`',
-                        'model' => $plainClass,
-                        'collection' => $collection,
-                        'file' => $fileName
-                    ]);
+                        $this->console->progress([
+                            ' `:collection` collection saved to `:file`',
+                            'collection' => $collection,
+                            'file' => $fileName]);
+                    }
                 }
             }
         }
@@ -93,7 +133,6 @@ class MongodbController extends Controller
      * @param string $str
      *
      * @return array
-     * @throws \ManaPHP\Cli\Controllers\Exception
      */
     protected function _inferFieldTypes($str)
     {
@@ -129,13 +168,12 @@ class MongodbController extends Controller
     /**
      * @param array  $fieldTypes
      * @param string $modelName
+     * @param int    $optimized
      *
      * @return string
      */
-    protected function _renderModel($fieldTypes, $modelName)
+    protected function _renderModel($fieldTypes, $modelName, $optimized = 0)
     {
-        $optimized = $this->arguments->getOption('optimized:o', 0);
-
         $fields = array_keys($fieldTypes);
 
         $hasPendingType = false;
@@ -150,7 +188,8 @@ class MongodbController extends Controller
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
 
-        $str .= 'class ' . substr($modelName, strrpos($modelName, '\\') + 1) . ' extends \ManaPHP\Mongodb\Model' . PHP_EOL;
+        $str .= 'class ' . substr($modelName,
+                strrpos($modelName, '\\') + 1) . ' extends \ManaPHP\Mongodb\Model' . PHP_EOL;
         $str .= '{';
         $str .= PHP_EOL;
         foreach ($fieldTypes as $field => $type) {
@@ -296,101 +335,97 @@ class MongodbController extends Controller
     }
 
     /**
-     * @CliCommand export mongodb data to csv files
-     * @CliParam   --service:-s  explicit the mongodb service name
-     * @CliParam   --collection:-c export these collections only
-     * @CliParam   --bom  contains BOM or not (default: 0)
+     * export mongodb data to csv files
+     *
+     * @param array  $services services list
+     * @param string $collections collection filter
+     * @param int    $bom contains BOM or not (default: 0)
      */
-    public function csvCommand()
+    public function csvCommand($services = [], $collections = '', $bom = 0)
     {
-        /**
-         * @var \ManaPHP\Mongodb $mongodb
-         */
-        $mongodb = $this->_di->getShared($this->arguments->getOption('service:s', 'mongodb'));
+        foreach ($services ?: $this->_getDbServices() as $service) {
+            /**
+             * @var \ManaPHP\Mongodb $mongodb
+             */
+            $mongodb = $this->_di->getShared($service);
+            foreach ($this->_getTables($service, $collections) as $collection) {
+                $fileName = "@tmp/mongodb_csv/$service/$collection.csv";
 
-        $bom = $this->arguments->getOption('bom', 0);
-        $collections = $this->arguments->getOption('collection:c', '');
+                $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 
-        foreach ($mongodb->listCollections() as $collection) {
-            if ($collections && strpos($collections, $collection) === false) {
-                continue;
-            }
+                $this->filesystem->dirCreate(dirname($fileName));
 
-            $fileName = "@tmp/mongodb/csv/$collection.csv";
+                $file = fopen($this->alias->resolve($fileName), 'wb');
 
-            $this->console->writeLn(['`:collection` processing...', 'collection' => $collection]);
-
-            $this->filesystem->dirCreate(dirname($fileName));
-
-            $file = fopen($this->alias->resolve($fileName), 'wb');
-
-            if ($bom) {
-                fprintf($file, "\xEF\xBB\xBF");
-            }
-
-            $docs = $mongodb->query($collection);
-
-            if ($docs) {
-                $columns = [];
-                foreach ((array)$docs[0] as $k => $v) {
-                    if ($k === '_id' && is_object($v)) {
-                        continue;
-                    }
-                    $columns[] = $k;
+                if ($bom) {
+                    fprintf($file, "\xEF\xBB\xBF");
                 }
 
-                fputcsv($file, $columns);
-            }
+                $docs = $mongodb->query($collection);
 
-            $linesCount = 0;
-            $startTime = microtime(true);
-            if (count($docs) !== 0) {
-                foreach ($docs as $doc) {
-                    $line = [];
-                    foreach ((array)$doc as $k => $v) {
+                if ($docs) {
+                    $columns = [];
+                    foreach ((array)$docs[0] as $k => $v) {
                         if ($k === '_id' && is_object($v)) {
                             continue;
                         }
-                        $line[] = $v;
+                        $columns[] = $k;
                     }
 
-                    $linesCount++;
-                    fputcsv($file, $line);
+                    fputcsv($file, $columns);
                 }
+
+                $linesCount = 0;
+                $startTime = microtime(true);
+                if (count($docs) !== 0) {
+                    foreach ($docs as $doc) {
+                        $line = [];
+                        foreach ((array)$doc as $k => $v) {
+                            if ($k === '_id' && is_object($v)) {
+                                continue;
+                            }
+                            $line[] = $v;
+                        }
+
+                        $linesCount++;
+                        fputcsv($file, $line);
+                    }
+                }
+
+                fclose($file);
+
+                $this->console->progress(['write to `:file` success: :count [:time]',
+                    'file' => $fileName,
+                    'count' => $linesCount,
+                    'time' => round(microtime(true) - $startTime, 4)]);
+                /** @noinspection DisconnectedForeachInstructionInspection */
             }
-
-            fclose($file);
-
-            $this->console->writeLn(['write to `:file` success: :count [:time]', 'file' => $fileName, 'count' => $linesCount, 'time' => round(microtime(true) - $startTime, 4)]);
-            /** @noinspection DisconnectedForeachInstructionInspection */
-            $this->console->writeLn();
         }
     }
 
     /**
-     * @CliCommand list databases and collections
-     * @CliParam   --service:-s  explicit the mongodb service name
-     * @CliParam   --database:-d list collections in these database only
+     * list databases and collections
+     *
+     * @param array  $services services list
+     * @param string $collections collection list
      */
-    public function listCommand()
+    public function listCommand($services = [], $collections = '')
     {
-        /**
-         * @var \ManaPHP\Mongodb $mongodb
-         */
-        $mongodb = $this->_di->getShared($this->arguments->getOption('service:s', 'mongodb'));
+        foreach ($services ?: $this->_getDbServices() as $service) {
+            /**
+             * @var \ManaPHP\DbInterface $mongodb
+             */
+            $mongodb = $this->_di->getShared($service);
 
-        $databases = $mongodb->listDatabases();
-        $filterDatabases = $this->arguments->getOption('database:d', '');
-        sort($databases);
-        foreach ($databases as $database) {
-            if ($filterDatabases && strpos($filterDatabases, $database) === false) {
-                continue;
-            }
-            $collections = $mongodb->listCollections($database);
-            sort($collections);
-            $this->console->writeLn([':database[:count]', 'database' => $database, 'count' => count($collections)]);
-            foreach ($collections as $collection) {
-                $this->console->writeLn(['    :collection', 'collection' => $collection]);
+            $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
+            foreach ($this->_getTables($service, $collections) as $row => $collection) {
+                $docs = $mongodb->query($collection, [], ['limit' => 1]);
+                $columns = $docs ? array_keys($docs[0]) : [];
+
+                $this->console->writeLn([' :row :collection(:columns)',
+                    'row' => sprintf('%2d ', $row + 1),
+                    'collection' => $this->console->colorize($collection, Console::FC_GREEN),
+                    'columns' => implode($columns, ', ')]);
             }
         }
     }
