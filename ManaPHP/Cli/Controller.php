@@ -75,10 +75,10 @@ abstract class Controller extends Component implements ControllerInterface
                 }
 
                 $parts = preg_split('#\s+#', $line, 4);
-                if (count($parts) !== 4 && $parts[0] !== '@param') {
+                if (count($parts) <3 || $parts[0] !== '@param') {
                     continue;
                 }
-                $params[substr($parts[2], 1)] = trim($parts[3]);
+                $params[substr($parts[2], 1)] = isset($parts[3]) ? trim($parts[3]) : '';
             }
 
             if ($params) {
