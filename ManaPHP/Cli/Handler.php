@@ -163,7 +163,7 @@ class Handler extends Component implements HandlerInterface
             } elseif (in_array('default', $commands, true)) {
                 $commandName = 'default';
             } else {
-                return $this->console->error('[sub-command is not provided');
+                $commandName='help';
             }
         }
 
