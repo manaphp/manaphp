@@ -12,7 +12,7 @@ use ManaPHP\Cli\Controller;
 class  SessionController extends Controller
 {
     /**
-     * @CliCommand clean expired sessions
+     * clean expired sessions
      */
     public function cleanCommand()
     {
