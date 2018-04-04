@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
@@ -15,25 +16,18 @@ use ManaPHP\Utility\Text;
 class ControllerController extends Controller
 {
     /**
-     * @CliCommand create controller
-     * @CliParam   --module,-m      the module for controller
-     * @CliParam   --controller,-c  the controller name
-     * @CliParam   --action,-a      the action list for controller
-     * @CliParam   --force          force to recreate all files
-     * @CliParam   --api            skip all views
+     * create controller
+     *
+     * @param string $module the module for controller
+     * @param string $controller the controller name
+     * @param array  $actions the action list for controller
+     * @param int    $force force to recreate all files
+     * @param int    $api skip all views
+     *
      * @return int
      */
-    public function createCommand()
+    public function createCommand($module = 'Home', $controller, $actions = ['list', 'create', 'detail', 'update', 'delete'], $force = 0, $api = 0)
     {
-        $module = $this->arguments->getOption('module:m', 'Home');
-        $controller = $this->arguments->getOption('controller:c', '');
-        $force = $this->arguments->hasOption('force');
-        $api = $this->arguments->hasOption('api');
-
-        if (!$controller) {
-            return $this->console->error('please use --controller assign in the controller name');
-        }
-
         $moduleName = Text::camelize($this->crossword->guess($this->application->getModules(), $module));
         if (!$moduleName) {
             return $this->console->error(['module name is unknown: `:module`', 'module' => $module]);
@@ -47,12 +41,12 @@ class ControllerController extends Controller
         if (!$force && $this->filesystem->fileExists($controllerFile)) {
             return $this->console->error(['`:controller` controller exists already', 'controller' => $controllerNamespace . '\\' . $controller]);
         }
-        $actions = [];
-        foreach (explode(',', $this->arguments->getOption('action:a', 'list,create,detail,update,delete')) as $action) {
+
+        foreach ($actions as $i => $action) {
             $action = trim($action);
             $action = lcfirst(Text::camelize($action));
 
-            $actions[] = $action;
+            $actions[$i] = $action;
         }
 
         $controllerBase = !$this->filesystem->fileExists("@app/$moduleName/Controllers/ControllerBase.php") ? 'ControllerBase' : '\ManaPHP\Mvc\Controller';
