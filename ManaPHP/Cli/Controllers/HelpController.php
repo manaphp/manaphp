@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Console;
@@ -19,47 +20,31 @@ class HelpController extends Controller
     public function listCommand()
     {
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
-        foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
-            if (preg_match('#/(\w+/Controllers/(\w+)Controller)\.php$#', $file, $matches)) {
-                $this->console->writeLn('- ' . $this->console->colorize(Text::underscore($matches[2]), Console::FC_YELLOW));
+        foreach (glob(__DIR__ . '/*Controller.php') as $file) {
+            $plainName = basename($file, '.php');
+            $this->console->writeLn(' - ' . $this->console->colorize(Text::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
+            $commands = $this->_getCommands(__NAMESPACE__ . "\\" . $plainName);
 
-                $controllerClassName = 'ManaPHP\\' . strtr($matches[1], '/', '\\');
-
-                $commands = $this->_getCommands($controllerClassName);
-                ksort($commands);
-
-                if (!$commands) {
-                    continue;
-                }
-
-                $maxLength = max(max(array_map('strlen', array_keys($commands))), 16);
-                foreach ($commands as $command => $description) {
-                    $cmd = str_pad($command, $maxLength + 1);
-                    $this->console->writeLn('    ' . $this->console->colorize($cmd, Console::FC_CYAN) . ' ' . $description);
-                }
+            $maxLength = max(max(array_map('strlen', array_keys($commands))), 18);
+            foreach ($commands as $command => $description) {
+                $cmd = str_pad($command, $maxLength + 1);
+                $this->console->writeLn('    ' . $this->console->colorize($cmd, Console::FC_CYAN) . ' ' . $description);
             }
         }
 
-        $this->console->writeLn('application commands: ', Console::FC_GREEN | Console::AT_BOLD);
         if ($this->alias->has('@cli')) {
-            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
-                if (preg_match('#(\w+)Controller\.php$#', $file, $matches)) {
-                    $this->console->writeLn('- ' . $this->console->colorize(Text::underscore($matches[1]), Console::FC_YELLOW));
+            $this->console->writeLn('application commands: ', Console::FC_GREEN | Console::AT_BOLD);
 
-                    $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . $matches[1] . 'Controller');
-                    $commands = $this->_getCommands($controllerClassName);
+            foreach (glob($this->alias->resolve('@cli/*Controller.php')) as $file) {
+                $plainName = basename($file, '.php');
+                $this->console->writeLn(' - ' . $this->console->colorize(Text::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
 
-                    ksort($commands);
+                $commands = $this->_getCommands($this->alias->resolveNS("@ns.cli\\$plainName"));
 
-                    if (!$commands) {
-                        continue;
-                    }
-
-                    $maxLength = max(max(array_map('strlen', array_keys($commands))), 16);
-                    foreach ($commands as $command => $description) {
-                        $cmd = str_pad($command, $maxLength + 1);
-                        $this->console->writeLn('  ' . $this->console->colorize($cmd, Console::FC_CYAN) . ' ' . $description);
-                    }
+                $maxLength = max(max(array_map('strlen', array_keys($commands))), 18);
+                foreach ($commands as $command => $description) {
+                    $cmd = str_pad($command, $maxLength + 1);
+                    $this->console->writeLn('    ' . $this->console->colorize($cmd, Console::FC_CYAN) . ' ' . $description);
                 }
             }
         }
@@ -77,8 +62,6 @@ class HelpController extends Controller
         $controller = Text::underscore(basename(strtr($controllerClassName, '\\', '/'), 'Controller'));
 
         $commands = [];
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $rc = new \ReflectionClass($controllerClassName);
         foreach (get_class_methods($controllerClassName) as $method) {
             if (preg_match('#^(.*)Command$#', $method, $match) !== 1) {
@@ -90,14 +73,22 @@ class HelpController extends Controller
 
             $command = $controller . ' ' . $match[1];
 
-            $rm = $rc->getMethod($match[0]);
-            $comment = $rm->getDocComment();
-            if ($comment && preg_match('#\*\s+@CliCommand\s+(.*)#', $comment, $match) === 1) {
-                $commands[$command] = $match[1];
-            } else {
-                $commands[$command] = '';
+            $description = '';
+            foreach (preg_split('#[\r\n]+#', $rc->getMethod($match[0])->getDocComment()) as $line) {
+                $line = trim($line, "\t /*\r\n");
+                if (!$line) {
+                    continue;
+                }
+
+                if ($line[0] !== '@') {
+                    $description = $line;
+                }
+                break;
             }
+            $commands[$command] = $description;
         }
+
+        ksort($commands);
 
         return $commands;
     }
