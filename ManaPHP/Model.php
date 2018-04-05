@@ -1027,7 +1027,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     /**
      * @param int|string $id
      *
-     * @return static
+     * @return static|null
      */
     public static function deleteOrFail($id = null)
     {
@@ -1057,10 +1057,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             throw new ModelException('primary key value is not scalar');
         }
 
-        $instance = static::firstOrFail([$pkName => $id]);
-        $instance->delete();
-
-        return $instance;
+        return ($instance = static::first([$pkName => $id])) ? $instance->delete() : null;
     }
 
     /**

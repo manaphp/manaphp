@@ -334,7 +334,7 @@ interface ModelInterface
     /**
      * @param int|string $id
      *
-     * @return static
+     * @return static|null
      */
     public static function deleteOrFail($id = null);
 
