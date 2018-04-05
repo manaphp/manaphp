@@ -1,6 +1,7 @@
 <?php
 
 namespace ManaPHP;
+use ManaPHP\Logger\LogCategorizable;
 
 /**
  * Class ManaPHP\Logger
@@ -31,11 +32,6 @@ class Logger extends Component implements LoggerInterface
      * @var array
      */
     protected $_appenders;
-
-    /**
-     * @var string
-     */
-    protected $_defaultCategory = '';
 
     /**
      * @var string
@@ -75,29 +71,6 @@ class Logger extends Component implements LoggerInterface
         if (isset($options['level'])) {
             $this->_level = strtoupper($options['level']);
         }
-
-        $mca = $this->dispatcher->getMCA('.');
-
-        if (trim($mca, '.') === 0) {
-            $this->_defaultCategory = $this->_prefix;
-        } else {
-            $this->_defaultCategory = $this->_prefix . '.' . $mca;
-        }
-
-        $this->attachEvent('dispatcher:beforeDispatch', function ($source) {
-            /**
-             * @var \ManaPHP\Mvc\DispatcherInterface $source
-             */
-            $this->_defaultCategory = $this->_prefix . '.' . $source->getMCA('.');
-        });
-    }
-
-    /**
-     * @param string $category
-     */
-    public function setDefaultCategory($category)
-    {
-        $this->_defaultCategory = $this->_prefix . $category;
     }
 
     /**
@@ -185,6 +158,24 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * @param array $traces
+     *
+     * @return string
+     */
+    public function _inferCategory($traces)
+    {
+        foreach ($traces as $trace) {
+            if (isset($trace['object'])) {
+                $object = $trace['object'];
+                if ($object instanceof LogCategorizable) {
+                    return $object->categorizeLog();
+                }
+            }
+        }
+        return '';
+    }
+
+    /**
      * @param string       $level
      * @param string|array $message
      * @param string       $category
@@ -209,12 +200,12 @@ class Logger extends Component implements LoggerInterface
             $message = strtr($message[0], $replaces);
         }
 
-        $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
+        $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
         $logEvent = [];
 
         $logEvent['level'] = $level;
-        $logEvent['category'] = $category ?: $this->_defaultCategory;
+        $logEvent['category'] = $category ?: $this->_inferCategory($traces);
         $logEvent['location'] = $this->_getLocation($traces);
         $logEvent['message'] = $message;
         $logEvent['caller'] = $this->_getCaller($traces);
