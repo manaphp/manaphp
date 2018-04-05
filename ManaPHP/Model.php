@@ -252,7 +252,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             }
             $keyField = $model->getPrimaryKey();
             $valueField = $field;
-            return $criteria->select([$keyField, $valueField])->indexBy([$keyField => $valueField])->orderBy($keyField)->execute();
+
+            $criteria = $criteria->select([$keyField, $valueField])->indexBy([$keyField => $valueField]);
+            if (in_array('display_order', $model->getFields(), true)) {
+                return $criteria->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->execute();
+            } else {
+                return $criteria->orderBy($keyField)->execute();
+            }
         } elseif (is_string($field)) {
             return $criteria->values($field);
         } else {
