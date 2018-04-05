@@ -249,10 +249,14 @@ class Di implements DiInterface
     {
         if (is_string($definition)) {
             $params = [];
-        } else {
+        } elseif (isset($definition['class'])) {
             $params = $definition;
             $definition = $definition['class'];
             unset($params['class'], $params['shared']);
+        } elseif (isset($definition[0])) {
+            $params = $definition;
+            $definition = $definition[0];
+            unset($params[0], $params['shared']);
         }
 
         if ($parameters === null) {
