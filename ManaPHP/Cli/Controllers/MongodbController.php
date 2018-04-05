@@ -52,15 +52,15 @@ class MongodbController extends Controller
      * generate model file from base64 encoded string
      *
      * @param string $input the base64 encoded json string
-     * @param string $name
-     * @param int    $optimized output as more methods as possible (default: 0)
+     * @param string $model_name
+     * @param bool   $optimized output as more methods as possible
      */
-    public function modelCommand($input, $name, $optimized = 0)
+    public function modelCommand($input, $model_name, $optimized = false)
     {
-        if (strpos($name, '\\') === false) {
-            $modelName = 'App\\Models\\' . ucfirst($name);
+        if (strpos($model_name, '\\') === false) {
+            $modelName = 'App\\Models\\' . ucfirst($model_name);
         } else {
-            $modelName = $name;
+            $modelName = $model_name;
         }
 
         $fieldTypes = $this->_inferFieldTypes($input);
@@ -77,9 +77,9 @@ class MongodbController extends Controller
      * @param array  $services explicit the mongodb service name
      * @param string $dir the data file directory name
      * @param string $namespace namespaces of models
-     * @param int    $optimized output as more methods as possible (default: 0)
+     * @param bool   $optimized output as more methods as possible
      */
-    public function modelsCommand($services = [], $dir = '', $namespace = 'App\Models', $optimized = 0)
+    public function modelsCommand($services = [], $dir = '', $namespace = 'App\Models', $optimized = false)
     {
         if ($dir) {
             if (!$this->filesystem->dirExists($dir)) {
@@ -96,7 +96,7 @@ class MongodbController extends Controller
                 $plainClass = Text::camelize($fileName);
                 $modelClass = $namespace . '\\' . $plainClass;
 
-                $model = $this->_renderModel($fieldTypes, $modelClass);
+                $model = $this->_renderModel($fieldTypes, $modelClass, $optimized);
 
                 $this->filesystem->filePut("@tmp/mongodb/models/$plainClass.php", $model);
             }
@@ -168,11 +168,11 @@ class MongodbController extends Controller
     /**
      * @param array  $fieldTypes
      * @param string $modelName
-     * @param int    $optimized
+     * @param bool   $optimized
      *
      * @return string
      */
-    protected function _renderModel($fieldTypes, $modelName, $optimized = 0)
+    protected function _renderModel($fieldTypes, $modelName, $optimized = false)
     {
         $fields = array_keys($fieldTypes);
 
@@ -338,17 +338,17 @@ class MongodbController extends Controller
      * export mongodb data to csv files
      *
      * @param array  $services services list
-     * @param string $collections collection filter
-     * @param int    $bom contains BOM or not (default: 0)
+     * @param string $collection_pattern match collection against a pattern
+     * @param bool   $bom contains BOM or not
      */
-    public function csvCommand($services = [], $collections = '', $bom = 0)
+    public function csvCommand($services = [], $collection_pattern = '', $bom = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /**
              * @var \ManaPHP\Mongodb $mongodb
              */
             $mongodb = $this->_di->getShared($service);
-            foreach ($this->_getTables($service, $collections) as $collection) {
+            foreach ($this->_getTables($service, $collection_pattern) as $collection) {
                 $fileName = "@tmp/mongodb_csv/$service/$collection.csv";
 
                 $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
@@ -407,9 +407,9 @@ class MongodbController extends Controller
      * list databases and collections
      *
      * @param array  $services services list
-     * @param string $collections collection list
+     * @param string $collection_pattern match collection against a pattern
      */
-    public function listCommand($services = [], $collections = '')
+    public function listCommand($services = [], $collection_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /**
@@ -418,7 +418,7 @@ class MongodbController extends Controller
             $mongodb = $this->_di->getShared($service);
 
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
-            foreach ($this->_getTables($service, $collections) as $row => $collection) {
+            foreach ($this->_getTables($service, $collection_pattern) as $row => $collection) {
                 $docs = $mongodb->query($collection, [], ['limit' => 1]);
                 $columns = $docs ? array_keys($docs[0]) : [];
 
