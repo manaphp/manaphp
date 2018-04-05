@@ -258,6 +258,8 @@ class Response extends Component implements ResponseInterface
             null;
         } elseif (is_int($content)) {
             $content = ['code' => $content, 'message' => ''];
+        } elseif ($content === null) {
+            $content = ['code' => 0, 'message' => '', 'data' => null];
         } elseif ($content instanceof FilterException) {
             $content = ['code' => -2, 'message' => $content->getMessage()];
         } elseif ($content instanceof \Exception) {
