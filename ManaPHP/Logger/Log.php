@@ -7,6 +7,5 @@ class Log
     public $category;
     public $location;
     public $message;
-    public $caller;
     public $timestamp;
 }

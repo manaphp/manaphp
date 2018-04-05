@@ -14,31 +14,26 @@ use ManaPHP\Logger\LogCategorizable;
  */
 class Logger extends Component implements LoggerInterface
 {
-    const LEVEL_FATAL = 'FATAL';
-    const LEVEL_ERROR = 'ERROR';
-    const LEVEL_WARN = 'WARN';
-    const LEVEL_INFO = 'INFO';
-    const LEVEL_DEBUG = 'DEBUG';
+    const LEVEL_FATAL = 10;
+    const LEVEL_ERROR = 20;
+    const LEVEL_WARN = 30;
+    const LEVEL_INFO = 40;
+    const LEVEL_DEBUG = 50;
 
     /**
      * @var string
      */
-    protected $_level = 'DEBUG';
+    protected $_level = self::LEVEL_DEBUG;
 
     /**
      * @var array
      */
-    protected $_s2i;
+    protected $_appenders = [];
 
     /**
      * @var array
      */
-    protected $_appenders;
-
-    /**
-     * @var string
-     */
-    protected $_prefix = 'app';
+    protected $_levels = [];
 
     /**
      * Logger constructor.
@@ -48,31 +43,51 @@ class Logger extends Component implements LoggerInterface
      */
     public function __construct($options = 'ManaPHP\Logger\Appender\File')
     {
-        $this->_s2i = array_flip([self::LEVEL_FATAL, self::LEVEL_ERROR, self::LEVEL_WARN, self::LEVEL_INFO, self::LEVEL_DEBUG]);
+        $this->_levels = $this->getConstants('level');
 
-        if (is_string($options) || is_object($options)) {
-            $options = ['appenders' => [['class' => $options]]];
-        }
+        if (is_string($options)) {
+            $this->_appenders[] = ['appender' => $options];
+        } elseif (is_object($options)) {
+            $this->_appenders[] = ['appender' => ['instance' => $options]];
+        } else {
+            if (isset($options['level'])) {
+                $this->setLevel($options['level']);
+                unset($options['level']);
+            }
+            if (isset($options['appenders'])) {
+                $options = $options['appenders'];
+            }
 
-        if (isset($options['appenders'])) {
-            foreach ((array)$options['appenders'] as $name => $appender) {
-                if (isset($appender['filter'])) {
-                    $filter = $appender['filter'];
-                    if (isset($filter['level'])) {
-                        $filter['level'] = strtoupper($filter['level']);
-                    }
-                    unset($appender['filter']);
+            foreach ((array)$options as $name => $value) {
+                if (is_int($name)) {
+                    $this->_appenders[] = ['appender' => $value];
+                } elseif (is_string($value)) {
+                    $this->_appenders[$name] = ['appender' => $value];
+                } elseif (isset($value['level'])) {
+                    $this->_appenders[$name]['level'] = is_numeric($value['level']) ? $value['level'] : $this->getConstants('level')[strtolower($value['level'])];
+                    unset($value['level']);
+                    $this->_appenders[$name]['appender'] = $value;
                 } else {
-                    $filter = [];
+                    $this->_appenders[$name] = ['appender' => $value];
                 }
-
-                $this->_appenders[$name] = ['filter' => $filter, 'appender' => $appender];
             }
         }
+    }
 
-        if (isset($options['level'])) {
-            $this->_level = strtoupper($options['level']);
+    /**
+     * @param int|string $level
+     *
+     * @return static
+     */
+    public function setLevel($level)
+    {
+        if (is_numeric($level)) {
+            $this->_level = (int)$level;
+        } else {
+            $this->_level = array_flip($this->getConstants('level'))[strtolower($level)];
         }
+
+        return $this;
     }
 
     /**
@@ -80,7 +95,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function getLevels()
     {
-        return $this->_s2i;
+        return $this->getConstants('level');
     }
 
     /**
@@ -90,7 +105,7 @@ class Logger extends Component implements LoggerInterface
      */
     protected function _getLocation($traces)
     {
-        if (isset($traces[2]['function']) && !isset($this->_s2i[strtoupper($traces[2]['function'])])) {
+        if (isset($traces[2]['function']) && !isset($this->_levels[strtoupper($traces[2]['function'])])) {
             $trace = $traces[1];
         } else {
             $trace = $traces[2];
@@ -101,62 +116,6 @@ class Logger extends Component implements LoggerInterface
         }
 
         return '';
-    }
-
-    /**
-     * @param array[] $traces
-     *
-     * @return string
-     */
-    protected function _getCaller($traces)
-    {
-        if (isset($traces[2]['function']) && !isset($this->_s2i[strtoupper($traces[2]['function'])])) {
-            $trace = $traces[2];
-        } elseif (isset($traces[3])) {
-            $trace = $traces[3];
-        } else {
-            return '';
-        }
-
-        if (isset($trace['class'], $trace['type'], $trace['function'])) {
-            return $trace['class'] . $trace['type'] . $trace['function'];
-        }
-
-        return '';
-    }
-
-    /**
-     * @param array $filter
-     * @param array $logEvent
-     *
-     * @return bool
-     */
-    protected function _IsFiltered($filter, $logEvent)
-    {
-        if (isset($filter['level']) && $this->_s2i[$filter['level']] < $this->_s2i[$logEvent['level']]) {
-            return true;
-        }
-
-        foreach ($filter as $field => $definition) {
-            if ($field === 'level') {
-                continue;
-            }
-
-            $matchNothing = true;
-            foreach (explode(',', $definition) as $pattern) {
-                $value = $logEvent[$field];
-                if ($value === $pattern || fnmatch($pattern, $value)) {
-                    $matchNothing = false;
-                    break;
-                }
-            }
-
-            if ($matchNothing) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -178,6 +137,26 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * @param int|string $name
+     *
+     * @return \ManaPHP\Logger\AppenderInterface|false
+     */
+    public function getAppender($name)
+    {
+        if (!isset($this->_appenders[$name])) {
+            return false;
+        }
+
+        $appender = $this->_appenders[$name];
+
+        if (!isset($appender['instance'])) {
+            return $this->_appenders[$name]['instance'] = $this->_di->getInstance($appender['appender']);
+        } else {
+            return $appender['instance'];
+        }
+    }
+
+    /**
      * @param string       $level
      * @param string|array $message
      * @param string       $category
@@ -186,7 +165,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function log($level, $message, $category = null)
     {
-        if ($this->_level !== $level && $this->_s2i[$this->_level] < $this->_s2i[$level]) {
+        if ($this->_level < $level) {
             return $this;
         }
 
@@ -205,11 +184,10 @@ class Logger extends Component implements LoggerInterface
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
         $log = new Log();
-        $log->level = $level;
+        $log->level = $this->_levels[$level];
         $log->category = $category ?: $this->_inferCategory($traces);
         $log->location = $this->_getLocation($traces);
         $log->message = $message;
-        $log->caller = $this->_getCaller($traces);
         $log->timestamp = time();
 
         $this->fireEvent('logger:log', $log);
@@ -217,16 +195,18 @@ class Logger extends Component implements LoggerInterface
         /**
          * @var \ManaPHP\Logger\AppenderInterface $appender
          */
-        foreach ($this->_appenders as $name => $appender_conf) {
-            if (!$this->_IsFiltered($appender_conf['filter'], $log)) {
-                if (!isset($appender_conf['instance'])) {
-                    $appender = $this->_appenders[$name]['instance'] = $this->_di->getInstance($appender_conf['appender']);
-                } else {
-                    $appender = $appender_conf['instance'];
-                }
-
-                $appender->append($log);
+        foreach ($this->_appenders as $name => $value) {
+            if (isset($value['level']) && $level > $value['level']) {
+                continue;
             }
+
+            if (!isset($value['instance'])) {
+                $appender = $this->_appenders[$name]['instance'] = $this->_di->getInstance($value['appender']);
+            } else {
+                $appender = $value['instance'];
+            }
+
+            $appender->append($log);
         }
 
         return $this;

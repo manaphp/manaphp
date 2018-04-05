@@ -15,6 +15,13 @@ interface LoggerInterface
     public function getLevels();
 
     /**
+     * @param int|string $name
+     *
+     * @return \ManaPHP\Logger\AppenderInterface
+     */
+    public function getAppender($name);
+
+    /**
      * Sends/Writes a debug message to the log
      *
      * @param string|array $message
