@@ -52,15 +52,13 @@ class MongodbController extends Controller
      * generate model file from base64 encoded string
      *
      * @param string $input the base64 encoded json string
-     * @param string $model_name
+     * @param string $modelName
      * @param bool   $optimized output as more methods as possible
      */
-    public function modelCommand($input, $model_name, $optimized = false)
+    public function modelCommand($input, $modelName, $optimized = false)
     {
-        if (strpos($model_name, '\\') === false) {
-            $modelName = 'App\\Models\\' . ucfirst($model_name);
-        } else {
-            $modelName = $model_name;
+        if (strpos($modelName, '\\') === false) {
+            $modelName = 'App\\Models\\' . ucfirst($modelName);
         }
 
         $fieldTypes = $this->_inferFieldTypes($input);
