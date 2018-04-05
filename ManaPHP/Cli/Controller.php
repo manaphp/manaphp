@@ -69,6 +69,13 @@ abstract class Controller extends Component implements ControllerInterface
             $command = $this->console->colorize(str_pad(basename($method, 'Command'), 10), Console::FC_YELLOW) . ' ' . $description;
             $this->console->writeLn($command);
 
+            $defaultValues = [];
+            foreach ($rm->getParameters() as $parameter) {
+                if ($parameter->isDefaultValueAvailable()) {
+                    $defaultValues[$parameter->getName()] = $parameter->getDefaultValue();
+                }
+            }
+	    
             $params = [];
             foreach ($lines as $line) {
                 if (strpos($line, '@param') === false) {
@@ -79,7 +86,24 @@ abstract class Controller extends Component implements ControllerInterface
                 if (count($parts) < 3 || $parts[0] !== '@param') {
                     continue;
                 }
-                $params[substr($parts[2], 1)] = isset($parts[3]) ? trim($parts[3]) : '';
+                $name = substr($parts[2], 1);
+                $type = $parts[1];
+
+                if (isset($defaultValues[$name])) {
+                    if ($type === 'bool' || $type === 'boolean') {
+                        $defaultValues[$name] = $defaultValues[$name] ? 'YES' : 'NO';
+                    } elseif ($type === 'int' || $type === 'integer') {
+                        $defaultValues[$name] = (int)$defaultValues[$name];
+                    } elseif ($type === 'float' || $type === 'double') {
+                        $defaultValues[$name] = (double)$defaultValues[$name];
+                    } elseif ($type === 'string') {
+                        $defaultValues[$name] = json_encode($defaultValues[$name]);
+                    } elseif ($type === 'array') {
+                        $defaultValues[$name] = json_encode($defaultValues[$name]);
+                    }
+                }
+
+                $params[$name] = isset($parts[3]) ? trim($parts[3]) : '';
             }
 
             if ($params) {
@@ -106,7 +130,8 @@ abstract class Controller extends Component implements ControllerInterface
                         $option .= ', -' . $shortNames[$name];
                     }
                     $option = str_pad($option, $maxLength + 1, ' ');
-                    $this->console->writeLn('    ' . $this->console->colorize($option, Console::FC_CYAN) . ($value ? "  $value" : ''));
+                    $this->console->writeLn('    ' . $this->console->colorize($option,
+                            Console::FC_CYAN) . ($value ? "  $value" : '') . (isset($defaultValues[$name]) ? " (default: $defaultValues[$name])" : ''));
                 }
             }
         }
