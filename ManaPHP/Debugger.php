@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Logger\Log;
 use ManaPHP\Utility\Text;
 
 /**
@@ -9,11 +10,11 @@ use ManaPHP\Utility\Text;
  *
  * @package debugger
  *
- * @property \ManaPHP\Mvc\RouterInterface      $router
- * @property \ManaPHP\Mvc\UrlInterface         $url
- * @property \ManaPHP\Http\RequestInterface    $request
- * @property \ManaPHP\RendererInterface        $renderer
- * @property \ManaPHP\Http\ResponseInterface   $response
+ * @property \ManaPHP\Mvc\RouterInterface    $router
+ * @property \ManaPHP\Mvc\UrlInterface       $url
+ * @property \ManaPHP\Http\RequestInterface  $request
+ * @property \ManaPHP\RendererInterface      $renderer
+ * @property \ManaPHP\Http\ResponseInterface $response
  */
 class Debugger extends Component implements DebuggerInterface
 {
@@ -99,16 +100,20 @@ class Debugger extends Component implements DebuggerInterface
         $this->_events[] = $event;
 
         if ($event === 'logger:log') {
+            /**
+             * @var Log $log
+             */
+            $log = $data;
             if (count($this->_log) <= $this->_log_max) {
                 $format = '[%time%][%level%] %message%';
                 $micro_date = explode(' ', microtime());
                 $replaces = [
                     '%time%' => date('H:i:s.', $micro_date[1]) . str_pad(ceil($micro_date[0] * 10000), '0', STR_PAD_LEFT),
-                    '%level%' => $data['level'],
-                    '%message%' => $data['message']
+                    '%level%' => $log->level,
+                    '%message%' => $log->message
                 ];
                 $this->_log[] = [
-                    'level' => $data['level'],
+                    'level' => $log->level,
                     'message' => strtr($format, $replaces)
                 ];
             }
