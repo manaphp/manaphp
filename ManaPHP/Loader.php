@@ -10,6 +10,11 @@ namespace ManaPHP;
 class Loader
 {
     /**
+     * @var \ManaPHP\AliasInterface
+     */
+    public $alias;
+
+    /**
      * @var array
      */
     protected $_classes = [];
@@ -18,6 +23,11 @@ class Loader
      * @var array
      */
     protected $_namespaces = [];
+
+    /**
+     * @var array
+     */
+    protected $_files = [];
 
     /**
      * Loader constructor.
@@ -83,6 +93,31 @@ class Loader
         }
 
         $this->_classes = $merge ? array_merge($this->_classes, $classes) : $classes;
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $files
+     *
+     * @return static
+     */
+    public function registerFiles($files)
+    {
+        foreach ((array)$files as $file) {
+            if (isset($this->_files[$file])) {
+                continue;
+            }
+
+            if ($file[0] === '@') {
+                $file = $this->_files[$file] = $this->alias->resolve($file);
+            } else {
+                $this->_files[$file] = $file;
+            }
+
+            /** @noinspection PhpIncludeInspection */
+            require_once $file;
+        }
 
         return $this;
     }

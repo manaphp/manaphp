@@ -22,6 +22,7 @@ namespace ManaPHP;
  * @property \ManaPHP\CacheInterface                       $scopedCache
  * @property \ManaPHP\Http\SessionInterface                $scopedSession
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
+ * @property \ManaPHP\Loader                               $loader
  */
 class Component implements ComponentInterface
 {

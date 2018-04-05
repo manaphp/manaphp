@@ -35,4 +35,11 @@ interface LoaderInterface
      * @return static
      */
     public function registerClasses($classes, $merge = true);
+
+    /**
+     * @param string|array $files
+     *
+     * @return static
+     */
+    public function registerFiles($files);
 }
