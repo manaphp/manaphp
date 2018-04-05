@@ -117,7 +117,7 @@ class Relation implements RelationInterface
             return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(true);
         } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
             $ids = $model::values($this->keyField, [$valueField=>is_array($model) ? $model[$valueField] : $model->$valueField]);
-            return $referenceModel::criteria()->where($this->keyField, $ids)->setFetchType(true);
+            return $referenceModel::criteria()->where((new $referenceModel)->getPrimaryKey(), $ids)->setFetchType(true);
         } else {
             throw  new RelationException(['unknown relation type: :type', 'type' => $type]);
         }
