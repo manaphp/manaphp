@@ -118,9 +118,12 @@ class Handler extends Component implements HandlerInterface
         $this->_args = $args !== null ? $args : $GLOBALS['argv'];
 
         list(, $controllerName, $commandName) = array_pad($this->_args, 3, null);
-        if ($controllerName === null) {
+        if ($controllerName === 'list') {
             $controllerName = 'help';
-        } elseif ($controllerName === 'help' && $commandName !== null) {
+            $commandName = $commandName ?: 'list';
+        } elseif ($controllerName === null) {
+            $controllerName = 'help';
+        } elseif ($controllerName === 'help' && $commandName !== null && $commandName !== 'list') {
             $controllerName = $commandName;
             $commandName = 'help';
         }
@@ -163,7 +166,7 @@ class Handler extends Component implements HandlerInterface
             } elseif (in_array('default', $commands, true)) {
                 $commandName = 'default';
             } else {
-                $commandName='help';
+                $commandName = 'help';
             }
         }
 
