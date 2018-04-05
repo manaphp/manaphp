@@ -165,7 +165,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function log($level, $message, $category = null)
     {
-        if ($this->_level < $level) {
+        if ($level > $this->_level) {
             return $this;
         }
 
