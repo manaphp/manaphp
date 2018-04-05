@@ -43,4 +43,13 @@ interface RandomInterface
      * @return string
      */
     public function getUuid();
+
+    /**
+     * https://en.wikipedia.org/wiki/Linear_congruential_generator
+     *
+     * @param int $n
+     *
+     * @return int
+     */
+    public function lgc($n);
 }

@@ -127,4 +127,16 @@ class Random extends Component implements RandomInterface
         $bytes = unpack('N1a/n1b/n1c/n1d/n1e/N1f', $this->getByte(16));
         return sprintf('%08x-%04x-%04x-%04x-%04x%08x', $bytes['a'], $bytes['b'], ($bytes['c'] & 0x0FFF) | 0x4000, ($bytes['d'] & 0x3FFF) | 0x8000, $bytes['e'], $bytes['f']);
     }
+
+    /**
+     * https://en.wikipedia.org/wiki/Linear_congruential_generator
+     *
+     * @param int $n
+     *
+     * @return int
+     */
+    public function lgc($n)
+    {
+        return (1103515245 * $n) & 0x7FFFFFFF;
+    }
 }
