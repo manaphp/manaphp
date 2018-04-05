@@ -13,6 +13,10 @@ class CliArgumentsTest extends TestCase
         $this->assertEquals('yes', $arguments->getOption('recursive:r'));
         $this->assertEquals('', $arguments->getOption('all:a', ''));
 
+        $arguments = new Arguments(['-r=yes']);
+        $this->assertEquals('yes', $arguments->getOption('recursive:r'));
+        $this->assertEquals('', $arguments->getOption('all:a', ''));
+
         $arguments = new Arguments(['/?v=1']);
         $this->assertEquals('1', $arguments->getOption('v'));
     }

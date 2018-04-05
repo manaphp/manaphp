@@ -15,7 +15,7 @@ class Arguments extends Component implements ArgumentsInterface
     /**
      * @var array
      */
-    protected $_options;
+    protected $_options = [];
 
     /**
      * @var array
@@ -47,23 +47,30 @@ class Arguments extends Component implements ArgumentsInterface
                 $this->_values[] = $fragment;
             }
         } else {
-            $this->_options = $this->_parse($arguments);
+            $this->_parse($arguments);
         }
     }
 
     /**
      * @param array $args
      *
-     * @return array
+     * @return static
      * @throws \ManaPHP\Cli\Arguments\Exception
      */
     public function _parse($args)
     {
-        $r = [];
-        while (count($args) !== 0) {
+        $this->_values = [];
+        $this->_options = [];
+
+        while ($args) {
             $o = array_shift($args);
-            if (strlen($o) < 2 || $o[0] !== '-') {
+            if ($o[0] !== '-') {
                 $this->_values[] = $o;
+                continue;
+            }
+
+            if (preg_match('#^-((\w)|-([\w-_]+))=(.*)$#', $o, $match)) {
+                $this->_options[$match[2]] = $match[4];
                 continue;
             }
 
@@ -71,28 +78,21 @@ class Arguments extends Component implements ArgumentsInterface
                 if (strlen($o) < 3) {
                     throw new ArgumentsException(['long `:option` option is too short', 'option' => $o]);
                 }
-                if (count($args) >= 1 && $args[0] !== '-') {
-                    $r[substr($o, 2)] = array_shift($args);
-                } else {
-                    $r[substr($o, 2)] = 1;
-                }
+
+                $this->_options[substr($o, 2)] = !$args || $args[0] === '-' ? 1 : array_shift($args);
             } else {
                 if (strlen($o) > 2) {
                     /** @noinspection PhpParamsInspection */
                     foreach (array_chunk(substr($o, 1), 1) as $c) {
-                        $r[$c] = 1;
+                        $this->_options[$c] = 1;
                     }
                 } else {
-                    if (count($args) >= 1 && $args[0] !== '-') {
-                        $r[substr($o, 1)] = array_shift($args);
-                    } else {
-                        $r[substr($o, 1)] = 1;
-                    }
+                    $this->_options[substr($o, 1)] = !$args || $args[0] === '-' ? 1 : array_shift($args);
                 }
             }
         }
 
-        return $r;
+        return $this;
     }
 
     /**
@@ -112,7 +112,7 @@ class Arguments extends Component implements ArgumentsInterface
             throw new ArgumentsException(['please remove `-` characters for `:argument` argument', 'argument' => $name]);
         }
 
-        foreach (explode(strpos($name, '|') !== false ? '|' : ':', $name) as $o) {
+        foreach (preg_split('#[|,:]+#', $name) as $o) {
             if (isset($this->_options[$o])) {
                 return $this->_options[$o];
             }
@@ -120,12 +120,8 @@ class Arguments extends Component implements ArgumentsInterface
 
         if ($defaultValue === null) {
             $options = [];
-            foreach (explode(strpos($name, '|') !== false ? '|' : ':', $name) as $opt) {
-                if (strlen($opt) === 1) {
-                    $options[] = '-' . $opt;
-                } else {
-                    $options[] = '--' . $opt;
-                }
+            foreach (preg_split('#[|,:]+#', $name) as $opt) {
+                $options[] = (strlen($opt) === 1 ? '-' : '--') . $opt;
             }
 
             throw new ArgumentsException('missing required options `' . implode('` or `', $options) . '` option');
@@ -141,7 +137,7 @@ class Arguments extends Component implements ArgumentsInterface
      */
     public function hasOption($name)
     {
-        foreach (explode(strpos($name, '|') !== false ? '|' : ':', $name) as $p) {
+        foreach (preg_split('#[|,:]+#', $name) as $p) {
             if (isset($this->_options[$p])) {
                 return true;
             }
