@@ -9,7 +9,7 @@ return [
     'int' => 'The :field must be an integer.',
     'float' => 'The :field must be a float.',
     'date' => 'The :field is not a valid date.',
-    'range' => 'The :field must be between :parameters[0] and :parameters[1].',
+    'range' => 'The :field must be range in :parameter.',
     'min' => 'The :field must be not less than :parameters[0].',
     'max' => 'The :field must be not great than :parameters[0].',
     'minLength' => 'The :field must be at least :parameters[0] characters.',
