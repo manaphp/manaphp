@@ -237,11 +237,11 @@ class DbController extends Controller
      * @param string $service service name
      * @param string $table table name
      * @param string $namespace
-     * @param int optimized output as more methods as possible (default: 0)
+     * @param bool   $optimized output as more methods as possible
      *
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
-    public function modelCommand($service = '', $table, $namespace = 'App\Models', $optimized = 0)
+    public function modelCommand($service = '', $table, $namespace = 'App\Models', $optimized = false)
     {
         /**
          * @var \ManaPHP\DbInterface $db
@@ -281,9 +281,9 @@ class DbController extends Controller
      * @param array  $services services name list
      * @param string $tables tables name list
      * @param string $namespace namespace of models
-     * @param int    $optimized output as more methods as possible (default: 0)
+     * @param bool   $optimized output as more methods as possible
      */
-    public function modelsCommand($services = [], $tables = '', $namespace = 'App\Models', $optimized = 0)
+    public function modelsCommand($services = [], $tables = '', $namespace = 'App\Models', $optimized = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             foreach ($this->_getTables($service, $tables) as $table) {
@@ -342,9 +342,9 @@ class DbController extends Controller
      *
      * @param array  $services services name list
      * @param string $tables tables name list
-     * @param int    $bom contains BOM or not (default: 0)
+     * @param bool   $bom contains BOM or not
      */
-    public function csvCommand($services = [], $tables = '', $bom = 0)
+    public function csvCommand($services = [], $tables = '', $bom = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /**
