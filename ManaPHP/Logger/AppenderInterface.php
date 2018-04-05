@@ -9,9 +9,9 @@ namespace ManaPHP\Logger;
 interface AppenderInterface
 {
     /**
-     * @param array $logEvent
+     * @param \ManaPHP\Logger\Log $log
      *
      * @return void
      */
-    public function append($logEvent);
+    public function append($log);
 }

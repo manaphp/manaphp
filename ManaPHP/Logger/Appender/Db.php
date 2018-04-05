@@ -41,12 +41,12 @@ class Db extends Component implements AppenderInterface
     }
 
     /**
-     * @param array $logEvent
+     * @param \ManaPHP\Logger\Log $log
      *
      * @return void
      * @throws \ManaPHP\Model\Exception
      */
-    public function append($logEvent)
+    public function append($log)
     {
         if ($this->_nested) {
             return;
@@ -55,21 +55,19 @@ class Db extends Component implements AppenderInterface
         $this->_nested = true;
 
         /**
-         * @var \ManaPHP\Logger\Appender\Db\Model $log
+         * @var \ManaPHP\Logger\Appender\Db\Model $logModel
          */
-        $log = new $this->_model;
+        $logModel = new $this->_model;
 
-        $log->user_id = $this->userIdentity->getId();
-        $log->user_name = $this->userIdentity->getName();
-        $log->level = $logEvent['level'];
-        $log->category = $logEvent['category'];
-        $log->location = $logEvent['location'];
-        $log->caller = $logEvent['caller'];
-        $log->message = $logEvent['message'];
-        $log->client_ip = $logEvent['client_ip'];
-        $log->created_time = $logEvent['timestamp'];
-
-        $log->create();
+        $logModel->user_id = $this->userIdentity->getId();
+        $logModel->user_name = $this->userIdentity->getName();
+        $logModel->level = $log->level;
+        $logModel->category = $log->category;
+        $logModel->location = $log->location;
+        $logModel->caller = $log->caller;
+        $logModel->message = $log->message;
+        $logModel->created_time = $log->timestamp;
+        $logModel->create();
 
         $this->_nested = false;
     }

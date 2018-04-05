@@ -50,11 +50,11 @@ class File extends Component implements AppenderInterface
     }
 
     /**
-     * @param array $logEvent
+     * @param \ManaPHP\Logger\Log $log
      *
      * @return void
      */
-    public function append($logEvent)
+    public function append($log)
     {
         if ($this->_firstLog) {
             $this->_file = $this->alias->resolve($this->_file);
@@ -70,14 +70,13 @@ class File extends Component implements AppenderInterface
             $this->_firstLog = false;
         }
 
-        $logEvent['date'] = date('Y-m-d H:i:s', $logEvent['timestamp']);
-
-        $logEvent['message'] .= PHP_EOL;
-
         $replaced = [];
-        foreach ($logEvent as $k => $v) {
-            $replaced[":$k"] = $v;
-        }
+
+        $replaced[':date'] = date('Y-m-d H:i:s', $log->timestamp);
+        $replaced[':level'] = $log->level;
+        $replaced[':category'] = $log->category;
+        $replaced[':location'] = $log->location;
+        $replaced[':message'] = $log->message . PHP_EOL;
 
         if (file_put_contents($this->_file, strtr($this->_format, $replaced), FILE_APPEND | LOCK_EX) === false) {
             /** @noinspection ForgottenDebugOutputInspection */

@@ -1,6 +1,8 @@
 <?php
 
 namespace ManaPHP;
+
+use ManaPHP\Logger\Log;
 use ManaPHP\Logger\LogCategorizable;
 
 /**
@@ -202,29 +204,28 @@ class Logger extends Component implements LoggerInterface
 
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
-        $logEvent = [];
+        $log = new Log();
+        $log->level = $level;
+        $log->category = $category ?: $this->_inferCategory($traces);
+        $log->location = $this->_getLocation($traces);
+        $log->message = $message;
+        $log->caller = $this->_getCaller($traces);
+        $log->timestamp = time();
 
-        $logEvent['level'] = $level;
-        $logEvent['category'] = $category ?: $this->_inferCategory($traces);
-        $logEvent['location'] = $this->_getLocation($traces);
-        $logEvent['message'] = $message;
-        $logEvent['caller'] = $this->_getCaller($traces);
-        $logEvent['timestamp'] = time();
-
-        $this->fireEvent('logger:log', $logEvent);
+        $this->fireEvent('logger:log', $log);
 
         /**
          * @var \ManaPHP\Logger\AppenderInterface $appender
          */
         foreach ($this->_appenders as $name => $appender_conf) {
-            if (!$this->_IsFiltered($appender_conf['filter'], $logEvent)) {
+            if (!$this->_IsFiltered($appender_conf['filter'], $log)) {
                 if (!isset($appender_conf['instance'])) {
                     $appender = $this->_appenders[$name]['instance'] = $this->_di->getInstance($appender_conf['appender']);
                 } else {
                     $appender = $appender_conf['instance'];
                 }
 
-                $appender->append($logEvent);
+                $appender->append($log);
             }
         }
 

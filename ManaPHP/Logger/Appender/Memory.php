@@ -12,22 +12,22 @@ use ManaPHP\Logger\AppenderInterface;
 class Memory extends Component implements AppenderInterface
 {
     /**
-     * @var array
+     * @var \ManaPHP\Logger\Log[]
      */
     protected $_logs = [];
 
     /**
-     * @param array $logEvent
+     * @param \ManaPHP\Logger\Log $log
      *
      * @return void
      */
-    public function append($logEvent)
+    public function append($log)
     {
-        $this->_logs[] = $logEvent;
+        $this->_logs[] = $log;
     }
 
     /**
-     * @return array
+     * @return \ManaPHP\Logger\Log[]
      */
     public function getLogs()
     {

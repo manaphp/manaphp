@@ -30,20 +30,19 @@ class Stdout extends Component implements AppenderInterface
     }
 
     /**
-     * @param array $logEvent
+     * @param \ManaPHP\Logger\Log $log
      *
      * @return void
      */
-    public function append($logEvent)
+    public function append($log)
     {
-        $logEvent['date'] = date('Y-m-d H:i:s', $logEvent['timestamp']);
-
-        $logEvent['message'] .= PHP_EOL;
-
         $replaced = [];
-        foreach ($logEvent as $k => $v) {
-            $replaced[":$k"] = $v;
-        }
+
+        $replaced[':date'] = date('Y-m-d H:i:s', $log->timestamp);
+        $replaced[':level'] = $log->level;
+        $replaced[':category'] = $log->category;
+        $replaced[':location'] = $log->location;
+        $replaced[':message'] = $log->message . PHP_EOL;
 
         echo strtr($this->_format, $replaced), PHP_EOL;
     }
