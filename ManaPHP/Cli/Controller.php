@@ -75,7 +75,7 @@ abstract class Controller extends Component implements ControllerInterface
                     $defaultValues[$parameter->getName()] = $parameter->getDefaultValue();
                 }
             }
-	    
+
             $params = [];
             foreach ($lines as $line) {
                 if (strpos($line, '@param') === false) {
@@ -97,9 +97,9 @@ abstract class Controller extends Component implements ControllerInterface
                     } elseif ($type === 'float' || $type === 'double') {
                         $defaultValues[$name] = (double)$defaultValues[$name];
                     } elseif ($type === 'string') {
-                        $defaultValues[$name] = json_encode($defaultValues[$name]);
+                        $defaultValues[$name] = json_encode($defaultValues[$name], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                     } elseif ($type === 'array') {
-                        $defaultValues[$name] = json_encode($defaultValues[$name]);
+                        $defaultValues[$name] = json_encode($defaultValues[$name], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
                     }
                 }
 
