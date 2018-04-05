@@ -10,9 +10,7 @@ use ManaPHP\Di\FactoryDefault;
  *
  * @package application
  *
- * @property \ManaPHP\Loader              $loader
  * @property \ManaPHP\DebuggerInterface   $debugger
- * @property \ManaPHP\FilesystemInterface $filesystem
  */
 abstract class Application extends Component implements ApplicationInterface
 {

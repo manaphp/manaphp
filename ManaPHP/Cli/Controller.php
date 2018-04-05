@@ -9,29 +9,14 @@ use ManaPHP\Component;
  *
  * @package controller
  *
- * @property \ManaPHP\Curl\EasyInterface              $httpClient
- * @property \ManaPHP\CounterInterface                $counter
- * @property \ManaPHP\CacheInterface                  $cache
- * @property \ManaPHP\DbInterface                     $db
- * @property \ManaPHP\Security\CryptInterface         $crypt
- * @property \ManaPHP\Di|\ManaPHP\DiInterface         $di
- * @property \ManaPHP\LoggerInterface                 $logger
- * @property \ManaPHP\Configuration\Configure         $configure
- * @property \ManaPHP\Configuration\SettingsInterface $settings
- * @property \ManaPHP\Cache\EngineInterface           $viewsCache
- * @property \ManaPHP\FilesystemInterface             $filesystem
- * @property \ManaPHP\Security\RandomInterface        $random
- * @property \ManaPHP\Message\QueueInterface          $messageQueue
- * @property \ManaPHP\Cli\ConsoleInterface            $console
- * @property \ManaPHP\Cli\ArgumentsInterface          $arguments
- * @property \ManaPHP\Text\CrosswordInterface         $crossword
- * @property \ManaPHP\Redis                           $redis
- * @property \ManaPHP\Cli\EnvironmentInterface        $environment
- * @property \ManaPHP\Net\ConnectivityInterface       $netConnectivity
- * @property \ManaPHP\Mongodb                         $mongodb
- * @property \Elasticsearch\Client                    $elasticsearch
- * @property \ManaPHP\ZookeeperInterface              $zookeeper
- * @property \ManaPHP\AmqpInterface                   $rabbitmq
+ * @property \ManaPHP\CounterInterface          $counter
+ * @property \ManaPHP\Di|\ManaPHP\DiInterface   $di
+ * @property \ManaPHP\Cache\EngineInterface     $viewsCache
+ * @property \ManaPHP\Message\QueueInterface    $messageQueue
+ * @property \ManaPHP\Cli\ConsoleInterface      $console
+ * @property \ManaPHP\Cli\ArgumentsInterface    $arguments
+ * @property \ManaPHP\Text\CrosswordInterface   $crossword
+ * @property \ManaPHP\Net\ConnectivityInterface $netConnectivity
  */
 abstract class Controller extends Component implements ControllerInterface
 {
@@ -99,7 +84,7 @@ abstract class Controller extends Component implements ControllerInterface
                     } elseif ($type === 'string') {
                         $defaultValues[$name] = json_encode($defaultValues[$name], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                     } elseif ($type === 'array') {
-                        $defaultValues[$name] = json_encode($defaultValues[$name], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+                        $defaultValues[$name] = json_encode($defaultValues[$name], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                     }
                 }
 

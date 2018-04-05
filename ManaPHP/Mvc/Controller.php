@@ -15,48 +15,32 @@ use ManaPHP\Component;
  * @method void onConstruct();
  *
  *
- * @property \ManaPHP\Mvc\ViewInterface                    $view
- * @property \ManaPHP\Mvc\View\FlashInterface              $flash
- * @property \ManaPHP\Mvc\View\FlashInterface              $flashSession
- * @property \ManaPHP\Security\CaptchaInterface            $captcha
- * @property \ManaPHP\Curl\EasyInterface                   $httpClient
- * @property \ManaPHP\Authentication\PasswordInterface     $password
- * @property \ManaPHP\Http\CookiesInterface                $cookies
- * @property \ManaPHP\CounterInterface                     $counter
- * @property \ManaPHP\CacheInterface                       $cache
- * @property \ManaPHP\DbInterface                          $db
- * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
- * @property \ManaPHP\Http\RequestInterface                $request
- * @property \ManaPHP\Http\ResponseInterface               $response
- * @property \ManaPHP\Security\CryptInterface              $crypt
- * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
- * @property \ManaPHP\LoggerInterface                      $logger
- * @property \ManaPHP\Configuration\Configure              $configure
- * @property \ManaPHP\Configuration\SettingsInterface      $settings
- * @property \ManaPHP\Http\SessionInterface                $session
- * @property \ManaPHP\Security\CsrfTokenInterface          $csrfToken
- * @property \ManaPHP\Paginator                            $paginator
- * @property \ManaPHP\Cache\EngineInterface                $viewsCache
- * @property \ManaPHP\FilesystemInterface                  $filesystem
- * @property \ManaPHP\Security\RandomInterface             $random
- * @property \ManaPHP\Message\QueueInterface               $messageQueue
- * @property \ManaPHP\Security\RateLimiterInterface        $rateLimiter
- * @property \ManaPHP\Meter\LinearInterface                $linearMeter
- * @property \ManaPHP\Meter\RoundInterface                 $roundMeter
- * @property \ManaPHP\Security\SecintInterface             $secint
- * @property \ManaPHP\Http\FilterInterface                 $filter
- * @property \ManaPHP\Db\Model\MetadataInterface           $modelsMetadata
- * @property \ManaPHP\Mvc\UrlInterface                     $url
- * @property \ManaPHP\StopwatchInterface                   $stopwatch
- * @property \ManaPHP\Security\HtmlPurifierInterface       $htmlPurifier
- * @property \ManaPHP\Cli\EnvironmentInterface             $environment
- * @property \ManaPHP\Net\ConnectivityInterface            $netConnectivity
- * @property \ManaPHP\Redis                                $redis
- * @property \ManaPHP\Mongodb                              $mongodb
- * @property \Elasticsearch\Client                         $elasticsearch
- * @property \ManaPHP\ZookeeperInterface                   $zookeeper
- * @property \ManaPHP\Mvc\RouterInterface                  $router
- * @property \ManaPHP\AmqpInterface                        $rabbitmq
+ * @property \ManaPHP\Mvc\ViewInterface                $view
+ * @property \ManaPHP\Mvc\View\FlashInterface          $flash
+ * @property \ManaPHP\Mvc\View\FlashInterface          $flashSession
+ * @property \ManaPHP\Security\CaptchaInterface        $captcha
+ * @property \ManaPHP\Authentication\PasswordInterface $password
+ * @property \ManaPHP\Http\CookiesInterface            $cookies
+ * @property \ManaPHP\CounterInterface                 $counter
+ * @property \ManaPHP\Http\RequestInterface            $request
+ * @property \ManaPHP\Http\ResponseInterface           $response
+ * @property \ManaPHP\Mvc\DispatcherInterface          $dispatcher
+ * @property \ManaPHP\Http\SessionInterface            $session
+ * @property \ManaPHP\Security\CsrfTokenInterface      $csrfToken
+ * @property \ManaPHP\Paginator                        $paginator
+ * @property \ManaPHP\Cache\EngineInterface            $viewsCache
+ * @property \ManaPHP\Message\QueueInterface           $messageQueue
+ * @property \ManaPHP\Security\RateLimiterInterface    $rateLimiter
+ * @property \ManaPHP\Meter\LinearInterface            $linearMeter
+ * @property \ManaPHP\Meter\RoundInterface             $roundMeter
+ * @property \ManaPHP\Security\SecintInterface         $secint
+ * @property \ManaPHP\Http\FilterInterface             $filter
+ * @property \ManaPHP\Db\Model\MetadataInterface       $modelsMetadata
+ * @property \ManaPHP\Mvc\UrlInterface                 $url
+ * @property \ManaPHP\StopwatchInterface               $stopwatch
+ * @property \ManaPHP\Security\HtmlPurifierInterface   $htmlPurifier
+ * @property \ManaPHP\Net\ConnectivityInterface        $netConnectivity
+ * @property \ManaPHP\Mvc\RouterInterface              $router
  */
 abstract class Controller extends Component implements ControllerInterface
 {

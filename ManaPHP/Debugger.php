@@ -12,9 +12,7 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\Mvc\RouterInterface      $router
  * @property \ManaPHP\Mvc\UrlInterface         $url
  * @property \ManaPHP\Http\RequestInterface    $request
- * @property \ManaPHP\LoggerInterface          $logger
  * @property \ManaPHP\RendererInterface        $renderer
- * @property \ManaPHP\Security\RandomInterface $random
  * @property \ManaPHP\Http\ResponseInterface   $response
  */
 class Debugger extends Component implements DebuggerInterface

@@ -23,6 +23,17 @@ namespace ManaPHP;
  * @property \ManaPHP\Http\SessionInterface                $scopedSession
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\Loader                               $loader
+ * @property \ManaPHP\CacheInterface                       $cache
+ * @property \ManaPHP\CacheInterface                       $redisCache
+ * @property \ManaPHP\Security\RandomInterface             $random
+ * @property \ManaPHP\Curl\EasyInterface                   $httpClient
+ * @property \ManaPHP\DbInterface                          $db
+ * @property \ManaPHP\Redis                                $redis
+ * @property \ManaPHP\Mongodb                              $mongodb
+ * @property \ManaPHP\AmqpInterface                        $rabbitmq
+ * @property \Elasticsearch\Client                         $elasticsearch
+ * @property \ManaPHP\ZookeeperInterface                   $zookeeper
+ * @property \ManaPHP\Cli\EnvironmentInterface             $environment
  */
 class Component implements ComponentInterface
 {

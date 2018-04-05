@@ -10,7 +10,6 @@ use ManaPHP\Task\Metadata;
  * @package task
  *
  * @property \ManaPHP\Task\MetadataInterface $tasksMetadata
- * @property \ManaPHP\LoggerInterface        $logger
  * @property \ManaPHP\Http\ResponseInterface $response
  */
 abstract class Task extends Component implements TaskInterface
