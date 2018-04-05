@@ -270,32 +270,6 @@ class MongodbController extends Controller
             $str .= '    }' . PHP_EOL;
         }
 
-        $crudTimestampFields = [];
-        $intersect = array_intersect(['created_time', 'created_at'], $fields);
-        if ($intersect) {
-            $crudTimestampFields['create'] = $intersect[0];
-        }
-
-        $intersect = array_intersect(['updated_time', 'updated_at'], $fields);
-        if ($intersect) {
-            $crudTimestampFields['update'] = $intersect[0];
-        }
-
-        if ($optimized && $crudTimestampFields) {
-            $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return array' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
-            $str .= '    protected function _getCrudTimestampFields()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= '        return [' . PHP_EOL;
-            foreach ($crudTimestampFields as $name => $field) {
-                $str .= "            '$name' => '$field'," . PHP_EOL;
-            }
-            $str .= '        ];' . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
         $str .= '}';
 
         return $str;
