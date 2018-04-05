@@ -117,7 +117,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      */
     public function getSafeFields()
     {
-        return null;
+        return array_keys($this->rules()) ?: null;
     }
 
     /**
