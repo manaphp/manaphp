@@ -55,15 +55,15 @@ class Logger extends Component implements LoggerInterface
         } elseif (is_object($options)) {
             $this->_appenders[] = ['appender' => ['instance' => $options]];
         } else {
-            if (isset($options['level'])) {
+            if (isset($options['level']) && $options['level']) {
                 $this->setLevel($options['level']);
-                unset($options['level']);
             }
 
-            if (isset($options['category'])) {
+            if (isset($options['category']) && $options['category']) {
                 $this->_category = $options['category'];
-                unset($options['category']);
             }
+
+            unset($options['level'], $options['category']);
 
             if (isset($options['appenders'])) {
                 $options = $options['appenders'];
