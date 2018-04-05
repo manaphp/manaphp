@@ -1268,30 +1268,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $name
      *
      * @return array
-     */
-    public function getConstants($name)
-    {
-        $name = strtoupper($name) . '_';
-        $constants = [];
-        $rc = new \ReflectionClass($this);
-
-        foreach ($rc->getConstants() as $cName => $cValue) {
-            if (strpos($cName, $name) === 0) {
-                $constants[$cValue] = strtolower(substr($cName, strlen($name)));
-            }
-        }
-
-        if (!$constants) {
-            throw new ModelException(['starts with `:constants` constants is not exists in `:model` model ', 'constants' => $name, 'model' => get_class($this)]);
-        }
-
-        return $constants;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return array
      * @throws \ManaPHP\Model\Exception
      * @throws \ReflectionException
      */

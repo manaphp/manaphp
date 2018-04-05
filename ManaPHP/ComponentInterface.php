@@ -31,6 +31,13 @@ interface ComponentInterface
     public function getDi();
 
     /**
+     * @param string $name
+     *
+     * @return array
+     */
+    public function getConstants($name);
+
+    /**
      * Attach a listener to the events manager
      *
      * @param string   $event
