@@ -203,9 +203,9 @@ class DbController extends Controller
      * list databases and tables
      *
      * @param array  $services services name list
-     * @param string $tables tables name list
+     * @param string $table_pattern match table against a pattern
      */
-    public function listCommand($services = [], $tables = '')
+    public function listCommand($services = [], $table_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /**
@@ -214,7 +214,7 @@ class DbController extends Controller
             $db = $this->_di->getShared($service);
 
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
-            foreach ($this->_getTables($service, $tables) as $row => $table) {
+            foreach ($this->_getTables($service, $table_pattern) as $row => $table) {
                 $columns = (array)$db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
                 $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
                 foreach ($columns as $i => $column) {
@@ -279,14 +279,14 @@ class DbController extends Controller
      * generate models file in online
      *
      * @param array  $services services name list
-     * @param string $tables tables name list
+     * @param string $table_pattern match table against a pattern
      * @param string $namespace namespace of models
      * @param bool   $optimized output as more methods as possible
      */
-    public function modelsCommand($services = [], $tables = '', $namespace = 'App\Models', $optimized = false)
+    public function modelsCommand($services = [], $table_pattern = '', $namespace = 'App\Models', $optimized = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
-            foreach ($this->_getTables($service, $tables) as $table) {
+            foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $plainClass = Text::camelize($table);
@@ -303,16 +303,16 @@ class DbController extends Controller
      * export db data to csv files
      *
      * @param array  $services services name list
-     * @param string $tables tables name list
+     * @param string $table_pattern match table against a pattern
      */
-    public function jsonCommand($services = [], $tables = '')
+    public function jsonCommand($services = [], $table_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /**
              * @var \ManaPHP\DbInterface $db
              */
             $db = $this->_di->getShared($service);
-            foreach ($this->_getTables($service, $tables) as $table) {
+            foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $fileName = "@tmp/db_json/$service/$table.json";
 
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
@@ -341,17 +341,17 @@ class DbController extends Controller
      * export db data to csv files
      *
      * @param array  $services services name list
-     * @param string $tables tables name list
+     * @param string $table_pattern match table against a pattern
      * @param bool   $bom contains BOM or not
      */
-    public function csvCommand($services = [], $tables = '', $bom = false)
+    public function csvCommand($services = [], $table_pattern = '', $bom = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /**
              * @var \ManaPHP\Db $db
              */
             $db = $this->_di->getShared($service);
-            foreach ($this->_getTables($service, $tables) as $table) {
+            foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $fileName = "@tmp/db_csv/$service/$table.csv";
