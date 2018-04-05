@@ -695,13 +695,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $data = [];
         if ($opMode === self::OP_CREATE) {
             $data['created_time'] = $data['created_at'] = in_array('created_time', $intTypeFields, true) || in_array('created_at', $intTypeFields, true) ? $ts : $time;
-            $data['creator_id'] = $data['updator_id'] = $this->userIdentity->getId();
-            $data['creator_name'] = $data['updator_name'] = $this->userIdentity->getName();
+            $data['creator_id'] = $data['updator_id'] = $this->_di->userIdentity->getId();
+            $data['creator_name'] = $data['updator_name'] = $this->_di->userIdentity->getName();
             $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intTypeFields, true) || in_array('updated_at', $intTypeFields, true) ? $ts : $time;
         } elseif ($opMode === self::OP_UPDATE) {
             $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intTypeFields, true) || in_array('updated_at', $intTypeFields, true) ? $ts : $time;
-            $data['updator_id'] = $this->userIdentity->getId();
-            $data['updator_name'] = $this->userIdentity->getName();
+            $data['updator_id'] = $this->_di->userIdentity->getId();
+            $data['updator_name'] = $this->_di->userIdentity->getName();
         }
 
         return $data;
