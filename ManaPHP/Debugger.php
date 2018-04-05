@@ -316,7 +316,7 @@ class Debugger extends Component implements DebuggerInterface
 
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_di->__debugInfo()['_instances'] as $k => $v) {
-            if ($k === 'configure') {
+            if ($k === 'configure' || $k === 'debugger') {
                 continue;
             }
 
