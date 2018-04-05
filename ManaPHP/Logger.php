@@ -23,7 +23,7 @@ class Logger extends Component implements LoggerInterface
     /**
      * @var string
      */
-    protected $_level = self::LEVEL_DEBUG;
+    protected $_level;
 
     /**
      * @var string
@@ -81,6 +81,20 @@ class Logger extends Component implements LoggerInterface
                 } else {
                     $this->_appenders[$name] = ['appender' => $value];
                 }
+            }
+        }
+
+        if ($this->_level === null) {
+            $error_level = error_reporting();
+
+            if ($error_level & E_ERROR) {
+                $this->_level = self::LEVEL_ERROR;
+            } elseif ($error_level & E_WARNING) {
+                $this->_level = self::LEVEL_WARN;
+            } elseif ($error_level & E_NOTICE) {
+                $this->_level = self::LEVEL_INFO;
+            } else {
+                $this->_level = self::LEVEL_DEBUG;
             }
         }
     }
