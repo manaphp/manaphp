@@ -26,6 +26,11 @@ class Logger extends Component implements LoggerInterface
     protected $_level = self::LEVEL_DEBUG;
 
     /**
+     * @var string
+     */
+    protected $_category;
+
+    /**
      * @var array
      */
     protected $_appenders = [];
@@ -54,6 +59,12 @@ class Logger extends Component implements LoggerInterface
                 $this->setLevel($options['level']);
                 unset($options['level']);
             }
+
+            if (isset($options['category'])) {
+                $this->_category = $options['category'];
+                unset($options['category']);
+            }
+
             if (isset($options['appenders'])) {
                 $options = $options['appenders'];
             }
@@ -91,6 +102,17 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * @param string $category
+     *
+     * @return static
+     */
+    public function setCategory($category)
+    {
+        $this->_category = $category;
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getLevels()
@@ -123,7 +145,7 @@ class Logger extends Component implements LoggerInterface
      *
      * @return string
      */
-    public function _inferCategory($traces)
+    protected function _inferCategory($traces)
     {
         foreach ($traces as $trace) {
             if (isset($trace['object'])) {
@@ -181,11 +203,11 @@ class Logger extends Component implements LoggerInterface
             $message = strtr($message[0], $replaces);
         }
 
-        $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
+        $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
 
         $log = new Log();
         $log->level = $this->_levels[$level];
-        $log->category = $category ?: $this->_inferCategory($traces);
+        $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
         $log->location = $this->_getLocation($traces);
         $log->message = $message;
         $log->timestamp = time();

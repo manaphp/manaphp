@@ -10,6 +10,20 @@ namespace ManaPHP;
 interface LoggerInterface
 {
     /**
+     * @param int|string $level
+     *
+     * @return static
+     */
+    public function setLevel($level);
+
+    /**
+     * @param string $category
+     *
+     * @return static
+     */
+    public function setCategory($category);
+
+    /**
      * @return array
      */
     public function getLevels();
