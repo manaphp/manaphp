@@ -50,19 +50,20 @@ abstract class Controller extends Component implements ControllerInterface
             }
 
             $lines = [];
-            foreach (explode("\n", $rm->getDocComment()) as $line) {
+            foreach (preg_split('#[\r\n]+#', $rm->getDocComment()) as $line) {
                 $lines[] = trim($line, "\t /*\r\n");
             }
 
             $description = '';
             foreach ($lines as $line) {
-                if (strpos($line, '@')) {
-                    break;
+                if (!$line) {
+                    continue;
                 }
-                if ($line) {
+
+                if ($line[0] !== '@') {
                     $description = $line;
-                    break;
                 }
+                break;
             }
 
             $command = $this->console->colorize(str_pad(basename($method, 'Command'), 10), Console::FC_YELLOW) . ' ' . $description;
@@ -75,7 +76,7 @@ abstract class Controller extends Component implements ControllerInterface
                 }
 
                 $parts = preg_split('#\s+#', $line, 4);
-                if (count($parts) <3 || $parts[0] !== '@param') {
+                if (count($parts) < 3 || $parts[0] !== '@param') {
                     continue;
                 }
                 $params[substr($parts[2], 1)] = isset($parts[3]) ? trim($parts[3]) : '';
