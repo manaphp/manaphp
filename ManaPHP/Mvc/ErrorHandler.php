@@ -58,7 +58,7 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
             if ($this->renderer->exists('@app/Views/Errors/debug')) {
                 return $this->renderer->render('@app/Views/Errors/debug', ['exception' => $exception]);
             } else {
-                return $this->renderer->render('@manaphp/Mvc/ErrorHandler/Errors/debug', ['exception' => $exception]);
+                return $this->renderer->render('@manaphp/Mvc/ErrorHandler/Views/debug', ['exception' => $exception]);
             }
         }
 
@@ -66,8 +66,8 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
 
         foreach (["@app/Views/Errors/$statusCode",
                      '@app/Views/Errors/error',
-                     "@manaphp/Mvc/ErrorHandler/Errors/$statusCode",
-                     "@manaphp/Mvc/ErrorHandler/Errors/error"] as $template) {
+                     "@manaphp/Mvc/ErrorHandler/Views/$statusCode",
+                     '@manaphp/Mvc/ErrorHandler/Views/error'] as $template) {
             if ($this->renderer->exists($template)) {
                 return $this->renderer->render($template, ['statusCode' => $statusCode, 'exception' => $exception]);
             }
