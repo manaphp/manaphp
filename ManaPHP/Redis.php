@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Redis\Exception as RedisException;
 
 class Redis extends \Redis
@@ -44,15 +45,13 @@ class Redis extends \Redis
      * Redis constructor.
      *
      * @param string $uri
-     *
-     * @throws \ManaPHP\Redis\Exception
      */
     public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'redis') {
-            throw new RedisException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
+            throw new InvalidValueException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
@@ -62,7 +61,7 @@ class Redis extends \Redis
             $path = trim($parts['path'], '/');
             if ($path !== '') {
                 if (!is_numeric($path)) {
-                    throw new RedisException(['`:url` url is invalid, `:db` db is not integer', 'url' => $uri, 'db' => $path]);
+                    throw new InvalidValueException(['`:url` url is invalid, `:db` db is not integer', 'url' => $uri, 'db' => $path]);
                 }
             }
             $this->_db = (int)$path;
