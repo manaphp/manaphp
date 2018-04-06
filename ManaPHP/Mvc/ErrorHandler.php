@@ -54,6 +54,14 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
      */
     public function render($exception)
     {
+        if ($this->configure->debug) {
+            if ($this->renderer->exists('@app/Views/Errors/debug')) {
+                return $this->renderer->render('@app/Views/Errors/debug', ['exception' => $exception]);
+            } else {
+                return $this->renderer->render('@manaphp/Mvc/ErrorHandler/Errors/debug', ['exception' => $exception]);
+            }
+        }
+
         $statusCode = $exception instanceof \ManaPHP\Exception ? $exception->getStatusCode() : 500;
 
         foreach (["@app/Views/Errors/$statusCode",

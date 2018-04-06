@@ -1,0 +1,28 @@
+<?php
+/**
+ * @var \Exception $exception
+ */
+?>
+<br>
+<table class="error" dir="ldr" border="1" cellspacing="0" cellpadding="1">
+    <tr>
+        <th align="left" bgcolor="#f57900" colspan="3"><span
+                    style="background-color: #cc0000; color: #fce94f; font-size: x-large;">( ! ) </span>Fatal error: Uncaught exception '{{get_class($exception)}}' with message '{{$exception->getMessage()}}' in {{$exception->getFile()}}
+                on line <i>{{$exception->getLine()}}</i></th>
+    </tr>
+    <tr>
+        <th align='left' bgcolor='#e9b96e' colspan='3'>Call Stack</th>
+    </tr>
+    <tr>
+        <th align='center' bgcolor='#eeeeec'>#</th>
+        <th align='left' bgcolor='#eeeeec'>Function</th>
+        <th align='left' bgcolor='#eeeeec'>Location</th>
+    </tr>
+    @foreach(array_reverse($exception->getTrace()) as $index=>$trace)
+        <tr>
+            <td bgcolor="#eeeeec" align="center"> {{$index}} </td>
+            <td bgcolor="#eeeeec">{{$trace['class']}}{{$trace['type']}}{{$trace['function']}}( )</td>
+            <td bgcolor="#eeeeec" title="{{$trace['file']}}">{{basename($trace['file'])}}:{{$trace['line']}}</td>
+        </tr>
+    @endforeach
+</table>

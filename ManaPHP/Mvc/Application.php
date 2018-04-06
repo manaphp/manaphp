@@ -103,14 +103,15 @@ class Application extends \ManaPHP\Application
     {
         $this->registerServices();
 
-        if ($this->configure->debug) {
+        if (PHP_RELEASE_VERSION < 7) {
+            class_alias('Exception', 'Throwable');
+        }
+
+        try {
             $this->handle();
-        } else {
-            try {
-                $this->handle();
-            } catch (\Exception $e) {
-                $this->errorHandler->handle($e);
-            }
+        } /** @noinspection PhpUndefinedClassInspection */
+        catch (\Throwable $e) {
+            $this->errorHandler->handle($e);
         }
 
         $this->response->send();

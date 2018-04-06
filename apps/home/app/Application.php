@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Home;
 
 class Application extends \ManaPHP\Mvc\Application
@@ -14,14 +15,11 @@ class Application extends \ManaPHP\Mvc\Application
         $this->registerServices();
 
         $this->debugger->start();
-        if ($this->configure->debug) {
+
+        try {
             $this->handle();
-        } else {
-            try {
-                $this->handle();
-            } catch (\Exception $e) {
-                $this->errorHandler->handle($e);
-            }
+        } catch (\Exception $e) {
+            $this->errorHandler->handle($e);
         }
 
         $this->response->send();
