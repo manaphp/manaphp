@@ -8,7 +8,7 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
-use ManaPHP\Db\Adapter\Mysql\Exception as MysqlException;
+use ManaPHP\Exception\InvalidValueException;
 
 /**
  * Class ManaPHP\Db\Adapter\Mysql
@@ -26,15 +26,13 @@ class Mysql extends Db
      * \ManaPHP\Db\Adapter constructor
      *
      * @param string $uri
-     *
-     * @throws \ManaPHP\Db\Exception
      */
     public function __construct($uri = 'mysql://root@localhost/test?charset=utf8')
     {
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mysql') {
-            throw new MysqlException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
+            throw new InvalidValueException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_username = isset($parts['user']) ? $parts['user'] : 'root';
@@ -86,7 +84,6 @@ class Mysql extends Db
      * @param string $source
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function getMetadata($source)
     {
