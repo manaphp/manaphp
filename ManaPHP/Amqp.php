@@ -4,6 +4,9 @@ namespace ManaPHP;
 use ManaPHP\Amqp\ConnectionException;
 use ManaPHP\Amqp\Exception as AmqpException;
 use ManaPHP\Amqp\Message;
+use ManaPHP\Exception\InvalidKeyException;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\UnexpectedValueException;
 
 class Amqp extends Component implements AmqpInterface
 {
@@ -52,7 +55,7 @@ class Amqp extends Component implements AmqpInterface
 
             if ($parts['scheme'] !== 'amqp') {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new AmqpException(['`:scheme` scheme is unknown: `:uri`', 'scheme' => $parts['scheme'], 'uri' => $uri]);
+                throw new InvalidValueException(['`:scheme` scheme is unknown: `:uri`', 'scheme' => $parts['scheme'], 'uri' => $uri]);
             }
 
             if (isset($parts['host'])) {
@@ -154,7 +157,7 @@ class Amqp extends Component implements AmqpInterface
     {
         if (isset($this->_exchanges[$name])) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['declare `:exchange` exchange failed: it is exists already', 'exchange' => $name]);
+            throw new InvalidKeyException(['declare `:exchange` exchange failed: it is exists already', 'exchange' => $name]);
         }
 
         try {
@@ -201,8 +204,7 @@ class Amqp extends Component implements AmqpInterface
     public function deleteExchange($name, $flags = AMQP_NOPARAM)
     {
         if (!isset($this->_exchanges[$name])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['delete `:exchange` exchange failed: it is NOT exists', 'exchange' => $name]);
+            throw new InvalidKeyException(['delete `:exchange` exchange failed: it is NOT exists', 'exchange' => $name]);
         }
 
         try {
@@ -226,8 +228,7 @@ class Amqp extends Component implements AmqpInterface
     public function declareQueue($name, $flags = AMQP_DURABLE)
     {
         if (isset($this->queues[$name])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['declare `:queue` queue failed: it is exists already', 'queue' => $name]);
+            throw new InvalidKeyException(['declare `:queue` queue failed: it is exists already', 'queue' => $name]);
         }
 
         try {
@@ -271,8 +272,7 @@ class Amqp extends Component implements AmqpInterface
     public function bindQueue($queue, $exchange, $binding_key = '')
     {
         if (!isset($this->_queues[$queue])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: queue is NOT exists',
+            throw new InvalidKeyException(['bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: queue is NOT exists',
                 'queue' => $queue,
                 'exchange' => $exchange,
                 'binding_key' => $binding_key]);
@@ -310,8 +310,7 @@ class Amqp extends Component implements AmqpInterface
     public function purgeQueue($name)
     {
         if (!isset($this->_queues[$name])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['purge `:queue` queue failed: it is NOT exists', 'queue' => $name]);
+            throw new InvalidKeyException(['purge `:queue` queue failed: it is NOT exists', 'queue' => $name]);
         }
 
         try {
@@ -332,8 +331,7 @@ class Amqp extends Component implements AmqpInterface
     public function deleteQueue($name)
     {
         if (!isset($this->queues)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['delete `:queue` queue failed: it is not exists', 'queue' => $name]);
+            throw new InvalidKeyException(['delete `:queue` queue failed: it is not exists', 'queue' => $name]);
         }
 
         try {
@@ -360,8 +358,7 @@ class Amqp extends Component implements AmqpInterface
     public function publishMessage($message, $exchange, $routing_key = '', $flags = AMQP_NOPARAM, $attributes = [])
     {
         if (!isset($this->_exchanges[$exchange])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['publish message to `:exchange` exchange with `:routing_key` routing_key failed: exchange is NOT exists',
+            throw new InvalidKeyException(['publish message to `:exchange` exchange with `:routing_key` routing_key failed: exchange is NOT exists',
                 'exchange' => $exchange, 'routing_key' => $routing_key]);
         }
 
@@ -401,8 +398,7 @@ class Amqp extends Component implements AmqpInterface
     public function getMessage($queue, $auto_ack = false)
     {
         if (!isset($this->_queues[$queue])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['retrieve message from queue failed: `:queue` queue is NOT exists`', 'queue' => $queue]);
+            throw new InvalidKeyException(['retrieve message from queue failed: `:queue` queue is NOT exists`', 'queue' => $queue]);
         }
 
         try {
@@ -424,8 +420,7 @@ class Amqp extends Component implements AmqpInterface
     public function getJsonMessage($queue, $auto_ack = false)
     {
         if (!isset($this->_queues[$queue])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['retrieve message from queue failed: `:queue queue is NOT exists`', 'queue' => $queue]);
+            throw new InvalidKeyException(['retrieve message from queue failed: `:queue queue is NOT exists`', 'queue' => $queue]);
         }
 
         try {
@@ -461,8 +456,7 @@ class Amqp extends Component implements AmqpInterface
     {
         if (is_array($message)) {
             if (!isset($message[self::MESSAGE_METADATA])) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new AmqpException(['ack message failed: message not contians metadata information']);
+                throw new InvalidKeyException(['ack message failed: message not contains metadata information']);
             }
             $queue = $message[self::MESSAGE_METADATA]['queue'];
             $delivery_tag = $message[self::MESSAGE_METADATA]['delivery_tag'];
@@ -472,8 +466,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         if (!$this->_queues[$queue]) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['ack message failed: `:queue` queue is NOT exists', 'queue' => $queue]);
+            throw new InvalidKeyException(['ack message failed: `:queue` queue is NOT exists', 'queue' => $queue]);
         }
         try {
             $this->_queues[$queue]->ack($delivery_tag, $multiple ? AMQP_MULTIPLE : AMQP_NOPARAM);
@@ -495,8 +488,7 @@ class Amqp extends Component implements AmqpInterface
     {
         if (is_array($message)) {
             if (!isset($message[self::MESSAGE_METADATA])) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new AmqpException(['ack message failed: message not contains metadata information']);
+                throw new InvalidValueException(['ack message failed: message not contains metadata information']);
             }
             $queue = $message[self::MESSAGE_METADATA]['queue'];
             $delivery_tag = $message[self::MESSAGE_METADATA]['delivery_tag'];
@@ -506,8 +498,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         if (!$this->_queues[$queue]) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['nack message failed: `:queue` queue is NOT exists', 'queue' => $queue]);
+            throw new InvalidKeyException(['nack message failed: `:queue` queue is NOT exists', 'queue' => $queue]);
         }
         try {
             $this->_queues[$queue]->nack($delivery_tag, $multiple ? AMQP_MULTIPLE : AMQP_NOPARAM);
@@ -529,8 +520,7 @@ class Amqp extends Component implements AmqpInterface
     public function consumeMessages($queue, $callback, $flags = AMQP_NOPARAM)
     {
         if (!isset($this->_queues[$queue])) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['consume message from queue failed: `:queue queue is NOT exists`', 'queue' => $queue]);
+            throw new InvalidKeyException(['consume message from queue failed: `:queue queue is NOT exists`', 'queue' => $queue]);
         }
 
         try {
