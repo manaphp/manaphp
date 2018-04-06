@@ -732,9 +732,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $this->_preCreate();
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException(['`:model` model cannot be created because it has been cancel.'/**m092e54c70ff7ecc1a*/, 'model' => get_class($this)]);
+            return $this;
         }
 
         $fieldValues = [];
@@ -855,9 +853,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $this->validate(array_keys($fieldValues));
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException(['`:model` model cannot be updated because it has been cancel.'/**m0634e5c85bbe0b638*/, 'model' => get_class($this)]);
+            return $this;
         }
 
         static::criteria(null, $this)->where($primaryKey, $this->$primaryKey)->update($fieldValues);
@@ -993,9 +989,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function delete()
     {
         if ($this->_fireEventCancel('beforeDelete') === false) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException(['`:model` model cannot be deleted because it has been cancel.'/**m0d51bc276770c0f85*/, 'model' => get_class($this)]);
+            return $this;
         }
 
         $primaryKey = $this->getPrimaryKey();
