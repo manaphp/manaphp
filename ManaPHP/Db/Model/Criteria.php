@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Db\Model;
 
-use ManaPHP\Db\Model\Criteria\Exception as CriteriaException;
 use ManaPHP\Di;
+use ManaPHP\Exception\NotSupportedException;
 
 /**
  * Class ManaPHP\Db\Model\Criteria
@@ -439,7 +439,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * @param int $page
      *
      * @return \ManaPHP\Paginator
-     * @throws \ManaPHP\Db\Model\Criteria\Exception
      */
     public function paginate($size = null, $page = null)
     {
@@ -457,7 +456,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
                     } elseif (is_callable($v)) {
                         $data = $v($relation->criteria($item));
                     } else {
-                        throw new CriteriaException(['`:with` with is invalid', 'with' => $k]);
+                        throw new NotSupportedException(['`:with` with is invalid', 'with' => $k]);
                     }
                 }
 
