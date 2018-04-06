@@ -4,6 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Cache\Exception as CacheException;
 use ManaPHP\Component\ScopedCloneableInterface;
+use ManaPHP\Exception\InvalidValueException;
 
 /**
  * Class ManaPHP\Cache
@@ -74,7 +75,6 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
 
         $json = json_decode($data, true);
         if ($json === null) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new CacheException([
                 '`:key` key cache value json_encode failed: `:code` `:message`',
                 'key' => $key,
@@ -96,12 +96,11 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      * @param int    $ttl
      *
      * @return void
-     * @throws \ManaPHP\Cache\Exception
      */
     public function set($key, $value, $ttl)
     {
         if ($value === false) {
-            throw new CacheException(['`:key` key cache value can not `false` boolean value', 'key' => $key]);
+            throw new InvalidValueException(['`:key` key cache value can not `false` boolean value', 'key' => $key]);
         } elseif (is_scalar($value) || $value === null) {
             if (is_string($value) && $value !== '' && $value[0] !== '{' && $value[0] !== '[') {
                 $data = $value;
@@ -115,7 +114,7 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
         }
 
         if ($data === false) {
-            throw new CacheException([
+            throw new RuntimeException([
                 '`:key` key cache value json_encode failed: `:code` `:message`',
                 'key' => $key,
                 'code' => json_last_error(),
