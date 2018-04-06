@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Exception\InvalidCredentialException;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Redis\Exception as RedisException;
 
 class Redis extends \Redis
 {
@@ -83,9 +83,6 @@ class Redis extends \Redis
         $this->_connect();
     }
 
-    /**
-     * @throws \ManaPHP\Redis\Exception
-     */
     protected function _connect()
     {
         if ($this->_persistent) {
@@ -95,11 +92,11 @@ class Redis extends \Redis
         }
 
         if ($this->_auth !== '' && !$this->auth($this->_auth)) {
-            throw new RedisException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
+            throw new InvalidCredentialException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
         }
 
         if ($this->_db !== 0 && !$this->select($this->_db)) {
-            throw new RedisException(['select `:db` db failed', 'db' => $this->_db]);
+            throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
         }
     }
 
