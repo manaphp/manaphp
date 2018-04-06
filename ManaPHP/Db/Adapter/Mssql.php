@@ -2,7 +2,9 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
-use ManaPHP\Db\Adapter\Mssql\Exception as MssqlException;
+use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Exception\NotImplementedException;
+use ManaPHP\Exception\PreconditionException;
 
 class Mssql extends Db
 {
@@ -10,16 +12,13 @@ class Mssql extends Db
      * SqlSrv constructor.
      *
      * @param string $uri
-     *
-     * @throws \ManaPHP\Db\Exception
-     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
     public function __construct($uri)
     {
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mssql') {
-            throw new MssqlException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
+            throw new InvalidArgumentException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_username = isset($parts['user']) ? $parts['user'] : null;
@@ -129,22 +128,20 @@ class Mssql extends Db
      * @param string $source
      *
      * @return void|static
-     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
     public function dropTable($source)
     {
-        throw new MssqlException('not implement');
+        throw new NotImplementedException(__METHOD__);
     }
 
     /**
      * @param null $schema
      *
      * @return array|void
-     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
     public function getTables($schema = null)
     {
-        throw new MssqlException('not implement');
+        throw new NotImplementedException(__METHOD__);
     }
 
     /**
@@ -152,18 +149,16 @@ class Mssql extends Db
      * @param null   $schema
      *
      * @return bool|void
-     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
     public function tableExists($table, $schema = null)
     {
-        throw new MssqlException('not implement');
+        throw new NotImplementedException(__METHOD__);
     }
 
     /**
      * @param array $params
      *
      * @return string
-     * @throws \ManaPHP\Db\Adapter\Mssql\Exception
      */
     public function buildSql($params)
     {
@@ -182,7 +177,7 @@ class Mssql extends Db
             $sql .= $params['fields'];
             if (isset($params['limit'], $params['offset'])) {
                 if (!isset($params['order'])) {
-                    throw new MssqlException('if use offset CLAUSE, must provide order CLAUSE.');
+                    throw new PreconditionException('if use offset CLAUSE, must provide order CLAUSE.');
                 }
 
                 $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . (isset($params['order']) ? $params['order'] : 'rand()') . ') AS _row_number_';
