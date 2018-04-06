@@ -21,14 +21,14 @@ class HttpResponseTest extends TestCase
         $response = new Response();
 
         //set only time
-        $response->setStatusCode(404, 'Not Found');
+        $response->setStatus(404, 'Not Found');
         $this->assertEquals(['Status' => '404 Not Found'], $response->getHeaders());
 
         //set multiple times
         $response = new Response();
-        $response->setStatusCode(200, 'OK');
-        $response->setStatusCode(404, 'Not Found');
-        $response->setStatusCode(409, 'Conflict');
+        $response->setStatus(200, 'OK');
+        $response->setStatus(404, 'Not Found');
+        $response->setStatus(409, 'Conflict');
         $this->assertEquals(['Status' => '409 Conflict'], $response->getHeaders());
     }
 

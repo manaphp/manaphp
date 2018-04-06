@@ -18,7 +18,7 @@ interface ResponseInterface
      *
      * @return static
      */
-    public function setStatusCode($code, $message);
+    public function setStatus($code, $message);
 
     /**
      * send a header in the response

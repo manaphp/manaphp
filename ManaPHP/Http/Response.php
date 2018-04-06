@@ -49,7 +49,7 @@ class Response extends Component implements ResponseInterface
      *
      * @return static
      */
-    public function setStatusCode($code, $message)
+    public function setStatus($code, $message)
     {
         $this->setHeader('Status', $code . ' ' . $message);
 
@@ -119,7 +119,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setNotModified()
     {
-        $this->setStatusCode(304, 'Not modified');
+        $this->setStatus(304, 'Not modified');
 
         return $this;
     }
@@ -181,9 +181,9 @@ class Response extends Component implements ResponseInterface
     public function redirect($location, $temporarily = true)
     {
         if ($temporarily) {
-            $this->setStatusCode(302, 'Temporarily Moved');
+            $this->setStatus(302, 'Temporarily Moved');
         } else {
-            $this->setStatusCode(301, 'Permanently Moved');
+            $this->setStatus(301, 'Permanently Moved');
         }
 
         if (isset($this->url)) {
@@ -206,9 +206,9 @@ class Response extends Component implements ResponseInterface
     public function redirectToAction($action, $temporarily = true)
     {
         if ($temporarily) {
-            $this->setStatusCode(302, 'Temporarily Moved');
+            $this->setStatus(302, 'Temporarily Moved');
         } else {
-            $this->setStatusCode(301, 'Permanently Moved');
+            $this->setStatus(301, 'Permanently Moved');
         }
 
         $this->setHeader('Location', $this->router->createUrl($action, true));

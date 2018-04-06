@@ -19,18 +19,18 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
     public function handleException($exception)
     {
         if ($exception instanceof NotFoundException) {
-            $this->response->setStatusCode('404', 'Not Found');
+            $this->response->setStatus('404', 'Not Found');
             $this->response->setContent('');
             return;
         } elseif ($exception instanceof CSrfTokenException) {
-            $this->response->setStatusCode('403', 'Forbidden');
+            $this->response->setStatus('403', 'Forbidden');
             $this->response->setContent('');
             return;
         }
 
         $this->logException($exception);
 
-        $this->response->setStatusCode(500, 'Internal Server Error');
+        $this->response->setStatus(500, 'Internal Server Error');
         $this->response->setContent('');
     }
 
