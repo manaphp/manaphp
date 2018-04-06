@@ -5,6 +5,7 @@ namespace ManaPHP;
 use ManaPHP\Component\ScopedCloneableInterface;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Cache

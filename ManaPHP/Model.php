@@ -7,9 +7,9 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\UnknownPropertyException;
-use ManaPHP\Model\Exception as ModelException;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
+use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Model

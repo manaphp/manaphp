@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP\Exception;
 
-use ManaPHP\RuntimeException;
-
 /**
  * Class IllegalArgumentException
  * @package ManaPHP\Exception

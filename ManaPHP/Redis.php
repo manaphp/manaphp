@@ -3,7 +3,7 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidCredentialException;
-use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\RuntimeException;
 
 class Redis extends \Redis
 {
