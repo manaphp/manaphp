@@ -48,6 +48,7 @@ class Renderer extends Component implements RendererInterface
         $engines = [
             '.sword' => 'ManaPHP\Renderer\Engine\Sword',
             '.phtml' => 'ManaPHP\Renderer\Engine\Php',
+            '.html' => 'ManaPHP\Renderer\Engine\Html',
         ]
     )
     {
