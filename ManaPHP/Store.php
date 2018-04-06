@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Component\ScopedCloneableInterface;
+use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Store\Exception as StoreException;
 
@@ -75,8 +76,7 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
 
         $json = json_decode($data, true);
         if ($json === null) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new StoreException([
+            throw new InvalidJsonException([
                 '`:key` key store value json_decode failed: `:code` `:message`',
                 'key' => $key,
                 'code' => json_last_error(),

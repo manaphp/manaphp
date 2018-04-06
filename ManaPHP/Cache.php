@@ -2,8 +2,8 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Cache\Exception as CacheException;
 use ManaPHP\Component\ScopedCloneableInterface;
+use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
 
 /**
@@ -75,7 +75,7 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
 
         $json = json_decode($data, true);
         if ($json === null) {
-            throw new CacheException([
+            throw new InvalidJsonException([
                 '`:key` key cache value json_encode failed: `:code` `:message`',
                 'key' => $key,
                 'code' => json_last_error(),
