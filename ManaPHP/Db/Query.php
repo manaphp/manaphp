@@ -2,8 +2,11 @@
 namespace ManaPHP\Db;
 
 use ManaPHP\Component;
-use ManaPHP\Db\Query\Exception as QueryException;
 use ManaPHP\Di;
+use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\RuntimeException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -334,7 +337,6 @@ class Query extends Component implements QueryInterface
      * @param int|float|string|array $value
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function where($filter, $value = null)
     {
@@ -367,7 +369,7 @@ class Query extends Component implements QueryInterface
                 $this->_bind[$bind_key] = $value;
             } elseif ($operator === '~=') {
                 if (count($value) !== 2) {
-                    throw new QueryException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
+                    throw new InvalidValueException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
                 }
                 $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif (in_array($operator, ['>', '>=', '<', '<=', '!=', '<>'], true)) {
@@ -382,10 +384,10 @@ class Query extends Component implements QueryInterface
             } elseif ($operator === ',=') {
                 $this->whereInset($field, $value);
             } else {
-                throw new QueryException(['unknown `:where` where filter', 'where' => $filter]);
+                throw new NotSupportedException(['unknown `:where` where filter', 'where' => $filter]);
             }
         } else {
-            throw new QueryException(['unknown `:filter` filter', 'filter' => $filter]);
+            throw new NotSupportedException(['unknown `:filter` filter', 'filter' => $filter]);
         }
 
         return $this;
@@ -395,7 +397,6 @@ class Query extends Component implements QueryInterface
      * @param array $fields
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereRequest($fields)
     {
@@ -557,7 +558,6 @@ class Query extends Component implements QueryInterface
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereIn($expr, $values)
     {
@@ -602,7 +602,6 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      * @deprecated
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function inWhere($expr, $values)
     {
@@ -637,7 +636,6 @@ class Query extends Component implements QueryInterface
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereNotIn($expr, $values)
     {
@@ -679,7 +677,6 @@ class Query extends Component implements QueryInterface
      *
      * @return static
      * @deprecated
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function notInWhere($expr, $values)
     {
@@ -721,7 +718,6 @@ class Query extends Component implements QueryInterface
      * @param string       $like
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereLike($expr, $like)
     {
@@ -768,7 +764,6 @@ class Query extends Component implements QueryInterface
      * @param string       $like
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereNotLike($expr, $like)
     {
@@ -815,7 +810,6 @@ class Query extends Component implements QueryInterface
      * @param string       $value
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereContains($expr, $value)
     {
@@ -827,7 +821,6 @@ class Query extends Component implements QueryInterface
      * @param string       $value
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereNotContains($expr, $value)
     {
@@ -840,7 +833,6 @@ class Query extends Component implements QueryInterface
      * @param int          $length
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereStartsWith($expr, $value, $length = null)
     {
@@ -853,7 +845,6 @@ class Query extends Component implements QueryInterface
      * @param int          $length
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereNotStartsWith($expr, $value, $length = null)
     {
@@ -865,7 +856,6 @@ class Query extends Component implements QueryInterface
      * @param string       $value
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereEndsWith($expr, $value)
     {
@@ -877,7 +867,6 @@ class Query extends Component implements QueryInterface
      * @param string       $value
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function whereNotEndsWith($expr, $value)
     {
@@ -1191,7 +1180,6 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function getSql()
     {
@@ -1206,7 +1194,6 @@ class Query extends Component implements QueryInterface
      * Returns a SQL statement built based on the builder parameters
      *
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
      */
     protected function _buildSql()
     {
@@ -1220,7 +1207,7 @@ class Query extends Component implements QueryInterface
 
         if (!$this->_tables) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new QueryException('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
+            throw new RuntimeException('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
         }
 
         $params = [];
@@ -1250,7 +1237,7 @@ class Query extends Component implements QueryInterface
             if ($table instanceof $this) {
                 if (is_int($alias)) {
                     /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    throw new QueryException('if using SubQuery, you must assign an alias for it'/**m0e5f4aa93dc102dde*/);
+                    throw new NotSupportedException('if using SubQuery, you must assign an alias for it'/**m0e5f4aa93dc102dde*/);
                 }
 
                 $selectedTables[] = '(' . $table->getSql() . ') AS [' . $alias . ']';
@@ -1287,7 +1274,7 @@ class Query extends Component implements QueryInterface
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $joinTable->getBind());
                 if ($joinAlias === null) {
-                    throw new QueryException('if using SubQuery, you must assign an alias for it'/**m0a80f96a41e1596cb*/);
+                    throw new NotSupportedException('if using SubQuery, you must assign an alias for it'/**m0a80f96a41e1596cb*/);
                 }
             } else {
                 $joinSQL .= ' JOIN [' . $joinTable . ']';
@@ -1399,14 +1386,13 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     protected function _getCacheOptions()
     {
         $cacheOptions = is_array($this->_cacheOptions) ? $this->_cacheOptions : ['ttl' => $this->_cacheOptions];
         if (!isset($cacheOptions['key'])) {
             if ($cacheOptions['key'][0] === '/') {
-                throw new QueryException(['modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, 'key' => $cacheOptions['key']]);
+                throw new InvalidValueException(['modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, 'key' => $cacheOptions['key']]);
             }
 
             $cacheOptions['key'] = md5($this->_sql . serialize($this->_bind));
@@ -1441,7 +1427,6 @@ class Query extends Component implements QueryInterface
     /**
      *
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function execute()
     {
@@ -1477,7 +1462,6 @@ class Query extends Component implements QueryInterface
      * @param array $expr
      *
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function aggregate($expr)
     {
@@ -1504,12 +1488,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return int
-     * @throws \ManaPHP\Db\Query\Exception
      */
     protected function _getTotalRows()
     {
         if ($this->_union) {
-            throw new QueryException('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
+            throw new NotSupportedException('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
         }
 
         $this->_fields = 'COUNT(*) as [row_count]';
@@ -1537,7 +1520,6 @@ class Query extends Component implements QueryInterface
      * @param int $page
      *
      * @return \ManaPHP\Paginator
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function paginate($size = null, $page = null)
     {
@@ -1592,7 +1574,6 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return bool
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function exists()
     {
@@ -1609,7 +1590,6 @@ class Query extends Component implements QueryInterface
      * @param string $field
      *
      * @return int
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function count($field = '*')
     {
@@ -1663,7 +1643,6 @@ class Query extends Component implements QueryInterface
 
     /**
      * @return array|false
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function fetchOne()
     {
@@ -1675,7 +1654,6 @@ class Query extends Component implements QueryInterface
     /**
      *
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function fetchAll()
     {
@@ -1686,7 +1664,6 @@ class Query extends Component implements QueryInterface
      * @param string $field
      *
      * @return array
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function values($field)
     {
