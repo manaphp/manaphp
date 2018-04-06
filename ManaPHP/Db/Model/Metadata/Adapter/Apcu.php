@@ -3,7 +3,7 @@
 namespace ManaPHP\Db\Model\Metadata\Adapter;
 
 use ManaPHP\Db\Model\Metadata;
-use ManaPHP\Db\Model\Metadata\Adapter\Apcu\Exception as ApcuException;
+use ManaPHP\Exception\NotSupportedException;
 
 /**
  * Class ManaPHP\Mvc\Model\Metadata\Adapter\Apcu
@@ -26,13 +26,11 @@ class Apcu extends Metadata
      * Apcu constructor.
      *
      * @param string|array $options
-     *
-     * @throws \ManaPHP\Db\Model\Metadata\Adapter\Exception
      */
     public function __construct($options = 'models_metadata:')
     {
         if (!extension_loaded('apcu')) {
-            throw new ApcuException('`apcu` is not installed, or the extension is not loaded'/**m0763710a465cf1bb2*/);
+            throw new NotSupportedException('`apcu` is not installed, or the extension is not loaded'/**m0763710a465cf1bb2*/);
         }
 
         if (is_string($options)) {
