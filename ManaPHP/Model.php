@@ -474,7 +474,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     {
         $value = static::value($filters, $field, $interval);
         if ($value === false) {
-            throw new ModelException(['valueOrFail failed: `:model` record is not exists', 'model' => get_called_class()]);
+            throw new NotFoundException(['valueOrFail failed: `:model` record is not exists', 'model' => get_called_class()]);
         } else {
             return $value;
         }
