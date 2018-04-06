@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Component\ScopedCloneableInterface;
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Store\Exception as StoreException;
 
 /**
@@ -76,7 +77,7 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
         if ($json === null) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new StoreException([
-                '`:key` key store value json_encode failed: `:code` `:message`',
+                '`:key` key store value json_decode failed: `:code` `:message`',
                 'key' => $key,
                 'code' => json_last_error(),
                 'message' => json_last_error_msg()
@@ -95,12 +96,11 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
      * @param mixed  $value
      *
      * @return void
-     * @throws \ManaPHP\Store\Exception
      */
     public function set($key, $value)
     {
         if ($value === false) {
-            throw new StoreException(['`:key` key store value can not `false` boolean value', 'key' => $key]);
+            throw new InvalidValueException(['`:key` key store value can not `false` boolean value', 'key' => $key]);
         } elseif (is_scalar($value) || $value === null) {
             if (is_string($value) && $value !== '' && $value[0] !== '{' && $value[0] !== '[') {
                 $data = $value;
@@ -114,7 +114,7 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
         }
 
         if ($data === false) {
-            throw new StoreException([
+            throw new InvalidValueException([
                 '`:key` key store value json_encode failed: `:code` `:message`',
                 'key' => $key,
                 'code' => json_last_error(),
