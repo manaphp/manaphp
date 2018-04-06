@@ -20,7 +20,7 @@ class Application extends \ManaPHP\Mvc\Application
             try {
                 $this->handle();
             } catch (\Exception $e) {
-                $this->errorHandler->handleException($e);
+                $this->errorHandler->handle($e);
             }
         }
 

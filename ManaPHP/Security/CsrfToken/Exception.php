@@ -8,5 +8,13 @@ namespace ManaPHP\Security\CsrfToken;
  */
 class Exception extends \ManaPHP\Security\Exception
 {
+    public function getStatusCode()
+    {
+        return 400;
+    }
 
+    public function getStatusText()
+    {
+        return 'Bad Request';
+    }
 }

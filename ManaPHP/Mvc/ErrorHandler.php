@@ -11,6 +11,26 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
 {
     /**
      * @param \Exception $exception
+     */
+    public function handle($exception)
+    {
+        $this->response->setContent('');
+
+        if ($exception instanceof \ManaPHP\Exception) {
+            $this->response->setStatus($exception->getStatusCode(), $exception->getStatusText());
+            if ($exception->getStatusCode() === 500) {
+                $this->logException($exception);
+                $this->response->setContent($this->render($exception));
+            }
+        } else {
+            $this->response->setStatus(500, 'Internal Server Error');
+            $this->logException($exception);
+            $this->response->setContent($this->render($exception));
+        }
+    }
+
+    /**
+     * @param \Exception $exception
      *
      * @return array
      */
@@ -25,5 +45,26 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
         $data['client_ip'] = $this->request->getClientAddress();
 
         return array_merge($data, parent::getLogData($exception));
+    }
+
+    /**
+     * @param \Exception|\ManaPHP\Exception $exception
+     *
+     * @return string
+     */
+    public function render($exception)
+    {
+        $statusCode = $exception instanceof \ManaPHP\Exception ? $exception->getStatusCode() : 500;
+
+        foreach (["@app/Views/Errors/$statusCode",
+                     '@app/Views/Errors/error',
+                     "@manaphp/Mvc/ErrorHandler/Errors/$statusCode",
+                     "@manaphp/Mvc/ErrorHandler/Errors/error"] as $template) {
+            if ($this->renderer->exists($template)) {
+                return $this->renderer->render($template, ['statusCode' => $statusCode, 'exception' => $exception]);
+            }
+        }
+
+        return 'Error';
     }
 }

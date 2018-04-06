@@ -8,5 +8,13 @@ namespace ManaPHP\Mvc;
  */
 class NotFoundException extends Exception
 {
+    public function getStatusCode()
+    {
+        return 404;
+    }
 
+    public function getStatusText()
+    {
+        return 'Not Found';
+    }
 }

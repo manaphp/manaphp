@@ -109,7 +109,7 @@ class Application extends \ManaPHP\Application
             try {
                 $this->handle();
             } catch (\Exception $e) {
-                $this->errorHandler->handleException($e);
+                $this->errorHandler->handle($e);
             }
         }
 

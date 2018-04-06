@@ -43,6 +43,22 @@ class Exception extends \Exception
     }
 
     /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return 500;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusText()
+    {
+        return 'Internal Server Error';
+    }
+
+    /**
      * @return array
      */
     public function dump()

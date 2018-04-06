@@ -4,7 +4,7 @@ namespace ManaPHP;
 interface ErrorHandlerInterface
 {
     /**
-     * @param \Exception $exception
+     * @param \Exception|\ManaPHP\Exception $exception
      */
-    public function handleException($exception);
+    public function handle($exception);
 }

@@ -2,6 +2,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Mvc\NotFoundException;
+use ManaPHP\Renderer\Engine\Php;
 use ManaPHP\Security\CsrfToken\Exception as CSrfTokenException;
 
 /**
@@ -10,28 +11,16 @@ use ManaPHP\Security\CsrfToken\Exception as CSrfTokenException;
  * @package ManaPHP
  *
  * @property \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\RendererInterface      $renderer
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
     /**
-     * @param \Exception $exception
+     * @param \Exception|\ManaPHP\Exception $exception
      */
-    public function handleException($exception)
+    public function handle($exception)
     {
-        if ($exception instanceof NotFoundException) {
-            $this->response->setStatus('404', 'Not Found');
-            $this->response->setContent('');
-            return;
-        } elseif ($exception instanceof CSrfTokenException) {
-            $this->response->setStatus('403', 'Forbidden');
-            $this->response->setContent('');
-            return;
-        }
 
-        $this->logException($exception);
-
-        $this->response->setStatus(500, 'Internal Server Error');
-        $this->response->setContent('');
     }
 
     /**
