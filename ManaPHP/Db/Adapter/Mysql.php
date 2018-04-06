@@ -8,6 +8,7 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
+use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidValueException;
 
 /**
@@ -32,7 +33,7 @@ class Mysql extends Db
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mysql') {
-            throw new InvalidValueException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_username = isset($parts['user']) ? $parts['user'] : 'root';

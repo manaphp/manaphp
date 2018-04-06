@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidCredentialException;
 use ManaPHP\Exception\InvalidValueException;
 
@@ -51,7 +52,7 @@ class Redis extends \Redis
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'redis') {
-            throw new InvalidValueException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
@@ -61,7 +62,7 @@ class Redis extends \Redis
             $path = trim($parts['path'], '/');
             if ($path !== '') {
                 if (!is_numeric($path)) {
-                    throw new InvalidValueException(['`:url` url is invalid, `:db` db is not integer', 'url' => $uri, 'db' => $path]);
+                    throw new DsnFormatException(['`:url` url is invalid, `:db` db is not integer', 'url' => $uri, 'db' => $path]);
                 }
             }
             $this->_db = (int)$path;

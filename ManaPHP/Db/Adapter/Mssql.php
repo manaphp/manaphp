@@ -2,6 +2,7 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
+use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
@@ -18,7 +19,7 @@ class Mssql extends Db
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mssql') {
-            throw new InvalidArgumentException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
         }
 
         $this->_username = isset($parts['user']) ? $parts['user'] : null;

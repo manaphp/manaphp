@@ -4,6 +4,7 @@ namespace ManaPHP;
 use ManaPHP\Amqp\ConnectionException;
 use ManaPHP\Amqp\Exception as AmqpException;
 use ManaPHP\Amqp\Message;
+use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidKeyException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\UnexpectedValueException;
@@ -54,8 +55,7 @@ class Amqp extends Component implements AmqpInterface
             $parts = parse_url($uri);
 
             if ($parts['scheme'] !== 'amqp') {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new InvalidValueException(['`:scheme` scheme is unknown: `:uri`', 'scheme' => $parts['scheme'], 'uri' => $uri]);
+                throw new DsnFormatException(['`:scheme` scheme is unknown: `:uri`', 'scheme' => $parts['scheme'], 'uri' => $uri]);
             }
 
             if (isset($parts['host'])) {
