@@ -1,6 +1,12 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Exception\BadMethodCallException;
+use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Model\Exception as ModelException;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
@@ -246,9 +252,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         if ($field === null) {
             $field = $model->getDisplayField();
             if ($field === null) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                /** @noinspection PhpUnhandledExceptionInspection */
-                throw new ModelException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
+                throw new PreconditionException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
             }
             $keyField = $model->getPrimaryKey();
             $valueField = $field;
@@ -317,15 +321,11 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             } elseif ($di->dispatcher->hasParam($pkName)) {
                 $pkValue = $di->dispatcher->getParam($pkName);
             } else {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                /** @noinspection PhpUnhandledExceptionInspection */
-                throw new ModelException('missing filters condition for Model::first method');
+                throw new InvalidArgumentException('missing filters condition for Model::first method');
             }
 
             if (!is_scalar($pkValue)) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                /** @noinspection PhpUnhandledExceptionInspection */
-                throw new ModelException('Model::first primary key value is not scalar');
+                throw new InvalidValueException('Model::first primary key value is not scalar');
             }
             $filters = [$pkName => $pkValue];
         } elseif (is_scalar($filters)) {
@@ -432,7 +432,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         } elseif (is_array($interval) && !$interval && is_int($max = key($interval))) {
             $interval = (float)$interval[$max];
         } else {
-            throw new ModelException(['`:interval` interval is not recognized', 'interval' => json_encode($interval, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+            throw new InvalidValueException(['`:interval` interval is not recognized', 'interval' => json_encode($interval, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
         }
 
         static $cached = [];
@@ -652,9 +652,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if ($whiteList === null) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException(['`:model` model do not define accessible fields.', 'model' => get_called_class()]);
+            throw new PreconditionException(['`:model` model do not define accessible fields.', 'model' => get_called_class()]);
         }
 
         foreach ($whiteList ?: $this->getFields() as $field) {
@@ -805,17 +803,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function update()
     {
         if ($this->_snapshot === false) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+            throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
         $primaryKey = $this->getPrimaryKey();
 
         if (!isset($this->{$primaryKey})) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException([
+            throw new PreconditionException([
                 '`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
                 'model' => get_class($this)
             ]);
@@ -907,16 +901,12 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
             if (count($params) === 1) {
                 $pkValue = current($params);
             } else {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                /** @noinspection PhpUnhandledExceptionInspection */
-                throw new ModelException('missing primary key value');
+                throw new PreconditionException('missing primary key value');
             }
         }
 
         if (!is_scalar($pkValue)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection PhpUnhandledExceptionInspection */
-            throw new ModelException('primary key value is not scalar');
+            throw new InvalidValueException('primary key value is not scalar');
         }
 
         $instance = static::firstOrFail([$pkName => $pkValue]);
@@ -991,9 +981,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         } elseif (is_scalar($pkValue)) {
             return static::firstOrFail($pkValue)->assign($data, $whiteList)->update();
         } else {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection PhpUnhandledExceptionInspection */
-            throw new ModelException('primary key value is not scalar');
+            throw new InvalidValueException('primary key value is not scalar');
         }
     }
 
@@ -1014,9 +1002,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
 
         $criteria = static::criteria(null, $this);
         if (!isset($this->{$primaryKey})) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException([
+            throw new PreconditionException([
                 '`:model` model cannot be deleted because the primary key attribute: `:field` was not set'/**m01dec9cd3b69742a5*/,
                 'model' => get_class($this),
                 'field' => $primaryKey
@@ -1052,15 +1038,13 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 if (count($params) === 1) {
                     $id = current($params);
                 } else {
-                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    throw new ModelException('missing primary key value');
+                    throw new PreconditionException('missing primary key value');
                 }
             }
         }
 
         if (!is_scalar($id)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException('primary key value is not scalar');
+            throw new InvalidValueException('primary key value is not scalar');
         }
 
         return ($instance = static::first([$pkName => $id])) ? $instance->delete() : null;
@@ -1119,7 +1103,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function getSnapshotData()
     {
         if ($this->_snapshot === false) {
-            throw new ModelException(['getSnapshotData failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+            throw new PreconditionException(['getSnapshotData failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
         return $this->_snapshot;
@@ -1143,7 +1127,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function getChangedFields()
     {
         if ($this->_snapshot === false) {
-            throw new ModelException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+            throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
         $changed = [];
@@ -1168,7 +1152,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
     public function hasChanged($fields)
     {
         if ($this->_snapshot === false) {
-            throw new ModelException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+            throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
         if (is_string($fields)) {
@@ -1212,7 +1196,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         $r = static::criteria($fields, $this)->where($primaryKey, $this->{$primaryKey})->execute();
         if (!$r) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ModelException(['`:model` model refresh failed: record is not exists now!', 'model' => get_called_class()]);
+            throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), 'key' => $this->$primaryKey]);
         }
 
         foreach ((array)$r[0] as $field => $value) {
@@ -1271,7 +1255,6 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
      * @param string $name
      *
      * @return array
-     * @throws \ManaPHP\Model\Exception
      * @throws \ReflectionException
      */
     public static function consts($name)
@@ -1287,7 +1270,7 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         }
 
         if (!$constants) {
-            throw new ModelException(['starts with `:constants` constants is not exists in `:model` model', 'constants' => $name, 'model' => get_called_class()]);
+            throw new RuntimeException(['starts with `:constants` constants is not exists in `:model` model', 'constants' => $name, 'model' => get_called_class()]);
         }
 
         return $constants;
@@ -1303,9 +1286,8 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         } elseif ($relation = $this->_di->relationsManager->get($this, $name)) {
             return $relation->criteria($this)->fetch();
         } else {
-            trigger_error(strtr('`:class` does not contain `:field` field: `:fields`',
-                [':class' => get_called_class(), ':field' => $name, ':fields' => implode(',', $this->getFields())]), E_USER_WARNING);
-            return null;
+            throw new UnknownPropertyException('`:class` does not contain `:field` field: `:fields`',
+                ['class' => get_called_class(), 'field' => $name, 'fields' => implode(',', $this->getFields())]);
         }
     }
 
@@ -1316,12 +1298,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 return $relation->criteria($this);
             }
 
-            trigger_error(strtr('`:class` model does not define `:method` relation', [':class' => get_called_class(), ':method' => $name]), E_USER_ERROR);
+            throw new NotSupportedException('`:class` model does not define `:method` relation', ['class' => get_called_class(), 'method' => $name]);
         }
-
-        trigger_error(strtr('`:class` does not contain `:method` method', [':class' => get_called_class(), ':method' => $name]), E_USER_ERROR);
-
-        return null;
+        throw new BadMethodCallException('`:class` does not contain `:method` method', ['class' => get_called_class(), 'method' => $name]);
     }
 
     /**
