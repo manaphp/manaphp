@@ -2,9 +2,9 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Image\Engine\Gd;
 use ManaPHP\Image\Engine\Imagick;
-use ManaPHP\Image\Exception as ImageException;
 
 /**
  * Class ManaPHP\Image
@@ -22,8 +22,6 @@ class Image implements ImageInterface
      * ImageInterface constructor.
      *
      * @param string $file
-     *
-     * @throws \ManaPHP\Image\Exception
      */
     public function __construct($file)
     {
@@ -32,7 +30,7 @@ class Image implements ImageInterface
         } elseif (extension_loaded('gd')) {
             $this->_engine = new Gd($file);
         } else {
-            throw new ImageException('No valid Image Engine exists.'/**m0e2528a66b81cf976*/);
+            throw new PreconditionException('No valid Image Engine exists.'/**m0e2528a66b81cf976*/);
         }
     }
 
