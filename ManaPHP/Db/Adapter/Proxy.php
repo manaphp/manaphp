@@ -3,8 +3,8 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Db\Adapter\Proxy\Exception as ProxyException;
 use ManaPHP\DbInterface;
+use ManaPHP\RuntimeException;
 
 class Proxy extends Component implements DbInterface
 {
@@ -119,8 +119,6 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @return static
-     * @throws \ManaPHP\Db\Exception
-     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      */
     public function getMasterConnection()
     {
@@ -128,7 +126,7 @@ class Proxy extends Component implements DbInterface
             $master = $this->_selectDbConfig($this->_masters);
 
             if ($master === false) {
-                throw new ProxyException('there is no available master server.');
+                throw new RuntimeException('there is no available master server.');
             }
             $options = $master['options'];
 
@@ -146,15 +144,13 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @return static
-     * @throws \ManaPHP\Db\Exception
-     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      */
     public function getSlaveConnection()
     {
         if ($this->_slaveConnection === null) {
             $slave = $this->_selectDbConfig($this->_slaves);
             if ($slave === false) {
-                throw new ProxyException('there is no available slave server.');
+                throw new RuntimeException('there is no available slave server.');
             }
 
             $options = $slave['options'];
