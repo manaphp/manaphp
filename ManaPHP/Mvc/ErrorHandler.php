@@ -14,19 +14,17 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
      */
     public function handle($exception)
     {
-        $this->response->setContent('');
-
         if ($exception instanceof \ManaPHP\Exception) {
             $this->response->setStatus($exception->getStatusCode(), $exception->getStatusText());
             if ($exception->getStatusCode() === 500) {
                 $this->logException($exception);
-                $this->response->setContent($this->render($exception));
             }
         } else {
             $this->response->setStatus(500, 'Internal Server Error');
             $this->logException($exception);
-            $this->response->setContent($this->render($exception));
         }
+
+        $this->response->setContent($this->render($exception));
     }
 
     /**
@@ -65,14 +63,12 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
         $statusCode = $exception instanceof \ManaPHP\Exception ? $exception->getStatusCode() : 500;
 
         foreach (["@app/Views/Errors/$statusCode",
-                     '@app/Views/Errors/error',
-                     "@manaphp/Mvc/ErrorHandler/Views/$statusCode",
-                     '@manaphp/Mvc/ErrorHandler/Views/error'] as $template) {
+                     '@app/Views/Errors/error'] as $template) {
             if ($this->renderer->exists($template)) {
                 return $this->renderer->render($template, ['statusCode' => $statusCode, 'exception' => $exception]);
             }
         }
-
-        return 'Error';
+        $statusText = $exception instanceof \ManaPHP\Exception ? $exception->getStatusText() : 'App Error';
+        return "<html><title>$statusCode: $statusText</title><body>$statusCode: $statusText</body></html>";
     }
 }
