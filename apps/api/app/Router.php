@@ -4,7 +4,7 @@ namespace App\Api;
 use App\Api\Controllers\CustomerController;
 use App\Api\Controllers\TimeController;
 
-class Router extends \ManaPHP\Mvc\Router
+class Router extends \ManaPHP\Router
 {
     public function __construct()
     {

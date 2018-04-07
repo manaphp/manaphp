@@ -1,7 +1,7 @@
 <?php
 namespace App\Admin;
 
-class Router extends \ManaPHP\Mvc\Router
+class Router extends \ManaPHP\Router
 {
     public function __construct()
     {

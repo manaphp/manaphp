@@ -3,7 +3,7 @@ namespace App\Home;
 
 use App\Home\Controllers\IndexController;
 
-class Router extends \ManaPHP\Mvc\Router
+class Router extends \ManaPHP\Router
 {
     public function __construct()
     {
