@@ -57,7 +57,6 @@ class Application extends \ManaPHP\Mvc\Application
         $this->router->setAreas(['Menu', 'Rbac', 'User']);
 
         if ($this->configure->debug) {
-            $this->response->setHeader('X-DEBUGGER', $this->debugger->getUrl());
             $this->handle();
         } else {
             try {
