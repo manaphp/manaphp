@@ -69,6 +69,8 @@ class Debugger extends Component implements DebuggerInterface
         $this->eventsManager->peekEvents($handler);
 
         $this->attachEvent('dispatcher:beforeDispatch');
+
+        $this->response->setHeader('X-Debugger-Link', $this->getUrl());
     }
 
     public function reConstruct()
