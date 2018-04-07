@@ -3,7 +3,7 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Http\Response;
-use ManaPHP\Mvc\Router\NotFoundRouteException;
+use ManaPHP\Router\NotFoundRouteException;
 
 /**
  * Class ManaPHP\Mvc\Application
@@ -12,7 +12,7 @@ use ManaPHP\Mvc\Router\NotFoundRouteException;
  * @property \ManaPHP\Http\RequestInterface   $request
  * @property \ManaPHP\Http\ResponseInterface  $response
  * @property \ManaPHP\ErrorHandlerInterface   $errorHandler
- * @property \ManaPHP\Mvc\RouterInterface     $router
+ * @property \ManaPHP\RouterInterface         $router
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property \ManaPHP\Mvc\ViewInterface       $view
  * @property \ManaPHP\Http\SessionInterface   $session

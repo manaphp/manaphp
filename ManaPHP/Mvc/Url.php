@@ -11,7 +11,7 @@ use ManaPHP\Utility\Text;
  *
  * @property \ManaPHP\Configuration\Configure $configure
  * @property \ManaPHP\Http\RequestInterface   $request
- * @property \ManaPHP\Mvc\RouterInterface     $router
+ * @property \ManaPHP\RouterInterface         $router
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class Url extends Component implements UrlInterface

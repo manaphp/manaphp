@@ -15,7 +15,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  *
  * @property \ManaPHP\AliasInterface                       $alias
  * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
- * @property \ManaPHP\Mvc\RouterInterface                  $router
+ * @property \ManaPHP\RouterInterface                      $router
  * @property \ManaPHP\Mvc\UrlInterface                     $url
  * @property \ManaPHP\Http\RequestInterface                $request
  * @property \ManaPHP\Http\FilterInterface                 $filter

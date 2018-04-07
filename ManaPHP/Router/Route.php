@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Mvc\Router;
+namespace ManaPHP\Router;
 
-use ManaPHP\Mvc\Router\Route\Exception as RouteException;
+use ManaPHP\Exception\InvalidFormatException;
 
 /**
- * Class ManaPHP\Mvc\Router\Route
+ * Class ManaPHP\Router\Route
  *
  * @package router
  */
@@ -32,7 +32,7 @@ class Route implements RouteInterface
     protected $_method;
 
     /**
-     * \ManaPHP\Mvc\Router\Route constructor
+     * \ManaPHP\Router\Route constructor
      *
      * @param string       $pattern
      * @param string|array $paths
@@ -152,7 +152,6 @@ class Route implements RouteInterface
      * @param string $method
      *
      * @return bool|array
-     * @throws \ManaPHP\Mvc\Router\Route\Exception
      */
     public function match($uri, $method = 'GET')
     {
@@ -168,7 +167,7 @@ class Route implements RouteInterface
 
         $r = preg_match($this->_compiledPattern, $uri, $matches);
         if ($r === false) {
-            throw new RouteException([
+            throw new InvalidFormatException([
                 '`:compiled` pcre pattern is invalid for `:pattern`'/**m0d6fa1de6a93475dd*/,
                 'compiled' => $this->_compiledPattern,
                 'pattern' => $this->_pattern

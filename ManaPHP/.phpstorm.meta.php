@@ -6,7 +6,7 @@ namespace PHPSTORM_META {                                // we want to avoid the
     $STATIC_METHOD_TYPES = [                                 // we make sections for scopes
         \ManaPHP\DiInterface::getShared('') => [           // STATIC call key to make static (1) & dynamic (2) calls work
             'dispatcher' instanceof \ManaPHP\Mvc\Dispatcher,
-            'router' instanceof \ManaPHP\Mvc\RouterInterface,
+            'router' instanceof \ManaPHP\RouterInterface,
             'request' instanceof \ManaPHP\Http\RequestInterface,
             'response' instanceof \ManaPHP\Http\ResponseInterface,
             'cookies' instanceof \ManaPHP\Http\CookiesInterface,

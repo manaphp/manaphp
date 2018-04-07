@@ -14,7 +14,7 @@ use ManaPHP\Utility\Text;
  *
  * @property \ManaPHP\Http\CookiesInterface $cookies
  * @property \ManaPHP\Mvc\UrlInterface      $url
- * @property \ManaPHP\Mvc\RouterInterface   $router
+ * @property \ManaPHP\RouterInterface       $router
  */
 class Response extends Component implements ResponseInterface
 {

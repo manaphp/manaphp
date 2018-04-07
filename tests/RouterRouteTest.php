@@ -2,11 +2,11 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Mvc\Router;
-use ManaPHP\Mvc\Router\Route;
+use ManaPHP\Router;
+use ManaPHP\Router\Route;
 use PHPUnit\Framework\TestCase;
 
-class MvcRouterRouteTest extends TestCase
+class RouterRouteTest extends TestCase
 {
     public function setUp()
     {

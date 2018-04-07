@@ -3,8 +3,8 @@ namespace Tests;
 
 use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Mvc\Router;
-use ManaPHP\Mvc\Router\Route;
+use ManaPHP\Router;
+use ManaPHP\Router\Route;
 use PHPUnit\Framework\TestCase;
 
 class MyRouter extends Router

@@ -41,7 +41,7 @@ use ManaPHP\Logger\LogCategorizable;
  * @property \ManaPHP\StopwatchInterface               $stopwatch
  * @property \ManaPHP\Security\HtmlPurifierInterface   $htmlPurifier
  * @property \ManaPHP\Net\ConnectivityInterface        $netConnectivity
- * @property \ManaPHP\Mvc\RouterInterface              $router
+ * @property \ManaPHP\RouterInterface                  $router
  */
 abstract class Controller extends Component implements ControllerInterface, LogCategorizable
 {

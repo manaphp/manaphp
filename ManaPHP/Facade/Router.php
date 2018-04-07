@@ -2,7 +2,7 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-use ManaPHP\Mvc\RouterInterface;
+use ManaPHP\RouterInterface;
 
 /**
  * Class ManaPHP\Facade\Router

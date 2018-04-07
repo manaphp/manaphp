@@ -11,7 +11,7 @@ use ManaPHP\Swoole\Exception as SwooleException;
  * @package application
  *
  * @property \ManaPHP\Http\ResponseInterface  $response
- * @property \ManaPHP\Mvc\RouterInterface     $router
+ * @property \ManaPHP\RouterInterface         $router
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property \ManaPHP\Swoole\HttpStats        $httpStats
  * @property \ManaPHP\Http\CookiesInterface   $cookies
