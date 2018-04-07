@@ -194,14 +194,6 @@ class Debugger extends Component implements DebuggerInterface
     }
 
     /**
-     * @return void
-     */
-    public function start()
-    {
-
-    }
-
-    /**
      * @param \Exception $exception
      *
      * @return bool

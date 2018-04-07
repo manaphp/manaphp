@@ -9,11 +9,6 @@ namespace ManaPHP;
 interface DebuggerInterface
 {
     /**
-     * @return void
-     */
-    public function start();
-
-    /**
      * @param mixed  $value
      * @param string $name
      *
