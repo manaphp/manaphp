@@ -1,7 +1,7 @@
 <?php
 namespace App\Home\Widgets;
 
-use ManaPHP\Mvc\Widget;
+use ManaPHP\View\Widget;
 
 class CopyrightWidget extends Widget
 {

@@ -4,7 +4,7 @@ namespace App\Admin\Widgets;
 use App\Admin\Areas\Menu\Models\Group;
 use App\Admin\Areas\Menu\Models\Item;
 use App\Admin\Areas\Rbac\Models\Permission;
-use ManaPHP\Mvc\Widget;
+use ManaPHP\View\Widget;
 use ManaPHP\Utility\Text;
 
 class SideMenuWidget extends Widget
