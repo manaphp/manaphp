@@ -49,7 +49,6 @@ abstract class HttpServer extends Application
     {
         parent::__construct($loader, $di);
         $this->_createSwooleServer();
-
     }
 
     protected function _createSwooleServer()
@@ -165,7 +164,7 @@ abstract class HttpServer extends Application
                 $this->response->setContent($this->view->getContent());
             }
         }
-
+        $this->response->setHeader('X-Response-Time', round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3));
         $response->header('worker-id', $_SERVER['WORKER_ID']);
         foreach ($this->response->getHeaders() as $k => $v) {
             $response->header($k, $v);
