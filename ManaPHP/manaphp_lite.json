@@ -25,7 +25,7 @@
         "ManaPHP\\Renderer",
         "ManaPHP\\Renderer\\Engine\\Sword",
         "ManaPHP\\Mvc\\Url",
-        "ManaPHP\\Mvc\\Widget",
+        "ManaPHP\\View\\Widget",
         "ManaPHP\\Security\\Random",
         "ManaPHP\\Filesystem\\Adapter\\File",
         "ManaPHP\\Logger",

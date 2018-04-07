@@ -1,12 +1,11 @@
 <?php
 
-namespace ManaPHP\Mvc;
+namespace ManaPHP;
 
-use ManaPHP\Component;
-use ManaPHP\Mvc\View\Exception as ViewException;
+use ManaPHP\View\Exception as ViewException;
 
 /**
- * Class ManaPHP\Mvc\View
+ * Class ManaPHP\View
  *
  * @package view
  *
@@ -148,7 +147,7 @@ class View extends Component implements ViewInterface
      * @param bool   $directOutput
      *
      * @return string
-     * @throws \ManaPHP\Mvc\View\Exception
+     * @throws \ManaPHP\View\Exception
      */
     public function _render($template, $vars, $directOutput)
     {
@@ -186,7 +185,7 @@ class View extends Component implements ViewInterface
      * @param string $action
      *
      * @return static
-     * @throws \ManaPHP\Mvc\View\Exception
+     * @throws \ManaPHP\View\Exception
      */
     public function render($controller, $action)
     {
@@ -286,7 +285,7 @@ class View extends Component implements ViewInterface
      * @param string $path
      * @param array  $vars
      *
-     * @throws \ManaPHP\Mvc\View\Exception
+     * @throws \ManaPHP\View\Exception
      */
     public function partial($path, $vars = [])
     {
@@ -298,7 +297,7 @@ class View extends Component implements ViewInterface
      * @param array     $options
      * @param int|array $cacheOptions
      *
-     * @throws \ManaPHP\Mvc\View\Exception
+     * @throws \ManaPHP\View\Exception
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
@@ -325,7 +324,7 @@ class View extends Component implements ViewInterface
         }
 
         /**
-         * @var \ManaPHP\Mvc\WidgetInterface $widgetInstance
+         * @var \ManaPHP\View\WidgetInterface $widgetInstance
          */
         $widgetInstance = $this->_di->get($widgetClassName);
         $vars = $widgetInstance->run($options);

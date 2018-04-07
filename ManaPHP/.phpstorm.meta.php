@@ -16,12 +16,12 @@ namespace PHPSTORM_META {                                // we want to avoid the
             'modelsManager' instanceof \ManaPHP\Mvc\Model\ManagerInterface,
             'modelsMetadata' instanceof \ManaPHP\Mvc\Model\MetadataInterface,
             'di' instanceof \ManaPHP\Di | \ManaPHP\DiInterface,
-            'view' instanceof \ManaPHP\Mvc\ViewInterface,
+            'view' instanceof \ManaPHP\ViewInterface,
             'authorization' instanceof \ManaPHP\Security\AuthorizationInterface,
             'application' instanceof \ManaPHP\ApplicationInterface,
             'alias' instanceof \ManaPHP\AliasInterface,
-            'flash' instanceof \ManaPHP\Mvc\View\FlashInterface,
-            'flashSession' instanceof \ManaPHP\Mvc\View\FlashInterface,
+            'flash' instanceof \ManaPHP\View\FlashInterface,
+            'flashSession' instanceof \ManaPHP\View\FlashInterface,
             'captcha' instanceof \ManaPHP\Security\CaptchaInterface,
             'httpClient' instanceof \ManaPHP\Curl\EasyInterface,
             'password' instanceof \ManaPHP\Authentication\PasswordInterface,
@@ -58,10 +58,10 @@ namespace PHPSTORM_META {                                // we want to avoid the
 }
 
 /**
- * @xglobal $view ManaPHP\Mvc\ViewInterface
+ * @xglobal $view ManaPHP\ViewInterface
  */
 /**
- * @var \ManaPHP\Mvc\ViewInterface     $view
+ * @var \ManaPHP\ViewInterface     $view
  * @var \ManaPHP\Di                    $di
  * @var \ManaPHP\Http\RequestInterface $request
  */

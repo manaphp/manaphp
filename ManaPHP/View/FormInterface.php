@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Mvc\View;
+namespace ManaPHP\View;
 
 interface FormInterface
 {

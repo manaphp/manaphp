@@ -21,8 +21,8 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property \ManaPHP\Http\FilterInterface                 $filter
  * @property \ManaPHP\Http\ResponseInterface               $response
  * @property \ManaPHP\Http\CookiesInterface                $cookies
- * @property \ManaPHP\Mvc\View\FlashInterface              $flash
- * @property \ManaPHP\Mvc\View\FlashInterface              $flashSession
+ * @property \ManaPHP\View\FlashInterface                  $flash
+ * @property \ManaPHP\View\FlashInterface                  $flashSession
  * @property \ManaPHP\Http\SessionInterface                $session
  * @property \ManaPHP\Event\ManagerInterface               $eventsManager
  * @property \ManaPHP\DbInterface                          $db
@@ -31,7 +31,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property \ManaPHP\Cache\EngineInterface                $modelsCache
  * @property \ManaPHP\Model\ValidatorInterface             $modelsValidator
  * @property \ManaPHP\Di|\ManaPHP\DiInterface              $di
- * @property \ManaPHP\Mvc\ViewInterface                    $view
+ * @property \ManaPHP\ViewInterface                        $view
  * @property \ManaPHP\Loader                               $loader
  * @property \ManaPHP\LoggerInterface                      $logger
  * @property \ManaPHP\RendererInterface                    $renderer

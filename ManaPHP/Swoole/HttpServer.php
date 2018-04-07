@@ -15,7 +15,7 @@ use ManaPHP\Swoole\Exception as SwooleException;
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property \ManaPHP\Swoole\HttpStats        $httpStats
  * @property \ManaPHP\Http\CookiesInterface   $cookies
- * @property \ManaPHP\Mvc\ViewInterface       $view
+ * @property \ManaPHP\ViewInterface           $view
  */
 abstract class HttpServer extends Application
 {

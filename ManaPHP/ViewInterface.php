@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Mvc;
+namespace ManaPHP;
 
 /**
- * Interface ManaPHP\Mvc\ViewInterface
+ * Interface ManaPHP\ViewInterface
  *
  * @package view
  */

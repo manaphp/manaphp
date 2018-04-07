@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Mvc;
+namespace ManaPHP\View;
 
 /**
- * Interface ManaPHP\Mvc\WidgetInterface
+ * Interface ManaPHP\View\WidgetInterface
  *
- * @package widget
+ * @package view
  */
 interface WidgetInterface
 {

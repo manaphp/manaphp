@@ -2,7 +2,7 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-use ManaPHP\Mvc\View\FlashInterface;
+use ManaPHP\View\FlashInterface;
 
 /**
  * Class ManaPHP\Facade\Flash

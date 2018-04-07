@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Mvc;
+namespace ManaPHP\View;
 
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Mvc\Widget
+ * Class ManaPHP\View\Widget
  *
  * @package widget
  *

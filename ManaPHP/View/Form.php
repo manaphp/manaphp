@@ -1,12 +1,12 @@
 <?php
-namespace ManaPHP\Mvc\View;
+namespace ManaPHP\View;
 
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Mvc\View\Form
+ * Class ManaPHP\View\Form
  *
- * @package ManaPHP\Mvc\View
+ * @package ManaPHP\View
  *
  * @property \ManaPHP\Http\RequestInterface  $request
  * @property \ManaPHP\Http\ResponseInterface $response

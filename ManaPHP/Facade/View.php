@@ -2,7 +2,7 @@
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-use ManaPHP\Mvc\ViewInterface;
+use ManaPHP\ViewInterface;
 
 /**
  * Class ManaPHP\Facade\View
