@@ -352,6 +352,7 @@ class Response extends Component implements ResponseInterface
     {
         if (isset($this->_headers['Status'])) {
             header('HTTP/1.1 ' . $this->_headers['Status']);
+            unset($this->_headers['Status']);
         }
 
         foreach ($this->_headers as $header => $value) {
