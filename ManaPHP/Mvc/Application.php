@@ -114,6 +114,7 @@ class Application extends \ManaPHP\Application
             $this->errorHandler->handle($e);
         }
 
+        $this->response->setHeader('X-Response-Time', round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3));
         $this->response->send();
     }
 }
