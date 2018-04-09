@@ -1,11 +1,11 @@
 <?php
-namespace ManaPHP\Mvc;
+namespace ManaPHP\View;
 
 use ManaPHP\Component;
 use ManaPHP\Utility\Text;
 
 /**
- * Class ManaPHP\Mvc\Url
+ * Class ManaPHP\View\Url
  *
  * @package url
  *

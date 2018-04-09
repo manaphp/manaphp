@@ -27,7 +27,7 @@ class FactoryDefault extends Di
             'router' => 'ManaPHP\Router',
             'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
             'actionInvoker' => 'ManaPHP\Mvc\Action\Invoker',
-            'url' => 'ManaPHP\Mvc\Url',
+            'url' => 'ManaPHP\View\Url',
             'modelsManager' => 'ManaPHP\Db\Model\Manager',
             'modelsMetadata' => 'ManaPHP\Db\Model\Metadata\Adapter\Memory',
             'modelsValidator' => 'ManaPHP\Model\Validator',

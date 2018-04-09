@@ -9,7 +9,7 @@ use ManaPHP\Renderer\Engine\Sword\Exception as SwordException;
  *
  * @package renderer\engine
  *
- * @property \ManaPHP\Mvc\UrlInterface    $url
+ * @property \ManaPHP\View\UrlInterface   $url
  * @property \ManaPHP\RouterInterface     $router
  */
 class Compiler extends Component

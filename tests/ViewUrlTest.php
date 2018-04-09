@@ -3,10 +3,10 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Mvc\Url;
+use ManaPHP\View\Url;
 use PHPUnit\Framework\TestCase;
 
-class MvcUrlTest extends TestCase
+class ViewUrlTest extends TestCase
 {
     public function setup()
     {

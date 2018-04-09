@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Mvc;
+namespace ManaPHP\View;
 
 /**
- * Interface ManaPHP\Mvc\UrlInterface
+ * Interface ManaPHP\View\UrlInterface
  *
  * @package url
  */

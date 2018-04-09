@@ -13,7 +13,7 @@ use ManaPHP\Utility\Text;
  * @package response
  *
  * @property \ManaPHP\Http\CookiesInterface $cookies
- * @property \ManaPHP\Mvc\UrlInterface      $url
+ * @property \ManaPHP\View\UrlInterface     $url
  * @property \ManaPHP\RouterInterface       $router
  */
 class Response extends Component implements ResponseInterface

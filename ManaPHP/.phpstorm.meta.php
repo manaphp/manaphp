@@ -38,7 +38,7 @@ namespace PHPSTORM_META {                                // we want to avoid the
             'random' instanceof \ManaPHP\Security\RandomInterface,
             'messageQueue' instanceof \ManaPHP\Message\QueueInterface,
             'filter' instanceof \ManaPHP\Http\FilterInterface,
-            'url' instanceof \ManaPHP\Mvc\UrlInterface,
+            'url' instanceof \ManaPHP\View\UrlInterface,
             'stopwatch' instanceof \ManaPHP\StopwatchInterface,
             'htmlPurifier' instanceof \ManaPHP\Security\HtmlPurifierInterface,
             'redis' instanceof \ManaPHP\Redis,

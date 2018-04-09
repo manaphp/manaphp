@@ -8,7 +8,7 @@ use ManaPHP\Component;
  *
  * @package widget
  *
- * @property \ManaPHP\Mvc\UrlInterface  $url
+ * @property \ManaPHP\View\UrlInterface $url
  * @property \ManaPHP\CacheInterface    $cache
  * @property \ManaPHP\RendererInterface $renderer
  * @property \ManaPHP\DbInterface       $db
