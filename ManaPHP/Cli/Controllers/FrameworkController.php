@@ -15,7 +15,7 @@ class FrameworkController extends Controller
     /**
      * build manaphp framework lite php file
      *
-     * @param string $input input file name
+     * @param string $input  input file name
      * @param string $output output file name
      * @param int    $interfaces_keep
      * @param int    $whitespaces_keep

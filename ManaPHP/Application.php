@@ -10,7 +10,7 @@ use ManaPHP\Di\FactoryDefault;
  *
  * @package application
  *
- * @property \ManaPHP\DebuggerInterface   $debugger
+ * @property \ManaPHP\DebuggerInterface $debugger
  */
 abstract class Application extends Component implements ApplicationInterface
 {

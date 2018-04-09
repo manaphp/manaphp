@@ -18,11 +18,11 @@ class ControllerController extends Controller
     /**
      * create controller
      *
-     * @param string $module the module for controller
+     * @param string $module     the module for controller
      * @param string $controller the controller name
-     * @param array  $actions the action list for controller
-     * @param int    $force force to recreate all files
-     * @param int    $api skip all views
+     * @param array  $actions    the action list for controller
+     * @param int    $force      force to recreate all files
+     * @param int    $api        skip all views
      *
      * @return int
      */

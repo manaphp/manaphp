@@ -167,7 +167,7 @@ class DbController extends Controller
             $str .= '        ];' . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
-        
+
         $str .= '}';
 
         return $str;
@@ -176,7 +176,7 @@ class DbController extends Controller
     /**
      * list databases and tables
      *
-     * @param array  $services services name list
+     * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
      */
     public function listCommand($services = [], $table_pattern = '')
@@ -208,8 +208,8 @@ class DbController extends Controller
     /**
      * generate model file in online
      *
-     * @param string $service service name
-     * @param string $table table name
+     * @param string $service   service name
+     * @param string $table     table name
      * @param string $namespace
      * @param bool   $optimized output as more methods as possible
      *
@@ -252,10 +252,10 @@ class DbController extends Controller
     /**
      * generate models file in online
      *
-     * @param array  $services services name list
+     * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
-     * @param string $namespace namespace of models
-     * @param bool   $optimized output as more methods as possible
+     * @param string $namespace     namespace of models
+     * @param bool   $optimized     output as more methods as possible
      */
     public function modelsCommand($services = [], $table_pattern = '', $namespace = 'App\Models', $optimized = false)
     {
@@ -276,7 +276,7 @@ class DbController extends Controller
     /**
      * export db data to csv files
      *
-     * @param array  $services services name list
+     * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
      */
     public function jsonCommand($services = [], $table_pattern = '')
@@ -314,9 +314,9 @@ class DbController extends Controller
     /**
      * export db data to csv files
      *
-     * @param array  $services services name list
+     * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
-     * @param bool   $bom contains BOM or not
+     * @param bool   $bom           contains BOM or not
      */
     public function csvCommand($services = [], $table_pattern = '', $bom = false)
     {

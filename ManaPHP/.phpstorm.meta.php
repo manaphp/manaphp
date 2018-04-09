@@ -61,7 +61,7 @@ namespace PHPSTORM_META {                                // we want to avoid the
  * @xglobal $view ManaPHP\ViewInterface
  */
 /**
- * @var \ManaPHP\ViewInterface     $view
+ * @var \ManaPHP\ViewInterface         $view
  * @var \ManaPHP\Di                    $di
  * @var \ManaPHP\Http\RequestInterface $request
  */

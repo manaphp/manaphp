@@ -9,8 +9,8 @@ use ManaPHP\Exception\InvalidFormatException;
  *
  * @package renderer\engine
  *
- * @property \ManaPHP\View\UrlInterface   $url
- * @property \ManaPHP\RouterInterface     $router
+ * @property \ManaPHP\View\UrlInterface $url
+ * @property \ManaPHP\RouterInterface   $router
  */
 class Compiler extends Component
 {
