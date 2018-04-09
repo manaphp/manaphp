@@ -48,7 +48,7 @@ abstract class HttpServer extends Application
     public function __construct($loader, $di = null)
     {
         parent::__construct($loader, $di);
-        $this->_di->keepInstancesState();
+        $this->_di->keepInstanceState();
         $this->_createSwooleServer();
     }
 

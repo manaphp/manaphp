@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Di\InstanceState;
 use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
@@ -88,10 +89,10 @@ class Di implements DiInterface
     /**
      * @var bool
      */
-    protected $_keepInstancesState = false;
+    protected $_keepInstanceState = false;
 
     /**
-     * @var array
+     * @var \ManaPHP\Di\InstanceState[]
      */
     protected $_instancesState = [];
 
@@ -301,8 +302,8 @@ class Di implements DiInterface
 
         if ($instance instanceof Component) {
             $instance->setDi($this);
-            if ($this->_keepInstancesState && ($state = $instance->saveInstanceState()) !== false) {
-                $this->_instancesState[] = [$name, $instance, $state];
+            if ($this->_keepInstanceState && ($state = $instance->saveInstanceState()) !== false) {
+                $this->_instancesState[] = new InstanceState($name, $instance, $state);
             }
         }
 
@@ -389,8 +390,6 @@ class Di implements DiInterface
     /**
      * @param string $name
      * @param mixed  $value
-     *
-     * @throws \ManaPHP\Di\Exception
      */
     public function __set($name, $value)
     {
@@ -449,19 +448,15 @@ class Di implements DiInterface
      *
      * @return void
      */
-    public function keepInstancesState($keep = true)
+    public function keepInstanceState($keep = true)
     {
-        $this->_keepInstancesState = $keep;
+        $this->_keepInstanceState = $keep;
     }
 
     public function restoreInstancesState()
     {
         foreach ($this->_instancesState as $item) {
-            /**
-             * @var \ManaPHP\Component $component
-             */
-            $component = $item[1];
-            $component->restoreInstanceState($item[2]);
+            $item->instance->restoreInstanceState($item->state);
         }
     }
 }
