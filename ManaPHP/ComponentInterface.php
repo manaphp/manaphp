@@ -63,14 +63,21 @@ interface ComponentInterface
     public function dump();
 
     /**
-     * @return bool
-     */
-    public function reConstruct();
-
-    /**
      * @param  \ManaPHP\Component $caller
      *
      * @return string
      */
     public function getComponentName($caller = null);
+
+    /**
+     * @return array|false
+     */
+    public function saveInstanceState();
+
+    /**
+     * @param array $data
+     *
+     * @return void
+     */
+    public function restoreInstanceState($data);
 }

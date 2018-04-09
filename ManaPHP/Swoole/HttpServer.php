@@ -48,6 +48,7 @@ abstract class HttpServer extends Application
     public function __construct($loader, $di = null)
     {
         parent::__construct($loader, $di);
+        $this->_di->keepInstancesState();
         $this->_createSwooleServer();
     }
 
@@ -182,9 +183,8 @@ abstract class HttpServer extends Application
 
         $content = $this->response->getContent();
         $response->end($content);
-        $this->_di->reConstruct();
-
         $this->_afterRequest();
+        $this->_di->restoreInstancesState();
     }
 
     public function main()

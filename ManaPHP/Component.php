@@ -219,14 +219,6 @@ class Component implements ComponentInterface
     }
 
     /**
-     * @return bool
-     */
-    public function reConstruct()
-    {
-        return true;
-    }
-
-    /**
      * @param \ManaPHP\Component $caller
      *
      * @return string
@@ -238,6 +230,26 @@ class Component implements ComponentInterface
             return lcfirst(substr($className, strrpos($className, '\\') + 1));
         } else {
             return strtr(substr($className, ($pos = strpos($className, '\\')) === false ? 0 : $pos + 1), '\\', '.');
+        }
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function saveInstanceState()
+    {
+        return false;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return void
+     */
+    public function restoreInstanceState($data)
+    {
+        foreach ($data as $k => $v) {
+            $this->$k = $v;
         }
     }
 }

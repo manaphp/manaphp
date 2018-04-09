@@ -40,9 +40,9 @@ class Cookies extends Component implements CookiesInterface
         }
     }
 
-    public function reConstruct()
+    public function saveInstanceState()
     {
-        $this->_cookies = [];
+        return ['_cookies' => []];
     }
 
     /**

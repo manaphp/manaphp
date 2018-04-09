@@ -73,21 +73,22 @@ class Debugger extends Component implements DebuggerInterface
         $this->response->setHeader('X-Debugger-Link', $this->getUrl());
     }
 
-    public function reConstruct()
+    public function saveInstanceState()
+    {
+        $data = [];
+        foreach (get_object_vars($this) as $k => $v) {
+            if (!is_object($k)) {
+                $data[$k] = $v;
+            }
+        }
+
+        return $data;
+    }
+
+    public function restoreInstanceState($data)
     {
         $this->save();
-
-        $this->_file = null;
-        $this->_dump = [];
-        $this->_view = [];
-        $this->_log = [];
-        $this->_sql_prepared = [];
-        $this->_sql_executed = [];
-        $this->_sql_count = 0;
-        $this->_sql_beforeQueryTime = null;
-        $this->_exception = [];
-        $this->_warnings = [];
-        $this->_events = [];
+        parent::restoreInstanceState($data);
     }
 
     /**

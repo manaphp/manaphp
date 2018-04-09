@@ -86,6 +86,16 @@ class Di implements DiInterface
     protected $_instances = [];
 
     /**
+     * @var bool
+     */
+    protected $_keepInstancesState = false;
+
+    /**
+     * @var array
+     */
+    protected $_instancesState = [];
+
+    /**
      * First DI build
      *
      * @var \ManaPHP\Di
@@ -291,6 +301,9 @@ class Di implements DiInterface
 
         if ($instance instanceof Component) {
             $instance->setDi($this);
+            if ($this->_keepInstancesState && ($state = $instance->saveInstanceState()) !== false) {
+                $this->_instancesState[] = [$name, $instance, $state];
+            }
         }
 
         return $instance;
@@ -431,12 +444,24 @@ class Di implements DiInterface
         return get_object_vars($this);
     }
 
-    public function reConstruct()
+    /**
+     * @param bool $keep
+     *
+     * @return void
+     */
+    public function keepInstancesState($keep = true)
     {
-        foreach ($this->_instances as $k => $v) {
-            if ($v instanceof Component) {
-                $v->reConstruct();
-            }
+        $this->_keepInstancesState = $keep;
+    }
+
+    public function restoreInstancesState()
+    {
+        foreach ($this->_instancesState as $item) {
+            /**
+             * @var \ManaPHP\Component $component
+             */
+            $component = $item[1];
+            $component->restoreInstanceState($item[2]);
         }
     }
 }
