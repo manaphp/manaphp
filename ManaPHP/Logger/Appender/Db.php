@@ -44,7 +44,6 @@ class Db extends Component implements AppenderInterface
      * @param \ManaPHP\Logger\Log $log
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function append($log)
     {
@@ -64,7 +63,6 @@ class Db extends Component implements AppenderInterface
         $logModel->level = $log->level;
         $logModel->category = $log->category;
         $logModel->location = $log->location;
-        $logModel->caller = $log->caller;
         $logModel->message = $log->message;
         $logModel->created_time = $log->timestamp;
         $logModel->create();
