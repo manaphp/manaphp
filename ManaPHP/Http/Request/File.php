@@ -4,7 +4,6 @@ namespace ManaPHP\Http\Request;
 
 use ManaPHP\Component;
 use ManaPHP\Http\Request\File\Exception as FileException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Http\Request\File
@@ -129,7 +128,7 @@ class File extends Component implements FileInterface
                 $allowedExtensions = ',' . str_replace(' ', '', $allowedExtensions) . ',';
                 $allowedExtensions = str_replace(',.', ',', $allowedExtensions);
 
-                if (!Text::contains($allowedExtensions, $extension, true)) {
+                if (stripos($allowedExtensions, $extension) === false) {
                     throw new FileException(['`:extension` file type is not allowed upload'/**m0fc09a879406a3940*/, 'extension' => $extension]);
                 }
             }
@@ -137,7 +136,7 @@ class File extends Component implements FileInterface
             if (is_string(self::$_alwaysRejectedExtensions)) {
                 $alwaysRejectedExtensions = ',' . str_replace(' ', '', self::$_alwaysRejectedExtensions) . ',';
                 $alwaysRejectedExtensions = str_replace(',.', ',', $alwaysRejectedExtensions);
-                if (Text::contains($alwaysRejectedExtensions, $extension, true)) {
+                if (stripos($alwaysRejectedExtensions, $extension) !== false) {
                     throw new FileException(['`:extension` file types is not allowed upload always'/**m0331d91c39adb3af6*/, 'extensions' => self::$_alwaysRejectedExtensions]);
                 }
             }

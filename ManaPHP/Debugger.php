@@ -3,7 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Logger\Log;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Debugger
@@ -212,7 +211,7 @@ class Debugger extends Component implements DebuggerInterface
 
             $parts = explode(' ', $v, 2);
             $call = $parts[1];
-            if (!Text::contains($call, ':')) {
+            if (strpos($call, ':') === false) {
                 $call .= ': ';
             }
             $parts = explode(': ', $call, 2);
@@ -324,7 +323,7 @@ class Debugger extends Component implements DebuggerInterface
             $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
         }
 
-        $template = Text::contains($this->_template, '/') ? $this->_template : ('@manaphp/Debugger/Template/' . $this->_template);
+        $template = strpos($this->_template, '/') !== false ? $this->_template : ('@manaphp/Debugger/Template/' . $this->_template);
 
         return $this->renderer->render($template, ['data' => $data], false);
     }

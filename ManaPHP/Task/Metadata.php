@@ -3,7 +3,6 @@ namespace ManaPHP\Task;
 
 use ManaPHP\Component;
 use ManaPHP\Task;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Task\Metadata
@@ -117,7 +116,7 @@ class Metadata extends Component implements MetadataInterface
         $data = [];
 
         foreach ($rc->getConstants() as $n => $field) {
-            if (!Text::startsWith($n, 'FIELD_')) {
+            if (strpos($n, 'FIELD_') !== 0) {
                 continue;
             }
 
@@ -208,7 +207,7 @@ class Metadata extends Component implements MetadataInterface
         $rc = new \ReflectionClass($this);
 
         foreach ($rc->getConstants() as $n => $field) {
-            if (!Text::startsWith($n, 'FIELD_')) {
+            if (strpos($n, 'FIELD_') !== 0) {
                 continue;
             }
 

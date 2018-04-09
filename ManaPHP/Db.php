@@ -8,7 +8,6 @@ use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Utility\Text;
 use ManaPHP\Exception\RuntimeException;
 
 /**
@@ -477,7 +476,7 @@ abstract class Db extends Component implements DbInterface
         /** @noinspection ForeachSourceInspection */
         foreach ($conditions as $k => $v) {
             if (is_int($k)) {
-                $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
+                $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             } else {
                 $wheres[] = "[$k]=:$k";
                 $bind[$k] = $v;
@@ -535,7 +534,7 @@ abstract class Db extends Component implements DbInterface
         /** @noinspection ForeachSourceInspection */
         foreach ($conditions as $k => $v) {
             if (is_int($k)) {
-                $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
+                $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             } else {
                 $wheres[] = "[$k]=:$k";
                 $bind[$k] = $v;

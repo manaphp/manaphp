@@ -5,7 +5,6 @@ use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Utility\Text;
 use ManaPHP\Exception\RuntimeException;
 
 /**
@@ -1291,7 +1290,7 @@ class Query extends Component implements QueryInterface
 
         $wheres = [];
         foreach ($this->_conditions as $v) {
-            $wheres[] = Text::contains($v, ' or ', true) ? "($v)" : $v;
+            $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
         }
 
         if ($wheres) {

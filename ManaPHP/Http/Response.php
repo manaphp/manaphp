@@ -5,7 +5,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Http\Filter\Exception as FilterException;
 use ManaPHP\Http\Response\Exception as ResponseException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Http\Response
@@ -438,7 +437,7 @@ class Response extends Component implements ResponseInterface
     {
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
             $userAgent = $_SERVER['HTTP_USER_AGENT'];
-            if (Text::contains($userAgent, 'Trident') || Text::contains($userAgent, 'MSIE')) {
+            if (strpos($userAgent, 'Trident') !== false || strpos($userAgent, 'MSIE') !== false) {
                 $attachmentName = urlencode($attachmentName);
             }
         }
@@ -476,7 +475,7 @@ class Response extends Component implements ResponseInterface
         fprintf($file, "\xEF\xBB\xBF");
 
         if ($fields !== null) {
-            if (Text::startsWith($fields[0], 'ID')) {
+            if (strpos($fields[0], 'ID') === 0) {
                 $fields[0] = strtolower($fields[0]);
             }
 

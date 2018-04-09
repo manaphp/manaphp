@@ -2,7 +2,6 @@
 namespace ManaPHP\View;
 
 use ManaPHP\Component;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\View\Url
@@ -75,7 +74,7 @@ class Url extends Component implements UrlInterface
             $strUrl = ($this->_prefix === '/' ? '' : rtrim($this->_prefix, '/')) . $uri;
         }
 
-        if (Text::contains($strUrl, ':')) {
+        if (strpos($strUrl, ':') !== false) {
             /** @noinspection ForeachSourceInspection */
             foreach ($args as $k => $v) {
                 $count = 0;
@@ -87,7 +86,7 @@ class Url extends Component implements UrlInterface
         }
 
         if (count($args) !== 0) {
-            $strUrl .= (Text::contains($strUrl, '?') ? '&' : '?') . http_build_query($args);
+            $strUrl .= (strpos($strUrl, '?') !== false ? '&' : '?') . http_build_query($args);
         }
 
         if (isset($anchor)) {

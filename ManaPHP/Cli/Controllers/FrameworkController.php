@@ -123,7 +123,7 @@ class FrameworkController extends Controller
 
         $dh = opendir($dir);
         while ($file = readdir($dh)) {
-            if (Text::startsWith($file, '.')) {
+            if ($file[0] === '.') {
                 continue;
             }
 
@@ -169,9 +169,9 @@ class FrameworkController extends Controller
             $dstFile = str_replace($ManaPHPSrcDir, $ManaPHPDstDir, $file);
 
             $content = $this->_minify($this->filesystem->fileGet($file));
-            $lineCount = substr_count($content, Text::contains($content, "\r") ? "\r" : "\n");
+            $lineCount = substr_count($content, strpos($content, "\r") !== false ? "\r" : "\n");
 
-            if (Text::contains($file, 'Interface.php')) {
+            if (strpos($file, 'Interface.php')) {
                 $totalInterfaceLines += $lineCount;
                 $totalLines += $lineCount;
             } else {

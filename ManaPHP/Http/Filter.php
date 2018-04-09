@@ -3,7 +3,6 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Http\Filter\Exception as FilterException;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Http\Filter
@@ -53,7 +52,7 @@ class Filter extends Component implements FilterInterface
     public function __construct($options = [])
     {
         foreach (get_class_methods($this) as $method) {
-            if (Text::startsWith($method, '_filter_')) {
+            if (strpos($method, '_filter_') === 0) {
                 $this->_filters[substr($method, 8)] = [$this, $method];
             }
         }
@@ -113,7 +112,7 @@ class Filter extends Component implements FilterInterface
 
         $filters = [];
         foreach ($parts as $part) {
-            if (Text::contains($part, ':')) {
+            if (strpos($part, ':') !== false) {
                 $parts2 = explode(':', $part, 2);
                 $filter = $parts2[0];
                 $parameters = explode(',', $parts2[1]);
@@ -196,7 +195,7 @@ class Filter extends Component implements FilterInterface
 
         if ($value === null) {
             if (is_string($this->_messages)) {
-                if (!Text::contains($this->_messages, '.')) {
+                if (strpos($this->_messages, '.') === false) {
                     $file = '@manaphp/Http/Filter/Messages/' . $this->_messages . '.php';
                 } else {
                     $file = $this->_messages;

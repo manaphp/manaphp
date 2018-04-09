@@ -5,7 +5,6 @@ namespace ManaPHP\Authentication\Token\Adapter;
 use ManaPHP\Authentication\Token\Adapter\Mwt\Exception as MwtException;
 use ManaPHP\Authentication\TokenInterface;
 use ManaPHP\Component;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Authentication\Token\Adapter\Mwt
@@ -47,7 +46,7 @@ class Mwt extends Component implements TokenInterface
     public function __construct($options = [])
     {
         foreach (get_object_vars($this) as $field => $_) {
-            if (!Text::startsWith($field, '_')) {
+            if ($field[0] !== '_') {
                 $this->_fields[] = $field;
             }
         }
