@@ -1,7 +1,7 @@
 <?php
-namespace ManaPHP\Mvc\Action;
+namespace ManaPHP;
 
-interface InvokerInterface
+interface ActionInvokerInterface
 {
     /**
      * @param \ManaPHP\Mvc\ControllerInterface $controller

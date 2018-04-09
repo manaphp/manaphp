@@ -1,17 +1,16 @@
 <?php
-namespace ManaPHP\Mvc\Action;
+namespace ManaPHP;
 
-use ManaPHP\Component;
-use ManaPHP\Mvc\Action\Exception as ActionException;
+use ManaPHP\ActionInvoker\Exception as ActionException;
 
 /**
- * Class ManaPHP\Mvc\Action\Invoker
+ * Class ManaPHP\ActionInvoker
  *
  * @package ManaPHP\Mvc\Action
  *
  * @property \ManaPHP\Http\RequestInterface $request
  */
-class Invoker extends Component implements InvokerInterface
+class ActionInvoker extends Component implements ActionInvokerInterface
 {
     /**
      * @param \ManaPHP\Mvc\ControllerInterface $controller
