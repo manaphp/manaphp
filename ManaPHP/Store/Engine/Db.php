@@ -68,7 +68,6 @@ class Db extends Component implements EngineInterface
      * @param string $value
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function set($key, $value)
     {

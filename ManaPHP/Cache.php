@@ -58,7 +58,6 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      * @param string $key
      *
      * @return mixed|false
-     * @throws \ManaPHP\Cache\Exception
      */
     public function get($key)
     {
@@ -155,7 +154,6 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
      * @param callable $callback
      *
      * @return mixed
-     * @throws \ManaPHP\Cache\Exception
      */
     public function remember($key, $ttl, $callback)
     {

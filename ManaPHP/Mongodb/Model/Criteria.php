@@ -1012,7 +1012,6 @@ class Criteria extends \ManaPHP\Model\Criteria
 
     /**
      * @return int
-     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
     public function delete()
     {
@@ -1026,7 +1025,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param $fieldValues
      *
      * @return int
-     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
     public function update($fieldValues)
     {

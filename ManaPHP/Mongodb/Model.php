@@ -230,7 +230,6 @@ class Model extends \ManaPHP\Model
      * @param     int
      *
      * @return int
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function generateAutoIncrementId($step = 1)
     {

@@ -7,7 +7,6 @@ use ManaPHP\Amqp\Message;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidKeyException;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\UnexpectedValueException;
 
 class Amqp extends Component implements AmqpInterface
 {

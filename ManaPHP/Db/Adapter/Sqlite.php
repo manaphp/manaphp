@@ -25,7 +25,6 @@ class Sqlite extends Db
      * @param string $source
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function getMetadata($source)
     {
@@ -89,7 +88,6 @@ class Sqlite extends Db
      * @param string $schema
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function getTables($schema = null)
     {

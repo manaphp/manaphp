@@ -4,6 +4,7 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Http\Response;
 use ManaPHP\Router\NotFoundRouteException;
+use ManaPHP\View;
 
 /**
  * Class ManaPHP\Mvc\Application
@@ -69,7 +70,6 @@ class Application extends \ManaPHP\Application
 
     /**
      * @return \ManaPHP\Http\ResponseInterface
-     * @throws \ManaPHP\Mvc\Exception
      */
     public function handle()
     {

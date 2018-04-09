@@ -38,7 +38,6 @@ class Db extends Component implements EngineInterface
      * @param int    $duration
      *
      * @return int
-     * @throws \ManaPHP\Model\Exception
      */
     public function check($type, $id, $duration)
     {

@@ -3,7 +3,6 @@ namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Exception\DsnFormatException;
-use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
 
@@ -56,7 +55,6 @@ class Mssql extends Db
      * @param $source
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function getMetadata($source)
     {

@@ -2,7 +2,8 @@
 namespace ManaPHP\Renderer\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Renderer\Engine\Sword\Exception as SwordException;
+use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Renderer\EngineInterface;
 
 /**
@@ -17,7 +18,6 @@ class Sword extends Component implements EngineInterface
      * @param array  $vars
      *
      * @return void
-     * @throws \ManaPHP\Renderer\Engine\Sword\Exception
      */
     public function render($file, $vars = [])
     {
@@ -34,10 +34,10 @@ class Sword extends Component implements EngineInterface
 
             /** @noinspection NotOptimalIfConditionsInspection */
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                throw new SwordException(['create `:dir` directory failed: :last_error_message', 'dir' => $dir]);
+                throw new CreateDirectoryFailedException(['create `:dir` directory failed: :last_error_message', 'dir' => $dir]);
             }
             if (file_put_contents($_compiledFile, $this->_di->getShared('swordCompiler')->compileString(file_get_contents($file)), LOCK_EX) === false) {
-                throw new SwordException(['write compiled sword `:file` failed: :last_error_message', 'file' => $_compiledFile]);
+                throw new RuntimeException(['write compiled sword `:file` failed: :last_error_message', 'file' => $_compiledFile]);
             }
         }
 

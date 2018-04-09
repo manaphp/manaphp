@@ -54,7 +54,6 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
      */
     protected function _buildSql()
     {
@@ -112,7 +111,6 @@ class Query extends \ManaPHP\Db\Query implements QueryInterface
      * @deprecated
      *
      * @return static
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function andWhere($condition, $bind = [])
     {

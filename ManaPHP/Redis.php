@@ -103,7 +103,6 @@ class Redis extends \Redis
 
     /**
      * @return static
-     * @throws \ManaPHP\Redis\Exception
      */
     public function reconnect()
     {

@@ -53,7 +53,6 @@ class Db extends Component implements EngineInterface
      * @param array  $context
      *
      * @return bool
-     * @throws \ManaPHP\Model\Exception
      */
     public function write($session_id, $data, $context)
     {

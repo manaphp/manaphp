@@ -1,10 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Mvc\NotFoundException;
-use ManaPHP\Renderer\Engine\Php;
-use ManaPHP\Security\CsrfToken\Exception as CSrfTokenException;
-
 /**
  * Class ManaPHP\ExceptionHandler
  *

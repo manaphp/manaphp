@@ -4,7 +4,7 @@ namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Component;
 use ManaPHP\DbInterface;
-use ManaPHP\RuntimeException;
+use ManaPHP\Exception\RuntimeException;
 
 class Proxy extends Component implements DbInterface
 {

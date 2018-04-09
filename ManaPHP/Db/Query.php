@@ -3,11 +3,10 @@ namespace ManaPHP\Db;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
-use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\RuntimeException;
 use ManaPHP\Utility\Text;
+use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Db\Model\QueryBuilder

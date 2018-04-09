@@ -22,7 +22,6 @@ interface CriteriaInterface extends \ManaPHP\Model\CriteriaInterface
 
     /**
      * @return string
-     * @throws \ManaPHP\Db\Query\Exception
      */
     public function getSql();
 

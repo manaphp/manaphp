@@ -2,6 +2,7 @@
 namespace ManaPHP;
 
 use ManaPHP\ActionInvoker\Exception as ActionException;
+use ManaPHP\ActionInvoker\NotFoundException;
 
 /**
  * Class ManaPHP\ActionInvoker
@@ -18,7 +19,7 @@ class ActionInvoker extends Component implements ActionInvokerInterface
      * @param array                            $params
      *
      * @return array
-     * @throws \ManaPHP\Mvc\Action\Exception
+     * @throws \ManaPHP\ActionInvoker\Exception
      */
     protected function _buildArgs($controller, $action, $params)
     {
@@ -94,8 +95,7 @@ class ActionInvoker extends Component implements ActionInvokerInterface
      * @param array                            $params
      *
      * @return mixed
-     * @throws \ManaPHP\Mvc\Action\Exception
-     * @throws \ManaPHP\Mvc\Action\NotFoundException
+     * @throws \ManaPHP\ActionInvoker\NotFoundException
      */
     public function invoke($controller, $action, $params)
     {

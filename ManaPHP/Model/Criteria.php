@@ -2,7 +2,8 @@
 namespace ManaPHP\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Model\Criteria\Exception as CriteriaException;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Model\Criteria
@@ -217,7 +218,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
             return $this->fetchOne();
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new CriteriaException('xxx');
+            throw new RuntimeException('xxx');
         }
     }
 
@@ -310,7 +311,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
                 } elseif (is_callable($v)) {
                     $data = $v($instance->$method());
                 } else {
-                    throw new CriteriaException(['`:with` with is invalid', 'with' => $k]);
+                    throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
                 }
             }
 

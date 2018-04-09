@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 2015/12/20
- * Time: 22:06
- */
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Exception\DsnFormatException;
-use ManaPHP\Exception\InvalidValueException;
 
 /**
  * Class ManaPHP\Db\Adapter\Mysql
@@ -154,7 +147,6 @@ class Mysql extends Db
      * @param string $schema
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function getTables($schema = null)
     {

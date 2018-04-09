@@ -2,7 +2,7 @@
 namespace ManaPHP\Renderer\Engine\Sword;
 
 use ManaPHP\Component;
-use ManaPHP\Renderer\Engine\Sword\Exception as SwordException;
+use ManaPHP\Exception\InvalidFormatException;
 
 /**
  * Class ManaPHP\Renderer\Engine\Sword
@@ -725,7 +725,6 @@ class Compiler extends Component
      * @param  string $expression
      *
      * @return string
-     * @throws \ManaPHP\Renderer\Engine\Sword\Exception
      */
     protected function _compileRequest(
         /** @noinspection PhpUnusedParameterInspection */
@@ -740,7 +739,7 @@ class Compiler extends Component
             case 2:
                 return "<?php if(isset(\$_REQUEST[$parts[0]])) echo \$renderer->escape(\$_REQUEST[$parts[0]]); else echo $parts[1]; ?>";
             default:
-                throw new SwordException(['bad expression: `:expression`', 'expression' => "@request($expression)"]);
+                throw new InvalidFormatException(['bad expression: `:expression`', 'expression' => "@request($expression)"]);
         }
     }
 

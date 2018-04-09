@@ -36,7 +36,6 @@ class Db extends Component implements EngineInterface
      * @param int    $priority
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {

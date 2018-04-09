@@ -2,7 +2,8 @@
 namespace ManaPHP\Store\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Store\Engine\File\Exception as FileException;
+use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Store\EngineInterface;
 
 /**
@@ -112,7 +113,6 @@ class File extends Component implements EngineInterface
      * @param string $value
      *
      * @return void
-     * @throws \ManaPHP\Store\Engine\Exception
      */
     public function set($id, $value)
     {
@@ -120,11 +120,11 @@ class File extends Component implements EngineInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new FileException(['Create `dir` store directory failed: :last_error_message'/**m0152cd058643d24d6*/, 'dir' => $dir]);
+            throw new CreateDirectoryFailedException(['Create `dir` store directory failed: :last_error_message'/**m0152cd058643d24d6*/, 'dir' => $dir]);
         }
 
         if (file_put_contents($file, $value, LOCK_EX) === false) {
-            throw new FileException(['write `:file` store file failed: :last_error_message'/**m0d7c8cf410b1e3a68*/, 'file' => $file]);
+            throw new RuntimeException(['write `:file` store file failed: :last_error_message'/**m0d7c8cf410b1e3a68*/, 'file' => $file]);
         }
 
         clearstatcache(true, $file);

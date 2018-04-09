@@ -27,7 +27,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     protected function _readMetaData($model)
     {
@@ -60,7 +59,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function getAttributes($model)
     {
@@ -77,7 +75,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
-     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function getPrimaryKeyAttributes($model)
     {
@@ -90,7 +87,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
      * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return string |null
-     * @throws \ManaPHP\Db\Model\Metadata\Exception
      */
     public function getAutoIncrementAttribute($model)
     {

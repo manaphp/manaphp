@@ -3,7 +3,11 @@
 namespace ManaPHP\Image\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Image\Engine\Imagick\Exception as ImagickException;
+use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\InvalidFormatException;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Image\EngineInterface;
 
 /**
@@ -35,27 +39,25 @@ class Imagick extends Component implements EngineInterface
 
     /**
      * @param string $file
-     *
-     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function __construct($file)
     {
         if (!extension_loaded('imagick')) {
-            throw new ImagickException('Imagick extension is not loaded: http://pecl.php.net/package/imagick'/**m08adb1315d01ac35d*/);
+            throw new PreconditionException('Imagick extension is not loaded: http://pecl.php.net/package/imagick'/**m08adb1315d01ac35d*/);
         }
 
         $this->_file = realpath($this->alias->resolve($file));
         if (!$this->_file) {
-            throw new ImagickException(['`:file` file is not exists'/**m03d72c93d7f919633*/, 'file' => $file]);
+            throw new InvalidValueException(['`:file` file is not exists'/**m03d72c93d7f919633*/, 'file' => $file]);
         }
 
         $this->_image = new \Imagick();
         if (!$this->_image->readImage($this->_file)) {
-            throw new ImagickException(['Imagick::readImage `:file` failed'/**m0bde8a84f102e2334*/, 'file' => $file]);
+            throw new InvalidFormatException(['Imagick::readImage `:file` failed'/**m0bde8a84f102e2334*/, 'file' => $file]);
         }
 
         if ($this->_image->getNumberImages() !== 1) {
-            throw new ImagickException(['not support multiple iterations: `:file`'/**m02c9881cd81a06a01*/, 'file' => $file]);
+            throw new PreconditionException(['not support multiple iterations: `:file`'/**m02c9881cd81a06a01*/, 'file' => $file]);
         }
 
         if (!$this->_image->getImageAlphaChannel()) {
@@ -99,8 +101,6 @@ class Imagick extends Component implements EngineInterface
      */
     public function resize($width, $height)
     {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $this->_image->scaleImage($width, $height);
 
         $this->_width = $this->_image->getImageWidth();
@@ -194,7 +194,6 @@ class Imagick extends Component implements EngineInterface
      * @param float  $opacity
      *
      * @return static
-     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
@@ -205,11 +204,11 @@ class Imagick extends Component implements EngineInterface
         }
 
         if ($watermark->getNumberImages() !== 1) {
-            throw new ImagickException(['not support multiple iterations: `:file`'/**m091516b22452f192b*/, 'file' => $file]);
+            throw new PreconditionException(['not support multiple iterations: `:file`'/**m091516b22452f192b*/, 'file' => $file]);
         }
 
         if (!$this->_image->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $offsetX, $offsetY)) {
-            throw new ImagickException('Imagick::compositeImage Failed'/**m0143717a75e945e37*/);
+            throw new RuntimeException('Imagick::compositeImage Failed'/**m0143717a75e945e37*/);
         }
 
         $watermark->clear();
@@ -221,8 +220,6 @@ class Imagick extends Component implements EngineInterface
     /**
      * @param string $file
      * @param int    $quality
-     *
-     * @throws \ManaPHP\Image\Engine\Exception
      */
     public function save($file, $quality = 80)
     {
@@ -243,11 +240,11 @@ class Imagick extends Component implements EngineInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new ImagickException(['create `:dir` image directory failed: :message'/**m0798bf2f57ec615b2*/, 'dir' => $dir, 'message' => error_get_last()['message']]);
+            throw new CreateDirectoryFailedException(['create `:dir` image directory failed: :message'/**m0798bf2f57ec615b2*/, 'dir' => $dir, 'message' => error_get_last()['message']]);
         }
 
         if (!$this->_image->writeImage($file)) {
-            throw new ImagickException(['save `:file` image file failed'/**m03102b42157ab9467*/, 'file' => $file]);
+            throw new RuntimeException(['save `:file` image file failed'/**m03102b42157ab9467*/, 'file' => $file]);
         }
     }
 

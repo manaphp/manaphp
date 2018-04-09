@@ -59,7 +59,6 @@ class Db extends Component implements AdapterInterface
      * @param mixed  $value
      *
      * @return void
-     * @throws \ManaPHP\Model\Exception
      */
     public function set($key, $value)
     {
