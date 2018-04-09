@@ -6,7 +6,7 @@ use ManaPHP\ZooKeeper\Exception as ZookeeperException;
 use ManaPHP\ZooKeeper\WatchedChildrenEvent;
 use ManaPHP\ZooKeeper\WatchedDataEvent;
 
-class ZooKeeper extends Component implements ZookeeperInterface
+class Zookeeper extends Component implements ZookeeperInterface
 {
     /**
      * @var string
