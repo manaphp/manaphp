@@ -27,7 +27,7 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @var string
      */
-    protected $templates_dir = '@manaphp/Model/Validator/Messages';
+    protected $_templates_dir = '@manaphp/Model/Validator/Messages';
 
     /**
      * @var array
@@ -47,13 +47,18 @@ class Validator extends Component implements ValidatorInterface
     public function __construct($options = [])
     {
         if (isset($options['templates_dir'])) {
-            $this->templates_dir = $options['templates_dir'];
+            $this->_templates_dir = $options['templates_dir'];
         }
 
         if (isset($options['templates'])) {
             $this->_templates = $options['templates'];
-            $this->templates_dir = null;
+            $this->_templates_dir = null;
         }
+    }
+
+    public function saveInstanceState()
+    {
+        return ['_templates_dir' => $this->_templates_dir];
     }
 
     /**
@@ -62,7 +67,7 @@ class Validator extends Component implements ValidatorInterface
     protected function _loadTemplates()
     {
         $languages = explode(',', $this->configure->language);
-        $file = "{$this->templates_dir}/$languages[0].php";
+        $file = "{$this->_templates_dir}/$languages[0].php";
         if (!$this->filesystem->fileExists($file)) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new ValidatorException(['`:file` validator message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
@@ -541,12 +546,5 @@ class Validator extends Component implements ValidatorInterface
     public function _validate_upper($value)
     {
         return strtoupper($value);
-    }
-
-    public function reConstruct()
-    {
-        if ($this->templates_dir && strpos($this->configure->language, ',') !== false) {
-            $this->_templates = null;
-        }
     }
 }
