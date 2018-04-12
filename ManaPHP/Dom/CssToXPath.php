@@ -22,6 +22,8 @@ class CssToXPath
                     } else {
                         return '[position()' . ($word === 'gt' ? '>' : '<') . "last()$match[2]]";
                     }
+                } else {
+                    return '';
                 }
             }, $path);
 
