@@ -6,10 +6,10 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
-use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Model
