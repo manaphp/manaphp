@@ -15,7 +15,7 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
     public function handle($exception)
     {
         if ($exception instanceof \ManaPHP\Exception) {
-            if ($exception->getStatusCode() === 200) {
+            if ($exception->getStatusCode() < 400) {
                 return;
             }
             $this->response->setStatus($exception->getStatusCode(), $exception->getStatusText());
