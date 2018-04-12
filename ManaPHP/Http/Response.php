@@ -44,13 +44,13 @@ class Response extends Component implements ResponseInterface
      *</code>
      *
      * @param int    $code
-     * @param string $message
+     * @param string $text
      *
      * @return static
      */
-    public function setStatus($code, $message)
+    public function setStatus($code, $text)
     {
-        $this->setHeader('Status', $code . ' ' . $message);
+        $this->setHeader('Status', $code . ' ' . $text);
 
         return $this;
     }

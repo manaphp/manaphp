@@ -14,11 +14,11 @@ interface ResponseInterface
      * Sets the HTTP response code
      *
      * @param int    $code
-     * @param string $message
+     * @param string $text
      *
      * @return static
      */
-    public function setStatus($code, $message);
+    public function setStatus($code, $text);
 
     /**
      * send a header in the response
