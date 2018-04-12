@@ -1,0 +1,56 @@
+<?php
+
+namespace ManaPHP\Cli\Controllers;
+
+use ManaPHP\Cli\Controller;
+
+class ServeController extends Controller
+{
+    /**
+     * start with php builtin server
+     *
+     * @param string $ip
+     * @param int    $port
+     */
+    public function defaultCommand($ip = '127.0.0.1', $port = 1983)
+    {
+        $router_str = <<<'STR'
+<?php
+$_SERVER['SERVER_ADDR'] = ':ip';
+$_SERVER['SERVER_PORT'] = ':port';
+$_SERVER['REQUEST_SCHEME'] = 'http';
+chdir("public");
+$uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+if ($uri !== '/') {
+    if (file_exists('public/' . $uri)
+        || preg_match('#(.css|.js|.gif|.png|.jpg|.jpeg|.ttf|.woff|.ico)$#', $uri) === 1
+    ) {
+        return false;
+    }
+}
+
+$_GET['_url'] = $uri;
+require_once  'index.php';
+STR;
+
+        if ($value = $this->arguments->getValue(0)) {
+            if (strpos($value, ':')) {
+                list($ip, $port) = explode(':', $value, 2);
+            } elseif (is_numeric($value)) {
+                $port = $value;
+            } else {
+                $ip = $value;
+            }
+        }
+        $router = 'builtin_server_router.php';
+        $this->filesystem->filePut("@tmp/$router", strtr($router_str, [':ip' => $ip, ':port' => $port]));
+
+        echo "server listen on: $ip:$port", PHP_EOL;
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            `explorer.exe http://$ip:$port/`;
+        }
+
+        $r = `php -S $ip:$port -t public /tmp/$router`;
+    }
+}
