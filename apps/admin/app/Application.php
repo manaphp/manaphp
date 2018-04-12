@@ -48,7 +48,9 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
-        $this->configure->loadFile('@app/config.php');
+        if ($this->_configFile) {
+            $this->configure->loadFile($this->_configFile);
+        }
 
         $this->registerServices();
         $this->alias->set('@messages', '@app/Messages');
@@ -56,14 +58,10 @@ class Application extends \ManaPHP\Mvc\Application
 
         $this->router->setAreas(['Menu', 'Rbac', 'User']);
 
-        if ($this->configure->debug) {
+        try {
             $this->handle();
-        } else {
-            try {
-                $this->handle();
-            } catch (\Exception $e) {
-                $this->errorHandler->handle($e);
-            }
+        } catch (\Exception $e) {
+            $this->errorHandler->handle($e);
         }
 
         $this->response->send();

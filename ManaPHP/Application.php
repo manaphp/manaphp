@@ -15,6 +15,11 @@ use ManaPHP\Di\FactoryDefault;
 abstract class Application extends Component implements ApplicationInterface
 {
     /**
+     * @var string
+     */
+    protected $_configFile = '@config/app.php';
+
+    /**
      * Application constructor.
      *
      * @param \ManaPHP\Loader      $loader
@@ -70,6 +75,7 @@ abstract class Application extends Component implements ApplicationInterface
             $this->alias->set('@root', $rootDir);
             $this->alias->set('@data', $rootDir . '/data');
             $this->alias->set('@tmp', $rootDir . '/tmp');
+            $this->alias->set('@config', $rootDir . '/config');
         }
     }
 

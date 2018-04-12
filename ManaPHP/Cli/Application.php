@@ -11,11 +11,6 @@ namespace ManaPHP\Cli;
  */
 class Application extends \ManaPHP\Application
 {
-    /**
-     * @var string
-     */
-    public $configFile = '@app/config.php';
-
     /** @noinspection MagicMethodsValidityInspection */
     /** @noinspection PhpMissingParentConstructorInspection */
     /**
@@ -58,8 +53,8 @@ class Application extends \ManaPHP\Application
      */
     public function main()
     {
-        if ($this->configFile) {
-            $this->configure->loadFile($this->configFile);
+        if ($this->_configFile) {
+            $this->configure->loadFile($this->_configFile);
         }
 
         $this->registerServices();

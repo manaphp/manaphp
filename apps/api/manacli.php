@@ -6,5 +6,5 @@ require __DIR__. '/../../ManaPHP/Loader.php';
 $loader = new \ManaPHP\Loader();
 
 $cli = new ManaPHP\Cli\Application($loader);
-$cli->configure->loadFile('@app/config.php');
+$cli->configure->loadFile('@config/app.php');
 $cli->main();
