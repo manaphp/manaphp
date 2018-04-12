@@ -4,6 +4,7 @@ namespace ManaPHP\Image\Engine;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
@@ -43,7 +44,7 @@ class Imagick extends Component implements EngineInterface
     public function __construct($file)
     {
         if (!extension_loaded('imagick')) {
-            throw new PreconditionException('Imagick extension is not loaded: http://pecl.php.net/package/imagick'/**m08adb1315d01ac35d*/);
+            throw new ExtensionNotInstalledException('Imagick');
         }
 
         $this->_file = realpath($this->alias->resolve($file));

@@ -3,7 +3,7 @@
 namespace ManaPHP\Task\Metadata\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Task\Metadata\Adapter\Apcu\Exception as ApcuException;
+use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Task\Metadata\AdapterInterface;
 
 /**
@@ -22,13 +22,11 @@ class Apcu extends Component implements AdapterInterface
      * Apcu constructor.
      *
      * @param string|array $options
-     *
-     * @throws \ManaPHP\Task\Metadata\Adapter\Exception
      */
     public function __construct($options = 'tasks_metadata:')
     {
         if (!extension_loaded('apcu')) {
-            throw new ApcuException('`apcu` is not installed, or the extension is not loaded'/**m06424012cd041dd33*/);
+            throw new ExtensionNotInstalledException('apcu');
         }
         if (is_string($options)) {
             $this->_prefix = $options;

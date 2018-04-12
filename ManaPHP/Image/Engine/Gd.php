@@ -3,6 +3,7 @@ namespace ManaPHP\Image\Engine;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Image\EngineInterface;
@@ -40,7 +41,7 @@ class Gd extends Component implements EngineInterface
     public function __construct($file)
     {
         if (!extension_loaded('gd')) {
-            throw new PreconditionException('gd is not installed, or the extension is not loaded'/**m02d21d9765a90c68b*/);
+            throw new ExtensionNotInstalledException('gd');
         }
 
         $this->_file = realpath($this->alias->resolve($file));
