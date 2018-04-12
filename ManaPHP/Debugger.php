@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Exception\HttpStatusException;
 use ManaPHP\Logger\Log;
 
 /**
@@ -67,7 +68,7 @@ class Debugger extends Component implements DebuggerInterface
         $handler = [$this, '_eventHandlerPeek'];
         $this->eventsManager->peekEvents($handler);
 
-        $this->attachEvent('dispatcher:beforeDispatch');
+        $this->attachEvent('router:beforeRoute');
 
         $this->response->setHeader('X-Debugger-Link', $this->getUrl());
     }
@@ -182,13 +183,13 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    public function onDispatcherBeforeDispatch()
+    public function onRouterBeforeRoute()
     {
         if (isset($_GET['_debugger']) && preg_match('#^[a-zA-Z0-9_/]+\.html$#', $_GET['_debugger'])) {
             $file = '@data/debugger' . $_GET['_debugger'];
             if ($this->filesystem->fileExists($file)) {
                 $this->response->setContent($this->filesystem->fileGet($file));
-                return false;
+                throw new HttpStatusException(200);
             }
         }
 
