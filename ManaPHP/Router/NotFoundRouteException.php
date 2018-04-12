@@ -7,9 +7,4 @@ class NotFoundRouteException extends Exception
     {
         return 404;
     }
-
-    public function getStatusText()
-    {
-        return 'Not Found';
-    }
 }

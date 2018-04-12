@@ -12,9 +12,4 @@ class NotFoundException extends Exception
     {
         return 404;
     }
-
-    public function getStatusText()
-    {
-        return 'Not Found';
-    }
 }

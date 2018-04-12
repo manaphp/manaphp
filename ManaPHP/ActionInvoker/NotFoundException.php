@@ -7,9 +7,4 @@ class NotFoundException extends \ManaPHP\Exception
     {
         return 404;
     }
-
-    public function getStatusText()
-    {
-        return 'Not Found';
-    }
 }
