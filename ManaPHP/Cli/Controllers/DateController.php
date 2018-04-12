@@ -104,56 +104,47 @@ class DateController extends Controller
             $str = trim(strtr($arguments[0], 'Tt', '  '));
             if (strpos($str, ' ') === false) {
                 if (strpos($str, ':') !== false) {
-                    $date = null;
+                    $date = '';
                     $time = $str;
                 } else {
                     $date = $str;
-                    $time = null;
+                    $time = '';
                 }
             } else {
                 list($date, $time) = explode(' ', $str);
             }
         }
 
-        if ($date === null || $date === '') {
-            $date = date('Y-m-d');
-        } else {
-            $date = strtr($date, '/', '-');
-            $date = trim(trim($date), '-');
+        $date = $date ? strtr($date, '/', '-') : date('Y-m-d');
+        $date = trim(trim($date), '-');
 
-            switch (substr_count($date, '-')) {
-                case 0:
-                    $date = date('Y-m-') . $date;
-                    break;
-                case 1:
-                    $date = date('Y-') . $date;
-                    break;
-            }
-            $parts = explode('-', $date);
-            $parts[0] = substr(date('Y'), 0, 4 - strlen($parts[0])) . $parts[0];
-
-            $date = $parts[0] . '-' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
+        switch (substr_count($date, '-')) {
+            case 0:
+                $date = date('Y-m-') . $date;
+                break;
+            case 1:
+                $date = date('Y-') . $date;
+                break;
         }
+        $parts = explode('-', $date);
+        $parts[0] = substr(date('Y'), 0, 4 - strlen($parts[0])) . $parts[0];
+        $date = $parts[0] . '-' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
 
-        if ($time === null || $time === '') {
-            $time = date('H:i:s');
-        } else {
-            $time = trim($time);
-            if ($time[0] === ':') {
-                $time = date('H') . $time;
-            }
-            switch (substr_count($time, ':')) {
-                case 0:
-                    $time .= date(':i:s');
-                    break;
-                case 1:
-                    $time .= date(':s');
-                    break;
-            }
-            $parts = explode(':', $time);
-
-            $time = str_pad($parts[0], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
+        $time = $time ? trim($time) : date('H:i:s');
+        if ($time[0] === ':') {
+            $time = date('H') . $time;
         }
+        switch (substr_count($time, ':')) {
+            case 0:
+                $time .= date(':i:s');
+                break;
+            case 1:
+                $time .= date(':s');
+                break;
+        }
+        $parts = explode(':', $time);
+
+        $time = str_pad($parts[0], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
 
         $str = $date . ' ' . $time;
         $timestamp = strtotime($str);
