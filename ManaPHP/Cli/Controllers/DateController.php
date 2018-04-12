@@ -115,7 +115,7 @@ class DateController extends Controller
             }
         }
 
-        $date = $date ? strtr($date, '/', '-') : date('Y-m-d');
+        $date = $date ? strtr($date, '/', '-') : (string)date('Y-m-d');
         $date = trim(trim($date), '-');
 
         switch (substr_count($date, '-')) {
@@ -130,7 +130,7 @@ class DateController extends Controller
         $parts[0] = substr(date('Y'), 0, 4 - strlen($parts[0])) . $parts[0];
         $date = $parts[0] . '-' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
 
-        $time = $time ? trim($time) : date('H:i:s');
+        $time = $time ? trim($time) : (string)date('H:i:s');
         if ($time[0] === ':') {
             $time = date('H') . $time;
         }
