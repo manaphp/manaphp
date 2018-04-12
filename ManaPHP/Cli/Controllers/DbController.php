@@ -226,7 +226,6 @@ class DbController extends Controller
                 throw new Exception(['`:table` is not exists', 'table' => $table]);
             }
         } else {
-            $service = null;
             foreach ($this->_getDbServices() as $s) {
                 $db = $this->_di->getShared($s);
                 if (in_array($table, $db->getTables(), true)) {
