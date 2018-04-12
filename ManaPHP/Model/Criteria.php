@@ -60,7 +60,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \JsonSer
         }
 
         if (in_array($field, $this->_model->getIntTypeFields(), true)) {
-            return [$left ? $left : null, $right ? $right : null];
+            return [$left ?: null, $right ?: null];
         } else {
             return [$left ? date('Y-m-d H:i:s', $left) : null, $right ? date('Y-m-d H:i:s', $right) : null];
         }
