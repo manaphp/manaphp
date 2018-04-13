@@ -470,6 +470,7 @@ class Router extends Component implements RouterInterface
 
                 unset($parts['controller'], $parts['action'], $parts['params']);
                 if ($params !== '') {
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
                     $parts = array_merge($parts, explode('/', $params));
                 }
                 return ['controller' => isset($parts['area']) ? "$parts[area]/$controller" : $controller, 'action' => $action, 'params' => $parts];
