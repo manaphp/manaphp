@@ -2,7 +2,7 @@
 namespace ManaPHP\Configuration;
 
 use ManaPHP\Component;
-use ManaPHP\Configuration\Settings\Exception as SettingsException;
+use ManaPHP\Exception\NotSupportedException;
 
 class Settings extends Component implements \ArrayAccess, SettingsInterface
 {
@@ -176,16 +176,12 @@ class Settings extends Component implements \ArrayAccess, SettingsInterface
 
     public function offsetSet($offset, $value)
     {
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        throw new SettingsException('not support offsetUnset method');
+        throw new NotSupportedException('not support offsetUnset method');
     }
 
     public function offsetUnset($offset)
     {
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        throw new SettingsException('not support offsetUnset method');
+        throw new NotSupportedException('not support offsetUnset method');
     }
 
     /**
