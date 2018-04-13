@@ -37,7 +37,7 @@ STR;
             if (strpos($value, ':')) {
                 list($ip, $port) = explode(':', $value, 2);
             } elseif (is_numeric($value)) {
-                $port = $value;
+                $port = (int)$value;
             } else {
                 $ip = $value;
             }
