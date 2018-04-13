@@ -132,7 +132,7 @@ class HttpStats extends Component
         $this->_stats['state'] = 1;
         $this->_stats['requests'] = $stats['worker_request_count'];
         $this->_stats['start time'] = $stats['start_time'];
-        $this->_stats['request duration'] = (int)((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000000);
+        $this->_stats['request duration'] = (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000000;
         $this->_stats['request method'] = $_SERVER['REQUEST_METHOD'];
         $this->_stats['request URI'] = $_SERVER['REQUEST_URI'];
         $this->_stats['content length'] = isset($_SERVER['HTTP_CONTENT_LENGTH']) ? $_SERVER['HTTP_CONTENT_LENGTH'] : 0;
@@ -142,7 +142,7 @@ class HttpStats extends Component
     public function onAfterRequest()
     {
         $this->_stats['state'] = 0;
-        $this->_stats['request duration'] = (int)((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000000);
+        $this->_stats['request duration'] = (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000000;
         $this->_stats['last request memory'] = memory_get_usage(true);
     }
 
