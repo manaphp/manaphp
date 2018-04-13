@@ -18,7 +18,7 @@ return [
         'mongodb' => ['mongodb://127.0.0.1/manaphp_unit_test'],
         'logger' => [
             'level' => 'debug',
-            'appenders' => ['file' => ['class' => \ManaPHP\Logger\Appender\Db::class, 'filter' => ['level' => 'error', 'category' => '*']]],
+            'appenders' => ['ManaPHP\Logger\Appender\File'],
         ],
         'translation' => ['language' => 'zh-CN,en']
     ],
