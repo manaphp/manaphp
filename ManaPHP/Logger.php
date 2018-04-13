@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Logger\Log;
 use ManaPHP\Logger\LogCategorizable;
 
@@ -70,17 +71,32 @@ class Logger extends Component implements LoggerInterface
             }
 
             foreach ((array)$options as $name => $value) {
+                $level = null;
                 if (is_int($name)) {
-                    $this->_appenders[] = ['appender' => $value];
+                    $appender = $value;
                 } elseif (is_string($value)) {
-                    $this->_appenders[$name] = ['appender' => $value];
+                    $appender = $value;
                 } elseif (isset($value['level'])) {
-                    $this->_appenders[$name]['level'] = is_numeric($value['level']) ? $value['level'] : $this->getConstants('level')[strtolower($value['level'])];
+                    $level = is_numeric($value['level']) ? (int)$value['level'] : array_search(strtolower($value['level']), $this->getConstants('level'));
                     unset($value['level']);
-                    $this->_appenders[$name]['appender'] = $value;
+                    $appender = $value;
                 } else {
-                    $this->_appenders[$name] = ['appender' => $value];
+                    $appender = $value;
                 }
+
+                if (is_array($appender) && !isset($appender[0]) && !isset($appender['class'])) {
+                    if (is_string($name)) {
+                        $appenderClassName = 'ManaPHP\Logger\Appender\\' . ucfirst($name);
+                        if (!class_exists($appenderClassName)) {
+                            throw new InvalidArgumentException($value);
+                        }
+                        $appender[0] = $appenderClassName;
+                    } else {
+                        throw new InvalidArgumentException($value);
+                    }
+                }
+
+                $this->_appenders[] = $level !== null ? ['level' => $level, 'appender' => $appender] : ['appender' => $appender];
             }
         }
 
