@@ -77,7 +77,7 @@ class Logger extends Component implements LoggerInterface
                 } elseif (is_string($value)) {
                     $appender = $value;
                 } elseif (isset($value['level'])) {
-                    $level = is_numeric($value['level']) ? (int)$value['level'] : array_search(strtolower($value['level']), $this->getConstants('level'));
+                    $level = is_numeric($value['level']) ? (int)$value['level'] : array_search(strtolower($value['level']), $this->getConstants('level'), true);
                     unset($value['level']);
                     $appender = $value;
                 } else {
