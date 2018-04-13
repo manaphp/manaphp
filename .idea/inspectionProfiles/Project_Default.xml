@@ -8,6 +8,31 @@
       <option name="configuration">
         <list>
           <option value="\ManaPHP\Exception\RuntimeException" />
+          <option value="\ManaPHP\Exception\BadFunctionCallException" />
+          <option value="\ManaPHP\Exception\BadMethodCallException" />
+          <option value="\ManaPHP\Exception\CreateDirectoryFailedException" />
+          <option value="\ManaPHP\Exception\DirectoryNotFoundException" />
+          <option value="\ManaPHP\Exception\DsnFormatException" />
+          <option value="\ManaPHP\Exception\ExtensionNotInstalledException" />
+          <option value="\ManaPHP\Exception\FileNotFoundException" />
+          <option value="\ManaPHP\Exception\HttpStatusException" />
+          <option value="\ManaPHP\Exception\InvalidArgumentException" />
+          <option value="\ManaPHP\Exception\InvalidCredentialException" />
+          <option value="\ManaPHP\Exception\InvalidFormatException" />
+          <option value="\ManaPHP\Exception\InvalidJsonException" />
+          <option value="\ManaPHP\Exception\InvalidKeyException" />
+          <option value="\ManaPHP\Exception\InvalidOptionException" />
+          <option value="\ManaPHP\Exception\InvalidValueException" />
+          <option value="\ManaPHP\Exception\KeyAlreadyExistsException" />
+          <option value="\ManaPHP\Exception\LengthException" />
+          <option value="\ManaPHP\Exception\NotImplementedException" />
+          <option value="\ManaPHP\Exception\NotSupportedException" />
+          <option value="\ManaPHP\Exception\NumberFormatException" />
+          <option value="\ManaPHP\Exception\OutOfRangeException" />
+          <option value="\ManaPHP\Exception\PathCaseSensitiveException" />
+          <option value="\ManaPHP\Exception\PreconditionException" />
+          <option value="\ManaPHP\Exception\UnexpectedValueException" />
+          <option value="\ManaPHP\Exception\UnknownPropertyException" />
           <option value="\RuntimeException" />
         </list>
       </option>
