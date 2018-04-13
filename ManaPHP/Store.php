@@ -2,7 +2,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Component\ScopedCloneableInterface;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
 
@@ -11,7 +10,7 @@ use ManaPHP\Exception\InvalidValueException;
  *
  * @package store
  */
-class Store extends Component implements StoreInterface, ScopedCloneableInterface
+class Store extends Component implements StoreInterface
 {
     /**
      * @var string|\ManaPHP\Store\EngineInterface
@@ -161,22 +160,5 @@ class Store extends Component implements StoreInterface, ScopedCloneableInterfac
         }
 
         return $r;
-    }
-
-    /**
-     * @param \ManaPHP\Component $scope
-     *
-     * @return static
-     */
-    public function getScopedClone($scope)
-    {
-        if (!is_object($this->_engine)) {
-            $this->_getEngine();
-        }
-
-        $cloned = clone $this;
-        $cloned->_prefix = ($this->_prefix ? $this->_prefix . ':' : '') . $scope->getComponentName($this) . ':';
-
-        return $cloned;
     }
 }

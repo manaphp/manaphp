@@ -2,7 +2,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Component\ScopedCloneableInterface;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
@@ -12,7 +11,7 @@ use ManaPHP\Exception\RuntimeException;
  *
  * @package cache
  */
-class Cache extends Component implements CacheInterface, ScopedCloneableInterface
+class Cache extends Component implements CacheInterface
 {
     /**
      * @var string|\ManaPHP\Cache\EngineInterface
@@ -164,22 +163,5 @@ class Cache extends Component implements CacheInterface, ScopedCloneableInterfac
         }
 
         return $r;
-    }
-
-    /**
-     * @param \ManaPHP\Component $scope
-     *
-     * @return static
-     */
-    public function getScopedClone($scope)
-    {
-        if (!is_object($this->_engine)) {
-            $this->_getEngine();
-        }
-
-        $cloned = clone $this;
-        $cloned->_prefix = ($this->_prefix ? $this->_prefix . ':' : '') . $scope->getComponentName($this) . ':';
-
-        return $cloned;
     }
 }

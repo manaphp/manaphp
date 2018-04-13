@@ -13,8 +13,6 @@ namespace ManaPHP;
  * @property \ManaPHP\Configuration\Configure              $configure
  * @property \ManaPHP\Configuration\SettingsInterface      $settings
  * @property \ManaPHP\Security\CryptInterface              $crypt
- * @property \ManaPHP\CacheInterface                       $scopedCache
- * @property \ManaPHP\Http\SessionInterface                $scopedSession
  * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  * @property \ManaPHP\Loader                               $loader
  * @property \ManaPHP\CacheInterface                       $cache
@@ -93,12 +91,7 @@ class Component implements ComponentInterface
             $this->_di = Di::getDefault();
         }
 
-        if (strncmp($name, 'scoped', 6) === 0) {
-            $component = lcfirst(substr($name, 6));
-            return $this->{$name} = $this->{$component}->getScopedClone($this);
-        } else {
-            return $this->{$name} = $this->_di->{$name};
-        }
+        return $this->{$name} = $this->_di->{$name};
     }
 
     /**
@@ -210,21 +203,6 @@ class Component implements ComponentInterface
         }
 
         return $data;
-    }
-
-    /**
-     * @param \ManaPHP\Component $caller
-     *
-     * @return string
-     */
-    public function getComponentName($caller = null)
-    {
-        $className = get_called_class();
-        if (strpos($className, 'ManaPHP') === 0) {
-            return lcfirst(substr($className, strrpos($className, '\\') + 1));
-        } else {
-            return strtr(substr($className, ($pos = strpos($className, '\\')) === false ? 0 : $pos + 1), '\\', '.');
-        }
     }
 
     /**
