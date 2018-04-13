@@ -3,6 +3,8 @@
 namespace ManaPHP\Mongodb;
 
 use ManaPHP\Di;
+use ManaPHP\Exception\InvalidFormatException;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Mongodb\Model\Exception as ModelException;
 use MongoDB\BSON\ObjectID;
 
@@ -150,15 +152,11 @@ class Model extends \ManaPHP\Model
 
                 $phpdoc = $rp->getDocComment();
                 if (!$phpdoc) {
-                    /** @noinspection PhpUnhandledExceptionInspection */
-                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    throw new ModelException(['`:property` property does not contain phpdoc', 'property' => $rp->getName()]);
+                    throw new RuntimeException(['`:property` property does not contain phpdoc', 'property' => $rp->getName()]);
                 }
 
-                if (!preg_match('#@var ([^\s]+)#', $phpdoc, $match)) {
-                    /** @noinspection PhpUnhandledExceptionInspection */
-                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    throw new ModelException([
+                if (!preg_match('#@var\s+(\S+)#', $phpdoc, $match)) {
+                    throw new InvalidFormatException([
                         '`:property` property phpdoc does not contain data type definition: `:phpdoc`',
                         'property' => $rp->getName(),
                         'phpdoc' => $phpdoc
