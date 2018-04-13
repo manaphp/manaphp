@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Serializer\Adapter;
 
-use ManaPHP\Serializer\Adapter\StringType\Exception as StringTypeException;
+use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Serializer\AdapterInterface;
 
 /**
@@ -15,7 +15,6 @@ class StringType implements AdapterInterface
      * @param mixed $data
      *
      * @return string
-     * @throws \ManaPHP\Serializer\Adapter\Exception
      */
     public function serialize($data)
     {
@@ -24,7 +23,7 @@ class StringType implements AdapterInterface
         } elseif ($data === false || $data === null) {
             return '';
         } else {
-            throw new StringTypeException(['data is not a string: `:data`'/**m0302aa8f9d395d68a*/, 'data' => json_encode(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+            throw new InvalidFormatException(['data is not a string: `:data`'/**m0302aa8f9d395d68a*/, 'data' => json_encode(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
         }
     }
 
