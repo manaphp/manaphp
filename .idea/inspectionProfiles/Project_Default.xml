@@ -34,6 +34,7 @@
           <option value="\ManaPHP\Exception\UnexpectedValueException" />
           <option value="\ManaPHP\Exception\UnknownPropertyException" />
           <option value="\RuntimeException" />
+          <option value="\ReflectionException" />
         </list>
       </option>
     </inspection_tool>
