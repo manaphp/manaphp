@@ -1,7 +1,8 @@
 <?php
 namespace ManaPHP\Model;
 
-use ManaPHP\Model\Relation\Exception as RelationException;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\NotSupportedException;
 
 class Relation implements RelationInterface
 {
@@ -66,7 +67,7 @@ class Relation implements RelationInterface
                 $this->keyField = $referenceField ?: $this->_inferReferenceField($model, get_class($model));
                 $this->valueField = $model->getPrimaryKey();
             } else {
-                throw  new RelationException(['unknown relation type: :type', 'type' => $type]);
+                throw  new InvalidValueException(['unknown relation type: :type', 'type' => $type]);
             }
         }
     }
@@ -95,8 +96,7 @@ class Relation implements RelationInterface
             }
         }
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        throw new RelationException(['infer referenceField from `:model` failed.', 'model' => $model]);
+        throw new NotSupportedException(['infer referenceField from `:model` failed.', 'model' => $model]);
     }
 
     /**
@@ -119,7 +119,7 @@ class Relation implements RelationInterface
             $ids = $model::values($this->keyField, [$valueField => is_array($model) ? $model[$valueField] : $model->$valueField]);
             return $referenceModel::criteria()->where((new $referenceModel)->getPrimaryKey(), $ids)->setFetchType(true);
         } else {
-            throw  new RelationException(['unknown relation type: :type', 'type' => $type]);
+            throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
         }
     }
 }
