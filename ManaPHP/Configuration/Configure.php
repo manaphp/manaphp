@@ -4,6 +4,7 @@ namespace ManaPHP\Configuration;
 
 use ManaPHP\Component;
 use ManaPHP\Configuration\Configure\Exception as ConfigureException;
+use ManaPHP\Exception\NotSupportedException;
 
 /**
  * Class ManaPHP\Configuration\Configure
@@ -72,7 +73,6 @@ class Configure extends Component implements ConfigureInterface
      * @param string|array $files
      *
      * @return static
-     * @throws \ManaPHP\Configuration\Configure\Exception
      */
     public function loadFile($files)
     {
@@ -93,7 +93,6 @@ class Configure extends Component implements ConfigureInterface
      * @param array $data
      *
      * @return static
-     * @throws \ManaPHP\Configuration\Configure\Exception
      */
     public function loadData($data)
     {
@@ -106,7 +105,7 @@ class Configure extends Component implements ConfigureInterface
             }
 
             if (!isset($properties[$field])) {
-                throw new ConfigureException(['`:item` item is not allowed: it must be a public property of `configure` component', 'item' => $field]);
+                throw new NotSupportedException(['`:item` item is not allowed: it must be a public property of `configure` component', 'item' => $field]);
             }
 
             if ($f_value) {
