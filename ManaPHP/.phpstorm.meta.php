@@ -2,58 +2,75 @@
 // This file is not a CODE, it makes no sense and won't run or validate
 // Its AST serves IDE as DATA source to make advanced type inference decisions.
 
-namespace PHPSTORM_META {                                // we want to avoid the pollution
-    $STATIC_METHOD_TYPES = [                                 // we make sections for scopes
-        \ManaPHP\DiInterface::getShared('') => [           // STATIC call key to make static (1) & dynamic (2) calls work
-            'dispatcher' instanceof \ManaPHP\Mvc\Dispatcher,
-            'router' instanceof \ManaPHP\RouterInterface,
-            'request' instanceof \ManaPHP\Http\RequestInterface,
-            'response' instanceof \ManaPHP\Http\ResponseInterface,
-            'cookies' instanceof \ManaPHP\Http\CookiesInterface,
-            'session' instanceof \ManaPHP\Http\SessionInterface,
+namespace PHPSTORM_META {
+    $STATIC_METHOD_TYPES = [
+        \ManaPHP\DiInterface::getShared('') => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
-            'db' instanceof \ManaPHP\DbInterface,
-            'modelsManager' instanceof \ManaPHP\Mvc\Model\ManagerInterface,
-            'modelsMetadata' instanceof \ManaPHP\Mvc\Model\MetadataInterface,
-            'di' instanceof \ManaPHP\Di | \ManaPHP\DiInterface,
-            'view' instanceof \ManaPHP\ViewInterface,
-            'authorization' instanceof \ManaPHP\Security\AuthorizationInterface,
-            'application' instanceof \ManaPHP\ApplicationInterface,
             'alias' instanceof \ManaPHP\AliasInterface,
-            'flash' instanceof \ManaPHP\View\FlashInterface,
-            'flashSession' instanceof \ManaPHP\View\FlashInterface,
-            'captcha' instanceof \ManaPHP\Security\CaptchaInterface,
-            'httpClient' instanceof \ManaPHP\Curl\EasyInterface,
-            'password' instanceof \ManaPHP\Authentication\PasswordInterface,
-            'counter' instanceof \ManaPHP\CounterInterface,
-            'cache' instanceof \ManaPHP\CacheInterface,
-            'userIdentity' instanceof \ManaPHP\Authentication\UserIdentityInterface,
-            'logger' instanceof \ManaPHP\LoggerInterface,
             'configure' instanceof \ManaPHP\Configuration\Configure,
             'settings' instanceof \ManaPHP\Configuration\SettingsInterface,
+            'errorHandler' instanceof \ManaPHP\ErrorHandlerInterface,
+            'router' instanceof \ManaPHP\RouterInterface,
+            'dispatcher' instanceof \ManaPHP\Mvc\Dispatcher,
+            'actionInvoker' instanceof \ManaPHP\ActionInvokerInterface,
+            'url' instanceof \ManaPHP\View\UrlInterface,
+            'modelsManager' instanceof \ManaPHP\Mvc\Model\ManagerInterface,
+            'modelsMetadata' instanceof \ManaPHP\Mvc\Model\MetadataInterface,
+            'modelsValidator' instanceof \ManaPHP\Model\ValidatorInterface,
+            'response' instanceof \ManaPHP\Http\ResponseInterface,
+            'cookies' instanceof \ManaPHP\Http\CookiesInterface,
+            'request' instanceof \ManaPHP\Http\RequestInterface,
+            'filter' instanceof \ManaPHP\Http\FilterInterface,
+            'crypt' instanceof \ManaPHP\Security\CryptInterface,
+            'flash' instanceof \ManaPHP\View\FlashInterface,
+            'flashSession' instanceof \ManaPHP\View\FlashInterface,
+            'session' instanceof \ManaPHP\Http\SessionInterface,
+            'view' instanceof \ManaPHP\ViewInterface,
+            'logger' instanceof \ManaPHP\LoggerInterface,
+            'renderer' instanceof \ManaPHP\RendererInterface,
+            'debugger' instanceof \ManaPHP\DebuggerInterface,
+            'password' instanceof \ManaPHP\Authentication\PasswordInterface,
+            'serializer' instanceof \ManaPHP\Serializer,
+            'cache' instanceof \ManaPHP\CacheInterface,
+            'store' instanceof \ManaPHP\StoreInterface,
+            'counter' instanceof \ManaPHP\CounterInterface,
+            'httpClient' instanceof \ManaPHP\Curl\EasyInterface,
+            'captcha' instanceof \ManaPHP\Security\CaptchaInterface,
             'csrfToken' instanceof \ManaPHP\Security\CsrfTokenInterface,
+            'authorization' instanceof \ManaPHP\Security\AuthorizationInterface,
+            'userIdentity' instanceof \ManaPHP\Authentication\UserIdentityInterface,
             'paginator' instanceof \ManaPHP\Paginator,
-            'viewsCache' instanceof \ManaPHP\Cache\EngineInterface,
-            'filesystem' instanceof \ManaPHP\FilesystemInterface,
+            'filesystem' instanceof \ManaPHP\Filesystem\Adapter\File,
             'random' instanceof \ManaPHP\Security\RandomInterface,
             'messageQueue' instanceof \ManaPHP\Message\QueueInterface,
-            'filter' instanceof \ManaPHP\Http\FilterInterface,
-            'url' instanceof \ManaPHP\View\UrlInterface,
+            'crossword' instanceof \ManaPHP\Text\CrosswordInterface,
+            'rateLimiter' instanceof \ManaPHP\Security\RateLimiterInterface,
+            'linearMeter' instanceof \ManaPHP\Meter\LinearInterface,
+            'roundMeter' instanceof \ManaPHP\Meter\RoundInterface,
+            'secint' instanceof \ManaPHP\Security\SecintInterface,
+            'swordCompiler' instanceof \ManaPHP\Renderer\Engine\Sword\Compiler,
             'stopwatch' instanceof \ManaPHP\StopwatchInterface,
+            'tasksMetadata' instanceof \ManaPHP\Task\MetadataInterface,
+            'viewsCache' instanceof \ManaPHP\Cache\EngineInterface,
+            'modelsCache' instanceof \ManaPHP\Cache\EngineInterface,
             'htmlPurifier' instanceof \ManaPHP\Security\HtmlPurifierInterface,
+            'environment' instanceof \ManaPHP\Cli\EnvironmentInterface,
+            'netConnectivity' instanceof \ManaPHP\Net\ConnectivityInterface,
+            'db' instanceof \ManaPHP\DbInterface,
             'redis' instanceof \ManaPHP\Redis,
+            'mongodb' instanceof \ManaPHP\MongodbInterface,
+            'translation' instanceof \ManaPHP\I18n\TranslationInterface,
+            'rabbitmq' instanceof \ManaPHP\AmqpInterface,
+            'relationsManager' instanceof \ManaPHP\Model\Relation\Manager,
+            'di' instanceof \ManaPHP\Di | \ManaPHP\DiInterface,
+            'application' instanceof \ManaPHP\ApplicationInterface
         ],
-        \ManaPHP\DiInterface::get('') => [           // STATIC call key to make static (1) & dynamic (2) calls work
+        \ManaPHP\DiInterface::get('') => [
             '' == '@',
         ],
-        new \ServiceLocatorInterface => [                // NEW INSTANCE is to make ArrayAccess (3) style factory work
-            "special" instanceof \Exception,
-        ],
-        \ServiceLocatorInterface::getByPattern('') => [
-            "" == "@Iterator",                       // "ignored" == "PatternWith@" substitutes @ with arg value
-        ],
-        globalFactoryFunction('') => [                   // (4) works also with functions
-        ],                                               // if key is not found its used as type name in all cases
+        \ManaPHP\DiInterface::getInstance('') => [
+            '' == '@',
+        ]
     ];
 }
 
