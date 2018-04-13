@@ -22,8 +22,8 @@ class Manager implements ManagerInterface
     /**
      * Attach a listener to the events manager
      *
-     * @param string   $event
-     * @param callable $handler
+     * @param string           $event
+     * @param callable|\object $handler
      *
      * @return void
      */
