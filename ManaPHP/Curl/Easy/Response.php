@@ -49,11 +49,10 @@ class Response
             list($name, $value) = explode(': ', $header, 2);
             if (isset($headers[$name])) {
                 if (!is_array($headers[$name])) {
-                    $headers[$name] = [$headers[$name]];
+                    $headers[$name] = [$headers[$name], $value];
+                }else{
+                    $headers[$name][] = $value;
                 }
-
-                $headers[$name][] = $value;
-
             } else {
                 $headers[$name] = $value;
             }
