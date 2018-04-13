@@ -528,7 +528,7 @@ class Amqp extends Component implements AmqpInterface
             }, $flags);
         } catch (\Exception $e) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException('consume `:queue` queue message faield: ', $e->getMessage());
+            throw new AmqpException('consume `:queue` queue message failed: ', $e->getMessage());
         }
     }
 }
