@@ -48,9 +48,9 @@ STR;
         echo "server listen on: $ip:$port", PHP_EOL;
 
         if (DIRECTORY_SEPARATOR === '\\') {
-            `explorer.exe http://$ip:$port/`;
+            shell_exec("explorer.exe http://$ip:$port/");
         }
 
-        $r = `php -S $ip:$port -t public /tmp/$router`;
+        shell_exec("php -S $ip:$port -t public tmp/$router");
     }
 }
