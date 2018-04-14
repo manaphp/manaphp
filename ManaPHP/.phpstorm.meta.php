@@ -81,6 +81,7 @@ namespace PHPSTORM_META {
  * @var \ManaPHP\ViewInterface         $view
  * @var \ManaPHP\Di                    $di
  * @var \ManaPHP\Http\RequestInterface $request
+ * @var \ManaPHP\RendererInterface     $renderer
  */
 $view = null;
 $di = null;
