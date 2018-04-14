@@ -55,6 +55,10 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
      */
     public function render($exception)
     {
+        for ($level = ob_get_level(); $level >=0; $level--) {
+            ob_end_clean();
+        }
+
         if ($this->configure->debug) {
             if ($this->renderer->exists('@app/Views/Errors/debug')) {
                 return $this->renderer->render('@app/Views/Errors/debug', ['exception' => $exception]);
