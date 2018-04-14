@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Serializer\Adapter;
 
-use ManaPHP\Serializer\Adapter\Php\Exception as PhpException;
+use ManaPHP\Exception\UnexpectedValueException;
 use ManaPHP\Serializer\AdapterInterface;
 
 /**
@@ -29,17 +29,16 @@ class Php implements AdapterInterface
      * @param string $serialized
      *
      * @return mixed
-     * @throws \ManaPHP\Serializer\Adapter\Exception
      */
     public function deserialize($serialized)
     {
         $data = unserialize($serialized);
         if ($data === false) {
-            throw new PhpException('unserialize failed: :last_error_message'/**m066507d6397244b1c*/);
+            throw new UnexpectedValueException('unserialize failed: :last_error_message'/**m066507d6397244b1c*/);
         }
 
         if (!is_array($data)) {
-            throw new PhpException('de serialized data is not a array maybe it has been corrupted'/**m06a7e8b3300369f79*/);
+            throw new UnexpectedValueException('de serialized data is not a array maybe it has been corrupted'/**m06a7e8b3300369f79*/);
         }
 
         if (isset($data['__wrapper__']) && count($data) === 1) {
