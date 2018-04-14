@@ -50,7 +50,7 @@ class File extends Mailer
                 . json_encode($message, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
                 . PHP_EOL;
         } else {
-            $data = '<' . date(DATE_ATOM) . '> ' . json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL;
+            $data = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL;
         }
 
         $this->filesystem->fileAppend($this->_file ?: '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);

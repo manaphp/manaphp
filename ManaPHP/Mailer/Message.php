@@ -17,6 +17,11 @@ class Message implements \JsonSerializable
     /**
      * @var string
      */
+    protected $_date;
+
+    /**
+     * @var string
+     */
     protected $_subject;
 
     /**
@@ -38,8 +43,6 @@ class Message implements \JsonSerializable
      * @var string|array
      */
     protected $_from;
-
-
 
     /**
      * @var string
@@ -78,6 +81,8 @@ class Message implements \JsonSerializable
                 $field = "_$k";
                 $this->$field = $v;
             }
+        } else {
+            $this->_date = date(DATE_ATOM);
         }
     }
 
