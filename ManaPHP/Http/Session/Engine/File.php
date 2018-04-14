@@ -2,7 +2,7 @@
 namespace ManaPHP\Http\Session\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Session\Engine\Exception as SessionException;
+use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Http\Session\EngineInterface;
 
 /**
@@ -85,15 +85,13 @@ class File extends Component implements EngineInterface
      * @param array  $context
      *
      * @return bool
-     *
-     * @throws \ManaPHP\Http\Session\Exception
      */
     public function write($session_id, $data, $context)
     {
         $file = $this->_getFileName($session_id);
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new SessionException(['create `:dir` session directory failed: :last_error_message'/**m0842502d4c2904242*/, 'dir' => $dir]);
+            throw new CreateDirectoryFailedException(['create `:dir` session directory failed: :last_error_message'/**m0842502d4c2904242*/, 'dir' => $dir]);
         }
 
         if (file_put_contents($file, $data, LOCK_EX) === false) {
