@@ -38,9 +38,6 @@ class Mongodb extends Component implements MongodbInterface
      * Mongodb constructor.
      *
      * @param string|array $dsn
-     *
-     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
-     * @throws \MongoDB\Driver\Exception\RuntimeException
      */
     public function __construct($dsn = 'mongodb://127.0.0.1:27017/')
     {
