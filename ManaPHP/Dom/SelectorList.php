@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP\Dom;
 
+use ManaPHP\Exception\NotSupportedException;
+
 class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 {
     /**
@@ -191,7 +193,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
                 } elseif ($field === 'node()') {
                     $value = $node;
                 } else {
-                    throw new Exception('invalid field');
+                    throw new NotSupportedException('invalid field');
                 }
             } else {
                 $value = $selector->attr($field);
