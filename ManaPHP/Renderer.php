@@ -152,7 +152,6 @@ class Renderer extends Component implements RendererInterface
      * @param array  $vars
      *
      * @return void
-     * @throws \Exception
      */
     public function partial($path, $vars = [])
     {
