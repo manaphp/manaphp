@@ -76,4 +76,15 @@ abstract class Token extends Component implements TokenInterface
     {
         return base64_decode(strtr($str, '-_', '+/'));
     }
+
+    public function __toString()
+    {
+        $data = get_object_vars($this);
+
+        if (isset($data['_claims']['exp'])) {
+            $data['_claims']['*expired_at*'] = date('Y-m-d H:i:s', $data['_claims']['exp']);
+        }
+
+        return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
 }

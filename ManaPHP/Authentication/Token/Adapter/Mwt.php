@@ -84,17 +84,11 @@ class Mwt extends Token
             return false;
         }
 
-        return $this->_claims = $claims;
-    }
-
-    public function __toString()
-    {
-        $data = get_object_vars($this);
-
-        if (isset($data['_claims']['exp'])) {
-            $data['_claims']['*expired_at*'] = date('Y-m-d H:i:s', $data['_claims']['exp']);
+        if (isset($claims['nbf']) && time() < $claims['nbf']) {
+            $this->logger->debug('token is not active.');
+            return false;
         }
 
-        return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return $this->_claims = $claims;
     }
 }
