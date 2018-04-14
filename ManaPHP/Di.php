@@ -69,6 +69,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property \ManaPHP\AmqpInterface                        $rabbitmq
  * @property \ManaPHP\Model\Relation\Manager               $relationsManager
  * @property \ManaPHP\Authentication\TokenInterface        $authenticationToken
+ * @property \ManaPHP\MailerInterface                      $mailer
  */
 class Di implements DiInterface
 {

@@ -26,6 +26,7 @@ namespace ManaPHP;
  * @property \Elasticsearch\Client                         $elasticsearch
  * @property \ManaPHP\ZookeeperInterface                   $zookeeper
  * @property \ManaPHP\Cli\EnvironmentInterface             $environment
+ * @property \ManaPHP\MailerInterface                      $mailer
  */
 class Component implements ComponentInterface
 {

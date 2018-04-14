@@ -78,6 +78,7 @@ class FactoryDefault extends Di
             'rabbitmq' => 'ManaPHP\Amqp',
             'relationsManager' => 'ManaPHP\Model\Relation\Manager',
             'authenticationToken' => 'ManaPHP\Authentication\Token\Adapter\Mwt',
+            'mailer' => 'ManaPHP\Mailer\Adapter\File'
         ];
     }
 }
