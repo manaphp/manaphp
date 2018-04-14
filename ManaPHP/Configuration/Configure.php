@@ -3,7 +3,6 @@
 namespace ManaPHP\Configuration;
 
 use ManaPHP\Component;
-use ManaPHP\Configuration\Configure\Exception as ConfigureException;
 use ManaPHP\Exception\NotSupportedException;
 
 /**
