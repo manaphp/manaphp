@@ -1280,8 +1280,10 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
         } elseif ($relation = $this->_di->relationsManager->get($this, $name)) {
             return $relation->criteria($this)->fetch();
         } else {
-            throw new UnknownPropertyException('`:class` does not contain `:field` field: `:fields`',
-                ['class' => get_called_class(), 'field' => $name, 'fields' => implode(',', $this->getFields())]);
+            throw new UnknownPropertyException(['`:class` does not contain `:field` field: `:fields`',
+                'class' => get_called_class(),
+                'field' => $name,
+                'fields' => implode(',', $this->getFields())]);
         }
     }
 
@@ -1292,9 +1294,9 @@ abstract class Model extends Component implements ModelInterface, \JsonSerializa
                 return $relation->criteria($this);
             }
 
-            throw new NotSupportedException('`:class` model does not define `:method` relation', ['class' => get_called_class(), 'method' => $name]);
+            throw new NotSupportedException(['`:class` model does not define `:method` relation', 'class' => get_called_class(), 'method' => $name]);
         }
-        throw new BadMethodCallException('`:class` does not contain `:method` method', ['class' => get_called_class(), 'method' => $name]);
+        throw new BadMethodCallException(['`:class` does not contain `:method` method', 'class' => get_called_class(), 'method' => $name]);
     }
 
     /**
