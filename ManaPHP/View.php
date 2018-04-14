@@ -1,8 +1,8 @@
 <?php
 
 namespace ManaPHP;
-
-use ManaPHP\View\Exception as ViewException;
+use ManaPHP\Exception\InvalidFormatException;
+use ManaPHP\Exception\InvalidValueException;
 
 /**
  * Class ManaPHP\View
@@ -152,13 +152,12 @@ class View extends Component implements ViewInterface
      * @param bool   $directOutput
      *
      * @return string
-     * @throws \ManaPHP\View\Exception
      */
     public function _render($template, $vars, $directOutput)
     {
         if ($template[0] !== '@') {
             if (strpos($template, '/') !== false) {
-                throw new ViewException(['`:template` template can not contains relative path', 'template' => $template]);
+                throw new InvalidFormatException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
             $template = dirname($this->_current_template) . '/' . $template;
@@ -166,12 +165,12 @@ class View extends Component implements ViewInterface
         $this->_current_template = $template;
 
         if (isset($vars['view'])) {
-            throw new ViewException('variable `view` is reserved for view'/**m0662b55555fc72f7d*/);
+            throw new InvalidValueException('variable `view` is reserved for view'/**m0662b55555fc72f7d*/);
         }
         $vars['view'] = $this;
 
         if (isset($vars['request'])) {
-            throw new ViewException('variable `request` is reserved for view');
+            throw new InvalidValueException('variable `request` is reserved for view');
         }
         $vars['request'] = isset($this->request) ? $this->request : null;
 
@@ -190,7 +189,6 @@ class View extends Component implements ViewInterface
      * @param string $action
      *
      * @return static
-     * @throws \ManaPHP\View\Exception
      */
     public function render($controller, $action)
     {
@@ -289,8 +287,6 @@ class View extends Component implements ViewInterface
      *
      * @param string $path
      * @param array  $vars
-     *
-     * @throws \ManaPHP\View\Exception
      */
     public function partial($path, $vars = [])
     {
@@ -301,8 +297,6 @@ class View extends Component implements ViewInterface
      * @param string    $widget
      * @param array     $options
      * @param int|array $cacheOptions
-     *
-     * @throws \ManaPHP\View\Exception
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
@@ -325,7 +319,7 @@ class View extends Component implements ViewInterface
         }
 
         if (!class_exists($widgetClassName)) {
-            throw new ViewException(['`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, 'widget' => $widget, 'class' => $widgetClassName]);
+            throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, 'widget' => $widget, 'class' => $widgetClassName]);
         }
 
         /**
