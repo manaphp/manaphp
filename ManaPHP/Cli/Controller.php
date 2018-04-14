@@ -10,14 +10,15 @@ use ManaPHP\Logger\LogCategorizable;
  *
  * @package controller
  *
- * @property \ManaPHP\CounterInterface          $counter
- * @property \ManaPHP\Di|\ManaPHP\DiInterface   $di
- * @property \ManaPHP\Cache\EngineInterface     $viewsCache
- * @property \ManaPHP\Message\QueueInterface    $messageQueue
- * @property \ManaPHP\Cli\ConsoleInterface      $console
- * @property \ManaPHP\Cli\ArgumentsInterface    $arguments
- * @property \ManaPHP\Text\CrosswordInterface   $crossword
- * @property \ManaPHP\Net\ConnectivityInterface $netConnectivity
+ * @property \ManaPHP\CounterInterface              $counter
+ * @property \ManaPHP\Di|\ManaPHP\DiInterface       $di
+ * @property \ManaPHP\Cache\EngineInterface         $viewsCache
+ * @property \ManaPHP\Message\QueueInterface        $messageQueue
+ * @property \ManaPHP\Cli\ConsoleInterface          $console
+ * @property \ManaPHP\Cli\ArgumentsInterface        $arguments
+ * @property \ManaPHP\Text\CrosswordInterface       $crossword
+ * @property \ManaPHP\Net\ConnectivityInterface     $netConnectivity
+ * @property \ManaPHP\Authentication\TokenInterface $authenticationToken
  */
 abstract class Controller extends Component implements ControllerInterface, LogCategorizable
 {

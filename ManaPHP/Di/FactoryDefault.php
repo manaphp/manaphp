@@ -76,7 +76,8 @@ class FactoryDefault extends Di
             'mongodb' => 'ManaPHP\Mongodb',
             'translation' => 'ManaPHP\I18n\Translation',
             'rabbitmq' => 'ManaPHP\Amqp',
-            'relationsManager' => 'ManaPHP\Model\Relation\Manager'
+            'relationsManager' => 'ManaPHP\Model\Relation\Manager',
+            'authenticationToken' => 'ManaPHP\Authentication\Token\Adapter\Mwt',
         ];
     }
 }
