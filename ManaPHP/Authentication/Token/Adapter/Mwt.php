@@ -38,9 +38,9 @@ class Mwt extends Token
         }
 
         $payload = $this->base64urlEncode(json_encode($claims, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        $hash = $this->base64urlEncode(hash_hmac($this->_alg, $payload, $this->_key[0], true));
+        $signature = $this->base64urlEncode(hash_hmac($this->_alg, $payload, $this->_key[0], true));
 
-        return "$payload.$hash";
+        return "$payload.$signature";
     }
 
     /**
@@ -57,19 +57,19 @@ class Mwt extends Token
             $this->logger->debug(['The MWT `:token` must have one dot', 'token' => $str]);
             return false;
         }
-        list($payload, $hash) = $parts;
+        list($payload, $signature) = $parts;
 
         $success = false;
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_key as $key) {
-            if ($this->base64urlEncode(hash_hmac($this->_alg, $payload, $key, true)) === $hash) {
+            if ($this->base64urlEncode(hash_hmac($this->_alg, $payload, $key, true)) === $signature) {
                 $success = true;
                 break;
             }
         }
 
         if (!$success) {
-            $this->logger->debug(['hash is not corrected: :hash', 'hash' => $hash]);
+            $this->logger->debug(['signature is not corrected: :signature', 'signature' => $signature]);
             return false;
         }
 

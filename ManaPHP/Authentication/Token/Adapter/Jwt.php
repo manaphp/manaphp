@@ -33,9 +33,9 @@ class Jwt extends Token
 
         $header = $this->base64urlEncode(json_encode(['alg' => $this->_alg, 'typ' => 'JWT']));
         $payload = $this->base64urlEncode(json_encode($claims, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        $hash = $this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $this->_key[0], true));
+        $signature = $this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $this->_key[0], true));
 
-        return "$header.$payload.$hash";
+        return "$header.$payload.$signature";
     }
 
     /**
@@ -53,12 +53,13 @@ class Jwt extends Token
             return false;
         }
 
-        list($header, $payload, $hash) = $parts;
+        list($header, $payload, $signature) = $parts;
         $decoded_header = json_decode($this->base64urlDecode($header), true);
         if (!$decoded_header) {
             $this->logger->debug(['The JWT header `:header` is not distinguished', 'header' => $header]);
             return false;
         }
+
         if (!isset($decoded_header['alg'])) {
             $this->logger->debug(['The JWT alg field is missing: `:token`', 'token' => $str]);
             return false;
@@ -76,19 +77,20 @@ class Jwt extends Token
 
         if ($decoded_header['typ'] !== 'JWT') {
             $this->logger->debug(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
+            return false;
         }
 
         $success = false;
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_key as $key) {
-            if ($this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $key, true)) === $hash) {
+            if ($this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $key, true)) === $signature) {
                 $success = true;
                 break;
             }
         }
 
         if (!$success) {
-            $this->logger->debug(['hash is not corrected: :hash', 'hash' => $hash]);
+            $this->logger->debug(['signature is not corrected: :signature', 'signature' => $signature]);
             return false;
         }
 
