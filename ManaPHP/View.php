@@ -50,6 +50,11 @@ class View extends Component implements ViewInterface
      */
     protected $_current_template;
 
+    public function __construct()
+    {
+        $this->loader->registerFiles('@manaphp/View/helpers.php');
+    }
+
     /**
      * @param false|string $layout
      *
