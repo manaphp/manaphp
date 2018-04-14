@@ -77,7 +77,7 @@ class Jwt extends Token
         if ($decoded_header['typ'] !== 'JWT') {
             $this->logger->debug(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
         }
-        
+
         $success = false;
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_key as $key) {
