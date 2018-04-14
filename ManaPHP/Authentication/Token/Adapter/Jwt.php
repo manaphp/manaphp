@@ -46,11 +46,13 @@ class Jwt extends Token
     public function decode($str)
     {
         $this->_claims = null;
+
         $parts = explode('.', $str, 5);
         if (count($parts) !== 3) {
             $this->logger->debug(['The JWT `:token` must have one dot', 'token' => $str]);
             return false;
         }
+
         list($header, $payload, $hash) = $parts;
         $decoded_header = json_decode($this->base64urlDecode($header), true);
         if (!$decoded_header) {
@@ -75,6 +77,7 @@ class Jwt extends Token
         if ($decoded_header['typ'] !== 'JWT') {
             $this->logger->debug(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
         }
+        
         $success = false;
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_key as $key) {
