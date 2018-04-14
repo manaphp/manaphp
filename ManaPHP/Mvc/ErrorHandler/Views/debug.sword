@@ -26,7 +26,11 @@
             @else
                 <td bgcolor="#eeeeec">{{$trace['function']}}( )</td>
             @endif
-            <td bgcolor="#eeeeec" title="{{$trace['file']}}">{{basename($trace['file'])}}:{{$trace['line']}}</td>
+            @if(isset($trace['file']))
+                <td bgcolor="#eeeeec" title="{{$trace['file']}}">{{basename($trace['file'])}}:{{$trace['line']}}</td>
+            @else
+                <td></td>
+            @endif
         </tr>
     @endforeach
 </table>
