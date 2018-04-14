@@ -9,15 +9,28 @@ namespace ManaPHP\Authentication;
 interface TokenInterface
 {
     /**
-     *
-     * @return string
+     * @return array
      */
-    public function encode();
+    public function encode($claims);
 
     /**
      * @param string $str
      *
-     * @return static
+     * @return array|false
      */
     public function decode($str);
+
+    /**
+     * @param string $claim
+     *
+     * @return string|int
+     */
+    public function getClaim($claim);
+
+    /**
+     * @param string $claim
+     *
+     * @return bool
+     */
+    public function hasClaim($claim);
 }

@@ -3,14 +3,7 @@ namespace Tests;
 
 use ManaPHP\Authentication\Token\Adapter\Mwt;
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Exception;
 use PHPUnit\Framework\TestCase;
-
-class UserToken extends Mwt
-{
-    public $id;
-    public $name;
-}
 
 class  AuthenticationTokenAdapterMwtTest extends TestCase
 {
@@ -23,52 +16,25 @@ class  AuthenticationTokenAdapterMwtTest extends TestCase
 
     public function test_encode()
     {
-        $userToken = new UserToken();
-        $userToken->id = 100;
-        $userToken->name = 'mana';
-
-        $encoded = $userToken->encode();
-        $this->assertContains('.', $encoded);
-        $decodeUserToken = new UserToken();
-        $decodeUserToken->decode($encoded);
-
-        $this->assertEquals($userToken->id, $decodeUserToken->id);
-        $this->assertEquals($userToken->name, $decodeUserToken->name);
+        $mwt = new Mwt();
+        $decoded = $mwt->decode($mwt->encode(['id' => 100, 'name' => 'mana']));
+        $this->assertEquals(100, $decoded['id']);
+        $this->assertEquals('mana', $decoded['name']);
     }
 
     public function test_decode()
     {
-        $userToken = new UserToken();
-        $userToken->id = 100;
-        $userToken->name = 'mana';
+        $mwt = new Mwt();
+        $decoded = $mwt->decode($mwt->encode(['id' => 100, 'name' => 'mana']));
+        $this->assertEquals(100, $decoded['id']);
+        $this->assertEquals('mana', $decoded['name']);
+    }
 
-        $encoded = $userToken->encode();
-        $this->assertContains('.', $encoded);
-        $decodeUserToken = new UserToken();
-        $decodeUserToken->decode($encoded);
-
-        $this->assertEquals($userToken->id, $decodeUserToken->id);
-        $this->assertEquals($userToken->name, $decodeUserToken->name);
-
-        //expire
-        $userToken = new UserToken(['ttl' => 1]);
-        $userToken->id = 100;
-        $userToken->name = 'mana';
-
-        $encoded = $userToken->encode();
-        $this->assertContains('.', $encoded);
-        $decodeUserToken = new UserToken();
+    public function test_expire()
+    {
+        $mwt = new Mwt();
+        $encoded = $mwt->encode(['id' => 100, 'name' => 'mana', 'exp' => 1]);
         sleep(2);
-
-        try {
-            $decodeUserToken->decode($encoded);
-            $this->fail('why not?');
-        } catch (Exception $e) {
-
-        }
-
-        for ($i = 0; $i < 10000; $i++) {
-            $decodeUserToken->decode($userToken->encode());
-        }
+        $this->assertFalse($mwt->decode($encoded));
     }
 }
