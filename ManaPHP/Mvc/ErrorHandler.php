@@ -55,7 +55,7 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
      */
     public function render($exception)
     {
-        for ($level = ob_get_level(); $level >=0; $level--) {
+        for ($level = ob_get_level(); $level > 0; $level--) {
             ob_end_clean();
         }
 
