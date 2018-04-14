@@ -33,6 +33,8 @@
           <option value="\ManaPHP\Exception\PreconditionException" />
           <option value="\ManaPHP\Exception\UnexpectedValueException" />
           <option value="\ManaPHP\Exception\UnknownPropertyException" />
+          <option value="\ManaPHP\Exception\MissingFieldException" />
+          <option value="\ManaPHP\Exception\InvalidUrlException" />
           <option value="\RuntimeException" />
           <option value="\ReflectionException" />
         </list>
