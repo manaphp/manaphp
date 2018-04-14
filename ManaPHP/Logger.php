@@ -221,16 +221,45 @@ class Logger extends Component implements LoggerInterface
             return $this;
         }
 
+        if ($category !== null && !is_string($category)) {
+            $message = [$message . ': :param', 'param' => $category];
+            $category = null;
+        }
+
         if (is_array($message)) {
-            $replaces = [];
-            /** @noinspection ForeachSourceInspection */
-            foreach ($message as $k => $v) {
-                if ($k !== 0) {
-                    $replaces[":$k"] = $v;
-                }
+            if (count($message) === 2 && isset($message[1], $message[0]) && is_string($message[0]) && !is_string($message[1])) {
+                $message[0] = rtrim($message[0], ': ') . ': :param';
+                $message['param'] = $message[1];
+                unset($message[1]);
             }
 
-            $message = strtr($message[0], $replaces);
+            if (isset($message[0]) && !isset($message[1])) {
+                $replaces = [];
+                /** @noinspection ForeachSourceInspection */
+                foreach ($message as $k => $v) {
+                    if ($k === 0) {
+                        continue;
+                    }
+
+                    if (is_array($v) || $v instanceof \JsonSerializable) {
+                        $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    } elseif ($v instanceof \Serializable) {
+                        $v = serialize($v);
+                    }
+
+                    $replaces[":$k"] = $v;
+                }
+
+                $message = strtr($message[0], $replaces);
+            } else {
+                $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        } elseif ($message instanceof \JsonSerializable) {
+            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        } elseif ($message instanceof \Serializable) {
+            $message = serialize($message);
+        } else {
+            $message = (string)$message;
         }
 
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
