@@ -10,8 +10,6 @@ return [
     ],
     'params' => ['manaphp_brand_show' => 1],
     'aliases' => [
-        '@cli' => '@app/Controllers',
-        '@ns.cli' => '@ns.app\\Controllers'
     ],
     'components' => [
         'db' => ['mysql://root@localhost/manaphp_unit_test?charset=utf8'],

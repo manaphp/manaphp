@@ -31,7 +31,7 @@ class Application extends \ManaPHP\Application
                 }
             } elseif (($calledClass = get_called_class()) !== __CLASS__) {
                 $this->alias->set('@cli', "$appDir/Controllers");
-                $this->alias->set('@ns.cli', substr($calledClass, 0, strrpos($calledClass, '\\')));
+                $this->alias->set('@ns.cli', substr($calledClass, 0, strrpos($calledClass, '\\') + 1) . 'Controllers');
             }
         }
     }
