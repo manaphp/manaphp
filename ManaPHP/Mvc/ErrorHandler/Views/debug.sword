@@ -21,7 +21,11 @@
     @foreach(array_reverse($exception->getTrace()) as $index=>$trace)
         <tr>
             <td bgcolor="#eeeeec" align="center"> {{$index}} </td>
-            <td bgcolor="#eeeeec">{{$trace['class']}}{{$trace['type']}}{{$trace['function']}}( )</td>
+            @if(isset($trace['class']))
+                <td bgcolor="#eeeeec">{{$trace['class']}}{{$trace['type']}}{{$trace['function']}}( )</td>
+            @else
+                <td bgcolor="#eeeeec">{{$trace['function']}}( )</td>
+            @endif
             <td bgcolor="#eeeeec" title="{{$trace['file']}}">{{basename($trace['file'])}}:{{$trace['line']}}</td>
         </tr>
     @endforeach
