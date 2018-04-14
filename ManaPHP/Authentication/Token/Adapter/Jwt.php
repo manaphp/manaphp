@@ -13,7 +13,7 @@ class Jwt extends Token
     public function __construct($options = [])
     {
         $this->_alg = isset($options['alg']) ? $options['alg'] : 'HS256';
-        $this->_key = isset($options['key']) ? (array)$options['key'] : [$this->crypt->getDerivedKey('mwt')];
+        $this->_key = isset($options['key']) ? (array)$options['key'] : [$this->crypt->getDerivedKey('jwt')];
 
         if (isset($options['ttl'])) {
             $this->_ttl = $options['ttl'];
