@@ -209,6 +209,41 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * @param \Exception $exception
+     *
+     * @return string
+     */
+    public function exceptionToString($exception)
+    {
+        $str = get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
+        $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
+        $traces = $exception->getTraceAsString();
+        $str .= preg_replace('/#\d+\s/', '    at ', $traces);
+
+        $prev = $traces;
+        $caused = $exception->getPrevious();
+        do {
+            $str .= PHP_EOL . '  Caused by ' . get_class($caused) . ': ' . $caused->getMessage() . PHP_EOL;
+            $str .= '    at ' . $caused->getFile() . ':' . $caused->getLine() . PHP_EOL;
+            $traces = $exception->getTraceAsString();
+            if ($traces !== $prev) {
+                $str .= preg_replace('/#\d+\s/', '    at ', $traces);
+            } else {
+                $str .= '    at ...';
+            }
+
+            $prev = $traces;
+        } while ($caused = $caused->getPrevious());
+
+        $replaces = [];
+        if ($app = $this->alias->get('@root')) {
+            $replaces[dirname(realpath($this->alias->resolve('@root'))) . DIRECTORY_SEPARATOR] = '';
+        }
+
+        return strtr($str, $replaces);
+    }
+
+    /**
      * @param string       $level
      * @param string|array $message
      * @param string       $category
@@ -226,7 +261,9 @@ class Logger extends Component implements LoggerInterface
             $category = null;
         }
 
-        if (is_array($message)) {
+        if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof \Throwable)) {
+            $message = $this->exceptionToString($message);
+        }elseif (is_array($message)) {
             if (count($message) === 2 && isset($message[1], $message[0]) && is_string($message[0]) && !is_string($message[1])) {
                 $message[0] = rtrim($message[0], ': ') . ': :param';
                 $message['param'] = $message[1];
