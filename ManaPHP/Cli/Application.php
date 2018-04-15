@@ -11,8 +11,6 @@ namespace ManaPHP\Cli;
  */
 class Application extends \ManaPHP\Application
 {
-    /** @noinspection MagicMethodsValidityInspection */
-    /** @noinspection PhpMissingParentConstructorInspection */
     /**
      * Application constructor.
      *
@@ -48,9 +46,6 @@ class Application extends \ManaPHP\Application
         $this->_di->setShared('commandInvoker', 'ManaPHP\Cli\Command\Invoker');
     }
 
-    /**
-     * @throws \ManaPHP\Configuration\Configure\Exception
-     */
     public function main()
     {
         if ($this->_configFile) {
