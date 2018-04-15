@@ -1081,6 +1081,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                 continue;
             }
 
+            if (is_object($value) && !$value instanceof self) {
+                continue;
+            }
+
             if (!$ignoreNull || $value !== null) {
                 $data[$field] = $value;
             }
