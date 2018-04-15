@@ -767,8 +767,8 @@ class Compiler extends Component
      */
     protected function _compileAction($expression)
     {
-        if (preg_match('#^\\(([/_a-z\d]+)\\)$#i', $expression, $match)) {
-            return $this->router->createUrl($match[1]);
+        if (preg_match('#^\\(([\'"]?)([/_a-z\d]+)\1\\)$#i', $expression, $match)) {
+            return $this->router->createUrl($match[2]);
         } else {
             return "<?php echo \$this->router->createActionUrl{$expression} ?>";
         }
