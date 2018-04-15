@@ -123,6 +123,39 @@ class Di implements DiInterface
     }
 
     /**
+     * @param string $name
+     * @param string $className
+     *
+     * @return string
+     */
+    protected function _completeClassName($name, $className)
+    {
+        if (isset($this->_components[$name])) {
+            $definition = $this->_components[$name];
+        } elseif (isset($this->_aliases[$name])) {
+            $definition = $this->_components[$this->_aliases[$name]];
+        } else {
+            return $className;
+        }
+
+        if (is_string($definition)) {
+            if ($pos = strrpos($definition, '\\')) {
+                return substr($definition, 0, $pos + 1) . ucfirst($className);
+            } else {
+                return $className;
+            }
+        } elseif (is_array($definition) && isset($definition['class'])) {
+            if ($pos = strrpos($definition['class'], '\\')) {
+                return substr($definition['class'], 0, $pos + 1) . ucfirst($className);
+            } else {
+                return $className;
+            }
+        } else {
+            return $className;
+        }
+    }
+
+    /**
      * Registers a component in the components container
      *
      * @param string $name
@@ -133,9 +166,16 @@ class Di implements DiInterface
     public function set($name, $definition)
     {
         if (is_string($definition)) {
+            if (strpos($definition, '\\') === false) {
+                $definition = $this->_completeClassName($name, $definition);
+            }
             $definition = ['class' => $definition, 'shared' => false];
         } elseif (is_array($definition)) {
-            if (!isset($definition['class'])) {
+            if (isset($definition['class'])) {
+                if (strpos($definition['class'], '\\') === false) {
+                    $definition['class'] = $this->_completeClassName($name, $definition['class']);
+                }
+            } else {
                 if (isset($this->_components[$name])) {
                     $component = $this->_components[$name];
                 } elseif (isset($this->_aliases[$name])) {
@@ -172,9 +212,15 @@ class Di implements DiInterface
     public function setShared($name, $definition)
     {
         if (is_string($definition)) {
-            null;//do nothing
+            if (strpos($definition, '\\') === false) {
+                $definition = $this->_completeClassName($name, $definition);
+            }
         } elseif (is_array($definition)) {
-            if (!isset($definition['class'])) {
+            if (isset($definition['class'])) {
+                if (strpos($definition['class'], '\\') === false) {
+                    $definition['class'] = $this->_completeClassName($name, $definition['class']);
+                }
+            } else {
                 if (isset($this->_components[$name])) {
                     $component = $this->_components[$name];
                 } elseif (isset($this->_aliases[$name])) {
