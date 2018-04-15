@@ -74,3 +74,16 @@ if (!function_exists('asset')) {
         return Di::getDefault()->url->getAsset($path);
     }
 }
+
+if (!function_exists('widget')) {
+    /**
+     * @param string $name
+     * @param array  $vars
+     *
+     * @return string|array
+     */
+    function widget($name, $vars = [])
+    {
+        return Di::getDefault()->view->widget($name, $vars);
+    }
+}

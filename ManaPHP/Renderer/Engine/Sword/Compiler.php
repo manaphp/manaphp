@@ -589,7 +589,7 @@ class Compiler extends Component
      */
     protected function _compileWidget($expression)
     {
-        return "<?php echo \$view->widget{$expression}; ?>";
+        return "<?php echo widget{$expression}; ?>";
     }
 
     /**
