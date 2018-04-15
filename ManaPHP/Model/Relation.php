@@ -10,6 +10,7 @@ class Relation implements RelationInterface
     const TYPE_HAS_MANY = 2;
     const TYPE_HAS_ONE = 3;
     const TYPE_HAS_MANY_TO_MANY = 4;
+    const TYPE_HAS_MANY_VIA = 5;
 
     /**
      * @var int
@@ -66,6 +67,9 @@ class Relation implements RelationInterface
             } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
                 $this->keyField = $referenceField ?: $this->_inferReferenceField($model, get_class($model));
                 $this->valueField = $model->getPrimaryKey();
+            } elseif ($type === self::TYPE_HAS_MANY_VIA) {
+                $this->keyField = $referenceField;
+                $this->valueField = $model->getPrimaryKey();
             } else {
                 throw  new InvalidValueException(['unknown relation type: :type', 'type' => $type]);
             }
@@ -118,6 +122,14 @@ class Relation implements RelationInterface
         } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
             $ids = $model::values($this->keyField, [$valueField => is_array($model) ? $model[$valueField] : $model->$valueField]);
             return $referenceModel::criteria()->where((new $referenceModel)->getPrimaryKey(), $ids)->setFetchType(true);
+        } elseif ($type === self::TYPE_HAS_MANY_VIA) {
+            $via = $this->keyField;
+            /**
+             * @var \ManaPHP\Model $reference
+             */
+            $reference = new $referenceModel();
+            $ids = $via::values($reference->getPrimaryKey(), [$valueField => is_array($model) ? $model[$valueField] : $model->$valueField]);
+            return $referenceModel::criteria()->where($reference->getPrimaryKey(), $ids)->setFetchType(true);
         } else {
             throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
         }

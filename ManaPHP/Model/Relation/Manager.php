@@ -2,6 +2,7 @@
 namespace ManaPHP\Model\Relation;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\Relation;
 
 class Manager extends Component
@@ -75,7 +76,7 @@ class Manager extends Component
                 return false;
             }
 
-            if (!$className = $this->_inferClassName($model, $singular)) {
+            if (!$referenceName = $this->_inferClassName($model, $singular)) {
                 return false;
             }
 
@@ -84,22 +85,22 @@ class Manager extends Component
                 /**
                  * @var \ManaPHP\Model $reference
                  */
-                $reference = new $className;
-                return [$className, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), $valueField];
+                $reference = new $referenceName;
+                return [$referenceName, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), $valueField];
             } else {
                 return false;
             }
         }
 
         if ($singular = $this->_pluralToSingular($name)) {
-            if (!$className = $this->_inferClassName($model, $singular)) {
+            if (!$referenceName = $this->_inferClassName($model, $singular)) {
                 return false;
             }
 
             /**
              * @var \ManaPHP\Model $reference
              */
-            $reference = new $className;
+            $reference = new $referenceName;
 
             $keys = $model->getForeignKeys();
             if (count($keys) === 2) {
@@ -107,14 +108,35 @@ class Manager extends Component
                 if (in_array($foreignKey, $keys, true)) {
                     $keys = array_flip($keys);
                     unset($keys[$foreignKey]);
-                    return [$className, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), key($keys)];
+                    return [$referenceName, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), key($keys)];
                 }
             }
-            return [$className, Relation::TYPE_HAS_MANY];
+            if (in_array($model->getPrimaryKey(), $reference->getFields(), true)) {
+                return [$referenceName, Relation::TYPE_HAS_MANY];
+            } else {
+                $r1Name = substr($referenceName, strrpos($referenceName, '\\') + 1);
+
+                $modelName = get_class($model);
+                $pos = strrpos($modelName, '\\');
+                $baseName = substr($modelName, 0, $pos + 1);
+                $r2Name = substr($modelName, $pos + 1);
+
+                $tryViaName = $baseName . $r1Name . $r2Name;
+                if (class_exists($tryViaName)) {
+                    return [$referenceName, Relation::TYPE_HAS_MANY_VIA, $tryViaName, $model->getPrimaryKey()];
+                } else {
+                    $tryViaName = $baseName . $r2Name . $r1Name;
+                    if (!class_exists($tryViaName)) {
+                        throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
+                    }
+
+                    return [$referenceName, Relation::TYPE_HAS_MANY_VIA, $tryViaName, $model->getPrimaryKey()];
+                }
+            }
         } else {
             if (in_array($name . '_id', $model->getFields(), true)) {
-                $className = $this->_inferClassName($model, $name);
-                return $className ? [$className, Relation::TYPE_HAS_ONE] : false;
+                $referenceName = $this->_inferClassName($model, $name);
+                return $referenceName ? [$referenceName, Relation::TYPE_HAS_ONE] : false;
             }
         }
 
