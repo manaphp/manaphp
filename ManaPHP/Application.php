@@ -73,6 +73,7 @@ abstract class Application extends Component implements ApplicationInterface
 
         if ($rootDir) {
             $this->alias->set('@root', $rootDir);
+            $this->alias->set('@public', $rootDir . '/public');
             $this->alias->set('@data', $rootDir . '/data');
             $this->alias->set('@tmp', $rootDir . '/tmp');
             $this->alias->set('@config', $rootDir . '/config');
