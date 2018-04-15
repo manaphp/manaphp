@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Authentication;
 
 /**
@@ -9,16 +10,18 @@ namespace ManaPHP\Authentication;
 interface TokenInterface
 {
     /**
-     * @return array
+     * @param array $claims
+     *
+     * @return string
      */
     public function encode($claims);
 
     /**
-     * @param string $str
+     * @param string $token
      *
      * @return array|false
      */
-    public function decode($str);
+    public function decode($token);
 
     /**
      * @param string $claim

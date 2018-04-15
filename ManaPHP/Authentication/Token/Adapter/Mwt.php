@@ -44,17 +44,17 @@ class Mwt extends Token
     }
 
     /**
-     * @param string $str
+     * @param string $token
      *
      * @return array|false
      */
-    public function decode($str)
+    public function decode($token)
     {
         $this->_claims = null;
 
-        $parts = explode('.', $str, 5);
+        $parts = explode('.', $token, 5);
         if (count($parts) !== 2) {
-            $this->logger->debug(['The MWT `:token` must have one dot', 'token' => $str]);
+            $this->logger->debug(['The MWT `:token` must have one dot', 'token' => $token]);
             return false;
         }
         list($payload, $signature) = $parts;

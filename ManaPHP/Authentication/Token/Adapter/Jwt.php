@@ -39,17 +39,17 @@ class Jwt extends Token
     }
 
     /**
-     * @param string $str
+     * @param string $token
      *
      * @return array|false
      */
-    public function decode($str)
+    public function decode($token)
     {
         $this->_claims = null;
 
-        $parts = explode('.', $str, 5);
+        $parts = explode('.', $token, 5);
         if (count($parts) !== 3) {
-            $this->logger->debug(['The JWT `:token` must have one dot', 'token' => $str]);
+            $this->logger->debug(['The JWT `:token` must have one dot', 'token' => $token]);
             return false;
         }
 
@@ -61,7 +61,7 @@ class Jwt extends Token
         }
 
         if (!isset($decoded_header['alg'])) {
-            $this->logger->debug(['The JWT alg field is missing: `:token`', 'token' => $str]);
+            $this->logger->debug(['The JWT alg field is missing: `:token`', 'token' => $token]);
             return false;
         }
 
@@ -71,7 +71,7 @@ class Jwt extends Token
         }
 
         if (!$decoded_header['typ']) {
-            $this->logger->debug(['The JWT typ field is missing: `:token`', 'token' => $str]);
+            $this->logger->debug(['The JWT typ field is missing: `:token`', 'token' => $token]);
             return false;
         }
 
