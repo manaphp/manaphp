@@ -194,9 +194,15 @@ class Compiler extends Component
         $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->_escapedTags[0], $this->_escapedTags[1]);
 
         $callback = function ($matches) {
-            $whitespace = empty($matches[3]) ? '' : $matches[3];
+            if ($matches[1]) {
+                return substr($matches[0], 1);
+            }
 
-            return $matches[1] ? substr($matches[0], 1) : '<?php echo e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . $whitespace;
+            if (preg_match('#^[\w\._]+$#', $matches[2]) || preg_match('#^\\$[\w]+\(#', $matches[2])) {
+                return $matches[0];
+            } else {
+                return '<?php echo e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? '' : $matches[3]);
+            }
         };
 
         return preg_replace_callback($pattern, $callback, $value);
