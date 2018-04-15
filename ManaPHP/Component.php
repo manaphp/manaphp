@@ -28,7 +28,7 @@ namespace ManaPHP;
  * @property \ManaPHP\Cli\EnvironmentInterface             $environment
  * @property \ManaPHP\MailerInterface                      $mailer
  */
-class Component implements ComponentInterface
+class Component implements ComponentInterface, \JsonSerializable
 {
     /**
      * @var \ManaPHP\Di
@@ -204,6 +204,27 @@ class Component implements ComponentInterface
         }
 
         return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $data = [];
+
+        foreach (get_object_vars($this) as $k => $v) {
+            if ($v === null || is_scalar($v)) {
+                $data[$k] = $v;
+            }
+        }
+
+        return $data;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**

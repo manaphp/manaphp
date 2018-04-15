@@ -33,7 +33,7 @@ use ManaPHP\Utility\Text;
  * method beforeDelete()
  * method afterDelete()
  */
-abstract class Model extends Component implements ModelInterface, \JsonSerializable, \Serializable
+abstract class Model extends Component implements ModelInterface, \Serializable
 {
     const OP_NONE = 0;
     const OP_CREATE = 1;
