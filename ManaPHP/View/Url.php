@@ -98,20 +98,33 @@ class Url extends Component implements UrlInterface
     }
 
     /**
-     * @param string $uri
+     * @param string $path
      *
      * @return string
      */
-    public function getAsset($uri)
+    public function getAsset($path)
     {
-        if ($uri[0] !== '/') {
-            $uri = '/' . $uri;
+        if ($path[0] !== '/') {
+            if (strpos($path, '/') === false) {
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                if ($ext === 'js') {
+                    $path = '/assets/js/' . $path;
+                } elseif ($ext === 'css') {
+                    $path = '/assets/css/' . $path;
+                } elseif ($ext === 'jpg' || $ext === 'png' || $ext === 'gif') {
+                    $path = '/assets/img/' . $path;
+                } else {
+                    $path = '/assets/' . $path;
+                }
+            } else {
+                $path = '/assets/' . $path;
+            }
         }
 
-        $file = $this->alias->resolve("@root/public/$uri");
+        $file = $this->alias->resolve("@public$path");
         if (!file_exists($file)) {
-            throw new FileNotFoundException('`:asset` asset file is not exists', ['asset' => '@root/public/$uri']);
+            throw new FileNotFoundException(['`:asset` asset file is not exists', 'asset' => "@public$path"]);
         }
-        return $this->_assets . $uri . '?' . substr(md5_file($file), 0, 16);
+        return $this->_assets . $path . '?' . substr(md5_file($file), 0, 16);
     }
 }

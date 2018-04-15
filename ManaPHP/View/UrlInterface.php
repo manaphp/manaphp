@@ -16,9 +16,9 @@ interface UrlInterface
     public function get($args);
 
     /**
-     * @param string $uri
+     * @param string $path
      *
      * @return string
      */
-    public function getAsset($uri);
+    public function getAsset($path);
 }
