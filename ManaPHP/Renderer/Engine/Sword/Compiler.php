@@ -196,7 +196,7 @@ class Compiler extends Component
         $callback = function ($matches) {
             $whitespace = empty($matches[3]) ? '' : $matches[3];
 
-            return $matches[1] ? substr($matches[0], 1) : '<?php echo $renderer->escape(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . $whitespace;
+            return $matches[1] ? substr($matches[0], 1) : '<?php echo e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . $whitespace;
         };
 
         return preg_replace_callback($pattern, $callback, $value);

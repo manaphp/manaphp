@@ -87,3 +87,16 @@ if (!function_exists('widget')) {
         return Di::getDefault()->view->widget($name, $vars);
     }
 }
+
+if (!function_exists('e')) {
+    /**
+     * @param string $value
+     * @param bool   $doubleEncode
+     *
+     * @return string
+     */
+    function e($value, $doubleEncode = true)
+    {
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
+    }
+}

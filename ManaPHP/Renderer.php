@@ -247,18 +247,4 @@ class Renderer extends Component implements RendererInterface
             $this->_sections[$last] = ob_get_clean();
         }
     }
-
-    /**
-     * @param string $v
-     *
-     * @return string
-     */
-    public function escape($v)
-    {
-        if (is_string($v)) {
-            return htmlentities($v, ENT_QUOTES, 'UTF-8', false);
-        } else {
-            return $v;
-        }
-    }
 }

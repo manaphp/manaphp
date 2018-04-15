@@ -67,11 +67,4 @@ interface RendererInterface
      * @return void
      */
     public function appendSection();
-
-    /**
-     * @param string $v
-     *
-     * @return string
-     */
-    public function escape($v);
 }
