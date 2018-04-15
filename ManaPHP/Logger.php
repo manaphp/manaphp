@@ -244,26 +244,15 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * @param string       $level
-     * @param string|array $message
-     * @param string       $category
+     * @param \Exception|array|\Serializable|\JsonSerializable $message
      *
-     * @return static
+     * @return string
      */
-    public function log($level, $message, $category = null)
+    protected function _formatMessage($message)
     {
-        if ($level > $this->_level) {
-            return $this;
-        }
-
-        if ($category !== null && !is_string($category)) {
-            $message = [$message . ': :param', 'param' => $category];
-            $category = null;
-        }
-
         if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof \Throwable)) {
-            $message = $this->exceptionToString($message);
-        }elseif (is_array($message)) {
+            return $this->exceptionToString($message);
+        } elseif (is_array($message)) {
             if (count($message) === 2 && isset($message[1], $message[0]) && is_string($message[0]) && !is_string($message[1])) {
                 $message[0] = rtrim($message[0], ': ') . ': :param';
                 $message['param'] = $message[1];
@@ -287,16 +276,35 @@ class Logger extends Component implements LoggerInterface
                     $replaces[":$k"] = $v;
                 }
 
-                $message = strtr($message[0], $replaces);
+                return strtr($message[0], $replaces);
             } else {
-                $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             }
         } elseif ($message instanceof \JsonSerializable) {
-            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } elseif ($message instanceof \Serializable) {
-            $message = serialize($message);
+            return serialize($message);
         } else {
-            $message = (string)$message;
+            return (string)$message;
+        }
+    }
+
+    /**
+     * @param string       $level
+     * @param string|array $message
+     * @param string       $category
+     *
+     * @return static
+     */
+    public function log($level, $message, $category = null)
+    {
+        if ($level > $this->_level) {
+            return $this;
+        }
+
+        if ($category !== null && !is_string($category)) {
+            $message = [$message . ': :param', 'param' => $category];
+            $category = null;
         }
 
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
@@ -305,7 +313,7 @@ class Logger extends Component implements LoggerInterface
         $log->level = $this->_levels[$level];
         $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
         $log->location = $this->_getLocation($traces);
-        $log->message = $message;
+        $log->message = $this->_formatMessage($message);
         $log->timestamp = time();
 
         $this->fireEvent('logger:log', $log);
