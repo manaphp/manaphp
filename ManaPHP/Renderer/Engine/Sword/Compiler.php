@@ -797,7 +797,7 @@ class Compiler extends Component
      */
     protected function _compileConstants($expression)
     {
-        return "<?php echo json_encode(constants{$expression}, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ;?>";
+        return "<?php echo json_encode(constants{$expression}, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), PHP_EOL; ?>";
     }
 
     /**
