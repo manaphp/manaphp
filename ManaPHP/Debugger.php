@@ -317,7 +317,7 @@ class Debugger extends Component implements DebuggerInterface
 
             $properties = $v instanceof Component ? $v->dump() : '';
 
-            if ($k === 'response') {
+            if ($k === 'response' && isset($properties['_content'])) {
                 $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
             }
 
