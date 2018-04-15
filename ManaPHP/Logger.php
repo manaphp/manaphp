@@ -84,7 +84,11 @@ class Logger extends Component implements LoggerInterface
                     $appender = $value;
                 }
 
-                if (is_array($appender) && !isset($appender[0]) && !isset($appender['class'])) {
+                if (is_string($appender)) {
+                    if (strpos($appender, '\\') === false) {
+                        $appender = 'ManaPHP\Logger\Appender\\' . ucfirst($appender);
+                    }
+                } elseif (is_array($appender) && !isset($appender[0]) && !isset($appender['class'])) {
                     if (is_string($name)) {
                         $appenderClassName = 'ManaPHP\Logger\Appender\\' . ucfirst($name);
                         if (!class_exists($appenderClassName)) {
