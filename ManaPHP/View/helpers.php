@@ -88,6 +88,20 @@ if (!function_exists('widget')) {
     }
 }
 
+if (!function_exists('partial')) {
+
+    /**
+     * @param string $path
+     * @param array  $vars
+     *
+     * @return void
+     */
+    function partial($path, $vars = [])
+    {
+        Di::getDefault()->renderer->partial($path, $vars);
+    }
+}
+
 if (!function_exists('e')) {
     /**
      * @param string $value
