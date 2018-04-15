@@ -31,6 +31,13 @@ interface DiInterface
     public function setShared($name, $definition);
 
     /**
+     * @param string $name
+     *
+     * @return string|array|callable|null
+     */
+    public function getDefinition($name);
+
+    /**
      * @param string       $component
      * @param string|array $aliases
      * @param bool         $force

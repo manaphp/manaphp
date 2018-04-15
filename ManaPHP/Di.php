@@ -378,6 +378,16 @@ class Di implements DiInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return string|array|callable|null
+     */
+    public function getDefinition($name)
+    {
+        return isset($this->_components[$name]) ? $this->_components[$name] : null;
+    }
+
+    /**
      * Magic method __get
      *
      * @param string $propertyName
