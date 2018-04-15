@@ -2,6 +2,7 @@
 namespace ManaPHP\View;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\FileNotFoundException;
 
 /**
  * Class ManaPHP\View\Url
@@ -107,6 +108,10 @@ class Url extends Component implements UrlInterface
             $uri = '/' . $uri;
         }
 
-        return $this->_assets . $uri;
+        $file = $this->alias->resolve("@root/public/$uri");
+        if (!file_exists($file)) {
+            throw new FileNotFoundException('`:asset` asset file is not exists', ['asset' => '@root/public/$uri']);
+        }
+        return $this->_assets . $uri . '?' . substr(md5_file($file), 0, 16);
     }
 }

@@ -62,3 +62,15 @@ if (!function_exists('constants')) {
         return $instance->getConstants($name);
     }
 }
+
+if (!function_exists('asset')) {
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    function asset($path)
+    {
+        return Di::getDefault()->url->getAsset($path);
+    }
+}

@@ -621,8 +621,8 @@ class Compiler extends Component
             $expression = '(\'' . trim($expression, '()') . '\')';
         }
 
-        return $this->url->getAsset(substr($expression, 2, -2));
-        /* return "<?php echo \$url->getAsset{$expression }; ?>";*/
+        return asset(substr($expression, 2, -2));
+        /*return "<?php echo asset{$expression}; ?>";*/
     }
 
     /**
