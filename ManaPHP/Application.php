@@ -102,7 +102,11 @@ abstract class Application extends Component implements ApplicationInterface
         }
 
         foreach ($configure->components as $component => $definition) {
-            $this->_di->setShared($component, $definition);
+            if ($definition === null) {
+                $this->_di->remove($component);
+            } else {
+                $this->_di->setShared($component, $definition);
+            }
         }
 
         foreach ($configure->bootstraps as $bootstrap) {
