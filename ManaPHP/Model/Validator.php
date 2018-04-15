@@ -2,8 +2,11 @@
 namespace ManaPHP\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Model\Validator\Exception as ValidatorException;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Model\Validator\Message;
+use ManaPHP\Model\Validator\ValidateFailedException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -69,8 +72,7 @@ class Validator extends Component implements ValidatorInterface
         $languages = explode(',', $this->configure->language);
         $file = "{$this->_templates_dir}/$languages[0].php";
         if (!$this->filesystem->fileExists($file)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ValidatorException(['`:file` validator message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
+            throw new FileNotFoundException(['`:file` validator message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
         }
         /** @noinspection PhpIncludeInspection */
         return $this->_templates = require $this->alias->resolve($file);
@@ -107,7 +109,7 @@ class Validator extends Component implements ValidatorInterface
      * @param array          $fields
      *
      * @return void
-     * @throws \ManaPHP\Model\Validator\Exception
+     * @throws \ManaPHP\Model\Validator\ValidateFailedException
      */
     public function validate($model, $fields = [])
     {
@@ -147,7 +149,7 @@ class Validator extends Component implements ValidatorInterface
         }
 
         if ($this->_messages) {
-            throw new ValidatorException('validate failed: ' . json_encode($this->_messages));
+            throw new ValidateFailedException('validate failed: ' . json_encode($this->_messages));
         }
     }
 
@@ -173,8 +175,7 @@ class Validator extends Component implements ValidatorInterface
             return $parameters === null ? $name($value) : $name($value, $parameters);
         }
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        throw new ValidatorException(['unsupported `:validate` validate method', 'validate' => $name]);
+        throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $name]);
     }
 
     /**
@@ -280,8 +281,7 @@ class Validator extends Component implements ValidatorInterface
         if (preg_match('#^(-?[\.\d]+)-(-?[\d\.]+)$#', $parameter, $match)) {
             return $value >= $match[1] && $value <= $match[2] ? $value : null;
         } else {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ValidatorException(['range validator `:parameter` parameters is not {min}-{max} format', 'parameter' => $parameter]);
+            throw new InvalidValueException(['range validator `:parameter` parameters is not {min}-{max} format', 'parameter' => $parameter]);
         }
     }
 
@@ -319,8 +319,7 @@ class Validator extends Component implements ValidatorInterface
         if (preg_match('#^(\d+)-(\d+)$#', $parameter, $match)) {
             return $len >= $match[1] && $len <= $match[2] ? $value : null;
         } else {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ValidatorException(['length validator `:parameter` parameters is not {minLength}-{maxLength} format', 'parameter' => $parameter]);
+            throw new InvalidValueException(['length validator `:parameter` parameters is not {minLength}-{maxLength} format', 'parameter' => $parameter]);
         }
     }
 
@@ -494,14 +493,12 @@ class Validator extends Component implements ValidatorInterface
                     $className = $this->alias->resolve('@ns.app\\Models\\' . Text::camelize($match[1]));
                 }
             } else {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new ValidatorException(['validate `:field` field failed: related model class name is not provided', 'field' => $field]);
+                throw new InvalidValueException(['validate `:field` field failed: related model class name is not provided', 'field' => $field]);
             }
         }
 
         if (!class_exists($className)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ValidatorException(['validate `:field` field failed: related `:model` model class is not exists.', 'field' => $field, 'model' => $className]);
+            throw new InvalidValueException(['validate `:field` field failed: related `:model` model class is not exists.', 'field' => $field, 'model' => $className]);
         }
 
         /**
