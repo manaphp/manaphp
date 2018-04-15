@@ -4,12 +4,6 @@ namespace App\Admin;
 use ManaPHP\Authentication\UserIdentity;
 use ManaPHP\Authorization\Rbac;
 
-if (PHP_EOL === "\n") {
-    require __DIR__ . '/../vendor/manaphp/framework/Mvc/Url/helpers.php';
-} else {
-    require __DIR__ . '/../../../ManaPHP/Mvc/Url/helpers.php';
-}
-
 class Application extends \ManaPHP\Mvc\Application
 {
     public function authenticate()
@@ -44,7 +38,6 @@ class Application extends \ManaPHP\Mvc\Application
 
     /**
      * @return void
-     * @throws \ManaPHP\Configuration\Configure\Exception
      */
     public function main()
     {
