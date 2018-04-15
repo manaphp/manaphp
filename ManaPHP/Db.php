@@ -104,7 +104,7 @@ abstract class Db extends Component implements DbInterface
             } catch (\PDOException $e) {
                 /** @noinspection PhpUnhandledExceptionInspection */
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode());
+                throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
         }
 
