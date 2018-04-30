@@ -11,17 +11,20 @@ use ManaPHP\Cli\Controller;
 class PasswordController extends Controller
 {
     /**
-     * calc password
+     *  calculate password hash
+     *
      * @param string $salt
      * @param string $password
      */
-    public function defaultCommand($salt = '', $password = '')
+    public function hashCommand($salt = '', $password = '')
     {
         if ($salt === '') {
             $salt = $this->password->salt();
+        } elseif (is_numeric($salt) && $salt < 100) {
+            $salt = $this->password->salt($salt);
         }
 
         $this->console->writeLn('salt: ' . $salt);
-        $this->console->writeLn('hash: '. $this->password->hash($password, $salt));
+        $this->console->writeLn('hash: ' . $this->password->hash($password, $salt));
     }
 }
