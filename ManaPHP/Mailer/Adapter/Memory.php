@@ -18,6 +18,12 @@ class Memory extends Mailer
         return $this->_message;
     }
 
+    /**
+     * @param \ManaPHP\Mailer\Message $message
+     * @param array                   $failedRecipients
+     *
+     * @return int
+     */
     protected function _send($message, &$failedRecipients = null)
     {
         $this->_message = $message;
