@@ -24,7 +24,7 @@ class Password extends Component implements PasswordInterface
             $base64 .= base64_encode(md5(mt_rand(), true));
         }
 
-        return strtr(substr($base64, 0, $length), '+/', '69');
+        return strtr(substr($base64, 0, $length), '+/=', '690');
     }
 
     /**
