@@ -11,7 +11,7 @@ use ManaPHP\Exception\RuntimeException;
  * @package ManaPHP\Model
  * @property \ManaPHP\Http\RequestInterface $request
  */
-abstract class Criteria extends Component implements CriteriaInterface, \JsonSerializable
+abstract class Criteria extends Component implements CriteriaInterface
 {
     /**
      * @var \ManaPHP\Model

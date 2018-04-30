@@ -12,7 +12,7 @@ use ManaPHP\Exception\PreconditionException;
  *
  * @property \ManaPHP\Http\RequestInterface $request
  */
-class Paginator extends Component implements \JsonSerializable, PaginatorInterface
+class Paginator extends Component implements PaginatorInterface
 {
     /**
      * @var int
