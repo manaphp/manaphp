@@ -1,48 +1,41 @@
 <?php
-namespace ManaPHP\Authorization\Rbac;
+namespace App\Admin\Areas\Rbac\Components;
 
-use ManaPHP\Authorization\Rbac\PermissionBuilder\Exception as PermissionBuilderException;
 use ManaPHP\Component;
+use App\Admin\Areas\Rbac\Components\PermissionBuilder\Exception as PermissionBuilderException;
 
-/**
- * Class ManaPHP\Authorization\Rbac\PermissionBuilder
- *
- * @package rbac
- *
- * @property \ManaPHP\AliasInterface $alias
- */
 class PermissionBuilder extends Component
 {
     /**
      * @return array
      */
-    public function getModules()
+    public function getAreas()
     {
-        if ($this->filesystem->dirExists('@app/Controllers')) {
-            return [''];
-        } else {
-            $modules = [];
-            foreach ($this->filesystem->glob('@app/*', GLOB_ONLYDIR) as $dir) {
-                if ($this->filesystem->dirExists($dir . '/Controllers')) {
-                    $modules[] = basename($dir);
-                }
-            }
-
-            return $modules;
+        if (!$this->filesystem->dirExists('@app/Areas/')) {
+            return [];
         }
+
+        $areas = [];
+        foreach ($this->filesystem->glob('@app/Areas/*', GLOB_ONLYDIR) as $dir) {
+            if ($this->filesystem->dirExists($dir . '/Controllers')) {
+                $areas[] = basename($dir);
+            }
+        }
+
+        return $areas;
     }
 
     /**
-     * @param string $moduleName
+     * @param string $area
      *
      * @return array
      */
-    public function getControllers($moduleName)
+    public function getControllers($area)
     {
         $controllers = [];
-        if ($moduleName) {
-            foreach (glob($this->alias->resolve("@app/$moduleName/Controllers/*Controller.php")) as $item) {
-                $controllers[] = $this->alias->resolveNS("@ns.app\\$moduleName\\Controllers\\" . basename($item, '.php'));
+        if ($area) {
+            foreach (glob($this->alias->resolve("@app/Areas/$area/Controllers/*Controller.php")) as $item) {
+                $controllers[] = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\" . basename($item, '.php'));
             }
         } else {
             foreach (glob($this->alias->resolve('@app/Controllers/*Controller.php')) as $item) {
@@ -57,13 +50,10 @@ class PermissionBuilder extends Component
      * @param string $controllerName
      *
      * @return array
-     * @throws \ManaPHP\Authorization\Rbac\PermissionBuilder\Exception
      */
     public function getActions($controllerName)
     {
         $actions = [];
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        /** @noinspection PhpUnhandledExceptionInspection */
         $rc = new \ReflectionClass($controllerName);
 
         foreach ($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {

@@ -20,7 +20,8 @@ return [
             'level' => 'debug',
             'appenders' => ['ManaPHP\Logger\Appender\File'],
         ],
-        'translation' => ['language' => 'zh-CN,en']
+        'translation' => ['language' => 'zh-CN,en'],
+        'authorization' => \App\Admin\Areas\Rbac\Components\Rbac::class
     ],
     'bootstraps' => ['debugger']
 ];

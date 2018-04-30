@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Admin\Areas\Rbac\Controllers;
 
 use App\Admin\Areas\Rbac\Models\Permission;
@@ -11,12 +12,14 @@ class RolePermissionController extends ControllerBase
     {
         if ($this->request->isAjax()) {
             try {
-                $role_id = $this->request->get('role_id', '*|int');
+                $role_id = $this->request->get('role_id', 'int');
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
 
-            return $this->response->setJsonContent(RolePermission::find(['role_id' => $role_id]));
+            return RolePermission::find(['role_id' => $role_id],
+                ['with' => ['permission' => 'description, path', 'roles' => 'role_id, role_name']],
+                ['id', 'permission_id', 'creator_name', 'created_time']);
         }
     }
 
@@ -25,30 +28,23 @@ class RolePermissionController extends ControllerBase
         if ($this->request->isPost()) {
             try {
                 $role_id = $this->request->get('role_id');
-                $permissions = $this->request->get('permissions');
+                $permission_ids = $this->request->get('permission_ids');
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
 
-            $role = Role::firstOrFail($role_id);
-			
             $old_permissions = RolePermission::values('permission_id', ['role_id' => $role_id]);
 
-            RolePermission::deleteAll(['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permissions))]);
+            RolePermission::deleteAll(['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permission_ids))]);
 
-            foreach (array_diff($permissions, $old_permissions) as $permission_id) {
+            foreach (array_diff($permission_ids, $old_permissions) as $permission_id) {
                 $rolePermission = new RolePermission();
                 $rolePermission->role_id = $role_id;
-                $rolePermission->role_name = $role->role_name;
                 $rolePermission->permission_id = $permission_id;
-                $rolePermission->permission_description = Permission::value($permission_id, 'description');
-                $rolePermission->creator_id = $this->userIdentity->getId();
-                $rolePermission->creator_name = $this->userIdentity->getName();
-
                 $rolePermission->create();
             }
 
-            return $this->response->setJsonContent(0);
+            return 0;
         }
     }
 }

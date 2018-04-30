@@ -27,7 +27,7 @@ class SideMenuWidget extends Widget
 
             foreach ($items as $k => $item) {
                 $permission = Permission::firstOrFail($item['permission_id']);
-                $items[$k]['action'] = '/' . Text::underscore($permission->module_name) . '/' . Text::underscore($permission->controller_name) . '/' . $permission->action_name;
+                $items[$k]['action'] = '/' ;//. Text::underscore($permission->module_name) . '/' . Text::underscore($permission->controller_name) . '/' . $permission->action_name;
             }
             $menu[] = [
                 'group_id' => $group['group_id'],

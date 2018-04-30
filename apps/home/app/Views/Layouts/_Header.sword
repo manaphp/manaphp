@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>About</title>
-    <link rel="stylesheet" href="@url('/static/css/manaphp.css')">
+    <link rel="stylesheet" href="@asset(/static/css/manaphp.css)">
 </head>
 <body>
 <div>

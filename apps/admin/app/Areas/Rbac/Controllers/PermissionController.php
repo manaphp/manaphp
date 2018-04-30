@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Admin\Areas\Rbac\Controllers;
 
 use App\Admin\Areas\Rbac\Models\Permission;
-use App\Admin\Areas\Rbac\Models\RolePermission;
-use ManaPHP\Authorization\Rbac\PermissionBuilder;
+use ManaPHP\Utility\Text;
 
 /**
  * Class RbacPermissionController
@@ -17,65 +17,80 @@ class PermissionController extends ControllerBase
     public function indexAction()
     {
         if ($this->request->isAjax()) {
-            $permissions = [];
-            foreach (Permission::find(['app_name' => $this->application->getAppName()]) as $permission) {
-                $permissions[] = array_merge($permission->toArray(),
-                    ['roles' => RolePermission::find(['permission_id' => $permission->permission_id], ['role_id', 'role_name'])]);
+            if ($permission_id = $this->request->get('permission_id', 'int', 0)) {
+                return Permission::find(['permission_id' => $permission_id], ['with' => ['roles' => 'role_id, role_name']]);
+            } else {
+                return Permission::find([], ['with' => ['roles' => 'role_id, role_name']]);
             }
-            return $this->response->setJsonContent($permissions);
         }
     }
 
     public function listAction()
     {
         if ($this->request->isAjax()) {
-            return $this->response->setJsonContent(
-                Permission::criteria([
-                    'permission_id',
-                    'module_name',
-                    'controller_name',
-                    'action_name',
-                    'description'
-                ])->where(['app_name' => $this->application->getAppName()])->indexBy('permission_id')->execute()
-            );
+            return Permission::find([], [], ['permission_id', 'path', 'description']);
         }
     }
 
     public function rebuildAction()
     {
-        if ($this->request->isPost()) {
-            $permissionBuilder = new PermissionBuilder();
+        if (!$this->request->isPost()) {
+            return;
+        }
 
-            foreach ($permissionBuilder->getModules() as $module) {
-                foreach ($permissionBuilder->getControllers($module) as $controller) {
-                    $controllerName = basename($controller, 'Controller');
-                    foreach ($permissionBuilder->getActions($controller) as $actionName => $actionDescription) {
-                        if (!Permission::exists(['module_name' => $module, 'controller_name' => $controllerName, 'action_name' => $actionName])) {
-                            $permission = new Permission();
+        foreach ($this->filesystem->glob('@app/Controllers/*Controller.php') as $item) {
+            $controller = $this->alias->resolveNS('@ns.app\\Controllers\\' . basename($item, '.php'));
+            $controller_path = '/' . Text::underscore(basename($item, 'Controller.php'));
 
-                            $permission->permission_type = Permission::TYPE_PENDING;
-                            $permission->app_name = $this->application->getAppName();
-                            $permission->module_name = $module;
-                            $permission->controller_name = $controllerName;
-                            $permission->action_name = $actionName;
-                            $permission->description = implode(':', [$module, $controllerName, $actionName]);
+            foreach (get_class_methods($controller) as $method) {
+                if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
+                    continue;
+                }
+                $path = preg_replace('#(/index)+$#', '', $controller_path . '/' . Text::underscore($match[1])) ?: '/';
+                if (Permission::exists(['path' => $path])) {
+                    continue;
+                }
 
-                            $permission->create();
-                        }
+                $permission = new Permission();
+                $permission->type = Permission::TYPE_PENDING;
+                $permission->path = $path;
+                $permission->description = $path;
+                $permission->create();
+            }
+        }
+
+        foreach ($this->filesystem->glob('@app/Areas/*', GLOB_ONLYDIR) as $area) {
+            $area = basename($area);
+            foreach (glob($this->alias->resolve("@app/Areas/$area/Controllers/*Controller.php")) as $item) {
+                $controller = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\" . basename($item, '.php'));
+                $controller_path = '/' . Text::underscore($area) . '/' . Text::underscore(basename($item, 'Controller.php'));
+
+                foreach (get_class_methods($controller) as $method) {
+                    if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
+                        continue;
                     }
+
+                    $path = preg_replace('#(/index)+$#', '', $controller_path . '/' . Text::underscore($match[1])) ?: '/';
+                    if (Permission::exists(['path' => $path])) {
+                        continue;
+                    }
+
+                    $permission = new Permission();
+                    $permission->type = Permission::TYPE_PENDING;
+                    $permission->path = $path;
+                    $permission->description = $path;
+                    $permission->create();
                 }
             }
-
-            return $this->response->setJsonContent(0);
         }
+
+        return 0;
     }
 
     public function editAction()
     {
         if ($this->request->isPost()) {
-            Permission::updateOrFail(['type' => 'permission_type', 'description']);
-
-            return $this->response->setJsonContent(0);
+            return Permission::updateOrFail();
         }
     }
 }

@@ -1,5 +1,4 @@
 @layout(false)
-@partial('Shared/Header')
 <body class="hold-transition register-page">
 <div class="register-box">
     <div class="register-logo">
@@ -66,7 +65,7 @@
                 var form = $(e.target);
 
                 $.post(form.attr('action'), form.serialize(), function (result) {
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         window.location.href = "@action('/')";
                     } else {
                         $error.text(result.error);
@@ -78,4 +77,3 @@
         });
     </script>
 @append
-@partial('Shared/Footer')

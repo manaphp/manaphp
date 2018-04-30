@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Admin;
 
 use ManaPHP\Authentication\UserIdentity;
-use ManaPHP\Authorization\Rbac;
+use App\Admin\Areas\Rbac\Components\Rbac;
 
 class Application extends \ManaPHP\Mvc\Application
 {
@@ -23,10 +24,8 @@ class Application extends \ManaPHP\Mvc\Application
             return true;
         }
 
-        if (strpos('User/', $dispatcher->getControllerName()) === 0) {
-            if (in_array($dispatcher->getControllerName(), ['Session', 'User'], true)) {
-                return true;
-            }
+        if (in_array($dispatcher->getControllerName(), ['User/Session', 'User/Login'], true)) {
+            return true;
         }
 
         if (!$this->userIdentity->getId()) {

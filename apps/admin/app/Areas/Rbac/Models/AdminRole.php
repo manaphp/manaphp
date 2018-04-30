@@ -1,19 +1,23 @@
 <?php
 namespace App\Admin\Areas\Rbac\Models;
 
+use App\Admin\Models\Admin;
 use ManaPHP\Db\Model;
+use ManaPHP\Model\Relation;
 
-class RolePermission extends Model
+class AdminRole extends Model
 {
     public $id;
+    public $admin_id;
+    public $admin_name;
     public $role_id;
-    public $permission_id;
+    public $role_name;
     public $creator_name;
     public $created_time;
 
     public function getSource($context = null)
     {
-        return 'rbac_role_permission';
+        return 'rbac_admin_role';
     }
 
     public function getSafeFields()
@@ -23,6 +27,6 @@ class RolePermission extends Model
 
     public function relations()
     {
-        return ['permission' => Permission::class];
+        return ['admins' => [Admin::class, Relation::TYPE_HAS_MANY_TO_MANY, 'admin_id', 'role_id']];
     }
 }

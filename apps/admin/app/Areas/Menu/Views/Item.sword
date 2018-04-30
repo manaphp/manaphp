@@ -1,13 +1,12 @@
 <div class="search-box">
     <el-row>
-        <el-col :span="2">
-            <el-select v-model="list.request.group_id" size="small" clearable @change="load_table_data">
+        <el-col :span="3">
+            <el-select v-model="request.group_id" size="small" clearable @change="reload_table">
                 <el-option v-for="(name, id) in groups" :key="id" :label="name" :value="id"></el-option>
             </el-select>
         </el-col>
         <el-col :span="3">
-            <el-button @click="create.group_id=list.request.group_id; createVisible=true" icon="el-icon-plus"
-                       size="small" type="primary">create
+            <el-button @click="create.group_id=request.group_id; createVisible=true" icon="el-icon-plus" size="small" type="primary">create
             </el-button>
         </el-col>
     </el-row>
@@ -38,10 +37,24 @@
     </span>
 </el-dialog>
 
-<el-dialog title="edit role" :visible.sync="editVisible">
+<el-dialog title="edit" :visible.sync="editVisible">
     <el-form :model="edit">
-        <el-form-item label="role_name:">
-            <el-input v-model="edit.role_name" auto-complete="off"></el-input>
+        <el-form-item label="item name:" prop="item_name">
+            <el-input v-model="edit.item_name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="display order:" prop="display_order">
+            <el-input v-model="edit.display_order" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="group name:">
+            <el-select v-model="edit.group_id" size="small">
+                <el-option v-for="(name, id) in groups" :key="id" :label="name" :value="id"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="permission:">
+            <el-select v-model="edit.permission_id" size="small" filterable>
+                <el-option v-for="item in permissions" :key="item.permission_id" :label="item.description"
+                           :value="item.permission_id"></el-option>
+            </el-select>
         </el-form-item>
     </el-form>
     <div slot="footer">
@@ -50,29 +63,24 @@
     </div>
 </el-dialog>
 <div class="result-box">
-    <el-table :data="list.response.items" border size="small">
+    <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="item_id" label="item_id" width="100"></el-table-column>
         <el-table-column prop="item_name" label="item_name"></el-table-column>
-        <el-table-column prop="item_name" label="item_name">
+        <el-table-column prop="display_order" label="display_order"></el-table-column>
+        <el-table-column prop="permission_name" label="permission_name">
             <template slot-scope="scope">
                 @{{permissions[scope.row.permission_id].description}}
             </template>
         </el-table-column>
-        <el-table-column prop="updated_time" label="updated_time" :formatter="formatter_date"
-                         width="150"></el-table-column>
-        <el-table-column prop="creator_id" label="creator_id" width="100"></el-table-column>
+        <el-table-column prop="updator_name" label="updator_name" width="120"></el-table-column>
+        <el-table-column prop="updated_time" label="updated_time" :formatter="fDate" width="150"></el-table-column>
         <el-table-column prop="creator_name" label="creator_name" width="120"></el-table-column>
-        <el-table-column prop="created_time" label="created_time" :formatter="formatter_date"
-                         width="150"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
         <el-table-column fixed="right" label="operation" width="250">
             <template slot-scope="scope">
-                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>
-                    edit
-                </el-button>
-                <el-button @click="do_delete(scope.row)" icon="el-icon-delete" size="mini" plain round>
-                    delete
-                </el-button>
+                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>edit</el-button>
+                <el-button @click="do_delete(scope.row)" icon="el-icon-delete" size="mini" plain round>delete</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -82,10 +90,8 @@
         vm = new Vue({
             el: '#app',
             data: {
-                list: {
-                    request: {},
-                    response: []
-                },
+                request: {},
+                response: [],
                 createVisible: false,
                 create: {
                     item_name: '',
@@ -96,64 +102,52 @@
 
                 editVisible: false,
                 edit: {
-                    role_id: '',
-                    role_name: ''
+                    item_id: 0,
+                    item_name: '',
+                    display_order: 0,
+                    group_id: '',
+                    permission_id: ''
                 },
                 groups: {},
                 permissions: {}
             },
             mounted: function () {
-                this.$axios.get('@action(group/list)').then(function (res) {
-                    this.groups = res.data.data;
-                    if (!this.list.request.group_id) {
-                        this.list.request.group_id = this._.find(this.groups);
+                this.ajax_get('@action(group/list)', function (res) {
+                    this.groups = res;
+                    if (!this.request.group_id) {
+                        this.request.group_id = this._.find(this.groups);
                     }
-                }.bind(this));
 
-                this.$axios.get('@action(/rbac/permission/list)').then(function (res) {
-                    this.permissions = res.data.data;
-                }.bind(this));
-                this.load_table_data();
+                    this.ajax_get('@action(/rbac/permission/list)', function (res) {
+                        this.permissions = res;
+                        this.reload_table();
+                    });
+                });
             },
             methods: {
                 do_create: function () {
-                    this.$axios.post('@action(create)', this.create).then(function (res) {
-                        if (res.data.code === 0) {
-                            this.$refs.create.resetFields();
-                            this.createVisible = false;
-                            this.load_table_data();
-                        } else {
-                            this.$alert(res.data.message);
-                        }
-                    }.bind(this));
+                    this.ajax_post('@action(create)', this.create, function (res) {
+                        this.$refs.create.resetFields();
+                        this.createVisible = false;
+                        this.reload_table();
+                    });
                 },
                 show_edit: function (row) {
-                    this.edit.role_id = row.role_id;
-                    this.edit.role_name = row.role_name;
-
+                    this.edit = Object.assign({}, row);
                     this.editVisible = true;
                 },
                 do_edit: function () {
-                    this.$axios.post('@action(edit)', this.edit).then(function (res) {
-                        if (res.data.code === 0) {
-                            this.editVisible = false;
-                            this.load_table_data();
-                        } else {
-                            this.$alert(res.data.message);
-                        }
-
-                    }.bind(this));
+                    this.ajax_post('@action(edit)', this.edit, function (res) {
+                        this.editVisible = false;
+                        this.reload_table();
+                    });
                 },
                 do_delete: function (row) {
                     this.$confirm('delete?').then(function (value) {
-                        this.$axios.post('@action(delete)', {item_id: row.item_id}).then(function (res) {
-                            if (res.data.code === 0) {
-                                this.load_table_data();
-                            } else {
-                                this.$alert(res.data.message);
-                            }
-                        }.bind(this));
-                    }.bind(this))
+                        this.ajax_post('@action(delete)', {item_id: row.item_id}).then(function (res) {
+                            this.reload_table();
+                        });
+                    })
                 }
             }
         });

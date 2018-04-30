@@ -1,7 +1,28 @@
 <?php
 namespace App\Admin\Areas\Rbac\Models;
 
-class Role extends \ManaPHP\Authorization\Rbac\Models\Role
-{
+use ManaPHP\Db\Model;
 
+class Role extends Model
+{
+    public $role_id;
+    public $role_name;
+    public $enabled;
+    public $creator_name;
+    public $updator_name;
+    public $created_time;
+    public $updated_time;
+
+    public function getSource($context = null)
+    {
+        return 'rbac_role';
+    }
+
+    public function rules()
+    {
+        return [
+            'role_name' => ['lower', 'length' => '3-15', 'unique'],
+            'enabled' => 'bool'
+        ];
+    }
 }

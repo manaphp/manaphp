@@ -1,0 +1,132 @@
+<div class="search-box">
+    <el-row>
+        <el-col :span="2">
+            <el-select v-model="filter.path" size="small" clearable>
+                <el-option v-for="path in paths" :key="path" :label="path" :value="path"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :span="2">
+            <el-select v-model="filter.type" size="small" clearable>
+                <el-option v-for="(name, id) in types" :key="id" :label="name" :value="id"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :span="3">
+            <el-button round size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh">rebuild</el-button>
+        </el-col>
+    </el-row>
+</div>
+<el-dialog title="edit permission" :visible.sync="editVisible">
+    <el-form :model="edit" ref="edit">
+        <el-form-item label="permission id:"><div>@{{edit.permission_id}}</div></el-form-item>
+        <el-form-item label="path:"><div>@{{edit.path}}</div></el-form-item>
+        <el-form-item label="type:">
+            <el-select v-model="edit.type"><el-option v-for="(name, id) in types" :key="id" :label="name" :value="id"></el-option></el-select>
+        </el-form-item>
+        <el-form-item label="description:"><el-input v-model="edit.description"></el-input></el-form-item>
+    </el-form>
+    <div slot="footer">
+        <el-button type="primary" @click="do_edit">save</el-button>
+        <el-button @click="editVisible=false">cancel</el-button>
+    </div>
+</el-dialog>
+<div class="result-box">
+    <el-table :data="filteredResponse" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="permission_id" label="id" width="50"></el-table-column>
+        <el-table-column label="type" width="100"><template slot-scope="scope">@{{types[scope.row.type]}}</template></el-table-column>
+        <el-table-column prop="path" label="path" width="250"></el-table-column>
+        <el-table-column prop="description" label="description" width="250"></el-table-column>
+        <el-table-column label="roles">
+            <template slot-scope="scope">
+                <el-tag size="small" v-for="role in scope.row.roles">@{{role.role_name}}</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column prop="updated_time" label="updated_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column fixed="right" label="operation" width="200">
+            <template slot-scope="scope">
+                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>edit</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                request: {},
+                response: {},
+                editVisible: false,
+                edit: {},
+                row: {},
+                paths: [],
+                filter: {
+                    path: '',
+                    type: ''
+                },
+                types:  @constants('permission', 'type')
+            },
+            computed: {
+                filteredResponse: function () {
+                    var filter = this.filter;
+                    var permissions = [];
+                    for (var item of this.response) {
+                        if (filter.path !== '' && item.path !== filter.path && item.path.indexOf(filter.path + '/') !== 0 && filter.path !== '/') {
+                            continue;
+                        }
+
+                        if (filter.type !== '' && item.type !== filter.type) {
+                            continue;
+                        }
+
+                        permissions.push(item);
+                    }
+
+                    return permissions;
+                }
+            },
+            mounted: function () {
+                this.reload_table();
+            },
+            methods: {
+                show_edit: function (row) {
+                    this.editVisible = true;
+                    this.row = row;
+                    this.edit = Object.assign({}, row)
+                },
+                do_edit: function () {
+                    this.ajax_post('@action(edit)', this.edit, function () {
+                        this.editVisible = false;
+                        this.row = Object.assign(this.row, this.edit);
+                    });
+                },
+                do_rebuild: function () {
+                    this.ajax_post('@action(rebuild)', {}, function () {
+                        this.reload_table();
+                    });
+                }
+            },
+            watch: {
+                response: function (v) {
+                    var paths = [];
+                    for (var item of this.response) {
+                        var count = 0;
+                        for (var item2 of this.response) {
+                            if (item2.path.indexOf(item.path) === 0) {
+                                count++;
+                            }
+                        }
+
+                        if (count > 1) {
+                            paths.push(item.path);
+                        }
+                    }
+                    this.paths = paths;
+                    this.filter.path = '';
+                }
+            }
+        });
+    </script>
+@append

@@ -1,0 +1,145 @@
+<div class="search-box">
+    <el-row>
+        <el-col :span="2">
+            <el-input v-model="request.keyword" placeholder="keyword" size="small"></el-input>
+        </el-col>
+        <el-col :span="3">
+            <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">create</el-button>
+        </el-col>
+    </el-row>
+</div>
+<el-dialog title="create admin" :visible.sync="createVisible">
+    <el-form :model="create" ref="create">
+        <el-form-item label="admin name:" prop="admin_name">
+            <el-input v-model="create.admin_name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="email:" prop="email">
+            <el-input v-model="create.email" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="password:" prop="password">
+            <el-input v-model="create.password" auto-complete="off" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="status:" prop="status">
+            <el-radio-group v-model="create.status">
+                <el-radio v-for="(status, id) in statuses" :label="id">@{{status}}</el-radio>
+            </el-radio-group>
+        </el-form-item>
+    </el-form>
+    <span slot="footer">
+        <el-button type="primary" @click="do_create">create</el-button>
+        <el-button @click="createVisible = false; $refs.create.resetFields()">cancel</el-button>
+    </span>
+</el-dialog>
+<el-dialog title="edit admin" :visible.sync="editVisible">
+    <el-form :model="edit">
+        <el-form-item label="admin_name:"><span text-align="left">@{{ edit.admin_name }}</span></el-form-item>
+        <el-form-item label="email:"><el-input v-model="edit.email" auto-complete="off"></el-input></el-form-item>
+        <el-form-item label="password:"><el-input v-model="edit.password" auto-complete="off"></el-input></el-form-item>
+    </el-form>
+    <div slot="footer">
+        <el-button type="primary" @click="do_edit">save</el-button>
+        <el-button @click="editVisible=false">cancel</el-button>
+    </div>
+</el-dialog>
+<div class="result-box">
+    <el-table :data="response.items" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="admin_id" label="admin_id" width="80"></el-table-column>
+        <el-table-column prop="admin_name" label="admin_name" width="100"></el-table-column>
+        <el-table-column prop="email" label="email"></el-table-column>
+        <el-table-column label="status" width="80">
+            <template slot-scope="scope">@{{ statuses[scope.row.status] }}</template>
+        </el-table-column>
+        <el-table-column prop="login_ip" label="login_ip" width="120"></el-table-column>
+        <el-table-column prop="login_time" label="login_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="updator_name" label="updator_name" width="120"></el-table-column>
+        <el-table-column prop="updated_time" label="updated_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="creator_name" label="creator_name" width="120"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column fixed="right" label="operation" width="240">
+            <template slot-scope="scope">
+                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>edit</el-button>
+                <el-button v-if="scope.row.status==1" @click="do_lock(scope.row)" size="mini" plain round>
+                    lock
+                </el-button>
+                <el-button v-if="scope.row.status!==1" @click="do_active(scope.row)" size="mini" plain
+                           round>active
+                </el-button>
+                <a :href="'@action(admin_role/)?admin_id='+scope.row.admin_id">roles</a>
+            </template>
+        </el-table-column>
+    </el-table>
+    <el-pagination :current-page.sync="request.page" :page-size="response.size" :total="response.count"
+                   layout="total, prev, pager, next"></el-pagination>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                request: {
+                    'keyword':'',
+                    'page':1,
+                },
+                response: {},
+                createVisible: false,
+                create: {
+                    admin_name: '',
+                    email: '',
+                    password: '',
+                    status: 1
+                },
+
+                editVisible: false,
+                edit: {
+                    admin_id: '',
+                    email: '',
+                    password: ''
+                },
+                statuses: @constants('admin' , 'status')
+            },
+            mounted: function () {
+                this.reload_table();
+            },
+            watch: {
+                request: {
+                    handler: _.debounce(function () {
+                        this.reload_table();
+                    }, 500),
+                    deep: true
+                }
+            },
+            methods: {
+                do_lock: function (row) {
+                    this.ajax_post('@action(lock)', {admin_id: row.admin_id}, function () {
+                        row.status = 2;
+                    });
+                },
+                do_active: function (row) {
+                    this.ajax_post('@action(active)', {admin_id: row.admin_id}, function () {
+                        row.status = 1;
+                    });
+                },
+                do_create: function () {
+                    this.ajax_post('@action(create)', this.create, function () {
+                        this.createVisible = false;
+                        this.$refs.create.resetFields();
+                        this.reload_table();
+                    });
+                },
+                show_edit: function (row) {
+                    this.edit = Object.assign({}, row);
+                    this.edit.password = '';
+                    this.editVisible = true;
+                },
+                do_edit: function () {
+                    this.ajax_post('@action(edit)', this.edit, function () {
+                        this.editVisible = false;
+                        this.reload_table();
+                    });
+                }
+            }
+        });
+    </script>
+@append

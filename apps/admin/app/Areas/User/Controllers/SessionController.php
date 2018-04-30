@@ -15,16 +15,11 @@ class SessionController extends Controller
     public function loginAction()
     {
         if ($this->request->isPost()) {
+            $this->captcha->verify();
+
             try {
                 $user_name = $this->request->get('user_name', '*|account');
                 $password = $this->request->get('password', '*');
-                $code = $this->request->get('code', '*');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-
-            try {
-                $this->captcha->verify($code);
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
@@ -80,7 +75,7 @@ class SessionController extends Controller
     {
         if ($this->request->isAjax()) {
             $builder = AdminLoginLog::query()
-                ->select('login_id, admin_id, admin_name, client_udid, user_agent, client_ip, created_time')
+                ->select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
                 ->orderBy('login_id DESC');
 
             $builder->whereRequest(['admin_id', 'admin_name*=', 'client_ip', 'created_time~=']);

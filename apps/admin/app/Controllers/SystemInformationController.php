@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Index\Controllers;
+namespace App\Admin\Controllers;
 
 use ManaPHP\Mvc\Controller;
 use ManaPHP\Version;

@@ -1,0 +1,112 @@
+<div class="search-box">
+    <el-row>
+        <el-col :span="2"><el-input v-model="request.keyword" placeholder="keyword" size="small"></el-input></el-col>
+        <el-col :span="3"><el-button @click="createVisible=true" icon="el-icon-plus" size="small" type="primary">create</el-button></el-col>
+    </el-row>
+</div>
+<el-dialog title="create role" :visible.sync="createVisible">
+    <el-form :model="create" ref="create">
+        <el-form-item label="role name:" prop="role_name"><el-input v-model="create.role_name" auto-complete="off"></el-input></el-form-item>
+        <el-form-item label="enabled:" prop="enabled"><el-switch v-model="create.enabled"></el-switch></el-form-item>
+    </el-form>
+    <span slot="footer">
+        <el-button type="primary" @click="do_create">create</el-button>
+        <el-button @click="createVisible = false; $refs.create.resetFields()">cancel</el-button>
+    </span>
+</el-dialog>
+
+<el-dialog title="edit role" :visible.sync="editVisible">
+    <el-form :model="edit">
+        <el-form-item label="role_name:"><el-input v-model="edit.role_name" auto-complete="off"></el-input></el-form-item>
+    </el-form>
+    <div slot="footer">
+        <el-button type="primary" @click="do_edit">save</el-button>
+        <el-button @click="editVisible=false">cancel</el-button>
+    </div>
+</el-dialog>
+<div class="result-box">
+    <el-table :data="response.items" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="role_id" label="role_id" width="100"></el-table-column>
+        <el-table-column prop="role_name" label="role_name"></el-table-column>
+        <el-table-column prop="enabled" :formatter="fEnabled" label="enabled" width="100"></el-table-column>
+        <el-table-column prop="updator_name" label="updator_name" width="120"></el-table-column>
+        <el-table-column prop="updated_time" label="updated_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="creator_name" label="creator_name" width="120"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column fixed="right" label="operation" width="200">
+            <template slot-scope="scope">
+                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>edit</el-button>
+                <el-button v-if="scope.row.enabled" @click.native.prevent="do_disable(scope.row)" size="mini" plain round>disabled</el-button>
+                <el-button v-if="!scope.row.enabled" @click.native.prevent="do_enable(scope.row)" size="mini" plain round>enabled</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <el-pagination :current-page.sync="request.page"
+                   :page-size="response.size"
+                   :total="response.count" layout="total, prev, pager, next"></el-pagination>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                request: {},
+                response: {},
+                createVisible: false,
+                create: {
+                    role_name: '',
+                    enabled: true
+                },
+
+                editVisible: false,
+                edit: {
+                    role_id: '',
+                    role_name: ''
+                }
+            },
+            mounted: function () {
+                this.reload_table();
+            },
+            watch: {
+                request: {
+                    handler: _.debounce(function () {
+                        this.reload_table();
+                    }, 500),
+                    deep: true
+                }
+            },
+            methods: {
+                do_enable: function (row) {
+                    this.ajax_post('@action(enable)', {role_id: row.role_id}, function () {
+                        row.enabled = 1;
+                    });
+                },
+                do_disable: function (row) {
+                    this.ajax_post('@action(disable)', {role_id: row.role_id}, function () {
+                        row.enabled = 0;
+                    });
+                },
+
+                do_create: function () {
+                    this.ajax_post('@action(create)', this.create, function () {
+                        this.$refs.create.resetFields();
+                        this.createVisible = false;
+                        this.reload_table();
+                    });
+                },
+                show_edit: function (row) {
+                    this.editVisible = true;
+                    this.edit = Object.assign({}, row);
+                },
+                do_edit: function () {
+                    this.ajax_post('@action(edit)', this.edit, function () {
+                        this.editVisible = false;
+                        this.reload_table();
+                    });
+                }
+            }
+        });
+    </script>
+@append

@@ -1,0 +1,127 @@
+<div class="search-box">
+    <el-row>
+        <el-col :span="2">
+            <el-select filterable v-model="request.admin_id" size="small" @change="reload_table">
+                <el-option v-for="(name, id) in admins" :key="id" :label="name" :value="id"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :span="2">
+            <el-button @click="show_edit()" type="primary" round size="small" icon="el-icon-edit">edit</el-button>
+        </el-col>
+    </el-row>
+</div>
+<el-dialog class="edit-dialog" title="edit" :visible.sync="editVisible" width="50%">
+    <el-form :model="edit" ref="edit">
+        <el-checkbox-group v-model="edit.role_ids">
+            <el-checkbox v-for="(name,id) in roles" :label="parseInt(id)"
+                         :key="id" style="width: 20%; text-align: left">
+                @{{name}}
+            </el-checkbox>
+        </el-checkbox-group>
+    </el-form>
+    <div slot="footer">
+        <el-button type="primary" @click="do_edit">save</el-button>
+        <el-button @click="editVisible=false">cancel</el-button>
+    </div>
+</el-dialog>
+<el-dialog title="detail" :visible.sync="detailVisible">
+    <el-table :data="detail" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="id" label="id" width="100"></el-table-column>
+        <el-table-column prop="admin_id" label="admin_id" with="100"></el-table-column>
+        <el-table-column prop="admin_name" label="admin_name" width="100"></el-table-column>
+        <el-table-column prop="role_id" label="role_id" width="100"></el-table-column>
+        <el-table-column prop="role_name" label="role_name"></el-table-column>
+        <el-table-column prop="creator_id" label="creator_id"></el-table-column>
+        <el-table-column prop="creator_name" label="creator_name"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
+    </el-table>
+</el-dialog>
+<div class="result-box">
+    <el-table :data="response" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="id" label="id" width="100"></el-table-column>
+        <el-table-column label="role_id" width="100">
+            <template slot-scope="scope"><a :href="'@action(role/)?role_id='+scope.row.role_id">@{{scope.row.role_id}}</a></template>
+        </el-table-column>
+        <el-table-column prop="role.role_name" label="role_name" width="100"></el-table-column>
+        <el-table-column label="admins">
+            <template slot-scope="scope">
+                <el-button size="small" v-for="admin in scope.row.users" :key="index" type="text"
+                           @click.native="request.admin_id = admin.admin_id"
+                           :disabled="request.admin_id == admin.admin_id">
+                    @{{ user.admin_name }}
+                </el-button>
+            </template>
+        </el-table-column>
+        <el-table-column prop="creator_name" label="creator_name" width="200"></el-table-column>
+        <el-table-column prop="created_time" label="created_time" width="200" :formatter="fDate"></el-table-column>
+    </el-table>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                request: {admin_id: ''},
+                response: [],
+
+                editVisible: false,
+                edit: {
+                    admin_id: '',
+                    role_ids: []
+                },
+
+                detailVisible: false,
+                detail: [],
+                admins: [],
+                roles: [],
+            },
+            mounted: function () {
+                this.ajax_get('@action(admin/list)', function (res) {
+                    this.admins = res;
+                    if (!this.request.admin_id) {
+                        this.request.admin_id = this._.keys(this.admins)[0];
+                    }
+                    this.reload_table();
+                });
+            },
+            watch: {
+                request: {
+                    handler: _.debounce(function () {
+                        this.reload_table();
+                    }, 500),
+                    deep: true
+                }
+            },
+            methods: {
+                show_edit: function () {
+                    this.edit.role_ids = this._.map(this.response, 'role_id');
+                    this.edit.admin_id = this.request.admin_id;
+                    this.editVisible = true;
+                    if (!this.roles.length) {
+                        this.ajax_get('@action(role/list)', function (res) {
+                            this.roles = res;
+                            this.editVisible = true;
+                        })
+                    } else {
+                        this.editVisible = true;
+                    }
+                },
+                do_edit: function () {
+                    this.ajax_post('@action(edit)', this.edit, function () {
+                        this.editVisible = false;
+                        this.reload_table();
+                    });
+                },
+                show_detail: function (row) {
+                    this.detailVisible = true;
+                    this.ajax_post('@action(detail)', {admin_id: row.admin_id}, function (res) {
+                        this.detail = data;
+                    });
+                }
+            }
+        });
+    </script>
+@append
