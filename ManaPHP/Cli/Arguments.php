@@ -31,6 +31,20 @@ class Arguments extends Component implements ArgumentsInterface
      */
     public function __construct($arguments = null)
     {
+        $this->parse($arguments);
+    }
+
+    /**
+     * @param array|string $arguments
+     *
+     * @return static
+     * @throws \ManaPHP\Cli\Arguments\Exception
+     */
+    public function parse($arguments = null)
+    {
+        $this->_options = [];
+        $this->_values = [];
+
         if ($arguments === null) {
             if (isset($GLOBALS['argv'][1]) && $GLOBALS['argv'][1][0] === '/') {
                 $arguments = [$GLOBALS['argv'][1]];
@@ -49,6 +63,8 @@ class Arguments extends Component implements ArgumentsInterface
         } else {
             $this->_parse($arguments);
         }
+
+        return $this;
     }
 
     /**

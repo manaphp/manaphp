@@ -9,6 +9,13 @@ namespace ManaPHP\Cli;
 interface ArgumentsInterface
 {
     /**
+     * @param array|string $arguments
+     *
+     * @return static
+     */
+    public function parse($arguments = null);
+
+    /**
      * @param string|int $name
      * @param mixed      $defaultValue
      *
