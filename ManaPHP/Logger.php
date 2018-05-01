@@ -316,6 +316,7 @@ class Logger extends Component implements LoggerInterface
         $log = new Log();
         $log->level = $this->_levels[$level];
         $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
+        $log->process_id = @getmypid() ?: 0;
         $log->location = $this->_getLocation($traces);
         $log->message = $this->_formatMessage($message);
         $log->timestamp = time();

@@ -20,7 +20,7 @@ class File extends Component implements AppenderInterface
     /**
      * @var string
      */
-    protected $_format = '[:date][:level][:category][:location] :message';
+    protected $_format = '[:date][:level][:category][:process_id][:location] :message';
 
     /**
      * @var bool
@@ -75,6 +75,7 @@ class File extends Component implements AppenderInterface
         $replaced[':date'] = date('c', $log->timestamp);
         $replaced[':level'] = $log->level;
         $replaced[':category'] = $log->category;
+        $replaced[':process_id'] = $log->process_id;
         $replaced[':location'] = $log->location;
         $replaced[':message'] = $log->message . PHP_EOL;
 
