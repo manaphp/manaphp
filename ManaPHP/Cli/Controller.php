@@ -128,4 +128,22 @@ abstract class Controller extends Component implements ControllerInterface, LogC
             }
         }
     }
+
+    /**
+     * @return array
+     */
+    public function getCommands()
+    {
+        $commands = [];
+        foreach (get_class_methods(__CLASS__) as $method) {
+            if ($method === 'helpCommand' || $method[0] === '_') {
+                continue;
+            }
+            if (preg_match('#^([a-z].*)Command$#', $method, $match)) {
+                $commands[] = $match[1];
+            }
+        }
+
+        return $commands;
+    }
 }
