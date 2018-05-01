@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Curl\Easy;
 
-use ManaPHP\Curl\Easy\Response\Exception as ResponseException;
+use ManaPHP\Exception\InvalidJsonException;
 
 class Response
 {
@@ -68,8 +68,7 @@ class Response
     {
         $data = json_decode($this->body, true);
         if (!is_array($data)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new ResponseException(['response of `:url` url is not a valid json: `:response`', 'url' => $this->url, 'response' => substr($this->body, 0, 128)]);
+            throw new InvalidJsonException(['response of `:url` url is not a valid json: `:response`', 'url' => $this->url, 'response' => substr($this->body, 0, 128)]);
         }
 
         return $data;
