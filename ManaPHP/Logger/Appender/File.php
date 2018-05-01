@@ -72,7 +72,7 @@ class File extends Component implements AppenderInterface
 
         $replaced = [];
 
-        $replaced[':date'] = date('Y-m-d H:i:s', $log->timestamp);
+        $replaced[':date'] = date('c', $log->timestamp);
         $replaced[':level'] = $log->level;
         $replaced[':category'] = $log->category;
         $replaced[':location'] = $log->location;
