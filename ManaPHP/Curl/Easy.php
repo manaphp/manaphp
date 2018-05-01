@@ -13,6 +13,8 @@ use ManaPHP\Exception\NotSupportedException;
  */
 class Easy extends Component implements EasyInterface
 {
+    const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+
     /**
      * @var array
      */
@@ -390,7 +392,7 @@ class Easy extends Component implements EasyInterface
 
         curl_setopt($template, CURLOPT_TIMEOUT, isset($options['timeout']) ? $options['timeout'] : 10);
         curl_setopt($template, CURLOPT_CONNECTTIMEOUT, isset($options['timeout']) ? $options['timeout'] : 10);
-        curl_setopt($template, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko');
+        curl_setopt($template, CURLOPT_USERAGENT, self::USER_AGENT_IE);
         curl_setopt($template, CURLOPT_HEADER, 0);
         /** @noinspection CurlSslServerSpoofingInspection */
         curl_setopt($template, CURLOPT_SSL_VERIFYHOST, false);
