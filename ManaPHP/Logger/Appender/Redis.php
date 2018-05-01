@@ -44,7 +44,7 @@ class Redis extends Component implements AppenderInterface
         $data = [
             'timestamp' => $log->timestamp,
             '@timestamp' => date('c', $log->timestamp),
-            'host' => gethostname(),
+            'host' => $log->host,
             'process_id' => $log->process_id,
             'category' => $log->category,
             'level' => $log->level,

@@ -314,6 +314,8 @@ class Logger extends Component implements LoggerInterface
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
 
         $log = new Log();
+		
+        $log->host = gethostname();
         $log->level = $this->_levels[$level];
         $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
         $log->process_id = @getmypid() ?: 0;

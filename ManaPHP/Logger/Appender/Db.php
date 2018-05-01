@@ -66,7 +66,7 @@ class Db extends Component implements AppenderInterface
 
         try {
             $db->insert($this->_table, [
-                'host' => gethostname(),
+                'host' => $log->host,
                 'process_id' => $log->process_id,
                 'category' => $log->category,
                 'level' => $log->level,
