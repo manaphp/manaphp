@@ -225,8 +225,8 @@ class Logger extends Component implements LoggerInterface
         $str .= preg_replace('/#\d+\s/', '    at ', $traces);
 
         $prev = $traces;
-        $caused = $exception->getPrevious();
-        do {
+        $caused = $exception;
+        while ($caused = $caused->getPrevious()) {
             $str .= PHP_EOL . '  Caused by ' . get_class($caused) . ': ' . $caused->getMessage() . PHP_EOL;
             $str .= '    at ' . $caused->getFile() . ':' . $caused->getLine() . PHP_EOL;
             $traces = $exception->getTraceAsString();
@@ -237,7 +237,7 @@ class Logger extends Component implements LoggerInterface
             }
 
             $prev = $traces;
-        } while ($caused = $caused->getPrevious());
+        };
 
         $replaces = [];
         if ($app = $this->alias->get('@root')) {
