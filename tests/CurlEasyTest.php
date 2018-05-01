@@ -5,26 +5,6 @@ use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Curl\Easy;
 use PHPUnit\Framework\TestCase;
 
-class DummyEasy extends Easy
-{
-    public $type;
-    public $url;
-    public $data;
-    public $headers;
-    public $options;
-    public $httpCode = 200;
-
-    public function _request($type, $url, $body, $headers, $options)
-    {
-        $this->type = $type;
-        $this->url = $url;
-        $this->data = $body;
-        $this->headers = $headers;
-        $this->options = $options;
-        return $this->httpCode;
-    }
-}
-
 class HttpClientTest extends TestCase
 {
     protected $_di;
@@ -35,33 +15,7 @@ class HttpClientTest extends TestCase
 
         $this->_di = new FactoryDefault();
     }
-
-    public function test_buildUrl()
-    {
-        $easy = new DummyEasy();
-
-        $easy->get('http://www.example.com/');
-        $this->assertEquals('http://www.example.com/', $easy->url);
-
-        $easy->get('http://www.example.com/?page=1');
-        $this->assertEquals('http://www.example.com/?page=1', $easy->url);
-
-        $easy->get(['http://www.example.com/', 'page' => 1]);
-        $this->assertEquals('http://www.example.com/?page=1', $easy->url);
-
-        $easy->get('http://www.example.com/?page=1&size=10');
-        $this->assertEquals('http://www.example.com/?page=1&size=10', $easy->url);
-
-        $easy->get(['http://www.example.com/', 'page' => 1, 'size' => 10]);
-        $this->assertEquals('http://www.example.com/?page=1&size=10', $easy->url);
-
-        $easy->get(['http://www.example.com/?page=1', 'size' => 10]);
-        $this->assertEquals('http://www.example.com/?page=1&size=10', $easy->url);
-
-        $easy->get(['http://www.example.com/', 'keyword' => '中国']);
-        $this->assertEquals('http://www.example.com/?keyword=%E4%B8%AD%E5%9B%BD', $easy->url);
-    }
-
+    
     public function test_get()
     {
         $easy = new Easy();
