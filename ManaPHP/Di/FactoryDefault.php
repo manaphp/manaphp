@@ -66,6 +66,7 @@ class FactoryDefault extends Di
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'stopwatch' => 'ManaPHP\Stopwatch',
             'tasksMetadata' => ['class' => 'ManaPHP\Task\Metadata', 'ManaPHP\Task\Metadata\Adapter\Redis'],
+            'tasksManager' => 'ManaPHP\Task\Manager',
             'viewsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/viewsCache', 'extension' => '.html'],
             'modelsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/modelsCache', 'extension' => '.json'],
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',

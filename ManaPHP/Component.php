@@ -27,6 +27,7 @@ namespace ManaPHP;
  * @property \ManaPHP\ZookeeperInterface                   $zookeeper
  * @property \ManaPHP\Cli\EnvironmentInterface             $environment
  * @property \ManaPHP\MailerInterface                      $mailer
+ * @property \ManaPHP\Task\ManagerInterface                $tasksManager
  */
 class Component implements ComponentInterface, \JsonSerializable
 {
