@@ -3,7 +3,8 @@ namespace ManaPHP\Curl;
 
 use ManaPHP\Component;
 use ManaPHP\Curl\Easy\Response;
-use ManaPHP\Curl\Exception as ClientException;
+use ManaPHP\Exception\ExtensionNotInstalledException;
+use ManaPHP\Exception\NotSupportedException;
 
 /**
  * Class ManaPHP\Curl\Easy
@@ -51,13 +52,11 @@ class Easy extends Component implements EasyInterface
      *
      * - `User-Agent`: User Agent to send to the server
      *   (string, default: php-requests/$version)
-     *
-     * @throws \ManaPHP\Curl\Exception
      */
     public function __construct($options = [], $headers = [])
     {
         if (!function_exists('curl_init')) {
-            throw new ClientException('curl extension is not loaded: http://php.net/curl'/**m01df15300bf1482df*/);
+            throw new ExtensionNotInstalledException('curl');
         }
 
         $this->_options = $options + [
@@ -97,7 +96,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\Exception
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     protected function request($type, $url, $body, $headers, $options)
     {
@@ -112,7 +111,7 @@ class Easy extends Component implements EasyInterface
         }
 
         if (preg_match('/^http(s)?:\/\//i', $url) !== 1) {
-            throw new ClientException(['only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, 'url' => $url]);
+            throw new NotSupportedException(['only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, 'url' => $url]);
         }
 
         /** @noinspection AdditionOperationOnArraysInspection */
@@ -127,7 +126,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\Exception
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function _request($type, $url, $body, $headers, $options)
     {
@@ -160,7 +159,7 @@ class Easy extends Component implements EasyInterface
                             $file = $parts[0];
                             $types = explode('=', $parts[1]);
                             if ($types[0] !== 'type' || count($types) !== 2) {
-                                throw new ClientException(['`:file` file name format is invalid'/**m05efb8755481bd2eb*/, 'file' => $v]);
+                                throw new NotSupportedException(['`:file` file name format is invalid', 'file' => $v]);
                             } else {
                                 $body[$k] = new \CURLFile($file, $types[1]);
                             }
@@ -229,7 +228,7 @@ class Easy extends Component implements EasyInterface
             } elseif ($scheme === 'sock5') {
                 curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
             } else {
-                throw new ClientException(['`:scheme` scheme of `:proxy` proxy is unknown', 'scheme' => $scheme, 'proxy' => $this->_proxy]);
+                throw new NotSupportedException(['`:scheme` scheme of `:proxy` proxy is unknown', 'scheme' => $scheme, 'proxy' => $this->_proxy]);
             }
 
             curl_setopt($curl, CURLOPT_PROXYPORT, $parts['port']);
@@ -270,7 +269,7 @@ class Easy extends Component implements EasyInterface
         }
 
         if (curl_errno($curl)) {
-            throw new ClientException(['cURL `:url` error: :message', 'url' => $url, 'message' => curl_error($curl)]);
+            throw new ConnectionException(['connect failed: `:url` :message', 'url' => $url, 'message' => curl_error($curl)]);
         }
 
         $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
@@ -295,7 +294,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\Exception
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function get($url, $headers = [], $options = [])
     {
@@ -309,7 +308,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\Exception
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function post($url, $body = [], $headers = [], $options = [])
     {
@@ -322,7 +321,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\Exception
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function delete($url, $headers = [], $options = [])
     {
@@ -336,7 +335,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\Exception
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function put($url, $body = [], $headers = [], $options = [])
     {
@@ -350,7 +349,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\Exception
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function patch($url, $body = [], $headers = [], $options = [])
     {
@@ -364,7 +363,7 @@ class Easy extends Component implements EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\Exception
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function head($url, $body = [], $headers = [], $options = [])
     {

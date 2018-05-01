@@ -22,6 +22,7 @@ interface EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function get($url, $headers = [], $options = []);
 
@@ -32,6 +33,7 @@ interface EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function post($url, $body = [], $headers = [], $options = []);
 
@@ -41,6 +43,7 @@ interface EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function delete($url, $headers = [], $options = []);
 
@@ -51,6 +54,7 @@ interface EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function put($url, $body = [], $headers = [], $options = []);
 
@@ -61,6 +65,7 @@ interface EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function patch($url, $body = [], $headers = [], $options = []);
 
@@ -71,6 +76,7 @@ interface EasyInterface
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function head($url, $body = [], $headers = [], $options = []);
 
