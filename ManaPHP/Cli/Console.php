@@ -54,10 +54,11 @@ class Console extends Component implements ConsoleInterface
     /**
      * @param string $text
      * @param int    $options
+     * @param int    $width
      *
      * @return string
      */
-    public function colorize($text, $options = 0)
+    public function colorize($text, $options = 0, $width = 0)
     {
         $map = [
             self::AT_BOLD => "\033[1m",
@@ -86,7 +87,7 @@ class Console extends Component implements ConsoleInterface
         ];
 
         if (!$this->isSupportColor()) {
-            return $text;
+            return $width ? str_pad($text, $width) : $text;
         }
 
         $c = '';
@@ -96,7 +97,7 @@ class Console extends Component implements ConsoleInterface
             }
         }
 
-        return $c . $text . "\033[0m";
+        return $c . $text . "\033[0m" . str_repeat(' ', max($width - strlen($text), 0));
     }
 
     /**

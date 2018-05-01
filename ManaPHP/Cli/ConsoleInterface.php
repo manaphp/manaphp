@@ -16,10 +16,11 @@ interface ConsoleInterface
     /**
      * @param string $text
      * @param int    $options
+     * @param int    $width
      *
      * @return string
      */
-    public function colorize($text, $options = 0);
+    public function colorize($text, $options = 0, $width = 0);
 
     /**
      * @return void
