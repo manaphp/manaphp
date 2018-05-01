@@ -240,20 +240,18 @@ class Easy extends Component implements EasyInterface
             }
         }
 
-        if ($options['ssl_certificates']) {
-            if ($this->_peek && $this->_options['proxy'] !== '') {
-                curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve('@manaphp/Http/Client/fiddler.cer'));
-            } else {
-                curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($options['ssl_certificates']));
-            }
-        } else {
+        if (isset($options['ssl_certificates'])) {
+            curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($options['ssl_certificates']));
+        }
+
+        if ($this->_peek) {
             /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        } else {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options['verify_host'] ? 2 : 0);
         }
-
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options['verify_host'] ? 2 : 0);
 
         foreach ($options as $k => $v) {
             if (is_int($k)) {
@@ -272,7 +270,7 @@ class Easy extends Component implements EasyInterface
         }
 
         if (curl_errno($curl)) {
-            throw new ClientException(['cURL `:url` error: :message'/**m0d2c9a60b72a0362f*/, 'url' => $url, 'message' => curl_error($curl)]);
+            throw new ClientException(['cURL `:url` error: :message', 'url' => $url, 'message' => curl_error($curl)]);
         }
 
         $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
@@ -282,7 +280,7 @@ class Easy extends Component implements EasyInterface
         $response->url = $url;
         $response->http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $response->headers = explode("\r\n", substr($content, 0, $header_length - 4));
-        $response->process_time = round(microtime(true) - $start_time, 6);
+        $response->process_time = round(microtime(true) - $start_time, 3);
         $response->content_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         $response->body = substr($content, $header_length);
 
