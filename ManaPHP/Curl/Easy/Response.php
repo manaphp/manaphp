@@ -11,6 +11,11 @@ class Response
     public $url;
 
     /**
+     * @var string
+     */
+    public $remote_ip;
+
+    /**
      * @var int
      */
     public $http_code;
@@ -36,6 +41,11 @@ class Response
     public $body;
 
     /**
+     * @var array
+     */
+    public $timeInfo;
+
+    /**
      * @return array
      */
     public function getHeaders()
@@ -50,7 +60,7 @@ class Response
             if (isset($headers[$name])) {
                 if (!is_array($headers[$name])) {
                     $headers[$name] = [$headers[$name], $value];
-                }else{
+                } else {
                     $headers[$name][] = $value;
                 }
             } else {
@@ -69,7 +79,9 @@ class Response
     {
         $data = json_decode($this->body, true);
         if (!is_array($data)) {
-            throw new InvalidJsonException(['response of `:url` url is not a valid json: `:response`', 'url' => $this->url, 'response' => substr($this->body, 0, 128)]);
+            throw new InvalidJsonException(['response of `:url` url is not a valid json: `:response`',
+                'url' => $this->url,
+                'response' => substr($this->body, 0, 128)]);
         }
 
         return $data;
