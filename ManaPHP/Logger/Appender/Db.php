@@ -17,12 +17,12 @@ class Db extends Component implements AppenderInterface
     /**
      * @var string
      */
-    protected $_model = '\ManaPHP\Logger\Appender\Db\Model';
+    protected $_db = 'db';
 
     /**
-     * @var bool
+     * @var string
      */
-    protected $_nested = false;
+    protected $_table = 'manaphp_log';
 
     /**
      * Db constructor.
@@ -32,11 +32,15 @@ class Db extends Component implements AppenderInterface
     public function __construct($options = [])
     {
         if (is_string($options)) {
-            $options = ['model' => $options];
-        }
+            $this->_table = $options;
+        } else {
+            if (isset($options['db'])) {
+                $this->_db = $options['db'];
+            }
 
-        if (isset($options['model'])) {
-            $this->_model = $options['model'];
+            if (isset($options['table'])) {
+                $this->_table = $options['table'];
+            }
         }
     }
 
@@ -47,26 +51,31 @@ class Db extends Component implements AppenderInterface
      */
     public function append($log)
     {
-        if ($this->_nested) {
-            return;
+        /**
+         * @var \ManaPHP\DbInterface $db
+         */
+        $db = $this->_di->getShared($this->_db);
+
+        if ($pos = strpos($log->location, ':')) {
+            $file = substr($log->location, 0, $pos);
+            $line = substr($log->location, $pos + 1);
+        } else {
+            $file = '';
+            $line = '';
         }
 
-        $this->_nested = true;
-
-        /**
-         * @var \ManaPHP\Logger\Appender\Db\Model $logModel
-         */
-        $logModel = new $this->_model;
-
-        $logModel->user_id = $this->userIdentity->getId();
-        $logModel->user_name = $this->userIdentity->getName();
-        $logModel->level = $log->level;
-        $logModel->category = $log->category;
-        $logModel->location = $log->location;
-        $logModel->message = $log->message;
-        $logModel->created_time = $log->timestamp;
-        $logModel->create();
-
-        $this->_nested = false;
+        try {
+            $db->insert($this->_table, [
+                'host' => gethostname(),
+                'process_id' => $log->process_id,
+                'category' => $log->category,
+                'level' => $log->level,
+                'file' => $file,
+                'line' => $line,
+                'message' => $log->message,
+                'created_time' => $log->timestamp]);
+        } catch (\Exception $e) {
+            trigger_error('Write log to db failed: ' . $e->getMessage(), E_USER_WARNING);
+        }
     }
 }
