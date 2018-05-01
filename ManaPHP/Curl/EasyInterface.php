@@ -17,6 +17,27 @@ interface EasyInterface
     public function setProxy($proxy = '127.0.0.1:8888', $peek = true);
 
     /**
+     * @param string $file
+     *
+     * @return static
+     */
+    public function setCaFile($file);
+
+    /**
+     * @param int $seconds
+     *
+     * @return static
+     */
+    public function setTimeout($seconds);
+
+    /**
+     * @param bool $verify
+     *
+     * @return static
+     */
+    public function setSslVerify($verify);
+
+    /**
      * @param string|array $url
      * @param array        $headers
      * @param array        $options

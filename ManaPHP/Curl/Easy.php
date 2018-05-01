@@ -36,20 +36,29 @@ class Easy extends Component implements EasyInterface
     protected $_proxy = '';
 
     /**
+     * @var string
+     */
+    protected $_caFile = '@manaphp/Curl/https/ca.pem';
+
+    /**
+     * @var int
+     */
+    protected $_timeout = 10;
+
+    /**
+     * @var bool
+     */
+    protected $_sslVerify = true;
+
+    /**
+     * @var string
+     */
+    protected $_userAgent = self::USER_AGENT_IE;
+
+    /**
      * Client constructor.
      *
      * @param array $options
-     *    - `timeout`: How long should we wait for a response?
-     *    (integer, seconds, default: 10)
-     *    (string, default: '')
-     *    - `ssl_certificates`: Should we verify SSL certificates? Allows passing in a custom
-     *    certificate file as a string. (Using true uses the system-wide root
-     *    certificate store instead, but this may have different behaviour
-     *    across transports.)
-     *    (string, default: 'xxx/ca.pem')
-     *    - `verify_host`: Should we verify the common name in the SSL certificate?
-     *    (bool: default, true)
-     *
      * @param array $headers
      *
      * - `User-Agent`: User Agent to send to the server
@@ -61,14 +70,28 @@ class Easy extends Component implements EasyInterface
             throw new ExtensionNotInstalledException('curl');
         }
 
-        $this->_options = $options + [
-                'timeout' => 10,
-                'proxy' => '',
-                'ssl_certificates' => '@manaphp/Curl/https/ca.pem',
-                'verify_host' => true,
-            ];
+        if (isset($options['timeout'])) {
+            $this->_timeout = $options['timeout'];
+            unset($options['timeout']);
+        }
+        if (isset($options['sslVerify'])) {
+            $this->_sslVerify = (bool)$options['sslVerify'];
+            unset($options['sslVerify']);
+        }
 
-        $this->_headers = $headers + ['User-Agent' => 'ManaPHP/httpClient'];
+        if (isset($options['proxy'])) {
+            $this->_proxy = $options['proxy'];
+            unset($options['proxy']);
+        }
+
+        if (isset($options['userAgent'])) {
+            $this->_userAgent = $options['userAgent'];
+            unset($options['userAgent']);
+        }
+
+        $this->_options = $options;
+
+        $this->_headers = $headers;
     }
 
     /**
@@ -86,6 +109,42 @@ class Easy extends Component implements EasyInterface
         }
 
         $this->_peek = $peek;
+
+        return $this;
+    }
+
+    /**
+     * @param string $file
+     *
+     * @return static
+     */
+    public function setCaFile($file)
+    {
+        $this->_caFile = $file;
+
+        return $this;
+    }
+
+    /**
+     * @param int $seconds
+     *
+     * @return static
+     */
+    public function setTimeout($seconds)
+    {
+        $this->_timeout = $seconds;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $verify
+     *
+     * @return static
+     */
+    public function setSslVerify($verify)
+    {
+        $this->_sslVerify = $verify;
 
         return $this;
     }
@@ -202,10 +261,10 @@ class Easy extends Component implements EasyInterface
         }
 
         curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $options['timeout']);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $options['timeout']);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $this->_timeout);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, isset($options['timeout']) ? $options['timeout'] : $this->_timeout);
         curl_setopt($curl, CURLOPT_REFERER, isset($headers['Referer']) ? $headers['Referer'] : $url);
-        curl_setopt($curl, CURLOPT_USERAGENT, $headers['User-Agent']);
+        curl_setopt($curl, CURLOPT_USERAGENT, isset($headers['User-Agent']) ? $headers['User-Agent'] : $this->_userAgent);
         curl_setopt($curl, CURLOPT_HEADER, 1);
 
         unset($headers['Referer'], $headers['User-Agent'], $headers['Cookie']);
@@ -241,17 +300,15 @@ class Easy extends Component implements EasyInterface
             }
         }
 
-        if (isset($options['ssl_certificates'])) {
-            curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($options['ssl_certificates']));
+        if ($this->_caFile) {
+            curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($this->_caFile));
         }
 
-        if ($this->_peek) {
+        if (!$this->_sslVerify || $this->_peek) {
             /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        } else {
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options['verify_host'] ? 2 : 0);
         }
 
         foreach ($options as $k => $v) {
