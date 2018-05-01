@@ -20,7 +20,7 @@ namespace ManaPHP;
  * @property \ManaPHP\Security\RandomInterface             $random
  * @property \ManaPHP\Curl\EasyInterface                   $httpClient
  * @property \ManaPHP\DbInterface                          $db
- * @property \ManaPHP\Redis                                $redis
+ * @property \Redis                                        $redis
  * @property \ManaPHP\Mongodb                              $mongodb
  * @property \ManaPHP\AmqpInterface                        $rabbitmq
  * @property \Elasticsearch\Client                         $elasticsearch

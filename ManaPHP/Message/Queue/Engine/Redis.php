@@ -16,7 +16,7 @@ use ManaPHP\Message\Queue\EngineInterface;
 class Redis extends Component implements EngineInterface
 {
     /**
-     * @var string|\ManaPHP\Redis
+     * @var string|\Redis
      */
     protected $_redis = 'redis';
 
@@ -38,7 +38,7 @@ class Redis extends Component implements EngineInterface
     /**
      * Redis constructor.
      *
-     * @param string|\ManaPHP\Redis|array $options
+     * @param string|\Redis|array $options
      */
     public function __construct($options = 'redis')
     {
@@ -60,7 +60,7 @@ class Redis extends Component implements EngineInterface
     }
 
     /**
-     * @return \ManaPHP\Redis
+     * @return \Redis
      */
     protected function _getRedis()
     {

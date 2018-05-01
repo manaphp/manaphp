@@ -41,7 +41,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property \ManaPHP\ApplicationInterface                 $application
  * @property \ManaPHP\DebuggerInterface                    $debugger
  * @property \ManaPHP\Authentication\PasswordInterface     $password
- * @property \ManaPHP\Redis                                $redis
+ * @property \Redis                                        $redis
  * @property \ManaPHP\Serializer\AdapterInterface          $serializer
  * @property \ManaPHP\CacheInterface                       $cache
  * @property \ManaPHP\CounterInterface                     $counter

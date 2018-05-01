@@ -15,7 +15,7 @@ use ManaPHP\Task\Metadata\AdapterInterface;
 class Redis extends Component implements AdapterInterface
 {
     /**
-     * @var string|\ManaPHP\Redis
+     * @var string|\Redis
      */
     protected $_redis = 'redis';
 
@@ -27,7 +27,7 @@ class Redis extends Component implements AdapterInterface
     /**
      * Redis constructor.
      *
-     * @param string|\ManaPHP\Redis|array $options
+     * @param string|\Redis|array $options
      */
     public function __construct($options = 'redis')
     {
@@ -45,7 +45,7 @@ class Redis extends Component implements AdapterInterface
     }
 
     /**
-     * @return \ManaPHP\Redis
+     * @return \Redis
      */
     protected function _getRedis()
     {

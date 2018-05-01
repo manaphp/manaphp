@@ -4,9 +4,15 @@ namespace ManaPHP;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidCredentialException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Redis\ConnectionException;
 
-class Redis extends \Redis
+class Redis extends Component
 {
+    /**
+     * @var string
+     */
+    protected $_url;
+
     /**
      * @var string
      */
@@ -28,6 +34,11 @@ class Redis extends \Redis
     protected $_retry_interval;
 
     /**
+     * @var int
+     */
+    protected $_retry_seconds = 60;
+
+    /**
      * @var string
      */
     protected $_auth;
@@ -43,16 +54,25 @@ class Redis extends \Redis
     protected $_persistent = false;
 
     /**
+     * @var \Redis
+     */
+    protected $_redis;
+
+    /**
      * Redis constructor.
      *
-     * @param string $uri
+     * @param string $url
+     *
+     * @throws \ManaPHP\Redis\ConnectionException
      */
-    public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
+    public function __construct($url = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
-        $parts = parse_url($uri);
+        $this->_url = $url;
+
+        $parts = parse_url($url);
 
         if ($parts['scheme'] !== 'redis') {
-            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $url, 'scheme' => $parts['scheme']]);
         }
 
         $this->_host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
@@ -62,7 +82,7 @@ class Redis extends \Redis
             $path = trim($parts['path'], '/');
             if ($path !== '') {
                 if (!is_numeric($path)) {
-                    throw new DsnFormatException(['`:url` url is invalid, `:db` db is not integer', 'url' => $uri, 'db' => $path]);
+                    throw new DsnFormatException(['`:url` url is invalid, `:db` db is not integer', 'url' => $url, 'db' => $path]);
                 }
             }
             $this->_db = (int)$path;
@@ -79,46 +99,100 @@ class Redis extends \Redis
         $this->_auth = isset($parts2['auth']) ? $parts2['auth'] : '';
         $this->_persistent = isset($parts2['persistent']) && $parts2['persistent'] === '1';
 
-        parent::__construct();
+        $this->_redis = new \Redis();
 
-        $this->_connect();
-    }
-
-    protected function _connect()
-    {
-        if ($this->_persistent) {
-            $this->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db);
-        } else {
-            $this->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval);
-        }
-
-        if ($this->_auth !== '' && !$this->auth($this->_auth)) {
-            throw new InvalidCredentialException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
-        }
-
-        if ($this->_db !== 0 && !$this->select($this->_db)) {
-            throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
+        if (!$this->_connect()) {
+            throw new ConnectionException(['connect to server failed: `:url`', 'url' => $url]);
         }
     }
 
     /**
+     * @return bool
+     */
+    protected function _connect()
+    {
+        if ($this->_persistent) {
+            if (!@$this->_redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
+                return false;
+            }
+        } else {
+            if (!@$this->_redis->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval)) {
+                return false;
+            }
+        }
+
+        if ($this->_auth !== '' && !$this->_redis->auth($this->_auth)) {
+            throw new InvalidCredentialException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
+        }
+
+        if ($this->_db !== 0 && !$this->_redis->select($this->_db)) {
+            throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
+        }
+
+        return true;
+    }
+
+    public function close()
+    {
+        $this->_redis->close();
+    }
+
+    /**
      * @return static
+     * @throws \ManaPHP\Redis\ConnectionException
      */
     public function reconnect()
     {
         $this->close();
-        $this->_connect();
+        if(!$this->_connect()){
+            throw new ConnectionException(['reconnect to `:url` failed', 'url' => $this->_url]);
+        }
 
         return $this;
     }
 
     /**
-     * @param string $key
+     * @param string $name
+     * @param array  $arguments
      *
-     * @return array|string
+     * @return bool|mixed
+     * @throws \ManaPHP\Redis\ConnectionException
      */
-    public function dump($key = null)
+    public function __call($name, $arguments)
     {
-        return $key === null ? get_object_vars($this) : parent::dump($key);
+        error_reporting(0);
+        try {
+            switch (count($arguments)) {
+                case 0:
+                    return $this->_redis->$name();
+                case 1:
+                    return $this->_redis->$name($arguments[0]);
+                case 2:
+                    return $this->_redis->$name($arguments[0], $arguments[1]);
+                case 3:
+                    return $this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
+                case 4:
+                    return $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                case 5:
+                    return $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+                default:
+                    return call_user_func_array([$this->_redis, $name], $arguments);
+            }
+        } /** @noinspection PhpRedundantCatchClauseInspection */
+        catch (\Exception $e) {
+            $this->_redis->close();
+            $start = time();
+            do {
+                sleep(1);
+                if ($r = $this->_connect()) {
+                    break;
+                }
+            } while (time() - $start > $this->_retry_seconds);
+
+            if (!$r) {
+                throw new ConnectionException(['reconnect to `:url` failed', 'url' => $this->_url]);
+            }
+            return call_user_func_array([$this->_redis, $name], $arguments);
+        }
     }
 }

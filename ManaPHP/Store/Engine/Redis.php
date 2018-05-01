@@ -14,7 +14,7 @@ use ManaPHP\Store\EngineInterface;
 class Redis extends Component implements EngineInterface
 {
     /**
-     * @var \ManaPHP\Redis
+     * @var \Redis
      */
     protected $_redis = 'redis';
 
@@ -26,7 +26,7 @@ class Redis extends Component implements EngineInterface
     /**
      * Redis constructor.
      *
-     * @param string|\ManaPHP\Redis|array $options
+     * @param string|\Redis|array $options
      *
      */
     public function __construct($options = [])
@@ -45,7 +45,7 @@ class Redis extends Component implements EngineInterface
     }
 
     /**
-     * @return \ManaPHP\Redis
+     * @return \Redis
      */
     protected function _getRedis()
     {
