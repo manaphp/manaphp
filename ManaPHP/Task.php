@@ -1,8 +1,10 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Logger\LogCategorizable;
 use ManaPHP\Task\Exception as TaskException;
 use ManaPHP\Task\Metadata;
+use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Task
@@ -12,7 +14,7 @@ use ManaPHP\Task\Metadata;
  * @property \ManaPHP\Task\MetadataInterface $tasksMetadata
  * @property \ManaPHP\Http\ResponseInterface $response
  */
-abstract class Task extends Component implements TaskInterface
+abstract class Task extends Component implements TaskInterface, LogCategorizable
 {
     const STATUS_NONE = 0;
     const STATUS_RUNNING = 1;
@@ -26,6 +28,27 @@ abstract class Task extends Component implements TaskInterface
      * @var int
      */
     protected $_memoryLimit = 16;
+
+    public function categorizeLog()
+    {
+        return Text::underscore(basename(get_called_class(), 'Task'));
+    }
+
+    /**
+     * @return int
+     */
+    public function getErrorDelay()
+    {
+        return 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInterval()
+    {
+        return 1;
+    }
 
     /**
      * @param int $timeLimit
