@@ -110,9 +110,9 @@ abstract class Controller extends Component implements ControllerInterface, LogC
                 }
                 $shortNames = array_flip(array_filter($shortNames));
 
-                $maxLength = 1;
+                $width = 1;
                 foreach ($params as $name => $description) {
-                    $maxLength = max($maxLength, strlen($name) + 2 + (isset($shortNames[$name]) ? 4 : 0));
+                    $width = max($width, strlen($name) + 2 + (isset($shortNames[$name]) ? 4 : 0));
                 }
                 $this->console->writeLn('  Options:');
 
@@ -121,9 +121,10 @@ abstract class Controller extends Component implements ControllerInterface, LogC
                     if (isset($shortNames[$name])) {
                         $option .= ', -' . $shortNames[$name];
                     }
-                    $option = str_pad($option, $maxLength + 1, ' ');
-                    $this->console->writeLn('    ' . $this->console->colorize($option,
-                            Console::FC_CYAN) . ($value ? "  $value" : '') . (isset($defaultValues[$name]) ? " (default: $defaultValues[$name])" : ''));
+                    $this->console->writeLn(['    :option :value :default',
+                        'option' => $this->console->colorize($option, Console::FC_CYAN, $width),
+                        'value' => $value ? "  $value" : '',
+                        'default' => (isset($defaultValues[$name]) ? " (default: $defaultValues[$name])" : '')]);
                 }
             }
         }

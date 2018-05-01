@@ -25,10 +25,9 @@ class HelpController extends Controller
             $this->console->writeLn(' - ' . $this->console->colorize(Text::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
             $commands = $this->_getCommands(__NAMESPACE__ . "\\" . $plainName);
 
-            $maxLength = max(max(array_map('strlen', array_keys($commands))), 18);
+            $width = max(max(array_map('strlen', array_keys($commands))), 18);
             foreach ($commands as $command => $description) {
-                $cmd = str_pad($command, $maxLength + 1);
-                $this->console->writeLn('    ' . $this->console->colorize($cmd, Console::FC_CYAN) . ' ' . $description);
+                $this->console->writeLn('    ' . $this->console->colorize($command, Console::FC_CYAN, $width) . ' ' . $description);
             }
         }
 
@@ -41,10 +40,9 @@ class HelpController extends Controller
 
                 $commands = $this->_getCommands($this->alias->resolveNS("@ns.cli\\$plainName"));
 
-                $maxLength = max(max(array_map('strlen', array_keys($commands))), 18);
+                $width = max(max(array_map('strlen', array_keys($commands))), 18);
                 foreach ($commands as $command => $description) {
-                    $cmd = str_pad($command, $maxLength + 1);
-                    $this->console->writeLn('    ' . $this->console->colorize($cmd, Console::FC_CYAN) . ' ' . $description);
+                    $this->console->writeLn('    ' . $this->console->colorize($command, Console::FC_CYAN, $width + 1) . ' ' . $description);
                 }
             }
         }
