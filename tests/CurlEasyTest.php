@@ -15,7 +15,7 @@ class HttpClientTest extends TestCase
 
         $this->_di = new FactoryDefault();
     }
-    
+
     public function test_get()
     {
         $easy = new Easy();

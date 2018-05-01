@@ -63,6 +63,7 @@ class Response
 
     /**
      * @return array
+     * @throws \ManaPHP\Exception\InvalidJsonException
      */
     public function getJsonBody()
     {
