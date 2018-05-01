@@ -24,7 +24,7 @@ abstract class Controller extends Component implements ControllerInterface, LogC
 {
     public function categorizeLog()
     {
-        return basename(strtr(get_called_class(), '\\', '.'), 'Controller');
+        return basename(get_called_class(), 'Controller');
     }
 
     /**
