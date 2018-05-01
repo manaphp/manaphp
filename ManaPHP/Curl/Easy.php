@@ -59,12 +59,11 @@ class Easy extends Component implements EasyInterface
      * Client constructor.
      *
      * @param array $options
-     * @param array $headers
      *
      * - `User-Agent`: User Agent to send to the server
      *   (string, default: php-requests/$version)
      */
-    public function __construct($options = [], $headers = [])
+    public function __construct($options = [])
     {
         if (!function_exists('curl_init')) {
             throw new ExtensionNotInstalledException('curl');
@@ -74,6 +73,7 @@ class Easy extends Component implements EasyInterface
             $this->_timeout = $options['timeout'];
             unset($options['timeout']);
         }
+	
         if (isset($options['sslVerify'])) {
             $this->_sslVerify = (bool)$options['sslVerify'];
             unset($options['sslVerify']);
@@ -90,8 +90,6 @@ class Easy extends Component implements EasyInterface
         }
 
         $this->_options = $options;
-
-        $this->_headers = $headers;
     }
 
     /**
@@ -153,13 +151,12 @@ class Easy extends Component implements EasyInterface
      * @param string       $type
      * @param string|array $url
      * @param string|array $body
-     * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
      */
-    protected function request($type, $url, $body, $headers, $options)
+    public function request($type, $url, $body, $options)
     {
         if (is_array($url)) {
             if (count($url) > 1) {
@@ -171,26 +168,14 @@ class Easy extends Component implements EasyInterface
             }
         }
 
+        if ($this->_options) {
+            $options = array_merge($options, $this->_options);
+        }
+
         if (preg_match('/^http(s)?:\/\//i', $url) !== 1) {
             throw new NotSupportedException(['only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, 'url' => $url]);
         }
 
-        /** @noinspection AdditionOperationOnArraysInspection */
-        return $this->_request($type, $url, $body, $headers + $this->_headers, $options + $this->_options);
-    }
-
-    /**
-     * @param string       $type
-     * @param string       $url
-     * @param string|array $body
-     * @param array        $headers
-     * @param array        $options
-     *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
-     */
-    public function _request($type, $url, $body, $headers, $options)
-    {
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -199,8 +184,9 @@ class Easy extends Component implements EasyInterface
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 8);
 
-        if (isset($headers['Cookie'])) {
-            curl_setopt($curl, CURLOPT_COOKIE, $headers['Cookie']);
+        if (isset($options['Cookie'])) {
+            curl_setopt($curl, CURLOPT_COOKIE, $options['Cookie']);
+            unset($options['Cookie']);
         }
 
         if (is_array($body)) {
@@ -263,21 +249,11 @@ class Easy extends Component implements EasyInterface
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_TIMEOUT, $this->_timeout);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, isset($options['timeout']) ? $options['timeout'] : $this->_timeout);
-        curl_setopt($curl, CURLOPT_REFERER, isset($headers['Referer']) ? $headers['Referer'] : $url);
-        curl_setopt($curl, CURLOPT_USERAGENT, isset($headers['User-Agent']) ? $headers['User-Agent'] : $this->_userAgent);
+        curl_setopt($curl, CURLOPT_REFERER, isset($options['Referer']) ? $options['Referer'] : $url);
+        curl_setopt($curl, CURLOPT_USERAGENT, isset($options['User-Agent']) ? $options['User-Agent'] : $this->_userAgent);
         curl_setopt($curl, CURLOPT_HEADER, 1);
 
-        unset($headers['Referer'], $headers['User-Agent'], $headers['Cookie']);
-
-        $formatted_headers = [];
-        foreach ($headers as $k => $v) {
-            if (is_int($k)) {
-                $formatted_headers[] = $v;
-            } else {
-                $formatted_headers[] = $k . ': ' . $v;
-            }
-        }
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $formatted_headers);
+        unset($options['timeout'], $options['Referer'], $options['User-Agent']);
 
         if ($this->_proxy) {
             $parts = parse_url($this->_proxy);
@@ -311,11 +287,15 @@ class Easy extends Component implements EasyInterface
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         }
 
+        $headers = [];
         foreach ($options as $k => $v) {
             if (is_int($k)) {
                 curl_setopt($curl, $k, $v);
+            } else {
+                $headers[] = $k . ': ' . $v;
             }
         }
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
         $start_time = microtime(true);
 
@@ -349,84 +329,78 @@ class Easy extends Component implements EasyInterface
 
     /**
      * @param array|string $url
-     * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
      */
-    public function get($url, $headers = [], $options = [])
+    public function get($url, $options = [])
     {
-        return $this->request('GET', $url, null, $headers, $options);
+        return $this->request('GET', $url, null, $options);
     }
 
     /**
      * @param array|string $url
      * @param string|array $body
-     * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
      */
-    public function post($url, $body = [], $headers = [], $options = [])
+    public function post($url, $body = [], $options = [])
     {
-        return $this->request('POST', $url, $body, $headers, $options);
+        return $this->request('POST', $url, $body, $options);
     }
 
     /**
      * @param array|string $url
-     * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
      */
-    public function delete($url, $headers = [], $options = [])
+    public function delete($url, $options = [])
     {
-        return $this->request('DELETE', $url, null, $headers, $options);
-    }
-
-    /**
-     * @param array|string $url
-     * @param string|array $body
-     * @param array        $headers
-     * @param array        $options
-     *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
-     */
-    public function put($url, $body = [], $headers = [], $options = [])
-    {
-        return $this->request('PUT', $url, $body, $headers, $options);
+        return $this->request('DELETE', $url, null, $options);
     }
 
     /**
      * @param array|string $url
      * @param string|array $body
-     * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
      */
-    public function patch($url, $body = [], $headers = [], $options = [])
+    public function put($url, $body = [], $options = [])
     {
-        return $this->request('PATCH', $url, $body, $headers, $options);
+        return $this->request('PUT', $url, $body, $options);
     }
 
     /**
      * @param array|string $url
      * @param string|array $body
-     * @param array        $headers
      * @param array        $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
      */
-    public function head($url, $body = [], $headers = [], $options = [])
+    public function patch($url, $body = [], $options = [])
     {
-        return $this->request('HEAD', $url, $body, $headers, $options);
+        return $this->request('PATCH', $url, $body, $options);
+    }
+
+    /**
+     * @param array|string $url
+     * @param string|array $body
+     * @param array        $options
+     *
+     * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    public function head($url, $body = [], $options = [])
+    {
+        return $this->request('HEAD', $url, $body, $options);
     }
 
     /**
