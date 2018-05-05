@@ -11,22 +11,32 @@ interface TaskInterface
     /**
      * @return int
      */
-    public function getErrorDelay();
+    public function getMaxDelay();
 
     /**
      * @return int
      */
     public function getInterval();
-    
+
+    /**
+     * @return void
+     */
+    public function heartbeat();
+
     /**
      * @return void
      */
     public function run();
 
     /**
-     * @param int $timeLimit
-     *
-     * @return void
+     * @return string
      */
-    public function start($timeLimit = 0);
+    public function getId();
+
+    /**
+     * @param string $id
+     *
+     * @return static
+     */
+    public function setId($id);
 }
