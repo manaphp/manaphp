@@ -162,7 +162,7 @@ class Manager extends Component implements ManagerInterface
                 $exception_times = 0;
                 for ($i = $instance->getInterval(); $i > 0; $i--) {
                     sleep(1);
-                    $this->heartbeat($instance->getId());
+                    $this->heartbeat($task);
                 }
             } catch (\Exception $e) {
                 if (!$last_exception || (string)$last_exception !== (string)$e) {
@@ -180,7 +180,7 @@ class Manager extends Component implements ManagerInterface
 
                 for ($i = $delay; $i > 0; $i--) {
                     sleep(1);
-                    $this->heartbeat($instance->getId());
+                    $this->heartbeat($task);
                 }
             } catch (\Throwable $t) {
                 $this->logger->fatal($t);

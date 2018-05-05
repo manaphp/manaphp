@@ -50,7 +50,7 @@ namespace PHPSTORM_META {
             'secint' instanceof \ManaPHP\Security\SecintInterface,
             'swordCompiler' instanceof \ManaPHP\Renderer\Engine\Sword\Compiler,
             'stopwatch' instanceof \ManaPHP\StopwatchInterface,
-            'tasksMetadata' instanceof \ManaPHP\Task\MetadataInterface,
+            'tasksManager' instanceof \ManaPHP\Task\ManagerInterface,
             'viewsCache' instanceof \ManaPHP\Cache\EngineInterface,
             'modelsCache' instanceof \ManaPHP\Cache\EngineInterface,
             'htmlPurifier' instanceof \ManaPHP\Security\HtmlPurifierInterface,

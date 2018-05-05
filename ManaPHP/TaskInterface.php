@@ -27,16 +27,4 @@ interface TaskInterface
      * @return void
      */
     public function run();
-
-    /**
-     * @return string
-     */
-    public function getId();
-
-    /**
-     * @param string $id
-     *
-     * @return static
-     */
-    public function setId($id);
 }
