@@ -319,6 +319,10 @@ class Di implements DiInterface
             } else {
                 $parameters = [$params];
             }
+        } else {
+            if (count($parameters) !== 0 && !isset($parameters[0])) {
+                $parameters = [$parameters];
+            }
         }
 
         if (is_string($definition)) {
