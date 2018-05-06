@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Facade\Exception as FacadeException;
-
 /**
  * Class ManaPHP\Facade
  *
@@ -58,15 +56,10 @@ class Facade
      * @param  array  $arguments
      *
      * @return mixed
-     *
-     * @throws \ManaPHP\Facade\Exception
      */
     public static function __callStatic($method, $arguments)
     {
         $instance = static::getFacadeInstance();
-        if (!$instance) {
-            throw new FacadeException('');
-        }
 
         switch (count($arguments)) {
             case 0:

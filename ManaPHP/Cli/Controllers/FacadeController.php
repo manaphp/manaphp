@@ -15,12 +15,11 @@ class FacadeController extends Controller
      */
     public function frameworkCommand()
     {
-        $content = <<<EOD
+        $header = <<<EOD
 <?php
 namespace ManaPHP\Facade;
 
 use ManaPHP\Facade;
-class Exception extends \ManaPHP\Exception{}
 
 EOD;
         foreach ($this->filesystem->glob('@manaphp/Facade/*.php') as $file) {
@@ -41,12 +40,9 @@ EOD;
                 $interfaceName = $match[1];
             }
 
-            $r = $this->generate($facadeName, $interfaceName);
             $this->console->writeLn(str_pad(' ' . $facadeName . ':', 16, ' ') . $interfaceName);
-            $content .= PHP_EOL . PHP_EOL . $r;
+            $this->filesystem->filePut("@manaphp/stubs/facade/$facadeName.php", $header . $this->generate($facadeName, $interfaceName));
         }
-
-        $this->filesystem->filePut('@manaphp/.ide.helper.facade.php', $content);
     }
 
     /**
@@ -70,8 +66,11 @@ EOD;
         $rc = new \ReflectionClass($interfaceName);
         $lines = file($rc->getFileName());
         foreach ($rc->getMethods() as $method) {
+            if(!$method->getStartLine()){
+                continue;
+            }
             $comment = '    ' . $method->getDocComment();
-            $content .= $comment . PHP_EOL;
+            $content .= preg_replace('#@return\s+(static|\$this)#', '@return ' . $interfaceName, $comment) . PHP_EOL;
 
             $signature = '';
             for ($i = $method->getStartLine(); $i <= $method->getEndLine(); $i++) {
