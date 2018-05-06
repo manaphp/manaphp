@@ -168,7 +168,7 @@ class Route implements RouteInterface
         $r = preg_match($this->_compiledPattern, $uri, $matches);
         if ($r === false) {
             throw new InvalidFormatException([
-                '`:compiled` pcre pattern is invalid for `:pattern`'/**m0d6fa1de6a93475dd*/,
+                '`:compiled` pcre pattern is invalid for `:pattern`',
                 'compiled' => $this->_compiledPattern,
                 'pattern' => $this->_pattern
             ]);

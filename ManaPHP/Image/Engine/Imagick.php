@@ -49,16 +49,16 @@ class Imagick extends Component implements EngineInterface
 
         $this->_file = realpath($this->alias->resolve($file));
         if (!$this->_file) {
-            throw new InvalidValueException(['`:file` file is not exists'/**m03d72c93d7f919633*/, 'file' => $file]);
+            throw new InvalidValueException(['`:file` file is not exists', 'file' => $file]);
         }
 
         $this->_image = new \Imagick();
         if (!$this->_image->readImage($this->_file)) {
-            throw new InvalidFormatException(['Imagick::readImage `:file` failed'/**m0bde8a84f102e2334*/, 'file' => $file]);
+            throw new InvalidFormatException(['Imagick::readImage `:file` failed', 'file' => $file]);
         }
 
         if ($this->_image->getNumberImages() !== 1) {
-            throw new PreconditionException(['not support multiple iterations: `:file`'/**m02c9881cd81a06a01*/, 'file' => $file]);
+            throw new PreconditionException(['not support multiple iterations: `:file`', 'file' => $file]);
         }
 
         if (!$this->_image->getImageAlphaChannel()) {
@@ -205,11 +205,11 @@ class Imagick extends Component implements EngineInterface
         }
 
         if ($watermark->getNumberImages() !== 1) {
-            throw new PreconditionException(['not support multiple iterations: `:file`'/**m091516b22452f192b*/, 'file' => $file]);
+            throw new PreconditionException(['not support multiple iterations: `:file`', 'file' => $file]);
         }
 
         if (!$this->_image->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $offsetX, $offsetY)) {
-            throw new RuntimeException('Imagick::compositeImage Failed'/**m0143717a75e945e37*/);
+            throw new RuntimeException('Imagick::compositeImage Failed');
         }
 
         $watermark->clear();
@@ -241,11 +241,11 @@ class Imagick extends Component implements EngineInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new CreateDirectoryFailedException(['create `:dir` image directory failed: :message'/**m0798bf2f57ec615b2*/, 'dir' => $dir, 'message' => error_get_last()['message']]);
+            throw new CreateDirectoryFailedException(['create `:dir` image directory failed: :message', 'dir' => $dir, 'message' => error_get_last()['message']]);
         }
 
         if (!$this->_image->writeImage($file)) {
-            throw new RuntimeException(['save `:file` image file failed'/**m03102b42157ab9467*/, 'file' => $file]);
+            throw new RuntimeException(['save `:file` image file failed', 'file' => $file]);
         }
     }
 

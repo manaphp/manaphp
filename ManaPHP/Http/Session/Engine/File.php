@@ -91,11 +91,11 @@ class File extends Component implements EngineInterface
         $file = $this->_getFileName($session_id);
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new CreateDirectoryFailedException(['create `:dir` session directory failed: :last_error_message'/**m0842502d4c2904242*/, 'dir' => $dir]);
+            throw new CreateDirectoryFailedException(['create `:dir` session directory failed: :last_error_message', 'dir' => $dir]);
         }
 
         if (file_put_contents($file, $data, LOCK_EX) === false) {
-            trigger_error(strtr('write `:file` session file failed: :last_error_message'/**m0f7ee56f71e1ec344*/, [':file' => $file]));
+            trigger_error(strtr('write `:file` session file failed: :last_error_message', [':file' => $file]));
         }
 
         @touch($file, time() + $context['ttl']);

@@ -30,7 +30,7 @@ class Image implements ImageInterface
         } elseif (extension_loaded('gd')) {
             $this->_engine = new Gd($file);
         } else {
-            throw new PreconditionException('No valid Image Engine exists.'/**m0e2528a66b81cf976*/);
+            throw new PreconditionException('No valid Image Engine exists.');
         }
     }
 

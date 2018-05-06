@@ -280,7 +280,7 @@ class Di implements DiInterface
     public function remove($name)
     {
         if (in_array($name, $this->_aliases, true)) {
-            throw new PreconditionException(['`:name` component is being used by alias, please remove alias first'/**m04c19e730f00d1a9f*/, 'name' => $name]);
+            throw new PreconditionException(['`:name` component is being used by alias, please remove alias first', 'name' => $name]);
         }
 
         if (isset($this->_aliases[$name])) {
@@ -323,7 +323,7 @@ class Di implements DiInterface
 
         if (is_string($definition)) {
             if (!class_exists($definition)) {
-                throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists'/**m03ae8f20fcb7c5ba6*/, 'name' => $name, 'class' => $definition]);
+                throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists', 'name' => $name, 'class' => $definition]);
             }
             $count = count($parameters);
 
@@ -346,7 +346,7 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {
-            throw new NotSupportedException(['`:name` component cannot be resolved: component implement type is not supported'/**m072d42756355fb069*/, 'name' => $name]);
+            throw new NotSupportedException(['`:name` component cannot be resolved: component implement type is not supported', 'name' => $name]);
         }
 
         if ($instance instanceof Component) {
@@ -491,7 +491,7 @@ class Di implements DiInterface
      */
     public function __call($method, $arguments = [])
     {
-        throw new BadMethodCallException(['Call to undefined method `:method`'/**m06946faf1ec42dea1*/, 'method' => $method]);
+        throw new BadMethodCallException(['Call to undefined method `:method`', 'method' => $method]);
     }
 
     /**

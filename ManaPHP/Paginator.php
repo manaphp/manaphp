@@ -132,7 +132,7 @@ class Paginator extends Component implements PaginatorInterface
     {
         if ($urlTemplate === null) {
             if (!$this->request->hasServer('REQUEST_URI')) {
-                throw new PreconditionException('REQUEST_URI is not exist in $_SERVER'/**m043f318485f00921e*/);
+                throw new PreconditionException('REQUEST_URI is not exist in $_SERVER');
             } else {
                 $urlTemplate = $this->request->getServer('REQUEST_URI', 'ignore');
             }
@@ -145,7 +145,7 @@ class Paginator extends Component implements PaginatorInterface
         }
 
         if (strpos($urlTemplate, '{page}') === false) {
-            throw new InvalidValueException(['`:template` url template is invalid: it must contain {page} pattern'/**m0b85431254175cf7a*/, 'template' => $urlTemplate]);
+            throw new InvalidValueException(['`:template` url template is invalid: it must contain {page} pattern', 'template' => $urlTemplate]);
         }
 
         $str = PHP_EOL . '<ul class="pagination">' . PHP_EOL;

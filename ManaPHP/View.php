@@ -165,7 +165,7 @@ class View extends Component implements ViewInterface
         $this->_current_template = $template;
 
         if (isset($vars['view'])) {
-            throw new InvalidValueException('variable `view` is reserved for view'/**m0662b55555fc72f7d*/);
+            throw new InvalidValueException('variable `view` is reserved for view');
         }
         $vars['view'] = $this;
 
@@ -319,7 +319,7 @@ class View extends Component implements ViewInterface
         }
 
         if (!class_exists($widgetClassName)) {
-            throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists'/**m020db278f144382d6*/, 'widget' => $widget, 'class' => $widgetClassName]);
+            throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists', 'widget' => $widget, 'class' => $widgetClassName]);
         }
 
         /**

@@ -152,7 +152,7 @@ abstract class HttpServer extends Application
             $this->authenticate();
 
             if (!$this->router->handle()) {
-                throw new SwooleException(['router does not have matched route for `:uri`'/**m0980aaf224562f1a4*/, 'uri' => $this->router->getRewriteUri()]);
+                throw new SwooleException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
             }
 
             $router = $this->router;

@@ -1205,7 +1205,7 @@ class Query extends Component implements QueryInterface
 
         if (!$this->_tables) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new RuntimeException('at least one model is required to build the query'/**m09d10c2135a4585fa*/);
+            throw new RuntimeException('at least one model is required to build the query');
         }
 
         $params = [];
@@ -1235,7 +1235,7 @@ class Query extends Component implements QueryInterface
             if ($table instanceof $this) {
                 if (is_int($alias)) {
                     /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                    throw new NotSupportedException('if using SubQuery, you must assign an alias for it'/**m0e5f4aa93dc102dde*/);
+                    throw new NotSupportedException('if using SubQuery, you must assign an alias for it');
                 }
 
                 $selectedTables[] = '(' . $table->getSql() . ') AS [' . $alias . ']';
@@ -1272,7 +1272,7 @@ class Query extends Component implements QueryInterface
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $joinTable->getBind());
                 if ($joinAlias === null) {
-                    throw new NotSupportedException('if using SubQuery, you must assign an alias for it'/**m0a80f96a41e1596cb*/);
+                    throw new NotSupportedException('if using SubQuery, you must assign an alias for it');
                 }
             } else {
                 $joinSQL .= ' JOIN [' . $joinTable . ']';
@@ -1390,7 +1390,7 @@ class Query extends Component implements QueryInterface
         $cacheOptions = is_array($this->_cacheOptions) ? $this->_cacheOptions : ['ttl' => $this->_cacheOptions];
         if (!isset($cacheOptions['key'])) {
             if ($cacheOptions['key'][0] === '/') {
-                throw new InvalidValueException(['modelsCache `:key` key can not be start with `/`'/**m02053af65daa98380*/, 'key' => $cacheOptions['key']]);
+                throw new InvalidValueException(['modelsCache `:key` key can not be start with `/`', 'key' => $cacheOptions['key']]);
             }
 
             $cacheOptions['key'] = md5($this->_sql . serialize($this->_bind));
@@ -1490,7 +1490,7 @@ class Query extends Component implements QueryInterface
     protected function _getTotalRows()
     {
         if ($this->_union) {
-            throw new NotSupportedException('Union query is not support to get total rows'/**m0b24b0f0a54a1227c*/);
+            throw new NotSupportedException('Union query is not support to get total rows');
         }
 
         $this->_fields = 'COUNT(*) as [row_count]';

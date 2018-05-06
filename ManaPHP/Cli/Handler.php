@@ -158,7 +158,7 @@ class Handler extends Component implements HandlerInterface
                 $controllerClassName = $guessed;
                 $controllerName = basename(substr($controllerClassName, strrpos($controllerClassName, '\\')), 'Controller');
             } else {
-                return $this->console->error(['`:command` command is not exists'/**m0d7fa39c3a64b91e0*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
+                return $this->console->error(['`:command` command is not exists', 'command' => lcfirst($controllerName) . ':' . $commandName]);
             }
         }
 
@@ -177,7 +177,7 @@ class Handler extends Component implements HandlerInterface
         if (!method_exists($controllerInstance, $commandName . 'Command')) {
             $guessed = $this->_guessCommand($controllerClassName, $commandName);
             if (!$guessed) {
-                return $this->console->error(['`:command` sub command is not exists'/**m061a35fc1c0cd0b6f*/, 'command' => lcfirst($controllerName) . ':' . $commandName]);
+                return $this->console->error(['`:command` sub command is not exists', 'command' => lcfirst($controllerName) . ':' . $commandName]);
             } else {
                 $commandName = $guessed;
             }

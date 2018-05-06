@@ -129,7 +129,7 @@ class File extends Component implements FileInterface
                 $allowedExtensions = str_replace(',.', ',', $allowedExtensions);
 
                 if (stripos($allowedExtensions, $extension) === false) {
-                    throw new FileException(['`:extension` file type is not allowed upload'/**m0fc09a879406a3940*/, 'extension' => $extension]);
+                    throw new FileException(['`:extension` file type is not allowed upload', 'extension' => $extension]);
                 }
             }
 
@@ -137,27 +137,27 @@ class File extends Component implements FileInterface
                 $alwaysRejectedExtensions = ',' . str_replace(' ', '', self::$_alwaysRejectedExtensions) . ',';
                 $alwaysRejectedExtensions = str_replace(',.', ',', $alwaysRejectedExtensions);
                 if (stripos($alwaysRejectedExtensions, $extension) !== false) {
-                    throw new FileException(['`:extension` file types is not allowed upload always'/**m0331d91c39adb3af6*/, 'extensions' => self::$_alwaysRejectedExtensions]);
+                    throw new FileException(['`:extension` file types is not allowed upload always', 'extensions' => self::$_alwaysRejectedExtensions]);
                 }
             }
         }
 
         if ($this->_file['error'] !== UPLOAD_ERR_OK) {
-            throw new FileException(['error code of upload file is not UPLOAD_ERR_OK: :error'/**m0454e71638e03eee6*/, 'error' => $this->_file['error']]);
+            throw new FileException(['error code of upload file is not UPLOAD_ERR_OK: :error', 'error' => $this->_file['error']]);
         }
 
         if ($this->filesystem->fileExists($dst)) {
-            throw new FileException(['`:file` file already exists'/**m0402f85613fe0f167*/, 'file' => $dst]);
+            throw new FileException(['`:file` file already exists', 'file' => $dst]);
         }
 
         $this->filesystem->dirCreate(dirname($dst));
 
         if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($dst))) {
-            throw new FileException(['move_uploaded_file to `:dst` failed: :last_error_message'/**m01d834f396d846d2b*/, 'dst' => $dst]);
+            throw new FileException(['move_uploaded_file to `:dst` failed: :last_error_message', 'dst' => $dst]);
         }
 
         if (!chmod($this->alias->resolve($dst), 0644)) {
-            throw new FileException(['chmod `:dst` destination failed: :last_error_message'/**m0a0e7dc6898fb4abe*/, 'dst' => $dst]);
+            throw new FileException(['chmod `:dst` destination failed: :last_error_message', 'dst' => $dst]);
         }
     }
 

@@ -190,7 +190,7 @@ class Filter extends Component implements FilterInterface
         } elseif (function_exists($filter)) {
             $value = call_user_func_array($filter, array_merge([$value], $parameters));
         } else {
-            throw new FilterException(['`:name` filter is not be recognized'/**m09d0e9938a3a49e27*/, 'name' => $filter]);
+            throw new FilterException(['`:name` filter is not be recognized', 'name' => $filter]);
         }
 
         if ($value === null) {
@@ -202,7 +202,7 @@ class Filter extends Component implements FilterInterface
                 }
 
                 if (!$this->filesystem->fileExists($file)) {
-                    throw new FilterException(['`:file` filter message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
+                    throw new FilterException(['`:file` filter message template file is not exists', 'file' => $file]);
                 }
 
                 /** @noinspection PhpIncludeInspection */

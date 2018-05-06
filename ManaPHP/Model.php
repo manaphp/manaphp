@@ -808,7 +808,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         if (!isset($this->{$primaryKey})) {
             throw new PreconditionException([
-                '`:model` model cannot be updated because some primary key value is not provided'/**m0efc1ffa8444dca8d*/,
+                '`:model` model cannot be updated because some primary key value is not provided',
                 'model' => get_class($this)
             ]);
         }
@@ -997,7 +997,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $criteria = static::criteria(null, $this);
         if (!isset($this->{$primaryKey})) {
             throw new PreconditionException([
-                '`:model` model cannot be deleted because the primary key attribute: `:field` was not set'/**m01dec9cd3b69742a5*/,
+                '`:model` model cannot be deleted because the primary key attribute: `:field` was not set',
                 'model' => get_class($this),
                 'field' => $primaryKey
             ]);

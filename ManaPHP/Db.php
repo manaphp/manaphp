@@ -186,14 +186,14 @@ abstract class Db extends Component implements DbInterface
             } elseif (is_float($value)) {
                 $type = \PDO::PARAM_STR;
             } else {
-                throw new NotSupportedException(['The `:type` type of `:parameter` parameter is not support'/**m06d8e38e608d5556f*/, 'parameter' => $parameter, 'type' => gettype($value)]);
+                throw new NotSupportedException(['The `:type` type of `:parameter` parameter is not support', 'parameter' => $parameter, 'type' => gettype($value)]);
             }
 
             if (is_int($parameter)) {
                 $statement->bindValue($parameter + 1, $value, $type);
             } else {
                 if ($parameter[0] === ':') {
-                    throw new InvalidValueException(['Bind does not require started with `:` for `:parameter` parameter'/**m0bcf77bf172de6825*/, 'parameter' => $parameter]);
+                    throw new InvalidValueException(['Bind does not require started with `:` for `:parameter` parameter', 'parameter' => $parameter]);
                 }
 
                 $statement->bindValue(':' . $parameter, $value, $type);
@@ -419,7 +419,7 @@ abstract class Db extends Component implements DbInterface
     public function insert($table, $fieldValues)
     {
         if (!$fieldValues) {
-            throw new InvalidArgumentException(['Unable to insert into :table table without data'/**m07945f8783104be33*/, 'table' => $table]);
+            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
         }
 
         if (array_key_exists(0, $fieldValues)) {
@@ -464,7 +464,7 @@ abstract class Db extends Component implements DbInterface
     public function update($table, $fieldValues, $conditions, $bind = [])
     {
         if (!$fieldValues) {
-            throw new InvalidArgumentException(['Unable to update :table table without data'/**m07b005f0072d05d71*/, 'table' => $table]);
+            throw new InvalidArgumentException(['Unable to update :table table without data', 'table' => $table]);
         }
 
         if (is_string($conditions)) {
@@ -632,7 +632,7 @@ abstract class Db extends Component implements DbInterface
             $this->fireEvent('db:beginTransaction');
 
             if (!$this->_getPdo()->beginTransaction()) {
-                throw new DbException('beginTransaction failed.'/**m009fd54f98ae8b9d4*/);
+                throw new DbException('beginTransaction failed.');
             }
         }
 
@@ -662,7 +662,7 @@ abstract class Db extends Component implements DbInterface
     public function rollback()
     {
         if ($this->_transactionLevel === 0) {
-            throw new RuntimeException('There is no active transaction'/**m05b2e1d48d574c125*/);
+            throw new RuntimeException('There is no active transaction');
         }
 
         $this->_transactionLevel--;
@@ -671,7 +671,7 @@ abstract class Db extends Component implements DbInterface
             $this->fireEvent('db:rollbackTransaction');
 
             if (!$this->_getPdo()->rollBack()) {
-                throw new DbException('rollBack failed.'/**m0bf1d0a9da75bc040*/);
+                throw new DbException('rollBack failed.');
             }
         }
     }
@@ -685,7 +685,7 @@ abstract class Db extends Component implements DbInterface
     public function commit()
     {
         if ($this->_transactionLevel === 0) {
-            throw new RuntimeException('There is no active transaction'/**m0737d0edc3626fee3*/);
+            throw new RuntimeException('There is no active transaction');
         }
 
         $this->_transactionLevel--;
@@ -694,7 +694,7 @@ abstract class Db extends Component implements DbInterface
             $this->fireEvent('db:commitTransaction');
 
             if (!$this->_getPdo()->commit()) {
-                throw new DbException('commit failed.'/**m0a74173017f21a198*/);
+                throw new DbException('commit failed.');
             }
         }
     }

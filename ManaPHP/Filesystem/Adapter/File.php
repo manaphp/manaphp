@@ -59,7 +59,7 @@ class File extends Component implements FilesystemInterface
     {
         /** @noinspection NotOptimalIfConditionsInspection */
         if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {
-            throw new CreateDirectoryFailedException(['create `:dir` directory failed: :last_error_message'/**m0d79ea0fd2e396837*/, 'dir' => $dir]);
+            throw new CreateDirectoryFailedException(['create `:dir` directory failed: :last_error_message', 'dir' => $dir]);
         }
     }
 
@@ -85,7 +85,7 @@ class File extends Component implements FilesystemInterface
 
         $this->_dirCreate(dirname($file));
         if (file_put_contents($file, $data, LOCK_EX) === false) {
-            throw new RuntimeException(['write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, 'file' => $file]);
+            throw new RuntimeException(['write `:file` file failed: :last_error_message', 'file' => $file]);
         }
     }
 
@@ -101,7 +101,7 @@ class File extends Component implements FilesystemInterface
         $this->_dirCreate(dirname($file));
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
-            throw new RuntimeException(['write `:file` file failed: :last_error_message'/**m02e67e7a286a4d112*/, 'file' => $file]);
+            throw new RuntimeException(['write `:file` file failed: :last_error_message', 'file' => $file]);
         }
     }
 

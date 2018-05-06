@@ -65,7 +65,7 @@ class Apcu extends Component implements EngineInterface
     {
         $r = apcu_store($this->_prefix . $key, $value, $ttl);
         if (!$r) {
-            throw new ApcuException(['apcu_store failed for `:key` key'/**m044d8697223644728*/, 'key' => $key]);
+            throw new ApcuException(['apcu_store failed for `:key` key', 'key' => $key]);
         }
     }
 

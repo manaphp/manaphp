@@ -234,7 +234,7 @@ class Captcha extends Component implements CaptchaInterface
         } elseif (function_exists('gd_info')) {
             $response = $this->_generateByGd($code, $width, $height);
         } else {
-            throw new CaptchaException('`captcha` service is not support, please install `gd` or `imagic` extension first'/**m09316721df158b71b*/);
+            throw new CaptchaException('`captcha` service is not support, please install `gd` or `imagic` extension first');
         }
 
         $captchaData = ['code' => $code, 'created_time' => time(), 'ttl' => $ttl];
@@ -256,7 +256,7 @@ class Captcha extends Component implements CaptchaInterface
         }
 
         if (!$this->session->has($this->_sessionVar)) {
-            throw new CaptchaException('captcha is not exist in server'/**m040995605d314e3ab*/);
+            throw new CaptchaException('captcha is not exist in server');
         }
 
         $sessionVar = $this->session->get($this->_sessionVar);
@@ -264,7 +264,7 @@ class Captcha extends Component implements CaptchaInterface
         if ($isTry) {
             if (isset($sessionVar['try_verified_time'])) {
                 $this->session->remove($this->_sessionVar);
-                throw new CaptchaException('captcha has been tried'/**m0010d91c684875791*/);
+                throw new CaptchaException('captcha has been tried');
             } else {
                 $sessionVar['try_verified_time'] = time();
                 $this->session->set($this->_sessionVar, $sessionVar);
@@ -274,15 +274,15 @@ class Captcha extends Component implements CaptchaInterface
         }
 
         if (time() - $sessionVar['created_time'] < $this->_minInterval) {
-            throw new CaptchaException('captcha verification is too frequency'/**m0f56e8e459a9a8420*/);
+            throw new CaptchaException('captcha verification is too frequency');
         }
 
         if (time() - $sessionVar['created_time'] > $sessionVar['ttl']) {
-            throw new CaptchaException('captcha is expired'/**m05b1b38779bb43fef*/);
+            throw new CaptchaException('captcha is expired');
         }
 
         if (strtolower($sessionVar['code']) !== strtolower($code)) {
-            throw new CaptchaException('captcha is not match'/**m0523c8d79327c0e6f*/);
+            throw new CaptchaException('captcha is not match');
         }
     }
 

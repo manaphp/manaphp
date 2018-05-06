@@ -21,7 +21,7 @@ class Ini implements EngineInterface
     {
         $data = parse_ini_file($file, true);
         if ($data === false) {
-            throw new IniException(['`:file` configure file can not be loaded'/**m0a0e54c0c2a796b88*/, 'file' => $file]);
+            throw new IniException(['`:file` configure file can not be loaded', 'file' => $file]);
         }
 
         return $data;

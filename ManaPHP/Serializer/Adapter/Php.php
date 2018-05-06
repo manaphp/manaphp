@@ -34,11 +34,11 @@ class Php implements AdapterInterface
     {
         $data = unserialize($serialized);
         if ($data === false) {
-            throw new UnexpectedValueException('unserialize failed: :last_error_message'/**m066507d6397244b1c*/);
+            throw new UnexpectedValueException('unserialize failed: :last_error_message');
         }
 
         if (!is_array($data)) {
-            throw new UnexpectedValueException('de serialized data is not a array maybe it has been corrupted'/**m06a7e8b3300369f79*/);
+            throw new UnexpectedValueException('de serialized data is not a array maybe it has been corrupted');
         }
 
         if (isset($data['__wrapper__']) && count($data) === 1) {

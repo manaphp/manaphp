@@ -99,17 +99,17 @@ class Renderer extends Component implements RendererInterface
                 $this->fireEvent('renderer:beforeRender', $eventArguments);
 
                 if (isset($vars['renderer'])) {
-                    throw new InvalidArgumentException('variable `renderer` is reserved for renderer'/**m04c9833791ad0d92b*/);
+                    throw new InvalidArgumentException('variable `renderer` is reserved for renderer');
                 }
                 $vars['renderer'] = $this;
 
                 if (isset($vars['di'])) {
-                    throw new InvalidArgumentException('variable `di` is reserved for renderer'/**m0351d1318ca365b9b*/);
+                    throw new InvalidArgumentException('variable `di` is reserved for renderer');
                 }
                 $vars['di'] = $this->_di;
 
                 if (isset($vars['url'])) {
-                    throw new InvalidArgumentException('variable `url` is reserved for renderer'/**m0394e70537f32f733*/);
+                    throw new InvalidArgumentException('variable `url` is reserved for renderer');
                 }
                 $vars['url'] = isset($this->url) ? $this->url : null;
 
@@ -131,7 +131,7 @@ class Renderer extends Component implements RendererInterface
 
         if ($notExists) {
             throw new FileNotFoundException([
-                '`:template` with `:extensions` extension file was not found'/**m0312a7f5d4bc76939*/,
+                '`:template` with `:extensions` extension file was not found',
                 'template' => $template,
                 'extensions' => implode(', or ', array_keys($this->_engines))
             ]);
@@ -220,7 +220,7 @@ class Renderer extends Component implements RendererInterface
     public function stopSection($overwrite = false)
     {
         if (!$this->_sectionStack) {
-            throw new PreconditionException('cannot stop a section without first starting session'/**m0005e5105f6b924c8*/);
+            throw new PreconditionException('cannot stop a section without first starting session');
         }
 
         $last = array_pop($this->_sectionStack);
@@ -237,7 +237,7 @@ class Renderer extends Component implements RendererInterface
     public function appendSection()
     {
         if (!$this->_sectionStack) {
-            throw new PreconditionException('Cannot append a section without first starting one:'/**m0612bf4d28a6f9d36*/);
+            throw new PreconditionException('Cannot append a section without first starting one:');
         }
 
         $last = array_pop($this->_sectionStack);

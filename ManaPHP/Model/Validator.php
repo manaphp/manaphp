@@ -72,7 +72,7 @@ class Validator extends Component implements ValidatorInterface
         $languages = explode(',', $this->configure->language);
         $file = "{$this->_templates_dir}/$languages[0].php";
         if (!$this->filesystem->fileExists($file)) {
-            throw new FileNotFoundException(['`:file` validator message template file is not exists'/**m08523be1bf26d3984*/, 'file' => $file]);
+            throw new FileNotFoundException(['`:file` validator message template file is not exists', 'file' => $file]);
         }
         /** @noinspection PhpIncludeInspection */
         return $this->_templates = require $this->alias->resolve($file);

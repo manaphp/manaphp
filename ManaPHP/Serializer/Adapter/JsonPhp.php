@@ -51,7 +51,7 @@ class JsonPhp implements AdapterInterface
         } elseif ($this->_isCanJsonSafely($data)) {
             $serialized = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             if ($serialized === false) {
-                throw new RuntimeException(['json_encode failed: :message'/**m0a9f602eae08a8d22*/, 'message' => json_last_error_msg()]);
+                throw new RuntimeException(['json_encode failed: :message', 'message' => json_last_error_msg()]);
             }
         } else {
             $serialized = serialize($data);
@@ -70,10 +70,10 @@ class JsonPhp implements AdapterInterface
         if ($serialized[0] === '{' || $serialized[0] === '[') {
             $data = json_decode($serialized, true);
             if ($data === null) {
-                throw new InvalidJsonException(['json_encode failed: :message'/**m0e2cd70719323b2fe*/, 'message' => json_last_error_msg()]);
+                throw new InvalidJsonException(['json_encode failed: :message', 'message' => json_last_error_msg()]);
             }
             if (!is_array($data)) {
-                throw new InvalidValueException('json serialized data is not a array, maybe it has been corrupted.'/**m01ea8122175406af1*/);
+                throw new InvalidValueException('json serialized data is not a array, maybe it has been corrupted.');
             }
 
             if (isset($data['__wrapper__']) && count($data) === 1) {
@@ -84,7 +84,7 @@ class JsonPhp implements AdapterInterface
         } else {
             $data = unserialize($serialized);
             if ($data === false) {
-                throw new InvalidValueException(['unserialize failed: :message'/**m05b0e54563d1303e7*/, 'message' => error_get_last()['message']]);
+                throw new InvalidValueException(['unserialize failed: :message', 'message' => error_get_last()['message']]);
             } else {
                 return $data;
             }

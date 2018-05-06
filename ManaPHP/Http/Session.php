@@ -314,7 +314,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
             $this->_started || $this->_start();
 
             if (PHP_SAPI !== 'cli' && !session_destroy()) {
-                throw new SessionException('destroy session failed: :last_error_message'/**m08409465b2b90d8a8*/);
+                throw new SessionException('destroy session failed: :last_error_message');
             }
 
             if (ini_get('session.use_cookies')) {

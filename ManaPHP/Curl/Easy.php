@@ -173,7 +173,7 @@ class Easy extends Component implements EasyInterface
         }
 
         if (preg_match('/^http(s)?:\/\//i', $url) !== 1) {
-            throw new NotSupportedException(['only HTTP requests can be handled: `:url`'/**m06c8af26e23f01884*/, 'url' => $url]);
+            throw new NotSupportedException(['only HTTP requests can be handled: `:url`', 'url' => $url]);
         }
 
         $curl = curl_init();
