@@ -156,7 +156,7 @@ class Easy extends Component implements EasyInterface
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
      */
-    public function request($type, $url, $body, $options)
+    public function request($type, $url, $body = null, $options = [])
     {
         if (is_array($url)) {
             if (count($url) > 1) {

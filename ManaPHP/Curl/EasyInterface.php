@@ -38,6 +38,17 @@ interface EasyInterface
     public function setSslVerify($verify);
 
     /**
+     * @param string       $type
+     * @param string|array $url
+     * @param string|array $body
+     * @param array        $options
+     *
+     * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    public function request($type, $url, $body = null, $options = []);
+
+    /**
      * @param string|array $url
      * @param array        $options
      *
