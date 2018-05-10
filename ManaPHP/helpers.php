@@ -309,4 +309,17 @@ if (!function_exists('curl')) {
     {
         return di('httpClient')->request($type, $url, $body, $options);
     }
+
+    if (!function_exists('render')) {
+        /**
+         * @param string $file
+         * @param array  $vars
+         *
+         * @return string
+         */
+        function render($file, $vars = [])
+        {
+            return di('renderer')->render($file, $vars);
+        }
+    }
 }
