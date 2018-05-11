@@ -410,17 +410,36 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param array            $files
-     * @param int|string|array $options
+     * @param string|array     $files
+     * @param string|int|array $options
      *
-     * @return array
+     * @return string|array
      */
     public function download($files, $options = [])
     {
-        if (is_int($options)) {
-            $options = ['concurrent' => $options];
-        } elseif (is_string($options)) {
-            $options = [preg_match('#^https?://#', $options) ? CURLOPT_REFERER : CURLOPT_USERAGENT => $options];
+        if (is_string($files)) {
+            if (is_string($options) && strpos($options, '://') === false) {
+                $return_file = $options;
+            } else {
+                $path = parse_url($files, PHP_URL_PATH);
+                if ($pos = strrpos($path, '.')) {
+                    $ext = strtolower(substr($path, $pos));
+                    if ($ext === '.php' || preg_match('#^\.\w+$#', $ext) === 0) {
+                        $ext = '.tmp';
+                    }
+                } else {
+                    $ext = '.tmp';
+                }
+                $return_file = $this->alias->resolve('@tmp/download/' . md5($files . gethostname()) . $ext);
+            }
+            $files = [$files => $return_file];
+        } else {
+            if (is_int($options)) {
+                $options = ['concurrent' => $options];
+            } elseif (is_string($options)) {
+                $options = [preg_match('#^https?://#', $options) ? CURLOPT_REFERER : CURLOPT_USERAGENT => $options];
+            }
+            $return_file = null;
         }
 
         $mh = curl_multi_init();
@@ -508,6 +527,10 @@ class Easy extends Component implements EasyInterface
         curl_multi_close($mh);
         curl_close($template);
 
-        return $failed;
+        if ($return_file) {
+            return $failed ? false : $return_file;
+        } else {
+            return $failed;
+        }
     }
 }

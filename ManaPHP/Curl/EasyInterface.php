@@ -107,10 +107,10 @@ interface EasyInterface
     public function head($url, $body = [], $options = []);
 
     /**
-     * @param array $files
-     * @param array $options
+     * @param string|array     $files
+     * @param string|int|array $options
      *
-     * @return array
+     * @return string|array
      */
     public function download($files, $options = []);
 }
