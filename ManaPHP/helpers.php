@@ -311,6 +311,19 @@ if (!function_exists('curl')) {
     }
 }
 
+if (!function_exists('download')) {
+    /**
+     * @param string|array     $files
+     * @param string|int|array $options
+     *
+     * @return string|array
+     */
+    function download($files, $options = [])
+    {
+        return di('httpClient')->download($files, $options);
+    }
+}
+
 if (!function_exists('render')) {
     /**
      * @param string $file
