@@ -353,6 +353,100 @@ if (!function_exists('download')) {
     }
 }
 
+if (!function_exists('rest')) {
+    /**
+     * @param string       $type
+     * @param string|array $url
+     * @param string|array $body
+     * @param array        $options
+     *
+     * @return array
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\Easy\ContentTypeException
+     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    function rest($type, $url, $body = null, $options = [])
+    {
+        return di('httpClient')->rest($type, $url, $body, $options);
+    }
+}
+
+if (!function_exists('rest_get')) {
+    /**
+     * @param string|array $url
+     * @param array        $options
+     *
+     * @return array
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\Easy\ContentTypeException
+     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    function rest_get($url, $options = [])
+    {
+        return di('httpClient')->rest('GET', $url, null, $options);
+    }
+}
+
+if (!function_exists('rest_post')) {
+    /**
+     * @param string|array $url
+     * @param string|array $body
+     * @param array        $options
+     *
+     * @return array
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\Easy\ContentTypeException
+     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    function rest_post($url, $body = null, $options = [])
+    {
+        return di('httpClient')->rest('POST', $url, $body, $options);
+    }
+}
+
+if (!function_exists('rest_put')) {
+    /**
+     * @param string|array $url
+     * @param string|array $body
+     * @param array        $options
+     *
+     * @return array
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\Easy\ContentTypeException
+     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    function rest_put($url, $body = null, $options = [])
+    {
+        return di('httpClient')->rest('PUT', $url, $body, $options);
+    }
+}
+
+if (!function_exists('rest_delete')) {
+    /**
+     * @param string|array $url
+     * @param array        $options
+     *
+     * @return array
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\Easy\ContentTypeException
+     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    function rest_delete($url, $options = [])
+    {
+        return di('httpClient')->rest('DELETE', $url, null, $options);
+    }
+}
+
 if (!function_exists('render')) {
     /**
      * @param string $file
