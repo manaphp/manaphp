@@ -190,35 +190,39 @@ class Easy extends Component implements EasyInterface
         }
 
         if (is_array($body)) {
-            $hasFiles = false;
-            /** @noinspection ForeachSourceInspection */
-            foreach ($body as $k => $v) {
-                if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && is_file(substr($v, 1))) {
-                    $hasFiles = true;
-                    if (class_exists('CURLFile')) {
-                        $file = substr($v, 1);
+            if (isset($options['Content-Type']) && strpos($options['Content-Type'], 'json') !== false) {
+                $body = json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            } else {
+                $hasFiles = false;
+                /** @noinspection ForeachSourceInspection */
+                foreach ($body as $k => $v) {
+                    if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && is_file(substr($v, 1))) {
+                        $hasFiles = true;
+                        if (class_exists('CURLFile')) {
+                            $file = substr($v, 1);
 
-                        $parts = explode(';', $file);
+                            $parts = explode(';', $file);
 
-                        if (count($parts) === 1) {
-                            $body[$k] = new \CURLFile($file);
-                        } else {
-                            $file = $parts[0];
-                            $types = explode('=', $parts[1]);
-                            if ($types[0] !== 'type' || count($types) !== 2) {
-                                throw new NotSupportedException(['`:file` file name format is invalid', 'file' => $v]);
+                            if (count($parts) === 1) {
+                                $body[$k] = new \CURLFile($file);
                             } else {
-                                $body[$k] = new \CURLFile($file, $types[1]);
+                                $file = $parts[0];
+                                $types = explode('=', $parts[1]);
+                                if ($types[0] !== 'type' || count($types) !== 2) {
+                                    throw new NotSupportedException(['`:file` file name format is invalid', 'file' => $v]);
+                                } else {
+                                    $body[$k] = new \CURLFile($file, $types[1]);
+                                }
                             }
                         }
+                    } elseif (is_object($v)) {
+                        $hasFiles = true;
                     }
-                } elseif (is_object($v)) {
-                    $hasFiles = true;
                 }
-            }
 
-            if (!$hasFiles) {
-                $body = http_build_query($body);
+                if (!$hasFiles) {
+                    $body = http_build_query($body);
+                }
             }
         }
 
