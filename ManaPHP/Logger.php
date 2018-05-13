@@ -161,13 +161,14 @@ class Logger extends Component implements LoggerInterface
      */
     protected function _getLocation($traces)
     {
-        if (isset($traces[2]['function']) && !isset($this->_levels[strtoupper($traces[2]['function'])])) {
-            $trace = $traces[1];
-        } else {
-            $trace = $traces[2];
+        for ($i = count($traces) - 1; $i >= 0; $i--) {
+            $trace = $traces[$i];
+            if (in_array($trace['function'], $this->_levels, true)) {
+                break;
+            }
         }
 
-        if (isset($trace['file'], $trace['line'])) {
+        if ($i >= 0 && isset($trace['file'], $trace['line'])) {
             return basename($trace['file']) . ':' . $trace['line'];
         }
 
@@ -314,7 +315,7 @@ class Logger extends Component implements LoggerInterface
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
 
         $log = new Log();
-		
+
         $log->host = gethostname();
         $log->level = $this->_levels[$level];
         $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
