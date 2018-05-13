@@ -311,6 +311,35 @@ if (!function_exists('curl')) {
     }
 }
 
+if (!function_exists('curl_get')) {
+    /**
+     * @param string|array $url
+     * @param array        $options
+     *
+     * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    function curl_get($url, $options = [])
+    {
+        return di('httpClient')->get($url, $options);
+    }
+}
+
+if (!function_exists('curl_post')) {
+    /**
+     * @param string|array $url
+     * @param string|array $body
+     * @param array        $options
+     *
+     * @return \ManaPHP\Curl\Easy\Response
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    function curl_post($url, $body = null, $options = [])
+    {
+        return di('httpClient')->post($url, $body, $options);
+    }
+}
+
 if (!function_exists('download')) {
     /**
      * @param string|array     $files
