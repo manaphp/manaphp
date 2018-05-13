@@ -2,8 +2,13 @@
 namespace ManaPHP\Curl;
 
 use ManaPHP\Component;
+use ManaPHP\Curl\Easy\BadRequestException;
+use ManaPHP\Curl\Easy\ContentTypeException;
+use ManaPHP\Curl\Easy\JsonDecodeException;
 use ManaPHP\Curl\Easy\Response;
+use ManaPHP\Curl\Easy\ServiceUnavailableException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 
 /**
@@ -335,6 +340,67 @@ class Easy extends Component implements EasyInterface
         curl_close($curl);
 
         return $response;
+    }
+
+    /**
+     * @param string       $type
+     * @param string|array $url
+     * @param string|array $body
+     * @param array        $options
+     *
+     * @return array
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\Easy\ContentTypeException
+     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    public function rest($type, $url, $body = null, $options = [])
+    {
+        if (isset($options['Content-Type']) && strpos($options['Content-Type'], 'json') === false) {
+            throw new InvalidValueException(['Content-Type of rest is not application/json: :content-type', 'content-type' => $options['Content-Type']]);
+        } else {
+            $options['Content-Type'] = 'application/json';
+        }
+
+        if (!isset($options['X-Requested-With'])) {
+            $options['X-Requested-With'] = 'XMLHttpRequest';
+        }
+
+        if (!isset($options['Accept'])) {
+            $options['Accept'] = 'application/json';
+        }
+
+        if (is_array($body)) {
+            $body = json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
+        $response = $this->request($type, $url, $body, $options);
+        if ($response->http_code >= 500) {
+            throw new ServiceUnavailableException(['service is unavailable: :http_code => `:url`',
+                'http_code' => $response->http_code, 'url' => $response->url],
+                $response);
+        }
+
+        if ($response->http_code >= 400) {
+            throw new BadRequestException(['bad request: :http_code => `:url`',
+                'http_code' => $response->http_code, 'url' => $response->url],
+                $response);
+        }
+
+        if (strpos($response->content_type, 'json') === false) {
+            throw new ContentTypeException(['content-type of response is not application/json: :content-type => `:url`',
+                'content-type' => $response->content_type, 'url' => $response->url],
+                $response);
+        }
+
+        $json = json_decode($response->body, true);
+        if (!is_array($json)) {
+            throw new JsonDecodeException(['json decode failed: :error => `:url`',
+                'url' => $response->url, 'error' => json_last_error_msg()],
+                $response);
+        }
+        return ['response' => $response, 'http_code' => $response->http_code, 'body' => $json];
     }
 
     /**

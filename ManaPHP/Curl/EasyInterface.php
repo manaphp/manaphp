@@ -43,6 +43,21 @@ interface EasyInterface
      * @param string|array $body
      * @param array        $options
      *
+     * @return array
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\Easy\ContentTypeException
+     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    public function rest($type, $url, $body = null, $options = []);
+
+    /**
+     * @param string       $type
+     * @param string|array $url
+     * @param string|array $body
+     * @param array        $options
+     *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
      */
