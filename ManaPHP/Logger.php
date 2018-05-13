@@ -238,7 +238,7 @@ class Logger extends Component implements LoggerInterface
             }
 
             $prev = $traces;
-        };
+        }
 
         $replaces = [];
         if ($app = $this->alias->get('@root')) {
