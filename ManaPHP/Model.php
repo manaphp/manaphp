@@ -1068,11 +1068,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * Returns the instance as an array representation
      *
-     * @param bool $ignoreNull
-     *
      * @return array
      */
-    public function toArray($ignoreNull = false)
+    public function toArray()
     {
         $data = [];
 
@@ -1085,7 +1083,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                 continue;
             }
 
-            if (!$ignoreNull || $value !== null) {
+            if ($value !== null) {
                 $data[$field] = $value;
             }
         }
@@ -1213,7 +1211,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public function jsonSerialize()
     {
-        return $this->toArray(true);
+        return $this->toArray();
     }
 
     /**
@@ -1340,6 +1338,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public function __toString()
     {
-        return json_encode($this->toArray(true), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return json_encode($this->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 }

@@ -352,11 +352,9 @@ interface ModelInterface
      * print_r($robot->toArray());
      *</code>
      *
-     * @param bool $ignoreNull
-     *
      * @return array
      */
-    public function toArray($ignoreNull = false);
+    public function toArray();
 
     /**
      * Returns the internal snapshot data
