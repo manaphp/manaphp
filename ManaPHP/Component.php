@@ -25,7 +25,6 @@ namespace ManaPHP;
  * @property \ManaPHP\AmqpInterface                        $rabbitmq
  * @property \Elasticsearch\Client                         $elasticsearch
  * @property \ManaPHP\ZookeeperInterface                   $zookeeper
- * @property \ManaPHP\Cli\EnvironmentInterface             $environment
  * @property \ManaPHP\MailerInterface                      $mailer
  * @property \ManaPHP\Task\ManagerInterface                $tasksManager
  */

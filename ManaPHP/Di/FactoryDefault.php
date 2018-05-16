@@ -69,7 +69,6 @@ class FactoryDefault extends Di
             'viewsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/viewsCache', 'extension' => '.html'],
             'modelsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/modelsCache', 'extension' => '.json'],
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
-            'environment' => 'ManaPHP\Cli\Environment',
             'netConnectivity' => 'ManaPHP\Net\Connectivity',
             'db' => 'ManaPHP\Db\Adapter\Mysql',
             'redis' => 'ManaPHP\Redis',
