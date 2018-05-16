@@ -158,6 +158,34 @@ class Di implements DiInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function _interClassName($name)
+    {
+        $component = null;
+        if (isset($this->_components[$name])) {
+            $component = $this->_components[$name];
+        } elseif (isset($this->_aliases[$name])) {
+            $component = $this->_components[$this->_aliases[$name]];
+        } elseif (strpos($name, '\\') !== false) {
+            $component = $name;
+        } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
+            $maybe = lcfirst($match[2]);
+            if (isset($this->_components[$maybe])) {
+                $component = $this->_components[$maybe];
+            }
+        }
+
+        if ($component === null) {
+            throw new InvalidValueException(['`:component` component definition is invalid: missing class field', 'component' => $name]);
+        }
+
+        return is_string($component) ? $component : $component['class'];
+    }
+
+    /**
      * Registers a component in the components container
      *
      * @param string $name
@@ -178,25 +206,7 @@ class Di implements DiInterface
                     $definition['class'] = $this->_completeClassName($name, $definition['class']);
                 }
             } else {
-                $component = null;
-                if (isset($this->_components[$name])) {
-                    $component = $this->_components[$name];
-                } elseif (isset($this->_aliases[$name])) {
-                    $component = $this->_components[$this->_aliases[$name]];
-                } elseif (strpos($name, '\\') !== false) {
-                    $component = $name;
-                } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
-                    $maybe = lcfirst($match[2]);
-                    if (isset($this->_components[$maybe])) {
-                        $component = $this->_components[$maybe];
-                    }
-                }
-
-                if ($component === null) {
-                    throw new InvalidValueException(['`:component` component definition is invalid: missing class field', 'component' => $name]);
-                }
-
-                $definition['class'] = is_string($component) ? $component : $component['class'];
+                $definition['class'] = $this->_interClassName($name);
             }
 
             $definition['shared'] = false;
@@ -235,25 +245,7 @@ class Di implements DiInterface
                     $definition['class'] = $this->_completeClassName($name, $definition['class']);
                 }
             } else {
-                $component = null;
-                if (isset($this->_components[$name])) {
-                    $component = $this->_components[$name];
-                } elseif (isset($this->_aliases[$name])) {
-                    $component = $this->_components[$this->_aliases[$name]];
-                } elseif (strpos($name, '\\') !== false) {
-                    $component = $name;
-                } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
-                    $maybe = lcfirst($match[2]);
-                    if (isset($this->_components[$maybe])) {
-                        $component = $this->_components[$maybe];
-                    }
-                }
-
-                if ($component === null) {
-                    throw new InvalidValueException(['`:component` component definition is invalid: missing class field', 'component' => $name]);
-                }
-
-                $definition['class'] = is_string($component) ? $component : $component['class'];
+                $definition['class'] = $this->_interClassName($name);
             }
         } elseif (is_object($definition)) {
             $definition = ['class' => $definition];
