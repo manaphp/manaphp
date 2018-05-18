@@ -33,7 +33,7 @@ if (!function_exists('env')) {
      *
      * @return mixed
      */
-    function env($key, $default = null)
+    function env($key = null, $default = null)
     {
         return di('dotenv')->getEnv($key, $default);
     }

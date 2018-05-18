@@ -77,6 +77,9 @@ class Dotenv extends Component implements DotenvInterface
             throw new FileNotFoundException(['.env file is not found: :file', 'file' => $file]);
         }
 
+
+        $this->_env += $env;
+
         if ($this->_toEnv) {
             /** @noinspection AdditionOperationOnArraysInspection */
             $_ENV += $env;
@@ -91,17 +94,17 @@ class Dotenv extends Component implements DotenvInterface
     }
 
     /**
-     * @param string $name
+     * @param string $key
      * @param mixed  $default
      *
      * @return mixed|array
      */
-    public function getEnv($name, $default = null)
+    public function getEnv($key, $default = null)
     {
-        if ($name === null) {
+        if ($key === null) {
             return $this->_env;
         } else {
-            return isset($this->_env[$name]) ? $this->_env[$name] : null;
+            return isset($this->_env[$key]) ? $this->_env[$key] : null;
         }
     }
 

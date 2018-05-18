@@ -18,10 +18,10 @@ interface DotenvInterface
     public function parse($lines);
 
     /**
-     * @param string $name
+     * @param string $key
      * @param mixed  $default
      *
      * @return mixed|array
      */
-    public function getEnv($name, $default = null);
+    public function getEnv($key, $default = null);
 }
