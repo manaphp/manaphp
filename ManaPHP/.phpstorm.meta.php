@@ -7,6 +7,7 @@ namespace PHPSTORM_META {
         \ManaPHP\DiInterface::getShared('') => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
             'alias' instanceof \ManaPHP\AliasInterface,
+            'dotenv' instanceof \ManaPHP\DotenvInterface,
             'configure' instanceof \ManaPHP\Configuration\Configure,
             'settings' instanceof \ManaPHP\Configuration\SettingsInterface,
             'errorHandler' instanceof \ManaPHP\ErrorHandlerInterface,
@@ -70,6 +71,7 @@ namespace PHPSTORM_META {
             'di' instanceof \ManaPHP\DiInterface,
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
             'alias' instanceof \ManaPHP\AliasInterface,
+            'dotenv' instanceof \ManaPHP\DotenvInterface,
             'configure' instanceof \ManaPHP\Configuration\Configure,
             'settings' instanceof \ManaPHP\Configuration\SettingsInterface,
             'errorHandler' instanceof \ManaPHP\ErrorHandlerInterface,

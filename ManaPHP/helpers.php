@@ -26,6 +26,19 @@ if (!function_exists('di')) {
     }
 }
 
+if (!function_exists('env')) {
+    /**
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    function env($key, $default = null)
+    {
+        return di('dotenv')->getEnv($key, $default);
+    }
+}
+
 if (!function_exists('debug')) {
     /**
      * @param string|array $message

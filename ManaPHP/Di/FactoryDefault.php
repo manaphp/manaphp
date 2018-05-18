@@ -21,6 +21,7 @@ class FactoryDefault extends Di
         $this->_components = [
             'eventsManager' => 'ManaPHP\Event\Manager',
             'alias' => 'ManaPHP\Alias',
+            'dotenv' => 'ManaPHP\Dotenv',
             'configure' => 'ManaPHP\Configuration\Configure',
             'settings' => 'ManaPHP\Configuration\Settings',
             'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
