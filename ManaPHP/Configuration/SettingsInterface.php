@@ -1,39 +1,34 @@
 <?php
 namespace ManaPHP\Configuration;
 
-interface SettingsInterface extends \ArrayAccess
+interface SettingsInterface
 {
     /**
-     * @param string $section
      * @param string $key
-     * @param string $defaultValue
      *
-     * @return string|array
+     * @return array
      */
-    public function get($section, $key = null, $defaultValue = '');
+    public function get($key);
 
     /**
-     * @param string       $section
-     * @param string|array $key
-     * @param string       $value
+     * @param string $key
+     * @param array  $value
      *
-     * @return void
+     * @return static
      */
-    public function set($section, $key, $value = null);
+    public function set($key, $value);
 
     /**
-     * @param string $section
      * @param string $key
      *
      * @return bool
      */
-    public function exists($section, $key = null);
+    public function exists($key);
 
     /**
-     * @param string $section
      * @param string $key
      *
-     * @return void
+     * @return static
      */
-    public function delete($section, $key);
+    public function delete($key);
 }
