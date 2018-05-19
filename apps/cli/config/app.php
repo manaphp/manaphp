@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'debug' => true,
+    'debug' => env('APP_DEBUG', false),
     'version' => '1.1.1',
     'timezone' => 'PRC',
-    'master_key' => '',
+    'master_key' => env('MASTER_KEY'),
     'services' => [
         'pay' => ['key' => '124', 'secret' => 'abc'],
     ],
@@ -12,14 +12,14 @@ return [
     'aliases' => [
     ],
     'components' => [
-        'db' => ['mysql://root@localhost/manaphp_unit_test?charset=utf8'],
-        'redis' => ['redis://localhost:6379/1?timeout=2&retry_interval=0&auth=&persistent=0'],
-        'mongodb' => ['mongodb://127.0.0.1/manaphp_unit_test'],
+        'db' => [env('DB_URL')],
+        'redis' => [env('REDIS_URL')],
+        'mongodb' => [env('MONGODB_URL')],
         'logger' => [
-            'level' => 'debug',
+            'level' => env('LOGGER_LEVEL', 'info'),
             'appenders' => ['ManaPHP\Logger\Appender\File'],
         ],
         'translation' => ['language' => 'zh-CN,en']
     ],
-    'bootstraps' => ['debugger']
+    'bootstraps' => explode(',', env('BOOTSTRAPS'))
 ];

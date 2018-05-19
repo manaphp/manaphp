@@ -2,6 +2,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\FileNotFoundException;
+use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 
@@ -104,7 +105,13 @@ class Dotenv extends Component implements DotenvInterface
         if ($key === null) {
             return $this->_env;
         } else {
-            return isset($this->_env[$key]) ? $this->_env[$key] : null;
+            if (isset($this->_env[$key])) {
+                return $this->_env[$key];
+            } elseif ($default !== null) {
+                return $default;
+            } else {
+                throw new InvalidArgumentException(['`:key` key value is not exists in .env file', 'key' => $key]);
+            }
         }
     }
 
@@ -155,7 +162,7 @@ class Dotenv extends Component implements DotenvInterface
 
                 if (strpos($value, '${') !== false) {
                     preg_match_all('#\$\{([\w\.]+)\}#', $value, $matches, PREG_PATTERN_ORDER);
-                    foreach ($matches[1] as $match) {
+                    foreach ((array)$matches[1] as $match) {
                         $ref_name = $match;
                         if (!isset($data[$ref_name])) {
                             throw new InvalidValueException('`:ref` ref variable is not exists: :value', ['ref' => $ref_name, 'value' => $value]);
@@ -164,7 +171,7 @@ class Dotenv extends Component implements DotenvInterface
                     }
                 } elseif (strpos($value, '$') !== false) {
                     preg_match_all('#\$([A-Z_\d]+)#', $value, $matches, PREG_PATTERN_ORDER);
-                    foreach ($matches[1] as $match) {
+                    foreach ((array)$matches[1] as $match) {
                         $ref_name = $match;
                         if (!isset($data[$ref_name])) {
                             throw new InvalidValueException('`:ref` ref variable is not exists: :value', ['ref' => $ref_name, 'value' => $value]);
