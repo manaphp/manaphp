@@ -224,19 +224,19 @@ class Mongodb extends Component implements MongodbInterface
      * @throws \MongoDB\Driver\Exception\Exception
      * @throws \ManaPHP\Mongodb\Exception
      */
-    public function pipeline($source, $pipeline)
+    public function aggregate($source, $pipeline)
     {
         $parts = explode('.', $source);
 
         try {
-            $this->fireEvent('mongodb:beforePipeline', ['namespace' => strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source)]);
+            $this->fireEvent('mongodb:beforeAggregate', ['namespace' => strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source)]);
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             /** @noinspection NullPointerExceptionInspection */
             $cursor = $this->_getManager()->executeCommand(count($parts) === 2 ? $parts[0] : $this->_defaultDb, new Command([
                 'aggregate' => count($parts) === 2 ? $parts[1] : $parts[0],
                 'pipeline' => $pipeline
             ]));
-            $this->fireEvent('mongodb:afterPipeline');
+            $this->fireEvent('mongodb:afterAggregate');
         } catch (RuntimeException $e) {
             throw new MongodbException([
                 '`:pipeline` pipeline for `:collection` collection failed: :msg',

@@ -318,4 +318,15 @@ class Model extends \ManaPHP\Model
             $this->{$field} = $this->getNormalizedValue($type, $this->{$field} !== null ? $this->{$field} : '');
         }
     }
+
+    /**
+     * @param array $pipeline
+     *
+     * @return array
+     */
+    public static function aggregate($pipeline)
+    {
+        $instance = new static();
+        return $instance->getConnection(null)->aggregate($instance->getSource(null), $pipeline);
+    }
 }

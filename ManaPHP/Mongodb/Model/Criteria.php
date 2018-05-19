@@ -845,7 +845,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $pipeline[] = ['$limit' => $this->_limit];
             }
 
-            $r = $db->pipeline($source, $pipeline);
+            $r = $db->aggregate($source, $pipeline);
 
             if ($this->_group !== null) {
                 foreach ($r as $k => $row) {

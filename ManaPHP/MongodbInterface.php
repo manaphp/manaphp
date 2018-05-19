@@ -61,7 +61,7 @@ interface MongodbInterface
      *
      * @return array
      */
-    public function pipeline($source, $pipeline);
+    public function aggregate($source, $pipeline);
 
     /**
      * @param string $source
