@@ -66,12 +66,13 @@ class Redis extends Component implements SettingsInterface
 
     /**
      * @param string $key
+     * @param int    $ttl
      *
      * @return array
      */
-    public function get($key)
+    public function get($key, $ttl = null)
     {
-        if (isset($this->_cached[$key]) && microtime(true) - $this->_cached[$key][0] > $this->_ttl) {
+        if (isset($this->_cached[$key]) && microtime(true) - $this->_cached[$key][0] > $ttl ?: $this->_ttl) {
             unset($this->_cached[$key]);
         }
 

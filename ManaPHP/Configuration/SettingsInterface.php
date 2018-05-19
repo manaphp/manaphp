@@ -5,10 +5,11 @@ interface SettingsInterface
 {
     /**
      * @param string $key
+     * @param int    $ttl
      *
      * @return array
      */
-    public function get($key);
+    public function get($key, $ttl = null);
 
     /**
      * @param string $key
