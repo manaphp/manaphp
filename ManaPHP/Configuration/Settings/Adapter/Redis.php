@@ -1,8 +1,8 @@
 <?php
-
-namespace ManaPHP\Configuration;
+namespace ManaPHP\Configuration\Settings\Adapter;
 
 use ManaPHP\Component;
+use ManaPHP\Configuration\SettingsInterface;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
 
@@ -16,7 +16,7 @@ class Redis extends Component implements SettingsInterface
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $_prefix = 'settings:';
 
     /**
      * @var array

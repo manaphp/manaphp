@@ -48,12 +48,30 @@ if (!function_exists('config')) {
     function config($key)
     {
         static $config = [];
-	
+
         if (!isset($config[$key])) {
             $config[$key] = di('configure')->$key;
         }
 
         return $config[$key];
+    }
+}
+
+if (!function_exists('settings')) {
+    /**
+     * @param string    $key
+     * @param int|array $ttl
+     *
+     * @return array
+     */
+    function settings($key, $ttl = null)
+    {
+        if (is_array($ttl)) {
+            di('settings')->set($key, $ttl);
+            return $ttl;
+        } else {
+            return di('settings')->get($key, $ttl);
+        }
     }
 }
 
