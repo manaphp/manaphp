@@ -60,17 +60,17 @@ if (!function_exists('config')) {
 if (!function_exists('settings')) {
     /**
      * @param string    $key
-     * @param int|array $ttl
+     * @param int|array $maxDelay
      *
      * @return array
      */
-    function settings($key, $ttl = null)
+    function settings($key, $maxDelay = null)
     {
-        if (is_array($ttl)) {
-            di('settings')->set($key, $ttl);
-            return $ttl;
+        if (is_array($maxDelay)) {
+            di('settings')->set($key, $maxDelay);
+            return $maxDelay;
         } else {
-            return di('settings')->get($key, $ttl);
+            return di('settings')->get($key, $maxDelay);
         }
     }
 }

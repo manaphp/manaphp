@@ -26,7 +26,7 @@ class Redis extends Component implements SettingsInterface
     /**
      * @var int
      */
-    protected $_ttl = 1;
+    protected $_maxDelay = 1;
 
     /**
      * Settings constructor.
@@ -46,8 +46,8 @@ class Redis extends Component implements SettingsInterface
                 $this->_prefix = $options['prefix'];
             }
 
-            if (isset($options['ttl'])) {
-                $this->_ttl = $options['ttl'];
+            if (isset($options['maxDelay'])) {
+                $this->_maxDelay = $options['maxDelay'];
             }
         }
     }
@@ -66,13 +66,13 @@ class Redis extends Component implements SettingsInterface
 
     /**
      * @param string $key
-     * @param int    $ttl
+     * @param int    $maxDelay
      *
      * @return array
      */
-    public function get($key, $ttl = null)
+    public function get($key, $maxDelay = null)
     {
-        if (isset($this->_cached[$key]) && microtime(true) - $this->_cached[$key][0] > $ttl ?: $this->_ttl) {
+        if (isset($this->_cached[$key]) && microtime(true) - $this->_cached[$key][0] > $maxDelay ?: $this->_maxDelay) {
             unset($this->_cached[$key]);
         }
 
