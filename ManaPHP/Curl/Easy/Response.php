@@ -43,7 +43,7 @@ class Response
     /**
      * @var array
      */
-    public $timeInfo;
+    public $stats;
 
     /**
      * @return array

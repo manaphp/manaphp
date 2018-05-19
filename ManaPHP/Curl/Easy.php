@@ -331,7 +331,7 @@ class Easy extends Component implements EasyInterface
         $response->process_time = round(microtime(true) - $start_time, 3);
         $response->content_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         $response->body = substr($content, $header_length);
-        $response->timeInfo = ['total_time' => curl_getinfo($curl, CURLINFO_TOTAL_TIME),
+        $response->stats = ['total_time' => curl_getinfo($curl, CURLINFO_TOTAL_TIME),
             'namelookup_time' => curl_getinfo($curl, CURLINFO_NAMELOOKUP_TIME),
             'connect_time' => curl_getinfo($curl, CURLINFO_CONNECT_TIME),
             'pretransfer_time' => curl_getinfo($curl, CURLINFO_PRETRANSFER_TIME),
