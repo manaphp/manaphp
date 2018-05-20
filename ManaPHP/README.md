@@ -17,7 +17,7 @@ composer require manaphp/framework
 or add
 
 ```json
-"manaphp/framework": "dev-master",
+{"manaphp/framework": "dev-master"}
 ```
 
 to the require section of your composer.json.
