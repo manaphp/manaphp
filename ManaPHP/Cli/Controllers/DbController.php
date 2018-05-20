@@ -245,7 +245,7 @@ class DbController extends Controller
         $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
         $plainClass = Text::camelize($table);
-        $fileName = "@tmp/db_model/$service/$plainClass.php";
+        $fileName = "@tmp/db_model/$plainClass.php";
         $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
         $this->filesystem->filePut($fileName, $model_str);
 
@@ -262,12 +262,16 @@ class DbController extends Controller
      */
     public function modelsCommand($services = [], $table_pattern = '', $namespace = 'App\Models', $optimized = false)
     {
+        if (strpos($namespace, '\\') === false) {
+            $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
+        }
+
         foreach ($services ?: $this->_getDbServices() as $service) {
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $plainClass = Text::camelize($table);
-                $fileName = "@tmp/db_models/$service/$plainClass.php";
+                $fileName = "@tmp/db_models/$plainClass.php";
                 $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
                 $this->filesystem->filePut($fileName, $model_str);
 
