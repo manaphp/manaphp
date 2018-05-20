@@ -1,9 +1,10 @@
 <?php
 namespace ManaPHP\Cache\Engine;
 
-use ManaPHP\Cache\Engine\File\Exception as FileException;
 use ManaPHP\Cache\EngineInterface;
 use ManaPHP\Component;
+use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\WriteFileFailedException;
 
 /**
  * Class ManaPHP\Cache\Adapter\File
@@ -114,7 +115,6 @@ class File extends Component implements EngineInterface
      * @param int    $ttl
      *
      * @return void
-     * @throws \ManaPHP\Cache\Engine\File\Exception
      */
     public function set($key, $value, $ttl)
     {
@@ -122,13 +122,11 @@ class File extends Component implements EngineInterface
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new FileException(['create `:dir` cache directory failed: :last_error_message', 'dir' => $dir]);
+            throw new CreateDirectoryFailedException(['create `:dir` cache directory failed: :last_error_message', 'dir' => $dir]);
         }
 
         if (file_put_contents($file, $value, LOCK_EX) === false) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new FileException(['write `:file` cache file failed: :last_error_message', 'file' => $file]);
+            throw new WriteFileFailedException(['write `:file` cache file failed: :last_error_message', 'file' => $file]);
         }
 
         @touch($file, time() + $ttl);

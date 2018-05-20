@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Cache\Engine;
 
-use ManaPHP\Cache\Engine\Apcu\Exception as ApcuException;
 use ManaPHP\Cache\EngineInterface;
 use ManaPHP\Component;
+use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Cache\Adapter\Apcu
@@ -58,14 +58,12 @@ class Apcu extends Component implements EngineInterface
      * @param string $key
      * @param string $value
      * @param int    $ttl
-     *
-     * @throws \ManaPHP\Cache\Engine\Apcu\Exception
      */
     public function set($key, $value, $ttl)
     {
         $r = apcu_store($this->_prefix . $key, $value, $ttl);
         if (!$r) {
-            throw new ApcuException(['apcu_store failed for `:key` key', 'key' => $key]);
+            throw new RuntimeException(['apcu_store failed for `:key` key', 'key' => $key]);
         }
     }
 
