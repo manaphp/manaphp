@@ -194,6 +194,16 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasAppender($name)
+    {
+        return isset($this->_appenders[$name]);
+    }
+
+    /**
      * @param int|string $name
      *
      * @return \ManaPHP\Logger\AppenderInterface|false
@@ -211,6 +221,44 @@ class Logger extends Component implements LoggerInterface
         } else {
             return $appender['instance'];
         }
+    }
+
+    /**
+     * @param string|array|\ManaPHP\Logger\AppenderInterface $appender
+     * @param string                                         $name
+     *
+     * @return static
+     */
+    public function addAppender($appender, $name = null)
+    {
+        $level = null;
+        if (is_string($appender)) {
+            $definition = $appender;
+        } elseif (isset($appender['level'])) {
+            $level = is_numeric($appender['level']) ? (int)$appender['level'] : array_search(strtolower($appender['level']), $this->getConstants('level'), true);
+            unset($appender['level']);
+            $definition = $appender;
+        } else {
+            $definition = $appender;
+        }
+
+        if (is_string($definition)) {
+            if (strpos($definition, '\\') === false) {
+                $definition = 'ManaPHP\Logger\Appender\\' . ucfirst($definition);
+            }
+        } elseif (is_array($definition) && !isset($definition[0]) && !isset($definition['class'])) {
+            throw new InvalidArgumentException($appender);
+        } elseif (isset($definition['class']) && strpos($definition['class'], '\\') === false) {
+            $definition['class'] = 'ManaPHP\Logger\Appender\\' . ucfirst($definition['class']);
+        }
+
+        if ($name === null) {
+            $this->_appenders[] = $level !== null ? ['level' => $level, 'appender' => $definition] : ['appender' => $definition];
+        } else {
+            $this->_appenders[$name] = $level !== null ? ['level' => $level, 'appender' => $definition] : ['appender' => $definition];
+        }
+
+        return $this;
     }
 
     /**
