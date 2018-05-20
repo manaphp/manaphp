@@ -168,7 +168,7 @@ class Linear extends Component implements LinearInterface
              * @var \ManaPHP\Meter\Linear\Model $instance
              */
             $model = new $this->_model();
-            $instance = $model::findFirst(['hash' => md5($type . ':' . $id)]);
+            $instance = $model::first(['hash' => md5($type . ':' . $id)]);
 
             return $instance ? (int)$instance->count : 0;
         }

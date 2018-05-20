@@ -39,7 +39,7 @@ class Db extends Component implements EngineInterface
          * @var \ManaPHP\Http\Session\Engine\Db\Model $model
          */
         $model = new $this->_model;
-        $model = $model::findFirst(['session_id' => $session_id]);
+        $model = $model::first(['session_id' => $session_id]);
         if ($model !== false && $model->expired_time > time()) {
             return $model->data;
         } else {

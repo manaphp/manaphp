@@ -50,7 +50,7 @@ class Db implements EngineInterface
          * @var \ManaPHP\Counter\Engine\Db\Model $counter
          */
         $counter = new $this->_model;
-        $counter = $counter::findFirst(['hash' => md5($key)]);
+        $counter = $counter::first(['hash' => md5($key)]);
 
         return $counter === false ? 0 : (int)$counter->value;
     }
@@ -71,7 +71,7 @@ class Db implements EngineInterface
          */
         $counter = new $this->_model;
 
-        $counter = $counter::findFirst(['hash' => $hash]);
+        $counter = $counter::first(['hash' => $hash]);
         if (!$counter) {
             try {
                 $counter = new $this->_model;
@@ -90,7 +90,7 @@ class Db implements EngineInterface
         }
 
         for ($i = 0; $i < $this->_maxTries; $i++) {
-            $counter = $counter::findFirst(['hash' => $hash]);
+            $counter = $counter::first(['hash' => $hash]);
             if ($counter === false) {
                 return 0;
             }

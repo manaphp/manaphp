@@ -285,20 +285,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
-     * alias of first
-     *
-     * @param string|array $filters
-     * @param string|array $fields
-     * @param array        $options
-     *
-     * @return static|false
-     */
-    public static function findFirst($filters = null, $fields = null, $options = null)
-    {
-        return static::first($filters, $fields, $options);
-    }
-
-    /**
      * Allows to query the first record that match the specified conditions
      *
      * @param int|string|array $filters

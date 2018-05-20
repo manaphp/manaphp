@@ -47,7 +47,7 @@ class Db extends Component implements EngineInterface
          */
         $model = new $this->_model();
         $hash = md5($type . ':' . $id);
-        $rateLimiter = $model::findFirst(['hash' => $hash]);
+        $rateLimiter = $model::first(['hash' => $hash]);
         if (!$rateLimiter) {
             $rateLimiter = new $this->_model();
 

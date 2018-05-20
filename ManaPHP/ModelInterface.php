@@ -115,17 +115,6 @@ interface ModelInterface
     public static function lists($filters = [], $field = null);
 
     /**
-     * alias of first
-     *
-     * @param int|string|array $filters
-     * @param string|array     $fields
-     * @param array            $options
-     *
-     * @return static|false
-     */
-    public static function findFirst($filters = null, $fields = null, $options = null);
-
-    /**
      * Allows to query the first record that match the specified conditions
      *
      * <code>

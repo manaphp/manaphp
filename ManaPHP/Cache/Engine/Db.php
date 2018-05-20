@@ -43,7 +43,7 @@ class Db extends Component implements EngineInterface
          * @var \ManaPHP\Cache\Engine\Db\Model $model
          */
         $model = new $this->_model;
-        $model = $model::findFirst(['hash' => md5($key)]);
+        $model = $model::first(['hash' => md5($key)]);
 
         return $model !== false && $model->expired_time >= time();
     }
@@ -59,7 +59,7 @@ class Db extends Component implements EngineInterface
          * @var \ManaPHP\Cache\Engine\Db\Model $model
          */
         $model = new $this->_model;
-        $model = $model::findFirst(['hash' => md5($key)]);
+        $model = $model::first(['hash' => md5($key)]);
 
         if ($model !== false && $model->expired_time > time()) {
             return $model->value;

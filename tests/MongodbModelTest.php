@@ -92,26 +92,26 @@ class MongodbModelTest extends TestCase
         $this->assertEquals(251, round($avg, 2));
     }
 
-    public function test_findFirst()
+    public function test_first()
     {
-        $actor = Actor::findFirst([]);
+        $actor = Actor::first([]);
         $this->assertTrue(is_object($actor));
         $this->assertInstanceOf(get_class(new Actor()), $actor);
         $this->assertInstanceOf('ManaPHP\Mongodb\Model', $actor);
 
-        $this->assertTrue(is_object(Actor::findFirst(['actor_id' => 1])));
+        $this->assertTrue(is_object(Actor::first(['actor_id' => 1])));
 
-        $actor = Actor::findFirst(10);
+        $actor = Actor::first(10);
         $this->assertInstanceOf(get_class(new Actor()), $actor);
         $this->assertEquals('10', $actor->actor_id);
 
-        $actor = Actor::findFirst(['actor_id' => 5]);
+        $actor = Actor::first(['actor_id' => 5]);
         $this->assertEquals(5, $actor->actor_id);
 
-        $actor = Actor::findFirst(['actor_id' => 5, 'first_name' => 'JOHNNY']);
+        $actor = Actor::first(['actor_id' => 5, 'first_name' => 'JOHNNY']);
         $this->assertEquals(5, $actor->actor_id);
 
-        $this->assertNotFalse(City::findFirst('10'));
+        $this->assertNotFalse(City::first('10'));
     }
 
     public function test_exists()
@@ -122,10 +122,10 @@ class MongodbModelTest extends TestCase
         $this->assertTrue(City::exists('1'));
     }
 
-    public function test_findFirst_usage()
+    public function test_first_usage()
     {
-        $this->assertEquals(10, City::findFirst(10)->city_id);
-        $this->assertEquals(10, City::findFirst(['city_id' => 10])->city_id);
+        $this->assertEquals(10, City::first(10)->city_id);
+        $this->assertEquals(10, City::first(['city_id' => 10])->city_id);
     }
 
     public function test_find()
@@ -187,7 +187,7 @@ class MongodbModelTest extends TestCase
 
         $this->assertEquals(1, $student->id);
 
-        $student = Student::findFirst(['id' => 1]);
+        $student = Student::first(['id' => 1]);
         $this->assertEquals(1, $student->id);
         $this->assertEquals(21, $student->age);
         $this->assertEquals('mana', $student->name);
@@ -210,12 +210,12 @@ class MongodbModelTest extends TestCase
         $student->name = 'mana';
         $student->create();
 
-        $student = Student::findFirst(['id' => 1]);
+        $student = Student::first(['id' => 1]);
         $student->age = 22;
         $student->name = 'mana2';
         $student->update();
 
-        $student = Student::findFirst(['id' => 1]);
+        $student = Student::first(['id' => 1]);
         $this->assertEquals(1, $student->id);
         $this->assertEquals(22, $student->age);
         $this->assertEquals('mana2', $student->name);
@@ -254,10 +254,10 @@ class MongodbModelTest extends TestCase
         $student->name = 'mana';
         $student->create();
 
-        $this->assertTrue(Student::findFirst(['id' => 1]) !== false);
+        $this->assertTrue(Student::first(['id' => 1]) !== false);
 
         Student::deleteAll([]);
-        $this->assertTrue(Student::findFirst(['id' => 1]) === false);
+        $this->assertTrue(Student::first(['id' => 1]) === false);
     }
 
     public function test_assign()
@@ -303,7 +303,7 @@ class MongodbModelTest extends TestCase
 
     public function test_getChangedFields()
     {
-        $actor = Actor::findFirst(1);
+        $actor = Actor::first(1);
 
         $actor->first_name = 'abc';
         $actor->last_name = 'mark';
@@ -312,7 +312,7 @@ class MongodbModelTest extends TestCase
 
     public function test_hasChanged()
     {
-        $actor = Actor::findFirst(1);
+        $actor = Actor::first(1);
 
         $actor->first_name = 'abc';
         $this->assertTrue($actor->hasChanged('first_name'));
