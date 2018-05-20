@@ -334,13 +334,13 @@ if (!function_exists('redis')) {
     }
 }
 
-if (!function_exists('ip')) {
+if (!function_exists('client_ip')) {
     /**
      * @return string
      */
-    function ip()
+    function client_ip()
     {
-        return di('request')->getClientAddress();
+        return di('request')->getClientIp();
     }
 }
 
