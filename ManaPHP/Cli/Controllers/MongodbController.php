@@ -131,7 +131,7 @@ class MongodbController extends Controller
 
                     $pending_fields = [];
                     foreach ($fieldTypes as $field => $type) {
-                        if ($type == '' || strpos($type, '|') !== false) {
+                        if ($type === '' || strpos($type, '|') !== false) {
                             $pending_fields[] = $field;
                         }
                     }
@@ -156,7 +156,7 @@ class MongodbController extends Controller
         $fieldTypes = [];
         foreach ($docs as $doc) {
             foreach ($doc as $field => $value) {
-                $fieldTypes[$field][$type = gettype($value)] = 1;;
+                $fieldTypes[$field][$type = gettype($value)] = 1;
             }
         }
 
