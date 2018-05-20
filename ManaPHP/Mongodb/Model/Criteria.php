@@ -3,6 +3,7 @@ namespace ManaPHP\Mongodb\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
+use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Mongodb\Model\Criteria\Exception as CriteriaException;
 use MongoDB\BSON\Regex;
@@ -236,13 +237,20 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $fieldTypes = $this->_model->getFieldTypes();
                 $this->_filters[] = [$field => $this->_model->getNormalizedValue($fieldTypes[$field], $value)];
             } elseif ($operator === '~=') {
+                $field = substr($filter, 0, -2);
+                if (!$this->_model->hasField($field)) {
+                    throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
+                        'field' => $field, 'collection' => $this->_model->getSource()
+                    ]);
+                }
+
                 if (is_scalar($value)) {
                     if (is_int($value)) {
-                        $this->_filters[] = [substr($filter, 0, -2) => ['$in' => [(string)$value, (int)($value)]]];
+                        $this->_filters[] = [$field => ['$in' => [(string)$value, (int)($value)]]];
                     } elseif (is_float($value)) {
-                        $this->_filters[] = [substr($filter, 0, -2) => ['$in' => [(string)$value, (double)$value]]];
+                        $this->_filters[] = [$field => ['$in' => [(string)$value, (double)$value]]];
                     } else {
-                        $this->_filters[] = [substr($filter, 0, -2) => ['$in' => [(string)$value, (int)($value), (double)$value]]];
+                        $this->_filters[] = [$field => ['$in' => [(string)$value, (int)($value), (double)$value]]];
                     }
                 } else {
                     throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
