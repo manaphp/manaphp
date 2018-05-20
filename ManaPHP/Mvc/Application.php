@@ -101,6 +101,8 @@ class Application extends \ManaPHP\Application
 
     public function main()
     {
+        $this->loader->registerFiles('@manaphp/helpers.php');
+
         if ($this->_dotenvFile && $this->filesystem->fileExists($this->_dotenvFile)) {
             $this->dotenv->load($this->_dotenvFile);
         }
