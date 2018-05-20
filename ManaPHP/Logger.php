@@ -253,44 +253,54 @@ class Logger extends Component implements LoggerInterface
      *
      * @return string
      */
-    protected function _formatMessage($message)
+    public function formatMessage($message)
     {
         if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof \Throwable)) {
             return $this->exceptionToString($message);
-        } elseif (is_array($message)) {
-            if (count($message) === 2 && isset($message[1], $message[0]) && is_string($message[0]) && !is_string($message[1])) {
-                $message[0] = rtrim($message[0], ': ') . ': :param';
-                $message['param'] = $message[1];
-                unset($message[1]);
-            }
-
-            if (isset($message[0]) && !isset($message[1])) {
-                $replaces = [];
-                /** @noinspection ForeachSourceInspection */
-                foreach ($message as $k => $v) {
-                    if ($k === 0) {
-                        continue;
-                    }
-
-                    if (is_array($v) || $v instanceof \JsonSerializable) {
-                        $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                    } elseif ($v instanceof \Serializable) {
-                        $v = serialize($v);
-                    }
-
-                    $replaces[":$k"] = $v;
-                }
-
-                return strtr($message[0], $replaces);
-            } else {
-                return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            }
         } elseif ($message instanceof \JsonSerializable) {
             return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } elseif ($message instanceof \Serializable) {
             return serialize($message);
-        } else {
+        } elseif (!is_array($message)) {
             return (string)$message;
+        }
+
+        if (!isset($message[0]) || !is_string($message[0])) {
+            return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+
+        if (count($message) === 2) {
+            if (isset($message[1]) && strpos($message[0], ':1') === false) {
+                $message[0] = rtrim($message[0], ': ') . ': :1';
+            }
+        } elseif (count($message) === 3) {
+            if (isset($message[1], $message[2]) && strpos($message[0], ':1') === false && is_scalar($message[1])) {
+                $message[0] = rtrim($message[0], ': ') . ': :1 => :2';
+            }
+        }
+
+        if (!isset($message[1]) || strpos($message[0], ':1') !== false) {
+            $replaces = [];
+            /** @noinspection ForeachSourceInspection */
+            foreach ($message as $k => $v) {
+                if ($k === 0) {
+                    continue;
+                }
+
+                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+                    $v = $this->exceptionToString($v);
+                } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+                    $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                } elseif ($v instanceof \Serializable) {
+                    $v = serialize($v);
+                }
+
+                $replaces[":$k"] = $v;
+            }
+
+            return strtr($message[0], $replaces);
+        } else {
+            return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
     }
 
@@ -321,7 +331,7 @@ class Logger extends Component implements LoggerInterface
         $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
         $log->process_id = @getmypid() ?: 0;
         $log->location = $this->_getLocation($traces);
-        $log->message = $this->_formatMessage($message);
+        $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = time();
 
         $this->fireEvent('logger:log', $log);

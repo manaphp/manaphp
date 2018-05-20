@@ -6,6 +6,7 @@ use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Logger;
 use ManaPHP\Logger\Appender\Memory;
 use PHPUnit\Framework\TestCase;
+use Tests\Models\City;
 
 class LoggerTest extends TestCase
 {
@@ -124,5 +125,25 @@ class LoggerTest extends TestCase
         $log = $appender->getLogs()[0];
         $this->assertEquals(Logger::LEVEL_FATAL, $log->level);
         $this->assertContains('**fatal**', $log->message);
+    }
+
+    public function test_formatMessage()
+    {
+        $logger = new Logger();
+
+        $city = new City();
+        $city->city_id = 1;
+        $city->city = 'shenzhen';
+        $this->assertEquals('city {"city_id":1,"city":"shenzhen"}', $logger->formatMessage(['city :1', $city]));
+        $this->assertEquals('[]', $logger->formatMessage([]));
+        $this->assertEquals('test', $logger->formatMessage(['test']));
+        $this->assertEquals('hello manaphp', $logger->formatMessage(['hello :1', 'manaphp']));
+        $this->assertEquals('hello manaphp', $logger->formatMessage(['hello :name', 'name' => 'manaphp']));
+        $this->assertEquals('id: [1,2,3,4]', $logger->formatMessage(['id', [1, 2, 3, 4]]));
+        $this->assertEquals('id: [1,2,3,4]', $logger->formatMessage(['id: ', [1, 2, 3, 4]]));
+        $this->assertEquals('id: 12 => [1,2,3,4]', $logger->formatMessage(['id: ', 12, [1, 2, 3, 4]]));
+        $this->assertEquals('{"city_id":1,"city":"shenzhen"}', $logger->formatMessage($city));
+        $this->assertEquals('city: {"city_id":1,"city":"shenzhen"}', $logger->formatMessage(['city', $city]));
+        $this->assertEquals('city {"city_id":1,"city":"shenzhen"}', $logger->formatMessage(['city :1', $city]));
     }
 }
