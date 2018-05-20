@@ -125,16 +125,12 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return static
      */
     public function select($fields)
     {
-        if (!is_array($fields)) {
-            $fields = explode(',', str_replace(['[', ']', "\t", ' ', "\r", "\n"], '', $fields));
-        }
-
         $this->_projection = array_fill_keys($fields, 1);
 
         return $this;
@@ -217,7 +213,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } else {
                     $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
                 }
-            } else if (isset($value[0]) || !$value) {
+            } elseif (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {

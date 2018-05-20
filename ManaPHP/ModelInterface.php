@@ -72,7 +72,7 @@ interface ModelInterface
     public function rules();
 
     /**
-     * @param string|array   $fields
+     * @param array          $fields
      * @param \ManaPHP\Model $model
      *
      * @return \ManaPHP\Db\Model\CriteriaInterface
@@ -89,18 +89,18 @@ interface ModelInterface
      *  $cities=City::find(['conditions'=>'country_id =:country_id','bind'=>['country_id'=>2]]);
      *
      * </code>
-     * @param array        $filters
-     * @param array        $options
-     * @param string|array $fields
+     * @param array $filters
+     * @param array $options
+     * @param array $fields
      *
      * @return  static[]
      */
     public static function all($filters = [], $options = null, $fields = null);
 
     /**
-     * @param array        $filters
-     * @param array        $options
-     * @param string|array $fields
+     * @param array $filters
+     * @param array $options
+     * @param array $fields
      *
      * @return  \ManaPHP\PaginatorInterface
      */
@@ -125,7 +125,7 @@ interface ModelInterface
      * </code>
      *
      * @param int|string|array $filters
-     * @param string|array     $fields
+     * @param array            $fields
      * @param array            $options
      *
      * @return static|false
@@ -134,7 +134,7 @@ interface ModelInterface
 
     /**
      * @param int|string|array $filters
-     * @param string|array     $fields
+     * @param array            $fields
      * @param array            $options
      *
      * @return static

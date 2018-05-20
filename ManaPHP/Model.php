@@ -159,9 +159,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array        $filters
-     * @param array        $options
-     * @param string|array $fields
+     * @param array $filters
+     * @param array $options
+     * @param array $fields
      *
      * @return  static[]
      */
@@ -201,9 +201,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
-     * @param array        $filters
-     * @param array        $options
-     * @param string|array $fields
+     * @param array $filters
+     * @param array $options
+     * @param array $fields
      *
      * @return  \ManaPHP\PaginatorInterface
      */
@@ -288,7 +288,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * Allows to query the first record that match the specified conditions
      *
      * @param int|string|array $filters
-     * @param string|array     $fields
+     * @param array            $fields
      * @param array|int|float  $options
      *
      * @return static|false
@@ -362,7 +362,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
     /**
      * @param int|string|array $filters
-     * @param string|array     $fields
+     * @param array            $fields
      * @param array            $options
      *
      * @return static
@@ -418,7 +418,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         } elseif (is_array($interval) && !$interval && is_int($max = key($interval))) {
             $interval = (float)$interval[$max];
         } else {
-            throw new InvalidValueException(['`:interval` interval is not recognized', 'interval' => json_encode($interval, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+            throw new InvalidValueException(['`:interval` interval is not recognized',
+                'interval' => json_encode($interval, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
         }
 
         static $cached = [];

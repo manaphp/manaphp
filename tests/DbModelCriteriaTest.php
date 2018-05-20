@@ -31,7 +31,7 @@ class DbModelCriteriaTest extends TestCase
     public function test_select()
     {
         $this->assertEquals('SELECT [city_id] FROM [city]',
-            City::criteria()->select('city_id')->getSql());
+            City::criteria()->select(['city_id'])->getSql());
     }
 
     public function test_where()

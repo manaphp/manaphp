@@ -99,7 +99,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param string|array      $fields
+     * @param array             $fields
      * @param \ManaPHP\Db\Model $model
      *
      * @return \ManaPHP\Db\Model\CriteriaInterface

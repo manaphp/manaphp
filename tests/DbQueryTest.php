@@ -33,13 +33,13 @@ class DbQueryTest extends TestCase
             (new Query())->from('city')->getSql());
 
         $this->assertEquals('SELECT * FROM [city]',
-            (new Query())->select('*')->from('city')->getSql());
+            (new Query())->select(['*'])->from('city')->getSql());
 
         $this->assertEquals('SELECT [city_id], [city_name] FROM [city]',
-            (new Query())->select('city_id, city_name')->from('city')->getSql());
+            (new Query())->select(['city_id', 'city_name'])->from('city')->getSql());
 
         $this->assertEquals('SELECT [city_id] AS [id], [city_name] FROM [city]',
-            (new Query())->select('city_id as id, city_name')->from('city')->getSql());
+            (new Query())->select(['id' =>'city_id', 'city_name'])->from('city')->getSql());
 
         $this->assertEquals('SELECT [city_id], [city_name] FROM [city]',
             (new Query())->select(['city_id', 'city_name'])->from('city')->getSql());
@@ -51,10 +51,10 @@ class DbQueryTest extends TestCase
             (new Query())->select(['sum' => 'SUM(city_id)', 'city_name'])->from('city')->getSql());
 
         $this->assertEquals('SELECT [c].[city_id] FROM [city] AS [c]',
-            (new Query())->select('c.city_id')->from('city', 'c')->getSql());
+            (new Query())->select(['c.city_id'])->from('city', 'c')->getSql());
 
         $this->assertEquals('SELECT [city_id] [id] FROM [city]',
-            (new Query())->select('city_id id')->from('city')->getSql());
+            (new Query())->select(['city_id id'])->from('city')->getSql());
     }
 
     public function test_from()
@@ -326,14 +326,14 @@ class DbQueryTest extends TestCase
 
     public function test_having()
     {
-        $this->assertEquals('SELECT COUNT(*), city_id FROM [country] GROUP BY [city_id] HAVING COUNT(*) >10',
-            (new Query())->select('COUNT(*), city_id')->from('country')->groupBy('city_id')->having('COUNT(*) >10')->getSql());
+        $this->assertEquals('SELECT COUNT(*), [city_id] FROM [country] GROUP BY [city_id] HAVING COUNT(*) >10',
+            (new Query())->select(['COUNT(*)', 'city_id'])->from('country')->groupBy('city_id')->having('COUNT(*) >10')->getSql());
 
-        $this->assertEquals('SELECT COUNT(*), city_id FROM [country] GROUP BY [city_id] HAVING COUNT(*) >10',
-            (new Query())->select('COUNT(*), city_id')->from('country')->groupBy('city_id')->having(['COUNT(*) >10'])->getSql());
+        $this->assertEquals('SELECT COUNT(*), [city_id] FROM [country] GROUP BY [city_id] HAVING COUNT(*) >10',
+            (new Query())->select(['COUNT(*)', 'city_id'])->from('country')->groupBy('city_id')->having(['COUNT(*) >10'])->getSql());
 
-        $this->assertEquals('SELECT COUNT(*), city_id FROM [country] GROUP BY [city_id] HAVING (COUNT(*) >10) AND (city_id >10)',
-            (new Query())->select('COUNT(*), city_id')->from('country')->groupBy('city_id')->having(['COUNT(*) >10', 'city_id >10'])->getSql());
+        $this->assertEquals('SELECT COUNT(*), [city_id] FROM [country] GROUP BY [city_id] HAVING (COUNT(*) >10) AND (city_id >10)',
+            (new Query())->select(['COUNT(*)', 'city_id'])->from('country')->groupBy('city_id')->having(['COUNT(*) >10', 'city_id >10'])->getSql());
     }
 
     public function test_groupBy()

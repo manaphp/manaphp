@@ -277,7 +277,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param string|array           $fields
+     * @param array                  $fields
      * @param \ManaPHP\Mongodb\Model $model
      *
      * @return \ManaPHP\Mongodb\Model\Criteria
@@ -288,7 +288,6 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     protected function _preCreate()
     {

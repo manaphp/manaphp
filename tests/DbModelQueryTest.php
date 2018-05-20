@@ -38,18 +38,18 @@ class DbModelQueryTest extends TestCase
     public function test_distinct()
     {
         //select all implicitly
-        $query = Address::query()->select('city_id');
+        $query = Address::query()->select(['city_id']);
         $this->assertCount(603, $query->execute());
 
         //select all explicitly
         $query = Address::query()
-            ->select('city_id')
+            ->select(['city_id'])
             ->distinct(false);
         $this->assertCount(603, $query->execute());
 
         //select distinct
         $query = Address::query()
-            ->select('city_id')
+            ->select(['city_id'])
             ->distinct(true);
         $this->assertCount(599, $query->execute());
     }
@@ -63,14 +63,14 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(8, $rows[0]);
 
         //select all columns explicitly
-        $query = Address::query()->select('*')->limit(2);
+        $query = Address::query()->select(['*'])->limit(2);
         $rows = $query->execute();
         $this->assertCount(2, $rows);
         $this->assertCount(8, $rows[0]);
 
         // select all columns explicitly and use table alias
         $query = Address::query('a')
-            ->select('a.*, c.*')
+            ->select(['a.*', 'c.*'])
             ->leftJoin(get_class(new City()), 'c.city_id =a.city_id', 'c')
             ->limit(2);
         $rows = $query->execute();
@@ -79,7 +79,7 @@ class DbModelQueryTest extends TestCase
 
         //string format columns
         $query = Address::query('a')
-            ->select('a.address_id, a.address, a.phone')
+            ->select(['a.address_id', 'a.address', 'a.phone'])
             ->limit(2);
         $rows = $query->execute();
         $this->assertCount(2, $rows);
@@ -87,9 +87,7 @@ class DbModelQueryTest extends TestCase
 
         //dense multi space to only one for columns
         $query = Address::query('a')
-            ->select('a.address_id,
-                        a.address,
-                        c.city')
+            ->select(['a.address_id', 'a.address', 'c.city'])
             ->leftJoin(get_class(new City()), 'c.city_id =a.city_id', 'c')
             ->limit(2)
             ->orderBy('a.address_id');
@@ -98,7 +96,7 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(3, $rows[0]);
 
         $query = Address::query()
-            ->select('count(address_id) as address_count');
+            ->select(['address_count' => 'count(address_id)']);
         $rows = $query->execute();
         $this->assertCount(1, $rows);
         $this->assertCount(1, $rows[0]);
@@ -107,7 +105,7 @@ class DbModelQueryTest extends TestCase
     public function test_from()
     {
         $query = Address::query()
-            ->select('address_id,address,phone')
+            ->select(['address_id', 'address', 'phone'])
             ->limit(2);
 
         $rows = $query->execute();
@@ -119,7 +117,7 @@ class DbModelQueryTest extends TestCase
     {
         //one model without alias
         $query = Address::query()
-            ->select('address_id,address,phone')
+            ->select(['address_id', 'address', 'phone'])
             ->limit(2);
 
         $rows = $query->execute();
@@ -128,7 +126,7 @@ class DbModelQueryTest extends TestCase
 
         //one model with alias
         $query = Address::query('a')
-            ->select('a.address_id,a.address,a.phone')
+            ->select(['a.address_id', 'a.address', 'a.phone'])
             ->limit(2);
 
         $rows = $query->execute();
@@ -137,7 +135,7 @@ class DbModelQueryTest extends TestCase
 
         //multi-models with alias
         $query = Address::query('a')
-            ->select('a.*, c.*')
+            ->select(['a.*', 'c.*'])
             ->addFrom(get_class(new City()), 'c')
             ->limit(2);
 
@@ -146,9 +144,9 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(10, $rows[0]);
 
         $query = (new Query())
-            ->select('*')
+            ->select(['*'])
             ->from(City::query()
-                ->select('*')
+                ->select(['*'])
                 ->where('city_id<=', 5), 'cc');
         $rows = $query->execute();
         $this->assertCount(5, $rows);
@@ -162,7 +160,7 @@ class DbModelQueryTest extends TestCase
 
         //with model
         $query = Address::query()
-            ->select('count(address_id) as address_count')
+            ->select(['address_count' => 'count(address_id)'])
             ->join(get_class(new City()));
         $rows = $query->execute();
         $this->assertCount(1, $rows);
@@ -170,7 +168,7 @@ class DbModelQueryTest extends TestCase
 
         //with model,conditions
         $query = Address::query('a')
-            ->select('count(address_id) as address_count')
+            ->select(['address_count' => 'count(address_id)'])
             ->join(get_class(new City()), 'city.city_id =a.city_id');
         $rows = $query->execute();
         $this->assertCount(1, $rows);
@@ -178,7 +176,7 @@ class DbModelQueryTest extends TestCase
 
         //with model,conditions,alias
         $query = Address::query('a')
-            ->select('count(address_id) as address_count')
+            ->select(['address_count' => 'count(address_id)'])
             ->join(get_class(new City()), 'c.city_id =a.city_id', 'c');
         $rows = $query->execute();
         $this->assertCount(1, $rows);
@@ -186,15 +184,15 @@ class DbModelQueryTest extends TestCase
 
         //with model,conditions,alias,join
         $query = Address::query('a')
-            ->select('a.address_id, a.address, a.city_id, c.city')
+            ->select(['a.address_id', 'a.address', 'a.city_id', 'c.city'])
             ->join(get_class(new City()), 'c.city_id =a.city_id', 'c', 'LEFT');
         $rows = $query->execute();
         $this->assertCount(603, $rows);
 
         $query = Address::query('a')
-            ->select('a.address_id, a.address, a.city_id, c.city')
+            ->select(['a.address_id', 'a.address', 'a.city_id', 'c.city'])
             ->join(City::query()
-                ->select('*')
+                ->select(['*'])
                 ->where('city_id <:city_id', ['city_id' => 50]), 'c.city_id =a.city_id', 'c', 'RIGHT');
         $rows = $query->execute();
         $this->assertCount(50, $rows);
@@ -209,7 +207,7 @@ class DbModelQueryTest extends TestCase
         $this->assertEquals(109, $countCountry);
 
         $builder = City::query('c1')
-            ->select('c1.*,c2.*')
+            ->select(['c1.*', 'c2.*'])
             ->innerJoin(get_class(new Country()), 'c1.city_id=c2.country_id', 'c2');
         $this->assertCount($countCountry, $builder->execute());
     }
@@ -223,7 +221,7 @@ class DbModelQueryTest extends TestCase
         $this->assertEquals(109, $countCountry);
 
         $query = City::query('c1')
-            ->select('c1.*,c2.*')
+            ->select(['c1.*', 'c2.*'])
             ->leftJoin(get_class(new Country()), 'c1.city_id=c2.country_id', 'c2');
         $this->assertCount($countCity, $query->execute());
     }
@@ -241,7 +239,7 @@ class DbModelQueryTest extends TestCase
         $this->assertEquals(109, $countCountry);
 
         $query = City::query('c1')
-            ->select('c1.*,c2.*')
+            ->select(['c1.*', 'c2.*'])
             ->rightJoin(get_class(new Country()), 'c1.city_id=c2.country_id', 'c2');
         $this->assertCount($countCountry, $query->execute());
     }
@@ -340,9 +338,9 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(2, $query->execute());
 
         $query = Address::query()
-            ->select('*')
+            ->select(['*'])
             ->whereIn('city_id', Address::query()
-                ->select('city_id')
+                ->select(['city_id'])
                 ->whereIn('city_id', [1, 2, 3, 4]));
         $this->assertCount(4, $query->execute());
     }
@@ -361,7 +359,7 @@ class DbModelQueryTest extends TestCase
     public function test_orderBy()
     {
         $query = Address::query()
-            ->select('address_id')
+            ->select(['address_id'])
             ->where('address_id <=:max_address_id', ['max_address_id' => 10])
             ->orderBy('address_id');
         $rows = $query->execute();
@@ -373,7 +371,7 @@ class DbModelQueryTest extends TestCase
         }
 
         $query = Address::query()
-            ->select('address_id')
+            ->select(['address_id'])
             ->where('address_id <=:max_address_id', ['max_address_id' => 10])
             ->orderBy('address_id ASC');
         $rows = $query->execute();
@@ -385,7 +383,7 @@ class DbModelQueryTest extends TestCase
         }
 
         $query = Address::query()
-            ->select('address_id')
+            ->select(['address_id'])
             ->where('address_id <=:max_address_id', ['max_address_id' => 10])
             ->orderBy('address_id DESC');
         $rows = $query->execute();
@@ -400,7 +398,7 @@ class DbModelQueryTest extends TestCase
     public function test_indexBy()
     {
         $query = Address::query()
-            ->select('address_id')
+            ->select(['address_id'])
             ->where('address_id>=', 5)
             ->indexBy('address_id')
             ->limit(1);
@@ -409,7 +407,7 @@ class DbModelQueryTest extends TestCase
         $this->assertArrayHasKey('5', $rows);
 
         $query = Address::query()
-            ->select('address_id, address')
+            ->select(['address_id', 'address'])
             ->where('address_id>=', 5)
             ->indexBy(['address_id' => 'address'])
             ->limit(1);
@@ -424,7 +422,7 @@ class DbModelQueryTest extends TestCase
         $this->assertEquals([5 => '1913 Hanoi Way'], $rows);
 
         $query = Address::query()
-            ->select('address_id')
+            ->select(['address_id'])
             ->where('address_id>=', 5)
             ->indexBy(function ($row) {
                 return 'address_' . $row['address_id'];
@@ -438,7 +436,7 @@ class DbModelQueryTest extends TestCase
     public function test_having()
     {
         $query = City::query()
-            ->select('COUNT(city_id) as count_city, country_id')
+            ->select(['count_city' => 'COUNT(city_id)', 'country_id'])
             ->groupBy('country_id')
             ->having('COUNT(city_id) >1');
         $rows = $query->execute();
@@ -448,7 +446,7 @@ class DbModelQueryTest extends TestCase
         }
 
         $query = City::query()
-            ->select('COUNT(city_id) as count_city, country_id')
+            ->select(['count_city' => 'COUNT(city_id)', 'country_id'])
             ->groupBy('country_id')
             ->having('COUNT(city_id) >1 AND COUNT(city_id) <7');
         $rows = $query->execute();
@@ -459,7 +457,7 @@ class DbModelQueryTest extends TestCase
         }
 
         $query = City::query()
-            ->select('COUNT(city_id) as count_city, country_id')
+            ->select(['count_city' => 'COUNT(city_id)', 'country_id'])
             ->groupBy('country_id')
             ->having('COUNT(city_id) >:min_count AND COUNT(city_id) <:max_count', ['min_count' => 1, 'max_count' => 7]);
         $rows = $query->execute();
@@ -469,12 +467,12 @@ class DbModelQueryTest extends TestCase
     public function test_limit()
     {
         //limit without offset
-        $query = City::query()->select('city_id')->limit(1);
+        $query = City::query()->select(['city_id'])->limit(1);
         $this->assertCount(1, $query->execute());
 
         //limit with offset
         $query = City::query()
-            ->select('city_id')
+            ->select(['city_id'])
             ->orderBy('city_id')
             ->limit(10, 20);
 
@@ -487,12 +485,12 @@ class DbModelQueryTest extends TestCase
     public function test_page()
     {
         //limit without offset
-        $query = City::query()->select('city_id')->limit(1);
+        $query = City::query()->select(['city_id'])->limit(1);
         $this->assertCount(1, $query->execute());
 
         //limit with offset
         $query = City::query()
-            ->select('city_id')
+            ->select(['city_id'])
             ->orderBy('city_id')
             ->page(10, 3);
 
@@ -505,13 +503,13 @@ class DbModelQueryTest extends TestCase
     public function test_groupBy()
     {
         $query = City::query()
-            ->select('COUNT(city_id) as count_city, country_id')
+            ->select(['count_city' => 'COUNT(city_id)', 'country_id'])
             ->groupBy('country_id');
         $rows = $query->execute();
         $this->assertCount(109, $rows);
 
         $query = Payment::query()
-            ->select('COUNT(payment_id) AS payment_times, customer_id, amount')
+            ->select(['payment_times' => 'COUNT(payment_id)', 'customer_id', 'amount'])
             ->groupBy('customer_id,amount');
         $rows = $query->execute();
         $this->assertCount(4812, $rows);
@@ -539,9 +537,9 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(601, $query->execute());
 
         $query = Address::query()
-            ->select('*')
+            ->select(['*'])
             ->whereNotIn('city_id', Address::query()
-                ->select('city_id')
+                ->select(['city_id'])
                 ->whereIn('city_id', [1, 2, 3, 4]));
         $this->assertCount(599, $query->execute());
     }
@@ -582,7 +580,7 @@ class DbModelQueryTest extends TestCase
         $query = (new Query())
             ->union([
                 City::query()
-                    ->select('*')
+                    ->select(['*'])
                     ->whereIn('city_id', [1, 2, 3, 4, 5])
             ]);
         $this->assertCount(5, $query->execute());

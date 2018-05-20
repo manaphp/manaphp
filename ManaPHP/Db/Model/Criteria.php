@@ -24,7 +24,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     protected $_modelReplaced = false;
 
     /**
-     * @var string|array
+     * @var array
      */
     protected $_columns;
 
@@ -32,7 +32,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * Criteria constructor.
      *
      * @param string|\ManaPHP\Db\Model $model
-     * @param string|array             $fields
+     * @param array                    $fields
      */
     public function __construct($model, $fields = null)
     {
@@ -61,7 +61,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return static
      */

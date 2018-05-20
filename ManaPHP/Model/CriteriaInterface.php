@@ -9,7 +9,7 @@ interface CriteriaInterface
     public function getModel();
 
     /**
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return static
      */

@@ -175,40 +175,29 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return static
      */
     public function select($fields)
     {
-        if (is_string($fields)) {
-            $fields = str_replace(["\t", "\r", "\n"], '', $fields);
-            if (strpos($fields, '[') === false && strpos($fields, '(') === false) {
-                $fields = (string)preg_replace('#\w+#', '[\\0]', $fields);
-                $fields = (string)str_ireplace('[as]', 'AS', $fields);
-                $fields = (string)preg_replace('#\s+#', ' ', $fields);
-            }
-
-            $this->_fields = $fields;
-        } elseif (is_array($fields)) {
-            $r = '';
-            foreach ($fields as $k => $v) {
-                if (strpos($v, '[') === false && strpos($v, '(') === false) {
-                    if (is_int($k)) {
-                        $r .= preg_replace('#\w+#', '[\\0]', $v) . ', ';
-                    } else {
-                        $r .= preg_replace('#\w+#', '[\\0]', $v) . ' AS [' . $k . '], ';
-                    }
+        $r = '';
+        foreach ($fields as $k => $v) {
+            if (strpos($v, '[') === false && strpos($v, '(') === false) {
+                if (is_int($k)) {
+                    $r .= preg_replace('#\w+#', '[\\0]', $v) . ', ';
                 } else {
-                    if (is_int($k)) {
-                        $r .= $v . ', ';
-                    } else {
-                        $r .= $v . ' AS [' . $k . '], ';
-                    }
+                    $r .= preg_replace('#\w+#', '[\\0]', $v) . ' AS [' . $k . '], ';
+                }
+            } else {
+                if (is_int($k)) {
+                    $r .= $v . ', ';
+                } else {
+                    $r .= $v . ' AS [' . $k . '], ';
                 }
             }
-            $this->_fields = substr($r, 0, -2);
         }
+        $this->_fields = substr($r, 0, -2);
 
         return $this;
     }
@@ -1677,7 +1666,7 @@ class Query extends Component implements QueryInterface
     public function values($field)
     {
         $values = [];
-        foreach ($this->distinct()->select($field)->fetchAll() as $v) {
+        foreach ($this->distinct()->select([$field])->fetchAll() as $v) {
             $values[] = $v[$field];
         }
 
