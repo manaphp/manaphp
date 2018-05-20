@@ -318,7 +318,7 @@ class Logger extends Component implements LoggerInterface
         }
 
         if (count($message) === 2) {
-            if (isset($message[1]) && strpos($message[0], ':1') === false) {
+            if (isset($message[1]) && strpos($message[0], ':1') === false && !is_scalar($message[1])) {
                 $message[0] = rtrim($message[0], ': ') . ': :1';
             }
         } elseif (count($message) === 3) {
