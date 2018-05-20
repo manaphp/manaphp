@@ -100,7 +100,7 @@ class Logger extends Component implements LoggerInterface
                     }
                 }
 
-                $this->_appenders[] = $level !== null ? ['level' => $level, 'appender' => $appender] : ['appender' => $appender];
+                $this->_appenders[$name] = $level !== null ? ['level' => $level, 'appender' => $appender] : ['appender' => $appender];
             }
         }
 
