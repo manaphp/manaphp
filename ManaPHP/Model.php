@@ -1129,8 +1129,14 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $changed = [];
 
         foreach ($this->getFields() as $field) {
-            if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
-                $changed[] = $field;
+            if (isset($this->_snapshot[$field])) {
+                if ($this->{$field} !== $this->_snapshot[$field]) {
+                    $changed[] = $field;
+                }
+            } else {
+                if ($this->$field !== null) {
+                    $changed[] = $field;
+                }
             }
         }
 
@@ -1308,8 +1314,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         $data = $this->toArray();
 
-        if ($this->_snapshot) {
-            $data['*changed_fields*'] = $this->getChangedFields();
+        if ($this->_snapshot && $changedFields = $this->getChangedFields()) {
+            $data['*changed_fields*'] = $changedFields;
         }
 
         foreach ($this->getFields() as $field) {
