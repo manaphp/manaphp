@@ -108,44 +108,75 @@ class Console extends Component implements ConsoleInterface
      */
     public function write($message, $options = 0)
     {
-        if (is_array($message)) {
-            if (isset($message[0])) {
-                $context = $message;
-                $message = $message[0];
-                unset($context[0]);
-            } else {
-                $message = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-                $context = [];
-            }
+        if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof \Throwable)) {
+            echo $message;
+            return $this;
         } elseif ($message instanceof \JsonSerializable) {
-            $message = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            $context = [];
-        } else {
-            $message = (string)$message;
-            $context = [];
+            echo json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return $this;
+        } elseif ($message instanceof \Serializable) {
+            echo serialize($message);
+            return $this;
+        } elseif (!is_array($message)) {
+            echo (string)$message;
+            return $this;
         }
 
-        if (strpos($message, ':') === false) {
-            echo $this->colorize($message, $options);
-        } else {
-            if (!isset($context['last_error_message'])) {
-                $context['last_error_message'] = error_get_last()['message'];
-            }
+        if (!isset($message[0]) || !is_string($message[0])) {
+            echo json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return $this;
+        }
 
+        if (count($message) === 2) {
+            if (isset($message[1]) && strpos($message[0], ':1') === false) {
+                if (is_scalar($message[1])) {
+                    echo json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    return $this;
+                } else {
+                    $message[0] = rtrim($message[0], ': ') . ': :1';
+                }
+            }
+        } elseif (count($message) === 3) {
+            if (isset($message[1], $message[2]) && strpos($message[0], ':1') === false) {
+                if (is_scalar($message[1]) && !is_scalar($message[2])) {
+                    $message[0] = rtrim($message[0], ': ') . ': :1 => :2';
+                } else {
+                    echo json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    return $this;
+                }
+            }
+        }
+
+        if (strpos($message[0], ':') === false) {
+            echo $this->colorize($message[0], $options);
+        } else {
             $replaces = [];
 
-            foreach ($context as $k => $v) {
-                if (!$options && strpos($v, "\033[") === false) {
-                    if (is_int($v) || is_float($v)) {
+            foreach ($message as $k => $v) {
+                if ($k === 0) {
+                    continue;
+                }
+
+                if (is_int($v)) {
+                    if (!$options && strpos($v, "\033[")) {
                         $v = $this->colorize($v, self::FC_GREEN);
-                    } elseif (strpos($message, "`:$k`") !== false) {
+                    }
+                } elseif (is_string($v)) {
+                    if (!$options && strpos($v, "\033[")) {
                         $v = $this->colorize($v, self::FC_CYAN);
                     }
+                } elseif ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+                    $v = (string)$v;
+                } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+                    $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                } elseif ($v instanceof \Serializable) {
+                    $v = serialize($v);
                 }
+
                 $replaces[':' . $k] = $v;
             }
 
-            echo $this->colorize(strtr($message, $replaces), $options);
+            echo $this->colorize(strtr($message[0], $replaces), $options);
         }
 
         return $this;
