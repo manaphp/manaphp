@@ -4,6 +4,7 @@ namespace ManaPHP\Mongodb;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidFormatException;
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Mongodb\Model\Exception as ModelException;
 use MongoDB\BSON\ObjectID;
@@ -123,13 +124,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * ```
-     * bool     => Boolean
-     * integer  => 32-bit integer
-     * float    => Double
-     * objectid => ObjectId
-     * string   => String
-     * ```
+     * boolean, integer, double, string, array, objectid
      *
      * @return array
      */
@@ -141,8 +136,6 @@ class Model extends \ManaPHP\Model
 
         if (!isset($cached[$calledClass])) {
             $fieldTypes = [];
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $rc = new \ReflectionClass(get_called_class());
 
             foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $rp) {
@@ -172,20 +165,23 @@ class Model extends \ManaPHP\Model
                         $type = 'integer';
                         break;
                     case 'float':
-                        $type = 'float';
+                    case 'double':
+                        $type = 'double';
                         break;
                     case 'bool':
                     case 'boolean':
-                        $type = 'bool';
+                        $type = 'boolean';
+                        break;
+                    case 'array':
+                    case '[]':
+                        $type = 'array';
                         break;
                     case '\MongoDB\BSON\ObjectId':
                     case 'ObjectId':
                         $type = 'objectid';
                         break;
                     default:
-                        /** @noinspection PhpUnhandledExceptionInspection */
-                        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                        throw new ModelException(['`:property` property `:type` type unsupported', 'property' => $rp->getName(), 'type' => $match[1]]);
+                        throw new InvalidValueException(['`:property` property `:type` type unsupported', 'property' => $rp->getName(), 'type' => $match[1]]);
                         break;
                 }
 
@@ -255,8 +251,7 @@ class Model extends \ManaPHP\Model
      * @param string $type
      * @param mixed  $value
      *
-     * @return bool|float|int|string|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
-     * @throws \ManaPHP\Mongodb\Model\Exception
+     * @return bool|float|int|string|array|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
      */
     public function getNormalizedValue($type, $value)
     {
@@ -268,16 +263,17 @@ class Model extends \ManaPHP\Model
             return is_string($value) ? $value : (string)$value;
         } elseif ($type === 'integer') {
             return is_int($value) ? $value : (int)$value;
-        } elseif ($type === 'float') {
-            return is_float($value) ? $value : (float)$value;
+        } elseif ($type === 'double') {
+            return is_float($value) ? $value : (double)$value;
         } elseif ($type === 'objectid') {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             return is_scalar($type) ? new ObjectID($value) : $value;
-        } elseif ($type === 'bool') {
+        } elseif ($type === 'boolean') {
             return is_bool($value) ? $value : (bool)$value;
+        } elseif ($type === 'array') {
+            return (array)$value;
         } else {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            throw new ModelException(['unsupported `:type` type', 'type' => $type]);
+            throw new InvalidValueException(['unsupported `:type` type', 'type' => $type]);
         }
     }
 

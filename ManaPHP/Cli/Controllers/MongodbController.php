@@ -76,8 +76,9 @@ class MongodbController extends Controller
      * @param string $dir       the data file directory name
      * @param string $namespace namespaces of models
      * @param bool   $optimized output as more methods as possible
+     * @param int    $sample    sample size
      */
-    public function modelsCommand($services = [], $dir = '', $namespace = 'App\Models', $optimized = false)
+    public function modelsCommand($services = [], $dir = '', $namespace = 'App\Models', $optimized = false, $sample = 1000)
     {
         if ($dir) {
             if (!$this->filesystem->dirExists($dir)) {
@@ -105,22 +106,36 @@ class MongodbController extends Controller
                  */
                 $mongodb = $this->_di->getShared($service);
                 foreach ($mongodb->listCollections() as $collection) {
-                    $docs = $mongodb->query($collection, [], ['limit' => 1]);
-                    if ($docs) {
-                        $plainClass = Text::camelize($collection);
-                        $fileName = "@tmp/mongodb_models/$service/$plainClass.php";
+                    if (!$docs = $mongodb->aggregate($collection, [['$sample' => ['size' => $sample]]])) {
+                        continue;
+                    }
 
-                        $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
+                    $plainClass = Text::camelize($collection);
+                    $fileName = "@tmp/mongodb_models/$plainClass.php";
 
-                        $fieldTypes = $this->_inferFieldTypes(json_encode($docs[0]));
-                        $modelClass = $namespace . '\\' . $plainClass;
-                        $model = $this->_renderModel($fieldTypes, $modelClass);
-                        $this->filesystem->filePut($fileName, $model);
+                    $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 
-                        $this->console->progress([
-                            ' `:collection` collection saved to `:file`',
+                    $fieldTypes = $this->_inferFieldTypes($docs);
+                    $modelClass = $namespace . '\\' . $plainClass;
+                    $model = $this->_renderModel($fieldTypes, $modelClass);
+                    $this->filesystem->filePut($fileName, $model);
+
+                    $this->console->progress([
+                        ' `:collection` collection saved to `:file`',
+                        'collection' => $collection,
+                        'file' => $fileName]);
+
+                    $pending_fields = [];
+                    foreach ($fieldTypes as $field => $type) {
+                        if ($type == '' || strpos($type, '|') !== false) {
+                            $pending_fields[] = $field;
+                        }
+                    }
+
+                    if ($pending_fields) {
+                        $this->console->warn(['`:collection` has pending fields: :fields',
                             'collection' => $collection,
-                            'file' => $fileName]);
+                            'fields' => implode(', ', $pending_fields)]);
                     }
                 }
             }
@@ -128,39 +143,30 @@ class MongodbController extends Controller
     }
 
     /**
-     * @param string $str
+     * @param array[] $docs
      *
      * @return array
      */
-    protected function _inferFieldTypes($str)
+    protected function _inferFieldTypes($docs)
     {
-        $json = json_decode('[' . $str . ']', true);
-        if (!$json) {
-            throw new Exception('not json');
-        }
         $fieldTypes = [];
-
-        foreach ((array)$json[0] as $k => $v) {
-            if ($v === null) {
-                $fieldTypes[$k] = 'string|int';
-            } elseif (is_array($v)) {
-                if (isset($v['$oid'])) {
-                    $fieldTypes[$k] = 'objectid';
-                } else {
-                    throw new Exception(['unsupported `:data` data expression for `:property` property', 'data' => $v, 'propery' => $k]);
-                }
-            } elseif (is_int($v)) {
-                $fieldTypes[$k] = 'integer';
-            } elseif (is_string($v)) {
-                $fieldTypes[$k] = 'string';
-            } elseif (is_float($v)) {
-                $fieldTypes[$k] = 'float';
-            } else {
-                throw new Exception(['unsupported `:data` data expression for `:property` property', 'data' => $v, 'propery' => $k]);
+        foreach ($docs as $doc) {
+            foreach ($doc as $field => $value) {
+                $fieldTypes[$field][$type = gettype($value)] = 1;;
             }
         }
 
-        return $fieldTypes;
+        $r = [];
+        foreach ($fieldTypes as $field => $types) {
+            unset($types['NULL']);
+            if (isset($types['object'])) {
+                $r[$field] = 'objectid';
+            } else {
+                $r[$field] = implode('|', array_keys($types));
+            }
+        }
+
+        return $r;
     }
 
     /**
