@@ -28,12 +28,12 @@ interface ConsoleInterface
     public function sampleColorizer();
 
     /**
-     * @param string|array $str
+     * @param string|array $message
      * @param int          $options
      *
      * @return static
      */
-    public function write($str, $options = 0);
+    public function write($message, $options = 0);
 
     /**
      * @param string|array $str

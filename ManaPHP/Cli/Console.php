@@ -101,32 +101,32 @@ class Console extends Component implements ConsoleInterface
     }
 
     /**
-     * @param string|array $str
+     * @param string|array $message
      * @param int          $options
      *
      * @return static
      */
-    public function write($str, $options = 0)
+    public function write($message, $options = 0)
     {
-        if (is_array($str)) {
-            if (isset($str[0])) {
-                $context = $str;
-                $str = $str[0];
+        if (is_array($message)) {
+            if (isset($message[0])) {
+                $context = $message;
+                $message = $message[0];
                 unset($context[0]);
             } else {
-                $str = json_encode($str, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $message = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                 $context = [];
             }
-        } elseif ($str instanceof \JsonSerializable) {
-            $str = json_encode($str, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        } elseif ($message instanceof \JsonSerializable) {
+            $message = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             $context = [];
         } else {
-            $str = (string)$str;
+            $message = (string)$message;
             $context = [];
         }
 
-        if (strpos($str, ':') === false) {
-            echo $this->colorize($str, $options);
+        if (strpos($message, ':') === false) {
+            echo $this->colorize($message, $options);
         } else {
             if (!isset($context['last_error_message'])) {
                 $context['last_error_message'] = error_get_last()['message'];
@@ -138,14 +138,14 @@ class Console extends Component implements ConsoleInterface
                 if (!$options && strpos($v, "\033[") === false) {
                     if (is_int($v) || is_float($v)) {
                         $v = $this->colorize($v, self::FC_GREEN);
-                    } elseif (strpos($str, "`:$k`") !== false) {
+                    } elseif (strpos($message, "`:$k`") !== false) {
                         $v = $this->colorize($v, self::FC_CYAN);
                     }
                 }
                 $replaces[':' . $k] = $v;
             }
 
-            echo $this->colorize(strtr($str, $replaces), $options);
+            echo $this->colorize(strtr($message, $replaces), $options);
         }
 
         return $this;
