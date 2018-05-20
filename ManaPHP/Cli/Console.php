@@ -158,11 +158,11 @@ class Console extends Component implements ConsoleInterface
                 }
 
                 if (is_int($v)) {
-                    if (!$options && strpos($v, "\033[")) {
+                    if (!$options &&strpos($v, "\033[") === false) {
                         $v = $this->colorize($v, self::FC_GREEN);
                     }
                 } elseif (is_string($v)) {
-                    if (!$options && strpos($v, "\033[")) {
+                    if (!$options && strpos($v, "\033[") === false) {
                         $v = $this->colorize($v, self::FC_CYAN);
                     }
                 } elseif ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
