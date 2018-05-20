@@ -466,10 +466,10 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
                 if (is_array($data) && isset($data[0])) {
                     foreach ($data as $kk => $vv) {
-                        $data[$kk] = $vv->toArray(true);
+                        $data[$kk] = $vv->toArray();
                     }
                 } elseif (is_object($data)) {
-                    $data = $data->toArray(true);
+                    $data = $data->toArray();
                 }
 
                 $item[$name] = $data;
