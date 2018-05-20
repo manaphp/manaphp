@@ -233,10 +233,19 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $fieldTypes = $this->_model->getFieldTypes();
                 $this->_filters[] = [$field => $this->_model->getNormalizedValue($fieldTypes[$field], $value)];
             } elseif ($operator === '~=') {
-                if (count($value) !== 2) {
+                if (is_scalar($value)) {
+                    if (is_int($value)) {
+                        $this->_filters[] = [substr($filter, 0, -2) => ['$in' => [(string)$value, (int)($value)]]];
+                    } elseif (is_float($value)) {
+                        $this->_filters[] = [substr($filter, 0, -2) => ['$in' => [(string)$value, (double)$value]]];
+                    } else {
+                        $this->_filters[] = [substr($filter, 0, -2) => ['$in' => [(string)$value, (int)($value), (double)$value]]];
+                    }
+                } elseif (count($value) !== 2) {
                     throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
+                } else {
+                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
                 }
-                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif ($operator === '@=') {
                 $field = substr($filter, 0, -2);
                 $times = $this->_normalizeTimeBetween($field, $value);
