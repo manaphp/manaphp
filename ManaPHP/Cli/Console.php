@@ -202,14 +202,30 @@ class Console extends Component implements ConsoleInterface
     }
 
     /**
-     * @param string|array $str
+     * @param string|array $message
      * @param int          $options
      *
      * @return static
      */
-    public function writeLn($str = '', $options = 0)
+    public function writeLn($message = '', $options = 0)
     {
-        $this->write($str, $options);
+        $this->write($message, $options);
+        $this->write(PHP_EOL);
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $message
+     * @param int          $options
+     *
+     * @return static
+     */
+    public function debug($message = '', $options = 0)
+    {
+        $this->logger->debug($message);
+
+        $this->write($message, $options);
         $this->write(PHP_EOL);
 
         return $this;
@@ -220,6 +236,8 @@ class Console extends Component implements ConsoleInterface
      */
     public function info($message)
     {
+        $this->logger->info($message);
+
         $this->write($message, self::FC_YELLOW);
         $this->write(PHP_EOL);
     }
@@ -229,6 +247,8 @@ class Console extends Component implements ConsoleInterface
      */
     public function warn($message)
     {
+        $this->logger->warn($message);
+
         $this->write($message, self::FC_MAGENTA);
         $this->write(PHP_EOL);
     }
@@ -238,6 +258,8 @@ class Console extends Component implements ConsoleInterface
      */
     public function success($message)
     {
+        $this->logger->info($message);
+
         $this->write($message, self::FC_BLUE);
         $this->write(PHP_EOL);
     }
@@ -250,6 +272,8 @@ class Console extends Component implements ConsoleInterface
      */
     public function error($message, $code = 1)
     {
+        $this->logger->error($message);
+
         $this->write($message, self::FC_RED);
         $this->write(PHP_EOL);
 
