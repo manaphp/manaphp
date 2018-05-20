@@ -1298,7 +1298,19 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public function __debugInfo()
     {
-        $data = $this->toArray();
+        $data = [];
+
+        foreach (get_object_vars($this) as $field => $value) {
+            if ($field[0] === '_') {
+                continue;
+            }
+
+            if (is_object($value) && !$value instanceof self) {
+                continue;
+            }
+
+            $data[$field] = $value;
+        }
 
         if ($this->_snapshot && $changedFields = $this->getChangedFields()) {
             $data['*changed_fields*'] = $changedFields;
