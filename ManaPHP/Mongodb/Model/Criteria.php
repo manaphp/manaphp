@@ -209,9 +209,11 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $this->where($k, $v);
             }
         } elseif ($value === null) {
-            $this->_filters[] = $filter;
+            $this->_filters[] = is_string($filter) ? [$filter => null] : $filter;
         } elseif (is_array($value)) {
-            if (isset($value[0]) || !$value) {
+            if (strpos($filter, '~=')) {
+                $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
+            } else if (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
