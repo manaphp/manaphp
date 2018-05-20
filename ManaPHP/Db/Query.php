@@ -345,7 +345,7 @@ class Query extends Component implements QueryInterface
             foreach ($filter as $k => $v) {
                 $this->where($k, $v);
             }
-        } elseif ($value === null) {
+        } elseif ($value === null && !is_string($filter)) {
             $this->_conditions[] = $filter;
         } elseif (is_array($value)) {
             if (isset($value[0]) || !$value) {
@@ -363,14 +363,25 @@ class Query extends Component implements QueryInterface
             $bind_key = strtr($field, '.', '_');
             $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
             if ($operator === '' || $operator === '=') {
-                $this->_conditions[] = $normalizedField . '=:' . $bind_key;
-                $this->_bind[$bind_key] = $value;
+                if ($value === null) {
+                    $this->_conditions[] = $normalizedField . ' IS NULL';
+                } else {
+                    $this->_conditions[] = $normalizedField . '=:' . $bind_key;
+                    $this->_bind[$bind_key] = $value;
+                }
             } elseif ($operator === '~=') {
                 if (count($value) !== 2) {
                     throw new InvalidValueException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
                 }
                 $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-            } elseif (in_array($operator, ['>', '>=', '<', '<=', '!=', '<>'], true)) {
+            } elseif ($operator === '!=' || $operator === '<>') {
+                if ($value === null) {
+                    $this->_conditions[] = $normalizedField . ' IS NOT NULL';
+                } else {
+                    $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
+                    $this->_bind[$bind_key] = $value;
+                }
+            } elseif (in_array($operator, ['>', '>=', '<', '<='], true)) {
                 $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
                 $this->_bind[$bind_key] = $value;
             } elseif ($operator === '^=') {
