@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Logger\LogCategorizable;
+
 /**
  * Class ManaPHP\Cli\Application
  *
@@ -9,8 +11,16 @@ namespace ManaPHP\Cli;
  *
  * @property \ManaPHP\Cli\HandlerInterface $cliHandler
  */
-class Application extends \ManaPHP\Application
+class Application extends \ManaPHP\Application implements LogCategorizable
 {
+    /**
+     * @return string
+     */
+    public function categorizeLog()
+    {
+        return 'cli';
+    }
+
     /**
      * Application constructor.
      *
@@ -59,6 +69,10 @@ class Application extends \ManaPHP\Application
         }
 
         $this->registerServices();
+
+        $this->logger->addAppender(['class' => 'file', 'file' => '@data/console/' . date('ymd') . '.log'], 'console');
+
+        $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) .' '. implode(' ', array_slice($GLOBALS['argv'], 1))]);
 
         exit($this->cliHandler->handle());
     }
