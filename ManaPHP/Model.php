@@ -165,7 +165,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      *
      * @return  static[]
      */
-    public static function find($filters = [], $options = null, $fields = null)
+    public static function all($filters = [], $options = null, $fields = null)
     {
         $criteria = static::criteria($fields ?: null)->where($filters);
 

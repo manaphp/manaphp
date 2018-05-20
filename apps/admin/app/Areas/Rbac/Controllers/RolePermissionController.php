@@ -17,7 +17,7 @@ class RolePermissionController extends ControllerBase
                 return $this->response->setJsonContent($e);
             }
 
-            return RolePermission::find(['role_id' => $role_id],
+            return RolePermission::all(['role_id' => $role_id],
                 ['with' => ['permission' => 'description, path', 'roles' => 'role_id, role_name']],
                 ['id', 'permission_id', 'creator_name', 'created_time']);
         }

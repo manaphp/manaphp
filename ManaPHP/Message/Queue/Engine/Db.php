@@ -75,7 +75,7 @@ class Db extends Component implements EngineInterface
             if ($prev_max !== $max_id) {
                 $prev_max = $max_id;
 
-                $models = $modelInstance::find(['topic' => $topic, 'deleted_time' => 0], ['order' => 'priority ASC, id ASC', 'limit' => 1]);
+                $models = $modelInstance::all(['topic' => $topic, 'deleted_time' => 0], ['order' => 'priority ASC, id ASC', 'limit' => 1]);
                 $model = isset($models[0]) ? $models[0] : false;
 
                 if ($model && $modelInstance::updateAll(['deleted_time' => time()], ['id' => $model->id])) {

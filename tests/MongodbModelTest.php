@@ -128,20 +128,20 @@ class MongodbModelTest extends TestCase
         $this->assertEquals(10, City::first(['city_id' => 10])->city_id);
     }
 
-    public function test_find()
+    public function test_all()
     {
-        $actors = Actor::find();
+        $actors = Actor::all();
         $this->assertTrue(is_array($actors));
         $this->assertCount(200, $actors);
         $this->assertInstanceOf(get_class(new Actor()), $actors[0]);
         $this->assertInstanceOf('ManaPHP\Mongodb\Model', $actors[0]);
 
-        $this->assertCount(200, Actor::find([]));
+        $this->assertCount(200, Actor::all([]));
 
-        $this->assertCount(0, Actor::find(['actor_id' => -1]));
-        $this->assertEquals([], Actor::find(['actor_id' => -1]));
+        $this->assertCount(0, Actor::all(['actor_id' => -1]));
+        $this->assertEquals([], Actor::all(['actor_id' => -1]));
 
-        $cities = City::find(['country_id' => 2], ['order' => 'city desc']);
+        $cities = City::all(['country_id' => 2], ['order' => 'city desc']);
         $this->assertCount(3, $cities);
         $this->assertEquals(483, $cities[0]->city_id);
     }
@@ -155,12 +155,12 @@ class MongodbModelTest extends TestCase
         $this->assertCount(0, $cities);
     }
 
-    public function test_find_usage()
+    public function test_all_usage()
     {
-        $this->assertCount(3, City::find(['country_id' => 2]));
-        $this->assertCount(3, City::find(['country_id' => 2], ['order' => 'city_id desc']));
-        $this->assertCount(2, City::find(['country_id' => 2], ['limit' => 2]));
-        $this->assertCount(1, City::find(['country_id' => 2], ['limit' => 1, 'offset' => 2]));
+        $this->assertCount(3, City::all(['country_id' => 2]));
+        $this->assertCount(3, City::all(['country_id' => 2], ['order' => 'city_id desc']));
+        $this->assertCount(2, City::all(['country_id' => 2], ['limit' => 2]));
+        $this->assertCount(1, City::all(['country_id' => 2], ['limit' => 1, 'offset' => 2]));
     }
 
     /**

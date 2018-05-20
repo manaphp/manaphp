@@ -95,7 +95,7 @@ interface ModelInterface
      *
      * @return  static[]
      */
-    public static function find($filters = [], $options = null, $fields = null);
+    public static function all($filters = [], $options = null, $fields = null);
 
     /**
      * @param array        $filters

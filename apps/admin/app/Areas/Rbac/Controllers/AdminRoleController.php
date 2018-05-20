@@ -17,7 +17,7 @@ class AdminRoleController extends ControllerBase
                 return $this->response->setJsonContent($e);
             }
 
-            return AdminRole::find(['admin_id' => $admin_id],
+            return AdminRole::all(['admin_id' => $admin_id],
                 ['with' => ['role', 'admins' => 'admin_id, admin_name']],
                 ['id', 'admin_id', 'role_id', 'creator_name', 'created_time']);
         }
@@ -31,7 +31,7 @@ class AdminRoleController extends ControllerBase
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
-            return $this->response->setJsonContent(AdminRole::find(['admin_id' => $admin_id]));
+            return $this->response->setJsonContent(AdminRole::all(['admin_id' => $admin_id]));
         }
     }
 

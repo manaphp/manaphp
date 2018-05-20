@@ -18,9 +18,9 @@ class PermissionController extends ControllerBase
     {
         if ($this->request->isAjax()) {
             if ($permission_id = $this->request->get('permission_id', 'int', 0)) {
-                return Permission::find(['permission_id' => $permission_id], ['with' => ['roles' => 'role_id, role_name']]);
+                return Permission::all(['permission_id' => $permission_id], ['with' => ['roles' => 'role_id, role_name']]);
             } else {
-                return Permission::find([], ['with' => ['roles' => 'role_id, role_name']]);
+                return Permission::all([], ['with' => ['roles' => 'role_id, role_name']]);
             }
         }
     }
@@ -28,7 +28,7 @@ class PermissionController extends ControllerBase
     public function listAction()
     {
         if ($this->request->isAjax()) {
-            return Permission::find([], [], ['permission_id', 'path', 'description']);
+            return Permission::all([], [], ['permission_id', 'path', 'description']);
         }
     }
 
