@@ -80,6 +80,10 @@ class MongodbController extends Controller
      */
     public function modelsCommand($services = [], $dir = '', $namespace = 'App\Models', $optimized = false, $sample = 1000)
     {
+        if (strpos($namespace, '\\') === false) {
+            $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
+        }
+
         if ($dir) {
             if (!$this->filesystem->dirExists($dir)) {
                 throw new Exception(['`:dir` dir is not exists', 'dir' => $dir]);

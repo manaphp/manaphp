@@ -217,6 +217,10 @@ class DbController extends Controller
      */
     public function modelCommand($service = '', $table, $namespace = 'App\Models', $optimized = false)
     {
+        if (strpos($namespace, '\\') === false) {
+            $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
+        }
+
         /**
          * @var \ManaPHP\DbInterface $db
          */
