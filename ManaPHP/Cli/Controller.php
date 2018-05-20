@@ -124,7 +124,7 @@ abstract class Controller extends Component implements ControllerInterface, LogC
                     $this->console->writeLn(['    :option :value :default',
                         'option' => $this->console->colorize($option, Console::FC_CYAN, $width),
                         'value' => $value ? "  $value" : '',
-                        'default' => (isset($defaultValues[$name]) ? " (default: $defaultValues[$name])" : '')]);
+                        'default' => isset($defaultValues[$name]) ? " (default: $defaultValues[$name])" : '']);
                 }
             }
         }
