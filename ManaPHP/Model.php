@@ -1200,14 +1200,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
      * @return string
      */
     public function serialize()
