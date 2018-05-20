@@ -386,7 +386,7 @@ class Request extends Component implements RequestInterface
      *
      * @return string
      */
-    public function getClientAddress()
+    public function getClientIp()
     {
         if (isset($_SERVER['HTTP_X_REAL_IP'])) {
             return $_SERVER['HTTP_X_REAL_IP'];

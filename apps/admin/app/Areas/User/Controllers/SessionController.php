@@ -35,7 +35,7 @@ class SessionController extends Controller
                 return $this->response->setJsonContent('account or password is wrong.');
             }
 
-            $admin->login_ip = $this->request->getClientAddress();
+            $admin->login_ip = $this->request->getClientIp();
             $admin->login_time = time();
             $admin->update();
 
@@ -49,7 +49,7 @@ class SessionController extends Controller
 
             $adminLoginLog->admin_id = $admin->admin_id;
             $adminLoginLog->admin_name = $user_name;
-            $adminLoginLog->client_ip = $this->request->getClientAddress();
+            $adminLoginLog->client_ip = $this->request->getClientIp();
             $adminLoginLog->client_udid = $udid;
             $adminLoginLog->user_agent = $this->request->getUserAgent();
 

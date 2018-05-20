@@ -139,15 +139,15 @@ class HttpRequestTest extends TestCase
 
     }
 
-    public function test_getClientAddress()
+    public function test_getClientIp()
     {
         $_SERVER['REMOTE_ADDR'] = '1.2.3.4';
         $request = new Request();
-        $this->assertEquals('1.2.3.4', $request->getClientAddress());
+        $this->assertEquals('1.2.3.4', $request->getClientIp());
 
         $_SERVER['HTTP_X_REAL_IP'] = '10.20.30.40';
         $request = new Request();
-        $this->assertEquals('10.20.30.40', $request->getClientAddress());
+        $this->assertEquals('10.20.30.40', $request->getClientIp());
     }
 
     public function test_getUserAgent()

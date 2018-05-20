@@ -180,7 +180,7 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getClientAddress();
+    public function getClientIp();
 
     /**
      * Gets HTTP user agent used to made the request

@@ -83,7 +83,7 @@ class RateLimiter extends Component implements RateLimiterInterface
      */
     public function limitIp($times, $duration)
     {
-        return $this->limit('ip', $this->request->getClientAddress(), $times, $duration);
+        return $this->limit('ip', $this->request->getClientIp(), $times, $duration);
     }
 
     /**

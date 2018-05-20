@@ -43,7 +43,7 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
         $data['GET'] = $_GET;
         $data['POST'] = $_POST;
 
-        $data['client_ip'] = $this->request->getClientAddress();
+        $data['client_ip'] = $this->request->getClientIp();
 
         return array_merge($data, parent::getLogData($exception));
     }
