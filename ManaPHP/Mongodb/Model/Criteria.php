@@ -242,11 +242,11 @@ class Criteria extends \ManaPHP\Model\Criteria
 
                 if (is_scalar($value)) {
                     if (is_int($value)) {
-                        $this->_filters[] = [$field => ['$in' => [(string)$value, (int)($value)]]];
+                        $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value]]];
                     } elseif (is_float($value)) {
                         $this->_filters[] = [$field => ['$in' => [(string)$value, (double)$value]]];
                     } else {
-                        $this->_filters[] = [$field => ['$in' => [(string)$value, (int)($value), (double)$value]]];
+                        $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (double)$value]]];
                     }
                 } else {
                     throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
