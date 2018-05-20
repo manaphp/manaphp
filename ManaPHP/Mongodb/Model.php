@@ -6,7 +6,6 @@ use ManaPHP\Di;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Mongodb\Model\Exception as ModelException;
 use MongoDB\BSON\ObjectID;
 
 /**
@@ -324,5 +323,10 @@ class Model extends \ManaPHP\Model
     {
         $instance = new static();
         return $instance->getConnection(null)->aggregate($instance->getSource(null), $pipeline);
+    }
+
+    public function __debugInfo()
+    {
+        return array_merge(['_id' => is_object($this->_id) ? (string)$this->_id : $this->_id], parent::__debugInfo());
     }
 }
