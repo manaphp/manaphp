@@ -166,6 +166,9 @@ class MongodbController extends Controller
             if (isset($types['object'])) {
                 $r[$field] = 'objectid';
             } else {
+                if (count($types) !== 1) {
+                    ksort($types);
+                }
                 $r[$field] = implode('|', array_keys($types));
             }
         }
