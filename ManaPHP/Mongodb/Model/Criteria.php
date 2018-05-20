@@ -3,6 +3,7 @@ namespace ManaPHP\Mongodb\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Mongodb\Model\Criteria\Exception as CriteriaException;
 use MongoDB\BSON\Regex;
 
@@ -196,8 +197,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param int|float|string|array $value
      *
      * @return static
-     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function where($filter, $value = null)
     {
@@ -212,7 +211,11 @@ class Criteria extends \ManaPHP\Model\Criteria
             $this->_filters[] = is_string($filter) ? [$filter => null] : $filter;
         } elseif (is_array($value)) {
             if (strpos($filter, '~=')) {
-                $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
+                if (count($value) === 2 && gettype($value[0]) === gettype($value[1])) {
+                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                } else {
+                    $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
+                }
             } else if (isset($value[0]) || !$value) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
@@ -241,10 +244,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                     } else {
                         $this->_filters[] = [substr($filter, 0, -2) => ['$in' => [(string)$value, (int)($value), (double)$value]]];
                     }
-                } elseif (count($value) !== 2) {
-                    throw new CriteriaException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
                 } else {
-                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                    throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
                 }
             } elseif ($operator === '@=') {
                 $field = substr($filter, 0, -2);
@@ -261,13 +262,13 @@ class Criteria extends \ManaPHP\Model\Criteria
             } else {
                 $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
                 if (!isset($operator_map[$operator])) {
-                    throw new CriteriaException(['unknown `:where` where filter', 'where' => $filter]);
+                    throw new InvalidValueException(['unknown `:where` where filter', 'where' => $filter]);
                 }
                 $fieldTypes = $this->_model->getFieldTypes();
                 $this->_filters[] = [$field => [$operator_map[$operator] => $this->_model->getNormalizedValue($fieldTypes[$field], $value)]];
             }
         } else {
-            throw new CriteriaException(['unknown mongodb criteria `filter` filter', 'filter' => $filter]);
+            throw new InvalidValueException(['unknown mongodb criteria `filter` filter', 'filter' => $filter]);
         }
 
         return $this;
