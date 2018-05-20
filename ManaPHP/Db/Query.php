@@ -3,6 +3,7 @@ namespace ManaPHP\Db;
 
 use ManaPHP\Component;
 use ManaPHP\Di;
+use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
@@ -338,10 +339,20 @@ class Query extends Component implements QueryInterface
             $this->_conditions[] = $filter;
         } elseif (is_array($value)) {
             if (isset($value[0]) || !$value) {
-                if (strpos($filter, '!=') || strpos($filter, '<>')) {
+                if (strpos($filter, '~=')) {
+                    if (count($value) !== 2) {
+                        throw new InvalidArgumentException(['`value of :filter` filter is invalid', 'filter' => $filter]);
+                    }
+                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
-                    $this->whereIn(rtrim($filter, '='), $value);
+                    if (strpos($filter, ' ') !== false) {
+                        $this->_conditions[] = $filter;
+                    } else {
+                        $this->whereIn(rtrim($filter, '='), $value);
+                    }
+
                 }
             } else {
                 $this->_conditions[] = $filter;
@@ -560,7 +571,7 @@ class Query extends Component implements QueryInterface
     public function whereIn($expr, $values)
     {
         if ($values instanceof $this) {
-            $this->where($expr . ' IN (' . $values->getSql() . ')');
+            $this->where($expr . ' IN (' . $values->getSql() . ')', []);
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } else {
             if (!$values) {
@@ -638,7 +649,7 @@ class Query extends Component implements QueryInterface
     public function whereNotIn($expr, $values)
     {
         if ($values instanceof $this) {
-            $this->where($expr . ' NOT IN (' . $values->getSql() . ')');
+            $this->where($expr . ' NOT IN (' . $values->getSql() . ')', []);
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } else {
             if ($values) {
@@ -737,7 +748,7 @@ class Query extends Component implements QueryInterface
                 $this->_bind[$key] = $like;
             }
 
-            $this->where(implode(' OR ', $conditions));
+            $this->where(implode(' OR ', $conditions), []);
         } else {
             $key = strtr($expr, '.', '_');
 
