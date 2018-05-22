@@ -302,7 +302,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param int|float|string $max
      *
      * @return static
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function whereBetween($field, $min, $max)
     {
@@ -337,7 +336,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param int|float|string $max
      *
      * @return static
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function whereNotBetween($field, $min, $max)
     {
@@ -371,7 +369,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param array  $values
      *
      * @return static
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function whereIn($field, $values)
     {
@@ -403,7 +400,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param array  $values
      *
      * @return static
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function whereNotIn($field, $values)
     {
