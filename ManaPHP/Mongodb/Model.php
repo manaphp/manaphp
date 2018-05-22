@@ -234,10 +234,7 @@ class Model extends \ManaPHP\Model
             'upsert' => true
         ];
 
-        $r = $this->getConnection()->command($command);
-        $r->setTypeMap(['root' => 'array', 'document' => 'array']);
-        $r = $r->toArray();
-        $id = $r[0]['value']['current_id'];
+        $id = $this->getConnection()->command($command)[0]['value']['current_id'];
 
         if ($id === $step) {
             $this->_createAutoIncrementIndex();

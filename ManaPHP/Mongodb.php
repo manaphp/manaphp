@@ -58,12 +58,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         for ($i = $this->_manager ? 0 : 1; $i < 2; $i++) {
             try {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                /** @noinspection NullPointerExceptionInspection */
-                /** @noinspection PhpUnhandledExceptionInspection */
-                $cursor = $this->_getManager()->executeCommand('admin', new Command(['ping' => 1]));
-                $cursor->setTypeMap(['root' => 'array']);
-                $r = $cursor->toArray()[0];
+                $r = $this->command(['ping' => 1], 'admin')[0];
                 if ($r['ok']) {
                     return true;
                 }
@@ -228,65 +223,63 @@ class Mongodb extends Component implements MongodbInterface
      * @param array  $options
      *
      * @return array
-     * @throws \MongoDB\Driver\Exception\Exception
      * @throws \ManaPHP\Mongodb\Exception
      */
     public function aggregate($source, $pipeline, $options = [])
     {
-        $parts = explode('.', $source);
+        if ($pos = strpos($source, '.')) {
+            $db = substr($source, 0, $pos);
+            $collection = substr($source, $pos + 1);
+        } else {
+            $db = $this->_defaultDb;
+            $collection = $source;
+        }
 
         try {
-            $command = ['aggregate' => count($parts) === 2 ? $parts[1] : $parts[0], 'pipeline' => $pipeline];
+            $command = ['aggregate' => $collection, 'pipeline' => $pipeline];
             if ($options) {
                 $command = array_merge($command, $options);
             }
             if (!isset($command['cursor'])) {
                 $command['cursor'] = ['batchSize' => 1000];
             }
-            $this->fireEvent('mongodb:beforeAggregate', ['namespace' => strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source)]);
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection NullPointerExceptionInspection */
-            $cursor = $this->_getManager()->executeCommand(count($parts) === 2 ? $parts[0] : $this->_defaultDb, new Command($command));
-            $this->fireEvent('mongodb:afterAggregate');
+            $this->fireEvent('mongodb:beforeAggregate', ['db' => $db, 'command' => $command]);
+            $r = $this->command($command, $db);
+            $this->fireEvent('mongodb:afterAggregate', ['db' => $db, 'command' => $command, 'result' => $r]);
+            return $r;
         } catch (RuntimeException $e) {
             throw new MongodbException([
-                '`:pipeline` pipeline for `:collection` collection failed: :msg',
-                'pipeline' => json_encode($pipeline),
+                '`:aggregate` aggregate for `:collection` collection failed: :msg',
+                'aggregate' => json_encode($pipeline),
                 'collection' => $source,
                 'msg' => $e->getMessage()
             ]);
         }
-        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-        return $cursor->toArray();
     }
 
     /**
      * @param string $source
      *
      * @return static
-     * @throws \ManaPHP\Mongodb\Exception
      */
     public function truncateTable($source)
     {
-        $parts = explode('.', $source);
-        $db = count($parts) === 2 ? $parts[1] : $this->_defaultDb;
-        $collection = count($parts) === 2 ? $parts[1] : $parts[0];
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        if ($pos = strpos($source, '.')) {
+            $db = substr($source, 0, $pos);
+            $collection = substr($source, $pos + 1);
+        } else {
+            $db = $this->_defaultDb;
+            $collection = $source;
+        }
+
         try {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $cursor = $this->_getManager()->executeCommand($db, new Command(['drop' => $collection]), new ReadPreference(ReadPreference::RP_PRIMARY));
-        } /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */ catch (RuntimeException $e) {
+            $r = $this->command(['drop' => $collection], $db);
+        } catch (RuntimeException $e) {
             if ($e->getMessage() === 'ns not found') {
                 return $this;
             }
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw $e;
-        }
-        $cursor->setTypeMap(['root' => 'array']);
-        $r = $cursor->toArray();
-        if (!$r[0]['ok']) {
-            throw new MongodbException(['drop `:collection` collection of `:db` db failed: ', 'collection' => $collection, 'db' => $db, 'msg' => $r[0]['errmsg']]);
         }
         return $this;
     }
@@ -320,5 +313,4 @@ class Mongodb extends Component implements MongodbInterface
 
         return $collections;
     }
-
 }
