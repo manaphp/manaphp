@@ -662,16 +662,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $this->_di->modelsValidator->validate($this, $fields ?: $this->getChangedFields());
     }
 
-    protected function _preCreate()
-    {
-
-    }
-
-    protected function _postCreate($connection)
-    {
-
-    }
-
     /**
      * @param int $opMode
      *
@@ -696,53 +686,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         return $data;
-    }
-
-    /**
-     * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
-     *
-     * @return static
-     */
-    public function create()
-    {
-        $fields = $this->getFields();
-        foreach ($this->getAutoFilledData(self::OP_CREATE) as $field => $value) {
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (!in_array($field, $fields, true) || $this->$field !== null) {
-                continue;
-            }
-            $this->$field = $value;
-        }
-
-        $this->validate($fields);
-
-        $this->_preCreate();
-
-        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
-            return $this;
-        }
-
-        $fieldValues = [];
-        foreach ($fields as $field) {
-            if ($this->{$field} !== null) {
-                $fieldValues[$field] = $this->{$field};
-            }
-        }
-
-        $db = $this->getDb($this);
-        $source = $this->getSource($this);
-
-        $connection = $this->_di->getShared($db);
-        $connection->insert($source, $fieldValues);
-
-        $this->_postCreate($connection);
-
-        $this->_snapshot = $this->toArray();
-
-        $this->_fireEvent('afterCreate');
-        $this->_fireEvent('afterSave');
-
-        return $this;
     }
 
     /**
