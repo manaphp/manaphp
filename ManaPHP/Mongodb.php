@@ -219,23 +219,28 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @param string $source
      * @param array  $pipeline
+     * @param array  $options
      *
      * @return array
      * @throws \MongoDB\Driver\Exception\Exception
      * @throws \ManaPHP\Mongodb\Exception
      */
-    public function aggregate($source, $pipeline)
+    public function aggregate($source, $pipeline, $options = [])
     {
         $parts = explode('.', $source);
 
         try {
+            $command = ['aggregate' => count($parts) === 2 ? $parts[1] : $parts[0], 'pipeline' => $pipeline];
+            if ($options) {
+                $command = array_merge($command, $options);
+            }
+            if (!isset($command['cursor'])) {
+                $command['cursor'] = ['batchSize' => 1000];
+            }
             $this->fireEvent('mongodb:beforeAggregate', ['namespace' => strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source)]);
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             /** @noinspection NullPointerExceptionInspection */
-            $cursor = $this->_getManager()->executeCommand(count($parts) === 2 ? $parts[0] : $this->_defaultDb, new Command([
-                'aggregate' => count($parts) === 2 ? $parts[1] : $parts[0],
-                'pipeline' => $pipeline
-            ]));
+            $cursor = $this->_getManager()->executeCommand(count($parts) === 2 ? $parts[0] : $this->_defaultDb, new Command($command));
             $this->fireEvent('mongodb:afterAggregate');
         } catch (RuntimeException $e) {
             throw new MongodbException([
@@ -246,17 +251,7 @@ class Mongodb extends Component implements MongodbInterface
             ]);
         }
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-        $r = $cursor->toArray()[0];
-        if (!$r['ok']) {
-            throw new MongodbException([
-                '`:pipeline` pipeline for `:collection` collection failed `:code`: `:msg`',
-                'code' => $r['code'],
-                'msg' => $r['errmsg'],
-                'collection' => $source
-            ]);
-        }
-
-        return $r['result'];
+        return $cursor->toArray();
     }
 
     /**

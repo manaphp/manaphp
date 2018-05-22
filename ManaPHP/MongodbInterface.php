@@ -58,10 +58,11 @@ interface MongodbInterface
     /**
      * @param string $source
      * @param array  $pipeline
+     * @param array  $options
      *
      * @return array
      */
-    public function aggregate($source, $pipeline);
+    public function aggregate($source, $pipeline, $options = []);
 
     /**
      * @param string $source
