@@ -105,7 +105,11 @@ class Mongodb extends Component implements MongodbInterface
             $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
         }
 
-        return $this->_getManager()->executeBulkWrite($ns, $bulk, $this->_writeConcern);
+        $this->fireEvent('mongodb:beforeBulkWrite', ['namespace' => $ns, 'bulk' => $bulk]);
+        $r = $this->_getManager()->executeBulkWrite($ns, $bulk, $this->_writeConcern);
+        $this->fireEvent('mongodb:afterBulkWrite', ['namespace' => $ns, 'bulk' => $bulk, 'result' => $r]);
+
+        return $r;
     }
 
     /**
