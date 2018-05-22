@@ -562,7 +562,6 @@ abstract class Db extends Component implements DbInterface
      * @param int   $preservedStrLength
      *
      * @return int|string
-     * @throws \ManaPHP\Db\Exception
      */
     protected function _parseBindValue($value, $preservedStrLength)
     {
@@ -589,7 +588,6 @@ abstract class Db extends Component implements DbInterface
      * @param int $preservedStrLength
      *
      * @return string
-     * @throws \ManaPHP\Db\Exception
      */
     public function getEmulatedSQL($preservedStrLength = -1)
     {
