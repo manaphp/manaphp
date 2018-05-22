@@ -260,7 +260,7 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @param string $source
      *
-     * @return static
+     * @return bool
      */
     public function truncateTable($source)
     {
@@ -273,15 +273,20 @@ class Mongodb extends Component implements MongodbInterface
         }
 
         try {
-            $r = $this->command(['drop' => $collection], $db);
+            $this->command(['drop' => $collection], $db);
+            return true;
         } catch (RuntimeException $e) {
-            if ($e->getMessage() === 'ns not found') {
-                return $this;
+            /**
+             * https://github.com/mongodb/mongo/blob/master/src/mongo/base/error_codes.err
+             * error_code("NamespaceNotFound", 26)
+             */
+            if ($e->getCode() === 26) {
+                return true;
+            } else {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                throw $e;
             }
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw $e;
         }
-        return $this;
     }
 
     /**

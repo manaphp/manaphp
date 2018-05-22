@@ -67,7 +67,7 @@ interface MongodbInterface
     /**
      * @param string $source
      *
-     * @return static
+     * @return bool
      */
     public function truncateTable($source);
 
