@@ -130,7 +130,21 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function select($fields)
     {
-        $this->_projection = array_fill_keys($fields, 1);
+        if ($fields) {
+            if (isset($fields[count($fields) - 1])) {
+                $this->_projection = array_fill_keys($fields, 1);
+            } else {
+                $projection = [];
+                foreach ($fields as $k => $v) {
+                    if (is_int($k)) {
+                        $projection[$v] = 1;
+                    } else {
+                        $projection[$k] = $v;
+                    }
+                }
+                $this->_projection = $projection;
+            }
+        }
 
         return $this;
     }
