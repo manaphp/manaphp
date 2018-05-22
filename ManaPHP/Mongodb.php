@@ -102,7 +102,7 @@ class Mongodb extends Component implements MongodbInterface
         $ns = strpos($source, '.') === false ? ($this->_defaultDb . '.' . $source) : $source;
 
         if ($this->_writeConcern === null) {
-            $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 1000);
+            $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
         }
 
         return $this->_getManager()->executeBulkWrite($ns, $bulk, $this->_writeConcern);
