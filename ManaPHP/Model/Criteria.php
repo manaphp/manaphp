@@ -305,21 +305,21 @@ abstract class Criteria extends Component implements CriteriaInterface
 
             if (is_int($k)) {
                 $data = $instance->$method()->fetch();
+            } elseif (is_string($v)) {
+                $data = $instance->$method()->select(preg_split('#[\s,]+#', $v))->fetch();
+            } elseif (is_array($v)) {
+                $data = $instance->$method()->select($v)->fetch();
+            } elseif (is_callable($v)) {
+                $data = $v($instance->$method());
             } else {
-                if (is_string($v) || is_array($v)) {
-                    $data = $instance->$method()->select($v)->fetch();
-                } elseif (is_callable($v)) {
-                    $data = $v($instance->$method());
-                } else {
-                    throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
-                }
+                throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
             }
-
-            if ($data instanceof Criteria) {
-                $data = $data->fetch();
-            }
-            $instance->{is_string($k) ? $k : $v} = $data;
         }
+
+        if ($data instanceof Criteria) {
+            $data = $data->fetch();
+        }
+        $instance->{is_string($k) ? $k : $v} = $data;
     }
 
     /**
