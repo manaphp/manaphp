@@ -17,6 +17,11 @@ use MongoDB\BSON\ObjectID;
 class Model extends \ManaPHP\Model
 {
     /**
+     * @var bool
+     */
+    protected static $_defaultAllowNullValue = false;
+
+    /**
      * @var \MongoDB\BSON\ObjectId
      */
     public $_id;
@@ -31,6 +36,14 @@ class Model extends \ManaPHP\Model
     public function getDb($context = null)
     {
         return 'mongodb';
+    }
+
+    /**
+     * @param bool $allow
+     */
+    public static function setDefaultAllowNullValue($allow)
+    {
+        self::$_defaultAllowNullValue = $allow;
     }
 
     /**
@@ -196,6 +209,14 @@ class Model extends \ManaPHP\Model
     /**
      * @return bool
      */
+    public function isAllowNullValue()
+    {
+        return self::$_defaultAllowNullValue;
+    }
+
+    /**
+     * @return bool
+     */
     protected function _createAutoIncrementIndex()
     {
         $autoIncField = $this->getAutoIncrementField();
@@ -285,29 +306,65 @@ class Model extends \ManaPHP\Model
     }
 
     /**
+     * @return static
      */
-    protected function _preCreate()
+    public function create()
     {
-        if ($this->_id === null) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $this->_id = new ObjectID();
-        } elseif (!is_object($this->_id)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $this->_id = new ObjectID($this->_id);
+        $fields = $this->getFields();
+        foreach ($this->getAutoFilledData(self::OP_CREATE) as $field => $value) {
+            /** @noinspection NotOptimalIfConditionsInspection */
+            if (!in_array($field, $fields, true) || $this->$field !== null) {
+                continue;
+            }
+            $this->$field = $value;
         }
 
+        $this->validate($fields);
+
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        $this->_id = new ObjectID($this->_id ?: null);
         $autoIncField = $this->getAutoIncrementField();
         if ($autoIncField !== null && $this->{$autoIncField} === null) {
             $this->{$autoIncField} = $this->generateAutoIncrementId();
         }
 
+        $allowNull = $this->isAllowNullValue();
         foreach ($this->getFieldTypes() as $field => $type) {
             if ($field === '_id') {
                 continue;
             }
 
-            $this->{$field} = $this->getNormalizedValue($type, $this->{$field} !== null ? $this->{$field} : '');
+            if ($this->$field !== null) {
+                $this->$field = $this->getNormalizedValue($type, $this->$field);
+            } else {
+                $this->$field = $allowNull ? null : $this->getNormalizedValue($type, '');
+            }
         }
+
+        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
+            return $this;
+        }
+
+        $fieldValues = [];
+        foreach ($fields as $field) {
+            if ($this->{$field} !== null) {
+                $fieldValues[$field] = $this->{$field};
+            } else {
+                if ($allowNull) {
+                    $fieldValues[$field] = null;
+                }
+            }
+        }
+
+        $connection = $this->_di->getShared($this->getDb($this));
+        $connection->insert($this->getSource($this), $fieldValues);
+
+        $this->_snapshot = $this->toArray();
+
+        $this->_fireEvent('afterCreate');
+        $this->_fireEvent('afterSave');
+
+        return $this;
     }
 
     /**
