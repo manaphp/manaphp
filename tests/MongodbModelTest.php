@@ -37,17 +37,17 @@ class MongodbModelTest extends TestCase
         $this->assertSame(123, $dt->getNormalizedValue('integer', 123));
         $this->assertSame(123, $dt->getNormalizedValue('integer', '123'));
 
-        $this->assertSame(1.23, $dt->getNormalizedValue('float', 1.23));
-        $this->assertSame(1.23, $dt->getNormalizedValue('float', '1.23'));
+        $this->assertSame(1.23, $dt->getNormalizedValue('double', 1.23));
+        $this->assertSame(1.23, $dt->getNormalizedValue('double', '1.23'));
 
         $objectId = new ObjectID();
         $this->assertEquals($objectId, $dt->getNormalizedValue('objectid', $objectId));
 
         $this->assertEquals(new ObjectID('123456789012345678901234'), $dt->getNormalizedValue('objectid', '123456789012345678901234'));
 
-        $this->assertTrue($dt->getNormalizedValue('bool', true));
-        $this->assertTrue($dt->getNormalizedValue('bool', 1));
-        $this->assertFalse($dt->getNormalizedValue('bool', 0));
+        $this->assertTrue($dt->getNormalizedValue('boolean', true));
+        $this->assertTrue($dt->getNormalizedValue('boolean', 1));
+        $this->assertFalse($dt->getNormalizedValue('boolean', 0));
     }
 
     public function test_count()

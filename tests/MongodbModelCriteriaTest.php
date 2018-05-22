@@ -38,7 +38,7 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertCount(1, $documents);
         $this->assertEquals(['city_id', 'city', 'country_id', 'last_update'], array_keys($documents[0]->toArray()));
 
-        $documents = City::criteria()->select('_id, city_id, city')->limit(1)->fetchAll();
+        $documents = City::criteria()->select(['_id', 'city_id', 'city'])->limit(1)->fetchAll();
         $this->assertCount(1, $documents);
         $this->assertEquals(['city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
 
