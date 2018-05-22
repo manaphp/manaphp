@@ -51,7 +51,7 @@ interface MongodbInterface
      * @param array  $command
      * @param string $db
      *
-     * @return \Mongodb\Driver\Cursor
+     * @return array[]
      */
     public function command($command, $db = null);
 

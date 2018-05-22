@@ -109,8 +109,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         }
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $cursor = $db->command($cmd);
-        $r = $cursor->toArray()[0];
+        $r = $db->command($cmd)[0];
         if (!$r['ok']) {
             throw new CriteriaException([
                 '`:distinct` distinct for `:collection` collection failed `:code`: `:msg`',

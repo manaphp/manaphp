@@ -205,18 +205,20 @@ class Mongodb extends Component implements MongodbInterface
      * @param array  $command
      * @param string $db
      *
-     * @return \Mongodb\Driver\Cursor
+     * @return array[]
      */
     public function command($command, $db = null)
     {
-        $this->fireEvent('mongodb:beforeExecuteCommand', ['db' => $db ?: $this->_defaultDb, 'command' => $command]);
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        /** @noinspection NullPointerExceptionInspection */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $r = $this->_getManager()->executeCommand($db ?: $this->_defaultDb, new Command($command));
-        $r->setTypeMap(['root' => 'array', 'document' => 'array']);
-        $this->fireEvent('mongodb:afterExecuteCommand');
+        if (!$db) {
+            $db = $this->_defaultDb;
+        }
 
+        $this->fireEvent('mongodb:beforeCommand', ['db' => $db, 'command' => $command]);
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        $cursor = $this->_getManager()->executeCommand($db, new Command($command));
+        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+        $r = $cursor->toArray();
+        $this->fireEvent('mongodb:afterCommand', ['db' => $db, 'command' => $command, 'result' => $r]);
         return $r;
     }
 
@@ -295,7 +297,7 @@ class Mongodb extends Component implements MongodbInterface
     public function listDatabases()
     {
         $databases = [];
-        $r = $this->command(['listDatabases' => 1], 'admin')->toArray();
+        $r = $this->command(['listDatabases' => 1], 'admin');
         foreach ((array)$r[0]['databases'] as $database) {
             $databases[] = $database['name'];
         }
@@ -311,7 +313,7 @@ class Mongodb extends Component implements MongodbInterface
     public function listCollections($db = null)
     {
         $collections = [];
-        $r = $this->command(['listCollections' => 1], $db)->toArray();
+        $r = $this->command(['listCollections' => 1], $db);
         foreach ($r as $collection) {
             $collections[] = $collection['name'];
         }
