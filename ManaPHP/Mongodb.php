@@ -45,7 +45,7 @@ class Mongodb extends Component implements MongodbInterface
 
         $pos = strrpos($dsn, '/');
         if ($pos !== false) {
-            $this->_defaultDb = substr($dsn, $pos + 1);
+            $this->_defaultDb = (string)substr($dsn, $pos + 1);
         }
     }
 
