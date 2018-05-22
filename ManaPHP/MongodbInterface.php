@@ -40,12 +40,12 @@ interface MongodbInterface
     /**
      * @param string   $source
      * @param array    $filter
-     * @param array    $queryOptions
+     * @param array    $options
      * @param bool|int $secondaryPreferred
      *
      * @return array
      */
-    public function query($source, $filter = [], $queryOptions = [], $secondaryPreferred = true);
+    public function query($source, $filter = [], $options = [], $secondaryPreferred = true);
 
     /**
      * @param array  $command

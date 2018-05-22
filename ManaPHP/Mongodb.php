@@ -178,12 +178,12 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @param string   $source
      * @param array    $filter
-     * @param array    $queryOptions
+     * @param array    $options
      * @param bool|int $secondaryPreferred
      *
      * @return array[]
      */
-    public function query($source, $filter = [], $queryOptions = [], $secondaryPreferred = true)
+    public function query($source, $filter = [], $options = [], $secondaryPreferred = true)
     {
         $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
         if (is_bool($secondaryPreferred)) {
@@ -191,14 +191,14 @@ class Mongodb extends Component implements MongodbInterface
         } else {
             $readPreference = $secondaryPreferred;
         }
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $this->fireEvent('mongodb:beforeQuery', ['namespace' => $ns]);
+        $this->fireEvent('mongodb:beforeQuery', ['namespace' => $ns, 'filter' => $filter, 'options' => $options]);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         /** @noinspection PhpUnhandledExceptionInspection */
-        $cursor = $this->_getManager()->executeQuery($ns, new Query($filter, $queryOptions), new ReadPreference($readPreference));
-        $this->fireEvent('mongodb:afterQuery');
+        $cursor = $this->_getManager()->executeQuery($ns, new Query($filter, $options), new ReadPreference($readPreference));
         $cursor->setTypeMap(['root' => 'array']);
-        return $cursor->toArray();
+        $r = $cursor->toArray();
+        $this->fireEvent('mongodb:afterQuery', ['namespace' => $ns, 'filter' => $filter, 'options' => $options, 'result' => $r]);
+        return $r;
     }
 
     /**
