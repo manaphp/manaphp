@@ -1219,7 +1219,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $this->_snapshot = $unserialized;
         }
 
-        foreach ($unserialized as $field => $value) {
+        foreach ((array)$unserialized as $field => $value) {
             $this->$field = $value;
         }
     }

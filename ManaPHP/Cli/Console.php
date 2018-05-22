@@ -152,7 +152,7 @@ class Console extends Component implements ConsoleInterface
         } else {
             $replaces = [];
 
-            foreach ($message as $k => $v) {
+            foreach ((array)$message as $k => $v) {
                 if ($k === 0) {
                     continue;
                 }

@@ -54,11 +54,11 @@ class CronController extends Controller
             $commandName = array_shift($arguments);
         }
 
+        $start_time = microtime(true);
+        $commandLine = implode(' ', array_slice($simArguments, 1));
+        $this->logger->info(str_repeat('*====', 10), 'cron');
+        $this->logger->info(['begin: `:command`.', 'command' => $commandLine], 'cron');
         try {
-            $start_time = microtime(true);
-            $commandLine = implode(' ', array_slice($simArguments, 1));
-            $this->logger->info(str_repeat('*====', 10), 'cron');
-            $this->logger->info(['begin: `:command`.', 'command' => $commandLine], 'cron');
             $this->arguments->parse($simArguments);
             $this->commandInvoker->invoke($controllerInstance, $commandName);
             $use_time = round(microtime(true) - $start_time, 3);
@@ -67,6 +67,8 @@ class CronController extends Controller
             $this->logger->info(['failed because of exception: `:command`', 'command' => $commandLine]);
             $this->logger->error($e, 'cron');
         }
+
+        return 0;
     }
 
 }

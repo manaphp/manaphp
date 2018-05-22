@@ -196,7 +196,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $model = new static;
 
         $table = $model->getSource($bind);
-        /** @noinspection SqlNoDataSourceInspection */
         return $model->getMasterConnection($bind)->execute("UPDATE [$table] SET " . $sql, $bind);
     }
 }

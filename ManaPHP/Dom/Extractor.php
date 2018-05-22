@@ -52,7 +52,7 @@ class Extractor
 
     /**
      * @param \DOMElement $node
-     * @param string      $rule
+     * @param string      $selectors
      *
      * @return string
      */

@@ -45,7 +45,6 @@ class Linter extends Component
     /**
      *
      * @return array
-     * @throws \ManaPHP\Mongodb\Model\Exception
      */
     public function lintMethodFields()
     {
@@ -142,7 +141,7 @@ class Linter extends Component
         $fields = [];
 
         if (preg_match_all('#\*\s+@property\s+(\S+)\s+\$(\w+)#', $comment, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
+            foreach ((array)$matches as $match) {
                 $type = $match[1];
                 $field = $match[2];
 
