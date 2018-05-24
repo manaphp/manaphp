@@ -76,6 +76,7 @@
     <li><a href="#tab_log" data-toggle="tab">Log</a></li>
     <li><a href="#tab_event" data-toggle="tab">Events</a></li>
     <li><a href="#tab_sql" data-toggle="tab">SQL</a></li>
+    <li><a href="#tab_mongodb" data-toggle="tab">Mongodb</a></li>
     <li><a href="#tab_included_files" data-toggle="tab">IncludedFiles</a></li>
   </ul>
   <div class="debugger"><a :href="basic.request_url" :title="basic.request_url" target="_self">ReqSrc</a></div>
@@ -289,6 +290,29 @@
         </table>
       </div>
     </div>
+      <div class="tab-pane" id="tab_mongodb">
+          <h4>Mongodb</h4>
+          <table class="table table-striped table-bordered table-condensed">
+              <thead>
+              <tr>
+                  <td>#</td>
+                  <td>type</td>
+                  <td>raw</td>
+                  <td>shell</td>
+                  <td>elapsed</td>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="(item, index) in mongodb">
+                  <td>{{index}}</td>
+                  <td>{{item.type}}</td>
+                  <td>{{item.raw|json 4}}</td>
+                  <td>{{item.shell}}</td>
+                  <td>{{item.elapsed}}</td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
     <div class="tab-pane" id="tab_included_files">
       <h4>IncludedFiles({{included_files_computed.length}}) <label><input type="checkbox" v-model="included_files_application_only">
           <small>Ignore Framework Files</small>

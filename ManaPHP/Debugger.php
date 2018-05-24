@@ -42,6 +42,9 @@ class Debugger extends Component implements DebuggerInterface
     protected $_sql_count = 0;
     protected $_sql_beforeQueryTime;
 
+    protected $_mongodb_max = 256;
+    protected $_mongodb = [];
+
     protected $_exception = [];
 
     protected $_warnings = [];
@@ -180,6 +183,45 @@ class Debugger extends Component implements DebuggerInterface
             $this->_view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
         } elseif ($event === 'component:setUndefinedProperty') {
             $this->_warnings[] = 'Set to undefined property `' . $data['name'] . '` of `' . $data['class'] . '`';
+        } elseif ($event === 'mongodb:afterQuery') {
+            if (count($this->_mongodb) < $this->_mongodb_max) {
+                $item = [];
+                $item['type'] = 'query';
+                $item['raw'] = ['namespace' => $data['namespace'], 'filter' => $data['filter'], 'options' => $data['options']];
+                $options = $data['options'];
+                list($ns, $collection) = explode('.', $data['namespace'], 2);
+                $shell = "/*use $ns;*/" . PHP_EOL
+                    . "db.$collection.";
+                if (isset($options['limit']) && $options['limit'] === 1) {
+                    $shell .= 'findOne(' . json_encode($data['filter'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    if (isset($options['projection'])) {
+                        $shell .= ', ' . json_encode($options['projection'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ');';
+                    } else {
+                        $shell .= ');';
+                    }
+                }
+                $item['shell'] = $shell;
+                $item['elapsed'] = $data['elapsed'];
+                $this->_mongodb[] = $item;
+            }
+        } elseif ($event === 'mongodb:afterCommand') {
+            if (count($this->_mongodb) < $this->_mongodb_max) {
+                $item = [];
+                $item['type'] = 'command';
+                $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
+                $item['shell'] = [];
+                $item['elapsed'] = $data['elapsed'];
+                $this->_mongodb[] = $item;
+            }
+        } elseif ($event === 'mongodb:afterBulkWrite') {
+            if (count($this->_mongodb) < $this->_mongodb_max) {
+                $item = [];
+                $item['type'] = 'bulkWrite';
+                $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
+                $item['shell'] = [];
+                $item['elapsed'] = $data['elapsed'];
+                $this->_mongodb = [];
+            }
         }
     }
 
@@ -301,7 +343,7 @@ class Debugger extends Component implements DebuggerInterface
         $data['logger'] = ['log' => $this->_log, 'levels' => array_flip($this->logger->getLevels()), 'level' => 6];
 
         $data['sql'] = ['prepared' => $this->_sql_prepared, 'executed' => $this->_sql_executed, 'count' => $this->_sql_count];
-
+        $data['mongodb'] = $this->_mongodb;
         $data['configure'] = isset($this->configure) ? $this->configure->__debugInfo() : [];
         $data['view'] = $this->_view;
         $data['exception'] = $this->_exception;
