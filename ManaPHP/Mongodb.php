@@ -58,8 +58,8 @@ class Mongodb extends Component implements MongodbInterface
     {
         for ($i = $this->_manager ? 0 : 1; $i < 2; $i++) {
             try {
-                $r = $this->command(['ping' => 1], 'admin')[0];
-                if ($r['ok']) {
+                $result = $this->command(['ping' => 1], 'admin')[0];
+                if ($result['ok']) {
                     return true;
                 }
             } catch (ConnectionTimeoutException $e) {
@@ -102,11 +102,11 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->fireEvent('mongodb:beforeBulkWrite', ['namespace' => $namespace, 'bulk' => $bulk]);
         $start_time = microtime(true);
-        $r = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
+        $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterBulkWrite', ['namespace' => $namespace, 'bulk' => $bulk, 'result' => $r, 'elapsed' => $elapsed]);
+        $this->fireEvent('mongodb:afterBulkWrite', ['namespace' => $namespace, 'bulk' => $bulk, 'result' => $result, 'elapsed' => $elapsed]);
 
-        return $r;
+        return $result;
     }
 
     /**
@@ -123,7 +123,7 @@ class Mongodb extends Component implements MongodbInterface
         $bulk = new BulkWrite();
         $id = $bulk->insert($document);
         $this->fireEvent('mongodb:beforeInsert', ['namespace' => $namespace]);
-        $this->bulkWrite($namespace, $bulk);
+        $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterInsert');
 
         return $id ?: $document['_id'];
@@ -194,10 +194,10 @@ class Mongodb extends Component implements MongodbInterface
         /** @noinspection PhpUnhandledExceptionInspection */
         $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), new ReadPreference($readPreference));
         $cursor->setTypeMap(['root' => 'array']);
-        $r = $cursor->toArray();
+        $result = $cursor->toArray();
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterQuery', ['namespace' => $namespace, 'filter' => $filter, 'options' => $options, 'result' => $r, 'elapsed' => $elapsed]);
-        return $r;
+        $this->fireEvent('mongodb:afterQuery', ['namespace' => $namespace, 'filter' => $filter, 'options' => $options, 'result' => $result, 'elapsed' => $elapsed]);
+        return $result;
     }
 
     /**
@@ -217,10 +217,10 @@ class Mongodb extends Component implements MongodbInterface
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $cursor = $this->_getManager()->executeCommand($db, new Command($command));
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-        $r = $cursor->toArray();
+        $result = $cursor->toArray();
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterCommand', ['db' => $db, 'command' => $command, 'result' => $r, 'elapsed' => $elapsed]);
-        return $r;
+        $this->fireEvent('mongodb:afterCommand', ['db' => $db, 'command' => $command, 'result' => $result, 'elapsed' => $elapsed]);
+        return $result;
     }
 
     /**
@@ -298,8 +298,8 @@ class Mongodb extends Component implements MongodbInterface
     public function listDatabases()
     {
         $databases = [];
-        $r = $this->command(['listDatabases' => 1], 'admin');
-        foreach ((array)$r[0]['databases'] as $database) {
+        $result = $this->command(['listDatabases' => 1], 'admin');
+        foreach ((array)$result[0]['databases'] as $database) {
             $databases[] = $database['name'];
         }
 
@@ -314,8 +314,8 @@ class Mongodb extends Component implements MongodbInterface
     public function listCollections($db = null)
     {
         $collections = [];
-        $r = $this->command(['listCollections' => 1], $db);
-        foreach ($r as $collection) {
+        $result = $this->command(['listCollections' => 1], $db);
+        foreach ($result as $collection) {
             $collections[] = $collection['name'];
         }
 
