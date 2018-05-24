@@ -375,34 +375,32 @@ class Model extends \ManaPHP\Model
      */
     public function update()
     {
-        if ($this->_snapshot === false) {
+        $snapshot = $this->_snapshot;
+        if ($snapshot === false) {
             throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
         $primaryKey = $this->getPrimaryKey();
 
         if (!isset($this->{$primaryKey})) {
-            throw new PreconditionException([
-                '`:model` model cannot be updated because some primary key value is not provided',
-                'model' => get_class($this)
-            ]);
+            throw new PreconditionException(['`:model` model cannot be updated because some primary key value is not provided', 'model' => get_class($this)]);
         }
 
         $changedFields = [];
         $fieldTypes = $this->getFieldTypes();
         foreach ($fieldTypes as $field => $type) {
             if ($this->$field === null) {
-                if (isset($this->_snapshot[$field])) {
+                if (isset($snapshot[$field])) {
                     $changedFields[] = $field;
                 }
             } else {
-                if (!isset($this->_snapshot[$field])) {
+                if (!isset($snapshot[$field])) {
                     $this->$field = $this->getNormalizedValue($type, $this->$field);
                     $changedFields[] = $field;
-                } elseif ($this->_snapshot[$field] !== $this->$field) {
+                } elseif ($snapshot[$field] !== $this->$field) {
                     $this->$field = $this->getNormalizedValue($type, $this->$field);
                     /** @noinspection NotOptimalIfConditionsInspection */
-                    if ($this->_snapshot[$field] !== $this->$field) {
+                    if ($snapshot[$field] !== $this->$field) {
                         $changedFields[] = $field;
                     }
                 }
@@ -418,11 +416,11 @@ class Model extends \ManaPHP\Model
         $fieldValues = [];
         foreach ($fieldTypes as $field => $type) {
             if ($this->$field === null) {
-                if (isset($this->_snapshot[$field])) {
+                if (isset($snapshot[$field])) {
                     $fieldValues[$field] = null;
                 }
             } else {
-                if (!isset($this->_snapshot[$field]) || $this->_snapshot[$field] !== $this->$field) {
+                if (!isset($snapshot[$field]) || $snapshot[$field] !== $this->$field) {
                     $fieldValues[$field] = $this->$field;
                 }
             }
