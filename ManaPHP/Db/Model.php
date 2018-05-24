@@ -3,6 +3,7 @@
 namespace ManaPHP\Db;
 
 use ManaPHP\Di;
+use ManaPHP\Exception\PreconditionException;
 
 /**
  * Class ManaPHP\Db\Model
@@ -167,6 +168,79 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $this->_snapshot = $this->toArray();
 
         $this->_fireEvent('afterCreate');
+        $this->_fireEvent('afterSave');
+
+        return $this;
+    }
+
+    /**
+     * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
+     *
+     * @return static
+     */
+    public function update()
+    {
+        if ($this->_snapshot === false) {
+            throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+        }
+
+        $primaryKey = $this->getPrimaryKey();
+
+        if (!isset($this->{$primaryKey})) {
+            throw new PreconditionException([
+                '`:model` model cannot be updated because some primary key value is not provided',
+                'model' => get_class($this)
+            ]);
+        }
+
+        $fieldValues = [];
+
+        $fields = $this->getFields();
+        foreach ($fields as $field) {
+            if ($field === $primaryKey || $this->{$field} === null) {
+                continue;
+            }
+
+            if (isset($this->_snapshot[$field])) {
+                if (is_int($this->_snapshot[$field])) {
+                    /** @noinspection TypeUnsafeComparisonInspection */
+                    if ($this->_snapshot[$field] == $this->{$field}) {
+                        continue;
+                    }
+                } else {
+                    if ($this->_snapshot[$field] === $this->{$field}) {
+                        continue;
+                    }
+                }
+            }
+
+            $fieldValues[$field] = $this->{$field};
+        }
+
+        if (!$fieldValues) {
+            return $this;
+        }
+
+        foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
+            if (!in_array($field, $fields, true)) {
+                continue;
+            }
+
+            $this->$field = $value;
+            $fieldValues[$field] = $value;
+        }
+
+        $this->validate(array_keys($fieldValues));
+
+        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
+            return $this;
+        }
+
+        static::criteria(null, $this)->where($primaryKey, $this->$primaryKey)->update($fieldValues);
+
+        $this->_snapshot = $this->toArray();
+
+        $this->_fireEvent('afterUpdate');
         $this->_fireEvent('afterSave');
 
         return $this;
