@@ -852,8 +852,19 @@ class Criteria extends \ManaPHP\Model\Criteria
             if ($this->_limit !== null) {
                 $options['limit'] = $this->_limit;
             }
+	    
+            $filters = [];
+            foreach ($this->_filters as $filter) {
+                $key = key($filter);
+                $value = current($filter);
+                if (isset($filters[$key]) || count($filter) !== 1) {
+                    $filters = ['$and' => $this->_filters];
+                    break;
+                }
+                $filters[$key] = $value;
+            }
 
-            $r = $db->query($source, $this->_filters ? ['$and' => $this->_filters] : [], $options, !$this->_forceUseMaster);
+            $r = $db->query($source, $filters, $options, !$this->_forceUseMaster);
         } else {
             $pipeline = [];
             if ($this->_filters) {
