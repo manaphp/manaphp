@@ -188,16 +188,14 @@ class Debugger extends Component implements DebuggerInterface
                 $item['raw'] = ['namespace' => $data['namespace'], 'filter' => $data['filter'], 'options' => $data['options']];
                 $options = $data['options'];
                 list($ns, $collection) = explode('.', $data['namespace'], 2);
-                $shell = "/*use $ns;*/" . PHP_EOL
-                    . "db.$collection.";
-                if (isset($options['limit']) && $options['limit'] === 1) {
-                    $shell .= 'findOne(' . json_encode($data['filter'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                    if (isset($options['projection'])) {
-                        $shell .= ', ' . json_encode($options['projection'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ');';
-                    } else {
-                        $shell .= ');';
-                    }
+                $shell = "db.$collection.";
+                $shell .= (isset($options['limit']) ? 'findOne(' : 'find(') . json_encode($data['filter'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                if (isset($options['projection'])) {
+                    $shell .= ', ' . json_encode($options['projection'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ');';
+                } else {
+                    $shell .= ');';
                 }
+
                 $item['shell'] = $shell;
                 $item['elapsed'] = $data['elapsed'];
                 $this->_mongodb[] = $item;
