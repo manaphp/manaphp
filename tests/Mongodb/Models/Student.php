@@ -23,7 +23,7 @@ class Student extends Model
     public function getFieldTypes()
     {
         return [
-            '_id' => 'integer',
+            '_id' => 'objectid',
             'id' => 'integer',
             'age' => 'integer',
             'name' => 'string'
