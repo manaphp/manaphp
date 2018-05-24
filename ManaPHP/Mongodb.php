@@ -94,17 +94,17 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkWrite($source, $bulk)
     {
-        $ns = strpos($source, '.') === false ? ($this->_defaultDb . '.' . $source) : $source;
+        $namespace = strpos($source, '.') === false ? ($this->_defaultDb . '.' . $source) : $source;
 
         if ($this->_writeConcern === null) {
             $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
         }
 
-        $this->fireEvent('mongodb:beforeBulkWrite', ['namespace' => $ns, 'bulk' => $bulk]);
+        $this->fireEvent('mongodb:beforeBulkWrite', ['namespace' => $namespace, 'bulk' => $bulk]);
         $start_time = microtime(true);
-        $r = $this->_getManager()->executeBulkWrite($ns, $bulk, $this->_writeConcern);
+        $r = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterBulkWrite', ['namespace' => $ns, 'bulk' => $bulk, 'result' => $r, 'elapsed' => $elapsed]);
+        $this->fireEvent('mongodb:afterBulkWrite', ['namespace' => $namespace, 'bulk' => $bulk, 'result' => $r, 'elapsed' => $elapsed]);
 
         return $r;
     }
@@ -118,12 +118,12 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function insert($source, $document)
     {
-        $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
         $bulk = new BulkWrite();
         $id = $bulk->insert($document);
-        $this->fireEvent('mongodb:beforeInsert', ['namespace' => $ns]);
-        $this->bulkWrite($ns, $bulk);
+        $this->fireEvent('mongodb:beforeInsert', ['namespace' => $namespace]);
+        $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterInsert');
 
         return $id ?: $document['_id'];
@@ -140,14 +140,14 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function update($source, $document, $filter, $updateOptions = [])
     {
-        $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
         $bulk = new BulkWrite();
         $updateOptions += ['multi' => true];
 
         $bulk->update($filter, ['$set' => $document], $updateOptions);
-        $this->fireEvent('mongodb:beforeUpdate', ['namespace' => $ns]);
-        $result = $this->bulkWrite($ns, $bulk);
+        $this->fireEvent('mongodb:beforeUpdate', ['namespace' => $namespace]);
+        $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterUpdate');
         return $result->getModifiedCount();
     }
@@ -162,12 +162,12 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function delete($source, $filter, $deleteOptions = [])
     {
-        $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
         $bulk = new BulkWrite();
         $bulk->delete($filter, $deleteOptions);
-        $this->fireEvent('mongodb:beforeDelete', ['namespace' => $ns]);
-        $result = $this->bulkWrite($ns, $bulk);
+        $this->fireEvent('mongodb:beforeDelete', ['namespace' => $namespace]);
+        $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterDelete');
         return $result->getDeletedCount();
     }
@@ -182,21 +182,21 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function query($source, $filter = [], $options = [], $secondaryPreferred = true)
     {
-        $ns = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
         if (is_bool($secondaryPreferred)) {
             $readPreference = $secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY;
         } else {
             $readPreference = $secondaryPreferred;
         }
-        $this->fireEvent('mongodb:beforeQuery', ['namespace' => $ns, 'filter' => $filter, 'options' => $options]);
+        $this->fireEvent('mongodb:beforeQuery', ['namespace' => $namespace, 'filter' => $filter, 'options' => $options]);
         $start_time = microtime(true);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         /** @noinspection PhpUnhandledExceptionInspection */
-        $cursor = $this->_getManager()->executeQuery($ns, new Query($filter, $options), new ReadPreference($readPreference));
+        $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), new ReadPreference($readPreference));
         $cursor->setTypeMap(['root' => 'array']);
         $r = $cursor->toArray();
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterQuery', ['namespace' => $ns, 'filter' => $filter, 'options' => $options, 'result' => $r, 'elapsed' => $elapsed]);
+        $this->fireEvent('mongodb:afterQuery', ['namespace' => $namespace, 'filter' => $filter, 'options' => $options, 'result' => $r, 'elapsed' => $elapsed]);
         return $r;
     }
 
