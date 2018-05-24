@@ -40,7 +40,6 @@ class Debugger extends Component implements DebuggerInterface
     protected $_sql_executed_max = 256;
 
     protected $_sql_count = 0;
-    protected $_sql_beforeQueryTime;
 
     protected $_mongodb_max = 256;
     protected $_mongodb = [];
@@ -124,7 +123,6 @@ class Debugger extends Component implements DebuggerInterface
                 ];
             }
         } elseif ($event === 'db:beforeQuery') {
-            $this->_sql_beforeQueryTime = microtime(true);
             /**
              * @var \ManaPHP\DbInterface $source
              */
@@ -150,7 +148,7 @@ class Debugger extends Component implements DebuggerInterface
              * @var \ManaPHP\DbInterface $source
              */
             if (count($this->_sql_executed) <= $this->_sql_executed_max) {
-                $this->_sql_executed[$this->_sql_count - 1]['time'] = round(microtime(true) - $this->_sql_beforeQueryTime, 4);
+                $this->_sql_executed[$this->_sql_count - 1]['elapsed'] = $data['elapsed'];
                 $this->_sql_executed[$this->_sql_count - 1]['row_count'] = $source->affectedRows();
             }
         } elseif ($event === 'db:beginTransaction' || $event === 'db:rollbackTransaction' || $event === 'db:commitTransaction') {
