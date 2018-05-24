@@ -227,7 +227,7 @@ abstract class Db extends Component implements DbInterface
         $this->_affectedRows = 0;
 
         $this->fireEvent('db:beforeQuery');
-
+        $start_time = microtime(true);
         try {
             if ($bind) {
                 $statement = $this->_getPdo()->prepare($this->_sql);
@@ -249,7 +249,8 @@ abstract class Db extends Component implements DbInterface
             ]);
         }
 
-        $this->fireEvent('db:afterQuery');
+        $elapsed = round(microtime(true) - $start_time, 3);
+        $this->fireEvent('db:afterQuery', ['elapsed' => $elapsed]);
 
         return $statement;
     }
@@ -285,7 +286,7 @@ abstract class Db extends Component implements DbInterface
         $this->_affectedRows = 0;
 
         $this->fireEvent('db:beforeQuery');
-
+        $start_time = microtime(true);
         try {
             if ($bind) {
                 $statement = $this->_executePrepared($this->_getPdo()->prepare($this->_sql), $bind);
@@ -303,7 +304,8 @@ abstract class Db extends Component implements DbInterface
         }
 
         if (is_int($this->_affectedRows)) {
-            $this->fireEvent('db:afterQuery');
+            $elapsed = round(microtime(true) - $start_time, 3);
+            $this->fireEvent('db:afterQuery', ['elapsed' => $elapsed]);
         }
 
         return $this->_affectedRows;
