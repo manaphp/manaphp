@@ -100,11 +100,11 @@ class Mongodb extends Component implements MongodbInterface
             $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
         }
 
-        $this->fireEvent('mongodb:beforeBulkWrite', ['namespace' => $namespace, 'bulk' => $bulk]);
+        $this->fireEvent('mongodb:beforeBulkWrite', compact('namespace', 'bulk'));
         $start_time = microtime(true);
         $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterBulkWrite', ['namespace' => $namespace, 'bulk' => $bulk, 'result' => $result, 'elapsed' => $elapsed]);
+        $this->fireEvent('mongodb:afterBulkWrite', compact('namespace', 'bulk', 'result', 'elapsed'));
 
         return $result;
     }
@@ -188,7 +188,7 @@ class Mongodb extends Component implements MongodbInterface
         } else {
             $readPreference = $secondaryPreferred;
         }
-        $this->fireEvent('mongodb:beforeQuery', ['namespace' => $namespace, 'filter' => $filter, 'options' => $options]);
+        $this->fireEvent('mongodb:beforeQuery', compact('namespace', 'filter', 'options'));
         $start_time = microtime(true);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -196,7 +196,7 @@ class Mongodb extends Component implements MongodbInterface
         $cursor->setTypeMap(['root' => 'array']);
         $result = $cursor->toArray();
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterQuery', ['namespace' => $namespace, 'filter' => $filter, 'options' => $options, 'result' => $result, 'elapsed' => $elapsed]);
+        $this->fireEvent('mongodb:afterQuery', compact('namespace', 'filter', 'options', 'result', 'elapsed'));
         return $result;
     }
 
@@ -212,14 +212,14 @@ class Mongodb extends Component implements MongodbInterface
             $db = $this->_defaultDb;
         }
 
-        $this->fireEvent('mongodb:beforeCommand', ['db' => $db, 'command' => $command]);
+        $this->fireEvent('mongodb:beforeCommand', compact('db', 'command'));
         $start_time = microtime(true);
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $cursor = $this->_getManager()->executeCommand($db, new Command($command));
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
         $result = $cursor->toArray();
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterCommand', ['db' => $db, 'command' => $command, 'result' => $result, 'elapsed' => $elapsed]);
+        $this->fireEvent('mongodb:afterCommand', compact('db', 'command', 'result', 'elapsed'));
         return $result;
     }
 
