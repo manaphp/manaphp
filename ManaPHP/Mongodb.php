@@ -243,10 +243,7 @@ class Mongodb extends Component implements MongodbInterface
             if (!isset($command['cursor'])) {
                 $command['cursor'] = ['batchSize' => 1000];
             }
-            $this->fireEvent('mongodb:beforeAggregate', ['db' => $db, 'command' => $command]);
-            $r = $this->command($command, $db);
-            $this->fireEvent('mongodb:afterAggregate', ['db' => $db, 'command' => $command, 'result' => $r]);
-            return $r;
+            return $this->command($command, $db);
         } catch (RuntimeException $e) {
             throw new MongodbException([
                 '`:aggregate` aggregate for `:collection` collection failed: :msg',
