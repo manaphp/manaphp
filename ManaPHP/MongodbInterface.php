@@ -22,20 +22,20 @@ interface MongodbInterface
      * @param string $source
      * @param array  $document
      * @param array  $filter
-     * @param array  $updateOptions
+     * @param array  $options
      *
      * @return int
      */
-    public function update($source, $document, $filter, $updateOptions = []);
+    public function update($source, $document, $filter, $options = []);
 
     /**
      * @param string $source
      * @param array  $filter
-     * @param array  $deleteOptions
+     * @param array  $options
      *
      * @return int|null
      */
-    public function delete($source, $filter, $deleteOptions = []);
+    public function delete($source, $filter, $options = []);
 
     /**
      * @param string   $source

@@ -133,19 +133,19 @@ class Mongodb extends Component implements MongodbInterface
      * @param string $source
      * @param array  $document
      * @param array  $filter
-     * @param array  $updateOptions
+     * @param array  $options
      *
      * @return int
      * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
-    public function update($source, $document, $filter, $updateOptions = [])
+    public function update($source, $document, $filter, $options = [])
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
         $bulk = new BulkWrite();
-        $updateOptions += ['multi' => true];
+        $options += ['multi' => true];
 
-        $bulk->update($filter, ['$set' => $document], $updateOptions);
+        $bulk->update($filter, ['$set' => $document], $options);
         $this->fireEvent('mongodb:beforeUpdate', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterUpdate');
@@ -155,17 +155,17 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @param string $source
      * @param array  $filter
-     * @param array  $deleteOptions
+     * @param array  $options
      *
      * @return int|null
      * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
-    public function delete($source, $filter, $deleteOptions = [])
+    public function delete($source, $filter, $options = [])
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
         $bulk = new BulkWrite();
-        $bulk->delete($filter, $deleteOptions);
+        $bulk->delete($filter, $options);
         $this->fireEvent('mongodb:beforeDelete', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterDelete');
