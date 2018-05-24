@@ -5,6 +5,7 @@ namespace ManaPHP\Mongodb;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use MongoDB\BSON\ObjectID;
 
@@ -362,6 +363,89 @@ class Model extends \ManaPHP\Model
         $this->_snapshot = $this->toArray();
 
         $this->_fireEvent('afterCreate');
+        $this->_fireEvent('afterSave');
+
+        return $this;
+    }
+
+    /**
+     * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
+     *
+     * @return static
+     */
+    public function update()
+    {
+        if ($this->_snapshot === false) {
+            throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+        }
+
+        $primaryKey = $this->getPrimaryKey();
+
+        if (!isset($this->{$primaryKey})) {
+            throw new PreconditionException([
+                '`:model` model cannot be updated because some primary key value is not provided',
+                'model' => get_class($this)
+            ]);
+        }
+
+        $changedFields = [];
+        $fieldTypes = $this->getFieldTypes();
+        foreach ($fieldTypes as $field => $type) {
+            if ($this->$field === null) {
+                if (isset($this->_snapshot[$field])) {
+                    $changedFields[] = $field;
+                }
+            } else {
+                if (!isset($this->_snapshot[$field])) {
+                    $this->$field = $this->getNormalizedValue($type, $this->$field);
+                    $changedFields[] = $field;
+                } elseif ($this->_snapshot[$field] !== $this->$field) {
+                    $this->$field = $this->getNormalizedValue($type, $this->$field);
+                    /** @noinspection NotOptimalIfConditionsInspection */
+                    if ($this->_snapshot[$field] !== $this->$field) {
+                        $changedFields[] = $field;
+                    }
+                }
+            }
+        }
+
+        if (!$changedFields) {
+            return $this;
+        }
+
+        $this->validate($changedFields);
+
+        $fieldValues = [];
+        foreach ($fieldTypes as $field => $type) {
+            if ($this->$field === null) {
+                if (isset($this->_snapshot[$field])) {
+                    $fieldValues[$field] = null;
+                }
+            } else {
+                if (!isset($this->_snapshot[$field]) || $this->_snapshot[$field] !== $this->$field) {
+                    $fieldValues[$field] = $this->$field;
+                }
+            }
+        }
+
+        foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
+            if (!isset($fieldTypes[$field])) {
+                continue;
+            }
+
+            $this->$field = $value;
+            $fieldValues[$field] = $value;
+        }
+
+        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
+            return $this;
+        }
+
+        static::criteria(null, $this)->where($primaryKey, $this->$primaryKey)->update($fieldValues);
+
+        $this->_snapshot = $this->toArray();
+
+        $this->_fireEvent('afterUpdate');
         $this->_fireEvent('afterSave');
 
         return $this;
