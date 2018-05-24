@@ -524,20 +524,23 @@ if (!function_exists('e')) {
 
 if (!function_exists('elapsed')) {
     /**
-     * @param float $previous
-     * @param int   $precision
+     * @param float|string $previous
+     * @param int          $precision
      *
      * @return float
      */
     function elapsed($previous = null, $precision = 3)
     {
         static $stack;
-        if ($previous !== null) {
+        if (is_float($previous)) {
             return round(microtime(true) - $previous, 3);
-        }
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-        if (isset($backtrace['class'])) {
-            $key = $backtrace['class'] . $backtrace['function'];
+        } elseif (is_string($previous)) {
+            $key = $previous;
+        } else {
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+            if (isset($backtrace['class'])) {
+                $key = $backtrace['class'] . $backtrace['function'];
+            }
         }
 
         if (!isset($stack[$key]) || count($stack[$key]) % 2 === 0) {
