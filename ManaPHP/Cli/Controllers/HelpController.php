@@ -69,7 +69,7 @@ class HelpController extends Controller
                 continue;
             }
 
-            $command = $controller . ' ' . $match[1];
+            $command = $controller . ($match[1] === 'default' ? '' : (' ' . $match[1]));
 
             $description = '';
             foreach (preg_split('#[\r\n]+#', $rc->getMethod($match[0])->getDocComment()) as $line) {
