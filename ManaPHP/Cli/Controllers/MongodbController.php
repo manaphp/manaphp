@@ -215,6 +215,8 @@ class MongodbController extends Controller
         if ($service !== 'mongodb') {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
+            $str .= '     * @param mixed $context' . PHP_EOL;
+            $str .= '     *' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
             $str .= '    public function getDb($context = null)' . PHP_EOL;
