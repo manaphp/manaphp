@@ -61,8 +61,8 @@ class MongodbController extends Controller
             $modelName = 'App\\Models\\' . ucfirst($modelName);
         }
 
-        $fieldTypes = $this->_inferFieldTypes($input);
-        $model = $this->_renderModel($fieldTypes, $modelName, $optimized);
+        $fieldTypes = $this->_inferFieldTypes([$input]);
+        $model = $this->_renderModel($fieldTypes, $modelName, 'mongodb', $optimized);
         $file = '@tmp/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         $this->filesystem->filePut($file, $model);
 
@@ -99,7 +99,7 @@ class MongodbController extends Controller
                 $plainClass = Text::camelize($fileName);
                 $modelClass = $namespace . '\\' . $plainClass;
 
-                $model = $this->_renderModel($fieldTypes, $modelClass, $optimized);
+                $model = $this->_renderModel($fieldTypes, $modelClass, 'mongodb', $optimized);
 
                 $this->filesystem->filePut("@tmp/mongodb/models/$plainClass.php", $model);
             }
@@ -121,7 +121,7 @@ class MongodbController extends Controller
 
                     $fieldTypes = $this->_inferFieldTypes($docs);
                     $modelClass = $namespace . '\\' . $plainClass;
-                    $model = $this->_renderModel($fieldTypes, $modelClass);
+                    $model = $this->_renderModel($fieldTypes, $modelClass, $service);
                     $this->filesystem->filePut($fileName, $model);
 
                     $this->console->progress([
@@ -179,11 +179,12 @@ class MongodbController extends Controller
     /**
      * @param array  $fieldTypes
      * @param string $modelName
+     * @param string $service
      * @param bool   $optimized
      *
      * @return string
      */
-    protected function _renderModel($fieldTypes, $modelName, $optimized = false)
+    protected function _renderModel($fieldTypes, $modelName, $service, $optimized = false)
     {
         $fields = array_keys($fieldTypes);
 
@@ -209,6 +210,17 @@ class MongodbController extends Controller
             }
 
             $str .= '    public $' . $field . ';' . PHP_EOL;
+        }
+
+        if ($service !== 'mongodb') {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public function getDb($context = null)' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= "        return '$service';" . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
         }
 
         if (1) {
