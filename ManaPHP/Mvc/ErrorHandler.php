@@ -8,7 +8,8 @@ use ManaPHP\ErrorHandlerInterface;
  * Class ManaPHP\Mvc\ErrorHandler
  *
  * @package ManaPHP\Mvc
- * @property \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\Http\RequestInterface  $request
+ * @property \ManaPHP\Http\ResponseInterface $response
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
