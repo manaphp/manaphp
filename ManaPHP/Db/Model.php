@@ -84,7 +84,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function getIntTypeFields()
     {
