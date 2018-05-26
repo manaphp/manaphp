@@ -1066,7 +1066,18 @@ class Criteria extends \ManaPHP\Model\Criteria
         $db = $this->_model->getDb($this);
         $source = $this->_model->getSource($this);
 
-        return $this->_di->getShared($db)->delete($source, $this->_filters ? ['$and' => $this->_filters] : []);
+        $filters = [];
+        foreach ($this->_filters as $filter) {
+            $key = key($filter);
+            $value = current($filter);
+            if (isset($filters[$key]) || count($filter) !== 1) {
+                $filters = ['$and' => $this->_filters];
+                break;
+            }
+            $filters[$key] = $value;
+        }
+
+        return $this->_di->getShared($db)->delete($source, $filters);
     }
 
     /**
@@ -1079,6 +1090,17 @@ class Criteria extends \ManaPHP\Model\Criteria
         $db = $this->_model->getDb($this);
         $source = $this->_model->getSource($this);
 
-        return $this->_di->getShared($db)->update($source, $fieldValues, $this->_filters ? ['$and' => $this->_filters] : []);
+        $filters = [];
+        foreach ($this->_filters as $filter) {
+            $key = key($filter);
+            $value = current($filter);
+            if (isset($filters[$key]) || count($filter) !== 1) {
+                $filters = ['$and' => $this->_filters];
+                break;
+            }
+            $filters[$key] = $value;
+        }
+
+        return $this->_di->getShared($db)->update($source, $fieldValues, $filters, ['multi' => false]);
     }
 }
