@@ -189,8 +189,9 @@ class Mongodb extends Component implements MongodbInterface
 
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
+            $pkValue = $document[$primaryKey];
             unset($document[$primaryKey]);
-            $bulk->update([$primaryKey => $document[$primaryKey]], ['$set' => $document]);
+            $bulk->update([$primaryKey => $pkValue], ['$set' => $document]);
         }
 
         $this->fireEvent('mongodb:beforeBulkUpdate', ['namespace' => $namespace]);
