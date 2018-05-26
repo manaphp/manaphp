@@ -90,7 +90,7 @@ class DbTest extends TestCase
 
     public function test_execute()
     {
-        $this->db->truncateTable('_student');
+        $this->db->truncate('_student');
 
         $affectedRows = $this->db->execute('INSERT INTO _student(id,age,name) VALUES(?,?,?)', [1, 20, 'mana']);
         $this->assertEquals(1, $affectedRows);
@@ -101,7 +101,7 @@ class DbTest extends TestCase
         $affectedRows = $this->db->execute('DELETE FROM _student WHERE id=?', [1]);
         $this->assertEquals(1, $affectedRows);
 
-        $this->db->truncateTable('_student');
+        $this->db->truncate('_student');
 
         $affectedRows = $this->db->execute('INSERT INTO _student(id,age,name) VALUES(:id,:age,:name)',
             ['id' => 11, 'age' => 220, 'name' => 'mana2']);
@@ -119,7 +119,7 @@ class DbTest extends TestCase
     {
 
         //recommended method without bind value type
-        $this->db->truncateTable('_student');
+        $this->db->truncate('_student');
         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
@@ -128,13 +128,13 @@ class DbTest extends TestCase
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
         //value only method
-        $this->db->truncateTable('_student');
+        $this->db->truncate('_student');
         $this->db->insert('_student', [null, 21, 'mana1']);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
         //compatible method
-        $this->db->truncateTable('_student');
+        $this->db->truncate('_student');
         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
@@ -146,7 +146,7 @@ class DbTest extends TestCase
 
     public function test_update()
     {
-        $this->db->truncateTable('_student');
+        $this->db->truncate('_student');
         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
 
         //recommended method without bind value type
@@ -164,7 +164,7 @@ class DbTest extends TestCase
 
     public function test_delete()
     {
-        $this->db->truncateTable('_student');
+        $this->db->truncate('_student');
         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $this->db->delete('_student', 'id=:id', ['id' => 1]);
         $this->assertFalse($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));

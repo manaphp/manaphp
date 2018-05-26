@@ -385,9 +385,9 @@ class Proxy extends Component implements DbInterface
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function truncateTable($source)
+    public function truncate($source)
     {
-        return $this->getMasterConnection()->truncateTable($source);
+        return $this->getMasterConnection()->truncate($source);
     }
 
     /**
@@ -397,9 +397,9 @@ class Proxy extends Component implements DbInterface
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function dropTable($source)
+    public function drop($source)
     {
-        return $this->getMasterConnection()->dropTable($source);
+        return $this->getMasterConnection()->drop($source);
     }
 
     /**

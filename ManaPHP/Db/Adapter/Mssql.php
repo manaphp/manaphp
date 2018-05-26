@@ -116,7 +116,7 @@ class Mssql extends Db
      * @return $this
      * @throws \ManaPHP\Db\Exception
      */
-    public function truncateTable($source)
+    public function truncate($source)
     {
         $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
 
@@ -128,7 +128,7 @@ class Mssql extends Db
      *
      * @return void|static
      */
-    public function dropTable($source)
+    public function drop($source)
     {
         throw new NotImplementedException(__METHOD__);
     }

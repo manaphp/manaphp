@@ -63,7 +63,7 @@ class Sqlite extends Db
      * @return static
      * @throws \ManaPHP\Db\Exception
      */
-    public function truncateTable($source)
+    public function truncate($source)
     {
         $this->execute('DELETE ' . 'FROM ' . $this->_escapeIdentifier($source));
         $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $source]);
@@ -77,7 +77,7 @@ class Sqlite extends Db
      * @return static
      * @throws \ManaPHP\Db\Exception
      */
-    public function dropTable($source)
+    public function drop($source)
     {
         $this->execute('DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
 

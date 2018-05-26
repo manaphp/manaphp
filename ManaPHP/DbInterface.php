@@ -228,14 +228,14 @@ interface DbInterface
      *
      * @return static
      */
-    public function truncateTable($source);
+    public function truncate($source);
 
     /**
      * @param string $source
      *
      * @return static
      */
-    public function dropTable($source);
+    public function drop($source);
 
     /**
      * @param string $schema

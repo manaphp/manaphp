@@ -123,7 +123,7 @@ class Mysql extends Db
      * @return static
      * @throws \ManaPHP\Db\Exception
      */
-    public function truncateTable($source)
+    public function truncate($source)
     {
         $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
 
@@ -136,7 +136,7 @@ class Mysql extends Db
      * @return static
      * @throws \ManaPHP\Db\Exception
      */
-    public function dropTable($source)
+    public function drop($source)
     {
         $this->execute('DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
 

@@ -197,7 +197,7 @@ class DbModelTest extends TestCase
          * @var \ManaPHP\Db $db
          */
         $db = $this->di->getShared('db');
-        $db->truncateTable($model->getSource());
+        $db->truncate($model->getSource());
     }
 
     public function test_create()
