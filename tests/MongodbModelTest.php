@@ -172,7 +172,7 @@ class MongodbModelTest extends TestCase
          * @var \ManaPHP\Db $db
          */
         $db = $this->di->getShared('mongodb');
-        $db->truncateTable($model->getSource());
+        $db->truncate($model->getSource());
     }
 
     public function test_create()

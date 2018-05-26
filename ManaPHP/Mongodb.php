@@ -400,7 +400,7 @@ class Mongodb extends Component implements MongodbInterface
      *
      * @return bool
      */
-    public function truncateTable($source)
+    public function truncate($source)
     {
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);

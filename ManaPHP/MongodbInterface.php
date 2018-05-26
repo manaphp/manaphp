@@ -110,7 +110,7 @@ interface MongodbInterface
      *
      * @return bool
      */
-    public function truncateTable($source);
+    public function truncate($source);
 
     /**
      * @return array
