@@ -1,11 +1,11 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Authentication\Token\Adapter\Mwt;
+use ManaPHP\Security\Identity\Adapter\Mwt;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class  AuthenticationTokenAdapterMwtTest extends TestCase
+class  SecurityIdentityAdapterMwtTest extends TestCase
 {
     public function setUp()
     {

@@ -1,11 +1,11 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Authentication\Token\Adapter\Jwt;
+use ManaPHP\Security\Identity\Adapter\Jwt;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class  AuthenticationTokenAdapterJwtTest extends TestCase
+class  SecurityIdentityAdapterJwtTest extends TestCase
 {
     public function setUp()
     {
