@@ -60,13 +60,6 @@ interface DbInterface
     public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null);
 
     /**
-     * Inserts data into a table using custom SQL syntax
-     *
-     * <code>
-     *  $db->insert('_student',['age'=>30,'name'=>'Mark']);
-     *  $db->insert('_student',[null,30,'Mark']);
-     * </code>
-     *
      * @param    string $table
      * @param    array  $record
      *

@@ -406,18 +406,6 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * Inserts data into a table using custom SQL syntax
-     * <code>
-     * //Inserting a new robot
-     * $success = $connection->insert(
-     *     "robots",
-     *     array("Boy", 1952),
-     *     array("name", "year")
-     * );
-     * //Next SQL sentence is sent to the database system
-     * INSERT INTO `robots` (`name`, `year`) VALUES ("boy", 1952);
-     * </code>
-     *
      * @param    string $table
      * @param    array  $record
      *
