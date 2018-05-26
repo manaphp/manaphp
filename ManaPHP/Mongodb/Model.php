@@ -82,7 +82,7 @@ class Model extends \ManaPHP\Model
                 return $cached[$calledClass] = $tryField;
             }
 
-            throw new NotImplementedException(['Primary key of `:class` class can not be inferred', 'class' => $calledClass]);
+            throw new NotImplementedException(['Primary key of `:model` model can not be inferred', 'model' => $calledClass]);
         }
 
         return $cached[$calledClass];
