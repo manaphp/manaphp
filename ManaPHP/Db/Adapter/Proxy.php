@@ -261,14 +261,14 @@ class Proxy extends Component implements DbInterface
 
     /**
      * @param string $table
-     * @param array  $fieldValues
+     * @param array  $record
      *
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function insert($table, $fieldValues)
+    public function insert($table, $record)
     {
-        $this->getMasterConnection()->insert($table, $fieldValues);
+        $this->getMasterConnection()->insert($table, $record);
     }
 
     /**

@@ -68,19 +68,19 @@ interface DbInterface
      * </code>
      *
      * @param    string $table
-     * @param    array  $fieldValues
+     * @param    array  $record
      *
      * @return void
      */
-    public function insert($table, $fieldValues);
+    public function insert($table, $record);
 
     /**
      * @param    string $table
-     * @param    array  $fieldValues
+     * @param    array  $record
      *
      * @return void
      */
-    public function insertOrIgnore($table, $fieldValues);
+    public function insertOrIgnore($table, $record);
 
     /**
      * Updates data on a table using custom SQL syntax

@@ -250,23 +250,23 @@ class Mysql extends Db
 
     /**
      * @param    string $table
-     * @param    array  $fieldValues
+     * @param    array  $record
      *
      * @return void
      */
-    public function insertOrIgnore($table, $fieldValues)
+    public function insertOrIgnore($table, $record)
     {
-        if (!$fieldValues) {
+        if (!$record) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
         }
 
-        if (array_key_exists(0, $fieldValues)) {
-            $insertedValues = rtrim(str_repeat('?,', count($fieldValues)), ',');
+        if (array_key_exists(0, $record)) {
+            $insertedValues = rtrim(str_repeat('?,', count($record)), ',');
 
             $sql = /** @lang Text */
                 'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " VALUES ($insertedValues)";
         } else {
-            $fields = array_keys($fieldValues);
+            $fields = array_keys($record);
             $insertedValues = ':' . implode(',:', $fields);
             $insertedFields = '[' . implode('],[', $fields) . ']';
 
@@ -274,7 +274,7 @@ class Mysql extends Db
                 'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
         }
 
-        $count = $this->execute($sql, $fieldValues);
-        $this->logger->debug(compact('count', 'table', 'fieldValues'), 'db.insertOrIgnore');
+        $count = $this->execute($sql, $record);
+        $this->logger->debug(compact('count', 'table', 'record'), 'db.insertOrIgnore');
     }
 }
