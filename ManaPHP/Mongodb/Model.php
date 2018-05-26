@@ -459,19 +459,16 @@ class Model extends \ManaPHP\Model
     {
         $instance = new static();
 
-        /**
-         * @var \ManaPHP\MongodbInterface $connection
-         */
-        $connection = $instance->getConnection();
-        return $connection->aggregate($instance->getSource(), $pipeline);
+        return $instance->getConnection()->aggregate($instance->getSource(), $pipeline);
     }
 
     /**
      * @param array[] $documents
+     * @param string  $skipIfExists
      *
      * @return int
      */
-    public static function bulkInsert($documents)
+    public static function bulkInsert($documents, $skipIfExists = false)
     {
         $instance = new static();
 
@@ -492,11 +489,7 @@ class Model extends \ManaPHP\Model
             $documents[$i] = $document;
         }
 
-        /**
-         * @var \ManaPHP\MongodbInterface $connection
-         */
-        $connection = $instance->getConnection();
-        return $connection->bulkInsert($instance->getSource(), $documents);
+        return $instance->getConnection()->bulkInsert($instance->getSource(), $documents, $instance->getPrimaryKey(), $skipIfExists);
     }
 
     /**
