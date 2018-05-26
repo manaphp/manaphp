@@ -137,7 +137,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param string  $source
      * @param array[] $documents
      *
-     * @return array
+     * @return int
      */
     public function bulkInsert($source, $documents)
     {
@@ -178,7 +178,7 @@ class Mongodb extends Component implements MongodbInterface
 
     /**
      * @param string $source
-     * @param array  $document
+     * @param array  $documents
      * @param string $primaryKey
      *
      * @return int
@@ -197,7 +197,7 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterBulkUpdate');
         $count = $result->getModifiedCount();
-        $this->logger->debug(compact('namespace', 'documents', 'primaryKey', 'filter', 'options', 'count'), 'mongodb.bulk.update');
+        $this->logger->debug(compact('namespace', 'documents', 'primaryKey', 'count'), 'mongodb.bulk.update');
         return $count;
     }
 
@@ -221,13 +221,13 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterUpsert');
         $count = $result->getUpsertedCount();
-        $this->logger->debug(compact('namespace', 'document', 'filter', 'options', 'count'), 'mongodb.upsert');
+        $this->logger->debug(compact('namespace', 'document', 'count'), 'mongodb.upsert');
         return $count;
     }
 
     /**
      * @param string $source
-     * @param array  $document
+     * @param array  $documents
      * @param string $primaryKey
      *
      * @return int
@@ -247,7 +247,7 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterBulkUpsert');
         $count = $result->getUpsertedCount();
-        $this->logger->debug(compact('namespace', 'document', 'filter', 'options', 'count'), 'mongodb.bulk.upsert');
+        $this->logger->debug(compact('namespace', 'documents', 'count'), 'mongodb.bulk.upsert');
         return $count;
     }
 
@@ -267,7 +267,7 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterDelete');
         $count = $result->getDeletedCount();
-        $this->logger->debug(compact('namespace', 'filter', 'options', 'count'), 'mongodb.delete');
+        $this->logger->debug(compact('namespace', 'filter', 'count'), 'mongodb.delete');
         return $count;
     }
 

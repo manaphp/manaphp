@@ -37,7 +37,7 @@ interface MongodbInterface
 
     /**
      * @param string $source
-     * @param array  $document
+     * @param array  $documents
      * @param string $primaryKey
      *
      * @return int
@@ -55,7 +55,7 @@ interface MongodbInterface
 
     /**
      * @param string $source
-     * @param array  $document
+     * @param array  $documents
      * @param string $primaryKey
      *
      * @return int
