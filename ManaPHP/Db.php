@@ -309,7 +309,11 @@ abstract class Db extends Component implements DbInterface
             $this->fireEvent('db:afterQuery', ['elapsed' => $elapsed]);
         }
         $count = $this->_affectedRows;
-        $this->logger->debug(compact('count', 'sql', 'bind', 'elapsed'), 'db.execute');
+
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+        if (!isset($backtrace['function']) || !in_array($backtrace['function'], ['insert', 'delete', 'update'], true)) {
+            $this->logger->debug(compact('count', 'sql', 'bind', 'elapsed'), 'db.execute');
+        }
         return $count;
     }
 
