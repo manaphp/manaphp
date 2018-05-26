@@ -545,6 +545,7 @@ if (!function_exists('elapsed')) {
 
         if (!isset($stack[$key]) || count($stack[$key]) % 2 === 0) {
             $stack[$key][] = microtime(true);
+            return null;
         } else {
             $prev = array_pop($stack[$key]);
             return round(microtime(true) - $prev, $precision);
