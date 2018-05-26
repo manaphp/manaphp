@@ -35,6 +35,7 @@
           <option value="\ManaPHP\Exception\UnknownPropertyException" />
           <option value="\ManaPHP\Exception\MissingFieldException" />
           <option value="\ManaPHP\Exception\InvalidUrlException" />
+          <option value="\ManaPHP\Exception\MisuseException" />
           <option value="\RuntimeException" />
           <option value="\ReflectionException" />
         </list>
