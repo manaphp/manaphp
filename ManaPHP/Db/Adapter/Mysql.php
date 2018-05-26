@@ -266,11 +266,13 @@ class Mysql extends Db
         $fields = array_keys($records[0]);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
+        $pdo = $this->_getPdo();
+
         $rows = [];
         foreach ($records as $record) {
             $row = [];
             foreach ($record as $field => $value) {
-                $row[] = is_string($value) ? $this->_pdo->quote($value) : $value;
+                $row[] = is_string($value) ? $pdo->quote($value) : $value;
             }
 
             $rows[] = '(' . implode(',', $row) . ')';
