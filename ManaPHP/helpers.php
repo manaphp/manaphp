@@ -555,7 +555,9 @@ if (!function_exists('elapsed')) {
 if (!function_exists('dd')) {
     function dd()
     {
-        var_dump(func_get_args());
+        foreach (func_get_args() as $arg) {
+            var_dump($arg);
+        }
         exit(1);
     }
 }
