@@ -106,7 +106,10 @@ class Mongodb extends Component implements MongodbInterface
         $elapsed = round(microtime(true) - $start_time, 3);
         $this->fireEvent('mongodb:afterBulkWrite', compact('namespace', 'bulk', 'result', 'elapsed'));
         if ($bulk->count() !== 1) {
-            $this->logger->debug(compact('namespace', 'bulk'));
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+            if (!isset($backtrace['function']) && !in_array($backtrace['function'], ['bulkInsert', 'bulkUpdate', 'bulkUpsert'], true)) {
+                $this->logger->debug(compact('namespace', 'bulk'));
+            }
         }
 
         return $result;
