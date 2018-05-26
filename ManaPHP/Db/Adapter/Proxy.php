@@ -262,6 +262,8 @@ class Proxy extends Component implements DbInterface
     /**
      * @param string $table
      * @param array  $record
+     * @param string $primaryKey
+     * @param bool   $skipIfExists
      *
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
