@@ -144,6 +144,10 @@ class Criteria extends \ManaPHP\Model\Criteria
                 }
                 $this->_projection = $projection;
             }
+
+            if (!isset($this->_projection['_id']) && $this->_model->getPrimaryKey() !== '_id') {
+                $this->_projection['_id'] = false;
+            }
         }
 
         return $this;
