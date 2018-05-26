@@ -789,8 +789,14 @@ class Criteria extends \ManaPHP\Model\Criteria
                     $this->_group[$field] = '$' . $field;
                 }
             }
-        } else {
-            $this->_group = $groupBy;
+        } elseif (is_array($groupBy)) {
+            foreach ($groupBy as $k => $v) {
+                if (is_int($k)) {
+                    $this->_group[$v] = '$' . $v;
+                } else {
+                    $this->_group[$k] = $v;
+                }
+            }
         }
 
         return $this;
@@ -852,7 +858,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             if ($this->_limit !== null) {
                 $options['limit'] = $this->_limit;
             }
-	    
+
             $filters = [];
             foreach ($this->_filters as $filter) {
                 $key = key($filter);
@@ -940,7 +946,9 @@ class Criteria extends \ManaPHP\Model\Criteria
         }
 
         $items = $this->_execute();
-
+        if (isset($items[0])) {
+            unset($items[0]['_id']);
+        }
         if (isset($cacheOptions)) {
             $this->modelsCache->set($cacheOptions['key'], json_encode(['time' => date('Y-m-d H:i:s'), 'items' => $items]), $cacheOptions['ttl']);
         }
