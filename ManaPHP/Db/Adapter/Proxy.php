@@ -266,9 +266,9 @@ class Proxy extends Component implements DbInterface
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function insert($table, $record)
+    public function insert($table, $record, $primaryKey = null, $skipIfExists = false)
     {
-        $this->getMasterConnection()->insert($table, $record);
+        $this->getMasterConnection()->insert($table, $record, $primaryKey, $skipIfExists);
     }
 
     /**
@@ -478,5 +478,10 @@ class Proxy extends Component implements DbInterface
         if ($this->_slaveConnection !== null) {
             $this->_slaveConnection->close();
         }
+    }
+
+    public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false)
+    {
+        return $this->getMasterConnection()->bulkInsert($table, $records, $primaryKey, $skipIfExists);
     }
 }

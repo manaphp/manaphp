@@ -432,6 +432,25 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
+     * @param string  $table
+     * @param array[] $records
+     * @param null    $primaryKey
+     * @param bool    $skipIfExists
+     *
+     * @return int
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false)
+    {
+        $count = 0;
+        foreach ($records as $record) {
+            $count += $this->insert($table, $record, $primaryKey, $skipIfExists);
+        }
+
+        return $count;
+    }
+
+    /**
      * Updates data on a table using custom SQL syntax
      * <code>
      * //Updating existing robot
