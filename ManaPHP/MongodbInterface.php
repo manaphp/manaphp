@@ -22,11 +22,10 @@ interface MongodbInterface
      * @param string $source
      * @param array  $document
      * @param array  $filter
-     * @param array  $options
      *
      * @return int
      */
-    public function update($source, $document, $filter, $options = []);
+    public function update($source, $document, $filter);
 
     /**
      * @param string $source

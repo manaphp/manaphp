@@ -137,24 +137,20 @@ class Mongodb extends Component implements MongodbInterface
      * @param string $source
      * @param array  $document
      * @param array  $filter
-     * @param array  $options
      *
      * @return int
-     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
-    public function update($source, $document, $filter, $options = [])
+    public function update($source, $document, $filter)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
         $bulk = new BulkWrite();
-        $options += ['multi' => true];
-
-        $bulk->update($filter, ['$set' => $document], $options);
+        $bulk->update($filter, ['$set' => $document], ['multi' => true]);
         $this->fireEvent('mongodb:beforeUpdate', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterUpdate');
         $count = $result->getModifiedCount();
-        $this->logger->debug(compact('namespace', 'document', 'filter', 'options', 'count'), 'mongodb.update');
+        $this->logger->debug(compact('namespace', 'document', 'filter', 'count'), 'mongodb.update');
         return $count;
     }
 
