@@ -1,13 +1,16 @@
 <?php
 namespace ManaPHP\Mvc;
 
+use ManaPHP\Component;
+use ManaPHP\ErrorHandlerInterface;
+
 /**
  * Class ManaPHP\Mvc\ErrorHandler
  *
  * @package ManaPHP\Mvc
  * @property \ManaPHP\Http\RequestInterface $request
  */
-class ErrorHandler extends \ManaPHP\ErrorHandler
+class ErrorHandler extends Component implements ErrorHandlerInterface
 {
     /**
      * @param \Exception $exception
@@ -20,32 +23,14 @@ class ErrorHandler extends \ManaPHP\ErrorHandler
             }
             $this->response->setStatus($exception->getStatusCode(), $exception->getStatusText());
             if ($exception->getStatusCode() === 500) {
-                $this->logException($exception);
+                $this->logger->error($exception);
             }
         } else {
             $this->response->setStatus(500, 'Internal Server Error');
-            $this->logException($exception);
+            $this->logger->error($exception);
         }
 
         $this->response->setContent($this->render($exception));
-    }
-
-    /**
-     * @param \Exception $exception
-     *
-     * @return array
-     */
-    public function getLogData($exception)
-    {
-        $data = [];
-        $data['method'] = $_SERVER['REQUEST_METHOD'];
-        $data['url'] = $this->request->getUrl();
-        $data['GET'] = $_GET;
-        $data['POST'] = $_POST;
-
-        $data['client_ip'] = $this->request->getClientIp();
-
-        return array_merge($data, parent::getLogData($exception));
     }
 
     /**
