@@ -461,6 +461,100 @@ class Model extends \ManaPHP\Model
         return $instance->getConnection(null)->aggregate($instance->getSource(null), $pipeline);
     }
 
+    /**
+     * @param array[] $documents
+     *
+     * @return int
+     */
+    public static function bulkInsert($documents)
+    {
+        $instance = new static();
+
+        $primaryKey = $instance->getPrimaryKey();
+        $allowNull = $instance->isAllowNullValue();
+        $fieldTypes = $instance->getFieldTypes();
+        foreach ($documents as $i => $document) {
+            if (!isset($document[$primaryKey])) {
+                $document[$primaryKey] = $instance->generateAutoIncrementId();
+            }
+            foreach ($fieldTypes as $field => $type) {
+                if (isset($document[$field])) {
+                    $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
+                } elseif ($field !== '_id') {
+                    $document[$field] = $allowNull ? null : $instance->getNormalizedValue($type, '');
+                }
+            }
+            $documents[$i] = $document;
+        }
+
+        /**
+         * @var \ManaPHP\MongodbInterface $connection
+         */
+        $connection = $instance->getConnection();
+        return $connection->bulkInsert($instance->getSource(), $documents);
+    }
+
+    /**
+     * @param array $documents
+     */
+    public static function bulkUpdate($documents)
+    {
+        $instance = new static();
+
+        $primaryKey = $instance->getPrimaryKey();
+        $allowNull = $instance->isAllowNullValue();
+        $fieldTypes = $instance->getFieldTypes();
+        foreach ($documents as $i => $document) {
+            if (!isset($document[$primaryKey])) {
+                throw new InvalidValueException(['bulkUpdate `:model` model must set primary value', 'model' => get_called_class()]);
+            }
+            foreach ($document as $field => $value) {
+                if ($value === null) {
+                    $document[$field] = $allowNull ? null : $instance->getNormalizedValue($type, '');
+                } else {
+                    $document[$field] = $instance->getNormalizedValue($fieldTypes[$field], $value);
+                }
+            }
+        }
+
+        /**
+         * @var \ManaPHP\MongodbInterface $connection
+         */
+        $connection = $instance->getConnection();
+        return $connection->bulkUpdate($instance->getSource(), $documents, $primaryKey);
+    }
+
+    /**
+     * @param array[] $documents
+     */
+    public static function bulkUpsert($documents)
+    {
+        $instance = new static();
+
+        $primaryKey = $instance->getPrimaryKey();
+        $allowNull = $instance->isAllowNullValue();
+        $fieldTypes = $instance->getFieldTypes();
+        foreach ($documents as $i => $document) {
+            if (!isset($document[$primaryKey])) {
+                $document[$primaryKey] = $instance->generateAutoIncrementId();
+            }
+            foreach ($fieldTypes as $field => $type) {
+                if (isset($document[$field])) {
+                    $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
+                } elseif ($field !== '_id') {
+                    $document[$field] = $allowNull ? null : $instance->getNormalizedValue($type, '');
+                }
+            }
+            $documents[$i] = $document;
+        }
+
+        /**
+         * @var \ManaPHP\MongodbInterface $connection
+         */
+        $connection = $instance->getConnection();
+        return $connection->bulkUpsert($instance->getSource(), $documents, $primaryKey);
+    }
+
     public function __debugInfo()
     {
         return array_merge(['_id' => is_object($this->_id) ? (string)$this->_id : $this->_id], parent::__debugInfo());
