@@ -157,12 +157,12 @@ class Mongodb extends Component implements MongodbInterface
 
     /**
      * @param string $source
-     * @param array  $document
      * @param array  $filter
+     * @param array  $document
      *
      * @return int
      */
-    public function update($source, $document, $filter)
+    public function update($source, $filter, $document)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 

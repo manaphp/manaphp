@@ -1107,6 +1107,6 @@ class Criteria extends \ManaPHP\Model\Criteria
             $filters[$key] = $value;
         }
 
-        return $this->_di->getShared($db)->update($source, $fieldValues, $filters, ['multi' => false]);
+        return $this->_di->getShared($db)->update($source, $filters, $fieldValues);
     }
 }
