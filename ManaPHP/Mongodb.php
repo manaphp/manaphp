@@ -156,6 +156,29 @@ class Mongodb extends Component implements MongodbInterface
 
     /**
      * @param string $source
+     * @param array  $document
+     * @param string $primaryKey
+     *
+     * @return int
+     */
+    public function upsert($source, $document, $primaryKey)
+    {
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+
+        $bulk = new BulkWrite();
+        unset($document[$primaryKey]);
+        $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
+
+        $this->fireEvent('mongodb:beforeUpsert', ['namespace' => $namespace]);
+        $result = $this->bulkWrite($namespace, $bulk);
+        $this->fireEvent('mongodb:afterUpsert');
+        $count = $result->getUpsertedCount();
+        $this->logger->debug(compact('namespace', 'document', 'filter', 'options', 'count'), 'mongodb.upsert');
+        return $count;
+    }
+
+    /**
+     * @param string $source
      * @param array  $filter
      *
      * @return int

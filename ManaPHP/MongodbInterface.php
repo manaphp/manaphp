@@ -29,6 +29,15 @@ interface MongodbInterface
 
     /**
      * @param string $source
+     * @param array  $document
+     * @param string $primaryKey
+     *
+     * @return int
+     */
+    public function upsert($source, $document, $primaryKey);
+
+    /**
+     * @param string $source
      * @param array  $filter
      *
      * @return int
