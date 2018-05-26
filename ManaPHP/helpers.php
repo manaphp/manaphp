@@ -561,3 +561,19 @@ if (!function_exists('dd')) {
         exit(1);
     }
 }
+
+if (!function_exists('seconds')) {
+    /**
+     * @param string $str
+     *
+     * @return int
+     */
+    function seconds($str)
+    {
+        if (($r = strtotime($str, 0)) !== false) {
+            return $r;
+        } else {
+            throw new \ManaPHP\Exception\InvalidValueException(['`:str` string is not a valid seconds expression', 'str' => $str]);
+        }
+    }
+}
