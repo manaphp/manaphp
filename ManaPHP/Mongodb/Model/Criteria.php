@@ -849,6 +849,8 @@ class Criteria extends \ManaPHP\Model\Criteria
 
             if ($this->_projection !== null) {
                 $options['projection'] = $this->_projection;
+            } elseif ($this->_model->getPrimaryKey() !== '_id') {
+                $options['projection'] = ['_id' => false];
             }
 
             if ($this->_order !== null) {
