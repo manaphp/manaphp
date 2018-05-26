@@ -351,7 +351,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
          * @var \ManaPHP\Model $r
          */
         $r = static::criteria($fields, $model)->where($pkName, $pkValue)->fetchOne();
-        $r->_snapshot = false;
+        if ($r) {
+            $r->_snapshot = false;
+        }
+
         $cached[$className][$pkValue] = [$current + $interval, $r];
         /** @noinspection PhpUndefinedVariableInspection */
         if (count($cached[$className]) > $max) {
