@@ -249,35 +249,13 @@ class Mysql extends Db
     }
 
     /**
-     * @param    string $table
-     * @param    array  $record
-     *
-     * @return void
-     */
-    public function insertOrIgnore($table, $record)
-    {
-        if (!$record) {
-            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
-        }
-
-        $fields = array_keys($record);
-        $insertedValues = ':' . implode(',:', $fields);
-        $insertedFields = '[' . implode('],[', $fields) . ']';
-
-        $sql = /** @lang Text */
-            'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
-
-        $count = $this->execute($sql, $record);
-        $this->logger->debug(compact('count', 'table', 'record'), 'db.insertOrIgnore');
-    }
-
-    /**
-     * @param    string  $table
-     * @param    array[] $records
+     * @param string  $table
+     * @param array[] $records
+     * @param bool    $skipIfExists
      *
      * @return int
      */
-    public function bulkInsert($table, $records)
+    public function bulkInsert($table, $records, $skipIfExists = false)
     {
         if (!$records) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
@@ -296,46 +274,11 @@ class Mysql extends Db
             $rows[] = '(' . implode(',', $row) . ')';
         }
 
-        $sql = /** @lang Text */
-            'INSERT INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
+        $sql = 'INSERT' . ($skipIfExists ? ' IGNORE' : '') . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
 
         $count = $this->execute($sql, []);
-        $this->logger->debug(compact('count', 'table', 'record'), 'db.insertOrIgnore');
+        $this->logger->debug(compact('count', 'table', 'records', 'skipIfExists'), 'db.bulkInsert');
 
-        return count($records);
-    }
-
-    /**
-     * @param    string  $table
-     * @param    array[] $records
-     *
-     * @return int
-     */
-    public function bulkInsertOrIgnore($table, $records)
-    {
-        if (!$records) {
-            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
-        }
-
-        $fields = array_keys($records[0]);
-        $insertedFields = '[' . implode('],[', $fields) . ']';
-
-        $rows = [];
-        foreach ($records as $record) {
-            $row = [];
-            foreach ($record as $field => $value) {
-                $row[] = is_string($value) ? $this->_pdo->quote($value) : $value;
-            }
-
-            $rows[] = '(' . implode(',', $row) . ')';
-        }
-
-        $sql = /** @lang Text */
-            'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
-
-        $count = $this->execute($sql, []);
-        $this->logger->debug(compact('count', 'table', 'record'), 'db.insertOrIgnore');
-
-        return $this->_affectedRows;
+        return $count;
     }
 }

@@ -60,28 +60,22 @@ interface DbInterface
     public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null);
 
     /**
-     * @param    string $table
-     * @param    array  $record
-     *
-     * @return void
-     */
-    public function insert($table, $record);
-
-    /**
-     * @param    string $table
-     * @param    array  $record
-     *
-     * @return void
-     */
-    public function insertOrIgnore($table, $record);
-
-    /**
-     * @param    string  $table
-     * @param    array[] $records
+     * @param string $table
+     * @param array  $record
+     * @param bool   $skipIfExists
      *
      * @return int
      */
-    public function bulkInsert($table, $records);
+    public function insert($table, $record, $skipIfExists = false);
+
+    /**
+     * @param string  $table
+     * @param array[] $records
+     * @param bool    $skipIfExists
+     *
+     * @return int
+     */
+    public function bulkInsert($table, $records, $skipIfExists = false);
 
     /**
      * @param    string  $table

@@ -406,13 +406,14 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * @param    string $table
-     * @param    array  $record
+     * @param string $table
+     * @param array  $record
+     * @param bool   $skipIfExists
      *
-     * @return void
+     * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    public function insert($table, $record)
+    public function insert($table, $record, $skipIfExists = false)
     {
         if (!$record) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
@@ -421,11 +422,12 @@ abstract class Db extends Component implements DbInterface
         $insertedValues = ':' . implode(',:', $fields);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $sql = /** @lang Text */
-            'INSERT INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+        $sql = 'INSERT' . ($skipIfExists ? ' IGNORE' : '') . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
         $count = $this->execute($sql, $record);
-        $this->logger->debug(compact('count', 'table', 'record'), 'db.insert');
+        $this->logger->debug(compact('count', 'table', 'record', 'skipIfExists'), 'db.insert');
+
+        return $count;
     }
 
     /**
