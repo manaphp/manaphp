@@ -161,17 +161,15 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @param string $source
      * @param array  $filter
-     * @param array  $options
      *
-     * @return int|null
-     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
+     * @return int
      */
-    public function delete($source, $filter, $options = [])
+    public function delete($source, $filter)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
         $bulk = new BulkWrite();
-        $bulk->delete($filter, $options);
+        $bulk->delete($filter);
         $this->fireEvent('mongodb:beforeDelete', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterDelete');

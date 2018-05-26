@@ -31,11 +31,10 @@ interface MongodbInterface
     /**
      * @param string $source
      * @param array  $filter
-     * @param array  $options
      *
-     * @return int|null
+     * @return int
      */
-    public function delete($source, $filter, $options = []);
+    public function delete($source, $filter);
 
     /**
      * @param string   $source
