@@ -12,7 +12,7 @@ interface AuthorizationInterface
      * Check whether a user is allowed to access a permission
      *
      * @param string $permission
-     * @param string $userId
+     * @param int    $userId
      *
      * @return bool
      */

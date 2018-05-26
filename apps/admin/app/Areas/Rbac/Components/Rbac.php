@@ -20,7 +20,7 @@ class Rbac extends Component implements AuthorizationInterface
 {
     /**
      * @param string $permissionName
-     * @param string $userId
+     * @param int    $userId
      *
      * @return bool
      */
