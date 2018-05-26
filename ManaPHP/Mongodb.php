@@ -152,21 +152,31 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @param string  $source
      * @param array[] $documents
+     * @param string  $primaryKey
+     * @param bool    $skipIfExists
      *
      * @return int
      */
-    public function bulkInsert($source, $documents)
+    public function bulkInsert($source, $documents, $primaryKey = null, $skipIfExists = false)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
+        if ($skipIfExists && $primaryKey === null) {
+            throw new InvalidValueException('when insert type is skipIfExists must provide primaryKey name');
+        }
+
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
-            $bulk->insert($document);
+            if ($skipIfExists) {
+                $bulk->update([$primaryKey => $document[$primaryKey]], ['$setOnInsert' => $document], ['upsert' => true]);
+            } else {
+                $bulk->insert($document);
+            }
         }
         $this->fireEvent('mongodb:beforeBulkInsert', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterBulkInsert');
-        $count = $result->getInsertedCount();
+        $count = $skipIfExists ? $result->getUpsertedCount() : $result->getInsertedCount();
         $this->logger->debug(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
         return $count;
     }
