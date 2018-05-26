@@ -128,7 +128,7 @@ interface ModelInterface
      * @param array            $fields
      * @param array            $options
      *
-     * @return static|false
+     * @return static|null
      */
     public static function first($filters = null, $fields = null, $options = null);
 

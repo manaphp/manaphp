@@ -323,7 +323,7 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @return \ManaPHP\Model|false
+     * @return \ManaPHP\Model|null
      */
     public function fetchOne()
     {
@@ -336,7 +336,7 @@ abstract class Criteria extends Component implements CriteriaInterface
             }
             return $model;
         } else {
-            return false;
+            return null;
         }
     }
 

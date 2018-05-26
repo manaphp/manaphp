@@ -291,7 +291,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param array            $fields
      * @param array|int|float  $options
      *
-     * @return static|false
+     * @return static|null
      */
     public static function first($filters = null, $fields = null, $options = null)
     {
@@ -369,7 +369,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function firstOrFail($filters = null, $fields = null, $options = null)
     {
-        if (($r = static::first($filters, $fields, $options)) === false) {
+        if (!$r = static::first($filters, $fields, $options)) {
             $exception = new NotFoundException([
                 'No query results for `:model` model with `:criteria` criteria',
                 'model' => static::class,
