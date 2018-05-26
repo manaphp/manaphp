@@ -154,7 +154,7 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterUpdate');
         $count = $result->getModifiedCount();
-        $this->logger->debug(compact('namespace', 'document', 'filter', 'options', 'count'));
+        $this->logger->debug(compact('namespace', 'document', 'filter', 'options', 'count'), 'mongodb.update');
         return $count;
     }
 
