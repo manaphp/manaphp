@@ -270,4 +270,38 @@ class Mysql extends Db
         $count = $this->execute($sql, $record);
         $this->logger->debug(compact('count', 'table', 'record'), 'db.insertOrIgnore');
     }
+
+    /**
+     * @param    string  $table
+     * @param    array[] $records
+     *
+     * @return int
+     */
+    public function bulkInsert($table, $records)
+    {
+        if (!$records) {
+            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
+        }
+
+        $fields = array_keys($records[0]);
+        $insertedFields = '[' . implode('],[', $fields) . ']';
+
+        $rows = [];
+        foreach ($records as $record) {
+            $row = [];
+            foreach ($record as $field => $value) {
+                $row[] = is_string($value) ? $this->_pdo->quote($value) : $value;
+            }
+
+            $rows[] = '(' . implode(',', $row) . ')';
+        }
+
+        $sql = /** @lang Text */
+            'INSERT INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
+
+        $count = $this->execute($sql, []);
+        $this->logger->debug(compact('count', 'table', 'record'), 'db.insertOrIgnore');
+
+        return count($records);
+    }
 }

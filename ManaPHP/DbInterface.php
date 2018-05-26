@@ -76,6 +76,14 @@ interface DbInterface
     public function insertOrIgnore($table, $record);
 
     /**
+     * @param    string  $table
+     * @param    array[] $records
+     *
+     * @return int
+     */
+    public function bulkInsert($table, $records);
+
+    /**
      * Updates data on a table using custom SQL syntax
      *
      * <code>
