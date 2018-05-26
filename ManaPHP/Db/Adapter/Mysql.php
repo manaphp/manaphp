@@ -247,4 +247,34 @@ class Mysql extends Db
     {
         return preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
     }
+
+    /**
+     * @param    string $table
+     * @param    array  $fieldValues
+     *
+     * @return void
+     */
+    public function insertOrIgnore($table, $fieldValues)
+    {
+        if (!$fieldValues) {
+            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
+        }
+
+        if (array_key_exists(0, $fieldValues)) {
+            $insertedValues = rtrim(str_repeat('?,', count($fieldValues)), ',');
+
+            $sql = /** @lang Text */
+                'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " VALUES ($insertedValues)";
+        } else {
+            $fields = array_keys($fieldValues);
+            $insertedValues = ':' . implode(',:', $fields);
+            $insertedFields = '[' . implode('],[', $fields) . ']';
+
+            $sql = /** @lang Text */
+                'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+        }
+
+        $count = $this->execute($sql, $fieldValues);
+        $this->logger->debug(compact('count', 'table', 'fieldValues'), 'db.insertOrIgnore');
+    }
 }
