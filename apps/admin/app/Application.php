@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Admin;
 
-use ManaPHP\Authentication\UserIdentity;
+use ManaPHP\Security\Identity;
 use App\Admin\Areas\Rbac\Components\Rbac;
 
 class Application extends \ManaPHP\Mvc\Application
@@ -10,7 +9,7 @@ class Application extends \ManaPHP\Mvc\Application
     public function authenticate()
     {
         $this->_di->authorization = new Rbac();
-        $this->_di->userIdentity = new UserIdentity($this->session->get('admin_auth', []));
+        $this->_di->identity = new Identity($this->session->get('admin_auth', []));
     }
 
     /**

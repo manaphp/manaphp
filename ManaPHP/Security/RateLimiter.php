@@ -8,13 +8,12 @@ use ManaPHP\Component;
  *
  * @package rateLimiter
  *
- * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
- * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
- * @property \ManaPHP\Http\RequestInterface                $request
+ * @property \ManaPHP\Mvc\DispatcherInterface    $dispatcher
+ * @property \ManaPHP\Security\IdentityInterface $identity
+ * @property \ManaPHP\Http\RequestInterface      $request
  */
 class RateLimiter extends Component implements RateLimiterInterface
 {
-
     /**
      * @var string|\ManaPHP\Security\RateLimiter\EngineInterface
      */
@@ -94,7 +93,7 @@ class RateLimiter extends Component implements RateLimiterInterface
      */
     public function limitUser($times, $duration)
     {
-        $userName = $this->userIdentity->getName();
+        $userName = $this->identity->getName();
         if ($userName) {
             return $this->limit('user', $userName, $times, $duration);
         } else {

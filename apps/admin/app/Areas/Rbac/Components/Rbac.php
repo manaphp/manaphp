@@ -13,8 +13,8 @@ use App\Admin\Areas\Rbac\Components\Rbac\Exception as RbacException;
  *
  * @package rbac
  *
- * @property \ManaPHP\Mvc\DispatcherInterface              $dispatcher
- * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
+ * @property \ManaPHP\Mvc\DispatcherInterface    $dispatcher
+ * @property \ManaPHP\Security\IdentityInterface $identity
  */
 class Rbac extends Component implements AuthorizationInterface
 {
@@ -26,7 +26,7 @@ class Rbac extends Component implements AuthorizationInterface
      */
     public function isAllowed($permissionName, $userId = null)
     {
-        $userId = $userId ?: $this->userIdentity->getId();
+        $userId = $userId ?: $this->identity->getId();
         $permission = Permission::first(['path' => $permissionName]);
 
         if (!$permission) {

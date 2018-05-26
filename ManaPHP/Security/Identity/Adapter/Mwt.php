@@ -1,16 +1,30 @@
 <?php
 
-namespace ManaPHP\Authentication\Token\Adapter;
+namespace ManaPHP\Security\Identity\Adapter;
 
-use ManaPHP\Authentication\Token;
+use ManaPHP\Security\Identity;
 
 /**
- * Class ManaPHP\Authentication\Token\Adapter\Mwt
- *
- * @package token\adapter
+ * Class Mwt
+ * @package ManaPHP\Security\Identity\Adapter
+ * @property \ManaPHP\Http\RequestInterface $request
  */
-class Mwt extends Token
+class Mwt extends Identity
 {
+    /**
+     * @var string
+     */
+    protected $_alg;
+    /**
+     * @var array
+     */
+    protected $_key = [];
+
+    /**
+     * @var int
+     */
+    protected $_ttl = 86400;
+
     /**
      * Mwt constructor.
      *
@@ -89,6 +103,17 @@ class Mwt extends Token
             return false;
         }
 
-        return $this->_claims = $claims;
+        return $claims;
+    }
+
+    /**
+     * @return bool
+     */
+    public function authenticate()
+    {
+        $claims = $this->decode($this->request->getAccessToken());
+        $this->_claims = $claims ?: [];
+
+        return (bool)$claims;
     }
 }

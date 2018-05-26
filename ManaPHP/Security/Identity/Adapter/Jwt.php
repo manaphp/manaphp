@@ -1,10 +1,30 @@
 <?php
-namespace ManaPHP\Authentication\Token\Adapter;
 
-use ManaPHP\Authentication\Token;
+namespace ManaPHP\Security\Identity\Adapter;
 
-class Jwt extends Token
+use ManaPHP\Security\Identity;
+
+/**
+ * Class Jwt
+ * @package ManaPHP\Security\Identity\Adapter
+ * @property \ManaPHP\Http\RequestInterface $request
+ */
+class Jwt extends Identity
 {
+    /**
+     * @var string
+     */
+    protected $_alg;
+    /**
+     * @var array
+     */
+    protected $_key = [];
+
+    /**
+     * @var int
+     */
+    protected $_ttl = 86400;
+
     /**
      * Jwt constructor.
      *
@@ -111,5 +131,16 @@ class Jwt extends Token
         }
 
         return $this->_claims = $claims;
+    }
+
+    /**
+     * @return bool
+     */
+    public function authenticate()
+    {
+        $claims = $this->decode($this->request->getAccessToken());
+        $this->_claims = $claims ?: [];
+
+        return (bool)$claims;
     }
 }

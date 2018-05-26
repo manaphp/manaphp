@@ -9,8 +9,6 @@ use ManaPHP\Logger\AppenderInterface;
  * Class ManaPHP\Logger\Appender\Db
  *
  * @package logger
- *
- * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
  */
 class Db extends Component implements AppenderInterface
 {

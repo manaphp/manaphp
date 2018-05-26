@@ -13,7 +13,7 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP\Authorization
  *
- * @property \ManaPHP\Authentication\UserIdentityInterface $userIdentity
+ * @property \ManaPHP\Security\IdentityInterface $identity
  */
 class Acl extends Component implements AuthorizationInterface, \Serializable
 {
@@ -69,7 +69,7 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
                 throw new AclException('ss');
         }
 
-        $roleId = ',' . ($roleId ?: $this->userIdentity->getRoleId()) . ',';
+        $roleId = ',' . ($roleId ?: $this->identity->getRoleId()) . ',';
         $action = ',' . $action . ',';
 
         if (isset($this->_acl['*'])) {
