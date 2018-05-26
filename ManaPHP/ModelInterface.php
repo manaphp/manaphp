@@ -146,7 +146,7 @@ interface ModelInterface
      * @param string           $field
      * @param int|float|array  $interval
      *
-     * @return int|double|string|false
+     * @return int|double|string|null
      */
     public static function value($filters, $field, $interval = null);
 

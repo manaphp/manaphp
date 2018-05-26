@@ -394,7 +394,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param string           $field
      * @param int|float|array  $interval
      *
-     * @return int|double|string|false
+     * @return int|double|string|null
      */
     public static function value($filters, $field, $interval = null)
     {
@@ -412,7 +412,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         if ($interval === null || $pkValue === null) {
             $rs = static::criteria([$field], $model)->where($filters)->limit(1)->execute();
-            return $rs ? $rs[0][$field] : false;
+            return $rs ? $rs[0][$field] : null;
         }
 
         if (is_numeric($interval)) {
@@ -439,11 +439,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         $rs = static::criteria([$field], $model)->where($pkName, $pkValue)->limit(1)->execute();
-        if (!$rs) {
-            return false;
-        }
-
-        $value = $rs[0][$field];
+        $value = $rs ? $rs[0][$field] : null;
 
         $cached[$className][$field][$pkValue] = [$current + $interval, $value];
         if (count($cached[$className][$field]) > $max) {
@@ -463,7 +459,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public static function valueOrFail($filters, $field, $interval = null)
     {
         $value = static::value($filters, $field, $interval);
-        if ($value === false) {
+        if ($value === null) {
             throw new NotFoundException(['valueOrFail failed: `:model` record is not exists', 'model' => get_called_class()]);
         } else {
             return $value;
