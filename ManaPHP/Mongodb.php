@@ -134,6 +134,28 @@ class Mongodb extends Component implements MongodbInterface
     }
 
     /**
+     * @param string  $source
+     * @param array[] $documents
+     *
+     * @return array
+     */
+    public function bulkInsert($source, $documents)
+    {
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+
+        $bulk = new BulkWrite();
+        foreach ($documents as $document) {
+            $bulk->insert($document);
+        }
+        $this->fireEvent('mongodb:beforeBulkInsert', ['namespace' => $namespace]);
+        $result = $this->bulkWrite($namespace, $bulk);
+        $this->fireEvent('mongodb:afterBulkInsert');
+        $count = $result->getInsertedCount();
+        $this->logger->debug(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
+        return $count;
+    }
+
+    /**
      * @param string $source
      * @param array  $document
      * @param array  $filter
@@ -161,6 +183,31 @@ class Mongodb extends Component implements MongodbInterface
      *
      * @return int
      */
+    public function bulkUpdate($source, $documents, $primaryKey)
+    {
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+
+        $bulk = new BulkWrite();
+        foreach ($documents as $document) {
+            unset($document[$primaryKey]);
+            $bulk->update([$primaryKey => $document[$primaryKey]], ['$set' => $document]);
+        }
+
+        $this->fireEvent('mongodb:beforeBulkUpdate', ['namespace' => $namespace]);
+        $result = $this->bulkWrite($namespace, $bulk);
+        $this->fireEvent('mongodb:afterBulkUpdate');
+        $count = $result->getModifiedCount();
+        $this->logger->debug(compact('namespace', 'documents', 'primaryKey', 'filter', 'options', 'count'), 'mongodb.bulk.update');
+        return $count;
+    }
+
+    /**
+     * @param string $source
+     * @param array  $document
+     * @param string $primaryKey
+     *
+     * @return int
+     */
     public function upsert($source, $document, $primaryKey)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
@@ -174,6 +221,30 @@ class Mongodb extends Component implements MongodbInterface
         $this->fireEvent('mongodb:afterUpsert');
         $count = $result->getUpsertedCount();
         $this->logger->debug(compact('namespace', 'document', 'filter', 'options', 'count'), 'mongodb.upsert');
+        return $count;
+    }
+
+    /**
+     * @param string $source
+     * @param array  $document
+     * @param string $primaryKey
+     *
+     * @return int
+     */
+    public function bulkUpsert($source, $documents, $primaryKey)
+    {
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+
+        $bulk = new BulkWrite();
+        foreach ($documents as $document) {
+            $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
+        }
+
+        $this->fireEvent('mongodb:beforeBulkUpsert', ['namespace' => $namespace]);
+        $result = $this->bulkWrite($namespace, $bulk);
+        $this->fireEvent('mongodb:afterBulkUpsert');
+        $count = $result->getUpsertedCount();
+        $this->logger->debug(compact('namespace', 'document', 'filter', 'options', 'count'), 'mongodb.bulk.upsert');
         return $count;
     }
 

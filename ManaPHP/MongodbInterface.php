@@ -19,6 +19,14 @@ interface MongodbInterface
     public function insert($source, $document);
 
     /**
+     * @param string  $source
+     * @param array[] $documents
+     *
+     * @return int
+     */
+    public function bulkInsert($source, $documents);
+
+    /**
      * @param string $source
      * @param array  $document
      * @param array  $filter
@@ -34,7 +42,25 @@ interface MongodbInterface
      *
      * @return int
      */
+    public function bulkUpdate($source, $documents, $primaryKey);
+
+    /**
+     * @param string $source
+     * @param array  $document
+     * @param string $primaryKey
+     *
+     * @return int
+     */
     public function upsert($source, $document, $primaryKey);
+
+    /**
+     * @param string $source
+     * @param array  $document
+     * @param string $primaryKey
+     *
+     * @return int
+     */
+    public function bulkUpsert($source, $documents, $primaryKey);
 
     /**
      * @param string $source
