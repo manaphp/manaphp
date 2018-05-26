@@ -260,19 +260,12 @@ class Mysql extends Db
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
         }
 
-        if (array_key_exists(0, $record)) {
-            $insertedValues = rtrim(str_repeat('?,', count($record)), ',');
+        $fields = array_keys($record);
+        $insertedValues = ':' . implode(',:', $fields);
+        $insertedFields = '[' . implode('],[', $fields) . ']';
 
-            $sql = /** @lang Text */
-                'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " VALUES ($insertedValues)";
-        } else {
-            $fields = array_keys($record);
-            $insertedValues = ':' . implode(',:', $fields);
-            $insertedFields = '[' . implode('],[', $fields) . ']';
-
-            $sql = /** @lang Text */
-                'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
-        }
+        $sql = /** @lang Text */
+            'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
         $count = $this->execute($sql, $record);
         $this->logger->debug(compact('count', 'table', 'record'), 'db.insertOrIgnore');

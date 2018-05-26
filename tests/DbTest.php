@@ -127,12 +127,6 @@ class DbTest extends TestCase
         $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
         $this->assertEquals([1, 21, 'mana1'], array_values($row));
 
-        //value only method
-        $this->db->truncate('_student');
-        $this->db->insert('_student', [null, 21, 'mana1']);
-        $row = $this->db->fetchOne('SELECT id,age,name FROM _student WHERE id=1');
-        $this->assertEquals([1, 21, 'mana1'], array_values($row));
-
         //compatible method
         $this->db->truncate('_student');
         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
