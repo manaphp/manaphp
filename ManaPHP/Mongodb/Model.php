@@ -561,15 +561,30 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param array $record
+     * @param array $document
      * @param bool  $skipIfExists
      *
      * @return int
      */
-    public static function insert($record, $skipIfExists = false)
+    public static function insert($document, $skipIfExists = false)
     {
         $instance = new static();
-        return $instance->getConnection($record)->insert($instance->getSource($record), $record, $instance->getPrimaryKey(), $skipIfExists);
+
+        $primaryKey = $instance->getPrimaryKey();
+        $allowNull = $instance->isAllowNullValue();
+        $fieldTypes = $instance->getFieldTypes();
+
+        if (!isset($document[$primaryKey])) {
+            $document[$primaryKey] = $instance->generateAutoIncrementId();
+        }
+        foreach ($fieldTypes as $field => $type) {
+            if (isset($document[$field])) {
+                $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
+            } elseif ($field !== '_id') {
+                $document[$field] = $allowNull ? null : $instance->getNormalizedValue($type, '');
+            }
+        }
+        return $instance->getConnection($document)->insert($instance->getSource($document), $document, $instance->getPrimaryKey(), $skipIfExists);
     }
 
     public function __debugInfo()
