@@ -13,18 +13,11 @@ interface MongodbInterface
     /**
      * @param string $source
      * @param array  $document
-     *
-     * @return \MongoDB\BSON\ObjectID|int|string
-     */
-    public function insert($source, $document);
-
-    /**
-     * @param string $source
-     * @param array  $document
+     * @param bool   $skipIfExists
      *
      * @return int
      */
-    public function insertOrIgnore($source, $document);
+    public function insert($source, $document, $skipIfExists = false);
 
     /**
      * @param string  $source
