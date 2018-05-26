@@ -577,3 +577,25 @@ if (!function_exists('seconds')) {
         }
     }
 }
+
+if (!function_exists('json')) {
+    /**
+     * @param array|string $data
+     *
+     * @return array|string
+     */
+    function json($data)
+    {
+        if (is_string($data)) {
+            if (!is_array($r = json_decode($data, true))) {
+                throw new \ManaPHP\Exception\InvalidJsonException(['`:data` data', 'data' => $data]);
+            } else {
+                return $r;
+            }
+        } elseif (is_array($data)) {
+            return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        } else {
+            throw new \ManaPHP\Exception\UnexpectedValueException(['`:data`', 'data' => $data]);
+        }
+    }
+}
