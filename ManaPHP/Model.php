@@ -374,7 +374,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         if (!$r = static::first($filters, $fields, $options)) {
             $exception = new NotFoundException([
-                'No query results for `:model` model with `:criteria` criteria',
+                'No record for `:model` model with `:criteria` criteria',
                 'model' => static::class,
                 'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)
             ]);
@@ -460,7 +460,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         $value = static::value($filters, $field, $interval);
         if ($value === null) {
-            throw new NotFoundException(['valueOrFail failed: `:model` record is not exists', 'model' => get_called_class()]);
+            throw new NotFoundException(['valueOrFail: `:model` model with `:criteria` criteria record is not exists',
+                'model' => get_called_class(),
+                'criteria' => json_encode($filters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
         } else {
             return $value;
         }
