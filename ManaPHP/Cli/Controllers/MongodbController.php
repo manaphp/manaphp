@@ -105,6 +105,11 @@ class MongodbController extends Controller
             }
         } else {
             foreach ($services ?: $this->_getDbServices() as $service) {
+                if (!$this->_di->has($service)) {
+                    if ($this->_di->has($service . 'Mongodb')) {
+                        $service .= 'Mongodb';
+                    }
+                }
                 /**
                  * @var \ManaPHP\Mongodb $mongodb
                  */
@@ -343,6 +348,11 @@ class MongodbController extends Controller
     public function csvCommand($services = [], $collection_pattern = '', $bom = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
+            if (!$this->_di->has($service)) {
+                if ($this->_di->has($service . 'Mongodb')) {
+                    $service .= 'Mongodb';
+                }
+            }
             /**
              * @var \ManaPHP\Mongodb $mongodb
              */
@@ -411,6 +421,11 @@ class MongodbController extends Controller
     public function listCommand($services = [], $collection_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
+            if (!$this->_di->has($service)) {
+                if ($this->_di->has($service . 'Mongodb')) {
+                    $service .= 'Mongodb';
+                }
+            }
             /**
              * @var \ManaPHP\DbInterface $mongodb
              */
