@@ -214,9 +214,7 @@ class Mongodb extends Component implements MongodbInterface
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
         $bulk = new BulkWrite();
-        $pkValue = $document[$primaryKey];
-        unset($document[$primaryKey]);
-        $bulk->update([$primaryKey => $pkValue], $document, ['upsert' => true]);
+        $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
 
         $this->fireEvent('mongodb:beforeUpsert', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
@@ -239,9 +237,7 @@ class Mongodb extends Component implements MongodbInterface
 
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
-            $pkValue = $document[$primaryKey];
-            unset($document[$primaryKey]);
-            $bulk->update([$primaryKey => $pkValue], $document, ['upsert' => true]);
+            $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
         }
 
         $this->fireEvent('mongodb:beforeBulkUpsert', ['namespace' => $namespace]);
