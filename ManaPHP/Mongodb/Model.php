@@ -464,7 +464,7 @@ class Model extends \ManaPHP\Model
 
     /**
      * @param array[] $documents
-     * @param string  $skipIfExists
+     * @param bool    $skipIfExists
      *
      * @return int
      */
@@ -494,6 +494,8 @@ class Model extends \ManaPHP\Model
 
     /**
      * @param array $documents
+     *
+     * @return int
      */
     public static function bulkUpdate($documents)
     {
@@ -508,7 +510,7 @@ class Model extends \ManaPHP\Model
             }
             foreach ($document as $field => $value) {
                 if ($value === null) {
-                    $document[$field] = $allowNull ? null : $instance->getNormalizedValue($type, '');
+                    $document[$field] = $allowNull ? null : $instance->getNormalizedValue($fieldTypes[$field], '');
                 } else {
                     $document[$field] = $instance->getNormalizedValue($fieldTypes[$field], $value);
                 }
@@ -524,6 +526,8 @@ class Model extends \ManaPHP\Model
 
     /**
      * @param array[] $documents
+     *
+     * @return int
      */
     public static function bulkUpsert($documents)
     {
