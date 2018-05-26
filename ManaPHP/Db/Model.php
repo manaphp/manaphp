@@ -310,4 +310,16 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $table = $model->getSource($bind);
         return $model->getMasterConnection($bind)->execute("UPDATE [$table] SET " . $sql, $bind);
     }
+
+    /**
+     * @param array $record
+     * @param bool  $skipIfExists
+     *
+     * @return int
+     */
+    public static function insert($record, $skipIfExists = false)
+    {
+        $instance = new static();
+        return $instance->getConnection($record)->insert($instance->getSource($record), $record, $skipIfExists);
+    }
 }

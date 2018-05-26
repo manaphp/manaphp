@@ -560,6 +560,18 @@ class Model extends \ManaPHP\Model
         return $connection->bulkUpsert($instance->getSource(), $documents, $primaryKey);
     }
 
+    /**
+     * @param array $record
+     * @param bool  $skipIfExists
+     *
+     * @return int
+     */
+    public static function insert($record, $skipIfExists = false)
+    {
+        $instance = new static();
+        return $instance->getConnection($record)->insert($instance->getSource($record), $record, $instance->getPrimaryKey(), $skipIfExists);
+    }
+
     public function __debugInfo()
     {
         return array_merge(['_id' => is_object($this->_id) ? (string)$this->_id : $this->_id], parent::__debugInfo());

@@ -344,6 +344,14 @@ interface ModelInterface
     public static function deleteAll($filters);
 
     /**
+     * @param array $record
+     * @param bool  $skipIfExists
+     *
+     * @return int
+     */
+    public static function insert($record, $skipIfExists = false);
+
+    /**
      * Returns the instance as an array representation
      *
      *<code>
