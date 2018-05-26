@@ -48,12 +48,13 @@ class Application extends \ManaPHP\Application implements LogCategorizable
     {
         $this->configure->bootstraps = array_diff($this->configure->bootstraps, ['debugger']);
 
-        parent::registerServices();
-
         $this->_di->setShared('cliHandler', 'ManaPHP\Cli\Handler');
         $this->_di->setShared('console', 'ManaPHP\Cli\Console');
         $this->_di->setShared('arguments', 'ManaPHP\Cli\Arguments');
         $this->_di->setShared('commandInvoker', 'ManaPHP\Cli\Command\Invoker');
+        $this->_di->setShared('errorHandler', 'ManaPHP\Cli\ErrorHandler');
+
+        parent::registerServices();
     }
 
     public function main()
@@ -72,8 +73,15 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         $this->logger->addAppender(['class' => 'file', 'file' => '@data/console/' . date('ymd') . '.log'], 'console');
 
-        $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) .' '. implode(' ', array_slice($GLOBALS['argv'], 1))]);
+        $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . implode(' ', array_slice($GLOBALS['argv'], 1))]);
 
-        exit($this->cliHandler->handle());
+        try {
+            exit($this->cliHandler->handle());
+        } /** @noinspection PhpUndefinedClassInspection */
+        catch (\Exception $e) {
+            $this->errorHandler->handle($e);
+        } catch (\Error $e) {
+            $this->errorHandler->handle($e);
+        }
     }
 }
