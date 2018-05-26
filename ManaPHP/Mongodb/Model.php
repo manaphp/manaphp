@@ -458,7 +458,12 @@ class Model extends \ManaPHP\Model
     public static function aggregate($pipeline)
     {
         $instance = new static();
-        return $instance->getConnection(null)->aggregate($instance->getSource(null), $pipeline);
+
+        /**
+         * @var \ManaPHP\MongodbInterface $connection
+         */
+        $connection = $instance->getConnection();
+        return $connection->aggregate($instance->getSource(), $pipeline);
     }
 
     /**
