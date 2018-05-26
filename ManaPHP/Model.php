@@ -522,6 +522,18 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * @param array $filters
+     * @param array $aggregation
+     * @param string|array
+     *
+     * @return array
+     */
+    public static function group($filters, $aggregation, $group = null)
+    {
+        return static::criteria()->where($filters)->groupBy($group)->aggregate($aggregation);
+    }
+
+    /**
      * Allows to count how many records match the specified conditions
      *
      * @param array  $filters

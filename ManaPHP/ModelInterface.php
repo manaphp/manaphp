@@ -176,6 +176,15 @@ interface ModelInterface
     public static function exists($filters);
 
     /**
+     * @param array $filters
+     * @param array $aggregation
+     * @param string|array
+     *
+     * @return array
+     */
+    public static function group($filters, $aggregation, $group = null);
+
+    /**
      * Allows to count how many records match the specified conditions
      *
      * <code>
