@@ -13,11 +13,12 @@ interface MongodbInterface
     /**
      * @param string $source
      * @param array  $document
+     * @param string $primaryKey
      * @param bool   $skipIfExists
      *
      * @return int
      */
-    public function insert($source, $document, $skipIfExists = false);
+    public function insert($source, $document, $primaryKey = null, $skipIfExists = false);
 
     /**
      * @param string  $source
