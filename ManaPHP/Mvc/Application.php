@@ -99,6 +99,12 @@ class Application extends \ManaPHP\Application
         return $this->response;
     }
 
+    public function registerServices()
+    {
+        $this->_di->setShared('errorHandler', 'ManaPHP\Mvc\ErrorHandler');
+        parent::registerServices();
+    }
+
     public function main()
     {
         $this->loader->registerFiles('@manaphp/helpers.php');

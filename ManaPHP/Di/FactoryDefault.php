@@ -24,7 +24,6 @@ class FactoryDefault extends Di
             'dotenv' => 'ManaPHP\Dotenv',
             'configure' => 'ManaPHP\Configuration\Configure',
             'settings' => 'ManaPHP\Configuration\Settings\Adapter\Redis',
-            'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
             'router' => 'ManaPHP\Router',
             'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
             'actionInvoker' => 'ManaPHP\ActionInvoker',
