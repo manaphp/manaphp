@@ -5,6 +5,7 @@ namespace ManaPHP\Mongodb;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use MongoDB\BSON\ObjectID;
@@ -81,7 +82,7 @@ class Model extends \ManaPHP\Model
                 return $cached[$calledClass] = $tryField;
             }
 
-            return $cached[$calledClass] = '_id';
+            throw new NotImplementedException(['Primary key of `:class` class can not be inferred', 'class' => $calledClass]);
         }
 
         return $cached[$calledClass];
