@@ -320,6 +320,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
     public static function insert($record, $skipIfExists = false)
     {
         $instance = new static();
-        return $instance->getConnection($record)->insert($instance->getSource($record), $record, $skipIfExists);
+        return $instance->getConnection($record)->insert($instance->getSource($record), $record, $instance->getPrimaryKey(), $skipIfExists);
     }
 }

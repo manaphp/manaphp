@@ -62,20 +62,22 @@ interface DbInterface
     /**
      * @param string $table
      * @param array  $record
+     * @param string $primaryKey
      * @param bool   $skipIfExists
      *
      * @return int
      */
-    public function insert($table, $record, $skipIfExists = false);
+    public function insert($table, $record, $primaryKey = null, $skipIfExists = false);
 
     /**
      * @param string  $table
      * @param array[] $records
+     * @param string  $primaryKey
      * @param bool    $skipIfExists
      *
      * @return int
      */
-    public function bulkInsert($table, $records, $skipIfExists = false);
+    public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false);
 
     /**
      * Updates data on a table using custom SQL syntax

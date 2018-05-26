@@ -408,12 +408,13 @@ abstract class Db extends Component implements DbInterface
     /**
      * @param string $table
      * @param array  $record
+     * @param string $primaryKey
      * @param bool   $skipIfExists
      *
      * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    public function insert($table, $record, $skipIfExists = false)
+    public function insert($table, $record, $primaryKey = null, $skipIfExists = false)
     {
         if (!$record) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);

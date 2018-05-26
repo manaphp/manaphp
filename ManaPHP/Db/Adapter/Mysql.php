@@ -3,6 +3,7 @@ namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Exception\DsnFormatException;
+use ManaPHP\Exception\InvalidArgumentException;
 
 /**
  * Class ManaPHP\Db\Adapter\Mysql
@@ -251,11 +252,12 @@ class Mysql extends Db
     /**
      * @param string  $table
      * @param array[] $records
+     * @param string  $primaryKey
      * @param bool    $skipIfExists
      *
      * @return int
      */
-    public function bulkInsert($table, $records, $skipIfExists = false)
+    public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false)
     {
         if (!$records) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
