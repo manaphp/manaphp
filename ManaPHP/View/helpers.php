@@ -3,7 +3,7 @@
 use ManaPHP\Di;
 
 if (!function_exists('action')) {
-    function action($args = [], $module = null)
+    function action($args = [])
     {
         static $router;
         if (!$router) {
