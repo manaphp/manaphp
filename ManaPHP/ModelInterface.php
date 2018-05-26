@@ -352,6 +352,14 @@ interface ModelInterface
     public static function insert($record, $skipIfExists = false);
 
     /**
+     * @param array $records
+     * @param bool  $skipIfExists
+     *
+     * @return int
+     */
+    public static function bulkInsert($records, $skipIfExists = false);
+
+    /**
      * Returns the instance as an array representation
      *
      *<code>

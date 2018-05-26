@@ -322,4 +322,16 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $instance = new static();
         return $instance->getConnection($record)->insert($instance->getSource($record), $record, $instance->getPrimaryKey(), $skipIfExists);
     }
+
+    /**
+     * @param array $records
+     * @param bool  $skipIfExists
+     *
+     * @return int
+     */
+    public static function bulkInsert($records, $skipIfExists = false)
+    {
+        $instance = new static();
+        return $instance->getConnection()->bulkInsert($instance->getSource(), $records, $instance->getPrimaryKey(), $skipIfExists);
+    }
 }
