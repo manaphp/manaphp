@@ -223,7 +223,7 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterUpsert');
         $count = $result->getUpsertedCount();
-        $this->logger->debug(compact('namespace', 'document', 'count'), 'mongodb.upsert');
+        $this->logger->debug(compact('count', 'namespace', 'document'), 'mongodb.upsert');
         return $count;
     }
 
@@ -247,7 +247,7 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterBulkUpsert');
         $count = $result->getUpsertedCount();
-        $this->logger->debug(compact('namespace', 'documents', 'count'), 'mongodb.bulk.upsert');
+        $this->logger->debug(compact('count', 'namespace', 'documents'), 'mongodb.bulk.upsert');
         return $count;
     }
 
