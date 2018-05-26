@@ -119,6 +119,39 @@ class Mongodb extends Component implements MongodbInterface
      * @param string $source
      * @param array  $document
      *
+     * @return int
+     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
+     */
+    public function insertOrIgnore($source, $document)
+    {
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+
+        $bulk = new BulkWrite();
+        $id = $bulk->insert($document);
+        $this->fireEvent('mongodb:beforeInsertOrIgnore', ['namespace' => $namespace]);
+        try {
+            $result = $this->bulkWrite($namespace, $bulk);
+            $count = $result->getInsertedCount();
+        } catch (\Exception $exception) {
+            /**
+             * https://github.com/mongodb/mongo/blob/master/src/mongo/base/error_codes.err
+             */
+            if (strpos($exception->getMessage(), 'E11000 ') !== 0) {
+                throw $exception;
+            } else {
+                $count = 0;
+            }
+        }
+
+        $this->fireEvent('mongodb:afterInsertOrIgnore');
+        $this->logger->debug(compact('namespace', 'document', 'count'), 'mongodb.insertOrIgnore');
+        return $count;
+    }
+
+    /**
+     * @param string $source
+     * @param array  $document
+     *
      * @return \MongoDB\BSON\ObjectID|int|string
      * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */

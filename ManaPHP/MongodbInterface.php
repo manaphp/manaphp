@@ -19,6 +19,14 @@ interface MongodbInterface
     public function insert($source, $document);
 
     /**
+     * @param string $source
+     * @param array  $document
+     *
+     * @return int
+     */
+    public function insertOrIgnore($source, $document);
+
+    /**
      * @param string  $source
      * @param array[] $documents
      *
