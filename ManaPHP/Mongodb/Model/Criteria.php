@@ -954,9 +954,6 @@ class Criteria extends \ManaPHP\Model\Criteria
         }
 
         $items = $this->_execute();
-        if (isset($items[0])) {
-            unset($items[0]['_id']);
-        }
         if (isset($cacheOptions)) {
             $this->modelsCache->set($cacheOptions['key'], json_encode(['time' => date('Y-m-d H:i:s'), 'items' => $items]), $cacheOptions['ttl']);
         }
