@@ -144,11 +144,24 @@ class Redis extends Component
     public function reconnect()
     {
         $this->close();
-        if(!$this->_connect()){
+        if (!$this->_connect()) {
             throw new ConnectionException(['reconnect to `:url` failed', 'url' => $this->_url]);
         }
 
         return $this;
+    }
+
+    public function ping()
+    {
+        try {
+            $this->_redis->time();
+        } catch (\Exception  $exception) {
+            try {
+                $this->reconnect();
+            } catch (\Exception $exception) {
+                throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_url]);
+            }
+        }
     }
 
     /**
