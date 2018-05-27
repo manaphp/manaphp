@@ -114,9 +114,11 @@ abstract class Application extends Component implements ApplicationInterface
                 $this->_di->setShared($component, $definition);
             }
         }
-
+        
         foreach ($configure->bootstraps as $bootstrap) {
-            $this->_di->getShared($bootstrap);
+            if($bootstrap){
+                $this->_di->getShared($bootstrap);
+            }
         }
     }
 }
