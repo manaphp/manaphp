@@ -600,3 +600,29 @@ if (!function_exists('json')) {
         }
     }
 }
+
+if (!function_exists('transaction')) {
+    /**
+     * @param callable $work
+     * @param string   $service
+     *
+     * @return true|string
+     */
+    function transaction($work, $service = 'db')
+    {
+        try {
+            /**
+             * @var \ManaPHP\DbInterface $db
+             */
+            $db = di($service);
+            $db->begin();
+            $work();
+            $db->commit();
+        } catch (\Exception $exception) {
+            $db->rollback();
+            error($exception);
+            return $exception->getMessage();
+        }
+        return true;
+    }
+}
