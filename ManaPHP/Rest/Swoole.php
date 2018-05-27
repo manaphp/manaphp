@@ -60,7 +60,7 @@ class Swoole extends Application
             $_SERVER['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
         }
 
-        $_SERVER['WORKER_ID'] = $this->_swoole->worker_pid;
+        $_SERVER['WORKER_ID'] = $this->swoole->worker_pid;
 
         $_GET = $request->get ?: [];
         $_POST = $request->post ?: [];
@@ -90,7 +90,7 @@ class Swoole extends Application
      */
     public function onRequest($request, $response)
     {
-        if ($request->get('request_uri') === '/favicon.ico') {
+        if ($request->server['request_uri'] === '/favicon.ico') {
             $response->status(404);
             $response->end();
             return;
