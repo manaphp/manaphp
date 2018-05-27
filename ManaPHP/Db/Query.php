@@ -346,13 +346,14 @@ class Query extends Component implements QueryInterface
                     $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
                 } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
-                } else {
+                } elseif (strpos($filter, '@=')) {
+                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                }else{
                     if (strpos($filter, ' ') !== false) {
                         $this->_conditions[] = $filter;
                     } else {
                         $this->whereIn(rtrim($filter, '='), $value);
                     }
-
                 }
             } else {
                 $this->_conditions[] = $filter;
@@ -416,7 +417,7 @@ class Query extends Component implements QueryInterface
                 $parts = explode('.', $v);
                 $field = $parts[1];
             }
-            $value = $this->request->get(rtrim($field, '=!<>~*^$'));
+            $value = $this->request->get(rtrim($field, '=!<>~*^@$'));
             if ($value === null) {
                 continue;
             } elseif (is_string($value)) {
