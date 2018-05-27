@@ -6,11 +6,11 @@
             </el-select>
         </el-col>
         <el-col :span="2">
-            <el-button @click="show_edit()" type="primary" round size="small" icon="el-icon-edit">edit</el-button>
+            <el-button @click="show_edit()" type="primary" round size="small" icon="el-icon-edit">编辑</el-button>
         </el-col>
     </el-row>
 </div>
-<el-dialog class="edit-dialog" title="edit" :visible.sync="editVisible" width="50%">
+<el-dialog class="edit-dialog" title="编辑" :visible.sync="editVisible" width="50%">
     <el-form :model="edit" ref="edit">
         <el-checkbox-group v-model="edit.role_ids">
             <el-checkbox v-for="(name,id) in roles" :label="parseInt(id)"
@@ -20,32 +20,32 @@
         </el-checkbox-group>
     </el-form>
     <div slot="footer">
-        <el-button type="primary" @click="do_edit">save</el-button>
-        <el-button @click="editVisible=false">cancel</el-button>
+        <el-button type="primary" @click="do_edit">保存</el-button>
+        <el-button @click="editVisible=false">取消</el-button>
     </div>
 </el-dialog>
-<el-dialog title="detail" :visible.sync="detailVisible">
+<el-dialog title="详情" :visible.sync="detailVisible">
     <el-table :data="detail" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="id" label="id" width="100"></el-table-column>
-        <el-table-column prop="admin_id" label="admin_id" with="100"></el-table-column>
-        <el-table-column prop="admin_name" label="admin_name" width="100"></el-table-column>
-        <el-table-column prop="role_id" label="role_id" width="100"></el-table-column>
-        <el-table-column prop="role_name" label="role_name"></el-table-column>
-        <el-table-column prop="creator_id" label="creator_id"></el-table-column>
-        <el-table-column prop="creator_name" label="creator_name"></el-table-column>
-        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="id" label="ID" width="100"></el-table-column>
+        <el-table-column prop="admin_id" label="用户ID" with="100"></el-table-column>
+        <el-table-column prop="admin_name" label="用户名" width="100"></el-table-column>
+        <el-table-column prop="role_id" label="角色ID" width="100"></el-table-column>
+        <el-table-column prop="role_name" label="角色名"></el-table-column>
+        <el-table-column prop="creator_id" label="创建者ID"></el-table-column>
+        <el-table-column prop="creator_name" label="创建者"></el-table-column>
+        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
     </el-table>
 </el-dialog>
 <div class="result-box">
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="id" label="id" width="100"></el-table-column>
-        <el-table-column label="role_id" width="100">
+        <el-table-column prop="id" label="ID" width="100"></el-table-column>
+        <el-table-column label="角色ID" width="100">
             <template slot-scope="scope"><a :href="'@action(role/)?role_id='+scope.row.role_id">@{{scope.row.role_id}}</a></template>
         </el-table-column>
-        <el-table-column prop="role.role_name" label="role_name" width="100"></el-table-column>
-        <el-table-column label="admins">
+        <el-table-column prop="role.role_name" label="角色名" width="100"></el-table-column>
+        <el-table-column label="用户列表">
             <template slot-scope="scope">
                 <el-button size="small" v-for="admin in scope.row.users" :key="index" type="text"
                            @click.native="request.admin_id = admin.admin_id"
@@ -54,8 +54,8 @@
                 </el-button>
             </template>
         </el-table-column>
-        <el-table-column prop="creator_name" label="creator_name" width="200"></el-table-column>
-        <el-table-column prop="created_time" label="created_time" width="200" :formatter="fDate"></el-table-column>
+        <el-table-column prop="creator_name" label="创建者" width="200"></el-table-column>
+        <el-table-column prop="created_time" label="创建时间" width="200" :formatter="fDate"></el-table-column>
     </el-table>
 </div>
 @section('script')

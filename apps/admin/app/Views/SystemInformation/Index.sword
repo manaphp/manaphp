@@ -1,0 +1,12 @@
+<template v-for="(value, name) in data">
+    <el-col :span="3"><div>{{name}}</div></el-col>
+    <el-col :span="19"><div>{{value}}</div></el-col>
+</template>
+@section('script')
+    <script>
+        vm = new Vue({
+            el: '#app',
+            data: @json(['data' => $data])
+        });
+    </script>
+@append

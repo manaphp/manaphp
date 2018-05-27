@@ -6,11 +6,11 @@
             </el-select>
         </el-col>
         <el-col :span="2">
-            <el-button @click="show_edit()" type="primary" round size="small" icon="el-icon-edit">edit</el-button>
+            <el-button @click="show_edit()" type="primary" round size="small" icon="el-icon-edit">编辑</el-button>
         </el-col>
     </el-row>
 </div>
-<el-dialog class="edit-dialog" title="edit" :visible.sync="editVisible" width="50%">
+<el-dialog class="edit-dialog" title="编辑" :visible.sync="editVisible" width="50%">
     <el-form :model="edit" ref="edit">
         <el-checkbox-group v-model="edit.permission_ids">
             <el-checkbox v-for="permission in permissions" :label="permission.permission_id"
@@ -20,20 +20,20 @@
         </el-checkbox-group>
     </el-form>
     <div slot="footer">
-        <el-button type="primary" @click="do_edit">save</el-button>
-        <el-button @click="editVisible=false">cancel</el-button>
+        <el-button type="primary" @click="do_edit">保存</el-button>
+        <el-button @click="editVisible=false">取消</el-button>
     </div>
 </el-dialog>
 <div class="result-box">
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="id" label="id" width="50"></el-table-column>
-        <el-table-column label="permission_id" width="120">
+        <el-table-column prop="id" label="ID" width="50"></el-table-column>
+        <el-table-column label="权限ID" width="120">
             <template slot-scope="scope"><a :href="'@action(permission/)?permission_id='+scope.row.permission_id">@{{scope.row.permission_id}}</a></template>
         </el-table-column>
-        <el-table-column prop="permission.path" label="path"></el-table-column>
-        <el-table-column prop="permission.description" label="description"></el-table-column>
-        <el-table-column label="roles">
+        <el-table-column prop="permission.path" label="权限路径"></el-table-column>
+        <el-table-column prop="permission.description" label="权限简述"></el-table-column>
+        <el-table-column label="角色列表">
             <template slot-scope="scope">
                 <el-button size="small" v-for="role in scope.row.roles" :key="index" type="text"
                            @click.native="request.role_id = role.role_id" :disabled="request.role_id == role.role_id">
@@ -41,8 +41,8 @@
                 </el-button>
             </template>
         </el-table-column>
-        <el-table-column prop="creator_name" label="creator_name" width="120"></el-table-column>
-        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
+        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
     </el-table>
 </div>
 

@@ -1,11 +1,11 @@
 <div class="search-box">
     <el-row>
         <el-col :span="2">
-            <el-input v-model="request.admin_name" placeholder="admin_name" size="small"
+            <el-input v-model="request.admin_name" placeholder="用户名" size="small"
                       @keyup.enter.native="reload_table"></el-input>
         </el-col>
         <el-col :span="2">
-            <el-input v-model="request.client_ip" placeholder="client_ip" size="small"
+            <el-input v-model="request.client_ip" placeholder="客户端IP" size="small"
                       @keyup.enter.native="reload_table"></el-input>
         </el-col>
         <el-col :span="3">
@@ -17,12 +17,12 @@
 <div class="result-box">
     <el-table :data="response.items" border size="small" align="left">
         <el-table-column label="#" type="index" width="50"></el-table-column>
-        <el-table-column prop="login_id" label="login_id" width="100"></el-table-column>
-        <el-table-column prop="admin_name" label="admin_name" width="100"></el-table-column>
-        <el-table-column prop="client_ip" label="client_ip" width="100"></el-table-column>
-        <el-table-column prop="client_udid" label="client_udid" width="150" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="user_agent" label="user_agent" show-overflow-tooltip align="left"></el-table-column>
-        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="login_id" label="日志ID" width="100"></el-table-column>
+        <el-table-column prop="admin_name" label="用户名" width="100"></el-table-column>
+        <el-table-column prop="client_ip" label="客户端IP" width="100"></el-table-column>
+        <el-table-column prop="client_udid" label="客户端ID" width="150" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="user_agent" label="浏览器" show-overflow-tooltip align="left"></el-table-column>
+        <el-table-column prop="created_time" label="生成时间" :formatter="fDate" width="150"></el-table-column>
     </el-table>
     <el-pagination @current-change="reload_table" :current-page.sync="request.page" :page-size="response.size"
                    :total="response.count" layout="total, prev, pager, next"></el-pagination>

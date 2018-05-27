@@ -6,25 +6,25 @@
             </el-select>
         </el-col>
         <el-col :span="3">
-            <el-button @click="create.group_id=request.group_id; createVisible=true" icon="el-icon-plus" size="small" type="primary">create
+            <el-button @click="create.group_id=request.group_id; createVisible=true" icon="el-icon-plus" size="small" type="primary">创建菜单项
             </el-button>
         </el-col>
     </el-row>
 </div>
-<el-dialog title="create" :visible.sync="createVisible">
+<el-dialog title="创建菜单项" :visible.sync="createVisible">
     <el-form :model="create" ref="create" v-if="createVisible">
-        <el-form-item label="item name:" prop="item_name">
+        <el-form-item label="名称:" prop="item_name">
             <el-input v-model="create.item_name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="display order:" prop="display_order">
+        <el-form-item label="排序:" prop="display_order">
             <el-input v-model="create.display_order" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="group name:">
+        <el-form-item label="组名:">
             <el-select v-model="create.group_id" size="small">
                 <el-option v-for="(name, id) in groups" :key="id" :label="name" :value="id"></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="permission:">
+        <el-form-item label="链接:">
             <el-select v-model="create.permission_id" size="small" filterable>
                 <el-option v-for="item in permissions" :key="item.permission_id" :label="item.description"
                            :value="item.permission_id"></el-option>
@@ -32,25 +32,25 @@
         </el-form-item>
     </el-form>
     <span slot="footer">
-        <el-button type="primary" @click="do_create">create</el-button>
-        <el-button @click="createVisible = false; $refs.create.resetFields()">cancel</el-button>
+        <el-button type="primary" @click="do_create">创建</el-button>
+        <el-button @click="createVisible = false; $refs.create.resetFields()">取消</el-button>
     </span>
 </el-dialog>
 
-<el-dialog title="edit" :visible.sync="editVisible">
+<el-dialog title="菜单项编辑" :visible.sync="editVisible">
     <el-form :model="edit">
-        <el-form-item label="item name:" prop="item_name">
+        <el-form-item label="名称:" prop="item_name">
             <el-input v-model="edit.item_name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="display order:" prop="display_order">
+        <el-form-item label="排序:" prop="display_order">
             <el-input v-model="edit.display_order" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="group name:">
+        <el-form-item label="组名:">
             <el-select v-model="edit.group_id" size="small">
                 <el-option v-for="(name, id) in groups" :key="id" :label="name" :value="id"></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="permission:">
+        <el-form-item label="权限:">
             <el-select v-model="edit.permission_id" size="small" filterable>
                 <el-option v-for="item in permissions" :key="item.permission_id" :label="item.description"
                            :value="item.permission_id"></el-option>
@@ -58,29 +58,29 @@
         </el-form-item>
     </el-form>
     <div slot="footer">
-        <el-button type="primary" @click="do_edit">save</el-button>
-        <el-button @click="editVisible=false">cancel</el-button>
+        <el-button type="primary" @click="do_edit">保存</el-button>
+        <el-button @click="editVisible=false">取消</el-button>
     </div>
 </el-dialog>
 <div class="result-box">
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="item_id" label="item_id" width="100"></el-table-column>
-        <el-table-column prop="item_name" label="item_name"></el-table-column>
-        <el-table-column prop="display_order" label="display_order"></el-table-column>
-        <el-table-column prop="permission_name" label="permission_name">
+        <el-table-column prop="item_id" label="菜单ID" width="100"></el-table-column>
+        <el-table-column prop="item_name" label="菜单名"></el-table-column>
+        <el-table-column prop="display_order" label="排序"></el-table-column>
+        <el-table-column prop="permission_name" label="权限">
             <template slot-scope="scope">
                 @{{permissions[scope.row.permission_id].description}}
             </template>
         </el-table-column>
-        <el-table-column prop="updator_name" label="updator_name" width="120"></el-table-column>
-        <el-table-column prop="updated_time" label="updated_time" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column prop="creator_name" label="creator_name" width="120"></el-table-column>
-        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column fixed="right" label="operation" width="250">
+        <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
+        <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
+        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="250">
             <template slot-scope="scope">
-                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>edit</el-button>
-                <el-button @click="do_delete(scope.row)" icon="el-icon-delete" size="mini" plain round>delete</el-button>
+                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>编辑</el-button>
+                <el-button @click="do_delete(scope.row)" icon="el-icon-delete" size="mini" plain round>删除</el-button>
             </template>
         </el-table-column>
     </el-table>

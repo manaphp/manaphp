@@ -54,7 +54,7 @@ Vue.mixin({
             return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
         },
         fEnabled: function (row, column, value) {
-            return ['disabled', 'enabled'][value];
+            return ['禁用', '启用'][value];
         },
     },
     created: function () {

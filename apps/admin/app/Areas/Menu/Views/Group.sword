@@ -1,52 +1,52 @@
 <div class="search-box">
     <el-row>
         <el-col :span="3">
-            <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">create</el-button>
+            <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">创建菜单组</el-button>
         </el-col>
     </el-row>
 </div>
-<el-dialog title="create new group" :visible.sync="createVisible">
+<el-dialog title="创建新组" :visible.sync="createVisible">
     <el-form :model="create" ref="create">
-        <el-form-item label="group name:" prop="group_name">
+        <el-form-item label="组名:" prop="group_name">
             <el-input v-model="create.group_name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="display order:" prop="display_order">
+        <el-form-item label="排序:" prop="display_order">
             <el-input v-model="create.display_order" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <span slot="footer">
-        <el-button type="primary" @click="do_create">create</el-button>
-        <el-button @click="createVisible = false; $refs.create.resetFields()">cancel</el-button>
+        <el-button type="primary" @click="do_create">创建</el-button>
+        <el-button @click="createVisible = false; $refs.create.resetFields()">取消</el-button>
     </span>
 </el-dialog>
-<el-dialog title="edit" :visible.sync="editVisible">
+<el-dialog title="菜单组编辑" :visible.sync="editVisible">
     <el-form :model="edit">
-        <el-form-item label="group_name:">
+        <el-form-item label="组名:">
             <el-input v-model="edit.group_name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="display_order:">
+        <el-form-item label="排序:">
             <el-input v-model="edit.display_order" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer">
-        <el-button type="primary" @click="do_edit">save</el-button>
-        <el-button @click="editVisible=false">cancel</el-button>
+        <el-button type="primary" @click="do_edit">保存</el-button>
+        <el-button @click="editVisible=false">取消</el-button>
     </div>
 </el-dialog>
 <div class="result-box">
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="group_id" label="group_id" width="100"></el-table-column>
-        <el-table-column prop="display_order" label="display_order" width="120"></el-table-column>
-        <el-table-column prop="group_name" label="group_name"></el-table-column>
-        <el-table-column prop="updator_name" label="updator_name" width="120"></el-table-column>
-        <el-table-column prop="updated_time" label="updated_time" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column prop="creator_name" label="creator_name" width="120"></el-table-column>
-        <el-table-column prop="created_time" label="created_time" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column fixed="right" label="operation" width="250">
+        <el-table-column prop="group_id" label="组ID" width="100"></el-table-column>
+        <el-table-column prop="display_order" label="排序" width="120"></el-table-column>
+        <el-table-column prop="group_name" label="组名"></el-table-column>
+        <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
+        <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
+        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="250">
             <template slot-scope="scope">
-                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>edit</el-button>
-                <el-button @click="do_delete(scope.row)" icon="el-icon-delete" size="mini" plain round>delete</el-button>
+                <el-button @click="show_edit(scope.row)" icon="el-icon-edit" size="mini" plain round>编辑</el-button>
+                <el-button @click="do_delete(scope.row)" icon="el-icon-delete" size="mini" plain round>删除</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -97,7 +97,7 @@
                     });
                 },
                 do_delete: function (row) {
-                    this.$confirm('delete?').then(function (value) {
+                    this.$confirm('删除菜单组: '+row.group_name+'?').then(function (value) {
                         this.ajax_post('@action(delete)', {group_id: row.group_id}).then(function (res) {
                             this.reload_table();
                         });
