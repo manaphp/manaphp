@@ -6,7 +6,7 @@
     <title>ManaPHP Admin</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="@asset('/static/css/manaphp.css')">
-    <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.0.5/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css">
     <!--[if lt IE 9]>
     <script src="http://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
@@ -68,7 +68,7 @@
     </el-container>
 </div>
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
-<script src="https://cdn.bootcss.com/element-ui/2.3.4/index.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>
 <script src="https://cdn.bootcss.com/axios/0.18.0/axios.js"></script>
 <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
