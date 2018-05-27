@@ -18,7 +18,7 @@ class Session extends Identity
     public function authenticate()
     {
         $claims = $this->session->get($this->_name, []);
-        $this->_claims = $claims;
+        $this->setClaims($claims);
 
         return (bool)$claims;
     }

@@ -112,7 +112,7 @@ class Mwt extends Identity
     public function authenticate()
     {
         $claims = $this->decode($this->request->getAccessToken());
-        $this->_claims = $claims ?: [];
+        $this->setClaims($claims ?: []);
 
         return (bool)$claims;
     }
