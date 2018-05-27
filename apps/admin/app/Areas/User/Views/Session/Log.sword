@@ -2,11 +2,11 @@
     <el-row>
         <el-col :span="2">
             <el-input v-model="request.admin_name" placeholder="用户名" size="small"
-                      @keyup.enter.native="reload_table"></el-input>
+                      @keyup.enter.native="reload_table" clearable></el-input>
         </el-col>
         <el-col :span="2">
             <el-input v-model="request.client_ip" placeholder="客户端IP" size="small"
-                      @keyup.enter.native="reload_table"></el-input>
+                      @keyup.enter.native="reload_table" clearable></el-input>
         </el-col>
         <el-col :span="3">
             <el-date-picker v-model="request.created_time" type="daterange" start-placeholder="开始日期"
