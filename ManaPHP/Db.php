@@ -127,18 +127,18 @@ abstract class Db extends Component implements DbInterface
 
         if ($this->_pdo) {
             try {
-                $this->_getPdo()->exec($sql);
+                $this->_getPdo()->query($sql)->fetchAll();
             } catch (\Exception $e) {
                 $this->close();
                 try {
-                    $this->_getPdo()->exec($sql);
+                    $this->_getPdo()->query($sql)->fetchAll();
                 } catch (\Exception $exception) {
                     throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_dsn], 0, $exception);
                 }
             }
         } else {
             try {
-                $this->_getPdo()->exec($sql);
+                $this->_getPdo()->query($sql)->fetchAll();
             } catch (\Exception $exception) {
                 throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_dsn], 0, $exception);
             }
