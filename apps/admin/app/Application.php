@@ -1,17 +1,8 @@
 <?php
 namespace App\Admin;
 
-use ManaPHP\Security\Identity;
-use App\Admin\Areas\Rbac\Components\Rbac;
-
 class Application extends \ManaPHP\Mvc\Application
 {
-    public function authenticate()
-    {
-        $this->_di->authorization = new Rbac();
-        $this->_di->identity = new Identity($this->session->get('admin_auth', []));
-    }
-
     /**
      * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
      *
@@ -27,7 +18,7 @@ class Application extends \ManaPHP\Mvc\Application
             return true;
         }
 
-        if (!$this->userIdentity->getId()) {
+        if ($this->identity->isGuest()) {
             return $this->response->redirect(['/user/session/login?redirect=' . $this->request->get('redirect', null, $this->request->getUrl())]);
         }
 
