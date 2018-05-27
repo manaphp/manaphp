@@ -132,8 +132,6 @@ abstract class HttpServer extends Application
         $this->httpStats->onAfterRequest();
     }
 
-    abstract public function authenticate();
-
     /**
      * @param \swoole_http_request  $request
      * @param \swoole_http_response $response
@@ -149,7 +147,7 @@ abstract class HttpServer extends Application
         if ($_SERVER['REQUEST_URI'] === '/swoole-status') {
             $this->httpStats->handle();
         } else {
-            $this->authenticate();
+            $this->identity->authenticate();
 
             if (!$this->router->handle()) {
                 throw new SwooleException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
