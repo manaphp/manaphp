@@ -104,7 +104,7 @@ abstract class Db extends Component implements DbInterface
         if ($this->_pdo === null) {
             try {
                 $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
-                $this->_pdo = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+                $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
                 $this->fireEvent('db:afterConnect');
             } catch (\PDOException $e) {
                 /** @noinspection PhpUnhandledExceptionInspection */
@@ -119,20 +119,22 @@ abstract class Db extends Component implements DbInterface
     /**
      * Pings a server connection, or tries to reconnect if the connection has gone down
      *
-     * @return bool
+     * @return void
      */
     public function ping()
     {
-        for ($i = $this->_pdo ? 0 : 1; $i < 2; $i++) {
-            try {
-                $this->_getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
-                return true;
-            } catch (\Exception $e) {
-                $this->_pdo = null;
-            }
-        }
+        $sql = 'SELECT 1';
 
-        return false;
+        if ($this->_pdo) {
+            try {
+                $this->_getPdo()->exec($sql);
+            } catch (\Exception $e) {
+                $this->close();
+                $this->_getPdo()->exec($sql);
+            }
+        } else {
+            $this->_getPdo()->exec($sql);
+        }
     }
 
     /**

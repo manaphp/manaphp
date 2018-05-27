@@ -12,7 +12,7 @@ interface DbInterface
     /**
      * Pings a server connection, or tries to reconnect if the connection has gone down
      *
-     * @return bool
+     * @return void
      */
     public function ping();
 
