@@ -2,7 +2,7 @@
 namespace ManaPHP\Security;
 
 use ManaPHP\Component;
-use ManaPHP\Security\Captcha\Exception as CaptchaException;
+use ManaPHP\Exception\BadRequestException;
 
 /**
  * Class ManaPHP\Security\Captcha
@@ -219,7 +219,6 @@ class Captcha extends Component implements CaptchaInterface
      * @param int $ttl
      *
      * @return \ManaPHP\Http\ResponseInterface
-     * @throws \ManaPHP\Security\Captcha\Exception
      */
     public function generate($width = 100, $height = 30, $ttl = 300)
     {
@@ -234,7 +233,7 @@ class Captcha extends Component implements CaptchaInterface
         } elseif (function_exists('gd_info')) {
             $response = $this->_generateByGd($code, $width, $height);
         } else {
-            throw new CaptchaException('`captcha` service is not support, please install `gd` or `imagic` extension first');
+            throw new BadRequestException('`captcha` service is not support, please install `gd` or `imagic` extension first');
         }
 
         $captchaData = ['code' => $code, 'created_time' => time(), 'ttl' => $ttl];
@@ -247,7 +246,6 @@ class Captcha extends Component implements CaptchaInterface
      * @param bool   $isTry
      *
      * @return void
-     * @throws \ManaPHP\Security\Captcha\Exception
      */
     protected function _verify($code, $isTry)
     {
@@ -256,7 +254,7 @@ class Captcha extends Component implements CaptchaInterface
         }
 
         if (!$this->session->has($this->_sessionVar)) {
-            throw new CaptchaException('captcha is not exist in server');
+            throw new BadRequestException('captcha is not exist in server');
         }
 
         $sessionVar = $this->session->get($this->_sessionVar);
@@ -264,7 +262,7 @@ class Captcha extends Component implements CaptchaInterface
         if ($isTry) {
             if (isset($sessionVar['try_verified_time'])) {
                 $this->session->remove($this->_sessionVar);
-                throw new CaptchaException('captcha has been tried');
+                throw new BadRequestException('captcha has been tried');
             } else {
                 $sessionVar['try_verified_time'] = time();
                 $this->session->set($this->_sessionVar, $sessionVar);
@@ -274,15 +272,15 @@ class Captcha extends Component implements CaptchaInterface
         }
 
         if (time() - $sessionVar['created_time'] < $this->_minInterval) {
-            throw new CaptchaException('captcha verification is too frequency');
+            throw new BadRequestException('captcha verification is too frequency');
         }
 
         if (time() - $sessionVar['created_time'] > $sessionVar['ttl']) {
-            throw new CaptchaException('captcha is expired');
+            throw new BadRequestException('captcha is expired');
         }
 
         if (strtolower($sessionVar['code']) !== strtolower($code)) {
-            throw new CaptchaException('captcha is not match');
+            throw new BadRequestException('captcha is not match');
         }
     }
 
@@ -290,7 +288,6 @@ class Captcha extends Component implements CaptchaInterface
      * @param string $code
      *
      * @return void
-     * @throws \ManaPHP\Security\Captcha\Exception
      */
     public function verify($code = null)
     {
@@ -301,7 +298,6 @@ class Captcha extends Component implements CaptchaInterface
      * @param string $code
      *
      * @return void
-     * @throws \ManaPHP\Security\Captcha\Exception
      */
     public function tryVerify($code = null)
     {
