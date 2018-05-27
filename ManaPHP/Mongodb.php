@@ -3,10 +3,10 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Mongodb\ConnectionException;
 use ManaPHP\Mongodb\Exception as MongodbException;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
-use MongoDB\Driver\Exception\ConnectionTimeoutException;
 use MongoDB\Driver\Exception\RuntimeException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
@@ -53,22 +53,30 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * Pings a server connection, or tries to reconnect if the connection has gone down
      *
-     * @return bool
+     * @return void
      */
     public function ping()
     {
-        for ($i = $this->_manager ? 0 : 1; $i < 2; $i++) {
+        $command = new Command(['ping' => 1]);
+
+        if ($this->_manager) {
             try {
-                $result = $this->command(['ping' => 1], 'admin')[0];
-                if ($result['ok']) {
-                    return true;
-                }
-            } catch (ConnectionTimeoutException $e) {
+                $this->_getManager()->executeCommand('admin', $command);
+            } catch (\Exception $exception) {
                 $this->_manager = null;
+                try {
+                    $this->_getManager()->executeCommand('admin', $command);
+                } catch (\Exception $exception) {
+                    throw new ConnectionException(['connection failed: `:dsn`', 'dsn' => $this->_dsn], 0, $exception);
+                }
+            }
+        } else {
+            try {
+                $this->_getManager()->executeCommand('admin', $command);
+            } catch (\Exception $exception) {
+                throw new ConnectionException(['connection failed: `:dsn`', 'dsn' => $this->_dsn], 0, $exception);
             }
         }
-
-        return false;
     }
 
     /**
