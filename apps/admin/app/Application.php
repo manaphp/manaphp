@@ -32,6 +32,10 @@ class Application extends \ManaPHP\Mvc\Application
     {
         $this->loader->registerFiles('@manaphp/helpers.php');
 
+        if ($this->_dotenvFile && $this->filesystem->fileExists($this->_dotenvFile)) {
+            $this->dotenv->load($this->_dotenvFile);
+        }
+
         if ($this->_configFile) {
             $this->configure->loadFile($this->_configFile);
         }
