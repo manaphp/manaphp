@@ -19,15 +19,9 @@ interface CaptchaInterface
 
     /**
      * @param string $code
+     * @param bool   $isTry
      *
      * @return void
      */
-    public function verify($code = null);
-
-    /**
-     * @param string $code
-     *
-     * @return void
-     */
-    public function tryVerify($code = null);
+    public function verify($code = null, $isTry = false);
 }

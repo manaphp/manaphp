@@ -247,7 +247,7 @@ class Captcha extends Component implements CaptchaInterface
      *
      * @return void
      */
-    protected function _verify($code, $isTry)
+    public function verify($code = null, $isTry = false)
     {
         if ($code === null) {
             $code = $this->request->get('code');
@@ -282,25 +282,5 @@ class Captcha extends Component implements CaptchaInterface
         if (strtolower($sessionVar['code']) !== strtolower($code)) {
             throw new BadRequestException('captcha is not match');
         }
-    }
-
-    /**
-     * @param string $code
-     *
-     * @return void
-     */
-    public function verify($code = null)
-    {
-        $this->_verify($code, false);
-    }
-
-    /**
-     * @param string $code
-     *
-     * @return void
-     */
-    public function tryVerify($code = null)
-    {
-        $this->_verify($code, true);
     }
 }
