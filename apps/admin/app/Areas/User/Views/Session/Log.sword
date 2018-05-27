@@ -10,7 +10,7 @@
         </el-col>
         <el-col :span="3">
             <el-date-picker size="small" v-model="request.created_time" type="daterange" start-placeholder="开始日期"
-                            end-placeholder="结束日期" value-format="yyyy-MM-dd" @change="reload_table"></el-date-picker>
+                            end-placeholder="结束日期" value-format="yyyy-MM-dd" @change="reload_table" size="small"></el-date-picker>
         </el-col>
         <el-col :span="3">
             <el-button round size="small" @click="reload_table" icon="el-icon-search" type="primary">search</el-button>
@@ -36,11 +36,23 @@
         vm = new Vue({
             el: '#app',
             data: {
-                request: {},
+                request: {
+                    admin_name: '',
+                    client_ip: '',
+                    created_time: ''
+                },
                 response: []
             },
             mounted: function () {
                 this.reload_table();
+            },
+            watch: {
+                request: {
+                    handler: _.debounce(function () {
+                        this.reload_table();
+                    }, 500),
+                    deep: true
+                }
             }
         });
     </script>
