@@ -15,23 +15,8 @@ use ManaPHP\Swoole\Exception as SwooleException;
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property \ManaPHP\Swoole\HttpStats        $httpStats
  */
-abstract class HttpServer extends Application
+class Swoole extends Application
 {
-    /**
-     * @var \swoole_http_server
-     */
-    protected $_swoole;
-
-    /**
-     * @var int
-     */
-    protected $_worker_num = 2;
-
-    /**
-     * @var string
-     */
-    protected $_listen = 'http://0.0.0.0:9501';
-
     /**
      * HttpServer constructor.
      *
@@ -46,24 +31,6 @@ abstract class HttpServer extends Application
         if (class_exists($routerClass)) {
             $this->_di->setShared('router', $routerClass);
         }
-        $this->_createSwooleServer();
-    }
-
-    protected function _createSwooleServer()
-    {
-        $parts = parse_url($this->_listen);
-        $this->_swoole = new \swoole_http_server($parts['host'], isset($parts['port']) ? $parts['port'] : 80);
-
-        $this->_swoole->set(['worker_num' => $this->_worker_num]);
-
-        $this->_prepareSwoole();
-
-        $this->_swoole->on('request', [$this, 'onRequest']);
-    }
-
-    protected function _prepareSwoole()
-    {
-
     }
 
     /**
@@ -125,7 +92,7 @@ abstract class HttpServer extends Application
     {
         if ($request->get('request_uri') === '/favicon.ico') {
             $response->status(404);
-            $response->end('');
+            $response->end();
             return;
         }
 
@@ -142,8 +109,6 @@ abstract class HttpServer extends Application
         $router = $this->router;
 
         $this->dispatcher->dispatch($router->getControllerName(), $router->getActionName(), $router->getParams());
-        $this->dispatcher->getReturnedValue();
-
         $this->response->setHeader('X-Response-Time', round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3));
         $response->header('X-WORKER-ID', $_SERVER['WORKER_ID']);
         $headers = $this->response->getHeaders();
@@ -156,8 +121,7 @@ abstract class HttpServer extends Application
             $response->header($k, $v);
         }
 
-        $content = $this->response->getContent();
-        $response->end($content);
+        $response->end($this->response->getContent());
         $this->_afterRequest();
         $this->_di->restoreInstancesState();
     }
@@ -174,8 +138,13 @@ abstract class HttpServer extends Application
             $this->configure->loadFile($this->_configFile);
         }
 
+        $swoole = new \swoole_http_server('0.0.0.0', 9501);
+        $this->_di->setShared('swoole', $swoole);
+        $swoole->set(['worker_num' => 2]);
+        $swoole->on('request', [$this, 'onRequest']);
+
         $this->registerServices();
 
-        $this->_swoole->start();
+        $swoole->start();
     }
 }
