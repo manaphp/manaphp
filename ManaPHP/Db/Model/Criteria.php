@@ -105,6 +105,8 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
                 $field = substr($filter, 0, -2);
                 $times = $this->_normalizeTimeBetween($field, $value);
                 $this->_query->whereBetween($field, $times[0], $times[1]);
+            } else {
+                $this->_query->where($filter, $value);
             }
         } elseif (is_array($filter)) {
             $query = $this->_query;
