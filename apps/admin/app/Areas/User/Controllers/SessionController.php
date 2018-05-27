@@ -80,7 +80,7 @@ class SessionController extends Controller
 
             $builder->whereRequest(['admin_id', 'admin_name*=', 'client_ip', 'created_time~=']);
 
-            return $this->response->setJsonContent($builder->paginate(15));
+            return $this->response->setJsonContent($builder->paginate(20));
         }
     }
 }
