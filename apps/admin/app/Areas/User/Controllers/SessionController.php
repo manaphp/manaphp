@@ -55,7 +55,7 @@ class SessionController extends Controller
 
             $adminLoginLog->create();
 
-            $this->session->set('admin_auth', ['userId' => $admin->admin_id, 'userName' => $admin->admin_name]);
+            $this->session->set('auth', ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name]);
 
             return $this->response->setJsonContent(0);
         } else {
