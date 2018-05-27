@@ -27,6 +27,13 @@ interface DbInterface
     public function getSlaveConnection();
 
     /**
+     * @param string $sql
+     *
+     * @return \PDOStatement
+     */
+    public function prepare($sql);
+
+    /**
      * Returns the first row in a SQL query result
      *
      * <code>
@@ -34,13 +41,13 @@ interface DbInterface
      *  $db->fetchOne('SELECT * FROM city WHERE city_id =:city_id',['city_id'=>5]);
      * </code>
      *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
+     * @param int                  $fetchMode
      *
      * @return array|false
      */
-    public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
+    public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
 
     /**
      * Dumps the complete result of a query into an array
@@ -50,14 +57,14 @@ interface DbInterface
      *  $db->fetchAll('SELECT * FROM city WHERE city_id <:city_id',['city_id'=>5]);
      * </code>
      *
-     * @param string                $sql
+     * @param string|\PDOStatement  $statement
      * @param array                 $bind
      * @param int                   $fetchMode
      * @param string|callable|array $indexBy
      *
      * @return array
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null);
+    public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null);
 
     /**
      * @param string $table
@@ -142,13 +149,13 @@ interface DbInterface
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server return rows
      *
-     * @param  string $sql
-     * @param  array  $bind
-     * @param int     $fetchMode
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
+     * @param int                  $fetchMode
      *
      * @return \PDOStatement
      */
-    public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
+    public function query($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
 
     /**
      * @return \ManaPHP\Db\Query
@@ -159,12 +166,12 @@ interface DbInterface
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server don't return any row
      *
-     * @param  string $sql
-     * @param  array  $bind
+     * @param  string|\PDOStatement $statement
+     * @param  array                $bind
      *
      * @return int
      */
-    public function execute($sql, $bind = []);
+    public function execute($statement, $bind = []);
 
     /**
      * Returns the number of affected rows by the last INSERT/UPDATE/DELETE reported by the database system

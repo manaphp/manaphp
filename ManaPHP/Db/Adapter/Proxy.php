@@ -223,39 +223,39 @@ class Proxy extends Component implements DbInterface
     }
 
     /**
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
+     * @param int                  $fetchMode
      *
      * @return array|false
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
+    public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
         if ($this->isUnderTransaction()) {
-            return $this->getMasterConnection()->fetchOne($sql, $bind, $fetchMode);
+            return $this->getMasterConnection()->fetchOne($statement, $bind, $fetchMode);
         } else {
-            return $this->getSlaveConnection()->fetchOne($sql, $bind, $fetchMode);
+            return $this->getSlaveConnection()->fetchOne($statement, $bind, $fetchMode);
         }
     }
 
     /**
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
-     * @param null   $indexBy
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
+     * @param int                  $fetchMode
+     * @param null                 $indexBy
      *
      * @return array
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
+    public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
         if ($this->isUnderTransaction()) {
-            return $this->getMasterConnection()->fetchAll($sql, $bind, $fetchMode, $indexBy);
+            return $this->getMasterConnection()->fetchAll($statement, $bind, $fetchMode, $indexBy);
         } else {
-            return $this->getSlaveConnection()->fetchAll($sql, $bind, $fetchMode, $indexBy);
+            return $this->getSlaveConnection()->fetchAll($statement, $bind, $fetchMode, $indexBy);
         }
     }
 

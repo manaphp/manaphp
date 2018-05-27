@@ -81,6 +81,11 @@ abstract class Db extends Component implements DbInterface
     protected $_timeout = 3;
 
     /**
+     * @var \PDOStatement[]
+     */
+    protected $_prepared = [];
+
+    /**
      * \ManaPHP\Db\Adapter constructor
      *
      */
@@ -167,13 +172,17 @@ abstract class Db extends Component implements DbInterface
      * $result = $connection->executePrepared($statement, array('name' => 'mana'));
      *</code>
      *
-     * @param \PDOStatement $statement
-     * @param array         $bind
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
      *
      * @return \PDOStatement
      */
-    protected function _executePrepared($statement, $bind)
+    protected function _execute($statement, $bind)
     {
+        if (is_string($statement)) {
+            $statement = $this->prepare($statement);
+        }
+
         foreach ($bind as $parameter => $value) {
             if (is_string($value)) {
                 $type = \PDO::PARAM_STR;
@@ -214,15 +223,15 @@ abstract class Db extends Component implements DbInterface
      *    $resultset = $connection->query("SELECT * FROM robots WHERE type=?", array("mechanical"));
      *</code>
      *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
+     * @param int                  $fetchMode
      *
      * @return \PdoStatement
      */
-    public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
+    public function query($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
-        $this->_sql = $this->replaceQuoteCharacters($sql);
+        $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
         $this->_bind = $bind;
         $this->_affectedRows = 0;
 
@@ -230,14 +239,13 @@ abstract class Db extends Component implements DbInterface
         $start_time = microtime(true);
         try {
             if ($bind) {
-                $statement = $this->_getPdo()->prepare($this->_sql);
-                $statement = $this->_executePrepared($statement, $bind);
+                $result = $this->_execute($statement, $bind);
             } else {
-                $statement = $this->_getPdo()->query($this->_sql);
+                $result = $this->_getPdo()->query($this->_sql);
             }
 
-            $this->_affectedRows = $statement->rowCount();
-            $statement->setFetchMode($fetchMode);
+            $this->_affectedRows = $result->rowCount();
+            $result->setFetchMode($fetchMode);
         } catch (\PDOException $e) {
             /** @noinspection PhpUnhandledExceptionInspection */
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -252,8 +260,9 @@ abstract class Db extends Component implements DbInterface
         $elapsed = round(microtime(true) - $start_time, 3);
         $count = $this->_affectedRows;
         $this->fireEvent('db:afterQuery', ['elapsed' => $elapsed]);
+
         $this->logger->debug(compact('count', 'sql', 'bind', 'elapsed'), 'db.query');
-        return $statement;
+        return $result;
     }
 
     /**
@@ -265,6 +274,24 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
+     * @param string $sql
+     *
+     * @return \PDOStatement
+     */
+    public function prepare($sql)
+    {
+        if (isset($this->_prepared[$sql])) {
+            return $this->_prepared[$sql];
+        }
+
+        if (count($this->_prepared) > 120) {
+            $this->_prepared = array_slice($this->_prepared, -100);
+        }
+
+        return $this->_prepared[$sql] = $this->_getPdo()->prepare($this->replaceQuoteCharacters($sql));
+    }
+
+    /**
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server does n't return any rows
      *<code>
@@ -273,15 +300,15 @@ abstract class Db extends Component implements DbInterface
      *    $success = $connection->execute("INSERT INTO robots VALUES (?, ?)", array(1, 'Boy'));
      *</code>
      *
-     * @param string $sql
-     * @param array  $bind
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
      *
      * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    public function execute($sql, $bind = [])
+    public function execute($statement, $bind = [])
     {
-        $this->_sql = $this->replaceQuoteCharacters($sql);
+        $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
         $this->_bind = $bind;
 
         $this->_affectedRows = 0;
@@ -290,8 +317,8 @@ abstract class Db extends Component implements DbInterface
         $start_time = microtime(true);
         try {
             if ($bind) {
-                $statement = $this->_executePrepared($this->_getPdo()->prepare($this->_sql), $bind);
-                $this->_affectedRows = $statement->rowCount();
+                $result = $this->_execute($statement, $bind);
+                $this->_affectedRows = $result->rowCount();
             } else {
                 $this->_affectedRows = $this->_getPdo()->exec($this->_sql);
             }
@@ -338,16 +365,16 @@ abstract class Db extends Component implements DbInterface
      *    print_r($robot);
      *</code>
      *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
+     * @param int                  $fetchMode
      *
      * @throws \ManaPHP\Db\Exception
      * @return array|false
      */
-    public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
+    public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
-        $result = $this->query($sql, $bind, $fetchMode);
+        $result = $this->query($statement, $bind, $fetchMode);
 
         return $result->fetch();
     }
@@ -370,16 +397,16 @@ abstract class Db extends Component implements DbInterface
      *    }
      *</code>
      *
-     * @param string                $sql
+     * @param string|\PDOStatement  $statement
      * @param array                 $bind
      * @param int                   $fetchMode
      * @param string|callable|array $indexBy
      *
      * @return array
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
+    public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
-        $result = $this->query($sql, $bind, $fetchMode);
+        $result = $this->query($statement, $bind, $fetchMode);
 
         if ($indexBy === null) {
             $rows = $result->fetchAll($fetchMode);
@@ -730,5 +757,6 @@ abstract class Db extends Component implements DbInterface
     public function close()
     {
         $this->_pdo = null;
+        $this->_prepared = [];
     }
 }
