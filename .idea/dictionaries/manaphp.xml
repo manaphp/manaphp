@@ -10,6 +10,7 @@
       <w>ansicon</w>
       <w>appenders</w>
       <w>bfcdec</w>
+      <w>boolval</w>
       <w>bson</w>
       <w>camelize</w>
       <w>categorizable</w>
@@ -23,6 +24,7 @@
       <w>dbname</w>
       <w>dentifier</w>
       <w>doctype</w>
+      <w>dotenv</w>
       <w>elasticsearch</w>
       <w>errmsg</w>
       <w>etag</w>
@@ -43,11 +45,13 @@
       <w>msie</w>
       <w>mssql</w>
       <w>nack</w>
+      <w>namelookup</w>
       <w>objectid</w>
       <w>paginator</w>
       <w>phalcon</w>
       <w>phtml</w>
       <w>pkeys</w>
+      <w>pretransfer</w>
       <w>propery</w>
       <w>rabbitmq</w>
       <w>rbac</w>
@@ -57,12 +61,15 @@
       <w>sapi</w>
       <w>scandir</w>
       <w>secint</w>
+      <w>smtp</w>
       <w>sqlsrv</w>
+      <w>starttransfer</w>
       <w>strlen</w>
       <w>strval</w>
       <w>subsplit</w>
       <w>substr</w>
       <w>swoole</w>
+      <w>udid</w>
       <w>unprocessable</w>
       <w>unserialize</w>
       <w>unserialized</w>
