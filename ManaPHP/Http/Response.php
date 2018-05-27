@@ -38,6 +38,14 @@ class Response extends Component implements ResponseInterface
     protected $_file;
 
     /**
+     * @return array|bool
+     */
+    public function saveInstanceState()
+    {
+        return get_object_vars($this);
+    }
+
+    /**
      * Sets the HTTP response code
      *<code>
      *    $response->setStatusCode(404, "Not Found");
