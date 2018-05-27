@@ -53,6 +53,7 @@ class PermissionController extends ControllerBase
 
                 $permission = new Permission();
                 $permission->type = Permission::TYPE_PENDING;
+                $permission->enabled = 1;
                 $permission->path = $path;
                 $permission->description = $path;
                 $permission->create();
@@ -77,6 +78,7 @@ class PermissionController extends ControllerBase
 
                     $permission = new Permission();
                     $permission->type = Permission::TYPE_PENDING;
+                    $permission->enabled = 1;
                     $permission->path = $path;
                     $permission->description = $path;
                     $permission->create();
