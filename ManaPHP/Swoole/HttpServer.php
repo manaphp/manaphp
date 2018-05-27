@@ -144,7 +144,9 @@ abstract class HttpServer extends Application
 
         $this->_beforeRequest();
 
-        if ($_SERVER['REQUEST_URI'] === '/swoole-status') {
+        if ($_SERVER['REQUEST_URI'] === '/favicon.ico') {
+            $this->response->setStatus(404, 'NOT FOUND');
+        } elseif ($_SERVER['REQUEST_URI'] === '/swoole-status') {
             $this->httpStats->handle();
         } else {
             $this->identity->authenticate();
@@ -164,8 +166,14 @@ abstract class HttpServer extends Application
             }
         }
         $this->response->setHeader('X-Response-Time', round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3));
-        $response->header('worker-id', $_SERVER['WORKER_ID']);
-        foreach ($this->response->getHeaders() as $k => $v) {
+        $response->header('X-WORKER-ID', $_SERVER['WORKER_ID']);
+        $headers = $this->response->getHeaders();
+        if (isset($headers['Status'])) {
+            $parts = explode(' ', $headers['Status']);
+            $response->status($parts[0]);
+            unset($headers['Status']);
+        }
+        foreach ($headers as $k => $v) {
             $response->header($k, $v);
         }
 
