@@ -1,110 +1,88 @@
 <?php
-
 namespace ManaPHP\Swoole;
 
-use ManaPHP\Application;
-use ManaPHP\Swoole\Exception as SwooleException;
+use ManaPHP\Component;
 
-/**
- * Class ManaPHP\Swoole\HttpServer
- *
- * @package application
- *
- * @property \ManaPHP\Http\ResponseInterface  $response
- * @property \ManaPHP\RouterInterface         $router
- * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
- * @property \ManaPHP\Swoole\HttpStats        $httpStats
- * @property \ManaPHP\Http\CookiesInterface   $cookies
- * @property \ManaPHP\ViewInterface           $view
- */
-abstract class HttpServer extends Application
+class HttpServer extends Component implements HttpServerInterface
 {
+    /**
+     * @var string
+     */
+    protected $_host = '0.0.0.0';
+
+    /**
+     * @var int
+     */
+    protected $_port = 9501;
+
+    /**
+     * @var array
+     */
+    protected $_settings = [];
+
+    /**
+     * @var array
+     */
+    protected $_server = [];
+
     /**
      * @var \swoole_http_server
      */
     protected $_swoole;
 
     /**
-     * @var int
+     * @var \swoole_http_request
      */
-    protected $_worker_num = 2;
+    protected $_request;
 
     /**
-     * @var bool
+     * @var \swoole_http_response
      */
-    protected $_useCookie = true;
+    protected $_response;
 
     /**
-     * @var string
+     * @var callable
      */
-    protected $_listen = 'http://0.0.0.0:9501';
+    protected $_handler;
 
     /**
-     * HttpServer constructor.
+     * Http constructor.
      *
-     * @param  \ManaPHP\Loader     $loader
-     * @param \ManaPHP\DiInterface $di
+     * @param array $options
      */
-    public function __construct($loader, $di = null)
+    public function __construct($options = [])
     {
-        parent::__construct($loader, $di);
-        $this->_di->keepInstanceState();
-        $this->_createSwooleServer();
-    }
-
-    protected function _createSwooleServer()
-    {
-        $parts = parse_url($this->_listen);
-        $scheme = $parts['scheme'];
-        $host = $parts['host'];
-        if (isset($parts['port'])) {
-            $port = $parts['port'];
-        } else {
-            $port = ($scheme === 'http' ? 80 : 443);
+        if (isset($options['host'])) {
+            $this->_host = $options['host'];
+            unset($options['host']);
+        }
+        if (isset($options['port'])) {
+            $this->_port = (int)$options['port'];
+            unset($options['port']);
         }
 
-        if ($scheme === 'http') {
-            $this->_swoole = new \swoole_http_server($host, $port);
-        } else {
-            $this->_swoole = new \swoole_http_server($host, $port, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_TCP);
-        }
+        $this->_settings = $options;
 
-        $this->_swoole->set(['worker_num' => $this->_worker_num]);
-
-        $this->_di->setShared('httpStats', new HttpStats(['swoole' => $this->_swoole]));
-        $this->_prepareSwoole();
-
-        $this->_swoole->on('request', [$this, 'onRequest']);
-
-    }
-
-    protected function _prepareSwoole()
-    {
-
+        $script_filename = get_included_files()[0];
+        $parts = explode('-', phpversion());
+        $this->_server = [
+            'DOCUMENT_ROOT' => dirname($script_filename),
+            'SCRIPT_FILENAME' => $script_filename,
+            'PHP_SELF' => $server['SCRIPT_NAME'] = '/' . basename($script_filename),
+            'QUERY_STRING' => '',
+            'REQUEST_SCHEME' => 'http',
+            'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' ' . php_uname('s') . '/' . $parts[1] . ' PHP/' . $parts[0]
+        ];
     }
 
     /**
      * @param \swoole_http_request $request
      */
-    protected function _prepareGlobals($request)
+    public function _prepareGlobals($request)
     {
-        static $server = null;
-
-        if ($server === null) {
-            $server = [];
-            $script_filename = get_included_files()[0];
-            $server['DOCUMENT_ROOT'] = dirname($script_filename);
-            $server['SCRIPT_FILENAME'] = $script_filename;
-            $server['PHP_SELF'] = $server['SCRIPT_NAME'] = '/' . basename($script_filename);
-            $server['QUERY_STRING'] = '';
-            $server['REQUEST_SCHEME'] = 'http';
-            $parts = explode('-', phpversion());
-            $server['SERVER_SOFTWARE'] = 'Swoole/' . SWOOLE_VERSION . ' ' . php_uname('s') . '/' . $parts[1] . ' PHP/' . $parts[0];
-        }
         $_SERVER = array_change_key_case($request->server, CASE_UPPER);
         unset($_SERVER['SERVER_SOFTWARE']);
-
-        $_SERVER += $server;
+        $_SERVER += $this->_server;
 
         foreach ($request->header ?: [] as $k => $v) {
             $_SERVER['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
@@ -122,52 +100,45 @@ abstract class HttpServer extends Application
         $_FILES = $request->files ?: [];
     }
 
-    protected function _beforeRequest()
+    /**
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function start($handler)
     {
-        $this->httpStats->onBeforeRequest();
+        $this->_swoole = new \swoole_http_server($this->_host, $this->_port);
+        $this->_swoole->set($this->_settings);
+        $this->_handler = $handler;
+        $this->_swoole->on('request', [$this, 'onRequest']);
+        $this->_swoole->start();
+
+        return $this;
     }
 
-    protected function _afterRequest()
+    public function onRequest($request, $response)
     {
-        $this->httpStats->onAfterRequest();
+        if ($request->server['request_uri'] === '/favicon.ico') {
+            $response->status(404);
+            $response->end();
+            return;
+        }
+        $this->_request = $request;
+        $this->_response = $response;
+        $this->_prepareGlobals($request);
+        $handler = $this->_handler;
+        $handler();
     }
 
     /**
-     * @param \swoole_http_request  $request
-     * @param \swoole_http_response $response
+     * @param array $headers
      *
-     * @throws \ManaPHP\Swoole\Exception
+     * @return static
      */
-    public function onRequest($request, $response)
+    public function sendHeaders($headers)
     {
-        $this->_prepareGlobals($request);
+        $response = $this->_response;
 
-        $this->_beforeRequest();
-
-        if ($_SERVER['REQUEST_URI'] === '/favicon.ico') {
-            $this->response->setStatus(404, 'NOT FOUND');
-        } elseif ($_SERVER['REQUEST_URI'] === '/swoole-status') {
-            $this->httpStats->handle();
-        } else {
-            $this->identity->authenticate();
-
-            if (!$this->router->handle()) {
-                throw new SwooleException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
-            }
-
-            $router = $this->router;
-
-            $this->dispatcher->dispatch($router->getControllerName(), $router->getActionName(), $router->getParams());
-
-            $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue === null) {
-                $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
-                $this->response->setContent($this->view->getContent());
-            }
-        }
-        $this->response->setHeader('X-Response-Time', round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3));
-        $response->header('X-WORKER-ID', $_SERVER['WORKER_ID']);
-        $headers = $this->response->getHeaders();
         if (isset($headers['Status'])) {
             $parts = explode(' ', $headers['Status']);
             $response->status($parts[0]);
@@ -177,36 +148,40 @@ abstract class HttpServer extends Application
             $response->header($k, $v);
         }
 
-        if ($this->_useCookie) {
-            $this->fireEvent('cookies:beforeSend');
-            foreach ($this->cookies->getSent() as $cookie) {
-                $response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                    $cookie['path'], $cookie['domain'], $cookie['secure'],
-                    $cookie['httpOnly']);
-            }
-            $this->fireEvent('cookies:afterSend');
-        }
+        $response->header('X-Response-Time', round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3));
+        $response->header('X-WORKER-ID', $_SERVER['WORKER_ID']);
 
-        $content = $this->response->getContent();
-        $response->end($content);
-        $this->_afterRequest();
-        $this->_di->restoreInstancesState();
+        return $this;
     }
 
-    public function main()
+    /**
+     * @param array $cookies
+     *
+     * @return static
+     */
+    public function sendCookies($cookies)
     {
-        $this->loader->registerFiles('@manaphp/helpers.php');
+        $response = $this->_response;
 
-        if ($this->_dotenvFile && $this->filesystem->fileExists($this->_dotenvFile)) {
-            $this->dotenv->load($this->_dotenvFile);
+        $this->fireEvent('cookies:beforeSend');
+        foreach ($cookies as $cookie) {
+            $response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
+                $cookie['path'], $cookie['domain'], $cookie['secure'],
+                $cookie['httpOnly']);
         }
+        $this->fireEvent('cookies:afterSend');
 
-        if ($this->_configFile) {
-            $this->configure->loadFile($this->_configFile);
-        }
-        
-        $this->registerServices();
+        return $this;
+    }
 
-        $this->_swoole->start();
+    /**
+     * @param string $content
+     *
+     * @return static
+     */
+    public function sendContent($content)
+    {
+        $this->_response->end($content);
+        return $this;
     }
 }
