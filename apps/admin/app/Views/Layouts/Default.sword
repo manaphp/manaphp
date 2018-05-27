@@ -7,50 +7,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="@asset('/static/css/manaphp.css')">
     <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css">
-    <style>
-        .el-pagination {
-            text-align: center;
-        }
-
-        .el-submenu .el-menu-item {
-            height: 30px;
-            line-height: 30px;
-        }
-
-        .el-menu-item, .el-submenu__title {
-            height: 35px;
-            line-height: 35px;
-        }
-
-        .el-table--small td, .el-table--small th {
-            padding: 2px 0;
-        }
-
-        .el-dialog {
-            width: 30%;
-        }
-
-        .el-range-editor {
-            width: 200px !important;
-        }
-
-        .el-dialog .el-form-item__label {
-            width: 30%;
-            font-weight: 700;
-        }
-
-        .el-dialog .el-input {
-            width: 70%;
-        }
-
-        .el-dialog .el-select {
-            width: 60%
-        }
-
-        /*[v-cloak] {*/
-        /*display: none;*/
-        /*}*/
-    </style>
+    <link rel="stylesheet" href="@asset('app.css')">
     @yield('css')
 </head>
 <body>
