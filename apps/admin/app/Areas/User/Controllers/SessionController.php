@@ -41,7 +41,7 @@ class SessionController extends Controller
 
             $udid = $this->cookies->get('CLIENT_UDID', '');
             if (!$udid) {
-                $udid = $this->random->getBase(32);
+                $udid = $this->random->getBase(16);
                 $this->cookies->set('CLIENT_UDID', $udid, strtotime('10 year'), '/');
             }
 
