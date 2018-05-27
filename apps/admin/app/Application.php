@@ -30,6 +30,8 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
+        $this->loader->registerFiles('@manaphp/helpers.php');
+
         if ($this->_configFile) {
             $this->configure->loadFile($this->_configFile);
         }
