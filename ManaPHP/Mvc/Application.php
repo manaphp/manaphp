@@ -55,11 +55,6 @@ class Application extends \ManaPHP\Application
         return basename($this->alias->resolveNS('@ns.app'));
     }
 
-    public function authenticate()
-    {
-
-    }
-
     /**
      * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
      */
@@ -73,7 +68,7 @@ class Application extends \ManaPHP\Application
      */
     public function handle()
     {
-        $this->authenticate();
+        $this->identity->authenticate();
 
         if (!$this->router->handle()) {
             throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
