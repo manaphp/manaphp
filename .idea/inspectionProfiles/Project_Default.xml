@@ -36,7 +36,9 @@
           <option value="\ManaPHP\Exception\MissingFieldException" />
           <option value="\ManaPHP\Exception\InvalidUrlException" />
           <option value="\ManaPHP\Exception\MisuseException" />
+          <option value="\ManaPHP\Exception\BadRequestException" />
           <option value="\RuntimeException" />
+          <option value="\ImagickException" />
           <option value="\ReflectionException" />
         </list>
       </option>
@@ -129,6 +131,7 @@
       </option>
       <option name="myCustomValuesEnabled" value="true" />
     </inspection_tool>
+    <inspection_tool class="HtmlUnknownTarget" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="LongInheritanceChainInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MoreThanThreeArgumentsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MultiAssignmentUsageInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
