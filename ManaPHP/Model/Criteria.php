@@ -80,7 +80,8 @@ abstract class Criteria extends Component implements CriteriaInterface
                 $parts = explode('.', $v);
                 $field = $parts[1];
             }
-            $value = $this->request->get(rtrim($field, '=!<>~*^$'));
+            $field = rtrim($field, '=!<>~*^$@');
+            $value = $this->request->get($field);
             if ($value === null) {
                 continue;
             } elseif (is_string($value)) {
@@ -89,6 +90,22 @@ abstract class Criteria extends Component implements CriteriaInterface
                     continue;
                 }
             } elseif (is_array($value)) {
+                if (strpos($v, '@=')) {
+                    if (in_array($field, $this->_model->getIntTypeFields(), true)) {
+                        if (!is_numeric($value)) {
+                            $value[0] = strtotime($value[0]);
+                            $value[1] = strtotime($value[1]);
+                        }
+                    } else {
+                        if (is_numeric($value) && preg_match('^[\d-/:]#', $value[0]) !== 1) {
+                            $value[0] = date('Y-m-d H:i:s', strtotime('date', strtotime($value[0])));
+                            $value[1] = date('Y-m-d H:i:s', strtotime('date', strtotime($value[1])));
+                        }
+                    }
+                    $this->whereBetween($field, $value[0], $value[1]);
+                    continue;
+                }
+
                 if (count($value) === 1 && trim($value[0]) === '') {
                     continue;
                 }
