@@ -224,7 +224,9 @@ class Criteria extends \ManaPHP\Model\Criteria
         } elseif ($value === null) {
             $this->_filters[] = is_string($filter) ? [$filter => null] : $filter;
         } elseif (is_array($value)) {
-            if (strpos($filter, '~=')) {
+            if ($filter === 'request') {
+                $this->whereRequest($value);
+            } elseif (strpos($filter, '~=')) {
                 if (count($value) === 2 && gettype($value[0]) === gettype($value[1])) {
                     $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
                 } else {
