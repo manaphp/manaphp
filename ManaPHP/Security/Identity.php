@@ -13,7 +13,7 @@ abstract class Identity extends Component implements IdentityInterface
     /**
      * @var string
      */
-    protected $_type = 'user';
+    protected $_type;
 
     /**
      * @var array
@@ -39,10 +39,14 @@ abstract class Identity extends Component implements IdentityInterface
     {
         if ($this->_claims === null) {
             throw new MisuseException('claims is not set');
+        } elseif ($this->_claims === []) {
+            return 0;
+        } elseif (!$this->_type) {
+            throw new MisuseException('type is unknown');
+        } else {
+            $id = $this->_type . '_id';
+            return isset($this->_claims[$id]) ? $this->_claims[$id] : 0;
         }
-
-        $id = $this->_type . '_id';
-        return isset($this->_claims[$id]) ? $this->_claims[$id] : 0;
     }
 
     /**
@@ -52,9 +56,14 @@ abstract class Identity extends Component implements IdentityInterface
     {
         if ($this->_claims === null) {
             throw new MisuseException('claims is not set');
+        } elseif ($this->_claims === []) {
+            return '';
+        } elseif (!$this->_type) {
+            throw new MisuseException('type is unknown');
+        } else {
+            $name = $this->_type . '_name';
+            return isset($this->_claims[$name]) ? $this->_claims[$name] : '';
         }
-        $name = $this->_type . '_name';
-        return isset($this->_claims[$name]) ? $this->_claims[$name] : '';
     }
 
     /**
@@ -77,6 +86,14 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function setClaims($claims)
     {
+        if (!$this->_type) {
+            foreach ($claims as $claim => $value) {
+                if (strlen($claim) > 3 && strrpos($claim, '_id', -3) !== false) {
+                    $this->_type = substr($claim, 0, -3);
+                    break;
+                }
+            }
+        }
         $this->_claims = $claims;
 
         return $this;
