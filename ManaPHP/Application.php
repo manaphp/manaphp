@@ -98,6 +98,11 @@ abstract class Application extends Component implements ApplicationInterface
 
     public function registerServices()
     {
+        $routerClass = $this->alias->resolveNS('@ns.app\Router');
+        if (class_exists($routerClass)) {
+            $this->_di->setShared('router', $routerClass);
+        }
+        
         $configure = $this->configure;
 
         date_default_timezone_set($configure->timezone);
@@ -114,7 +119,7 @@ abstract class Application extends Component implements ApplicationInterface
                 $this->_di->setShared($component, $definition);
             }
         }
-        
+
         foreach ($configure->bootstraps as $bootstrap) {
             if($bootstrap){
                 $this->_di->getShared($bootstrap);

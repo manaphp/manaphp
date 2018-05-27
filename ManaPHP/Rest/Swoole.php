@@ -27,10 +27,6 @@ class Swoole extends Application
     {
         parent::__construct($loader, $di);
         $this->_di->keepInstanceState();
-        $routerClass = $this->alias->resolveNS('@ns.app\Router');
-        if (class_exists($routerClass)) {
-            $this->_di->setShared('router', $routerClass);
-        }
     }
 
     /**

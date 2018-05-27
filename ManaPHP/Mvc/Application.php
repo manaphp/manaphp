@@ -39,11 +39,6 @@ class Application extends \ManaPHP\Application
         }
         $this->alias->set('@web', $web);
 
-        $routerClass = $this->alias->resolveNS('@ns.app\Router');
-        if (class_exists($routerClass)) {
-            $this->_di->setShared('router', $routerClass);
-        }
-
         $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
     }
 
