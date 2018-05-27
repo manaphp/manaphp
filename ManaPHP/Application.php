@@ -83,6 +83,8 @@ abstract class Application extends Component implements ApplicationInterface
             $this->alias->set('@tmp', $rootDir . '/tmp');
             $this->alias->set('@config', $rootDir . '/config');
         }
+
+        $this->loader->registerFiles('@manaphp/helpers.php');
     }
 
     /**
@@ -102,7 +104,7 @@ abstract class Application extends Component implements ApplicationInterface
         if (class_exists($routerClass)) {
             $this->_di->setShared('router', $routerClass);
         }
-        
+
         $configure = $this->configure;
 
         date_default_timezone_set($configure->timezone);
