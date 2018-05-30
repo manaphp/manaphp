@@ -44,7 +44,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         //magic property and return false
         $city = new City();
         $city->country_id = -1;
-        $this->assertFalse($city->country);
+        $this->assertNull($city->country);
 
         //magic method
         $city = City::first(1);
@@ -55,7 +55,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         //magic method and return false
         $city = new City();
         $city->country_id = -1;
-        $this->assertFalse($city->getCountry()->fetch());
+        $this->assertNull($city->getCountry()->fetch());
 
         //criteria with all fields
         $city = City::first(1, null, ['with' => 'country']);
@@ -94,7 +94,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         //magic property and result is false
         $city = new City();
         $city->country_id = -1;
-        $this->assertFalse($city->countryExplicit);
+        $this->assertNull($city->countryExplicit);
 
         //normal method
         $city = City::first(1);
@@ -105,7 +105,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         //normal method and result is false
         $city = new City();
         $city->country_id = -1;
-        $this->assertFalse($city->getCountry()->fetch());
+        $this->assertNull($city->getCountry()->fetch());
 
         //criteria with all fields
         $city = City::first(1, null, ['with' => 'countryExplicit']);

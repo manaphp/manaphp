@@ -65,7 +65,7 @@ class DbModelTest extends TestCase
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getEmulatedSQL());
             });
-
+            $this->di->identity->setClaims([]);
             return $db;
         });
     }
@@ -304,7 +304,7 @@ class DbModelTest extends TestCase
 
         $this->assertNotFalse(Student::first(1));
         $student->delete();
-        $this->assertFalse(Student::first(1));
+        $this->assertNull(Student::first(1));
     }
 
     public function test_deleteAll()
@@ -319,7 +319,7 @@ class DbModelTest extends TestCase
         $this->assertNotFalse(Student::first(1));
 
         Student::deleteAll(['id>' => 0]);
-        $this->assertFalse(Student::first(1));
+        $this->assertNull(Student::first(1));
     }
 
     public function test_assign()

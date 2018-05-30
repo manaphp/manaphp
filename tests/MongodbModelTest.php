@@ -23,7 +23,7 @@ class MongodbModelTest extends TestCase
     public function setUp()
     {
         $this->di = new FactoryDefault();
-
+        $this->di->identity->setClaims([]);
         $config = require __DIR__ . '/config.database.php';
         $this->di->setShared('mongodb', new Mongodb($config['mongodb']));
     }
@@ -254,10 +254,10 @@ class MongodbModelTest extends TestCase
         $student->name = 'mana';
         $student->create();
 
-        $this->assertTrue(Student::first(['id' => 1]) !== false);
+        $this->assertNotNull(Student::first(['id' => 1]));
 
         Student::deleteAll([]);
-        $this->assertTrue(Student::first(['id' => 1]) === false);
+        $this->assertNull(Student::first(['id' => 1]));
     }
 
     public function test_assign()
