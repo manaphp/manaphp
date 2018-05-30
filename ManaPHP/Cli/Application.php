@@ -56,6 +56,8 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         $this->_di->setShared('errorHandler', 'ManaPHP\Cli\ErrorHandler');
 
         parent::registerServices();
+	
+        $this->_di->identity->setClaims([]);
     }
 
     public function main()
