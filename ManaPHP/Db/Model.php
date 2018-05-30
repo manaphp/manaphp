@@ -345,7 +345,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $instance = new static();
         if ($fields = array_diff(array_keys($records[0]), $instance->_di->modelsMetadata->getAttributes($instance))) {
             $instance->logger->debug(['bulkInsert `:1` table skip fields: :2', $instance->getSource(), array_values($fields)]);
-            
+
             foreach ($records as $k => $record) {
                 foreach ($fields as $field) {
                     unset($record[$field]);

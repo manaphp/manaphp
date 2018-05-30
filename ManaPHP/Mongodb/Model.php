@@ -292,7 +292,7 @@ class Model extends \ManaPHP\Model
         } elseif ($type === 'array') {
             return (array)$value;
         } else {
-            throw new InvalidValueException(['unsupported `:type` type', 'type' => $type]);
+            throw new InvalidValueException(['`:model` model is not supported `:type` type', 'model' => get_called_class(), 'type' => $type]);
         }
     }
 
