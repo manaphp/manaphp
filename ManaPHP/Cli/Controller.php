@@ -18,7 +18,6 @@ use ManaPHP\Logger\LogCategorizable;
  * @property \ManaPHP\Cli\ArgumentsInterface        $arguments
  * @property \ManaPHP\Text\CrosswordInterface       $crossword
  * @property \ManaPHP\Net\ConnectivityInterface     $netConnectivity
- * @property \ManaPHP\Authentication\TokenInterface $authenticationToken
  */
 abstract class Controller extends Component implements ControllerInterface, LogCategorizable
 {

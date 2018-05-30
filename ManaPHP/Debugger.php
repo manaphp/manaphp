@@ -187,7 +187,7 @@ class Debugger extends Component implements DebuggerInterface
                 $item['type'] = 'query';
                 $item['raw'] = ['namespace' => $data['namespace'], 'filter' => $data['filter'], 'options' => $data['options']];
                 $options = $data['options'];
-                list($ns, $collection) = explode('.', $data['namespace'], 2);
+                list(, $collection) = explode('.', $data['namespace'], 2);
                 $shell = "db.$collection.";
                 $shell .= (isset($options['limit']) ? 'findOne(' : 'find(') . json_encode($data['filter'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 if (isset($options['projection'])) {

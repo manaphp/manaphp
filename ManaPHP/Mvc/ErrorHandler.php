@@ -10,6 +10,7 @@ use ManaPHP\ErrorHandlerInterface;
  * @package ManaPHP\Mvc
  * @property \ManaPHP\Http\RequestInterface  $request
  * @property \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\RendererInterface      $renderer
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {

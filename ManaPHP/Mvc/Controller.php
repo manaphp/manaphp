@@ -42,7 +42,6 @@ use ManaPHP\Logger\LogCategorizable;
  * @property \ManaPHP\Security\HtmlPurifierInterface   $htmlPurifier
  * @property \ManaPHP\Net\ConnectivityInterface        $netConnectivity
  * @property \ManaPHP\RouterInterface                  $router
- * @property \ManaPHP\Authentication\TokenInterface    $authenticationToken
  */
 abstract class Controller extends Component implements ControllerInterface, LogCategorizable
 {
