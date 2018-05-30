@@ -61,6 +61,11 @@ class Easy extends Component implements EasyInterface
     protected $_userAgent = self::USER_AGENT_IE;
 
     /**
+     * @var \ManaPHP\Curl\Easy\Response
+     */
+    protected $_lastResponse;
+
+    /**
      * Client constructor.
      *
      * @param array $options
@@ -163,6 +168,8 @@ class Easy extends Component implements EasyInterface
      */
     public function request($type, $url, $body = null, $options = [])
     {
+        $this->_lastResponse = null;
+
         if (is_array($url)) {
             if (count($url) > 1) {
                 $uri = $url[0];
@@ -348,7 +355,7 @@ class Easy extends Component implements EasyInterface
             'body' => strpos($response->content_type, 'json') !== false ? $response->getJsonBody() : $response->body]],
             'httpClient.body');
 
-        return $response;
+        return $this->_lastResponse = $response;
     }
 
     /**
@@ -611,5 +618,13 @@ class Easy extends Component implements EasyInterface
         } else {
             return $failed;
         }
+    }
+
+    /**
+     * @return \ManaPHP\Curl\Easy\Response
+     */
+    public function getLastResponse()
+    {
+        return $this->_lastResponse;
     }
 }

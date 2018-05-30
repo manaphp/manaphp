@@ -128,4 +128,9 @@ interface EasyInterface
      * @return string|array
      */
     public function download($files, $options = []);
+    
+    /**
+     * @return \ManaPHP\Curl\Easy\Response
+     */
+    public function getLastResponse();
 }
