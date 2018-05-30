@@ -193,6 +193,15 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    public function prepare($sql)
+    {
+        if ($this->isUnderTransaction()) {
+            return $this->getMasterConnection()->prepare($sql);
+        } else {
+            return $this->getSlaveConnection()->prepare($sql);
+        }
+    }
+
     /**
      * @return \ManaPHP\Db\QueryInterface
      */
