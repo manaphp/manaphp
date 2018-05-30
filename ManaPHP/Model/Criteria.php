@@ -331,12 +331,13 @@ abstract class Criteria extends Component implements CriteriaInterface
             } else {
                 throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
             }
-        }
 
-        if ($data instanceof Criteria) {
-            $data = $data->fetch();
+            if ($data instanceof Criteria) {
+                $data = $data->fetch();
+            }
+
+            $instance->{is_string($k) ? $k : $v} = $data;
         }
-        $instance->{is_string($k) ? $k : $v} = $data;
     }
 
     /**
