@@ -116,6 +116,10 @@ class HttpServer extends Component implements HttpServerInterface
         return $this;
     }
 
+    /**
+     * @param \swoole_http_request $request
+     * @param \swoole_http_response $response
+     */
     public function onRequest($request, $response)
     {
         if ($request->server['request_uri'] === '/favicon.ico') {
