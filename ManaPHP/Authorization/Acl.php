@@ -69,7 +69,7 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
                 throw new AclException('ss');
         }
 
-        $roleId = ',' . ($roleId ?: $this->identity->getRoleId()) . ',';
+        $roleId = ',' . ($roleId ?: $this->identity->getClaim('role_id')) . ',';
         $action = ',' . $action . ',';
 
         if (isset($this->_acl['*'])) {
