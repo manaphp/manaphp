@@ -1177,10 +1177,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if ($field[0] === '_') {
-                continue;
-            }
-
             if (is_object($value) && !$value instanceof self) {
                 continue;
             }
