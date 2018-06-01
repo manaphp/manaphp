@@ -25,7 +25,7 @@ interface ModelInterface
     public function getDb($context = null);
 
     /**
-     * @return string
+     * @return string|array
      */
     public function getPrimaryKey();
 

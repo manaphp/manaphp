@@ -56,11 +56,17 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return string
+     * @return string|array
      */
     public function getPrimaryKey()
     {
-        return $this->_di->modelsMetadata->getPrimaryKeyAttributes($this)[0];
+        $primaryKey = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
+
+        if (count($primaryKey) === 1) {
+            return $primaryKey[0];
+        } else {
+            return $primaryKey;
+        }
     }
 
     /**
