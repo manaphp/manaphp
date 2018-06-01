@@ -881,7 +881,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             return $this;
         }
 
-        $criteria->where($this->_getPrimaryKeyValuePairs())->delete();
+        static::criteria(null, $this)->where($this->_getPrimaryKeyValuePairs())->delete();
 
         $this->_fireEvent('afterDelete');
 
