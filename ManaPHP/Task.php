@@ -2,7 +2,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Logger\LogCategorizable;
-use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Task
@@ -15,7 +14,8 @@ abstract class Task extends Component implements TaskInterface, LogCategorizable
 {
     public function categorizeLog()
     {
-        return Text::underscore(basename(get_called_class(), 'Task'));
+        $className = get_called_class();
+        return 'task.' . basename(substr($className, strrpos($className, '\\') + 1), 'Task');
     }
 
     /**
