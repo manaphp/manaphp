@@ -93,7 +93,7 @@ class Manager extends Component implements ManagerInterface, LogCategorizable
     public function run($task)
     {
         if (strpos($task, '\\') === false) {
-            $task = Text::underscore($task);
+            $task = Text::underscore(basename($task, 'Task'));
             $className = $this->alias->resolveNS('@ns.app\\Tasks\\' . Text::camelize($task) . 'Task');
         } else {
             $className = $task;
