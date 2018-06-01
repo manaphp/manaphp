@@ -852,6 +852,25 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * @return array
+     * @throws \ManaPHP\Exception\PreconditionException
+     */
+    protected function _getPrimaryKeyValuePairs()
+    {
+        $filter = [];
+        foreach ((array)$this->getPrimaryKey() as $key) {
+            if (!isset($this->{$key})) {
+                throw new PreconditionException(['`:model` model cannot be updated because `:key` primary key value is not provided',
+                    'model' => get_class($this),
+                    'key' => $key]);
+            }
+            $filter[$key] = $this->$key;
+        }
+
+        return $filter;
+    }
+
+    /**
      * Deletes a model instance. Returning true on success or false otherwise.
      *
      * @return static
@@ -862,18 +881,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             return $this;
         }
 
-        $primaryKey = $this->getPrimaryKey();
-
-        $criteria = static::criteria(null, $this);
-        if (!isset($this->{$primaryKey})) {
-            throw new PreconditionException([
-                '`:model` model cannot be deleted because the primary key attribute: `:field` was not set',
-                'model' => get_class($this),
-                'field' => $primaryKey
-            ]);
-        }
-
-        $criteria->where($primaryKey, $this->{$primaryKey})->delete();
+        $criteria->where($this->_getPrimaryKeyValuePairs())->delete();
 
         $this->_fireEvent('afterDelete');
 

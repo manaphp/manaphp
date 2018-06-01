@@ -185,17 +185,17 @@ class Model extends \ManaPHP\Model implements ModelInterface
             throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
-        $primaryKey = $this->getPrimaryKey();
-
-        if (!isset($this->{$primaryKey})) {
-            throw new PreconditionException(['`:model` model cannot be updated because some primary key value is not provided', 'model' => get_class($this)]);
-        }
+        $filter = $this->_getPrimaryKeyValuePairs();
 
         $fieldValues = [];
 
         $fields = $this->getFields();
         foreach ($fields as $field) {
-            if ($field === $primaryKey || $this->{$field} === null) {
+            if (isset($filter[$field])) {
+                continue;
+            }
+
+            if ($this->{$field} === null) {
                 continue;
             }
 
@@ -234,7 +234,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             return $this;
         }
 
-        static::criteria(null, $this)->where($primaryKey, $this->$primaryKey)->update($fieldValues);
+        static::criteria(null, $this)->where($filter)->update($fieldValues);
 
         $this->_snapshot = $this->toArray();
 
