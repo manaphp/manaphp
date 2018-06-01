@@ -48,7 +48,7 @@ class Easy extends Component implements EasyInterface
     /**
      * @var int
      */
-    protected $_timeout = 10;
+    protected $_timeout = 30;
 
     /**
      * @var bool
