@@ -191,34 +191,49 @@ class Model extends \ManaPHP\Model implements ModelInterface
             throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
-        $filter = $this->_getPrimaryKeyValuePairs();
-
-        $fieldValues = [];
-
         $fields = $this->getFields();
+        $intFields = $this->getIntTypeFields();
+
+        $changedFields = [];
         foreach ($fields as $field) {
-            if (isset($filter[$field])) {
-                continue;
-            }
-
-            if ($this->{$field} === null) {
-                continue;
-            }
-
-            if (isset($snapshot[$field])) {
-                if (is_int($snapshot[$field])) {
-                    /** @noinspection TypeUnsafeComparisonInspection */
-                    if ($snapshot[$field] == $this->{$field}) {
-                        continue;
+            if ($this->$field === null) {
+                if (isset($snapshot[$field])) {
+                    $changedFields[] = $field;
+                }
+            } else {
+                if (!isset($snapshot[$field])) {
+                    $changedFields[] = $field;
+                } elseif ($snapshot[$field] !== $this->$field) {
+                    if (in_array($field, $intFields, true)) {
+                        $this->$field = (int)$this->$field;
+                    } elseif (is_float($snapshot[$field])) {
+                        $this->$field = (float)$this->$field;
                     }
-                } else {
-                    if ($snapshot[$field] === $this->{$field}) {
-                        continue;
+
+                    if ($snapshot[$field] !== $this->$field) {
+                        $changedFields[] = $field;
                     }
                 }
             }
+        }
 
-            $fieldValues[$field] = $this->{$field};
+        if (!$changedFields) {
+            return $this;
+        }
+
+        $this->validate($changedFields);
+
+        $fieldValues = [];
+        foreach ($fields as $field) {
+            if ($this->$field === null) {
+                if (isset($snapshot[$field])) {
+                    $fieldValues[$field] = null;
+                }
+            } else {
+                if (!isset($snapshot[$field]) || $snapshot[$field] !== $this->$field) {
+                    $fieldValues[$field] = $this->$field;
+                }
+            }
         }
 
         if (!$fieldValues) {
@@ -234,13 +249,11 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $fieldValues[$field] = $value;
         }
 
-        $this->validate(array_keys($fieldValues));
-
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
             return $this;
         }
 
-        static::criteria(null, $this)->where($filter)->update($fieldValues);
+        static::criteria(null, $this)->where($this->_getPrimaryKeyValuePairs())->update($fieldValues);
 
         $this->_snapshot = $this->toArray();
 
