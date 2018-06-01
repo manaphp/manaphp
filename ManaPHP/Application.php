@@ -32,6 +32,8 @@ abstract class Application extends Component implements ApplicationInterface
      */
     public function __construct($loader, $di = null)
     {
+        ini_set('default_socket_timeout', -1);
+
         $this->_di = $di ?: new FactoryDefault();
         $GLOBALS['DI'] = $this->_di;
 
@@ -123,7 +125,7 @@ abstract class Application extends Component implements ApplicationInterface
         }
 
         foreach ($configure->bootstraps as $bootstrap) {
-            if($bootstrap){
+            if ($bootstrap) {
                 $this->_di->getShared($bootstrap);
             }
         }
