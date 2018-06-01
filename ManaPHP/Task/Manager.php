@@ -4,9 +4,10 @@ namespace ManaPHP\Task;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Logger\LogCategorizable;
 use ManaPHP\Utility\Text;
 
-class Manager extends Component implements ManagerInterface
+class Manager extends Component implements ManagerInterface, LogCategorizable
 {
     const FIELD_HOST = 'host';
     const FIELD_CLASS = 'class';
@@ -49,6 +50,14 @@ class Manager extends Component implements ManagerInterface
                 $this->_heartbeat_interval = $options['heartbeat_interval'];
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function categorizeLog()
+    {
+        return 'tasksManager';
     }
 
     /**
