@@ -157,6 +157,19 @@ class Component implements ComponentInterface, \JsonSerializable
     }
 
     /**
+     * @param string|array $message
+     * @param string       $category
+     *
+     * @return static
+     */
+    public function trace($message, $category = null)
+    {
+        $this->logger->debug($message, $category);
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function __debugInfo()

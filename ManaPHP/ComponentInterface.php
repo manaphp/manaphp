@@ -52,6 +52,14 @@ interface ComponentInterface
     public function fireEvent($event, $data = []);
 
     /**
+     * @param string|array $message
+     * @param string       $category
+     *
+     * @return static
+     */
+    public function trace($message, $category = null);
+
+    /**
      * @return array
      */
     public function dump();
