@@ -197,7 +197,7 @@ class Redis extends Component
                     $r = call_user_func_array([$this->_redis, $name], $arguments);
                     break;
             }
-            $this->logger->debug(["\$redis->$name(:args) => :return",
+            $this->trace(["\$redis->$name(:args) => :return",
                 'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
                 'return' => json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             ], 'redis.' . $name);
