@@ -173,7 +173,6 @@ class Redis extends Component
      */
     public function __call($name, $arguments)
     {
-        error_reporting(0);
         try {
             switch (count($arguments)) {
                 case 0:
