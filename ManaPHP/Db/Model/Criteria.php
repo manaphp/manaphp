@@ -4,6 +4,7 @@ namespace ManaPHP\Db\Model;
 use ManaPHP\Di;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\Expression\Increment;
+use ManaPHP\Model\Expression\Raw;
 use ManaPHP\Model\ExpressionInterface;
 
 /**
@@ -656,6 +657,8 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
             if ($value instanceof ExpressionInterface) {
                 if ($value instanceof Increment) {
                     $fieldValues[] = "[$field]=[$field]" . ($value->step >= 0 ? '+' : '') . $value->step;
+                } elseif ($value instanceof Raw) {
+                    $fieldValues[] = "[$field]=" . $value->expression;
                 }
                 unset($fieldValues[$field]);
             }
