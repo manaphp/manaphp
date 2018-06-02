@@ -4,6 +4,7 @@ namespace ManaPHP\Db;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Model\ExpressionInterface;
 
 /**
  * Class ManaPHP\Db\Model
@@ -255,7 +256,22 @@ class Model extends \ManaPHP\Model implements ModelInterface
             return $this;
         }
 
-        static::criteria(null, $this)->where($this->_getPrimaryKeyValuePairs())->update($fieldValues);
+        $expressionFields = [];
+        foreach ($fieldValues as $field => $value) {
+            if ($value instanceof ExpressionInterface) {
+                $expressionFields[] = $field;
+            }
+        }
+
+        $criteria = static::criteria(null, $this)->where($this->_getPrimaryKeyValuePairs());
+        $criteria->update($fieldValues);
+        if ($expressionFields) {
+            if ($rs = $criteria->select($expressionFields)->execute()) {
+                foreach ($rs[0] as $field => $value) {
+                    $this->$field = $value;
+                }
+            }
+        }
 
         $this->_snapshot = $this->toArray();
 

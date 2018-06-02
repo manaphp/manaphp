@@ -3,6 +3,8 @@ namespace ManaPHP\Db\Model;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Model\Expression\Increment;
+use ManaPHP\Model\ExpressionInterface;
 
 /**
  * Class ManaPHP\Db\Model\Criteria
@@ -650,6 +652,14 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function update($fieldValues)
     {
+        foreach ($fieldValues as $field => $value) {
+            if ($value instanceof ExpressionInterface) {
+                if ($value instanceof Increment) {
+                    $fieldValues[] = "[$field]=[$field]" . ($value->step >= 0 ? '+' : '') . $value->step;
+                }
+                unset($fieldValues[$field]);
+            }
+        }
         return $this->_replaceModelInfo()->_query->update($fieldValues);
     }
 }
