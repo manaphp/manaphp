@@ -935,6 +935,22 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * @param int|string $primaryKey
+     * @param array      $fieldValues
+     *
+     * @return int
+     */
+    public static function updateRecord($primaryKey, $fieldValues)
+    {
+        if (!is_scalar($primaryKey)) {
+            throw new \InvalidArgumentException(['`:value` is not a valid primary key value', 'value' => $primaryKey]);
+        }
+
+        $instance = new static();
+        return static::criteria()->where($instance->getPrimaryKey(), $primaryKey)->update($fieldValues);
+    }
+
+    /**
      * @param array $filters
      *
      * @return int

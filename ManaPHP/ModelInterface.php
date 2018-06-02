@@ -323,6 +323,14 @@ interface ModelInterface
     public static function updateAll($fieldValues, $filters);
 
     /**
+     * @param int|string $primaryKey
+     * @param array      $fieldValues
+     *
+     * @return int
+     */
+    public static function updateRecord($primaryKey, $fieldValues);
+
+    /**
      * Deletes a model instance. Returning true on success or false otherwise.
      *
      * @return static
