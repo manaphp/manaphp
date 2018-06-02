@@ -357,7 +357,7 @@ interface CriteriaInterface
     public function fetchAll();
 
     /**
-     * @param $fieldValues
+     * @param array $fieldValues
      *
      * @return int
      */

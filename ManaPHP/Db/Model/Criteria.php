@@ -644,7 +644,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
-     * @param $fieldValues
+     * @param array $fieldValues
      *
      * @return int
      */
