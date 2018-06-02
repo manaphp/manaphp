@@ -406,4 +406,20 @@ interface ModelInterface
      * @return static
      */
     public function refresh($interval, $fields = null);
+
+    /**
+     * @param string     $field
+     * @param int|double $step
+     *
+     * @return static
+     */
+    public function increment($field, $step = 1);
+
+    /**
+     * @param string     $field
+     * @param int|double $step
+     *
+     * @return static
+     */
+    public function decrement($field, $step = 1);
 }

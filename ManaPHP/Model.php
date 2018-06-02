@@ -8,6 +8,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Exception\UnknownPropertyException;
+use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
 
@@ -1146,6 +1147,34 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         return $constants;
+    }
+
+    /**
+     * @param string     $field
+     * @param int|double $step
+     *
+     * @return static
+     */
+    public function increment($field, $step = 1)
+    {
+        if (!in_array($field, $this->getFields(), true)) {
+            throw new \InvalidArgumentException([':field field is invalid.', 'field' => $field]);
+        }
+
+        $this->$field = new Increment($step);
+
+        return $this;
+    }
+
+    /**
+     * @param string     $field
+     * @param int|double $step
+     *
+     * @return static
+     */
+    public function decrement($field, $step = 1)
+    {
+        return $this->increment($field, -$step);
     }
 
     public function __get($name)
