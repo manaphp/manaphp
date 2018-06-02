@@ -51,6 +51,16 @@ interface LoggerInterface
     public function addAppender($appender, $name = null);
 
     /**
+     * Sends/Writes a trace message to the log
+     *
+     * @param string|array $message
+     * @param string       $category
+     *
+     * @return static
+     */
+    public function trace($message, $category = null);
+
+    /**
      * Sends/Writes a debug message to the log
      *
      * @param string|array $message

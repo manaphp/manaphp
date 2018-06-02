@@ -20,6 +20,7 @@ class Logger extends Component implements LoggerInterface
     const LEVEL_WARN = 30;
     const LEVEL_INFO = 40;
     const LEVEL_DEBUG = 50;
+    const LEVEL_TRACE = 60;
 
     /**
      * @var string
@@ -402,6 +403,19 @@ class Logger extends Component implements LoggerInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Sends/Writes a trace message to the log
+     *
+     * @param string|array $message
+     * @param string       $category
+     *
+     * @return static
+     */
+    public function trace($message, $category = null)
+    {
+        return $this->log(self::LEVEL_DEBUG, $message, $category);
     }
 
     /**
