@@ -5,6 +5,8 @@ use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Model\Expression\Increment;
+use ManaPHP\Model\ExpressionInterface;
 use ManaPHP\Mongodb\Model\Criteria\Exception as CriteriaException;
 use MongoDB\BSON\Regex;
 
@@ -1104,6 +1106,26 @@ class Criteria extends \ManaPHP\Model\Criteria
                 break;
             }
             $filters[$key] = $value;
+        }
+
+        $expressions = [];
+        foreach ($fieldValues as $field => $value) {
+            if ($value instanceof ExpressionInterface) {
+                $expressions[$field] = $value;
+                unset($fieldValues[$field]);
+            }
+        }
+
+        if ($expressions) {
+            if ($fieldValues) {
+                $fieldValues = ['$set' => $fieldValues];
+            }
+
+            foreach ($expressions as $field => $value) {
+                if ($value instanceof Increment) {
+                    $fieldValues['$inc'][$field] = $value->step;
+                }
+            }
         }
 
         return $this->_di->getShared($db)->update($source, $filters, $fieldValues);

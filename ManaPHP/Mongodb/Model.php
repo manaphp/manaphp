@@ -8,6 +8,7 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Model\ExpressionInterface;
 use MongoDB\BSON\ObjectID;
 
 /**
@@ -399,10 +400,14 @@ class Model extends \ManaPHP\Model
                     $this->$field = $this->getNormalizedValue($type, $this->$field);
                     $changedFields[] = $field;
                 } elseif ($snapshot[$field] !== $this->$field) {
-                    $this->$field = $this->getNormalizedValue($type, $this->$field);
-                    /** @noinspection NotOptimalIfConditionsInspection */
-                    if ($snapshot[$field] !== $this->$field) {
+                    if ($this->$field instanceof ExpressionInterface) {
                         $changedFields[] = $field;
+                    } else {
+                        $this->$field = $this->getNormalizedValue($type, $this->$field);
+                        /** @noinspection NotOptimalIfConditionsInspection */
+                        if ($snapshot[$field] !== $this->$field) {
+                            $changedFields[] = $field;
+                        }
                     }
                 }
             }
@@ -440,7 +445,24 @@ class Model extends \ManaPHP\Model
             return $this;
         }
 
-        static::criteria(null, $this)->where($primaryKey, $this->$primaryKey)->update($fieldValues);
+        $criteria = static::criteria(null, $this)->where($primaryKey, $this->$primaryKey);
+        $criteria->update($fieldValues);
+
+        $expressionFields = [];
+        foreach ($fieldValues as $field => $value) {
+            if ($value instanceof ExpressionInterface) {
+                $expressionFields[] = $field;
+            }
+        }
+
+        if ($expressionFields) {
+            $expressionFields['_id'] = false;
+            if ($rs = $criteria->select($expressionFields)->execute()) {
+                foreach ($rs[0] as $field => $value) {
+                    $this->$field = $value;
+                }
+            }
+        }
 
         $this->_snapshot = $this->toArray();
 
