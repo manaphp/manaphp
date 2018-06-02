@@ -176,20 +176,33 @@ class Redis extends Component
         try {
             switch (count($arguments)) {
                 case 0:
-                    return $this->_redis->$name();
+                    $r = $this->_redis->$name();
+                    break;
                 case 1:
-                    return $this->_redis->$name($arguments[0]);
+                    $r = $this->_redis->$name($arguments[0]);
+                    break;
                 case 2:
-                    return $this->_redis->$name($arguments[0], $arguments[1]);
+                    $r = $this->_redis->$name($arguments[0], $arguments[1]);
+                    break;
                 case 3:
-                    return $this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
+                    $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
+                    break;
                 case 4:
-                    return $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                    $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                    break;
                 case 5:
-                    return $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+                    $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+                    break;
                 default:
-                    return call_user_func_array([$this->_redis, $name], $arguments);
+                    $r = call_user_func_array([$this->_redis, $name], $arguments);
+                    break;
             }
+            $this->logger->debug(["\$redis->$name(:args) => :return",
+                'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
+                'return' => json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+            ], 'redis.' . $name);
+
+            return $r;
         } /** @noinspection PhpRedundantCatchClauseInspection */
         catch (\Exception $e) {
             $this->_redis->close();
