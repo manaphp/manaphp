@@ -1258,11 +1258,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if ($field === '_snapshot' || $field === '_last_refresh') {
-                continue;
-            }
-
-            if (is_object($value) && !$value instanceof self) {
+            if (in_array($field, ['_traced', '_di', '_snapshot', '_last_refresh'], true)) {
                 continue;
             }
 
