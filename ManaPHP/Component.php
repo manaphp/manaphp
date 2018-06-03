@@ -31,6 +31,11 @@ namespace ManaPHP;
 class Component implements ComponentInterface, \JsonSerializable
 {
     /**
+     * @var bool
+     */
+    protected $_traced;
+
+    /**
      * @var \ManaPHP\Di
      */
     protected $_di;
@@ -157,6 +162,18 @@ class Component implements ComponentInterface, \JsonSerializable
     }
 
     /**
+     * @param bool $enabled
+     *
+     * @return static
+     */
+    public function enableTrace($enabled = true)
+    {
+        $this->_traced = $enabled;
+	
+        return $this;
+    }
+
+    /**
      * @param string|array $message
      * @param string       $category
      *
@@ -164,7 +181,9 @@ class Component implements ComponentInterface, \JsonSerializable
      */
     public function trace($message, $category = null)
     {
-        $this->logger->debug($message, $category);
+        if ($this->_traced) {
+            $this->logger->trace($message, $category);
+        }
 
         return $this;
     }

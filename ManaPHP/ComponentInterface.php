@@ -52,6 +52,13 @@ interface ComponentInterface
     public function fireEvent($event, $data = []);
 
     /**
+     * @param bool $enabled
+     *
+     * @return static
+     */
+    public function enableTrace($enabled = true);
+
+    /**
      * @param string|array $message
      * @param string       $category
      *
