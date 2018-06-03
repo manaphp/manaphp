@@ -122,10 +122,12 @@ class Manager extends Component implements ManagerInterface, LogCategorizable
                 /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
                 $redis->setTimeout($oldMetaKey, 86400 * 7);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
+            $this->logger->error($exception);
             $this->logger->info('move old task meta data failed');
         }
 
+        $this->logger->info([':class start success.', 'class' => $className]);
         /**
          * @var \ManaPHP\TaskInterface $instance
          */
