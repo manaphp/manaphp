@@ -129,5 +129,9 @@ abstract class Application extends Component implements ApplicationInterface
                 $this->_di->getShared($bootstrap);
             }
         }
+
+        if ($configure->traces) {
+            $this->_di->setTraces($configure->traces);
+        }
     }
 }
