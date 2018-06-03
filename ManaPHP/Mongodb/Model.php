@@ -455,7 +455,7 @@ class Model extends \ManaPHP\Model
         if ($expressionFields) {
             $expressionFields['_id'] = false;
             if ($rs = $criteria->select($expressionFields)->execute()) {
-                foreach ($rs[0] as $field => $value) {
+                foreach ((array)$rs[0] as $field => $value) {
                     $this->$field = $value;
                 }
             }
