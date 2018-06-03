@@ -655,6 +655,7 @@ if (!function_exists('size_to_int')) {
         if (is_numeric($size)) {
             return (int)$size;
         } else {
+            /** @noinspection PowerOperatorCanBeUsedInspection */
             return (int)(substr($size, 0, -1) * pow($base, strpos('bkmgtpe', substr($size, -1))));
         }
     }
