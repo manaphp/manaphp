@@ -297,7 +297,30 @@ class Di implements DiInterface
      */
     public function setTraces($names)
     {
-        $this->_traces = $names;
+        if (in_array('*', $names, true)) {
+            $this->_traces = ['*'];
+        } else {
+            $traces = [];
+            foreach ($names as $name) {
+                if (strpos($name, '*') !== false) {
+                    foreach ($this->_components as $component => $definition) {
+                        if (fnmatch($name, $component)) {
+                            $traces[] = $component;
+                        }
+                    }
+                } else {
+                    $traces[] = $name;
+                }
+            }
+
+            foreach ($this->_instances as $name => $instance) {
+                if ($instance instanceof Component) {
+                    $instance->enableTrace($traces === ['*'] || in_array($name, $traces, true));
+                }
+            }
+
+            $this->_traces = $traces;
+        }
 
         return $this;
     }
