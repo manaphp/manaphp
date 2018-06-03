@@ -213,6 +213,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
                         }
                     }
 
+                    /** @noinspection NotOptimalIfConditionsInspection */
                     if ($snapshot[$field] !== $this->$field) {
                         $changedFields[] = $field;
                     }
@@ -267,7 +268,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $criteria->update($fieldValues);
         if ($expressionFields) {
             if ($rs = $criteria->select($expressionFields)->execute()) {
-                foreach ($rs[0] as $field => $value) {
+                foreach ((array)$rs[0] as $field => $value) {
                     $this->$field = $value;
                 }
             }
