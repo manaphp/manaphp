@@ -188,7 +188,7 @@ class Easy extends Component implements EasyInterface
             throw new NotSupportedException(['only HTTP requests can be handled: `:url`', 'url' => $url]);
         }
 
-        $this->logger->debug([$type, compact('url', 'body', 'options')], 'httpClient.request');
+        $this->trace([$type, compact('url', 'body', 'options')], 'httpClient.request');
 
         $curl = curl_init();
 
@@ -348,9 +348,9 @@ class Easy extends Component implements EasyInterface
 
         curl_close($curl);
 
-        $this->logger->debug(['stats', ['url' => $response->url, 'stats' => $response->stats]], 'httpClient.stats');
-        $this->logger->debug(['headers', $response->getHeaders()], 'httpClient.headers');
-        $this->logger->debug(['body', ['url' => $response->url,
+        $this->trace(['stats', ['url' => $response->url, 'stats' => $response->stats]], 'httpClient.stats');
+        $this->trace(['headers', $response->getHeaders()], 'httpClient.headers');
+        $this->trace(['body', ['url' => $response->url,
             'http_code' => $response->http_code,
             'body' => strpos($response->content_type, 'json') !== false ? $response->getJsonBody() : $response->body]],
             'httpClient.body');
