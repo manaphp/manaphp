@@ -292,6 +292,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $fieldTypes = $this->_model->getFieldTypes();
                 $this->_filters[] = [$field => [$operator_map[$operator] => $this->_model->getNormalizedValue($fieldTypes[$field], $value)]];
             }
+        } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
+            $this->_filters[] = [$matches[1] => ['$mod' => [(int)$matches[2], (int)$value]]];
         } else {
             throw new InvalidValueException(['unknown mongodb criteria `filter` filter', 'filter' => $filter]);
         }

@@ -396,6 +396,8 @@ class Query extends Component implements QueryInterface
             } else {
                 throw new NotSupportedException(['unknown `:where` where filter', 'where' => $filter]);
             }
+        } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
+            $this->_conditions[] = $matches[0] . (int)$value;
         } else {
             throw new NotSupportedException(['unknown `:filter` filter', 'filter' => $filter]);
         }
