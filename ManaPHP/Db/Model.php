@@ -153,22 +153,18 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $fieldValues = [];
         foreach ($fields as $field) {
-            if ($this->{$field} !== null) {
-                $fieldValues[$field] = $this->{$field};
+            if ($this->$field !== null) {
+                $fieldValues[$field] = $this->$field;
             }
         }
 
-        $db = $this->getDb($this);
-        $source = $this->getSource($this);
+        /**
+         * @var \ManaPHP\DbInterface $connection
+         */
+        $connection = $this->_di->getShared($this->getDb($this));
+        $connection->insert($this->getSource($this), $fieldValues);
 
-        $connection = $this->_di->getShared($db);
-        $connection->insert($source, $fieldValues);
-
-        $autoIncrementField = $this->getAutoIncrementField();
-        if ($autoIncrementField !== null) {
-            /**
-             * @var \ManaPHP\DbInterface $connection
-             */
+        if ($autoIncrementField = $this->getAutoIncrementField()) {
             $this->{$autoIncrementField} = $connection->lastInsertId();
         }
 
