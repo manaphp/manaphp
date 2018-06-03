@@ -78,7 +78,7 @@ class Logger extends Component implements LoggerInterface
                 } elseif (is_string($value)) {
                     $appender = $value;
                 } elseif (isset($value['level'])) {
-                    $level = is_numeric($value['level']) ? (int)$value['level'] : array_search(strtolower($value['level']), $this->getConstants('level'), true);
+                    $level = is_numeric($value['level']) ? (int)$value['level'] : array_search(strtolower($value['level']), $this->_levels, true);
                     unset($value['level']);
                     $appender = $value;
                 } else {
@@ -130,7 +130,7 @@ class Logger extends Component implements LoggerInterface
         if (is_numeric($level)) {
             $this->_level = (int)$level;
         } else {
-            $this->_level = array_flip($this->getConstants('level'))[strtolower($level)];
+            $this->_level = array_search(strtolower($level), $this->_levels, true);
         }
 
         return $this;
@@ -152,7 +152,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function getLevels()
     {
-        return $this->getConstants('level');
+        return $this->_levels;
     }
 
     /**
@@ -236,7 +236,7 @@ class Logger extends Component implements LoggerInterface
         if (is_string($appender)) {
             $definition = $appender;
         } elseif (isset($appender['level'])) {
-            $level = is_numeric($appender['level']) ? (int)$appender['level'] : array_search(strtolower($appender['level']), $this->getConstants('level'), true);
+            $level = is_numeric($appender['level']) ? (int)$appender['level'] : array_search(strtolower($appender['level']), $this->_levels, true);
             unset($appender['level']);
             $definition = $appender;
         } else {
