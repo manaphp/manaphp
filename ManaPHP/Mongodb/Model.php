@@ -605,10 +605,13 @@ class Model extends \ManaPHP\Model
 
     public function __debugInfo()
     {
-        if ($this->_id !== null) {
-            return array_merge(['_id' => is_object($this->_id) ? (string)$this->_id : $this->_id], parent::__debugInfo());
-        } else {
-            return parent::__debugInfo();
+        $data = parent::__debugInfo();
+        if ($data['_id'] === null) {
+            unset($data['_id']);
+        } elseif (is_object($data['_id'])) {
+            $data['_id'] = (string)$data['_id'];
         }
+
+        return $data;
     }
 }
