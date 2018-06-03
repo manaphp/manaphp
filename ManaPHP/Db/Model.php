@@ -361,7 +361,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 unset($record[$field]);
             }
         }
-        return $instance->getConnection($record)->insert($instance->getSource($record), $record, $instance->getPrimaryKey(), $skipIfExists);
+        return $instance->getMasterConnection($record)->insert($instance->getSource($record), $record, $instance->getPrimaryKey(), $skipIfExists);
     }
 
     /**
@@ -388,6 +388,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        return $instance->getConnection()->bulkInsert($instance->getSource(), $records, $instance->getPrimaryKey(), $skipIfExists);
+        return $instance->getMasterConnection()->bulkInsert($instance->getSource(), $records, $instance->getPrimaryKey(), $skipIfExists);
     }
 }
