@@ -331,7 +331,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_in($value, $parameter)
     {
-        return in_array($value, preg_split('#[\s,]+#', $parameter), false) ? $value : null;
+        return in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
     /**
@@ -342,7 +342,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_not_in($value, $parameter)
     {
-        return !in_array($value, preg_split('#[\s,]+#', $parameter), false) ? $value : null;
+        return !in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
     /**
@@ -419,7 +419,7 @@ class Validator extends Component implements ValidatorInterface
         }
 
         $ext = pathinfo($value, PATHINFO_EXTENSION);
-        return in_array(strtolower($ext), preg_split('#[\s,]+#', $parameter), true) ? $value : null;
+        return in_array(strtolower($ext), preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), true) ? $value : null;
     }
 
     /**

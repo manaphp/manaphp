@@ -323,7 +323,7 @@ abstract class Criteria extends Component implements CriteriaInterface
             if (is_int($k)) {
                 $data = $instance->$method()->fetch();
             } elseif (is_string($v)) {
-                $data = $instance->$method()->select(preg_split('#[\s,]+#', $v))->fetch();
+                $data = $instance->$method()->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY))->fetch();
             } elseif (is_array($v)) {
                 $data = $instance->$method()->select($v)->fetch();
             } elseif (is_callable($v)) {

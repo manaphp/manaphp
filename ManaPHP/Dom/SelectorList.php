@@ -395,7 +395,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     public function removeAttr($css, $attr = null)
     {
         if ($attr) {
-            $attr = (array)preg_split('#[\s,]+#', $attr);
+            $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         /**
@@ -424,7 +424,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     public function retainAttr($css, $attr)
     {
         if (is_string($attr)) {
-            $attr = (array)preg_split('#[\s,]+#', $attr);
+            $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         /**

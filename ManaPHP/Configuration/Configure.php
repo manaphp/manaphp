@@ -138,7 +138,7 @@ class Configure extends Component implements ConfigureInterface
         }
 
         if (is_string($this->traces)) {
-            $this->traces = preg_split('#[\s,]+#', $this->traces);
+            $this->traces = preg_split('#[\s,]+#', $this->traces, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         return $this;

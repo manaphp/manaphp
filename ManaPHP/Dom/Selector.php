@@ -125,7 +125,7 @@ class Selector
     public function removeAttr($css, $attr = null)
     {
         if (is_string($attr)) {
-            $attr = (array)preg_split('#[\s,]+#', $attr);
+            $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         /**
@@ -151,7 +151,7 @@ class Selector
     public function retainAttr($css, $attr)
     {
         if (is_string($attr)) {
-            $attr = (array)preg_split('#[\s,]+#', $attr);
+            $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         /**
