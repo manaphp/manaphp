@@ -352,7 +352,7 @@ class Easy extends Component implements EasyInterface
         $this->trace(['headers', $response->getHeaders()], 'httpClient.headers');
         $this->trace(['body', ['url' => $response->url,
             'http_code' => $response->http_code,
-            'body' => strpos($response->content_type, 'json') !== false ? $response->getJsonBody() : $response->body]],
+            'body' => strpos($response->content_type, 'json') !== false ? $response->getJsonBody() : $response->getUtf8Body()]],
             'httpClient.body');
 
         return $this->_lastResponse = $response;
