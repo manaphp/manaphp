@@ -69,6 +69,11 @@ class Configure extends Component implements ConfigureInterface
     public $bootstraps = [];
 
     /**
+     * @var array
+     */
+    public $traces = [];
+
+    /**
      * @param string|array $files
      *
      * @return static
@@ -130,6 +135,10 @@ class Configure extends Component implements ConfigureInterface
             }
 
             $this->$field = $value;
+        }
+
+        if (is_string($this->traces)) {
+            $this->traces = preg_split('#[\s,]+#', $this->traces);
         }
 
         return $this;
