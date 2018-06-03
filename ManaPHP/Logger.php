@@ -362,7 +362,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function log($level, $message, $category = null)
     {
-        if ($level > $this->_level) {
+        if ($level > $this->_level && $level !== self::LEVEL_TRACE) {
             return $this;
         }
 
