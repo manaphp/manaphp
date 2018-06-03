@@ -415,7 +415,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function trace($message, $category = null)
     {
-        return $this->log(self::LEVEL_DEBUG, $message, $category);
+        return $this->log(self::LEVEL_TRACE, $message, $category);
     }
 
     /**
