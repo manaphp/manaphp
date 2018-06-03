@@ -350,13 +350,7 @@ class Model extends \ManaPHP\Model
 
         $fieldValues = [];
         foreach ($fields as $field) {
-            if ($this->{$field} !== null) {
-                $fieldValues[$field] = $this->{$field};
-            } else {
-                if ($allowNull) {
-                    $fieldValues[$field] = null;
-                }
-            }
+            $fieldValues[$field] = $this->$field;
         }
 
         /**
