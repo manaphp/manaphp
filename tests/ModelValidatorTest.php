@@ -163,7 +163,7 @@ class ModelValidatorTest extends \PHPUnit_Framework_TestCase
         //timestamp
         $city = $this->createMock(City::class);
         $city->method('rules')->willReturn(['last_update' => 'date']);
-        $city->method('getIntTypeFields')->willReturn(['last_update']);
+        $city->method('getIntFields')->willReturn(['last_update']);
 
         $city->last_update = $ts;
         $validator->validate($city, ['last_update']);
@@ -203,7 +203,7 @@ class ModelValidatorTest extends \PHPUnit_Framework_TestCase
         //with format
         $city = $this->createMock(City::class);
         $city->method('rules')->willReturn(['last_update' => ['date' => 'Y-m-d']]);
-        $city->method('getIntTypeFields')->willReturn([]);
+        $city->method('getIntFields')->willReturn([]);
 
         $city->last_update = date('Y-m-d H:i:s', $ts);
         $validator->validate($city, ['last_update']);

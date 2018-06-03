@@ -713,16 +713,16 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         $ts = time();
         $time = date('Y-m-d H:i:s');
-        $intTypeFields = $this->getIntTypeFields();
+        $intFields = $this->getIntFields();
 
         $data = [];
         if ($opMode === self::OP_CREATE) {
-            $data['created_time'] = $data['created_at'] = in_array('created_time', $intTypeFields, true) || in_array('created_at', $intTypeFields, true) ? $ts : $time;
+            $data['created_time'] = $data['created_at'] = in_array('created_time', $intFields, true) || in_array('created_at', $intFields, true) ? $ts : $time;
             $data['creator_id'] = $data['updator_id'] = $this->_di->identity->getId();
             $data['creator_name'] = $data['updator_name'] = $this->_di->identity->getName();
-            $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intTypeFields, true) || in_array('updated_at', $intTypeFields, true) ? $ts : $time;
+            $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intFields, true) || in_array('updated_at', $intFields, true) ? $ts : $time;
         } elseif ($opMode === self::OP_UPDATE) {
-            $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intTypeFields, true) || in_array('updated_at', $intTypeFields, true) ? $ts : $time;
+            $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intFields, true) || in_array('updated_at', $intFields, true) ? $ts : $time;
             $data['updator_id'] = $this->_di->identity->getId();
             $data['updator_name'] = $this->_di->identity->getName();
         }

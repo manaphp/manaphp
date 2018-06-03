@@ -59,7 +59,7 @@ interface ModelInterface
     /**
      * @return array|null
      */
-    public function getIntTypeFields();
+    public function getIntFields();
 
     /**
      * @return string|null

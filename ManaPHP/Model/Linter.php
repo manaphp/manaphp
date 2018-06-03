@@ -67,8 +67,8 @@ class Linter extends Component
                 } else {
                     $all = array_keys($model->getFieldTypes());
                 }
-            } elseif ($methodName === 'getIntTypeFields') {
-                $some = $model->getIntTypeFields();
+            } elseif ($methodName === 'getIntFields') {
+                $some = $model->getIntFields();
                 if ($model instanceof DbModel) {
                     $all = $this->modelsMetadata->getIntTypeAttributes($model);
                 } else {

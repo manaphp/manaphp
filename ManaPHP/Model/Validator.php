@@ -260,7 +260,7 @@ class Validator extends Component implements ValidatorInterface
             return null;
         }
 
-        if (in_array($this->_field, $this->_model->getIntTypeFields(), true)) {
+        if (in_array($this->_field, $this->_model->getIntFields(), true)) {
             return $timestamp;
         } else {
             $format = $parameter ?: 'Y-m-d H:i:s';

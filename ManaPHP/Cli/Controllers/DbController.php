@@ -152,16 +152,16 @@ class DbController extends Controller
         }
 
         if ($optimized) {
-            $intTypeFields = (array)$metadata[Db::METADATA_INT_TYPE_ATTRIBUTES];
+            $intFields = (array)$metadata[Db::METADATA_INT_TYPE_ATTRIBUTES];
 
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return array' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getIntTypeFields()' . PHP_EOL;
+            $str .= '    public function getIntFields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
-            foreach ($intTypeFields as $field) {
+            foreach ($intFields as $field) {
                 $str .= "            '$field'," . PHP_EOL;
             }
             $str .= '        ];' . PHP_EOL;

@@ -59,7 +59,7 @@ abstract class Criteria extends Component implements CriteriaInterface
             $right = strtotime($right[0] === '-' || $right[0] === '+' ? date('Y-m-d 23:59:59', strtotime($right)) : $right);
         }
 
-        if (in_array($field, $this->_model->getIntTypeFields(), true)) {
+        if (in_array($field, $this->_model->getIntFields(), true)) {
             return [$left ?: null, $right ?: null];
         } else {
             return [$left ? date('Y-m-d H:i:s', $left) : null, $right ? date('Y-m-d H:i:s', $right) : null];
@@ -91,7 +91,7 @@ abstract class Criteria extends Component implements CriteriaInterface
                 }
             } elseif (is_array($value)) {
                 if (strpos($v, '@=')) {
-                    if (in_array($field, $this->_model->getIntTypeFields(), true)) {
+                    if (in_array($field, $this->_model->getIntFields(), true)) {
                         if (!is_numeric($value)) {
                             $value[0] = strtotime($value[0]);
                             $value[1] = strtotime($value[1]);

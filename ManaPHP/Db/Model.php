@@ -93,7 +93,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     /**
      * @return array
      */
-    public function getIntTypeFields()
+    public function getIntFields()
     {
         return $this->_di->modelsMetadata->getIntTypeAttributes($this);
     }
@@ -189,7 +189,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         $fields = $this->getFields();
-        $intFields = $this->getIntTypeFields();
+        $intFields = $this->getIntFields();
 
         $changedFields = [];
         foreach ($fields as $field) {
