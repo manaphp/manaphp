@@ -356,7 +356,9 @@ class Model extends \ManaPHP\Model
         }
 
         foreach ($this->getJsonFields() as $field) {
-            $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            if (isset($fieldValues[$field]) && !is_string($fieldValues[$field])) {
+                $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
         }
 
         /**
@@ -454,7 +456,9 @@ class Model extends \ManaPHP\Model
         }
 
         foreach ($this->getJsonFields() as $field) {
-            $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            if (isset($fieldValues[$field]) && !is_string($fieldValues[$field])) {
+                $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
         }
 
         $criteria = static::criteria(null, $this)->where($primaryKey, $this->$primaryKey);

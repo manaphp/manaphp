@@ -64,7 +64,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         if ($data) {
             foreach ($this->getJsonFields() as $field) {
-                if (isset($data[$field])) {
+                if (isset($data[$field]) && is_string($data[$field])) {
                     if ($data[$field] === '') {
                         $data[$field] = [];
                     } else {
