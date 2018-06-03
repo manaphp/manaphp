@@ -22,5 +22,6 @@ return [
         ],
         'translation' => ['language' => 'zh-CN,en']
     ],
-    'bootstraps' => explode(',', env('BOOTSTRAPS'))
+    'bootstraps' => explode(',', env('BOOTSTRAPS')),
+    'traces' => env('TRACES', '')
 ];
