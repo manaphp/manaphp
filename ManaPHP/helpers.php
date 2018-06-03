@@ -658,3 +658,38 @@ if (!function_exists('size_to_int')) {
         }
     }
 }
+
+if (!function_exists('tap')) {
+    class _manaphp_tap_proxy
+    {
+        public $target;
+
+        public function __construct($target)
+        {
+            $this->target = $target;
+        }
+
+        public function __call($method, $arguments)
+        {
+            call_user_func([$this->target, $method], $arguments);
+
+            return $this->target;
+        }
+    }
+
+    /**
+     * @param mixed         $value
+     * @param callable|null $callback
+     *
+     * @return mixed
+     */
+    function tap($value, $callback = null)
+    {
+        if ($callback === null) {
+            return new _manaphp_tap_proxy($value);
+        } else {
+            $callback($value);
+            return $value;
+        }
+    }
+}
