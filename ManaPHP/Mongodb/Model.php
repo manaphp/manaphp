@@ -359,6 +359,9 @@ class Model extends \ManaPHP\Model
             }
         }
 
+        /**
+         * @var \ManaPHP\MongodbInterface $connection
+         */
         $connection = $this->_di->getShared($this->getDb($this));
         $connection->insert($this->getSource($this), $fieldValues);
 
