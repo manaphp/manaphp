@@ -626,3 +626,35 @@ if (!function_exists('transaction')) {
         return true;
     }
 }
+
+if (!function_exists('size_to_str')) {
+    /**
+     * @param int $size
+     * @param int $precision
+     * @param int $base
+     *
+     * @return string
+     */
+    function size_to_str($size, $precision = 2, $base = 1024)
+    {
+        return round($size / pow($base, ($i = round(log($size, $base)))), $precision) . ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'][$i];
+    }
+}
+
+if (!function_exists('size_to_int')) {
+    /**
+     * @param string $size
+     * @param int    $base
+     *
+     * @return int
+     */
+    function size_to_int($size, $base = 1024)
+    {
+        $size = rtrim(strtolower($size), 'b');
+        if (is_numeric($size)) {
+            return (int)$size;
+        } else {
+            return (int)(substr($size, 0, -1) * pow($base, strpos('bkmgtpe', substr($size, -1))));
+        }
+    }
+}
