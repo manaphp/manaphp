@@ -204,6 +204,9 @@ abstract class Db extends Component implements DbInterface
                 $type = \PDO::PARAM_NULL;
             } elseif (is_float($value)) {
                 $type = \PDO::PARAM_STR;
+            } elseif (is_array($value) || $value instanceof \JsonSerializable) {
+                $type = \PDO::PARAM_STR;
+                $value = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             } else {
                 throw new NotSupportedException(['The `:type` type of `:parameter` parameter is not support', 'parameter' => $parameter, 'type' => gettype($value)]);
             }
