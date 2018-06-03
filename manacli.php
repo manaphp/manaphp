@@ -7,6 +7,4 @@ $loader = new \ManaPHP\Loader();
 
 $cli = new \ManaPHP\Cli\Application($loader);
 
-$cli->configFile = '';
-
 $cli->main();
