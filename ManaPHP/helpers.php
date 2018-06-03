@@ -637,7 +637,8 @@ if (!function_exists('size_to_str')) {
      */
     function size_to_str($size, $precision = 2, $base = 1024)
     {
-        return round($size / pow($base, ($i = round(log($size, $base)))), $precision) . ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'][$i];
+        /** @noinspection PowerOperatorCanBeUsedInspection */
+        return round($size / pow($base, $i = (int)round(log($size, $base))), $precision) . ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'][$i];
     }
 }
 
