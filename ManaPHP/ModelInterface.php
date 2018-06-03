@@ -52,6 +52,11 @@ interface ModelInterface
     public function getSafeFields();
 
     /**
+     * @return array
+     */
+    public function getJsonFields();
+
+    /**
      * @return array|null
      */
     public function getIntTypeFields();
