@@ -23,7 +23,7 @@ class Logger extends Component implements LoggerInterface
     const LEVEL_TRACE = 60;
 
     /**
-     * @var string
+     * @var int
      */
     protected $_level;
 
@@ -354,7 +354,7 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * @param string       $level
+     * @param int          $level
      * @param string|array $message
      * @param string       $category
      *
