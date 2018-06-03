@@ -47,6 +47,13 @@ interface DiInterface
     public function setAliases($component, $aliases, $force = false);
 
     /**
+     * @param array $names
+     *
+     * @return static
+     */
+    public function setTraces($names);
+
+    /**
      * Removes a component from the components container
      *
      * @param string $name

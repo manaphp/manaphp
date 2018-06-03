@@ -99,6 +99,11 @@ class Di implements DiInterface
     protected $_instancesState = [];
 
     /**
+     * @var array
+     */
+    protected $_traces;
+
+    /**
      * First DI build
      *
      * @var \ManaPHP\Di
@@ -109,6 +114,10 @@ class Di implements DiInterface
     {
         if (self::$_default === null) {
             self::$_default = $this;
+        }
+
+        if (error_reporting() === -1) {
+            $this->_traces = ['*'];
         }
     }
 
@@ -282,6 +291,18 @@ class Di implements DiInterface
     }
 
     /**
+     * @param array $names
+     *
+     * @return static
+     */
+    public function setTraces($names)
+    {
+        $this->_traces = $names;
+
+        return $this;
+    }
+
+    /**
      * Removes a component in the components container
      *
      * @param string $name
@@ -365,6 +386,12 @@ class Di implements DiInterface
         }
 
         if ($instance instanceof Component) {
+            if ($name !== null && $this->_traces !== null) {
+                if ($this->_traces === ['*'] || in_array($name, $this->_traces, true)) {
+                    $instance->enableTrace();
+                }
+            }
+
             $instance->setDi($this);
             if ($this->_keepInstanceState && ($state = $instance->saveInstanceState()) !== false) {
                 $this->_instancesState[] = new InstanceState($name, $instance, $state);
