@@ -63,20 +63,18 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $this->_di = Di::getDefault();
 
         if ($data) {
-            if ($jsonFields = $this->getJsonFields()) {
-                foreach ($jsonFields as $field) {
-                    if (isset($data[$field])) {
-                        if ($data[$field] === '') {
-                            $data[$field] = [];
+            foreach ($this->getJsonFields() as $field) {
+                if (isset($data[$field])) {
+                    if ($data[$field] === '') {
+                        $data[$field] = [];
+                    } else {
+                        if (($json = json_decode($data[$field], true)) === null) {
+                            throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string: :error',
+                                'field' => $field,
+                                'model' => get_class($this),
+                                'error' => json_last_error_msg()]);
                         } else {
-                            if (($json = json_decode($data[$field], true)) === null) {
-                                throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string: :error',
-                                    'field' => $field,
-                                    'model' => get_class($this),
-                                    'error' => json_last_error_msg()]);
-                            } else {
-                                $data[$field] = $json;
-                            }
+                            $data[$field] = $json;
                         }
                     }
                 }
