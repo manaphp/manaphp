@@ -42,14 +42,6 @@ class Application extends \ManaPHP\Application
         $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
     }
 
-    /**
-     * @return string
-     */
-    public function getAppName()
-    {
-        return basename($this->alias->resolveNS('@ns.app'));
-    }
-
     public function authenticate()
     {
         return $this->identity->authenticate();

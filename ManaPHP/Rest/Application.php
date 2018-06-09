@@ -34,14 +34,6 @@ class Application extends \ManaPHP\Application
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getAppName()
-    {
-        return basename($this->alias->resolveNS('@ns.app'));
-    }
-
     public function authenticate()
     {
 
