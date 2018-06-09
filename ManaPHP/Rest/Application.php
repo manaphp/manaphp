@@ -41,6 +41,7 @@ class Application extends \ManaPHP\Application
 
     /**
      * @return \ManaPHP\Http\ResponseInterface
+     * @throws \ManaPHP\Router\NotFoundRouteException
      */
     public function handle()
     {
