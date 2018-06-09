@@ -311,6 +311,11 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
     }
 
+    public function getCacheCapacity()
+    {
+        return 100;
+    }
+
     /**
      * Allows to query the first record that match the specified conditions
      *
@@ -349,13 +354,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         $interval = null;
-        if ($options === null) {
-            null;
-        } elseif (is_float($options)) {
-            $interval = $options;
-            $max = 10;
-        } elseif (is_array($options) && count($options) === 1 && is_int($max = key($options))) {
-            $interval = $options[$max];
+        if (is_scalar($options)) {
+            $interval = (float)$options;
+            $options = [];
         }
 
         if ($pkValue === null || $interval === null) {
@@ -384,7 +385,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         $cached[$className][$pkValue] = [$current + $interval, $r];
         /** @noinspection PhpUndefinedVariableInspection */
-        if (count($cached[$className]) > $max) {
+        if (count($cached[$className]) > $model->getCacheCapacity()) {
             unset($cached[$className][key($cached[$className])]);
         }
         return $r;
@@ -442,16 +443,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             return $rs ? $rs[0][$field] : null;
         }
 
-        if (is_numeric($interval)) {
-            $interval = (float)$interval;
-            $max = 100;
-        } elseif (is_array($interval) && !$interval && is_int($max = key($interval))) {
-            $interval = (float)$interval[$max];
-        } else {
-            throw new InvalidValueException(['`:interval` interval is not recognized',
-                'interval' => json_encode($interval, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
-        }
-
         static $cached = [];
 
         $current = microtime(true);
@@ -469,7 +460,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $value = $rs ? $rs[0][$field] : null;
 
         $cached[$className][$field][$pkValue] = [$current + $interval, $value];
-        if (count($cached[$className][$field]) > $max) {
+        if (count($cached[$className][$field]) > $model->getCacheCapacity()) {
             unset($cached[$className][$field][key($cached[$className][$field])]);
         }
 
