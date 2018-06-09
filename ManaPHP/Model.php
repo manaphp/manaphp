@@ -503,6 +503,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                 $criteria->page($options['size'], isset($options['page']) ? $options['page'] : null);
             }
 
+            if (isset($options['distinct'])) {
+                $criteria->distinct();
+            }
+
             if (isset($options['order'])) {
                 $criteria->orderBy($options['order']);
             }
