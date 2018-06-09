@@ -212,6 +212,10 @@ class Di implements DiInterface
                 if (strpos($definition['class'], '\\') === false) {
                     $definition['class'] = $this->_completeClassName($name, $definition['class']);
                 }
+            } elseif (isset($definition[0]) && count($definition) !== 1) {
+                if (strpos($definition[0], '\\') === false) {
+                    $definition[0] = $this->_completeClassName($name, $definition[0]);
+                }
             } else {
                 $definition['class'] = $this->_interClassName($name);
             }
@@ -250,6 +254,10 @@ class Di implements DiInterface
             if (isset($definition['class'])) {
                 if (strpos($definition['class'], '\\') === false) {
                     $definition['class'] = $this->_completeClassName($name, $definition['class']);
+                }
+            } elseif (isset($definition[0]) && count($definition) !== 1) {
+                if (strpos($definition[0], '\\') === false) {
+                    $definition[0] = $this->_completeClassName($name, $definition[0]);
                 }
             } else {
                 $definition['class'] = $this->_interClassName($name);
