@@ -39,13 +39,18 @@ class Swoole extends Application
 
     }
 
+    public function authenticate()
+    {
+        return $this->identity->authenticate();
+    }
+
     /**
      */
     public function handle()
     {
         $this->_beforeRequest();
 
-        $this->identity->authenticate();
+        $this->authenticate();
 
         if (!$this->router->handle()) {
             throw new SwooleException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
