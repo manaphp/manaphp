@@ -106,11 +106,31 @@ class Dotenv extends Component implements DotenvInterface
             return $this->_env;
         } else {
             if (isset($this->_env[$key])) {
-                return $this->_env[$key];
+                $value = $this->_env[$key];
             } elseif ($default !== null) {
-                return $default;
+                $value = $default;
             } else {
                 throw new InvalidArgumentException(['`:key` key value is not exists in .env file', 'key' => $key]);
+            }
+
+            if (is_array($default)) {
+                return preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
+            } elseif (is_int($default)) {
+                return (int)$value;
+            } elseif (is_float($default)) {
+                return (float)$value;
+            } elseif (is_bool($default)) {
+                if (is_bool($value)) {
+                    return $value;
+                } elseif (in_array(strtolower($value), ['1', 'on', 'true'], true)) {
+                    return true;
+                } elseif (in_array(strtolower($value), ['0', 'off', 'false'], true)) {
+                    return false;
+                } else {
+                    throw new InvalidArgumentException(['`:key` key value is not a valid bool value: :value', 'key' => $key, 'value' => $value]);
+                }
+            } else {
+                return $value;
             }
         }
     }
