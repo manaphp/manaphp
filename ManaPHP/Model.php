@@ -515,6 +515,30 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * @param string $field
+     * @param array  $filters
+     * @param array  $options
+     *
+     * @return array
+     */
+    public static function distinct($field, $filters = null, $options = null)
+    {
+        $criteria = static::criteria()->where($filters)->distinct();
+        if (is_array($options)) {
+            if (isset($options['limit'])) {
+                $criteria->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
+            } elseif (isset($options['size'])) {
+                $criteria->page($options['size'], isset($options['page']) ? $options['page'] : null);
+            }
+
+            if (isset($options['order'])) {
+                $criteria->orderBy($options['order']);
+            }
+        }
+        return $criteria->values($field);
+    }
+
+    /**
      * @param int|string|array $filters
      *
      * @return bool
