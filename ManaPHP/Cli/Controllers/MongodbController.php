@@ -417,8 +417,9 @@ class MongodbController extends Controller
      *
      * @param array  $services           services list
      * @param string $collection_pattern match collection against a pattern
+     * @param string $field              collection must contains one this field
      */
-    public function listCommand($services = [], $collection_pattern = '')
+    public function listCommand($services = [], $collection_pattern = '', $field = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             if (!$this->_di->has($service)) {
@@ -427,13 +428,19 @@ class MongodbController extends Controller
                 }
             }
             /**
-             * @var \ManaPHP\DbInterface $mongodb
+             * @var \ManaPHP\Mongodb $mongodb
              */
             $mongodb = $this->_di->getShared($service);
 
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
             foreach ($this->_getTables($service, $collection_pattern) as $row => $collection) {
-                $docs = $mongodb->query($collection, [], ['limit' => 1]);
+                if ($field) {
+                    if (!$docs = $mongodb->query($collection, [$field => ['$exists' => 1]], ['limit' => 1])) {
+                        continue;
+                    }
+                } else {
+                    $docs = $mongodb->query($collection, [], ['limit' => 1]);
+                }
                 $columns = $docs ? array_keys($docs[0]) : [];
 
                 $this->console->writeLn([' :row :collection(:columns)',
