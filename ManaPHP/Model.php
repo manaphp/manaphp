@@ -988,7 +988,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public static function updateRecord($primaryKey, $fieldValues)
     {
         if (!is_scalar($primaryKey)) {
-            throw new \InvalidArgumentException(['`:value` is not a valid primary key value', 'value' => $primaryKey]);
+            throw new InvalidArgumentException(['`:value` is not a valid primary key value', 'value' => $primaryKey]);
         }
 
         $instance = new static();
@@ -1219,7 +1219,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public function increment($field, $step = 1)
     {
         if (!in_array($field, $this->getFields(), true)) {
-            throw new \InvalidArgumentException([':field field is invalid.', 'field' => $field]);
+            throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
         }
 
         $this->$field = new Increment($step);
