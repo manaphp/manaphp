@@ -518,12 +518,12 @@ class Model extends \ManaPHP\Model
     {
         $instance = new static();
 
-        $primaryKey = $instance->getPrimaryKey();
+        $autoIncrementField = $instance->getAutoIncrementField();
         $allowNull = $instance->isAllowNullValue();
         $fieldTypes = $instance->getFieldTypes();
         foreach ($documents as $i => $document) {
-            if (!isset($document[$primaryKey])) {
-                $document[$primaryKey] = $instance->generateAutoIncrementId();
+            if ($autoIncrementField && !isset($document[$autoIncrementField])) {
+                $document[$autoIncrementField] = $instance->generateAutoIncrementId();
             }
             foreach ((array)$fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
