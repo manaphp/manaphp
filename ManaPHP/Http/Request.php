@@ -16,9 +16,7 @@ class Request extends Component implements RequestInterface
 {
     public function __construct()
     {
-        if (isset($_SERVER['REQUEST_METHOD'])
-            && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)
-            && count($_POST) === 0) {
+        if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
             $data = file_get_contents('php://input');
 
             if (isset($_SERVER['CONTENT_TYPE'])
