@@ -18,17 +18,13 @@ abstract class Identity extends Component implements IdentityInterface
     /**
      * @var array
      */
-    protected $_claims;
+    protected $_claims = [];
 
     /**
      * @return bool
      */
     public function isGuest()
     {
-        if ($this->_claims === null) {
-            throw new MisuseException('claims is not set');
-        }
-
         return !$this->_claims;
     }
 
@@ -37,9 +33,7 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getId()
     {
-        if ($this->_claims === null) {
-            throw new MisuseException('claims is not set');
-        } elseif ($this->_claims === []) {
+        if (!$this->_claims) {
             return 0;
         } elseif (!$this->_type) {
             throw new MisuseException('type is unknown');
@@ -54,9 +48,7 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getName()
     {
-        if ($this->_claims === null) {
-            throw new MisuseException('claims is not set');
-        } elseif ($this->_claims === []) {
+        if (!$this->_claims) {
             return '';
         } elseif (!$this->_type) {
             throw new MisuseException('type is unknown');
@@ -107,9 +99,6 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getClaim($claim, $default = null)
     {
-        if ($this->_claims === null) {
-            throw new MisuseException('claims is not set');
-        }
         return isset($this->_claims[$claim]) ? $this->_claims[$claim] : $default;
     }
 
@@ -118,10 +107,6 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getClaims()
     {
-        if ($this->_claims === null) {
-            throw new MisuseException('claims is not set');
-        }
-
         return $this->_claims;
     }
 
@@ -132,9 +117,6 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function hasClaims($claim)
     {
-        if ($this->_claims === null) {
-            throw new MisuseException('claims is not set');
-        }
         return isset($this->_claims[$claim]);
     }
 
