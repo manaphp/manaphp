@@ -813,3 +813,45 @@ if (!function_exists('mbstr_in_set')) {
         return preg_match('#\b' . preg_quote($needle, '#') . '\b#u', $haystack) === 1;
     }
 }
+
+if (!function_exists('str_fnmatch')) {
+    /**
+     * @param string       $needle
+     * @param array|string $patterns
+     */
+    function str_fnmatch($needle, $patterns)
+    {
+        if (is_string($patterns)) {
+            $patterns = (array)preg_split('#[\s,]+#', $patterns, -1, PREG_SPLIT_NO_EMPTY);
+        }
+
+        foreach ($patterns as $pattern) {
+            if (fnmatch($pattern, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('mbstr_fnmatch')) {
+    /**
+     * @param string       $needle
+     * @param array|string $patterns
+     */
+    function mbstr_fnmatch($needle, $patterns)
+    {
+        if (is_string($patterns)) {
+            $patterns = (array)preg_split('#[\s,]+#/u', $patterns, -1, PREG_SPLIT_NO_EMPTY);
+        }
+
+        foreach ($patterns as $pattern) {
+            if (fnmatch($pattern, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
