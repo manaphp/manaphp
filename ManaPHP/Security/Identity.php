@@ -78,7 +78,7 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function setClaims($claims)
     {
-        if (!$this->_type) {
+        if ($claims && (!$this->_type || !isset($claims[$this->_type]))) {
             foreach ($claims as $claim => $value) {
                 if (strlen($claim) > 3 && strrpos($claim, '_id', -3) !== false) {
                     $this->_type = substr($claim, 0, -3);
