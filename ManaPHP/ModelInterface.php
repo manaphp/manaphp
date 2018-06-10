@@ -67,6 +67,13 @@ interface ModelInterface
     public function getAutoIncrementField();
 
     /**
+     * @param int $step
+     *
+     * @return int
+     */
+    public function generateAutoIncrementId($step = 1);
+
+    /**
      * @return string|null
      */
     public function getDisplayField();

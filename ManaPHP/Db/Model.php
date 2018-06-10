@@ -107,6 +107,16 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
+     * @param int $step
+     *
+     * @return int
+     */
+    public function generateAutoIncrementId($step = 1)
+    {
+        return null;
+    }
+
+    /**
      * @param array             $fields
      * @param \ManaPHP\Db\Model $model
      *
@@ -136,6 +146,12 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function create()
     {
+        $autoIncrementField = $this->getAutoIncrementField();
+
+        if ($autoIncrementField && $this->$autoIncrementField === null) {
+            $this->$autoIncrementField = $this->generateAutoIncrementId();
+        }
+
         $fields = $this->getFields();
         foreach ($this->getAutoFilledData(self::OP_CREATE) as $field => $value) {
             /** @noinspection NotOptimalIfConditionsInspection */
@@ -164,8 +180,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $connection = $this->_di->getShared($this->getDb($this));
         $connection->insert($this->getSource($this), $fieldValues);
 
-        if ($autoIncrementField = $this->getAutoIncrementField()) {
-            $this->{$autoIncrementField} = $connection->lastInsertId();
+        if ($autoIncrementField && $this->$autoIncrementField === null) {
+            $this->$autoIncrementField = $connection->lastInsertId();
         }
 
         $this->_snapshot = $this->toArray();

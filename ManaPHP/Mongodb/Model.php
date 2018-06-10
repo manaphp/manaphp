@@ -244,7 +244,6 @@ class Model extends \ManaPHP\Model
 
     /**
      * @param int $step
-     * @param     int
      *
      * @return int
      */
@@ -313,6 +312,11 @@ class Model extends \ManaPHP\Model
      */
     public function create()
     {
+        $autoIncrementField = $this->getAutoIncrementField();
+        if ($autoIncrementField && $this->$autoIncrementField === null) {
+            $this->$autoIncrementField = $this->generateAutoIncrementId();
+        }
+
         $fields = $this->getFields();
         foreach ($this->getAutoFilledData(self::OP_CREATE) as $field => $value) {
             /** @noinspection NotOptimalIfConditionsInspection */
@@ -332,11 +336,6 @@ class Model extends \ManaPHP\Model
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_id = new ObjectID();
-        }
-
-        $autoIncField = $this->getAutoIncrementField();
-        if ($autoIncField !== null && $this->{$autoIncField} === null) {
-            $this->{$autoIncField} = $this->generateAutoIncrementId();
         }
 
         $allowNull = $this->isAllowNullValue();
