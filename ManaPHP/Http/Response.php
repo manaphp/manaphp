@@ -273,7 +273,7 @@ class Response extends Component implements ResponseInterface
             $content = ['code' => -1, 'message' => $content->getMessage()];
         }
 
-        $this->_content = is_string($content) ? $content : json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $this->_content = is_string($content) ? $content : json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         return $this;
     }
