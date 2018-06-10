@@ -324,8 +324,16 @@ class Model extends \ManaPHP\Model
 
         $this->validate($fields);
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $this->_id = new ObjectID($this->_id ?: null);
+        if ($this->_id) {
+            if (is_string($this->_id) && strlen($this->_id) === 24) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                $this->_id = new ObjectID($this->_id);
+            }
+        } else {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $this->_id = new ObjectID();
+        }
+
         $autoIncField = $this->getAutoIncrementField();
         if ($autoIncField !== null && $this->{$autoIncField} === null) {
             $this->{$autoIncField} = $this->generateAutoIncrementId();
