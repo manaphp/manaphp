@@ -525,7 +525,7 @@ class Model extends \ManaPHP\Model
             if (!isset($document[$primaryKey])) {
                 $document[$primaryKey] = $instance->generateAutoIncrementId();
             }
-            foreach ($fieldTypes as $field => $type) {
+            foreach ((array)$fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
                     $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
                 } elseif ($field !== '_id') {
@@ -554,7 +554,7 @@ class Model extends \ManaPHP\Model
             if (!isset($document[$primaryKey])) {
                 throw new InvalidValueException(['bulkUpdate `:model` model must set primary value', 'model' => get_called_class()]);
             }
-            foreach ($document as $field => $value) {
+            foreach ((array)$document as $field => $value) {
                 if ($value === null) {
                     $document[$field] = $allowNull ? null : $instance->getNormalizedValue($fieldTypes[$field], '');
                 } else {
@@ -586,7 +586,7 @@ class Model extends \ManaPHP\Model
             if (!isset($document[$primaryKey])) {
                 $document[$primaryKey] = $instance->generateAutoIncrementId();
             }
-            foreach ($fieldTypes as $field => $type) {
+            foreach ((array)$fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
                     $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
                 } elseif ($field !== '_id') {
@@ -620,7 +620,7 @@ class Model extends \ManaPHP\Model
         if (!isset($document[$primaryKey])) {
             $document[$primaryKey] = $instance->generateAutoIncrementId();
         }
-        foreach ($fieldTypes as $field => $type) {
+        foreach ((array)$fieldTypes as $field => $type) {
             if (isset($document[$field])) {
                 $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
             } elseif ($field !== '_id') {
