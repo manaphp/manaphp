@@ -695,3 +695,95 @@ if (!function_exists('tap')) {
         }
     }
 }
+
+if (!function_exists('str_starts_with')) {
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @param int    $offset
+     *
+     * @return bool
+     */
+    function str_starts_with($haystack, $needle, $offset = 0)
+    {
+        return strpos($haystack, $needle, $offset) === 0;
+    }
+}
+
+if (!function_exists('mbstr_starts_with')) {
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @param int    $offset
+     *
+     * @return bool
+     */
+    function mbstr_starts_with($haystack, $needle, $offset = 0)
+    {
+        return mb_strpos($haystack, $needle, $offset) === 0;
+    }
+}
+
+if (!function_exists('str_ends_with')) {
+    /**
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    function str_ends_with($haystack, $needle)
+    {
+        $lh = strlen($haystack);
+        $ln = strlen($needle);
+        if ($lh < $ln) {
+            return false;
+        }
+
+        return substr_compare($haystack, $needle, $lh - $ln, $ln) === 0;
+    }
+}
+
+if (!function_exists('mbstr_ends_with')) {
+    /**
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    function mbstr_ends_with($haystack, $needle)
+    {
+        $lh = mb_strlen($haystack);
+        $ln = mb_strlen($needle);
+        if ($lh < $ln) {
+            return false;
+        }
+
+        return mb_substr($haystack, $lh - $ln) === $needle;
+    }
+}
+
+if (!function_exists('str_contains')) {
+    /**
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    function str_contains($haystack, $needle)
+    {
+        return strpos($haystack, $needle) !== false;
+    }
+}
+
+if (!function_exists('mbstr_contains')) {
+    /**
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    function mbstr_contains($haystack, $needle)
+    {
+        return mb_strpos($haystack, $needle) !== false;
+    }
+}
