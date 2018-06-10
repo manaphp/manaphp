@@ -135,7 +135,7 @@ abstract class Controller extends Component implements ControllerInterface, LogC
     public function getCommands()
     {
         $commands = [];
-        foreach (get_class_methods(__CLASS__) as $method) {
+        foreach (get_class_methods($this) as $method) {
             if ($method === 'helpCommand' || $method[0] === '_') {
                 continue;
             }
