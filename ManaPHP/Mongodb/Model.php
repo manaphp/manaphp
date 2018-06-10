@@ -613,13 +613,13 @@ class Model extends \ManaPHP\Model
     {
         $instance = new static();
 
-        $primaryKey = $instance->getPrimaryKey();
         $allowNull = $instance->isAllowNullValue();
         $fieldTypes = $instance->getFieldTypes();
-
-        if (!isset($document[$primaryKey])) {
-            $document[$primaryKey] = $instance->generateAutoIncrementId();
+        $autoIncrementField = $instance->getAutoIncrementField();
+        if ($autoIncrementField && !isset($document[$autoIncrementField])) {
+            $document[$autoIncrementField] = $instance->generateAutoIncrementId();
         }
+
         foreach ((array)$fieldTypes as $field => $type) {
             if (isset($document[$field])) {
                 $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
