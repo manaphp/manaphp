@@ -1019,8 +1019,16 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                 continue;
             }
 
-            if (is_object($value) && !$value instanceof self) {
-                continue;
+            if (is_object($value)) {
+                if ($value instanceof self) {
+                    $value = $value->toArray();
+                } else {
+                    continue;
+                }
+            } elseif (is_array($value) && ($first = current($value)) && $first instanceof self) {
+                foreach ($value as $k => $v) {
+                    $value[$k] = $v->toArray();
+                }
             }
 
             if ($value !== null) {
