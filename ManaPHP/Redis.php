@@ -173,6 +173,12 @@ class Redis extends Component
      */
     public function __call($name, $arguments)
     {
+        if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
+            $this->trace(["\$redis->$name(:args) ... blocking",
+                'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
+            ], 'redis.' . $name);
+        }
+
         try {
             switch (count($arguments)) {
                 case 0:
