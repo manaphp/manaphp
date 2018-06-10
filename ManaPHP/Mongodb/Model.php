@@ -96,7 +96,7 @@ class Model extends \ManaPHP\Model
     {
         $primaryKey = $this->getPrimaryKey();
 
-        return $primaryKey !== '_id' ? $primaryKey : null;
+        return (is_string($primaryKey) && $primaryKey !== '_id') ? $primaryKey : null;
     }
 
     /**
