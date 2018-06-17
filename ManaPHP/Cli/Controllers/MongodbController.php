@@ -76,8 +76,9 @@ class MongodbController extends Controller
      * @param string $namespace namespaces of models
      * @param bool   $optimized output as more methods as possible
      * @param int    $sample    sample size
+     * @param array  $db        db name list
      */
-    public function modelsCommand($services = [], $namespace = 'App\Models', $optimized = false, $sample = 1000)
+    public function modelsCommand($services = [], $namespace = 'App\Models', $optimized = false, $sample = 1000, $db = [])
     {
         if (strpos($namespace, '\\') === false) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
@@ -101,12 +102,12 @@ class MongodbController extends Controller
                     continue;
                 }
 
-                foreach ($mongodb->listCollections($db) as $collection) {
+                foreach ($mongodb->listCollections($cdb) as $collection) {
                     if (strpos($collection, '.')) {
                         continue;
                     }
 
-                    if (!$docs = $mongodb->aggregate("$db.$collection", [['$sample' => ['size' => $sample]]])) {
+                    if (!$docs = $mongodb->aggregate("$cdb.$collection", [['$sample' => ['size' => $sample]]])) {
                         continue;
                     }
 
@@ -117,7 +118,7 @@ class MongodbController extends Controller
 
                     $fieldTypes = $this->_inferFieldTypes($docs);
                     $modelClass = $namespace . '\\' . $plainClass;
-                    $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? null : "$db.$collection", $optimized);
+                    $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? null : "$cdb.$collection", $optimized);
                     $this->filesystem->filePut($fileName, $model);
 
                     $this->console->progress([
