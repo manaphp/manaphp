@@ -73,82 +73,69 @@ class MongodbController extends Controller
      * generate models file from data files or online data
      *
      * @param array  $services  explicit the mongodb service name
-     * @param string $dir       the data file directory name
      * @param string $namespace namespaces of models
      * @param bool   $optimized output as more methods as possible
      * @param int    $sample    sample size
      */
-    public function modelsCommand($services = [], $dir = '', $namespace = 'App\Models', $optimized = false, $sample = 1000)
+    public function modelsCommand($services = [], $namespace = 'App\Models', $optimized = false, $sample = 1000)
     {
         if (strpos($namespace, '\\') === false) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
         }
 
-        if ($dir) {
-            if (!$this->filesystem->dirExists($dir)) {
-                throw new Exception(['`:dir` dir is not exists', 'dir' => $dir]);
-            }
 
-            foreach ($this->filesystem->glob($dir . '/*.json') as $file) {
-                $lines = file($file);
-                if (!isset($lines[0])) {
+        foreach ($services ?: $this->_getDbServices() as $service) {
+            if (!$this->_di->has($service)) {
+                if ($this->_di->has($service . 'Mongodb')) {
+                    $service .= 'Mongodb';
+                }
+            }
+            /**
+             * @var \ManaPHP\Mongodb $mongodb
+             */
+            $mongodb = $this->_di->getShared($service);
+
+            $defaultDb = $mongodb->getDefaultDb();
+            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
+                if (!$defaultDb && in_array($db, ['admin', 'local'], true)) {
                     continue;
                 }
-                $fieldTypes = $this->_inferFieldTypes($lines[0]);
-                $fileName = basename($file, '.json');
-                $plainClass = Text::camelize($fileName);
-                $modelClass = $namespace . '\\' . $plainClass;
 
-                $model = $this->_renderModel($fieldTypes, $modelClass, 'mongodb', $optimized);
-
-                $this->filesystem->filePut("@tmp/mongodb/models/$plainClass.php", $model);
-            }
-        } else {
-            foreach ($services ?: $this->_getDbServices() as $service) {
-                if (!$this->_di->has($service)) {
-                    if ($this->_di->has($service . 'Mongodb')) {
-                        $service .= 'Mongodb';
+                foreach ($mongodb->listCollections($db) as $collection) {
+                    if (strpos($collection, '.')) {
+                        continue;
                     }
-                }
-                /**
-                 * @var \ManaPHP\Mongodb $mongodb
-                 */
-                $mongodb = $this->_di->getShared($service);
 
-                $defaultDb = $mongodb->getDefaultDb();
-                foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
-                    foreach ($mongodb->listCollections($db) as $collection) {
-                        if (!$docs = $mongodb->aggregate("$db.$collection", [['$sample' => ['size' => $sample]]])) {
-                            continue;
+                    if (!$docs = $mongodb->aggregate("$db.$collection", [['$sample' => ['size' => $sample]]])) {
+                        continue;
+                    }
+
+                    $plainClass = Text::camelize($collection);
+                    $fileName = "@tmp/mongodb_models/$plainClass.php";
+
+                    $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
+
+                    $fieldTypes = $this->_inferFieldTypes($docs);
+                    $modelClass = $namespace . '\\' . $plainClass;
+                    $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? null : "$db.$collection", $optimized);
+                    $this->filesystem->filePut($fileName, $model);
+
+                    $this->console->progress([
+                        ' `:collection` collection saved to `:file`',
+                        'collection' => $collection,
+                        'file' => $fileName]);
+
+                    $pending_fields = [];
+                    foreach ($fieldTypes as $field => $type) {
+                        if ($type === '' || strpos($type, '|') !== false) {
+                            $pending_fields[] = $field;
                         }
+                    }
 
-                        $plainClass = Text::camelize($collection);
-                        $fileName = "@tmp/mongodb_models/$plainClass.php";
-
-                        $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
-
-                        $fieldTypes = $this->_inferFieldTypes($docs);
-                        $modelClass = $namespace . '\\' . $plainClass;
-                        $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? null : "$db.$collection");
-                        $this->filesystem->filePut($fileName, $model);
-
-                        $this->console->progress([
-                            ' `:collection` collection saved to `:file`',
+                    if ($pending_fields) {
+                        $this->console->warn(['`:collection` has pending fields: :fields',
                             'collection' => $collection,
-                            'file' => $fileName]);
-
-                        $pending_fields = [];
-                        foreach ($fieldTypes as $field => $type) {
-                            if ($type === '' || strpos($type, '|') !== false) {
-                                $pending_fields[] = $field;
-                            }
-                        }
-
-                        if ($pending_fields) {
-                            $this->console->warn(['`:collection` has pending fields: :fields',
-                                'collection' => $collection,
-                                'fields' => implode(', ', $pending_fields)]);
-                        }
+                            'fields' => implode(', ', $pending_fields)]);
                     }
                 }
             }
