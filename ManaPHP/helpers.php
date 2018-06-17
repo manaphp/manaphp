@@ -875,3 +875,24 @@ if (!function_exists('array_field')) {
         return $values;
     }
 }
+
+if (!function_exists('array_unique_field')) {
+    /**
+     * @param array  $input
+     * @param string $field_key
+     *
+     * @return array
+     */
+    function array_unique_field($input, $field_key)
+    {
+        $values = [];
+        foreach ($input as $item) {
+            $value = is_array($item) ? $item[$field_key] : $item->$field_key;
+            if (!in_array($value, $values, true)) {
+                $values[] = $value;
+            }
+        }
+
+        return $values;
+    }
+}
