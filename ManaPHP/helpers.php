@@ -901,3 +901,29 @@ if (!function_exists('array_unique_field')) {
         return $values;
     }
 }
+
+if (!function_exists('array_only')) {
+    /**
+     * @param array $ar
+     * @param array $keys
+     *
+     * @return array
+     */
+    function array_only($ar, $keys)
+    {
+        return array_intersect_key($ar, array_fill_keys($keys, null));
+    }
+}
+
+if (!function_exists('array_except')) {
+    /**
+     * @param array $ar
+     * @param array $keys
+     *
+     * @return array
+     */
+    function array_except($ar, $keys)
+    {
+        return array_diff_key($ar, array_fill_keys($keys, null));
+    }
+}
