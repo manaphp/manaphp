@@ -927,3 +927,57 @@ if (!function_exists('array_except')) {
         return array_diff_key($ar, array_fill_keys($keys, null));
     }
 }
+
+if (!function_exists('array_dot')) {
+    /**
+     * @param array  $ar
+     * @param string $prepend
+     *
+     * @return array
+     */
+    function array_dot($ar, $prepend = '')
+    {
+        $r = [];
+
+        foreach ($ar as $key => $value) {
+            if (is_array($value) && $value) {
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $r = array_merge($r, array_dot($value, $prepend . $key . '.'));
+            } else {
+                $r[$prepend . $key] = $value;
+            }
+        }
+        return $r;
+    }
+}
+
+if (!function_exists('array_get')) {
+    /**
+     * @param array  $ar
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    function array_get($ar, $key, $default = null)
+    {
+        if (!$key) {
+            return $ar;
+        }
+
+        if (($pos = strrpos($key, '.')) === false) {
+            return isset($ar[$key]) ? $ar[$key] : null;
+        }
+
+        $t = $ar;
+        foreach (explode('.', substr($key, 0, $pos)) as $segment) {
+            if (!isset($t[$segment]) || !is_array($t[$segment])) {
+                return $default;
+            }
+            $t = $t[$segment];
+        }
+
+        $last = substr($key, $pos + 1);
+        return isset($t[$last]) ? $t[$last] : $default;
+    }
+}
