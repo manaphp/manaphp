@@ -2,6 +2,10 @@
 
 use ManaPHP\Di;
 
+if (PHP_VERSION_ID < 70000) {
+    require_once __DIR__ . '/polyfill.php';
+}
+
 if (!function_exists('di')) {
     /**
      * @param string $name
