@@ -114,37 +114,41 @@ class MongodbController extends Controller
                  * @var \ManaPHP\Mongodb $mongodb
                  */
                 $mongodb = $this->_di->getShared($service);
-                foreach ($mongodb->listCollections() as $collection) {
-                    if (!$docs = $mongodb->aggregate($collection, [['$sample' => ['size' => $sample]]])) {
-                        continue;
-                    }
 
-                    $plainClass = Text::camelize($collection);
-                    $fileName = "@tmp/mongodb_models/$plainClass.php";
-
-                    $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
-
-                    $fieldTypes = $this->_inferFieldTypes($docs);
-                    $modelClass = $namespace . '\\' . $plainClass;
-                    $model = $this->_renderModel($fieldTypes, $modelClass, $service);
-                    $this->filesystem->filePut($fileName, $model);
-
-                    $this->console->progress([
-                        ' `:collection` collection saved to `:file`',
-                        'collection' => $collection,
-                        'file' => $fileName]);
-
-                    $pending_fields = [];
-                    foreach ($fieldTypes as $field => $type) {
-                        if ($type === '' || strpos($type, '|') !== false) {
-                            $pending_fields[] = $field;
+                $defaultDb = $mongodb->getDefaultDb();
+                foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
+                    foreach ($mongodb->listCollections($db) as $collection) {
+                        if (!$docs = $mongodb->aggregate("$db.$collection", [['$sample' => ['size' => $sample]]])) {
+                            continue;
                         }
-                    }
 
-                    if ($pending_fields) {
-                        $this->console->warn(['`:collection` has pending fields: :fields',
+                        $plainClass = Text::camelize($collection);
+                        $fileName = "@tmp/mongodb_models/$plainClass.php";
+
+                        $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
+
+                        $fieldTypes = $this->_inferFieldTypes($docs);
+                        $modelClass = $namespace . '\\' . $plainClass;
+                        $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? null : "$db.$collection");
+                        $this->filesystem->filePut($fileName, $model);
+
+                        $this->console->progress([
+                            ' `:collection` collection saved to `:file`',
                             'collection' => $collection,
-                            'fields' => implode(', ', $pending_fields)]);
+                            'file' => $fileName]);
+
+                        $pending_fields = [];
+                        foreach ($fieldTypes as $field => $type) {
+                            if ($type === '' || strpos($type, '|') !== false) {
+                                $pending_fields[] = $field;
+                            }
+                        }
+
+                        if ($pending_fields) {
+                            $this->console->warn(['`:collection` has pending fields: :fields',
+                                'collection' => $collection,
+                                'fields' => implode(', ', $pending_fields)]);
+                        }
                     }
                 }
             }
@@ -185,11 +189,12 @@ class MongodbController extends Controller
      * @param array  $fieldTypes
      * @param string $modelName
      * @param string $service
+     * @param string $namespace
      * @param bool   $optimized
      *
      * @return string
      */
-    protected function _renderModel($fieldTypes, $modelName, $service, $optimized = false)
+    protected function _renderModel($fieldTypes, $modelName, $service, $namespace, $optimized = false)
     {
         $fields = array_keys($fieldTypes);
 
@@ -227,6 +232,19 @@ class MongodbController extends Controller
             $str .= '    public function getDb($context = null)' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$service';" . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        if ($namespace) {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @param mixed $context' . PHP_EOL;
+            $str .= '     *' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public function getSource($context = null)' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= "        return '$namespace';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
