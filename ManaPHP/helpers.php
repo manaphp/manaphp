@@ -880,10 +880,11 @@ if (!function_exists('array_unique_field')) {
     /**
      * @param array  $input
      * @param string $field_key
+     * @param int    $sort
      *
      * @return array
      */
-    function array_unique_field($input, $field_key)
+    function array_unique_field($input, $field_key, $sort = SORT_REGULAR)
     {
         $values = [];
         foreach ($input as $item) {
@@ -891,6 +892,10 @@ if (!function_exists('array_unique_field')) {
             if (!in_array($value, $values, true)) {
                 $values[] = $value;
             }
+        }
+
+        if ($sort !== null) {
+            sort($values, $sort);
         }
 
         return $values;
