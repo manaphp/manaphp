@@ -104,16 +104,14 @@ if (!function_exists('random_bytes')) {
             /** @noinspection CryptographicallySecureRandomnessInspection */
             /** @noinspection PhpDeprecationInspection */
             return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-        }else{
+        } else {
             throw new \RuntimeException('random_bytes is not be implemented');
         }
     }
 }
 
 //(PHP 7)
-if (!defined(PHP_INT_MIN)) {
-    define(PHP_INT_MIN, ~PHP_INT_MAX);
-}
+defined('PHP_INT_MIN') or define('PHP_INT_MIN', ~PHP_INT_MAX);
 
 //(PHP 7)
 if (!function_exists('random_int')) {
