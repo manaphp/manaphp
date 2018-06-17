@@ -77,8 +77,9 @@ class Model extends \ManaPHP\Model
             }
 
             $source = $this->getSource();
-            $pos = strrpos($source, '_');
-            $tryField = ($pos === false ? $source : substr($source, $pos + 1)) . '_id';
+            $collection = ($pos = strpos($source, '.')) ? substr($source, $pos + 1) : $source;
+            $pos = strrpos($collection, '_');
+            $tryField = ($pos === false ? $collection : substr($collection, $pos + 1)) . '_id';
             if (in_array($tryField, $fields, true)) {
                 return $cached[$calledClass] = $tryField;
             }
@@ -223,9 +224,17 @@ class Model extends \ManaPHP\Model
     protected function _createAutoIncrementIndex()
     {
         $autoIncField = $this->getAutoIncrementField();
+        $source = $this->getSource();
+        if ($pos = strpos($source, '.')) {
+            $db = substr($source, 0, $pos);
+            $collection = substr($source, $pos + 1);
+        } else {
+            $db = null;
+            $collection = $source;
+        }
 
         $command = [
-            'createIndexes' => $this->getSource(),
+            'createIndexes' => $collection,
             'indexes' => [
                 [
                     'key' => [
@@ -237,7 +246,7 @@ class Model extends \ManaPHP\Model
             ]
         ];
 
-        $this->getConnection()->command($command);
+        $this->getConnection()->command($command, $db);
 
         return true;
     }
@@ -249,15 +258,24 @@ class Model extends \ManaPHP\Model
      */
     public function generateAutoIncrementId($step = 1)
     {
+        $source = $this->getSource();
+        if ($pos = strpos($source, '.')) {
+            $db = substr($source, 0, $pos);
+            $collection = substr($source, $pos + 1);
+        } else {
+            $db = null;
+            $collection = $source;
+        }
+
         $command = [
             'findAndModify' => 'auto_increment_id',
-            'query' => ['_id' => $this->getSource()],
+            'query' => ['_id' => $collection],
             'update' => ['$inc' => ['current_id' => $step]],
             'new' => true,
             'upsert' => true
         ];
 
-        $id = $this->getConnection()->command($command)[0]['value']['current_id'];
+        $id = $this->getConnection()->command($command, $db)[0]['value']['current_id'];
 
         if ($id === $step) {
             $this->_createAutoIncrementIndex();
