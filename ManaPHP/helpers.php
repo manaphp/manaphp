@@ -666,6 +666,8 @@ if (!function_exists('size_to_int')) {
 }
 
 if (!function_exists('tap')) {
+    /** @noinspection AutoloadingIssuesInspection */
+
     class _manaphp_tap_proxy
     {
         public $target;
@@ -822,14 +824,12 @@ if (!function_exists('str_fnmatch')) {
     /**
      * @param string       $needle
      * @param array|string $patterns
+     *
+     * @return bool
      */
     function str_fnmatch($needle, $patterns)
     {
-        if (is_string($patterns)) {
-            $patterns = (array)preg_split('#[\s,]+#', $patterns, -1, PREG_SPLIT_NO_EMPTY);
-        }
-
-        foreach ($patterns as $pattern) {
+        foreach ((array)(is_array($patterns) ? $patterns : preg_split('#[\s,]+#', $patterns, -1, PREG_SPLIT_NO_EMPTY)) as $pattern) {
             if (fnmatch($pattern, $needle)) {
                 return true;
             }
@@ -843,14 +843,12 @@ if (!function_exists('mbstr_fnmatch')) {
     /**
      * @param string       $needle
      * @param array|string $patterns
+     *
+     * @return bool
      */
     function mbstr_fnmatch($needle, $patterns)
     {
-        if (is_string($patterns)) {
-            $patterns = (array)preg_split('#[\s,]+#/u', $patterns, -1, PREG_SPLIT_NO_EMPTY);
-        }
-
-        foreach ($patterns as $pattern) {
+        foreach ((array)(is_array($patterns) ? $patterns : preg_split('#[\s,]+#/u', $patterns, -1, PREG_SPLIT_NO_EMPTY)) as $pattern) {
             if (fnmatch($pattern, $needle)) {
                 return true;
             }
