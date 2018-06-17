@@ -857,3 +857,21 @@ if (!function_exists('mbstr_fnmatch')) {
         return false;
     }
 }
+
+if (!function_exists('array_field')) {
+    /**
+     * @param array  $input
+     * @param string $field_key
+     *
+     * @return array
+     */
+    function array_field($input, $field_key)
+    {
+        $values = [];
+        foreach ($input as $item) {
+            $values[] = is_array($item) ? $item[$field_key] : $item->$field_key;
+        }
+
+        return $values;
+    }
+}
