@@ -99,11 +99,10 @@ class Criteria extends \ManaPHP\Model\Criteria
     public function values($field)
     {
         $source = $this->_model->getSource();
-
         /**
-         * @var \ManaPHP\MongodbInterface $db
+         * @var \ManaPHP\MongodbInterface $mongodb
          */
-        $db = $this->_di->getShared($this->_model->getDb());
+        $mongodb = $this->_di->getShared($this->_model->getDb());
 
         $cmd = ['distinct' => $source, 'key' => $field];
         if ($this->_filters) {
@@ -111,7 +110,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         }
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $r = $db->command($cmd)[0];
+        $r = $mongodb->command($cmd)[0];
         if (!$r['ok']) {
             throw new CriteriaException([
                 '`:distinct` distinct for `:collection` collection failed `:code`: `:msg`',
@@ -847,9 +846,9 @@ class Criteria extends \ManaPHP\Model\Criteria
     {
         $source = $this->_model->getSource();
         /**
-         * @var \ManaPHP\MongodbInterface $db
+         * @var \ManaPHP\MongodbInterface $mongodb
          */
-        $db = $this->_di->getShared($this->_model->getDb());
+        $mongodb = $this->_di->getShared($this->_model->getDb());
         if (!$this->_aggregate) {
             $options = [];
 
@@ -882,7 +881,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $filters[$key] = $value;
             }
 
-            $r = $db->query($source, $filters, $options, !$this->_forceUseMaster);
+            $r = $mongodb->query($source, $filters, $options, !$this->_forceUseMaster);
         } else {
             $pipeline = [];
             if ($this->_filters) {
@@ -903,7 +902,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $pipeline[] = ['$limit' => $this->_limit];
             }
 
-            $r = $db->aggregate($source, $pipeline);
+            $r = $mongodb->aggregate($source, $pipeline);
 
             if ($this->_group !== null) {
                 foreach ($r as $k => $row) {
@@ -1072,7 +1071,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function delete()
     {
-        $db = $this->_model->getDb($this);
         $source = $this->_model->getSource($this);
 
         $filters = [];
@@ -1086,7 +1084,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $filters[$key] = $value;
         }
 
-        return $this->_di->getShared($db)->delete($source, $filters);
+        return $this->_di->getShared($this->_model->getDb($this))->delete($source, $filters);
     }
 
     /**
@@ -1096,7 +1094,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function update($fieldValues)
     {
-        $db = $this->_model->getDb($this);
         $source = $this->_model->getSource($this);
 
         $filters = [];
@@ -1130,6 +1127,6 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
         }
 
-        return $this->_di->getShared($db)->update($source, $filters, $fieldValues);
+        return $this->_di->getShared($this->_model->getDb($this))->update($source, $filters, $fieldValues);
     }
 }
