@@ -49,6 +49,14 @@ class Mongodb extends Component implements MongodbInterface
     }
 
     /**
+     * @return string|null
+     */
+    public function getDefaultDb()
+    {
+        return $this->_defaultDb;
+    }
+
+    /**
      * Pings a server connection, or tries to reconnect if the connection has gone down
      *
      * @return void
