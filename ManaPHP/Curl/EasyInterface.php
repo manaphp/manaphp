@@ -38,10 +38,10 @@ interface EasyInterface
     public function setSslVerify($verify);
 
     /**
-     * @param string       $type
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string           $type
+     * @param string|array     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return array
      * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
@@ -53,10 +53,10 @@ interface EasyInterface
     public function rest($type, $url, $body = null, $options = []);
 
     /**
-     * @param string       $type
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string           $type
+     * @param string|array     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -64,8 +64,8 @@ interface EasyInterface
     public function request($type, $url, $body = null, $options = []);
 
     /**
-     * @param string|array $url
-     * @param array        $options
+     * @param string|array     $url
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -73,9 +73,9 @@ interface EasyInterface
     public function get($url, $options = []);
 
     /**
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string|array     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -83,8 +83,8 @@ interface EasyInterface
     public function post($url, $body = [], $options = []);
 
     /**
-     * @param string|array $url
-     * @param array        $options
+     * @param string|array     $url
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -92,9 +92,9 @@ interface EasyInterface
     public function delete($url, $options = []);
 
     /**
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string|array     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -102,9 +102,9 @@ interface EasyInterface
     public function put($url, $body = [], $options = []);
 
     /**
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string|array     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -112,9 +112,9 @@ interface EasyInterface
     public function patch($url, $body = [], $options = []);
 
     /**
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string|array     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -128,7 +128,7 @@ interface EasyInterface
      * @return string|array
      */
     public function download($files, $options = []);
-    
+
     /**
      * @return \ManaPHP\Curl\Easy\Response
      */

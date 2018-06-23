@@ -152,10 +152,10 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param string       $type
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string                 $type
+     * @param string|array           $url
+     * @param string|array           $body
+     * @param array|string|int|float $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -172,6 +172,12 @@ class Easy extends Component implements EasyInterface
             } else {
                 $url = $url[0];
             }
+        }
+
+        if (is_int($options) || is_float($options)) {
+            $options = ['timeout' => $options];
+        } elseif (is_string($options)) {
+            $options = [strpos($options, '://') ? CURLOPT_REFERER : CURLOPT_USERAGENT => $options];
         }
 
         if ($this->_options) {
@@ -388,10 +394,10 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param string       $type
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string           $type
+     * @param string|array     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return array
      * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
@@ -449,8 +455,8 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param array|string $url
-     * @param array        $options
+     * @param array|string     $url
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -461,9 +467,9 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param array|string $url
-     * @param string|array $body
-     * @param array        $options
+     * @param array|string     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -474,8 +480,8 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param array|string $url
-     * @param array        $options
+     * @param array|string     $url
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -486,9 +492,9 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param array|string $url
-     * @param string|array $body
-     * @param array        $options
+     * @param array|string     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -499,9 +505,9 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param array|string $url
-     * @param string|array $body
-     * @param array        $options
+     * @param array|string     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
@@ -512,9 +518,9 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param array|string $url
-     * @param string|array $body
-     * @param array        $options
+     * @param array|string     $url
+     * @param string|array     $body
+     * @param array|string|int $options
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
