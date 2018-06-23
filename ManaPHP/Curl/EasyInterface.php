@@ -122,8 +122,8 @@ interface EasyInterface
     public function head($url, $body = [], $options = []);
 
     /**
-     * @param string|array     $files
-     * @param string|int|array $options
+     * @param string|array           $files
+     * @param string|int|float|array $options
      *
      * @return string|array
      */

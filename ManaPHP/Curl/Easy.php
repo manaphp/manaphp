@@ -531,8 +531,8 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @param string|array     $files
-     * @param string|int|array $options
+     * @param string|array           $files
+     * @param string|int|array|float $options
      *
      * @return string|array
      */
@@ -557,6 +557,8 @@ class Easy extends Component implements EasyInterface
         } else {
             if (is_int($options)) {
                 $options = ['concurrent' => $options];
+            } elseif (is_float($options)) {
+                $options = ['timeout' => $options];
             } elseif (is_string($options)) {
                 $options = [preg_match('#^https?://#', $options) ? CURLOPT_REFERER : CURLOPT_USERAGENT => $options];
             }
@@ -567,8 +569,22 @@ class Easy extends Component implements EasyInterface
 
         $template = curl_init();
 
-        curl_setopt($template, CURLOPT_TIMEOUT, isset($options['timeout']) ? $options['timeout'] : 10);
-        curl_setopt($template, CURLOPT_CONNECTTIMEOUT, isset($options['timeout']) ? $options['timeout'] : 10);
+        if (isset($options['timeout'])) {
+            $timeout = $options['timeout'];
+            unset($options['timeout']);
+        } else {
+            $timeout = 10;
+        }
+
+        if (isset($options['concurrent'])) {
+            $concurrent = $options['concurrent'];
+            unset($options['concurrent']);
+        } else {
+            $concurrent = 10;
+        }
+
+        curl_setopt($template, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($template, CURLOPT_CONNECTTIMEOUT, $timeout);
         curl_setopt($template, CURLOPT_USERAGENT, self::USER_AGENT_IE);
         curl_setopt($template, CURLOPT_HEADER, 0);
         /** @noinspection CurlSslServerSpoofingInspection */
@@ -592,9 +608,7 @@ class Easy extends Component implements EasyInterface
                 $files[$url] = $file;
             }
         }
-
-        $concurrent = isset($options['concurrent']) ? $options['concurrent'] : 10;
-
+        
         $handles = [];
         $failed = [];
         do {
