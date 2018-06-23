@@ -18,6 +18,10 @@ use ManaPHP\Exception\NotSupportedException;
  */
 class Easy extends Component implements EasyInterface
 {
+    const HEADER_USER_AGENT = CURLOPT_USERAGENT;
+    const HEADER_REFERER = CURLOPT_REFERER;
+    const HEADER_COOKIE = CURLOPT_COOKIE;
+
     const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
 
     /**
@@ -56,11 +60,6 @@ class Easy extends Component implements EasyInterface
     protected $_sslVerify = true;
 
     /**
-     * @var string
-     */
-    protected $_userAgent = self::USER_AGENT_IE;
-
-    /**
      * @var \ManaPHP\Curl\Easy\Response
      */
     protected $_lastResponse;
@@ -92,11 +91,6 @@ class Easy extends Component implements EasyInterface
         if (isset($options['proxy'])) {
             $this->_proxy = $options['proxy'];
             unset($options['proxy']);
-        }
-
-        if (isset($options['userAgent'])) {
-            $this->_userAgent = $options['userAgent'];
-            unset($options['userAgent']);
         }
 
         $this->_options = $options;
@@ -184,6 +178,43 @@ class Easy extends Component implements EasyInterface
             $options = array_merge($options, $this->_options);
         }
 
+        if (isset($options['-'])) {
+            $options[CURLOPT_REFERER] = $options['-'];
+            unset($options['-']);
+        } elseif (isset($options['Referer'])) {
+            $options[CURLOPT_REFERER] = $options['Referer'];
+            unset($options['Referer']);
+        }
+
+        if (isset($options[CURLOPT_REFERER])) {
+            if (is_array($options[CURLOPT_REFERER])) {
+                $referer = $options[CURLOPT_REFERER];
+                if (isset($referer[0])) {
+                    $str = $referer[0];
+                    unset($referer[0]);
+                } else {
+                    $str = 'http://TRACK/';
+                }
+                $options[CURLOPT_REFERER] = $str . (strpos($str, '?') ? '&' : '?') . http_build_query($referer);
+            } else {
+                if (!strpos($options[CURLOPT_REFERER], '://')) {
+                    $options[CURLOPT_REFERER] = 'http://TRACE/' . $options[CURLOPT_REFERER];
+                }
+            }
+        }
+
+        if (isset($options['Cookie'])) {
+            $options[CURLOPT_COOKIE] = $options['Cookie'];
+            unset($options['Cookie']);
+        }
+
+        if (isset($options['User-Agent'])) {
+            $options[CURLOPT_USERAGENT] = $options['User-Agent'];
+            unset($options['User-Agent']);
+        } else {
+            $options[CURLOPT_USERAGENT] = self::USER_AGENT_IE;
+        }
+
         if (preg_match('/^http(s)?:\/\//i', $url) !== 1) {
             throw new NotSupportedException(['only HTTP requests can be handled: `:url`', 'url' => $url]);
         }
@@ -197,11 +228,6 @@ class Easy extends Component implements EasyInterface
 
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 8);
-
-        if (isset($options['Cookie'])) {
-            curl_setopt($curl, CURLOPT_COOKIE, $options['Cookie']);
-            unset($options['Cookie']);
-        }
 
         if (is_array($body)) {
             if (isset($options['Content-Type']) && strpos($options['Content-Type'], 'json') !== false) {
@@ -264,14 +290,17 @@ class Easy extends Component implements EasyInterface
                 break;
         }
 
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $this->_timeout);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, isset($options['timeout']) ? $options['timeout'] : $this->_timeout);
-        curl_setopt($curl, CURLOPT_REFERER, isset($options['Referer']) ? $options['Referer'] : $url);
-        curl_setopt($curl, CURLOPT_USERAGENT, isset($options['User-Agent']) ? $options['User-Agent'] : $this->_userAgent);
-        curl_setopt($curl, CURLOPT_HEADER, 1);
+        if (isset($options['timeout'])) {
+            $timeout = $options['timeout'];
+            unset($options['timeout']);
+        } else {
+            $timeout = $this->_timeout;
+        }
 
-        unset($options['timeout'], $options['Referer'], $options['User-Agent']);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($curl, CURLOPT_HEADER, 1);
 
         if ($this->_proxy) {
             $parts = parse_url($this->_proxy);
