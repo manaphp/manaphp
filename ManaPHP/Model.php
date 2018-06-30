@@ -418,6 +418,30 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * Allows to query the last record that match the specified conditions
+     *
+     * @param array $filters
+     * @param array $fields
+     * @param array $options
+     *
+     * @return static|null
+     */
+    public static function last($filters = null, $fields = null, $options = null)
+    {
+        $model = new static();
+
+        if ($autoIncField = $model->getAutoIncrementField()) {
+            $order = [$autoIncField => SORT_DESC];
+        } elseif (in_array('created_time', $model->getFields(), true)) {
+            $order = ['created_time' => SORT_DESC];
+        } else {
+            throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => get_called_class()]);
+        }
+
+        return static::criteria($fields, $model)->where($filters)->orderBy($order)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+    }
+
+    /**
      * @param int|string|array $filters
      * @param string           $field
      * @param int|float|array  $interval

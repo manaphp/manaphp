@@ -154,6 +154,17 @@ interface ModelInterface
     public static function firstOrFail($filters = null, $fields = null, $options = null);
 
     /**
+     * Allows to query the last record that match the specified conditions
+     *
+     * @param array $filters
+     * @param array $fields
+     * @param array $options
+     *
+     * @return static|null
+     */
+    public static function last($filters = null, $fields = null, $options = null);
+
+    /**
      * @param int|string|array $filters
      * @param string           $field
      * @param int|float|array  $interval
