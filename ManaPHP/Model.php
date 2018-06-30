@@ -369,7 +369,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $className = get_class($model);
         if (isset($cached[$className][$pkValue])) {
             $cache = $cached[$className][$pkValue];
-            if ($current - $cache[0] < $interval) {
+            if ($current - $cache[0] <= $interval) {
                 return $cache[1];
             } else {
                 unset($cached[$className][$pkValue]);
@@ -383,7 +383,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $r->_snapshot = false;
         }
 
-        $cached[$className][$pkValue] = [$current + $interval, $r];
+        $cached[$className][$pkValue] = [$current, $r];
         /** @noinspection PhpUndefinedVariableInspection */
         if (count($cached[$className]) > $model->getCacheCapacity()) {
             unset($cached[$className][key($cached[$className])]);
@@ -450,7 +450,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         if (isset($cached[$className][$field][$pkValue])) {
             $cache = $cached[$className][$field][$pkValue];
-            if ($current - $cache[0] < $interval) {
+            if ($current - $cache[0] <= $interval) {
                 return $cache[1];
             }
             unset($cached[$className][$field][$pkValue]);
@@ -459,7 +459,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $rs = static::criteria([$field], $model)->where($pkName, $pkValue)->limit(1)->execute();
         $value = $rs ? $rs[0][$field] : null;
 
-        $cached[$className][$field][$pkValue] = [$current + $interval, $value];
+        $cached[$className][$field][$pkValue] = [$current, $value];
         if (count($cached[$className][$field]) > $model->getCacheCapacity()) {
             unset($cached[$className][$field][key($cached[$className][$field])]);
         }
