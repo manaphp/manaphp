@@ -468,7 +468,7 @@ class Validator extends Component implements ValidatorInterface
     protected function _validate_unique($value)
     {
         $modelName = $this->_model;
-        return $value && $modelName::exists([$this->_field => $value]) ? null : $value;
+        return ($value && $modelName::exists([$this->_field => $value])) ? null : $value;
     }
 
     /**
