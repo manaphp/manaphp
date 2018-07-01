@@ -348,7 +348,7 @@ class Query extends Component implements QueryInterface
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } elseif (strpos($filter, '@=')) {
                     $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                }else{
+                } else {
                     if (strpos($filter, ' ') !== false) {
                         $this->_conditions[] = $filter;
                     } else {
@@ -576,20 +576,19 @@ class Query extends Component implements QueryInterface
         if ($values instanceof $this) {
             $this->where($expr . ' IN (' . $values->getSql() . ')', []);
             $this->_bind = array_merge($this->_bind, $values->getBind());
-        } else {
-            if (!$values) {
-                $this->_conditions[] = '1=2';
-            } else {
-                if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                    if (strpos($expr, '.') !== false) {
-                        $expr = '[' . str_replace('.', '].[', $expr) . ']';
-                    } else {
-                        $expr = '[' . $expr . ']';
-                    }
+        } elseif ($values) {
+            if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
+                if (strpos($expr, '.') !== false) {
+                    $expr = '[' . str_replace('.', '].[', $expr) . ']';
+                } else {
+                    $expr = '[' . $expr . ']';
                 }
+            }
 
+            if (is_int(current($values))) {
+                $this->_conditions[] = $expr . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
+            } else {
                 $bindKeys = [];
-
                 /** @noinspection ForeachSourceInspection */
                 foreach ($values as $k => $value) {
                     $key = '_in_' . $this->_hiddenParamNumber . '_' . $k;
@@ -598,9 +597,10 @@ class Query extends Component implements QueryInterface
                 }
 
                 $this->_conditions[] = $expr . ' IN (' . implode(', ', $bindKeys) . ')';
+                $this->_hiddenParamNumber++;
             }
-
-            $this->_hiddenParamNumber++;
+        } else {
+            $this->_conditions[] = '1=2';
         }
 
         return $this;
@@ -654,18 +654,19 @@ class Query extends Component implements QueryInterface
         if ($values instanceof $this) {
             $this->where($expr . ' NOT IN (' . $values->getSql() . ')', []);
             $this->_bind = array_merge($this->_bind, $values->getBind());
-        } else {
-            if ($values) {
-                if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                    if (strpos($expr, '.') !== false) {
-                        $expr = '[' . str_replace('.', '].[', $expr) . ']';
-                    } else {
-                        $expr = '[' . $expr . ']';
-                    }
+        } elseif ($values) {
+            if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
+                if (strpos($expr, '.') !== false) {
+                    $expr = '[' . str_replace('.', '].[', $expr) . ']';
+                } else {
+                    $expr = '[' . $expr . ']';
                 }
+            }
 
+            if (is_int(current($values))) {
+                $this->_conditions[] = $expr . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
+            } else {
                 $bindKeys = [];
-
                 /** @noinspection ForeachSourceInspection */
                 foreach ($values as $k => $value) {
                     $key = '_in_' . $this->_hiddenParamNumber . '_' . $k;
@@ -678,6 +679,7 @@ class Query extends Component implements QueryInterface
                 $this->_conditions[] = $expr . ' NOT IN (' . implode(', ', $bindKeys) . ')';
             }
         }
+
         return $this;
     }
 
