@@ -371,10 +371,14 @@ class Query extends Component implements QueryInterface
                     $this->_bind[$bind_key] = $value;
                 }
             } elseif ($operator === '~=') {
-                if (count($value) !== 2) {
-                    throw new InvalidValueException(['`:filter` filter is valid: value is not a two elements array', 'filter' => $filter]);
+                if ($value === 0 || $value === 0.0) {
+                    $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=0";
+                } elseif ($value === '') {
+                    $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=''";
+                } else {
+                    $this->_conditions[] = $normalizedField . '=' . $bind_key;
+                    $this->_bind[$bind_key] = $value;
                 }
-                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif ($operator === '!=' || $operator === '<>') {
                 if ($value === null) {
                     $this->_conditions[] = $normalizedField . ' IS NOT NULL';
