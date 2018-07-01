@@ -232,7 +232,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param array $options
      * @param array $fields
      *
-     * @return  \ManaPHP\PaginatorInterface
+     * @return  \ManaPHP\Paginator
      */
     public static function paginate($filters = [], $options = null, $fields = null)
     {
