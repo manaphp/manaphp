@@ -1319,6 +1319,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         foreach ($this->getFields() as $field) {
+            if (!isset($this->$field)) {
+                continue;
+            }
+
             $value = $this->$field;
 
             if (is_int($value)) {
