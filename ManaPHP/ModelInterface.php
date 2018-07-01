@@ -126,7 +126,7 @@ interface ModelInterface
      * @return  \ManaPHP\Paginator
      */
     public static function search($filters = [], $options = null, $fields = null);
-    
+
     /**
      * @param array        $filters
      * @param string|array $field

@@ -273,17 +273,16 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public static function search($filters = [], $options = null, $fields = null)
     {
         foreach ($filters as $k => $v) {
-            if(is_string($v)){
+            if (is_string($v)) {
                 $v = trim($v);
-            }
-
-
-            if ($v === '') {
+                if ($v === '' || $v === '0') {
+                    unset($filters[$k]);
+                    continue;
+                }
+                $filters[$k] = $v;
+            } elseif ($v === 0) {
                 unset($filters[$k]);
-                continue;
             }
-
-            $filters[$k] = $v;
         }
 
         return static::paginate($filters, $options, $fields);
