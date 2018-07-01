@@ -269,5 +269,13 @@ interface DbInterface
      */
     public function replaceQuoteCharacters($sql);
 
+    /**
+     * @return string
+     */
+    public function getLastSql();
+
+    /**
+     * @return mixed
+     */
     public function close();
 }
