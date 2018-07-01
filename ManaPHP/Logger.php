@@ -376,6 +376,7 @@ class Logger extends Component implements LoggerInterface
         $log = new Log();
 
         $log->host = gethostname();
+        $log->client_ip = isset($_SERVER['SERVER_ADDR']) ? $this->request->getClientIp() : '';
         $log->level = $this->_levels[$level];
         $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
         $log->process_id = @getmypid() ?: 0;

@@ -20,7 +20,7 @@ class File extends Component implements AppenderInterface
     /**
      * @var string
      */
-    protected $_format = '[:date][:level][:process_id][:category][:location] :message';
+    protected $_format = '[:date][:client_ip][:level][:process_id][:category][:location] :message';
 
     /**
      * \ManaPHP\Logger\Adapter\File constructor.
@@ -64,6 +64,7 @@ class File extends Component implements AppenderInterface
         $replaced = [];
 
         $replaced[':date'] = date('c', $log->timestamp);
+        $replaced[':client_ip'] = $log->client_ip ?: '-';
         $replaced[':process_id'] = $log->process_id;
         $replaced[':category'] = $log->category;
         $replaced[':location'] = $log->location;
