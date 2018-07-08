@@ -1611,7 +1611,7 @@ class Query extends Component implements QueryInterface
      */
     public function count($field = '*')
     {
-        return $this->aggregate(['count' => 'COUNT(*)'])[0]['count'];
+        return $this->aggregate(['count' => "COUNT($field)"])[0]['count'];
     }
 
     /**
