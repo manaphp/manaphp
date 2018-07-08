@@ -1611,7 +1611,13 @@ class Query extends Component implements QueryInterface
      */
     public function count($field = '*')
     {
-        return $this->aggregate(['count' => "COUNT($field)"])[0]['count'];
+        $copy = clone $this;
+
+        $copy->_limit = null;
+        $copy->_offset = null;
+        $copy->_order = null;
+
+        return $copy->aggregate(['count' => "COUNT($field)"])[0]['count'];
     }
 
     /**
