@@ -1616,6 +1616,7 @@ class Query extends Component implements QueryInterface
         $copy->_limit = null;
         $copy->_offset = null;
         $copy->_order = null;
+        $copy->_index = null;
 
         return $copy->aggregate(['count' => "COUNT($field)"])[0]['count'];
     }
