@@ -329,25 +329,31 @@ class Logger extends Component implements LoggerInterface
         }
 
         if (!isset($message[1]) || strpos($message[0], ':1') !== false) {
-            $replaces = [];
-            /** @noinspection ForeachSourceInspection */
-            foreach ($message as $k => $v) {
-                if ($k === 0) {
-                    continue;
-                }
-
-                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
-                    $v = $this->exceptionToString($v);
-                } elseif (is_array($v) || $v instanceof \JsonSerializable) {
-                    $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                } elseif ($v instanceof \Serializable) {
-                    $v = serialize($v);
-                }
-
-                $replaces[":$k"] = $v;
+        $replaces = [];
+        /** @noinspection ForeachSourceInspection */
+        foreach ($message as $k => $v) {
+            if ($k === 0) {
+                continue;
             }
 
-            return strtr($message[0], $replaces);
+            if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+                $v = $this->exceptionToString($v);
+            } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+                $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            } elseif ($v instanceof \Serializable) {
+                $v = serialize($v);
+            } elseif (is_string($v)) {
+                null;
+            } elseif ($v === null || is_scalar($v)) {
+                $v = json_encode($v);
+            } else {
+                $v = (string)$v;
+            }
+
+            $replaces[":$k"] = $v;
+        }
+
+        return strtr($message[0], $replaces);
         } else {
             return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
