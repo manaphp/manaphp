@@ -87,6 +87,20 @@ class Alias extends Component implements AliasInterface
      */
     public function resolve($path)
     {
+        if (strpos($path, '{') !== false && preg_match_all('#{([^\}]+)}#', $path, $matches)) {
+            foreach ((array)$matches[1] as $k => $match) {
+                if (is_numeric($match)) {
+                    $replaced = substr(function_exists('random_bytes') ? bin2hex(random_bytes($match / 2 + 1)) : md5(uniqid(mt_rand(), true)), 0, $match);
+                } else {
+                    /** @noinspection UnSafeIsSetOverArrayInspection */
+                    $ts = isset($ts) ? $ts : time();
+                    $replaced = date($match, $ts);
+                }
+
+                $path = str_replace($matches[0][$k], $replaced, $path);
+            }
+        }
+
         if ($path[0] !== '@') {
             return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
         }
