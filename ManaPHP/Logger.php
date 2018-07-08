@@ -328,7 +328,6 @@ class Logger extends Component implements LoggerInterface
             }
         }
 
-        if (!isset($message[1]) || strpos($message[0], ':1') !== false) {
         $replaces = [];
         /** @noinspection ForeachSourceInspection */
         foreach ($message as $k => $v) {
@@ -354,9 +353,6 @@ class Logger extends Component implements LoggerInterface
         }
 
         return strtr($message[0], $replaces);
-        } else {
-            return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        }
     }
 
     /**
