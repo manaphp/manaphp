@@ -371,6 +371,10 @@ class Logger extends Component implements LoggerInterface
             $category = null;
         }
 
+        if (is_array($message) && count($message) === 1 && isset($message[0])) {
+            $message = $message[0];
+        }
+
         $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
 
         $log = new Log();
