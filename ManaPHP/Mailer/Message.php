@@ -62,12 +62,22 @@ class Message implements \JsonSerializable
     /**
      * @var string
      */
-    protected $_contentType;
+    protected $_htmlBody;
 
     /**
      * @var string
      */
-    protected $_body;
+    protected $_textBody;
+
+    /**
+     * @var array
+     */
+    protected $_attachments = [];
+
+    /**
+     * @var array
+     */
+    protected $_embeddedFiles = [];
 
     /**
      * Message constructor.
@@ -139,7 +149,7 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @return string|array
+     * @return array
      */
     public function getFrom()
     {
@@ -247,15 +257,27 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @param string $body
-     * @param string $contentType
+     * @param string $html
+     * @param string $text
      *
      * @return static
      */
-    public function setBody($body, $contentType)
+    public function setBody($html, $text = null)
     {
-        $this->_body = $body;
-        $this->_contentType = $contentType;
+        $this->_htmlBody = $html;
+        $this->_textBody = $text;
+
+        return $this;
+    }
+
+    /**
+     * @param string $body
+     *
+     * @return static
+     */
+    public function setHtmlBody($body)
+    {
+        $this->_htmlBody = $body;
 
         return $this;
     }
@@ -263,14 +285,9 @@ class Message implements \JsonSerializable
     /**
      * @return string
      */
-    public function getBody()
+    public function getHtmlBody()
     {
-        return $this->_body;
-    }
-
-    public function getContentType()
-    {
-        return $this->_contentType;
+        return $this->_htmlBody;
     }
 
     /**
@@ -280,17 +297,19 @@ class Message implements \JsonSerializable
      */
     public function setTextBody($body)
     {
-        return $this->setBody($body, 'text/plain');
+        $this->_textBody = $body;
+
+        return $this;
     }
 
     /**
      * @param string $html
      *
-     * @return static
+     * @return string
      */
-    public function setHtmlBody($html)
+    public function getTextBody()
     {
-        return $this->setBody($html, 'text/html');
+        return $this->_textBody;
     }
 
     /**
@@ -311,6 +330,77 @@ class Message implements \JsonSerializable
     public function getPriority()
     {
         return $this->_priority;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRandomId()
+    {
+        return md5(microtime(true) . mt_rand());
+    }
+
+    /**
+     * @param  string $file
+     * @param string  $name
+     *
+     *
+     * @return static
+     */
+    public function addAttachment($file, $name = null)
+    {
+        $this->_attachments[] = ['file' => $file, 'name' => $name ?: basename($file)];
+        return $this;
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getAttachments()
+    {
+        return $this->_attachments;
+    }
+
+    /**
+     * @param string $file
+     * @param string $name
+     *
+     * @return string
+     */
+    public function addEmbeddedFile($file = null, $name = null)
+    {
+        if (!$name) {
+            $name = basename($file);
+        }
+
+        if (preg_match('#^[\w\.]+$#', $name)) {
+            $cid = $name;
+        } else {
+            $cid = md5($name) . '.' . pathinfo($name, PATHINFO_EXTENSION);
+        }
+
+        $this->_embeddedFiles[] = ['file' => $file, 'name' => $name, 'cid' => $cid];
+
+        return 'cid:' . $cid;
+    }
+
+    /**
+     * @param string $file
+     * @param string $name
+     *
+     * @return string
+     */
+    public function embed($file, $name = null)
+    {
+        return $this->addEmbeddedFile($file, $name);
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getEmbeddedFiles()
+    {
+        return $this->_embeddedFiles;
     }
 
     /**

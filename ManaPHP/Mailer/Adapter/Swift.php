@@ -104,11 +104,16 @@ class Swift extends Mailer
         }
 
         $swiftMessage->setSubject($message->getSubject());
-        $swiftMessage->setBody($message->getBody());
+        $swiftMessage->setBody($message->getHtmlBody());
         $swiftMessage->setContentType($message->getContentType());
 
         if ($priority = $message->getPriority()) {
             $swiftMessage->setPriority($priority);
+        }
+
+        foreach ($message->getAttachments() as $attachment) {
+            $swiftMessage->attach(
+                (new \Swift_Attachment($attachment['data'], $attachment['file'], $attachment['contentType']))->setId($attachment['cid']));
         }
 
         return $this->_swift->send($swiftMessage, $failedRecipients);
