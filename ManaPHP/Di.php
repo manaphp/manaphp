@@ -203,10 +203,14 @@ class Di implements DiInterface
     public function set($name, $definition)
     {
         if (is_string($definition)) {
-            if (strpos($definition, '\\') === false) {
-                $definition = $this->_completeClassName($name, $definition);
+            if (strpos($definition, '/') !== false || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
+                $definition = ['class' => $this->_interClassName($name), $definition, 'shared' => false];
+            } else {
+                if (strpos($definition, '\\') === false) {
+                    $definition = $this->_completeClassName($name, $definition);
+                }
+                $definition = ['class' => $definition, 'shared' => false];
             }
-            $definition = ['class' => $definition, 'shared' => false];
         } elseif (is_array($definition)) {
             if (isset($definition['class'])) {
                 if (strpos($definition['class'], '\\') === false) {
@@ -247,7 +251,9 @@ class Di implements DiInterface
         }
 
         if (is_string($definition)) {
-            if (strpos($definition, '\\') === false) {
+            if (strpos($definition, '/') !== false || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
+                $definition = ['class' => $this->_interClassName($name), $definition];
+            } elseif (strpos($definition, '\\') === false) {
                 $definition = $this->_completeClassName($name, $definition);
             }
         } elseif (is_array($definition)) {
