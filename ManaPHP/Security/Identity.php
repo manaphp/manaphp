@@ -115,7 +115,7 @@ abstract class Identity extends Component implements IdentityInterface
      *
      * @return bool
      */
-    public function hasClaims($claim)
+    public function hasClaim($claim)
     {
         return isset($this->_claims[$claim]);
     }

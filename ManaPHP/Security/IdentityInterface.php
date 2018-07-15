@@ -60,5 +60,5 @@ interface IdentityInterface
      *
      * @return bool
      */
-    public function hasClaims($claim);
+    public function hasClaim($claim);
 }
