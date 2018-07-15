@@ -164,6 +164,7 @@ class Smtp extends Mailer
     /**
      * @param string $data
      *
+     * @return static
      * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
      */
     protected function _writeLine($data = null)
@@ -180,6 +181,8 @@ class Smtp extends Mailer
         if (fwrite($this->_socket, "\r\n") === false) {
             throw new TransmitException(['send data failed: :url', 'url' => $this->_url]);
         }
+
+        return $this;
     }
 
     /**
@@ -197,6 +200,103 @@ class Smtp extends Mailer
     }
 
     /**
+     * @param string $textBody
+     *
+     * @return static
+     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     */
+    protected function _sendTextBody($textBody)
+    {
+        $this->_writeLine('Content-Type: text/plain; charset=utf-8');
+        $this->_writeLine('X-Content-Length: ' . strlen($textBody));
+        $this->_writeLine('Content-Transfer-Encoding: base64');
+        $this->_writeLine();
+        $this->_writeLine(chunk_split(base64_encode($textBody), 983));
+
+        return $this;
+    }
+
+    /**
+     * @param string $htmlBody
+     * @param string $boundary
+     *
+     * @return static
+     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     */
+    protected function _sendHtmlBody($htmlBody, $boundary = null)
+    {
+        $contentType = preg_match('#<meta http-equiv="Content-Type" content="([^"]+)">#i', $htmlBody, $match) ? $match[1] : 'text/html; charset=utf-8';
+
+        if ($boundary) {
+            $this->_writeLine();
+            $this->_writeLine("--$boundary");
+        }
+        $this->_writeLine('Content-Type: ' . $contentType);
+        $this->_writeLine('Content-Length: ' . strlen($htmlBody));
+        $this->_writeLine('Content-Transfer-Encoding: base64');
+        $this->_writeLine();
+        $this->_writeLine(chunk_split(base64_encode($htmlBody), 983));
+
+        return $this;
+    }
+
+    /**
+     * @param array  $attachments
+     * @param string $boundary
+     *
+     * @return static
+     * @throws \ManaPHP\Exception\InvalidValueException
+     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     */
+    protected function _sendAttachments($attachments, $boundary)
+    {
+        foreach ($attachments as $attachment) {
+            $file = $this->alias->resolve($attachment['file']);
+            if (!is_file($file)) {
+                throw new InvalidValueException(['`:file` attachment file is not exists', 'file' => $file]);
+            }
+            $this->_writeLine();
+            $this->_writeLine("--$boundary");
+            $this->_writeLine('Content-Type: ' . mime_content_type($file));
+            $this->_writeLine('Content-Length: ' . filesize($file));
+            $this->_writeLine('Content-Disposition: attachment; filename="' . $attachment['name'] . '"');
+            $this->_writeLine('Content-Transfer-Encoding: base64');
+            $this->_writeLine();
+            $this->_writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array[] $embeddedFiles
+     * @param string  $boundary
+     *
+     * @return static
+     *
+     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     */
+    protected function _sendEmbeddedFiles($embeddedFiles, $boundary)
+    {
+        foreach ($embeddedFiles as $embeddedFile) {
+            if (!is_file($file = $this->alias->resolve($embeddedFile['file']))) {
+                throw new InvalidValueException(['`:file` inline file is not exists', 'file' => $file]);
+            }
+            $this->_writeLine();
+            $this->_writeLine("--$boundary");
+            $this->_writeLine('Content-Type: ' . mime_content_type($file));
+            $this->_writeLine('Content-Length: ' . filesize($file));
+            $this->_writeLine('Content-ID: <' . $embeddedFile['cid'] . '>');
+            $this->_writeLine('Content-Disposition: inline; filename="' . $embeddedFile['name'] . '"');
+            $this->_writeLine('Content-Transfer-Encoding: base64');
+            $this->_writeLine();
+            $this->_writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
+        }
+
+        return $this;
+    }
+
+    /**
      * @param \ManaPHP\Mailer\Message $message
      * @param array                   $failedRecipients
      *
@@ -210,7 +310,7 @@ class Smtp extends Mailer
     {
         $this->_connect();
 
-        $this->_transmit("HELO localhost", [250]);
+        $this->_transmit('HELO localhost', [250]);
         if ($this->_password) {
             $this->_transmit('AUTH LOGIN', [334]);
 
@@ -233,72 +333,40 @@ class Smtp extends Mailer
         $this->_writeLine('From: ' . (is_string($from) ? $from : current($from)));
         $this->_writeLine('To: ' . (is_string($to) ? $to : current($to)));
         $this->_writeLine('Subject: ' . $message->getSubject());
-
-        $textBody = $message->getTextBody();
-        $htmlBody = $message->getHtmlBody();
-        $attachments = $message->getAttachments();
-        $embeddedFiles = $message->getEmbeddedFiles();
-
         $this->_writeLine('MIME-Version: 1.0');
-        if ($textBody) {
-            $this->_writeLine('Content-Type:text/plain; charset=utf-8');
-            $this->_writeLine('Content-Transfer-Encoding: 8bit');
-            $this->_writeLine('Content-Length: ' . strlen($textBody));
-            $this->_writeLine();
-            $this->_writeLine($textBody);
-        } elseif (!$attachments && !$embeddedFiles) {
-            $this->_writeLine('Content-Type:text/html; charset=utf-8');
-            $this->_writeLine('Content-Transfer-Encoding: 8bit');
-            $this->_writeLine('Content-Length: ' . strlen($htmlBody));
-            $this->_writeLine();
-            $this->_writeLine($htmlBody);
-        } else {
-            $boundary = md5(microtime(true) . mt_rand());
+
+        $htmlBody = $message->getHtmlBody();
+        $boundary = md5(microtime(true) . mt_rand());
+        if (!$htmlBody) {
+            if ($textBody = $message->getTextBody()) {
+                $this->_sendTextBody($textBody);
+            } else {
+                throw new InvalidValueException('mail is invalid: neither html body nor text body is exist.');
+            }
+        } elseif ($attachments = $message->getAttachments()) {
             $this->_writeLine('Content-Type: multipart/mixed;');
             $this->_writeLine("\tboundary=$boundary");
-
-            $this->_writeLine();
-            $this->_writeLine("--$boundary");
-            $this->_writeLine('Content-Type:text/html; charset=utf-8');
-            $this->_writeLine('Content-Transfer-Encoding: 8bit');
-            $this->_writeLine('Content-Length: ' . strlen($htmlBody));
-            $this->_writeLine();
-            $this->_writeLine($htmlBody);
-            $this->_writeLine("--$boundary");
-
-            foreach ($attachments as $attachment) {
-                $file = $this->alias->resolve($attachment['file']);
-                if (!is_file($file)) {
-                    throw new InvalidValueException(['`:file` attachment file is not exists', 'file' => $file]);
-                }
-                $this->_writeLine();
-                $this->_writeLine("--$boundary");
-                $this->_writeLine('Content-Transfer-Encoding: 8bit');
-                $this->_writeLine('Content-Length: ' . filesize($file));
-                $this->_writeLine('Content-Disposition: attachment; filename="' . $attachment['name'] . '"');
-                $this->_writeLine();
-                $this->_writeLine(file_get_contents($file));
-                $this->_writeLine("--$boundary");
+            $this->_sendHtmlBody($htmlBody, $boundary);
+            if ($embeddedFiles = $message->getEmbeddedFiles()) {
+                $this->_sendEmbeddedFiles($embeddedFiles, $boundary);
             }
-
-            foreach ($embeddedFiles as $embeddedFile) {
-                $file = $this->alias->resolve($embeddedFile['file']);
-                if (!is_file($file)) {
-                    throw new InvalidValueException(['`:file` inline file is not exists', 'file' => $file]);
-                }
-                $this->_writeLine();
-                $this->_writeLine("--$boundary");
-                $this->_writeLine('Content-Transfer-Encoding: 8bit');
-                $this->_writeLine('Content-Length: ' . filesize($file));
-                $this->_writeLine('Content-Disposition: inline');
-                $this->_writeLine('Content-ID: ' . $embeddedFile['cid']);
-                $this->_writeLine();
-                $this->_writeLine(file_get_contents($file));
-                $this->_writeLine("--$boundary");
+            $this->_sendAttachments($attachments, $boundary);
+            $this->_writeLine("--$boundary--");
+        } else {
+            if ($embeddedFiles = $message->getEmbeddedFiles()) {
+                $this->_writeLine('Content-Type: multipart/related;');
+                $this->_writeLine("\tboundary=$boundary");
+                $this->_sendHtmlBody($htmlBody, $boundary);
+                $this->_sendEmbeddedFiles($embeddedFiles, $boundary);
+                $this->_writeLine("--$boundary--");
+            } else {
+                $this->_sendHtmlBody($htmlBody);
             }
         }
 
         $this->_transmit("\r\n.\r\n", [250]);
-        $this->_transmit('QUIT', [221]);
+        $this->_transmit('QUIT', [221, 421]);
+
+        return 1;
     }
 }
