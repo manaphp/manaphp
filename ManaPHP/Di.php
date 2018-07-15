@@ -178,13 +178,13 @@ class Di implements DiInterface
             $component = $this->_components[$this->_aliases[$name]];
         } elseif (strpos($name, '\\') !== false) {
             $component = $name;
-        } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
-            $maybe = lcfirst($match[2]);
+        } elseif ($pos = strrpos($name, '_')) {
+            $maybe = substr($name, $pos + 1);
             if (isset($this->_components[$maybe])) {
                 $component = $this->_components[$maybe];
             }
-        } elseif ($pos = strrpos($name, '_')) {
-            $maybe = substr($name, $pos + 1);
+        } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
+            $maybe = lcfirst($match[2]);
             if (isset($this->_components[$maybe])) {
                 $component = $this->_components[$maybe];
             }
