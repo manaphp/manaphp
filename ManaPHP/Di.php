@@ -183,6 +183,11 @@ class Di implements DiInterface
             if (isset($this->_components[$maybe])) {
                 $component = $this->_components[$maybe];
             }
+        } elseif ($pos = strrpos($name, '_')) {
+            $maybe = substr($name, $pos + 1);
+            if (isset($this->_components[$maybe])) {
+                $component = $this->_components[$maybe];
+            }
         }
 
         if ($component === null) {
