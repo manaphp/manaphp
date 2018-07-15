@@ -208,7 +208,7 @@ class Smtp extends Mailer
     protected function _sendTextBody($textBody)
     {
         $this->_writeLine('Content-Type: text/plain; charset=utf-8');
-        $this->_writeLine('X-Content-Length: ' . strlen($textBody));
+        $this->_writeLine('Content-Length: ' . strlen($textBody));
         $this->_writeLine('Content-Transfer-Encoding: base64');
         $this->_writeLine();
         $this->_writeLine(chunk_split(base64_encode($textBody), 983));
@@ -297,6 +297,35 @@ class Smtp extends Mailer
     }
 
     /**
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _encode($str)
+    {
+        return '=?utf-8?B?' . base64_encode($str) . '?=';
+    }
+
+    /**
+     * @param string $type
+     * @param array  $addresses
+     *
+     * @return static
+     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     */
+    protected function _sendAddresses($type, $addresses)
+    {
+        foreach ($addresses as $k => $v) {
+            if (is_int($k)) {
+                $this->_writeLine("$type: <$v>");
+            } else {
+                $this->_writeLine("$type: " . $this->_encode($v) . " <$k>");
+            }
+        }
+        return $this;
+    }
+
+    /**
      * @param \ManaPHP\Mailer\Message $message
      * @param array                   $failedRecipients
      *
@@ -325,14 +354,31 @@ class Smtp extends Mailer
         }
 
         $from = $message->getFrom();
-        $this->_transmit('MAIL FROM:<' . (is_string($from) ? $from : current($from)) . '>', [250]);
+        $this->_transmit('MAIL FROM:<' . (isset($from[0]) ? $from[0] : key($from)) . '>', [250]);
+
         $to = $message->getTo();
-        $this->_transmit('RCPT TO:<' . (is_string($to) ? $to : current($to)) . '>', [250]);
+        $cc = $message->getCc();
+        $bcc = $message->getBcc();
+
+        $success = 1;
+        foreach (array_merge($to, $cc, $bcc) as $k => $v) {
+            $address = is_int($k) ? $v : $k;
+            list($code, $msg) = $this->_transmit("RCPT TO:<$address>");
+            if ($code !== 250) {
+                if ($failedRecipients !== null) {
+                    $failedRecipients[] = $address;
+                }
+            } else {
+                $success++;
+            }
+        }
         $this->_transmit('DATA', [354]);
 
-        $this->_writeLine('From: ' . (is_string($from) ? $from : current($from)));
-        $this->_writeLine('To: ' . (is_string($to) ? $to : current($to)));
-        $this->_writeLine('Subject: ' . $message->getSubject());
+        $this->_sendAddresses('From', $from);
+        $this->_sendAddresses('To', $to);
+        $this->_sendAddresses('Cc', $cc);
+        $this->_sendAddresses('Reply-To', $message->getReplyTo());
+        $this->_writeLine('Subject: ' . $this->_encode($message->getSubject()));
         $this->_writeLine('MIME-Version: 1.0');
 
         $htmlBody = $message->getHtmlBody();
@@ -367,6 +413,6 @@ class Smtp extends Mailer
         $this->_transmit("\r\n.\r\n", [250]);
         $this->_transmit('QUIT', [221, 421]);
 
-        return 1;
+        return $success;
     }
 }

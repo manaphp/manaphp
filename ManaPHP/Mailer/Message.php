@@ -27,7 +27,7 @@ class Message implements \JsonSerializable
     /**
      * @var string|array
      */
-    protected $_to;
+    protected $_to = [];
 
     /**
      * @var int
@@ -40,24 +40,24 @@ class Message implements \JsonSerializable
     protected $_charset = 'utf-8';
 
     /**
-     * @var string|array
+     * @var array
      */
-    protected $_from;
+    protected $_from = [];
 
     /**
-     * @var string
+     * @var array
      */
-    protected $_replayTo;
+    protected $_replayTo = [];
 
     /**
-     * @var string|array
+     * @var array
      */
-    protected $_cc;
+    protected $_cc = [];
 
     /**
-     * @var string|array
+     * @var array
      */
-    protected $_bcc;
+    protected $_bcc = [];
 
     /**
      * @var string
@@ -143,7 +143,7 @@ class Message implements \JsonSerializable
      */
     public function setFrom($from)
     {
-        $this->_from = $from;
+        $this->_from = is_string($from) ? [$from] : $from;
 
         return $this;
     }
@@ -163,13 +163,13 @@ class Message implements \JsonSerializable
      */
     public function setTo($to)
     {
-        $this->_to = $to;
+        $this->_to = is_string($to) ? [$to] : $to;
 
         return $this;
     }
 
     /**
-     * @return string|array
+     * @return array
      */
     public function getTo()
     {
@@ -177,19 +177,19 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @param string $replyTo
+     * @param string|array $replyTo
      *
      * @return static
      */
     public function setReplyTo($replyTo)
     {
-        $this->_replayTo = $replyTo;
+        $this->_replayTo = is_string($replyTo) ? [$replyTo] : $replyTo;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getReplyTo()
     {
@@ -203,13 +203,13 @@ class Message implements \JsonSerializable
      */
     public function setCc($cc)
     {
-        $this->_cc = $cc;
+        $this->_cc = is_string($cc) ? [$cc] : $cc;
 
         return $this;
     }
 
     /**
-     * @return string|array
+     * @return array
      */
     public function getCc()
     {
@@ -223,13 +223,13 @@ class Message implements \JsonSerializable
      */
     public function setBcc($bcc)
     {
-        $this->_bcc = $bcc;
+        $this->_bcc = is_string($bcc) ? [$bcc] : $bcc;
 
         return $this;
     }
 
     /**
-     * @return string|array
+     * @return array
      */
     public function getBcc()
     {
@@ -303,7 +303,6 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @param string $html
      *
      * @return string
      */
