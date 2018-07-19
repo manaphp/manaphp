@@ -71,6 +71,11 @@ class Manager extends Component
      */
     protected function _inferRelation($model, $name)
     {
+        if (in_array($name . '_id', $model->getFields(), true)) {
+            $referenceName = $this->_inferClassName($model, $name);
+            return $referenceName ? [$referenceName, Relation::TYPE_HAS_ONE] : false;
+        }
+
         if (preg_match('#^(.+[a-z\d])Of([A-Z].*)$#', $name, $match)) {
             if (!$singular = $this->_pluralToSingular($match[1])) {
                 return false;
@@ -132,11 +137,6 @@ class Manager extends Component
 
                     return [$referenceName, Relation::TYPE_HAS_MANY_VIA, $tryViaName, $model->getPrimaryKey()];
                 }
-            }
-        } else {
-            if (in_array($name . '_id', $model->getFields(), true)) {
-                $referenceName = $this->_inferClassName($model, $name);
-                return $referenceName ? [$referenceName, Relation::TYPE_HAS_ONE] : false;
             }
         }
 
