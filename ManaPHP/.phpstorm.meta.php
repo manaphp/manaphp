@@ -65,6 +65,7 @@ namespace PHPSTORM_META {
             'application' instanceof \ManaPHP\ApplicationInterface,
             'jwt' instanceof \ManaPHP\Authentication\Token\Adapter\Jwt,
             'mwt' instanceof \ManaPHP\Authentication\Token\Adapter\Mwt,
+            'mailer' instanceof \ManaPHP\MailerInterface,
         ],
         \di('') => [
             'di' instanceof \ManaPHP\DiInterface,
@@ -127,6 +128,7 @@ namespace PHPSTORM_META {
             'di' instanceof \ManaPHP\Di | \ManaPHP\DiInterface,
             'application' instanceof \ManaPHP\ApplicationInterface,
             'authenticationToken' instanceof \ManaPHP\Authentication\Token\Adapter\Mwt,
+            'mailer' instanceof \ManaPHP\MailerInterface,
         ],
         \ManaPHP\DiInterface::get('') => [
             '' == '@',
