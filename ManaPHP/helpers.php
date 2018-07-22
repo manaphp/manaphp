@@ -267,6 +267,19 @@ if (!function_exists('mwt')) {
     }
 }
 
+if (!function_exists('input')) {
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return string|array|\ManaPHP\Http\RequestInterface
+     */
+    function input($name = null, $default = null)
+    {
+        return di('request')->getInput($name, false, $default);
+    }
+}
+
 if (!function_exists('request')) {
     /**
      * @param string $name
