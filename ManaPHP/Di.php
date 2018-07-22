@@ -116,7 +116,7 @@ class Di implements DiInterface
             self::$_default = $this;
         }
 
-        if (error_reporting() === -1) {
+        if (error_reporting() === E_ALL) {
             $this->_traces = ['*'];
         }
     }
