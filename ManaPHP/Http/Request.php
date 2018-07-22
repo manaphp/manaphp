@@ -224,7 +224,11 @@ class Request extends Component implements RequestInterface
     public function getInput($name = null, $rule = null, $defaultValue = '')
     {
         if ($name === null) {
-            return array_merge($this->get(), $this->dispatcher->getParams());
+            $params = $this->dispatcher->getParams();
+            if (isset($params[0]) && count($params) === 1) {
+                $params = ['id' => $params[0]];
+            }
+            return array_merge($this->get(), $params);
         } elseif ($this->dispatcher->hasParam($name)) {
             return $this->dispatcher->getParam($name);
         } elseif ($this->has($name)) {
