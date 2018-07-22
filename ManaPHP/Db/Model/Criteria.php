@@ -47,8 +47,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
             if (is_string($fields)) {
                 $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
             }
-            $this->_columns = $fields;
-            $this->_query->select($fields);
+            $this->select($fields);
         }
     }
 
