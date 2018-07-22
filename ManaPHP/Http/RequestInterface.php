@@ -71,6 +71,15 @@ interface RequestInterface
     public function getQuery($name = null, $rule = null, $defaultValue = '');
 
     /**
+     * @param string $name
+     * @param string $rule
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
+     */
+    public function getInput($name = null, $rule = null, $defaultValue = '');
+
+    /**
      * Gets variable from $_SERVER
      *
      * @param string $name
@@ -124,6 +133,13 @@ interface RequestInterface
      * @return bool
      */
     public function hasQuery($name);
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasInput($name);
 
     /**
      * @return string

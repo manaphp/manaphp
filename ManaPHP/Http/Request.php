@@ -10,7 +10,8 @@ use ManaPHP\Http\Request\File;
  *
  * @package request
  *
- * @property \ManaPHP\Http\FilterInterface $filter
+ * @property \ManaPHP\Http\FilterInterface    $filter
+ * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class Request extends Component implements RequestInterface
 {
@@ -214,6 +215,26 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param string $name
+     * @param string $rule
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
+     */
+    public function getInput($name = null, $rule = null, $defaultValue = '')
+    {
+        if ($name === null) {
+            return array_merge($this->get(), $this->dispatcher->getParams());
+        } elseif ($this->dispatcher->hasParam($name)) {
+            return $this->dispatcher->getParam($name);
+        } elseif ($this->has($name)) {
+            return $this->get($name, $rule, $defaultValue);
+        } else {
+            return $defaultValue;
+        }
+    }
+
+    /**
      * Checks whether $_REQUEST has certain index
      *
      * @param string $name
@@ -271,6 +292,16 @@ class Request extends Component implements RequestInterface
     public function hasQuery($name)
     {
         return isset($_GET[$name]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasInput($name)
+    {
+        return $this->has($name) || $this->dispatcher->hasParam($name);
     }
 
     /**
