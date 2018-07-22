@@ -38,7 +38,7 @@ class Stdout extends Component implements AppenderInterface
     {
         $replaced = [];
 
-        $replaced[':date'] = date('Y-m-d H:i:s', $log->timestamp);
+        $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
         $replaced[':level'] = $log->level;
         $replaced[':category'] = $log->category;
         $replaced[':location'] = $log->location;

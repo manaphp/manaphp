@@ -388,7 +388,7 @@ class Logger extends Component implements LoggerInterface
         $log->process_id = @getmypid() ?: 0;
         $log->location = $this->_getLocation($traces);
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
-        $log->timestamp = time();
+        $log->timestamp = microtime(true);
 
         $this->fireEvent('logger:log', $log);
 
