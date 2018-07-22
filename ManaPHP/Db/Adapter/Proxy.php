@@ -495,4 +495,9 @@ class Proxy extends Component implements DbInterface
     {
         return $this->getMasterConnection()->bulkInsert($table, $records, $primaryKey, $skipIfExists);
     }
+
+    public function getLastSql()
+    {
+        return $this->getSQL();
+    }
 }
