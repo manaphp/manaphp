@@ -84,6 +84,9 @@ class Criteria extends \ManaPHP\Model\Criteria
         $this->_di = Di::getDefault();
 
         if ($fields !== null) {
+            if (is_string($fields)) {
+                $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
+            }
             $this->select($fields);
         }
     }

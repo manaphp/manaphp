@@ -35,7 +35,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      * Criteria constructor.
      *
      * @param string|\ManaPHP\Db\Model $model
-     * @param array                    $fields
+     * @param string|array             $fields
      */
     public function __construct($model, $fields = null)
     {
@@ -44,6 +44,9 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
         $this->_query = $this->_di->get('ManaPHP\Db\Query');
         if ($fields !== null) {
+            if (is_string($fields)) {
+                $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
+            }
             $this->_columns = $fields;
             $this->_query->select($fields);
         }
