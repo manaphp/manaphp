@@ -276,6 +276,13 @@ if (!function_exists('input')) {
      */
     function input($name = null, $default = null)
     {
+        if ($name === 'id') {
+            $params = di('dispatcher')->getParams();
+            if (count($params) === 1 && isset($params[0])) {
+                return $params[0];
+            }
+        }
+
         return di('request')->getInput($name, false, $default);
     }
 }
