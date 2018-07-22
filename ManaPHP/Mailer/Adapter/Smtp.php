@@ -147,6 +147,7 @@ class Smtp extends Mailer
         $parts = explode(' ', $response, 2);
         if (count($parts) === 2) {
             list($code, $message) = $parts;
+            $message = rtrim($message);
         } else {
             $code = $parts[0];
             $message = null;
@@ -360,7 +361,7 @@ class Smtp extends Mailer
         $cc = $message->getCc();
         $bcc = $message->getBcc();
 
-        $success = 1;
+        $success = 0;
         foreach (array_merge($to, $cc, $bcc) as $k => $v) {
             $address = is_int($k) ? $v : $k;
             list($code, $msg) = $this->_transmit("RCPT TO:<$address>");
@@ -368,10 +369,17 @@ class Smtp extends Mailer
                 if ($failedRecipients !== null) {
                     $failedRecipients[] = $address;
                 }
+                $this->trace(['Failed Recipient To <:address>: :msg', 'address' => $address, 'msg' => $msg]);
             } else {
                 $success++;
             }
         }
+
+        if (!$success) {
+            $this->trace('Send Failed:', array_merge($message->getTo(), $message->getCc(), $message->getBcc()));
+            return $success;
+        }
+
         $this->_transmit('DATA', [354]);
 
         $this->_sendAddresses('From', $from);
