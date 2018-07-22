@@ -181,6 +181,10 @@ class Component implements ComponentInterface, \JsonSerializable
      */
     public function trace($message, $category = null)
     {
+        if ($this->_traced === null) {
+            $this->_traced = error_reporting() === E_ALL;
+        }
+
         if ($this->_traced) {
             $this->logger->trace($message, $category);
         }
