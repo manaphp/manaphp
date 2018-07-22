@@ -401,7 +401,8 @@ class Logger extends Component implements LoggerInterface
             }
 
             if (!isset($value['instance'])) {
-                $appender = $this->_appenders[$name]['instance'] = $this->_di->getInstance($value['appender']);
+                $this->_appenders[$name]['instance'] = $this->_di->getInstance($value['appender']);
+                $appender = $this->_appenders[$name]['instance'];
             } else {
                 $appender = $value['instance'];
             }
