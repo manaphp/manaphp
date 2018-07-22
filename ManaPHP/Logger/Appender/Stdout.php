@@ -42,7 +42,7 @@ class Stdout extends Component implements AppenderInterface
         $replaced[':level'] = $log->level;
         $replaced[':category'] = $log->category;
         $replaced[':location'] = $log->location;
-        $replaced[':message'] = $log->message . PHP_EOL;
+        $replaced[':message'] = $log->message;
 
         echo strtr($this->_format, $replaced), PHP_EOL;
     }
