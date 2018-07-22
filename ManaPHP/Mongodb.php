@@ -45,7 +45,7 @@ class Mongodb extends Component implements MongodbInterface
         $this->_dsn = $dsn;
 
         $path = parse_url($dsn, PHP_URL_PATH);
-        $this->_defaultDb = $path !== '/' && $path !== null ? substr($path, 1) : null;
+        $this->_defaultDb = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
     }
 
     /**
