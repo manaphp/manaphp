@@ -225,7 +225,8 @@ class Easy extends Component implements EasyInterface
             throw new NotSupportedException(['only HTTP requests can be handled: `:url`', 'url' => $url]);
         }
 
-        $this->trace([$type, compact('url', 'body', 'options')], 'httpClient.request');
+        $request_id = substr(md5(microtime() . mt_rand()), 0, 16);
+        $this->trace([['REQUEST_ID' => $request_id, 'METHOD' => $type, 'URL' => $url, 'OPTIONS' => $options, 'BODY' => $body]], 'httpClient.request');
 
         $curl = curl_init();
 
@@ -383,12 +384,17 @@ class Easy extends Component implements EasyInterface
 
         curl_close($curl);
 
-        $this->trace(['stats', ['url' => $response->url, 'stats' => $response->stats]], 'httpClient.stats');
-        $this->trace(['headers', $response->getHeaders()], 'httpClient.headers');
-        $this->trace(['body', ['url' => $response->url,
-            'http_code' => $response->http_code,
-            'body' => strpos($response->content_type, 'json') !== false ? $response->getJsonBody() : $response->getUtf8Body()]],
-            'httpClient.body');
+        $this->trace([[
+            'REQUEST_ID' => $request_id,
+            'METHOD' => $type,
+            'URL' => $response->url,
+            'HTTP_CODE' => $response->http_code,
+            "REFERER" => isset($options[CURLOPT_REFERER]) ? $options[CURLOPT_REFERER] : '',
+            'REQUEST_BODY' => $body,
+            'HEADERS' => $response->getHeaders(),
+            'STATS' => $response->stats,
+            'BODY' => strpos($response->content_type, 'json') !== false ? $response->getJsonBody() : $response->getUtf8Body()]],
+            'httpClient.response');
 
         return $this->_lastResponse = $response;
     }
