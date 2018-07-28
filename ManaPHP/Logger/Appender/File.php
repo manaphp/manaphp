@@ -15,7 +15,7 @@ class File extends Component implements AppenderInterface
     /**
      * @var string
      */
-    protected $_file;
+    protected $_file = '@data/logger/app.log';
 
     /**
      * @var string
@@ -33,11 +33,9 @@ class File extends Component implements AppenderInterface
             $options = ['file' => $options];
         }
 
-        if (!isset($options['file'])) {
-            $options['file'] = '@data/logger/' . date('ymd') . '.log';
+        if (isset($options['file'])) {
+            $this->_file = $options['file'];
         }
-
-        $this->_file = $options['file'];
 
         if (isset($options['format'])) {
             $this->_format = $options['format'];
