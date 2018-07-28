@@ -361,7 +361,18 @@ class Easy extends Component implements EasyInterface
             $content = curl_exec($curl);
         }
 
-        if (curl_errno($curl)) {
+        if (($errno = curl_errno($curl)) === CURLE_SSL_CACERT && !$this->_caFile && DIRECTORY_SEPARATOR === '\\') {
+            $this->logger->warn('ca.pem file is not exists,so https verify is disabled, you should download from https://curl.haxx.se/ca/cacert.pem');
+            /** @noinspection CurlSslServerSpoofingInspection */
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            /** @noinspection CurlSslServerSpoofingInspection */
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $content = curl_exec($curl);
+            $errno = curl_error($curl);
+        }
+
+        if ($errno) {
             throw new ConnectionException(['connect failed: `:url` :message', 'url' => $url, 'message' => curl_error($curl)]);
         }
 
@@ -614,7 +625,7 @@ class Easy extends Component implements EasyInterface
                 $files[$url] = $file;
             }
         }
-        
+
         $handles = [];
         $failed = [];
         do {
