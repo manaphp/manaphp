@@ -55,23 +55,6 @@ class Paginator extends Component implements PaginatorInterface
     protected $_numberOfLinks = 11;
 
     /**
-     * @var array
-     */
-    protected $_displayText = ['first' => '&lt;&lt;', 'last' => '&gt;&gt;', 'prev' => '&lt;', 'next' => '&gt;'];
-
-    /**
-     * @param array $displayText
-     *
-     * @return static
-     */
-    public function setDisplayText($displayText)
-    {
-        $this->_displayText = array_merge($this->_displayText, $displayText);
-
-        return $this;
-    }
-
-    /**
      * @param int $number
      *
      * @return static
@@ -149,12 +132,12 @@ class Paginator extends Component implements PaginatorInterface
         }
 
         $str = PHP_EOL . '<ul class="pagination">' . PHP_EOL;
-        $str .= '  <li class="first"><a href="' . str_replace('{page}', 1, $urlTemplate) . '">' . $this->_displayText['first'] . '</a></li>' . PHP_EOL;
+        $str .= '  <li class="first"><a href="' . str_replace('{page}', 1, $urlTemplate) . '">&lt;&lt;</a></li>' . PHP_EOL;
 
         if ($this->prev < 0) {
-            $str .= '  <li class="prev disabled"><span>' . $this->_displayText['prev'] . '</span></li>' . PHP_EOL;
+            $str .= '  <li class="prev disabled"><span>&lt;</span></li>' . PHP_EOL;
         } else {
-            $str .= '  <li class="prev"><a href="' . str_replace('{page}', $this->prev, $urlTemplate) . '">' . $this->_displayText['prev'] . '</a></li>' . PHP_EOL;
+            $str .= '  <li class="prev"><a href="' . str_replace('{page}', $this->prev, $urlTemplate) . '">&lt;</a></li>' . PHP_EOL;
         }
 
         $startPage = (int)min($this->page - ceil($this->_numberOfLinks / 2), $this->pages - $this->_numberOfLinks);
@@ -171,12 +154,12 @@ class Paginator extends Component implements PaginatorInterface
         }
 
         if ($this->next < 0) {
-            $str .= '  <li class="next disabled"><span>' . $this->_displayText['next'] . '</span></li>' . PHP_EOL;
+            $str .= '  <li class="next disabled"><span>&gt;</span></li>' . PHP_EOL;
         } else {
-            $str .= '  <li class="next"><a href="' . str_replace('{page}', $this->next, $urlTemplate) . '">' . $this->_displayText['next'] . '</a></li>' . PHP_EOL;
+            $str .= '  <li class="next"><a href="' . str_replace('{page}', $this->next, $urlTemplate) . '">&gt;</a></li>' . PHP_EOL;
         }
 
-        $str .= '  <li class="last"><a href="' . str_replace('{page}', $this->pages, $urlTemplate) . '">' . $this->_displayText['last'] . '</a></li>' . PHP_EOL;
+        $str .= '  <li class="last"><a href="' . str_replace('{page}', $this->pages, $urlTemplate) . '">&gt;&gt;</a></li>' . PHP_EOL;
         $str .= '</ul>' . PHP_EOL;
         return $str;
     }

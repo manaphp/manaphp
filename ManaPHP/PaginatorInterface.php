@@ -10,13 +10,6 @@ namespace ManaPHP;
 interface PaginatorInterface
 {
     /**
-     * @param array $displayText
-     *
-     * @return static
-     */
-    public function setDisplayText($displayText);
-
-    /**
      * @param int $number
      *
      * @return static
