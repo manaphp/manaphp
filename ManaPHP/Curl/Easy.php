@@ -47,7 +47,7 @@ class Easy extends Component implements EasyInterface
     /**
      * @var string
      */
-    protected $_caFile = '@manaphp/Curl/https/ca.pem';
+    protected $_caFile;
 
     /**
      * @var int
