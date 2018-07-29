@@ -79,6 +79,9 @@ class Compiler extends Component
      */
     public function compileFile($source, $compiled)
     {
+        $source = $this->alias->resolve($source);
+        $compiled = $this->alias->resolve($compiled);
+
         $dir = dirname($compiled);
 
         /** @noinspection NotOptimalIfConditionsInspection */
