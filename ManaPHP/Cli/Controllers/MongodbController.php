@@ -111,8 +111,8 @@ class MongodbController extends Controller
                     $this->filesystem->filePut($fileName, $model);
 
                     $this->console->progress([
-                        ' `:collection` collection saved to `:file`',
-                        'collection' => $collection,
+                        ' `:namespace` collection saved to `:file`',
+                        'namespace' => "$cdb.$collection",
                         'file' => $fileName]);
 
                     $pending_fields = [];
