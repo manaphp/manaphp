@@ -37,6 +37,7 @@
           <option value="\ManaPHP\Exception\InvalidUrlException" />
           <option value="\ManaPHP\Exception\MisuseException" />
           <option value="\ManaPHP\Exception\BadRequestException" />
+          <option value="\ManaPHP\Exception\WriteFileFailedException" />
           <option value="\RuntimeException" />
           <option value="\ImagickException" />
           <option value="\ReflectionException" />
