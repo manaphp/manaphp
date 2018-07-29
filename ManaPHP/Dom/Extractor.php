@@ -10,6 +10,8 @@ class Extractor
 
     /**
      * Extractor constructor.
+     *
+     * @param \ManaPHP\Dom\Document $document
      */
     public function __construct($document)
     {
