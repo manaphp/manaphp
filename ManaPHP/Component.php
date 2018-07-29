@@ -217,7 +217,7 @@ class Component implements ComponentInterface, \JsonSerializable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($v === null) {
+            if ($v === null || $k === '_traced') {
                 continue;
             }
 
