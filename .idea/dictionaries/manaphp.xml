@@ -9,9 +9,11 @@
       <w>amqp</w>
       <w>ansicon</w>
       <w>appenders</w>
+      <w>autoloading</w>
       <w>bfcdec</w>
       <w>bkmgtpe</w>
       <w>boolval</w>
+      <w>brpoplpush</w>
       <w>bson</w>
       <w>camelize</w>
       <w>categorizable</w>
@@ -28,32 +30,42 @@
       <w>dotenv</w>
       <w>elasticsearch</w>
       <w>errmsg</w>
+      <w>errno</w>
+      <w>errstr</w>
       <w>etag</w>
       <w>floatval</w>
+      <w>fnmatch</w>
       <w>gitattributes</w>
+      <w>helo</w>
       <w>httponly</w>
       <w>ifunused</w>
       <w>imagic</w>
+      <w>intdiv</w>
       <w>intval</w>
       <w>linter</w>
       <w>mana</w>
       <w>manacli</w>
       <w>manaphp</w>
       <w>maxlifetime</w>
+      <w>mbstr</w>
       <w>mcrypt</w>
       <w>minify</w>
+      <w>mkdir</w>
       <w>mozilla</w>
       <w>msie</w>
       <w>mssql</w>
       <w>nack</w>
       <w>namelookup</w>
+      <w>noninfringement</w>
       <w>objectid</w>
       <w>paginator</w>
+      <w>pbkdf</w>
       <w>phalcon</w>
       <w>phtml</w>
       <w>pkeys</w>
       <w>pretransfer</w>
       <w>propery</w>
+      <w>psubscribe</w>
       <w>rabbitmq</w>
       <w>rbac</w>
       <w>resultset</w>
