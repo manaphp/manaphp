@@ -400,7 +400,7 @@ class Easy extends Component implements EasyInterface
             'METHOD' => $type,
             'URL' => $response->url,
             'HTTP_CODE' => $response->http_code,
-            "REFERER" => isset($options[CURLOPT_REFERER]) ? $options[CURLOPT_REFERER] : '',
+            'REFERER' => isset($options[CURLOPT_REFERER]) ? $options[CURLOPT_REFERER] : '',
             'REQUEST_BODY' => $body,
             'HEADERS' => $response->getHeaders(),
             'STATS' => $response->stats,
