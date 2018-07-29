@@ -9,17 +9,35 @@ use ManaPHP\Utility\Text;
 class MongodbController extends Controller
 {
     /**
+     * @param array $services
+     *
      * @return array
      */
-    protected function _getDbServices()
+    protected function _getServices($services)
     {
-        $services = [];
-        foreach ($this->configure->components as $service => $config) {
-            $config = json_encode($config, JSON_UNESCAPED_SLASHES);
-            if (preg_match('#mongodb://#', $config)) {
-                $services[] = $service;
+        if ($services) {
+            foreach ($services as $index => $service) {
+                if (!$this->_di->has($service)) {
+                    if ($this->_di->has($service . 'Mongodb')) {
+                        $services[$index] = $service . 'Mongodb';
+                    } elseif ($this->_di->has($service . '_mongodb')) {
+                        $services[$index] = $service . '_mongodb';
+                    } else {
+                        $this->console->warn(['`:service` service is not exists: ignoring', 'service' => $service]);
+                        unset($services[$index]);
+                    }
+                }
+            }
+        } else {
+            $services = [];
+            foreach ($this->configure->components as $service => $config) {
+                $config = json_encode($config, JSON_UNESCAPED_SLASHES);
+                if (preg_match('#mongodb://#', $config)) {
+                    $services[] = $service;
+                }
             }
         }
+
         return $services;
     }
 
@@ -77,6 +95,8 @@ class MongodbController extends Controller
      * @param bool   $optimized output as more methods as possible
      * @param int    $sample    sample size
      * @param array  $db        db name list
+     *
+     * @throws \ManaPHP\Mongodb\Exception
      */
     public function modelsCommand($services = [], $namespace = 'App\Models', $optimized = false, $sample = 1000, $db = [])
     {
@@ -84,21 +104,15 @@ class MongodbController extends Controller
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
         }
 
-
-        foreach ($services ?: $this->_getDbServices() as $service) {
-            if (!$this->_di->has($service)) {
-                if ($this->_di->has($service . 'Mongodb')) {
-                    $service .= 'Mongodb';
-                }
-            }
+        foreach ($this->_getServices($services) as $service) {
             /**
              * @var \ManaPHP\Mongodb $mongodb
              */
             $mongodb = $this->_di->getShared($service);
 
             $defaultDb = $mongodb->getDefaultDb();
-            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
-                if (!$defaultDb && in_array($db, ['admin', 'local'], true)) {
+            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $cdb) {
+                if (in_array($cdb, ['admin', 'local'], true) || ($db && !in_array($cdb, $db, true))) {
                     continue;
                 }
 
@@ -353,12 +367,7 @@ class MongodbController extends Controller
      */
     public function csvCommand($services = [], $collection_pattern = '', $bom = false)
     {
-        foreach ($services ?: $this->_getDbServices() as $service) {
-            if (!$this->_di->has($service)) {
-                if ($this->_di->has($service . 'Mongodb')) {
-                    $service .= 'Mongodb';
-                }
-            }
+        foreach ($this->_getServices($services) as $service) {
             /**
              * @var \ManaPHP\Mongodb $mongodb
              */
@@ -427,12 +436,7 @@ class MongodbController extends Controller
      */
     public function listCommand($services = [], $collection_pattern = '', $field = '')
     {
-        foreach ($services ?: $this->_getDbServices() as $service) {
-            if (!$this->_di->has($service)) {
-                if ($this->_di->has($service . 'Mongodb')) {
-                    $service .= 'Mongodb';
-                }
-            }
+        foreach ($this->_getServices($services) as $service) {
             /**
              * @var \ManaPHP\Mongodb $mongodb
              */
