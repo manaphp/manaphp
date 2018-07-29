@@ -42,31 +42,6 @@ class MongodbController extends Controller
     }
 
     /**
-     * @param string $service
-     * @param string $pattern
-     *
-     * @return array
-     */
-    protected function _getTables($service, $pattern = null)
-    {
-        /**
-         * @var \ManaPHP\MongodbInterface $mongodb
-         */
-        $mongodb = $this->_di->getShared($service);
-        $tables = [];
-        foreach ($mongodb->listCollections() as $table) {
-            if ($pattern && !fnmatch($pattern, $table)) {
-                continue;
-            }
-            $tables[] = $table;
-        }
-
-        sort($tables);
-
-        return $tables;
-    }
-
-    /**
      * generate model file from base64 encoded string
      *
      * @param string $input     the base64 encoded json string
@@ -372,58 +347,71 @@ class MongodbController extends Controller
              * @var \ManaPHP\Mongodb $mongodb
              */
             $mongodb = $this->_di->getShared($service);
-            foreach ($this->_getTables($service, $collection_pattern) as $collection) {
-                $fileName = "@tmp/mongodb_csv/$service/$collection.csv";
+            $defaultDb = $mongodb->getDefaultDb();
 
-                $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
-
-                $this->filesystem->dirCreate(dirname($fileName));
-
-                $file = fopen($this->alias->resolve($fileName), 'wb');
-
-                if ($bom) {
-                    fprintf($file, "\xEF\xBB\xBF");
+            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
+                if (in_array($db, ['admin', 'local'], true)) {
+                    continue;
                 }
-
-                $docs = $mongodb->query($collection);
-
-                if ($docs) {
-                    $columns = [];
-                    foreach ((array)$docs[0] as $k => $v) {
-                        if ($k === '_id' && is_object($v)) {
-                            continue;
-                        }
-                        $columns[] = $k;
+				
+                foreach ($mongodb->listCollections($db) as $collection) {
+                    if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
+                        continue;
                     }
 
-                    fputcsv($file, $columns);
-                }
+                    $fileName = "@tmp/mongodb_csv/$db/$collection.csv";
 
-                $linesCount = 0;
-                $startTime = microtime(true);
-                if (count($docs) !== 0) {
-                    foreach ($docs as $doc) {
-                        $line = [];
-                        foreach ((array)$doc as $k => $v) {
+                    $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
+
+                    $this->filesystem->dirCreate(dirname($fileName));
+
+                    $file = fopen($this->alias->resolve($fileName), 'wb');
+
+                    if ($bom) {
+                        fprintf($file, "\xEF\xBB\xBF");
+                    }
+
+                    $docs = $mongodb->query("$db.$collection");
+
+                    if ($docs) {
+                        $columns = [];
+                        foreach ((array)$docs[0] as $k => $v) {
                             if ($k === '_id' && is_object($v)) {
                                 continue;
                             }
-                            $line[] = $v;
+                            $columns[] = $k;
                         }
 
-                        $linesCount++;
-                        fputcsv($file, $line);
+                        fputcsv($file, $columns);
                     }
+
+                    $linesCount = 0;
+                    $startTime = microtime(true);
+                    if (count($docs) !== 0) {
+                        foreach ($docs as $doc) {
+                            $line = [];
+                            foreach ((array)$doc as $k => $v) {
+                                if ($k === '_id' && is_object($v)) {
+                                    continue;
+                                }
+                                $line[] = $v;
+                            }
+
+                            $linesCount++;
+                            fputcsv($file, $line);
+                        }
+                    }
+
+                    fclose($file);
+
+                    $this->console->progress(['write to `:file` success: :count [:time]',
+                        'file' => $fileName,
+                        'count' => $linesCount,
+                        'time' => round(microtime(true) - $startTime, 4)]);
+                    /** @noinspection DisconnectedForeachInstructionInspection */
                 }
-
-                fclose($file);
-
-                $this->console->progress(['write to `:file` success: :count [:time]',
-                    'file' => $fileName,
-                    'count' => $linesCount,
-                    'time' => round(microtime(true) - $startTime, 4)]);
-                /** @noinspection DisconnectedForeachInstructionInspection */
             }
+
         }
     }
 
