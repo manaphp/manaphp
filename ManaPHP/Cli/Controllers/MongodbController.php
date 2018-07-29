@@ -433,8 +433,9 @@ class MongodbController extends Controller
      * @param array  $services           services list
      * @param string $collection_pattern match collection against a pattern
      * @param string $field              collection must contains one this field
+     * @param array  $db
      */
-    public function listCommand($services = [], $collection_pattern = '', $field = '')
+    public function listCommand($services = [], $collection_pattern = '', $field = '', $db = [])
     {
         foreach ($this->_getServices($services) as $service) {
             /**
@@ -443,25 +444,28 @@ class MongodbController extends Controller
             $mongodb = $this->_di->getShared($service);
 
             $defaultDb = $mongodb->getDefaultDb();
+            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $cdb) {
+                if ($db && !in_array($cdb, $db, true)) {
+                    continue;
+                }
 
-            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
-                $this->console->writeLn(['---`:db` db of `:service` service---', 'db' => $db, 'service' => $service], Console::BC_CYAN);
-                foreach ($mongodb->listCollections($db) as $row => $collection) {
+                $this->console->writeLn(['---`:db` db of `:service` service---', 'db' => $cdb, 'service' => $service], Console::BC_CYAN);
+                foreach ($mongodb->listCollections($cdb) as $row => $collection) {
                     if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
                         continue;
                     }
                     if ($field) {
-                        if (!$docs = $mongodb->query("$db.$collection", [$field => ['$exists' => 1]], ['limit' => 1])) {
+                        if (!$docs = $mongodb->query("$cdb.$collection", [$field => ['$exists' => 1]], ['limit' => 1])) {
                             continue;
                         }
                     } else {
-                        $docs = $mongodb->query("$db.$collection", [], ['limit' => 1]);
+                        $docs = $mongodb->query("$cdb.$collection", [], ['limit' => 1]);
                     }
                     $columns = $docs ? array_keys($docs[0]) : [];
 
                     $this->console->writeLn([' :row :namespace(:columns)',
                         'row' => sprintf('%2d ', $row + 1),
-                        'namespace' => $this->console->colorize("$db.$collection", Console::FC_GREEN),
+                        'namespace' => $this->console->colorize("$cdb.$collection", Console::FC_GREEN),
                         'columns' => implode($columns, ', ')]);
                 }
             }
