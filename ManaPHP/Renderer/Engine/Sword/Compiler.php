@@ -2,7 +2,10 @@
 namespace ManaPHP\Renderer\Engine\Sword;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
+use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Renderer\Engine\Sword
@@ -66,6 +69,34 @@ class Compiler extends Component
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $source
+     * @param string $compiled
+     *
+     * @return static
+     */
+    public function compileFile($source, $compiled)
+    {
+        $dir = dirname($compiled);
+
+        /** @noinspection NotOptimalIfConditionsInspection */
+        if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
+            throw new CreateDirectoryFailedException(['create `:dir` directory failed: :last_error_message', 'dir' => $dir]);
+        }
+
+        if (($str = file_get_contents($source)) === false) {
+            throw new InvalidArgumentException(['read `:file` sword source file failed: :last_error_message', 'file' => $source]);
+        }
+
+        if (file_put_contents($compiled, $this->compileString($str), LOCK_EX) === false) {
+            throw new RuntimeException(['write `:compiled` compiled file for `:source` file failed: :last_error_message',
+                'complied' => $compiled,
+                'source' => $source]);
+        }
+
+        return $this;
     }
 
     /**
