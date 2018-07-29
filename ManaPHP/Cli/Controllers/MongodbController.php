@@ -442,21 +442,28 @@ class MongodbController extends Controller
              */
             $mongodb = $this->_di->getShared($service);
 
-            $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
-            foreach ($this->_getTables($service, $collection_pattern) as $row => $collection) {
-                if ($field) {
-                    if (!$docs = $mongodb->query($collection, [$field => ['$exists' => 1]], ['limit' => 1])) {
+            $defaultDb = $mongodb->getDefaultDb();
+
+            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
+                $this->console->writeLn(['---`:db` db of `:service` service---', 'db' => $db, 'service' => $service], Console::BC_CYAN);
+                foreach ($mongodb->listCollections($db) as $row => $collection) {
+                    if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
                         continue;
                     }
-                } else {
-                    $docs = $mongodb->query($collection, [], ['limit' => 1]);
-                }
-                $columns = $docs ? array_keys($docs[0]) : [];
+                    if ($field) {
+                        if (!$docs = $mongodb->query("$db.$collection", [$field => ['$exists' => 1]], ['limit' => 1])) {
+                            continue;
+                        }
+                    } else {
+                        $docs = $mongodb->query("$db.$collection", [], ['limit' => 1]);
+                    }
+                    $columns = $docs ? array_keys($docs[0]) : [];
 
-                $this->console->writeLn([' :row :collection(:columns)',
-                    'row' => sprintf('%2d ', $row + 1),
-                    'collection' => $this->console->colorize($collection, Console::FC_GREEN),
-                    'columns' => implode($columns, ', ')]);
+                    $this->console->writeLn([' :row :namespace(:columns)',
+                        'row' => sprintf('%2d ', $row + 1),
+                        'namespace' => $this->console->colorize("$db.$collection", Console::FC_GREEN),
+                        'columns' => implode($columns, ', ')]);
+                }
             }
         }
     }
