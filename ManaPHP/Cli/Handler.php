@@ -192,4 +192,12 @@ class Handler extends Component implements HandlerInterface
 
         return is_int($r) ? $r : 0;
     }
+
+    /**
+     * @return array
+     */
+    public function getArgs()
+    {
+        return $this->_args;
+    }
 }

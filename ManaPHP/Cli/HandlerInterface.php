@@ -10,4 +10,9 @@ interface HandlerInterface
      * @return int
      */
     public function handle($args = null);
+
+    /**
+     * @return array
+     */
+    public function getArgs();
 }
