@@ -174,6 +174,12 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
+        if ($commandName !== 'help') {
+            if (in_array('--help', $this->_args, true)) {
+                $commandName = 'help';
+            }
+        }
+		
         if (!method_exists($controllerInstance, $commandName . 'Command')) {
             $guessed = $this->_guessCommand($controllerClassName, $commandName);
             if (!$guessed) {

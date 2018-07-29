@@ -10,14 +10,15 @@ use ManaPHP\Logger\LogCategorizable;
  *
  * @package controller
  *
- * @property \ManaPHP\CounterInterface              $counter
- * @property \ManaPHP\Di|\ManaPHP\DiInterface       $di
- * @property \ManaPHP\Cache\EngineInterface         $viewsCache
- * @property \ManaPHP\Message\QueueInterface        $messageQueue
- * @property \ManaPHP\Cli\ConsoleInterface          $console
- * @property \ManaPHP\Cli\ArgumentsInterface        $arguments
- * @property \ManaPHP\Text\CrosswordInterface       $crossword
- * @property \ManaPHP\Net\ConnectivityInterface     $netConnectivity
+ * @property \ManaPHP\CounterInterface          $counter
+ * @property \ManaPHP\Di|\ManaPHP\DiInterface   $di
+ * @property \ManaPHP\Cache\EngineInterface     $viewsCache
+ * @property \ManaPHP\Message\QueueInterface    $messageQueue
+ * @property \ManaPHP\Cli\ConsoleInterface      $console
+ * @property \ManaPHP\Cli\ArgumentsInterface    $arguments
+ * @property \ManaPHP\Text\CrosswordInterface   $crossword
+ * @property \ManaPHP\Net\ConnectivityInterface $netConnectivity
+ * @property \ManaPHP\Cli\HandlerInterface      $cliHandler
  */
 abstract class Controller extends Component implements ControllerInterface, LogCategorizable
 {
@@ -31,10 +32,22 @@ abstract class Controller extends Component implements ControllerInterface, LogC
      */
     public function helpCommand()
     {
+        $args = $this->cliHandler->getArgs();
+        if (isset($args[2]) && $args[2][0] !== '-') {
+            $actionName = $args[2];
+        } else {
+            $actionName = '';
+        }
+
         foreach (get_class_methods($this) as $method) {
-            if (!preg_match('#^[a-z].*Command$#', $method)) {
+            if (!preg_match('#^([a-z].*)Command$#', $method, $match)) {
                 continue;
             }
+
+            if ($actionName && $match[1] !== $actionName) {
+                continue;
+            }
+
             $rm = new \ReflectionMethod($this, $method);
             if (!$rm->isPublic()) {
                 continue;
