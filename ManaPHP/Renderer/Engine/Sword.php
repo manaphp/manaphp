@@ -16,6 +16,30 @@ use ManaPHP\Renderer\EngineInterface;
 class Sword extends Component implements EngineInterface
 {
     /**
+     * @param string $source
+     *
+     * @return string
+     */
+    public function getCompiledFile($source)
+    {
+        if (strpos($source, $this->alias->get('@app')) === 0) {
+            $compiled = '@data/sword' . str_replace($this->alias->get('@app'), '', $source);
+        } elseif (strpos($source, $this->alias->get('@manaphp')) === 0) {
+            $compiled = '@data/sword/_manaphp_/' . str_replace($this->alias->get('@manaphp'), '', $source);
+        } else {
+            $compiled = '@data/sword/_mixed_/' . md5($source);
+        }
+
+        $compiled = $this->alias->resolve($compiled);
+
+        if ($this->configure->debug || !file_exists($compiled) || filemtime($source) > filemtime($compiled)) {
+            $this->swordCompiler->compileFile($source, $compiled);
+        }
+
+        return $compiled;
+    }
+
+    /**
      * @param string $file
      * @param array  $vars
      *
@@ -23,23 +47,9 @@ class Sword extends Component implements EngineInterface
      */
     public function render($file, $vars = [])
     {
-        if (strpos($file, $this->alias->get('@app')) === 0) {
-            $_compiledFile = '@data/sword' . str_replace($this->alias->get('@app'), '', $file);
-        } elseif (strpos($file, $this->alias->get('@manaphp')) === 0) {
-            $_compiledFile = '@data/sword/_manaphp_/' . str_replace($this->alias->get('@manaphp'), '', $file);
-        } else {
-            $_compiledFile = '@data/sword/_mixed_/' . md5($file);
-        }
-
-        $_compiledFile = $this->alias->resolve($_compiledFile);
-
-        if ($this->configure->debug || !file_exists($_compiledFile) || filemtime($file) > filemtime($_compiledFile)) {
-            $this->swordCompiler->compileFile($file, $_compiledFile);
-        }
-
         extract($vars, EXTR_SKIP);
 
         /** @noinspection PhpIncludeInspection */
-        require $_compiledFile;
+        require $this->getCompiledFile($file);
     }
 }
