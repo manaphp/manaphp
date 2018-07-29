@@ -33,8 +33,10 @@ abstract class Controller extends Component implements ControllerInterface, LogC
     public function helpCommand()
     {
         $args = $this->cliHandler->getArgs();
-        if (isset($args[2]) && $args[2][0] !== '-') {
+        if (isset($args[2]) && $args[2][0] !== '-' && $args[2] !== 'help') {
             $actionName = $args[2];
+        } elseif (isset($args[3]) && $args[3][0] !== '-' && $args[2] === 'help') {
+            $actionName = $args[3];
         } else {
             $actionName = '';
         }
