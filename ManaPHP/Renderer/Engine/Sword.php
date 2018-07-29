@@ -2,8 +2,6 @@
 namespace ManaPHP\Renderer\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\CreateDirectoryFailedException;
-use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Renderer\EngineInterface;
 
 /**
