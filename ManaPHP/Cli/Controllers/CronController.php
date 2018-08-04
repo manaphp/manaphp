@@ -24,16 +24,18 @@ class CronController extends Controller
         array_shift($arguments);//cron
         array_shift($arguments);//run
         $simArguments = array_merge([$GLOBALS['argv'][0]], $arguments);
+
+        $cron = null;
         while (1) {
-            $a = array_shift($arguments);
-            if ($a[0] === '-') {
+            $cron = array_shift($arguments);
+            if ($cron[0] === '-') {
                 array_shift($arguments);
             } else {
                 break;
             }
         }
 
-        $controller = Text::camelize($a) . 'Controller';
+        $controller = Text::camelize($cron) . 'Controller';
 
         if (class_exists(__NAMESPACE__ . '\\' . $controller)) {
             $controllerName = __NAMESPACE__ . '\\' . $controller;
