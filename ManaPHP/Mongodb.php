@@ -256,7 +256,11 @@ class Mongodb extends Component implements MongodbInterface
         foreach ($documents as $document) {
             $pkValue = $document[$primaryKey];
             unset($document[$primaryKey]);
-            $bulk->update([$primaryKey => $pkValue], key($document)[0] === '$' ? $document : ['$set' => $document]);
+            try {
+                $bulk->update([$primaryKey => $pkValue], key($document)[0] === '$' ? $document : ['$set' => $document]);
+            } catch (\Exception $exception) {
+                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            }
         }
 
         $this->fireEvent('mongodb:beforeBulkUpdate', ['namespace' => $namespace]);
@@ -281,7 +285,11 @@ class Mongodb extends Component implements MongodbInterface
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
-        $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
+        try {
+            $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
+        } catch (\Exception $exception) {
+            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+        }
 
         $this->fireEvent('mongodb:beforeUpsert', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
@@ -306,7 +314,11 @@ class Mongodb extends Component implements MongodbInterface
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
-            $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
+            try {
+                $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
+            } catch (\Exception $exception) {
+                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            }
         }
 
         $this->fireEvent('mongodb:beforeBulkUpsert', ['namespace' => $namespace]);
@@ -330,7 +342,12 @@ class Mongodb extends Component implements MongodbInterface
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
-        $bulk->delete($filter);
+        try {
+            $bulk->delete($filter);
+        } catch (\Exception $exception) {
+            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
         $this->fireEvent('mongodb:beforeDelete', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterDelete');
