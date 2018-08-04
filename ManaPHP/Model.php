@@ -522,6 +522,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param int|float|array  $interval
      *
      * @return int|double|string
+     * @throws \ManaPHP\Model\NotFoundException
      */
     public static function valueOrFail($filters, $field, $interval = null)
     {
