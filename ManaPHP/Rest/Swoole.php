@@ -45,6 +45,7 @@ class Swoole extends Application
     }
 
     /**
+     * @throws \ManaPHP\Swoole\Exception
      */
     public function handle()
     {
