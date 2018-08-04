@@ -47,6 +47,8 @@ class Document extends Component
      * Document constructor.
      *
      * @param string $str
+     *
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function __construct($str = null)
     {
@@ -59,6 +61,7 @@ class Document extends Component
      * @param string $str
      *
      * @return static
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function load($str)
     {
@@ -89,6 +92,7 @@ class Document extends Component
      * @param string $url
      *
      * @return static
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function loadUrl($url)
     {
