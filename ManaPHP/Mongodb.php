@@ -63,6 +63,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function ping()
     {
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $command = new Command(['ping' => 1]);
 
         if ($this->_manager) {
