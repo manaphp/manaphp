@@ -384,6 +384,7 @@ class Logger extends Component implements LoggerInterface
         $log->host = gethostname();
         $log->client_ip = isset($_SERVER['SERVER_ADDR']) ? $this->request->getClientIp() : '';
         $log->level = $this->_levels[$level];
+        /** @noinspection NestedTernaryOperatorInspection */
         $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
         $log->process_id = @getmypid() ?: 0;
         $log->location = $this->_getLocation($traces);
