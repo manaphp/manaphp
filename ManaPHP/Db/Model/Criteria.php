@@ -474,7 +474,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
                     }
                 }
 
-                if ($data instanceof Criteria) {
+                if ($data instanceof self) {
                     $data = $data->fetch();
                 }
 
