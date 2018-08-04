@@ -324,6 +324,8 @@ class DbController extends Controller
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
      * @param bool   $bom           contains BOM or not
+     *
+     * @throws \ManaPHP\Db\Exception
      */
     public function csvCommand($services = [], $table_pattern = '', $bom = false)
     {
