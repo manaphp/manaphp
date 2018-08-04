@@ -118,13 +118,9 @@ class CsrfToken extends Component implements CsrfTokenInterface
         } else {
             if ($this->request->get($this->_name)) {
                 $token_client = $this->request->get($this->_name);
+            } elseif ($this->request->hasServer($this->_header)) {
+                $token_client = $this->request->getServer($this->_header);
             } else {
-                if ($this->request->hasServer($this->_header)) {
-                    $token_client = $this->request->getServer($this->_header);
-                }
-            }
-
-            if (!isset($token_client)) {
                 $this->logger->debug('The CSRF token could not be verified: missing in client');
                 throw new CsrfTokenException('The CSRF token could not be verified: missing in client');
             }
