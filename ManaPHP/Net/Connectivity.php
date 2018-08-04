@@ -29,13 +29,11 @@ class Connectivity extends Component implements ConnectivityInterface
     public function test($url, $time = 0.1)
     {
         if (strpos($url, ',') !== false) {
-            if (strpos($url, '://') !== false) {
-                $scheme = parse_url($url, PHP_URL_SCHEME);
-            }
+            $scheme = strpos($url, '://') !== false ? parse_url($url, PHP_URL_SCHEME) : null;
             foreach (explode(',', $url) as $u) {
                 $u = trim($u);
 
-                if (isset($scheme) && strpos($u, '://') === false) {
+                if ($scheme !== null && strpos($u, '://') === false) {
                     $u = $scheme . '://' . $u;
                 }
                 if ($this->test($u)) {
