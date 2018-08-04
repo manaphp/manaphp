@@ -180,6 +180,7 @@ class Mongodb extends Component implements MongodbInterface
             throw new InvalidValueException('when insert type is skipIfExists must provide primaryKey name');
         }
 
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
             if ($skipIfExists) {
@@ -207,6 +208,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         $bulk->update($filter, key($document)[0] === '$' ? $document : ['$set' => $document], ['multi' => true]);
         $this->fireEvent('mongodb:beforeUpdate', ['namespace' => $namespace]);
@@ -228,6 +230,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
             $pkValue = $document[$primaryKey];
@@ -254,6 +257,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
 
@@ -276,6 +280,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
             $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
@@ -299,6 +304,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         $bulk->delete($filter);
         $this->fireEvent('mongodb:beforeDelete', ['namespace' => $namespace]);
