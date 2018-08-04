@@ -120,6 +120,7 @@ abstract class Db extends Component implements DbInterface
      * Pings a server connection, or tries to reconnect if the connection has gone down
      *
      * @return void
+     * @throws \ManaPHP\Db\ConnectionException
      */
     public function ping()
     {
@@ -382,7 +383,6 @@ abstract class Db extends Component implements DbInterface
      * @param array                $bind
      * @param int                  $fetchMode
      *
-     * @throws \ManaPHP\Db\Exception
      * @return array|false
      */
     public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
@@ -685,8 +685,12 @@ abstract class Db extends Component implements DbInterface
         if ($this->_transactionLevel === 0) {
             $this->fireEvent('db:beginTransaction');
 
-            if (!$this->_getPdo()->beginTransaction()) {
-                throw new DbException('beginTransaction failed.');
+            try {
+                if (!$this->_getPdo()->beginTransaction()) {
+                    throw new DbException('beginTransaction failed.');
+                }
+            } catch (\PDOException $exception) {
+                throw new DbException('beginTransaction failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             }
         }
 
