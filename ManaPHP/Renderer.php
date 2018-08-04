@@ -75,13 +75,14 @@ class Renderer extends Component implements RendererInterface
             }
 
             $template = dirname($this->_current_template) . '/' . $template;
+        } else {
+            $template = $this->alias->resolve($template);
         }
 
         $this->_current_template = $template;
 
         foreach ($this->_engines as $extension => $engine) {
-            $file = $this->alias->resolve($template . $extension);
-            if (is_file($file)) {
+            if (is_file($file = $template . $extension)) {
                 if (PHP_EOL !== "\n") {
                     $realPath = strtr(realpath($file), '\\', '/');
                     if ($file !== $realPath) {
@@ -158,9 +159,18 @@ class Renderer extends Component implements RendererInterface
      */
     public function exists($template)
     {
+        if ($template[0] !== '@') {
+            if (strpos($template, '/') !== false) {
+                throw new InvalidValueException(['`:template` template can not contains relative path', 'template' => $template]);
+            }
+
+            $template = dirname($this->_current_template) . '/' . $template;
+        } else {
+            $template = $this->alias->resolve($template);
+        }
+
         foreach ($this->_engines as $extension => $_) {
-            $file = $this->alias->resolve($template . $extension);
-            if (is_file($file)) {
+            if (is_file($file = $template . $extension)) {
                 if (PHP_EOL !== "\n") {
                     $realPath = strtr(realpath($file), '\\', '/');
                     if ($file !== $realPath) {
