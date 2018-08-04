@@ -388,7 +388,7 @@ class Di implements DiInterface
         }
 
         if ($parameters === null) {
-            if (isset($params[0]) || !$params) {
+            if (!$params || isset($params[0])) {
                 $parameters = $params;
             } else {
                 $parameters = [$params];
