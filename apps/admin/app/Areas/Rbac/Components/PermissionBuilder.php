@@ -2,7 +2,7 @@
 namespace App\Admin\Areas\Rbac\Components;
 
 use ManaPHP\Component;
-use App\Admin\Areas\Rbac\Components\PermissionBuilder\Exception as PermissionBuilderException;
+use ManaPHP\Exception\InvalidValueException;
 
 class PermissionBuilder extends Component
 {
@@ -66,7 +66,7 @@ class PermissionBuilder extends Component
             $actionName = $match[1];
 
             if ($match[2] !== 'Action') {
-                throw new PermissionBuilderException([
+                throw new InvalidValueException([
                     '`:action` action of `:controller` is not suffix with `Action`'/**m05bcf1d580ad9945f*/,
                     'controller' => $rc->getName(),
                     'action' => $methodName
@@ -74,7 +74,7 @@ class PermissionBuilder extends Component
             }
 
             if (!$method->isPublic()) {
-                throw new PermissionBuilderException([
+                throw new InvalidValueException([
                     '`:action` action of `:controller` does not have public visibility.'/**m096584b24a62a55aa*/,
                     'controller' => $rc->getName(),
                     'action' => $methodName
