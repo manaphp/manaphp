@@ -169,7 +169,6 @@ class Mysql extends Db
      * @param string $source
      *
      * @return bool
-     * @throws \ManaPHP\Db\Exception
      */
     public function tableExists($source)
     {

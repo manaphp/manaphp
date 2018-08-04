@@ -102,7 +102,6 @@ class Mssql extends Db
 
     /**
      * @return int
-     * @throws \ManaPHP\Db\Exception
      */
     public function lastInsertId()
     {

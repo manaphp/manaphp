@@ -242,6 +242,7 @@ abstract class Db extends Component implements DbInterface
      * @param int                  $fetchMode
      *
      * @return \PdoStatement
+     * @throws \ManaPHP\Db\Exception
      */
     public function query($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
@@ -261,8 +262,6 @@ abstract class Db extends Component implements DbInterface
             $this->_affectedRows = $result->rowCount();
             $result->setFetchMode($fetchMode);
         } catch (\PDOException $e) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new DbException([
                 ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
                 'message' => $e->getMessage(),
@@ -384,6 +383,7 @@ abstract class Db extends Component implements DbInterface
      * @param int                  $fetchMode
      *
      * @return array|false
+     * @throws \ManaPHP\Db\Exception
      */
     public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
@@ -416,6 +416,7 @@ abstract class Db extends Component implements DbInterface
      * @param string|callable|array $indexBy
      *
      * @return array
+     * @throws \ManaPHP\Db\Exception
      */
     public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
