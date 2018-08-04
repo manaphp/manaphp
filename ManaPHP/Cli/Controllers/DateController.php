@@ -20,7 +20,12 @@ class DateController extends Controller
 
         $prev_timestamp = 0;
         do {
-            $timestamp = strtotime($this->httpClient->head($url)->getHeaders()['Date']);
+            try {
+                $timestamp = strtotime($this->httpClient->head($url)->getHeaders()['Date']);
+            } catch (\Exception $exception) {
+                return false;
+            }
+
             if ($prev_timestamp !== 0 && $prev_timestamp !== $timestamp) {
                 break;
             }
