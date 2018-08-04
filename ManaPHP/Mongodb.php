@@ -60,6 +60,7 @@ class Mongodb extends Component implements MongodbInterface
      * Pings a server connection, or tries to reconnect if the connection has gone down
      *
      * @return void
+     * @throws \ManaPHP\Mongodb\ConnectionException
      */
     public function ping()
     {
@@ -68,6 +69,7 @@ class Mongodb extends Component implements MongodbInterface
 
         if ($this->_manager) {
             try {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $this->_getManager()->executeCommand('admin', $command);
             } catch (\Exception $exception) {
                 $this->_manager = null;
@@ -79,6 +81,7 @@ class Mongodb extends Component implements MongodbInterface
             }
         } else {
             try {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $this->_getManager()->executeCommand('admin', $command);
             } catch (\Exception $exception) {
                 throw new ConnectionException(['connection failed: `:dsn`', 'dsn' => $this->_dsn], 0, $exception);
@@ -106,14 +109,18 @@ class Mongodb extends Component implements MongodbInterface
      * @param \MongoDb\Driver\BulkWrite $bulk
      *
      * @return \MongoDB\Driver\WriteResult
-     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
+     * @throws \ManaPHP\Mongodb\Exception
      */
     public function bulkWrite($source, $bulk)
     {
         $namespace = strpos($source, '.') === false ? ($this->_defaultDb . '.' . $source) : $source;
 
         if ($this->_writeConcern === null) {
-            $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
+            try {
+                $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
+            } catch (\Exception $exception) {
+                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            }
         }
 
         $this->fireEvent('mongodb:beforeBulkWrite', compact('namespace', 'bulk'));
@@ -121,6 +128,7 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
         $elapsed = round(microtime(true) - $start_time, 3);
         $this->fireEvent('mongodb:afterBulkWrite', compact('namespace', 'bulk', 'result', 'elapsed'));
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         if ($bulk->count() !== 1) {
             $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
             if (!isset($backtrace['function']) && !in_array($backtrace['function'], ['bulkInsert', 'bulkUpdate', 'bulkUpsert'], true)) {
@@ -138,6 +146,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param bool   $skipIfExists
      *
      * @return int
+     * @throws \ManaPHP\Mongodb\Exception
      * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
     public function insert($source, $document, $primaryKey = null, $skipIfExists = false)
@@ -171,6 +180,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param bool    $skipIfExists
      *
      * @return int
+     * @throws \ManaPHP\Mongodb\Exception
      */
     public function bulkInsert($source, $documents, $primaryKey = null, $skipIfExists = false)
     {
@@ -203,6 +213,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param array  $document
      *
      * @return int
+     * @throws \ManaPHP\Mongodb\Exception
      */
     public function update($source, $filter, $document)
     {
@@ -225,6 +236,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param string $primaryKey
      *
      * @return int
+     * @throws \ManaPHP\Mongodb\Exception
      */
     public function bulkUpdate($source, $documents, $primaryKey)
     {
@@ -252,6 +264,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param string $primaryKey
      *
      * @return int
+     * @throws \ManaPHP\Mongodb\Exception
      */
     public function upsert($source, $document, $primaryKey)
     {
@@ -275,6 +288,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param string $primaryKey
      *
      * @return int
+     * @throws \ManaPHP\Mongodb\Exception
      */
     public function bulkUpsert($source, $documents, $primaryKey)
     {
@@ -299,6 +313,7 @@ class Mongodb extends Component implements MongodbInterface
      * @param array  $filter
      *
      * @return int
+     * @throws \ManaPHP\Mongodb\Exception
      */
     public function delete($source, $filter)
     {
