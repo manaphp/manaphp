@@ -95,6 +95,7 @@ class ActionInvoker extends Component implements ActionInvokerInterface
      * @param array                            $params
      *
      * @return mixed
+     * @throws \ManaPHP\ActionInvoker\Exception
      * @throws \ManaPHP\ActionInvoker\NotFoundException
      */
     public function invoke($controller, $action, $params)
