@@ -22,6 +22,7 @@ class Selector
     public function __construct($document, $node = null)
     {
         if (is_string($document)) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $document = (new Document())->load($document);
         }
 
