@@ -1008,6 +1008,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                     $items = $result['items'];
                     break;
                 }
+            } else {
+                $cacheOptions = null;
             }
 
             $copy = clone $this;
@@ -1023,7 +1025,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 }
             }
 
-            if (isset($cacheOptions)) {
+            if ($cacheOptions) {
                 $this->modelsCache->set($cacheOptions['key'],
                     json_encode(['time' => date('Y-m-d H:i:s'), 'count' => $count, 'items' => $items], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
                     $cacheOptions['ttl']);
