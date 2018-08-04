@@ -79,6 +79,7 @@ class Mysql extends Db
      * @param string $source
      *
      * @return array
+     * @throws \ManaPHP\Db\Exception
      */
     public function getMetadata($source)
     {
@@ -148,6 +149,7 @@ class Mysql extends Db
      * @param string $schema
      *
      * @return array
+     * @throws \ManaPHP\Db\Exception
      */
     public function getTables($schema = null)
     {
@@ -169,6 +171,7 @@ class Mysql extends Db
      * @param string $source
      *
      * @return bool
+     * @throws \ManaPHP\Db\Exception
      */
     public function tableExists($source)
     {
@@ -255,6 +258,7 @@ class Mysql extends Db
      * @param bool    $skipIfExists
      *
      * @return int
+     * @throws \ManaPHP\Db\Exception
      */
     public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false)
     {

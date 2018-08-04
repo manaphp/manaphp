@@ -55,6 +55,7 @@ class Mssql extends Db
      * @param $source
      *
      * @return array
+     * @throws \ManaPHP\Db\Exception
      */
     public function getMetadata($source)
     {
@@ -102,6 +103,7 @@ class Mssql extends Db
 
     /**
      * @return int
+     * @throws \ManaPHP\Db\Exception
      */
     public function lastInsertId()
     {
