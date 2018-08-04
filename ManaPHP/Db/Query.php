@@ -1456,21 +1456,21 @@ class Query extends Component implements QueryInterface
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $cacheOptions = $this->_getCacheOptions();
 
-            $data = $this->modelsCache->get($cacheOptions['key']);
-            if ($data !== false) {
+            if (($data = $this->modelsCache->get($cacheOptions['key'])) !== false) {
                 $this->fireEvent('modelsCache:hit', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
-
                 return json_decode($data, true)['items'];
             }
             $this->fireEvent('modelsCache:miss', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
-        }
 
-        $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
-        $result = $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
-        if (isset($cacheOptions)) {
+            $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
+            $result = $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
+
             $this->modelsCache->set($cacheOptions['key'],
                 json_encode($this->_buildCacheData($result, -1), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
                 $cacheOptions['ttl']);
+        } else {
+            $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
+            $result = $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
         }
 
         return $result;
