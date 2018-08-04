@@ -39,9 +39,10 @@ class CronController extends Controller
 
         if (class_exists(__NAMESPACE__ . '\\' . $controller)) {
             $controllerName = __NAMESPACE__ . '\\' . $controller;
-        } elseif ($this->alias->has('@ns.cli')) {
+        } else {
             $controllerName = $this->alias->resolveNS('@ns.cli\\' . $controller);
         }
+
         /**
          * @var \ManaPHP\Cli\Controller $controllerInstance
          */
