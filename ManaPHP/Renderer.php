@@ -44,12 +44,12 @@ class Renderer extends Component implements RendererInterface
     /**
      * Renderer constructor.
      *
-     * @param array $engines
+     * @param array $options
      */
     public function __construct($options = [])
     {
         if (isset($options['engines'])) {
-            $this->_engines = $options['engines'] ? $options['engines'] : ['.phtml' => 'ManaPHP\Renderer\Engine\Php'];
+            $this->_engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Renderer\Engine\Php'];
         }
     }
 
