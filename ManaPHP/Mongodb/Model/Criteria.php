@@ -960,15 +960,15 @@ class Criteria extends \ManaPHP\Model\Criteria
     {
         if ($this->_cacheOptions !== null) {
             $cacheOptions = $this->_getCacheOptions();
-            $data = $this->modelsCache->get($cacheOptions['key']);
-            if ($data !== false) {
+            if (($data = $this->modelsCache->get($cacheOptions['key'])) !== false) {
                 return json_decode($data, true)['items'];
             }
-        }
 
-        $items = $this->_execute();
-        if (isset($cacheOptions)) {
+            $items = $this->_execute();
+
             $this->modelsCache->set($cacheOptions['key'], json_encode(['time' => date('Y-m-d H:i:s'), 'items' => $items]), $cacheOptions['ttl']);
+        } else {
+            $items = $this->_execute();
         }
 
         return $items;
