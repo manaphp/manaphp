@@ -194,7 +194,11 @@ class Mongodb extends Component implements MongodbInterface
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
             if ($skipIfExists) {
-                $bulk->update([$primaryKey => $document[$primaryKey]], ['$setOnInsert' => $document], ['upsert' => true]);
+                try {
+                    $bulk->update([$primaryKey => $document[$primaryKey]], ['$setOnInsert' => $document], ['upsert' => true]);
+                } catch (\Exception $exception) {
+                    throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+                }
             } else {
                 $bulk->insert($document);
             }
@@ -221,7 +225,12 @@ class Mongodb extends Component implements MongodbInterface
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
-        $bulk->update($filter, key($document)[0] === '$' ? $document : ['$set' => $document], ['multi' => true]);
+        try {
+            $bulk->update($filter, key($document)[0] === '$' ? $document : ['$set' => $document], ['multi' => true]);
+        } catch (\Exception $exception) {
+            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
         $this->fireEvent('mongodb:beforeUpdate', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $this->fireEvent('mongodb:afterUpdate');
