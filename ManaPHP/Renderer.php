@@ -22,7 +22,9 @@ class Renderer extends Component implements RendererInterface
     /**
      * @var array
      */
-    protected $_engines = [];
+    protected $_engines = [
+        '.sword' => 'ManaPHP\Renderer\Engine\Sword',
+        '.phtml' => 'ManaPHP\Renderer\Engine\Php'];
 
     /**
      * @var array
@@ -44,14 +46,11 @@ class Renderer extends Component implements RendererInterface
      *
      * @param array $engines
      */
-    public function __construct(
-        $engines = [
-            '.sword' => 'ManaPHP\Renderer\Engine\Sword',
-            '.phtml' => 'ManaPHP\Renderer\Engine\Php',
-        ]
-    )
+    public function __construct($options = [])
     {
-        $this->_engines = $engines;
+        if (isset($options['engines'])) {
+            $this->_engines = $options['engines'] ? $options['engines'] : ['.phtml' => 'ManaPHP\Renderer\Engine\Php'];
+        }
     }
 
     /**
