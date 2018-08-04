@@ -338,7 +338,7 @@ class Query extends Component implements QueryInterface
         } elseif ($value === null && !is_string($filter)) {
             $this->_conditions[] = $filter;
         } elseif (is_array($value)) {
-            if (isset($value[0]) || !$value) {
+            if (!$value || isset($value[0])) {
                 if (strpos($filter, '~=')) {
                     if (count($value) !== 2) {
                         throw new InvalidArgumentException(['`value of :filter` filter is invalid', 'filter' => $filter]);

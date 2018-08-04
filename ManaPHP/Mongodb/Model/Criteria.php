@@ -244,7 +244,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } else {
                     $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
                 }
-            } elseif (isset($value[0]) || !$value) {
+            } elseif (!$value || isset($value[0])) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } else {
