@@ -323,6 +323,7 @@ class Logger extends Component implements LoggerInterface
                 $message[0] = rtrim($message[0], ': ') . ': :1';
             }
         } elseif (count($message) === 3) {
+            /** @noinspection NotOptimalIfConditionsInspection */
             if (isset($message[1], $message[2]) && strpos($message[0], ':1') === false && is_scalar($message[1])) {
                 $message[0] = rtrim($message[0], ': ') . ': :1 => :2';
             }
