@@ -428,6 +428,7 @@ class Router extends Component implements RouterInterface
         }
 
         if ($params !== []) {
+            $fragment = null;
             if (isset($params['#'])) {
                 $fragment = $params['#'];
                 unset($params['#']);
@@ -437,7 +438,7 @@ class Router extends Component implements RouterInterface
             if ($params !== []) {
                 $url .= '?' . http_build_query($params);
             }
-            if (isset($fragment)) {
+            if ($fragment !== null) {
                 $url .= '#' . $fragment;
             }
         }
