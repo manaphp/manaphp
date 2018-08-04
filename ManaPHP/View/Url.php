@@ -56,6 +56,7 @@ class Url extends Component implements UrlInterface
     public function get($args = [])
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+        $anchor = null;
         if (is_string($args)) {
             $uri = $args;
             $args = [];
@@ -90,7 +91,7 @@ class Url extends Component implements UrlInterface
             $strUrl .= (strpos($strUrl, '?') !== false ? '&' : '?') . http_build_query($args);
         }
 
-        if (isset($anchor)) {
+        if ($anchor !== null) {
             $strUrl .= '#' . $anchor;
         }
 
