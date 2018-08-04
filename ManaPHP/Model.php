@@ -1296,6 +1296,14 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         return $this->increment($field, -$step);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return \ManaPHP\Model|\ManaPHP\Model[]|mixed
+     * @throws \ManaPHP\Exception\BadMethodCallException
+     * @throws \ManaPHP\Exception\NotSupportedException
+     * @throws \ManaPHP\Exception\UnknownPropertyException
+     */
     public function __get($name)
     {
         $method = 'get' . ucfirst($name);
@@ -1313,6 +1321,14 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     *
+     * @return \ManaPHP\Model\CriteriaInterface
+     * @throws \ManaPHP\Exception\BadMethodCallException
+     * @throws \ManaPHP\Exception\NotSupportedException
+     */
     public function __call($name, $arguments)
     {
         if (strpos($name, 'get') === 0) {
