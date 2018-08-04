@@ -110,6 +110,7 @@ class Invoker extends Component implements InvokerInterface
      * @param string                           $command
      *
      * @return mixed
+     * @throws \ManaPHP\Cli\Command\NotFoundException
      */
     public function invoke($controller, $command)
     {
