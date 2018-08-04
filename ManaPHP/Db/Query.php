@@ -1563,6 +1563,8 @@ class Query extends Component implements QueryInterface
                     break;
                 }
                 $this->fireEvent('modelsCache:miss', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
+            } else {
+                $cacheOptions = null;
             }
 
             /** @noinspection SuspiciousAssignmentsInspection */
@@ -1578,7 +1580,7 @@ class Query extends Component implements QueryInterface
                 }
             }
 
-            if (isset($cacheOptions)) {
+            if ($cacheOptions) {
                 $this->modelsCache->set($cacheOptions['key'],
                     json_encode($this->_buildCacheData($items, $count), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
                     $cacheOptions['ttl']);
