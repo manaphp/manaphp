@@ -68,15 +68,14 @@ class FrameworkController extends Controller
                 }
             }
 
-            if (!$interfaces_keep) {
-                if (preg_match('#\s+implements\s+.*#', $classContent, $matches) === 1) {
-                    $implements = $matches[0];
-                    $implements = preg_replace('#[a-zA-Z]+Interface,?#', '', $implements);
-                    if (str_replace([',', ' ', "\r", "\n"], '', $implements) === 'implements') {
-                        $implements = '';
-                    }
-                    $classContent = str_replace($matches[0], $implements, $classContent);
+            if (!$interfaces_keep && preg_match('#\s+implements\s+.*#', $classContent, $matches) === 1) {
+                $implements = $matches[0];
+                $implements = preg_replace('#[a-zA-Z]+Interface,?#', '', $implements);
+                if (str_replace([',', ' ', "\r", "\n"], '', $implements) === 'implements') {
+                    $implements = '';
                 }
+                $classContent = str_replace($matches[0], $implements, $classContent);
+
             }
 
             if (!$whitespaces_keep) {
