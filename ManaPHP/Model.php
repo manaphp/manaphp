@@ -1377,6 +1377,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
             if (is_numeric($value)) {
                 foreach ((new \ReflectionClass(get_called_class()))->getConstants() as $cName => $cValue) {
+                    /** @noinspection TypeUnsafeComparisonInspection */
                     if ($cValue == $value && stripos($cName, $field) === 0) {
                         $data['*human_const*'][$field] = $cName;
                     }
