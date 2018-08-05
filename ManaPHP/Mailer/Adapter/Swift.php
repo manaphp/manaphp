@@ -105,7 +105,6 @@ class Swift extends Mailer
 
         $swiftMessage->setSubject($message->getSubject());
         $swiftMessage->setBody($message->getHtmlBody());
-        $swiftMessage->setContentType($message->getContentType());
 
         if ($priority = $message->getPriority()) {
             $swiftMessage->setPriority($priority);
