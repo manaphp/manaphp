@@ -80,10 +80,8 @@ class Redis extends Component
 
         if (isset($parts['path'])) {
             $path = trim($parts['path'], '/');
-            if ($path !== '') {
-                if (!is_numeric($path)) {
-                    throw new DsnFormatException(['`:url` url is invalid, `:db` db is not integer', 'url' => $url, 'db' => $path]);
-                }
+            if ($path !== '' && !is_numeric($path)) {
+                throw new DsnFormatException(['`:url` url is invalid, `:db` db is not integer', 'url' => $url, 'db' => $path]);
             }
             $this->_db = (int)$path;
         }
