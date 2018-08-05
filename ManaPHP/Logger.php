@@ -169,7 +169,7 @@ class Logger extends Component implements LoggerInterface
             }
         }
 
-        if ($i >= 0 && isset($trace['file'], $trace['line'])) {
+        if (isset($trace) && $i >= 0 && isset($trace['file'], $trace['line'])) {
             return basename($trace['file']) . ':' . $trace['line'];
         }
 
