@@ -150,10 +150,6 @@ class View extends Component implements ViewInterface
      */
     public function _render($template, $vars, $directOutput)
     {
-        if ($template[0] !== '@' && strpos($template, '/') !== false) {
-            throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
-        }
-
         if (isset($vars['view'])) {
             throw new MisuseException('variable `view` is reserved for view');
         }
