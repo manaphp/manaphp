@@ -1,7 +1,6 @@
 <?php
 
 namespace ManaPHP;
-use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 
@@ -158,7 +157,7 @@ class View extends Component implements ViewInterface
     {
         if ($template[0] !== '@') {
             if (strpos($template, '/') !== false) {
-                throw new InvalidFormatException(['`:template` template can not contains relative path', 'template' => $template]);
+                throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
             $template = dirname($this->_current_template) . '/' . $template;
@@ -166,12 +165,12 @@ class View extends Component implements ViewInterface
         $this->_current_template = $template;
 
         if (isset($vars['view'])) {
-            throw new InvalidValueException('variable `view` is reserved for view');
+            throw new MisuseException('variable `view` is reserved for view');
         }
         $vars['view'] = $this;
 
         if (isset($vars['request'])) {
-            throw new InvalidValueException('variable `request` is reserved for view');
+            throw new MisuseException('variable `request` is reserved for view');
         }
         $vars['request'] = isset($this->request) ? $this->request : null;
 
