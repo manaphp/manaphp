@@ -68,10 +68,8 @@ class TaskController extends Controller
      */
     public function runCommand($task = '')
     {
-        if (!$task) {
-            if ($tasks = $this->arguments->getValues()) {
-                $task = $tasks[0];
-            }
+        if (!$task && $tasks = $this->arguments->getValues()) {
+            $task = $tasks[0];
         }
 
         if (!$task) {
