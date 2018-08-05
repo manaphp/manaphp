@@ -46,9 +46,9 @@ class View extends Component implements ViewInterface
     protected $_pickedView;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $_current_template;
+    protected $_templates = [];
 
     public function __construct()
     {
@@ -160,9 +160,9 @@ class View extends Component implements ViewInterface
                 throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
-            $template = dirname($this->_current_template) . '/' . $template;
+            $template = dirname(end($this->_templates)) . '/' . $template;
         }
-        $this->_current_template = $template;
+        $this->_templates[] = $template;
 
         if (isset($vars['view'])) {
             throw new MisuseException('variable `view` is reserved for view');
@@ -174,7 +174,9 @@ class View extends Component implements ViewInterface
         }
         $vars['request'] = isset($this->request) ? $this->request : null;
 
-        return $this->renderer->render($template, $vars, $directOutput);
+        $r = $this->renderer->render($template, $vars, $directOutput);
+        array_pop($this->_templates);
+        return $r;
     }
 
     /**

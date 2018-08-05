@@ -36,9 +36,9 @@ class Renderer extends Component implements RendererInterface
     protected $_sectionStack = [];
 
     /**
-     * @var string
+     * @var array
      */
-    protected $_current_template;
+    protected $_templates = [];
 
     /**
      * Renderer constructor.
@@ -71,12 +71,12 @@ class Renderer extends Component implements RendererInterface
                 throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
-            $template = dirname($this->_current_template) . '/' . $template;
+            $template = dirname(end($this->_templates)) . '/' . $template;
         } else {
             $template = $this->alias->resolve($template);
         }
 
-        $this->_current_template = $template;
+        $this->_templates[] = $template;
 
         foreach ($this->_engines as $extension => $engine) {
             if (is_file($file = $template . $extension)) {
@@ -135,6 +135,8 @@ class Renderer extends Component implements RendererInterface
             ]);
         }
 
+        array_pop($this->_templates);
+
         return $content;
     }
 
@@ -161,7 +163,7 @@ class Renderer extends Component implements RendererInterface
                 throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
-            $template = dirname($this->_current_template) . '/' . $template;
+            $template = dirname(end($this->_templates)) . '/' . $template;
         } else {
             $template = $this->alias->resolve($template);
         }
