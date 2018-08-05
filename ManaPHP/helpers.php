@@ -562,9 +562,7 @@ if (!function_exists('elapsed')) {
             $key = $previous;
         } else {
             $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-            if (isset($backtrace['class'])) {
-                $key = $backtrace['class'] . $backtrace['function'];
-            }
+            $key = $backtrace['class'] . $backtrace['function'];
         }
 
         if (!isset($stack[$key]) || count($stack[$key]) % 2 === 0) {
