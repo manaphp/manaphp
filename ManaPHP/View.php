@@ -211,7 +211,7 @@ class View extends Component implements ViewInterface
         if (($pos = strpos($this->_controllerName, '/')) !== false) {
             $dir = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/' . substr($this->_controllerName, $pos + 1);
         } else {
-            $dir = "@app/Views/{$this->_controllerName}";
+            $dir = "@views/{$this->_controllerName}";
         }
 
         if ($this->filesystem->dirExists($dir)) {
@@ -229,10 +229,10 @@ class View extends Component implements ViewInterface
                 if ($pos !== false) {
                     $layout = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Layouts' . substr($this->_controllerName, $pos);
                     if (!$this->filesystem->dirExists(dirname($layout))) {
-                        $layout = '@app/Views/Layouts/' . ucfirst($this->_layout ?: 'Default');
+                        $layout = '@views/Layouts/' . ucfirst($this->_layout ?: 'Default');
                     }
                 } else {
-                    $layout = '@app/Views/Layouts/' . ucfirst($this->_layout ?: $this->_controllerName);
+                    $layout = '@views/Layouts/' . ucfirst($this->_layout ?: $this->_controllerName);
                 }
             }
             $this->_content = $this->_render($layout, $this->_vars, false);
@@ -302,7 +302,7 @@ class View extends Component implements ViewInterface
     {
         if (($pos = strpos($widget, '/')) === false) {
             $widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$widget}Widget");
-            $view = '@app/Views/Widgets/' . $widget;
+            $view = '@views/Widgets/' . $widget;
 
             if (!class_exists($widgetClassName) && ($pos = strpos($this->_controllerName, '/')) !== false) {
                 $widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($this->_controllerName, 0, $pos) . "\\Widgets\\{$widget}Widget");
@@ -311,7 +311,7 @@ class View extends Component implements ViewInterface
         } else {
             if ($pos === 0) {
                 $widgetClassName = $this->alias->resolveNS('@ns.app\\Widgets\\' . substr($widget, 1) . 'Widget');
-                $view = '@app/Views/Widgets/' . substr($widget, 1);
+                $view = '@views/Widgets/' . substr($widget, 1);
             } else {
                 $widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($widget, 0, $pos) . '\\Widgets\\' . substr($widget, $pos + 1) . 'Widget');
                 $view = '@app/Areas/' . substr($widget, 0, $pos) . '/Views/Widgets/' . substr($widget, $pos + 1);
@@ -366,7 +366,7 @@ class View extends Component implements ViewInterface
     public function block($path, $vars = [])
     {
         if ($path[0] !== '@' && strpos($path, '/') === false) {
-            $path = "@app/Views/Blocks/$path";
+            $path = "@views/Blocks/$path";
         }
 
         $this->_render($path, $vars, true);

@@ -47,8 +47,8 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
         }
 
         if ($this->configure->debug) {
-            if ($this->renderer->exists('@app/Views/Errors/debug')) {
-                return $this->renderer->render('@app/Views/Errors/debug', ['exception' => $exception]);
+            if ($this->renderer->exists('@views/Errors/debug')) {
+                return $this->renderer->render('@views/Errors/debug', ['exception' => $exception]);
             } else {
                 return $this->renderer->render('@manaphp/Mvc/ErrorHandler/Views/debug', ['exception' => $exception]);
             }
@@ -56,8 +56,8 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
 
         $statusCode = $exception instanceof \ManaPHP\Exception ? $exception->getStatusCode() : 500;
 
-        foreach (["@app/Views/Errors/$statusCode",
-                     '@app/Views/Errors/error'] as $template) {
+        foreach (["@views/Errors/$statusCode",
+                     '@views/Errors/error'] as $template) {
             if ($this->renderer->exists($template)) {
                 return $this->renderer->render($template, ['statusCode' => $statusCode, 'exception' => $exception]);
             }

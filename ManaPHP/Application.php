@@ -70,11 +70,12 @@ abstract class Application extends Component implements ApplicationInterface
 
             if ($appDir) {
                 $this->alias->set('@app', $appDir);
-            }
+                if ($appNamespace) {
+                    $this->alias->set('@ns.app', $appNamespace);
+                    $this->loader->registerNamespaces([$appNamespace => $appDir]);
+                }
 
-            if ($appNamespace) {
-                $this->alias->set('@ns.app', $appNamespace);
-                $this->loader->registerNamespaces([$appNamespace => $appDir]);
+                $this->alias->set('@views', $appDir . '/Views');
             }
         }
 
