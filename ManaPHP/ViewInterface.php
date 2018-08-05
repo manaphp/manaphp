@@ -97,6 +97,14 @@ interface ViewInterface
     public function widget($widget, $vars = [], $cacheOptions = null);
 
     /**
+     * @param string $path
+     * @param array  $vars
+     *
+     * @return void
+     */
+    public function block($path, $vars = []);
+    
+    /**
      * Externally sets the view content
      *
      * @param string $content

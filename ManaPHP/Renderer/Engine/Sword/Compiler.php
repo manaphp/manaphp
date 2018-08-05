@@ -541,6 +541,18 @@ class Compiler extends Component
     }
 
     /**
+     * Compile the block statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compileBlock($expression)
+    {
+        return "<?php block{$expression} ?>";
+    }
+
+    /**
      * Compile the break statements into valid PHP.
      *
      * @param  string $expression

@@ -101,3 +101,16 @@ if (!function_exists('partial')) {
         Di::getDefault()->view->partial($path, $vars);
     }
 }
+
+if (!function_exists('block')) {
+    /**
+     * @param string $path
+     * @param array  $vars
+     *
+     * @return void
+     */
+    function block($path, $vars = [])
+    {
+        Di::getDefault()->view->block($path, $vars);
+    }
+}

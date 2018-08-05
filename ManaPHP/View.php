@@ -358,6 +358,21 @@ class View extends Component implements ViewInterface
     }
 
     /**
+     * @param string $path
+     * @param array  $vars
+     *
+     * @return void
+     */
+    public function block($path, $vars = [])
+    {
+        if ($path[0] !== '@' && strpos($path, '/') === false) {
+            $path = "@app/Views/Blocks/$path";
+        }
+
+        $this->_render($path, $vars, true);
+    }
+
+    /**
      * Externally sets the view content
      *
      *<code>
