@@ -385,6 +385,8 @@ class Di implements DiInterface
             $params = $definition;
             $definition = $definition[0];
             unset($params[0], $params['shared']);
+        } else {
+            $params = [];
         }
 
         if ($parameters === null) {
