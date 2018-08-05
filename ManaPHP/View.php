@@ -3,6 +3,7 @@
 namespace ManaPHP;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 
 /**
  * Class ManaPHP\View
@@ -300,22 +301,16 @@ class View extends Component implements ViewInterface
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
-        if (($pos = strpos($widget, '/')) === false) {
-            $widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$widget}Widget");
-            $view = '@views/Widgets/' . $widget;
+        if (strpos($widget, '/') !== false) {
+            throw new MisuseException('it is not allowed to access other area widgets');
+        }
 
-            if (!class_exists($widgetClassName) && ($pos = strpos($this->_controllerName, '/')) !== false) {
-                $widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($this->_controllerName, 0, $pos) . "\\Widgets\\{$widget}Widget");
-                $view = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Widgets/' . $widget;
-            }
-        } else {
-            if ($pos === 0) {
-                $widgetClassName = $this->alias->resolveNS('@ns.app\\Widgets\\' . substr($widget, 1) . 'Widget');
-                $view = '@views/Widgets/' . substr($widget, 1);
-            } else {
-                $widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($widget, 0, $pos) . '\\Widgets\\' . substr($widget, $pos + 1) . 'Widget');
-                $view = '@app/Areas/' . substr($widget, 0, $pos) . '/Views/Widgets/' . substr($widget, $pos + 1);
-            }
+        $widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$widget}Widget");
+        $view = '@views/Widgets/' . $widget;
+
+        if (!class_exists($widgetClassName) && ($pos = strpos($this->_controllerName, '/')) !== false) {
+            $widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($this->_controllerName, 0, $pos) . "\\Widgets\\{$widget}Widget");
+            $view = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Widgets/' . $widget;
         }
 
         if (!class_exists($widgetClassName)) {
