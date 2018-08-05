@@ -11,7 +11,6 @@ use ManaPHP\Exception\MisuseException;
  *
  * @property \ManaPHP\RendererInterface     $renderer
  * @property \ManaPHP\Cache\EngineInterface $viewsCache
- * @property \ManaPHP\Http\RequestInterface $request
  */
 class View extends Component implements ViewInterface
 {
@@ -166,11 +165,6 @@ class View extends Component implements ViewInterface
     /**
      * Executes render process from dispatching data
      *
-     *<code>
-     * //Shows recent posts view (app/views/posts/recent.phtml)
-     * $view->start()->render('posts', 'recent')->finish();
-     *</code>
-     *
      * @param string $controller
      * @param string $action
      *
@@ -234,21 +228,6 @@ class View extends Component implements ViewInterface
     /**
      * Choose a different view to render instead of last-controller/last-action
      *
-     * <code>
-     * class ProductsController extends \ManaPHP\Mvc\Controller
-     * {
-     *
-     *    public function saveAction()
-     *    {
-     *
-     *         //Do some save stuff...
-     *
-     *         //Then show the list view
-     *         $this->view->pick("products/list");
-     *    }
-     * }
-     * </code>
-     *
      * @param string $view
      *
      * @return static
@@ -262,16 +241,6 @@ class View extends Component implements ViewInterface
 
     /**
      * Renders a partial view
-     *
-     * <code>
-     *    //Show a partial inside another view
-     *    $this->partial('shared/footer');
-     * </code>
-     *
-     * <code>
-     *    //Show a partial inside another view with parameters
-     *    $this->partial('shared/footer', array('content' => $html));
-     * </code>
      *
      * @param string $path
      * @param array  $vars
