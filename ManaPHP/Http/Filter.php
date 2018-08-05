@@ -240,11 +240,10 @@ class Filter extends Component implements FilterInterface
 
     /**
      * @param string $value
-     * @param array  $parameters
      *
      * @return string
      */
-    protected function _filter_xss($value, $parameters)
+    protected function _filter_xss($value)
     {
         if ($value === '') {
             return $value;
@@ -626,11 +625,10 @@ class Filter extends Component implements FilterInterface
 
     /**
      * @param string $value
-     * @param array  $parameters
      *
      * @return string
      */
-    public function _filter_escape($value, $parameters)
+    public function _filter_escape($value)
     {
         return htmlspecialchars($value);
     }
