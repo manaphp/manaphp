@@ -199,8 +199,10 @@ class View extends Component implements ViewInterface
         $this->fireEvent('view:beforeRender');
 
         if (($pos = strpos($this->_controllerName, '/')) !== false) {
-            $dir = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/' . substr($this->_controllerName, $pos + 1);
+            $area = substr($this->_controllerName, 0, $pos);
+            $dir = "@app/Areas/$area/Views/" . substr($this->_controllerName, $pos + 1);
         } else {
+            $area = null;
             $dir = "@views/{$this->_controllerName}";
         }
 
@@ -216,8 +218,8 @@ class View extends Component implements ViewInterface
             if ($this->_layout[0] === '@') {
                 $layout = $this->_layout;
             } else {
-                if ($pos !== false) {
-                    $layout = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Layouts' . substr($this->_controllerName, $pos);
+                if ($area) {
+                    $layout = "@app/Areas/$area/Views/Layouts" . substr($this->_controllerName, $pos);
                     if (!$this->filesystem->dirExists(dirname($layout))) {
                         $layout = '@views/Layouts/' . ucfirst($this->_layout ?: 'Default');
                     }
@@ -296,8 +298,9 @@ class View extends Component implements ViewInterface
 
         do {
             if (($pos = strpos($this->_controllerName, '/')) !== false) {
-                $view = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Widgets/' . $widget;
-                if (class_exists($widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($this->_controllerName, 0, $pos) . "\\Widgets\\{$widget}Widget"))) {
+                $area = substr($this->_controllerName, 0, $pos);
+                $view = "@app/Areas/$area/Views/Widgets/$widget";
+                if (class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Widgets\\{$widget}Widget"))) {
                     break;
                 }
             }
