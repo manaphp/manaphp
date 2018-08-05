@@ -2,7 +2,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\FileNotFoundException;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PathCaseSensitiveException;
 use ManaPHP\Exception\PreconditionException;
@@ -69,7 +68,7 @@ class Renderer extends Component implements RendererInterface
 
         if ($template[0] !== '@') {
             if (strpos($template, '/') !== false) {
-                throw new InvalidValueException(['`:template` template can not contains relative path', 'template' => $template]);
+                throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
             $template = dirname($this->_current_template) . '/' . $template;
@@ -159,7 +158,7 @@ class Renderer extends Component implements RendererInterface
     {
         if ($template[0] !== '@') {
             if (strpos($template, '/') !== false) {
-                throw new InvalidValueException(['`:template` template can not contains relative path', 'template' => $template]);
+                throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
             }
 
             $template = dirname($this->_current_template) . '/' . $template;
