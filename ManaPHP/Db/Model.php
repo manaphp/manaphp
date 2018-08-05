@@ -278,11 +278,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $criteria = static::criteria(null, $this)->where($this->_getPrimaryKeyValuePairs());
         $criteria->update($fieldValues);
-        if ($expressionFields) {
-            if ($rs = $criteria->select($expressionFields)->execute()) {
-                foreach ((array)$rs[0] as $field => $value) {
-                    $this->$field = $value;
-                }
+        if ($expressionFields && $rs = $criteria->select($expressionFields)->execute()) {
+            foreach ((array)$rs[0] as $field => $value) {
+                $this->$field = $value;
             }
         }
 
