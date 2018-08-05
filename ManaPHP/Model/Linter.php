@@ -82,6 +82,8 @@ class Linter extends Component
             } elseif ($methodName === 'rules') {
                 $some = array_keys($model->rules());
                 $all = $model->getFields();
+            } else {
+                continue;
             }
 
             $r[$methodName][self::METHOD_FIELDS_BAD] = array_diff($some, $all);
