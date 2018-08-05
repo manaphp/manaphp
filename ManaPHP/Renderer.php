@@ -2,8 +2,8 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\FileNotFoundException;
-use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PathCaseSensitiveException;
 use ManaPHP\Exception\PreconditionException;
 
@@ -98,17 +98,17 @@ class Renderer extends Component implements RendererInterface
                 $this->fireEvent('renderer:beforeRender', $eventArguments);
 
                 if (isset($vars['renderer'])) {
-                    throw new InvalidArgumentException('variable `renderer` is reserved for renderer');
+                    throw new MisuseException('variable `renderer` is reserved for renderer');
                 }
                 $vars['renderer'] = $this;
 
                 if (isset($vars['di'])) {
-                    throw new InvalidArgumentException('variable `di` is reserved for renderer');
+                    throw new MisuseException('variable `di` is reserved for renderer');
                 }
                 $vars['di'] = $this->_di;
 
                 if (isset($vars['url'])) {
-                    throw new InvalidArgumentException('variable `url` is reserved for renderer');
+                    throw new MisuseException('variable `url` is reserved for renderer');
                 }
                 $vars['url'] = isset($this->url) ? $this->url : null;
 
