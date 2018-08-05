@@ -121,7 +121,7 @@ class Handler extends Component implements HandlerInterface
         if ($commandName !== null && $commandName[0] === '-') {
             $commandName = null;
         }
-        
+
         if ($controllerName === 'list') {
             $controllerName = 'help';
             $commandName = $commandName ?: 'list';
@@ -174,12 +174,10 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        if ($commandName !== 'help') {
-            if (in_array('--help', $this->_args, true)) {
-                $commandName = 'help';
-            }
+        if ($commandName !== 'help' && in_array('--help', $this->_args, true)) {
+            $commandName = 'help';
         }
-		
+
         if (!method_exists($controllerInstance, $commandName . 'Command')) {
             $guessed = $this->_guessCommand($controllerClassName, $commandName);
             if (!$guessed) {
