@@ -1371,10 +1371,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
             $value = $this->$field;
 
-            if (is_int($value)) {
-                if ($value > 100000000 /**1973/3/3 17:46:40*/ && strpos($field, '_id') === false) {
-                    $data['*human_time*'][$field] = date('Y-m-d H:i:s', $value);
-                }
+            if (is_int($value) && $value > 100000000 /**1973/3/3 17:46:40*/ && strpos($field, '_id') === false) {
+                $data['*human_time*'][$field] = date('Y-m-d H:i:s', $value);
             }
 
             if (is_numeric($value)) {
