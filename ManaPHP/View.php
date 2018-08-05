@@ -305,17 +305,20 @@ class View extends Component implements ViewInterface
             throw new MisuseException('it is not allowed to access other area widgets');
         }
 
-        $widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$widget}Widget");
-        $view = '@views/Widgets/' . $widget;
+        do {
+            if (($pos = strpos($this->_controllerName, '/')) !== false) {
+                $view = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Widgets/' . $widget;
+                if (class_exists($widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($this->_controllerName, 0, $pos) . "\\Widgets\\{$widget}Widget"))) {
+                    break;
+                }
+            }
 
-        if (!class_exists($widgetClassName) && ($pos = strpos($this->_controllerName, '/')) !== false) {
-            $widgetClassName = $this->alias->resolveNS('@ns.app\\Areas\\' . substr($this->_controllerName, 0, $pos) . "\\Widgets\\{$widget}Widget");
-            $view = '@app/Areas/' . substr($this->_controllerName, 0, $pos) . '/Views/Widgets/' . $widget;
-        }
-
-        if (!class_exists($widgetClassName)) {
-            throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists', 'widget' => $widget, 'class' => $widgetClassName]);
-        }
+            /** @noinspection SuspiciousAssignmentsInspection */
+            $view = '@views/Widgets/' . $widget;
+            if (!class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$widget}Widget"))) {
+                throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists', 'widget' => $widget, 'class' => $widgetClassName]);
+            }
+        } while (false);
 
         /**
          * @var \ManaPHP\View\WidgetInterface $widgetInstance
