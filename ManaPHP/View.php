@@ -45,11 +45,6 @@ class View extends Component implements ViewInterface
      */
     protected $_pickedView;
 
-    /**
-     * @var array
-     */
-    protected $_templates = [];
-
     public function __construct()
     {
         $this->loader->registerFiles('@manaphp/View/helpers.php');
@@ -155,14 +150,9 @@ class View extends Component implements ViewInterface
      */
     public function _render($template, $vars, $directOutput)
     {
-        if ($template[0] !== '@') {
-            if (strpos($template, '/') !== false) {
-                throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
-            }
-
-            $template = dirname(end($this->_templates)) . '/' . $template;
+        if ($template[0] !== '@' && strpos($template, '/') !== false) {
+            throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
         }
-        $this->_templates[] = $template;
 
         if (isset($vars['view'])) {
             throw new MisuseException('variable `view` is reserved for view');
@@ -174,9 +164,7 @@ class View extends Component implements ViewInterface
         }
         $vars['request'] = isset($this->request) ? $this->request : null;
 
-        $r = $this->renderer->render($template, $vars, $directOutput);
-        array_pop($this->_templates);
-        return $r;
+        return $this->renderer->render($template, $vars, $directOutput);
     }
 
     /**
