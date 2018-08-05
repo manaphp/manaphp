@@ -316,7 +316,8 @@ class Debugger extends Component implements DebuggerInterface
             'system_time' => date('Y-m-d H:i:s'),
             'server_ip' => isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '',
             'client_ip' => $_SERVER['REMOTE_ADDR'],
-            'operating_system' => php_uname(),
+            'operating_system' => /** @noinspection ConstantCanBeUsedInspection */
+                php_uname(),
             'manaphp_version' => Version::get(),
             'php_version' => PHP_VERSION,
             'sapi' => PHP_SAPI,
