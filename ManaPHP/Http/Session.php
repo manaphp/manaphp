@@ -62,6 +62,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
             $this->_ttl = (int)ini_get('session.gc_maxlifetime');
         }
 
+        /** @noinspection PhpParamsInspection */
         session_set_save_handler(
             [$this, '_handler_open'], [$this, '_handler_close'],
             [$this, '_handler_read'], [$this, '_handler_write'],
