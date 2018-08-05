@@ -98,6 +98,6 @@ if (!function_exists('partial')) {
      */
     function partial($path, $vars = [])
     {
-        Di::getDefault()->renderer->partial($path, $vars);
+        Di::getDefault()->view->partial($path, $vars);
     }
 }
