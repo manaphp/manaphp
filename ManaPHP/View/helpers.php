@@ -114,3 +114,31 @@ if (!function_exists('block')) {
         Di::getDefault()->view->block($path, $vars);
     }
 }
+
+if (!function_exists('pager')) {
+    /**
+     * @param \ManaPHP\Paginator|string $template
+     * @param \ManaPHP\Paginator|string $pagination
+     *
+     * @return
+     */
+    function pager($template = null, $pagination = null)
+    {
+        /** @noinspection SuspiciousAssignmentsInspection */
+        $template = $pagination = null;
+
+        foreach (func_get_args() as $value) {
+            if (is_string($value)) {
+                $template = $value;
+            } elseif (is_object($value)) {
+                $pagination = $value;
+            }
+        }
+
+        if (!$pagination) {
+            $pagination = di('paginator');
+        }
+
+        return $pagination->renderAsHtml($template);
+    }
+}

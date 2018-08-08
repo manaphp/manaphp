@@ -745,6 +745,18 @@ class Compiler extends Component
     }
 
     /**
+     * Compile the pager statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compilePager($expression)
+    {
+        return "<?php echo pager{$expression}; ?>";
+    }
+
+    /**
      * Compile the json statements into valid PHP.
      *
      * @param  string $expression
