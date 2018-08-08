@@ -745,15 +745,15 @@ class Compiler extends Component
     }
 
     /**
-     * Compile the json statements into valid PHP.
+     * Compile the t statements into valid PHP.
      *
      * @param  string $expression
      *
      * @return string
      */
-    protected function _compileTranslate($expression)
+    protected function _compileT($expression)
     {
-        return "<?php echo \$di->translation->translate{$expression}; ?>";
+        return "<?php echo t{$expression}; ?>";
     }
 
     /**

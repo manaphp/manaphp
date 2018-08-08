@@ -142,3 +142,16 @@ if (!function_exists('pager')) {
         return $pagination->renderAsHtml($template);
     }
 }
+
+if (!function_exists('t')) {
+    /**
+     * @param string $id
+     * @param array  $bind
+     *
+     * @return string
+     */
+    function t($id, $bind = [])
+    {
+        return di('translation')->translate($id, $bind);
+    }
+}
