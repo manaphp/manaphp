@@ -733,18 +733,6 @@ class Compiler extends Component
     }
 
     /**
-     * Compile the json statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compilePagination($expression)
-    {
-        return "<?php echo \$di->paginator->renderAsHtml{$expression}; ?>";
-    }
-
-    /**
      * Compile the pager statements into valid PHP.
      *
      * @param  string $expression
