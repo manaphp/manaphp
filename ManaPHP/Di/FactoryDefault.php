@@ -41,6 +41,7 @@ class FactoryDefault extends Di
             'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
             'session' => 'ManaPHP\Http\Session',
             'view' => 'ManaPHP\View',
+            'html' => 'ManaPHP\View\Html',
             'logger' => 'ManaPHP\Logger',
             'renderer' => 'ManaPHP\Renderer',
             'debugger' => 'ManaPHP\Debugger',
