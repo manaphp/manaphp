@@ -657,7 +657,7 @@ class Compiler extends Component
             $expression = '(\'' . trim($expression, '()') . '\')';
         }
 
-        return "<?php echo \$url->get{$expression}; ?>";
+        return "<?php echo url{$expression}; ?>";
     }
 
     /**

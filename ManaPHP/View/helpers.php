@@ -63,6 +63,18 @@ if (!function_exists('constants')) {
     }
 }
 
+if (!function_exists('url')) {
+    /**
+     * @param string|array $args
+     *
+     * @return string
+     */
+    function url($args)
+    {
+        return di('url')->get($args);
+    }
+}
+
 if (!function_exists('asset')) {
     /**
      * @param string $path
