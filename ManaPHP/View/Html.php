@@ -20,15 +20,17 @@ class Html extends Component
     public function render($name, $data)
     {
         if (isset($data['value'])) {
-            $current_value = $data['value'];
+            $value = $data['value'];
             unset($data['value']);
+        } elseif (isset($data['name'])) {
+            $value = $this->request->getInput($data['name'], '');
         } else {
-            $current_value = $this->request->getInput($name, '');
+            $value = null;
         }
 
         $method = '_render_' . $name;
         if (method_exists($this, $method)) {
-            return $this->$method($data, $current_value);
+            return $this->$method($data, $value);
         } else {
             throw new InvalidArgumentException('sss');
         }
@@ -70,7 +72,7 @@ class Html extends Component
         $r .= '>' . PHP_EOL;
 
         foreach ((array)$options as $value => $label) {
-            $r .= "  <option value=\"$value\"";
+            $r .= '  <option value="' . (is_numeric($value) ? $value : htmlspecialchars($value)) . '"';
             /** @noinspection TypeUnsafeComparisonInspection */
             if (($value === '' && $current_value === '') || ($current_value !== '' && $value == $current_value)) {
                 $r .= ' selected';
