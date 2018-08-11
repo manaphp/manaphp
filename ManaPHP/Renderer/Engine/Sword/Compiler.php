@@ -821,7 +821,7 @@ class Compiler extends Component
         if (preg_match('#^\\(([\'"]?)([/_a-z\d]+)\1\\)$#i', $expression, $match)) {
             return $this->router->createUrl($match[2]);
         } else {
-            return "<?php echo \$this->router->createActionUrl{$expression} ?>";
+            return "<?php echo action{$expression} ?>";
         }
     }
 
