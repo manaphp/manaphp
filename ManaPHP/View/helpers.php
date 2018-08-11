@@ -120,7 +120,7 @@ if (!function_exists('pager')) {
      * @param \ManaPHP\Paginator|string $template
      * @param \ManaPHP\Paginator|string $pagination
      *
-     * @return
+     * @return string
      */
     function pager($template = null, $pagination = null)
     {
