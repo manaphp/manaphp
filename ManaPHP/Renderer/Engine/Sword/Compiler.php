@@ -808,6 +808,15 @@ class Compiler extends Component
     }
 
     /**
+     *
+     * @return string
+     */
+    protected function _compileCsrf_token()
+    {
+        return "<?php echo csrf_token(); ?>";
+    }
+	
+    /**
      * Register a handler for custom directives.
      *
      * @param  string   $name

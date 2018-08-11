@@ -168,11 +168,11 @@ if (!function_exists('t')) {
     }
 }
 
-if (!function_exists('csrf_value')) {
+if (!function_exists('csrf_token')) {
     /**
      * @return string
      */
-    function csrf_value()
+    function csrf_token()
     {
         return di('csrfToken')->get();
     }
