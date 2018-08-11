@@ -815,7 +815,17 @@ class Compiler extends Component
     {
         return '<?php echo csrf_token(); ?>';
     }
-	
+
+    /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_html($expression)
+    {
+        return "<?php echo html{$expression}; ?>";
+    }
+
     /**
      * Register a handler for custom directives.
      *
