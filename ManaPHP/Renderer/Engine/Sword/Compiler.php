@@ -777,30 +777,6 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compileRequest(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        $parts = explode(',', substr($expression, 1, -1));
-
-        switch (count($parts)) {
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 1:
-                $parts[] = "''";
-            case 2:
-                return "<?php if(isset(\$_REQUEST[$parts[0]])) echo \$renderer->escape(\$_REQUEST[$parts[0]]); else echo $parts[1]; ?>";
-            default:
-                throw new InvalidFormatException(['bad expression: `:expression`', 'expression' => "@request($expression)"]);
-        }
-    }
-
-    /**
-     * Compile the eol statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
     protected function _compileDate(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
