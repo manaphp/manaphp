@@ -719,20 +719,6 @@ class Compiler extends Component
     }
 
     /**
-     * Compile the json statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compileCsrfToken(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
-        return '<?php echo $di->csrfToken->get(); ?>';
-    }
-
-    /**
      * Compile the pager statements into valid PHP.
      *
      * @param  string $expression

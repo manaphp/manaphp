@@ -155,3 +155,13 @@ if (!function_exists('t')) {
         return di('translation')->translate($id, $bind);
     }
 }
+
+if (!function_exists('csrf_value')) {
+    /**
+     * @return string
+     */
+    function csrf_value()
+    {
+        return di('csrfToken')->get();
+    }
+}
