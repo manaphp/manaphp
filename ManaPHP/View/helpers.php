@@ -188,3 +188,16 @@ if (!function_exists('csrf_field')) {
         return sprintf('<input type="hidden" name="%s" value="%s" />', $csrfToken->getName(), $csrfToken->get());
     }
 }
+
+if (!function_exists('html')) {
+    /**
+     * @param string $name
+     * @param array  $data
+     *
+     * @return string
+     */
+    function html($name, $data = [])
+    {
+        return di('html')->render($name, $data);
+    }
+}
