@@ -98,6 +98,14 @@ class CsrfToken extends Component implements CsrfTokenInterface
     }
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->_name;
+    }
+
+    /**
      * @return void
      * @throws \ManaPHP\Security\CsrfToken\Exception
      */

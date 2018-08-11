@@ -19,6 +19,11 @@ interface CsrfTokenInterface
     public function get();
 
     /**
+     * @return string
+     */
+    public function getName();
+
+    /**
      * @return void
      */
     public function verify();
