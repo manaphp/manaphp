@@ -51,7 +51,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property \ManaPHP\AuthorizationInterface           $authorization
  * @property \ManaPHP\Security\CaptchaInterface        $captcha
  * @property \ManaPHP\Security\CsrfTokenInterface      $csrfToken
- * @property \ManaPHP\Security\IdentityInterface       $identity
+ * @property \ManaPHP\IdentityInterface                $identity
  * @property \ManaPHP\Paginator                        $paginator
  * @property \ManaPHP\FilesystemInterface              $filesystem
  * @property \ManaPHP\Security\RandomInterface         $random

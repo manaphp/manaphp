@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\Security\Identity\Adapter;
+namespace ManaPHP\Identity\Adapter;
 
-use ManaPHP\Security\Identity;
+use ManaPHP\Identity;
 
 /**
  * Class Jwt
- * @package ManaPHP\Security\Identity\Adapter
+ * @package ManaPHP\Identity\Adapter
  * @property \ManaPHP\Http\RequestInterface $request
  */
 class Jwt extends Identity

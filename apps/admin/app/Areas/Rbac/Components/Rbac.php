@@ -13,8 +13,8 @@ use ManaPHP\Exception\InvalidValueException;
  *
  * @package rbac
  *
- * @property \ManaPHP\Mvc\DispatcherInterface    $dispatcher
- * @property \ManaPHP\Security\IdentityInterface $identity
+ * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property \ManaPHP\IdentityInterface       $identity
  */
 class Rbac extends Component implements AuthorizationInterface
 {

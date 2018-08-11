@@ -13,7 +13,7 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP\Authorization
  *
- * @property \ManaPHP\Security\IdentityInterface $identity
+ * @property \ManaPHP\IdentityInterface $identity
  */
 class Acl extends Component implements AuthorizationInterface, \Serializable
 {

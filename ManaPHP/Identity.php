@@ -1,12 +1,11 @@
 <?php
 
-namespace ManaPHP\Security;
+namespace ManaPHP;
 
-use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 
 /**
- * Class ManaPHP\Security\Identity
+ * Class ManaPHP\Identity
  */
 abstract class Identity extends Component implements IdentityInterface
 {

@@ -13,7 +13,7 @@ namespace ManaPHP;
  * @property \ManaPHP\Configuration\Configure         $configure
  * @property \ManaPHP\Configuration\SettingsInterface $settings
  * @property \ManaPHP\Security\CryptInterface         $crypt
- * @property \ManaPHP\Security\IdentityInterface      $identity
+ * @property \ManaPHP\IdentityInterface               $identity
  * @property \ManaPHP\Loader                          $loader
  * @property \ManaPHP\CacheInterface                  $cache
  * @property \ManaPHP\CacheInterface                  $redisCache

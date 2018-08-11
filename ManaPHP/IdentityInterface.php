@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Security;
+namespace ManaPHP;
 
 /**
- * Interface ManaPHP\Security\IdentityInterface
+ * Interface ManaPHP\IdentityInterface
  */
 interface IdentityInterface
 {

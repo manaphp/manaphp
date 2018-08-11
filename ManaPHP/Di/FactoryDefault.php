@@ -52,7 +52,7 @@ class FactoryDefault extends Di
             'captcha' => 'ManaPHP\Security\Captcha',
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
             'authorization' => 'ManaPHP\Authorization\Bypass',
-            'identity' => 'ManaPHP\Security\Identity\Adapter\Session',
+            'identity' => 'ManaPHP\Identity\Adapter\Session',
             'paginator' => 'ManaPHP\Paginator',
             'filesystem' => 'ManaPHP\Filesystem\Adapter\File',
             'random' => 'ManaPHP\Security\Random',
