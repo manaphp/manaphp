@@ -92,7 +92,25 @@ class Application extends \ManaPHP\Application
     public function coreComponents()
     {
         return [
-            'errorHandler' => 'ManaPHP\Mvc\ErrorHandler'
+            'router' => 'ManaPHP\Router',
+            'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
+            'actionInvoker' => 'ManaPHP\ActionInvoker',
+            'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
+            'url' => 'ManaPHP\View\Url',
+            'response' => 'ManaPHP\Http\Response',
+            'request' => 'ManaPHP\Http\Request',
+            'html' => 'ManaPHP\View\Html',
+            'view' => 'ManaPHP\View',
+            'flash' => 'ManaPHP\View\Flash\Adapter\Direct',
+            'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
+            'session' => 'ManaPHP\Http\Session',
+            'captcha' => 'ManaPHP\Security\Captcha',
+            'csrfToken' => 'ManaPHP\Security\CsrfToken',
+            'viewsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/viewsCache', 'extension' => '.html'],
+            'cookies' => 'ManaPHP\Http\Cookies',
+            'debugger' => 'ManaPHP\Debugger',
+            'authorization' => 'ManaPHP\Authorization\Bypass',
+            'swooleHttpServer' => 'ManaPHP\Swoole\HttpServer'
         ];
     }
 
