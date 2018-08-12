@@ -3,7 +3,6 @@ namespace ManaPHP\Renderer\Engine\Sword;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidArgumentException;
-use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\RuntimeException;
 
