@@ -35,6 +35,11 @@ class Response extends Component implements ResponseInterface
     /**
      * @var string
      */
+    protected $_status;
+
+    /**
+     * @var string
+     */
     protected $_file;
 
     /**
@@ -58,7 +63,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setStatus($code, $text)
     {
-        $this->setHeader('Status', $code . ' ' . $text);
+        $this->_status = $code . ' ' . $text;
 
         return $this;
     }
@@ -357,9 +362,8 @@ class Response extends Component implements ResponseInterface
      */
     public function sendHeaders()
     {
-        if (isset($this->_headers['Status'])) {
-            header('HTTP/1.1 ' . $this->_headers['Status']);
-            unset($this->_headers['Status']);
+        if ($this->_status) {
+            header('HTTP/1.1 ' . $this->_status);
         }
 
         foreach ($this->_headers as $header => $value) {
