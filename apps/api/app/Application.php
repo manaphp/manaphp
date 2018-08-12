@@ -2,7 +2,7 @@
 
 namespace App\Api;
 
-class Application extends \ManaPHP\Mvc\Application
+class Application extends \ManaPHP\Rest\Application
 {
     public function authenticate()
     {
