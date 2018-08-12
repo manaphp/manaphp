@@ -31,12 +31,8 @@ class Application extends \ManaPHP\Mvc\Application
     public function main()
     {
         $this->loader->registerFiles('@manaphp/helpers.php');
-
         $this->dotenv->load();
-
-        if ($this->_configFile) {
-            $this->configure->loadFile($this->_configFile);
-        }
+        $this->configure->loadFile();
 
         $this->registerServices();
         $this->alias->set('@messages', '@app/Messages');

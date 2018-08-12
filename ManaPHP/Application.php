@@ -16,11 +16,6 @@ use ManaPHP\Di\FactoryDefault;
 abstract class Application extends Component implements ApplicationInterface
 {
     /**
-     * @var string
-     */
-    protected $_configFile = '@config/app.php';
-
-    /**
      * Application constructor.
      *
      * @param \ManaPHP\Loader      $loader

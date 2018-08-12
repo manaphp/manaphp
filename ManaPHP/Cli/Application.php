@@ -9,7 +9,7 @@ use ManaPHP\Logger\LogCategorizable;
  *
  * @package application
  *
- * @property \ManaPHP\Cli\HandlerInterface  $cliHandler
+ * @property \ManaPHP\Cli\HandlerInterface $cliHandler
  */
 class Application extends \ManaPHP\Application implements LogCategorizable
 {
@@ -62,10 +62,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
     public function main()
     {
         $this->dotenv->load();
-
-        if ($this->_configFile && $this->filesystem->fileExists($this->_configFile)) {
-            $this->configure->loadFile($this->_configFile);
-        }
+        $this->configure->loadFile();
 
         $this->registerServices();
 
