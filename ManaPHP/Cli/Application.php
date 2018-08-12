@@ -24,12 +24,11 @@ class Application extends \ManaPHP\Application implements LogCategorizable
     /**
      * Application constructor.
      *
-     * @param \ManaPHP\Loader      $loader
-     * @param \ManaPHP\DiInterface $di
+     * @param \ManaPHP\Loader $loader
      */
-    public function __construct($loader, $di = null)
+    public function __construct($loader)
     {
-        parent::__construct($loader, $di);
+        parent::__construct($loader);
 
         if ($appDir = $this->alias->get('@app')) {
             if (is_dir("$appDir/Cli")) {
@@ -44,18 +43,12 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         }
     }
 
-    /**
-     * @return array
-     */
-    public function coreComponents()
+    public function getDi()
     {
-        return [
-            'cliHandler' => 'ManaPHP\Cli\Handler',
-            'console' => 'ManaPHP\Cli\Console',
-            'arguments' => 'ManaPHP\Cli\Arguments',
-            'commandInvoker' => 'ManaPHP\Cli\Command\Invoker',
-            'errorHandler' => 'ManaPHP\Cli\ErrorHandler'
-        ];
+        if (!$this->_di) {
+            $this->_di = new Factory();
+        }
+        return $this->_di;
     }
 
     public function registerServices()

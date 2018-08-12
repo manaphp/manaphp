@@ -22,12 +22,11 @@ class Application extends \ManaPHP\Application
     /**
      * Application constructor.
      *
-     * @param \ManaPHP\Loader      $loader
-     * @param \ManaPHP\DiInterface $di
+     * @param \ManaPHP\Loader $loader
      */
-    public function __construct($loader, $di = null)
+    public function __construct($loader)
     {
-        parent::__construct($loader, $di);
+        parent::__construct($loader);
 
         $web = '';
         if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {
@@ -39,6 +38,14 @@ class Application extends \ManaPHP\Application
         $this->alias->set('@web', $web);
 
         $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
+    }
+
+    public function getDi()
+    {
+        if (!$this->_di) {
+            $this->_di = new Factory();
+        }
+        return $this->_di;
     }
 
     public function authenticate()
@@ -84,34 +91,6 @@ class Application extends \ManaPHP\Application
         }
 
         return $this->response;
-    }
-
-    /**
-     * @return array
-     */
-    public function coreComponents()
-    {
-        return [
-            'router' => 'ManaPHP\Router',
-            'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
-            'actionInvoker' => 'ManaPHP\ActionInvoker',
-            'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
-            'url' => 'ManaPHP\View\Url',
-            'response' => 'ManaPHP\Http\Response',
-            'request' => 'ManaPHP\Http\Request',
-            'html' => 'ManaPHP\View\Html',
-            'view' => 'ManaPHP\View',
-            'flash' => 'ManaPHP\View\Flash\Adapter\Direct',
-            'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
-            'session' => 'ManaPHP\Http\Session',
-            'captcha' => 'ManaPHP\Security\Captcha',
-            'csrfToken' => 'ManaPHP\Security\CsrfToken',
-            'viewsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/viewsCache', 'extension' => '.html'],
-            'cookies' => 'ManaPHP\Http\Cookies',
-            'debugger' => 'ManaPHP\Debugger',
-            'authorization' => 'ManaPHP\Authorization\Bypass',
-            'swooleHttpServer' => 'ManaPHP\Swoole\HttpServer'
-        ];
     }
 
     public function main()

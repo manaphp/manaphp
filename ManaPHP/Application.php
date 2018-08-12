@@ -18,15 +18,13 @@ abstract class Application extends Component implements ApplicationInterface
     /**
      * Application constructor.
      *
-     * @param \ManaPHP\Loader      $loader
-     * @param \ManaPHP\DiInterface $di
+     * @param \ManaPHP\Loader $loader
      */
-    public function __construct($loader, $di = null)
+    public function __construct($loader)
     {
         ini_set('default_socket_timeout', -1);
 
-        $this->_di = $di ?: new FactoryDefault();
-        $GLOBALS['DI'] = $this->_di;
+        $GLOBALS['DI'] = $this->getDi();
 
         $loader->alias = $this->alias;
 
@@ -92,11 +90,6 @@ abstract class Application extends Component implements ApplicationInterface
         throw new AbortException($message, $code);
     }
 
-    /**
-     * @return array
-     */
-    abstract public function coreComponents();
-
     public function registerServices()
     {
         $routerClass = $this->alias->resolveNS('@ns.app\Router');
@@ -111,10 +104,6 @@ abstract class Application extends Component implements ApplicationInterface
 
         foreach ($configure->aliases as $alias => $path) {
             $this->_di->alias->set($alias, $path);
-        }
-
-        foreach ($this->coreComponents() as $component => $definition) {
-            $this->_di->setShared($component, $definition);
         }
 
         foreach ($configure->components as $component => $definition) {
