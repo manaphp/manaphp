@@ -14,7 +14,7 @@ interface ConfigureInterface
      *
      * @return static
      */
-    public function loadFile($files = ['@config/app.php']);
+    public function loadFile($files = '@config/app.php');
 
     /**
      * @param array $data

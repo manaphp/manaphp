@@ -78,7 +78,7 @@ class Configure extends Component implements ConfigureInterface
      *
      * @return static
      */
-    public function loadFile($files = ['@config/app.php'])
+    public function loadFile($files = '@config/app.php')
     {
         foreach ((array)$files as $file) {
             /**
