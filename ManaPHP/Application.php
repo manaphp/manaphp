@@ -18,11 +18,6 @@ abstract class Application extends Component implements ApplicationInterface
     /**
      * @var string
      */
-    protected $_dotenvFile = '@root/.env';
-
-    /**
-     * @var string
-     */
     protected $_configFile = '@config/app.php';
 
     /**

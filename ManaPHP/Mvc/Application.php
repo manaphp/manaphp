@@ -94,9 +94,7 @@ class Application extends \ManaPHP\Application
 
     public function main()
     {
-        if ($this->_dotenvFile && $this->filesystem->fileExists($this->_dotenvFile)) {
-            $this->dotenv->load($this->_dotenvFile);
-        }
+        $this->dotenv->load();
 
         if ($this->_configFile) {
             $this->configure->loadFile($this->_configFile);
