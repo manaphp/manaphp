@@ -84,13 +84,12 @@ class Application extends \ManaPHP\Application
 
         try {
             $this->handle();
-        } /** @noinspection PhpUndefinedClassInspection */
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->errorHandler->handle($e);
         } catch (\Error $e) {
             $this->errorHandler->handle($e);
         }
-        
+
         $this->response->send();
     }
 }
