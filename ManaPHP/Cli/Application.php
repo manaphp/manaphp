@@ -44,19 +44,25 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         }
     }
 
+    /**
+     * @return array
+     */
+    public function coreComponents()
+    {
+        return [
+            'cliHandler' => 'ManaPHP\Cli\Handler',
+            'console' => 'ManaPHP\Cli\Console',
+            'arguments' => 'ManaPHP\Cli\Arguments',
+            'commandInvoker' => 'ManaPHP\Cli\Command\Invoker',
+            'errorHandler' => 'ManaPHP\Cli\ErrorHandler'
+        ];
+    }
+
     public function registerServices()
     {
         $this->configure->bootstraps = array_diff($this->configure->bootstraps, ['debugger']);
 
-        $this->_di->setShared('cliHandler', 'ManaPHP\Cli\Handler');
-        $this->_di->setShared('console', 'ManaPHP\Cli\Console');
-        $this->_di->setShared('arguments', 'ManaPHP\Cli\Arguments');
-        $this->_di->setShared('commandInvoker', 'ManaPHP\Cli\Command\Invoker');
-        $this->_di->setShared('errorHandler', 'ManaPHP\Cli\ErrorHandler');
-
         parent::registerServices();
-
-        $this->_di->identity->setClaims([]);
     }
 
     public function main()

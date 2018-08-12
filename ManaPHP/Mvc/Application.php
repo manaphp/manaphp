@@ -86,10 +86,14 @@ class Application extends \ManaPHP\Application
         return $this->response;
     }
 
-    public function registerServices()
+    /**
+     * @return array
+     */
+    public function coreComponents()
     {
-        $this->_di->setShared('errorHandler', 'ManaPHP\Mvc\ErrorHandler');
-        parent::registerServices();
+        return [
+            'errorHandler' => 'ManaPHP\Mvc\ErrorHandler'
+        ];
     }
 
     public function main()

@@ -92,6 +92,11 @@ abstract class Application extends Component implements ApplicationInterface
         throw new AbortException($message, $code);
     }
 
+    /**
+     * @return array
+     */
+    abstract public function coreComponents();
+
     public function registerServices()
     {
         $routerClass = $this->alias->resolveNS('@ns.app\Router');
@@ -106,6 +111,10 @@ abstract class Application extends Component implements ApplicationInterface
 
         foreach ($configure->aliases as $alias => $path) {
             $this->_di->alias->set($alias, $path);
+        }
+
+        foreach ($this->coreComponents() as $component => $definition) {
+            $this->_di->setShared($component, $definition);
         }
 
         foreach ($configure->components as $component => $definition) {
