@@ -1300,8 +1300,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param string $name
      *
      * @return \ManaPHP\Model|\ManaPHP\Model[]|mixed
-     * @throws \ManaPHP\Exception\BadMethodCallException
-     * @throws \ManaPHP\Exception\NotSupportedException
      * @throws \ManaPHP\Exception\UnknownPropertyException
      */
     public function __get($name)
