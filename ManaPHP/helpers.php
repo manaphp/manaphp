@@ -283,7 +283,17 @@ if (!function_exists('input')) {
             }
         }
 
-        return di('request')->getInput($name, false, $default);
+        if (($value = di('request')->getInput($name, false, null)) === null) {
+            if ($default === null) {
+                $exception = new \ManaPHP\Exception\RequiredValidatorException($name);
+                $exception->parameter_name = $name;
+                throw $exception;
+            } else {
+                $value = $default;
+            }
+        }
+
+        return $value;
     }
 }
 
