@@ -4,6 +4,7 @@ namespace ManaPHP;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 
 class Dotenv extends Component implements DotenvInterface
@@ -11,7 +12,7 @@ class Dotenv extends Component implements DotenvInterface
     /**
      * @var string
      */
-    protected $_file = '@root/.env';
+    protected $_file;
 
     /**
      * @var array
@@ -61,9 +62,11 @@ class Dotenv extends Component implements DotenvInterface
      *
      * @return static
      */
-    public function load($file = null)
+    public function load($file = '@root/.env')
     {
-        $file = $this->alias->resolve($file ?: $this->_file);
+        $this->_file = $file;
+
+        $file = $this->alias->resolve($file);
         $parsed_file = $file . '.php';
         if (is_file($parsed_file)) {
             /** @noinspection PhpIncludeInspection */
@@ -77,7 +80,6 @@ class Dotenv extends Component implements DotenvInterface
         } else {
             throw new FileNotFoundException(['.env file is not found: :file', 'file' => $file]);
         }
-
 
         $this->_env += $env;
 
@@ -104,34 +106,36 @@ class Dotenv extends Component implements DotenvInterface
     {
         if ($key === null) {
             return $this->_env;
-        } else {
-            if (isset($this->_env[$key])) {
-                $value = $this->_env[$key];
-            } elseif ($default !== null) {
-                $value = $default;
-            } else {
-                throw new InvalidArgumentException(['`:key` key value is not exists in .env file', 'key' => $key]);
-            }
+        }
 
-            if (is_array($default)) {
-                return preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
-            } elseif (is_int($default)) {
-                return (int)$value;
-            } elseif (is_float($default)) {
-                return (float)$value;
-            } elseif (is_bool($default)) {
-                if (is_bool($value)) {
-                    return $value;
-                } elseif (in_array(strtolower($value), ['1', 'on', 'true'], true)) {
-                    return true;
-                } elseif (in_array(strtolower($value), ['0', 'off', 'false'], true)) {
-                    return false;
-                } else {
-                    throw new InvalidArgumentException(['`:key` key value is not a valid bool value: :value', 'key' => $key, 'value' => $value]);
-                }
-            } else {
+        if (isset($this->_env[$key])) {
+            $value = $this->_env[$key];
+        } elseif (!$this->_file) {
+            throw new PreconditionException('@root/.env file is not exists: you can copy from @root/.env.sample to @root/.env file');
+        } elseif ($default !== null) {
+            $value = $default;
+        } else {
+            throw new InvalidArgumentException(['`:key` key value is not exists in .env file', 'key' => $key]);
+        }
+
+        if (is_array($default)) {
+            return preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
+        } elseif (is_int($default)) {
+            return (int)$value;
+        } elseif (is_float($default)) {
+            return (float)$value;
+        } elseif (is_bool($default)) {
+            if (is_bool($value)) {
                 return $value;
+            } elseif (in_array(strtolower($value), ['1', 'on', 'true'], true)) {
+                return true;
+            } elseif (in_array(strtolower($value), ['0', 'off', 'false'], true)) {
+                return false;
+            } else {
+                throw new InvalidArgumentException(['`:key` key value is not a valid bool value: :value', 'key' => $key, 'value' => $value]);
             }
+        } else {
+            return $value;
         }
     }
 

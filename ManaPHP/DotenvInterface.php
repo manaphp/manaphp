@@ -8,7 +8,7 @@ interface DotenvInterface
      *
      * @return static
      */
-    public function load($file = null);
+    public function load($file = '@root/.env');
 
     /**
      * @param array $lines
