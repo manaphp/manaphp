@@ -270,10 +270,8 @@ class File extends Component implements FilesystemInterface
             $srcPath = $src . '/' . $item;
             $dstPath = $dst . '/' . $item;
             if (is_file($srcPath)) {
-                if ($overwrite || !file_exists($dstPath)) {
-                    if (!copy($srcPath, $dstPath)) {
-                        throw new RuntimeException(['copy `:src` file to `:dst` file failed: :last_error_message', 'src' => $srcPath, 'dst' => $dstPath]);
-                    }
+                if (($overwrite || !file_exists($dstPath)) && !copy($srcPath, $dstPath)) {
+                    throw new RuntimeException(['copy `:src` file to `:dst` file failed: :last_error_message', 'src' => $srcPath, 'dst' => $dstPath]);
                 }
             } elseif (is_dir($srcPath)) {
                 if ($overwrite || !is_dir($dstPath)) {
