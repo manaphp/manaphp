@@ -20,17 +20,25 @@ class Application extends \ManaPHP\Application
     /**
      * Application constructor.
      *
-     * @param \ManaPHP\Loader      $loader
-     * @param \ManaPHP\DiInterface $di
+     * @param \ManaPHP\Loader $loader
      */
-    public function __construct($loader, $di = null)
+    public function __construct($loader)
     {
-        parent::__construct($loader, $di);
-
+        ini_set('html_errors', 'off');
+        parent::__construct($loader);
         $routerClass = $this->alias->resolveNS('@ns.app\Router');
         if (class_exists($routerClass)) {
             $this->_di->setShared('router', $routerClass);
         }
+    }
+
+    public function getDi()
+    {
+        if (!$this->_di) {
+            $this->_di = new Factory();
+        }
+
+        return $this->_di;
     }
 
     public function authenticate()
@@ -69,6 +77,9 @@ class Application extends \ManaPHP\Application
 
     public function main()
     {
+        $this->dotenv->load();
+        $this->configure->loadFile();
+
         $this->registerServices();
 
         try {
@@ -80,7 +91,7 @@ class Application extends \ManaPHP\Application
             $this->errorHandler->handle($e);
         }
 
-        $this->response->setHeader('X-Response-Time', round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3));
+        $this->response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
         $this->response->send();
     }
 }
