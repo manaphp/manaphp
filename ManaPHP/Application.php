@@ -10,7 +10,8 @@ use ManaPHP\Di\FactoryDefault;
  *
  * @package application
  *
- * @property \ManaPHP\DotenvInterface $dotenv
+ * @property \ManaPHP\DotenvInterface       $dotenv
+ * @property \ManaPHP\ErrorHandlerInterface $errorHandler
  */
 abstract class Application extends Component implements ApplicationInterface
 {

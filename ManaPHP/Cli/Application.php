@@ -10,7 +10,6 @@ use ManaPHP\Logger\LogCategorizable;
  * @package application
  *
  * @property \ManaPHP\Cli\HandlerInterface  $cliHandler
- * @property \ManaPHP\ErrorHandlerInterface $errorHandler
  */
 class Application extends \ManaPHP\Application implements LogCategorizable
 {

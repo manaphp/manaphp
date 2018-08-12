@@ -12,7 +12,6 @@ use ManaPHP\View;
  * @package application
  * @property \ManaPHP\Http\RequestInterface   $request
  * @property \ManaPHP\Http\ResponseInterface  $response
- * @property \ManaPHP\ErrorHandlerInterface   $errorHandler
  * @property \ManaPHP\RouterInterface         $router
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property \ManaPHP\ViewInterface           $view
