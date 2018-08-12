@@ -90,8 +90,7 @@ class Application extends \ManaPHP\Application
         } catch (\Error $e) {
             $this->errorHandler->handle($e);
         }
-
-        $this->response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
+        
         $this->response->send();
     }
 }

@@ -372,6 +372,8 @@ class Response extends Component implements ResponseInterface
 
         $this->cookies->send();
 
+        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
+
         return $this;
     }
 
