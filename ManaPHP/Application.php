@@ -3,7 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Application\AbortException;
-use ManaPHP\Di\FactoryDefault;
 
 /**
  * Class ManaPHP\Application
@@ -47,7 +46,7 @@ abstract class Application extends Component implements ApplicationInterface
                 $rootDir = dirname($appDir);
                 $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
             } else {
-                $entryPointDir = dirname(get_included_files()[0]);
+                $entryPointDir = dirname($_SERVER['SCRIPT_FILENAME']);
                 if (is_dir($entryPointDir . '/app')) {
                     $rootDir = $entryPointDir;
                     $appDir = $rootDir . '/app';
