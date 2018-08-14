@@ -21,11 +21,10 @@ class Swoole extends Application
      * HttpServer constructor.
      *
      * @param  \ManaPHP\Loader     $loader
-     * @param \ManaPHP\DiInterface $di
      */
-    public function __construct($loader, $di = null)
+    public function __construct($loader)
     {
-        parent::__construct($loader, $di);
+        parent::__construct($loader);
         $this->_di->keepInstanceState();
     }
 
