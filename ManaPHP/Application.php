@@ -91,8 +91,7 @@ abstract class Application extends Component implements ApplicationInterface
 
     public function registerServices()
     {
-        $routerClass = $this->alias->resolveNS('@ns.app\Router');
-        if (class_exists($routerClass)) {
+        if ($this->alias->has('@ns.app') && class_exists($routerClass = $this->alias->resolveNS('@ns.app\Router'))) {
             $this->_di->setShared('router', $routerClass);
         }
 
