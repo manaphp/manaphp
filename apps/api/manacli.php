@@ -1,10 +1,11 @@
 #!/usr/bin/env php
 <?php
-error_reporting(E_ALL);
+require __DIR__ . (is_dir(__DIR__ . '/vendor/') ? '/vendor/manaphp/framework' : '/../../ManaPHP') . '/Loader.php';
 
-require __DIR__. '/../../ManaPHP/Loader.php';
+if (is_file(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+}
+
 $loader = new \ManaPHP\Loader();
-
-$cli = new ManaPHP\Cli\Application($loader);
-
+$cli = new \ManaPHP\Cli\Application($loader);
 $cli->main();
