@@ -16,6 +16,9 @@ class BashCompletionController extends Controller
 
         try {
             foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
+                if (in_array(pathinfo($file, PATHINFO_FILENAME), ['BashCompletionController'], true)) {
+                    continue;
+                }
                 $controllers[] = Text::underscore(basename($file, 'Controller.php'));
             }
 
