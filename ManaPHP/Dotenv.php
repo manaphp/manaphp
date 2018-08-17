@@ -119,7 +119,7 @@ class Dotenv extends Component implements DotenvInterface
         }
 
         if (is_array($default)) {
-            return preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
+            return is_array($value) ? $value : preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
         } elseif (is_int($default)) {
             return (int)$value;
         } elseif (is_float($default)) {
