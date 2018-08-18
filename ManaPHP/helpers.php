@@ -651,9 +651,15 @@ if (!function_exists('transaction')) {
             $work();
             $db->commit();
         } catch (\Exception $exception) {
-            $db->rollback();
+            /** @noinspection UnSafeIsSetOverArrayInspection */
+            isset($db) && $db->rollback();
             error($exception);
             return $exception->getMessage();
+        } catch (\Error $error) {
+            /** @noinspection UnSafeIsSetOverArrayInspection */
+            isset($db) && $db->rollback();
+            error($error);
+            return $error->getMessage();
         }
         return true;
     }
