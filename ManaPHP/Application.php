@@ -41,32 +41,23 @@ abstract class Application extends Component implements ApplicationInterface
             $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
         } else {
             $entryPointDir = dirname($_SERVER['SCRIPT_FILENAME']);
-            if (is_dir($entryPointDir . '/app')) {
-                $rootDir = $entryPointDir;
-                $appDir = $rootDir . '/app';
-            } elseif ($pos = strrpos($entryPointDir, DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR)) {
-                $rootDir = substr($entryPointDir, 0, $pos);
-                $appDir = $rootDir . '/app';
-            }
+
+            $rootDir = is_dir($entryPointDir . '/app') ? $entryPointDir : dirname($entryPointDir);
+            $appDir = $rootDir . '/app';
+            $appNamespace = 'App';
         }
 
-        if ($appDir) {
-            $this->alias->set('@app', $appDir);
-            if ($appNamespace) {
-                $this->alias->set('@ns.app', $appNamespace);
-                $this->loader->registerNamespaces([$appNamespace => $appDir]);
-            }
+        $this->alias->set('@app', $appDir);
+        $this->alias->set('@ns.app', $appNamespace);
+        $this->loader->registerNamespaces([$appNamespace => $appDir]);
 
-            $this->alias->set('@views', $appDir . '/Views');
-        }
+        $this->alias->set('@views', $appDir . '/Views');
 
-        if ($rootDir) {
-            $this->alias->set('@root', $rootDir);
-            $this->alias->set('@public', $rootDir . '/public');
-            $this->alias->set('@data', $rootDir . '/data');
-            $this->alias->set('@tmp', $rootDir . '/tmp');
-            $this->alias->set('@config', $rootDir . '/config');
-        }
+        $this->alias->set('@root', $rootDir);
+        $this->alias->set('@public', $rootDir . '/public');
+        $this->alias->set('@data', $rootDir . '/data');
+        $this->alias->set('@tmp', $rootDir . '/tmp');
+        $this->alias->set('@config', $rootDir . '/config');
 
         $this->loader->registerFiles('@manaphp/helpers.php');
     }
