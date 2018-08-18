@@ -28,41 +28,36 @@ abstract class Application extends Component implements ApplicationInterface
         $this->_di->setShared('loader', $loader);
         $this->_di->setShared('application', $this);
 
-        if ($appDir = $this->alias->has('@app')) {
+        $rootDir = null;
+        $appDir = null;
+        $appNamespace = null;
+
+        $calledClass = get_called_class();
+        if (strpos($calledClass, 'ManaPHP\\') !== 0) {
+            $calledFile = (new \ReflectionClass($calledClass))->getFileName();
+
+            $appDir = dirname($calledFile);
             $rootDir = dirname($appDir);
-            $this->loader->registerNamespaces([$this->alias->resolveNS('@ns.app') => $appDir]);
+            $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
         } else {
-            $rootDir = null;
-            $appDir = null;
-            $appNamespace = null;
+            $entryPointDir = dirname($_SERVER['SCRIPT_FILENAME']);
+            if (is_dir($entryPointDir . '/app')) {
+                $rootDir = $entryPointDir;
+                $appDir = $rootDir . '/app';
+            } elseif ($pos = strrpos($entryPointDir, DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR)) {
+                $rootDir = substr($entryPointDir, 0, $pos);
+                $appDir = $rootDir . '/app';
+            }
+        }
 
-            $calledClass = get_called_class();
-            if (strpos($calledClass, 'ManaPHP\\') !== 0) {
-                $calledFile = (new \ReflectionClass($calledClass))->getFileName();
-
-                $appDir = dirname($calledFile);
-                $rootDir = dirname($appDir);
-                $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
-            } else {
-                $entryPointDir = dirname($_SERVER['SCRIPT_FILENAME']);
-                if (is_dir($entryPointDir . '/app')) {
-                    $rootDir = $entryPointDir;
-                    $appDir = $rootDir . '/app';
-                } elseif ($pos = strrpos($entryPointDir, DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR)) {
-                    $rootDir = substr($entryPointDir, 0, $pos);
-                    $appDir = $rootDir . '/app';
-                }
+        if ($appDir) {
+            $this->alias->set('@app', $appDir);
+            if ($appNamespace) {
+                $this->alias->set('@ns.app', $appNamespace);
+                $this->loader->registerNamespaces([$appNamespace => $appDir]);
             }
 
-            if ($appDir) {
-                $this->alias->set('@app', $appDir);
-                if ($appNamespace) {
-                    $this->alias->set('@ns.app', $appNamespace);
-                    $this->loader->registerNamespaces([$appNamespace => $appDir]);
-                }
-
-                $this->alias->set('@views', $appDir . '/Views');
-            }
+            $this->alias->set('@views', $appDir . '/Views');
         }
 
         if ($rootDir) {
