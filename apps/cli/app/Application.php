@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Cli;
+namespace App;
 
 class Application extends \ManaPHP\Cli\Application
 {

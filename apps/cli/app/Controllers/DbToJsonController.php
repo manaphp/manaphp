@@ -1,8 +1,7 @@
 <?php
-namespace App\Cli\Controllers;
+namespace App\Controllers;
 
 use ManaPHP\Cli\Controller;
-use ManaPHP\Db;
 
 class DbToJsonController extends Controller
 {

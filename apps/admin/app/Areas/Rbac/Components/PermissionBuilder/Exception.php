@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Areas\Rbac\Components\PermissionBuilder;
+namespace App\Areas\Rbac\Components\PermissionBuilder;
 
 /**
  *

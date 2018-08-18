@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Tasks;
+namespace App\Tasks;
 
 use ManaPHP\Task;
 

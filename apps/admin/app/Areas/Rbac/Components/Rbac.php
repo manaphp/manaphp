@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Admin\Areas\Rbac\Components;
+namespace App\Areas\Rbac\Components;
 
-use App\Admin\Areas\Rbac\Models\Permission;
-use App\Admin\Areas\Rbac\Models\RolePermission;
-use App\Admin\Areas\Rbac\Models\AdminRole;
+use App\Areas\Rbac\Models\Permission;
+use App\Areas\Rbac\Models\RolePermission;
+use App\Areas\Rbac\Models\AdminRole;
 use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;

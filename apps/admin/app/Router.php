@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin;
+namespace App;
 
 class Router extends \ManaPHP\Router
 {

@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Areas\Rbac\Components;
+namespace App\Areas\Rbac\Components;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;

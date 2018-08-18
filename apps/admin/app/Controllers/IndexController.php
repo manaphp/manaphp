@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Controllers;
+namespace App\Controllers;
 
 use ManaPHP\Mvc\Controller;
 

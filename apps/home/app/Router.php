@@ -1,7 +1,7 @@
 <?php
-namespace App\Home;
+namespace App;
 
-use App\Home\Controllers\IndexController;
+use App\Controllers\IndexController;
 
 class Router extends \ManaPHP\Router
 {

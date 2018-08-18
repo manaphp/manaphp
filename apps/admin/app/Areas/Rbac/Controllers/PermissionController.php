@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Admin\Areas\Rbac\Controllers;
+namespace App\Areas\Rbac\Controllers;
 
-use App\Admin\Areas\Rbac\Models\Permission;
+use App\Areas\Rbac\Models\Permission;
 use ManaPHP\Utility\Text;
 
 /**
  * Class RbacPermissionController
  *
- * @package App\Admin\Controllers
+ * @package App\Controllers
  *
  * @property \ManaPHP\Mvc\Application $application
  */

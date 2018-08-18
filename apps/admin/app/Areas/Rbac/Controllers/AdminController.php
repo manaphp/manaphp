@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Admin\Areas\Rbac\Controllers;
+namespace App\Areas\Rbac\Controllers;
 
-use App\Admin\Models\Admin;
+use App\Models\Admin;
 
 class AdminController extends ControllerBase
 {

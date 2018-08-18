@@ -1,14 +1,14 @@
 <?php
-namespace App\Cli\Models;
+namespace App\Models;
 
 use ManaPHP\Db\Model;
 use ManaPHP\Model\Relation;
 
 /**
- * Class App\Home\Models\City
+ * Class App\Models\City
  *
- * @package App\Home\Models
- * @property \App\Home\Models\Country $country
+ * @package App\Models
+ * @property \App\Models\Country $country
  */
 class City extends Model
 {

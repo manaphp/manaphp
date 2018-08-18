@@ -1,9 +1,9 @@
 <?php
-namespace App\Admin\Widgets;
+namespace App\Widgets;
 
-use App\Admin\Areas\Menu\Models\Group;
-use App\Admin\Areas\Menu\Models\Item;
-use App\Admin\Areas\Rbac\Models\Permission;
+use App\Areas\Menu\Models\Group;
+use App\Areas\Menu\Models\Item;
+use App\Areas\Rbac\Models\Permission;
 use ManaPHP\View\Widget;
 use ManaPHP\Utility\Text;
 

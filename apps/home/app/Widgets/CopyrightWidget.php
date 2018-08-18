@@ -1,5 +1,5 @@
 <?php
-namespace App\Home\Widgets;
+namespace App\Widgets;
 
 use ManaPHP\View\Widget;
 

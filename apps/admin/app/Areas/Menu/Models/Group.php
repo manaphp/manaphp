@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Areas\Menu\Models;
+namespace App\Areas\Menu\Models;
 
 use ManaPHP\Db\Model;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api;
+namespace App;
 
 class Application extends \ManaPHP\Rest\Application
 {

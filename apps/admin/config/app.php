@@ -21,7 +21,7 @@ return [
             'appenders' => ['ManaPHP\Logger\Appender\File'],
         ],
         'translation' => ['language' => 'zh-CN,en'],
-        'authorization' => \App\Admin\Areas\Rbac\Components\Rbac::class
+        'authorization' => \App\Areas\Rbac\Components\Rbac::class
     ],
     'bootstraps' => explode(',', env('BOOTSTRAPS'))
 ];

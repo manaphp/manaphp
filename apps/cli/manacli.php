@@ -9,5 +9,5 @@ require (is_file('vendor/manaphp/framework/Loader.php') ? 'vendor/manaphp/framew
 
 $loader = new \ManaPHP\Loader();
 require 'app/Application.php';
-$cli = new \App\Cli\Application($loader);
+$cli = new \App\Application($loader);
 $cli->main();

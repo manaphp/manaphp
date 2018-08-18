@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Areas\Rbac\Components\Rbac;
+namespace App\Areas\Rbac\Components\Rbac;
 
 class Exception extends \ManaPHP\Exception
 {

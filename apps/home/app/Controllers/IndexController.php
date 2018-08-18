@@ -1,5 +1,5 @@
 <?php
-namespace App\Home\Controllers;
+namespace App\Controllers;
 
 use ManaPHP\Version;
 
@@ -10,6 +10,9 @@ class IndexController extends ControllerBase
         $this->dispatcher->forward('about');
     }
 
+    /**
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
     public function aboutAction()
     {
         $this->view->setVar('version', Version::get());

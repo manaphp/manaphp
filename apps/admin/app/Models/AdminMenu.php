@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Models;
+namespace App\Models;
 
 class AdminMenu extends ModelBase
 {

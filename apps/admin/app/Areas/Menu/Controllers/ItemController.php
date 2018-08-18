@@ -1,7 +1,7 @@
 <?php
-namespace App\Admin\Areas\Menu\Controllers;
+namespace App\Areas\Menu\Controllers;
 
-use App\Admin\Areas\Menu\Models\Item;
+use App\Areas\Menu\Models\Item;
 use ManaPHP\Mvc\Controller;
 
 class ItemController extends Controller

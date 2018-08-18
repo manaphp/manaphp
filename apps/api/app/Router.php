@@ -1,8 +1,8 @@
 <?php
-namespace App\Api;
+namespace App;
 
-use App\Api\Controllers\CustomerController;
-use App\Api\Controllers\TimeController;
+use App\Controllers\CustomerController;
+use App\Controllers\TimeController;
 
 class Router extends \ManaPHP\Router
 {

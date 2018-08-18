@@ -1,13 +1,13 @@
 <?php
-namespace App\Admin\Models;
+namespace App\Models;
 
-use App\Admin\Areas\Rbac\Models\AdminRole;
+use App\Areas\Rbac\Models\AdminRole;
 use ManaPHP\Model\Relation;
 
 /**
  * Class Admin
  *
- * @package App\Admin\Models
+ * @package App\Models
  */
 class Admin extends ModelBase
 {

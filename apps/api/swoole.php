@@ -7,6 +7,6 @@ require  __DIR__. '/vendor/manaphp/framework/Loader.php';
 $loader = new \ManaPHP\Loader();
 
 require __DIR__ . '/app/Swoole.php';
-$application = new \App\Api\Swoole($loader);
+$application = new \App\Swoole($loader);
 
 $application->main();

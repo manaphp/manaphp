@@ -1,10 +1,10 @@
 <?php
-namespace App\Admin\Models;
+namespace App\Models;
 
 /**
  * Class AdminLogin
  *
- * @package App\Admin\Models
+ * @package App\Models
  *
  * @method static $this findFirstByLoginId($id)
  */

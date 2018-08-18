@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Admin\Areas\Rbac\Controllers;
+namespace App\Areas\Rbac\Controllers;
 
-use App\Admin\Areas\Rbac\Models\Role;
+use App\Areas\Rbac\Models\Role;
 
 class RoleController extends ControllerBase
 {

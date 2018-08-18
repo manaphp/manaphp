@@ -1,7 +1,7 @@
 <?php
-namespace App\Admin\Areas\Rbac\Models;
+namespace App\Areas\Rbac\Models;
 
-use App\Admin\Models\Admin;
+use App\Models\Admin;
 use ManaPHP\Db\Model;
 use ManaPHP\Model\Relation;
 

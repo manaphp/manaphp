@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Tasks;
+namespace App\Tasks;
 
 class TestTask extends TaskBase
 {

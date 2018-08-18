@@ -8,5 +8,5 @@ require (is_dir('vendor/manaphp/framework') ? 'vendor/manaphp/framework' : '../.
 
 $loader = new \ManaPHP\Loader();
 require 'app/Application.php';
-$app = new \App\Home\Application($loader);
+$app = new \App\Application($loader);
 $app->main();

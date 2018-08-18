@@ -1,8 +1,8 @@
 <?php
-namespace App\Admin\Areas\User\Controllers;
+namespace App\Areas\User\Controllers;
 
-use App\Admin\Models\Admin;
-use App\Admin\Models\AdminLoginLog;
+use App\Models\Admin;
+use App\Models\AdminLoginLog;
 use ManaPHP\Mvc\Controller;
 
 class SessionController extends Controller

@@ -1,11 +1,11 @@
 <?php
-namespace App\Api\Models;
+namespace App\Models;
 
 /**
  * Class Address
- * @package App\Api\Models
+ * @package App\Models
  *
- * @property \App\Api\Models\Customer[] $customers
+ * @property \App\Models\Customer[] $customers
  */
 class Address extends ModelBase
 {

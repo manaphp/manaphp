@@ -1,5 +1,5 @@
 <?php
-namespace App\Admin\Areas\Rbac\Controllers;
+namespace App\Areas\Rbac\Controllers;
 
 use ManaPHP\Mvc\Controller;
 

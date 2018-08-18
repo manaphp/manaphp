@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Home;
+namespace App;
 
 class Application extends \ManaPHP\Mvc\Application
 {

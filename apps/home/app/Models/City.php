@@ -5,13 +5,13 @@
  * Date: 2016/3/25
  */
 
-namespace App\Home\Models;
+namespace App\Models;
 
 /**
- * Class App\Home\Models\City
+ * Class App\Models\City
  *
- * @package App\Home\Models
- * @property \App\Home\Models\Country $country
+ * @package App\Models
+ * @property \App\Models\Country $country
  */
 class City extends ModelBase
 {

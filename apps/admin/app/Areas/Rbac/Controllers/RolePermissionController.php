@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Admin\Areas\Rbac\Controllers;
+namespace App\Areas\Rbac\Controllers;
 
-use App\Admin\Areas\Rbac\Models\Permission;
-use App\Admin\Areas\Rbac\Models\Role;
-use App\Admin\Areas\Rbac\Models\RolePermission;
+use App\Areas\Rbac\Models\Permission;
+use App\Areas\Rbac\Models\Role;
+use App\Areas\Rbac\Models\RolePermission;
 
 class RolePermissionController extends ControllerBase
 {

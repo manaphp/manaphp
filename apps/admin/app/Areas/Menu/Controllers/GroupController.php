@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Admin\Areas\Menu\Controllers;
+namespace App\Areas\Menu\Controllers;
 
-use App\Admin\Areas\Menu\Models\Group;
+use App\Areas\Menu\Models\Group;
 use ManaPHP\Mvc\Controller;
 
 class GroupController extends Controller

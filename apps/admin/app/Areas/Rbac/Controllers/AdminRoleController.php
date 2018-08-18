@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Admin\Areas\Rbac\Controllers;
+namespace App\Areas\Rbac\Controllers;
 
-use App\Admin\Areas\Rbac\Models\Role;
-use App\Admin\Models\Admin;
-use App\Admin\Areas\Rbac\Models\AdminRole;
+use App\Areas\Rbac\Models\Role;
+use App\Models\Admin;
+use App\Areas\Rbac\Models\AdminRole;
 
 class AdminRoleController extends ControllerBase
 {
