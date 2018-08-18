@@ -5,7 +5,6 @@ use App\Areas\Menu\Models\Group;
 use App\Areas\Menu\Models\Item;
 use App\Areas\Rbac\Models\Permission;
 use ManaPHP\View\Widget;
-use ManaPHP\Utility\Text;
 
 class SideMenuWidget extends Widget
 {

@@ -2,8 +2,6 @@
 
 namespace App\Areas\Rbac\Controllers;
 
-use App\Areas\Rbac\Models\Permission;
-use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
 
 class RolePermissionController extends ControllerBase
