@@ -32,7 +32,7 @@ class Application extends \ManaPHP\Mvc\Application
     {
         $this->loader->registerFiles('@manaphp/helpers.php');
         $this->dotenv->load();
-        $this->configure->loadFile();
+        $this->configure->load();
 
         $this->registerServices();
         $this->alias->set('@messages', '@app/Messages');

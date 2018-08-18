@@ -16,6 +16,11 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
+    protected $_file = '@config/app.php';
+
+    /**
+     * @var string
+     */
     public $env = 'prod';
 
     /**
@@ -74,21 +79,12 @@ class Configure extends Component implements ConfigureInterface
     public $traces = [];
 
     /**
-     * @param string|array $files
-     *
      * @return static
      */
-    public function loadFile($files = '@config/app.php')
+    public function load()
     {
-        foreach ((array)$files as $file) {
-            /**
-             * @var \ManaPHP\Configuration\Configure\EngineInterface $loader
-             */
-            $loader = $this->_di->getShared('ManaPHP\Configuration\Configure\Engine\\' . ucfirst(pathinfo($file, PATHINFO_EXTENSION)));
-            $data = $loader->load($this->_di->alias->resolve($file));
-
-            $this->loadData($data);
-        }
+        /** @noinspection PhpIncludeInspection */
+        $this->loadData(require $this->_di->alias->resolve($this->_file));
 
         return $this;
     }

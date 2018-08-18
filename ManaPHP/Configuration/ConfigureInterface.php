@@ -10,11 +10,9 @@ namespace ManaPHP\Configuration;
 interface ConfigureInterface
 {
     /**
-     * @param string|array $files
-     *
      * @return static
      */
-    public function loadFile($files = '@config/app.php');
+    public function load();
 
     /**
      * @param array $data

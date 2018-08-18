@@ -68,7 +68,7 @@ class Swoole extends Application
     public function main()
     {
         $this->dotenv->load();
-        $this->configure->loadFile();
+        $this->configure->load();
 
         $this->registerServices();
 

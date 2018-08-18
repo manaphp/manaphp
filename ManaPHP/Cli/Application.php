@@ -61,7 +61,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
     public function main()
     {
         $this->dotenv->load();
-        $this->configure->loadFile();
+        $this->configure->load();
 
         $this->registerServices();
 

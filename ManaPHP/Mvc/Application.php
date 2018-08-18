@@ -96,7 +96,7 @@ class Application extends \ManaPHP\Application
     public function main()
     {
         $this->dotenv->load();
-        $this->configure->loadFile();
+        $this->configure->load();
 
         $this->registerServices();
 
