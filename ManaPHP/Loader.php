@@ -10,11 +10,6 @@ namespace ManaPHP;
 class Loader
 {
     /**
-     * @var \ManaPHP\AliasInterface
-     */
-    public $alias;
-
-    /**
      * @var array
      */
     protected $_classes = [];
@@ -110,13 +105,12 @@ class Loader
             }
 
             if ($file[0] === '@') {
-                $file = $this->_files[$file] = $this->alias->resolve($file);
-            } else {
-                $this->_files[$file] = $file;
+                $file = Di::getDefault()->getShared('alias')->resolve($file);
             }
+            $this->_files[$file] = 1;
 
             /** @noinspection PhpIncludeInspection */
-            require_once $file;
+            require $file;
         }
 
         return $this;

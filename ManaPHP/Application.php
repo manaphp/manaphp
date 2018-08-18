@@ -25,8 +25,6 @@ abstract class Application extends Component implements ApplicationInterface
 
         $GLOBALS['DI'] = $this->getDi();
 
-        $loader->alias = $this->alias;
-
         $this->_di->setShared('loader', $loader);
         $this->_di->setShared('application', $this);
 
