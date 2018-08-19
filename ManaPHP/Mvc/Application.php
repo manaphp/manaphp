@@ -24,7 +24,7 @@ class Application extends \ManaPHP\Application
      *
      * @param \ManaPHP\Loader $loader
      */
-    public function __construct($loader)
+    public function __construct($loader = null)
     {
         parent::__construct($loader);
 

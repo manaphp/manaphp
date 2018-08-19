@@ -22,7 +22,7 @@ class Swoole extends Application
      *
      * @param  \ManaPHP\Loader $loader
      */
-    public function __construct($loader)
+    public function __construct($loader = null)
     {
         parent::__construct($loader);
         $this->_di->keepInstanceState();

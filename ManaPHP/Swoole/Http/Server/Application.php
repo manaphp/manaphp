@@ -23,7 +23,7 @@ class Application extends \ManaPHP\Application
      *
      * @param \ManaPHP\Loader $loader
      */
-    public function __construct($loader)
+    public function __construct($loader = null)
     {
         ini_set('html_errors', 'off');
         parent::__construct($loader);

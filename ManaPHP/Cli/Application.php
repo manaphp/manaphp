@@ -26,7 +26,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
      *
      * @param \ManaPHP\Loader $loader
      */
-    public function __construct($loader)
+    public function __construct($loader = null)
     {
         parent::__construct($loader);
 

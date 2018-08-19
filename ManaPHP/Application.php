@@ -19,13 +19,13 @@ abstract class Application extends Component implements ApplicationInterface
      *
      * @param \ManaPHP\Loader $loader
      */
-    public function __construct($loader)
+    public function __construct($loader = null)
     {
         ini_set('default_socket_timeout', -1);
 
         $GLOBALS['DI'] = $this->getDi();
 
-        $this->_di->setShared('loader', $loader);
+        $this->_di->setShared('loader', $loader ?: new Loader());
         $this->_di->setShared('application', $this);
 
         $rootDir = null;
