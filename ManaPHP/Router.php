@@ -480,4 +480,14 @@ class Router extends Component implements RouterInterface
 
         return false;
     }
+
+    public function saveInstanceState()
+    {
+        $this->_controller = null;
+        $this->_action = null;
+        $this->_params = [];
+        $this->_wasMatched = null;
+
+        return [];
+    }
 }
