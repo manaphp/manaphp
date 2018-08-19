@@ -6,7 +6,7 @@ services:
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
-    command: php /var/www/html/public/index.php
+    command: php /var/www/html/swoole.php
     ports:
       - 9501:9501
     restart: always

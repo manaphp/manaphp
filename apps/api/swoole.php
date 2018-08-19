@@ -1,12 +1,13 @@
 <?php
+chdir(__DIR__);
 
-ini_set('html_errors', 'on');
+/** @noinspection PhpIncludeInspection */
+is_file('vendor/autoload.php') && require 'vendor/autoload.php';
+/** @noinspection PhpIncludeInspection */
+require 'vendor/manaphp/framework/Loader.php';
 
-require  __DIR__. '/vendor/manaphp/framework/Loader.php';
-//require __DIR__.'/../../ManaPHP/Loader.php';
 $loader = new \ManaPHP\Loader();
 
-require __DIR__ . '/app/Swoole.php';
-$application = new \App\Swoole($loader);
-
-$application->main();
+require 'app/Swoole.php';
+$app = new \App\Swoole($loader);
+$app->main();
