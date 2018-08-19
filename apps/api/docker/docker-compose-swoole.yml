@@ -1,13 +1,12 @@
 version: "2"
 services:
   swoole:
-    image: manaphp/php-fpm:1.0
+    image: manaphp/php70:1.0
     volumes: 
       - /usr/share/zoneinfo/PRC:/etc/localtime
-      - ${ROOT_DIR}:/var/www/html
-      - ./php/docker-entrypoint.d:/docker-entrypoint.d
-      - ${ROOT_DIR}/../../ManaPHP:/var/www/html/vendor/manaphp/framework:ro
-    command: php /var/www/html/swoole.php
+      - ../:/var/www/html
+      - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
+    command: php /var/www/html/public/index.php
     ports:
-      - ${WEB_PORT}:9501
+      - 9501:9501
     restart: always
