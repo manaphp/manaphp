@@ -117,21 +117,30 @@ class Server extends Component implements ServerInterface
     }
 
     /**
-     * @param \swoole_http_request $request
+     * @param \swoole_http_request  $request
      * @param \swoole_http_response $response
      */
     public function onRequest($request, $response)
     {
-        if ($request->server['request_uri'] === '/favicon.ico') {
-            $response->status(404);
-            $response->end();
-            return;
+        try {
+            if ($request->server['request_uri'] === '/favicon.ico') {
+                $response->status(404);
+                $response->end();
+                return;
+            }
+            $this->_request = $request;
+            $this->_response = $response;
+            $this->_prepareGlobals($request);
+            call_user_func($this->_handler);
+        } catch (\Exception $exception) {
+            $this->logger->error($exception);
+            $response->status(500);
+            $response->end('Internal Server Error');
+        } catch (\Error $error) {
+            $this->logger->error($error);
+            $response->status(500);
+            $response->end('Internal Server Error');
         }
-        $this->_request = $request;
-        $this->_response = $response;
-        $this->_prepareGlobals($request);
-        $handler = $this->_handler;
-        $handler();
     }
 
     /**
