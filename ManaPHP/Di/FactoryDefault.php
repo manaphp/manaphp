@@ -61,7 +61,6 @@ class FactoryDefault extends Di
             'relationsManager' => 'ManaPHP\Model\Relation\Manager',
             'authenticationToken' => 'ManaPHP\Authentication\Token\Adapter\Mwt',
             'mailer' => 'ManaPHP\Mailer\Adapter\Smtp',
-            'swooleHttpServer' => 'ManaPHP\Swoole\HttpServer',
         ];
     }
 }
