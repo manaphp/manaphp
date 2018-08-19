@@ -402,6 +402,10 @@ class Di implements DiInterface
         }
 
         if (is_string($definition)) {
+            if ($definition[0] === '@') {
+                $definition = $this->alias->resolveNS($definition);
+            }
+			
             if (!class_exists($definition)) {
                 throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists', 'name' => $name, 'class' => $definition]);
             }
