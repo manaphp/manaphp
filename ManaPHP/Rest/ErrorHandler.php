@@ -17,18 +17,29 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
     public function handle($exception)
     {
         if ($exception instanceof \ManaPHP\Exception) {
-            if ($exception->getStatusCode() < 400) {
+            $code = $exception->getStatusCode();
+			
+            if ($code < 400) {
                 return;
+            } elseif ($code === 404) {
+                $message = 'Not Found';
+            } else {
+                $message = $exception->getStatusText();
             }
-            if ($exception->getStatusCode() === 500) {
-                $this->logger->error($exception);
-            }
-            $this->response->setStatus($exception->getStatusCode(), $exception->getStatusText());
-            $this->response->setJsonContent(['code' => $exception->getStatusCode(), 'message' => $exception->getStatusText()]);
         } else {
+            $code = 500;
+            $message = 'Internal Server Error';
+        }
+
+        if ($code === 500) {
             $this->logger->error($exception);
-            $this->response->setStatus(500, 'Internal Server Error');
-            $this->response->setJsonContent(['code' => 500, 'message'=> 'Internal Server Error']);
+        }
+
+        $this->response->setStatus($code, $message);
+        if ($this->configure->debug) {
+            $this->response->setJsonContent(['code' => $code, 'message' => $message, 'exception' => explode("\n", $exception)]);
+        } else {
+            $this->response->setJsonContent(['code' => $code, 'message' => $message]);
         }
     }
 }
