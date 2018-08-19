@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Swoole\Http\Server;
 
-use ManaPHP\Rest\Factory;
 use ManaPHP\Http\Response;
+use ManaPHP\Rest\Factory;
 use ManaPHP\Router\NotFoundRouteException;
 
 /**
@@ -50,45 +50,35 @@ class Application extends \ManaPHP\Application
 
     }
 
-    /**
-     * @return \ManaPHP\Http\ResponseInterface
-     * @throws \ManaPHP\Router\NotFoundRouteException
-     */
     public function handle()
     {
-        $this->authenticate();
-
-        if (!$this->router->handle()) {
-            throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
-        }
-
-        $controllerName = $this->router->getControllerName();
-        $actionName = $this->router->getActionName();
-        $params = $this->router->getParams();
-
-        $ret = $this->dispatcher->dispatch($controllerName, $actionName, $params);
-        if ($ret !== false) {
-            $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue instanceof Response) {
-                null;
-            } else {
-                $this->response->setJsonContent($actionReturnValue);
-            }
-        }
-
-        return $this->response;
-    }
-
-    public function main2()
-    {
         try {
-            $this->handle();
+            $this->authenticate();
+
+            if (!$this->router->handle()) {
+                throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
+            }
+
+            $controllerName = $this->router->getControllerName();
+            $actionName = $this->router->getActionName();
+            $params = $this->router->getParams();
+
+            $ret = $this->dispatcher->dispatch($controllerName, $actionName, $params);
+            if ($ret !== false) {
+                $actionReturnValue = $this->dispatcher->getReturnedValue();
+                if ($actionReturnValue instanceof Response) {
+                    null;
+                } else {
+                    $this->response->setJsonContent($actionReturnValue);
+                }
+            }
+
             $this->response->send();
             $this->_di->restoreInstancesState();
-        } catch (\Exception $e) {
-            $this->errorHandler->handle($e);
-        } catch (\Error $e) {
-            $this->errorHandler->handle($e);
+        } catch (\Exception $exception) {
+            $this->handleException($exception);
+        } catch (\Error $error) {
+            $this->handleException($error);
         }
     }
 
@@ -99,6 +89,6 @@ class Application extends \ManaPHP\Application
 
         $this->registerServices();
 
-        $this->swooleHttpServer->start([$this, 'main2']);
+        $this->swooleHttpServer->start([$this, 'handle']);
     }
 }

@@ -46,33 +46,34 @@ class Application extends \ManaPHP\Application
 
     }
 
-    /**
-     * @return \ManaPHP\Http\ResponseInterface
-     * @throws \ManaPHP\Router\NotFoundRouteException
-     */
     public function handle()
     {
-        $this->authenticate();
+        try {
+            $this->authenticate();
 
-        if (!$this->router->handle()) {
-            throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
-        }
-
-        $controllerName = $this->router->getControllerName();
-        $actionName = $this->router->getActionName();
-        $params = $this->router->getParams();
-
-        $ret = $this->dispatcher->dispatch($controllerName, $actionName, $params);
-        if ($ret !== false) {
-            $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue instanceof Response) {
-                null;
-            } else {
-                $this->response->setJsonContent($actionReturnValue);
+            if (!$this->router->handle()) {
+                throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
             }
-        }
 
-        return $this->response;
+            $controllerName = $this->router->getControllerName();
+            $actionName = $this->router->getActionName();
+            $params = $this->router->getParams();
+
+            $ret = $this->dispatcher->dispatch($controllerName, $actionName, $params);
+            if ($ret !== false) {
+                $actionReturnValue = $this->dispatcher->getReturnedValue();
+                if ($actionReturnValue instanceof Response) {
+                    null;
+                } else {
+                    $this->response->setJsonContent($actionReturnValue);
+                }
+            }
+            $this->response->send();
+        } catch (\Exception $exception) {
+            $this->handleException($exception);
+        } catch (\Error $error) {
+            $this->handleException($error);
+        }
     }
 
     public function main()
@@ -82,14 +83,6 @@ class Application extends \ManaPHP\Application
 
         $this->registerServices();
 
-        try {
-            $this->handle();
-        } catch (\Exception $e) {
-            $this->errorHandler->handle($e);
-        } catch (\Error $e) {
-            $this->errorHandler->handle($e);
-        }
-
-        $this->response->send();
+        $this->handle();
     }
 }
