@@ -10,17 +10,17 @@ use ManaPHP\Swoole\Exception as SwooleException;
  *
  * @package application
  *
- * @property \ManaPHP\Http\ResponseInterface     $response
- * @property \ManaPHP\RouterInterface            $router
- * @property \ManaPHP\Mvc\DispatcherInterface    $dispatcher
- * @property \ManaPHP\Swoole\HttpServerInterface $swooleHttpServer
+ * @property \ManaPHP\Http\ResponseInterface      $response
+ * @property \ManaPHP\RouterInterface             $router
+ * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher
+ * @property \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
  */
 class Swoole extends Application
 {
     /**
      * HttpServer constructor.
      *
-     * @param  \ManaPHP\Loader     $loader
+     * @param  \ManaPHP\Loader $loader
      */
     public function __construct($loader)
     {

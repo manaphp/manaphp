@@ -28,7 +28,6 @@ class Factory extends FactoryDefault
             'cookies' => 'ManaPHP\Http\Cookies',
             'debugger' => 'ManaPHP\Debugger',
             'authorization' => 'ManaPHP\Authorization\Bypass',
-            'swooleHttpServer' => 'ManaPHP\Swoole\HttpServer'
         ]);
     }
 }

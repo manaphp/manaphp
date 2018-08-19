@@ -1,9 +1,9 @@
 <?php
 namespace App;
 
-use ManaPHP\Swoole\HttpServer;
+use ManaPHP\Swoole\Http\Server;
 
-class Swoole extends HttpServer
+class Swoole extends Server
 {
     protected function _beforeRequest()
     {

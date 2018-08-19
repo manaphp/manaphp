@@ -1,16 +1,16 @@
 <?php
-namespace ManaPHP\Swoole;
+namespace ManaPHP\Swoole\Http;
 
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Swoole\HttpStats
+ * Class ManaPHP\Swoole\Http\Stats
  *
- * @package ManaPHP\Swoole
+ * @package ManaPHP\Swoole\Http
  * @property \ManaPHP\Http\RequestInterface  $request
  * @property \ManaPHP\Http\ResponseInterface $response
  */
-class HttpStats extends Component
+class Stats extends Component
 {
     /**
      * @var \swoole_http_server

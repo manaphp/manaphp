@@ -22,7 +22,6 @@ class Factory extends FactoryDefault
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
             'debugger' => 'ManaPHP\Debugger',
             'authorization' => 'ManaPHP\Authorization\Bypass',
-            'swooleHttpServer' => 'ManaPHP\Swoole\HttpServer'
         ]);
     }
 }

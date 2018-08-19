@@ -1,7 +1,7 @@
 <?php
-namespace ManaPHP\Swoole;
+namespace ManaPHP\Swoole\Http;
 
-interface HttpServerInterface
+interface ServerInterface
 {
     /**
      * @param callable $handler

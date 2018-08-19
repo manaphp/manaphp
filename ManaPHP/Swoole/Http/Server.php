@@ -1,9 +1,9 @@
 <?php
-namespace ManaPHP\Swoole;
+namespace ManaPHP\Swoole\Http;
 
 use ManaPHP\Component;
 
-class HttpServer extends Component implements HttpServerInterface
+class Server extends Component implements ServerInterface
 {
     /**
      * @var string
