@@ -3,16 +3,18 @@ namespace ManaPHP\Swoole\Http\Server;
 
 use ManaPHP\Rest\Factory;
 use ManaPHP\Http\Response;
+use ManaPHP\Router\NotFoundRouteException;
 
 /**
  * Class ManaPHP\Mvc\Application
  *
  * @package application
- * @property \ManaPHP\Http\RequestInterface   $request
- * @property \ManaPHP\Http\ResponseInterface  $response
- * @property \ManaPHP\RouterInterface         $router
- * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
- * @property \ManaPHP\Http\SessionInterface   $session
+ * @property \ManaPHP\Http\RequestInterface       $request
+ * @property \ManaPHP\Http\ResponseInterface      $response
+ * @property \ManaPHP\RouterInterface             $router
+ * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher
+ * @property \ManaPHP\Http\SessionInterface       $session
+ * @property \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
  */
 class Application extends \ManaPHP\Application
 {
