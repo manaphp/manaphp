@@ -37,4 +37,11 @@ interface ServerInterface
      * @return static
      */
     public function sendContent($content);
+
+    /**
+     * @param string $file
+     *
+     * @return static
+     */
+    public function sendFile($file);
 }
