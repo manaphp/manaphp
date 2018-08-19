@@ -75,10 +75,6 @@ abstract class Application extends Component implements ApplicationInterface
 
     public function registerServices()
     {
-        if ($this->alias->has('@ns.app') && class_exists($routerClass = $this->alias->resolveNS('@ns.app\Router'))) {
-            $this->_di->setShared('router', $routerClass);
-        }
-
         $configure = $this->configure;
 
         date_default_timezone_set($configure->timezone);
