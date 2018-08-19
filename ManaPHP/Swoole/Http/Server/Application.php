@@ -81,11 +81,6 @@ class Application extends \ManaPHP\Application
 
     public function main2()
     {
-        $this->dotenv->load();
-        $this->configure->load();
-
-        $this->registerServices();
-
         try {
             $this->handle();
             $this->response->send();
@@ -99,6 +94,11 @@ class Application extends \ManaPHP\Application
 
     public function main()
     {
+        $this->dotenv->load();
+        $this->configure->load();
+
+        $this->registerServices();
+
         $this->swooleHttpServer->start([$this, 'main2']);
     }
 }
