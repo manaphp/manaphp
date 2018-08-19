@@ -68,12 +68,13 @@ class Application extends \ManaPHP\Application
                     $this->response->setJsonContent($actionReturnValue);
                 }
             }
-            $this->response->send();
         } catch (\Exception $exception) {
             $this->handleException($exception);
         } catch (\Error $error) {
             $this->handleException($error);
         }
+        
+        $this->response->send();
     }
 
     public function main()
