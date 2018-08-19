@@ -102,4 +102,12 @@ abstract class Application extends Component implements ApplicationInterface
             }
         }
     }
+
+    /**
+     * @param \Exception|\Error $exception
+     */
+    public function handleException($exception)
+    {
+        $this->errorHandler->handle($exception);
+    }
 }

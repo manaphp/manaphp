@@ -25,4 +25,9 @@ interface ApplicationInterface
      * @return void
      */
     public function abort($code, $message);
+
+    /**
+     * @param \Exception|\Error $exception
+     */
+    public function handleException($exception);
 }
