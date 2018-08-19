@@ -144,6 +144,18 @@ class Server extends Component implements ServerInterface
     }
 
     /**
+     * @param int $code
+     *
+     * @return static
+     */
+    public function setStatus($code)
+    {
+        $this->_response->status($code);
+
+        return $this;
+    }
+
+    /**
      * @param array $headers
      *
      * @return static

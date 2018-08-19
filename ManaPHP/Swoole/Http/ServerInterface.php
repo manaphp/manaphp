@@ -11,6 +11,13 @@ interface ServerInterface
     public function start($handler);
 
     /**
+     * @param integer $code
+     *
+     * @return static
+     */
+    public function setStatus($code);
+
+    /**
      * @param array $headers
      *
      * @return static
