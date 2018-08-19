@@ -369,4 +369,12 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         return Text::underscore($this->_controllerName) . $glue . Text::underscore($this->_actionName);
     }
+
+    public function saveInstanceState()
+    {
+        $state = get_object_vars($this);
+        unset($state['_di'], $state['_traced']);
+
+        return $state;
+    }
 }
