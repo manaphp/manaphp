@@ -209,4 +209,16 @@ class Server extends Component implements ServerInterface
         $this->_response->end($content);
         return $this;
     }
+
+    /**
+     * @param string $file
+     *
+     * @return static
+     */
+    public function sendFile($file)
+    {
+        $this->_response->sendfile($this->alias->resolve($file));
+
+        return $this;
+    }
 }
