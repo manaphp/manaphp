@@ -72,14 +72,14 @@ class Application extends \ManaPHP\Application
                     $this->response->setJsonContent($actionReturnValue);
                 }
             }
-
-            $this->response->send();
-            $this->_di->restoreInstancesState();
         } catch (\Exception $exception) {
             $this->handleException($exception);
         } catch (\Error $error) {
             $this->handleException($error);
         }
+
+        $this->response->send();
+        $this->_di->restoreInstancesState();
     }
 
     public function main()
