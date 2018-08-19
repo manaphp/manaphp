@@ -110,8 +110,14 @@ class Server extends Component implements ServerInterface
         $this->_swoole = new \swoole_http_server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
         $this->_handler = $handler;
+
+        echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
+        echo sprintf('[%s][info]: starting listen on: %s:%d with setting: %s', date('c'), $this->_host, $this->_port, json_encode($this->_settings)), PHP_EOL;
+
         $this->_swoole->on('request', [$this, 'onRequest']);
+
         $this->_swoole->start();
+        echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
 
         return $this;
     }
