@@ -36,6 +36,7 @@ class Application extends \ManaPHP\Application
             }
         }
         $this->alias->set('@web', $web);
+        $this->alias->set('@asset', $web);
 
         $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
     }

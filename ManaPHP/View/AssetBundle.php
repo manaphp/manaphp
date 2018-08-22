@@ -53,6 +53,6 @@ class AssetBundle extends Component implements AssetBundleInterface
             $this->filesystem->filePut("@public/$bundle", $r);
         }
 
-        return $this->alias->resolve("@$bundle");
+        return $this->alias->resolve("@asset/$bundle");
     }
 }
