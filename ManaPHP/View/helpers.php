@@ -201,3 +201,16 @@ if (!function_exists('html')) {
         return di('html')->render($name, $data);
     }
 }
+
+if (!function_exists('bundle')) {
+    /**
+     * @param array  $files
+     * @param string $name
+     *
+     * @return string
+     */
+    function bundle($files, $name = 'app')
+    {
+        return di('assetBundle')->bundle($files, $name);
+    }
+}

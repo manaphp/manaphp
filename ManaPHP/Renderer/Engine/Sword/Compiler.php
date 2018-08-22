@@ -913,6 +913,16 @@ class Compiler extends Component
     }
 
     /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_bundle($expression)
+    {
+        return "<?php echo bundle{$expression}; ?>";
+    }
+
+    /**
      * Register a handler for custom directives.
      *
      * @param  string   $name
