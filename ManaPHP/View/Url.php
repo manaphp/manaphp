@@ -19,11 +19,6 @@ class Url extends Component implements UrlInterface
     /**
      * @var string
      */
-    protected $_assets;
-
-    /**
-     * @var string
-     */
     protected $_prefix;
 
     /**
@@ -44,8 +39,6 @@ class Url extends Component implements UrlInterface
         if ($this->_prefix[0] === '/') {
             $this->_prefix = $selfPath . $this->_prefix;
         }
-
-        $this->_assets = $selfPath . (isset($options['assets']) ? rtrim($options['assets'], '/') : '');
     }
 
     /**
@@ -109,23 +102,25 @@ class Url extends Component implements UrlInterface
             if (strpos($path, '/') === false) {
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
                 if ($ext === 'js') {
-                    $path = '/assets/js/' . $path;
+                    $path = 'assets/js/' . $path;
                 } elseif ($ext === 'css') {
-                    $path = '/assets/css/' . $path;
+                    $path = 'assets/css/' . $path;
                 } elseif ($ext === 'jpg' || $ext === 'png' || $ext === 'gif') {
-                    $path = '/assets/img/' . $path;
+                    $path = 'assets/img/' . $path;
                 } else {
-                    $path = '/assets/' . $path;
+                    $path = 'assets/' . $path;
                 }
             } else {
-                $path = '/assets/' . $path;
+                $path = 'assets/' . $path;
             }
+        } else {
+            $path = substr($path, 1);
         }
 
-        $file = $this->alias->resolve("@public$path");
+        $file = $this->alias->resolve("@public/$path");
         if (!file_exists($file)) {
-            throw new FileNotFoundException(['`:asset` asset file is not exists', 'asset' => "@public$path"]);
+            throw new FileNotFoundException(['`:asset` asset file is not exists', 'asset' => "@public/$path"]);
         }
-        return $this->_assets . $path . '?' . substr(md5_file($file), 0, 16);
+        return $this->alias->resolve("@asset/$path") . '?' . substr(md5_file($file), 0, 16);
     }
 }
