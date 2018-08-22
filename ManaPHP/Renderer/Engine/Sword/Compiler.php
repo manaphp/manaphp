@@ -39,6 +39,11 @@ class Compiler extends Component
     protected $_escapedTags = ['{{', '}}'];
 
     /**
+     * @var bool
+     */
+    protected $_foreachelse_used = false;
+
+    /**
      * Compile the given Sword template contents.
      *
      * @param  string $value
@@ -358,6 +363,19 @@ class Compiler extends Component
     }
 
     /**
+     * Compile the foreachelse statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
+    protected function _compile_foreachElse($expression)
+    {
+        $this->_foreachelse_used = true;
+        return "<?php endforeach; ?> <?php if(\$index === -1): ?>";
+    }
+
+    /**
      * Compile the can statements into valid PHP.
      *
      * @param  string $expression
@@ -469,8 +487,11 @@ class Compiler extends Component
     protected function _compile_endForeach(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    ) {
-        return '<?php endforeach; ?>';
+    )
+    {
+        $r = $this->_foreachelse_used ? '<?php endif; ?>' : '<?php endforeach; ?>';
+        $this->_foreachelse_used = false;
+        return $r;
     }
 
     /**
