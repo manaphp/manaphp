@@ -3,6 +3,7 @@ namespace ManaPHP\View;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Exception\MissingFieldException;
 
 /**
  * Class Html
@@ -11,6 +12,23 @@ use ManaPHP\Exception\InvalidArgumentException;
  */
 class Html extends Component
 {
+    /**
+     * @var string
+     */
+    protected $_select_all_text = '不限';
+
+    /**
+     * Html constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['select_all_text'])) {
+            $this->_select_all_text = $options['select_all_text'];
+        }
+    }
+
     /**
      * @param string $name
      * @param array  $data
@@ -32,7 +50,7 @@ class Html extends Component
         if (method_exists($this, $method)) {
             return $this->$method($data, $value);
         } else {
-            throw new InvalidArgumentException('sss');
+            throw new InvalidArgumentException(['`:type` type is not exist', 'type' => $name]);
         }
     }
 
@@ -47,17 +65,23 @@ class Html extends Component
         if (isset($data['options'])) {
             $options = $data['options'];
             unset($data['options']);
-        } elseif ($data['option']) {
-            $options = $data['option'];
-            unset($data['option']);
         } elseif (isset($data['values'])) {
             $options = $data['values'];
             unset($data['values']);
         } else {
-            throw new InvalidArgumentException('');
+            throw new MissingFieldException('values');
         }
 
-        $r = '<select';
+        if (isset($data['all'])) {
+            if ($data['all']) {
+                $options = array_merge(['' => $data['all']], $options);
+            }
+            unset($data['all']);
+        } else {
+            $options = array_merge(['' => $this->_select_all_text], $options);
+        }
+
+        $r = PHP_EOL . '  <select';
         foreach (['id', 'name', 'class'] as $attr) {
             if (isset($data[$attr])) {
                 $r .= " $attr=\"$data[$attr]\"";
@@ -66,20 +90,88 @@ class Html extends Component
         }
 
         foreach ($data as $attr => $value) {
-            $r .= " $attr=\"$data[$attr]\"";
+            $r .= " $attr=\"" . htmlspecialchars($data[$attr]) . '"';
         }
 
         $r .= '>' . PHP_EOL;
 
         foreach ((array)$options as $value => $label) {
-            $r .= '  <option value="' . (is_numeric($value) ? $value : htmlspecialchars($value)) . '"';
+            $r .= '    <option value="' . (is_numeric($value) ? $value : htmlspecialchars($value)) . '"';
             /** @noinspection TypeUnsafeComparisonInspection */
-            if (($value === '' && $current_value === '') || ($current_value !== '' && $value == $current_value)) {
+            if (($current_value === '' && $value === '') || ($current_value !== '' && $value == $current_value)) {
                 $r .= ' selected';
             }
             $r .= '>' . htmlspecialchars($label) . '</option>' . PHP_EOL;
         }
-        $r .= '</select>';
+        $r .= '  </select>' . PHP_EOL;
+
+        return $r;
+    }
+
+    /**
+     * @param array  $data
+     * @param string $current_value
+     *
+     * @return string
+     * @throws \ManaPHP\Exception\MissingFieldException
+     */
+    protected function _render_radio($data, $current_value)
+    {
+        if (isset($data['name'])) {
+            $name = $data['name'];
+        } else {
+            throw new MissingFieldException('name');
+        }
+
+        if (isset($data['values'])) {
+            $values = $data['values'];
+        } else {
+            throw new MissingFieldException('values');
+        }
+
+        $r = PHP_EOL;
+        foreach ($values as $value => $label) {
+            /** @noinspection TypeUnsafeComparisonInspection */
+            $checked = ($current_value === '' && $value === '') || ($current_value !== '' && $value == $current_value);
+            $r .= '  <label><input type="radio"'
+                . " name=\"$name\" value=\"$value\" "
+                . ($checked ? 'checked="checked"' : '')
+                . '/><span>' . htmlspecialchars($label) . '</span></label>' . PHP_EOL;
+
+        }
+
+        return $r;
+    }
+
+    /**
+     * @param array $data
+     * @param array $current_value
+     *
+     * @return string
+     * @throws \ManaPHP\Exception\MissingFieldException
+     */
+    protected function _render_checkbox($data, $current_value)
+    {
+        if (isset($data['name'])) {
+            $name = $data['name'];
+        } else {
+            throw new MissingFieldException('name');
+        }
+
+        if (isset($data['values'])) {
+            $values = $data['values'];
+        } else {
+            throw new MissingFieldException('values');
+        }
+
+        $r = PHP_EOL;
+        foreach ($values as $value => $label) {
+            $checked = is_array($current_value) && in_array($value, $current_value, false);
+            $r .= '  <label><input type="checkbox"'
+                . " name=\"{$name}[]\"  value=\"$value\" "
+                . ($checked ? 'checked="checked"' : '')
+                . '/><span>' . htmlspecialchars($label) . '</span></label>' . PHP_EOL;
+        }
 
         return $r;
     }
