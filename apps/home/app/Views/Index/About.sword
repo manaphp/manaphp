@@ -1,3 +1,4 @@
+@css
 <style>
     h1 {
         font-size: 50px;
@@ -18,6 +19,14 @@
         margin: 10px auto;
     }
 </style>
+@endcss
+
+@js
+<script>
+        //test
+</script>
+@endjs
+
 <div class="copyright"> @widget('Copyright')</div>
 <div>{{ $baidu_time }}</div>
 <div class="mana_container">

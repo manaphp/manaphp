@@ -1,3 +1,5 @@
 @debugger()
+@yield('js')
 </body>
+
 </html>

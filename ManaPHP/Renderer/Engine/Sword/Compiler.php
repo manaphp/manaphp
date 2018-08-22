@@ -826,6 +826,46 @@ class Compiler extends Component
     }
 
     /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_css($expression)
+    {
+        return "<?php \$renderer->startSection('css'); ?>";
+    }
+
+    /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_endcss($expression)
+    {
+        return '<?php $renderer->appendSection(); ?>';
+    }
+
+    /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_js($expression)
+    {
+        return "<?php \$renderer->startSection('js'); ?>";
+    }
+
+    /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_endjs($expression)
+    {
+        return '<?php $renderer->appendSection(); ?>';
+    }
+
+    /**
      * Register a handler for custom directives.
      *
      * @param  string   $name
