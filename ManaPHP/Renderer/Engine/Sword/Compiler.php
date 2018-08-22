@@ -866,6 +866,32 @@ class Compiler extends Component
     }
 
     /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_empty($expression)
+    {
+        if (strpos($expression, ',') === false) {
+            return "<?php if(empty{$expression}): ?>";
+        } else {
+            $expression = substr($expression, 1, -1);
+            $parts = explode(',', $expression, 2);
+            return "<?php if(empty($parts[0])) echo $parts[1]; ?>";
+        }
+    }
+
+    /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_endempty($expression)
+    {
+        return '<?php endif; ?>';
+    }
+
+    /**
      * Register a handler for custom directives.
      *
      * @param  string   $name
