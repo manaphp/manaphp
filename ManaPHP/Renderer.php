@@ -3,7 +3,6 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\PathCaseSensitiveException;
 use ManaPHP\Exception\PreconditionException;
 
 /**
