@@ -39,12 +39,20 @@ abstract class Application extends Component implements ApplicationInterface
             $appDir = dirname($calledFile);
             $rootDir = dirname($appDir);
             $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
+            $this->alias->set('@public', $rootDir . '/public');
+        } elseif (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
+            $rootDir = dirname($_SERVER['DOCUMENT_ROOT']);
+            $appDir = $rootDir . '/app';
+            $appNamespace = 'App';
+
+            $this->alias->set('@public', $_SERVER['DOCUMENT_ROOT']);
         } else {
             $entryPointDir = dirname($_SERVER['SCRIPT_FILENAME']);
-
             $rootDir = is_dir($entryPointDir . '/app') ? $entryPointDir : dirname($entryPointDir);
             $appDir = $rootDir . '/app';
             $appNamespace = 'App';
+
+            $this->alias->set('@public', $rootDir . '/public');
         }
 
         $this->alias->set('@app', $appDir);
@@ -54,7 +62,6 @@ abstract class Application extends Component implements ApplicationInterface
         $this->alias->set('@views', $appDir . '/Views');
 
         $this->alias->set('@root', $rootDir);
-        $this->alias->set('@public', $rootDir . '/public');
         $this->alias->set('@data', $rootDir . '/data');
         $this->alias->set('@tmp', $rootDir . '/tmp');
         $this->alias->set('@config', $rootDir . '/config');
