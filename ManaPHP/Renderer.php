@@ -120,10 +120,10 @@ class Renderer extends Component implements RendererInterface
         }
         $vars['di'] = $this->_di;
 
+        $this->_templates[] = $template;
+
         $eventArguments = ['file' => $file, 'vars' => $vars];
         $this->fireEvent('renderer:beforeRender', $eventArguments);
-
-        $this->_templates[] = $template;
 
         if ($directOutput) {
             $engine->render($file, $vars);
