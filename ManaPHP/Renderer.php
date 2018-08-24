@@ -123,11 +123,6 @@ class Renderer extends Component implements RendererInterface
         }
         $vars['di'] = $this->_di;
 
-        if (isset($vars['url'])) {
-            throw new MisuseException('variable `url` is reserved for renderer');
-        }
-        $vars['url'] = isset($this->url) ? $this->url : null;
-
         $this->_templates[] = $template;
 
         if ($directOutput) {
