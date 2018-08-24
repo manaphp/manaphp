@@ -66,6 +66,10 @@ class Renderer extends Component implements RendererInterface
         $notExists = true;
         $content = null;
 
+        if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
+            $template = str_replace('\\', '/', $template);
+        }
+
         if ($template[0] !== '@') {
             if (strpos($template, '/') !== false) {
                 throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
@@ -158,6 +162,10 @@ class Renderer extends Component implements RendererInterface
      */
     public function exists($template)
     {
+        if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
+            $template = str_replace('\\', '/', $template);
+        }
+
         if ($template[0] !== '@') {
             if (strpos($template, '/') !== false) {
                 throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
