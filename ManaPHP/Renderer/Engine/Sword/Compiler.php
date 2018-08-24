@@ -53,6 +53,7 @@ class Compiler extends Component
     public function compileString($value)
     {
         $result = '';
+        $value = $this->_replaceLinks($value);
 
         // Here we will loop through all of the tokens returned by the Zend lexer and
         // parse each one into the corresponding valid PHP. We will then have this
@@ -73,6 +74,16 @@ class Compiler extends Component
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _replaceLinks($str)
+    {
+        return preg_replace('#\s(href|src)="(/[^/][^"]+\.(css|js|jpg|png|gif))"#', ' \1="<?=asset(\'\2\')?>"', $str);
     }
 
     /**
