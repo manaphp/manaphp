@@ -79,8 +79,6 @@ class Renderer extends Component implements RendererInterface
             $template = dirname(end($this->_templates)) . '/' . $template;
         }
 
-        $this->_templates[] = $template;
-
         $notExists = true;
         $extension = null;
         $file = null;
@@ -129,6 +127,8 @@ class Renderer extends Component implements RendererInterface
             throw new MisuseException('variable `url` is reserved for renderer');
         }
         $vars['url'] = isset($this->url) ? $this->url : null;
+
+        $this->_templates[] = $template;
 
         if ($directOutput) {
             $engine->render($file, $vars);
