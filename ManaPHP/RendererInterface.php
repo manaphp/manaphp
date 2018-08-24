@@ -30,7 +30,7 @@ interface RendererInterface
     /**
      * @param string $template
      *
-     * @return bool
+     * @return string|false
      */
     public function exists($template);
 

@@ -156,7 +156,7 @@ class Renderer extends Component implements RendererInterface
     /**
      * @param string $template
      *
-     * @return bool
+     * @return string|false
      */
     public function exists($template)
     {
@@ -176,7 +176,7 @@ class Renderer extends Component implements RendererInterface
 
         foreach ($this->_engines as $extension => $_) {
             if (is_file($file = $template . $extension)) {
-                return true;
+                return $file;
             }
         }
 
