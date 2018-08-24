@@ -70,14 +70,14 @@ class Renderer extends Component implements RendererInterface
             $template = str_replace('\\', '/', $template);
         }
 
-        if ($template[0] !== '@') {
-            if (strpos($template, '/') !== false) {
-                throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
-            }
-
-            $template = dirname(end($this->_templates)) . '/' . $template;
-        } else {
+        if ($template[0] === '@') {
             $template = $this->alias->resolve($template);
+        } elseif ($template[0] === '/' || (isset($template[1]) && $template[1] === ':')) {
+            null;
+        } elseif (strpos($template, '/') !== false) {
+            throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
+        } else {
+            $template = dirname(end($this->_templates)) . '/' . $template;
         }
 
         $this->_templates[] = $template;
@@ -166,14 +166,14 @@ class Renderer extends Component implements RendererInterface
             $template = str_replace('\\', '/', $template);
         }
 
-        if ($template[0] !== '@') {
-            if (strpos($template, '/') !== false) {
-                throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
-            }
-
-            $template = dirname(end($this->_templates)) . '/' . $template;
-        } else {
+        if ($template[0] === '@') {
             $template = $this->alias->resolve($template);
+        } elseif ($template[0] === '/' || (isset($template[1]) && $template[1] === ':')) {
+            null;
+        } elseif (strpos($template, '/') !== false) {
+            throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
+        } else {
+            $template = dirname(end($this->_templates)) . '/' . $template;
         }
 
         foreach ($this->_engines as $extension => $_) {
