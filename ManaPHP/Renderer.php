@@ -63,7 +63,6 @@ class Renderer extends Component implements RendererInterface
      */
     public function render($template, $vars = [], $directOutput = false)
     {
-        $notExists = true;
         $content = null;
 
         if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
@@ -82,51 +81,12 @@ class Renderer extends Component implements RendererInterface
 
         $this->_templates[] = $template;
 
+        $notExists = true;
+        $extension = null;
+        $file = null;
         foreach ($this->_engines as $extension => $engine) {
             if (is_file($file = $template . $extension)) {
-                if (PHP_EOL !== "\n") {
-                    $realPath = strtr(realpath($file), '\\', '/');
-                    if ($file !== $realPath) {
-                        trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
-                    }
-                }
-
-                if (!isset($this->_resolved[$extension])) {
-                    $this->_resolved[$extension] = $this->_di->getShared($engine);
-                }
-
-                $engine = $this->_resolved[$extension];
-
-                $eventArguments = ['file' => $file, 'vars' => $vars];
-                $this->fireEvent('renderer:beforeRender', $eventArguments);
-
-                if (isset($vars['renderer'])) {
-                    throw new MisuseException('variable `renderer` is reserved for renderer');
-                }
-                $vars['renderer'] = $this;
-
-                if (isset($vars['di'])) {
-                    throw new MisuseException('variable `di` is reserved for renderer');
-                }
-                $vars['di'] = $this->_di;
-
-                if (isset($vars['url'])) {
-                    throw new MisuseException('variable `url` is reserved for renderer');
-                }
-                $vars['url'] = isset($this->url) ? $this->url : null;
-
-                if ($directOutput) {
-                    $engine->render($file, $vars);
-                    $content = null;
-                } else {
-                    ob_start();
-                    ob_implicit_flush(false);
-                    $engine->render($file, $vars);
-                    $content = ob_get_clean();
-                }
-
                 $notExists = false;
-                $this->fireEvent('renderer:afterRender', $eventArguments);
                 break;
             }
         }
@@ -138,6 +98,49 @@ class Renderer extends Component implements RendererInterface
                 'extensions' => implode(', or ', array_keys($this->_engines))
             ]);
         }
+
+        if (PHP_EOL !== "\n") {
+            $realPath = strtr(realpath($file), '\\', '/');
+            if ($file !== $realPath) {
+                trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
+            }
+        }
+
+        if (!isset($this->_resolved[$extension])) {
+            $engine = $this->_resolved[$extension] = $this->_di->getShared($this->_engines[$extension]);
+        } else {
+            $engine = $this->_resolved[$extension];
+        }
+
+        $eventArguments = ['file' => $file, 'vars' => $vars];
+        $this->fireEvent('renderer:beforeRender', $eventArguments);
+
+        if (isset($vars['renderer'])) {
+            throw new MisuseException('variable `renderer` is reserved for renderer');
+        }
+        $vars['renderer'] = $this;
+
+        if (isset($vars['di'])) {
+            throw new MisuseException('variable `di` is reserved for renderer');
+        }
+        $vars['di'] = $this->_di;
+
+        if (isset($vars['url'])) {
+            throw new MisuseException('variable `url` is reserved for renderer');
+        }
+        $vars['url'] = isset($this->url) ? $this->url : null;
+
+        if ($directOutput) {
+            $engine->render($file, $vars);
+            $content = null;
+        } else {
+            ob_start();
+            ob_implicit_flush(false);
+            $engine->render($file, $vars);
+            $content = ob_get_clean();
+        }
+
+        $this->fireEvent('renderer:afterRender', $eventArguments);
 
         array_pop($this->_templates);
 
@@ -181,7 +184,9 @@ class Renderer extends Component implements RendererInterface
                 if (PHP_EOL !== "\n") {
                     $realPath = strtr(realpath($file), '\\', '/');
                     if ($file !== $realPath) {
-                        throw new PathCaseSensitiveException(['`:real_file` file name does case mismatch for `:wanted_file`', 'real_file' => $realPath, 'wanted_file' => $file]);
+                        throw new PathCaseSensitiveException(['`:real_file` file name does case mismatch for `:wanted_file`',
+                            'real_file' => $realPath,
+                            'wanted_file' => $file]);
                     }
                 }
                 return true;
