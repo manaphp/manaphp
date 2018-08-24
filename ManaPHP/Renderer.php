@@ -110,9 +110,6 @@ class Renderer extends Component implements RendererInterface
             $engine = $this->_resolved[$extension];
         }
 
-        $eventArguments = ['file' => $file, 'vars' => $vars];
-        $this->fireEvent('renderer:beforeRender', $eventArguments);
-
         if (isset($vars['renderer'])) {
             throw new MisuseException('variable `renderer` is reserved for renderer');
         }
@@ -122,6 +119,9 @@ class Renderer extends Component implements RendererInterface
             throw new MisuseException('variable `di` is reserved for renderer');
         }
         $vars['di'] = $this->_di;
+
+        $eventArguments = ['file' => $file, 'vars' => $vars];
+        $this->fireEvent('renderer:beforeRender', $eventArguments);
 
         $this->_templates[] = $template;
 
