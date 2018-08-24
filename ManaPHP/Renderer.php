@@ -82,10 +82,16 @@ class Renderer extends Component implements RendererInterface
         $notExists = true;
         $extension = null;
         $file = null;
-        foreach ($this->_engines as $extension => $engine) {
-            if (is_file($file = $template . $extension)) {
-                $notExists = false;
-                break;
+        if (($extension = pathinfo($template, PATHINFO_EXTENSION)) && isset($this->_engines[".$extension"])) {
+            $notExists = false;
+            $extension = ".$extension";
+            $file = $template;
+        } else {
+            foreach ($this->_engines as $extension => $engine) {
+                if (is_file($file = $template . $extension)) {
+                    $notExists = false;
+                    break;
+                }
             }
         }
 
