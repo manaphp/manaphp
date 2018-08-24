@@ -79,23 +79,7 @@ class Renderer extends Component implements RendererInterface
             $template = dirname(end($this->_templates)) . '/' . $template;
         }
 
-        $notExists = true;
-        $extension = null;
-        $file = null;
-        if (($extension = pathinfo($template, PATHINFO_EXTENSION)) && isset($this->_engines[".$extension"])) {
-            $notExists = false;
-            $extension = ".$extension";
-            $file = $template;
-        } else {
-            foreach ($this->_engines as $extension => $engine) {
-                if (is_file($file = $template . $extension)) {
-                    $notExists = false;
-                    break;
-                }
-            }
-        }
-
-        if ($notExists) {
+        if (!$file = $this->exists($template)) {
             throw new FileNotFoundException([
                 '`:template` with `:extensions` extension file was not found',
                 'template' => $template,
@@ -110,6 +94,7 @@ class Renderer extends Component implements RendererInterface
             }
         }
 
+        $extension = substr($file, $file === $template ? strrpos($template, '.') : strlen($template));
         if (!isset($this->_resolved[$extension])) {
             $engine = $this->_resolved[$extension] = $this->_di->getShared($this->_engines[$extension]);
         } else {
