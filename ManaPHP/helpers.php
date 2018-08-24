@@ -84,11 +84,16 @@ if (!function_exists('debug')) {
      * @param string|array $message
      * @param string       $category
      *
-     * @return \ManaPHP\LoggerInterface
+     * @return void
      */
     function debug($message, $category = null)
     {
-        return di('logger')->debug($message, $category);
+        static $logger;
+        if (!$logger) {
+            $logger = di('logger');
+        }
+
+        $logger->debug($message, $category);
     }
 }
 
@@ -97,11 +102,16 @@ if (!function_exists('info')) {
      * @param string|array $message
      * @param string       $category
      *
-     * @return \ManaPHP\LoggerInterface
+     * @return void
      */
     function info($message, $category = null)
     {
-        return di('logger')->info($message, $category);
+        static $logger;
+        if (!$logger) {
+            $logger = di('logger');
+        }
+
+        $logger->info($message, $category);
     }
 }
 
@@ -110,11 +120,16 @@ if (!function_exists('warn')) {
      * @param string|array $message
      * @param string       $category
      *
-     * @return \ManaPHP\LoggerInterface
+     * @return void
      */
     function warn($message, $category = null)
     {
-        return di('logger')->warn($message, $category);
+        static $logger;
+        if (!$logger) {
+            $logger = di('logger');
+        }
+
+        $logger->warn($message, $category);
     }
 }
 
@@ -123,11 +138,16 @@ if (!function_exists('error')) {
      * @param string|array $message
      * @param string       $category
      *
-     * @return \ManaPHP\LoggerInterface
+     * @return void
      */
     function error($message, $category = null)
     {
-        return di('logger')->error($message, $category);
+        static $logger;
+        if (!$logger) {
+            $logger = di('logger');
+        }
+
+        $logger->error($message, $category);
     }
 }
 
@@ -140,7 +160,12 @@ if (!function_exists('fatal')) {
      */
     function fatal($message, $category = null)
     {
-        return di('logger')->fatal($message, $category);
+        static $logger;
+        if (!$logger) {
+            $logger = di('logger');
+        }
+
+        return $logger->fatal($message, $category);
     }
 }
 
