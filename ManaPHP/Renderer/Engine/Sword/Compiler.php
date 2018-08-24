@@ -83,7 +83,7 @@ class Compiler extends Component
      */
     protected function _replaceLinks($str)
     {
-        return preg_replace('#\s(href|src)="(/[^/][^"]+\.(css|js|jpg|png|gif))"#', ' \1="<?=asset(\'\2\')?>"', $str);
+        return preg_replace('#\s(href|src)="(/[^/][^"]+\.(css|js|jpg|png|gif))"#', ' \1="<?php echo asset(\'\2\') ;?>"', $str);
     }
 
     /**
