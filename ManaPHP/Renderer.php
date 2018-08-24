@@ -180,6 +180,10 @@ class Renderer extends Component implements RendererInterface
             $template = dirname(end($this->_templates)) . '/' . $template;
         }
 
+        if (($extension = pathinfo($template, PATHINFO_EXTENSION)) && isset($this->_engines[".$extension"])) {
+            return $template;
+        }
+
         foreach ($this->_engines as $extension => $_) {
             if (is_file($file = $template . $extension)) {
                 return $file;
