@@ -39,6 +39,7 @@ abstract class Application extends Component implements ApplicationInterface
             $appDir = dirname($calledFile);
             $rootDir = dirname($appDir);
             $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
+
             $this->alias->set('@public', $rootDir . '/public');
         } elseif (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
             $rootDir = dirname($_SERVER['DOCUMENT_ROOT']);
