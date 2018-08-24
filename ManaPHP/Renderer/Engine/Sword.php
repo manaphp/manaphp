@@ -20,12 +20,15 @@ class Sword extends Component implements EngineInterface
      */
     public function getCompiledFile($source)
     {
-        if (strpos($source, $this->alias->get('@app')) === 0) {
-            $compiled = '@data/sword' . str_replace($this->alias->get('@app'), '', $source);
-        } elseif (strpos($source, $this->alias->get('@manaphp')) === 0) {
-            $compiled = '@data/sword/_manaphp_/' . str_replace($this->alias->get('@manaphp'), '', $source);
+        if (strpos($source, $root = $this->alias->get('@root')) === 0) {
+            $compiled = '@data/sword' . substr($source, strlen($root));
+        } elseif (isset($_SERVER['DOCUMENT_ROOT']) && strpos($source, $_SERVER['DOCUMENT_ROOT']) === 0) {
+            $compiled = '@data/sword/' . substr($source, strlen($_SERVER['DOCUMENT_ROOT']));
         } else {
-            $compiled = '@data/sword/_mixed_/' . md5($source);
+            $compiled = "@data/sword/$source";
+            if (DIRECTORY_SEPARATOR === '\\') {
+                $compiled = str_replace(':', '_', $compiled);
+            }
         }
 
         $compiled = $this->alias->resolve($compiled);
