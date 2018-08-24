@@ -176,14 +176,6 @@ class Renderer extends Component implements RendererInterface
 
         foreach ($this->_engines as $extension => $_) {
             if (is_file($file = $template . $extension)) {
-                if (PHP_EOL !== "\n") {
-                    $realPath = strtr(realpath($file), '\\', '/');
-                    if ($file !== $realPath) {
-                        throw new PathCaseSensitiveException(['`:real_file` file name does case mismatch for `:wanted_file`',
-                            'real_file' => $realPath,
-                            'wanted_file' => $file]);
-                    }
-                }
                 return true;
             }
         }
