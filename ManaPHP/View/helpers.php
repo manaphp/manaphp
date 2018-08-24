@@ -110,7 +110,7 @@ if (!function_exists('asset')) {
         if (!file_exists($file = $alias->resolve("@public/$path"))) {
             throw new \ManaPHP\Exception\FileNotFoundException(['`:asset` asset file is not exists', 'asset' => "@public/$path"]);
         }
-        return $alias->resolve("@asset/$path") . '?' . substr(md5_file($file), 0, 16);
+        return $alias->resolve("@asset/$path") . '?' . substr(md5_file($file), 0, 12);
     }
 }
 
