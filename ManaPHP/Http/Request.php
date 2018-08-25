@@ -231,26 +231,26 @@ class Request extends Component implements RequestInterface
             }
             return array_merge($this->get(), $params);
         } elseif ($current = strpos($name, '[')) {
-            $values = $this->get(null, false);
+            $value = $this->get(null, false);
             $var = substr($name, 0, $current);
-            if (!isset($values[$var])) {
+            if (!isset($value[$var])) {
                 return $defaultValue;
             }
-            $values = $values[$var];
+            $value = $value[$var];
             while ($next = strpos($name, ']', $current)) {
                 $var = substr($name, $current + 1, $next - $current - 1);
-                if (!is_array($values) || !isset($values[$var])) {
+                if (!is_array($value) || !isset($value[$var])) {
                     return $defaultValue;
                 }
-                $values = $values[$var];
+                $value = $value[$var];
                 $current = $next + 1;
             }
 
-            if (is_array($values) && is_scalar($defaultValue)) {
+            if (is_array($value) && is_scalar($defaultValue)) {
                 throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
             }
 
-            return $values;
+            return $value;
         } elseif ($this->dispatcher->hasParam($name)) {
             return $this->dispatcher->getParam($name);
         } elseif ($this->has($name)) {
