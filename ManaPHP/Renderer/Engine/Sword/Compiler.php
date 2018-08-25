@@ -423,7 +423,7 @@ class Compiler extends Component
     protected function _compile_foreachElse($expression)
     {
         $this->_foreachelse_used = true;
-        return "<?php endforeach; ?> <?php if(\$index === -1): ?>";
+        return '<?php endforeach; ?> <?php if($index === -1): ?>';
     }
 
     /**
