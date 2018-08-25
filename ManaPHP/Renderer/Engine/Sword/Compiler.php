@@ -46,9 +46,23 @@ class Compiler extends Component
      * @var array
      */
     protected $_safe_functions = [
-        'url', 'action', 'asset', 'csrf_token', 'csrf_field', 'date', 'html','bundle','attr_nv','attr_inv'
+        'e',
+        'url',
+        'action',
+        'asset',
+        'csrf_token',
+        'csrf_field',
+        'date',
+        'html',
+        'bundle',
+        'attr_nv',
+        'attr_inv',
+        'widget',
+        'partial',
+        'block',
+        'pager'
     ];
-    
+
     /**
      * Compile the given Sword template contents.
      *
