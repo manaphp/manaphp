@@ -48,35 +48,15 @@ class Request extends Component implements RequestInterface
     protected function _getHelper($source, $name = null, $rule = null, $defaultValue = '')
     {
         if ($name === null) {
-            if ($rule === '') {
-                return $source;
-            }
-
-            $data = [];
-            foreach ($source as $k => $v) {
-                $data[$k] = is_array($v) ? $this->_getHelper($v) : $this->filter->sanitize($k, null, $v);
-            }
-
-            return $data;
+            return $source;
         } else {
-            if (isset($source[$name])) {
-                $value = $source[$name];
-                if (is_string($value) && $value === '') {
-                    $value = $defaultValue;
-                }
-            } else {
-                $value = $defaultValue;
-            }
+            $value = (isset($source[$name]) && $source[$name] !== '') ? $source[$name] : $defaultValue;
 
-            if ($rule === '') {
+            if ($rule === null || $rule === '') {
                 return $value;
             }
 
-            if (is_array($value)) {
-                return $this->_getHelper($value);
-            } else {
-                return $this->filter->sanitize($name, $rule, $value);
-            }
+            return is_array($value) ? $value : $this->filter->sanitize($name, $rule, $value);
         }
     }
 
