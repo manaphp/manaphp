@@ -19,7 +19,6 @@ class Compiler extends Component
     /**
      * All custom "directive" handlers.
      *
-     *
      * @var array
      */
     protected $_directives = [];
@@ -43,6 +42,13 @@ class Compiler extends Component
      */
     protected $_foreachelse_used = false;
 
+    /**
+     * @var array
+     */
+    protected $_safe_functions = [
+        'url', 'action', 'asset', 'csrf_token', 'csrf_field', 'date', 'html'
+    ];
+    
     /**
      * Compile the given Sword template contents.
      *
@@ -256,11 +262,25 @@ class Compiler extends Component
             if (preg_match('#^[\w\._]+$#', $matches[2]) || preg_match('#^\\$[\w]+\(#', $matches[2])) {
                 return $matches[0];
             } else {
-                return '<?php echo e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? '' : $matches[3]);
+                if ($this->_isSafeEchos($matches[2])) {
+                    return "<?php echo $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);
+                } else {
+                    return '<?php echo e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? '' : $matches[3]);
+                }
             }
         };
 
         return preg_replace_callback($pattern, $callback, $value);
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return bool
+     */
+    protected function _isSafeEchos($value)
+    {
+        return preg_match('#^([a-z\d_]+)\\(#', $value, $match) === 1 && in_array($match[1], $this->_safe_functions, true);
     }
 
     /**
