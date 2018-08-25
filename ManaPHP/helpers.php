@@ -705,7 +705,7 @@ if (!function_exists('size_to_int')) {
      */
     function size_to_int($size, $base = 1024)
     {
-        $size = rtrim(strtolower($size), 'b');
+        $size = strtolower(rtrim($size, 'b'));
         if (is_numeric($size)) {
             return (int)$size;
         } else {
