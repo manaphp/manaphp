@@ -1159,10 +1159,11 @@ if (!function_exists('asset')) {
             $path = substr($path, 1);
         }
 
-        if (!file_exists($file = $alias->resolve("@public/$path"))) {
-            throw new \ManaPHP\Exception\FileNotFoundException(['`:asset` asset file is not exists', 'asset' => "@public/$path"]);
+        if (strpos($path, '?') === false && is_file($file = $alias->resolve("@public/$path"))) {
+            return $alias->resolve("@asset/$path") . '?' . substr(md5_file($file), 0, 12);
+        } else {
+            return $alias->resolve("@asset/$path");
         }
-        return $alias->resolve("@asset/$path") . '?' . substr(md5_file($file), 0, 12);
     }
 }
 
