@@ -1140,29 +1140,10 @@ if (!function_exists('asset')) {
             $alias = di('alias');
         }
 
-        if ($path[0] !== '/') {
-            if (strpos($path, '/') === false) {
-                $ext = pathinfo($path, PATHINFO_EXTENSION);
-                if ($ext === 'js') {
-                    $path = 'assets/js/' . $path;
-                } elseif ($ext === 'css') {
-                    $path = 'assets/css/' . $path;
-                } elseif ($ext === 'jpg' || $ext === 'png' || $ext === 'gif') {
-                    $path = 'assets/img/' . $path;
-                } else {
-                    $path = 'assets/' . $path;
-                }
-            } else {
-                $path = 'assets/' . $path;
-            }
+        if (strpos($path, '?') === false && is_file($file = $alias->resolve("@public{$path}"))) {
+            return $alias->resolve("@asset{$path}") . '?' . substr(md5_file($file), 0, 12);
         } else {
-            $path = substr($path, 1);
-        }
-
-        if (strpos($path, '?') === false && is_file($file = $alias->resolve("@public/$path"))) {
-            return $alias->resolve("@asset/$path") . '?' . substr(md5_file($file), 0, 12);
-        } else {
-            return $alias->resolve("@asset/$path");
+            return $alias->resolve("@asset{$path}");
         }
     }
 }
