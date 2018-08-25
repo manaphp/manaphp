@@ -46,7 +46,7 @@ class Compiler extends Component
      * @var array
      */
     protected $_safe_functions = [
-        'url', 'action', 'asset', 'csrf_token', 'csrf_field', 'date', 'html'
+        'url', 'action', 'asset', 'csrf_token', 'csrf_field', 'date', 'html','bundle'
     ];
     
     /**
@@ -954,16 +954,6 @@ class Compiler extends Component
     protected function _compile_endempty($expression)
     {
         return '<?php endif; ?>';
-    }
-
-    /**
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function _compile_bundle($expression)
-    {
-        return "<?php echo bundle{$expression}; ?>";
     }
 
     /**
