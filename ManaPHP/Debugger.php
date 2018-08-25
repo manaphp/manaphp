@@ -360,6 +360,10 @@ class Debugger extends Component implements DebuggerInterface
                 $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
             }
 
+            if ($k === 'renderer') {
+                $properties['_sections'] = array_keys($properties['_sections']);
+            }
+	    
             $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
         }
 
