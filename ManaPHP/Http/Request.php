@@ -3,6 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File;
 
 /**
@@ -229,6 +230,27 @@ class Request extends Component implements RequestInterface
                 $params = ['id' => $params[0]];
             }
             return array_merge($this->get(), $params);
+        } elseif ($current = strpos($name, '[')) {
+            $values = $this->get(null, false);
+            $var = substr($name, 0, $current);
+            if (!isset($values[$var])) {
+                return $defaultValue;
+            }
+            $values = $values[$var];
+            while ($next = strpos($name, ']', $current)) {
+                $var = substr($name, $current + 1, $next - $current - 1);
+                if (!is_array($values) || !isset($values[$var])) {
+                    return $defaultValue;
+                }
+                $values = $values[$var];
+                $current = $next + 1;
+            }
+
+            if (is_array($values) && is_scalar($defaultValue)) {
+                throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
+            }
+
+            return $values;
         } elseif ($this->dispatcher->hasParam($name)) {
             return $this->dispatcher->getParam($name);
         } elseif ($this->has($name)) {
