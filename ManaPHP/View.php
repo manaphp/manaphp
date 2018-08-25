@@ -1,6 +1,7 @@
 <?php
 
 namespace ManaPHP;
+
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 
@@ -251,31 +252,43 @@ class View extends Component implements ViewInterface
     }
 
     /**
+     * @param string $widget
+     *
+     * @return string|false
+     */
+    public function getWidgetClassName($widget)
+    {
+        if (strpos($widget, '/') !== false) {
+            throw new MisuseException('it is not allowed to access other area widgets');
+        }
+
+        if (($pos = strpos($this->_controllerName, '/')) !== false) {
+            $area = substr($this->_controllerName, 0, $pos);
+            if (class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Widgets\\{$widget}Widget"))) {
+                return $widgetClassName;
+            }
+        }
+
+        return class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$widget}Widget")) ? $widgetClassName : false;
+    }
+
+    /**
      * @param string    $widget
      * @param array     $options
      * @param int|array $cacheOptions
      */
     public function widget($widget, $options = [], $cacheOptions = null)
     {
-        if (strpos($widget, '/') !== false) {
-            throw new MisuseException('it is not allowed to access other area widgets');
+        if (!$widgetClassName = $this->getWidgetClassName($widget)) {
+            throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists', 'widget' => $widget, 'class' => $widgetClassName]);
         }
 
-        do {
-            if (($pos = strpos($this->_controllerName, '/')) !== false) {
-                $area = substr($this->_controllerName, 0, $pos);
-                $view = "@app/Areas/$area/Views/Widgets/$widget";
-                if (class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Widgets\\{$widget}Widget"))) {
-                    break;
-                }
-            }
-
-            /** @noinspection SuspiciousAssignmentsInspection */
-            $view = '@views/Widgets/' . $widget;
-            if (!class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Widgets\\{$widget}Widget"))) {
-                throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists', 'widget' => $widget, 'class' => $widgetClassName]);
-            }
-        } while (false);
+        if (strpos($widgetClassName, '\\Areas\\')) {
+            $area = substr($this->_controllerName, 0, strpos($this->_controllerName, '/'));
+            $view = "@app/Areas/$area/Views/Widgets/$widget";
+        } else {
+            $view = "@views/Widgets/$widget";
+        }
 
         /**
          * @var \ManaPHP\View\WidgetInterface $widgetInstance
