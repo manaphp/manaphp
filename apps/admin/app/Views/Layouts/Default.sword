@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>ManaPHP Admin</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="@asset('/static/css/manaphp.css')">
+    <link rel="stylesheet" href="{{asset('/static/css/manaphp.css')}}">
     <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css">
-    <link rel="stylesheet" href="@asset('app.css')">
+    <link rel="stylesheet" href="{{asset('/assets/css/app.css')}}">
     @yield('css')
 </head>
 <body>
@@ -26,7 +26,7 @@
 <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
 <script src="https://cdn.bootcss.com/lodash.js/4.17.5/lodash.js"></script>
-<script src="@asset('app.js')"></script>
+<script src="{{asset('/assets/js/app.js')}}"></script>
 @yield('script')
 @debugger()
 </body>

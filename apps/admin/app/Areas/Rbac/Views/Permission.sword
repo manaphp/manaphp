@@ -97,13 +97,13 @@
                     this.edit = Object.assign({}, row)
                 },
                 do_edit: function () {
-                    this.ajax_post('@action(edit)', this.edit, function () {
+                    this.ajax_post("{{action('edit')}}", this.edit, function () {
                         this.editVisible = false;
                         this.row = Object.assign(this.row, this.edit);
                     });
                 },
                 do_rebuild: function () {
-                    this.ajax_post('@action(rebuild)', {}, function () {
+                    this.ajax_post("{{action('rebuild')}}", {}, function () {
                         this.reload_table();
                     });
                 }

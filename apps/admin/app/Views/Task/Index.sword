@@ -17,9 +17,9 @@
             <td>{{ ['none','running','stop'][$task['status']] }}</td>
             <td>{{ $task['up_time_human'] or '' }}</td>
             <td>{{ $task['keep_alive_time_human'] or '' }}</td>
-            <td><a href="@action('task/start',['task'=>$name])">START</a> &nbsp;
-                <a href="@action('task/stop',['task'=>$name])">STOP</a> &nbsp;
-                <a href="@action('task/kill',['task'=>$name])">KILL</a>
+            <td><a href="{{action(['task/start','task'=>$name])}}">START</a> &nbsp;
+                <a href="{{action(['task/stop','task'=>$name])}}">STOP</a> &nbsp;
+                <a href="{{action(['task/kill','task'=>$name])}}">KILL</a>
             </td>
         </tr>
     @endforeach

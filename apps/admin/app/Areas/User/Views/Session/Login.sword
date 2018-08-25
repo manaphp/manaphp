@@ -48,7 +48,7 @@
             </el-input>
         </el-col>
         <el-col :span="2"><span><img :src="captcha_url"
-                                     @click="captcha_url='@action(captcha)'+'?t='+new Date().getTime()"></span>
+                                     @click="captcha_url='{{action('captcha')}}'+'?t='+new Date().getTime()"></span>
         </el-col>
     </el-row>
     <el-row>
@@ -75,16 +75,16 @@
                 password: '',
                 code: ''
             },
-            captcha_url: "@action(captcha)"
+            captcha_url: "{{action('captcha')}}"
         },
         methods: {
             login: function () {
                 this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
                     if (res.data.code === 0) {
-                        window.location.href = "@url('/')";
+                        window.location.href = "{{action('/')}}";
                     } else {
                         this.$alert(res.data.message);
-                        this.captcha_url='@action(captcha)'+'?t='+new Date().getTime();
+                        this.captcha_url="{{action('captcha')}}"+'?t='+new Date().getTime();
                     }
                 }.bind(this));
             },

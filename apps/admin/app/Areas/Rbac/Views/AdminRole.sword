@@ -42,7 +42,7 @@
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="ID" width="100"></el-table-column>
         <el-table-column label="角色ID" width="100">
-            <template slot-scope="scope"><a :href="'@action(role/)?role_id='+scope.row.role_id">@{{scope.row.role_id}}</a></template>
+            <template slot-scope="scope"><a :href="'{{action('role/')}}?role_id='+scope.row.role_id">@{{scope.row.role_id}}</a></template>
         </el-table-column>
         <el-table-column prop="role.role_name" label="角色名" width="100"></el-table-column>
         <el-table-column label="用户列表">
@@ -79,7 +79,7 @@
                 roles: [],
             },
             mounted: function () {
-                this.ajax_get('@action(admin/list)', function (res) {
+                this.ajax_get("{{action('admin/list')}}", function (res) {
                     this.admins = res;
                     if (!this.request.admin_id) {
                         this.request.admin_id = this._.keys(this.admins)[0];
@@ -101,7 +101,7 @@
                     this.edit.admin_id = this.request.admin_id;
                     this.editVisible = true;
                     if (!this.roles.length) {
-                        this.ajax_get('@action(role/list)', function (res) {
+                        this.ajax_get("{{action('role/list')}}", function (res) {
                             this.roles = res;
                             this.editVisible = true;
                         })
@@ -110,14 +110,14 @@
                     }
                 },
                 do_edit: function () {
-                    this.ajax_post('@action(edit)', this.edit, function () {
+                    this.ajax_post("{{action('edit')}}", this.edit, function () {
                         this.editVisible = false;
                         this.reload_table();
                     });
                 },
                 show_detail: function (row) {
                     this.detailVisible = true;
-                    this.ajax_post('@action(detail)', {admin_id: row.admin_id}, function (res) {
+                    this.ajax_post("{{action('detail')}}", {admin_id: row.admin_id}, function (res) {
                         this.detail = data;
                     });
                 }

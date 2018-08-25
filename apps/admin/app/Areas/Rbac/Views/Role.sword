@@ -79,18 +79,18 @@
             },
             methods: {
                 do_enable: function (row) {
-                    this.ajax_post('@action(enable)', {role_id: row.role_id}, function () {
+                    this.ajax_post("{{action('enable')}}", {role_id: row.role_id}, function () {
                         row.enabled = 1;
                     });
                 },
                 do_disable: function (row) {
-                    this.ajax_post('@action(disable)', {role_id: row.role_id}, function () {
+                    this.ajax_post("{{action('disable')}}", {role_id: row.role_id}, function () {
                         row.enabled = 0;
                     });
                 },
 
                 do_create: function () {
-                    this.ajax_post('@action(create)', this.create, function () {
+                    this.ajax_post("{{action('create')}}", this.create, function () {
                         this.$refs.create.resetFields();
                         this.createVisible = false;
                         this.reload_table();
@@ -101,7 +101,7 @@
                     this.edit = Object.assign({}, row);
                 },
                 do_edit: function () {
-                    this.ajax_post('@action(edit)', this.edit, function () {
+                    this.ajax_post("{{action('edit')}}", this.edit, function () {
                         this.editVisible = false;
                         this.reload_table();
                     });
