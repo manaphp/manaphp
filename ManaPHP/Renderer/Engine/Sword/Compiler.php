@@ -845,12 +845,19 @@ class Compiler extends Component
     }
 
     /**
-     *
      * @return string
      */
     protected function _compile_csrf_token()
     {
         return '<?php echo csrf_token(); ?>';
+    }
+
+    /**
+     * @return string
+     */
+    protected function _compile_csrf_field()
+    {
+        return '<?php echo csrf_field(); ?>';
     }
 
     /**
