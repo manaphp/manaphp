@@ -49,15 +49,34 @@ class Request extends Component implements RequestInterface
     {
         if ($name === null) {
             return $source;
+        } elseif ($current = strpos($name, '[')) {
+            $value = $this->get();
+            $var = substr($name, 0, $current);
+            if (!isset($value[$var])) {
+                return $defaultValue;
+            }
+            $value = $value[$var];
+            while ($next = strpos($name, ']', $current)) {
+                $var = substr($name, $current + 1, $next - $current - 1);
+                if (!is_array($value) || !isset($value[$var])) {
+                    return $defaultValue;
+                }
+                $value = $value[$var];
+                $current = $next + 1;
+            }
         } else {
             $value = (isset($source[$name]) && $source[$name] !== '') ? $source[$name] : $defaultValue;
-
-            if ($rule === null || $rule === '') {
-                return $value;
-            }
-
-            return is_array($value) ? $value : $this->filter->sanitize($name, $rule, $value);
         }
+
+        if (is_array($value) && is_scalar($defaultValue)) {
+            throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
+        }
+
+        if ($rule === null || $rule === '') {
+            return $value;
+        }
+
+        return $this->filter->sanitize($name, $rule, $value);
     }
 
     /**
@@ -210,33 +229,10 @@ class Request extends Component implements RequestInterface
                 $params = ['id' => $params[0]];
             }
             return array_merge($this->get(), $params);
-        } elseif ($current = strpos($name, '[')) {
-            $value = $this->get();
-            $var = substr($name, 0, $current);
-            if (!isset($value[$var])) {
-                return $defaultValue;
-            }
-            $value = $value[$var];
-            while ($next = strpos($name, ']', $current)) {
-                $var = substr($name, $current + 1, $next - $current - 1);
-                if (!is_array($value) || !isset($value[$var])) {
-                    return $defaultValue;
-                }
-                $value = $value[$var];
-                $current = $next + 1;
-            }
-
-            if (is_array($value) && is_scalar($defaultValue)) {
-                throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
-            }
-
-            return $value;
         } elseif ($this->dispatcher->hasParam($name)) {
             return $this->dispatcher->getParam($name);
-        } elseif ($this->has($name)) {
-            return $this->get($name, $rule, $defaultValue);
         } else {
-            return $defaultValue;
+            return $this->get($name, $rule, $defaultValue);
         }
     }
 
