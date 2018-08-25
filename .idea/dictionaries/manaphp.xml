@@ -29,12 +29,15 @@
       <w>doctype</w>
       <w>dotenv</w>
       <w>elasticsearch</w>
+      <w>endcss</w>
+      <w>endjs</w>
       <w>errmsg</w>
       <w>errno</w>
       <w>errstr</w>
       <w>etag</w>
       <w>floatval</w>
       <w>fnmatch</w>
+      <w>foreachelse</w>
       <w>gitattributes</w>
       <w>helo</w>
       <w>httponly</w>
