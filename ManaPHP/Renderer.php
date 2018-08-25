@@ -49,6 +49,8 @@ class Renderer extends Component implements RendererInterface
         if (isset($options['engines'])) {
             $this->_engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Renderer\Engine\Php'];
         }
+
+        $this->loader->registerFiles('@manaphp/Renderer/helpers.php');
     }
 
     /**

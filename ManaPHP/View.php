@@ -45,11 +45,6 @@ class View extends Component implements ViewInterface
      */
     protected $_pickedView;
 
-    public function __construct()
-    {
-        $this->loader->registerFiles('@manaphp/View/helpers.php');
-    }
-
     /**
      * @param false|string $layout
      *
