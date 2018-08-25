@@ -68,6 +68,11 @@ interface DispatcherInterface
     public function getReturnedValue();
 
     /**
+     * @return string
+     */
+    public function getControllerClassName();
+
+    /**
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param string $controller

@@ -160,6 +160,20 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
+     * @return string
+     */
+    public function getControllerClassName()
+    {
+        if (($pos = strpos($this->_controllerName, '/')) !== false) {
+            $areaName = substr($this->_controllerName, 0, $pos);
+            $controllerName = substr($this->_controllerName, $pos + 1);
+            return $this->alias->resolveNS("@ns.app\\Areas\\$areaName\\Controllers\\{$controllerName}Controller");
+        } else {
+            return $this->alias->resolveNS("@ns.app\\Controllers\\{$this->_controllerName}Controller");
+        }
+    }
+
+    /**
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param string $controller
@@ -197,13 +211,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 throw new DispatcherException('dispatcher has detected a cyclic routing causing stability problems');
             }
 
-            if (($pos = strpos($this->_controllerName, '/')) !== false) {
-                $areaName = substr($this->_controllerName, 0, $pos);
-                $controllerName = substr($this->_controllerName, $pos + 1);
-                $controllerClassName = $this->alias->resolveNS("@ns.app\\Areas\\$areaName\\Controllers\\{$controllerName}Controller");
-            } else {
-                $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\{$this->_controllerName}Controller");
-            }
+            $controllerClassName = $this->getControllerClassName();
 
             if (!class_exists($controllerClassName) && !$this->_di->has($controllerClassName)) {
                 throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
