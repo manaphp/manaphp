@@ -231,7 +231,7 @@ class Request extends Component implements RequestInterface
             }
             return array_merge($this->get(), $params);
         } elseif ($current = strpos($name, '[')) {
-            $value = $this->get(null, false);
+            $value = $this->get();
             $var = substr($name, 0, $current);
             if (!isset($value[$var])) {
                 return $defaultValue;
