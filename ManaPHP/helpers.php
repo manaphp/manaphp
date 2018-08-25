@@ -1164,3 +1164,35 @@ if (!function_exists('html')) {
         return di('html')->render($name, $data);
     }
 }
+
+if (!function_exists('attr_nv')) {
+    /**
+     * @param string $name
+     * @param string $default
+     *
+     * @return string
+     */
+    function attr_nv($name, $default = '')
+    {
+        return sprintf('name="%s" value="%s"', $name, e(input($name, $default)));
+    }
+}
+
+if (!function_exists('attr_inv')) {
+    /**
+     * @param string $name
+     * @param string $default
+     *
+     * @return string
+     */
+    function attr_inv($name, $default = '')
+    {
+        if ($pos = strpos($name, '[')) {
+            $id = substr($name, $pos + 1, -1);
+        } else {
+            $id = $name;
+        }
+
+        return sprintf('id="%s" name="%s" value="%s"', $id, $name, e(input($name, $default)));
+    }
+}
