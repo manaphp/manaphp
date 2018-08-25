@@ -299,8 +299,13 @@ if (!function_exists('input')) {
      *
      * @return string|array|\ManaPHP\Http\RequestInterface
      */
-    function input($name = null, $default = null)
+    function input($name = null, $default = '')
     {
+        static $request;
+        if (!$request) {
+            $request = di('request');
+        }
+
         if ($name === 'id') {
             $params = di('dispatcher')->getParams();
             if (count($params) === 1 && isset($params[0])) {
@@ -308,7 +313,7 @@ if (!function_exists('input')) {
             }
         }
 
-        if (($value = di('request')->getInput($name, false, null)) === null) {
+        if (($value = $request->getInput($name, false, null)) === null) {
             if ($default === null) {
                 $exception = new \ManaPHP\Exception\RequiredValidatorException($name);
                 $exception->parameter_name = $name;
