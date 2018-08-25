@@ -60,8 +60,24 @@ class Compiler extends Component
         'widget',
         'partial',
         'block',
-        'pager'
+        'pager',
+        'json'
     ];
+
+    /**
+     * Compiler constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['safe_functions'])) {
+            if (is_string($options['safe_functions'])) {
+                $options['safe_functions'] = preg_split('#[\s,]+#', $options['safe_functions'], PREG_SPLIT_NO_EMPTY);
+            }
+            $this->_safe_functions = array_merge($this->_safe_functions, $options['safe_functions']);
+        }
+    }
 
     /**
      * Compile the given Sword template contents.
