@@ -2,7 +2,6 @@
 namespace ManaPHP\View;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\FileNotFoundException;
 
 /**
  * Class ManaPHP\View\Url
