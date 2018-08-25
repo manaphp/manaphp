@@ -313,12 +313,11 @@ if (!function_exists('input')) {
                 $exception = new \ManaPHP\Exception\RequiredValidatorException($name);
                 $exception->parameter_name = $name;
                 throw $exception;
-            } else {
-                $value = $default;
             }
+            return $default;
+        } else {
+            return (is_array($value) && is_scalar($default)) ? $default : $value;
         }
-
-        return $value;
     }
 }
 
