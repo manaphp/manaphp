@@ -786,19 +786,7 @@ class Compiler extends Component
     {
         return "<?php echo pager{$expression}; ?>";
     }
-
-    /**
-     * Compile the t statements into valid PHP.
-     *
-     * @param  string $expression
-     *
-     * @return string
-     */
-    protected function _compile_t($expression)
-    {
-        return "<?php echo t{$expression}; ?>";
-    }
-
+    
     /**
      * Compile the eol statements into valid PHP.
      *
@@ -913,7 +901,7 @@ class Compiler extends Component
     {
         return '<?php $renderer->appendSection(); ?>';
     }
-    
+
     /**
      * Register a handler for custom directives.
      *
