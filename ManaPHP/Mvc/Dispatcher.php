@@ -160,16 +160,22 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
+     * @param string $controllerName
+     *
      * @return string
      */
-    public function getControllerClassName()
+    public function getControllerClassName($controllerName = null)
     {
-        if (($pos = strpos($this->_controllerName, '/')) !== false) {
-            $areaName = substr($this->_controllerName, 0, $pos);
-            $controllerName = substr($this->_controllerName, $pos + 1);
-            return $this->alias->resolveNS("@ns.app\\Areas\\$areaName\\Controllers\\{$controllerName}Controller");
+        if (!$controllerName) {
+            $controllerName = $this->_controllerName;
+        }
+
+        if (($pos = strpos($controllerName, '/')) !== false) {
+            $area = substr($controllerName, 0, $pos);
+            $controller = substr($controllerName, $pos + 1);
+            return $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller");
         } else {
-            return $this->alias->resolveNS("@ns.app\\Controllers\\{$this->_controllerName}Controller");
+            return $this->alias->resolveNS("@ns.app\\Controllers\\{$controllerName}Controller");
         }
     }
 
