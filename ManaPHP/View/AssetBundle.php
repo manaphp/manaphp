@@ -59,6 +59,10 @@ class AssetBundle extends Component implements AssetBundleInterface
      */
     public function bundle($files, $name = 'app')
     {
+        if (!$files) {
+            return '';
+        }
+
         $hash = substr(md5(implode('', $files)), 0, $this->_length);
         $extension = pathinfo($files[0], PATHINFO_EXTENSION);
 
