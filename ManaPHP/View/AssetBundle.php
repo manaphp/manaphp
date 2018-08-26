@@ -24,6 +24,34 @@ class AssetBundle extends Component implements AssetBundleInterface
     }
 
     /**
+     * @param string $file
+     * @param string $content
+     *
+     * @return string
+     */
+    protected function _replaceCssUrl($file, $content)
+    {
+        $path = dirname(substr($this->alias->resolve($file), strlen($this->alias->resolve('@public'))));
+
+        return preg_replace_callback('#url\((.+?)\)#', function ($match) use ($path) {
+            $url = trim($match[1], '\'"');
+            if ($url === '' || strpos($url, '//') !== false) {
+                return $match[0];
+            }
+
+            if ($url[0] !== '/') {
+                while (strpos($url, '../') === 0) {
+                    $path = dirname($path);
+                    $url = substr($url, 3);
+                }
+
+                $url = rtrim($path, '/\\') . '/' . $url;
+            }
+            return sprintf('url("%s")', $this->alias->resolve('@asset' . $url));
+        }, $content);
+    }
+
+    /**
      * @param array  $files
      * @param string $name
      *
@@ -36,18 +64,22 @@ class AssetBundle extends Component implements AssetBundleInterface
 
         $bundle = "assets/bundle/$name.$hash.$extension";
 
-        if (!is_file($target = $this->alias->resolve("@public/$bundle"))) {
+        if ($this->configure->debug || !is_file($target = $this->alias->resolve("@public/$bundle"))) {
             $r = '';
             foreach ($files as $file) {
                 if ($file[0] !== '@') {
-                    $file = '@public/' . $file;
+                    $file = '@public' . $file;
                 }
 
                 if (($content = file_get_contents($this->alias->resolve($file))) === false) {
                     throw new FileNotFoundException(['bundled `:file` file is not exists', 'file' => $file]);
                 }
 
-                $r .= "/* SOURCE_FILE `$file` */" . PHP_EOL . $content;
+                if ($extension === 'css') {
+                    $content = $this->_replaceCssUrl($file, $content);
+                }
+
+                $r .= PHP_EOL . PHP_EOL . "/* SOURCE_FILE `$file` */" . PHP_EOL . $content;
             }
 
             $this->filesystem->filePut("@public/$bundle", $r);
