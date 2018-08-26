@@ -9,14 +9,6 @@ namespace ManaPHP;
 interface DebuggerInterface
 {
     /**
-     * @param mixed  $value
-     * @param string $name
-     *
-     * @return static
-     */
-    public function var_dump($value, $name = null);
-
-    /**
      * @return string
      */
     public function output();

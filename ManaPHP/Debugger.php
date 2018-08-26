@@ -28,7 +28,6 @@ class Debugger extends Component implements DebuggerInterface
      */
     protected $_file;
 
-    protected $_dump = [];
     protected $_view = [];
 
     protected $_log = [];
@@ -270,36 +269,6 @@ class Debugger extends Component implements DebuggerInterface
     }
 
     /**
-     * @param mixed  $value
-     * @param string $name
-     *
-     * @return static
-     */
-    public function var_dump($value, $name = null)
-    {
-        $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
-        $caller = isset($traces[1]) && $traces[1]['object'] instanceof $this ? $traces[1] : $traces[0];
-
-        if ($name === null) {
-            $lines = file($caller['file']);
-            $str = $lines[$caller['line'] - 1];
-            if (preg_match('#->var_dump\((.*)\)\s*;#', $str, $match) === 1) {
-                $name = $match[1];
-            }
-        }
-
-        $this->_dump[] = [
-            'name' => $name,
-            'value' => $value,
-            'file' => strtr($caller['file'], '\\', '/'),
-            'line' => $caller['line'],
-            'base_name' => basename($caller['file'])
-        ];
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     protected function _getBasic()
@@ -336,7 +305,6 @@ class Debugger extends Component implements DebuggerInterface
         $data = [];
         $data['basic'] = $this->_getBasic();
 
-        $data['dump'] = $this->_dump;
         $data['logger'] = ['log' => $this->_log, 'levels' => array_flip($this->logger->getLevels()), 'level' => 6];
 
         $data['sql'] = ['prepared' => $this->_sql_prepared, 'executed' => $this->_sql_executed, 'count' => $this->_sql_count];
