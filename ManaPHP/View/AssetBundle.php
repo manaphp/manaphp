@@ -65,6 +65,9 @@ class AssetBundle extends Component implements AssetBundleInterface
 
         $hash = substr(md5(implode('', $files)), 0, $this->_length);
         $extension = pathinfo($files[0], PATHINFO_EXTENSION);
+        if ($pos = strpos($extension, '?')) {
+            $extension = substr($extension, 0, $pos);
+        }
 
         $bundle = ($name[0] !== '/' ? "/assets/bundle/$name" : $name) . ".$hash.$extension";
 
@@ -73,6 +76,11 @@ class AssetBundle extends Component implements AssetBundleInterface
             foreach ($files as $file) {
                 if ($file[0] !== '@') {
                     $file = '@public' . $file;
+                }
+                $source_file = $file;
+
+                if ($pos = strpos($file, '?')) {
+                    $file = substr($file, 0, $pos);
                 }
 
                 if (($content = file_get_contents($this->alias->resolve($file))) === false) {
@@ -83,7 +91,7 @@ class AssetBundle extends Component implements AssetBundleInterface
                     $content = $this->_replaceCssUrl($file, $content);
                 }
 
-                $r .= PHP_EOL . PHP_EOL . "/* SOURCE_FILE `$file` */" . PHP_EOL . $content;
+                $r .= PHP_EOL . PHP_EOL . "/* SOURCE_FILE `$source_file` */" . PHP_EOL . $content;
             }
 
             $this->filesystem->filePut("@public$bundle", $r);
