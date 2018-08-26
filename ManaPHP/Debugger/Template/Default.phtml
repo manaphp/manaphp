@@ -76,7 +76,7 @@
     <li><a href="#tab_event" data-toggle="tab">Events</a></li>
     <li><a href="#tab_sql" data-toggle="tab">SQL</a></li>
     <li><a href="#tab_mongodb" data-toggle="tab">Mongodb</a></li>
-    <li><a href="#tab_included_files" data-toggle="tab">IncludedFiles</a></li>
+    <li><a href="#tab_files" data-toggle="tab">Files</a></li>
   </ul>
   <div class="debugger"><a :href="basic.request_url" :title="basic.request_url" target="_self">ReqSrc</a></div>
   <div class="tab-content">
@@ -289,7 +289,7 @@
               </tbody>
           </table>
       </div>
-    <div class="tab-pane" id="tab_included_files">
+    <div class="tab-pane" id="tab_files">
       <h4>IncludedFiles({{included_files_computed.length}}) <label><input type="checkbox" v-model="included_files_application_only">
           <small>Ignore Framework Files</small>
           </input></label></h4>
