@@ -70,17 +70,6 @@ abstract class Application extends Component implements ApplicationInterface
         $this->loader->registerFiles('@manaphp/helpers.php');
     }
 
-    /**
-     * @param int    $code
-     * @param string $message
-     *
-     * @throws \ManaPHP\Application\AbortException
-     */
-    public function abort($code, $message)
-    {
-        throw new AbortException($message, $code);
-    }
-
     public function registerServices()
     {
         $configure = $this->configure;
