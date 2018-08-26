@@ -10,8 +10,9 @@ use ManaPHP\Exception\MisuseException;
  *
  * @package view
  *
- * @property \ManaPHP\RendererInterface     $renderer
- * @property \ManaPHP\Cache\EngineInterface $viewsCache
+ * @property \ManaPHP\RendererInterface       $renderer
+ * @property \ManaPHP\Cache\EngineInterface   $viewsCache
+ * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class View extends Component implements ViewInterface
 {
@@ -29,21 +30,6 @@ class View extends Component implements ViewInterface
      * @var false|string|null
      */
     protected $_layout;
-
-    /**
-     * @var string
-     */
-    protected $_controllerName;
-
-    /**
-     * @var string
-     */
-    protected $_actionName;
-
-    /**
-     * @var string
-     */
-    protected $_pickedView;
 
     /**
      * @param false|string $layout
@@ -117,26 +103,6 @@ class View extends Component implements ViewInterface
     }
 
     /**
-     * Gets the name of the controller rendered
-     *
-     * @return string
-     */
-    public function getControllerName()
-    {
-        return $this->_controllerName;
-    }
-
-    /**
-     * Gets the name of the action rendered
-     *
-     * @return string
-     */
-    public function getActionName()
-    {
-        return $this->_actionName;
-    }
-
-    /**
      * @param string $template
      * @param array  $vars
      * @param bool   $directOutput
@@ -161,76 +127,52 @@ class View extends Component implements ViewInterface
     /**
      * Executes render process from dispatching data
      *
-     * @param string $controller
-     * @param string $action
+     * @param string $template
      *
      * @return static
      */
-    public function render($controller, $action)
+    public function render($template = null)
     {
-        if ($this->_pickedView) {
-            $parts = explode('/', $this->_pickedView);
-            if (count($parts) === 1) {
-                $this->_controllerName = $controller;
-                $this->_actionName = $parts[0];
+        $controllerName = $this->dispatcher->getControllerName();
+
+        if (!$template) {
+            if (($pos = strpos($controllerName, '/')) !== false) {
+                $area = substr($controllerName, 0, $pos);
+                $dir = "@app/Areas/$area/Views/" . substr($controllerName, $pos + 1);
             } else {
-                $this->_controllerName = $parts[0];
-                $this->_actionName = $parts[1];
+                $dir = "@views/$controllerName";
             }
-        } else {
-            $this->_controllerName = $controller;
-            $this->_actionName = $action;
+
+            if ($this->filesystem->dirExists($dir)) {
+                $template = $dir . '/' . ucfirst($this->dispatcher->getActionName());
+            } else {
+                $template = $dir;
+            }
         }
 
         $this->fireEvent('view:beforeRender');
 
-        if (($pos = strpos($this->_controllerName, '/')) !== false) {
-            $area = substr($this->_controllerName, 0, $pos);
-            $dir = "@app/Areas/$area/Views/" . substr($this->_controllerName, $pos + 1);
-        } else {
-            $area = null;
-            $dir = "@views/{$this->_controllerName}";
-        }
-
-        if ($this->filesystem->dirExists($dir)) {
-            $view = $dir . '/' . ucfirst($this->_actionName);
-        } else {
-            $view = $dir;
-        }
-
-        $this->_content = $this->_render($view, $this->_vars, false);
+        $this->_content = $this->_render($template, $this->_vars, false);
 
         if ($this->_layout !== false) {
             if ($this->_layout[0] === '@') {
                 $layout = $this->_layout;
             } else {
-                if ($area) {
-                    $layout = "@app/Areas/$area/Views/Layouts" . substr($this->_controllerName, $pos);
+                $controllerName = $this->dispatcher->getControllerName();
+                if (($pos = strpos($controllerName, '/')) !== false) {
+                    $area = substr($controllerName, 0, $pos);
+                    $layout = "@app/Areas/$area/Views/Layouts" . substr($controllerName, $pos);
                     if (!$this->filesystem->dirExists(dirname($layout))) {
                         $layout = '@views/Layouts/' . ucfirst($this->_layout ?: 'Default');
                     }
                 } else {
-                    $layout = '@views/Layouts/' . ucfirst($this->_layout ?: $this->_controllerName);
+                    $layout = '@views/Layouts/' . ucfirst($this->_layout ?: $controllerName);
                 }
             }
             $this->_content = $this->_render($layout, $this->_vars, false);
         }
 
         $this->fireEvent('view:afterRender');
-
-        return $this;
-    }
-
-    /**
-     * Choose a different view to render instead of last-controller/last-action
-     *
-     * @param string $view
-     *
-     * @return static
-     */
-    public function pick($view)
-    {
-        $this->_pickedView = $view;
 
         return $this;
     }
@@ -257,8 +199,9 @@ class View extends Component implements ViewInterface
             throw new MisuseException('it is not allowed to access other area widgets');
         }
 
-        if (($pos = strpos($this->_controllerName, '/')) !== false) {
-            $area = substr($this->_controllerName, 0, $pos);
+        $controllerName = $this->dispatcher->getControllerName();
+        if (($pos = strpos($controllerName, '/')) !== false) {
+            $area = substr($controllerName, 0, $pos);
             if (class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Widgets\\{$widget}Widget"))) {
                 return $widgetClassName;
             }
@@ -279,7 +222,8 @@ class View extends Component implements ViewInterface
         }
 
         if (strpos($widgetClassName, '\\Areas\\')) {
-            $area = substr($this->_controllerName, 0, strpos($this->_controllerName, '/'));
+            $controllerName = $this->dispatcher->getControllerName();
+            $area = substr($controllerName, 0, strpos($controllerName, '/'));
             $view = "@app/Areas/$area/Views/Widgets/$widget";
         } else {
             $view = "@views/Widgets/$widget";

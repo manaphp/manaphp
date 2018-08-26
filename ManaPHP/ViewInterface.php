@@ -55,19 +55,9 @@ interface ViewInterface
     /**
      * Executes render process from dispatching data
      *
-     * @param string $controller
-     * @param string $action
+     * @param string $template
      */
-    public function render($controller, $action);
-
-    /**
-     * Choose a view different to render than last-controller/last-action
-     *
-     * @param string $view
-     *
-     * @return static
-     */
-    public function pick($view);
+    public function render($template = null);
 
     /**
      * Renders a partial view
@@ -103,7 +93,7 @@ interface ViewInterface
      * @return void
      */
     public function block($path, $vars = []);
-    
+
     /**
      * Externally sets the view content
      *

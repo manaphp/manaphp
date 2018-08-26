@@ -82,7 +82,7 @@ class Application extends \ManaPHP\Application
         if ($ret !== false) {
             $actionReturnValue = $this->dispatcher->getReturnedValue();
             if ($actionReturnValue === null || $actionReturnValue instanceof View) {
-                $this->view->render($this->dispatcher->getControllerName(), $this->dispatcher->getActionName());
+                $this->view->render();
                 $this->response->setContent($this->view->getContent());
             } elseif ($actionReturnValue instanceof Response) {
                 null;
