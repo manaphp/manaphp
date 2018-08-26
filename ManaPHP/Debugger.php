@@ -31,16 +31,12 @@ class Debugger extends Component implements DebuggerInterface
     protected $_view = [];
 
     protected $_log = [];
-    protected $_log_max = 512;
 
     protected $_sql_prepared = [];
-    protected $_sql_prepared_max = 256;
     protected $_sql_executed = [];
-    protected $_sql_executed_max = 256;
 
     protected $_sql_count = 0;
 
-    protected $_mongodb_max = 256;
     protected $_mongodb = [];
 
     protected $_exception = [];
@@ -108,71 +104,60 @@ class Debugger extends Component implements DebuggerInterface
              * @var Log $log
              */
             $log = $data;
-            if (count($this->_log) <= $this->_log_max) {
-                $format = '[%time%][%level%] %message%';
-                $micro_date = explode(' ', microtime());
-                $replaces = [
-                    '%time%' => date('H:i:s.', $micro_date[1]) . str_pad(ceil($micro_date[0] * 10000), '0', STR_PAD_LEFT),
-                    '%level%' => $log->level,
-                    '%message%' => $log->message
-                ];
-                $this->_log[] = [
-                    'level' => $log->level,
-                    'message' => strtr($format, $replaces)
-                ];
-            }
+            $format = '[%time%][%level%] %message%';
+            $micro_date = explode(' ', microtime());
+            $replaces = [
+                '%time%' => date('H:i:s.', $micro_date[1]) . str_pad(ceil($micro_date[0] * 10000), '0', STR_PAD_LEFT),
+                '%level%' => $log->level,
+                '%message%' => $log->message
+            ];
+            $this->_log[] = [
+                'level' => $log->level,
+                'message' => strtr($format, $replaces)
+            ];
         } elseif ($event === 'db:beforeQuery') {
             /**
              * @var \ManaPHP\DbInterface $source
              */
-            if (count($this->_sql_prepared) <= $this->_sql_prepared_max) {
-                $preparedSQL = $source->getSQL();
-                if (!isset($this->_sql_prepared[$preparedSQL])) {
-                    $this->_sql_prepared[$preparedSQL] = 1;
-                } else {
-                    $this->_sql_prepared[$preparedSQL]++;
-                }
+            $preparedSQL = $source->getSQL();
+            if (!isset($this->_sql_prepared[$preparedSQL])) {
+                $this->_sql_prepared[$preparedSQL] = 1;
+            } else {
+                $this->_sql_prepared[$preparedSQL]++;
             }
 
             $this->_sql_count++;
-            if (count($this->_sql_executed) <= $this->_sql_executed_max) {
-                $this->_sql_executed[] = [
-                    'prepared' => $source->getSQL(),
-                    'bind' => $source->getBind(),
-                    'emulated' => $source->getEmulatedSQL()
-                ];
-            }
+            $this->_sql_executed[] = [
+                'prepared' => $source->getSQL(),
+                'bind' => $source->getBind(),
+                'emulated' => $source->getEmulatedSQL()
+            ];
         } elseif ($event === 'db:afterQuery') {
             /**
              * @var \ManaPHP\DbInterface $source
              */
-            if (count($this->_sql_executed) <= $this->_sql_executed_max) {
-                $this->_sql_executed[$this->_sql_count - 1]['elapsed'] = $data['elapsed'];
-                $this->_sql_executed[$this->_sql_count - 1]['row_count'] = $source->affectedRows();
-            }
+
+            $this->_sql_executed[$this->_sql_count - 1]['elapsed'] = $data['elapsed'];
+            $this->_sql_executed[$this->_sql_count - 1]['row_count'] = $source->affectedRows();
         } elseif ($event === 'db:beginTransaction' || $event === 'db:rollbackTransaction' || $event === 'db:commitTransaction') {
             $this->_sql_count++;
 
             $parts = explode(':', $event);
             $name = $parts[1];
 
-            if (count($this->_sql_executed) <= $this->_sql_executed_max) {
-                $this->_sql_executed[] = [
-                    'prepared' => $name,
-                    'bind' => [],
-                    'emulated' => $name,
-                    'time' => 0,
-                    'row_count' => 0
-                ];
-            }
+            $this->_sql_executed[] = [
+                'prepared' => $name,
+                'bind' => [],
+                'emulated' => $name,
+                'time' => 0,
+                'row_count' => 0
+            ];
 
-            if (count($this->_sql_prepared) <= $this->_sql_prepared_max) {
-                $preparedSQL = $name;
-                if (!isset($this->_sql_prepared[$preparedSQL])) {
-                    $this->_sql_prepared[$preparedSQL] = 1;
-                } else {
-                    $this->_sql_prepared[$preparedSQL]++;
-                }
+            $preparedSQL = $name;
+            if (!isset($this->_sql_prepared[$preparedSQL])) {
+                $this->_sql_prepared[$preparedSQL] = 1;
+            } else {
+                $this->_sql_prepared[$preparedSQL]++;
             }
         } elseif ($event === 'renderer:beforeRender') {
             $vars = $data['vars'];
@@ -181,42 +166,36 @@ class Debugger extends Component implements DebuggerInterface
         } elseif ($event === 'component:setUndefinedProperty') {
             $this->_warnings[] = 'Set to undefined property `' . $data['name'] . '` of `' . $data['class'] . '`';
         } elseif ($event === 'mongodb:afterQuery') {
-            if (count($this->_mongodb) < $this->_mongodb_max) {
-                $item = [];
-                $item['type'] = 'query';
-                $item['raw'] = ['namespace' => $data['namespace'], 'filter' => $data['filter'], 'options' => $data['options']];
-                $options = $data['options'];
-                list(, $collection) = explode('.', $data['namespace'], 2);
-                $shell = "db.$collection.";
-                $shell .= (isset($options['limit']) ? 'findOne(' : 'find(') . json_encode($data['filter'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                if (isset($options['projection'])) {
-                    $shell .= ', ' . json_encode($options['projection'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ');';
-                } else {
-                    $shell .= ');';
-                }
+            $item = [];
+            $item['type'] = 'query';
+            $item['raw'] = ['namespace' => $data['namespace'], 'filter' => $data['filter'], 'options' => $data['options']];
+            $options = $data['options'];
+            list(, $collection) = explode('.', $data['namespace'], 2);
+            $shell = "db.$collection.";
+            $shell .= (isset($options['limit']) ? 'findOne(' : 'find(') . json_encode($data['filter'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            if (isset($options['projection'])) {
+                $shell .= ', ' . json_encode($options['projection'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ');';
+            } else {
+                $shell .= ');';
+            }
 
-                $item['shell'] = $shell;
-                $item['elapsed'] = $data['elapsed'];
-                $this->_mongodb[] = $item;
-            }
+            $item['shell'] = $shell;
+            $item['elapsed'] = $data['elapsed'];
+            $this->_mongodb[] = $item;
         } elseif ($event === 'mongodb:afterCommand') {
-            if (count($this->_mongodb) < $this->_mongodb_max) {
-                $item = [];
-                $item['type'] = 'command';
-                $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
-                $item['shell'] = [];
-                $item['elapsed'] = $data['elapsed'];
-                $this->_mongodb[] = $item;
-            }
+            $item = [];
+            $item['type'] = 'command';
+            $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
+            $item['shell'] = [];
+            $item['elapsed'] = $data['elapsed'];
+            $this->_mongodb[] = $item;
         } elseif ($event === 'mongodb:afterBulkWrite') {
-            if (count($this->_mongodb) < $this->_mongodb_max) {
-                $item = [];
-                $item['type'] = 'bulkWrite';
-                $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
-                $item['shell'] = [];
-                $item['elapsed'] = $data['elapsed'];
-                $this->_mongodb = [];
-            }
+            $item = [];
+            $item['type'] = 'bulkWrite';
+            $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
+            $item['shell'] = [];
+            $item['elapsed'] = $data['elapsed'];
+            $this->_mongodb = [];
         }
     }
 
@@ -331,7 +310,7 @@ class Debugger extends Component implements DebuggerInterface
             if ($k === 'renderer') {
                 $properties['_sections'] = array_keys($properties['_sections']);
             }
-	    
+
             $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
         }
 
