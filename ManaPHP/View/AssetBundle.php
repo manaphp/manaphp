@@ -66,7 +66,7 @@ class AssetBundle extends Component implements AssetBundleInterface
         $hash = substr(md5(implode('', $files)), 0, $this->_length);
         $extension = pathinfo($files[0], PATHINFO_EXTENSION);
 
-        $bundle = "assets/bundle/$name.$hash.$extension";
+        $bundle = ($name[0] !== '/' ? "/assets/bundle/$name" : $name) . ".$hash.$extension";
 
         if ($this->configure->debug || !is_file($target = $this->alias->resolve("@public/$bundle"))) {
             $r = '';
@@ -86,9 +86,9 @@ class AssetBundle extends Component implements AssetBundleInterface
                 $r .= PHP_EOL . PHP_EOL . "/* SOURCE_FILE `$file` */" . PHP_EOL . $content;
             }
 
-            $this->filesystem->filePut("@public/$bundle", $r);
+            $this->filesystem->filePut("@public$bundle", $r);
         }
 
-        return $this->alias->resolve("@asset/$bundle");
+        return $this->alias->resolve("@asset$bundle");
     }
 }
