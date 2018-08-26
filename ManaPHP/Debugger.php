@@ -34,7 +34,6 @@ class Debugger extends Component implements DebuggerInterface
 
     protected $_sql_prepared = [];
     protected $_sql_executed = [];
-
     protected $_sql_count = 0;
 
     protected $_mongodb = [];
@@ -136,7 +135,6 @@ class Debugger extends Component implements DebuggerInterface
             /**
              * @var \ManaPHP\DbInterface $source
              */
-
             $this->_sql_executed[$this->_sql_count - 1]['elapsed'] = $data['elapsed'];
             $this->_sql_executed[$this->_sql_count - 1]['row_count'] = $source->affectedRows();
         } elseif ($event === 'db:beginTransaction' || $event === 'db:rollbackTransaction' || $event === 'db:commitTransaction') {
