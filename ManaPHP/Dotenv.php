@@ -10,6 +10,11 @@ use ManaPHP\Exception\RuntimeException;
 class Dotenv extends Component implements DotenvInterface
 {
     /**
+     * @var bool
+     */
+    protected $_toEnv;
+
+    /**
      * @var string
      */
     protected $_file;
@@ -20,16 +25,6 @@ class Dotenv extends Component implements DotenvInterface
     protected $_env = [];
 
     /**
-     * @var bool
-     */
-    protected $_toEnv;
-
-    /**
-     * @var bool
-     */
-    protected $_toServer;
-
-    /**
      * DotEnv constructor.
      *
      * @param array $options
@@ -38,10 +33,6 @@ class Dotenv extends Component implements DotenvInterface
     {
         if (isset($options['toEnv'])) {
             $this->_toEnv = $options['toEnv'];
-        }
-
-        if (isset($options['toServer'])) {
-            $this->_toServer = $options['toServer'];
         }
 
         foreach ($_ENV as $k => $v) {
@@ -86,11 +77,6 @@ class Dotenv extends Component implements DotenvInterface
         if ($this->_toEnv) {
             /** @noinspection AdditionOperationOnArraysInspection */
             $_ENV += $env;
-        }
-
-        if ($this->_toServer) {
-            /** @noinspection AdditionOperationOnArraysInspection */
-            $_SERVER += $env;
         }
 
         return $this;
