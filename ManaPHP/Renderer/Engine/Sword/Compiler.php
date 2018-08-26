@@ -754,6 +754,23 @@ class Compiler extends Component
      *
      * @return string
      */
+    protected function _compile_asset($expression)
+    {
+        if (strcspn($expression, '$\'"') === strlen($expression)) {
+            $expression = '(\'' . trim($expression, '()') . '\')';
+        }
+
+        return asset(substr($expression, 2, -2));
+        /*return "<?php echo asset{$expression}; ?>";*/
+    }
+
+    /**
+     * Compile the flash statements into valid PHP.
+     *
+     * @param  string $expression
+     *
+     * @return string
+     */
     protected function _compile_flash(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
