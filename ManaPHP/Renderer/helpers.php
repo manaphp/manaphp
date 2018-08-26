@@ -170,12 +170,7 @@ if (!function_exists('bundle')) {
      */
     function bundle($files, $name = 'app')
     {
-        if (!$bundle = di('assetBundle')->bundle($files, $name)) {
-            return '';
-        }
-
-        $extension = pathinfo($bundle, PATHINFO_EXTENSION);
-        return sprintf(($extension === 'css' ? '<link ref="stylesheet" href="%s" />' : '<script src="%s"></script>') . PHP_EOL, $bundle);
+        return di('assetBundle')->bundle($files, $name);
     }
 }
 
