@@ -9,5 +9,5 @@ interface AssetBundleInterface
      *
      * @return string
      */
-    public function bundle($files, $name = 'bundle');
+    public function bundle($files, $name = 'app');
 }
