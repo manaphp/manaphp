@@ -59,10 +59,10 @@ abstract class Criteria extends Component implements CriteriaInterface
             $right = strtotime($right[0] === '-' || $right[0] === '+' ? date('Y-m-d 23:59:59', strtotime($right)) : $right);
         }
 
-        if (in_array($field, $this->_model->getIntFields(), true)) {
-            return [$left ?: null, $right ?: null];
+        if ($format = $this->_model->getDateFormat($field)) {
+            return [$left ? date($format, $left) : null, $right ? date($format, $right) : null];
         } else {
-            return [$left ? date('Y-m-d H:i:s', $left) : null, $right ? date('Y-m-d H:i:s', $right) : null];
+            return [$left ?: null, $right ?: null];
         }
     }
 
@@ -91,18 +91,35 @@ abstract class Criteria extends Component implements CriteriaInterface
                 }
             } elseif (is_array($value)) {
                 if (strpos($v, '@=')) {
-                    if (in_array($field, $this->_model->getIntFields(), true)) {
-                        if (!is_numeric($value)) {
-                            $value[0] = strtotime($value[0]);
-                            $value[1] = strtotime($value[1]);
+                    $left = $value[0];
+                    $right = $value[1];
+                    if ($format = $this->_model->getDateFormat($field)) {
+                        if ($left) {
+                            if (is_numeric($left)) {
+                                $left = date($format, $left);
+                            } elseif (preg_match('#^[\d-/:]+$#', $left) !== 1) {
+                                $left = date($format, strtotime($left));
+                            }
+                        }
+
+                        if ($right) {
+                            if (is_numeric($right)) {
+                                $right = date($format, $right);
+                            } elseif (preg_match('#^[\d-/:]+$#', $right) !== 1) {
+                                $right = date($format, strtotime($right));
+                            }
                         }
                     } else {
-                        if (is_numeric($value) && preg_match('^[\d-/:]#', $value[0]) !== 1) {
-                            $value[0] = date('Y-m-d H:i:s', strtotime('date', strtotime($value[0])));
-                            $value[1] = date('Y-m-d H:i:s', strtotime('date', strtotime($value[1])));
+                        if ($left && !is_numeric($left)) {
+                            $left[0] = strtotime($left);
+                        }
+                        if ($right && !is_numeric($right)) {
+                            $right = strtotime($right);
                         }
                     }
-                    $this->whereBetween($field, $value[0], $value[1]);
+                    
+                    $this->whereBetween($field, $left ?: null, $right ?: null);
+
                     continue;
                 }
 

@@ -2,9 +2,9 @@
 namespace ManaPHP\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Model\Validator\Message;
 use ManaPHP\Model\Validator\ValidateFailedException;
 use ManaPHP\Utility\Text;
@@ -255,18 +255,16 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_date($value, $parameter = null)
     {
-        $timestamp = is_numeric($value) ? (int)$value : strtotime($value);
-        if ($timestamp === false) {
+        $ts = is_numeric($value) ? (int)$value : strtotime($value);
+        if ($ts === false) {
             return null;
         }
 
-        if (in_array($this->_field, $this->_model->getIntFields(), true)) {
-            return $timestamp;
-        } else {
-            $format = $parameter ?: 'Y-m-d H:i:s';
-
-            $r = date($format, $timestamp);
+        if ($format = $this->_model->getDateFormat($this->_field)) {
+            $r = date($parameter ? $parameter : $format, $ts);
             return $r !== false ? $r : null;
+        } else {
+            return $ts;
         }
     }
 

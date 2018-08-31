@@ -789,18 +789,16 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public function getAutoFilledData($opMode)
     {
         $ts = time();
-        $time = date('Y-m-d H:i:s');
-        $intFields = $this->getIntFields();
 
         $data = [];
         if ($opMode === self::OP_CREATE) {
-            $data['created_time'] = $data['created_at'] = in_array('created_time', $intFields, true) || in_array('created_at', $intFields, true) ? $ts : $time;
+            $data['updated_time'] = $data['created_time'] = ($format = $this->getDateFormat('created_time')) ? date($format, $ts) : $ts;
+            $data['updated_at'] = $data['created_at'] = ($format = $this->getDateFormat('created_at')) ? date($format, $ts) : $ts;
             $data['creator_id'] = $data['updator_id'] = $this->_di->identity->getId();
             $data['creator_name'] = $data['updator_name'] = $this->_di->identity->getName();
-            $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intFields, true) || in_array('updated_at', $intFields, true) ? $ts : $time;
         } elseif ($opMode === self::OP_UPDATE) {
-            $data['updated_time'] = $data['updated_at'] = in_array('updated_time', $intFields, true) || in_array('updated_at', $intFields, true) ? $ts : $time;
-            $data['updator_id'] = $this->_di->identity->getId();
+            $data['updated_time'] = ($format = $this->getDateFormat('updated_time')) ? date($format, $ts) : $ts;
+            $data['updated_at'] = ($format = $this->getDateFormat('updated_at')) ? date($format, $ts) : $ts;
             $data['updator_name'] = $this->_di->identity->getName();
         }
 
