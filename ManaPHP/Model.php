@@ -138,6 +138,16 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * @param string $field
+     *
+     * @return string
+     */
+    public function getDateFormat($field)
+    {
+        return in_array($field, $this->getIntFields(), true) ? null : 'Y-m-d H:i:s';
+    }
+
+    /**
      * @return array|null
      */
     public function getSafeFields()

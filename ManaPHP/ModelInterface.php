@@ -47,6 +47,13 @@ interface ModelInterface
     public function hasField($field);
 
     /**
+     * @param string $field
+     *
+     * @return string
+     */
+    public function getDateFormat($field);
+
+    /**
      * @return array|null
      */
     public function getSafeFields();
