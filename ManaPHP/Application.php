@@ -2,8 +2,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Application\AbortException;
-
 /**
  * Class ManaPHP\Application
  *
