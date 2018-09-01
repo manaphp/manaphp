@@ -51,6 +51,13 @@ interface LoggerInterface
     public function addAppender($appender, $name = null);
 
     /**
+     * @param string $appender
+     *
+     * @return static
+     */
+    public function removeAppender($appender);
+
+    /**
      * Sends/Writes a trace message to the log
      *
      * @param string|array $message

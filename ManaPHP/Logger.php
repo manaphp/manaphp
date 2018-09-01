@@ -264,6 +264,18 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * @param string $appender
+     *
+     * @return static
+     */
+    public function removeAppender($appender)
+    {
+        unset($this->_appenders[$appender]);
+
+        return $this;
+    }
+
+    /**
      * @param \Exception $exception
      *
      * @return string
