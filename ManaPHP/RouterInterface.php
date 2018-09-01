@@ -185,9 +185,9 @@ interface RouterInterface
 
     /**
      * @param array|string $args
-     * @param bool         $absolute
+     * @param string|bool  $scheme
      *
      * @return string
      */
-    public function createUrl($args, $absolute = false);
+    public function createUrl($args, $scheme = false);
 }

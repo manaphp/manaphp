@@ -175,13 +175,20 @@ if (!function_exists('bundle')) {
 }
 
 if (!function_exists('action')) {
-    function action($args = [])
+
+    /**
+     * @param array|string $args
+     * @param bool|string  $scheme
+     *
+     * @return string
+     */
+    function action($args = [], $scheme = false)
     {
         static $router;
         if (!$router) {
             $router = Di::getDefault()->router;
         }
-        return $router->createUrl($args);
+        return $router->createUrl($args, $scheme);
     }
 }
 

@@ -382,11 +382,11 @@ class Router extends Component implements RouterInterface
 
     /**
      * @param array|string $args
-     * @param bool         $absolute
+     * @param bool|string  $scheme
      *
      * @return string
      */
-    public function createUrl($args, $absolute = false)
+    public function createUrl($args, $scheme = false)
     {
         if (is_string($args)) {
             if (($pos = strpos($args, '?')) !== false) {
@@ -443,7 +443,11 @@ class Router extends Component implements RouterInterface
             }
         }
 
-        if ($absolute) {
+        if ($scheme === true) {
+            $scheme = $this->request->getScheme();
+        }
+        
+        if ($scheme) {
             $url = $this->request->getScheme() . '://' . $_SERVER['HTTP_HOST'] . $url;
         }
 
