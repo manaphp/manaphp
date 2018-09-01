@@ -216,12 +216,18 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (1)',
             (new Query())->from('city')->whereIn('city_id', [1])->getSql());
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0)',
+            (new Query())->from('city')->whereIn('city_id', ['1'])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (1, 2)',
             (new Query())->from('city')->whereIn('city_id', [1, 2])->getSql());
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0, :_in_0_1)',
+            (new Query())->from('city')->whereIn('city_id', ['1', '2'])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) IN (2000, 2001)',
             (new Query())->from('city')->whereIn('DATE(created_time)', [2000, 2001])->getSql());
+        $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) IN (:_in_0_0, :_in_0_1)',
+            (new Query())->from('city')->whereIn('DATE(created_time)', ['2000', '2001'])->getSql());
     }
 
     public function test_whereNotIn()
@@ -231,11 +237,18 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (1)',
             (new Query())->from('city')->whereNotIn('city_id', [1])->getSql());
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (:_in_0_0)',
+            (new Query())->from('city')->whereNotIn('city_id', ['1'])->getSql());
+
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (1, 2)',
             (new Query())->from('city')->whereNotIn('city_id', [1, 2])->getSql());
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (:_in_0_0, :_in_0_1)',
+            (new Query())->from('city')->whereNotIn('city_id', ['1', '2'])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) NOT IN (2000, 2001)',
             (new Query())->from('city')->whereNotIn('DATE(created_time)', [2000, 2001])->getSql());
+        $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) NOT IN (:_in_0_0, :_in_0_1)',
+            (new Query())->from('city')->whereNotIn('DATE(created_time)', ['2000', '2001'])->getSql());
     }
 
     public function test_whereContains()
