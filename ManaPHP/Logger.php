@@ -53,7 +53,7 @@ class Logger extends Component implements LoggerInterface
         $this->_levels = $this->getConstants('level');
 
         if (is_string($options)) {
-            $this->_appenders[] = ['appender' => $options];
+            $this->_appenders[($pos = strrpos($options, '\\')) !== false ? lcfirst(substr($options, $pos + 1)) : $options] = ['appender' => $options];
         } elseif (is_object($options)) {
             $this->_appenders[] = ['appender' => ['instance' => $options]];
         } else {
