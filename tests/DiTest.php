@@ -180,6 +180,7 @@ class DiTest extends TestCase
         $di->setShared('request', 'ManaPHP\Http\Request');
         $this->assertSame($di->getShared('request'), $di->getShared('request'));
 
+        $di = new Di();
         $di->setShared('request', 'ManaPHP\Http\Request');
         $this->assertSame($di->get('request'), $di->get('request'));
     }
