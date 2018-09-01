@@ -21,11 +21,13 @@ class ViewHtmlTest extends TestCase
         //no value
         $data = $base;
         $this->assertEquals(<<<EOT
-<select>
-  <option value="" selected>all</option>
-  <option value="0">baidu</option>
-  <option value="1">google</option>
-</select>
+
+  <select>
+    <option value="" selected>all</option>
+    <option value="0">baidu</option>
+    <option value="1">google</option>
+  </select>
+
 EOT
             , $html->render('select', $data));
 
@@ -33,11 +35,13 @@ EOT
         $data = $base;
         $data['value'] = '';
         $this->assertEquals(<<<EOT
-<select>
-  <option value="" selected>all</option>
-  <option value="0">baidu</option>
-  <option value="1">google</option>
-</select>
+
+  <select>
+    <option value="" selected>all</option>
+    <option value="0">baidu</option>
+    <option value="1">google</option>
+  </select>
+
 EOT
             , $html->render('select', $data));
 
@@ -45,11 +49,13 @@ EOT
         $data = $base;
         $data['value'] = 1;
         $this->assertEquals(<<<EOT
-<select>
-  <option value="">all</option>
-  <option value="0">baidu</option>
-  <option value="1" selected>google</option>
-</select>
+
+  <select>
+    <option value="">all</option>
+    <option value="0">baidu</option>
+    <option value="1" selected>google</option>
+  </select>
+
 EOT
             , $html->render('select', $data));
 
@@ -57,11 +63,13 @@ EOT
         $data = $base;
         $data['value'] = '1';
         $this->assertEquals(<<<EOT
-<select>
-  <option value="">all</option>
-  <option value="0">baidu</option>
-  <option value="1" selected>google</option>
-</select>
+
+  <select>
+    <option value="">all</option>
+    <option value="0">baidu</option>
+    <option value="1" selected>google</option>
+  </select>
+
 EOT
             , $html->render('select', $data));
 
@@ -71,11 +79,13 @@ EOT
         $data['class'] = 'engine_select';
         $data['value'] = '1';
         $this->assertEquals(<<<EOT
-<select name="engine" class="engine_select">
-  <option value="">all</option>
-  <option value="0">baidu</option>
-  <option value="1" selected>google</option>
-</select>
+
+  <select name="engine" class="engine_select">
+    <option value="">all</option>
+    <option value="0">baidu</option>
+    <option value="1" selected>google</option>
+  </select>
+
 EOT
             , $html->render('select', $data));
     }
