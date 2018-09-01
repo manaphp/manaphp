@@ -446,9 +446,9 @@ class Router extends Component implements RouterInterface
         if ($scheme === true) {
             $scheme = $this->request->getScheme();
         }
-        
+
         if ($scheme) {
-            $url = $this->request->getScheme() . '://' . $_SERVER['HTTP_HOST'] . $url;
+            $url = $scheme . '://' . $_SERVER['HTTP_HOST'] . $url;
         }
 
         return $url;
