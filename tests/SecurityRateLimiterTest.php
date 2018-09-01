@@ -1,7 +1,7 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mvc\Factory;
 use ManaPHP\Security\RateLimiter;
 use PHPUnit\Framework\TestCase;
 
@@ -10,7 +10,7 @@ class SecurityRateLimiterTest extends TestCase
     public function test_construct()
     {
         //default
-        $di = new FactoryDefault();
+        $di = new Factory();
         $di->alias->set('@data', __DIR__ . '/tmp');
 
         $rateLimiter = new RateLimiter();
@@ -22,7 +22,7 @@ class SecurityRateLimiterTest extends TestCase
         $this->assertAttributeSame('', '_prefix', $rateLimiter);
 
         //instance
-        $di = new FactoryDefault();
+        $di = new Factory();
         $di->alias->set('@data', __DIR__ . '/tmp');
 
         $file = new RateLimiter\Engine\Redis();
@@ -71,7 +71,7 @@ class SecurityRateLimiterTest extends TestCase
 
     public function test_limit()
     {
-        $di = new FactoryDefault();
+        $di = new Factory();
         $rateLimiter = $di->getShared('ManaPHP\Security\RateLimiter');
         $this->assertEquals(9, $rateLimiter->limit('test', 1, 10, 2));
         $this->assertEquals(8, $rateLimiter->limit('test', 1, 10, 2));
@@ -82,7 +82,7 @@ class SecurityRateLimiterTest extends TestCase
     public function test_limitIp()
     {
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        $di = new FactoryDefault();
+        $di = new Factory();
         $rateLimiter = $di->getShared('ManaPHP\Security\RateLimiter');
         $this->assertEquals(9, $rateLimiter->limitIp(10, 2));
         $this->assertEquals(8, $rateLimiter->limitIp(10, 2));
@@ -92,10 +92,9 @@ class SecurityRateLimiterTest extends TestCase
 
     public function test_limitUser()
     {
-        $di = new FactoryDefault();
+        $di = new Factory();
         $rateLimiter = $di->getShared('ManaPHP\Security\RateLimiter');
-        $di->setShared('userIdentity', ['userName' => 'manaphp']);
-
+        $di->identity->setClaims(['user_id' => 1, 'user_name' => 'manaphp']);
         $this->assertEquals(9, $rateLimiter->limitUser(10, 2));
         $this->assertEquals(8, $rateLimiter->limitUser(10, 2));
         sleep(3);
