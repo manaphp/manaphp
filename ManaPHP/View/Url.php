@@ -27,16 +27,9 @@ class Url extends Component implements UrlInterface
      */
     public function __construct($options = [])
     {
-        $selfPath = strtr(dirname($_SERVER['PHP_SELF']), '\\', '/');
-        if ($selfPath !== '/' && preg_match('#(.*)/public$#', $selfPath, $match) === 1) {
-            $selfPath = $match[1];
-        } else {
-            $selfPath = rtrim($selfPath, '/');
-        }
-
         $this->_prefix = $this->router->getPrefix();
         if ($this->_prefix[0] === '/') {
-            $this->_prefix = $selfPath . $this->_prefix;
+            $this->_prefix = rtrim($this->alias->resolve('@web') . $this->_prefix, '/');
         }
     }
 
