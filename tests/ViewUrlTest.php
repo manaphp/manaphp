@@ -2,20 +2,27 @@
 
 namespace Tests;
 
-use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mvc\Factory;
 use ManaPHP\View\Url;
 use PHPUnit\Framework\TestCase;
 
 class ViewUrlTest extends TestCase
 {
+    /**
+     * @var \ManaPHP\DiInterface
+     */
+    protected $_di;
+
     public function setup()
     {
-        $di = new FactoryDefault();
+        $this->_di = new Factory();
     }
 
     public function test_get()
     {
-        $url = new Url(['baseUrls' => ['' => '/']]);
+        $this->_di->alias->set('@web','');
+        $url = new Url();
+	
         $this->assertEquals('/', $url->get('/'));
         $this->assertEquals('/home', $url->get('/home'));
         $this->assertEquals('/home', $url->get('home'));
@@ -29,7 +36,9 @@ class ViewUrlTest extends TestCase
         $this->assertEquals('/article/10', $url->get(['/article/:article_id', 'article_id' => 10]));
         $this->assertEquals('/article/10?from=google', $url->get(['/article/:article_id', 'article_id' => 10, 'from' => 'google']));
 
-        $url = new Url(['baseUrls' => ['' => 'http://www.manaphp.com/manaphp']]);
+        $this->_di->alias->set('@web','http://www.manaphp.com/manaphp');
+        $url = new Url();
+	
         $this->assertEquals('http://www.manaphp.com/manaphp/', $url->get('/'));
         $this->assertEquals('/manaphp/', $url->get(''));
         $this->assertEquals('http://www.manaphp.com/manaphp/home', $url->get('/home'));
