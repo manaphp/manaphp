@@ -188,12 +188,13 @@ if (!function_exists('action')) {
 if (!function_exists('url')) {
     /**
      * @param string|array $args
+     * @param bool|string  $scheme
      *
      * @return string
      */
-    function url($args)
+    function url($args, $scheme = false)
     {
-        return di('url')->get($args);
+        return di('url')->get($args, $scheme);
     }
 }
 
