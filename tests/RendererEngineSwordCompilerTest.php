@@ -84,7 +84,7 @@ EOT;
 Welcome, {{ $name or ManaPHP }} !
 EOT;
         $compiled = <<<'EOT'
-Welcome, <?php echo $renderer->escape(isset($name) ? $name : ManaPHP); ?> !
+Welcome, <?php echo e(isset($name) ? $name : ManaPHP); ?> !
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -272,7 +272,7 @@ EOT;
 @include('footer')
 EOT;
         $compiled = <<<'EOT'
-<?php isset($view) ? $view->partial('footer') : $renderer->partial('footer'); ?>
+<?php $renderer->partial('footer') ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
@@ -280,7 +280,7 @@ EOT;
 @include('footer',['p1'=>1,'p2'=>2])
 EOT;
         $compiled = <<<'EOT'
-<?php isset($view) ? $view->partial('footer',['p1'=>1,'p2'=>2]) : $renderer->partial('footer',['p1'=>1,'p2'=>2]); ?>
+<?php $renderer->partial('footer',['p1'=>1,'p2'=>2]) ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -291,7 +291,7 @@ EOT;
 @include('footer')
 EOT;
         $compiled = <<<'EOT'
-<?php isset($view) ? $view->partial('footer') : $renderer->partial('footer'); ?>
+<?php $renderer->partial('footer') ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
@@ -299,7 +299,7 @@ EOT;
 @include('footer',['p1'=>1,'p2'=>2])
 EOT;
         $compiled = <<<'EOT'
-<?php isset($view) ? $view->partial('footer',['p1'=>1,'p2'=>2]) : $renderer->partial('footer',['p1'=>1,'p2'=>2]); ?>
+<?php $renderer->partial('footer',['p1'=>1,'p2'=>2]) ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -422,7 +422,7 @@ EOT;
 @widget('ad')
 EOT;
         $compiled = <<<'EOT'
-<?php echo $view->widget('ad'); ?>
+<?php echo widget('ad'); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
@@ -430,7 +430,7 @@ EOT;
 @widget('ad',['category_id'=>1])
 EOT;
         $compiled = <<<'EOT'
-<?php echo $view->widget('ad',['category_id'=>1]); ?>
+<?php echo widget('ad',['category_id'=>1]); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -441,7 +441,7 @@ EOT;
 @url('/')
 EOT;
         $compiled = <<<'EOT'
-<?php echo $url->get('/'); ?>
+<?php echo url('/'); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
@@ -449,7 +449,7 @@ EOT;
 @url('/',['id'=>100])
 EOT;
         $compiled = <<<'EOT'
-<?php echo $url->get('/',['id'=>100]); ?>
+<?php echo url('/',['id'=>100]); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -460,7 +460,7 @@ EOT;
 @asset('/app.js')
 EOT;
         $compiled = <<<'EOT'
-<?php echo $url->getAsset('/app.js'); ?>
+<?php echo asset('/app.js'); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
@@ -509,32 +509,32 @@ EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_csrfToken()
+    public function test_csrf_token()
     {
         $source = <<<'EOT'
-@csrfToken()
+{{csrf_token()}}
 EOT;
         $compiled = <<<'EOT'
-<?php echo $di->csrfToken->get(); ?>
+<?php echo csrf_token() ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
 
-    public function test_request()
+    public function test_input()
     {
         $source = <<<'EOT'
-@request('id')
+{{input('id')}}
 EOT;
         $compiled = <<<'EOT'
-<?php if(isset($_REQUEST['id'])) echo $renderer->escape($_REQUEST['id']); else echo ''; ?>
+<?php echo e(input('id')); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
         $source = <<<'EOT'
-@request('id','manaphp')
+{{input('id','manaphp')}}
 EOT;
         $compiled = <<<'EOT'
-<?php if(isset($_REQUEST['id'])) echo $renderer->escape($_REQUEST['id']); else echo 'manaphp'; ?>
+<?php echo e(input('id','manaphp')); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
     }
