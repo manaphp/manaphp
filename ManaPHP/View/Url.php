@@ -7,16 +7,18 @@ use ManaPHP\Component;
  * Class ManaPHP\View\Url
  *
  * @package url
+ * @property \ManaPHP\Http\RequestInterface $request
  *
  */
 class Url extends Component implements UrlInterface
 {
     /**
      * @param string|array $args
+     * @param string|bool  $scheme
      *
      * @return string
      */
-    public function get($args = [])
+    public function get($args = [], $scheme = false)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $anchor = null;
@@ -57,6 +59,14 @@ class Url extends Component implements UrlInterface
 
         if ($anchor !== null) {
             $strUrl .= '#' . $anchor;
+        }
+
+        if ($scheme === true) {
+            $scheme = $this->request->getScheme();
+        }
+
+        if ($scheme) {
+            return $scheme . ($scheme === '//' ? '' : '://') . $_SERVER['HTTP_HOST'] . $strUrl;
         }
 
         return $strUrl;
