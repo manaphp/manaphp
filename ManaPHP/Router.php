@@ -422,7 +422,7 @@ class Router extends Component implements RouterInterface
             $ca = substr($ca, 0, $pos);
         }
 
-        $url = $this->alias->get('@web') . '/' . lcfirst($ca);
+        $url = $this->alias->resolve('@web') . ($this->_prefix === '/' ? '/' : $this->_prefix . '/') . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }
