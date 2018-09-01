@@ -64,8 +64,11 @@ class DbModelCriteriaTest extends TestCase
         $this->assertEquals('SELECT * FROM [city] WHERE 1=2',
             City::criteria()->whereIn('city_id', [])->getSql());
 
-        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0)',
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (1)',
             City::criteria()->whereIn('city_id', [1])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0)',
+            City::criteria()->whereIn('city_id', ['1'])->getSql());
     }
 
     public function test_whereNotIn()
@@ -73,8 +76,11 @@ class DbModelCriteriaTest extends TestCase
         $this->assertEquals('SELECT * FROM [city]',
             City::criteria()->whereNotIn('city_id', [])->getSql());
 
-        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (:_in_0_0)',
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (1)',
             City::criteria()->whereNotIn('city_id', [1])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (:_in_0_0)',
+            City::criteria()->whereNotIn('city_id', ['1'])->getSql());
     }
 
     public function test_whereContains()
