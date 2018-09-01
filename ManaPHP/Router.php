@@ -444,7 +444,7 @@ class Router extends Component implements RouterInterface
         }
 
         if ($absolute) {
-            $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $url;
+            $url = $this->request->getScheme() . '://' . $_SERVER['HTTP_HOST'] . $url;
         }
 
         return $url;

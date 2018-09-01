@@ -601,7 +601,7 @@ class Request extends Component implements RequestInterface
      */
     public function getUrl()
     {
-        $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $url = $this->getScheme() . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         return strip_tags($url);
     }
