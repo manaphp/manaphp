@@ -11,8 +11,8 @@ namespace Tests;
 use ManaPHP\Db\Adapter\Proxy;
 use ManaPHP\Db\Assignment;
 use ManaPHP\DbInterface;
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Exception;
+use ManaPHP\Mvc\Factory;
 use ManaPHP\Mvc\Model;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\Actor;
@@ -52,7 +52,7 @@ class DbModelTest extends TestCase
 
     public function setUp()
     {
-        $this->di = new FactoryDefault();
+        $this->di = new Factory();
 
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
