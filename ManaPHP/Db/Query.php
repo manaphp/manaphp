@@ -668,7 +668,7 @@ class Query extends Component implements QueryInterface
             }
 
             if (is_int(current($values))) {
-                $this->_conditions[] = $expr . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
+                $this->_conditions[] = $expr . ' NOT IN (' . implode(', ', array_map('intval', $values)) . ')';
             } else {
                 $bindKeys = [];
                 /** @noinspection ForeachSourceInspection */
