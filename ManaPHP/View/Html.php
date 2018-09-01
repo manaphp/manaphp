@@ -98,7 +98,21 @@ class Html extends Component
         foreach ((array)$options as $value => $label) {
             $r .= '    <option value="' . (is_numeric($value) ? $value : htmlspecialchars($value)) . '"';
             /** @noinspection TypeUnsafeComparisonInspection */
-            if (($current_value === '' && $value === '') || ($current_value !== '' && $value == $current_value)) {
+	    
+            $selected = false;
+            if ($value === '') {
+                if ($current_value === null || $current_value === '') {
+                    $selected = true;
+                }
+            } elseif ($value === '0' || $value === 0) {
+                if ($current_value === '0' || $current_value === 0) {
+                    $selected = true;
+                }
+            } elseif ((string)$value === (string)$current_value) {
+                $selected = true;
+            }
+
+            if ($selected) {
                 $r .= ' selected';
             }
             $r .= '>' . htmlspecialchars($label) . '</option>' . PHP_EOL;
