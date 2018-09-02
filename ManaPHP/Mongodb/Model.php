@@ -449,11 +449,9 @@ class Model extends \ManaPHP\Model
         $this->validate($changedFields);
 
         foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
-            if (!in_array($field, $fields, true)) {
-                continue;
+            if (in_array($field, $fields, true)) {
+                $this->$field = $value;
             }
-
-            $this->$field = $value;
         }
 
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
