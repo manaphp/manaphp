@@ -22,14 +22,14 @@ class HttpResponseTest extends TestCase
 
         //set only time
         $response->setStatus(404, 'Not Found');
-        $this->assertEquals(['Status' => '404 Not Found'], $response->getHeaders());
+        $this->assertEquals('404 Not Found', $response->getStatus());
 
         //set multiple times
         $response = new Response();
         $response->setStatus(200, 'OK');
         $response->setStatus(404, 'Not Found');
         $response->setStatus(409, 'Conflict');
-        $this->assertEquals(['Status' => '409 Conflict'], $response->getHeaders());
+        $this->assertEquals('409 Conflict', $response->getStatus());
     }
 
     public function test_setHeader()
@@ -70,7 +70,7 @@ class HttpResponseTest extends TestCase
 
         $response->setNotModified();
 
-        $this->assertEquals(['Status' => '304 Not modified'], $response->getHeaders());
+        $this->assertEquals('304 Not modified', $response->getStatus());
     }
 
     public function test_setContentType()
@@ -90,37 +90,29 @@ class HttpResponseTest extends TestCase
         $response->setDi(new Di());
 
         $response->redirect('some/local/url');
-        $this->assertEquals([
-            'Status' => '302 Temporarily Moved',
-            'Location' => 'some/local/url'
-        ], $response->getHeaders());
+        $this->assertEquals('302 Temporarily Moved', $response->getStatus());
+        $this->assertEquals(['Location' => 'some/local/url'], $response->getHeaders());
 
         $response = new Response();
         $response->setDi(new Di());
 
         $response->redirect('http://www.manaphp.com');
-        $this->assertEquals([
-            'Status' => '302 Temporarily Moved',
-            'Location' => 'http://www.manaphp.com'
-        ], $response->getHeaders());
+        $this->assertEquals('302 Temporarily Moved', $response->getStatus());
+        $this->assertEquals(['Location' => 'http://www.manaphp.com'], $response->getHeaders());
 
         $response = new Response();
         $response->setDi(new Di());
 
         $response->redirect('http://www.manaphp.com', false);
-        $this->assertEquals([
-            'Status' => '301 Permanently Moved',
-            'Location' => 'http://www.manaphp.com'
-        ], $response->getHeaders());
+        $this->assertEquals('301 Permanently Moved', $response->getStatus());
+        $this->assertEquals(['Location' => 'http://www.manaphp.com'], $response->getHeaders());
 
         $response = new Response();
         $response->setDi(new Di());
 
-        $response->redirect('http://www.manaphp.com', false);
-        $this->assertEquals([
-            'Status' => '301 Permanently Moved',
-            'Location' => 'http://www.manaphp.com'
-        ], $response->getHeaders());
+        $response->redirect('http://www.manaphp.com', true);
+        $this->assertEquals('302 Temporarily Moved', $response->getStatus());
+        $this->assertEquals(['Location' => 'http://www.manaphp.com'], $response->getHeaders());
     }
 
     public function test_setContent()
