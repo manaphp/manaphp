@@ -490,16 +490,16 @@ class Model extends \ManaPHP\Model
             $fieldValues[$field] = $value;
         }
 
-        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
-            return $this;
-        }
-
         foreach ($this->getJsonFields() as $field) {
             if (isset($fieldValues[$field]) && !is_string($fieldValues[$field])) {
                 $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             }
         }
 
+        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
+            return $this;
+        }
+        
         $criteria = static::criteria(null, $this)->where($primaryKey, $this->$primaryKey);
         $criteria->update($fieldValues);
 
