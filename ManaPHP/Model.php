@@ -282,20 +282,37 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function search($filters = [], $options = null, $fields = null)
     {
+        $model = new static();
+        $data = $model->request->get();
+
+        $conditions = [];
+        $modelFields = $model->getFields();
         foreach ($filters as $k => $v) {
-            if (is_string($v)) {
-                $v = trim($v);
-                if ($v === '' || $v === '0') {
-                    unset($filters[$k]);
+            preg_match('#^(\w+)(.*)$#', is_int($k) ? $v : $k, $match);
+            $field = $match[1];
+
+            if (!in_array($field, $modelFields, true)) {
+                throw new InvalidValueException(['`:model` is not contains `:field` field', 'model' => get_declared_classes(), 'field' => $field]);
+            }
+
+            if (is_int($k)) {
+                if (!isset($data[$field])) {
                     continue;
                 }
-                $filters[$k] = $v;
-            } elseif ($v === 0) {
-                unset($filters[$k]);
+                $value = $data[$field];
+                if (is_string($value)) {
+                    $value = trim($value);
+                    if ($value === '') {
+                        continue;
+                    }
+                }
+                $conditions[$v] = $value;
+            } else {
+                $conditions[$k] = $v;
             }
         }
 
-        return static::paginate($filters, $options, $fields);
+        return static::paginate($conditions, $options, $fields);
     }
 
     /**
