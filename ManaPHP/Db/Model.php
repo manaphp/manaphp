@@ -210,6 +210,12 @@ class Model extends \ManaPHP\Model implements ModelInterface
             throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
+        $primaryKey = $this->getPrimaryKey();
+
+        if (!isset($this->{$primaryKey})) {
+            throw new PreconditionException(['`:model` model cannot be updated because some primary key value is not provided', 'model' => get_class($this)]);
+        }
+
         $fields = $this->getFields();
         $intFields = $this->getIntFields();
 
