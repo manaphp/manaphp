@@ -72,7 +72,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function get($key, $maxDelay = null)
     {
-        if (isset($this->_cached[$key]) && microtime(true) - $this->_cached[$key][0] > $maxDelay ?: $this->_maxDelay) {
+        if (isset($this->_cached[$key]) && $maxDelay && microtime(true) - $this->_cached[$key][0] > $maxDelay) {
             unset($this->_cached[$key]);
         }
 
