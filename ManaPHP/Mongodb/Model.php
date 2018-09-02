@@ -467,6 +467,20 @@ class Model extends \ManaPHP\Model
             }
         }
 
+        if ($primaryKey = $this->getPrimaryKey()) {
+            if (is_string($primaryKey)) {
+                unset($fieldValues[$primaryKey]);
+            } elseif (is_array($primaryKey)) {
+                foreach ($primaryKey as $key) {
+                    unset($fieldValues[$key]);
+                }
+            }
+        }
+
+        if (!$fieldValues) {
+            return $this;
+        }
+
         foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
             if (!isset($fieldTypes[$field])) {
                 continue;
