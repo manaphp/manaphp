@@ -2,7 +2,8 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Exception\InvalidFormatException;
+use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Exception\MisuseException;
 
 /**
  * Class ManaPHP\Alias
@@ -34,7 +35,7 @@ class Alias extends Component implements AliasInterface
     public function set($name, $path)
     {
         if ($name[0] !== '@') {
-            throw new InvalidFormatException(['`:name` must start with `@`', 'name' => $name]);
+            throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
         }
 
         if ($path === '') {
@@ -60,7 +61,7 @@ class Alias extends Component implements AliasInterface
         }
 
         if ($name[0] !== '@') {
-            throw new InvalidFormatException(['`:name` must start with `@`', 'name' => $name]);
+            throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
         }
 
         return isset($this->_aliases[$name]) ? $this->_aliases[$name] : false;
@@ -74,7 +75,7 @@ class Alias extends Component implements AliasInterface
     public function has($name)
     {
         if ($name[0] !== '@') {
-            throw new InvalidFormatException(['`:name` must start with `@`', 'name' => $name]);
+            throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
         }
 
         return isset($this->_aliases[$name]);
@@ -114,7 +115,7 @@ class Alias extends Component implements AliasInterface
 
         $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
-            throw new InvalidFormatException(['`:alias` is not exists for `:path`', 'alias' => $alias, 'path' => $path]);
+            throw new InvalidArgumentException(['`:alias` is not exists for `:path`', 'alias' => $alias, 'path' => $path]);
         }
 
         return str_replace($alias, $this->_aliases[$alias], $path);
@@ -135,7 +136,7 @@ class Alias extends Component implements AliasInterface
 
         $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
-            throw new InvalidFormatException(['`:alias` is not exists for `:namespace`', 'alias' => $alias, 'namespace' => $ns]);
+            throw new InvalidArgumentException(['`:alias` is not exists for `:namespace`', 'alias' => $alias, 'namespace' => $ns]);
         }
 
         return $this->_aliases[$alias] . (isset($parts[1]) ? '\\' . $parts[1] : '');
