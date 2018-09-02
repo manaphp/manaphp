@@ -78,11 +78,7 @@ class Redis extends Component implements SettingsInterface
 
         if (!isset($this->_cached[$key])) {
             $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-            $data = $redis->get($this->_prefix . $key);
-            if (!$data) {
-                throw new InvalidValueException(['`:key` key is not exists', 'key' => $key]);
-            }
-            $value = json_decode($data, true);
+            $value = json_decode($redis->get($this->_prefix . $key) ?: '[]', true);
             if (!is_array($value)) {
                 throw new InvalidJsonException('the settings of `:key` key value is not json format', ['key' => $key]);
             }
@@ -119,7 +115,7 @@ class Redis extends Component implements SettingsInterface
     public function exists($key)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        return $redis->set($this->_prefix . $key);
+        return $redis->exists($this->_prefix . $key);
     }
 
     /**
