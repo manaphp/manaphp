@@ -371,6 +371,12 @@ class Model extends \ManaPHP\Model
             }
         }
 
+        foreach ($this->getJsonFields() as $field) {
+            if (is_array($this->$field)) {
+                $this->$field = json_encode($this->$field, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
+        }
+
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
             return $this;
         }
@@ -380,11 +386,6 @@ class Model extends \ManaPHP\Model
             $fieldValues[$field] = $this->$field;
         }
 
-        foreach ($this->getJsonFields() as $field) {
-            if (isset($fieldValues[$field]) && !is_string($fieldValues[$field])) {
-                $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            }
-        }
 
         /**
          * @var \ManaPHP\MongodbInterface $connection
@@ -499,7 +500,7 @@ class Model extends \ManaPHP\Model
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
             return $this;
         }
-        
+
         $criteria = static::criteria(null, $this)->where($primaryKey, $this->$primaryKey);
         $criteria->update($fieldValues);
 
