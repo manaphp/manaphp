@@ -1011,13 +1011,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                 $id = $di->request->get($pkName);
             } elseif ($di->dispatcher->hasParam($pkName)) {
                 $id = $di->dispatcher->getParam($pkName);
+            } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
+                $id = $params[0];
             } else {
-                $params = $di->dispatcher->getParams();
-                if (count($params) === 1) {
-                    $id = current($params);
-                } else {
-                    throw new PreconditionException('missing primary key value');
-                }
+                throw new PreconditionException('missing primary key value');
             }
         }
 
