@@ -418,10 +418,11 @@ class Model extends \ManaPHP\Model
             throw new PreconditionException(['`:model` model cannot be updated because some primary key value is not provided', 'model' => get_class($this)]);
         }
 
-        $changedFields = [];
         $fieldTypes = $this->getFieldTypes();
+        $fields = array_keys($fieldTypes);
 
-        foreach ($fieldTypes as $field => $type) {
+        $changedFields = [];
+        foreach ($fields as $field) {
             if ($this->$field === null) {
                 if (isset($snapshot[$field])) {
                     $changedFields[] = $field;
@@ -429,12 +430,12 @@ class Model extends \ManaPHP\Model
             } else {
                 if (!isset($snapshot[$field])) {
                     if (is_scalar($this->$field)) {
-                        $this->$field = $this->getNormalizedValue($type, $this->$field);
+                        $this->$field = $this->getNormalizedValue($fieldTypes[$field], $this->$field);
                     }
                     $changedFields[] = $field;
                 } elseif ($snapshot[$field] !== $this->$field) {
                     if (is_scalar($this->$field)) {
-                        $this->$field = $this->getNormalizedValue($type, $this->$field);
+                        $this->$field = $this->getNormalizedValue($fieldTypes[$field], $this->$field);
                     }
 
                     /** @noinspection NotOptimalIfConditionsInspection */
@@ -452,7 +453,7 @@ class Model extends \ManaPHP\Model
         $this->validate($changedFields);
 
         $fieldValues = [];
-        foreach ($fieldTypes as $field => $type) {
+        foreach ($fields as $field => $type) {
             if ($this->$field === null) {
                 if (isset($snapshot[$field])) {
                     $fieldValues[$field] = null;
@@ -471,13 +472,13 @@ class Model extends \ManaPHP\Model
                 unset($fieldValues[$key]);
             }
         }
-        
+
         if (!$fieldValues) {
             return $this;
         }
 
         foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
-            if (!isset($fieldTypes[$field])) {
+            if (!in_array($field, $fields, true)) {
                 continue;
             }
 
