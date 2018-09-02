@@ -371,12 +371,6 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        foreach ($this->getJsonFields() as $field) {
-            if (is_array($this->$field)) {
-                $this->$field = json_encode($this->$field, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            }
-        }
-
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeCreate') === false) {
             return $this;
         }
@@ -384,6 +378,12 @@ class Model extends \ManaPHP\Model
         $fieldValues = [];
         foreach ($fields as $field) {
             $fieldValues[$field] = $this->$field;
+        }
+
+        foreach ($this->getJsonFields() as $field) {
+            if (is_array($this->$field)) {
+                $fieldValues[$field] = json_encode($this->$field, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
         }
 
         /**
