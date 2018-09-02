@@ -385,8 +385,7 @@ class Model extends \ManaPHP\Model
         foreach ($fields as $field) {
             $fieldValues[$field] = $this->$field;
         }
-
-
+        
         /**
          * @var \ManaPHP\MongodbInterface $connection
          */
