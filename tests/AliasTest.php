@@ -24,7 +24,7 @@ class AliasTest extends TestCase
             $alias->set('a', 'fdf');
             $this->assertFalse('why not?');
         } catch (\Exception $e) {
-            $this->assertInstanceOf('\ManaPHP\Alias\Exception', $e);
+            $this->assertInstanceOf('ManaPHP\Exception\MisuseException', $e);
         }
     }
 
@@ -39,7 +39,7 @@ class AliasTest extends TestCase
             $alias->get('app');
             $this->assertFalse('why not?');
         } catch (\Exception $e) {
-            $this->assertInstanceOf('\ManaPHP\Alias\Exception', $e);
+            $this->assertInstanceOf('ManaPHP\Exception\MisuseException', $e);
         }
     }
 
