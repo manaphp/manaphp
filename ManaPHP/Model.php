@@ -868,7 +868,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $pkValue = $di->request->get($pkName);
         } elseif ($di->dispatcher->hasParam($pkName)) {
             $pkValue = $di->dispatcher->getParam($pkName);
-        } elseif (count($params = $di->dispatcher->getParams())===1 && isset($params[0])) {
+        } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
             $pkValue = $params[0];
         } else {
             throw new PreconditionException('missing primary key value');
@@ -932,7 +932,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $pkValue = $data[$pkName];
         } elseif ($di->dispatcher->hasParam($pkName)) {
             $pkValue = $di->dispatcher->getParam($pkName);
-        } elseif (count($params = $di->dispatcher->getParams())===1 && isset($params[0])) {
+        } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
             $pkValue = $params[0];
         }
 
