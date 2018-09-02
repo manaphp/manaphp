@@ -275,6 +275,12 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $fieldValues[$field] = $value;
         }
 
+        foreach ($this->getJsonFields() as $field) {
+            if (isset($fieldValues[$field]) && !is_string($fieldValues[$field])) {
+                $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
+        }
+
         if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
             return $this;
         }
