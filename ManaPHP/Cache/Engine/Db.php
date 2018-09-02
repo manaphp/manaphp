@@ -80,15 +80,23 @@ class Db extends Component implements EngineInterface
         /**
          * @var \ManaPHP\Cache\Engine\Db\Model $model
          */
-        $model = new $this->_model;
+        $modelClass = $this->_model;
 
-        $model->hash = md5($key);
-        $model->key = $key;
-        $model->value = $value;
-        $model->ttl = $ttl;
-        $model->expired_time = time() + $ttl;
-
-        $model->save();
+        $hash = md5($key);
+        if ($model = $modelClass::first(['hash' => $hash])) {
+            $model->value = $value;
+            $model->ttl = $ttl;
+            $model->expired_time = time() + $ttl;
+            $model->update();
+        } else {
+            $model = new $modelClass();
+            $model->hash = $hash;
+            $model->key = $key;
+            $model->value = $value;
+            $model->ttl = $ttl;
+            $model->expired_time = time() + $ttl;
+            $model->create();
+        }
     }
 
     /**
