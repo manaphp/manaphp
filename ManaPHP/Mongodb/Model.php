@@ -489,7 +489,7 @@ class Model extends \ManaPHP\Model
         }
 
         foreach ($this->getJsonFields() as $field) {
-            if (isset($fieldValues[$field]) && !is_string($fieldValues[$field])) {
+            if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
                 $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             }
         }

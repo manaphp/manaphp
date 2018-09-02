@@ -285,7 +285,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         foreach ($this->getJsonFields() as $field) {
-            if (isset($fieldValues[$field]) && !is_string($fieldValues[$field])) {
+            if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
                 $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             }
         }
@@ -294,6 +294,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
             return $this;
         }
 
+        $criteria = static::criteria(null, $this)->where($this->_getPrimaryKeyValuePairs());
+        $criteria->update($fieldValues);
+
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
             if ($value instanceof ExpressionInterface) {
@@ -301,8 +304,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $criteria = static::criteria(null, $this)->where($this->_getPrimaryKeyValuePairs());
-        $criteria->update($fieldValues);
         if ($expressionFields && $rs = $criteria->select($expressionFields)->execute()) {
             foreach ((array)$rs[0] as $field => $value) {
                 $this->$field = $value;
