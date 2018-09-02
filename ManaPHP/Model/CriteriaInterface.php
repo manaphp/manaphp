@@ -60,6 +60,15 @@ interface CriteriaInterface
     public function whereBetween($field, $min, $max);
 
     /**
+     * @param string     $field
+     * @param int|string $min
+     * @param int|string $max
+     *
+     * @return static
+     */
+    public function whereDateBetween($field, $min, $max);
+
+    /**
      * Appends a NOT BETWEEN condition to the current conditions
      *
      *<code>

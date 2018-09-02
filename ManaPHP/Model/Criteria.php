@@ -91,35 +91,7 @@ abstract class Criteria extends Component implements CriteriaInterface
                 }
             } elseif (is_array($value)) {
                 if (strpos($v, '@=')) {
-                    $left = $value[0];
-                    $right = $value[1];
-                    if ($format = $this->_model->getDateFormat($field)) {
-                        if ($left) {
-                            if (is_numeric($left)) {
-                                $left = date($format, $left);
-                            } elseif (preg_match('#^[\d-/:]+$#', $left) !== 1) {
-                                $left = date($format, strtotime($left));
-                            }
-                        }
-
-                        if ($right) {
-                            if (is_numeric($right)) {
-                                $right = date($format, $right);
-                            } elseif (preg_match('#^[\d-/:]+$#', $right) !== 1) {
-                                $right = date($format, strtotime($right));
-                            }
-                        }
-                    } else {
-                        if ($left && !is_numeric($left)) {
-                            $left[0] = strtotime($left);
-                        }
-                        if ($right && !is_numeric($right)) {
-                            $right = strtotime($right);
-                        }
-                    }
-                    
-                    $this->whereBetween($field, $left ?: null, $right ?: null);
-
+                    $this->whereDateBetween($field, $value[0], $value[1]);
                     continue;
                 }
 
@@ -132,6 +104,43 @@ abstract class Criteria extends Component implements CriteriaInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @param string     $field
+     * @param int|string $min
+     * @param int|string $max
+     *
+     * @return static
+     */
+    public function whereDateBetween($field, $min, $max)
+    {
+        if ($format = $this->_model->getDateFormat($field)) {
+            if ($min) {
+                if (is_numeric($min)) {
+                    $min = date($format, $min);
+                } elseif (preg_match('#^[\d-/:]+$#', $min) !== 1) {
+                    $min = date($format, strtotime($min));
+                }
+            }
+
+            if ($max) {
+                if (is_numeric($max)) {
+                    $max = date($format, $max);
+                } elseif (preg_match('#^[\d-/:]+$#', $max) !== 1) {
+                    $max = date($format, strtotime($max));
+                }
+            }
+        } else {
+            if ($min && !is_numeric($min)) {
+                $min = (int)strtotime($min);
+            }
+            if ($max && !is_numeric($max)) {
+                $max = (int)strtotime($max);
+            }
+        }
+
+        return $this->whereBetween($field, $min ?: null, $max ?: null);
     }
 
     /**
