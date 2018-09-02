@@ -264,13 +264,11 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        if ($primaryKey = $this->getPrimaryKey()) {
-            if (is_string($primaryKey)) {
-                unset($fieldValues[$primaryKey]);
-            } elseif (is_array($primaryKey)) {
-                foreach ($primaryKey as $key) {
-                    unset($fieldValues[$key]);
-                }
+        if (is_string($primaryKey)) {
+            unset($fieldValues[$primaryKey]);
+        } elseif (is_array($primaryKey)) {
+            foreach ($primaryKey as $key) {
+                unset($fieldValues[$key]);
             }
         }
 
