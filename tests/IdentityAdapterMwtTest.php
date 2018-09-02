@@ -1,17 +1,18 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Security\Identity\Adapter\Mwt;
 use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Identity\Adapter\Mwt;
 use PHPUnit\Framework\TestCase;
 
-class  SecurityIdentityAdapterMwtTest extends TestCase
+class  IdentityAdapterMwtTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
         $di = new FactoryDefault();
         $di->crypt->setMasterKey('mwt_key');
+        $di->logger->removeAppender('file');
     }
 
     public function test_encode()
