@@ -385,7 +385,7 @@ class Model extends \ManaPHP\Model
         foreach ($fields as $field) {
             $fieldValues[$field] = $this->$field;
         }
-        
+
         /**
          * @var \ManaPHP\MongodbInterface $connection
          */
@@ -467,16 +467,14 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        if ($primaryKey = $this->getPrimaryKey()) {
-            if (is_string($primaryKey)) {
-                unset($fieldValues[$primaryKey]);
-            } elseif (is_array($primaryKey)) {
-                foreach ($primaryKey as $key) {
-                    unset($fieldValues[$key]);
-                }
+        if (is_string($primaryKey)) {
+            unset($fieldValues[$primaryKey]);
+        } elseif (is_array($primaryKey)) {
+            foreach ($primaryKey as $key) {
+                unset($fieldValues[$key]);
             }
         }
-
+        
         if (!$fieldValues) {
             return $this;
         }
