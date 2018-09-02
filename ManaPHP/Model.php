@@ -1198,12 +1198,30 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), json_encode($this->getPrimaryKeyValuePairs())]);
         }
 
-        foreach ((array)$r[0] as $field => $value) {
+        $data = $r[0];
+        foreach ($this->getJsonFields() as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                if ($data[$field] === '') {
+                    $data[$field] = [];
+                } else {
+                    if (($json = json_decode($data[$field], true)) === null) {
+                        throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string: :error',
+                            'field' => $field,
+                            'model' => get_class($this),
+                            'error' => json_last_error_msg()]);
+                    } else {
+                        $data[$field] = $json;
+                    }
+                }
+            }
+        }
+
+        foreach ($data as $field => $value) {
             $this->$field = $value;
         }
 
         if ($this->_snapshot !== false) {
-            $this->_snapshot = array_merge($this->_snapshot, $r[0]);
+            $this->_snapshot = array_merge($this->_snapshot, $data);
         }
 
         return $this;
