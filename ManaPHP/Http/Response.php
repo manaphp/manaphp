@@ -61,6 +61,14 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->_status;
+    }
+
+    /**
      * Overwrites a header in the response
      *<code>
      *    $response->setHeader("Content-Type", "text/plain");

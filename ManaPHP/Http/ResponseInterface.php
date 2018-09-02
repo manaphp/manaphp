@@ -21,6 +21,11 @@ interface ResponseInterface
     public function setStatus($code, $text);
 
     /**
+     * @return string
+     */
+    public function getStatus();
+
+    /**
      * send a header in the response
      *
      * @param string $name
