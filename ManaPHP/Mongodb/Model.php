@@ -420,6 +420,7 @@ class Model extends \ManaPHP\Model
 
         $changedFields = [];
         $fieldTypes = $this->getFieldTypes();
+
         foreach ($fieldTypes as $field => $type) {
             if ($this->$field === null) {
                 if (isset($snapshot[$field])) {
