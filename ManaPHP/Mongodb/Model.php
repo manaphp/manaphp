@@ -412,11 +412,7 @@ class Model extends \ManaPHP\Model
             throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
-        $primaryKey = $this->getPrimaryKey();
-
-        if (!isset($this->{$primaryKey})) {
-            throw new PreconditionException(['`:model` model cannot be updated because some primary key value is not provided', 'model' => get_class($this)]);
-        }
+        $primaryKeyValuePairs = $this->getPrimaryKeyValuePairs();
 
         $fieldTypes = $this->getFieldTypes();
         $fields = array_keys($fieldTypes);
@@ -465,12 +461,8 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        if (is_string($primaryKey)) {
-            unset($fieldValues[$primaryKey]);
-        } elseif (is_array($primaryKey)) {
-            foreach ($primaryKey as $key) {
-                unset($fieldValues[$key]);
-            }
+        foreach ($primaryKeyValuePairs as $key => $value) {
+            unset($fieldValues[$key]);
         }
 
         if (!$fieldValues) {
@@ -496,7 +488,7 @@ class Model extends \ManaPHP\Model
             return $this;
         }
 
-        $criteria = static::criteria(null, $this)->where($primaryKey, $this->$primaryKey);
+        $criteria = static::criteria(null, $this)->where($primaryKeyValuePairs);
         $criteria->update($fieldValues);
 
         $expressionFields = [];

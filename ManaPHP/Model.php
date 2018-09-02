@@ -957,21 +957,27 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
     /**
      * @return array
-     * @throws \ManaPHP\Exception\PreconditionException
      */
-    protected function _getPrimaryKeyValuePairs()
+    public function getPrimaryKeyValuePairs()
     {
-        $filter = [];
-        foreach ((array)$this->getPrimaryKey() as $key) {
-            if (!isset($this->{$key})) {
-                throw new PreconditionException(['`:model` model cannot be updated because `:key` primary key value is not provided',
-                    'model' => get_class($this),
-                    'key' => $key]);
+        $primaryKey = $this->getPrimaryKey();
+        if (is_string($primaryKey)) {
+            if (!isset($this->{$primaryKey})) {
+                throw new PreconditionException(['`:model` model cannot be updated because primary key value is not provided', 'model' => get_class($this)]);
             }
-            $filter[$key] = $this->$key;
+            return [$primaryKey => $this->$primaryKey];
+        } elseif (is_array($primaryKey)) {
+            $keyValue = [];
+            foreach ($primaryKey as $key) {
+                if (!isset($this->$key)) {
+                    throw new PreconditionException(['`:model` model cannot be updated because some primary key value is not provided', 'model' => get_class($this)]);
+                }
+                $keyValue[$key] = $this->$key;
+            }
+            return $keyValue;
+        } else {
+            return [];
         }
-
-        return $filter;
     }
 
     /**
@@ -985,7 +991,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             return $this;
         }
 
-        static::criteria(null, $this)->where($this->_getPrimaryKeyValuePairs())->delete();
+        static::criteria(null, $this)->where($this->getPrimaryKeyValuePairs())->delete();
 
         $this->_fireEvent('afterDelete');
 
