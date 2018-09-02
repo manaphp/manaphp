@@ -432,17 +432,13 @@ class Model extends \ManaPHP\Model
                     }
                     $changedFields[] = $field;
                 } elseif ($snapshot[$field] !== $this->$field) {
-                    if ($this->$field instanceof ExpressionInterface) {
-                        $changedFields[] = $field;
-                    } else {
-                        if (is_scalar($this->$field)) {
-                            $this->$field = $this->getNormalizedValue($type, $this->$field);
-                        }
+                    if (is_scalar($this->$field)) {
+                        $this->$field = $this->getNormalizedValue($type, $this->$field);
+                    }
 
-                        /** @noinspection NotOptimalIfConditionsInspection */
-                        if ($snapshot[$field] !== $this->$field) {
-                            $changedFields[] = $field;
-                        }
+                    /** @noinspection NotOptimalIfConditionsInspection */
+                    if ($snapshot[$field] !== $this->$field) {
+                        $changedFields[] = $field;
                     }
                 }
             }
