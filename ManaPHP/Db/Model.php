@@ -246,6 +246,18 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $this->validate($changedFields);
 
+        foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
+            if (!in_array($field, $fields, true)) {
+                continue;
+            }
+
+            $this->$field = $value;
+        }
+
+        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
+            return $this;
+        }
+
         $fieldValues = [];
         foreach ($fields as $field) {
             if ($this->$field === null) {
@@ -267,23 +279,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
             return $this;
         }
 
-        foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
-            if (!in_array($field, $fields, true)) {
-                continue;
-            }
-
-            $this->$field = $value;
-            $fieldValues[$field] = $value;
-        }
-
         foreach ($this->getJsonFields() as $field) {
             if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
                 $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             }
-        }
-
-        if ($this->_fireEventCancel('beforeSave') === false || $this->_fireEventCancel('beforeUpdate') === false) {
-            return $this;
         }
 
         $criteria = static::criteria(null, $this)->where($primaryKeyValuePairs);
