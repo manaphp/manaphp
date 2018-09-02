@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class ViewUrlTest extends TestCase
 {
     /**
-     * @var \ManaPHP\DiInterface
+     * @var \ManaPHP\Di
      */
     protected $_di;
 
@@ -20,9 +20,9 @@ class ViewUrlTest extends TestCase
 
     public function test_get()
     {
-        $this->_di->alias->set('@web','');
+        $this->_di->alias->set('@web', '');
         $url = new Url();
-	
+
         $this->assertEquals('/', $url->get('/'));
         $this->assertEquals('/home', $url->get('/home'));
         $this->assertEquals('/home', $url->get('home'));
@@ -36,11 +36,12 @@ class ViewUrlTest extends TestCase
         $this->assertEquals('/article/10', $url->get(['/article/:article_id', 'article_id' => 10]));
         $this->assertEquals('/article/10?from=google', $url->get(['/article/:article_id', 'article_id' => 10, 'from' => 'google']));
 
-        $this->_di->alias->set('@web','http://www.manaphp.com/manaphp');
+        $this->_di->alias->set('@web', 'http://www.manaphp.com/manaphp');
         $url = new Url();
-	
+
         $this->assertEquals('http://www.manaphp.com/manaphp/', $url->get('/'));
-        $this->assertEquals('/manaphp/', $url->get(''));
+        $_SERVER['REQUEST_URI'] = '/a/b/c';
+        $this->assertEquals('/a/b/c', $url->get(''));
         $this->assertEquals('http://www.manaphp.com/manaphp/home', $url->get('/home'));
         $this->assertEquals('/manaphp/home', $url->get('home'));
 
