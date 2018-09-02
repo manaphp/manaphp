@@ -147,7 +147,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
     public function create()
     {
         $autoIncrementField = $this->getAutoIncrementField();
-
         if ($autoIncrementField && $this->$autoIncrementField === null) {
             $this->$autoIncrementField = $this->generateAutoIncrementId();
         }
