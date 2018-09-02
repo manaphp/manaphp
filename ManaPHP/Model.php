@@ -893,13 +893,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     protected function _exists()
     {
-        $primaryKey = $this->getPrimaryKey();
-
-        if (!isset($this->{$primaryKey})) {
-            return false;
-        }
-
-        return static::criteria(null, $this)->where($primaryKey, $this->{$primaryKey})->forceUseMaster()->exists();
+        return static::criteria(null, $this)->where($this->getPrimaryKeyValuePairs())->forceUseMaster()->exists();
     }
 
     /**
@@ -1205,12 +1199,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             }
         }
 
-        $primaryKey = $this->getPrimaryKey();
-
-        $r = static::criteria($fields, $this)->where($primaryKey, $this->{$primaryKey})->execute();
+        $r = static::criteria($fields, $this)->where($this->getPrimaryKeyValuePairs())->execute();
         if (!$r) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), 'key' => $this->$primaryKey]);
+            throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), json_encode($this->getPrimaryKeyValuePairs())]);
         }
 
         foreach ((array)$r[0] as $field => $value) {
