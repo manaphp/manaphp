@@ -129,22 +129,12 @@ interface RouterInterface
     /**
      * Handles routing information received from the rewrite engine
      *
-     * <code>
-     *
-     *  $router->handle();  //==>$router->handle($_GET['_url'],$_SERVER['HTTP_HOST']);
-     *
-     *  $router->handle('/blog');   //==>$router->handle('/blog',$_SERVER['HTTP_HOST']);
-     *
-     * $router->handle('/blog','www.manaphp.com');
-     *
-     * </code>
      * @param string $uri
      * @param string $method
-     * @param string $host
      *
      * @return bool
      */
-    public function handle($uri = null, $method = null, $host = null);
+    public function handle($uri = null, $method = null);
 
     /**
      * Get rewrite info. This info is read from $_GET['_url'] or _SERVER["REQUEST_URI"].

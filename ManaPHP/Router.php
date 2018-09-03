@@ -269,30 +269,17 @@ class Router extends Component implements RouterInterface
     /**
      * Handles routing information received from the rewrite engine
      *
-     *<code>
-     * //Read the info from the rewrite engine
-     * $router->handle();
-     *
-     * //Manually passing an URL
-     * $router->handle('/posts/edit/1');
-     *</code>
-     *
      * @param string $uri
      * @param string $method
-     * @param string $host
      *
      * @return bool
      */
-    public function handle($uri = null, $method = null, $host = null)
+    public function handle($uri = null, $method = null)
     {
         $uri = $this->getRewriteUri($uri);
 
         if ($method === null) {
             $method = $_SERVER['REQUEST_METHOD'];
-        }
-
-        if ($host === null && isset($_SERVER['HTTP_HOST'])) {
-            $host = $_SERVER['HTTP_HOST'];
         }
 
         $this->_controller = null;
@@ -304,9 +291,6 @@ class Router extends Component implements RouterInterface
         $this->fireEvent('router:beforeRoute');
 
         $prefix = $this->_prefix;
-        if ($prefix[0] !== '/' && strpos($prefix, $host) === 0) {
-            $prefix = $prefix === $host ? '/' : substr($prefix, strlen($host));
-        }
 
         if (strpos($uri, $prefix) === 0) {
             $area = null;
