@@ -65,6 +65,15 @@ abstract class Application extends Component implements ApplicationInterface
         $this->alias->set('@tmp', $rootDir . '/tmp');
         $this->alias->set('@config', $rootDir . '/config');
 
+        $web = '';
+        if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {
+            $web = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
+            if (substr_compare($web, '/public', -7) === 0) {
+                $web = substr($web, 0, -7);
+            }
+        }
+        $this->alias->set('@web', $web);
+
         $this->loader->registerFiles('@manaphp/helpers.php');
     }
 

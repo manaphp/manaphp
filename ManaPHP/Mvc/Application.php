@@ -28,15 +28,7 @@ class Application extends \ManaPHP\Application
     {
         parent::__construct($loader);
 
-        $web = '';
-        if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {
-            $web = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
-            if (substr_compare($web, '/public', -7) === 0) {
-                $web = substr($web, 0, -7);
-            }
-        }
-        $this->alias->set('@web', $web);
-        $this->alias->set('@asset', $web);
+        $this->alias->set('@asset', '@web');
 
         $routerClass = $this->alias->resolveNS('@ns.app\Router');
         if (class_exists($routerClass)) {
