@@ -6,6 +6,8 @@ use App\Controllers\TimeController;
 
 class Router extends \ManaPHP\Router
 {
+    protected $_prefix='/abc/123';
+
     public function __construct()
     {
         parent::__construct(false);

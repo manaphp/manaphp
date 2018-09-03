@@ -47,7 +47,7 @@ class Router extends Component implements RouterInterface
     /**
      * @var string
      */
-    protected $_prefix = '/';
+    protected $_prefix = '';
 
     /**
      * Group constructor.
@@ -290,33 +290,28 @@ class Router extends Component implements RouterInterface
 
         $this->fireEvent('router:beforeRoute');
 
-        $prefix = $this->_prefix;
-
-        if (strpos($uri, $prefix) === 0) {
-            $area = null;
-            $handledUri = $prefix === '/' ? $uri : substr($uri, strlen($prefix));
-
-            if ($handledUri !== '/' && $this->_areas) {
-                if (substr_count($handledUri, '/') < 2) {
-                    $handledUri .= '/';
-                }
-
-                $pos = strpos($handledUri, '/', 1);
-                $area = Text::camelize(substr($handledUri, 1, $pos - 1));
-                if (in_array($area, $this->_areas, true)) {
-                    $handledUri = substr($handledUri, $pos);
-                } else {
-                    $area = null;
-                }
+        $area = null;
+        $handledUri = $this->_prefix ? substr($uri, strlen($this->_prefix)) : $uri;
+        if ($handledUri !== '/' && $this->_areas) {
+            if (substr_count($handledUri, '/') < 2) {
+                $handledUri .= '/';
             }
 
-            $parts = $this->matchRoute($handledUri, $method);
-            if ($parts !== false) {
-                $this->_wasMatched = true;
-                $this->_controller = $area ? (Text::underscore($area) . '/' . $parts['controller']) : $parts['controller'];
-                $this->_action = $parts['action'];
-                $this->_params = $parts['params'];
+            $pos = strpos($handledUri, '/', 1);
+            $area = Text::camelize(substr($handledUri, 1, $pos - 1));
+            if (in_array($area, $this->_areas, true)) {
+                $handledUri = substr($handledUri, $pos);
+            } else {
+                $area = null;
             }
+        }
+
+        $parts = $this->matchRoute($handledUri, $method);
+        if ($parts !== false) {
+            $this->_wasMatched = true;
+            $this->_controller = $area ? (Text::underscore($area) . '/' . $parts['controller']) : $parts['controller'];
+            $this->_action = $parts['action'];
+            $this->_params = $parts['params'];
         }
 
         $this->fireEvent('router:afterRoute');
@@ -406,7 +401,7 @@ class Router extends Component implements RouterInterface
             $ca = substr($ca, 0, $pos);
         }
 
-        $url = $this->alias->resolve('@web') . ($this->_prefix === '/' ? '/' : $this->_prefix . '/') . lcfirst($ca);
+        $url = $this->alias->resolve('@web') . $this->_prefix . '/' . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }
