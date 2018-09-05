@@ -16,6 +16,15 @@ interface CriteriaInterface
     public function select($fields);
 
     /**
+     * Sets SELECT DISTINCT / SELECT ALL flag
+     *
+     * @param bool $distinct
+     *
+     * @return static
+     */
+    public function distinct($distinct = true);
+
+    /**
      * @param array $expr
      *
      * @return array

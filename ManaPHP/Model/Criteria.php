@@ -3,6 +3,7 @@ namespace ManaPHP\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 
 /**
@@ -39,6 +40,18 @@ abstract class Criteria extends Component implements CriteriaInterface
     public function getModel()
     {
         return $this->_model;
+    }
+
+    /**
+     * Sets SELECT DISTINCT / SELECT ALL flag
+     *
+     * @param bool $distinct
+     *
+     * @return static
+     */
+    public function distinct($distinct = true)
+    {
+        throw new NotImplementedException(__METHOD__);
     }
 
     /**
@@ -352,6 +365,10 @@ abstract class Criteria extends Component implements CriteriaInterface
             $this->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
         } elseif (isset($options['size'])) {
             $this->page($options['size'], isset($options['page']) ? $options['page'] : null);
+        }
+
+        if (isset($options['distinct'])) {
+            $this->distinct($options['distinct']);
         }
 
         if (isset($options['order'])) {

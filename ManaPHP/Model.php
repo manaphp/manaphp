@@ -568,23 +568,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function values($field, $filters = null, $options = null)
     {
-        $criteria = static::criteria()->where($filters);
-        if (is_array($options)) {
-            if (isset($options['limit'])) {
-                $criteria->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
-            } elseif (isset($options['size'])) {
-                $criteria->page($options['size'], isset($options['page']) ? $options['page'] : null);
-            }
-
-            if (isset($options['distinct'])) {
-                $criteria->distinct();
-            }
-
-            if (isset($options['order'])) {
-                $criteria->orderBy($options['order']);
-            }
-        }
-        return $criteria->values($field);
+        return static::criteria()->where($filters)->options($options)->values($field);
     }
 
     /**
