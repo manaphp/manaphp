@@ -375,6 +375,18 @@ abstract class Criteria extends Component implements CriteriaInterface
             $this->orderBy($options['order']);
         }
 
+        if (isset($options['index'])) {
+            $this->indexBy($options['index']);
+        }
+
+        if (isset($options['cache'])) {
+            $this->cache($options['cache']);
+        }
+
+        if (isset($options['with'])) {
+            $this->with($options['with']);
+        }
+
         return $this;
     }
 

@@ -246,31 +246,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function paginate($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria($fields)->where($filters);
-
-        if ($options !== null) {
-            if (isset($options['distinct'])) {
-                $criteria->distinct($options['distinct']);
-            }
-
-            if (isset($options['order'])) {
-                $criteria->orderBy($options['order']);
-            }
-
-            if (isset($options['index'])) {
-                $criteria->indexBy($options['index']);
-            }
-
-            if (isset($options['cache'])) {
-                $criteria->cache($options['cache']);
-            }
-
-            if (isset($options['with'])) {
-                $criteria->with($options['with']);
-            }
-        }
-
-        return $criteria->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
+        return static::criteria($fields)->where($filters)->options($options)
+            ->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
     }
 
     /**
@@ -282,31 +259,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function search($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria($fields)->whereSearch($filters);
-
-        if ($options !== null) {
-            if (isset($options['distinct'])) {
-                $criteria->distinct($options['distinct']);
-            }
-
-            if (isset($options['order'])) {
-                $criteria->orderBy($options['order']);
-            }
-
-            if (isset($options['index'])) {
-                $criteria->indexBy($options['index']);
-            }
-
-            if (isset($options['cache'])) {
-                $criteria->cache($options['cache']);
-            }
-
-            if (isset($options['with'])) {
-                $criteria->with($options['with']);
-            }
-        }
-
-        return $criteria->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
+        return static::criteria($fields)->whereSearch($filters)->options($options)
+            ->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
     }
 
     /**
