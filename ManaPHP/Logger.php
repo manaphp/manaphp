@@ -331,6 +331,22 @@ class Logger extends Component implements LoggerInterface
             return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
+        if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
+            foreach ((array)$message as $k => $v) {
+                if ($k === 0 || is_scalar($v) || $v === null) {
+                    continue;
+                }
+
+                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+                    $message[$k] = $this->exceptionToString($v);
+                } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+                    $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                }
+            }
+            /** @noinspection ArgumentUnpackingCanBeUsedInspection */
+            return (string)call_user_func_array('sprintf', $message);
+        }
+
         if (count($message) === 2) {
             if (isset($message[1]) && strpos($message[0], ':1') === false) {
                 $message[0] = rtrim($message[0], ': ') . ': :1';
