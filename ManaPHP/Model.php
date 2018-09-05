@@ -1160,9 +1160,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         $name = strtoupper($name) . '_';
         $constants = [];
-        $rc = new \ReflectionClass(get_called_class());
-
-        foreach ($rc->getConstants() as $cName => $cValue) {
+        foreach ((new \ReflectionClass(get_called_class()))->getConstants() as $cName => $cValue) {
             if (strpos($cName, $name) === 0) {
                 $constants[$cValue] = strtolower(substr($cName, strlen($name)));
             }
