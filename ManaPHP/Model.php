@@ -1047,12 +1047,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
         }
 
-        if (is_string($fields)) {
-            $fields = [$fields];
-        }
-
         /** @noinspection ForeachSourceInspection */
-        foreach ($fields as $field) {
+        foreach ((array)$fields as $field) {
             if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
                 return true;
             }
