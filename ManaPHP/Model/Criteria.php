@@ -67,40 +67,39 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @param array $fields
+     * @param array $filters
      *
      * @return static
      */
-    public function whereRequest($fields)
+    public function whereSearch($filters)
     {
-        foreach ($fields as $k => $v) {
-            if (strpos($v, '.') === false) {
-                $field = $v;
+        $data = $this->request->get();
+
+        $conditions = [];
+        $fields = $this->_model->getFields();
+        foreach ($filters as $k => $v) {
+            preg_match('#^(\w+)(.*)$#', is_int($k) ? $v : $k, $match);
+            $field = $match[1];
+
+            if (!in_array($field, $fields, true)) {
+                throw new InvalidValueException(['`:model` is not contains `:field` field', 'model' => get_declared_classes(), 'field' => $field]);
+            }
+
+            if (is_int($k)) {
+                if (!isset($data[$field])) {
+                    continue;
+                }
+                $value = $data[$field];
+                if (is_string($value)) {
+                    $value = trim($value);
+                    if ($value === '') {
+                        continue;
+                    }
+                }
+                $conditions[$v] = $value;
             } else {
-                $parts = explode('.', $v);
-                $field = $parts[1];
+                $conditions[$k] = $v;
             }
-            $field = rtrim($field, '=!<>~*^$@');
-            $value = $this->request->get($field);
-            if ($value === null) {
-                continue;
-            } elseif (is_string($value)) {
-                $value = trim($value);
-                if ($value === '') {
-                    continue;
-                }
-            } elseif (is_array($value)) {
-                if (strpos($v, '@=')) {
-                    $this->whereDateBetween($field, $value[0], $value[1]);
-                    continue;
-                }
-
-                if (count($value) === 1 && trim($value[0]) === '') {
-                    continue;
-                }
-            }
-
-            $this->where($v, $value);
         }
 
         return $this;

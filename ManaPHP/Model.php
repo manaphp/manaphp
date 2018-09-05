@@ -282,37 +282,31 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function search($filters = [], $options = null, $fields = null)
     {
-        $model = new static();
-        $data = $model->request->get();
+        $criteria = static::criteria($fields)->whereSearch($filters);
 
-        $conditions = [];
-        $modelFields = $model->getFields();
-        foreach ($filters as $k => $v) {
-            preg_match('#^(\w+)(.*)$#', is_int($k) ? $v : $k, $match);
-            $field = $match[1];
-
-            if (!in_array($field, $modelFields, true)) {
-                throw new InvalidValueException(['`:model` is not contains `:field` field', 'model' => get_declared_classes(), 'field' => $field]);
+        if ($options !== null) {
+            if (isset($options['distinct'])) {
+                $criteria->distinct($options['distinct']);
             }
 
-            if (is_int($k)) {
-                if (!isset($data[$field])) {
-                    continue;
-                }
-                $value = $data[$field];
-                if (is_string($value)) {
-                    $value = trim($value);
-                    if ($value === '') {
-                        continue;
-                    }
-                }
-                $conditions[$v] = $value;
-            } else {
-                $conditions[$k] = $v;
+            if (isset($options['order'])) {
+                $criteria->orderBy($options['order']);
+            }
+
+            if (isset($options['index'])) {
+                $criteria->indexBy($options['index']);
+            }
+
+            if (isset($options['cache'])) {
+                $criteria->cache($options['cache']);
+            }
+
+            if (isset($options['with'])) {
+                $criteria->with($options['with']);
             }
         }
 
-        return static::paginate($conditions, $options, $fields);
+        return $criteria->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
     }
 
     /**

@@ -38,11 +38,11 @@ interface CriteriaInterface
     public function where($filter, $value = null);
 
     /**
-     * @param array $fields
+     * @param array $filters
      *
      * @return static
      */
-    public function whereRequest($fields);
+    public function whereSearch($filters);
 
     /**
      * Appends a BETWEEN condition to the current conditions
