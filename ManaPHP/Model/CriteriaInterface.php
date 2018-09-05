@@ -212,6 +212,13 @@ interface CriteriaInterface
     public function whereNotRegex($field, $regex, $flags = '');
 
     /**
+     * @param array $options
+     *
+     * @return static
+     */
+    public function options($options);
+
+    /**
      * @param string|array $with
      *
      * @return static

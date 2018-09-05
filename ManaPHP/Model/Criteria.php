@@ -338,6 +338,30 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
+     * @param array $options
+     *
+     * @return static
+     */
+    public function options($options)
+    {
+        if (!$options) {
+            return $this;
+        }
+
+        if (isset($options['limit'])) {
+            $this->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
+        } elseif (isset($options['size'])) {
+            $this->page($options['size'], isset($options['page']) ? $options['page'] : null);
+        }
+
+        if (isset($options['order'])) {
+            $this->orderBy($options['order']);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param \ManaPHP\Model $instance
      */
     protected function _with($instance)
