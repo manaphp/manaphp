@@ -249,7 +249,7 @@ interface ModelInterface
      *
      * @return int
      */
-    public static function count($filters = null, $field = null);
+    public static function count($filters = null, $field = '*');
 
     /**
      * Allows to calculate a summary on a column that match the specified conditions

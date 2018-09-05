@@ -523,21 +523,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
-     * Generate a SQL SELECT statement for an aggregate
-     *
-     * @param string $function
-     * @param string $alias
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return mixed
-     */
-    protected static function _groupResult($function, $alias, $field, $filters)
-    {
-        return static::criteria()->where($filters)->aggregate([$alias => "$function($field)"])[0][$alias];
-    }
-
-    /**
      * @param array $filters
      * @param array $aggregation
      * @param string|array
@@ -557,9 +542,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      *
      * @return int
      */
-    public static function count($filters = null, $field = null)
+    public static function count($filters = null, $field = '*')
     {
-        $result = static::_groupResult('COUNT', 'row_count', $field ?: '*', $filters);
+        $result = static::criteria()->where($filters)->aggregate(['r' => "COUNT($field)"])[0]['r'];
         if (is_string($result)) {
             $result = (int)$result;
         }
@@ -577,7 +562,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function sum($field, $filters = null)
     {
-        return static::_groupResult('SUM', 'summary', $field, $filters);
+        return static::criteria()->where($filters)->aggregate(['r' => "SUM($field)"])[0]['r'];
     }
 
     /**
@@ -590,7 +575,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function max($field, $filters = null)
     {
-        return static::_groupResult('MAX', 'maximum', $field, $filters);
+        return static::criteria()->where($filters)->aggregate(['r' => "MAX($field)"])[0]['r'];
     }
 
     /**
@@ -604,7 +589,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function min($field, $filters = null)
     {
-        return static::_groupResult('MIN', 'minimum', $field, $filters);
+        return static::criteria()->where($filters)->aggregate(['r' => "MIN($field)"])[0]['r'];
     }
 
     /**
@@ -617,7 +602,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function avg($field, $filters = null)
     {
-        return (double)static::_groupResult('AVG', 'average', $field, $filters);
+        return (double)static::criteria()->where($filters)->aggregate(['r' => "AVG($field)"])[0]['r'];
     }
 
     /**
