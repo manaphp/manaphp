@@ -69,10 +69,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                         $data[$field] = [];
                     } else {
                         if (($json = json_decode($data[$field], true)) === null) {
-                            throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string: :error',
+                            throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
                                 'field' => $field,
-                                'model' => get_class($this),
-                                'error' => json_last_error_msg()]);
+                                'model' => get_class($this)]);
                         } else {
                             $data[$field] = $json;
                         }
@@ -1097,10 +1096,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                     $data[$field] = [];
                 } else {
                     if (($json = json_decode($data[$field], true)) === null) {
-                        throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string: :error',
+                        throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
                             'field' => $field,
-                            'model' => get_class($this),
-                            'error' => json_last_error_msg()]);
+                            'model' => get_class($this)]);
                     } else {
                         $data[$field] = $json;
                     }
