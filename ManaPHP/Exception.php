@@ -23,23 +23,30 @@ class Exception extends \Exception
      */
     public function __construct($message = '', $code = 0, \Exception $previous = null)
     {
-        $tr = [];
-
         if (is_array($message)) {
-            $this->_bind = $message;
-            $message = $message[0];
-            unset($this->_bind[0]);
+            if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
+                /** @noinspection ArgumentUnpackingCanBeUsedInspection */
+                $message = call_user_func_array('sprintf', $message);
+            } else {
+                $this->_bind = $message;
+                $message = $message[0];
+                unset($this->_bind[0]);
+
+                if (!isset($this->_bind['last_error_message'])) {
+                    $this->_bind['last_error_message'] = error_get_last()['message'];
+                }
+
+                $tr = [];
+                /** @noinspection ForeachSourceInspection */
+                foreach ($this->_bind as $k => $v) {
+                    $tr[':' . $k] = $v;
+                }
+
+                $message = strtr($message, $tr);
+            }
         }
 
-        if (!isset($this->_bind['last_error_message'])) {
-            $this->_bind['last_error_message'] = error_get_last()['message'];
-        }
-        /** @noinspection ForeachSourceInspection */
-        foreach ($this->_bind as $k => $v) {
-            $tr[':' . $k] = $v;
-        }
-
-        parent::__construct(strtr($message, $tr), $code, $previous);
+        parent::__construct($message, $code, $previous);
     }
 
     /**
