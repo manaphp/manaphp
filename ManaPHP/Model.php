@@ -204,37 +204,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function all($filters = [], $options = null, $fields = null)
     {
-        $criteria = static::criteria($fields ?: null)->where($filters);
-
-        if ($options !== null) {
-            if (isset($options['distinct'])) {
-                $criteria->distinct($options['distinct']);
-            }
-
-            if (isset($options['order'])) {
-                $criteria->orderBy($options['order']);
-            }
-
-            if (isset($options['limit'])) {
-                $criteria->limit($options['limit'], isset($options['offset']) ? $options['offset'] : null);
-            } elseif (isset($options['size'])) {
-                $criteria->page($options['size'], isset($options['page']) ? $options['page'] : null);
-            }
-
-            if (isset($options['index'])) {
-                $criteria->indexBy($options['index']);
-            }
-
-            if (isset($options['cache'])) {
-                $criteria->cache($options['cache']);
-            }
-
-            if (isset($options['with'])) {
-                $criteria->with($options['with']);
-            }
-        }
-
-        return $criteria->fetchAll();
+        return static::criteria($fields ?: null)->where($filters)->options($options)->fetchAll();
     }
 
     /**
