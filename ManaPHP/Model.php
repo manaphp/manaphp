@@ -1070,17 +1070,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public function refresh($interval, $fields = null)
     {
         if ($interval > 0) {
-            $current = microtime(true);
-
-            if ($this->_last_refresh > 0) {
-                if ($current - $this->_last_refresh < $interval) {
-                    return $this;
-                }
-                $this->_last_refresh = $current;
-            } else {
-                $this->_last_refresh = $current;
+            if ($this->_last_refresh && microtime(true) - $this->_last_refresh < $interval) {
                 return $this;
             }
+            $this->_last_refresh = microtime(true);
         }
 
         $r = static::criteria($fields, $this)->where($this->getPrimaryKeyValuePairs())->execute();
