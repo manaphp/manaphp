@@ -78,7 +78,7 @@ class SessionController extends Controller
                 ->select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
                 ->orderBy('login_id DESC');
 
-            $builder->whereRequest(['admin_id', 'admin_name*=', 'client_ip', 'created_time@=']);
+            $builder->whereSearch(['admin_id', 'admin_name*=', 'client_ip', 'created_time@=']);
 
             return $this->response->setJsonContent($builder->paginate(20));
         }
