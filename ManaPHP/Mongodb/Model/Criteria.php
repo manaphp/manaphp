@@ -5,6 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\ExpressionInterface;
 use ManaPHP\Mongodb\Model\Criteria\Exception as CriteriaException;
@@ -166,6 +167,24 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
+     * @param string $str
+     *
+     * @return array
+     */
+    protected function _compileCondExpression($expr)
+    {
+        if (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $expr, $match)) {
+            $op1 = $match[1];
+            $op2 = $match[2];
+            $op3 = $match[3];
+            $alg = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$neq', '<>' => '$neq'];
+            return ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (double)$op1 : '$' . $op1, is_numeric($op3) ? (double)$op3 : '$' . $op3]], 1, 0]];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @param array $expr
      *
      * @return array
@@ -195,12 +214,16 @@ class Criteria extends \ManaPHP\Model\Criteria
             if ($accumulator === 'count') {
                 if ($operand === '*' || preg_match('#^[\w\.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$sum' => 1];
-                } elseif (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $operand, $match)) {
-                    $op1 = $match[1];
-                    $op2 = $match[2];
-                    $op3 = $match[3];
-                    $alg = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$neq', '<>' => '$neq'];
-                    $this->_aggregate[$k] = ['$sum' => ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (double)$op1 : '$' . $op1, is_numeric($op3) ? (double)$op3 : '$' . $op3]], 1, 0]]];
+                } elseif ($cond = $this->_compileCondExpression($operand)) {
+                    $this->_aggregate[$k] = ['$sum' => $cond];
+                }else{
+                    throw new MisuseException(['unknown COUNT expression: `:expression`', 'expression' => $operand]);
+                }
+            } elseif ($accumulator === 'rate') {
+                if ($cond = $this->_compileCondExpression($operand)) {
+                    $this->_aggregate[$k] = ['$avg' => $cond];
+                } else {
+                    throw new MisuseException(['unknown RATE expression: `:expression`', 'expression' => $operand]);
                 }
             } elseif (in_array($accumulator, ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'], true)) {
                 if (preg_match('#^[\w\.]+$#', $operand) === 1) {
