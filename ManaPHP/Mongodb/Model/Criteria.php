@@ -194,6 +194,18 @@ class Criteria extends \ManaPHP\Model\Criteria
     {
         foreach ($expr as $k => $v) {
             if (is_array($v)) {
+                if (isset($v['$count_if'])) {
+                    unset($v['$count_if'][0]);
+                    $v = ['$sum' => ['$cond' => [$v['$count_if'], 1, 0]]];
+                } else if (isset($v['$sum_if'])) {
+                    $field = isset($v['$sum_if'][0]) ? $v['$sum_if'][0] : 1;
+                    unset($v['$sum_if'][0]);
+                    $v = ['$sum' => ['$cond' => [$v['$sum_if'], is_numeric($field) ? (double)$field : '$' . $field, 0]]];
+                } elseif (isset($v['$avg_if'])) {
+                    $field = isset($v['$avg_if'][0]) ? $v['$avg_if'][0] : 1;
+                    unset($v['$avg_if'][0]);
+                    $v = ['$avg' => ['$cond' => [$v['$avg_if'], is_numeric($field) ? (double)$field : '$' . $field, 0]]];
+                }
                 $this->_aggregate[$k] = $v;
                 continue;
             }
