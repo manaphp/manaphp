@@ -55,31 +55,6 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @param string $field
-     * @param array  $value
-     *
-     * @return array
-     */
-    protected function _normalizeTimeBetween($field, $value)
-    {
-        $left = $value[0];
-        if ($left && is_string($left)) {
-            $left = strtotime($left[0] === '-' || $left[0] === '+' ? date('Y-m-d', strtotime($left)) : $left);
-        }
-
-        $right = $value[1];
-        if ($right && is_string($right)) {
-            $right = strtotime($right[0] === '-' || $right[0] === '+' ? date('Y-m-d 23:59:59', strtotime($right)) : $right);
-        }
-
-        if ($format = $this->_model->getDateFormat($field)) {
-            return [$left ? date($format, $left) : null, $right ? date($format, $right) : null];
-        } else {
-            return [$left ?: null, $right ?: null];
-        }
-    }
-
-    /**
      * @param array $filters
      *
      * @return static

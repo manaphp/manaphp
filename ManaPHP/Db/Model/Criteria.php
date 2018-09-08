@@ -104,12 +104,8 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     public function where($filter, $value = null)
     {
         if (is_string($filter)) {
-            if ($filter === 'request') {
-                $this->whereRequest($value);
-            } elseif (strpos($filter, '@=')) {
-                $field = substr($filter, 0, -2);
-                $times = $this->_normalizeTimeBetween($field, $value);
-                $this->_query->whereBetween($field, $times[0], $times[1]);
+            if (strpos($filter, '@=')) {
+                $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } else {
                 $this->_query->where($filter, $value);
             }
@@ -117,9 +113,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
             $query = $this->_query;
             foreach ((array)$filter as $k => $v) {
                 if (strpos($k, '@=')) {
-                    $field = substr($filter, 0, -2);
-                    $times = $this->_normalizeTimeBetween($field, $v);
-                    $query->whereBetween($field, $times[0], $times[1]);
+                    $this->whereDateBetween(substr($filter, 0, -2), $v[0], $v[1]);
                 } else {
                     if (is_array($v) && in_array($k, $this->_model->getIntFields(), true)) {
                         $v = array_map('intval', $v);

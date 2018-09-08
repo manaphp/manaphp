@@ -283,9 +283,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                     throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
                 }
             } elseif ($operator === '@=') {
-                $field = substr($filter, 0, -2);
-                $times = $this->_normalizeTimeBetween($field, $value);
-                $this->whereBetween($field, $times[0], $times[1]);
+                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif ($operator === '^=') {
                 $this->whereStartsWith($field, $value);
             } elseif ($operator === '$=') {
