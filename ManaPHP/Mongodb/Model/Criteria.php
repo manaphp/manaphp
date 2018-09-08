@@ -224,9 +224,9 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
             $operand = $match[2];
             if ($accumulator === 'count') {
-                if ($operand === '*' || preg_match('#^[\w\.]+$#', $operand) === 1) {
-                    $this->_aggregate[$k] = ['$sum' => 1];
-                } elseif ($cond = $this->_compileCondExpression($operand)) {
+                $this->_aggregate[$k] = ['$sum' => 1];
+            } elseif ($accumulator === 'count_if') {
+                if ($cond = $this->_compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$sum' => $cond];
                 } else {
                     throw new MisuseException(['unknown COUNT expression: `:expression`', 'expression' => $operand]);
