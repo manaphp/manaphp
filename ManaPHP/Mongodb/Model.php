@@ -514,14 +514,15 @@ class Model extends \ManaPHP\Model
 
     /**
      * @param array $pipeline
+     * @param array $options
      *
      * @return array
      */
-    public static function aggregateEx($pipeline)
+    public static function aggregateEx($pipeline, $options = [])
     {
         $instance = new static();
 
-        return $instance->getConnection()->aggregate($instance->getSource(), $pipeline);
+        return $instance->getConnection()->aggregate($instance->getSource(), $pipeline, $options);
     }
 
     /**
