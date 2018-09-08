@@ -196,7 +196,7 @@ class View extends Component implements ViewInterface
     public function getWidgetClassName($widget)
     {
         if (strpos($widget, '/') !== false) {
-            throw new MisuseException('it is not allowed to access other area widgets');
+            throw new MisuseException(['it is not allowed to access other area `:widget` widget', 'widget' => $widget]);
         }
 
         $controllerName = $this->dispatcher->getControllerName();
