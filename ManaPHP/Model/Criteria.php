@@ -362,6 +362,10 @@ abstract class Criteria extends Component implements CriteriaInterface
             $this->with($options['with']);
         }
 
+        if (isset($options['group'])) {
+            $this->groupBy($options['group']);
+        }
+
         return $this;
     }
 
