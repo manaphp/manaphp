@@ -238,7 +238,20 @@ class Criteria extends \ManaPHP\Model\Criteria
                 }
             }
         } elseif ($value === null) {
-            $this->_filters[] = is_string($filter) ? [$filter => null] : $filter;
+            if (is_string($filter)) {
+                if (preg_match('#^\w+$#', $filter) === 1) {
+                    $this->_filters[] = [$filter => null];
+                } elseif (strpos($filter, 'this.') !== false) {
+                    $this->_filters[] = ['$where' => $filter];
+                } else {
+                    $filter = preg_replace_callback('#\b\w+\b#', function ($match) {
+                        return (is_numeric($match[0]) ? '' : 'this.') . $match[0];
+                    }, $filter);
+                    $this->_filters[] = ['$where' => $filter];
+                }
+            } else {
+                $this->_filters[] = $filter;
+            }
         } elseif (is_array($value)) {
             if (strpos($filter, '~=')) {
                 if (count($value) === 2 && gettype($value[0]) === gettype($value[1])) {
