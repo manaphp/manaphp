@@ -495,18 +495,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
-     * @param string $field
-     * @param array  $filters
-     * @param array  $options
-     *
-     * @return array
-     */
-    public static function distinct($field, $filters = null, $options = null)
-    {
-        return static::criteria()->where($filters)->distinct()->options($options)->values($field);
-    }
-
-    /**
      * @param int|string|array $filters
      *
      * @return bool

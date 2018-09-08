@@ -213,15 +213,6 @@ interface ModelInterface
     public static function values($field, $filters = null, $options = null);
 
     /**
-     * @param string $field
-     * @param array  $filters
-     * @param array  $options
-     *
-     * @return array
-     */
-    public static function distinct($field, $filters = null, $options = null);
-
-    /**
      * @param string|array $filters
      *
      * @return bool

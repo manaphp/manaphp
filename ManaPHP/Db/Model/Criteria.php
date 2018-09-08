@@ -591,7 +591,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function values($field)
     {
-        return $this->_replaceModelInfo()->_query->values($field);
+        return $this->_replaceModelInfo()->_query->distinct()->values($field);
     }
 
     /**
