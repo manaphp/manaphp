@@ -1031,3 +1031,25 @@ if (!function_exists('array_get')) {
         return isset($t[$last]) ? $t[$last] : $default;
     }
 }
+
+if (!function_exists('array_index_by')) {
+    /**
+     * @param array  $ar
+     * @param string $key
+     *
+     * @return array
+     */
+    function array_index_by($ar, $key)
+    {
+        if (!is_array($ar)) {
+            return $ar;
+        }
+
+        $r = [];
+        foreach ($ar as $v) {
+            $r[is_object($v) ? $v->$key : $v[$key]] = $v;
+        }
+
+        return $r;
+    }
+}
