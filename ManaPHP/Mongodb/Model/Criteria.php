@@ -173,12 +173,26 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     protected function _compileCondExpression($expr)
     {
-        if (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $expr, $match)) {
+        if (strpos($expr, ',') !== false) {
+            $parts = explode(',', $expr);
+            $cond = trim($parts[0]);
+            $true = trim($parts[1]);
+            $false = isset($parts[2]) ? trim($parts[2]) : 0;
+
+            $true = is_numeric($true) ? (double)$true : '$' . $true;
+            $false = is_numeric($false) ? (double)$false : '$' . $false;
+        } else {
+            $cond = $expr;
+            $true = 1;
+            $false = 0;
+        }
+
+        if (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $cond, $match)) {
             $op1 = $match[1];
             $op2 = $match[2];
             $op3 = $match[3];
             $alg = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$neq', '<>' => '$neq'];
-            return ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (double)$op1 : '$' . $op1, is_numeric($op3) ? (double)$op3 : '$' . $op3]], 1, 0]];
+            return ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (double)$op1 : '$' . $op1, is_numeric($op3) ? (double)$op3 : '$' . $op3]], $true, $false]];
         } else {
             return null;
         }
@@ -230,6 +244,12 @@ class Criteria extends \ManaPHP\Model\Criteria
                     $this->_aggregate[$k] = ['$sum' => $cond];
                 } else {
                     throw new MisuseException(['unknown COUNT_IF expression: `:expression`', 'expression' => $operand]);
+                }
+            } elseif ($accumulator === 'sum_if') {
+                if ($cond = $this->_compileCondExpression($operand)) {
+                    $this->_aggregate[$k] = ['$sum' => $cond];
+                } else {
+                    throw new MisuseException(['unknown SUM_IF expression: `:expression`', 'expression' => $operand]);
                 }
             } elseif ($accumulator === 'rate') {
                 if ($cond = $this->_compileCondExpression($operand)) {
