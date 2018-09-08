@@ -251,12 +251,6 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } else {
                     throw new MisuseException(['unknown SUM_IF expression: `:expression`', 'expression' => $operand]);
                 }
-            } elseif ($accumulator === 'rate') {
-                if ($cond = $this->_compileCondExpression($operand)) {
-                    $this->_aggregate[$k] = ['$avg' => $cond];
-                } else {
-                    throw new MisuseException(['unknown RATE expression: `:expression`', 'expression' => $operand]);
-                }
             } elseif (in_array($accumulator, ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'], true)) {
                 if (preg_match('#^[\w\.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$' . $accumulator => '$' . $operand];
