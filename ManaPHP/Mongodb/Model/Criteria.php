@@ -184,10 +184,15 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
 
             $accumulator = strtolower($match[1]);
+            $normalizes = ['std' => 'stdDevPop', 'stddev' => 'stdDevPop', 'stddev_pop' => 'stdDevPop', 'stddev_samp' => 'stdDevSamp',
+                'addtoset' => 'addToSet', 'stddevpop' => 'stdDevPop', 'stddevsamp' => 'stdDevSamp'];
+            if (isset($normalizes[$accumulator])) {
+                $accumulator = $normalizes[$accumulator];
+            }
             $operand = $match[2];
             if ($accumulator === 'count') {
                 $this->_aggregate[$k] = ['$sum' => 1];
-            } elseif (in_array($accumulator, ['sum', 'avg', 'max', 'min'], true)) {
+            } elseif (in_array($accumulator, ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'], true)) {
                 if (preg_match('#^[\w\.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$' . $accumulator => '$' . $operand];
                 } elseif (preg_match('#^([\w\.]+)\s*([\+\-\*/%])\s*([\w\.]+)$#', $operand, $match2) === 1) {
