@@ -229,7 +229,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 if ($cond = $this->_compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$sum' => $cond];
                 } else {
-                    throw new MisuseException(['unknown COUNT expression: `:expression`', 'expression' => $operand]);
+                    throw new MisuseException(['unknown COUNT_IF expression: `:expression`', 'expression' => $operand]);
                 }
             } elseif ($accumulator === 'rate') {
                 if ($cond = $this->_compileCondExpression($operand)) {
