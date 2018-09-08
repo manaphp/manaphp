@@ -517,7 +517,7 @@ class Model extends \ManaPHP\Model
      *
      * @return array
      */
-    public static function aggregate($pipeline)
+    public static function aggregateEx($pipeline)
     {
         $instance = new static();
 

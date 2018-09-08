@@ -516,7 +516,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      *
      * @return array
      */
-    public static function group($filters, $aggregation, $options = null)
+    public static function aggregate($filters, $aggregation, $options = null)
     {
         if (is_string($options)) {
             $options = ['group' => $options];

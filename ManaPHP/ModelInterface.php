@@ -226,7 +226,7 @@ interface ModelInterface
      *
      * @return array
      */
-    public static function group($filters, $aggregation, $options = null);
+    public static function aggregate($filters, $aggregation, $options = null);
 
     /**
      * Allows to count how many records match the specified conditions
