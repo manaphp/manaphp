@@ -184,7 +184,8 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
 
             $accumulator = strtolower($match[1]);
-            $normalizes = ['std' => 'stdDevPop', 'stddev' => 'stdDevPop', 'stddev_pop' => 'stdDevPop', 'stddev_samp' => 'stdDevSamp',
+            $normalizes = ['group_concat' => 'push',
+                'std' => 'stdDevPop', 'stddev' => 'stdDevPop', 'stddev_pop' => 'stdDevPop', 'stddev_samp' => 'stdDevSamp',
                 'addtoset' => 'addToSet', 'stddevpop' => 'stdDevPop', 'stddevsamp' => 'stdDevSamp'];
             if (isset($normalizes[$accumulator])) {
                 $accumulator = $normalizes[$accumulator];
