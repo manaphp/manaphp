@@ -522,15 +522,18 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
-     * @param array $filters
-     * @param array $aggregation
-     * @param string|array
+     * @param array        $filters
+     * @param array        $aggregation
+     * @param string|array $options
      *
      * @return array
      */
-    public static function group($filters, $aggregation, $group = null)
+    public static function group($filters, $aggregation, $options = null)
     {
-        return static::criteria()->where($filters)->groupBy($group)->aggregate($aggregation);
+        if (is_string($options)) {
+            $options = ['group' => $options];
+        }
+        return static::criteria()->where($filters)->options($options)->aggregate($aggregation);
     }
 
     /**
