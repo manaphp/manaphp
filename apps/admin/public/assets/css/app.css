@@ -20,7 +20,6 @@
     width: 30%;
 }
 
-
 .el-dialog .el-form-item__label {
     width: 30%;
     font-weight: 700;
@@ -37,3 +36,11 @@
 /*[v-cloak] {*/
 /*display: none;*/
 /*}*/
+
+.product-name {
+    margin: 20px 10px 50px;
+}
+
+.el-aside {
+    min-height: 800px;
+}

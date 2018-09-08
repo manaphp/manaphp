@@ -11,15 +11,15 @@
     @yield('css')
 </head>
 <body>
-<div id="app" v-cloak>
+
+<el-container id="app">
+    <el-aside width="200px">@widget('SideMenu')</el-aside>
     <el-container>
         <el-header></el-header>
-        <el-container>
-            <el-aside width="200px">@widget('SideMenu')</el-aside>
-            <el-main>@content()</el-main>
-        </el-container>
+        <el-main>@content()</el-main>
     </el-container>
-</div>
+</el-container>
+
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
 <script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>
 <script src="https://cdn.bootcss.com/axios/0.18.0/axios.js"></script>

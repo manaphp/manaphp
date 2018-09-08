@@ -1,3 +1,4 @@
+<div class="product-name">ManaPHP 管理系统</div>
 <el-menu
         default-active="<?=action('')?>"
         class="el-menu-vertical-demo">
