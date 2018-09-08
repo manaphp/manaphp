@@ -187,7 +187,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $operand = $match[2];
             if ($accumulator === 'count') {
                 $this->_aggregate[$k] = ['$sum' => 1];
-            } elseif ($accumulator === 'sum' || $accumulator === 'avg' || $accumulator === 'max' || $accumulator === 'min') {
+            } elseif (in_array($accumulator, ['sum', 'avg', 'max', 'min'], true)) {
                 if (preg_match('#^[\w\.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$' . $accumulator => '$' . $operand];
                 } elseif (preg_match('#^([\w\.]+)\s*([\+\-\*/%])\s*([\w\.]+)$#', $operand, $match2) === 1) {
