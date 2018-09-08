@@ -1095,7 +1095,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function exists()
     {
-        return (bool)$this->select(['_id'])->fetchOne();
+        return (bool)$this->select(['_id'])->limit(1)->_execute();
     }
 
     /**
