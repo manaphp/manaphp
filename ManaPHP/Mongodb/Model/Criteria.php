@@ -193,7 +193,15 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
             $operand = $match[2];
             if ($accumulator === 'count') {
-                $this->_aggregate[$k] = ['$sum' => 1];
+                if ($operand === '*' || preg_match('#^[\w\.]+$#', $operand) === 1) {
+                    $this->_aggregate[$k] = ['$sum' => 1];
+                } elseif (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $operand, $match)) {
+                    $op1 = $match[1];
+                    $op2 = $match[2];
+                    $op3 = $match[3];
+                    $alg = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$neq', '<>' => '$neq'];
+                    $this->_aggregate[$k] = ['$sum' => ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (double)$op1 : '$' . $op1, is_numeric($op3) ? (double)$op3 : '$' . $op3]], 1, 0]]];
+                }
             } elseif (in_array($accumulator, ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'], true)) {
                 if (preg_match('#^[\w\.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$' . $accumulator => '$' . $operand];
