@@ -216,7 +216,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                     $this->_aggregate[$k] = ['$sum' => 1];
                 } elseif ($cond = $this->_compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$sum' => $cond];
-                }else{
+                } else {
                     throw new MisuseException(['unknown COUNT expression: `:expression`', 'expression' => $operand]);
                 }
             } elseif ($accumulator === 'rate') {
@@ -234,6 +234,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                     $sub_operand1 = is_numeric($match2[1]) ? (double)$match2[1] : ('$' . $match2[1]);
                     $sub_operand2 = is_numeric($match2[3]) ? (double)$match2[3] : ('$' . $match2[3]);
                     $this->_aggregate[$k] = ['$' . $accumulator => [$sub_operand => [$sub_operand1, $sub_operand2]]];
+                } elseif ($cond = $this->_compileCondExpression($operand)) {
+                    $this->_aggregate[$k] = ['$' . $accumulator => $this->_compileCondExpression($operand)];
                 } else {
                     throw new CriteriaException(['unknown `:operand` operand of `:aggregate` aggregate', 'operand' => $operand, 'aggregate' => $v]);
                 }
