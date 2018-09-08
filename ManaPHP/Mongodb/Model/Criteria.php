@@ -231,7 +231,11 @@ class Criteria extends \ManaPHP\Model\Criteria
         } elseif (is_array($filter)) {
             /** @noinspection ForeachSourceInspection */
             foreach ($filter as $k => $v) {
-                $this->where($k, $v);
+                if (is_int($k)) {
+                    $this->where($v, null);
+                } else {
+                    $this->where($k, $v);
+                }
             }
         } elseif ($value === null) {
             $this->_filters[] = is_string($filter) ? [$filter => null] : $filter;
