@@ -333,7 +333,7 @@ unset($data['server']['PATH']);
     data['log_checked_executed'] = true;
     data['global_type'] = 'request';
 
-    $("a[href='#<?=$data['exception'] ? 'tab_exception' : 'tab_basic'?>']").tab('show');
+    $("a[href='#tab_basic']").tab('show');
 
     var app = new Vue({
         el: '#app',

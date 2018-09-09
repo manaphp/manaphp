@@ -38,10 +38,6 @@ class Debugger extends Component implements DebuggerInterface
 
     protected $_mongodb = [];
 
-    protected $_exception = [];
-
-    protected $_warnings = [];
-
     protected $_events = [];
 
     /**
@@ -159,15 +155,13 @@ class Debugger extends Component implements DebuggerInterface
             }
         } elseif ($event === 'renderer:beforeRender') {
             $vars = $data['vars'];
-            foreach ($vars as $k => $v) {
+            foreach ((array)$vars as $k => $v) {
                 if ($v instanceof Component) {
                     unset($vars[$k]);
                 }
             }
             unset($vars['di']);
             $this->_view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
-        } elseif ($event === 'component:setUndefinedProperty') {
-            $this->_warnings[] = 'Set to undefined property `' . $data['name'] . '` of `' . $data['class'] . '`';
         } elseif ($event === 'mongodb:afterQuery') {
             $item = [];
             $item['type'] = 'query';
@@ -216,41 +210,6 @@ class Debugger extends Component implements DebuggerInterface
     }
 
     /**
-     * @param \Exception $exception
-     *
-     * @return bool
-     */
-    public function onUncaughtException($exception)
-    {
-        for ($i = ob_get_level(); $i > 0; $i--) {
-            ob_end_clean();
-        }
-
-        $callers = [];
-        foreach (explode("\n", $exception->getTraceAsString()) as $v) {
-
-            $parts = explode(' ', $v, 2);
-            $call = $parts[1];
-            if (strpos($call, ':') === false) {
-                $call .= ': ';
-            }
-            $parts = explode(': ', $call, 2);
-            $callers[] = ['location' => $parts[0], 'revoke' => $parts[1]];
-        }
-        $this->_exception = [
-            'message' => $exception->getMessage(),
-            'code' => $exception->getCode(),
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
-            'callers' => $callers,
-        ];
-
-        echo $this->output();
-
-        return true;
-    }
-
-    /**
      * @return array
      */
     protected function _getBasic()
@@ -292,8 +251,6 @@ class Debugger extends Component implements DebuggerInterface
         $data['mongodb'] = $this->_mongodb;
         $data['configure'] = isset($this->configure) ? $this->configure->__debugInfo() : [];
         $data['view'] = $this->_view;
-        $data['exception'] = $this->_exception;
-        $data['warnings'] = $this->_warnings;
         $data['components'] = [];
         $data['events'] = $this->_events;
 
