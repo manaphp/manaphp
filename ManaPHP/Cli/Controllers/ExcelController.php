@@ -10,11 +10,16 @@ class ExcelController extends Controller
      */
     public function odsCommand($file)
     {
+        if ($this->filesystem->dirExists($file)) {
+            $file = $file . '/content.xml';
+        }
+
         $content = $this->filesystem->fileGet($file);
 
         $content = preg_replace('#table:formula="[^\"]+" #', '', $content);
         $content = preg_replace('#table:number-rows-repeated="\d+"#', 'table:number-rows-repeated="100"', $content);
+        $content = preg_replace('#office:value-type="float" office:value=".*?" #', '', $content);
 
-        $this->filesystem->filePut($file.'.xml', $content);
+        $this->filesystem->filePut($file . '.xml', $content);
     }
 }
