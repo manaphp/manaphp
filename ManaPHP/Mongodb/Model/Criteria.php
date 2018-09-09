@@ -331,6 +331,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } else {
                     $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
                 }
+            } elseif (strpos($filter, '@=')) {
+                $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif (!$value || isset($value[0])) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
@@ -344,7 +346,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             } else {
                 $this->_filters[] = [$filter => $value];
             }
-        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~@,]*)$#', $filter, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~,]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
 
             if ($operator === '' || $operator === '=') {
@@ -369,8 +371,6 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } else {
                     throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
                 }
-            } elseif ($operator === '@=') {
-                $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
             } elseif ($operator === '^=') {
                 $this->whereStartsWith($field, $value);
             } elseif ($operator === '$=') {
