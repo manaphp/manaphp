@@ -102,27 +102,25 @@ abstract class Criteria extends Component implements CriteriaInterface
      */
     public function whereDateBetween($field, $min, $max)
     {
-        if ($format = $this->_model->getDateFormat($field)) {
-            if ($min) {
-                if (is_numeric($min)) {
-                    $min = date($format, $min);
-                } elseif (preg_match('#^[\d-/:]+$#', $min) !== 1) {
-                    $min = date($format, strtotime($min));
-                }
-            }
+        if ($min && strpos($min, ':') === false) {
+            $min = (int)(is_numeric($min) ? $min : strtotime($min . ' 00:00:00'));
+        }
+        if ($max && strpos($max, ':') === false) {
+            $max = (int)(is_numeric($max) ? $max : strtotime($max . ' 23:59:59'));
+        }
 
-            if ($max) {
-                if (is_numeric($max)) {
-                    $max = date($format, $max);
-                } elseif (preg_match('#^[\d-/:]+$#', $max) !== 1) {
-                    $max = date($format, strtotime($max));
-                }
+        if ($format = $this->_model->getDateFormat($field)) {
+            if (is_int($min)) {
+                $min = date($format, $min);
+            }
+            if (is_int($max)) {
+                $max = date($format, $max);
             }
         } else {
-            if ($min && !is_numeric($min)) {
+            if ($min && !is_int($min)) {
                 $min = (int)strtotime($min);
             }
-            if ($max && !is_numeric($max)) {
+            if ($max && !is_int($max)) {
                 $max = (int)strtotime($max);
             }
         }
