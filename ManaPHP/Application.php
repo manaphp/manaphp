@@ -48,6 +48,9 @@ class Application extends Component implements ApplicationInterface
             $this->alias->set('@public', $_SERVER['DOCUMENT_ROOT']);
         } else {
             $rootDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
+            if (is_file($rootDir . '/index.php')) {
+                $rootDir = dirname($rootDir);
+            }
             $appDir = $rootDir . '/app';
             $appNamespace = 'App';
 
