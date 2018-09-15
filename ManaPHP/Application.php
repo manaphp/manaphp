@@ -19,6 +19,11 @@ class Application extends Component implements ApplicationInterface
     protected $_classFileName;
 
     /**
+     * @var string
+     */
+    protected $_rootDir;
+
+    /**
      * Application constructor.
      *
      * @param \ManaPHP\Loader $loader
@@ -75,17 +80,32 @@ class Application extends Component implements ApplicationInterface
      */
     public function getRootDir()
     {
-        if (strpos(get_called_class(), 'ManaPHP\\') !== 0) {
-            return dirname(dirname($this->_classFileName));
-        } elseif (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
-            return dirname($_SERVER['DOCUMENT_ROOT']);
-        } else {
-            $rootDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
-            if (is_file($rootDir . '/index.php')) {
-                $rootDir = dirname($rootDir);
+        if (!$this->_rootDir) {
+            if (strpos(get_called_class(), 'ManaPHP\\') !== 0) {
+                $this->_rootDir = dirname(dirname($this->_classFileName));
+            } elseif (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
+                $this->_rootDir = dirname($_SERVER['DOCUMENT_ROOT']);
+            } else {
+                $rootDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
+                if (is_file($rootDir . '/index.php')) {
+                    $rootDir = dirname($rootDir);
+                }
+                $this->_rootDir = $rootDir;
             }
-            return $rootDir;
         }
+
+        return $this->_rootDir;
+    }
+
+    /**
+     * @param string $rootDir
+     *
+     * @return static
+     */
+    public function setRootDir($rootDir)
+    {
+        $this->_rootDir = $rootDir;
+        return $this;
     }
 
     public function getDi()
