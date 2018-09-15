@@ -14,12 +14,20 @@ use ManaPHP\Di\FactoryDefault;
 class Application extends Component implements ApplicationInterface
 {
     /**
+     * @var string
+     */
+    protected $_classFileName;
+
+    /**
      * Application constructor.
      *
      * @param \ManaPHP\Loader $loader
      */
     public function __construct($loader = null)
     {
+        $calledClass = get_called_class();
+        $this->_classFileName = (new \ReflectionClass($calledClass))->getFileName();
+
         ini_set('default_socket_timeout', -1);
 
         $GLOBALS['DI'] = $this->getDi();
@@ -27,36 +35,18 @@ class Application extends Component implements ApplicationInterface
         $this->_di->setShared('loader', $loader ?: new Loader());
         $this->_di->setShared('application', $this);
 
-        $rootDir = null;
-        $appDir = null;
-        $appNamespace = null;
+        $rootDir = $this->getRootDir();
+        $appDir = $rootDir . '/app';
+        $appNamespace = 'App';
+        $publicDir = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : $rootDir . '/public';
 
-        $calledClass = get_called_class();
         if (strpos($calledClass, 'ManaPHP\\') !== 0) {
-            $calledFile = (new \ReflectionClass($calledClass))->getFileName();
-
-            $appDir = dirname($calledFile);
-            $rootDir = dirname($appDir);
+            $appDir = dirname($this->_classFileName);
             $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
-
-            $this->alias->set('@public', $rootDir . '/public');
-        } elseif (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
-            $rootDir = dirname($_SERVER['DOCUMENT_ROOT']);
-            $appDir = $rootDir . '/app';
-            $appNamespace = 'App';
-
-            $this->alias->set('@public', $_SERVER['DOCUMENT_ROOT']);
-        } else {
-            $rootDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
-            if (is_file($rootDir . '/index.php')) {
-                $rootDir = dirname($rootDir);
-            }
-            $appDir = $rootDir . '/app';
-            $appNamespace = 'App';
-
-            $this->alias->set('@public', $rootDir . '/public');
+            $publicDir = $rootDir . '/public';
         }
 
+        $this->alias->set('@public', $publicDir);
         $this->alias->set('@app', $appDir);
         $this->alias->set('@ns.app', $appNamespace);
         $this->loader->registerNamespaces([$appNamespace => $appDir]);
@@ -78,6 +68,24 @@ class Application extends Component implements ApplicationInterface
         $this->alias->set('@web', $web);
 
         $this->loader->registerFiles('@manaphp/helpers.php');
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootDir()
+    {
+        if (strpos(get_called_class(), 'ManaPHP\\') !== 0) {
+            return dirname(dirname($this->_classFileName));
+        } elseif (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
+            return dirname($_SERVER['DOCUMENT_ROOT']);
+        } else {
+            $rootDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
+            if (is_file($rootDir . '/index.php')) {
+                $rootDir = dirname($rootDir);
+            }
+            return $rootDir;
+        }
     }
 
     public function getDi()
