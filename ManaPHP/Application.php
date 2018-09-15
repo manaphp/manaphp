@@ -1,7 +1,9 @@
 <?php
 
 namespace ManaPHP;
-use ManaPHP\Di\FactoryDefault;
+
+use ManaPHP\Cli\Factory as CliFactory;
+use ManaPHP\Mvc\Factory as MvcFactory;
 
 /**
  * Class ManaPHP\Application
@@ -112,7 +114,7 @@ class Application extends Component implements ApplicationInterface
     public function getDi()
     {
         if (!$this->_di) {
-            $this->_di = new FactoryDefault();
+            $this->_di = isset($_SERVER['DOCUMENT_ROOT']) ? new MvcFactory() : new CliFactory();
         }
         return $this->_di;
     }
