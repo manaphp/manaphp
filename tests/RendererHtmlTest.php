@@ -2,10 +2,10 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\View\Html;
+use ManaPHP\Renderer\Html;
 use PHPUnit\Framework\TestCase;
 
-class ViewHtmlTest extends TestCase
+class RendererHtmlTest extends TestCase
 {
     protected function setUp()/* The :void return type declaration that should be here would cause a BC issue */
     {

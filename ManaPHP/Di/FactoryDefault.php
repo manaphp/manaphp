@@ -32,6 +32,7 @@ class FactoryDefault extends Di
             'crypt' => 'ManaPHP\Security\Crypt',
             'logger' => 'ManaPHP\Logger',
             'renderer' => 'ManaPHP\Renderer',
+            'html' => 'ManaPHP\Renderer\Html',
             'password' => 'ManaPHP\Authentication\Password',
             'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
             'cache' => 'ManaPHP\Cache',

@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\View;
+namespace ManaPHP\Renderer;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -7,7 +7,7 @@ use ManaPHP\Exception\MissingFieldException;
 
 /**
  * Class Html
- * @package ManaPHP\View
+ * @package ManaPHP\Renderer
  * @property \ManaPHP\Http\RequestInterface $request
  */
 class Html extends Component
