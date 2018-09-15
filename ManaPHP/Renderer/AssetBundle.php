@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\View;
+namespace ManaPHP\Renderer;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\FileNotFoundException;

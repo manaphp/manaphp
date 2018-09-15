@@ -18,7 +18,6 @@ class Factory extends FactoryDefault
             'response' => 'ManaPHP\Http\Response',
             'request' => 'ManaPHP\Http\Request',
             'view' => 'ManaPHP\View',
-            'assetBundle' => 'ManaPHP\View\AssetBundle',
             'flash' => 'ManaPHP\View\Flash\Adapter\Direct',
             'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
             'session' => 'ManaPHP\Http\Session',

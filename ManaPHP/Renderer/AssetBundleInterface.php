@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\View;
+namespace ManaPHP\Renderer;
 
 interface AssetBundleInterface
 {
