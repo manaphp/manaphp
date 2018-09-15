@@ -2,8 +2,8 @@
 namespace ManaPHP\Renderer\Engine\Sword;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\RuntimeException;
 
 /**
@@ -11,8 +11,8 @@ use ManaPHP\Exception\RuntimeException;
  *
  * @package renderer\engine
  *
- * @property \ManaPHP\View\UrlInterface $url
- * @property \ManaPHP\RouterInterface   $router
+ * @property \ManaPHP\UrlInterface    $url
+ * @property \ManaPHP\RouterInterface $router
  */
 class Compiler extends Component
 {

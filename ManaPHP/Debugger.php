@@ -11,7 +11,7 @@ use ManaPHP\Logger\Log;
  * @package debugger
  *
  * @property \ManaPHP\RouterInterface        $router
- * @property \ManaPHP\View\UrlInterface      $url
+ * @property \ManaPHP\UrlInterface           $url
  * @property \ManaPHP\Http\RequestInterface  $request
  * @property \ManaPHP\RendererInterface      $renderer
  * @property \ManaPHP\Http\ResponseInterface $response

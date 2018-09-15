@@ -14,7 +14,7 @@ class Factory extends FactoryDefault
             'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
             'actionInvoker' => 'ManaPHP\ActionInvoker',
             'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
-            'url' => 'ManaPHP\View\Url',
+            'url' => 'ManaPHP\Url',
             'response' => 'ManaPHP\Http\Response',
             'request' => 'ManaPHP\Http\Request',
             'view' => 'ManaPHP\View',

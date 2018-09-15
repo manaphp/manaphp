@@ -1,10 +1,8 @@
 <?php
-namespace ManaPHP\View;
-
-use ManaPHP\Component;
+namespace ManaPHP;
 
 /**
- * Class ManaPHP\View\Url
+ * Class ManaPHP\Url
  *
  * @package url
  * @property \ManaPHP\Http\RequestInterface $request
