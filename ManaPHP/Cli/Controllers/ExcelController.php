@@ -11,7 +11,7 @@ class ExcelController extends Controller
     public function odsCommand($file)
     {
         if ($this->filesystem->dirExists($file)) {
-            $file = $file . '/content.xml';
+            $file .= '/content.xml';
         }
 
         $content = $this->filesystem->fileGet($file);
