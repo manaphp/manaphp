@@ -71,6 +71,7 @@ class Application extends Component implements ApplicationInterface
             }
         }
         $this->alias->set('@web', $web);
+        $this->alias->set('@asset', $web);
 
         $this->loader->registerFiles('@manaphp/helpers.php');
     }

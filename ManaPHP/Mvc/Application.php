@@ -28,8 +28,6 @@ class Application extends \ManaPHP\Application
     {
         parent::__construct($loader);
 
-        $this->alias->set('@asset', '@web');
-
         $routerClass = $this->alias->resolveNS('@ns.app\Router');
         if (class_exists($routerClass)) {
             $this->_di->setShared('router', $routerClass);
