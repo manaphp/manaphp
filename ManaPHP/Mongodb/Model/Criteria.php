@@ -167,7 +167,7 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param string $str
+     * @param string $expr
      *
      * @return array
      */
