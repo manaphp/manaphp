@@ -36,7 +36,7 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
-    public $timezone = 'UTC';
+    public $timezone;
 
     /**
      * @var string
