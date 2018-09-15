@@ -1,6 +1,7 @@
 <?php
 
 namespace ManaPHP;
+use ManaPHP\Di\FactoryDefault;
 
 /**
  * Class ManaPHP\Application
@@ -10,7 +11,7 @@ namespace ManaPHP;
  * @property \ManaPHP\DotenvInterface       $dotenv
  * @property \ManaPHP\ErrorHandlerInterface $errorHandler
  */
-abstract class Application extends Component implements ApplicationInterface
+class Application extends Component implements ApplicationInterface
 {
     /**
      * Application constructor.
@@ -77,6 +78,14 @@ abstract class Application extends Component implements ApplicationInterface
         $this->loader->registerFiles('@manaphp/helpers.php');
     }
 
+    public function getDi()
+    {
+        if (!$this->_di) {
+            $this->_di = new FactoryDefault();
+        }
+        return $this->_di;
+    }
+
     public function registerServices()
     {
         $configure = $this->configure;
@@ -113,5 +122,18 @@ abstract class Application extends Component implements ApplicationInterface
     public function handleException($exception)
     {
         $this->errorHandler->handle($exception);
+    }
+
+    public function main()
+    {
+        if ($this->filesystem->fileExists('@root/.env')) {
+            $this->dotenv->load();
+        }
+
+        if ($this->filesystem->fileExists('@config/app.php')) {
+            $this->configure->load();
+        }
+
+        $this->registerServices();
     }
 }
