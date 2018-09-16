@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Identity\Adapter;
 
+use ManaPHP\Exception\NoCredentialException;
 use ManaPHP\Identity;
 
 /**
@@ -13,13 +14,16 @@ class Session extends Identity
     protected $_name = 'auth';
 
     /**
-     * @return bool
+     * @param bool $silent
+     *
+     * @return static
      */
-    public function authenticate()
+    public function authenticate($silent = true)
     {
         $claims = $this->session->get($this->_name, []);
-        $this->setClaims($claims);
-
-        return (bool)$claims;
+        if (!$claims && !$silent) {
+            throw new NoCredentialException('');
+        }
+        return $this->setClaims($claims);
     }
 }

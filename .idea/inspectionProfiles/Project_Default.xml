@@ -40,6 +40,7 @@
           <option value="\ManaPHP\Exception\WriteFileFailedException" />
           <option value="\ManaPHP\Exception\ForbiddenException" />
           <option value="\ManaPHP\Exception\NotAuthenticatedException" />
+          <option value="\ManaPHP\Exception\NoCredentialException" />
           <option value="\RuntimeException" />
           <option value="\ImagickException" />
           <option value="\ReflectionException" />
