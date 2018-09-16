@@ -331,7 +331,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if ($pkValue === null || $interval === null) {
-            return static::criteria($fields ?: null, $model)->where($filters)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+            return static::criteria($fields ?: null, $model)->where($filters)->options($options)->fetchOne();
         }
 
         static $cached = [];
@@ -349,7 +349,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         /**
          * @var \ManaPHP\Model $r
          */
-        $r = static::criteria($fields, $model)->where($pkName, $pkValue)->fetchOne();
+        $r = static::criteria($fields, $model)->where($pkName, $pkValue)->options($options)->fetchOne();
         if ($r) {
             $r->_snapshot = false;
         }
@@ -409,7 +409,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => get_called_class()]);
         }
 
-        return static::criteria($fields, $model)->where($filters)->orderBy($order)->with(isset($options['with']) ? $options['with'] : [])->fetchOne();
+        return static::criteria($fields, $model)->where($filters)->orderBy($order)->options($options)->fetchOne();
     }
 
     /**
