@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Exception;
 
-class InvalidCredentialException extends RuntimeException
+class InvalidCredentialException extends ForbiddenException
 {
 
 }
