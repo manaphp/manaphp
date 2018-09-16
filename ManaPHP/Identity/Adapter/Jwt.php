@@ -3,7 +3,9 @@
 namespace ManaPHP\Identity\Adapter;
 
 use ManaPHP\Exception\ExpiredCredentialException;
+use ManaPHP\Exception\InvalidCredentialException;
 use ManaPHP\Exception\NoCredentialException;
+use ManaPHP\Exception\NotBeforeCredentialException;
 use ManaPHP\Identity;
 
 /**
@@ -63,43 +65,35 @@ class Jwt extends Identity
     /**
      * @param string $token
      *
-     * @return array|false
+     * @return array
      */
     public function decode($token)
     {
-        $this->_claims = null;
-
         $parts = explode('.', $token, 5);
         if (count($parts) !== 3) {
-            $this->logger->debug(['The JWT `:token` must have one dot', 'token' => $token]);
-            return false;
+            throw new InvalidCredentialException(['The JWT `:token` must have one dot', 'token' => $token]);
         }
 
         list($header, $payload, $signature) = $parts;
         $decoded_header = json_decode($this->base64urlDecode($header), true);
         if (!$decoded_header) {
-            $this->logger->debug(['The JWT header `:header` is not distinguished', 'header' => $header]);
-            return false;
+            throw new InvalidCredentialException(['The JWT header `:header` is not distinguished', 'header' => $header]);
         }
 
         if (!isset($decoded_header['alg'])) {
-            $this->logger->debug(['The JWT alg field is missing: `:token`', 'token' => $token]);
-            return false;
+            throw new InvalidCredentialException(['The JWT alg field is missing: `:token`', 'token' => $token]);
         }
 
         if ($decoded_header['alg'] !== $this->_alg) {
-            $this->logger->debug(['The JWT alg `:alg` is not same as configured :alg2', 'alg' => $decoded_header['alg'], 'alg2' => $this->_alg]);
-            return false;
+            throw new InvalidCredentialException(['The JWT alg `:alg` is not same as configured :alg2', 'alg' => $decoded_header['alg'], 'alg2' => $this->_alg]);
         }
 
         if (!$decoded_header['typ']) {
-            $this->logger->debug(['The JWT typ field is missing: `:token`', 'token' => $token]);
-            return false;
+            throw new InvalidCredentialException(['The JWT typ field is missing: `:token`', 'token' => $token]);
         }
 
         if ($decoded_header['typ'] !== 'JWT') {
-            $this->logger->debug(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
-            return false;
+            throw new InvalidCredentialException(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
         }
 
         $success = false;
@@ -112,14 +106,12 @@ class Jwt extends Identity
         }
 
         if (!$success) {
-            $this->logger->debug(['signature is not corrected: :signature', 'signature' => $signature]);
-            return false;
+            throw new InvalidCredentialException(['signature is not corrected: :signature', 'signature' => $signature]);
         }
 
         $claims = json_decode($this->base64urlDecode($payload), true);
         if (!is_array($claims)) {
-            $this->logger->debug('payload is not array.');
-            return false;
+            throw new InvalidCredentialException('payload is not array.');
         }
 
         if (isset($claims['exp']) && time() > $claims['exp']) {
@@ -127,11 +119,10 @@ class Jwt extends Identity
         }
 
         if (isset($claims['nbf']) && time() < $claims['nbf']) {
-            $this->logger->debug('token is not active.');
-            return false;
+            throw new NotBeforeCredentialException('token is not active.');
         }
 
-        return $this->_claims = $claims;
+        return $claims;
     }
 
     /**
@@ -146,6 +137,6 @@ class Jwt extends Identity
             throw new NoCredentialException('no token');
         }
         $claims = $this->decode($token);
-        return $this->setClaims($claims ?: []);
+        return $this->setClaims($claims);
     }
 }

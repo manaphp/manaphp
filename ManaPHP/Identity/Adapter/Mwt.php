@@ -3,7 +3,9 @@
 namespace ManaPHP\Identity\Adapter;
 
 use ManaPHP\Exception\ExpiredCredentialException;
+use ManaPHP\Exception\InvalidCredentialException;
 use ManaPHP\Exception\NoCredentialException;
+use ManaPHP\Exception\NotBeforeCredentialException;
 use ManaPHP\Identity;
 
 /**
@@ -62,16 +64,13 @@ class Mwt extends Identity
     /**
      * @param string $token
      *
-     * @return array|false
+     * @return array
      */
     public function decode($token)
     {
-        $this->_claims = null;
-
         $parts = explode('.', $token, 5);
         if (count($parts) !== 2) {
-            $this->logger->debug(['The MWT `:token` must have one dot', 'token' => $token]);
-            return false;
+            throw new InvalidCredentialException(['The MWT `:token` must have one dot', 'token' => $token]);
         }
         list($payload, $signature) = $parts;
 
@@ -85,14 +84,12 @@ class Mwt extends Identity
         }
 
         if (!$success) {
-            $this->logger->debug(['signature is not corrected: :signature', 'signature' => $signature]);
-            return false;
+            throw new InvalidCredentialException(['signature is not corrected: :signature', 'signature' => $signature]);
         }
 
         $claims = json_decode($this->base64urlDecode($payload), true);
         if (!is_array($claims)) {
-            $this->logger->debug('payload is not array.');
-            return false;
+            throw new InvalidCredentialException('payload is not array.');
         }
 
         if (isset($claims['exp']) && time() > $claims['exp']) {
@@ -100,8 +97,7 @@ class Mwt extends Identity
         }
 
         if (isset($claims['nbf']) && time() < $claims['nbf']) {
-            $this->logger->debug('token is not active.');
-            return false;
+            throw new NotBeforeCredentialException('token is not active.');
         }
 
         return $claims;
@@ -119,6 +115,6 @@ class Mwt extends Identity
             throw new NoCredentialException('no token');
         }
         $claims = $this->decode($token);
-        return $this->setClaims($claims ?: []);
+        return $this->setClaims($claims);
     }
 }
