@@ -41,6 +41,8 @@
           <option value="\ManaPHP\Exception\ForbiddenException" />
           <option value="\ManaPHP\Exception\NotAuthenticatedException" />
           <option value="\ManaPHP\Exception\NoCredentialException" />
+          <option value="\ManaPHP\Exception\ExpiredCredentialException" />
+          <option value="\ManaPHP\Exception\CredentialException" />
           <option value="\RuntimeException" />
           <option value="\ImagickException" />
           <option value="\ReflectionException" />

@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Identity\Adapter;
 
+use ManaPHP\Exception\ExpiredCredentialException;
 use ManaPHP\Exception\NoCredentialException;
 use ManaPHP\Identity;
 
@@ -95,8 +96,7 @@ class Mwt extends Identity
         }
 
         if (isset($claims['exp']) && time() > $claims['exp']) {
-            $this->logger->debug('token is expired.');
-            return false;
+            throw new ExpiredCredentialException('token is expired.');
         }
 
         if (isset($claims['nbf']) && time() < $claims['nbf']) {
