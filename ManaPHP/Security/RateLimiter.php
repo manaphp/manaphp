@@ -93,7 +93,7 @@ class RateLimiter extends Component implements RateLimiterInterface
      */
     public function limitUser($times, $duration)
     {
-        $userName = $this->identity->getName();
+        $userName = $this->identity->getName('');
         if ($userName) {
             return $this->limit('user', $userName, $times, $duration);
         } else {

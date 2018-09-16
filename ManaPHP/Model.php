@@ -678,12 +678,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         if ($opMode === self::OP_CREATE) {
             $data['updated_time'] = $data['created_time'] = ($format = $this->getDateFormat('created_time')) ? date($format, $ts) : $ts;
             $data['updated_at'] = $data['created_at'] = ($format = $this->getDateFormat('created_at')) ? date($format, $ts) : $ts;
-            $data['creator_id'] = $data['updator_id'] = $this->_di->identity->getId();
-            $data['creator_name'] = $data['updator_name'] = $this->_di->identity->getName();
+            $data['creator_id'] = $data['updator_id'] = $this->_di->identity->getId(0);
+            $data['creator_name'] = $data['updator_name'] = $this->_di->identity->getName('');
         } elseif ($opMode === self::OP_UPDATE) {
             $data['updated_time'] = ($format = $this->getDateFormat('updated_time')) ? date($format, $ts) : $ts;
             $data['updated_at'] = ($format = $this->getDateFormat('updated_at')) ? date($format, $ts) : $ts;
-            $data['updator_name'] = $this->_di->identity->getName();
+            $data['updator_name'] = $this->_di->identity->getName('');
         }
 
         return $data;

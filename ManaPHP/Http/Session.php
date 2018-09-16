@@ -147,7 +147,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
         $context = [];
         $context['ttl'] = $this->_ttl;
         $context['client_ip'] = $this->request->getClientIp();
-        $context['user_id'] = $this->identity->getId();
+        $context['user_id'] = $this->identity->getId(0);
 
         return $engine->write($session_id, $data, $context);
     }

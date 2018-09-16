@@ -26,7 +26,7 @@ class Rbac extends Component implements AuthorizationInterface
      */
     public function isAllowed($permissionName, $userId = null)
     {
-        $userId = $userId ?: $this->identity->getId();
+        $userId = $userId ?: $this->identity->getId(0);
         $permission = Permission::first(['path' => $permissionName]);
 
         if (!$permission) {

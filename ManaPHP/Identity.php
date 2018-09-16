@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NotAuthenticatedException;
 
 /**
  * Class ManaPHP\Identity
@@ -28,12 +29,18 @@ abstract class Identity extends Component implements IdentityInterface
     }
 
     /**
+     * @param int $default
+     *
      * @return int
      */
-    public function getId()
+    public function getId($default = null)
     {
         if (!$this->_claims) {
-            return 0;
+            if ($default === null) {
+                throw new NotAuthenticatedException('id');
+            } else {
+                return $default;
+            }
         } elseif (!$this->_type) {
             throw new MisuseException('type is unknown');
         } else {
@@ -43,12 +50,18 @@ abstract class Identity extends Component implements IdentityInterface
     }
 
     /**
+     * @param string $default
+     *
      * @return string
      */
-    public function getName()
+    public function getName($default = null)
     {
         if (!$this->_claims) {
-            return '';
+            if ($default === null) {
+                throw new NotAuthenticatedException('name');
+            } else {
+                return $default;
+            }
         } elseif (!$this->_type) {
             throw new MisuseException('type is unknown');
         } else {

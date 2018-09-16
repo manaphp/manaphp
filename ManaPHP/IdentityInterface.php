@@ -18,14 +18,18 @@ interface IdentityInterface
     public function isGuest();
 
     /**
+     * @param int $default
+     *
      * @return int
      */
-    public function getId();
+    public function getId($default = null);
 
     /**
+     * @param string $default
+     *
      * @return string
      */
-    public function getName();
+    public function getName($default = null);
 
     /**
      * @param string     $claim
