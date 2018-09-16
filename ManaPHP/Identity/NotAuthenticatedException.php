@@ -1,5 +1,7 @@
 <?php
-namespace ManaPHP\Exception;
+namespace ManaPHP\Identity;
+
+use ManaPHP\Exception\ForbiddenException;
 
 class NotAuthenticatedException extends ForbiddenException
 {

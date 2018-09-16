@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Exception;
+namespace ManaPHP\Identity;
 
 class ExpiredCredentialException extends CredentialException
 {

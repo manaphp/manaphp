@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Identity\Adapter;
 
-use ManaPHP\Exception\NoCredentialException;
+use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Identity;
 
 /**

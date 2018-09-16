@@ -3,7 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotAuthenticatedException;
+use ManaPHP\Identity\NotAuthenticatedException;
 
 /**
  * Class ManaPHP\Identity

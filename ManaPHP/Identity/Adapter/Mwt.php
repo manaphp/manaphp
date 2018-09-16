@@ -2,11 +2,11 @@
 
 namespace ManaPHP\Identity\Adapter;
 
-use ManaPHP\Exception\ExpiredCredentialException;
-use ManaPHP\Exception\InvalidCredentialException;
-use ManaPHP\Exception\NoCredentialException;
-use ManaPHP\Exception\NotBeforeCredentialException;
 use ManaPHP\Identity;
+use ManaPHP\Identity\ExpiredCredentialException;
+use ManaPHP\Identity\InvalidCredentialException;
+use ManaPHP\Identity\NoCredentialException;
+use ManaPHP\Identity\NotBeforeCredentialException;
 
 /**
  * Class Mwt
