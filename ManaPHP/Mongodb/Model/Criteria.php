@@ -118,7 +118,17 @@ class Criteria extends \ManaPHP\Model\Criteria
 
         $cmd = ['distinct' => $collection, 'key' => $field];
         if ($this->_filters) {
-            $cmd['query'] = ['$and' => $this->_filters];
+            $filters = [];
+            foreach ($this->_filters as $filter) {
+                $key = key($filter);
+                $value = current($filter);
+                if (isset($filters[$key]) || count($filter) !== 1) {
+                    $filters = ['$and' => $this->_filters];
+                    break;
+                }
+                $filters[$key] = $value;
+            }
+            $cmd['query'] = $filters;
         }
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
