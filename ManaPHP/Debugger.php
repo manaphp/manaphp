@@ -244,14 +244,14 @@ class Debugger extends Component implements DebuggerInterface
     {
         $data = [];
         $data['basic'] = $this->_getBasic();
-
         $data['logger'] = ['log' => $this->_log, 'levels' => array_flip($this->logger->getLevels()), 'level' => 6];
-
         $data['sql'] = ['prepared' => $this->_sql_prepared, 'executed' => $this->_sql_executed, 'count' => $this->_sql_count];
         $data['mongodb'] = $this->_mongodb;
+
         $configure = isset($this->configure) ? $this->configure->__debugInfo() : [];
         unset($configure['_traced'], $configure['alias']);
         $data['configure'] = $configure;
+
         $data['view'] = $this->_view;
         $data['components'] = [];
         $data['events'] = $this->_events;
