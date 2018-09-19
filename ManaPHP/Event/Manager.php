@@ -54,17 +54,25 @@ class Manager implements ManagerInterface
      */
     public function fireEvent($event, $source, $data = [])
     {
-        $type = $this->_peeks ? substr($event, strpos($event, ':')) : '';
-        foreach ($this->_peeks as $k => $handlers) {
-            if ($k !== '*' && $k !== $event && $k !== "$type:*") {
-                continue;
-            }
-            foreach ((array)$handlers as $handler) {
-                if ($handler instanceof \Closure) {
-                    $handler($event, $source, $data);
-                } else {
-                    $handler[0]->{$handler[1]}($event, $source, $data);
-                }
+        $handlers = [];
+        if (isset($this->_peeks['*'])) {
+            $handlers = $this->_peeks['*'];
+        }
+
+        list($p1, $p2) = explode(':', $event);
+        if (isset($this->_peeks[$p1]['*'])) {
+            $handlers = array_merge($handlers, $this->_peeks[$p1]['*']);
+        }
+
+        if (isset($this->_peeks[$p1][$p2])) {
+            $handlers = array_merge($handlers, $this->_peeks[$p1][$p2]);
+        }
+
+        foreach ((array)$handlers as $handler) {
+            if ($handler instanceof \Closure) {
+                $handler($event, $source, $data);
+            } else {
+                $handler[0]->{$handler[1]}($event, $source, $data);
             }
         }
 
@@ -97,7 +105,12 @@ class Manager implements ManagerInterface
      */
     public function peekEvent($event, $handler)
     {
-        $this->_peeks[$event][] = $handler;
+        if ($event === '*') {
+            $this->_peeks['*'][] = $handler;
+        } else {
+            list($p1, $p2) = explode(':', $event);
+            $this->_peeks[$p1][$p2][] = $handler;
+        }
 
         return $this;
     }

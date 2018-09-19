@@ -52,6 +52,12 @@ interface ComponentInterface
     public function fireEvent($event, $data = []);
 
     /**
+     * @param string $event
+     * @param string $handler
+     */
+    public static function peekEvent($event, $handler);
+
+    /**
      * @param bool $enabled
      *
      * @return static
