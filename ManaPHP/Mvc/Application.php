@@ -49,10 +49,7 @@ class Application extends \ManaPHP\Application
         return $this->identity->authenticate();
     }
 
-    /**
-     * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
-     */
-    public function authorize($dispatcher)
+    public function authorize()
     {
 
     }

@@ -61,9 +61,9 @@ class Manager implements ManagerInterface
             }
             foreach ((array)$handlers as $handler) {
                 if ($handler instanceof \Closure) {
-                    $handler($source, $data, $event);
+                    $handler($event, $source, $data);
                 } else {
-                    $handler[0]->{$handler[1]}($source, $data, $event);
+                    $handler[0]->{$handler[1]}($event, $source, $data);
                 }
             }
         }

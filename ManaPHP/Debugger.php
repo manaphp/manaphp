@@ -84,13 +84,13 @@ class Debugger extends Component implements DebuggerInterface
     }
 
     /**
+     * @param string                      $event
      * @param \ManaPHP\ComponentInterface $source
      * @param mixed                       $data
-     * @param string                      $event
      *
      * @return void
      */
-    public function _eventHandlerPeek($source, $data, $event)
+    public function _eventHandlerPeek($event, $source, $data)
     {
         $this->_events[] = $event;
 
