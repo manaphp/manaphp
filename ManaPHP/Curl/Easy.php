@@ -4,9 +4,11 @@ namespace ManaPHP\Curl;
 use ManaPHP\Component;
 use ManaPHP\Curl\Easy\BadRequestException;
 use ManaPHP\Curl\Easy\ContentTypeException;
+use ManaPHP\Curl\Easy\ForbiddenException;
 use ManaPHP\Curl\Easy\JsonDecodeException;
 use ManaPHP\Curl\Easy\Response;
 use ManaPHP\Curl\Easy\ServiceUnavailableException;
+use ManaPHP\Curl\Easy\TooManyRequestsException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
@@ -418,6 +420,8 @@ class Easy extends Component implements EasyInterface
      * @param array|string|int $options
      *
      * @return array
+     * @throws \ManaPHP\Curl\Easy\ForbiddenException
+     * @throws \ManaPHP\Curl\Easy\TooManyRequestsException
      * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
      * @throws \ManaPHP\Curl\Easy\BadRequestException
      * @throws \ManaPHP\Curl\Easy\ContentTypeException
@@ -445,6 +449,12 @@ class Easy extends Component implements EasyInterface
         }
 
         $response = $this->request($type, $url, $body, $options);
+        if ($response->http_code === 429) {
+            throw new TooManyRequestsException($response->url, $response);
+        } elseif ($response->http_code === 403) {
+            throw new ForbiddenException($response->url, $response);
+        }
+
         if ($response->http_code >= 500) {
             throw new ServiceUnavailableException(['service is unavailable: :http_code => `:url`',
                 'http_code' => $response->http_code, 'url' => $response->url],
