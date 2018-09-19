@@ -81,7 +81,7 @@ class Configure extends Component implements ConfigureInterface
     public function load($file = '@config/app.php')
     {
         /** @noinspection PhpIncludeInspection */
-        $this->loadData(require $this->_di->alias->resolve($file));
+        $this->loadData(require $this->alias->resolve($file));
 
         return $this;
     }
