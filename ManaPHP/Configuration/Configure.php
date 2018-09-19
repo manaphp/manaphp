@@ -16,11 +16,6 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
-    protected $_file = '@config/app.php';
-
-    /**
-     * @var string
-     */
     public $env = 'prod';
 
     /**
@@ -79,12 +74,14 @@ class Configure extends Component implements ConfigureInterface
     public $traces = [];
 
     /**
+     * @param string $file
+     *
      * @return static
      */
-    public function load()
+    public function load($file = '@config/app.php')
     {
         /** @noinspection PhpIncludeInspection */
-        $this->loadData(require $this->_di->alias->resolve($this->_file));
+        $this->loadData(require $this->_di->alias->resolve($file));
 
         return $this;
     }
