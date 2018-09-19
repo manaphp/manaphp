@@ -15,12 +15,4 @@ interface ConfigureInterface
      * @return static
      */
     public function load($file = '@config/app.php');
-
-    /**
-     * @param array $data
-     *
-     * @return static
-     * @throws \ManaPHP\Configuration\Configure\Exception
-     */
-    public function loadData($data);
 }

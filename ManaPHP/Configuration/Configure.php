@@ -81,30 +81,15 @@ class Configure extends Component implements ConfigureInterface
     public function load($file = '@config/app.php')
     {
         /** @noinspection PhpIncludeInspection */
-        $this->loadData(require $this->alias->resolve($file));
+        $data = require $this->alias->resolve($file);
 
-        return $this;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return static
-     */
-    public function loadData($data)
-    {
         $properties = get_object_vars($this);
-
-        foreach ($data as $field => $value) {
-            if (!isset($properties[$field])) {
+        foreach ((array)$data as $field => $value) {
+            if (!isset($properties[$field]) && !array_key_exists($field, $properties)) {
                 throw new NotSupportedException(['`:item` item is not allowed: it must be a public property of `configure` component', 'item' => $field]);
             }
 
             $this->$field = $value;
-        }
-
-        if (is_string($this->traces)) {
-            $this->traces = preg_split('#[\s,]+#', $this->traces, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         return $this;
