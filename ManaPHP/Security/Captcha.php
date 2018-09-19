@@ -2,7 +2,8 @@
 namespace ManaPHP\Security;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\BadRequestException;
+use ManaPHP\Exception\ExtensionNotInstalledException;
+use ManaPHP\Security\Captcha\InvalidCaptchaException;
 
 /**
  * Class ManaPHP\Security\Captcha
@@ -233,7 +234,7 @@ class Captcha extends Component implements CaptchaInterface
         } elseif (function_exists('gd_info')) {
             $response = $this->_generateByGd($code, $width, $height);
         } else {
-            throw new BadRequestException('`captcha` service is not support, please install `gd` or `imagic` extension first');
+            throw new ExtensionNotInstalledException('`captcha` service is not support, please install `gd` or `imagic` extension first');
         }
 
         $captchaData = ['code' => $code, 'created_time' => time(), 'ttl' => $ttl];
@@ -254,7 +255,7 @@ class Captcha extends Component implements CaptchaInterface
         }
 
         if (!$this->session->has($this->_sessionVar)) {
-            throw new BadRequestException('captcha is not exist in server');
+            throw new InvalidCaptchaException('captcha is not exist in server');
         }
 
         $sessionVar = $this->session->get($this->_sessionVar);
@@ -262,7 +263,7 @@ class Captcha extends Component implements CaptchaInterface
         if ($isTry) {
             if (isset($sessionVar['try_verified_time'])) {
                 $this->session->remove($this->_sessionVar);
-                throw new BadRequestException('captcha has been tried');
+                throw new InvalidCaptchaException('captcha has been tried');
             } else {
                 $sessionVar['try_verified_time'] = time();
                 $this->session->set($this->_sessionVar, $sessionVar);
@@ -272,15 +273,15 @@ class Captcha extends Component implements CaptchaInterface
         }
 
         if (time() - $sessionVar['created_time'] < $this->_minInterval) {
-            throw new BadRequestException('captcha verification is too frequency');
+            throw new InvalidCaptchaException('captcha verification is too frequency');
         }
 
         if (time() - $sessionVar['created_time'] > $sessionVar['ttl']) {
-            throw new BadRequestException('captcha is expired');
+            throw new InvalidCaptchaException('captcha is expired');
         }
 
         if (strtolower($sessionVar['code']) !== strtolower($code)) {
-            throw new BadRequestException('captcha is not match');
+            throw new InvalidCaptchaException('captcha is not match');
         }
     }
 }

@@ -44,6 +44,7 @@
           <option value="\ManaPHP\Identity\ExpiredCredentialException" />
           <option value="\ManaPHP\Identity\CredentialException" />
           <option value="\ManaPHP\Identity\NotBeforeCredentialException" />
+          <option value="\ManaPHP\Security\Captcha\InvalidCaptchaException" />
           <option value="\RuntimeException" />
           <option value="\ImagickException" />
           <option value="\ReflectionException" />
