@@ -96,35 +96,8 @@ class Configure extends Component implements ConfigureInterface
         $properties = get_object_vars($this);
 
         foreach ($data as $field => $value) {
-            $f_value = null;
-            if (strpos($field, ':') !== false) {
-                list($field, $f_value) = explode(':', $field);
-            }
-
             if (!isset($properties[$field])) {
                 throw new NotSupportedException(['`:item` item is not allowed: it must be a public property of `configure` component', 'item' => $field]);
-            }
-
-            if ($f_value) {
-                if (preg_match('#^(.*)([+-=])$#', $f_value, $match) === 1) {
-                    $f_env = $match[1];
-                    /** @noinspection MultiAssignmentUsageInspection */
-                    $f_op = $match[2];
-                } else {
-                    $f_env = $f_value;
-                    $f_op = '=';
-                }
-
-                if ($f_env[0] === '!' ? !in_array($this->env, explode(',', substr($f_env, 1)), true) : in_array($this->env, explode(',', $f_env), true)) {
-                    if ($f_op === '=') {
-                        null;
-                    } elseif ($f_op === '+') {
-                        /** @noinspection SlowArrayOperationsInLoopInspection */
-                        $value = array_merge($this->$field, $value);
-                    } elseif ($f_op === '-') {
-                        $value = isset($this->$field[0]) ? array_diff($this->$field, $value) : array_diff_key($this->$field, array_flip($value));
-                    }
-                }
             }
 
             $this->$field = $value;
