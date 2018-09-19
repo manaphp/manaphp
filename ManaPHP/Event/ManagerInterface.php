@@ -32,9 +32,10 @@ interface ManagerInterface
     public function fireEvent($event, $source, $data = []);
 
     /**
+     * @param string   $event
      * @param callable $handler
      *
-     * @return void
+     * @return static
      */
-    public function peekEvents($handler);
+    public function peekEvent($event, $handler);
 }

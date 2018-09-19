@@ -58,7 +58,7 @@ class Debugger extends Component implements DebuggerInterface
         $this->_file = $options['file'];
 
         $handler = [$this, '_eventHandlerPeek'];
-        $this->eventsManager->peekEvents($handler);
+        $this->eventsManager->peekEvent('*', $handler);
 
         $this->attachEvent('router:beforeRoute');
 

@@ -54,11 +54,17 @@ class Manager implements ManagerInterface
      */
     public function fireEvent($event, $source, $data = [])
     {
-        foreach ($this->_peeks as $handler) {
-            if ($handler instanceof \Closure) {
-                $handler($source, $data, $event);
-            } else {
-                $handler[0]->{$handler[1]}($source, $data, $event);
+        $type = $this->_peeks ? substr($event, strpos($event, ':')) : '';
+        foreach ($this->_peeks as $k => $handlers) {
+            if ($k !== '*' && $k !== $event && $k !== "$type:*") {
+                continue;
+            }
+            foreach ((array)$handlers as $handler) {
+                if ($handler instanceof \Closure) {
+                    $handler($source, $data, $event);
+                } else {
+                    $handler[0]->{$handler[1]}($source, $data, $event);
+                }
             }
         }
 
@@ -84,12 +90,15 @@ class Manager implements ManagerInterface
     }
 
     /**
+     * @param string   $event
      * @param callable $handler
      *
-     * @return void
+     * @return static
      */
-    public function peekEvents($handler)
+    public function peekEvent($event, $handler)
     {
-        $this->_peeks[] = $handler;
+        $this->_peeks[$event][] = $handler;
+
+        return $this;
     }
 }
