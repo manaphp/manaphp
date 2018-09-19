@@ -167,13 +167,6 @@ class Component implements ComponentInterface, \JsonSerializable
      */
     public static function peekEvent($event, $handler)
     {
-        if (strpos($event, ',') !== false) {
-            foreach (explode(',', $event) as $e) {
-                self::peekEvent(trim($e), $handler);
-            }
-            return;
-        }
-
         if (strpos($event, ':') === false) {
             $type = $className = get_called_class();
             while (true) {
