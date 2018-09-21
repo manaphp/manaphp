@@ -61,6 +61,19 @@ class Router extends Component implements RouterInterface
         }
     }
 
+    public function saveInstanceState()
+    {
+        return [];
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_controller = null;
+        $this->_action = null;
+        $this->_params = [];
+        $this->_wasMatched = false;
+    }
+
     /**
      * @param string $prefix
      *
@@ -462,15 +475,5 @@ class Router extends Component implements RouterInterface
         }
 
         return false;
-    }
-
-    public function saveInstanceState()
-    {
-        $this->_controller = null;
-        $this->_action = null;
-        $this->_params = [];
-        $this->_wasMatched = null;
-
-        return [];
     }
 }
