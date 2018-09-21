@@ -42,21 +42,9 @@ class Debugger extends Component implements DebuggerInterface
 
     /**
      * Debugger constructor.
-     *
-     * @param string|array $options
      */
-    public function __construct($options = [])
+    public function __construct()
     {
-        if (is_string($options)) {
-            $options = ['file' => $options];
-        }
-
-        if (!isset($options['file'])) {
-            $options['file'] = date('/ymd/His_') . $this->random->getBase(32) . '.html';
-        }
-
-        $this->_file = $options['file'];
-
         $handler = [$this, '_eventHandlerPeek'];
         $this->eventsManager->peekEvent('*', $handler);
 
@@ -67,20 +55,21 @@ class Debugger extends Component implements DebuggerInterface
 
     public function saveInstanceState()
     {
-        $data = [];
-        foreach (get_object_vars($this) as $k => $v) {
-            if (!is_object($k)) {
-                $data[$k] = $v;
-            }
-        }
-
-        return $data;
+        return [];
     }
 
     public function restoreInstanceState($data)
     {
         $this->save();
-        parent::restoreInstanceState($data);
+
+        $this->_file = null;
+        $this->_view = [];
+        $this->_log = [];
+        $this->_sql_prepared = [];
+        $this->_sql_executed = [];
+        $this->_sql_count = 0;
+        $this->_mongodb = [];
+        $this->_events = [];
     }
 
     /**
@@ -294,6 +283,10 @@ class Debugger extends Component implements DebuggerInterface
      */
     public function getUrl()
     {
+        if ($this->_file === null) {
+            $this->_file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+        }
+
         return $this->router->createUrl('/?_debugger=' . $this->_file, true);
     }
 
