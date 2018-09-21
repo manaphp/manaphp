@@ -31,6 +31,18 @@ class View extends Component implements ViewInterface
      */
     protected $_layout;
 
+    public function saveInstanceState()
+    {
+        return true;
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_content = null;
+        $this->_vars = [];
+        $this->_layout = null;
+    }
+
     /**
      * @param false|string $layout
      *
