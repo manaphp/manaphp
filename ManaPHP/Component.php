@@ -41,6 +41,26 @@ class Component implements ComponentInterface, \JsonSerializable
     protected $_di;
 
     /**
+     * @return array|bool
+     */
+    public function saveInstanceState()
+    {
+        return false;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return void
+     */
+    public function restoreInstanceState($data)
+    {
+        foreach ($data as $k => $v) {
+            $this->$k = $v;
+        }
+    }
+
+    /**
      * Sets the dependency injector
      *
      * @param \ManaPHP\DiInterface $di
@@ -283,25 +303,5 @@ class Component implements ComponentInterface, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * @return array|bool
-     */
-    public function saveInstanceState()
-    {
-        return false;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return void
-     */
-    public function restoreInstanceState($data)
-    {
-        foreach ($data as $k => $v) {
-            $this->$k = $v;
-        }
     }
 }
