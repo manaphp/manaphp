@@ -47,7 +47,7 @@ class Response extends Component implements ResponseInterface
      */
     public function saveInstanceState()
     {
-        return [];
+        return true;
     }
 
     public function restoreInstanceState($data)

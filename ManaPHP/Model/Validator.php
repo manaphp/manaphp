@@ -61,7 +61,7 @@ class Validator extends Component implements ValidatorInterface
 
     public function saveInstanceState()
     {
-        return [];
+        return true;
     }
 
     public function restoreInstanceState($data)

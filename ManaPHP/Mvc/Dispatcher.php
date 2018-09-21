@@ -64,7 +64,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
     public function saveInstanceState()
     {
-        return [];
+        return true;
     }
 
     public function restoreInstanceState($data)

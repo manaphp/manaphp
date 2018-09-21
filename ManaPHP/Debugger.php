@@ -55,7 +55,7 @@ class Debugger extends Component implements DebuggerInterface
 
     public function saveInstanceState()
     {
-        return [];
+        return true;
     }
 
     public function restoreInstanceState($data)
