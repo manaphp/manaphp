@@ -62,6 +62,24 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     protected $_previousActionName;
 
+    public function saveInstanceState()
+    {
+        return [];
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_finished = false;
+        $this->_forwarded = false;
+        $this->_controllerName = null;
+        $this->_actionName = null;
+        $this->_params = [];
+        $this->_controller = null;
+        $this->_returnedValue = null;
+        $this->_previousControllerName = null;
+        $this->_previousActionName = null;
+    }
+
     /**
      * Gets the latest dispatched action name
      *
@@ -382,13 +400,5 @@ class Dispatcher extends Component implements DispatcherInterface
     public function getMCA($glue = '/')
     {
         return Text::underscore($this->_controllerName) . $glue . Text::underscore($this->_actionName);
-    }
-
-    public function saveInstanceState()
-    {
-        $state = get_object_vars($this);
-        unset($state['_di'], $state['_traced']);
-
-        return $state;
     }
 }
