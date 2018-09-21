@@ -61,7 +61,13 @@ class Validator extends Component implements ValidatorInterface
 
     public function saveInstanceState()
     {
-        return ['_templates_dir' => $this->_templates_dir];
+        return [];
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_model = null;
+        $this->_field = null;
     }
 
     /**
