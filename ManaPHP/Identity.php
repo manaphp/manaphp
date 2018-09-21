@@ -20,6 +20,11 @@ abstract class Identity extends Component implements IdentityInterface
      */
     protected $_claims = [];
 
+    public function saveInstanceState()
+    {
+        return ['_type' => $this->_type, '_claims' => $this->_claims];
+    }
+
     /**
      * @return bool
      */
