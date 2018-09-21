@@ -6,6 +6,7 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Exception\ParameterOrderException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Exception\UnknownPropertyException;
@@ -421,6 +422,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function value($filters, $field, $interval = null)
     {
+        if (!is_string($field)) {
+            throw new ParameterOrderException(__METHOD__ . ' field');
+        }
+
         $model = new static;
         $pkName = $model->getPrimaryKey();
 
@@ -491,6 +496,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function values($field, $filters = null, $options = null)
     {
+        if (!is_string($field)) {
+            throw new ParameterOrderException(__METHOD__ . ' field');
+        }
         return static::criteria()->where($filters)->options($options)->values($field);
     }
 
