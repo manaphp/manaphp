@@ -43,6 +43,23 @@ class Response extends Component implements ResponseInterface
     protected $_file;
 
     /**
+     * @return array|bool
+     */
+    public function saveInstanceState()
+    {
+        return [];
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_sent = false;
+        $this->_content = null;
+        $this->_headers = [];
+        $this->_status = null;
+        $this->_file = null;
+    }
+
+    /**
      * Sets the HTTP response code
      *<code>
      *    $response->setStatusCode(404, "Not Found");

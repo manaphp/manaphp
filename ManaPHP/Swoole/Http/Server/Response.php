@@ -11,17 +11,6 @@ use ManaPHP\Http\Response\Exception as ResponseException;
 class Response extends \ManaPHP\Http\Response
 {
     /**
-     * @return array|bool
-     */
-    public function saveInstanceState()
-    {
-        $state = get_object_vars($this);
-        unset($state['_di'], $state['_traced']);
-
-        return $state;
-    }
-
-    /**
      * Sends headers to the client
      *
      * @return static
