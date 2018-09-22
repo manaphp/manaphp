@@ -232,7 +232,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $primaryKeyValuePairs = $this->getPrimaryKeyValuePairs();
 
         $fields = $this->getFields();
-        $intFields = $this->getIntFields();
 
         $changedFields = [];
         foreach ($fields as $field) {
@@ -244,16 +243,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 if (!isset($snapshot[$field])) {
                     $changedFields[] = $field;
                 } elseif ($snapshot[$field] !== $this->$field) {
-                    if (is_string($this->$field)) {
-                        if (in_array($field, $intFields, true)) {
-                            $this->$field = (int)$this->$field;
-                        } elseif (is_float($snapshot[$field])) {
-                            $this->$field = (float)$this->$field;
-                        }
-                    }
-
-                    /** @noinspection NotOptimalIfConditionsInspection */
-                    if ($snapshot[$field] !== $this->$field) {
+                    if (is_string($this->$field) && !is_string($snapshot[$field]) && (string)$snapshot[$field] === $this->$field) {
+                        $this->$field = $snapshot[$field];
+                    } else {
                         $changedFields[] = $field;
                     }
                 }
