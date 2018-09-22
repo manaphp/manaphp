@@ -401,9 +401,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public static function last($filters = null, $fields = null, $options = null)
     {
         $model = new static();
-
-        if ($autoIncField = $model->getAutoIncrementField()) {
-            $order = [$autoIncField => SORT_DESC];
+        
+        if (is_string($primaryKey = $model->getPrimaryKey())) {
+            $order = [$primaryKey => SORT_DESC];
         } elseif (in_array('created_time', $model->getFields(), true)) {
             $order = ['created_time' => SORT_DESC];
         } else {
