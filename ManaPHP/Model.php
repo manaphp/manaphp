@@ -153,7 +153,14 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public function getDateFormat($field)
     {
-        return in_array($field, $this->getIntFields(), true) ? 'U' : 'Y-m-d H:i:s';
+        if ($this->_snapshot && isset($this->_snapshot[$field])) {
+            $ts = is_numeric($this->_snapshot[$field]);
+        } elseif (isset($this->$field)) {
+            $ts = is_numeric($field);
+        } else {
+            $ts = in_array($field, $this->getIntFields(), true);
+        }
+        return $ts ? 'U' : 'Y-m-d H:i:s';
     }
 
     /**
