@@ -71,13 +71,18 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 return $cached[$calledClass] = 'id';
             }
 
+            $tryField = lcfirst(($pos = strrpos($calledClass, '\\')) === false ? $calledClass : substr($calledClass, $pos + 1)) . '_id';
+            if (in_array($tryField, $fields, true)) {
+                return $cached[$calledClass] = $tryField;
+            }
+
             $tryField = $this->getSource() . '_id';
             if (in_array($tryField, $fields, true)) {
                 return $cached[$calledClass] = $tryField;
-            } else {
-                $primaryKey = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
-                return $cached[$calledClass] = count($primaryKey) === 1 ? $primaryKey[0] : $primaryKey;
             }
+
+            $primaryKey = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
+            return $cached[$calledClass] = count($primaryKey) === 1 ? $primaryKey[0] : $primaryKey;
         }
 
         return $cached[$calledClass];
