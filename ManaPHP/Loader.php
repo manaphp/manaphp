@@ -182,9 +182,4 @@ class Loader
 
         return false;
     }
-
-    public function dump()
-    {
-        return get_object_vars($this);
-    }
 }
