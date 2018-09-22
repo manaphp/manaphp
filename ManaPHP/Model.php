@@ -401,16 +401,19 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public static function last($filters = null, $fields = null, $options = null)
     {
         $model = new static();
-        
-        if (is_string($primaryKey = $model->getPrimaryKey())) {
-            $order = [$primaryKey => SORT_DESC];
-        } elseif (in_array('created_time', $model->getFields(), true)) {
-            $order = ['created_time' => SORT_DESC];
-        } else {
-            throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => get_called_class()]);
+        if ($options === null) {
+            $options = [];
         }
 
-        return static::criteria($fields, $model)->where($filters)->orderBy($order)->options($options)->fetchOne();
+        if (!isset($options['order'])) {
+            if (is_string($primaryKey = $model->getPrimaryKey())) {
+                $options['order'] = [$primaryKey => SORT_DESC];
+            } else {
+                throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => get_called_class()]);
+            }
+        }
+
+        return static::criteria($fields, $model)->where($filters)->options($options)->fetchOne();
     }
 
     /**
