@@ -432,11 +432,9 @@ class Compiler extends Component
     /**
      * Compile the foreachelse statements into valid PHP.
      *
-     * @param  string $expression
-     *
      * @return string
      */
-    protected function _compile_foreachElse($expression)
+    protected function _compile_foreachElse()
     {
         $this->_foreachelse_used = true;
         return '<?php endforeach; ?> <?php if($index === -1): ?>';
@@ -893,41 +891,35 @@ class Compiler extends Component
     }
 
     /**
-     * @param string $expression
-     *
      * @return string
      */
-    protected function _compile_css($expression)
+    protected function _compile_css()
     {
         return "<?php \$renderer->startSection('css'); ?>";
     }
 
     /**
-     * @param string $expression
-     *
      * @return string
      */
-    protected function _compile_endcss($expression)
+    protected function _compile_endcss()
     {
         return '<?php $renderer->appendSection(); ?>';
     }
 
     /**
-     * @param string $expression
      *
      * @return string
      */
-    protected function _compile_js($expression)
+    protected function _compile_js()
     {
         return "<?php \$renderer->startSection('js'); ?>";
     }
 
     /**
-     * @param string $expression
      *
      * @return string
      */
-    protected function _compile_endjs($expression)
+    protected function _compile_endjs()
     {
         return '<?php $renderer->appendSection(); ?>';
     }
