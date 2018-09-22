@@ -88,19 +88,21 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function getFields()
     {
-        static $fields = [];
+        static $cached = [];
 
         $className = get_called_class();
+        if (!isset($cached[$className])) {
+            $fields = [];
+            foreach (get_class_vars($className) as $field => $value) {
+                if ($value === null && $field[0] !== '_') {
+                    $fields[] = $field;
+                }
+            }
 
-        if (!isset($fields[$className])) {
-            $properties = array_keys(get_class_vars($className));
-            $attributes = $this->_di->modelsMetadata->getAttributes($className);
-            $intersect = array_intersect($properties, $attributes);
-
-            $fields[$className] = $intersect ?: $attributes;
+            $cached[$className] = $fields;
         }
 
-        return $fields[$className];
+        return $cached[$className];
     }
 
     /**
