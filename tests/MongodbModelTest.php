@@ -1,8 +1,8 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mongodb;
+use ManaPHP\Mvc\Factory;
 use MongoDB\BSON\ObjectID;
 use PHPUnit\Framework\TestCase;
 use Tests\Mongodb\Models\Actor;
@@ -22,7 +22,7 @@ class MongodbModelTest extends TestCase
 
     public function setUp()
     {
-        $this->di = new FactoryDefault();
+        $this->di = new Factory();
         $this->di->identity->setClaims([]);
         $config = require __DIR__ . '/config.database.php';
         $this->di->setShared('mongodb', new Mongodb($config['mongodb']));
