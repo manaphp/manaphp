@@ -153,7 +153,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public function getDateFormat($field)
     {
-        return in_array($field, $this->getIntFields(), true) ? null : 'Y-m-d H:i:s';
+        return in_array($field, $this->getIntFields(), true) ? 'U' : 'Y-m-d H:i:s';
     }
 
     /**
@@ -692,17 +692,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public function getAutoFilledData($opMode)
     {
-        $ts = time();
-
         $data = [];
         if ($opMode === self::OP_CREATE) {
-            $data['updated_time'] = $data['created_time'] = ($format = $this->getDateFormat('created_time')) ? date($format, $ts) : $ts;
-            $data['updated_at'] = $data['created_at'] = ($format = $this->getDateFormat('created_at')) ? date($format, $ts) : $ts;
+            $data['updated_time'] = $data['created_time'] = date($this->getDateFormat('created_time'));
+            $data['updated_at'] = $data['created_at'] = date($this->getDateFormat('created_at'));
             $data['creator_id'] = $data['updator_id'] = $this->_di->identity->getId(0);
             $data['creator_name'] = $data['updator_name'] = $this->_di->identity->getName('');
         } elseif ($opMode === self::OP_UPDATE) {
-            $data['updated_time'] = ($format = $this->getDateFormat('updated_time')) ? date($format, $ts) : $ts;
-            $data['updated_at'] = ($format = $this->getDateFormat('updated_at')) ? date($format, $ts) : $ts;
+            $data['updated_time'] = date($this->getDateFormat('updated_time'));
+            $data['updated_at'] = date($this->getDateFormat('updated_at'));
             $data['updator_name'] = $this->_di->identity->getName('');
         }
 
