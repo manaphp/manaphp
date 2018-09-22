@@ -346,15 +346,17 @@ abstract class Db extends Component implements DbInterface
             ]);
         }
 
-        if (is_int($this->_affectedRows)) {
-            $elapsed = round(microtime(true) - $start_time, 3);
-            $this->fireEvent('db:afterExecute', ['elapsed' => $elapsed]);
-        }
         $count = $this->_affectedRows;
+        $elapsed = round(microtime(true) - $start_time, 3);
+
+        $event_data = compact('count', 'sql', 'bind', 'elapsed');
+        if (is_int($this->_affectedRows)) {
+            $this->fireEvent('db:afterExecute', $event_data);
+        }
 
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
         if (!isset($backtrace['function']) || !in_array($backtrace['function'], ['insert', 'delete', 'update'], true)) {
-            $this->trace(compact('count', 'sql', 'bind', 'elapsed'), 'db.execute');
+            $this->trace($event_data, 'db.execute');
         }
         return $count;
     }
