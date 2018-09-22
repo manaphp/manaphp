@@ -119,14 +119,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getAutoIncrementField()
-    {
-        return $this->_di->modelsMetadata->getAutoIncrementAttribute($this);
-    }
-
-    /**
      * @param int $step
      *
      * @return int

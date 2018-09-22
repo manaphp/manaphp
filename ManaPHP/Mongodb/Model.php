@@ -94,16 +94,6 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return null|string
-     */
-    public function getAutoIncrementField()
-    {
-        $primaryKey = $this->getPrimaryKey();
-
-        return (is_string($primaryKey) && $primaryKey !== '_id') ? $primaryKey : null;
-    }
-
-    /**
      * @return array
      */
     public function getFields()

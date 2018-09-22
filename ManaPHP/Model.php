@@ -126,6 +126,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $modelName = get_called_class();
         return Text::underscore(($pos = strrpos($modelName, '\\')) === false ? $modelName : substr($modelName, $pos + 1));
     }
+    
+    /**
+     * @return string|null
+     */
+    public function getAutoIncrementField()
+    {
+        $primaryKey = $this->getPrimaryKey();
+        return is_string($primaryKey) ? $primaryKey : null;
+    }
 
     /**
      * @param string $field
