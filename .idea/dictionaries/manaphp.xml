@@ -3,6 +3,7 @@
     <words>
       <w>absolutize</w>
       <w>addr</w>
+      <w>addtoset</w>
       <w>aeiou</w>
       <w>aeioudgkprt</w>
       <w>alnum</w>
@@ -78,8 +79,12 @@
       <w>scandir</w>
       <w>secint</w>
       <w>smtp</w>
+      <w>sprintf</w>
       <w>sqlsrv</w>
       <w>starttransfer</w>
+      <w>stddev</w>
+      <w>stddevpop</w>
+      <w>stddevsamp</w>
       <w>strlen</w>
       <w>strval</w>
       <w>subsplit</w>
