@@ -52,7 +52,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * @var float
      */
-    protected $_last_refresh;
+    protected $_last_refresh = 0;
 
     /**
      * \ManaPHP\Model constructor
