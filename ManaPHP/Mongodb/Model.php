@@ -82,9 +82,7 @@ class Model extends \ManaPHP\Model
             }
 
             $source = $this->getSource();
-            $collection = ($pos = strpos($source, '.')) ? substr($source, $pos + 1) : $source;
-            $pos = strrpos($collection, '_');
-            $tryField = ($pos === false ? $collection : substr($collection, $pos + 1)) . '_id';
+            $tryField = (($pos = strpos($source, '.')) ? substr($source, $pos + 1) : $source) . '_id';
             if (in_array($tryField, $fields, true)) {
                 return $cached[$calledClass] = $tryField;
             }
