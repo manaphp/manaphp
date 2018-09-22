@@ -272,9 +272,11 @@ abstract class Db extends Component implements DbInterface
 
         $elapsed = round(microtime(true) - $start_time, 3);
         $count = $this->_affectedRows;
-        $this->fireEvent('db:afterQuery', ['elapsed' => $elapsed]);
 
-        $this->trace(compact('count', 'sql', 'bind', 'elapsed'), 'db.query');
+        $event_data = compact('count', 'sql', 'bind', 'elapsed');
+        $this->fireEvent('db:afterQuery', $event_data);
+        $this->trace($event_data, 'db.query');
+
         return $result;
     }
 
