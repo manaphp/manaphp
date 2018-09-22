@@ -452,7 +452,7 @@ class Model extends \ManaPHP\Model
         }
 
         $fieldValues = [];
-        foreach ($fields as $field => $type) {
+        foreach ($fields as $field) {
             if ($this->$field === null) {
                 if (isset($snapshot[$field])) {
                     $fieldValues[$field] = null;
