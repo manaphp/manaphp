@@ -2,9 +2,9 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\DsnFormatException;
-use ManaPHP\Exception\InvalidCredentialException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Redis\ConnectionException;
+use ManaPHP\Redis\AuthException;
 
 class Redis extends Component
 {
@@ -63,6 +63,7 @@ class Redis extends Component
      *
      * @param string $url
      *
+     * @throws \ManaPHP\Redis\AuthException
      * @throws \ManaPHP\Redis\ConnectionException
      */
     public function __construct($url = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
@@ -106,6 +107,7 @@ class Redis extends Component
 
     /**
      * @return bool
+     * @throws \ManaPHP\Redis\AuthException
      */
     protected function _connect()
     {
@@ -120,7 +122,7 @@ class Redis extends Component
         }
 
         if ($this->_auth !== '' && !$this->_redis->auth($this->_auth)) {
-            throw new InvalidCredentialException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
+            throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
         }
 
         if ($this->_db !== 0 && !$this->_redis->select($this->_db)) {
@@ -137,6 +139,7 @@ class Redis extends Component
 
     /**
      * @return static
+     * @throws \ManaPHP\Redis\AuthException
      * @throws \ManaPHP\Redis\ConnectionException
      */
     public function reconnect()
