@@ -328,7 +328,7 @@ abstract class Db extends Component implements DbInterface
 
         $this->_affectedRows = 0;
 
-        $this->fireEvent('db:beforeQuery');
+        $this->fireEvent('db:beforeExecute');
         $start_time = microtime(true);
         try {
             if ($bind) {
@@ -348,7 +348,7 @@ abstract class Db extends Component implements DbInterface
 
         if (is_int($this->_affectedRows)) {
             $elapsed = round(microtime(true) - $start_time, 3);
-            $this->fireEvent('db:afterQuery', ['elapsed' => $elapsed]);
+            $this->fireEvent('db:afterExecute', ['elapsed' => $elapsed]);
         }
         $count = $this->_affectedRows;
 

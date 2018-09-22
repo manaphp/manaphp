@@ -99,7 +99,7 @@ class Debugger extends Component implements DebuggerInterface
                 'level' => $log->level,
                 'message' => strtr($format, $replaces)
             ];
-        } elseif ($event === 'db:beforeQuery') {
+        } elseif ($event === 'db:beforeQuery' || $event === 'db:beforeExecute') {
             /**
              * @var \ManaPHP\DbInterface $source
              */
@@ -116,7 +116,7 @@ class Debugger extends Component implements DebuggerInterface
                 'bind' => $source->getBind(),
                 'emulated' => $source->getEmulatedSQL()
             ];
-        } elseif ($event === 'db:afterQuery') {
+        } elseif ($event === 'db:afterQuery' || $event === 'db:afterExecute') {
             /**
              * @var \ManaPHP\DbInterface $source
              */
