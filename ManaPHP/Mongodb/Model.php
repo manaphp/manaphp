@@ -76,6 +76,11 @@ class Model extends \ManaPHP\Model
                 return $cached[$calledClass] = 'id';
             }
 
+            $tryField = lcfirst(($pos = strrpos($calledClass, '\\')) === false ? $calledClass : substr($calledClass, $pos + 1)) . '_id';
+            if (in_array($tryField, $fields, true)) {
+                return $cached[$calledClass] = $tryField;
+            }
+
             $source = $this->getSource();
             $collection = ($pos = strpos($source, '.')) ? substr($source, $pos + 1) : $source;
             $pos = strrpos($collection, '_');
