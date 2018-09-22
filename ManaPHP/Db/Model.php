@@ -61,13 +61,26 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function getPrimaryKey()
     {
-        $primaryKey = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
+        static $cached = [];
 
-        if (count($primaryKey) === 1) {
-            return $primaryKey[0];
-        } else {
-            return $primaryKey;
+        $calledClass = get_called_class();
+        if (!isset($cached[$calledClass])) {
+            $fields = $this->getFields();
+
+            if (in_array('id', $fields, true)) {
+                return $cached[$calledClass] = 'id';
+            }
+
+            $tryField = $this->getSource() . '_id';
+            if (in_array($tryField, $fields, true)) {
+                return $cached[$calledClass] = $tryField;
+            } else {
+                $primaryKey = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
+                return $cached[$calledClass] = count($primaryKey) === 1 ? $primaryKey[0] : $primaryKey;
+            }
         }
+
+        return $cached[$calledClass];
     }
 
     /**
