@@ -275,7 +275,7 @@ abstract class Db extends Component implements DbInterface
 
         $event_data = compact('count', 'sql', 'bind', 'elapsed');
         $this->fireEvent('db:afterQuery', $event_data);
-        $this->trace($event_data, 'db.query');
+        $this->logger->debug($event_data, 'db.query');
 
         return $result;
     }
@@ -356,7 +356,7 @@ abstract class Db extends Component implements DbInterface
 
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
         if (!isset($backtrace['function']) || !in_array($backtrace['function'], ['insert', 'delete', 'update'], true)) {
-            $this->trace($event_data, 'db.execute');
+            $this->logger->debug($event_data, 'db.execute');
         }
         return $count;
     }
@@ -471,7 +471,7 @@ abstract class Db extends Component implements DbInterface
         $sql = 'INSERT' . ($skipIfExists ? ' IGNORE' : '') . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
         $count = $this->execute($sql, $record);
-        $this->trace(compact('count', 'table', 'record', 'skipIfExists'), 'db.insert');
+        $this->logger->debug(compact('count', 'table', 'record', 'skipIfExists'), 'db.insert');
 
         return $count;
     }
@@ -559,7 +559,7 @@ abstract class Db extends Component implements DbInterface
         $sql = 'UPDATE ' . $this->_escapeIdentifier($table) . ' SET ' . implode(',', $setFields) . ' WHERE ' . implode(' AND ', $wheres);
 
         $count = $this->execute($sql, $bind);
-        $this->trace(compact('count', 'table', 'fieldValues', 'conditions', 'bind'), 'db.update');
+        $this->logger->debug(compact('count', 'table', 'fieldValues', 'conditions', 'bind'), 'db.update');
         return $count;
     }
 
@@ -602,7 +602,7 @@ abstract class Db extends Component implements DbInterface
         $sql = /**@lang Text */
             'DELETE FROM ' . $this->_escapeIdentifier($table) . ' WHERE ' . implode(' AND ', $wheres);
         $count = $this->execute($sql, $bind);
-        $this->trace(compact('count', 'table', 'conditions', 'bind'), 'db.delete');
+        $this->logger->debug(compact('count', 'table', 'conditions', 'bind'), 'db.delete');
         return $count;
     }
 
@@ -685,7 +685,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function begin()
     {
-        $this->trace('transaction begin', 'db.transaction.begin');
+        $this->logger->debug('transaction begin', 'db.transaction.begin');
 
         if ($this->_transactionLevel === 0) {
             $this->fireEvent('db:beginTransaction');
@@ -724,7 +724,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function rollback()
     {
-        $this->trace('transaction rollback', 'db.transaction.rollback');
+        $this->logger->debug('transaction rollback', 'db.transaction.rollback');
 
         if ($this->_transactionLevel === 0) {
             throw new RuntimeException('There is no active transaction');
@@ -749,7 +749,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function commit()
     {
-        $this->trace('transaction commit', 'db.transaction.commit');
+        $this->logger->debug('transaction commit', 'db.transaction.commit');
 
         if ($this->_transactionLevel === 0) {
             throw new RuntimeException('There is no active transaction');

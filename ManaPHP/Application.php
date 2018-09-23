@@ -132,10 +132,6 @@ class Application extends Component implements ApplicationInterface
             $this->_di->alias->set($alias, $path);
         }
 
-        if ($configure->traces) {
-            $this->_di->setTraces($configure->traces);
-        }
-
         foreach ($configure->components as $component => $definition) {
             if ($definition === null) {
                 $this->_di->remove($component);

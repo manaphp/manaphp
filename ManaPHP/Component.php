@@ -204,37 +204,6 @@ class Component implements ComponentInterface, \JsonSerializable
     }
 
     /**
-     * @param bool $enabled
-     *
-     * @return static
-     */
-    public function enableTrace($enabled = true)
-    {
-        $this->_traced = $enabled;
-	
-        return $this;
-    }
-
-    /**
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return static
-     */
-    public function trace($message, $category = null)
-    {
-        if ($this->_traced === null) {
-            $this->_traced = error_reporting() === E_ALL;
-        }
-
-        if ($this->_traced) {
-            $this->logger->trace($message, $category);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function __debugInfo()
@@ -259,7 +228,7 @@ class Component implements ComponentInterface, \JsonSerializable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($v === null || $k === '_traced') {
+            if ($v === null) {
                 continue;
             }
 

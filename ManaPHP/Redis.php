@@ -175,7 +175,7 @@ class Redis extends Component
     public function __call($name, $arguments)
     {
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
-            $this->trace(["\$redis->$name(:args) ... blocking",
+            $this->logger->debug(["\$redis->$name(:args) ... blocking",
                 'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
             ], 'redis.' . $name);
         }
@@ -204,7 +204,7 @@ class Redis extends Component
                     $r = call_user_func_array([$this->_redis, $name], $arguments);
                     break;
             }
-            $this->trace(["\$redis->$name(:args) => :return",
+            $this->logger->debug(["\$redis->$name(:args) => :return",
                 'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
                 'return' => json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             ], 'redis.' . $name);

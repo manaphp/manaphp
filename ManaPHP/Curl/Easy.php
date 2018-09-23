@@ -228,7 +228,7 @@ class Easy extends Component implements EasyInterface
         }
 
         $request_id = substr(md5(microtime() . mt_rand()), 0, 16);
-        $this->trace([['REQUEST_ID' => $request_id, 'METHOD' => $type, 'URL' => $url, 'OPTIONS' => $options, 'BODY' => $body]], 'httpClient.request');
+        $this->logger->debug([['REQUEST_ID' => $request_id, 'METHOD' => $type, 'URL' => $url, 'OPTIONS' => $options, 'BODY' => $body]], 'httpClient.request');
 
         $curl = curl_init();
 
@@ -398,7 +398,7 @@ class Easy extends Component implements EasyInterface
 
         curl_close($curl);
 
-        $this->trace([[
+        $this->logger->debug([[
             'REQUEST_ID' => $request_id,
             'METHOD' => $type,
             'URL' => $response->url,

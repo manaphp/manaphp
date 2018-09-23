@@ -78,11 +78,11 @@ abstract class Mailer extends Component implements MailerInterface
             $this->filesystem->fileAppend($this->_log, json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL);
         }
 
-        $this->trace(['From: ', $message->getFrom()]);
-        $this->trace(['To: ', $message->getTo()]);
-        $this->trace(['Cc:', $message->getCc()]);
-        $this->trace(['Bcc: ', $message->getBcc()]);
-        $this->trace(['Subject: ', $message->getSubject()]);
+        $this->logger->debug(['From: ', $message->getFrom()]);
+        $this->logger->debug(['To: ', $message->getTo()]);
+        $this->logger->debug(['Cc:', $message->getCc()]);
+        $this->logger->debug(['Bcc: ', $message->getBcc()]);
+        $this->logger->debug(['Subject: ', $message->getSubject()]);
 
         $failedRecipients = [];
 

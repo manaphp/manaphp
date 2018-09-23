@@ -58,21 +58,6 @@ interface ComponentInterface
     public static function peekEvent($event, $handler);
 
     /**
-     * @param bool $enabled
-     *
-     * @return static
-     */
-    public function enableTrace($enabled = true);
-
-    /**
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return static
-     */
-    public function trace($message, $category = null);
-
-    /**
      * @return array
      */
     public function dump();

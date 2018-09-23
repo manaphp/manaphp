@@ -238,7 +238,7 @@ class Debugger extends Component implements DebuggerInterface
         $data['mongodb'] = $this->_mongodb;
 
         $configure = isset($this->configure) ? $this->configure->__debugInfo() : [];
-        unset($configure['_traced'], $configure['alias']);
+        unset($configure['alias']);
         $data['configure'] = $configure;
 
         $data['view'] = $this->_view;

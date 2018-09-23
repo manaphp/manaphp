@@ -369,14 +369,14 @@ class Smtp extends Mailer
                 if ($failedRecipients !== null) {
                     $failedRecipients[] = $address;
                 }
-                $this->trace(['Failed Recipient To <:address>: :msg', 'address' => $address, 'msg' => $msg]);
+                $this->logger->debug(['Failed Recipient To <:address>: :msg', 'address' => $address, 'msg' => $msg]);
             } else {
                 $success++;
             }
         }
 
         if (!$success) {
-            $this->trace('Send Failed:', array_merge($message->getTo(), $message->getCc(), $message->getBcc()));
+            $this->logger->debug('Send Failed:', array_merge($message->getTo(), $message->getCc(), $message->getBcc()));
             return $success;
         }
 

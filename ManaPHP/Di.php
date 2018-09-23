@@ -99,11 +99,6 @@ class Di implements DiInterface
     protected $_instancesState = [];
 
     /**
-     * @var array
-     */
-    protected $_traces;
-
-    /**
      * First DI build
      *
      * @var \ManaPHP\Di
@@ -114,10 +109,6 @@ class Di implements DiInterface
     {
         if (self::$_default === null) {
             self::$_default = $this;
-        }
-
-        if (error_reporting() === E_ALL) {
-            $this->_traces = ['*'];
         }
     }
 
@@ -310,41 +301,6 @@ class Di implements DiInterface
     }
 
     /**
-     * @param array $names
-     *
-     * @return static
-     */
-    public function setTraces($names)
-    {
-        if (in_array('*', $names, true)) {
-            $this->_traces = ['*'];
-        } else {
-            $traces = [];
-            foreach ($names as $name) {
-                if (strpos($name, '*') !== false) {
-                    foreach ($this->_components as $component => $definition) {
-                        if (fnmatch($name, $component)) {
-                            $traces[] = $component;
-                        }
-                    }
-                } else {
-                    $traces[] = $name;
-                }
-            }
-
-            foreach ($this->_instances as $name => $instance) {
-                if ($instance instanceof Component) {
-                    $instance->enableTrace($traces === ['*'] || in_array($name, $traces, true));
-                }
-            }
-
-            $this->_traces = $traces;
-        }
-
-        return $this;
-    }
-
-    /**
      * Removes a component in the components container
      *
      * @param string $name
@@ -434,12 +390,6 @@ class Di implements DiInterface
         }
 
         if ($instance instanceof Component) {
-            if ($name !== null && $this->_traces !== null) {
-                if ($this->_traces === ['*'] || in_array($name, $this->_traces, true)) {
-                    $instance->enableTrace();
-                }
-            }
-
             $instance->setDi($this);
             if ($this->_keepInstanceState && ($state = $instance->saveInstanceState()) !== false) {
                 $this->_instancesState[] = new InstanceState($name, $instance, $state);

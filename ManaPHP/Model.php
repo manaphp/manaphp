@@ -1257,7 +1257,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (in_array($field, ['_traced', '_di', '_snapshot', '_last_refresh'], true)) {
+            if (in_array($field, ['_di', '_snapshot', '_last_refresh'], true)) {
                 continue;
             }
 
