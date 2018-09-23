@@ -313,8 +313,9 @@ class Manager extends Component implements ManagerInterface
     public function lazyBind($instance, $withs)
     {
         foreach ($withs as $k => $v) {
-            $method = 'get' . ucfirst(is_string($k) ? $k : $v);
+            $name = is_string($k) ? $k : $v;
 
+            $method = 'get' . ucfirst($name);
             if (is_int($k)) {
                 $data = $instance->$method()->fetch();
             } elseif (is_string($v)) {
@@ -330,7 +331,7 @@ class Manager extends Component implements ManagerInterface
                 throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
             }
 
-            $instance->{is_string($k) ? $k : $v} = $data;
+            $instance->$name = $data;
         }
 
         return $instance;
