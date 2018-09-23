@@ -284,7 +284,7 @@ class Mysql extends Db
         $sql = 'INSERT' . ($skipIfExists ? ' IGNORE' : '') . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
 
         $count = $this->execute($sql, []);
-        $this->logger->debug(compact('count', 'table', 'records', 'skipIfExists'), 'db.bulkInsert');
+        $this->logger->debug(compact('count', 'table', 'records', 'skipIfExists'), 'db.bulk.insert');
 
         return $count;
     }
