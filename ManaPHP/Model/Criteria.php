@@ -4,6 +4,7 @@ namespace ManaPHP\Model;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
 
 /**
@@ -431,5 +432,17 @@ abstract class Criteria extends Component implements CriteriaInterface
         }
 
         return $models;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        if ($this->_with) {
+            throw new NotSupportedException(__METHOD__);
+        }
+
+        return $this->execute();
     }
 }
