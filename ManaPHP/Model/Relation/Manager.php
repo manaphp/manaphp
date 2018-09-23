@@ -2,6 +2,8 @@
 namespace ManaPHP\Model\Relation;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\Relation;
 
@@ -201,5 +203,82 @@ class Manager extends Component
         }
 
         return false;
+    }
+
+    /**
+     * @param \ManaPHP\Model $model
+     * @param array          $r
+     * @param array          $withs
+     *
+     * @return array
+     *
+     * @throws \ManaPHP\Exception\InvalidValueException
+     * @throws \ManaPHP\Exception\NotSupportedException
+     */
+    public function bulkPlainBind($model, $r, $withs)
+    {
+        foreach ($withs as $k => $v) {
+            $name = is_int($k) ? $v : $k;
+            if (($relation = $this->get($model, $name)) === false) {
+                throw new InvalidValueException(['unknown `:relation` relation', 'relation' => $name]);
+            }
+            $keyField = $relation->keyField;
+            $valueField = $relation->valueField;
+            /**
+             * @var \ManaPHP\Model $referenceModel
+             */
+            $referenceModel = $relation->referenceModel;
+            $criteria = $referenceModel::criteria();
+            if (is_int($k)) {
+                null;
+            } elseif (is_string($v)) {
+                $criteria->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY));
+            } elseif (is_array($v)) {
+                $criteria->select($v);
+            } elseif (is_callable($v)) {
+                $criteria = $v($criteria);
+            } else {
+                throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
+            }
+
+            if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
+                $data = $criteria->where($keyField, array_column($r, $valueField))->indexBy($keyField)->toArray();
+
+                foreach ($r as $ri => $rv) {
+                    $rv[$name] = isset($data[$rv[$keyField]]) ? $data[$rv[$keyField]] : null;;
+                    $r[$ri] = $rv;
+                }
+
+                foreach ($r as $ri => $rv) {
+                    if (!isset($rv[$name])) {
+                        $r[$ri][$rv][$name] = null;
+                    }
+                }
+            } elseif ($relation->type === Relation::TYPE_HAS_MANY) {
+                $tr = $r;
+                $r = [];
+                foreach ($tr as $rv) {
+                    $r[$rv[$keyField]] = $rv;
+                }
+                unset($tr);
+
+                $data = $criteria->where($keyField, array_column($r, $valueField))->toArray();
+                foreach ($data as $di => $dv) {
+                    $r[$dv[$keyField]][$name][] = $dv;
+                }
+
+                foreach ($r as $ri => $rv) {
+                    if (!isset($rv[$name])) {
+                        $r[$ri][$rv][$name] = [];
+                    }
+                }
+
+                $r = array_values($r);
+            } else {
+                throw new NotSupportedException($name);
+            }
+        }
+
+        return $r;
     }
 }
