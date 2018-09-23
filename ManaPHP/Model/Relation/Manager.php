@@ -259,7 +259,7 @@ class Manager extends Component implements ManagerInterface
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
                 $ids = array_values(array_unique(array_column($r, $valueField)));
-                $data = $criteria->where($keyField, $ids)->indexBy($keyField)->toArray();
+                $data = $criteria->where($keyField, $ids)->indexBy($keyField)->fetch(true);
 
                 foreach ($r as $ri => $rv) {
                     $key = $rv[$valueField];
@@ -282,7 +282,7 @@ class Manager extends Component implements ManagerInterface
                 unset($tr);
 
                 $ids = array_column($r, $valueField);
-                $data = $criteria->where($keyField, $ids)->toArray();
+                $data = $criteria->where($keyField, $ids)->fetch(true);
                 foreach ($data as $di => $dv) {
                     $r[$dv[$keyField]][$name][] = $dv;
                 }
@@ -373,7 +373,7 @@ class Manager extends Component implements ManagerInterface
              * @var \ManaPHP\Model $reference
              */
             $reference = new $referenceModel();
-            $ids = $via::values($reference->getPrimaryKey(), [$valueField =>  $relation->$valueField]);
+            $ids = $via::values($reference->getPrimaryKey(), [$valueField => $relation->$valueField]);
             return $referenceModel::criteria()->where($reference->getPrimaryKey(), $ids)->setFetchType(true);
         } else {
             throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);

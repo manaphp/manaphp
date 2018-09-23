@@ -306,9 +306,9 @@ interface CriteriaInterface
     public function setFetchType($multiple);
 
     /**
-     * @return \ManaPHP\Model[]|\ManaPHP\Model
+     * @return \ManaPHP\Model[]|\ManaPHP\Model|array
      */
-    public function fetch();
+    public function fetch($asArray = false);
 
     /**
      * @param string $field
@@ -370,11 +370,6 @@ interface CriteriaInterface
      * @return array
      */
     public function execute();
-
-    /**
-     * @return array
-     */
-    public function toArray();
 
     /**
      * @param array $fieldValues

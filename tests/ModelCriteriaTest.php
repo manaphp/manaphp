@@ -67,14 +67,14 @@ class ModelCriteriaTest extends \PHPUnit_Framework_TestCase
 
     public function test_toArray()
     {
-        $r = City::criteria()->where(['city_id<' => 10])->toArray();
+        $r = City::criteria()->where(['city_id<' => 10])->fetch(true);
         $this->assertCount(9, $r);
         $this->assertCount(4, $r[0]);
     }
 
     public function test_with()
     {
-        $r = City::criteria()->where(['city_id<=' => 2])->with(['country'])->toArray();
+        $r = City::criteria()->where(['city_id<=' => 2])->with(['country'])->fetch(true);
         $this->assertCount(2, $r);
         $this->assertCount(5, $r[0]);
         $this->assertArrayHasKey('country', $r[0]);

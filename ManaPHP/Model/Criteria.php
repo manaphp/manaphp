@@ -236,10 +236,21 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @return \ManaPHP\Model[]|\ManaPHP\Model|null
+     * @param bool $asArray
+     *
+     * @return \ManaPHP\Model[]|\ManaPHP\Model|null|array
      */
-    public function fetch()
+    public function fetch($asArray = false)
     {
+        if($asArray){
+            $r = $this->execute();
+
+            if ($this->_with) {
+                $r = $this->relationsManager->bulkPlainBind($this->_model, $r, $this->_with);
+            }
+
+            return $r;
+        }
         if ($this->_multiple === false) {
             $rs = $this->execute();
             if (isset($rs[0])) {
@@ -384,19 +395,5 @@ abstract class Criteria extends Component implements CriteriaInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        $r = $this->execute();
-
-        if ($this->_with) {
-            $r = $this->relationsManager->bulkPlainBind($this->_model, $r, $this->_with);
-        }
-
-        return $r;
     }
 }
