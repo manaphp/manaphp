@@ -406,7 +406,14 @@ class Mongodb extends Component implements MongodbInterface
         $elapsed = round(microtime(true) - $start_time, 3);
         $this->fireEvent('mongodb:afterCommand', compact('db', 'command', 'result', 'elapsed'));
         $count = count($result);
-        $this->logger->debug(compact('db', 'command', 'count', 'elapsed'), 'mongodb.command');
+        $command_name = key($command);
+        if (strpos('ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
+                'authenticate,listDatabases,listCollections,listIndexes', $command_name) !== false) {
+            $this->logger->debug(compact('db', 'command', 'count', 'elapsed'), 'mongodb.command.' . $command_name);
+        } else {
+            $this->logger->info(compact('db', 'command', 'count', 'elapsed'), 'mongodb.command.' . $command_name);
+        }
+
         return $result;
     }
 
