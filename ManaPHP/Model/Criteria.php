@@ -369,14 +369,6 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @param \ManaPHP\Model $instance
-     */
-    protected function _with($instance)
-    {
-
-    }
-
-    /**
      * @return \ManaPHP\Model|null
      */
     public function fetchOne()
