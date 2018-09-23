@@ -16,7 +16,7 @@ class ModelCriteriaTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->di = new FactoryDefault();
-
+        $this->di->alias->set('@data', __DIR__);
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Mysql($config['mysql']);
@@ -63,5 +63,12 @@ class ModelCriteriaTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(599, City::criteria()->where('country_id!=', [1])->count());
         $this->assertSame(597, City::criteria()->where('country_id!=', [2])->count());
         $this->assertSame(596, City::criteria()->where('country_id!=', [1, 2])->count());
+    }
+
+    public function test_toArray()
+    {
+        $r = City::criteria()->where(['city_id<' => 10])->toArray();
+        $this->assertCount(9, $r);
+        $this->assertCount(4, $r[0]);
     }
 }
