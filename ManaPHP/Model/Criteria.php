@@ -373,27 +373,7 @@ abstract class Criteria extends Component implements CriteriaInterface
      */
     protected function _with($instance)
     {
-        foreach ($this->_with as $k => $v) {
-            $method = 'get' . ucfirst(is_string($k) ? $k : $v);
 
-            if (is_int($k)) {
-                $data = $instance->$method()->fetch();
-            } elseif (is_string($v)) {
-                $data = $instance->$method()->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY))->fetch();
-            } elseif (is_array($v)) {
-                $data = $instance->$method()->select($v)->fetch();
-            } elseif (is_callable($v)) {
-                $data = $v($instance->$method());
-            } else {
-                throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
-            }
-
-            if ($data instanceof self) {
-                $data = $data->fetch();
-            }
-
-            $instance->{is_string($k) ? $k : $v} = $data;
-        }
     }
 
     /**
@@ -406,7 +386,7 @@ abstract class Criteria extends Component implements CriteriaInterface
         if ($r = $this->limit(1)->execute()) {
             $model = new $modelName($r[0]);
             if ($this->_with) {
-                $this->_with($model);
+                $this->relationsManager->lazyBind($model, $this->_with);
             }
             return $model;
         } else {
@@ -425,7 +405,7 @@ abstract class Criteria extends Component implements CriteriaInterface
         foreach ($this->execute() as $k => $result) {
             $model = new $modelName($result);
             if ($this->_with) {
-                $this->_with($model);
+                $this->relationsManager->lazyBind($model, $this->_with);
             }
 
             $models[$k] = $model;

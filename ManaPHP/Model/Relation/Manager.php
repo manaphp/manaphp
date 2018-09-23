@@ -5,6 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Model\Criteria;
 use ManaPHP\Model\Relation;
 
 class Manager extends Component implements ManagerInterface
@@ -299,5 +300,39 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $r;
+    }
+
+    /**
+     * @param \ManaPHP\Model $instance
+     * @param array          $withs
+     *
+     * @return \ManaPHP\Model
+     *
+     * @throws \ManaPHP\Exception\InvalidValueException
+     */
+    public function lazyBind($instance, $withs)
+    {
+        foreach ($withs as $k => $v) {
+            $method = 'get' . ucfirst(is_string($k) ? $k : $v);
+
+            if (is_int($k)) {
+                $data = $instance->$method()->fetch();
+            } elseif (is_string($v)) {
+                $data = $instance->$method()->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY))->fetch();
+            } elseif (is_array($v)) {
+                $data = $instance->$method()->select($v)->fetch();
+            } elseif (is_callable($v)) {
+                $data = $v($instance->$method());
+                if ($data instanceof Criteria) {
+                    $data = $data->fetch();
+                }
+            } else {
+                throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
+            }
+
+            $instance->{is_string($k) ? $k : $v} = $data;
+        }
+
+        return $instance;
     }
 }
