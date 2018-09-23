@@ -7,7 +7,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\Relation;
 
-class Manager extends Component
+class Manager extends Component implements ManagerInterface
 {
     /**
      * @var array[]
