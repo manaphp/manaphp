@@ -310,20 +310,20 @@ class Manager extends Component implements ManagerInterface
      *
      * @throws \ManaPHP\Exception\InvalidValueException
      */
-    public function lazyBind($instance, $withs)
+    public function lazyBindAll($instance, $withs)
     {
         foreach ($withs as $k => $v) {
             $name = is_string($k) ? $k : $v;
 
-            $method = 'get' . ucfirst($name);
+            $criteria = $this->lazyBind($instance, $name);
             if (is_int($k)) {
-                $data = $instance->$method()->fetch();
+                $data = $criteria->fetch();
             } elseif (is_string($v)) {
-                $data = $instance->$method()->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY))->fetch();
+                $data = $criteria->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY))->fetch();
             } elseif (is_array($v)) {
-                $data = $instance->$method()->select($v)->fetch();
+                $data = $criteria->select($v)->fetch();
             } elseif (is_callable($v)) {
-                $data = $v($instance->$method());
+                $data = $v($criteria);
                 if ($data instanceof Criteria) {
                     $data = $data->fetch();
                 }
@@ -335,5 +335,16 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $instance;
+    }
+
+    /**
+     * @param $instance
+     * @param $relation
+     *
+     * @return \ManaPHP\Model\CriteriaInterface
+     */
+    public function lazyBind($instance, $relation)
+    {
+        return $this->get($instance, $relation)->criteria($instance);
     }
 }

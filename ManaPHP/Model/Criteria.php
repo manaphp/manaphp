@@ -386,7 +386,7 @@ abstract class Criteria extends Component implements CriteriaInterface
         if ($r = $this->limit(1)->execute()) {
             $model = new $modelName($r[0]);
             if ($this->_with) {
-                $this->relationsManager->lazyBind($model, $this->_with);
+                $this->relationsManager->lazyBindAll($model, $this->_with);
             }
             return $model;
         } else {
@@ -405,7 +405,7 @@ abstract class Criteria extends Component implements CriteriaInterface
         foreach ($this->execute() as $k => $result) {
             $model = new $modelName($result);
             if ($this->_with) {
-                $this->relationsManager->lazyBind($model, $this->_with);
+                $this->relationsManager->lazyBindAll($model, $this->_with);
             }
 
             $models[$k] = $model;

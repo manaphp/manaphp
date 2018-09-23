@@ -1219,8 +1219,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             return $this->$name = $this->$method()->fetch();
         } elseif ($this->_di->has($name)) {
             return $this->{$name} = $this->_di->getShared($name);
-        } elseif ($relation = $this->_di->relationsManager->get($this, $name)) {
-            return $relation->criteria($this)->fetch();
+        } elseif ($this->_di->relationsManager->has($this, $name)) {
+            return $this->$name = $this->_di->relationsManager->lazyBind($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException(['`:class` does not contain `:field` field: `:fields`',
                 'class' => get_called_class(),
@@ -1240,11 +1240,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public function __call($name, $arguments)
     {
         if (strpos($name, 'get') === 0) {
-            if ($relation = $this->_di->relationsManager->get($this, lcfirst(substr($name, 3)))) {
-                return $relation->criteria($this);
+            $relation = lcfirst(substr($name, 3));
+            if ($this->_di->relationsManager->has($this, $relation)) {
+                return $this->_di->relationsManager->lazyBind($this, $relation);
+            } else {
+                throw new NotSupportedException(['`:class` model does not define `:method` relation', 'class' => get_called_class(), 'method' => $relation]);
             }
-
-            throw new NotSupportedException(['`:class` model does not define `:method` relation', 'class' => get_called_class(), 'method' => $name]);
         }
         throw new BadMethodCallException(['`:class` does not contain `:method` method', 'class' => get_called_class(), 'method' => $name]);
     }
