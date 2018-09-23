@@ -269,7 +269,8 @@ class Manager extends Component implements ManagerInterface
 
                 foreach ($r as $ri => $rv) {
                     if (!isset($rv[$name])) {
-                        $r[$ri][$rv][$name] = null;
+                        $rv[$name] = null;
+                        $r[$ri] = $rv;
                     }
                 }
             } elseif ($relation->type === Relation::TYPE_HAS_MANY) {
