@@ -257,10 +257,12 @@ class Manager extends Component implements ManagerInterface
             }
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
-                $data = $criteria->where($keyField, array_column($r, $valueField))->indexBy($keyField)->toArray();
+                $ids = array_values(array_unique(array_column($r, $valueField)));
+                $data = $criteria->where($keyField, $ids)->indexBy($keyField)->toArray();
 
                 foreach ($r as $ri => $rv) {
-                    $rv[$name] = isset($data[$rv[$keyField]]) ? $data[$rv[$keyField]] : null;
+                    $key = $rv[$valueField];
+                    $rv[$name] = isset($data[$key]) ? $data[$key] : null;
                     $r[$ri] = $rv;
                 }
 
@@ -273,18 +275,20 @@ class Manager extends Component implements ManagerInterface
                 $tr = $r;
                 $r = [];
                 foreach ($tr as $rv) {
-                    $r[$rv[$keyField]] = $rv;
+                    $r[$rv[$valueField]] = $rv;
                 }
                 unset($tr);
 
-                $data = $criteria->where($keyField, array_column($r, $valueField))->toArray();
+                $ids = array_column($r, $valueField);
+                $data = $criteria->where($keyField, $ids)->toArray();
                 foreach ($data as $di => $dv) {
                     $r[$dv[$keyField]][$name][] = $dv;
                 }
 
                 foreach ($r as $ri => $rv) {
                     if (!isset($rv[$name])) {
-                        $r[$ri][$rv][$name] = [];
+                        $rv[$name] = [];
+                        $r[$ri] = $rv;
                     }
                 }
 
