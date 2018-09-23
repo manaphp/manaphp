@@ -356,7 +356,7 @@ abstract class Db extends Component implements DbInterface
 
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
         if (!isset($backtrace['function']) || !in_array($backtrace['function'], ['insert', 'delete', 'update'], true)) {
-            $this->logger->debug($event_data, 'db.execute');
+            $this->logger->info($event_data, 'db.execute');
         }
         return $count;
     }
@@ -471,7 +471,7 @@ abstract class Db extends Component implements DbInterface
         $sql = 'INSERT' . ($skipIfExists ? ' IGNORE' : '') . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
         $count = $this->execute($sql, $record);
-        $this->logger->debug(compact('count', 'table', 'record', 'skipIfExists'), 'db.insert');
+        $this->logger->info(compact('count', 'table', 'record', 'skipIfExists'), 'db.insert');
 
         return $count;
     }
@@ -559,7 +559,7 @@ abstract class Db extends Component implements DbInterface
         $sql = 'UPDATE ' . $this->_escapeIdentifier($table) . ' SET ' . implode(',', $setFields) . ' WHERE ' . implode(' AND ', $wheres);
 
         $count = $this->execute($sql, $bind);
-        $this->logger->debug(compact('count', 'table', 'fieldValues', 'conditions', 'bind'), 'db.update');
+        $this->logger->info(compact('count', 'table', 'fieldValues', 'conditions', 'bind'), 'db.update');
         return $count;
     }
 
@@ -602,7 +602,7 @@ abstract class Db extends Component implements DbInterface
         $sql = /**@lang Text */
             'DELETE FROM ' . $this->_escapeIdentifier($table) . ' WHERE ' . implode(' AND ', $wheres);
         $count = $this->execute($sql, $bind);
-        $this->logger->debug(compact('count', 'table', 'conditions', 'bind'), 'db.delete');
+        $this->logger->info(compact('count', 'table', 'conditions', 'bind'), 'db.delete');
         return $count;
     }
 
@@ -685,7 +685,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function begin()
     {
-        $this->logger->debug('transaction begin', 'db.transaction.begin');
+        $this->logger->info('transaction begin', 'db.transaction.begin');
 
         if ($this->_transactionLevel === 0) {
             $this->fireEvent('db:beginTransaction');
@@ -724,7 +724,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function rollback()
     {
-        $this->logger->debug('transaction rollback', 'db.transaction.rollback');
+        $this->logger->info('transaction rollback', 'db.transaction.rollback');
 
         if ($this->_transactionLevel === 0) {
             throw new RuntimeException('There is no active transaction');
@@ -749,7 +749,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function commit()
     {
-        $this->logger->debug('transaction commit', 'db.transaction.commit');
+        $this->logger->info('transaction commit', 'db.transaction.commit');
 
         if ($this->_transactionLevel === 0) {
             throw new RuntimeException('There is no active transaction');
