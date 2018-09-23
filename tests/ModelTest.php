@@ -72,7 +72,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         }]]);
         $this->assertNull($city->country->last_update);
         $this->assertEquals(87, $city->country->country_id);
-        $this->assertCount(1, $city->country->toArray(true));
+        $this->assertCount(1, $city->country->toArray());
 
         //criteria with closure explicit fetch()
         $city = City::first(1, null, ['with' => ['country' => function (Criteria $criteria) {
@@ -80,7 +80,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         }]]);
         $this->assertNull($city->country->last_update);
         $this->assertEquals(87, $city->country->country_id);
-        $this->assertCount(1, $city->country->toArray(true));
+        $this->assertCount(1, $city->country->toArray());
     }
 
     public function test_explicit_hasOne()
@@ -122,7 +122,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         }]]);
         $this->assertNull($city->countryExplicit->last_update);
         $this->assertEquals(87, $city->countryExplicit->country_id);
-        $this->assertCount(1, $city->countryExplicit->toArray(true));
+        $this->assertCount(1, $city->countryExplicit->toArray());
 
         //criteria with closure explicit fetch()
         $city = City::first(1, null, ['with' => ['countryExplicit' => function (Criteria $criteria) {
@@ -130,7 +130,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         }]]);
         $this->assertNull($city->countryExplicit->last_update);
         $this->assertEquals(87, $city->countryExplicit->country_id);
-        $this->assertCount(1, $city->countryExplicit->toArray(true));
+        $this->assertCount(1, $city->countryExplicit->toArray());
     }
 
     public function test_implicit_hasMany()
@@ -161,7 +161,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         //criteria with explicit fields
         $country = Country::first(44, null, ['with' => ['cities' => 'city_id, city']]);
         $this->assertCount(60, $country->cities);
-        $this->assertCount(2, $country->cities[8]->toArray(true));
+        $this->assertCount(2, $country->cities[8]->toArray());
     }
 
     public function test_explicit_hasMany()
@@ -192,19 +192,19 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         //criteria with explicit fields
         $country = Country::first(44, null, ['with' => ['citiesExplicit' => 'city_id, city']]);
         $this->assertCount(60, $country->citiesExplicit);
-        $this->assertCount(2, $country->citiesExplicit[8]->toArray(true));
+        $this->assertCount(2, $country->citiesExplicit[8]->toArray());
 
         //criteria with closure and implicit fetch()
         $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (Criteria $criteria) {
             return $criteria->select(['city_id', 'city']);
         }]]);
-        $this->assertCount(2, $country->citiesExplicit[8]->toArray(true));
+        $this->assertCount(2, $country->citiesExplicit[8]->toArray());
 
         //criteria with closure explicit fetch()
         $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (Criteria $criteria) {
             return $criteria->select(['city_id', 'city'])->fetch();
         }]]);
-        $this->assertCount(2, $country->citiesExplicit[8]->toArray(true));
+        $this->assertCount(2, $country->citiesExplicit[8]->toArray());
     }
 
     public function test_hasManyToMany()
