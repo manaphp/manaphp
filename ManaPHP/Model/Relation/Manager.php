@@ -315,7 +315,7 @@ class Manager extends Component implements ManagerInterface
         foreach ($withs as $k => $v) {
             $name = is_string($k) ? $k : $v;
 
-            $criteria = $this->lazyBind($instance, $name);
+            $criteria = $this->lazyLoad($instance, $name);
             if (is_int($k)) {
                 $data = $criteria->fetch();
             } elseif (is_string($v)) {
@@ -343,7 +343,7 @@ class Manager extends Component implements ManagerInterface
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
-    public function lazyBind($instance, $relation)
+    public function lazyLoad($instance, $relation)
     {
         $relation = $this->get($instance, $relation);
         if ($relation === false) {

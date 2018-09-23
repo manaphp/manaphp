@@ -1220,7 +1220,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         } elseif ($this->_di->has($name)) {
             return $this->{$name} = $this->_di->getShared($name);
         } elseif ($this->_di->relationsManager->has($this, $name)) {
-            return $this->$name = $this->_di->relationsManager->lazyBind($this, $name)->fetch();
+            return $this->$name = $this->_di->relationsManager->lazyLoad($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException(['`:class` does not contain `:field` field: `:fields`',
                 'class' => get_called_class(),
@@ -1242,7 +1242,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         if (strpos($name, 'get') === 0) {
             $relation = lcfirst(substr($name, 3));
             if ($this->_di->relationsManager->has($this, $relation)) {
-                return $this->_di->relationsManager->lazyBind($this, $relation);
+                return $this->_di->relationsManager->lazyLoad($this, $relation);
             } else {
                 throw new NotSupportedException(['`:class` model does not define `:method` relation', 'class' => get_called_class(), 'method' => $relation]);
             }
