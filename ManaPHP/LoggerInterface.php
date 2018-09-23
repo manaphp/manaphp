@@ -17,6 +17,11 @@ interface LoggerInterface
     public function setLevel($level);
 
     /**
+     * @return int
+     */
+    public function getLevel();
+
+    /**
      * @param string $category
      *
      * @return static

@@ -136,6 +136,14 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * @return int
+     */
+    public function getLevel()
+    {
+        return $this->_level;
+    }
+
+    /**
      * @param string $category
      *
      * @return static
