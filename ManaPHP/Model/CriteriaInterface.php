@@ -372,11 +372,6 @@ interface CriteriaInterface
     public function execute();
 
     /**
-     * @return \ManaPHP\Model|null
-     */
-    public function fetchOne();
-
-    /**
      * @return array|\ManaPHP\ModelInterface[]
      */
     public function fetchAll();

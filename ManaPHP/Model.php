@@ -348,7 +348,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if ($pkValue === null || $interval === null) {
-            return static::criteria($fields ?: null, $model)->where($filters)->options($options)->fetchOne();
+            $rs = static::criteria($fields ?: null, $model)->where($filters)->options($options)->limit(1)->fetchAll();
+            return isset($rs[0]) ? $rs[0] : null;
         }
 
         static $cached = [];
@@ -366,7 +367,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         /**
          * @var \ManaPHP\Model $r
          */
-        $r = static::criteria($fields, $model)->where($pkName, $pkValue)->options($options)->fetchOne();
+        $rs = static::criteria($fields, $model)->where($pkName, $pkValue)->options($options)->limit(1)->fetchAll();
+        $r = isset($rs[0]) ? $rs[0] : null;
         if ($r) {
             $r->_snapshot = false;
         }
@@ -429,7 +431,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             }
         }
 
-        return static::criteria($fields, $model)->where($filters)->options($options)->fetchOne();
+        $rs = static::criteria($fields, $model)->where($filters)->options($options)->limit(1)->fetchAll();
+        return isset($rs[0]) ? $rs[0] : null;
     }
 
     /**

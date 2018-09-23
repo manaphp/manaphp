@@ -237,14 +237,15 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @return \ManaPHP\Model[]|\ManaPHP\Model|false
+     * @return \ManaPHP\Model[]|\ManaPHP\Model|null
      */
     public function fetch()
     {
         if ($this->_multiple === true) {
             return $this->fetchAll();
         } elseif ($this->_multiple === false) {
-            return $this->fetchOne();
+            $rs = $this->limit(1)->fetchAll();
+            return isset($rs[0]) ? $rs[0] : null;
         } else {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new RuntimeException('xxx');
@@ -366,24 +367,6 @@ abstract class Criteria extends Component implements CriteriaInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @return \ManaPHP\Model|null
-     */
-    public function fetchOne()
-    {
-        $modelName = get_class($this->_model);
-
-        if ($r = $this->limit(1)->execute()) {
-            $model = new $modelName($r[0]);
-            if ($this->_with) {
-                $this->relationsManager->lazyBindAll($model, $this->_with);
-            }
-            return $model;
-        } else {
-            return null;
-        }
     }
 
     /**
