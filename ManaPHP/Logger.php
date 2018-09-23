@@ -428,7 +428,9 @@ class Logger extends Component implements LoggerInterface
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = microtime(true);
 
-        $this->fireEvent('logger:log', $log);
+        if ($this->fireEvent('logger:log', $log) === false) {
+            return $this;
+        }
 
         /**
          * @var \ManaPHP\Logger\AppenderInterface $appender
