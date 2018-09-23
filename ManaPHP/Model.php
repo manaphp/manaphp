@@ -220,7 +220,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function all($filters = [], $options = null, $fields = null)
     {
-        return static::criteria($fields ?: null)->where($filters)->options($options)->fetchAll();
+        return static::criteria($fields ?: null)->where($filters)->options($options)->fetch();
     }
 
     /**
@@ -281,7 +281,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         } else {
             $keyField = key($field);
             $valueField = current($field);
-            foreach ($criteria->select([$keyField, $valueField])->fetchAll() as $v) {
+            foreach ($criteria->select([$keyField, $valueField])->fetch() as $v) {
                 $keyValue = $v->{$keyField};
 
                 if (!isset($list[$keyValue])) {
@@ -348,7 +348,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if ($pkValue === null || $interval === null) {
-            $rs = static::criteria($fields ?: null, $model)->where($filters)->options($options)->limit(1)->fetchAll();
+            $rs = static::criteria($fields ?: null, $model)->where($filters)->options($options)->limit(1)->fetch();
             return isset($rs[0]) ? $rs[0] : null;
         }
 
@@ -367,7 +367,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         /**
          * @var \ManaPHP\Model $r
          */
-        $rs = static::criteria($fields, $model)->where($pkName, $pkValue)->options($options)->limit(1)->fetchAll();
+        $rs = static::criteria($fields, $model)->where($pkName, $pkValue)->options($options)->limit(1)->fetch();
         $r = isset($rs[0]) ? $rs[0] : null;
         if ($r) {
             $r->_snapshot = false;
@@ -431,7 +431,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             }
         }
 
-        $rs = static::criteria($fields, $model)->where($filters)->options($options)->limit(1)->fetchAll();
+        $rs = static::criteria($fields, $model)->where($filters)->options($options)->limit(1)->fetch();
         return isset($rs[0]) ? $rs[0] : null;
     }
 

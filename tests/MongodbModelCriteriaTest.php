@@ -34,15 +34,15 @@ class MongodbModelCriteriaTest extends TestCase
 
     public function test_select()
     {
-        $documents = City::criteria()->limit(1)->fetchAll();
+        $documents = City::criteria()->limit(1)->fetch();
         $this->assertCount(1, $documents);
         $this->assertEquals(['city_id', 'city', 'country_id', 'last_update'], array_keys($documents[0]->toArray()));
 
-        $documents = City::criteria()->select(['_id', 'city_id', 'city'])->limit(1)->fetchAll();
+        $documents = City::criteria()->select(['_id', 'city_id', 'city'])->limit(1)->fetch();
         $this->assertCount(1, $documents);
         $this->assertEquals(['city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
 
-        $documents = City::criteria()->select(['_id', 'city_id', 'city'])->limit(1)->fetchAll();
+        $documents = City::criteria()->select(['_id', 'city_id', 'city'])->limit(1)->fetch();
         $this->assertCount(1, $documents);
         $this->assertEquals(['city_id', 'city'], array_keys(array_filter($documents[0]->toArray())));
     }
@@ -98,147 +98,147 @@ class MongodbModelCriteriaTest extends TestCase
         $document = City::criteria()->where(['city_id' => 2])->fetchOne();
         $this->assertEquals(2, $document->city_id);
 
-        $documents = City::criteria()->where('city_id', -2)->fetchAll();
+        $documents = City::criteria()->where('city_id', -2)->fetch();
         $this->assertEmpty($documents);
 
-        $documents = City::criteria()->where('city_id=', 10)->fetchAll();
+        $documents = City::criteria()->where('city_id=', 10)->fetch();
         $this->assertCount(1, $documents);
         $this->assertEquals(10, $documents[0]->city_id);
 
-        $documents = City::criteria()->where('city_id>', 10)->fetchAll();
+        $documents = City::criteria()->where('city_id>', 10)->fetch();
         $this->assertCount(590, $documents);
         $this->assertEquals(11, $documents[0]->city_id);
 
-        $documents = City::criteria()->where('city_id>=', 10)->fetchAll();
+        $documents = City::criteria()->where('city_id>=', 10)->fetch();
         $this->assertCount(591, $documents);
         $this->assertEquals(10, $documents[0]->city_id);
 
-        $documents = City::criteria()->where('city_id<', 10)->fetchAll();
+        $documents = City::criteria()->where('city_id<', 10)->fetch();
         $this->assertCount(9, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
-        $documents = City::criteria()->where('city_id<=', 10)->fetchAll();
+        $documents = City::criteria()->where('city_id<=', 10)->fetch();
         $this->assertCount(10, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
-        $documents = City::criteria()->where('city_id!=', 10)->fetchAll();
+        $documents = City::criteria()->where('city_id!=', 10)->fetch();
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
-        $documents = City::criteria()->where('city_id<>', 10)->fetchAll();
+        $documents = City::criteria()->where('city_id<>', 10)->fetch();
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
-        $documents = City::criteria()->where('city^=', 'Ab')->fetchAll();
+        $documents = City::criteria()->where('city^=', 'Ab')->fetch();
         $this->assertCount(2, $documents);
         $this->assertEquals(2, $documents[0]->city_id);
         $this->assertEquals(3, $documents[1]->city_id);
 
-        $documents = City::criteria()->where('city$=', 'a')->fetchAll();
+        $documents = City::criteria()->where('city$=', 'a')->fetch();
         $this->assertCount(125, $documents);
 
-        $documents = City::criteria()->where('city*=', 'a')->fetchAll();
+        $documents = City::criteria()->where('city*=', 'a')->fetch();
         $this->assertCount(450, $documents);
 
-        $documents = City::criteria()->where('city_id', [1, 2, 3, 4])->fetchAll();
+        $documents = City::criteria()->where('city_id', [1, 2, 3, 4])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::criteria()->where('city_id', ['1', '2', '3', '4'])->fetchAll();
+        $documents = City::criteria()->where('city_id', ['1', '2', '3', '4'])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::criteria()->where('city_id~=', [1, 4])->fetchAll();
+        $documents = City::criteria()->where('city_id~=', [1, 4])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::criteria()->where('city_id~=', ['1', '4'])->fetchAll();
+        $documents = City::criteria()->where('city_id~=', ['1', '4'])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::criteria()->where('city_id', [])->fetchAll();
+        $documents = City::criteria()->where('city_id', [])->fetch();
         $this->assertCount(0, $documents);
 
-        $documents = City::criteria()->where('city_id', ['$ne' => 10])->fetchAll();
+        $documents = City::criteria()->where('city_id', ['$ne' => 10])->fetch();
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
     }
 
     public function test_whereRaw()
     {
-        $documents = City::criteria()->whereRaw(['city_id' => ['$lt' => 10]])->fetchAll();
+        $documents = City::criteria()->whereRaw(['city_id' => ['$lt' => 10]])->fetch();
         $this->assertCount(9, $documents);
     }
 
     public function test_whereBetween()
     {
-        $documents = City::criteria()->whereBetween('city_id', 2, 3)->fetchAll();
+        $documents = City::criteria()->whereBetween('city_id', 2, 3)->fetch();
         $this->assertCount(2, $documents);
 
-        $documents = City::criteria()->whereBetween('city_id', '2', '3')->fetchAll();
+        $documents = City::criteria()->whereBetween('city_id', '2', '3')->fetch();
         $this->assertCount(2, $documents);
 
-        $documents = City::criteria()->whereBetween('city_id', 2, 2)->fetchAll();
+        $documents = City::criteria()->whereBetween('city_id', 2, 2)->fetch();
         $this->assertCount(1, $documents);
     }
 
     public function test_whereNotBetween()
     {
-        $documents = City::criteria()->whereNotBetween('city_id', 100, 600)->fetchAll();
+        $documents = City::criteria()->whereNotBetween('city_id', 100, 600)->fetch();
         $this->assertCount(99, $documents);
 
-        $documents = City::criteria()->whereNotBetween('city_id', '100', '600')->fetchAll();
+        $documents = City::criteria()->whereNotBetween('city_id', '100', '600')->fetch();
         $this->assertCount(99, $documents);
 
-        $documents = City::criteria()->whereNotBetween('city_id', 50, 200)->whereNotBetween('city_id', 200, 600)->fetchAll();
+        $documents = City::criteria()->whereNotBetween('city_id', 50, 200)->whereNotBetween('city_id', 200, 600)->fetch();
         $this->assertCount(49, $documents);
     }
 
     public function test_whereIn()
     {
-        $documents = City::criteria()->whereIn('city_id', [1, 2, 3, 4])->fetchAll();
+        $documents = City::criteria()->whereIn('city_id', [1, 2, 3, 4])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::criteria()->whereIn('city_id', ['1', '2', '3', '4'])->fetchAll();
+        $documents = City::criteria()->whereIn('city_id', ['1', '2', '3', '4'])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::criteria()->whereIn('city_id', [1, 2, 3, 4])->whereIn('city_id', [2, 4])->fetchAll();
+        $documents = City::criteria()->whereIn('city_id', [1, 2, 3, 4])->whereIn('city_id', [2, 4])->fetch();
         $this->assertCount(2, $documents);
 
-        $documents = City::criteria()->whereIn('city_id', ['1', '2', '3', '4'])->whereIn('city_id', ['2', '4'])->fetchAll();
+        $documents = City::criteria()->whereIn('city_id', ['1', '2', '3', '4'])->whereIn('city_id', ['2', '4'])->fetch();
         $this->assertCount(2, $documents);
 
-        $documents = City::criteria()->whereIn('city_id', [])->fetchAll();
+        $documents = City::criteria()->whereIn('city_id', [])->fetch();
         $this->assertCount(0, $documents);
     }
 
     public function test_whereNotIn()
     {
-        $documents = City::criteria()->whereNotIn('city_id', [1, 2, 3, 4])->fetchAll();
+        $documents = City::criteria()->whereNotIn('city_id', [1, 2, 3, 4])->fetch();
         $this->assertCount(596, $documents);
 
-        $documents = City::criteria()->whereNotIn('city_id', ['1', '2', '3', '4'])->fetchAll();
+        $documents = City::criteria()->whereNotIn('city_id', ['1', '2', '3', '4'])->fetch();
         $this->assertCount(596, $documents);
 
-        $documents = City::criteria()->whereNotIn('city_id', [])->fetchAll();
+        $documents = City::criteria()->whereNotIn('city_id', [])->fetch();
         $this->assertCount(600, $documents);
     }
 
     public function test_whereContains()
     {
-        $documents = Address::criteria()->whereContains('address', 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains('address', 'as')->fetch();
         $this->assertCount(24, $documents);
-        $documents = Address::criteria()->whereContains('district', 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains('district', 'as')->fetch();
         $this->assertCount(48, $documents);
 
-        $documents = Address::criteria()->whereContains(['address', 'district'], 'as')->fetchAll();
+        $documents = Address::criteria()->whereContains(['address', 'district'], 'as')->fetch();
         $this->assertCount(71, $documents);
     }
 
     public function test_whereNotContains()
     {
-        $documents = Address::criteria()->whereNotContains('address', 'as')->fetchAll();
+        $documents = Address::criteria()->whereNotContains('address', 'as')->fetch();
         $this->assertCount(579, $documents);
-        $documents = Address::criteria()->whereNotContains('district', 'as')->fetchAll();
+        $documents = Address::criteria()->whereNotContains('district', 'as')->fetch();
         $this->assertCount(555, $documents);
 
-        $documents = Address::criteria()->whereNotContains(['address', 'district'], 'as')->fetchAll();
+        $documents = Address::criteria()->whereNotContains(['address', 'district'], 'as')->fetch();
         $this->assertCount(532, $documents);
     }
 
@@ -320,37 +320,37 @@ class MongodbModelCriteriaTest extends TestCase
 
     public function test_orderBy()
     {
-        $documents = City::criteria()->orderBy('city_id')->limit(10, 100)->fetchAll();
+        $documents = City::criteria()->orderBy('city_id')->limit(10, 100)->fetch();
         $this->assertEquals(101, $documents[0]->city_id);
 
-        $documents = City::criteria()->orderBy('city_id asc')->limit(10, 100)->fetchAll();
+        $documents = City::criteria()->orderBy('city_id asc')->limit(10, 100)->fetch();
         $this->assertEquals(101, $documents[0]->city_id);
 
-        $documents = City::criteria()->orderBy('city_id desc')->limit(10, 100)->fetchAll();
+        $documents = City::criteria()->orderBy('city_id desc')->limit(10, 100)->fetch();
         $this->assertEquals(500, $documents[0]->city_id);
 
-        $documents = City::criteria()->orderBy('country_id desc, city_id desc')->limit(10, 100)->fetchAll();
+        $documents = City::criteria()->orderBy('country_id desc, city_id desc')->limit(10, 100)->fetch();
         $this->assertEquals(526, $documents[0]->city_id);
 
-        $documents = City::criteria()->orderBy(['city_id' => SORT_ASC])->limit(10, 100)->fetchAll();
+        $documents = City::criteria()->orderBy(['city_id' => SORT_ASC])->limit(10, 100)->fetch();
         $this->assertEquals(101, $documents[0]->city_id);
 
-        $documents = City::criteria()->orderBy(['city_id' => SORT_DESC])->limit(10, 100)->fetchAll();
+        $documents = City::criteria()->orderBy(['city_id' => SORT_DESC])->limit(10, 100)->fetch();
         $this->assertEquals(500, $documents[0]->city_id);
 
-        $documents = City::criteria()->orderBy(['city_id' => 'desc'])->limit(10, 100)->fetchAll();
+        $documents = City::criteria()->orderBy(['city_id' => 'desc'])->limit(10, 100)->fetch();
         $this->assertEquals(500, $documents[0]->city_id);
     }
 
     public function test_limit()
     {
-        $documents = City::criteria()->limit(10)->fetchAll();
+        $documents = City::criteria()->limit(10)->fetch();
         $this->assertCount(10, $documents);
     }
 
     public function test_page()
     {
-        $documents = City::criteria()->page(10, 2)->fetchAll();
+        $documents = City::criteria()->page(10, 2)->fetch();
         $this->assertCount(10, $documents);
         $this->assertEquals(11, $documents[0]->city_id);
     }
@@ -384,7 +384,7 @@ class MongodbModelCriteriaTest extends TestCase
 
     public function test_indexBy()
     {
-        $cities = City::criteria()->indexBy('city_id')->limit(1)->fetchAll();
+        $cities = City::criteria()->indexBy('city_id')->limit(1)->fetch();
         $this->assertArrayHasKey(1, $cities);
         $cities = City::criteria()->indexBy(['city_id' => 'city'])->limit(1)->execute();
         $this->assertEquals([1 => 'A Corua (La Corua)'], $cities);
@@ -395,7 +395,7 @@ class MongodbModelCriteriaTest extends TestCase
         $this->assertArrayHasKey('city_id_1', $cities);
 
         $this->assertArrayHasKey('s', City::criteria()->groupBy('substr(city, 1, 1)')->indexBy('city')->aggregate(['count' => 'COUNT(*)']));
-        $this->assertArrayHasKey(600, City::criteria()->indexBy('city_id')->fetchAll());
+        $this->assertArrayHasKey(600, City::criteria()->indexBy('city_id')->fetch());
     }
 
     public function test_count()

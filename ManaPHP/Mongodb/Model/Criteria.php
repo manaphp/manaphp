@@ -1108,7 +1108,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
 
             $copy = clone $this;
-            $items = $this->fetchAll();
+            $items = $this->fetch();
 
             if ($this->_limit === null) {
                 $count = count($items);

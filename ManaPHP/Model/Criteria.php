@@ -4,7 +4,6 @@ namespace ManaPHP\Model;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
-use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Model\Criteria
@@ -241,14 +240,32 @@ abstract class Criteria extends Component implements CriteriaInterface
      */
     public function fetch()
     {
-        if ($this->_multiple === true) {
-            return $this->fetchAll();
-        } elseif ($this->_multiple === false) {
-            $rs = $this->limit(1)->fetchAll();
-            return isset($rs[0]) ? $rs[0] : null;
+        if ($this->_multiple === false) {
+            $rs = $this->execute();
+            if (isset($rs[0])) {
+                $modelName = get_class($this->_model);
+                $model = new $modelName($rs[0]);
+                if ($this->_with) {
+                    $this->relationsManager->lazyBindAll($model, $this->_with);
+                }
+                return $model;
+            } else {
+                return null;
+            }
         } else {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new RuntimeException('xxx');
+            $modelName = get_class($this->_model);
+
+            $models = [];
+            foreach ($this->execute() as $k => $result) {
+                $model = new $modelName($result);
+                if ($this->_with) {
+                    $this->relationsManager->lazyBindAll($model, $this->_with);
+                }
+
+                $models[$k] = $model;
+            }
+
+            return $models;
         }
     }
 
@@ -367,26 +384,6 @@ abstract class Criteria extends Component implements CriteriaInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @return \ManaPHP\Model[]
-     */
-    public function fetchAll()
-    {
-        $modelName = get_class($this->_model);
-
-        $models = [];
-        foreach ($this->execute() as $k => $result) {
-            $model = new $modelName($result);
-            if ($this->_with) {
-                $this->relationsManager->lazyBindAll($model, $this->_with);
-            }
-
-            $models[$k] = $model;
-        }
-
-        return $models;
     }
 
     /**
