@@ -338,13 +338,44 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param $instance
-     * @param $relation
+     * @param \ManaPHP\Model $instance
+     * @param string         $relation
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
     public function lazyBind($instance, $relation)
     {
-        return $this->get($instance, $relation)->criteria($instance);
+        $relation = $this->get($instance, $relation);
+        if ($relation === false) {
+            throw new InvalidValueException('');
+        }
+
+        $type = $relation->type;
+        $referenceModel = $relation->referenceModel;
+        $valueField = $relation->valueField;
+        if ($type === Relation::TYPE_HAS_ONE) {
+            return $referenceModel::criteria()->where($relation->keyField, $instance->$valueField)->setFetchType(false);
+        } elseif ($type === Relation::TYPE_BELONGS_TO) {
+            return $referenceModel::criteria()->where($relation->keyField, $instance->$valueField)->setFetchType(false);
+        } elseif ($type === Relation::TYPE_HAS_MANY) {
+            return $referenceModel::criteria()->where($relation->keyField, $instance->$valueField)->setFetchType(true);
+        } elseif ($type === Relation::TYPE_HAS_MANY_TO_MANY) {
+            $ids = $instance::values($relation->keyField, [$valueField => $instance->$valueField]);
+            /**
+             * @var \ManaPHP\Model $referenceInstance
+             */
+            $referenceInstance = is_string($referenceModel) ? new $referenceModel : $referenceModel;
+            return $referenceModel::criteria()->where($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
+        } elseif ($type === Relation::TYPE_HAS_MANY_VIA) {
+            $via = $relation->keyField;
+            /**
+             * @var \ManaPHP\Model $reference
+             */
+            $reference = new $referenceModel();
+            $ids = $via::values($reference->getPrimaryKey(), [$valueField =>  $relation->$valueField]);
+            return $referenceModel::criteria()->where($reference->getPrimaryKey(), $ids)->setFetchType(true);
+        } else {
+            throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
+        }
     }
 }

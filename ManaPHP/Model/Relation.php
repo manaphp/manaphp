@@ -4,7 +4,7 @@ namespace ManaPHP\Model;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 
-class Relation implements RelationInterface
+class Relation
 {
     const TYPE_BELONGS_TO = 1;
     const TYPE_HAS_MANY = 2;
@@ -101,41 +101,5 @@ class Relation implements RelationInterface
         }
 
         throw new NotSupportedException(['infer referenceField from `:model` failed.', 'model' => $model]);
-    }
-
-    /**
-     * @param \ManaPHP\Model|array $model
-     *
-     * @return \ManaPHP\Model\CriteriaInterface
-     */
-    public function criteria($model)
-    {
-        $type = $this->type;
-        $referenceModel = $this->referenceModel;
-        $valueField = $this->valueField;
-        if ($type === self::TYPE_HAS_ONE) {
-            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(false);
-        } elseif ($type === self::TYPE_BELONGS_TO) {
-            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(false);
-        } elseif ($type === self::TYPE_HAS_MANY) {
-            return $referenceModel::criteria()->where($this->keyField, is_array($model) ? $model[$valueField] : $model->$valueField)->setFetchType(true);
-        } elseif ($type === self::TYPE_HAS_MANY_TO_MANY) {
-            $ids = $model::values($this->keyField, [$valueField => is_array($model) ? $model[$valueField] : $model->$valueField]);
-            /**
-             * @var \ManaPHP\Model $referenceInstance
-             */
-            $referenceInstance = is_string($referenceModel) ? new $referenceModel : $referenceModel;
-            return $referenceModel::criteria()->where($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
-        } elseif ($type === self::TYPE_HAS_MANY_VIA) {
-            $via = $this->keyField;
-            /**
-             * @var \ManaPHP\Model $reference
-             */
-            $reference = new $referenceModel();
-            $ids = $via::values($reference->getPrimaryKey(), [$valueField => is_array($model) ? $model[$valueField] : $model->$valueField]);
-            return $referenceModel::criteria()->where($reference->getPrimaryKey(), $ids)->setFetchType(true);
-        } else {
-            throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
-        }
     }
 }
