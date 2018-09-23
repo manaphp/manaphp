@@ -206,6 +206,34 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
+     * @param \ManaPHP\Model\Relation $relation
+     * @param mixed                   $context
+     *
+     * @return \ManaPHP\Model\Criteria|false
+     */
+    protected function _getRelationCriteria($relation, $context = [])
+    {
+        /**
+         * @var \ManaPHP\Model $referenceModel
+         */
+        $referenceModel = $relation->referenceModel;
+        $criteria = $referenceModel::criteria();
+        if ($context === null) {
+            null;
+        } elseif (is_string($context)) {
+            $criteria->select(preg_split('#[\s,]+#', $context, -1, PREG_SPLIT_NO_EMPTY));
+        } elseif (is_array($context)) {
+            $criteria->select($context);
+        } elseif (is_callable($context)) {
+            $criteria = $context($criteria);
+        } else {
+            return false;
+        }
+
+        return $criteria;
+    }
+
+    /**
      * @param \ManaPHP\Model $model
      * @param array          $r
      * @param array          $withs
@@ -224,28 +252,15 @@ class Manager extends Component implements ManagerInterface
             }
             $keyField = $relation->keyField;
             $valueField = $relation->valueField;
-            /**
-             * @var \ManaPHP\Model $referenceModel
-             */
-            $referenceModel = $relation->referenceModel;
-            $criteria = $referenceModel::criteria();
-            if (is_int($k)) {
-                null;
-            } elseif (is_string($v)) {
-                $criteria->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY));
-            } elseif (is_array($v)) {
-                $criteria->select($v);
-            } elseif (is_callable($v)) {
-                $criteria = $v($criteria);
-            } else {
-                throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
+            if (($criteria = $this->_getRelationCriteria($relation, is_int($k) ? null : $v)) === false) {
+                throw new InvalidValueException(['`:with` with is invalid', 'with' => is_int($k) ? $k : $v]);
             }
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
                 $data = $criteria->where($keyField, array_column($r, $valueField))->indexBy($keyField)->toArray();
 
                 foreach ($r as $ri => $rv) {
-                    $rv[$name] = isset($data[$rv[$keyField]]) ? $data[$rv[$keyField]] : null;;
+                    $rv[$name] = isset($data[$rv[$keyField]]) ? $data[$rv[$keyField]] : null;
                     $r[$ri] = $rv;
                 }
 
