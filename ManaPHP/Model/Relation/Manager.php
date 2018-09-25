@@ -182,6 +182,7 @@ class Manager extends Component implements ManagerInterface
         }
 
         if (!isset($this->_relations[$modelName][$name]) || !$this->_relations[$modelName][$name]) {
+            /** @noinspection NestedPositiveIfStatementsInspection */
             if ($relation = $this->_inferRelation($model, $name)) {
                 $this->_relations[$modelName][$name] = $relation;
             }
@@ -340,15 +341,14 @@ class Manager extends Component implements ManagerInterface
 
     /**
      * @param \ManaPHP\Model $instance
-     * @param string         $relation
+     * @param string         $relation_name
      *
      * @return \ManaPHP\Model\CriteriaInterface
      */
-    public function lazyLoad($instance, $relation)
+    public function lazyLoad($instance, $relation_name)
     {
-        $relation = $this->get($instance, $relation);
-        if ($relation === false) {
-            throw new InvalidValueException('');
+        if (($relation = $this->get($instance, $relation_name)) === false) {
+            throw new InvalidValueException($relation);
         }
 
         $type = $relation->type;
