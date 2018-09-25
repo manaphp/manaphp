@@ -31,11 +31,6 @@ namespace ManaPHP;
 class Component implements ComponentInterface, \JsonSerializable
 {
     /**
-     * @var bool
-     */
-    protected $_traced;
-
-    /**
      * @var \ManaPHP\Di
      */
     protected $_di;
