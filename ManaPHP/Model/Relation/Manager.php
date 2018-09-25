@@ -254,8 +254,26 @@ class Manager extends Component implements ManagerInterface
             }
             $keyField = $relation->keyField;
             $valueField = $relation->valueField;
-            if (($criteria = $this->_getRelationCriteria($relation, is_int($k) ? null : $v)) === false) {
-                throw new InvalidValueException(['`:with` with is invalid', 'with' => is_int($k) ? $k : $v]);
+            /**
+             * @var \ManaPHP\Model $referenceModel
+             */
+            $referenceModel = $relation->referenceModel;
+            $criteria = $referenceModel::criteria();
+            if (is_int($k)) {
+                null;
+            } elseif (is_string($v)) {
+                $criteria->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY));
+            } elseif (is_array($v)) {
+                $criteria->select($v);
+            } elseif (is_callable($v)) {
+                $criteria = $v($criteria);
+            } else {
+                throw new InvalidValueException(['`:with` with is invalid', 'with' => $name]);
+            }
+
+            $method = 'get' . ucfirst($name);
+            if (method_exists($model, $method)) {
+                $criteria = $model->$method($criteria);
             }
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
