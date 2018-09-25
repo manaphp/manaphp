@@ -223,7 +223,7 @@ class Manager extends Component implements ManagerInterface
         if ($context === null) {
             null;
         } elseif (is_string($context)) {
-            $criteria->select(preg_split('#[\s,]+#', $context, -1, PREG_SPLIT_NO_EMPTY));
+            $criteria->select($context);
         } elseif (is_array($context)) {
             $criteria->select($context);
         } elseif (is_callable($context)) {
@@ -262,13 +262,13 @@ class Manager extends Component implements ManagerInterface
             if (is_int($k)) {
                 null;
             } elseif (is_string($v)) {
-                $criteria->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY));
+                $criteria->select($v);
             } elseif (is_array($v)) {
                 if ($v) {
                     if (isset($v[count($v) - 1])) {
                         $criteria->select($v);
                     } elseif (isset($v[0])) {
-                        $criteria->select(preg_split('#[\s,]+#', $v[0], -1, PREG_SPLIT_NO_EMPTY));
+                        $criteria->select($v[0]);
                         unset($v[0]);
                         $criteria->where($v);
                     } else {
@@ -349,13 +349,13 @@ class Manager extends Component implements ManagerInterface
             if (is_int($k)) {
                 $data = $criteria->fetch();
             } elseif (is_string($v)) {
-                $data = $criteria->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY))->fetch();
+                $data = $criteria->select($v)->fetch();
             } elseif (is_array($v)) {
                 if ($v) {
                     if (isset($v[count($v) - 1])) {
                         $criteria->select($v);
                     } elseif (isset($v[0])) {
-                        $criteria->select(preg_split('#[\s,]+#', $v[0], -1, PREG_SPLIT_NO_EMPTY));
+                        $criteria->select($v[0]);
                         unset($v[0]);
                         $criteria->where($v);
                     } else {
