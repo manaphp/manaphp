@@ -264,7 +264,17 @@ class Manager extends Component implements ManagerInterface
             } elseif (is_string($v)) {
                 $criteria->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY));
             } elseif (is_array($v)) {
-                $criteria->select($v);
+                if ($v) {
+                    if (isset($v[count($v) - 1])) {
+                        $criteria->select($v);
+                    } elseif (isset($v[0])) {
+                        $criteria->select(preg_split('#[\s,]+#', $v[0], -1, PREG_SPLIT_NO_EMPTY));
+                        unset($v[0]);
+                        $criteria->where($v);
+                    } else {
+                        $criteria->where($v);
+                    }
+                }
             } elseif (is_callable($v)) {
                 $criteria = $v($criteria);
             } else {
@@ -341,7 +351,18 @@ class Manager extends Component implements ManagerInterface
             } elseif (is_string($v)) {
                 $data = $criteria->select(preg_split('#[\s,]+#', $v, -1, PREG_SPLIT_NO_EMPTY))->fetch();
             } elseif (is_array($v)) {
-                $data = $criteria->select($v)->fetch();
+                if ($v) {
+                    if (isset($v[count($v) - 1])) {
+                        $criteria->select($v);
+                    } elseif (isset($v[0])) {
+                        $criteria->select(preg_split('#[\s,]+#', $v[0], -1, PREG_SPLIT_NO_EMPTY));
+                        unset($v[0]);
+                        $criteria->where($v);
+                    } else {
+                        $criteria->where($v);
+                    }
+                }
+                $data = $criteria->fetch();
             } elseif (is_callable($v)) {
                 $data = $v($criteria);
                 if ($data instanceof Criteria) {
