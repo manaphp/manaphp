@@ -44,9 +44,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 
         $this->_query = $this->_di->get('ManaPHP\Db\Query');
         if ($fields !== null) {
-            if (is_string($fields)) {
-                $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
-            }
             $this->select($fields);
         }
     }
@@ -66,12 +63,16 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
-     * @param array $fields
+     * @param string|array $fields
      *
      * @return static
      */
     public function select($fields)
     {
+        if (is_string($fields)) {
+            $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
+        }
+
         $this->_query->select($fields);
         $this->_columns = $fields;
 

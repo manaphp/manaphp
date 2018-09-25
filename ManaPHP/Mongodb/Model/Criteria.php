@@ -85,9 +85,6 @@ class Criteria extends \ManaPHP\Model\Criteria
         $this->_di = Di::getDefault();
 
         if ($fields !== null) {
-            if (is_string($fields)) {
-                $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
-            }
             $this->select($fields);
         }
     }
@@ -147,12 +144,16 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param array $fields
+     * @param string|array $fields
      *
      * @return static
      */
     public function select($fields)
     {
+        if (is_string($fields)) {
+            $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
+        }
+
         if ($fields) {
             if (isset($fields[count($fields) - 1])) {
                 $this->_projection = array_fill_keys($fields, 1);
