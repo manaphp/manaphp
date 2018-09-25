@@ -303,6 +303,83 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * @param int|string       $id
+     * @param int|string|array $fieldsOrTtl
+     *
+     * @return static
+     */
+    public static function get($id = null, $fieldsOrTtl = null)
+    {
+        if (is_int($fieldsOrTtl)) {
+            $ttl = $fieldsOrTtl;
+            $fields = null;
+        } else {
+            $ttl = null;
+            $fields = $fieldsOrTtl;
+        }
+
+        $model = new static;
+
+        $pkName = $model->getPrimaryKey();
+
+        if ($id === null) {
+            $di = $model->_di;
+            if ($di->request->has($pkName)) {
+                $id = $di->request->get($pkName);
+            } elseif ($di->dispatcher->hasParam($pkName)) {
+                $id = $di->dispatcher->getParam($pkName);
+            } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
+                $id = $params[0];
+            } else {
+                throw new InvalidArgumentException('missing filters condition for Model::get method');
+            }
+        }
+
+        if (!is_scalar($id)) {
+            throw new InvalidValueException('Model::get id is not scalar');
+        }
+
+        if (!$ttl) {
+            if (!$rs = static::criteria($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
+                throw new NotFoundException(['No record for `:model` model of `:id` id', 'id' => $id]);
+            } else {
+                return $rs[0];
+            }
+        }
+
+        static $cached = [];
+
+        $current = microtime(true);
+        $className = get_class($model);
+        if (isset($cached[$className][$id])) {
+            $cache = $cached[$className][$id];
+            if ($ttl === -1 || $current - $cache[0] <= $ttl) {
+                return $cache[1];
+            } else {
+                unset($cached[$className][$id]);
+            }
+        }
+
+        if (!$rs = static::criteria($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
+            throw new NotFoundException(['No record for `:model` model of `:id` id', 'id' => $id]);
+        }
+
+        $r = $rs[0];
+        /**
+         * @var \ManaPHP\Model $r
+         */
+        $r->_snapshot = false;
+
+        $cached[$className][$id] = [$current, $r];
+        /** @noinspection PhpUndefinedVariableInspection */
+        if (count($cached[$className]) > $model->getCacheCapacity()) {
+            unset($cached[$className][key($cached[$className])]);
+        }
+
+        return $r;
+    }
+
+    /**
      * Allows to query the first record that match the specified conditions
      *
      * @param int|string|array $filters

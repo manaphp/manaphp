@@ -148,6 +148,14 @@ interface ModelInterface
     public static function lists($filters = [], $field = null);
 
     /**
+     * @param int|string       $id
+     * @param int|string|array $fieldsOrTtl
+     *
+     * @return static
+     */
+    public static function get($id = null, $fieldsOrTtl = null);
+    
+    /**
      * Allows to query the first record that match the specified conditions
      *
      * <code>
