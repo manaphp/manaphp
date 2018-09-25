@@ -297,7 +297,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        if ($expressionFields && $rs = $criteria->select($expressionFields)->execute()) {
+        if ($expressionFields && $rs = $criteria->select($expressionFields)->fetch(true)) {
             foreach ((array)$rs[0] as $field => $value) {
                 $this->$field = $value;
             }

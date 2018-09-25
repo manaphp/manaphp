@@ -272,9 +272,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
             $criteria = $criteria->select([$keyField, $valueField])->indexBy([$keyField => $valueField]);
             if (in_array('display_order', $model->getFields(), true)) {
-                return $criteria->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->execute();
+                return $criteria->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
             } else {
-                return $criteria->orderBy($keyField)->execute();
+                return $criteria->orderBy($keyField)->fetch(true);
             }
         } elseif (is_string($field)) {
             return $criteria->values($field);
@@ -461,7 +461,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if ($interval === null || $pkValue === null) {
-            $rs = static::criteria([$field], $model)->where($filters)->limit(1)->execute();
+            $rs = static::criteria([$field], $model)->where($filters)->limit(1)->fetch(true);
             return $rs ? $rs[0][$field] : null;
         }
 
@@ -478,7 +478,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             unset($cached[$className][$field][$pkValue]);
         }
 
-        $rs = static::criteria([$field], $model)->where($pkName, $pkValue)->limit(1)->execute();
+        $rs = static::criteria([$field], $model)->where($pkName, $pkValue)->limit(1)->fetch(true);
         $value = $rs ? $rs[0][$field] : null;
 
         $cached[$className][$field][$pkValue] = [$current, $value];
@@ -1091,7 +1091,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $this->_last_refresh = microtime(true);
         }
 
-        $r = static::criteria($fields, $this)->where($this->getPrimaryKeyValuePairs())->execute();
+        $r = static::criteria($fields, $this)->where($this->getPrimaryKeyValuePairs())->fetch(true);
         if (!$r) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), json_encode($this->getPrimaryKeyValuePairs())]);

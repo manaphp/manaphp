@@ -367,11 +367,6 @@ interface CriteriaInterface
     public function exists();
 
     /**
-     * @return array
-     */
-    public function execute();
-
-    /**
      * @param array $fieldValues
      *
      * @return int

@@ -236,6 +236,11 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
+     * @return array
+     */
+    abstract public function execute();
+
+    /**
      * @param bool $asArray
      *
      * @return \ManaPHP\Model[]|\ManaPHP\Model|null|array

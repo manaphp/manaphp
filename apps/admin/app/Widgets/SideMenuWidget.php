@@ -12,14 +12,14 @@ class SideMenuWidget extends Widget
     {
         $groups = Group::criteria()
             ->orderBy('display_order DESC, group_id ASC')
-            ->execute();
+            ->fetch(true);
 
         $menu = [];
         foreach ($groups as $group) {
             $items = Item::criteria()
                 ->where(['group_id' => $group['group_id']])
                 ->orderBy('display_order DESC, item_id ASC')
-                ->execute();
+                ->fetch(true);
             if (count($items) === 0) {
                 continue;
             }
