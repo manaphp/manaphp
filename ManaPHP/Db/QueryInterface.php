@@ -21,7 +21,7 @@ interface QueryInterface
     public function distinct($distinct = true);
 
     /**
-     * @param array $fields
+     * @param string|array $fields
      *
      * @return static
      */

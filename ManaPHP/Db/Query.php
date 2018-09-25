@@ -176,12 +176,16 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * @param array $fields
+     * @param string|array $fields
      *
      * @return static
      */
     public function select($fields)
     {
+        if (is_string($fields)) {
+            $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
+        }
+
         $r = '';
         foreach ($fields as $k => $v) {
             if (strpos($v, '[') === false && strpos($v, '(') === false) {
