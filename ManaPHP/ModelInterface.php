@@ -148,8 +148,8 @@ interface ModelInterface
     public static function lists($filters = [], $field = null);
 
     /**
-     * @param int|string       $id
-     * @param int|array $fieldsOrTtl
+     * @param int|string $id
+     * @param int|array  $fieldsOrTtl
      *
      * @return static
      */
@@ -196,20 +196,20 @@ interface ModelInterface
     /**
      * @param int|string|array $filters
      * @param string           $field
-     * @param int|float|array  $interval
+     * @param int              $ttl
      *
      * @return int|double|string|null
      */
-    public static function value($filters, $field, $interval = null);
+    public static function value($filters, $field, $ttl = null);
 
     /**
      * @param int|string|array $filters
      * @param string           $field
-     * @param int|float|array  $interval
+     * @param int              $ttl
      *
      * @return int|double|string
      */
-    public static function valueOrFail($filters, $field, $interval = null);
+    public static function valueOrFail($filters, $field, $ttl = null);
 
     /**
      * @param string $field

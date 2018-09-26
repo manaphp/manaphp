@@ -494,11 +494,11 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * @param int|string|array $filters
      * @param string           $field
-     * @param int|float|array  $interval
+     * @param int              $ttl
      *
      * @return int|double|string|null
      */
-    public static function value($filters, $field, $interval = null)
+    public static function value($filters, $field, $ttl = null)
     {
         if (!is_string($field)) {
             throw new ParameterOrderException(__METHOD__ . ' field');
@@ -516,7 +516,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             }
         }
 
-        if ($interval === null || $pkValue === null) {
+        if ($ttl === null || $pkValue === null) {
             $rs = static::criteria([$field], $model)->where($filters)->limit(1)->fetch(true);
             return $rs ? $rs[0][$field] : null;
         }
@@ -528,7 +528,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         if (isset($cached[$className][$field][$pkValue])) {
             $cache = $cached[$className][$field][$pkValue];
-            if ($interval === -1 || $current - $cache[0] <= $interval) {
+            if ($ttl === -1 || $current - $cache[0] <= $ttl) {
                 return $cache[1];
             }
             unset($cached[$className][$field][$pkValue]);
@@ -548,14 +548,14 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * @param int|string|array $filters
      * @param string           $field
-     * @param int|float|array  $interval
+     * @param int              $ttl
      *
      * @return int|double|string
      * @throws \ManaPHP\Model\NotFoundException
      */
-    public static function valueOrFail($filters, $field, $interval = null)
+    public static function valueOrFail($filters, $field, $ttl = null)
     {
-        $value = static::value($filters, $field, $interval);
+        $value = static::value($filters, $field, $ttl);
         if ($value === null) {
             throw new NotFoundException(['valueOrFail: `:model` model with `:criteria` criteria record is not exists',
                 'model' => get_called_class(),
