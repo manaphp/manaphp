@@ -126,7 +126,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $modelName = get_called_class();
         return Text::underscore(($pos = strrpos($modelName, '\\')) === false ? $modelName : substr($modelName, $pos + 1));
     }
-    
+
     /**
      * @return string|null
      */
@@ -384,19 +384,18 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      *
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array|int|float  $options
+     * @param array|int        $options
      *
      * @return static|null
      */
     public static function first($filters = null, $fields = null, $options = null)
     {
         $model = new static;
-        $di = $model->_di;
-
-        $pkName = $model->getPrimaryKey();
-        $pkValue = null;
 
         if ($filters === null) {
+            $di = $model->_di;
+            $pkName = $model->getPrimaryKey();
+
             if ($di->request->has($pkName)) {
                 $pkValue = $di->request->get($pkName);
             } elseif ($di->dispatcher->hasParam($pkName)) {
@@ -412,50 +411,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             }
             $filters = [$pkName => $pkValue];
         } elseif (is_scalar($filters)) {
-            $pkValue = $filters;
-            $filters = [$pkName => $pkValue];
-        } elseif (count($filters) === 1 && isset($filters[$pkName])) {
-            $pkValue = $filters[$pkName];
+            $filters = [$model->getPrimaryKey() => $filters];
         }
 
-        $interval = null;
         if (is_scalar($options)) {
-            $interval = (float)$options;
-            $options = [];
+            $options = ['cache' => $options];
         }
 
-        if ($pkValue === null || $interval === null) {
-            $rs = static::criteria($fields ?: null, $model)->where($filters)->options($options)->limit(1)->fetch();
-            return isset($rs[0]) ? $rs[0] : null;
-        }
-
-        static $cached = [];
-
-        $current = microtime(true);
-        $className = get_class($model);
-        if (isset($cached[$className][$pkValue])) {
-            $cache = $cached[$className][$pkValue];
-            if ($current - $cache[0] <= $interval) {
-                return $cache[1];
-            } else {
-                unset($cached[$className][$pkValue]);
-            }
-        }
-        /**
-         * @var \ManaPHP\Model $r
-         */
-        $rs = static::criteria($fields, $model)->where($pkName, $pkValue)->options($options)->limit(1)->fetch();
-        $r = isset($rs[0]) ? $rs[0] : null;
-        if ($r) {
-            $r->_snapshot = false;
-        }
-
-        $cached[$className][$pkValue] = [$current, $r];
-        /** @noinspection PhpUndefinedVariableInspection */
-        if (count($cached[$className]) > $model->getCacheCapacity()) {
-            unset($cached[$className][key($cached[$className])]);
-        }
-        return $r;
+        $rs = static::criteria($fields ?: null, $model)->where($filters)->options($options)->limit(1)->fetch();
+        return isset($rs[0]) ? $rs[0] : null;
     }
 
     /**
