@@ -306,6 +306,8 @@ interface CriteriaInterface
     public function setFetchType($multiple);
 
     /**
+     * @param bool $asArray
+     *
      * @return \ManaPHP\Model[]|\ManaPHP\Model|array
      */
     public function fetch($asArray = false);
