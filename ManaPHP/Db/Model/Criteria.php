@@ -69,6 +69,10 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
      */
     public function select($fields)
     {
+        if (!$fields) {
+            return $this;
+        }
+
         if (is_string($fields)) {
             $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
         }
