@@ -19,11 +19,11 @@ class ServeController extends Controller
 $_SERVER['SERVER_ADDR'] = ':ip';
 $_SERVER['SERVER_PORT'] = ':port';
 $_SERVER['REQUEST_SCHEME'] = 'http';
-chdir("public");
+chdir('public');
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 if ($uri !== '/') {
     if (file_exists('public/' . $uri)
-        || preg_match('#(.css|.js|.gif|.png|.jpg|.jpeg|.ttf|.woff|.ico)$#', $uri) === 1
+        || preg_match('#\.(?:css|js|gif|png|jpg|jpeg|ttf|woff|ico)$#', $uri) === 1
     ) {
         return false;
     }
