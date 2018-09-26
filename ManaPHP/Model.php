@@ -534,8 +534,21 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             unset($cached[$className][$field][$pkValue]);
         }
 
-        $rs = static::criteria([$field], $model)->where($pkName, $pkValue)->limit(1)->fetch(true);
-        $value = $rs ? $rs[0][$field] : null;
+        $value = null;
+        $key = '_.models.value.' . $model->getSource() . ".$field.$pkValue";
+        if ($cache = $model->_di->ipcCache->get($key)) {
+            if ($ttl === -1 || $current - $cache[0] <= $ttl) {
+                $current = $cache[0];
+                $value = $cache[1];
+            }
+        }
+
+        if ($value === null) {
+            $rs = static::criteria([$field], $model)->where($pkName, $pkValue)->limit(1)->fetch(true);
+            $value = $rs ? $rs[0][$field] : null;
+
+            $model->_di->ipcCache->set($key, [$current, $value], $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
+        }
 
         $cached[$className][$field][$pkValue] = [$current, $value];
         if (count($cached[$className][$field]) > $model->getCacheCapacity()) {
