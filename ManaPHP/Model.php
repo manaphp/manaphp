@@ -513,7 +513,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         if (isset($cached[$className][$field][$pkValue])) {
             $cache = $cached[$className][$field][$pkValue];
-            if ($current - $cache[0] <= $interval) {
+            if ($interval === -1 || $current - $cache[0] <= $interval) {
                 return $cache[1];
             }
             unset($cached[$className][$field][$pkValue]);
