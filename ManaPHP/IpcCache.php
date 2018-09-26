@@ -21,16 +21,14 @@ class IpcCache implements IpcCacheInterface
      */
     public function __construct($options = [])
     {
+        $this->_enabled = function_exists('apcu_fetch');
+
         if (isset($options['enabled'])) {
-            $this->_enabled = (bool)$options['enabled'];
+            $this->_enabled = $options['enabled'] && function_exists('apcu_fetch');
         }
 
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
-        }
-
-        if (!function_exists('apcu_fetch')) {
-            $this->_enabled = false;
         }
     }
 
