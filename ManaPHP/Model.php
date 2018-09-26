@@ -361,16 +361,29 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             }
         }
 
-        if (!$rs = static::criteria($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new NotFoundException(['No record for `:model` model of `:id` id', 'id' => $id]);
+        $r = null;
+        $key = '_.models.get.' . $model->getSource() . '.' . $id;
+        if ($cache = $model->_di->ipcCache->get($key)) {
+            if ($ttl === -1 || $current - $cache[0] <= $ttl) {
+                $current = $cache[0];
+                $r = $cache[1];
+            }
         }
 
-        $r = $rs[0];
-        /**
-         * @var \ManaPHP\Model $r
-         */
-        $r->_snapshot = false;
+        if (!$r) {
+            if (!$rs = static::criteria($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                throw new NotFoundException(['No record for `:model` model of `:id` id', 'id' => $id]);
+            }
+
+            $r = $rs[0];
+            /**
+             * @var \ManaPHP\Model $r
+             */
+            $r->_snapshot = false;
+
+            $model->_di->ipcCache->set($key, [$current, $r], $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
+        }
 
         $cached[$className][$id] = [$current, $r];
         /** @noinspection PhpUndefinedVariableInspection */
