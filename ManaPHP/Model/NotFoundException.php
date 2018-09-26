@@ -12,4 +12,9 @@ class NotFoundException extends Exception
      * @var int|string|array
      */
     public $filters;
+
+    public function getStatusCode()
+    {
+        return 404;
+    }
 }
