@@ -2,7 +2,6 @@
 namespace ManaPHP\Db\Model;
 
 use ManaPHP\Di;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\Expression\Raw;
 use ManaPHP\Model\ExpressionInterface;
@@ -457,36 +456,8 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     {
         $paginator = $this->_replaceModelInfo()->_query->paginate($size, $page);
 
-        foreach ($this->_with as $k => $v) {
-            $name = is_string($k) ? $k : $v;
-            $relation = $this->relationsManager->get($this->_model, $name);
-            foreach ($paginator->items as &$item) {
-                if (is_int($k)) {
-                    $data = $relation->criteria($item)->fetch();
-                } else {
-                    if (is_string($v) || is_array($v)) {
-                        $data = $relation->criteria($item)->select($v)->fetch();
-                    } elseif (is_callable($v)) {
-                        $data = $v($relation->criteria($item));
-                    } else {
-                        throw new NotSupportedException(['`:with` with is invalid', 'with' => $k]);
-                    }
-                }
-
-                if ($data instanceof self) {
-                    $data = $data->fetch();
-                }
-
-                if (is_array($data) && isset($data[0])) {
-                    foreach ($data as $kk => $vv) {
-                        $data[$kk] = $vv->toArray();
-                    }
-                } elseif (is_object($data)) {
-                    $data = $data->toArray();
-                }
-
-                $item[$name] = $data;
-            }
+        if ($this->_with) {
+            $paginator->items = $this->relationsManager->bulkPlainBind($this->_model, $paginator->items, $this->_with);
         }
 
         return $paginator;
