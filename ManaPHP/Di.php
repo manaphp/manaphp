@@ -70,6 +70,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property \ManaPHP\Model\Relation\Manager           $relationsManager
  * @property \ManaPHP\MailerInterface                  $mailer
  * @property \ManaPHP\Task\ManagerInterface            $tasksManager
+ * @property \ManaPHP\IpcCacheInterface                $ipcCache
  */
 class Di implements DiInterface
 {
