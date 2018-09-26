@@ -149,12 +149,12 @@ interface ModelInterface
 
     /**
      * @param int|string       $id
-     * @param int|string|array $fieldsOrTtl
+     * @param int|array $fieldsOrTtl
      *
      * @return static
      */
     public static function get($id = null, $fieldsOrTtl = null);
-    
+
     /**
      * Allows to query the first record that match the specified conditions
      *
@@ -167,7 +167,7 @@ interface ModelInterface
      *
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array            $options
+     * @param array|int        $options
      *
      * @return static|null
      */
@@ -176,7 +176,7 @@ interface ModelInterface
     /**
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array            $options
+     * @param array|int        $options
      *
      * @return static
      */

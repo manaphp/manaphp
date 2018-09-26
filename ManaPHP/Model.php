@@ -303,8 +303,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
-     * @param int|string       $id
-     * @param int|string|array $fieldsOrTtl
+     * @param int|string $id
+     * @param int|array  $fieldsOrTtl
      *
      * @return static
      */
@@ -425,7 +425,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array            $options
+     * @param array|int        $options
      *
      * @return static
      */
