@@ -292,13 +292,6 @@ interface CriteriaInterface
     public function indexBy($indexBy);
 
     /**
-     * @param array|int $options
-     *
-     * @return static
-     */
-    public function cache($options);
-
-    /**
      * @param bool $multiple
      *
      * @return static

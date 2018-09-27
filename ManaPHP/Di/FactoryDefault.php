@@ -53,7 +53,6 @@ class FactoryDefault extends Di
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'stopwatch' => 'ManaPHP\Stopwatch',
             'tasksManager' => 'ManaPHP\Task\Manager',
-            'modelsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/modelsCache', 'extension' => '.json'],
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
             'netConnectivity' => 'ManaPHP\Net\Connectivity',
             'db' => 'ManaPHP\Db\Adapter\Mysql',

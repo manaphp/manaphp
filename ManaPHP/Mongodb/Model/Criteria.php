@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Mongodb\Model;
 
-use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
@@ -17,7 +16,6 @@ use MongoDB\BSON\Regex;
  * @package ManaPHP\Mongodb\Model
  *
  * @property \ManaPHP\Paginator             $paginator
- * @property \ManaPHP\CacheInterface        $modelsCache
  * @property \ManaPHP\Http\RequestInterface $request
  * @property \ManaPHP\Mongodb\Model         $_model
  */
@@ -57,11 +55,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @var bool
      */
     protected $_distinct;
-
-    /**
-     * @var int|array
-     */
-    protected $_cacheOptions;
 
     /**
      * @var array
@@ -226,14 +219,16 @@ class Criteria extends \ManaPHP\Model\Criteria
                 if (isset($v['$count_if'])) {
                     unset($v['$count_if'][0]);
                     $v = ['$sum' => ['$cond' => [$v['$count_if'], 1, 0]]];
-                } else if (isset($v['$sum_if'])) {
-                    $field = isset($v['$sum_if'][0]) ? $v['$sum_if'][0] : 1;
-                    unset($v['$sum_if'][0]);
-                    $v = ['$sum' => ['$cond' => [$v['$sum_if'], is_numeric($field) ? (double)$field : '$' . $field, 0]]];
-                } elseif (isset($v['$avg_if'])) {
-                    $field = isset($v['$avg_if'][0]) ? $v['$avg_if'][0] : 1;
-                    unset($v['$avg_if'][0]);
-                    $v = ['$avg' => ['$cond' => [$v['$avg_if'], is_numeric($field) ? (double)$field : '$' . $field, 0]]];
+                } else {
+                    if (isset($v['$sum_if'])) {
+                        $field = isset($v['$sum_if'][0]) ? $v['$sum_if'][0] : 1;
+                        unset($v['$sum_if'][0]);
+                        $v = ['$sum' => ['$cond' => [$v['$sum_if'], is_numeric($field) ? (double)$field : '$' . $field, 0]]];
+                    } elseif (isset($v['$avg_if'])) {
+                        $field = isset($v['$avg_if'][0]) ? $v['$avg_if'][0] : 1;
+                        unset($v['$avg_if'][0]);
+                        $v = ['$avg' => ['$cond' => [$v['$avg_if'], is_numeric($field) ? (double)$field : '$' . $field, 0]]];
+                    }
                 }
                 $this->_aggregate[$k] = $v;
                 continue;
@@ -245,9 +240,13 @@ class Criteria extends \ManaPHP\Model\Criteria
 
             $accumulator = strtolower($match[1]);
             $normalizes = ['group_concat' => 'push',
-                'std' => 'stdDevPop', 'stddev' => 'stdDevPop', 'stddev_pop' => 'stdDevPop',
+                'std' => 'stdDevPop',
+                'stddev' => 'stdDevPop',
+                'stddev_pop' => 'stdDevPop',
                 'stddev_samp' => 'stdDevSamp',
-                'addtoset' => 'addToSet', 'stddevpop' => 'stdDevPop', 'stddevsamp' => 'stdDevSamp'];
+                'addtoset' => 'addToSet',
+                'stddevpop' => 'stdDevPop',
+                'stddevsamp' => 'stdDevSamp'];
             if (isset($normalizes[$accumulator])) {
                 $accumulator = $normalizes[$accumulator];
             }
@@ -371,7 +370,8 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $field = substr($filter, 0, -2);
                 if (!$this->_model->hasField($field)) {
                     throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
-                        'field' => $field, 'collection' => $this->_model->getSource()
+                        'field' => $field,
+                        'collection' => $this->_model->getSource()
                     ]);
                 }
 
@@ -939,18 +939,6 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param array|int $options
-     *
-     * @return static
-     */
-    public function cache($options)
-    {
-        $this->_cacheOptions = $options;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     protected function _execute()
@@ -1058,20 +1046,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function execute()
     {
-        if ($this->_cacheOptions !== null) {
-            $cacheOptions = $this->_getCacheOptions();
-            if (($data = $this->modelsCache->get($cacheOptions['key'])) !== false) {
-                return json_decode($data, true)['items'];
-            }
-
-            $items = $this->_execute();
-
-            $this->modelsCache->set($cacheOptions['key'], json_encode(['time' => date('Y-m-d H:i:s'), 'items' => $items]), $cacheOptions['ttl']);
-        } else {
-            $items = $this->_execute();
-        }
-
-        return $items;
+        return $this->_execute();
     }
 
     /**
@@ -1097,65 +1072,21 @@ class Criteria extends \ManaPHP\Model\Criteria
     {
         $this->page($size, $page);
 
-        do {
-            if ($this->_cacheOptions !== null) {
-                $cacheOptions = $this->_getCacheOptions();
+        $copy = clone $this;
+        $items = $this->fetch();
 
-                if (($result = $this->modelsCache->get($cacheOptions['key'])) !== false) {
-                    $result = json_decode($result, true);
-
-                    $count = $result['count'];
-                    $items = $result['items'];
-                    break;
-                }
+        if ($this->_limit === null) {
+            $count = count($items);
+        } else {
+            if (count($items) % $this->_limit === 0) {
+                $count = $copy->_getTotalRows();
             } else {
-                $cacheOptions = null;
+                $count = $this->_offset + count($items);
             }
-
-            $copy = clone $this;
-            $items = $this->fetch();
-
-            if ($this->_limit === null) {
-                $count = count($items);
-            } else {
-                if (count($items) % $this->_limit === 0) {
-                    $count = $copy->_getTotalRows();
-                } else {
-                    $count = $this->_offset + count($items);
-                }
-            }
-
-            if ($cacheOptions) {
-                $this->modelsCache->set($cacheOptions['key'],
-                    json_encode(['time' => date('Y-m-d H:i:s'), 'count' => $count, 'items' => $items], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                    $cacheOptions['ttl']);
-            }
-
-        } while (false);
+        }
 
         $this->paginator->items = $items;
         return $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
-    }
-
-    /**
-     *
-     * @return array
-     */
-    protected function _getCacheOptions()
-    {
-        $cacheOptions = is_array($this->_cacheOptions) ? $this->_cacheOptions : ['ttl' => $this->_cacheOptions];
-
-        if (!isset($cacheOptions['key'])) {
-            $data = [];
-            foreach (get_object_vars($this) as $k => $v) {
-                if ($v !== null && !$v instanceof Component) {
-                    $data[$k] = $v;
-                }
-            }
-            $cacheOptions['key'] = md5(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        }
-
-        return $cacheOptions;
     }
 
     /**

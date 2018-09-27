@@ -7,7 +7,6 @@ namespace ManaPHP\Db\Model;
  *
  * @package queryBuilder
  *
- * @property \ManaPHP\Cache\EngineInterface   $modelsCache
  * @property \ManaPHP\Paginator               $paginator
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */

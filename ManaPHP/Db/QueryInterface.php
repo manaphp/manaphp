@@ -420,13 +420,6 @@ interface QueryInterface
     public function getTables();
 
     /**
-     * @param array|int $options
-     *
-     * @return static
-     */
-    public function cache($options);
-
-    /**
      * @param \ManaPHP\Db\QueryInterface[] $queries
      * @param bool                         $distinct
      *

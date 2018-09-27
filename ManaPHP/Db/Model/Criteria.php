@@ -549,18 +549,6 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
-     * @param array|int $options
-     *
-     * @return static
-     */
-    public function cache($options)
-    {
-        $this->_query->cache($options);
-
-        return $this;
-    }
-
-    /**
      * @param string $field
      *
      * @return array

@@ -4,7 +4,6 @@ namespace ManaPHP\Db;
 use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
 
@@ -13,7 +12,6 @@ use ManaPHP\Exception\RuntimeException;
  *
  * @package queryBuilder
  *
- * @property \ManaPHP\Cache\EngineInterface   $modelsCache
  * @property \ManaPHP\Paginator               $paginator
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property \ManaPHP\Http\RequestInterface   $request
@@ -99,11 +97,6 @@ class Query extends Component implements QueryInterface
      * @var string
      */
     protected $_sql;
-
-    /**
-     * @var int|array
-     */
-    protected $_cacheOptions;
 
     /**
      * @var bool
@@ -1411,46 +1404,6 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * @return array
-     */
-    protected function _getCacheOptions()
-    {
-        $cacheOptions = is_array($this->_cacheOptions) ? $this->_cacheOptions : ['ttl' => $this->_cacheOptions];
-        if (!isset($cacheOptions['key'])) {
-            if ($cacheOptions['key'][0] === '/') {
-                throw new InvalidValueException(['modelsCache `:key` key can not be start with `/`', 'key' => $cacheOptions['key']]);
-            }
-
-            $cacheOptions['key'] = md5($this->_sql . serialize($this->_bind));
-        }
-
-        return $cacheOptions;
-    }
-
-    /**
-     * @param array $items
-     * @param int   $count
-     *
-     * @return array
-     */
-    protected function _buildCacheData($items, $count)
-    {
-        return ['time' => date('Y-m-d H:i:s'), 'sql' => $this->_sql, 'bind' => $this->_bind, 'count' => $count, 'items' => $items];
-    }
-
-    /**
-     * @param array|int $options
-     *
-     * @return static
-     */
-    public function cache($options)
-    {
-        $this->_cacheOptions = $options;
-
-        return $this;
-    }
-
-    /**
      *
      * @return array
      */
@@ -1460,28 +1413,8 @@ class Query extends Component implements QueryInterface
 
         $this->_sql = $this->_buildSql();
 
-        if ($this->_cacheOptions !== null) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $cacheOptions = $this->_getCacheOptions();
-
-            if (($data = $this->modelsCache->get($cacheOptions['key'])) !== false) {
-                $this->fireEvent('modelsCache:hit', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
-                return json_decode($data, true)['items'];
-            }
-            $this->fireEvent('modelsCache:miss', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
-
-            $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
-            $result = $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
-
-            $this->modelsCache->set($cacheOptions['key'],
-                json_encode($this->_buildCacheData($result, -1), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                $cacheOptions['ttl']);
-        } else {
-            $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
-            $result = $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
-        }
-
-        return $result;
+        $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
+        return $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
     }
 
     /**
@@ -1557,43 +1490,18 @@ class Query extends Component implements QueryInterface
 
         $this->_sql = $this->_buildSql();
 
-        do {
-            if ($this->_cacheOptions !== null) {
-                $cacheOptions = $this->_getCacheOptions();
+        /** @noinspection SuspiciousAssignmentsInspection */
+        $items = $this->_db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
 
-                if (($result = $this->modelsCache->get($cacheOptions['key'])) !== false) {
-                    $result = json_decode($result, true);
-
-                    $count = $result['count'];
-                    $items = $result['items'];
-
-                    $this->fireEvent('modelsCache:hit', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
-                    break;
-                }
-                $this->fireEvent('modelsCache:miss', ['key' => $cacheOptions['key'], 'sql' => $this->_sql]);
+        if ($this->_limit === null) {
+            $count = count($items);
+        } else {
+            if (count($items) % $this->_limit === 0) {
+                $count = $copy->_getTotalRows();
             } else {
-                $cacheOptions = null;
+                $count = $this->_offset + count($items);
             }
-
-            /** @noinspection SuspiciousAssignmentsInspection */
-            $items = $this->_db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
-
-            if ($this->_limit === null) {
-                $count = count($items);
-            } else {
-                if (count($items) % $this->_limit === 0) {
-                    $count = $copy->_getTotalRows();
-                } else {
-                    $count = $this->_offset + count($items);
-                }
-            }
-
-            if ($cacheOptions) {
-                $this->modelsCache->set($cacheOptions['key'],
-                    json_encode($this->_buildCacheData($items, $count), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                    $cacheOptions['ttl']);
-            }
-        } while (false);
+        }
 
         $this->paginator->items = $items;
 
