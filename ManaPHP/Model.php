@@ -399,7 +399,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      *
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array|int        $options
+     * @param array            $options
      *
      * @return static|null
      */
@@ -429,10 +429,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $filters = [$model->getPrimaryKey() => $filters];
         }
 
-        if (is_scalar($options)) {
-            $options = ['cache' => $options];
-        }
-
         $rs = static::criteria($fields ?: null, $model)->where($filters)->options($options)->limit(1)->fetch();
         return isset($rs[0]) ? $rs[0] : null;
     }
@@ -440,7 +436,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array|int        $options
+     * @param array            $options
      *
      * @return static
      */

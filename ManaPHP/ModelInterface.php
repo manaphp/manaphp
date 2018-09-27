@@ -167,7 +167,7 @@ interface ModelInterface
      *
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array|int        $options
+     * @param array            $options
      *
      * @return static|null
      */
@@ -176,7 +176,7 @@ interface ModelInterface
     /**
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array|int        $options
+     * @param array            $options
      *
      * @return static
      */
