@@ -365,6 +365,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $r = null;
         $key = '_mp:models:get:' . $model->getSource() . ":$id";
         if ($cache = $model->_di->ipcCache->get($key)) {
+            /** @noinspection NestedPositiveIfStatementsInspection */
             if ($ttl === -1 || $current - $cache[0] <= $ttl) {
                 $current = $cache[0];
                 $r = $cache[1];
@@ -534,6 +535,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $value = null;
         $key = '_mp:models:value:' . $model->getSource() . ":$field:$pkValue";
         if ($cache = $model->_di->ipcCache->get($key)) {
+            /** @noinspection NestedPositiveIfStatementsInspection */
             if ($ttl === -1 || $current - $cache[0] <= $ttl) {
                 $current = $cache[0];
                 $value = $cache[1];
