@@ -362,7 +362,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         $r = null;
-        $key = '_.models.get.' . $model->getSource() . '.' . $id;
+        $key = '_mp:models:get:' . $model->getSource() . ":$id";
         if ($cache = $model->_di->ipcCache->get($key)) {
             if ($ttl === -1 || $current - $cache[0] <= $ttl) {
                 $current = $cache[0];
@@ -535,7 +535,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         $value = null;
-        $key = '_.models.value.' . $model->getSource() . ".$field.$pkValue";
+        $key = '_mp:models:value:' . $model->getSource() . ":$field:$pkValue";
         if ($cache = $model->_di->ipcCache->get($key)) {
             if ($ttl === -1 || $current - $cache[0] <= $ttl) {
                 $current = $cache[0];
