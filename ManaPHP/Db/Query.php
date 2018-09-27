@@ -184,6 +184,7 @@ class Query extends Component implements QueryInterface
         }
 
         $r = '';
+        /** @noinspection ForeachSourceInspection */
         foreach ($fields as $k => $v) {
             if (strpos($v, '[') === false && strpos($v, '(') === false) {
                 if (is_int($k)) {
