@@ -281,6 +281,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         } else {
             $keyField = key($field);
             $valueField = current($field);
+            /** @noinspection ForeachSourceInspection */
             foreach ($criteria->select([$keyField, $valueField])->fetch() as $v) {
                 $keyValue = $v->{$keyField};
 
