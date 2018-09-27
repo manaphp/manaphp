@@ -217,7 +217,7 @@ class Manager extends Component implements ManagerInterface
      * @throws \ManaPHP\Exception\InvalidValueException
      * @throws \ManaPHP\Exception\NotSupportedException
      */
-    public function bulkPlainBind($model, $r, $withs)
+    public function earlyLoad($model, $r, $withs)
     {
         foreach ($withs as $k => $v) {
             $name = is_int($k) ? $v : $k;

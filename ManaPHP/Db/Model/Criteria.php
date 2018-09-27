@@ -457,7 +457,7 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
         $paginator = $this->_replaceModelInfo()->_query->paginate($size, $page);
 
         if ($this->_with) {
-            $paginator->items = $this->relationsManager->bulkPlainBind($this->_model, $paginator->items, $this->_with);
+            $paginator->items = $this->relationsManager->earlyLoad($this->_model, $paginator->items, $this->_with);
         }
 
         return $paginator;

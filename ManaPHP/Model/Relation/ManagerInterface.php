@@ -27,5 +27,5 @@ interface ManagerInterface
      *
      * @return array
      */
-    public function bulkPlainBind($model, $r, $withs);
+    public function earlyLoad($model, $r, $withs);
 }

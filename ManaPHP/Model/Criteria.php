@@ -251,7 +251,7 @@ abstract class Criteria extends Component implements CriteriaInterface
             $r = $this->execute();
 
             if ($this->_with) {
-                $r = $this->relationsManager->bulkPlainBind($this->_model, $r, $this->_with);
+                $r = $this->relationsManager->earlyLoad($this->_model, $r, $this->_with);
             }
 
             return $r;
