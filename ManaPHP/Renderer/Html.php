@@ -144,6 +144,7 @@ class Html extends Component
         }
 
         $r = PHP_EOL;
+        /** @noinspection ForeachSourceInspection */
         foreach ($values as $value => $label) {
             /** @noinspection TypeUnsafeComparisonInspection */
             $checked = ($current_value === '' && $value === '') || ($current_value !== '' && $value == $current_value);
@@ -179,6 +180,7 @@ class Html extends Component
         }
 
         $r = PHP_EOL;
+        /** @noinspection ForeachSourceInspection */
         foreach ($values as $value => $label) {
             $checked = is_array($current_value) && in_array($value, $current_value, false);
             $r .= '  <label><input type="checkbox"'
