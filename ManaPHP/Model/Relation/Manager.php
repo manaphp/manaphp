@@ -208,34 +208,6 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param \ManaPHP\Model\Relation $relation
-     * @param mixed                   $context
-     *
-     * @return \ManaPHP\Model\Criteria|false
-     */
-    protected function _getRelationCriteria($relation, $context = [])
-    {
-        /**
-         * @var \ManaPHP\Model $referenceModel
-         */
-        $referenceModel = $relation->referenceModel;
-        $criteria = $referenceModel::criteria();
-        if ($context === null) {
-            null;
-        } elseif (is_string($context)) {
-            $criteria->select($context);
-        } elseif (is_array($context)) {
-            $criteria->select($context);
-        } elseif (is_callable($context)) {
-            $criteria = $context($criteria);
-        } else {
-            return false;
-        }
-
-        return $criteria;
-    }
-
-    /**
      * @param \ManaPHP\Model $model
      * @param array          $r
      * @param array          $withs
