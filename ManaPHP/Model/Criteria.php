@@ -251,7 +251,7 @@ abstract class Criteria extends Component implements CriteriaInterface
      */
     public function fetch($asArray = false)
     {
-        if($asArray){
+        if ($asArray) {
             $r = $this->execute();
 
             if ($this->_with) {
@@ -290,26 +290,13 @@ abstract class Criteria extends Component implements CriteriaInterface
     }
 
     /**
-     * @param string $function
-     * @param string $alias
-     * @param string $field
-     *
-     * @return mixed
-     */
-    protected function _groupResult($function, $alias, $field)
-    {
-        $r = $this->aggregate([$alias => "$function($field)"]);
-        return isset($r[0]) ? $r[0][$alias] : 0;
-    }
-
-    /**
      * @param string $field
      *
      * @return int|float
      */
     public function sum($field)
     {
-        return $this->_groupResult('SUM', 'summary', $field);
+        return $this->aggregate(['r' => "SUM($field)"])[0]['r'];
     }
 
     /**
@@ -319,7 +306,7 @@ abstract class Criteria extends Component implements CriteriaInterface
      */
     public function max($field)
     {
-        return $this->_groupResult('MAX', 'maximum', $field);
+        return $this->aggregate(['r' => "MAX($field)"])[0]['r'];
     }
 
     /**
@@ -329,7 +316,7 @@ abstract class Criteria extends Component implements CriteriaInterface
      */
     public function min($field)
     {
-        return $this->_groupResult('MIN', 'minimum', $field);
+        return $this->aggregate(['r' => "MIN($field)"])[0]['r'];
     }
 
     /**
@@ -339,7 +326,7 @@ abstract class Criteria extends Component implements CriteriaInterface
      */
     public function avg($field)
     {
-        return (double)$this->_groupResult('AVG', 'average', $field);
+        return (double)$this->aggregate(['r' => "AVG($field)"])[0]['r'];
     }
 
     /**
@@ -349,12 +336,8 @@ abstract class Criteria extends Component implements CriteriaInterface
      */
     public function count($field = null)
     {
-        $r = $this->_groupResult('COUNT', 'row_count', $field ?: '*');
-        if (is_string($r)) {
-            $r = (int)$r;
-        }
-
-        return $r;
+        $r = $this->aggregate(['r' => "COUNT($field)"])[0]['r'];
+        return is_string($r) ? (int)$r : $r;
     }
 
     public function jsonSerialize()

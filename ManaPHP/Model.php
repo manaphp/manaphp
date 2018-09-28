@@ -632,12 +632,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function count($filters = null, $field = '*')
     {
-        $result = static::criteria()->where($filters)->aggregate(['r' => "COUNT($field)"])[0]['r'];
-        if (is_string($result)) {
-            $result = (int)$result;
-        }
-
-        return $result;
+        return static::criteria()->where($filters)->count($field);
     }
 
     /**
@@ -650,7 +645,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function sum($field, $filters = null)
     {
-        return static::criteria()->where($filters)->aggregate(['r' => "SUM($field)"])[0]['r'];
+        return static::criteria()->where($filters)->sum($field);
     }
 
     /**
@@ -663,7 +658,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function max($field, $filters = null)
     {
-        return static::criteria()->where($filters)->aggregate(['r' => "MAX($field)"])[0]['r'];
+        return static::criteria()->where($filters)->max($field);
     }
 
     /**
@@ -677,7 +672,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function min($field, $filters = null)
     {
-        return static::criteria()->where($filters)->aggregate(['r' => "MIN($field)"])[0]['r'];
+        return static::criteria()->where($filters)->min($field);
     }
 
     /**
@@ -690,7 +685,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function avg($field, $filters = null)
     {
-        return (double)static::criteria()->where($filters)->aggregate(['r' => "AVG($field)"])[0]['r'];
+        return (double)static::criteria()->where($filters)->avg($field);
     }
 
     /**
