@@ -194,10 +194,14 @@ abstract class Criteria extends Component implements CriteriaInterface
     public function with($with)
     {
         if (is_string($with)) {
-            $this->_with[] = $with;
-        } else {
-            $this->_with = array_merge($this->_with, $with);
+            if (strpos($with, ',') === false) {
+                $with = [$with];
+            } else {
+                $with = (array)preg_split('#[\s,]+#', $with, -1, PREG_SPLIT_NO_EMPTY);
+            }
         }
+
+        $this->_with = $this->_with ? array_merge($this->_with, $with) : $with;
 
         return $this;
     }
