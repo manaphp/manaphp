@@ -221,6 +221,13 @@ class Manager extends Component implements ManagerInterface
     {
         foreach ($withs as $k => $v) {
             $name = is_int($k) ? $v : $k;
+            if ($pos = strpos($name, '.')) {
+                $child_name = substr($name, $pos + 1);
+                $name = substr($name, 0, $pos);
+            } else {
+                $child_name = null;
+            }
+
             if (($relation = $this->get($model, $name)) === false) {
                 throw new InvalidValueException(['unknown `:relation` relation', 'relation' => $name]);
             }
@@ -231,6 +238,9 @@ class Manager extends Component implements ManagerInterface
              */
             $referenceModel = $relation->referenceModel;
             $criteria = $referenceModel::criteria();
+            if ($child_name) {
+                $criteria->with([$child_name]);
+            }
             if (is_int($k)) {
                 null;
             } elseif (is_string($v)) {
@@ -275,17 +285,15 @@ class Manager extends Component implements ManagerInterface
                     }
                 }
             } elseif ($relation->type === Relation::TYPE_HAS_MANY) {
-                $tr = $r;
-                $r = [];
-                foreach ($tr as $rv) {
-                    $r[$rv[$valueField]] = $rv;
+                $r_index = [];
+                foreach ($r as $ri => $rv) {
+                    $r_index[$rv[$valueField]] = $ri;
                 }
-                unset($tr);
 
                 $ids = array_column($r, $valueField);
                 $data = $criteria->where($keyField, $ids)->fetch(true);
-                foreach ($data as $di => $dv) {
-                    $r[$dv[$keyField]][$name][] = $dv;
+                foreach ($data as $dv) {
+                    $r[$r_index[$dv[$keyField]]][$name][] = $dv;
                 }
 
                 foreach ($r as $ri => $rv) {
@@ -295,7 +303,7 @@ class Manager extends Component implements ManagerInterface
                     }
                 }
 
-                $r = array_values($r);
+                return $r;
             } else {
                 throw new NotSupportedException($name);
             }
