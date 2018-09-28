@@ -154,9 +154,9 @@ class Mysql extends Db
     public function getTables($schema = null)
     {
         if ($schema) {
-            $sql = 'SHOW TABLES FROM `' . $this->_escapeIdentifier($schema) . '`';
+            $sql = 'SHOW FULL TABLES FROM `' . $this->_escapeIdentifier($schema) . '` WHERE Table_Type != "VIEW"';
         } else {
-            $sql = 'SHOW TABLES';
+            $sql = 'SHOW FULL TABLES WHERE Table_Type != "VIEW"';
         }
 
         $tables = [];
