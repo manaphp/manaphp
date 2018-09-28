@@ -951,9 +951,15 @@ class Criteria extends \ManaPHP\Model\Criteria
             $options = [];
 
             if ($this->_projection !== null) {
-                $options['projection'] = $this->_projection;
-            } elseif ($this->_model->getPrimaryKey() !== '_id') {
-                $options['projection'] = ['_id' => false];
+                if (!isset($this->_projection['*'])) {
+                    $options['projection'] = $this->_projection;
+                }
+            } else {
+                $options['projection'] = array_fill_keys($this->_model->getFields(), 1);
+            }
+
+            if (isset($options['projection']) && !isset($options['projection']['_id'])) {
+                $options['projection']['_id'] = false;
             }
 
             if ($this->_order !== null) {
