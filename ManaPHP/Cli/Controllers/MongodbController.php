@@ -107,7 +107,7 @@ class MongodbController extends Controller
 
                     $fieldTypes = $this->_inferFieldTypes($docs);
                     $modelClass = $namespace . '\\' . $plainClass;
-                    $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? null : "$cdb.$collection", $optimized);
+                    $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? $collection : "$cdb.$collection", $optimized);
                     $this->filesystem->filePut($fileName, $model);
 
                     $this->console->progress([
@@ -217,6 +217,7 @@ class MongodbController extends Controller
         }
 
         if ($namespace) {
+            $source = ($pos = strpos($namespace, '.')) ? substr($namespace, $pos + 1):$namespace;
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @param mixed $context' . PHP_EOL;
@@ -225,7 +226,7 @@ class MongodbController extends Controller
             $str .= '     */' . PHP_EOL;
             $str .= '    public function getSource($context = null)' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
-            $str .= "        return '$namespace';" . PHP_EOL;
+            $str .= "        return '$source';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
@@ -279,7 +280,7 @@ class MongodbController extends Controller
         }
 
         $primaryKey = null;
-        if ($optimized && ($primaryKey = $this->_inferPrimaryKey($fieldTypes, $modelName))) {
+        if ($primaryKey = $this->_inferPrimaryKey($fieldTypes, $modelName)) {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
