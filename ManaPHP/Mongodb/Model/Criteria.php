@@ -1086,6 +1086,11 @@ class Criteria extends \ManaPHP\Model\Criteria
         }
 
         $this->paginator->items = $items;
+
+        if ($this->_with) {
+            $this->paginator->items = $this->relationsManager->earlyLoad($this->_model, $this->paginator->items, $this->_with);
+        }
+
         return $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
     }
 
