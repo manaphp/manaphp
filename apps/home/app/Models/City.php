@@ -1,19 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MarkMa
- * Date: 2016/3/25
- */
-
 namespace App\Models;
 
 /**
- * Class App\Models\City
- *
- * @package App\Models
+ * Class City
  * @property \App\Models\Country $country
  */
-class City extends ModelBase
+class City extends \ManaPHP\Db\Model
 {
     public $city_id;
     public $city;
