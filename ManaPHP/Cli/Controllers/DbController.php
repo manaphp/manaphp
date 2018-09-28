@@ -71,7 +71,7 @@ class DbController extends Controller
         $str .= PHP_EOL;
 
         $str .= '/**' . PHP_EOL;
-        $str .= ' * Class ' . $plainClass . PHP_EOL;
+        $str .= ' * Class ' . $modelName . PHP_EOL;
         $str .= ' */' . PHP_EOL;
 
         $str .= 'class ' . $plainClass . ' extends \ManaPHP\Db\Model' . PHP_EOL;
