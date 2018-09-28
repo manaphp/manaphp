@@ -187,6 +187,10 @@ class MongodbController extends Controller
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
 
+        $str .= '/**' . PHP_EOL;
+        $str .= ' * Class ' . $modelName . PHP_EOL;
+        $str .= ' */' . PHP_EOL;
+
         $str .= 'class ' . substr($modelName,
                 strrpos($modelName, '\\') + 1) . ' extends \ManaPHP\Mongodb\Model' . PHP_EOL;
         $str .= '{';
