@@ -103,11 +103,6 @@ class MvcDispatcherTest extends TestCase
 //        $dispatcher->dispatch('Test', 'test2', 'another2', [2, '3']);
 //        $this->assertEquals(5, $dispatcher->getReturnedValue());
 
-        //forward
-        $dispatcher->dispatch('Test', 'test2', 'another3');
-        $this->assertEquals('another4', $dispatcher->getActionName());
-        $this->assertEquals(120, $dispatcher->getReturnedValue());
-        $this->assertTrue($dispatcher->wasForwarded());
 
         //fetch param from dispatcher
         $dispatcher->dispatch('Test', 'test2', 'another5', ['param1' => 2, 'param2' => 3]);
@@ -125,32 +120,5 @@ class MvcDispatcherTest extends TestCase
         $dispatcher = $this->_di->dispatcher;
         $dispatcher->dispatch('Test', 'test2', 'another5', ['param1' => 2, 'param2' => 3]);
         $this->assertEquals(5, $dispatcher->getReturnedValue());
-    }
-
-    public function test_forward()
-    {
-        $dispatcher = $this->_di->dispatcher;
-
-        $dispatcher->dispatch('Test', 'test2', 'another3');
-        $this->assertEquals(strtolower('test2'), strtolower($dispatcher->getPreviousControllerName()));
-        $this->assertEquals('another3', $dispatcher->getPreviousActionName());
-        $this->assertEquals(strtolower('test2'), strtolower($dispatcher->getControllerName()));
-        $this->assertEquals('another4', $dispatcher->getActionName());
-
-        $dispatcher->dispatch('Test', 'test2', 'index');
-        $dispatcher->forward('test3/other');
-        $this->assertEquals(strtolower('test3'), strtolower($dispatcher->getControllerName()));
-        $this->assertEquals('other', $dispatcher->getActionName());
-
-        $this->assertEquals(strtolower('test2'), strtolower($dispatcher->getPreviousControllerName()));
-        $this->assertEquals('index', $dispatcher->getPreviousActionName());
-    }
-
-    public function test_wasForwarded()
-    {
-        $dispatcher = $this->_di->dispatcher;
-
-        $dispatcher->dispatch('Test', 'test2', 'another3');
-        $this->assertTrue($dispatcher->wasForwarded());
     }
 }

@@ -86,21 +86,6 @@ interface DispatcherInterface
     public function dispatch($controller, $action, $params = []);
 
     /**
-     * Forwards the execution flow to another controller/action
-     *
-     * @param string $forward
-     * @param array  $params
-     */
-    public function forward($forward, $params = []);
-
-    /**
-     * Check if the current executed action was forwarded by another one
-     *
-     * @return bool
-     */
-    public function wasForwarded();
-
-    /**
      * Gets last dispatched controller name
      *
      * @return string
@@ -113,20 +98,6 @@ interface DispatcherInterface
      * @return static
      */
     public function setControllerName($controllerName);
-
-    /**
-     * Returns the previous controller in the dispatcher
-     *
-     * @return string
-     */
-    public function getPreviousControllerName();
-
-    /**
-     * Returns the previous action in the dispatcher
-     *
-     * @return string
-     */
-    public function getPreviousActionName();
 
     /**
      * @param string $glue

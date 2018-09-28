@@ -7,7 +7,7 @@ class IndexController extends ControllerBase
 {
     public function indexAction()
     {
-        $this->dispatcher->forward('about');
+        $this->response->redirect('about');
     }
 
     /**

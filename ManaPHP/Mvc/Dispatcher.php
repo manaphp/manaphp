@@ -18,16 +18,6 @@ use ManaPHP\Utility\Text;
 class Dispatcher extends Component implements DispatcherInterface
 {
     /**
-     * @var bool
-     */
-    protected $_finished = false;
-
-    /**
-     * @var bool
-     */
-    protected $_forwarded = false;
-
-    /**
      * @var string
      */
     protected $_controllerName;
@@ -52,15 +42,6 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     protected $_returnedValue;
 
-    /**
-     * @var string
-     */
-    protected $_previousControllerName;
-
-    /**
-     * @var string
-     */
-    protected $_previousActionName;
 
     public function saveInstanceState()
     {
@@ -69,15 +50,11 @@ class Dispatcher extends Component implements DispatcherInterface
 
     public function restoreInstanceState($data)
     {
-        $this->_finished = false;
-        $this->_forwarded = false;
         $this->_controllerName = null;
         $this->_actionName = null;
         $this->_params = [];
         $this->_controller = null;
         $this->_returnedValue = null;
-        $this->_previousControllerName = null;
-        $this->_previousActionName = null;
     }
 
     /**
@@ -205,7 +182,6 @@ class Dispatcher extends Component implements DispatcherInterface
      * @param array  $params
      *
      * @return bool
-     * @throws \ManaPHP\Mvc\Dispatcher\Exception
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
      */
     public function dispatch($controller, $action, $params = [])
@@ -224,122 +200,41 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         $controllerInstance = null;
-        $numberDispatches = 0;
-        $this->_finished = false;
 
-        while ($this->_finished === false) {
-            // if the user made a forward in the listener,the $this->_finished will be changed to false.
-            $this->_finished = true;
+        $controllerClassName = $this->getControllerClassName();
 
-            if ($numberDispatches++ === 32) {
-                throw new DispatcherException('dispatcher has detected a cyclic routing causing stability problems');
-            }
+        if (!class_exists($controllerClassName) && !$this->_di->has($controllerClassName)) {
+            throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
+        }
 
-            $controllerClassName = $this->getControllerClassName();
+        /**
+         * @var \ManaPHP\Mvc\ControllerInterface $controllerInstance
+         */
+        $controllerInstance = $this->_di->getShared($controllerClassName);
+        $this->_controller = $controllerInstance;
 
-            if (!class_exists($controllerClassName) && !$this->_di->has($controllerClassName)) {
-                throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
-            }
+        if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
+            return false;
+        }
 
-            /**
-             * @var \ManaPHP\Mvc\ControllerInterface $controllerInstance
-             */
-            $controllerInstance = $this->_di->getShared($controllerClassName);
-            $this->_controller = $controllerInstance;
+        if (method_exists($controllerInstance, 'beforeExecuteRoute') && $controllerInstance->beforeExecuteRoute() === false) {
+            return false;
+        }
 
-            if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
-                return false;
-            }
+        $this->_returnedValue = $this->actionInvoker->invoke($controllerInstance, $this->_actionName, $this->_params);
 
-            if ($this->_finished === false) {
-                continue;
-            }
 
-            // Calling beforeExecuteRoute as callback
-            if (method_exists($controllerInstance, 'beforeExecuteRoute')) {
-                if ($controllerInstance->beforeExecuteRoute() === false) {
-                    continue;
-                }
+        if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
+            return false;
+        }
 
-                if ($this->_finished === false) {
-                    continue;
-                }
-            }
-
-            $this->_returnedValue = $this->actionInvoker->invoke($controllerInstance, $this->_actionName, $this->_params);
-            if ($this->_finished === false) {
-                continue;
-            }
-
-            if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
-                return false;
-            }
-
-            if ($this->_finished === false) {
-                continue;
-            }
-
-            if (method_exists($controllerInstance, 'afterExecuteRoute')) {
-                if ($controllerInstance->afterExecuteRoute() === false) {
-                    continue;
-                }
-
-                if ($this->_finished === false) {
-                    continue;
-                }
-            }
+        if (method_exists($controllerInstance, 'afterExecuteRoute')) {
+            $controllerInstance->afterExecuteRoute();
         }
 
         $this->fireEvent('dispatcher:afterDispatch');
 
         return true;
-    }
-
-    /**
-     * Forwards the execution flow to another controller/action
-     * Dispatchers are unique per module. Forwarding between modules is not allowed
-     *
-     *<code>
-     *  $this->dispatcher->forward('posts/index'));
-     *</code>
-     *
-     * @param string $forward
-     * @param array  $params
-     *
-     * @throws \ManaPHP\Mvc\Dispatcher\Exception
-     */
-    public function forward($forward, $params = [])
-    {
-        $parts = explode('/', $forward);
-        switch (count($parts)) {
-            case 1:
-                $this->_previousActionName = $this->_actionName;
-                $this->_actionName = strpos($parts[0], '_') === false ? $parts[0] : lcfirst(Text::camelize($parts[0]));
-                break;
-            case 2:
-                $this->_previousControllerName = $this->_controllerName;
-                $this->_controllerName = strpos($parts[0], '_') === false ? ucfirst($parts[0]) : Text::camelize($parts[0]);
-                $this->_previousActionName = $this->_actionName;
-                $this->_actionName = strpos($parts[1], '_') === false ? $parts[1] : lcfirst(Text::camelize($parts[1]));
-                break;
-            default:
-                throw new DispatcherException(['`:forward` forward format is invalid', 'forward' => $forward]);
-        }
-
-        $this->_params = array_merge($this->_params, $params);
-
-        $this->_finished = false;
-        $this->_forwarded = true;
-    }
-
-    /**
-     * Check if the current executed action was forwarded by another one
-     *
-     * @return bool
-     */
-    public function wasForwarded()
-    {
-        return $this->_forwarded;
     }
 
     /**
@@ -370,26 +265,6 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->_controllerName = Text::camelize($controllerName);
 
         return $this;
-    }
-
-    /**
-     * Returns the previous controller in the dispatcher
-     *
-     * @return string
-     */
-    public function getPreviousControllerName()
-    {
-        return $this->_previousControllerName;
-    }
-
-    /**
-     * Returns the previous action in the dispatcher
-     *
-     * @return string
-     */
-    public function getPreviousActionName()
-    {
-        return $this->_previousActionName;
     }
 
     /**

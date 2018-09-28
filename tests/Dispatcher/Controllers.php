@@ -31,11 +31,6 @@ namespace App\Test\Controllers {
             return $a + $b;
         }
 
-        public function another3Action()
-        {
-            return $this->dispatcher->forward('test2/another4');
-        }
-
         public function another4Action()
         {
             return 120;
