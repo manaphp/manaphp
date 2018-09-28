@@ -183,4 +183,12 @@ class Paginator extends Component implements PaginatorInterface
     {
         return $this->renderAsArray();
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->renderAsArray();
+    }
 }

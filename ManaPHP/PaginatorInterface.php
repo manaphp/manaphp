@@ -38,4 +38,9 @@ interface PaginatorInterface
      * @return string
      */
     public function renderAsHtml($urlTemplate = null);
+
+    /**
+     * @return array
+     */
+    public function toArray();
 }
