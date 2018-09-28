@@ -103,7 +103,11 @@ class Model extends \ManaPHP\Model
         $calledClass = get_called_class();
 
         if (!isset($cached[$calledClass])) {
-            return $cached[$calledClass] = array_keys($this->getFieldTypes());
+            $fieldTypes = $this->getFieldTypes();
+            if ($this->getPrimaryKey() !== '_id') {
+                unset($fieldTypes['_id']);
+            }
+            return $cached[$calledClass] = array_keys($fieldTypes);
         }
 
         return $cached[$calledClass];
@@ -372,6 +376,8 @@ class Model extends \ManaPHP\Model
         foreach ($fields as $field) {
             $fieldValues[$field] = $this->$field;
         }
+
+        $fieldValues['_id'] = $this->_id;
 
         foreach ($this->getJsonFields() as $field) {
             if (is_array($this->$field)) {
