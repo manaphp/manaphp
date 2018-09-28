@@ -929,10 +929,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function indexBy($indexBy)
     {
-        if (is_array($indexBy)) {
-            $this->select([key($indexBy), current($indexBy)]);
-        }
-
         $this->_index = $indexBy;
 
         return $this;
