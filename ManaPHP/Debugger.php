@@ -274,6 +274,7 @@ class Debugger extends Component implements DebuggerInterface
     public function save()
     {
         if ($this->_file !== null) {
+            $this->logger->debug('debugger-link: ' . $this->getUrl(), 'debugger.link');
             $this->filesystem->filePut('@data/debugger/' . $this->_file, $this->output());
         }
     }
