@@ -1,9 +1,9 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Exception;
 use ManaPHP\Mvc\Dispatcher;
+use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
 require __DIR__ . '/Dispatcher/Controllers.php';
@@ -42,7 +42,7 @@ class MvcDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->_di = new FactoryDefault();
+        $this->_di = new Factory();
 
         $this->_di->alias->set('@ns.module', 'App\\Test');
         $this->_di->remove($this->_di->alias->resolve('@ns.module\\Controllers\\Test1Controller'));
