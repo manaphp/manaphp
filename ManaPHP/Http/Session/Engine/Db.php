@@ -40,7 +40,7 @@ class Db extends Component implements EngineInterface
          */
         $model = new $this->_model;
         $model = $model::first(['session_id' => $session_id]);
-        if ($model !== false && $model->expired_time > time()) {
+        if ($model && $model->expired_time > time()) {
             return $model->data;
         } else {
             return '';

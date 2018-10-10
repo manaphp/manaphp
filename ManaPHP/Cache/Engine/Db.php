@@ -45,7 +45,7 @@ class Db extends Component implements EngineInterface
         $model = new $this->_model;
         $model = $model::first(['hash' => md5($key)]);
 
-        return $model !== false && $model->expired_time >= time();
+        return $model && $model->expired_time >= time();
     }
 
     /**
@@ -61,7 +61,7 @@ class Db extends Component implements EngineInterface
         $model = new $this->_model;
         $model = $model::first(['hash' => md5($key)]);
 
-        if ($model !== false && $model->expired_time > time()) {
+        if ($model && $model->expired_time > time()) {
             return $model->value;
         } else {
             return false;

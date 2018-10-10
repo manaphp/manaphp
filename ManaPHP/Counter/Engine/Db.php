@@ -52,7 +52,7 @@ class Db implements EngineInterface
         $counter = new $this->_model;
         $counter = $counter::first(['hash' => md5($key)]);
 
-        return $counter === false ? 0 : (int)$counter->value;
+        return $counter ? (int)$counter->value : 0;
     }
 
     /**
