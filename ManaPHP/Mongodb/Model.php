@@ -104,7 +104,7 @@ class Model extends \ManaPHP\Model
 
         if (!isset($cached[$calledClass])) {
             $fieldTypes = $this->getFieldTypes();
-            if ($this->getPrimaryKey() !== '_id') {
+            if (isset($fieldTypes['_id']) && $fieldTypes['_id'] === 'objectid') {
                 unset($fieldTypes['_id']);
             }
             return $cached[$calledClass] = array_keys($fieldTypes);
