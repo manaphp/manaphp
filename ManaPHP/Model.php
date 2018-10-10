@@ -156,7 +156,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         if ($this->_snapshot && isset($this->_snapshot[$field])) {
             $ts = is_numeric($this->_snapshot[$field]);
         } elseif (isset($this->$field)) {
-            $ts = is_numeric($field);
+            $ts = is_numeric($this->$field);
         } else {
             $ts = in_array($field, $this->getIntFields(), true);
         }
