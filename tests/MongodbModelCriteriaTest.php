@@ -19,11 +19,11 @@ class MongodbModelCriteriaTest extends TestCase
 
     public function test_construct()
     {
-        $document = City::criteria()->fetchOne();
-        $this->assertEquals(['city_id', 'city', 'country_id', 'last_update'], array_keys($document->toArray()));
+        $document = City::criteria()->fetch();
+        $this->assertEquals(['city_id', 'city', 'country_id', 'last_update'], array_keys($document[0]->toArray()));
 
-        $document = City::criteria(['city_id', 'city'])->fetchOne();
-        $this->assertEquals(['city_id', 'city'], array_keys(array_filter($document->toArray())));
+        $document = City::criteria(['city_id', 'city'])->fetch();
+        $this->assertEquals(['city_id', 'city'], array_keys(array_filter($document[0]->toArray())));
     }
 
     public function test_values()
@@ -89,14 +89,14 @@ class MongodbModelCriteriaTest extends TestCase
         /**
          * @var City $document
          */
-        $document = City::criteria()->where('city_id', 2)->fetchOne();
-        $this->assertEquals(2, $document->city_id);
+        $document = City::criteria()->where('city_id', 2)->fetch();
+        $this->assertEquals(2, $document[0]->city_id);
 
-        $document = City::criteria()->where('city_id', '2')->fetchOne();
-        $this->assertEquals(2, $document->city_id);
+        $document = City::criteria()->where('city_id', '2')->fetch();
+        $this->assertEquals(2, $document[0]->city_id);
 
-        $document = City::criteria()->where(['city_id' => 2])->fetchOne();
-        $this->assertEquals(2, $document->city_id);
+        $document = City::criteria()->where(['city_id' => 2])->fetch();
+        $this->assertEquals(2, $document[0]->city_id);
 
         $documents = City::criteria()->where('city_id', -2)->fetch();
         $this->assertEmpty($documents);
