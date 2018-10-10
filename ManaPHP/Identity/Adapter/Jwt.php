@@ -2,33 +2,16 @@
 
 namespace ManaPHP\Identity\Adapter;
 
-use ManaPHP\Identity;
 use ManaPHP\Identity\ExpiredCredentialException;
 use ManaPHP\Identity\InvalidCredentialException;
-use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Identity\NotBeforeCredentialException;
 
 /**
  * Class Jwt
  * @package ManaPHP\Identity\Adapter
- * @property \ManaPHP\Http\RequestInterface $request
  */
-class Jwt extends Identity
+class Jwt extends Token
 {
-    /**
-     * @var string
-     */
-    protected $_alg;
-    /**
-     * @var array
-     */
-    protected $_key = [];
-
-    /**
-     * @var int
-     */
-    protected $_ttl = 86400;
-
     /**
      * Jwt constructor.
      *
@@ -51,9 +34,8 @@ class Jwt extends Identity
      */
     public function encode($claims)
     {
-        if (!isset($claims['exp'])) {
-            $claims['exp'] = time() + $this->_ttl;
-        }
+        $claims['iat'] = time();
+        $claims['exp'] = time() + $this->_ttl;
 
         $header = $this->base64urlEncode(json_encode(['alg' => $this->_alg, 'typ' => 'JWT']));
         $payload = $this->base64urlEncode(json_encode($claims, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
@@ -126,17 +108,24 @@ class Jwt extends Identity
     }
 
     /**
-     * @param bool $silent
+     * @param string $token
      *
-     * @return static
+     * @return array
      */
-    public function authenticate($silent = true)
+    public function decodeClaims($token)
     {
-        $token = $this->request->getAccessToken();
-        if (!$token && !$silent) {
-            throw new NoCredentialException('no token');
+        $parts = explode('.', $token, 5);
+        if (count($parts) !== 3) {
+            throw new InvalidCredentialException(['The JWT `:token` must have one dot', 'token' => $token]);
         }
-        $claims = $this->decode($token);
-        return $this->setClaims($claims);
+
+        list(, $payload,) = $parts;
+
+        $claims = json_decode($this->base64urlDecode($payload), true);
+        if (!is_array($claims)) {
+            throw new InvalidCredentialException('payload is not array.');
+        }
+
+        return $claims;
     }
 }
