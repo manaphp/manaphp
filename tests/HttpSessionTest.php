@@ -1,8 +1,8 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Http\Session;
+use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
 class HttpSessionTest extends TestCase
@@ -11,7 +11,7 @@ class HttpSessionTest extends TestCase
     public function setUp()
     {
         error_reporting(0);
-        new FactoryDefault();
+        new Factory();
     }
 
     public function test_get()
