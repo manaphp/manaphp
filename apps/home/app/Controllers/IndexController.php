@@ -7,7 +7,7 @@ class IndexController extends ControllerBase
 {
     public function indexAction()
     {
-        $this->response->redirect('about');
+        return $this->response->redirect('about');
     }
 
     /**
