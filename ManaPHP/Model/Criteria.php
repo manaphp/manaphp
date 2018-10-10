@@ -334,10 +334,14 @@ abstract class Criteria extends Component implements CriteriaInterface
      *
      * @return int
      */
-    public function count($field = null)
+    public function count($field = '*')
     {
-        $r = $this->aggregate(['r' => "COUNT($field)"])[0]['r'];
-        return is_string($r) ? (int)$r : $r;
+        if ($rs = $this->aggregate(['r' => "COUNT($field)"])) {
+            $r = $rs[0]['r'];
+            return is_string($r) ? (int)$r : $r;
+        } else {
+            return 0;
+        }
     }
 
     public function jsonSerialize()

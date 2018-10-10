@@ -317,7 +317,7 @@ interface CriteriaInterface
      *
      * @return int
      */
-    public function count($field = null);
+    public function count($field = '*');
 
     /**
      *
