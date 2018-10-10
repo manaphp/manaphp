@@ -36,6 +36,12 @@ class  IdentityAdapterMwtTest extends TestCase
         $mwt = new Mwt();
         $encoded = $mwt->encode(['id' => 100, 'name' => 'mana', 'exp' => 1]);
         sleep(2);
-        $this->assertFalse($mwt->decode($encoded));
+        try{
+            $this->assertFalse($mwt->decode($encoded));
+            $this->fail('why not?');
+        }catch (\Exception $exception){
+
+        }
+
     }
 }

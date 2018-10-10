@@ -42,6 +42,12 @@ class  IdentityAdapterJwtTest extends TestCase
         $jwt = new Jwt();
         $encoded = $jwt->encode(['id' => 100, 'name' => 'mana', 'exp' => 1]);
         sleep(2);
-        $this->assertFalse($jwt->decode($encoded));
+        try{
+            $this->assertFalse($jwt->decode($encoded));
+            $this->fail('why not');
+        }catch (\Exception $e){
+
+        }
+
     }
 }
