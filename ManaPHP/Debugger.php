@@ -49,8 +49,6 @@ class Debugger extends Component implements DebuggerInterface
         $this->eventsManager->peekEvent('*', $handler);
 
         $this->attachEvent('router:beforeRoute');
-
-        $this->response->setHeader('X-Debugger-Link', $this->getUrl());
     }
 
     public function saveInstanceState()
