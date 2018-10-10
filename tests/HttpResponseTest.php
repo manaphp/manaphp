@@ -2,8 +2,8 @@
 namespace Tests;
 
 use ManaPHP\Di;
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Http\Response;
+use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
 class HttpResponseTest extends TestCase
@@ -11,9 +11,7 @@ class HttpResponseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $di = new FactoryDefault();
-        $di->setShared('configure', 'ManaPHP\Configure\Configure');
-
+        $di = new Factory();
     }
 
     public function test_setStatusCode()
