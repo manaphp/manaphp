@@ -203,6 +203,21 @@ class MongodbController extends Controller
             $str .= '    public $' . $field . ';' . PHP_EOL;
         }
 
+        if (true) {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return array' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public function getFieldTypes()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= '        return [' . PHP_EOL;
+            foreach ($fieldTypes as $field => $type) {
+                $str .= "            '$field' => '$type'," . PHP_EOL;
+            }
+            $str .= '        ];' . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
         if ($service !== 'mongodb') {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
@@ -230,18 +245,26 @@ class MongodbController extends Controller
             $str .= '    }' . PHP_EOL;
         }
 
-        if (1) {
+        $primaryKey = null;
+        if ($primaryKey = $this->_inferPrimaryKey($fieldTypes, $modelName)) {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return array' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getFieldTypes()' . PHP_EOL;
+            $str .= '    public function getPrimaryKey()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
-            $str .= '        return [' . PHP_EOL;
-            foreach ($fieldTypes as $field => $type) {
-                $str .= "            '$field' => '$type'," . PHP_EOL;
-            }
-            $str .= '        ];' . PHP_EOL;
+            $str .= "        return '$primaryKey';" . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        if ($optimized && $primaryKey && $fieldTypes[$primaryKey] === 'integer') {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public function getAutoIncrementField()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= "        return '$primaryKey';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
@@ -276,29 +299,6 @@ class MongodbController extends Controller
                 $str .= "            '$field'," . PHP_EOL;
             }
             $str .= '        ];' . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
-        $primaryKey = null;
-        if ($primaryKey = $this->_inferPrimaryKey($fieldTypes, $modelName)) {
-            $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
-            $str .= '    public function getPrimaryKey()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '$primaryKey';" . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
-        if ($optimized && $primaryKey && $fieldTypes[$primaryKey] === 'integer') {
-            $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
-            $str .= '    public function getAutoIncrementField()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '$primaryKey';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
