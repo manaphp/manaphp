@@ -36,6 +36,11 @@ class Mongodb extends Component implements MongodbInterface
     protected $_writeConcern;
 
     /**
+     * @var int
+     */
+    protected $_lastIoTime;
+
+    /**
      * Mongodb constructor.
      *
      * @param string|array $dsn
@@ -102,6 +107,19 @@ class Mongodb extends Component implements MongodbInterface
             $this->_manager = new Manager($this->_dsn);
             $this->fireEvent('mongodb:afterConnect');
         }
+
+        if (time() - $this->_lastIoTime >= 10) {
+            try {
+                $this->logger->debug('probe the connection on first or long time idle', 'mongodb.ping');
+                $command = new Command(['ping' => 1]);
+                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                $this->_manager->executeCommand('admin', $command);
+            } catch (\Exception $exception) {
+                null;
+            }
+        }
+
+        $this->_lastIoTime = time();
 
         return $this->_manager;
     }
