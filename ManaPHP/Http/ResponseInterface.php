@@ -90,6 +90,11 @@ interface ResponseInterface
     public function setContentType($contentType, $charset = null);
 
     /**
+     * @return string
+     */
+    public function getContentType();
+
+    /**
      * Redirect by HTTP to another action or URL
      *
      * @param string|array $location

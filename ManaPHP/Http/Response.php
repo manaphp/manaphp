@@ -210,6 +210,14 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        return isset($this->_headers['Content-Type']) ? $this->_headers['Content-Type'] : null;
+    }
+
+    /**
      * Redirect by HTTP to another action or URL
      *<code>
      *  //Using a string redirect (internal/external)
