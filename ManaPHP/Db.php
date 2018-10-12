@@ -86,6 +86,16 @@ abstract class Db extends Component implements DbInterface
     protected $_prepared = [];
 
     /**
+     * @var string
+     */
+    protected $_pingSql = "SELECT 'PING'";
+
+    /**
+     * @var float
+     */
+    protected $_lastIoTime;
+
+    /**
      * \ManaPHP\Db\Adapter constructor
      *
      */
@@ -104,14 +114,42 @@ abstract class Db extends Component implements DbInterface
         if ($this->_pdo === null) {
             try {
                 $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
-                $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+                $pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
                 $this->fireEvent('db:afterConnect');
-            } catch (\PDOException $e) {
+
+                /** @noinspection NotOptimalIfConditionsInspection */
+                if (isset($this->_options[\PDO::ATTR_PERSISTENT]) && $this->_options[\PDO::ATTR_PERSISTENT]) {
+                    $pdo->query($this->_pingSql)->fetchAll();
+                }
+                $this->_pdo = $pdo;
+            } catch (\Exception $e) {
                 /** @noinspection PhpUnhandledExceptionInspection */
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
+        } else {
+            if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0) {
+                try {
+                    @$this->_pdo->query($this->_pingSql)->fetchAll();
+                } catch (\Exception $exception) {
+                    try {
+                        $this->close();
+
+                        $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
+                        $pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+                        $this->fireEvent('db:afterConnect');
+                        $this->_pdo = $pdo;
+                    } catch (\Exception $e) {
+                        /** @noinspection PhpUnhandledExceptionInspection */
+                        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                        throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(),
+                            $e);
+                    }
+                }
+            }
         }
+
+        $this->_lastIoTime = microtime(true);
 
         return $this->_pdo;
     }
@@ -124,22 +162,20 @@ abstract class Db extends Component implements DbInterface
      */
     public function ping()
     {
-        $sql = 'SELECT 1';
-
         if ($this->_pdo) {
             try {
-                $this->_getPdo()->query($sql)->fetchAll();
+                $this->_getPdo()->query($this->_pingSql)->fetchAll();
             } catch (\Exception $e) {
                 $this->close();
                 try {
-                    $this->_getPdo()->query($sql)->fetchAll();
+                    $this->_getPdo()->query($this->_pingSql)->fetchAll();
                 } catch (\Exception $exception) {
                     throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_dsn], 0, $exception);
                 }
             }
         } else {
             try {
-                $this->_getPdo()->query($sql)->fetchAll();
+                $this->_getPdo()->query($this->_pingSql)->fetchAll();
             } catch (\Exception $exception) {
                 throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_dsn], 0, $exception);
             }
@@ -730,15 +766,16 @@ abstract class Db extends Component implements DbInterface
             throw new RuntimeException('There is no active transaction');
         }
 
-        $this->_transactionLevel--;
-
-        if ($this->_transactionLevel === 0) {
+        if ($this->_transactionLevel === 1) {
             $this->fireEvent('db:rollbackTransaction');
 
             if (!$this->_getPdo()->rollBack()) {
+                $this->_transactionLevel--;
                 throw new DbException('rollBack failed.');
             }
         }
+
+        $this->_transactionLevel--;
     }
 
     /**
@@ -755,15 +792,16 @@ abstract class Db extends Component implements DbInterface
             throw new RuntimeException('There is no active transaction');
         }
 
-        $this->_transactionLevel--;
-
-        if ($this->_transactionLevel === 0) {
+        if ($this->_transactionLevel === 1) {
             $this->fireEvent('db:commitTransaction');
 
             if (!$this->_getPdo()->commit()) {
+                $this->_transactionLevel--;
                 throw new DbException('commit failed.');
             }
         }
+
+        $this->_transactionLevel--;
     }
 
     /**
@@ -786,7 +824,11 @@ abstract class Db extends Component implements DbInterface
 
     public function close()
     {
-        $this->_pdo = null;
-        $this->_prepared = [];
+        if ($this->_pdo) {
+            $this->_pdo = null;
+            $this->_prepared = [];
+            $this->_lastIoTime = null;
+            $this->_transactionLevel = 0;
+        }
     }
 }
