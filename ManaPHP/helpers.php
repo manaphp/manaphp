@@ -39,7 +39,7 @@ if (!function_exists('env')) {
      */
     function env($key = null, $default = null)
     {
-        return di('dotenv')->getEnv($key, $default);
+        return di('dotenv')->get($key, $default);
     }
 }
 

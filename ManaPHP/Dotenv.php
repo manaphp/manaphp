@@ -88,7 +88,7 @@ class Dotenv extends Component implements DotenvInterface
      *
      * @return mixed|array
      */
-    public function getEnv($key, $default = null)
+    public function get($key, $default = null)
     {
         if ($key === null) {
             return $this->_env;
