@@ -136,7 +136,7 @@ class Redis extends Component
             throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
         }
 
-        $this->redis = $redis;
+        $this->_redis = $redis;
         $this->_lastIoTime = microtime(true);
     }
 
@@ -181,8 +181,7 @@ class Redis extends Component
         } else {
             if (microtime(true) - $this->_lastIoTime > 1.0) {
                 try {
-                    $this->_redis->ping();
-                    $this->_lastIoTime = microtime(true);
+                    @$this->_redis->ping();
                 } catch (\Exception $exception) {
                     null;
                 }
