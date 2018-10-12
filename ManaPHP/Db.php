@@ -827,10 +827,9 @@ abstract class Db extends Component implements DbInterface
         if ($this->_pdo) {
             if ($this->_transactionLevel !== 0) {
                 $this->logger->warn('transaction is not close correctly', 'db.transaction.abnormal');
+                $this->_pdo->rollBack();
+                $this->_transactionLevel = 0;
             }
-
-            $this->_pdo->rollBack();
-            $this->_transactionLevel = 0;
 
             $this->_pdo = null;
             $this->_prepared = [];
