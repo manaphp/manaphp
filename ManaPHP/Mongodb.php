@@ -95,6 +95,8 @@ class Mongodb extends Component implements MongodbInterface
     protected function _getManager()
     {
         if ($this->_manager === null) {
+            $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.connect');
+
             $this->fireEvent('mongodb:beforeConnect', ['dsn' => $this->_dsn]);
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_manager = new Manager($this->_dsn);
