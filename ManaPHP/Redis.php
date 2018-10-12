@@ -3,8 +3,8 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Redis\ConnectionException;
 use ManaPHP\Redis\AuthException;
+use ManaPHP\Redis\ConnectionException;
 
 class Redis extends Component
 {
@@ -62,9 +62,6 @@ class Redis extends Component
      * Redis constructor.
      *
      * @param string $url
-     *
-     * @throws \ManaPHP\Redis\AuthException
-     * @throws \ManaPHP\Redis\ConnectionException
      */
     public function __construct($url = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
@@ -97,27 +94,27 @@ class Redis extends Component
         $this->_retry_interval = isset($parts2['retry_interval']) ? (int)$parts2['retry_interval'] : 0;
         $this->_auth = isset($parts2['auth']) ? $parts2['auth'] : '';
         $this->_persistent = isset($parts2['persistent']) && $parts2['persistent'] === '1';
-
-        $this->_redis = new \Redis();
-
-        if (!$this->_connect()) {
-            throw new ConnectionException(['connect to server failed: `:url`', 'url' => $url]);
-        }
     }
 
     /**
-     * @return bool
+     * @throws \ManaPHP\Redis\ConnectionException
      * @throws \ManaPHP\Redis\AuthException
      */
-    protected function _connect()
+    public function connect()
     {
+        if ($this->_redis) {
+            $this->_redis->close();
+        }
+
+        $this->_redis = new \Redis();
+
         if ($this->_persistent) {
             if (!@$this->_redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
-                return false;
+                throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
             }
         } else {
             if (!@$this->_redis->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval)) {
-                return false;
+                throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
             }
         }
 
@@ -128,28 +125,14 @@ class Redis extends Component
         if ($this->_db !== 0 && !$this->_redis->select($this->_db)) {
             throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
         }
-
-        return true;
     }
 
     public function close()
     {
-        $this->_redis->close();
-    }
-
-    /**
-     * @return static
-     * @throws \ManaPHP\Redis\AuthException
-     * @throws \ManaPHP\Redis\ConnectionException
-     */
-    public function reconnect()
-    {
-        $this->close();
-        if (!$this->_connect()) {
-            throw new ConnectionException(['reconnect to `:url` failed', 'url' => $this->_url]);
+        if ($this->_redis) {
+            $this->_redis->close();
         }
-
-        return $this;
+        $this->_redis = null;
     }
 
     public function ping()
@@ -158,7 +141,7 @@ class Redis extends Component
             $this->_redis->time();
         } catch (\Exception  $exception) {
             try {
-                $this->reconnect();
+                $this->connect();
             } catch (\Exception $exception) {
                 throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_url]);
             }
@@ -174,6 +157,10 @@ class Redis extends Component
      */
     public function __call($name, $arguments)
     {
+        if (!$this->_redis) {
+            $this->connect();
+        }
+
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
             $this->logger->debug(["\$redis->$name(:args) ... blocking",
                 'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
@@ -216,7 +203,7 @@ class Redis extends Component
             $start = time();
             do {
                 sleep(1);
-                if ($r = $this->_connect()) {
+                if ($r = $this->connect()) {
                     break;
                 }
             } while (time() - $start > $this->_retry_seconds);
