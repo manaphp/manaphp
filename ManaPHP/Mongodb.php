@@ -36,7 +36,7 @@ class Mongodb extends Component implements MongodbInterface
     protected $_writeConcern;
 
     /**
-     * @var int
+     * @var float
      */
     protected $_lastIoTime;
 
@@ -108,7 +108,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->fireEvent('mongodb:afterConnect');
         }
 
-        if (time() - $this->_lastIoTime >= 10) {
+        if (microtime(true) - $this->_lastIoTime > 1.0) {
             try {
                 $this->logger->debug('probe the connection on first or long time idle', 'mongodb.ping');
                 $command = new Command(['ping' => 1]);
@@ -119,7 +119,7 @@ class Mongodb extends Component implements MongodbInterface
             }
         }
 
-        $this->_lastIoTime = time();
+        $this->_lastIoTime = microtime(true);
 
         return $this->_manager;
     }
