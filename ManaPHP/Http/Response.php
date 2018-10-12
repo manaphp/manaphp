@@ -104,6 +104,39 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * @param string $name
+     * @param string $default
+     *
+     * @return string
+     */
+    public function getHeader($name, $default = null)
+    {
+        return isset($this->_headers[$name]) ? $this->_headers[$name] : $default;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasHeader($name)
+    {
+        return isset($this->_headers[$name]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return static
+     */
+    public function removeHeader($name)
+    {
+        unset($this->_headers[$name]);
+
+        return $this;
+    }
+
+    /**
      * Send a raw header to the response
      *<code>
      *    $response->setRawHeader("HTTP/1.1 404 Not Found");

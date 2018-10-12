@@ -36,6 +36,28 @@ interface ResponseInterface
     public function setHeader($name, $value);
 
     /**
+     * @param string $name
+     * @param string $default
+     *
+     * @return string
+     */
+    public function getHeader($name, $default = null);
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasHeader($name);
+
+    /**
+     * @param string $name
+     *
+     * @return static
+     */
+    public function removeHeader($name);
+
+    /**
      * Send a raw header in the response
      *
      * @param string $header
