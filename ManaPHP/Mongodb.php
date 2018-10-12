@@ -127,7 +127,13 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->fireEvent('mongodb:beforeBulkWrite', compact('namespace', 'bulk'));
         $start_time = microtime(true);
-        $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
+        try {
+            $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
+        } catch (\Exception $exception) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
         $elapsed = round(microtime(true) - $start_time, 3);
         $this->fireEvent('mongodb:afterBulkWrite', compact('namespace', 'bulk', 'result', 'elapsed'));
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -376,11 +382,17 @@ class Mongodb extends Component implements MongodbInterface
         }
         $this->fireEvent('mongodb:beforeQuery', compact('namespace', 'filter', 'options'));
         $start_time = microtime(true);
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), new ReadPreference($readPreference));
-        $cursor->setTypeMap(['root' => 'array']);
-        $result = $cursor->toArray();
+
+        try {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), new ReadPreference($readPreference));
+            $cursor->setTypeMap(['root' => 'array']);
+            $result = $cursor->toArray();
+        } catch (\Exception $exception) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
         $elapsed = round(microtime(true) - $start_time, 3);
         $this->fireEvent('mongodb:afterQuery', compact('namespace', 'filter', 'options', 'result', 'elapsed'));
         $this->logger->debug(compact('namespace', 'filter', 'options', 'result', 'elapsed'), 'mongodb.query');
@@ -401,10 +413,18 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->fireEvent('mongodb:beforeCommand', compact('db', 'command'));
         $start_time = microtime(true);
+        try {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $cursor = $this->_getManager()->executeCommand($db, new Command($command));
+            $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+            $result = $cursor->toArray();
+        } catch (\Exception $exception) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $cursor = $this->_getManager()->executeCommand($db, new Command($command));
-        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-        $result = $cursor->toArray();
+
         $elapsed = round(microtime(true) - $start_time, 3);
         $this->fireEvent('mongodb:afterCommand', compact('db', 'command', 'result', 'elapsed'));
         $count = count($result);
