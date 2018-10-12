@@ -43,15 +43,7 @@ class HttpResponseTest extends TestCase
             'Content-Length' => '1234'
         ], $response->getHeaders());
     }
-
-    public function test_setRawHeader()
-    {
-        $response = new Response();
-
-        $response->setRawHeader('Server: Apache');
-        $this->assertEquals(['Server: Apache' => ''], $response->getHeaders());
-    }
-
+    
     public function test_setExpires()
     {
         $response = new Response();

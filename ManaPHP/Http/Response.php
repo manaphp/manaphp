@@ -137,23 +137,6 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
-     * Send a raw header to the response
-     *<code>
-     *    $response->setRawHeader("HTTP/1.1 404 Not Found");
-     *</code>
-     *
-     * @param string $header
-     *
-     * @return static
-     */
-    public function setRawHeader($header)
-    {
-        $this->_headers[$header] = null;
-
-        return $this;
-    }
-
-    /**
      * Sets a Expires header to use HTTP cache
      *<code>
      *    $this->response->setExpires(new DateTime());

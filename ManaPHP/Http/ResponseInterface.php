@@ -58,15 +58,6 @@ interface ResponseInterface
     public function removeHeader($name);
 
     /**
-     * Send a raw header in the response
-     *
-     * @param string $header
-     *
-     * @return static
-     */
-    public function setRawHeader($header);
-
-    /**
      * Sets output expire time header
      *
      * @param int $timestamp
