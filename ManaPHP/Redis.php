@@ -59,6 +59,11 @@ class Redis extends Component
     protected $_redis;
 
     /**
+     * @var float
+     */
+    protected $_lastIoTime;
+
+    /**
      * Redis constructor.
      *
      * @param string $url
@@ -103,47 +108,61 @@ class Redis extends Component
     public function connect()
     {
         if ($this->_redis) {
-            $this->_redis->close();
+            $this->close();
         }
 
-        $this->_redis = new \Redis();
+        $redis = new \Redis();
 
         if ($this->_persistent) {
-            if (!@$this->_redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
+            if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
+                throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
+            }
+            try {
+                $redis->ping();
+            } catch (\Exception $exception) {
                 throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
             }
         } else {
-            if (!@$this->_redis->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval)) {
+            if (!@$redis->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval)) {
                 throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
             }
         }
 
-        if ($this->_auth !== '' && !$this->_redis->auth($this->_auth)) {
+        if ($this->_auth !== '' && !$redis->auth($this->_auth)) {
             throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
         }
 
-        if ($this->_db !== 0 && !$this->_redis->select($this->_db)) {
+        if ($this->_db !== 0 && !$redis->select($this->_db)) {
             throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
         }
+
+        $this->redis = $redis;
+        $this->_lastIoTime = microtime(true);
     }
 
     public function close()
     {
         if ($this->_redis) {
             $this->_redis->close();
+            $this->_redis = null;
+            $this->_lastIoTime = null;
         }
-        $this->_redis = null;
     }
 
     public function ping()
     {
-        try {
-            $this->_redis->time();
-        } catch (\Exception  $exception) {
+        if (!$this->_redis) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $this->connect();
+        } else {
             try {
-                $this->connect();
-            } catch (\Exception $exception) {
-                throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_url]);
+                $this->_redis->ping();
+            } catch (\Exception  $exception) {
+                try {
+                    $this->connect();
+                } catch (\Exception $exception) {
+                    throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_url]);
+                }
             }
         }
     }
@@ -159,7 +178,18 @@ class Redis extends Component
     {
         if (!$this->_redis) {
             $this->connect();
+        } else {
+            if (microtime(true) - $this->_lastIoTime > 1.0) {
+                try {
+                    $this->_redis->ping();
+                    $this->_lastIoTime = microtime(true);
+                } catch (\Exception $exception) {
+                    null;
+                }
+            }
         }
+
+        $this->_lastIoTime = microtime(true);
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
             $this->logger->debug(["\$redis->$name(:args) ... blocking",
@@ -167,51 +197,34 @@ class Redis extends Component
             ], 'redis.' . $name);
         }
 
-        try {
-            switch (count($arguments)) {
-                case 0:
-                    $r = $this->_redis->$name();
-                    break;
-                case 1:
-                    $r = $this->_redis->$name($arguments[0]);
-                    break;
-                case 2:
-                    $r = $this->_redis->$name($arguments[0], $arguments[1]);
-                    break;
-                case 3:
-                    $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
-                    break;
-                case 4:
-                    $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
-                    break;
-                case 5:
-                    $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
-                    break;
-                default:
-                    $r = call_user_func_array([$this->_redis, $name], $arguments);
-                    break;
-            }
-            $this->logger->debug(["\$redis->$name(:args) => :return",
-                'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
-                'return' => json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
-            ], 'redis.' . $name);
-
-            return $r;
-        } /** @noinspection PhpRedundantCatchClauseInspection */
-        catch (\Exception $e) {
-            $this->_redis->close();
-            $start = time();
-            do {
-                sleep(1);
-                if ($r = $this->connect()) {
-                    break;
-                }
-            } while (time() - $start > $this->_retry_seconds);
-
-            if (!$r) {
-                throw new ConnectionException(['reconnect to `:url` failed', 'url' => $this->_url]);
-            }
-            return call_user_func_array([$this->_redis, $name], $arguments);
+        switch (count($arguments)) {
+            case 0:
+                $r = $this->_redis->$name();
+                break;
+            case 1:
+                $r = $this->_redis->$name($arguments[0]);
+                break;
+            case 2:
+                $r = $this->_redis->$name($arguments[0], $arguments[1]);
+                break;
+            case 3:
+                $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
+                break;
+            case 4:
+                $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                break;
+            case 5:
+                $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+                break;
+            default:
+                $r = call_user_func_array([$this->_redis, $name], $arguments);
+                break;
         }
+        $this->logger->debug(["\$redis->$name(:args) => :return",
+            'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
+            'return' => json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+        ], 'redis.' . $name);
+
+        return $r;
     }
 }
