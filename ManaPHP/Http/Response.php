@@ -148,6 +148,10 @@ class Response extends Component implements ResponseInterface
      */
     public function setExpires($timestamp)
     {
+        if ($timestamp <= 2592000) {
+            $timestamp += time();
+        }
+
         $date = new \DateTime('now', new \DateTimeZone('UTC'));
         $date->setTimestamp($timestamp);
 
