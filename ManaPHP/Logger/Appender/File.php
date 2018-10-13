@@ -30,7 +30,7 @@ class File extends Component implements AppenderInterface
     public function __construct($options = [])
     {
         if (is_string($options)) {
-            $options = ['file' => $options];
+            $options = [(strpos($options, ':') === false ? 'file' : 'format') => $options];
         }
 
         if (isset($options['file'])) {
