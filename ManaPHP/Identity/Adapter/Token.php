@@ -26,6 +26,8 @@ abstract class Token extends Identity
 
     /**
      * @param int $ttl
+     *
+     * @return static
      */
     public function setTtl($ttl)
     {
@@ -43,6 +45,8 @@ abstract class Token extends Identity
 
     /**
      * @param string|array $key
+     *
+     * @return static
      */
     public function setKey($key)
     {
@@ -73,7 +77,7 @@ abstract class Token extends Identity
      * @return array
      */
     abstract public function decode($token);
-    
+
     /**
      * @param bool $silent
      *
