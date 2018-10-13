@@ -48,7 +48,7 @@ abstract class Controller extends Component implements ControllerInterface, LogC
     public function categorizeLog()
     {
         $className = get_called_class();
-        $controller = basename($className, 'Controller');
+        $controller = basename(str_replace('\\', '/', $className), 'Controller');
         if (strpos($className, '\Areas\\') && preg_match('#/Areas/(\w+)/Controllers#', strtr($className, '\\', '/'), $match)) {
             return 'app.controllers.' . lcfirst($match[1]) . '.' . lcfirst($controller);
         } else {
