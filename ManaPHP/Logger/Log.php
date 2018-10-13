@@ -7,6 +7,7 @@ class Log
     public $process_id;
     public $host;
     public $client_ip;
+    public $request_id;
     public $category;
     public $location;
     public $level;
