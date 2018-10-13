@@ -15,7 +15,7 @@ return [
         'mongodb' => [env('MONGODB_URL')],
         'logger' => [
             'level' => env('LOGGER_LEVEL', 'info'),
-            'appenders' => ['file' => ['file' => '@data/logger/log.log']],
+            'appenders' => ['file' => ['file' => '@data/logger/app.log']],
         ]
     ],
 ];
