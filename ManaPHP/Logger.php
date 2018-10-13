@@ -171,7 +171,7 @@ class Logger extends Component implements LoggerInterface
     {
         for ($i = count($traces) - 1; $i >= 0; $i--) {
             $trace = $traces[$i];
-            if (in_array($trace['function'], $this->_levels, true)) {
+            if ($trace['function'] === '__call' || in_array($trace['function'], $this->_levels, true)) {
                 break;
             }
         }
