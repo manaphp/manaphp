@@ -343,7 +343,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         if (!$ttl) {
             if (!$rs = static::criteria($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new NotFoundException(['No record for `:model` model of `:id` id', 'id' => $id]);
+                throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             } else {
                 return $rs[0];
             }
@@ -375,7 +375,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         if (!$r) {
             if (!$rs = static::criteria($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new NotFoundException(['No record for `:model` model of `:id` id', 'id' => $id]);
+                throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             }
 
             $r = $rs[0];
