@@ -424,7 +424,6 @@ class Logger extends Component implements LoggerInterface
         $log->request_id = isset($_SERVER['HTTP_X_REQUEST_ID']) ? preg_replace('#[^a-zA-Z\d-_\.]#', 'X', $_SERVER['HTTP_X_REQUEST_ID']) : '';
         /** @noinspection NestedTernaryOperatorInspection */
         $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
-        $log->process_id = @getmypid() ?: 0;
         $log->location = $this->_getLocation($traces);
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = microtime(true);
