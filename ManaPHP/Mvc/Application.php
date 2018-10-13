@@ -101,6 +101,10 @@ class Application extends \ManaPHP\Application
             $this->errorHandler->handle($e);
         }
 
+        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !$this->response->hasHeader('X-Request-Id')) {
+            $this->response->setHeader('X-Request-Id', $_SERVER['HTTP_X_REQUEST_ID']);
+        }
+
         $this->response->send();
     }
 }
