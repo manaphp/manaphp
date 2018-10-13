@@ -45,7 +45,6 @@ class Redis extends Component implements AppenderInterface
             'date' => date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000),
             '@timestamp' => $log->timestamp,
             'host' => $log->host,
-            'process_id' => $log->process_id,
             'category' => $log->category,
             'level' => $log->level,
             'location' => $log->location,
