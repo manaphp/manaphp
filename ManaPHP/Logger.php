@@ -199,7 +199,7 @@ class Logger extends Component implements LoggerInterface
                 }
             }
         }
-        return '';
+        return 'unknown';
     }
 
     /**
