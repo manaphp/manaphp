@@ -39,6 +39,6 @@ abstract class Controller extends Component implements LogCategorizable
 {
     public function categorizeLog()
     {
-        return basename(strtr(get_called_class(), '\\', '.'), 'Controller');
+        return 'app.controllers.' . basename(strtr(get_called_class(), '\\', '.'), 'Controller');
     }
 }

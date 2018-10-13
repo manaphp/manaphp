@@ -50,9 +50,9 @@ abstract class Controller extends Component implements ControllerInterface, LogC
         $className = get_called_class();
         $controller = basename($className, 'Controller');
         if (strpos($className, '\Areas\\') && preg_match('#/Areas/(\w+)/Controllers#', strtr($className, '\\', '/'), $match)) {
-            return "$match[1].$controller";
+            return 'app.controllers.' . lcfirst($match[1]) . '.' . lcfirst($controller);
         } else {
-            return $controller;
+            return 'app.controllers.' . lcfirst($controller);
         }
     }
 }
