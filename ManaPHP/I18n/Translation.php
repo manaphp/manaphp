@@ -9,7 +9,6 @@ use ManaPHP\Component;
  * @package i18n
  *
  * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class Translation extends Component implements TranslationInterface
 {

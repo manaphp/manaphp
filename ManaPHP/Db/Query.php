@@ -13,7 +13,6 @@ use ManaPHP\Exception\RuntimeException;
  * @package queryBuilder
  *
  * @property-read \ManaPHP\Paginator               $paginator
- * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Http\RequestInterface   $request
  */
 class Query extends Component implements QueryInterface

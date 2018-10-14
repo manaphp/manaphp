@@ -11,7 +11,6 @@ use ManaPHP\Logger\LogCategorizable;
  *
  * @package logger
  * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class Logger extends Component implements LoggerInterface
 {
