@@ -47,13 +47,13 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
     }
 
     /**
-     * @param string     $permission
-     * @param int|string $roleId
+     * @param string $permission
+     * @param string $role
      *
      * @return bool
      * @throws \ManaPHP\Authorization\Acl\Exception
      */
-    public function isAllowed($permission, $roleId = null)
+    public function isAllowed($permission, $role = null)
     {
         $parts = explode('::', $permission);
         switch (count($parts)) {
@@ -69,13 +69,13 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
                 throw new AclException('ss');
         }
 
-        $roleId = ',' . ($roleId ?: $this->identity->getClaim('role_id')) . ',';
+        $role = ',' . ($role ?: $this->identity->getRole()) . ',';
         $action = ',' . $action . ',';
 
         if (isset($this->_acl['*'])) {
             foreach ($this->_acl['*'] as $item) {
                 $parts = explode(':', $item);
-                if (strpos($parts[0], $roleId) !== false) {
+                if (strpos($parts[0], $role) !== false) {
                     return true;
                 }
             }
@@ -84,7 +84,7 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
         if (isset($this->_acl[$controller])) {
             foreach ($this->_acl[$controller] as $item) {
                 $parts = explode(':', $item);
-                if (strpos($parts[0], $roleId) !== false) {
+                if (strpos($parts[0], $role) !== false) {
                     if (strpos($parts[1], $action) !== false || strpos($parts[1], '*') !== false) {
                         return true;
                     }

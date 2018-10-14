@@ -3,8 +3,8 @@
 namespace App\Areas\Rbac\Components;
 
 use App\Areas\Rbac\Models\Permission;
+use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
-use App\Areas\Rbac\Models\AdminRole;
 use ManaPHP\AuthorizationInterface;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
@@ -20,13 +20,13 @@ class Rbac extends Component implements AuthorizationInterface
 {
     /**
      * @param string $permissionName
-     * @param int    $userId
+     * @param string $role
      *
      * @return bool
      */
-    public function isAllowed($permissionName, $userId = null)
+    public function isAllowed($permissionName, $role = null)
     {
-        $userId = $userId ?: $this->identity->getId(0);
+        $role = $role ?: $this->identity->getRole();
         $permission = Permission::first(['path' => $permissionName]);
 
         if (!$permission) {
@@ -39,11 +39,10 @@ class Rbac extends Component implements AuthorizationInterface
             case Permission::TYPE_PUBLIC:
                 return true;
             case Permission::TYPE_INTERNAL:
-                return !empty($userId);
+                return !empty($role);
             case Permission::TYPE_PRIVATE:
                 $rolesByPermissionId = RolePermission::values('role_id', ['permission_id' => $permission->permission_id]);
-                $rolesByUserId = AdminRole::values('role_id', ['admin_id' => $userId]);
-                return (bool)array_intersect($rolesByPermissionId, $rolesByUserId);
+                return Role::exists(['role_name' => $role, 'role_id' => $rolesByPermissionId]);
             default:
                 throw new InvalidValueException(['`:permission` type is not recognized', 'permission' => $permissionName]);
         }

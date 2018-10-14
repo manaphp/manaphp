@@ -12,9 +12,9 @@ interface AuthorizationInterface
      * Check whether a user is allowed to access a permission
      *
      * @param string $permission
-     * @param int    $userId
+     * @param string $role
      *
      * @return bool
      */
-    public function isAllowed($permission, $userId = null);
+    public function isAllowed($permission, $role = null);
 }

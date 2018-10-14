@@ -12,11 +12,11 @@ class Bypass implements AuthorizationInterface
 {
     /**
      * @param string $permission
-     * @param string $userId
+     * @param string $role
      *
      * @return bool
      */
-    public function isAllowed($permission, $userId = null)
+    public function isAllowed($permission, $role = null)
     {
         return true;
     }
