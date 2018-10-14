@@ -135,7 +135,7 @@ class Manager extends Component implements ManagerInterface, LogCategorizable
             try {
                 $instance = new $className();
                 if ($redis = $this->_getRedis()) {
-                    $redis->hMset($metaKey, [
+                    $redis->hMSet($metaKey, [
                         self::FIELD_HOST => gethostname(),
                         self::FIELD_CLASS => $className,
                         self::FIELD_START_TIME => date('c')]);
