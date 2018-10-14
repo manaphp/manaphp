@@ -8,7 +8,7 @@ use ManaPHP\Http\Session\Exception as SessionException;
  * Class ManaPHP\Http\Session
  *
  * @package session
- * @property-read \ManaPHP\Http\Cookies          $cookies
+ * @property-read \ManaPHP\Http\CookiesInterface $cookies
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Session extends Component implements SessionInterface, \ArrayAccess
