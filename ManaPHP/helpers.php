@@ -1053,3 +1053,35 @@ if (!function_exists('array_index_by')) {
         return $r;
     }
 }
+
+if (!function_exists('array_trim')) {
+    /**
+     * @param array $ar
+     * @param bool  $removeEmpty
+     *
+     * @return array
+     */
+    function array_trim($ar, $removeEmpty = true)
+    {
+        foreach ($ar as $k => $v) {
+            if (is_string($v)) {
+                if ($v === '') {
+                    if ($removeEmpty) {
+                        unset($ar[$k]);
+                    }
+                } else {
+                    $v = trim($v);
+                    if ($v === '' && $removeEmpty) {
+                        unset($ar[$k]);
+                    } else {
+                        $ar[$k] = $v;
+                    }
+                }
+            } elseif (is_array($v)) {
+                $ar[$k] = array_trim($v, $removeEmpty);
+            }
+        }
+
+        return $ar;
+    }
+}
