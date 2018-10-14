@@ -926,7 +926,7 @@ if (!function_exists('array_field')) {
     }
 }
 
-if (!function_exists('array_unique_field')) {
+if (!function_exists('array_ufield')) {
     /**
      * @param array  $input
      * @param string $field_key
@@ -934,7 +934,7 @@ if (!function_exists('array_unique_field')) {
      *
      * @return array
      */
-    function array_unique_field($input, $field_key, $sort = SORT_REGULAR)
+    function array_ufield($input, $field_key, $sort = SORT_REGULAR)
     {
         $values = [];
         foreach ($input as $item) {
