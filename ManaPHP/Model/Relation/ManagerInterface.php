@@ -28,4 +28,14 @@ interface ManagerInterface
      * @return array
      */
     public function earlyLoad($model, $r, $withs);
+
+    /**
+     * @param \ManaPHP\Model $instance
+     * @param array          $withs
+     *
+     * @return \ManaPHP\Model
+     *
+     * @throws \ManaPHP\Exception\InvalidValueException
+     */
+    public function lazyBindAll($instance, $withs);
 }
