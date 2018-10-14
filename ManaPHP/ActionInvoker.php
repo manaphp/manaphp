@@ -14,9 +14,9 @@ use ManaPHP\ActionInvoker\NotFoundException;
 class ActionInvoker extends Component implements ActionInvokerInterface
 {
     /**
-     * @param \ManaPHP\Mvc\ControllerInterface $controller
-     * @param string                           $action
-     * @param array                            $params
+     * @param \ManaPHP\Mvc\Controller|\ManaPHP\Rest\Controller $controller
+     * @param string                                           $action
+     * @param array                                            $params
      *
      * @return array
      * @throws \ManaPHP\ActionInvoker\Exception
@@ -99,9 +99,9 @@ class ActionInvoker extends Component implements ActionInvokerInterface
     }
 
     /**
-     * @param \ManaPHP\Mvc\ControllerInterface $controller
-     * @param string                           $action
-     * @param array                            $params
+     * @param \ManaPHP\Mvc\Controller|\ManaPHP\Rest\Controller $controller
+     * @param string                                           $action
+     * @param array                                            $params
      *
      * @return mixed
      * @throws \ManaPHP\ActionInvoker\Exception

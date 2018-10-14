@@ -40,7 +40,7 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\Net\ConnectivityInterface        $netConnectivity
  * @property-read \ManaPHP\RouterInterface                  $router
  */
-abstract class Controller extends Component implements ControllerInterface, LogCategorizable
+abstract class Controller extends Component implements LogCategorizable
 {
     public function categorizeLog()
     {
