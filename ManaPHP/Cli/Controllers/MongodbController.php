@@ -142,7 +142,7 @@ class MongodbController extends Controller
         $fieldTypes = [];
         foreach ($docs as $doc) {
             foreach ($doc as $field => $value) {
-                $fieldTypes[$field][$type = gettype($value)] = 1;
+                $fieldTypes[$field][gettype($value)] = 1;
             }
         }
 
