@@ -22,7 +22,7 @@ class Factory extends FactoryDefault
             'captcha' => 'ManaPHP\Security\Captcha',
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
             'debugger' => 'ManaPHP\Debugger',
-            'authorization' => 'ManaPHP\Authorization\Bypass',
+            'authorization' => 'ManaPHP\Authorization',
         ]);
     }
 }

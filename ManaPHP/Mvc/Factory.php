@@ -26,7 +26,7 @@ class Factory extends FactoryDefault
             'viewsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/viewsCache', 'extension' => '.html'],
             'cookies' => 'ManaPHP\Http\Cookies',
             'debugger' => 'ManaPHP\Debugger',
-            'authorization' => 'ManaPHP\Authorization\Bypass',
+            'authorization' => 'ManaPHP\Authorization',
         ]);
     }
 }
