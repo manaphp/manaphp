@@ -8,8 +8,6 @@ use ManaPHP\Counter\EngineInterface;
  * Class ManaPHP\Counter\Engine\Redis
  *
  * @package counter\engine
- *
- * @property-read \Redis $counterRedis
  */
 class Redis extends Component implements EngineInterface
 {

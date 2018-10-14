@@ -10,8 +10,6 @@ use ManaPHP\Message\Queue\EngineInterface;
  * Class ManaPHP\Message\Queue\Engine\Redis
  *
  * @package messageQueue\engine
- *
- * @property-read \Redis $messageQueueRedis
  */
 class Redis extends Component implements EngineInterface
 {

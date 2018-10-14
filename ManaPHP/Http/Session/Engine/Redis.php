@@ -8,8 +8,6 @@ use ManaPHP\Http\Session\EngineInterface;
  * Class ManaPHP\Http\Session\Engine\Redis
  *
  * @package session\engine
- *
- * @property-read \Redis $sessionRedis
  */
 class Redis extends Component implements EngineInterface
 {
