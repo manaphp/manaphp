@@ -25,6 +25,9 @@ class ActionInvoker extends Component implements ActionInvokerInterface
     {
         $args = [];
         $missing = [];
+
+        $di = $this->_di;
+
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $parameters = (new \ReflectionMethod($controller, $action . 'Action'))->getParameters();
         foreach ($parameters as $parameter) {
@@ -41,7 +44,13 @@ class ActionInvoker extends Component implements ActionInvokerInterface
             }
 
             if ($type !== null && is_subclass_of($type, Component::class)) {
-                $value = $this->_di->get($type->getName());
+                if ($di->has($name)) {
+                    $value = $di->get($name);
+                } elseif ($di->has($type)) {
+                    $value = $di->get($type);
+                } else {
+                    $value = $di->getShared($type);
+                }
             } elseif (isset($params[$name])) {
                 $value = $params[$name];
             } elseif ($this->request->has($name)) {

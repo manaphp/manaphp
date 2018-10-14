@@ -47,6 +47,8 @@ class Invoker extends Component implements InvokerInterface
     {
         $args = [];
 
+        $di = $this->_di;
+
         $parameters = (new \ReflectionMethod($controller, $command . 'Command'))->getParameters();
         $shortNames = $this->_getShortNames($parameters);
 
@@ -64,7 +66,13 @@ class Invoker extends Component implements InvokerInterface
             }
 
             if ($type !== null && is_subclass_of($type, Component::class)) {
-                $value = $this->_di->getShared($type);
+                if ($di->has($name)) {
+                    $value = $di->get($name);
+                } elseif ($di->has($type)) {
+                    $value = $di->get($type);
+                } else {
+                    $value = $di->getShared($type);
+                }
             } elseif ($this->arguments->hasOption($name)) {
                 $value = $this->arguments->getOption($name);
             } elseif (isset($shortNames[$name]) && $this->arguments->hasOption($shortNames[$name])) {
