@@ -9,4 +9,12 @@ abstract class Controller extends Component implements LogCategorizable
     {
         return basename(str_replace('\\', '.', get_called_class()), 'Controller');
     }
+
+    /**
+     * @return array
+     */
+    public function getAcl()
+    {
+        return [];
+    }
 }
