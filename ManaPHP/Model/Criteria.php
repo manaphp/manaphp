@@ -90,6 +90,8 @@ abstract class Criteria extends Component implements CriteriaInterface
             }
         }
 
+        $this->where($conditions);
+
         return $this;
     }
 
