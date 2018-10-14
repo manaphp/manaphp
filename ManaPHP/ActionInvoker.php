@@ -43,7 +43,7 @@ class ActionInvoker extends Component implements ActionInvokerInterface
                 }
             }
 
-            if ($className = $parameter->getClass()) {
+            if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
                 if ($di->has($name)) {
                     $value = $di->get($name);
                 } elseif ($di->has($className)) {

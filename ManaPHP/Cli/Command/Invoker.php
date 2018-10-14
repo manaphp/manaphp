@@ -65,7 +65,7 @@ class Invoker extends Component implements InvokerInterface
                 }
             }
 
-            if ($className = $parameter->getClass()) {
+            if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
                 if ($di->has($name)) {
                     $value = $di->get($name);
                 } elseif ($di->has($className)) {
