@@ -38,8 +38,8 @@ class Invoker extends Component implements InvokerInterface
     }
 
     /**
-     * @param \ManaPHP\Cli\ControllerInterface $controller
-     * @param string                           $command
+     * @param \ManaPHP\Cli\Controller $controller
+     * @param string                  $command
      *
      * @return array
      */
@@ -114,8 +114,8 @@ class Invoker extends Component implements InvokerInterface
     }
 
     /**
-     * @param \ManaPHP\Cli\ControllerInterface $controller
-     * @param string                           $command
+     * @param \ManaPHP\Cli\Controller $controller
+     * @param string                  $command
      *
      * @return mixed
      * @throws \ManaPHP\Cli\Command\NotFoundException

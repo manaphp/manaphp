@@ -4,8 +4,8 @@ namespace ManaPHP\Cli\Command;
 interface InvokerInterface
 {
     /**
-     * @param \ManaPHP\Cli\ControllerInterface $controller
-     * @param string                           $command
+     * @param \ManaPHP\Cli\Controller $controller
+     * @param string                  $command
      *
      * @return mixed
      */
