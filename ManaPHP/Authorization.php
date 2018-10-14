@@ -79,7 +79,7 @@ abstract class Authorization extends Component implements AuthorizationInterface
      */
     public function isAllowed($permission = null, $role = null)
     {
-        if ($permission) {
+        if ($permission && strpos($permission, '/') !== false) {
             $controllerClassName = '';
             $action = '';
             if (!isset($this->_acl[$controllerClassName])) {
@@ -90,6 +90,7 @@ abstract class Authorization extends Component implements AuthorizationInterface
         } else {
             $controllerInstance = $this->dispatcher->getController();
             $controllerClassName = get_class($controllerInstance);
+            $action = $permission ?: $this->dispatcher->getActionName();
 
             if (!isset($this->_acl[$controllerClassName])) {
                 $this->_acl[$controllerClassName] = $controllerInstance->getAcl();
