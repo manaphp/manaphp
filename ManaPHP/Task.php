@@ -14,8 +14,7 @@ abstract class Task extends Component implements TaskInterface, LogCategorizable
 {
     public function categorizeLog()
     {
-        $className = get_called_class();
-        return 'task.' . basename(substr($className, strrpos($className, '\\') + 1), 'Task');
+        return basename(str_replace('\\', '.', get_called_class()), 'Task');
     }
 
     /**
