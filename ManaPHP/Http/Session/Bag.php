@@ -9,7 +9,7 @@ use ManaPHP\Component;
  *
  * @package session
  *
- * @property \ManaPHP\Http\SessionInterface $session
+ * @property-read \ManaPHP\Http\SessionInterface $session
  */
 class Bag extends Component implements BagInterface
 {

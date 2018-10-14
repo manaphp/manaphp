@@ -9,7 +9,7 @@ use ManaPHP\ActionInvoker\NotFoundException;
  *
  * @package ManaPHP\Mvc\Action
  *
- * @property \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class ActionInvoker extends Component implements ActionInvokerInterface
 {

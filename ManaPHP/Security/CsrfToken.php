@@ -9,10 +9,10 @@ use ManaPHP\Security\CsrfToken\Exception as CsrfTokenException;
  *
  * @package csrfToken
  *
- * @property \ManaPHP\Http\CookiesInterface  $cookies
- * @property \ManaPHP\Http\ResponseInterface $response
- * @property \ManaPHP\Http\RequestInterface  $request
- * @property \ManaPHP\Http\SessionInterface  $session
+ * @property-read \ManaPHP\Http\CookiesInterface  $cookies
+ * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\SessionInterface  $session
  */
 class CsrfToken extends Component implements CsrfTokenInterface
 {

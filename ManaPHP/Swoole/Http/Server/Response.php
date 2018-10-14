@@ -6,7 +6,7 @@ use ManaPHP\Http\Response\Exception as ResponseException;
 /**
  * Class Response
  * @package ManaPHP\Swoole\Http\Server
- * @property \ManaPHP\Swoole\Http\Server $swooleHttpServer
+ * @property-read \ManaPHP\Swoole\Http\Server $swooleHttpServer
  */
 class Response extends \ManaPHP\Http\Response
 {

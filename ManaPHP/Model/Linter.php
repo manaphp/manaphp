@@ -8,7 +8,7 @@ use ManaPHP\Db\Model as DbModel;
  * Class Linter
  *
  * @package ManaPHP\Model
- * @property \ManaPHP\Db\Model\MetadataInterface $modelsMetadata
+ * @property-read \ManaPHP\Db\Model\MetadataInterface $modelsMetadata
  */
 class Linter extends Component
 {

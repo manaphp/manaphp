@@ -8,7 +8,7 @@ use ManaPHP\Component;
  * Class Invoker
  * @package ManaPHP\Cli\Command
  *
- * @property  \ManaPHP\Cli\ArgumentsInterface $arguments
+ * @property-read \ManaPHP\Cli\ArgumentsInterface $arguments
  */
 class Invoker extends Component implements InvokerInterface
 {

@@ -9,7 +9,7 @@ use ManaPHP\Counter\EngineInterface;
  *
  * @package counter\engine
  *
- * @property \Redis $counterRedis
+ * @property-read \Redis $counterRedis
  */
 class Redis extends Component implements EngineInterface
 {

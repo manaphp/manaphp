@@ -9,8 +9,8 @@ use ManaPHP\Http\Filter\Exception as FilterException;
  *
  * @package filter
  *
- * @property \ManaPHP\Security\SecintInterface       $secint
- * @property \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
+ * @property-read \ManaPHP\Security\SecintInterface       $secint
+ * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  */
 class Filter extends Component implements FilterInterface
 {

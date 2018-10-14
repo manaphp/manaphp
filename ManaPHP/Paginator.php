@@ -10,7 +10,7 @@ use ManaPHP\Exception\PreconditionException;
  *
  * @package paginator
  *
- * @property \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Paginator extends Component implements PaginatorInterface
 {

@@ -9,7 +9,7 @@ use ManaPHP\Logger\LogCategorizable;
  *
  * @package application
  *
- * @property \ManaPHP\Cli\HandlerInterface $cliHandler
+ * @property-read \ManaPHP\Cli\HandlerInterface $cliHandler
  */
 class Application extends \ManaPHP\Application implements LogCategorizable
 {

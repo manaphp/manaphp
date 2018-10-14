@@ -8,8 +8,8 @@ use ManaPHP\Component;
  *
  * @package i18n
  *
- * @property \ManaPHP\Http\RequestInterface   $request
- * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class Translation extends Component implements TranslationInterface
 {

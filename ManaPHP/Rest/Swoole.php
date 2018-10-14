@@ -10,10 +10,10 @@ use ManaPHP\Swoole\Exception as SwooleException;
  *
  * @package application
  *
- * @property \ManaPHP\Http\ResponseInterface      $response
- * @property \ManaPHP\RouterInterface             $router
- * @property \ManaPHP\Mvc\DispatcherInterface     $dispatcher
- * @property \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
+ * @property-read \ManaPHP\Http\ResponseInterface      $response
+ * @property-read \ManaPHP\RouterInterface             $router
+ * @property-read \ManaPHP\Mvc\DispatcherInterface     $dispatcher
+ * @property-read \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
  */
 class Swoole extends Application
 {

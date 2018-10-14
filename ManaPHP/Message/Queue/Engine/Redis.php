@@ -11,7 +11,7 @@ use ManaPHP\Message\Queue\EngineInterface;
  *
  * @package messageQueue\engine
  *
- * @property \Redis $messageQueueRedis
+ * @property-read \Redis $messageQueueRedis
  */
 class Redis extends Component implements EngineInterface
 {

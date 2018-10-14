@@ -16,32 +16,32 @@ use ManaPHP\Logger\LogCategorizable;
  * @method void onConstruct();
  *
  *
- * @property \ManaPHP\ViewInterface                    $view
- * @property \ManaPHP\View\FlashInterface              $flash
- * @property \ManaPHP\View\FlashInterface              $flashSession
- * @property \ManaPHP\Security\CaptchaInterface        $captcha
- * @property \ManaPHP\Authentication\PasswordInterface $password
- * @property \ManaPHP\Http\CookiesInterface            $cookies
- * @property \ManaPHP\CounterInterface                 $counter
- * @property \ManaPHP\Http\RequestInterface            $request
- * @property \ManaPHP\Http\ResponseInterface           $response
- * @property \ManaPHP\Mvc\DispatcherInterface          $dispatcher
- * @property \ManaPHP\Http\SessionInterface            $session
- * @property \ManaPHP\Security\CsrfTokenInterface      $csrfToken
- * @property \ManaPHP\Paginator                        $paginator
- * @property \ManaPHP\Cache\EngineInterface            $viewsCache
- * @property \ManaPHP\Message\QueueInterface           $messageQueue
- * @property \ManaPHP\Security\RateLimiterInterface    $rateLimiter
- * @property \ManaPHP\Meter\LinearInterface            $linearMeter
- * @property \ManaPHP\Meter\RoundInterface             $roundMeter
- * @property \ManaPHP\Security\SecintInterface         $secint
- * @property \ManaPHP\Http\FilterInterface             $filter
- * @property \ManaPHP\Db\Model\MetadataInterface       $modelsMetadata
- * @property \ManaPHP\UrlInterface                     $url
- * @property \ManaPHP\StopwatchInterface               $stopwatch
- * @property \ManaPHP\Security\HtmlPurifierInterface   $htmlPurifier
- * @property \ManaPHP\Net\ConnectivityInterface        $netConnectivity
- * @property \ManaPHP\RouterInterface                  $router
+ * @property-read \ManaPHP\ViewInterface                    $view
+ * @property-read \ManaPHP\View\FlashInterface              $flash
+ * @property-read \ManaPHP\View\FlashInterface              $flashSession
+ * @property-read \ManaPHP\Security\CaptchaInterface        $captcha
+ * @property-read \ManaPHP\Authentication\PasswordInterface $password
+ * @property-read \ManaPHP\Http\CookiesInterface            $cookies
+ * @property-read \ManaPHP\CounterInterface                 $counter
+ * @property-read \ManaPHP\Http\RequestInterface            $request
+ * @property-read \ManaPHP\Http\ResponseInterface           $response
+ * @property-read \ManaPHP\Mvc\DispatcherInterface          $dispatcher
+ * @property-read \ManaPHP\Http\SessionInterface            $session
+ * @property-read \ManaPHP\Security\CsrfTokenInterface      $csrfToken
+ * @property-read \ManaPHP\Paginator                        $paginator
+ * @property-read \ManaPHP\Cache\EngineInterface            $viewsCache
+ * @property-read \ManaPHP\Message\QueueInterface           $messageQueue
+ * @property-read \ManaPHP\Security\RateLimiterInterface    $rateLimiter
+ * @property-read \ManaPHP\Meter\LinearInterface            $linearMeter
+ * @property-read \ManaPHP\Meter\RoundInterface             $roundMeter
+ * @property-read \ManaPHP\Security\SecintInterface         $secint
+ * @property-read \ManaPHP\Http\FilterInterface             $filter
+ * @property-read \ManaPHP\Db\Model\MetadataInterface       $modelsMetadata
+ * @property-read \ManaPHP\UrlInterface                     $url
+ * @property-read \ManaPHP\StopwatchInterface               $stopwatch
+ * @property-read \ManaPHP\Security\HtmlPurifierInterface   $htmlPurifier
+ * @property-read \ManaPHP\Net\ConnectivityInterface        $netConnectivity
+ * @property-read \ManaPHP\RouterInterface                  $router
  */
 abstract class Controller extends Component implements ControllerInterface, LogCategorizable
 {

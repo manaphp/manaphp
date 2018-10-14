@@ -8,7 +8,7 @@ use ManaPHP\Exception\MissingFieldException;
 /**
  * Class Html
  * @package ManaPHP\Renderer
- * @property \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Html extends Component
 {

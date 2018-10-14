@@ -9,7 +9,7 @@ use ManaPHP\Dom\Document\Exception as DocumentException;
  *
  * @package ManaPHP\Dom
  *
- * @property \ManaPHP\Curl\Easy $httpClient
+ * @property-read \ManaPHP\Curl\Easy $httpClient
  */
 class Document extends Component
 {

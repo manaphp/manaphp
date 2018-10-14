@@ -7,8 +7,8 @@ namespace ManaPHP\Db\Model;
  *
  * @package queryBuilder
  *
- * @property \ManaPHP\Paginator               $paginator
- * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\Paginator               $paginator
+ * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
  */
 class Query extends \ManaPHP\Db\Query implements QueryInterface
 {

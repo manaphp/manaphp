@@ -6,27 +6,27 @@ namespace ManaPHP;
  *
  * @package component
  *
- * @property \ManaPHP\AliasInterface                  $alias
- * @property \ManaPHP\Event\ManagerInterface          $eventsManager
- * @property \ManaPHP\FilesystemInterface             $filesystem
- * @property \ManaPHP\LoggerInterface                 $logger
- * @property \ManaPHP\Configuration\Configure         $configure
- * @property \ManaPHP\Configuration\SettingsInterface $settings
- * @property \ManaPHP\Security\CryptInterface         $crypt
- * @property \ManaPHP\IdentityInterface               $identity
- * @property \ManaPHP\Loader                          $loader
- * @property \ManaPHP\CacheInterface                  $cache
- * @property \ManaPHP\CacheInterface                  $redisCache
- * @property \ManaPHP\Security\RandomInterface        $random
- * @property \ManaPHP\Curl\EasyInterface              $httpClient
- * @property \ManaPHP\DbInterface                     $db
- * @property \Redis                                   $redis
- * @property \ManaPHP\Mongodb                         $mongodb
- * @property \ManaPHP\AmqpInterface                   $rabbitmq
- * @property \Elasticsearch\Client                    $elasticsearch
- * @property \ManaPHP\ZookeeperInterface              $zookeeper
- * @property \ManaPHP\MailerInterface                 $mailer
- * @property \ManaPHP\Task\ManagerInterface           $tasksManager
+ * @property-read \ManaPHP\AliasInterface                  $alias
+ * @property-read \ManaPHP\Event\ManagerInterface          $eventsManager
+ * @property-read \ManaPHP\FilesystemInterface             $filesystem
+ * @property-read \ManaPHP\LoggerInterface                 $logger
+ * @property-read \ManaPHP\Configuration\Configure         $configure
+ * @property-read \ManaPHP\Configuration\SettingsInterface $settings
+ * @property-read \ManaPHP\Security\CryptInterface         $crypt
+ * @property-read \ManaPHP\IdentityInterface               $identity
+ * @property-read \ManaPHP\Loader                          $loader
+ * @property-read \ManaPHP\CacheInterface                  $cache
+ * @property-read \ManaPHP\CacheInterface                  $redisCache
+ * @property-read \ManaPHP\Security\RandomInterface        $random
+ * @property-read \ManaPHP\Curl\EasyInterface              $httpClient
+ * @property-read \ManaPHP\DbInterface                     $db
+ * @property-read \Redis                                   $redis
+ * @property-read \ManaPHP\Mongodb                         $mongodb
+ * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
+ * @property-read \Elasticsearch\Client                    $elasticsearch
+ * @property-read \ManaPHP\ZookeeperInterface              $zookeeper
+ * @property-read \ManaPHP\MailerInterface                 $mailer
+ * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
  */
 class Component implements ComponentInterface, \JsonSerializable
 {

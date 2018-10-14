@@ -7,7 +7,7 @@ use ManaPHP\Utility\Text;
 /**
  * Class CronController
  * @package ManaPHP\Cli\Controllers
- * @property \ManaPHP\Cli\Command\Invoker $commandInvoker
+ * @property-read \ManaPHP\Cli\Command\Invoker $commandInvoker
  */
 class CronController extends Controller
 {

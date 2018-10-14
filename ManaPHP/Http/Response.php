@@ -11,9 +11,9 @@ use ManaPHP\Http\Response\Exception as ResponseException;
  *
  * @package response
  *
- * @property \ManaPHP\Http\CookiesInterface $cookies
- * @property \ManaPHP\UrlInterface          $url
- * @property \ManaPHP\RouterInterface       $router
+ * @property-read \ManaPHP\Http\CookiesInterface $cookies
+ * @property-read \ManaPHP\UrlInterface          $url
+ * @property-read \ManaPHP\RouterInterface       $router
  */
 class Response extends Component implements ResponseInterface
 {

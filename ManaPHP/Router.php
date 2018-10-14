@@ -10,7 +10,7 @@ use ManaPHP\Utility\Text;
  *
  * @package router
  *
- * @property \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Router extends Component implements RouterInterface
 {

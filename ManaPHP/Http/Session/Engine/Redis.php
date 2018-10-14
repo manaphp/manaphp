@@ -9,7 +9,7 @@ use ManaPHP\Http\Session\EngineInterface;
  *
  * @package session\engine
  *
- * @property \Redis $sessionRedis
+ * @property-read \Redis $sessionRedis
  */
 class Redis extends Component implements EngineInterface
 {

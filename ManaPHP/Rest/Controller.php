@@ -16,24 +16,24 @@ use ManaPHP\Logger\LogCategorizable;
  * @method void onConstruct();
  *
  *
- * @property \ManaPHP\Security\CaptchaInterface        $captcha
- * @property \ManaPHP\Authentication\PasswordInterface $password
- * @property \ManaPHP\CounterInterface                 $counter
- * @property \ManaPHP\Http\RequestInterface            $request
- * @property \ManaPHP\Http\ResponseInterface           $response
- * @property \ManaPHP\Mvc\DispatcherInterface          $dispatcher
- * @property \ManaPHP\Security\CsrfTokenInterface      $csrfToken
- * @property \ManaPHP\Paginator                        $paginator
- * @property \ManaPHP\Message\QueueInterface           $messageQueue
- * @property \ManaPHP\Security\RateLimiterInterface    $rateLimiter
- * @property \ManaPHP\Meter\LinearInterface            $linearMeter
- * @property \ManaPHP\Meter\RoundInterface             $roundMeter
- * @property \ManaPHP\Security\SecintInterface         $secint
- * @property \ManaPHP\Http\FilterInterface             $filter
- * @property \ManaPHP\Db\Model\MetadataInterface       $modelsMetadata
- * @property \ManaPHP\StopwatchInterface               $stopwatch
- * @property \ManaPHP\Security\HtmlPurifierInterface   $htmlPurifier
- * @property \ManaPHP\RouterInterface                  $router
+ * @property-read \ManaPHP\Security\CaptchaInterface        $captcha
+ * @property-read \ManaPHP\Authentication\PasswordInterface $password
+ * @property-read \ManaPHP\CounterInterface                 $counter
+ * @property-read \ManaPHP\Http\RequestInterface            $request
+ * @property-read \ManaPHP\Http\ResponseInterface           $response
+ * @property-read \ManaPHP\Mvc\DispatcherInterface          $dispatcher
+ * @property-read \ManaPHP\Security\CsrfTokenInterface      $csrfToken
+ * @property-read \ManaPHP\Paginator                        $paginator
+ * @property-read \ManaPHP\Message\QueueInterface           $messageQueue
+ * @property-read \ManaPHP\Security\RateLimiterInterface    $rateLimiter
+ * @property-read \ManaPHP\Meter\LinearInterface            $linearMeter
+ * @property-read \ManaPHP\Meter\RoundInterface             $roundMeter
+ * @property-read \ManaPHP\Security\SecintInterface         $secint
+ * @property-read \ManaPHP\Http\FilterInterface             $filter
+ * @property-read \ManaPHP\Db\Model\MetadataInterface       $modelsMetadata
+ * @property-read \ManaPHP\StopwatchInterface               $stopwatch
+ * @property-read \ManaPHP\Security\HtmlPurifierInterface   $htmlPurifier
+ * @property-read \ManaPHP\RouterInterface                  $router
  */
 abstract class Controller extends Component implements LogCategorizable
 {

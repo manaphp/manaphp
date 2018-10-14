@@ -10,7 +10,7 @@ use ManaPHP\Utility\Text;
  * Class TaskController
  * @package ManaPHP\Cli\Controllers
  *
- * @property \ManaPHP\Task\ManagerInterface $tasksManager
+ * @property-read \ManaPHP\Task\ManagerInterface $tasksManager
  */
 class TaskController extends Controller
 {

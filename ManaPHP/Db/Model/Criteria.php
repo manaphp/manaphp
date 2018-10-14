@@ -10,8 +10,8 @@ use ManaPHP\Model\ExpressionInterface;
  * Class ManaPHP\Db\Model\Criteria
  *
  * @package ManaPHP\Db\Model
- * @property \ManaPHP\Db\Model               $_model
- * @property \ManaPHP\Model\Relation\Manager $relationsManager
+ * @property \ManaPHP\Db\Model                    $_model
+ * @property-read \ManaPHP\Model\Relation\Manager $relationsManager
  */
 class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
 {

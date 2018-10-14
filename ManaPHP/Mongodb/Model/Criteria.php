@@ -15,9 +15,9 @@ use MongoDB\BSON\Regex;
  *
  * @package ManaPHP\Mongodb\Model
  *
- * @property \ManaPHP\Paginator             $paginator
- * @property \ManaPHP\Http\RequestInterface $request
- * @property \ManaPHP\Mongodb\Model         $_model
+ * @property-read \ManaPHP\Paginator             $paginator
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Mongodb\Model         $_model
  */
 class Criteria extends \ManaPHP\Model\Criteria
 {

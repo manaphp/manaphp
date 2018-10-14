@@ -5,7 +5,7 @@ namespace ManaPHP;
  * Class ManaPHP\Url
  *
  * @package url
- * @property \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  *
  */
 class Url extends Component implements UrlInterface

@@ -10,12 +10,12 @@ use ManaPHP\View;
  * Class ManaPHP\Mvc\Application
  *
  * @package application
- * @property \ManaPHP\Http\RequestInterface   $request
- * @property \ManaPHP\Http\ResponseInterface  $response
- * @property \ManaPHP\RouterInterface         $router
- * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
- * @property \ManaPHP\ViewInterface           $view
- * @property \ManaPHP\Http\SessionInterface   $session
+ * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\ResponseInterface  $response
+ * @property-read \ManaPHP\RouterInterface         $router
+ * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\ViewInterface           $view
+ * @property-read \ManaPHP\Http\SessionInterface   $session
  */
 class Application extends \ManaPHP\Application
 {

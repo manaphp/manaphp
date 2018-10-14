@@ -7,7 +7,7 @@ use ManaPHP\ErrorHandlerInterface;
 /**
  * Class ErrorHandler
  * @package ManaPHP\Rest
- * @property \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {

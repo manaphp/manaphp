@@ -9,7 +9,7 @@ use ManaPHP\Counter\EngineInterface;
  *
  * @package counter\adapter
  *
- * @property \ManaPHP\DbInterface $db
+ * @property-read \ManaPHP\DbInterface $db
  */
 class Db implements EngineInterface
 {

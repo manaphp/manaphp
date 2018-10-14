@@ -11,9 +11,9 @@ use ManaPHP\Utility\Text;
  * Class ManaPHP\Mvc\Dispatcher
  *
  * @package dispatcher
- * @property \ManaPHP\Http\FilterInterface   $filter
- * @property \ManaPHP\Http\RequestInterface  $request
- * @property \ManaPHP\ActionInvokerInterface $actionInvoker
+ * @property-read \ManaPHP\Http\FilterInterface   $filter
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\ActionInvokerInterface $actionInvoker
  */
 class Dispatcher extends Component implements DispatcherInterface
 {

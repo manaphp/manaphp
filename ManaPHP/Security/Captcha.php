@@ -10,9 +10,9 @@ use ManaPHP\Security\Captcha\InvalidCaptchaException;
  *
  * @package captcha
  *
- * @property \ManaPHP\Http\ResponseInterface $response
- * @property \ManaPHP\Http\RequestInterface  $request
- * @property \ManaPHP\Http\SessionInterface  $session
+ * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\SessionInterface  $session
  */
 class Captcha extends Component implements CaptchaInterface
 {

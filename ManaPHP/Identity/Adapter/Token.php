@@ -6,7 +6,7 @@ use ManaPHP\Identity;
 /**
  * Class Token
  * @package ManaPHP\Db\Adapter
- * @property \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 abstract class Token extends Identity
 {

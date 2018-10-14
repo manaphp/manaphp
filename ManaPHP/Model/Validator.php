@@ -13,7 +13,7 @@ use ManaPHP\Utility\Text;
  * Class ManaPHP\Model\Validator
  *
  * @package ManaPHP\Model
- * @property \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
+ * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  */
 class Validator extends Component implements ValidatorInterface
 {

@@ -10,7 +10,7 @@ use ManaPHP\Http\Cookies\Exception as CookiesException;
  *
  * @package cookies
  *
- * @property \ManaPHP\Security\CryptInterface $crypt
+ * @property-read \ManaPHP\Security\CryptInterface $crypt
  */
 class Cookies extends Component implements CookiesInterface
 {

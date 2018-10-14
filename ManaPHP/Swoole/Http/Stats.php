@@ -7,8 +7,8 @@ use ManaPHP\Component;
  * Class ManaPHP\Swoole\Http\Stats
  *
  * @package ManaPHP\Swoole\Http
- * @property \ManaPHP\Http\RequestInterface  $request
- * @property \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 class Stats extends Component
 {

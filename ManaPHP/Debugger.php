@@ -10,11 +10,11 @@ use ManaPHP\Logger\Log;
  *
  * @package debugger
  *
- * @property \ManaPHP\RouterInterface        $router
- * @property \ManaPHP\UrlInterface           $url
- * @property \ManaPHP\Http\RequestInterface  $request
- * @property \ManaPHP\RendererInterface      $renderer
- * @property \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\RouterInterface        $router
+ * @property-read \ManaPHP\UrlInterface           $url
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\RendererInterface      $renderer
+ * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 class Debugger extends Component implements DebuggerInterface
 {

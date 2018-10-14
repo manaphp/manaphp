@@ -8,7 +8,7 @@ use ManaPHP\Component;
  *
  * @package linearMeter
  *
- * @property \Redis $redis
+ * @property-read \Redis $redis
  */
 class Linear extends Component implements LinearInterface
 {

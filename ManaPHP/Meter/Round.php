@@ -8,7 +8,7 @@ use ManaPHP\Component;
  *
  * @package roundMeter
  *
- * @property \Redis $redis
+ * @property-read \Redis $redis
  */
 class Round extends Component implements RoundInterface
 {

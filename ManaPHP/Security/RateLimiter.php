@@ -8,9 +8,9 @@ use ManaPHP\Component;
  *
  * @package rateLimiter
  *
- * @property \ManaPHP\Mvc\DispatcherInterface    $dispatcher
- * @property \ManaPHP\IdentityInterface          $identity
- * @property \ManaPHP\Http\RequestInterface      $request
+ * @property-read \ManaPHP\Mvc\DispatcherInterface    $dispatcher
+ * @property-read \ManaPHP\IdentityInterface          $identity
+ * @property-read \ManaPHP\Http\RequestInterface      $request
  */
 class RateLimiter extends Component implements RateLimiterInterface
 {

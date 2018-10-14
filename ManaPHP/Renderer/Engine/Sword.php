@@ -9,7 +9,7 @@ use ManaPHP\Renderer\EngineInterface;
  *
  * @package renderer\engine
  *
- * @property \ManaPHP\Renderer\Engine\Sword\Compiler $swordCompiler
+ * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler $swordCompiler
  */
 class Sword extends Component implements EngineInterface
 {

@@ -7,8 +7,6 @@ use ManaPHP\Logger\LogCategorizable;
  * Class ManaPHP\Task
  *
  * @package task
- *
- * @property \ManaPHP\Http\ResponseInterface $response
  */
 abstract class Task extends Component implements TaskInterface, LogCategorizable
 {

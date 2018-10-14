@@ -11,8 +11,8 @@ use ManaPHP\Exception\RuntimeException;
  *
  * @package renderer\engine
  *
- * @property \ManaPHP\UrlInterface    $url
- * @property \ManaPHP\RouterInterface $router
+ * @property-read \ManaPHP\UrlInterface    $url
+ * @property-read \ManaPHP\RouterInterface $router
  */
 class Compiler extends Component
 {

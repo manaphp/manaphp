@@ -7,7 +7,7 @@ use ManaPHP\Identity;
 /**
  * Class Session
  * @package ManaPHP\Identity\Adapter
- * @property \ManaPHP\Http\SessionInterface $session
+ * @property-read \ManaPHP\Http\SessionInterface $session
  */
 class Session extends Identity
 {

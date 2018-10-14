@@ -19,8 +19,8 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP
  *
- * @property \ManaPHP\Model\ValidatorInterface $modelsValidator
- * @property \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Model\ValidatorInterface $modelsValidator
+ * @property-read \ManaPHP\Http\RequestInterface    $request
  *
  * method beforeCreate()
  * method afterCreate()
