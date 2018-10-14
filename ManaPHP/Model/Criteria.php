@@ -9,8 +9,8 @@ use ManaPHP\Exception\NotImplementedException;
  * Class ManaPHP\Model\Criteria
  *
  * @package ManaPHP\Model
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Model\Relation\Manager $relationsManager
+ * @property-read \ManaPHP\Http\RequestInterface           $request
+ * @property-read \ManaPHP\Model\Relation\ManagerInterface $relationsManager
  */
 abstract class Criteria extends Component implements CriteriaInterface
 {
