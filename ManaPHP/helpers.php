@@ -1054,6 +1054,26 @@ if (!function_exists('array_indexby')) {
     }
 }
 
+if (!function_exists('array_groupby')) {
+    /**
+     * @param array  $ar
+     * @param string $key
+     *
+     * @return array
+     */
+    function array_groupby($ar, $key)
+    {
+        $r = [];
+
+        foreach ($ar as $value) {
+            $kv = is_object($value) ? $value->$key : $value[$value];
+            $r[$kv][] = $value;
+        }
+
+        return $r;
+    }
+}
+
 if (!function_exists('array_trim')) {
     /**
      * @param array $ar
