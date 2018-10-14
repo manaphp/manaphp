@@ -77,19 +77,28 @@ abstract class Authorization extends Component implements AuthorizationInterface
      *
      * @return bool
      */
-    public function isAllowed($permission, $role = null)
+    public function isAllowed($permission = null, $role = null)
     {
-        $controllerName = '';
-        $actionName = '';
-        if (isset($this->_acl[$controllerName])) {
-            $acl = $this->_acl[$controllerName];
+        if ($permission) {
+            $controllerClassName = '';
+            $action = '';
+            if (!isset($this->_acl[$controllerClassName])) {
+                /** @var \ManaPHP\Controller $controllerInstance */
+                $controllerInstance = new $controllerClassName;
+                $this->_acl[$controllerClassName] = $controllerInstance->getAcl();
+            }
         } else {
-            /** @var \ManaPHP\Controller $controllerInstance */
-            $controllerInstance = new $controllerName;
-            $acl = $this->_acl[$controllerName] = $controllerInstance->getAcl();
+            $controllerInstance = $this->dispatcher->getController();
+            $controllerClassName = get_class($controllerInstance);
+
+            if (!isset($this->_acl[$controllerClassName])) {
+                $this->_acl[$controllerClassName] = $controllerInstance->getAcl();
+            }
         }
 
-        if (!$allowedRoles = $this->getActionAllowedRoles($acl, $actionName)) {
+        $acl = $this->_acl[$controllerClassName];
+
+        if (!$allowedRoles = $this->getActionAllowedRoles($acl, $action)) {
             return false;
         }
 

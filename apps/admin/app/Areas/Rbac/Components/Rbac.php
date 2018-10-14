@@ -20,7 +20,7 @@ class Rbac extends Authorization
      *
      * @return bool
      */
-    public function isAllowed($permissionName, $role = null)
+    public function isAllowed($permissionName = null, $role = null)
     {
         $role = $role ?: $this->identity->getRole();
         $permission = Permission::first(['path' => $permissionName]);

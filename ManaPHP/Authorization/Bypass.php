@@ -16,7 +16,7 @@ class Bypass implements AuthorizationInterface
      *
      * @return bool
      */
-    public function isAllowed($permission, $role = null)
+    public function isAllowed($permission = null, $role = null)
     {
         return true;
     }

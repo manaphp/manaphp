@@ -50,7 +50,7 @@ class Acl extends Authorization implements \Serializable
      * @return bool
      * @throws \ManaPHP\Authorization\Acl\Exception
      */
-    public function isAllowed($permission, $role = null)
+    public function isAllowed($permission = null, $role = null)
     {
         $parts = explode('::', $permission);
         switch (count($parts)) {
