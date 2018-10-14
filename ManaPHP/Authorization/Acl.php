@@ -2,9 +2,8 @@
 
 namespace ManaPHP\Authorization;
 
+use ManaPHP\Authorization;
 use ManaPHP\Authorization\Acl\Exception as AclException;
-use ManaPHP\AuthorizationInterface;
-use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Utility\Text;
 
@@ -12,10 +11,8 @@ use ManaPHP\Utility\Text;
  * Class ManaPHP\Authorization\Acl
  *
  * @package ManaPHP\Authorization
- *
- * @property-read \ManaPHP\IdentityInterface $identity
  */
-class Acl extends Component implements AuthorizationInterface, \Serializable
+class Acl extends Authorization implements \Serializable
 {
     /**
      * @var array[]
@@ -100,7 +97,7 @@ class Acl extends Component implements AuthorizationInterface, \Serializable
      */
     public function serialize()
     {
-        return json_encode($this->_acl, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return (string)json_encode($this->_acl, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
     /**

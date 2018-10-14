@@ -5,18 +5,14 @@ namespace App\Areas\Rbac\Components;
 use App\Areas\Rbac\Models\Permission;
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
-use ManaPHP\AuthorizationInterface;
-use ManaPHP\Component;
+use ManaPHP\Authorization;
 use ManaPHP\Exception\InvalidValueException;
 
 /**
  *
  * @package rbac
- *
- * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
- * @property \ManaPHP\IdentityInterface       $identity
  */
-class Rbac extends Component implements AuthorizationInterface
+class Rbac extends Authorization
 {
     /**
      * @param string $permissionName
