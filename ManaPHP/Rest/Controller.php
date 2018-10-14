@@ -10,11 +10,8 @@ use ManaPHP\Logger\LogCategorizable;
  *
  * @package controller
  *
- * @method void initialize();
  * @method bool beforeExecuteRoute();
  * @method bool afterExecuteRoute();
- * @method void onConstruct();
- *
  *
  * @property-read \ManaPHP\Security\CaptchaInterface        $captcha
  * @property-read \ManaPHP\Authentication\PasswordInterface $password
