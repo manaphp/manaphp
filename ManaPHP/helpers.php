@@ -1032,14 +1032,14 @@ if (!function_exists('array_get')) {
     }
 }
 
-if (!function_exists('array_index_by')) {
+if (!function_exists('array_indexby')) {
     /**
      * @param array  $ar
      * @param string $key
      *
      * @return array
      */
-    function array_index_by($ar, $key)
+    function array_indexby($ar, $key)
     {
         if (!is_array($ar)) {
             return $ar;
