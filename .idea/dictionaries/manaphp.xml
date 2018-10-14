@@ -44,6 +44,7 @@
       <w>httponly</w>
       <w>ifunused</w>
       <w>imagic</w>
+      <w>indexby</w>
       <w>intdiv</w>
       <w>intval</w>
       <w>linter</w>
@@ -91,6 +92,7 @@
       <w>substr</w>
       <w>swoole</w>
       <w>udid</w>
+      <w>ufield</w>
       <w>unprocessable</w>
       <w>unserialize</w>
       <w>unserialized</w>
