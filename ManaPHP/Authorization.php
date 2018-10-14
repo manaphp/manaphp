@@ -8,7 +8,7 @@ namespace ManaPHP;
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property \ManaPHP\IdentityInterface       $identity
  */
-abstract class Authorization extends Component implements AuthorizationInterface
+class Authorization extends Component implements AuthorizationInterface
 {
     /**
      * @var array
