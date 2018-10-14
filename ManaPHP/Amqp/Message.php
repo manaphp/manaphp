@@ -190,6 +190,6 @@ class Message implements \JsonSerializable
      */
     public function __toString()
     {
-        return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return (string)json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 }

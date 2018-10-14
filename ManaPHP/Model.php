@@ -1368,6 +1368,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public function __toString()
     {
-        return json_encode($this->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return (string)json_encode($this->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 }

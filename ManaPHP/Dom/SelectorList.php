@@ -688,6 +688,6 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
     public function __toString()
     {
-        return json_encode($this->text(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return (string)json_encode($this->text(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 }
