@@ -109,6 +109,8 @@ class ActionInvoker extends Component implements ActionInvokerInterface
      */
     public function invoke($controller, $action, $params)
     {
+        $this->fireEvent('actionInvoker:beforeInvoke');
+
         $actionMethod = $action . 'Action';
 
         if (!method_exists($controller, $actionMethod)) {
@@ -133,6 +135,8 @@ class ActionInvoker extends Component implements ActionInvokerInterface
                 break;
         }
 
+        $this->fireEvent('actionInvoker:afterInvoke');
+		
         return $r;
     }
 }
