@@ -34,7 +34,7 @@ class FactoryDefault extends Di
             'renderer' => 'ManaPHP\Renderer',
             'html' => 'ManaPHP\Renderer\Html',
             'assetBundle' => 'ManaPHP\Renderer\AssetBundle',
-            'password' => 'ManaPHP\Authentication\Password',
+            'password' => 'ManaPHP\Password',
             'serializer' => 'ManaPHP\Serializer\Adapter\JsonPhp',
             'cache' => 'ManaPHP\Cache',
             'ipcCache' => 'ManaPHP\IpcCache',

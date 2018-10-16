@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Authentication;
+namespace ManaPHP;
 
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Authentication\Password
+ * Class ManaPHP\Password
  *
  * @package password
  */

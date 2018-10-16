@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Authentication;
+namespace ManaPHP;
 
 /**
- * Interface ManaPHP\Authentication\PasswordInterface
+ * Interface ManaPHP\PasswordInterface
  *
  * @package password
  */
