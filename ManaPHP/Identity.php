@@ -82,7 +82,15 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getRole($default = 'guest')
     {
-        return isset($this->_claims['role']) ? $this->_claims['role'] : $default;
+        if ($this->_claims) {
+            if (isset($this->_claims['role'])) {
+                return $this->_claims['role'];
+            } else {
+                return isset($this->_claims['admin_id']) && $this->_claims['admin_id'] === 1 ? 'admin' : 'user';
+            }
+        } else {
+            return $default;
+        }
     }
 
     /**
