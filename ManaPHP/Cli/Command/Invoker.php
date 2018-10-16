@@ -59,10 +59,8 @@ class Invoker extends Component implements InvokerInterface
             $type = $parameter->getClass();
             if ($type !== null) {
                 $type = $type->getName();
-            } else {
-                if ($parameter->isDefaultValueAvailable()) {
-                    $type = gettype($parameter->getDefaultValue());
-                }
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $type = gettype($parameter->getDefaultValue());
             }
 
             if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
