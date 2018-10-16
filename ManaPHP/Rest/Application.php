@@ -14,6 +14,7 @@ use ManaPHP\Router\NotFoundRouteException;
  * @property-read \ManaPHP\RouterInterface         $router
  * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Http\SessionInterface   $session
+ * @property-read \ManaPHP\AuthorizationInterface  $authorization
  */
 class Application extends \ManaPHP\Application
 {
