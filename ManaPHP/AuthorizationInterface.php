@@ -17,4 +17,11 @@ interface AuthorizationInterface
      * @return bool
      */
     public function isAllowed($permission = null, $role = null);
+
+
+    /**
+     * @param string $permission
+     * @param string $role
+     */
+    public function authorize($permission = null, $role = null);
 }

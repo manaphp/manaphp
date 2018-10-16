@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -167,6 +168,17 @@ class Authorization extends Component implements AuthorizationInterface
                 }
             }
             return false;
+        }
+    }
+
+    /**
+     * @param string $permission
+     * @param string $role
+     */
+    public function authorize($permission = null, $role = null)
+    {
+        if (!$this->isAllowed($permission, $role)) {
+            throw new ForbiddenException($permission);
         }
     }
 }
