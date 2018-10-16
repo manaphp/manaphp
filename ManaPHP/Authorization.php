@@ -67,7 +67,7 @@ class Authorization extends Component implements AuthorizationInterface
         } elseif ($role === 'admin') {
             return true;
         } else {
-            return preg_match("#\b$role\b", $roles) === 1;
+            return preg_match("#\b$role\b#", $roles) === 1;
         }
     }
 
