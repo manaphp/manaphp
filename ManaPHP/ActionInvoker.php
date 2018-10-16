@@ -14,9 +14,35 @@ use ManaPHP\ActionInvoker\NotFoundException;
 class ActionInvoker extends Component implements ActionInvokerInterface
 {
     /**
-     * @param \ManaPHP\Mvc\Controller|\ManaPHP\Rest\Controller $controller
-     * @param string                                           $action
-     * @param array                                            $params
+     * @var \ManaPHP\Controller
+     */
+    protected $_controller;
+
+    /**
+     * @var string
+     */
+    protected $_action;
+
+    /**
+     * @return \ManaPHP\Controller
+     */
+    public function getController()
+    {
+        return $this->_controller;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->_action;
+    }
+
+    /**
+     * @param \ManaPHP\Controller $controller
+     * @param string              $action
+     * @param array               $params
      *
      * @return array
      * @throws \ManaPHP\ActionInvoker\Exception
@@ -99,9 +125,9 @@ class ActionInvoker extends Component implements ActionInvokerInterface
     }
 
     /**
-     * @param \ManaPHP\Mvc\Controller|\ManaPHP\Rest\Controller $controller
-     * @param string                                           $action
-     * @param array                                            $params
+     * @param \ManaPHP\Controller $controller
+     * @param string              $action
+     * @param array               $params
      *
      * @return mixed
      * @throws \ManaPHP\ActionInvoker\Exception
@@ -109,6 +135,9 @@ class ActionInvoker extends Component implements ActionInvokerInterface
      */
     public function invoke($controller, $action, $params)
     {
+        $this->_controller = $controller;
+        $this->_action = $action;
+
         $this->fireEvent('actionInvoker:beforeInvoke');
 
         $actionMethod = $action . 'Action';
@@ -136,7 +165,7 @@ class ActionInvoker extends Component implements ActionInvokerInterface
         }
 
         $this->fireEvent('actionInvoker:afterInvoke');
-		
+
         return $r;
     }
 }

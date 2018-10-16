@@ -4,9 +4,19 @@ namespace ManaPHP;
 interface ActionInvokerInterface
 {
     /**
-     * @param \ManaPHP\Mvc\Controller|\ManaPHP\Rest\Controller $controller
-     * @param string                                           $action
-     * @param array                                            $params
+     * @return \ManaPHP\Controller
+     */
+    public function getController();
+
+    /**
+     * @return string
+     */
+    public function getAction();
+
+    /**
+     * @param \ManaPHP\Controller $controller
+     * @param string              $action
+     * @param array               $params
      *
      * @return mixed
      */
