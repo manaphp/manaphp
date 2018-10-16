@@ -1,12 +1,14 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Utility\Text;
+
 /**
  * Class Authorization
  * @package ManaPHP
  *
  * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
- * @property \ManaPHP\IdentityInterface       $identity
+ * @property \ManaPHP\RouterInterface         $router
  */
 class Authorization extends Component implements AuthorizationInterface
 {
@@ -70,6 +72,57 @@ class Authorization extends Component implements AuthorizationInterface
     }
 
     /**
+     * @param string $permission
+     *
+     * @return array
+     */
+    public function inferControllerAction($permission)
+    {
+        $area = null;
+        if ($permission[0] === '/') {
+            if ($areas = $this->router->getAreas()) {
+                $pos = strpos($permission, '/', 1);
+                $area = Text::camelize($pos === false ? substr($permission, 1) : substr($permission, 1, $pos - 1));
+                if (in_array($area, $areas, true)) {
+                    $permission = $pos === false || $pos === strlen($permission) - 1 ? '' : (string)substr($permission, $pos + 1);
+                } else {
+                    $area = null;
+                    $permission = substr($permission, 1);
+                }
+            } else {
+                $permission = substr($permission, 1);
+            }
+        } else {
+            $c = $this->dispatcher->getControllerName();
+            if ($pos = strpos($c, '/')) {
+                $area = substr($c, $pos);
+            }
+        }
+
+        if ($permission === '') {
+            $controller = 'Index';
+            $action = 'index';
+        } elseif ($pos = strpos($permission, '/')) {
+            if ($pos === false || $pos === strlen($permission) - 1) {
+                $controller = Text::camelize($pos === false ? $permission : substr($permission, 0, -1));
+                $action = 'index';
+            } else {
+                $controller = Text::camelize(substr($permission, 0, $pos));
+                $action = lcfirst(Text::camelize(substr($permission, $pos + 1)));
+            }
+        } else {
+            $controller = Text::camelize($permission);
+            $action = 'index';
+        }
+
+        if ($area) {
+            return ["@ns.app/Areas/$area/Controllers/{$controller}Controller", $action];
+        } else {
+            return ["@ns.app/Controllers/{$controller}Controller", $action];
+        }
+    }
+
+    /**
      * Check whether a user is allowed to access a permission
      *
      * @param string $permission
@@ -80,8 +133,8 @@ class Authorization extends Component implements AuthorizationInterface
     public function isAllowed($permission = null, $role = null)
     {
         if ($permission && strpos($permission, '/') !== false) {
-            $controllerClassName = '';
-            $action = '';
+            list($controllerClassName, $action) = $this->inferControllerAction($permission);
+            $controllerClassName = $this->alias->resolveNS($controllerClassName);
             if (!isset($this->_acl[$controllerClassName])) {
                 /** @var \ManaPHP\Controller $controllerInstance */
                 $controllerInstance = new $controllerClassName;
