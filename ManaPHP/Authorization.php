@@ -178,7 +178,7 @@ class Authorization extends Component implements AuthorizationInterface
     public function authorize($permission = null, $role = null)
     {
         if (!$this->isAllowed($permission, $role)) {
-            throw new ForbiddenException($permission);
+            throw new ForbiddenException('no permission');
         }
     }
 }
