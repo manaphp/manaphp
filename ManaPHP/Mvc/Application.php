@@ -52,7 +52,7 @@ class Application extends \ManaPHP\Application
 
     public function authorize()
     {
-
+        $this->authorization->authorize();
     }
 
     /**

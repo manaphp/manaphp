@@ -31,6 +31,8 @@ class Application extends \ManaPHP\Application
         if (class_exists($routerClass)) {
             $this->_di->setShared('router', $routerClass);
         }
+
+        $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
     }
 
     public function getDi()
@@ -44,7 +46,12 @@ class Application extends \ManaPHP\Application
 
     public function authenticate()
     {
+        $this->identity->authenticate();
+    }
 
+    public function authorize()
+    {
+        $this->authorization->authorize();
     }
 
     public function handle()
