@@ -34,7 +34,7 @@ class Application extends \ManaPHP\Application
             $this->_di->setShared('router', $routerClass);
         }
 
-        $this->attachEvent('dispatcher:beforeDispatch', [$this, 'authorize']);
+        $this->attachEvent('actionInvoker:beforeInvoke', [$this, 'authorize']);
     }
 
     public function getDi()
