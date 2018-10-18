@@ -16,7 +16,8 @@ class AclController extends Controller
         $controllers = [];
 
         foreach (glob($this->alias->resolve("@app/Areas/*/Controllers/*Controller.php")) as $item) {
-            $controllers[] = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\" . basename($item, '.php'));
+            $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+            $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
         }
 
         foreach (glob($this->alias->resolve('@app/Controllers/*Controller.php')) as $item) {
