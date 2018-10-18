@@ -7,6 +7,11 @@ use ManaPHP\Mvc\Controller;
 
 class SessionController extends Controller
 {
+    public function getAcl()
+    {
+        return ['*' => '*'];
+    }
+
     public function captchaAction()
     {
         return $this->captcha->generate();
