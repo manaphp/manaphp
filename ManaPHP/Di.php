@@ -15,61 +15,61 @@ use ManaPHP\Exception\UnexpectedValueException;
  *
  * @package  di
  *
- * @property-read \ManaPHP\AliasInterface                   $alias
- * @property-read \ManaPHP\Mvc\DispatcherInterface          $dispatcher
- * @property-read \ManaPHP\RouterInterface                  $router
- * @property-read \ManaPHP\UrlInterface                     $url
- * @property-read \ManaPHP\Http\RequestInterface            $request
- * @property-read \ManaPHP\Http\FilterInterface             $filter
- * @property-read \ManaPHP\Http\ResponseInterface           $response
- * @property-read \ManaPHP\Http\CookiesInterface            $cookies
- * @property-read \ManaPHP\View\FlashInterface              $flash
- * @property-read \ManaPHP\View\FlashInterface              $flashSession
- * @property-read \ManaPHP\Http\SessionInterface            $session
- * @property-read \ManaPHP\Event\ManagerInterface           $eventsManager
- * @property-read \ManaPHP\DbInterface                      $db
- * @property-read \ManaPHP\Security\CryptInterface          $crypt
- * @property-read \ManaPHP\Db\Model\MetadataInterface       $modelsMetadata
- * @property-read \ManaPHP\Model\ValidatorInterface         $modelsValidator
- * @property-read \ManaPHP\Di|\ManaPHP\DiInterface          $di
- * @property-read \ManaPHP\ViewInterface                    $view
- * @property-read \ManaPHP\Loader                           $loader
- * @property-read \ManaPHP\LoggerInterface                  $logger
- * @property-read \ManaPHP\RendererInterface                $renderer
- * @property-read \ManaPHP\Configuration\Configure          $configure
- * @property-read \ManaPHP\Configuration\SettingsInterface  $settings
- * @property-read \ManaPHP\ApplicationInterface             $application
- * @property-read \ManaPHP\DebuggerInterface                $debugger
- * @property-read \ManaPHP\Authentication\PasswordInterface $password
- * @property-read \Redis                                    $redis
- * @property-read \ManaPHP\Serializer\AdapterInterface      $serializer
- * @property-read \ManaPHP\CacheInterface                   $cache
- * @property-read \ManaPHP\CounterInterface                 $counter
- * @property-read \ManaPHP\Cache\EngineInterface            $viewsCache
- * @property-read \ManaPHP\Curl\EasyInterface               $httpClient
- * @property-read \ManaPHP\AuthorizationInterface           $authorization
- * @property-read \ManaPHP\Security\CaptchaInterface        $captcha
- * @property-read \ManaPHP\Security\CsrfTokenInterface      $csrfToken
- * @property-read \ManaPHP\IdentityInterface                $identity
- * @property-read \ManaPHP\Paginator                        $paginator
- * @property-read \ManaPHP\FilesystemInterface              $filesystem
- * @property-read \ManaPHP\Security\RandomInterface         $random
- * @property-read \ManaPHP\Message\QueueInterface           $messageQueue
- * @property-read \ManaPHP\Text\CrosswordInterface          $crossword
- * @property-read \ManaPHP\Security\RateLimiterInterface    $rateLimiter
- * @property-read \ManaPHP\Meter\LinearInterface            $linearMeter
- * @property-read \ManaPHP\Meter\RoundInterface             $roundMeter
- * @property-read \ManaPHP\Security\SecintInterface         $secint
- * @property-read \ManaPHP\I18n\Translation                 $translation
- * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler   $swordCompiler
- * @property-read \ManaPHP\StopwatchInterface               $stopwatch
- * @property-read \ManaPHP\Security\HtmlPurifierInterface   $htmlPurifier
- * @property-read \ManaPHP\Net\ConnectivityInterface        $netConnectivity
- * @property-read \ManaPHP\AmqpInterface                    $rabbitmq
- * @property-read \ManaPHP\Model\Relation\Manager           $relationsManager
- * @property-read \ManaPHP\MailerInterface                  $mailer
- * @property-read \ManaPHP\Task\ManagerInterface            $tasksManager
- * @property-read \ManaPHP\IpcCacheInterface                $ipcCache
+ * @property-read \ManaPHP\AliasInterface                  $alias
+ * @property-read \ManaPHP\Mvc\DispatcherInterface         $dispatcher
+ * @property-read \ManaPHP\RouterInterface                 $router
+ * @property-read \ManaPHP\UrlInterface                    $url
+ * @property-read \ManaPHP\Http\RequestInterface           $request
+ * @property-read \ManaPHP\Http\FilterInterface            $filter
+ * @property-read \ManaPHP\Http\ResponseInterface          $response
+ * @property-read \ManaPHP\Http\CookiesInterface           $cookies
+ * @property-read \ManaPHP\View\FlashInterface             $flash
+ * @property-read \ManaPHP\View\FlashInterface             $flashSession
+ * @property-read \ManaPHP\Http\SessionInterface           $session
+ * @property-read \ManaPHP\Event\ManagerInterface          $eventsManager
+ * @property-read \ManaPHP\DbInterface                     $db
+ * @property-read \ManaPHP\Security\CryptInterface         $crypt
+ * @property-read \ManaPHP\Db\Model\MetadataInterface      $modelsMetadata
+ * @property-read \ManaPHP\Model\ValidatorInterface        $modelsValidator
+ * @property-read \ManaPHP\Di|\ManaPHP\DiInterface         $di
+ * @property-read \ManaPHP\ViewInterface                   $view
+ * @property-read \ManaPHP\Loader                          $loader
+ * @property-read \ManaPHP\LoggerInterface                 $logger
+ * @property-read \ManaPHP\RendererInterface               $renderer
+ * @property-read \ManaPHP\Configuration\Configure         $configure
+ * @property-read \ManaPHP\Configuration\SettingsInterface $settings
+ * @property-read \ManaPHP\ApplicationInterface            $application
+ * @property-read \ManaPHP\DebuggerInterface               $debugger
+ * @property-read \ManaPHP\PasswordInterface               $password
+ * @property-read \Redis                                   $redis
+ * @property-read \ManaPHP\Serializer\AdapterInterface     $serializer
+ * @property-read \ManaPHP\CacheInterface                  $cache
+ * @property-read \ManaPHP\CounterInterface                $counter
+ * @property-read \ManaPHP\Cache\EngineInterface           $viewsCache
+ * @property-read \ManaPHP\Curl\EasyInterface              $httpClient
+ * @property-read \ManaPHP\AuthorizationInterface          $authorization
+ * @property-read \ManaPHP\Security\CaptchaInterface       $captcha
+ * @property-read \ManaPHP\Security\CsrfTokenInterface     $csrfToken
+ * @property-read \ManaPHP\IdentityInterface               $identity
+ * @property-read \ManaPHP\Paginator                       $paginator
+ * @property-read \ManaPHP\FilesystemInterface             $filesystem
+ * @property-read \ManaPHP\Security\RandomInterface        $random
+ * @property-read \ManaPHP\Message\QueueInterface          $messageQueue
+ * @property-read \ManaPHP\Text\CrosswordInterface         $crossword
+ * @property-read \ManaPHP\Security\RateLimiterInterface   $rateLimiter
+ * @property-read \ManaPHP\Meter\LinearInterface           $linearMeter
+ * @property-read \ManaPHP\Meter\RoundInterface            $roundMeter
+ * @property-read \ManaPHP\Security\SecintInterface        $secint
+ * @property-read \ManaPHP\I18n\Translation                $translation
+ * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler  $swordCompiler
+ * @property-read \ManaPHP\StopwatchInterface              $stopwatch
+ * @property-read \ManaPHP\Security\HtmlPurifierInterface  $htmlPurifier
+ * @property-read \ManaPHP\Net\ConnectivityInterface       $netConnectivity
+ * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
+ * @property-read \ManaPHP\Model\Relation\Manager          $relationsManager
+ * @property-read \ManaPHP\MailerInterface                 $mailer
+ * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
+ * @property-read \ManaPHP\IpcCacheInterface               $ipcCache
  */
 class Di implements DiInterface
 {
@@ -361,7 +361,7 @@ class Di implements DiInterface
             if ($definition[0] === '@') {
                 $definition = $this->alias->resolveNS($definition);
             }
-			
+
             if (!class_exists($definition)) {
                 throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists', 'name' => $name, 'class' => $definition]);
             }
