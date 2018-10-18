@@ -1,7 +1,7 @@
 <?php
-namespace ManaPHP\Cli\Command;
+namespace ManaPHP\Cli;
 
-interface InvokerInterface
+interface CommandInvokerInterface
 {
     /**
      * @param \ManaPHP\Cli\Controller $controller

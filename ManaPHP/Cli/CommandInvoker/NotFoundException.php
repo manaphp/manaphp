@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Cli\Command;
+namespace ManaPHP\Cli\CommandInvoker;
 
 use ManaPHP\Cli\Exception;
 

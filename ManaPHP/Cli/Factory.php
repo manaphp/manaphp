@@ -13,7 +13,7 @@ class Factory extends FactoryDefault
             'cliHandler' => 'ManaPHP\Cli\Handler',
             'console' => 'ManaPHP\Cli\Console',
             'arguments' => 'ManaPHP\Cli\Arguments',
-            'commandInvoker' => 'ManaPHP\Cli\Command\Invoker',
+            'commandInvoker' => 'ManaPHP\Cli\CommandInvoker',
             'errorHandler' => 'ManaPHP\Cli\ErrorHandler']);
     }
 }

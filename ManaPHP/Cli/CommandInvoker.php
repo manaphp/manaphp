@@ -1,8 +1,9 @@
 <?php
 
-namespace ManaPHP\Cli\Command;
+namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
+use ManaPHP\Cli\CommandInvoker\NotFoundException;
 
 /**
  * Class Invoker
@@ -10,7 +11,7 @@ use ManaPHP\Component;
  *
  * @property-read \ManaPHP\Cli\ArgumentsInterface $arguments
  */
-class Invoker extends Component implements InvokerInterface
+class CommandInvoker extends Component implements CommandInvokerInterface
 {
     /**
      * @param \ReflectionParameter[] $parameters
@@ -116,7 +117,7 @@ class Invoker extends Component implements InvokerInterface
      * @param string                  $command
      *
      * @return mixed
-     * @throws \ManaPHP\Cli\Command\NotFoundException
+     * @throws \ManaPHP\Cli\CommandInvoker\NotFoundException
      */
     public function invoke($controller, $command)
     {

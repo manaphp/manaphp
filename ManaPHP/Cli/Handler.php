@@ -11,8 +11,8 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP\Cli
  *
- * @property-read \ManaPHP\Cli\ConsoleInterface         $console
- * @property-read \ManaPHP\Cli\Command\InvokerInterface $commandInvoker
+ * @property-read \ManaPHP\Cli\ConsoleInterface        $console
+ * @property-read \ManaPHP\Cli\CommandInvokerInterface $commandInvoker
  */
 class Handler extends Component implements HandlerInterface
 {
