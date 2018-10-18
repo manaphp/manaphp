@@ -7,8 +7,8 @@ namespace ManaPHP\Rest;
  *
  * @package controller
  *
- * @method bool beforeExecuteRoute();
- * @method bool afterExecuteRoute();
+ * @method bool beforeInvoke(string $action);
+ * @method bool afterInvoke(string $action, mixed $r);
  *
  * @property-read \ManaPHP\Security\CaptchaInterface      $captcha
  * @property-read \ManaPHP\PasswordInterface              $password

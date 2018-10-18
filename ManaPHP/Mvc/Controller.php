@@ -7,8 +7,8 @@ namespace ManaPHP\Mvc;
  *
  * @package controller
  *
- * @method bool beforeExecuteRoute();
- * @method bool afterExecuteRoute();
+ * @method mixed beforeInvoke(string $action);
+ * @method mixed afterInvoke(string $action, mixed $r);
  *
  * @property-read \ManaPHP\ViewInterface                  $view
  * @property-read \ManaPHP\View\FlashInterface            $flash

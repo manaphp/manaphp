@@ -136,6 +136,10 @@ class ActionInvoker extends Component implements ActionInvokerInterface
         $this->_controller = $controller;
         $this->_action = $action;
 
+        if (method_exists($controller, 'beforeInvoke') && ($r = $controller->beforeInvoke($action)) !== null) {
+            return $r;
+        }
+
         $this->fireEvent('actionInvoker:beforeInvoke');
 
         $actionMethod = $action . 'Action';
@@ -163,6 +167,10 @@ class ActionInvoker extends Component implements ActionInvokerInterface
         }
 
         $this->fireEvent('actionInvoker:afterInvoke');
+
+        if (method_exists($controller, 'afterInvoke')) {
+            $controller->afterInvoke($action, $r);
+        }
 
         return $r;
     }

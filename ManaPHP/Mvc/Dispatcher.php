@@ -213,24 +213,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $this->_controller = $controllerInstance;
 
-        if ($this->fireEvent('dispatcher:beforeExecuteRoute') === false) {
-            return false;
-        }
-
-        if (method_exists($controllerInstance, 'beforeExecuteRoute') && $controllerInstance->beforeExecuteRoute() === false) {
-            return false;
-        }
-
         $this->_returnedValue = $this->actionInvoker->invoke($controllerInstance, $this->_actionName, $this->_params);
-
-
-        if ($this->fireEvent('dispatcher:afterExecuteRoute') === false) {
-            return false;
-        }
-
-        if (method_exists($controllerInstance, 'afterExecuteRoute')) {
-            $controllerInstance->afterExecuteRoute();
-        }
 
         $this->fireEvent('dispatcher:afterDispatch');
 
