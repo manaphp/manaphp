@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Component;
-
 /**
  * Class ManaPHP\Password
  *
