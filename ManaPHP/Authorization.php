@@ -2,6 +2,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\ForbiddenException;
+use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -179,8 +180,14 @@ class Authorization extends Component implements AuthorizationInterface
      */
     public function authorize($permission = null, $role = null)
     {
+        $role = $role ?: $this->identity->getRole();
+
         if (!$this->isAllowed($permission, $role)) {
-            throw new ForbiddenException('no permission');
+            if ($role === 'guest') {
+                throw new NoCredentialException('No Credential or Invalid Credential');
+            } else {
+                throw new ForbiddenException('Access denied to resource');
+            }
         }
     }
 }
