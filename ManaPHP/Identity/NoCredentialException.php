@@ -5,5 +5,8 @@ use ManaPHP\Exception\ForbiddenException;
 
 class NoCredentialException extends ForbiddenException
 {
-
+    public function __construct($message = 'No Credentials', $code = 0, \Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }
