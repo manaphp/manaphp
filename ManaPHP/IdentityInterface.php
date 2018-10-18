@@ -41,6 +41,13 @@ interface IdentityInterface
     public function getRole($default = 'guest');
 
     /**
+     * @param string $role
+     *
+     * @return static
+     */
+    public function setRole($role);
+
+    /**
      * @param string     $claim
      * @param string|int $value
      *

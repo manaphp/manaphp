@@ -94,6 +94,18 @@ abstract class Identity extends Component implements IdentityInterface
     }
 
     /**
+     * @param string $role
+     *
+     * @return static
+     */
+    public function setRole($role)
+    {
+        $this->_claims['role'] = $role;
+
+        return $this;
+    }
+
+    /**
      * @param string     $claim
      * @param string|int $value
      *
