@@ -15,21 +15,21 @@ use ManaPHP\Exception\InvalidValueException;
 class Rbac extends Authorization
 {
     /**
-     * @param string $permissionName
+     * @param string $permission
      * @param string $role
      *
      * @return bool
      */
-    public function isAllowed($permissionName = null, $role = null)
+    public function isAllowed($permission = null, $role = null)
     {
         $role = $role ?: $this->identity->getRole();
-        $permission = Permission::first(['path' => $permissionName]);
+        $permissionModel = Permission::first(['path' => $permission]);
 
-        if (!$permission) {
-            throw new InvalidValueException(['`:permission` permission is not exists'/**m06ab9af781c2de7f2*/, 'permission' => $permissionName]);
+        if (!$permissionModel) {
+            throw new InvalidValueException(['`:permission` permission is not exists'/**m06ab9af781c2de7f2*/, 'permission' => $permission]);
         }
 
-        $rolesByPermissionId = RolePermission::values('role_id', ['permission_id' => $permission->permission_id]);
+        $rolesByPermissionId = RolePermission::values('role_id', ['permission_id' => $permissionModel->permission_id]);
         return Role::exists(['role_name' => $role, 'role_id' => $rolesByPermissionId]);
     }
 }
