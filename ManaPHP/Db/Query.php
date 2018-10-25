@@ -1412,7 +1412,12 @@ class Query extends Component implements QueryInterface
         $this->_hiddenParamNumber = 0;
 
         $this->_sql = $this->_buildSql();
-
+	
+        if (in_array('FALSE', $this->_conditions, true)) {
+            $this->logger->debug($this->_sql, 'db.query.skip');
+            return [];
+        }
+	
         $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
         return $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
     }
