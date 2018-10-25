@@ -392,7 +392,7 @@ class Manager extends Component implements ManagerInterface
              * @var \ManaPHP\Model $reference
              */
             $reference = new $referenceModel();
-            $ids = $via::values($reference->getPrimaryKey(), [$valueField => $relation->$valueField]);
+            $ids = $via::values($reference->getPrimaryKey(), [$valueField => $instance->$valueField]);
             return $referenceModel::criteria()->where($reference->getPrimaryKey(), $ids)->setFetchType(true);
         } else {
             throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
