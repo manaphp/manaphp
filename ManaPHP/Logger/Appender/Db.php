@@ -3,6 +3,7 @@
 namespace ManaPHP\Logger\Appender;
 
 use ManaPHP\Component;
+use ManaPHP\Logger;
 use ManaPHP\Logger\AppenderInterface;
 
 /**
@@ -62,17 +63,23 @@ class Db extends Component implements AppenderInterface
             $line = '';
         }
 
+        $level = $this->logger->getLevel();
+        $this->logger->setLevel(Logger::LEVEL_FATAL);
         try {
             $db->insert($this->_table, [
                 'host' => $log->host,
+                'client_ip' => $log->client_ip,
+                'request_id' => $log->request_id,
                 'category' => $log->category,
                 'level' => $log->level,
                 'file' => $file,
                 'line' => $line,
                 'message' => $log->message,
-                'created_time' => $log->timestamp]);
+                'timestamp' => $log->timestamp - (int)$log->timestamp,
+                'created_time' => (int)$log->timestamp]);
         } catch (\Exception $e) {
-            trigger_error('Write log to db failed: ' . $e->getMessage(), E_USER_WARNING);
+            null;
         }
+        $this->logger->setLevel($level);
     }
 }
