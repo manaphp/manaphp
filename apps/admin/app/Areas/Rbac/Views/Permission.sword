@@ -5,11 +5,6 @@
                 <el-option v-for="path in paths" :key="path" :label="path" :value="path"></el-option>
             </el-select>
         </el-col>
-        <el-col :span="2">
-            <el-select v-model="filter.type" size="small" placeholder="类别" clearable>
-                <el-option v-for="(name, id) in types" :key="id" :label="name" :value="id"></el-option>
-            </el-select>
-        </el-col>
         <el-col :span="3">
             <el-button round size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh">重新扫描</el-button>
         </el-col>
@@ -19,9 +14,6 @@
     <el-form :model="edit" ref="edit">
         <el-form-item label="ID:"><div>@{{edit.permission_id}}</div></el-form-item>
         <el-form-item label="路径:"><div>@{{edit.path}}</div></el-form-item>
-        <el-form-item label="类别:">
-            <el-select v-model="edit.type"><el-option v-for="(name, id) in types" :key="id" :label="name" :value="id"></el-option></el-select>
-        </el-form-item>
         <el-form-item label="描述:"><el-input v-model="edit.description"></el-input></el-form-item>
     </el-form>
     <div slot="footer">
@@ -33,7 +25,6 @@
     <el-table :data="filteredResponse" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="permission_id" label="ID" width="50"></el-table-column>
-        <el-table-column label="类型" width="100"><template slot-scope="scope">@{{types[scope.row.type]}}</template></el-table-column>
         <el-table-column prop="path" label="路径" width="250"></el-table-column>
         <el-table-column prop="description" label="简述" width="250"></el-table-column>
         <el-table-column label="角色列表">
@@ -64,9 +55,7 @@
                 paths: [],
                 filter: {
                     path: '',
-                    type: ''
-                },
-                types:  @constants('permission', 'type')
+                }
             },
             computed: {
                 filteredResponse: function () {
@@ -74,10 +63,6 @@
                     var permissions = [];
                     for (var item of this.response) {
                         if (filter.path !== '' && item.path !== filter.path && item.path.indexOf(filter.path + '/') !== 0 && filter.path !== '/') {
-                            continue;
-                        }
-
-                        if (filter.type !== '' && item.type !== filter.type) {
                             continue;
                         }
 
