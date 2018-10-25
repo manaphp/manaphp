@@ -34,42 +34,15 @@ class PermissionController extends ControllerBase
 
     public function rebuildAction()
     {
-        if (!$this->request->isPost()) {
-            return;
-        }
-
-        foreach ($this->filesystem->glob('@app/Controllers/*Controller.php') as $item) {
-            $controller = $this->alias->resolveNS('@ns.app\\Controllers\\' . basename($item, '.php'));
-            $controller_path = '/' . Text::underscore(basename($item, 'Controller.php'));
-
-            foreach (get_class_methods($controller) as $method) {
-                if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
-                    continue;
-                }
-                $path = preg_replace('#(/index)+$#', '', $controller_path . '/' . Text::underscore($match[1])) ?: '/';
-                if (Permission::exists(['path' => $path])) {
-                    continue;
-                }
-
-                $permission = new Permission();
-                $permission->enabled = 1;
-                $permission->path = $path;
-                $permission->description = $path;
-                $permission->create();
-            }
-        }
-
-        foreach ($this->filesystem->glob('@app/Areas/*', GLOB_ONLYDIR) as $area) {
-            $area = basename($area);
-            foreach (glob($this->alias->resolve("@app/Areas/$area/Controllers/*Controller.php")) as $item) {
-                $controller = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\" . basename($item, '.php'));
-                $controller_path = '/' . Text::underscore($area) . '/' . Text::underscore(basename($item, 'Controller.php'));
+        if ($this->request->isPost()) {
+            foreach ($this->filesystem->glob('@app/Controllers/*Controller.php') as $item) {
+                $controller = $this->alias->resolveNS('@ns.app\\Controllers\\' . basename($item, '.php'));
+                $controller_path = '/' . Text::underscore(basename($item, 'Controller.php'));
 
                 foreach (get_class_methods($controller) as $method) {
                     if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
                         continue;
                     }
-
                     $path = preg_replace('#(/index)+$#', '', $controller_path . '/' . Text::underscore($match[1])) ?: '/';
                     if (Permission::exists(['path' => $path])) {
                         continue;
@@ -82,9 +55,32 @@ class PermissionController extends ControllerBase
                     $permission->create();
                 }
             }
-        }
 
-        return 0;
+            foreach ($this->filesystem->glob('@app/Areas/*', GLOB_ONLYDIR) as $area) {
+                $area = basename($area);
+                foreach (glob($this->alias->resolve("@app/Areas/$area/Controllers/*Controller.php")) as $item) {
+                    $controller = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\" . basename($item, '.php'));
+                    $controller_path = '/' . Text::underscore($area) . '/' . Text::underscore(basename($item, 'Controller.php'));
+
+                    foreach (get_class_methods($controller) as $method) {
+                        if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
+                            continue;
+                        }
+
+                        $path = preg_replace('#(/index)+$#', '', $controller_path . '/' . Text::underscore($match[1])) ?: '/';
+                        if (Permission::exists(['path' => $path])) {
+                            continue;
+                        }
+
+                        $permission = new Permission();
+                        $permission->enabled = 1;
+                        $permission->path = $path;
+                        $permission->description = $path;
+                        $permission->create();
+                    }
+                }
+            }
+        }
     }
 
     public function editAction()
