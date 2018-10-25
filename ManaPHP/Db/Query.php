@@ -12,8 +12,8 @@ use ManaPHP\Exception\RuntimeException;
  *
  * @package queryBuilder
  *
- * @property-read \ManaPHP\Paginator               $paginator
- * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Paginator             $paginator
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Query extends Component implements QueryInterface
 {
@@ -605,7 +605,7 @@ class Query extends Component implements QueryInterface
                 $this->_hiddenParamNumber++;
             }
         } else {
-            $this->_conditions[] = '1=2';
+            $this->_conditions[] = 'FALSE';
         }
 
         return $this;
