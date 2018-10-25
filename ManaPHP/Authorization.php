@@ -187,6 +187,9 @@ class Authorization extends Component implements AuthorizationInterface
     /**
      * @param string $permission
      * @param string $role
+     *
+     * @throws \ManaPHP\Identity\NoCredentialException
+     * @throws \ManaPHP\Exception\ForbiddenException
      */
     public function authorize($permission = null, $role = null)
     {
