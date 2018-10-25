@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use ManaPHP\Identity\NoCredentialException;
+
 class Application extends \ManaPHP\Mvc\Application
 {
     /**
@@ -9,11 +11,11 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function authorize()
     {
-        if ($this->identity->isGuest()) {
+        try {
+            $this->authorization->authorize();
+        } catch (NoCredentialException $exception) {
             return $this->response->redirect(['/user/session/login?redirect=' . $this->request->get('redirect', null, $this->request->getUrl())]);
         }
-
-        return null;
     }
 
     /**
