@@ -6,6 +6,11 @@ use App\Areas\Rbac\Models\Role;
 
 class RoleController extends ControllerBase
 {
+    public function getAcl()
+    {
+        return ['list' => '@index'];
+    }
+
     public function indexAction()
     {
         if ($this->request->isAjax()) {

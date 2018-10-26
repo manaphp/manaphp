@@ -6,6 +6,11 @@ use App\Models\Admin;
 
 class AdminController extends ControllerBase
 {
+    public function getAcl()
+    {
+        return ['list' => '@index'];
+    }
+
     public function indexAction()
     {
         if ($this->request->isAjax()) {

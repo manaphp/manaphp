@@ -14,6 +14,11 @@ use ManaPHP\Utility\Text;
  */
 class PermissionController extends ControllerBase
 {
+    public function getAcl()
+    {
+        return ['list' => '@index'];
+    }
+
     public function indexAction()
     {
         if ($this->request->isAjax()) {

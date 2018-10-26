@@ -6,6 +6,11 @@ use ManaPHP\Mvc\Controller;
 
 class AccountController extends Controller
 {
+    public function getAcl()
+    {
+        return ['register' => '*'];
+    }
+
     public function registerAction()
     {
         if ($this->request->isAjax()) {
