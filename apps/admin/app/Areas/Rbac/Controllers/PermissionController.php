@@ -40,51 +40,61 @@ class PermissionController extends ControllerBase
     public function rebuildAction()
     {
         if ($this->request->isPost()) {
+            $controllers = [];
             foreach ($this->filesystem->glob('@app/Controllers/*Controller.php') as $item) {
-                $controller = $this->alias->resolveNS('@ns.app\\Controllers\\' . basename($item, '.php'));
-                $controller_path = '/' . Text::underscore(basename($item, 'Controller.php'));
+                $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
+            }
 
-                foreach (get_class_methods($controller) as $method) {
+            foreach ($this->filesystem->glob('@app/Areas/*/Controllers/*Controller.php') as $item) {
+                $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
+            }
+
+            foreach ($controllers as $controller) {
+                /**@var \ManaPHP\Controller $controllerInstance */
+                $controllerInstance = new $controller;
+                $acl = $controllerInstance->getAcl();
+
+                if (preg_match('#/Areas/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $controller), $match)) {
+                    $area = $match[1];
+                    $controller_name = $match[2];
+                } else {
+                    $area = null;
+                    $controller_name = basename(str_replace('\\', '/', $controller), 'Controller');
+                }
+
+                foreach (get_class_methods($controllerInstance) as $method) {
                     if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
                         continue;
                     }
-                    $path = preg_replace('#(/index)+$#', '', $controller_path . '/' . Text::underscore($match[1])) ?: '/';
+
+                    $action = $match[1];
+                    if (isset($acl[$action])) {
+                        $roles = $acl[$action];
+                        if ($roles[0] === '@' || in_array($acl[$action], ['*', 'guest', 'user', 'admin'], true)) {
+                            continue;
+                        }
+                    } else {
+                        if (isset($acl['*']) && in_array($acl['*'], ['*', 'guest', 'user', 'admin'], true)) {
+                            continue;
+                        }
+                    }
+                    $path = '/' . ($area ? Text::underscore($area) . '/' : '') . Text::underscore($controller_name) . '/' . Text::underscore($action);
+                    $path = preg_replace('#(/index)+$#', '', $path) ?: '/';
+
                     if (Permission::exists(['path' => $path])) {
                         continue;
                     }
 
                     $permission = new Permission();
-                    $permission->enabled = 1;
                     $permission->path = $path;
                     $permission->description = $path;
                     $permission->create();
                 }
             }
 
-            foreach ($this->filesystem->glob('@app/Areas/*', GLOB_ONLYDIR) as $area) {
-                $area = basename($area);
-                foreach (glob($this->alias->resolve("@app/Areas/$area/Controllers/*Controller.php")) as $item) {
-                    $controller = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\" . basename($item, '.php'));
-                    $controller_path = '/' . Text::underscore($area) . '/' . Text::underscore(basename($item, 'Controller.php'));
-
-                    foreach (get_class_methods($controller) as $method) {
-                        if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
-                            continue;
-                        }
-
-                        $path = preg_replace('#(/index)+$#', '', $controller_path . '/' . Text::underscore($match[1])) ?: '/';
-                        if (Permission::exists(['path' => $path])) {
-                            continue;
-                        }
-
-                        $permission = new Permission();
-                        $permission->enabled = 1;
-                        $permission->path = $path;
-                        $permission->description = $path;
-                        $permission->create();
-                    }
-                }
-            }
+            return 0;
         }
     }
 

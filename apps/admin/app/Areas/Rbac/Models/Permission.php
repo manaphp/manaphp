@@ -7,7 +7,6 @@ use ManaPHP\Db\Model;
 class Permission extends Model
 {
     public $permission_id;
-    public $enabled;
     public $path;
     public $description;
     public $created_time;
@@ -21,7 +20,6 @@ class Permission extends Model
     public function rules()
     {
         return [
-            'enabled' => 'int',
             'description' => ['length' => '0-128']
         ];
     }
