@@ -2,8 +2,8 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Exception\AuthenticationException;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Identity\NotAuthenticatedException;
 
 /**
  * Class ManaPHP\Identity
@@ -42,7 +42,7 @@ abstract class Identity extends Component implements IdentityInterface
     {
         if (!$this->_claims) {
             if ($default === null) {
-                throw new NotAuthenticatedException('id');
+                throw new AuthenticationException();
             } else {
                 return $default;
             }
@@ -63,7 +63,7 @@ abstract class Identity extends Component implements IdentityInterface
     {
         if (!$this->_claims) {
             if ($default === null) {
-                throw new NotAuthenticatedException('name');
+                throw new AuthenticationException();
             } else {
                 return $default;
             }

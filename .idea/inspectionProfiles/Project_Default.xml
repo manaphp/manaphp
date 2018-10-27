@@ -40,7 +40,7 @@
           <option value="\ManaPHP\Exception\ForbiddenException" />
           <option value="\ManaPHP\Exception\TooManyRequestsException" />
           <option value="\ManaPHP\Exception\ParameterOrderException" />
-          <option value="\ManaPHP\Identity\NotAuthenticatedException" />
+          <option value="\ManaPHP\Exception\AuthenticationException" />
           <option value="\ManaPHP\Identity\InvalidCredentialException" />
           <option value="\ManaPHP\Identity\NoCredentialException" />
           <option value="\ManaPHP\Identity\ExpiredCredentialException" />

@@ -1,9 +1,9 @@
 <?php
 namespace ManaPHP\Identity;
 
-use ManaPHP\Exception\ForbiddenException;
+use ManaPHP\Exception\AuthenticationException;
 
-class CredentialException extends ForbiddenException
+class CredentialException extends AuthenticationException
 {
 
 }
