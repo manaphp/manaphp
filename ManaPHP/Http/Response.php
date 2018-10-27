@@ -320,6 +320,9 @@ class Response extends Component implements ResponseInterface
         } elseif ($content instanceof FilterException) {
             $content = ['code' => -2, 'message' => $content->getMessage()];
         } elseif ($content instanceof \Exception) {
+            if ($content instanceof \ManaPHP\Exception) {
+                $this->setStatus($content->getStatusCode(), $content->getStatusText());
+            }
             $content = ['code' => -1, 'message' => $content->getMessage()];
         }
 
