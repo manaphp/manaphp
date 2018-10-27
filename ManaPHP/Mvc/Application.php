@@ -69,6 +69,8 @@ class Application extends \ManaPHP\Application
                 return $this->response->redirect(["{$this->_loginUrl}{$sep}redirect=$redirect"]);
             }
         }
+
+        return null;
     }
 
     /**
