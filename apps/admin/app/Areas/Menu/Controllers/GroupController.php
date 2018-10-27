@@ -16,9 +16,9 @@ class GroupController extends Controller
     {
         if ($this->request->isAjax()) {
             return Group::criteria()
-                ->whereRequest(['group_id'])
+                ->whereSearch(['group_id'])
                 ->orderBy('display_order DESC, group_id ASC')
-                ->execute();
+                ->fetch(true);
         }
     }
 
