@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use ManaPHP\Exception\AuthenticationException;
 use ManaPHP\Identity\NoCredentialException;
 
 class Application extends \ManaPHP\Mvc\Application
@@ -13,8 +14,12 @@ class Application extends \ManaPHP\Mvc\Application
     {
         try {
             $this->authorization->authorize();
-        } catch (NoCredentialException $exception) {
-            return $this->response->redirect(['/user/session/login?redirect=' . $this->request->get('redirect', null, $this->request->getUrl())]);
+        } catch (AuthenticationException $exception) {
+            if ($this->request->isAjax()) {
+                return $this->response->setJsonContent($exception);
+            } else {
+                return $this->response->redirect(['/user/session/login?redirect=' . $this->request->get('redirect', null, $this->request->getUrl())]);
+            }
         }
     }
 
@@ -28,7 +33,7 @@ class Application extends \ManaPHP\Mvc\Application
         $this->configure->load();
 
         $this->registerServices();
-        $this->logger->debug(str_pad('', 80,'*'));
+        $this->logger->debug(str_pad('', 80, '*'));
         $this->alias->set('@messages', '@app/Messages');
         $this->view->setLayout();
 
