@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Mvc;
 
+use ManaPHP\Exception\AuthenticationException;
 use ManaPHP\Http\Response;
 use ManaPHP\Router\NotFoundRouteException;
 use ManaPHP\View;
@@ -20,6 +21,11 @@ use ManaPHP\View;
  */
 class Application extends \ManaPHP\Application
 {
+    /**
+     * @var string
+     */
+    protected $_loginUrl = '/user/session/login';
+
     /**
      * Application constructor.
      *
@@ -52,7 +58,17 @@ class Application extends \ManaPHP\Application
 
     public function authorize()
     {
-        $this->authorization->authorize();
+        try {
+            $this->authorization->authorize();
+        } catch (AuthenticationException $exception) {
+            if ($this->request->isAjax()) {
+                return $this->response->setJsonContent($exception);
+            } else {
+                $redirect = $this->request->get('redirect', null, $this->request->getUrl());
+                $sep = (strpos($this->_loginUrl, '?') ? '&' : '?');
+                return $this->response->redirect(["{$this->_loginUrl}{$sep}redirect=$redirect"]);
+            }
+        }
     }
 
     /**
