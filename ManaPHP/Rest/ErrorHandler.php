@@ -24,9 +24,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
             $message = 'Internal Server Error';
         }
 
-        if ($code < 400) {
-            return;
-        } elseif ($code >= 500) {
+        if ($code >= 500) {
             $this->logger->error($exception);
         }
 
