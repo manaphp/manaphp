@@ -11,6 +11,7 @@ return [
     ],
     'params' => ['manaphp_brand_show' => 1],
     'aliases' => [
+        '@messages' => '@app/Messages'
     ],
     'components' => [
         'db' => env('DB_URL'),

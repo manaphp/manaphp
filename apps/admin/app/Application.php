@@ -8,13 +8,11 @@ class Application extends \ManaPHP\Mvc\Application
      */
     public function main()
     {
-        $this->loader->registerFiles('@manaphp/helpers.php');
         $this->dotenv->load();
         $this->configure->load();
 
         $this->registerServices();
         $this->logger->debug(str_pad('', 80, '*'));
-        $this->alias->set('@messages', '@app/Messages');
         $this->view->setLayout();
 
         try {
