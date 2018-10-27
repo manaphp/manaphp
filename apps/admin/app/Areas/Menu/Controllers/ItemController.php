@@ -10,9 +10,9 @@ class ItemController extends Controller
     {
         if ($this->request->isAjax()) {
             return Item::criteria()
-                ->whereRequest(['group_id'])
+                ->whereSearch(['group_id'])
                 ->orderBy(['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC])
-                ->execute();
+                ->fetch(true);
         }
     }
 
