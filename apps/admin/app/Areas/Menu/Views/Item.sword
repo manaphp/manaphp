@@ -13,16 +13,16 @@
 </div>
 <el-dialog title="创建菜单项" :visible.sync="createVisible">
     <el-form :model="create" ref="create" v-if="createVisible">
+        <el-form-item label="组名:">
+            <el-select v-model="create.group_id" size="small">
+                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="名称:" prop="item_name">
             <el-input v-model="create.item_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:" prop="display_order">
             <el-input v-model="create.display_order" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="组名:">
-            <el-select v-model="create.group_id" size="small">
-                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
-            </el-select>
         </el-form-item>
         <el-form-item label="链接:" prop="url">
             <el-input v-model="create.url" auto-complete="off"></el-input>
@@ -36,16 +36,16 @@
 
 <el-dialog title="菜单项编辑" :visible.sync="editVisible">
     <el-form :model="edit">
+        <el-form-item label="组名:">
+            <el-select v-model="edit.group_id" size="small">
+                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="名称:" prop="item_name">
             <el-input v-model="edit.item_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:" prop="display_order">
             <el-input v-model="edit.display_order" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="组名:">
-            <el-select v-model="edit.group_id" size="small">
-                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
-            </el-select>
         </el-form-item>
         <el-form-item label="链接:" prop="url">
             <el-input v-model="edit.url" auto-complete="off"></el-input>
