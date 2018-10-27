@@ -31,7 +31,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
             $this->logger->error($exception);
         }
 
-        $this->response->setStatus($code, $message);
+        $this->response->setStatus($code, $code === 200 ? 'OK' : $message);
 
         if ($this->request->isAjax()) {
             if ($this->configure->debug) {

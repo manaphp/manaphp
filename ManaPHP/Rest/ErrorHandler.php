@@ -30,7 +30,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
             $this->logger->error($exception);
         }
 
-        $this->response->setStatus($code, $message);
+        $this->response->setStatus($code, $code === 200 ? 'OK' : $message);
         if ($this->configure->debug) {
             $this->response->setJsonContent(['code' => $code, 'message' => $message, 'exception' => explode("\n", $exception)]);
         } else {
