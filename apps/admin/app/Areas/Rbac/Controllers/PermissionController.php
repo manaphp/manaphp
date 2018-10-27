@@ -51,6 +51,7 @@ class PermissionController extends ControllerBase
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }
 
+            $count = 0;
             foreach ($controllers as $controller) {
                 /**@var \ManaPHP\Controller $controllerInstance */
                 $controllerInstance = new $controller;
@@ -91,10 +92,11 @@ class PermissionController extends ControllerBase
                     $permission->path = $path;
                     $permission->description = $path;
                     $permission->create();
+                    $count++;
                 }
             }
 
-            return 0;
+            return $this->response->setJsonContent(['code' => 0, 'message' => "新增 $count 条"]);
         }
     }
 
