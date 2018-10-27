@@ -23,11 +23,7 @@ class SideMenuWidget extends Widget
             if (count($items) === 0) {
                 continue;
             }
-
-            foreach ($items as $k => $item) {
-                $permission = Permission::firstOrFail($item['permission_id']);
-                $items[$k]['path'] = $permission->path;
-            }
+            
             $menu[] = [
                 'group_id' => $group['group_id'],
                 'group_name' => $group['group_name'],

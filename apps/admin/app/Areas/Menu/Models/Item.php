@@ -9,7 +9,7 @@ class Item extends Model
     public $item_id;
     public $item_name;
     public $group_id;
-    public $permission_id;
+    public $url;
     public $display_order;
     public $creator_name;
     public $updator_name;
@@ -26,7 +26,7 @@ class Item extends Model
         return [
             'item_name' => ['length' => '5-32'],
             'group_id' => 'exists',
-            'permission_id' => ['exists' => Permission::class],
+            'url' => ['length' => '1-128'],
             'display_order' => ['range' => '0-127']
         ];
     }

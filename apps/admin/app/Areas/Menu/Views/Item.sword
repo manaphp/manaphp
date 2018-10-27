@@ -50,11 +50,8 @@
                 <el-option v-for="(name, id) in groups" :key="id" :label="name" :value="id"></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="权限:">
-            <el-select v-model="edit.permission_id" size="small" filterable>
-                <el-option v-for="item in permissions" :key="item.permission_id" :label="item.description"
-                           :value="item.permission_id"></el-option>
-            </el-select>
+        <el-form-item label="链接:" prop="url">
+            <el-input v-model="edit.url" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer">
@@ -68,11 +65,7 @@
         <el-table-column prop="item_id" label="菜单ID" width="100"></el-table-column>
         <el-table-column prop="item_name" label="菜单名"></el-table-column>
         <el-table-column prop="display_order" label="排序"></el-table-column>
-        <el-table-column prop="permission_name" label="权限">
-            <template slot-scope="scope">
-                @{{permissions[scope.row.permission_id].description}}
-            </template>
-        </el-table-column>
+        <el-table-column prop="url" label="链接"></el-table-column>
         <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
         <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
@@ -106,7 +99,7 @@
                     item_name: '',
                     display_order: 0,
                     group_id: '',
-                    permission_id: ''
+                    url: ''
                 },
                 groups: {},
                 permissions: {}
@@ -115,14 +108,19 @@
                 this.ajax_get("{{action('group/list')}}", function (res) {
                     this.groups = res;
                     if (!this.request.group_id) {
-                        this.request.group_id = this._.find(this.groups);
+                        this.request.group_id = this._.find(this.groups, function (v, k) {
+                            return k;
+                        });
                     }
-
-                    this.ajax_get("{{action('/rbac/permission/list')}}", function (res) {
-                        this.permissions = res;
-                        this.reload_table();
-                    });
                 });
+            },
+            watch: {
+                'request.group_id': {
+                    immediate: true,
+                    handler: function () {
+                        this.reload_table();
+                    }
+                }
             },
             methods: {
                 do_create: function () {
