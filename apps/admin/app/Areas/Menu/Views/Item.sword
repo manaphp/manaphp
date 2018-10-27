@@ -24,11 +24,8 @@
                 <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="链接:">
-            <el-select v-model="create.permission_id" size="small" filterable>
-                <el-option v-for="item in permissions" :key="item.permission_id" :label="item.description"
-                           :value="item.permission_id"></el-option>
-            </el-select>
+        <el-form-item label="链接:" prop="url">
+            <el-input v-model="create.url" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <span slot="footer">
@@ -90,7 +87,7 @@
                     item_name: '',
                     display_order: 0,
                     group_id: '',
-                    permission_id: ''
+                    url: ''
                 },
 
                 editVisible: false,
@@ -143,7 +140,7 @@
                         this.ajax_post("{{action('delete')}}", {item_id: row.item_id}).then(function (res) {
                             this.reload_table();
                         });
-                    })
+                    }.bind(this));
                 }
             }
         });
