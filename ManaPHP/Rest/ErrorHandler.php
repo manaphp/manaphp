@@ -18,20 +18,15 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
     {
         if ($exception instanceof \ManaPHP\Exception) {
             $code = $exception->getStatusCode();
-			
-            if ($code < 400) {
-                return;
-            } elseif ($code === 404) {
-                $message = 'Not Found';
-            } else {
-                $message = $exception->getStatusText();
-            }
+            $message = $exception->getStatusText();
         } else {
             $code = 500;
             $message = 'Internal Server Error';
         }
 
-        if ($code === 500) {
+        if ($code < 400) {
+            return;
+        } elseif ($code >= 500) {
             $this->logger->error($exception);
         }
 
