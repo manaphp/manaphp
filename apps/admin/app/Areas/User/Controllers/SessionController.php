@@ -73,7 +73,7 @@ class SessionController extends Controller
     {
         $this->session->destroy();
 
-        return $this->response->redirect(['/', 'Home']);
+        return $this->response->redirect('/');
     }
 
     public function logAction()

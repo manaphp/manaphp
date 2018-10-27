@@ -81,7 +81,7 @@
             login: function () {
                 this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
                     if (res.data.code === 0) {
-                        window.location.href = "{{action('/')}}";
+                        window.location.href = "{{$redirect}}";
                     } else {
                         this.$alert(res.data.message);
                         this.captcha_url="{{action('captcha')}}"+'?t='+new Date().getTime();
