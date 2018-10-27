@@ -101,7 +101,7 @@
                         this.ajax_post("{{action('delete')}}", {group_id: row.group_id}).then(function (res) {
                             this.reload_table();
                         });
-                    })
+                    }.bind(this));
                 }
             }
         });
