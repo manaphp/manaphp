@@ -37,7 +37,7 @@ class SessionController extends Controller
 
             $admin = Admin::first(['admin_name' => $user_name]);
             if (!$admin || !$this->password->verify($password, $admin->password, $admin->salt)) {
-                return $this->response->setJsonContent('account or password is wrong.');
+                return $this->response->setJsonError('account or password is wrong.');
             }
 
             $admin->login_ip = $this->request->getClientIp();
