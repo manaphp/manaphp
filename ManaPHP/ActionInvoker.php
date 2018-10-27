@@ -140,7 +140,9 @@ class ActionInvoker extends Component implements ActionInvokerInterface
             return $r;
         }
 
-        $this->fireEvent('actionInvoker:beforeInvoke');
+        if (($r = $this->fireEvent('actionInvoker:beforeInvoke')) !== null) {
+            return $r;
+        }
 
         $actionMethod = $action . 'Action';
 
