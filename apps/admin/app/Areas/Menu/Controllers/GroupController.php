@@ -25,7 +25,7 @@ class GroupController extends Controller
     public function listAction()
     {
         if ($this->request->isAjax()) {
-            return Group::lists();
+            return Group::all([], null, ['group_id', 'group_name']);
         }
     }
 

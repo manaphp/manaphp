@@ -2,7 +2,7 @@
     <el-row>
         <el-col :span="3">
             <el-select v-model="request.group_id" size="small" clearable @change="reload_table">
-                <el-option v-for="(name, id) in groups" :key="id" :label="name" :value="id"></el-option>
+                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
             </el-select>
         </el-col>
         <el-col :span="3">
@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item label="组名:">
             <el-select v-model="create.group_id" size="small">
-                <el-option v-for="(name, id) in groups" :key="id" :label="name" :value="id"></el-option>
+                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="链接:">
@@ -47,7 +47,7 @@
         </el-form-item>
         <el-form-item label="组名:">
             <el-select v-model="edit.group_id" size="small">
-                <el-option v-for="(name, id) in groups" :key="id" :label="name" :value="id"></el-option>
+                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="链接:" prop="url">
@@ -108,9 +108,7 @@
                 this.ajax_get("{{action('group/list')}}", function (res) {
                     this.groups = res;
                     if (!this.request.group_id) {
-                        this.request.group_id = this._.find(this.groups, function (v, k) {
-                            return k;
-                        });
+                        this.request.group_id = this.groups[0].group_id;
                     }
                 });
             },
