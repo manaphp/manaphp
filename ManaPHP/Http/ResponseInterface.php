@@ -124,6 +124,14 @@ interface ResponseInterface
     public function setContent($content);
 
     /**
+     * @param string $message
+     * @param int    $code
+     *
+     * @return static
+     */
+    public function setJsonError($message, $code = 1);
+
+    /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
      *<code>
      *    $response->setJsonContent(array("status" => "OK"));
