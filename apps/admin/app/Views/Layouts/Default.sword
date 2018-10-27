@@ -21,7 +21,7 @@
 </el-container>
 
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
-<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/2.4.7/index.js"></script>
 <script src="https://cdn.bootcss.com/axios/0.18.0/axios.js"></script>
 <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
