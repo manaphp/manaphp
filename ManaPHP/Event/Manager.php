@@ -20,6 +20,11 @@ class Manager implements ManagerInterface
     protected $_peeks = [];
 
     /**
+     * @var array
+     */
+    protected $_listeners = [];
+
+    /**
      * Attach a listener to the events manager
      *
      * @param string           $event
@@ -54,12 +59,28 @@ class Manager implements ManagerInterface
      */
     public function fireEvent($event, $source, $data = [])
     {
+        list($p1, $p2) = explode(':', $event);
+
+        if (isset($this->_listeners[$p1])) {
+            foreach ($this->_listeners[$p1] as $k => $v) {
+                /**@var \ManaPHP\Event\Listener $listener */
+                if (is_int($v)) {
+                    $this->_listeners[$p1][$k] = $listener = new $k;
+                } else {
+                    $listener = $v;
+                }
+
+                if (($ret = $listener->process($p2, $source, $data)) !== null) {
+                    return $ret;
+                }
+            }
+        }
+
         $handlers = [];
         if (isset($this->_peeks['*'])) {
             $handlers = $this->_peeks['*'];
         }
 
-        list($p1, $p2) = explode(':', $event);
         if (isset($this->_peeks[$p1]['*'])) {
             $handlers = array_merge($handlers, $this->_peeks[$p1]['*']);
         }
@@ -111,6 +132,24 @@ class Manager implements ManagerInterface
             list($p1, $p2) = explode(':', $event);
             $this->_peeks[$p1][$p2][] = $handler;
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $listener
+     * @param string $type
+     *
+     * @return static
+     */
+    public function addListener($listener, $type = null)
+    {
+        if (!$type) {
+            $type = basename(substr($listener, strrpos($listener, '\\') + 1), 'Listener');
+            $type = lcfirst(rtrim($type, '0123456789'));
+        }
+
+        $this->_listeners[$type][$listener] = 1;
 
         return $this;
     }

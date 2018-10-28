@@ -119,6 +119,27 @@ class Application extends Component implements ApplicationInterface
         return $this->_di;
     }
 
+    protected function _loadListeners($listeners)
+    {
+        foreach ($listeners as $listener) {
+            if ($listener === '*') {
+                foreach ($this->filesystem->glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
+                    $item = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                    $item = substr(str_replace('/', '\\', $item), 0, -4);
+                    $this->eventsManager->addListener($item);
+                }
+
+                foreach ($this->filesystem->glob('@app/Listeners/*Listener.php') as $item) {
+                    $item = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                    $item = substr(str_replace('/', '\\', $item), 0, -4);
+                    $this->eventsManager->addListener($item);
+                }
+            } else {
+                $this->eventsManager->addListener($listener);
+            }
+        }
+    }
+
     public function registerServices()
     {
         $configure = $this->configure;
@@ -145,6 +166,8 @@ class Application extends Component implements ApplicationInterface
                 $this->_di->getShared($bootstrap);
             }
         }
+
+        $this->_loadListeners($configure->listeners);
     }
 
     /**

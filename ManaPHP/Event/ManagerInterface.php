@@ -38,4 +38,12 @@ interface ManagerInterface
      * @return static
      */
     public function peekEvent($event, $handler);
+
+    /**
+     * @param string $listener
+     * @param string $type
+     *
+     * @return static
+     */
+    public function addListener($listener, $type = null);
 }

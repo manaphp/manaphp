@@ -18,4 +18,5 @@ return [
             'appenders' => ['file' => ['file' => '@data/logger/app.log']],
         ]
     ],
+    'listeners' => ['*']
 ];
