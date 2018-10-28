@@ -29,6 +29,12 @@ class Listener extends Component
 
     public function process($event, $source, $data)
     {
+        if (method_exists($this, 'peek')) {
+            if (($r = $this->peek($event, $source, $data)) !== null) {
+                return $r;
+            }
+        }
+
         if (isset($this->_processors[$event])) {
             foreach ($this->_processors[$event] as $processor) {
                 if (($r = $this->$processor($source, $data)) !== null) {
