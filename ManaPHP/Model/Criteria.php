@@ -39,6 +39,11 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
         return new \ArrayIterator($this->fetch(true));
     }
 
+    public function jsonSerialize()
+    {
+        return $this->fetch(true);
+    }
+
     /**
      * @return \ManaPHP\Model
      */
@@ -349,11 +354,6 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
         } else {
             return 0;
         }
-    }
-
-    public function jsonSerialize()
-    {
-        return $this->fetch();
     }
 
     /**
