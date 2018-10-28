@@ -4,8 +4,8 @@ namespace ManaPHP\Db;
 use ManaPHP\Component;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Db\Model\QueryBuilder
@@ -1225,8 +1225,7 @@ class Query extends Component implements QueryInterface
         }
 
         if (!$this->_tables) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new RuntimeException('at least one model is required to build the query');
+            throw new MisuseException('at least one model is required to build the query');
         }
 
         $params = [];
