@@ -2,13 +2,19 @@
 namespace ManaPHP\Event;
 
 use ManaPHP\Component;
+use ManaPHP\Logger\LogCategorizable;
 
-class Listener extends Component
+class Listener extends Component implements LogCategorizable
 {
     /**
      * @var array
      */
     protected $_processors = [];
+
+    public function categorizeLog()
+    {
+        return basename(str_replace('\\', '.', get_called_class()), 'Listener');
+    }
 
     public function __construct()
     {
