@@ -15,7 +15,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Paginator             $paginator
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Query extends Component implements QueryInterface
+class Query extends Component implements QueryInterface, \IteratorAggregate
 {
     /**
      * @var array
@@ -139,6 +139,11 @@ class Query extends Component implements QueryInterface
         $this->_db = $db;
 
         $this->_di = Di::getDefault();
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->fetchAll());
     }
 
     /**
@@ -1411,12 +1416,12 @@ class Query extends Component implements QueryInterface
         $this->_hiddenParamNumber = 0;
 
         $this->_sql = $this->_buildSql();
-	
+
         if (in_array('FALSE', $this->_conditions, true)) {
             $this->logger->debug($this->_sql, 'db.query.skip');
             return [];
         }
-	
+
         $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
         return $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
     }
