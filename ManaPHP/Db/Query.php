@@ -146,6 +146,11 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
         return new \ArrayIterator($this->fetchAll());
     }
 
+    public function jsonSerialize()
+    {
+        return $this->fetchAll();
+    }
+
     /**
      * @param \ManaPHP\DbInterface|string $db
      *
