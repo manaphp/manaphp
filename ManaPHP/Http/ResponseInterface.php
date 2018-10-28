@@ -125,6 +125,13 @@ interface ResponseInterface
 
     /**
      * @param string $message
+     *
+     * @return static
+     */
+    public function setJsonOk($message = '');
+
+    /**
+     * @param string $message
      * @param int    $code
      *
      * @return static

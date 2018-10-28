@@ -292,6 +292,16 @@ class Response extends Component implements ResponseInterface
 
     /**
      * @param string $message
+     *
+     * @return static
+     */
+    public function setJsonOk($message = '')
+    {
+        return $this->setJsonContent(['code' => 0, 'message' => $message]);
+    }
+
+    /**
+     * @param string $message
      * @param int    $code
      *
      * @return static
