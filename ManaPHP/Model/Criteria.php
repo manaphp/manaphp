@@ -12,7 +12,7 @@ use ManaPHP\Exception\NotImplementedException;
  * @property-read \ManaPHP\Http\RequestInterface           $request
  * @property-read \ManaPHP\Model\Relation\ManagerInterface $relationsManager
  */
-abstract class Criteria extends Component implements CriteriaInterface
+abstract class Criteria extends Component implements CriteriaInterface, \IteratorAggregate
 {
     /**
      * @var \ManaPHP\Model
@@ -33,6 +33,11 @@ abstract class Criteria extends Component implements CriteriaInterface
      * @var string|callable
      */
     protected $_index;
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->fetch(true));
+    }
 
     /**
      * @return \ManaPHP\Model
