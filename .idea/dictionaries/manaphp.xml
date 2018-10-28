@@ -48,6 +48,7 @@
       <w>indexby</w>
       <w>intdiv</w>
       <w>intval</w>
+      <w>kvalues</w>
       <w>linter</w>
       <w>mana</w>
       <w>manacli</w>
@@ -102,6 +103,7 @@
       <w>urandom</w>
       <w>urldecode</w>
       <w>vhost</w>
+      <w>vlabels</w>
       <w>woff</w>
       <w>xdigit</w>
       <w>xxxx</w>
