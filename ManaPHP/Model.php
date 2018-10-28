@@ -263,10 +263,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         $list = [];
         if ($field === null) {
-            $field = $model->getDisplayField();
-            if ($field === null) {
+            if (!$field = $model->getDisplayField()) {
                 throw new PreconditionException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
             }
+        }
+
+        if (is_string($field)) {
             $keyField = $model->getPrimaryKey();
             $valueField = $field;
 
@@ -276,8 +278,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             } else {
                 return $criteria->orderBy($keyField)->fetch(true);
             }
-        } elseif (is_string($field)) {
-            return $criteria->values($field);
         } else {
             $keyField = key($field);
             $valueField = current($field);
