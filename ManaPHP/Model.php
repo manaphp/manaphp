@@ -619,6 +619,31 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return mixed
+     */
+    public static function vlabels($field = null, $filters = null)
+    {
+        $model = new static();
+        if ($field === null) {
+            if (!$field = $model->getDisplayField()) {
+                throw new PreconditionException(['invoke :model:vlabels method must provide displayField', 'model' => get_called_class()]);
+            }
+        }
+
+        $pkField = $model->getPrimaryKey();
+
+        $criteria = static::criteria(['value' => $pkField, 'label' => $field], $model)->where($filters);
+        if (in_array('display_order', $model->getFields(), true)) {
+            $criteria->orderBy(['display_order' => SORT_DESC, $pkField => SORT_ASC]);
+        }
+
+        return $criteria->fetch(true);
+    }
+
+    /**
      * @param int|string|array $filters
      *
      * @return bool
