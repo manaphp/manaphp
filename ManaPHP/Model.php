@@ -593,6 +593,32 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
+     * @param string $field
+     * @param array  $filters
+     * @param array  $options
+     *
+     * @return array
+     */
+    public static function kvalues($field = null, $filters = null)
+    {
+        $model = new static();
+        if ($field === null) {
+            if (!$field = $model->getDisplayField()) {
+                throw new PreconditionException(['invoke :model:kvalues method must provide displayField', 'model' => get_called_class()]);
+            }
+        }
+
+        $pkField = $model->getPrimaryKey();
+
+        $criteria = static::criteria([$pkField, $field], $model)->where($filters)->indexBy([$pkField => $field]);
+        if (in_array('display_order', $model->getFields(), true)) {
+            $criteria->orderBy(['display_order' => SORT_DESC, $pkField => SORT_ASC]);
+        }
+
+        return $criteria->fetch(true);
+    }
+
+    /**
      * @param int|string|array $filters
      *
      * @return bool
