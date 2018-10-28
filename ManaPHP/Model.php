@@ -619,18 +619,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     }
 
     /**
-     * @param string $field
-     * @param array  $filters
+     * @param array $filters
      *
      * @return mixed
      */
-    public static function vlabels($field = null, $filters = null)
+    public static function vlabels($filters = null)
     {
         $model = new static();
-        if ($field === null) {
-            if (!$field = $model->getDisplayField()) {
-                throw new PreconditionException(['invoke :model:vlabels method must provide displayField', 'model' => get_called_class()]);
-            }
+        if (!$field = $model->getDisplayField()) {
+            throw new PreconditionException(['invoke :model:vlabels method must provide displayField', 'model' => get_called_class()]);
         }
 
         $pkField = $model->getPrimaryKey();

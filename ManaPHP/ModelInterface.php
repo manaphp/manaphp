@@ -229,12 +229,11 @@ interface ModelInterface
     public static function kvalues($field = null, $filters = null);
 
     /**
-     * @param string $field
      * @param array  $filters
      *
      * @return mixed
      */
-    public static function vlabels($field, $filters = null);
+    public static function vlabels($filters = null);
 
     /**
      * @param string|array $filters
