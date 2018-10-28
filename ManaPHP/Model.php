@@ -270,7 +270,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $keyField = $model->getPrimaryKey();
             $valueField = $field;
 
-            $criteria = $criteria->select([$keyField, $valueField])->indexBy([$keyField => $valueField]);
+            $criteria = $criteria->select([$keyField, $valueField]);
             if (in_array('display_order', $model->getFields(), true)) {
                 return $criteria->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
             } else {
