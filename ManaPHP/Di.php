@@ -394,6 +394,8 @@ class Di implements DiInterface
             if ($this->_keepInstanceState && ($state = $instance->saveInstanceState()) !== false) {
                 $this->_instancesState[] = new InstanceState($name, $instance, $state);
             }
+        } elseif (method_exists($instance, 'setDi')) {
+            $instance->setDi($this);
         }
 
         return $instance;
