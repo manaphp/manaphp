@@ -193,7 +193,7 @@ class Mongodb extends Component implements MongodbInterface
         $result = $this->bulkWrite($namespace, $bulk);
         $count = $skipIfExists ? $result->getUpsertedCount() : $result->getInsertedCount();
 
-        $this->fireEvent('mongodb:afterInsert');
+        $this->fireEvent('mongodb:afterInsert', ['namespace' => $namespace]);
         $this->logger->info(compact('count', 'namespace', 'primaryKey', 'document', 'skipIfExists'), 'mongodb.insert');
 
         return $count;
@@ -231,7 +231,7 @@ class Mongodb extends Component implements MongodbInterface
         }
         $this->fireEvent('mongodb:beforeBulkInsert', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $this->fireEvent('mongodb:afterBulkInsert');
+        $this->fireEvent('mongodb:afterBulkInsert', ['namespace' => $namespace]);
         $count = $skipIfExists ? $result->getUpsertedCount() : $result->getInsertedCount();
         $this->logger->info(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
         return $count;
@@ -291,7 +291,7 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->fireEvent('mongodb:beforeBulkUpdate', ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $this->fireEvent('mongodb:afterBulkUpdate');
+        $this->fireEvent('mongodb:afterBulkUpdate', ['namespace' => $namespace]);
         $count = $result->getModifiedCount();
         $this->logger->info(compact('namespace', 'documents', 'primaryKey', 'count'), 'mongodb.bulk.update');
         return $count;
