@@ -176,6 +176,10 @@ class Easy extends Component implements EasyInterface
             }
         }
 
+        $curl = curl_init();
+
+        $this->fireEvent('curl:beforeRequest', compact('type', 'url', 'body', 'options', 'curl'));
+
         if (is_int($options) || is_float($options)) {
             $options = ['timeout' => $options];
         } elseif (is_string($options)) {
@@ -229,8 +233,6 @@ class Easy extends Component implements EasyInterface
 
         $request_id = substr(md5(microtime() . mt_rand()), 0, 16);
         $this->logger->debug([['REQUEST_ID' => $request_id, 'METHOD' => $type, 'URL' => $url, 'OPTIONS' => $options, 'BODY' => $body]], 'httpClient.request');
-
-        $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_AUTOREFERER, true);
@@ -397,6 +399,8 @@ class Easy extends Component implements EasyInterface
             'starttransfer_time' => curl_getinfo($curl, CURLINFO_STARTTRANSFER_TIME)];
 
         curl_close($curl);
+
+        $this->fireEvent('curl:afterRequest', compact('type', 'url', 'body', 'options', 'response'));
 
         $this->logger->debug([[
             'REQUEST_ID' => $request_id,
