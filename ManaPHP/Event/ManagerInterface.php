@@ -9,6 +9,17 @@ namespace ManaPHP\Event;
  */
 interface ManagerInterface
 {
+    /**
+     * @return \ManaPHP\DiInterface
+     */
+    public function getDi();
+
+    /**
+     * @param \ManaPHP\DiInterface $di
+     *
+     * @return static
+     */
+    public function setDi($di);
 
     /**
      * Attach a listener to the events manager

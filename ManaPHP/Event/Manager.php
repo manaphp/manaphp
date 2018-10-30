@@ -10,6 +10,11 @@ namespace ManaPHP\Event;
 class Manager implements ManagerInterface
 {
     /**
+     * @var \ManaPHP\DiInterface
+     */
+    protected $_di;
+
+    /**
      * @var array
      */
     protected $_events = [];
@@ -23,6 +28,26 @@ class Manager implements ManagerInterface
      * @var array
      */
     protected $_listeners = [];
+
+    /**
+     * @return \ManaPHP\DiInterface
+     */
+    public function getDi()
+    {
+        return $this->_di;
+    }
+
+    /**
+     * @param \ManaPHP\DiInterface $di
+     *
+     * @return static
+     */
+    public function setDi($di)
+    {
+        $this->_di = $di;
+
+        return $this;
+    }
 
     /**
      * Attach a listener to the events manager
@@ -65,7 +90,7 @@ class Manager implements ManagerInterface
             foreach ($this->_listeners[$p1] as $k => $v) {
                 /**@var \ManaPHP\Event\Listener $listener */
                 if (is_int($v)) {
-                    $this->_listeners[$p1][$k] = $listener = new $k;
+                    $this->_listeners[$p1][$k] = $listener = $this->_di->getShared($k);
                 } else {
                     $listener = $v;
                 }
