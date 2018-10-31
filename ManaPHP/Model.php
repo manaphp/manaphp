@@ -595,7 +595,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * @param string $field
      * @param array  $filters
-     * @param array  $options
      *
      * @return array
      */
