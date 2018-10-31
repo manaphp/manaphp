@@ -580,16 +580,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     /**
      * @param string $field
      * @param array  $filters
-     * @param array  $options
      *
      * @return array
      */
-    public static function values($field, $filters = null, $options = null)
+    public static function values($field, $filters = null)
     {
         if (!is_string($field)) {
             throw new ParameterOrderException(__METHOD__ . ' field');
         }
-        return static::criteria()->where($filters)->options($options)->values($field);
+        return static::criteria()->where($filters)->values($field);
     }
 
     /**

@@ -214,11 +214,10 @@ interface ModelInterface
     /**
      * @param string $field
      * @param array  $filters
-     * @param array  $options
      *
      * @return array
      */
-    public static function values($field, $filters = null, $options = null);
+    public static function values($field, $filters = null);
 
     /**
      * @param string $field
