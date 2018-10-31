@@ -7,8 +7,6 @@ use ManaPHP\Cli\Controller;
 class AclController extends Controller
 {
     /**
-     * @param string $area
-     *
      * @return array
      */
     public function getControllers()
