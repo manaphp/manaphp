@@ -2,6 +2,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\ForbiddenException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Utility\Text;
 
@@ -33,6 +34,9 @@ class Authorization extends Component implements AuthorizationInterface
                 $original_action = substr($roles, 1);
                 if (isset($acl[$original_action])) {
                     $roles = $acl[$original_action];
+                    if ($roles[0] === '@') {
+                        throw new MisuseException(['`:action` original action is not allow indirect.', 'action' => $original_action]);
+                    }
                 } else {
                     $roles = null;
                 }
