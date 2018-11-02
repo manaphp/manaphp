@@ -228,7 +228,7 @@ interface ModelInterface
     public static function kvalues($field = null, $filters = null);
 
     /**
-     * @param array  $filters
+     * @param array $filters
      *
      * @return mixed
      */
