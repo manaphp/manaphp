@@ -9,8 +9,10 @@ class Item extends Model
     public $item_id;
     public $item_name;
     public $group_id;
-    public $url;
     public $display_order;
+    public $url;
+    public $icon;
+    public $roles;
     public $creator_name;
     public $updator_name;
     public $created_time;
@@ -27,7 +29,8 @@ class Item extends Model
             'item_name' => ['length' => '5-32'],
             'group_id' => 'exists',
             'url' => ['length' => '1-128'],
-            'display_order' => ['range' => '0-127']
+            'display_order' => ['range' => '0-127'],
+            'icon' => ['length' => '0-64']
         ];
     }
 }

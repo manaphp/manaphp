@@ -23,12 +23,9 @@ class SideMenuWidget extends Widget
             if (count($items) === 0) {
                 continue;
             }
-            
-            $menu[] = [
-                'group_id' => $group['group_id'],
-                'group_name' => $group['group_name'],
-                'items' => $items
-            ];
+
+            $group['items'] = $items;
+            $menu[] = $group;
         }
 
         return ['menu' => $menu];

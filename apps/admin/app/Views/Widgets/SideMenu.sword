@@ -5,11 +5,11 @@
     @foreach($menu as $group)
         <el-submenu index="{{$group['group_name']}}">
             <template slot="title">
+                <i class="{{$group['icon']}}"></i>
                 <span>{{$group['group_name']}}</span>
             </template>
             @foreach($group['items'] as $item)
-                <el-menu-item index="<?=action($item['url'])?>"><a
-                            href="<?=action($item['url'])?>">{{$item['item_name']}}</a></el-menu-item>
+                <el-menu-item index="<?=action($item['url'])?>"><i class="{{$item['icon']}}"></i><a href="<?=action($item['url'])?>">{{$item['item_name']}}</a></el-menu-item>
             @endforeach
         </el-submenu>
     @endforeach

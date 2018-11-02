@@ -13,6 +13,9 @@
         <el-form-item label="排序:" prop="display_order">
             <el-input v-model="create.display_order" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="图标:" prop="icon">
+            <el-input v-model="create.icon" auto-complete="off"></el-input>
+        </el-form-item>
     </el-form>
     <span slot="footer">
         <el-button type="primary" @click="do_create">创建</el-button>
@@ -27,6 +30,9 @@
         <el-form-item label="排序:">
             <el-input v-model="edit.display_order" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="图标:" prop="icon">
+            <el-input v-model="edit.icon" auto-complete="off"></el-input>
+        </el-form-item>
     </el-form>
     <div slot="footer">
         <el-button type="primary" @click="do_edit">保存</el-button>
@@ -39,6 +45,7 @@
         <el-table-column prop="group_id" label="组ID" width="100"></el-table-column>
         <el-table-column prop="display_order" label="排序" width="120"></el-table-column>
         <el-table-column prop="group_name" label="组名"></el-table-column>
+        <el-table-column prop="icon" label="图标"></el-table-column>
         <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
         <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
@@ -62,14 +69,16 @@
                 createVisible: false,
                 create: {
                     group_name: '',
-                    display_order: 0
+                    display_order: 0,
+                    icon: ''
                 },
 
                 editVisible: false,
                 edit: {
                     group_id: '',
                     group_name: '',
-                    display_order: 0
+                    display_order: 0,
+                    icon: ''
                 }
             },
             mounted: function () {
@@ -87,7 +96,7 @@
                     this.edit.group_id = row.group_id;
                     this.edit.group_name = row.group_name;
                     this.edit.display_order = row.display_order;
-
+                    this.edit.icon = row.icon;
                     this.editVisible = true;
                 },
                 do_edit: function () {

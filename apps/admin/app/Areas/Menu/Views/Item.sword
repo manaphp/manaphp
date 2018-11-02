@@ -27,6 +27,9 @@
         <el-form-item label="链接:" prop="url">
             <el-input v-model="create.url" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="图标:" prop="icon">
+            <el-input v-model="create.icon" auto-complete="off"></el-input>
+        </el-form-item>
     </el-form>
     <span slot="footer">
         <el-button type="primary" @click="do_create">创建</el-button>
@@ -50,6 +53,9 @@
         <el-form-item label="链接:" prop="url">
             <el-input v-model="edit.url" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="图标:" prop="icon">
+            <el-input v-model="edit.icon" auto-complete="off"></el-input>
+        </el-form-item>
     </el-form>
     <div slot="footer">
         <el-button type="primary" @click="do_edit">保存</el-button>
@@ -62,6 +68,7 @@
         <el-table-column prop="item_id" label="菜单ID" width="100"></el-table-column>
         <el-table-column prop="item_name" label="菜单名"></el-table-column>
         <el-table-column prop="display_order" label="排序"></el-table-column>
+        <el-table-column prop="icon" label="图标"></el-table-column>
         <el-table-column prop="url" label="链接"></el-table-column>
         <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
         <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
@@ -87,7 +94,8 @@
                     item_name: '',
                     display_order: 0,
                     group_id: '',
-                    url: ''
+                    url: '',
+                    icon: ''
                 },
 
                 editVisible: false,
@@ -96,7 +104,8 @@
                     item_name: '',
                     display_order: 0,
                     group_id: '',
-                    url: ''
+                    url: '',
+                    icon: ''
                 },
                 groups: {},
                 permissions: {}

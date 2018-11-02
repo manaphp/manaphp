@@ -8,6 +8,7 @@ class Group extends Model
     public $group_id;
     public $group_name;
     public $display_order;
+    public $icon;
     public $creator_name;
     public $updator_name;
     public $created_time;
@@ -22,7 +23,8 @@ class Group extends Model
     {
         return [
             'group_name' => 'unique',
-            'display_order' => ['range' => '0-127']
+            'display_order' => ['range' => '0-127'],
+            'icon' => ['length' => '0-64']
         ];
     }
 }
