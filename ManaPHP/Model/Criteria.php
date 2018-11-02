@@ -304,7 +304,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
     /**
      * @param string $field
      *
-     * @return int|float
+     * @return int|float|null
      */
     public function sum($field)
     {
@@ -314,7 +314,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
     /**
      * @param string $field
      *
-     * @return int|float
+     * @return int|float|null
      */
     public function max($field)
     {
@@ -324,7 +324,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
     /**
      * @param string $field
      *
-     * @return int|float
+     * @return int|float|null
      */
     public function min($field)
     {
@@ -334,7 +334,7 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
     /**
      * @param string $field
      *
-     * @return double
+     * @return double|null
      */
     public function avg($field)
     {

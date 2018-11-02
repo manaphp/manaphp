@@ -323,28 +323,28 @@ interface CriteriaInterface
      *
      * @param string $field
      *
-     * @return int|float
+     * @return int|float|null
      */
     public function sum($field);
 
     /**
      * @param string $field
      *
-     * @return int|float
+     * @return int|float|null
      */
     public function max($field);
 
     /**
      * @param string $field
      *
-     * @return int|float
+     * @return int|float|null
      */
     public function min($field);
 
     /**
      * @param string $field
      *
-     * @return double
+     * @return double|null
      */
     public function avg($field);
 

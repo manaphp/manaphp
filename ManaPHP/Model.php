@@ -687,7 +687,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param string $field
      * @param array  $filters
      *
-     * @return int|float
+     * @return int|float|null
      */
     public static function sum($field, $filters = null)
     {
@@ -700,7 +700,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param string $field
      * @param array  $filters
      *
-     * @return int|float
+     * @return int|float|null
      */
     public static function max($field, $filters = null)
     {
@@ -714,7 +714,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param string $field
      * @param array  $filters
      *
-     * @return int|float
+     * @return int|float|null
      */
     public static function min($field, $filters = null)
     {
@@ -727,7 +727,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param string $field
      * @param array  $filters
      *
-     * @return double
+     * @return double|null
      */
     public static function avg($field, $filters = null)
     {
