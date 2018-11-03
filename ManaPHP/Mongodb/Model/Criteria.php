@@ -950,7 +950,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $options['projection'] = array_fill_keys($this->_model->getFields(), 1);
             }
 
-            if (isset($options['projection']) && !isset($options['projection']['_id'])) {
+            if (isset($options['projection']) && !isset($options['projection']['_id']) && $this->_model->getPrimaryKey() !== '_id') {
                 $options['projection']['_id'] = false;
             }
 
