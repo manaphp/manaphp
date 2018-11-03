@@ -80,22 +80,29 @@ class Easy extends Component implements EasyInterface
             throw new ExtensionNotInstalledException('curl');
         }
 
-        if (isset($options['timeout'])) {
-            $this->_timeout = $options['timeout'];
-            unset($options['timeout']);
-        }
-
-        if (isset($options['sslVerify'])) {
-            $this->_sslVerify = (bool)$options['sslVerify'];
-            unset($options['sslVerify']);
+        if (isset($options['peek'])) {
+            $this->_peek = (bool)$options['peek'];
         }
 
         if (isset($options['proxy'])) {
             $this->_proxy = $options['proxy'];
-            unset($options['proxy']);
         }
 
-        $this->_options = $options;
+        if (isset($options['caFile'])) {
+            $this->_caFile = $options['caFile'];
+        }
+
+        if (isset($options['timeout'])) {
+            $this->_timeout = (int)$options['timeout'];
+        }
+
+        if (isset($options['sslVerify'])) {
+            $this->_sslVerify = (bool)$options['sslVerify'];
+        }
+
+        if (isset($options['options'])) {
+            $this->_options = $options['options'];
+        }
     }
 
     /**
