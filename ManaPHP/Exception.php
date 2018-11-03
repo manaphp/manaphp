@@ -118,28 +118,6 @@ class Exception extends \Exception
     }
 
     /**
-     * @return array
-     */
-    public function dump()
-    {
-        $data = [];
-
-        $data['id'] = date('His') . mt_rand(10, 99);
-        $data['code'] = $this->code;
-        $data['message'] = $this->message;
-        $data['location'] = $this->file . ':' . $this->line;
-        $data['class'] = get_class($this);
-        $data['trace'] = explode("\n", $this->getTraceAsString());
-
-        $data['REQUEST_URI'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        $data['GET'] = $_GET;
-        $data['POST'] = $_POST;
-
-        return $data;
-    }
-
-
-    /**
      * @param array|string $data
      *
      * @return static
@@ -161,16 +139,6 @@ class Exception extends \Exception
     public function getJson()
     {
         return $this->_json ? $this->_json : ['code' => 1, 'message' => $this->getMessage()];
-    }
-
-    /**
-     * @return string
-     */
-    public static function getLastErrorMessage()
-    {
-        $error = error_get_last();
-
-        return $error['message'];
     }
 
     /**
