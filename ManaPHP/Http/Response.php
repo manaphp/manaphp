@@ -90,7 +90,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getStatusCode()
     {
-        return $this->_status ? substr($this->_status, 0, strpos($this->_status, ' ')) : 200;
+        return $this->_status ? (int)substr($this->_status, 0, strpos($this->_status, ' ')) : 200;
     }
 
     /**
