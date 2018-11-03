@@ -15,6 +15,11 @@ class Exception extends \Exception
     protected $_bind = [];
 
     /**
+     * @var array
+     */
+    protected $_json;
+
+    /**
      * Exception constructor.
      *
      * @param string|array $message
@@ -131,6 +136,31 @@ class Exception extends \Exception
         $data['POST'] = $_POST;
 
         return $data;
+    }
+
+
+    /**
+     * @param array|string $data
+     *
+     * @return static
+     */
+    public function setJson($data)
+    {
+        if (is_array($data)) {
+            $this->_json = $data;
+        } elseif (is_string($data)) {
+            $this->_json = ['code' => 1, 'message' => $data];
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJson()
+    {
+        return $this->_json ? $this->_json : ['code' => 1, 'message' => $this->getMessage()];
     }
 
     /**
