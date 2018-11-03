@@ -9,15 +9,22 @@ class EnvController extends Controller
     /**
      * @return array
      */
-    protected function _getEnvFiles()
+    protected function _getEnvTypes()
     {
         $files = [];
 
-        foreach (glob($this->alias->resolve('@root/.env.*')) as $env) {
+        foreach (glob($this->alias->resolve('@root/.env[._-]*')) as $env) {
             $env = basename($env);
-            if (!in_array($env, ['.env', '.env.php', '.env.dist', '.env.sample'], true)) {
-                $files[] = substr($env, 5);
+            $ext = pathinfo($env, PATHINFO_EXTENSION);
+            if ($ext === 'php') {
+                $env = substr($env, 0, -4);
             }
+
+            if (preg_match('#[\.-_](php|dist|example)$#', $env)) {
+                continue;
+            }
+
+            $files[] = substr($env, 5);
         }
         return $files;
     }
@@ -40,7 +47,7 @@ class EnvController extends Controller
         }
 
         $candidates = [];
-        foreach ($this->_getEnvFiles() as $file) {
+        foreach ($this->_getEnvTypes() as $file) {
             if (strpos($file, $target) === 0) {
                 $candidates[] = $file;
             }
@@ -50,13 +57,19 @@ class EnvController extends Controller
             return $this->console->error(['can not one file: :env', 'env' => implode(',', $candidates)]);
         }
         $target = $candidates[0];
-        $file = '@root/.env.' . $target;
-        if (!$this->filesystem->fileExists($file)) {
-            return $this->console->error(['dotenv file `:file` is not exists', 'file' => $file]);
-        } else {
+
+        $glob = '@root/.env[._-]' . $target;
+        $files = $this->filesystem->glob($glob);
+        if ($files) {
+            $file = $files[0];
             $this->filesystem->fileCopy($file, '@root/.env', true);
-            $this->console->writeLn(['copy dotenv file `:src` to `:dst` success.', 'src' => $file, 'dst' => '@root/.env']);
+            if (file_exists($file . '.php')) {
+                $this->filesystem->fileDelete($file . '.php');
+            }
+            $this->console->writeLn(['copy `:src` to `:dst` success.', 'src' => basename($file), 'dst' => '.env']);
             return 0;
+        } else {
+            return $this->console->error(['dotenv file `:file` is not exists', 'file' => $glob]);
         }
     }
 
@@ -65,7 +78,7 @@ class EnvController extends Controller
      */
     public function listCommand()
     {
-        $this->console->writeLn('list: ' . implode(',', $this->_getEnvFiles()));
+        $this->console->writeLn('list: ' . implode(' ', $this->_getEnvTypes()));
     }
 
     /**
@@ -80,7 +93,7 @@ class EnvController extends Controller
 
         $data = (new Dotenv())->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
         $content = '<?php' . PHP_EOL .
-            'return ' . var_export($data, true) . PHP_EOL;
+            'return ' . var_export($data, true) . ';' . PHP_EOL;
         $this->filesystem->filePut('@root/.env.php', $content);
 
         return 0;
