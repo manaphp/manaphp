@@ -18,7 +18,7 @@ interface ResponseInterface
      *
      * @return static
      */
-    public function setStatus($code, $text);
+    public function setStatus($code, $text = null);
 
     /**
      * @return string
