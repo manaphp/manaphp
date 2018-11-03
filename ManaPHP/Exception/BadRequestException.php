@@ -9,9 +9,4 @@ class BadRequestException extends Exception
     {
         return 400;
     }
-
-    public function getStatusText()
-    {
-        return 'Bad Request';
-    }
 }

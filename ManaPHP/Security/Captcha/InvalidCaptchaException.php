@@ -10,8 +10,8 @@ class InvalidCaptchaException extends Exception
         return 200;
     }
 
-    public function getStatusText()
+    public function getJson()
     {
-        return '验证码错误';
+        return ['code' => 1, 'message' => '验证码错误', 'field' => 'captcha'];
     }
 }
