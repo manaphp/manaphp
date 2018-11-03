@@ -65,7 +65,6 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         $this->registerServices();
 
-        $this->logger->addAppender(['class' => 'file', 'file' => '@data/logger/console.log'], 'console');
         $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . implode(' ', array_slice($GLOBALS['argv'], 1))]);
 
         try {
