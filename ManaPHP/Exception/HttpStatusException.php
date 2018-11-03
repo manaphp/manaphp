@@ -10,10 +10,10 @@ class HttpStatusException extends Exception
      */
     protected $_statusCode;
 
-    public function __construct($statusCode, $previous = null)
+    public function __construct($statusCode, $message = '', $previous = null)
     {
         $this->_statusCode = $statusCode;
-        parent::__construct($this->getStatusText(), $statusCode, $previous);
+        parent::__construct($message, $statusCode, $previous);
     }
 
     public function getStatusCode()
