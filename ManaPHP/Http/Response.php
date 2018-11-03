@@ -421,8 +421,11 @@ class Response extends Component implements ResponseInterface
         } elseif ($content instanceof \Exception) {
             if ($content instanceof \ManaPHP\Exception) {
                 $this->setStatus($content->getStatusCode());
+                $content = $content->getJson();
+            } else {
+                $this->setStatus(500);
+                $content = ['code' => -1, 'message' => 'Server Internal Error'];
             }
-            $content = ['code' => -1, 'message' => $content->getMessage()];
         }
 
         $this->_content = is_string($content) ? $content : json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL;
