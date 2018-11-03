@@ -703,7 +703,7 @@ if (!function_exists('t')) {
      */
     function t($id, $bind = [])
     {
-        return di('translation')->translate($id, $bind);
+        return di('translator')->translate($id, $bind);
     }
 }
 

@@ -18,9 +18,8 @@ return [
         'mongodb' => env('MONGODB_URL'),
         'logger' => [
             'level' => env('LOGGER_LEVEL', 'info'),
-            'appenders' => ['ManaPHP\Logger\Appender\File'],
-        ],
-        'translation' => ['language' => 'zh-CN,en']
+            'appenders' => ['ManaPHP\Logger\Appender\Db'],
+        ]
     ],
     'bootstraps' => env('BOOTSTRAPS', []),
 ];

@@ -20,7 +20,6 @@ return [
             'level' => 'debug',
             'appenders' => ['ManaPHP\Logger\Appender\File'],
         ],
-        'translation' => ['language' => 'zh-CN,en']
     ],
     'bootstraps' => ['debugger']
 ];

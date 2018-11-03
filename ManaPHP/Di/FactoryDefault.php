@@ -58,7 +58,7 @@ class FactoryDefault extends Di
             'db' => 'ManaPHP\Db\Adapter\Mysql',
             'redis' => 'ManaPHP\Redis',
             'mongodb' => 'ManaPHP\Mongodb',
-            'translation' => 'ManaPHP\I18n\Translation',
+            'translator' => 'ManaPHP\I18n\Translator',
             'rabbitmq' => 'ManaPHP\Amqp',
             'relationsManager' => 'ManaPHP\Model\Relation\Manager',
             'authenticationToken' => 'ManaPHP\Authentication\Token\Adapter\Mwt',

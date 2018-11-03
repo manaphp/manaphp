@@ -21,7 +21,6 @@ return [
             'level' => env('LOGGER_LEVEL', 'info'),
             'appenders' => ['ManaPHP\Logger\Appender\File'],
         ],
-        'translation' => ['language' => 'zh-CN,en'],
         'authorization' => \App\Areas\Rbac\Components\Rbac::class
     ],
     'bootstraps' => explode(',', env('BOOTSTRAPS'))

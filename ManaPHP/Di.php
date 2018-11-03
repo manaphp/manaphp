@@ -60,7 +60,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\Meter\LinearInterface           $linearMeter
  * @property-read \ManaPHP\Meter\RoundInterface            $roundMeter
  * @property-read \ManaPHP\Security\SecintInterface        $secint
- * @property-read \ManaPHP\I18n\Translation                $translation
+ * @property-read \ManaPHP\I18n\Translator                 $translation
  * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler  $swordCompiler
  * @property-read \ManaPHP\StopwatchInterface              $stopwatch
  * @property-read \ManaPHP\Security\HtmlPurifierInterface  $htmlPurifier
