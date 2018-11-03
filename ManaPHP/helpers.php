@@ -681,6 +681,32 @@ if (!function_exists('transaction')) {
     }
 }
 
+if (!function_exists('e')) {
+    /**
+     * @param string $value
+     * @param bool   $doubleEncode
+     *
+     * @return string
+     */
+    function e($value, $doubleEncode = true)
+    {
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
+    }
+}
+
+if (!function_exists('t')) {
+    /**
+     * @param string $id
+     * @param array  $bind
+     *
+     * @return string
+     */
+    function t($id, $bind = [])
+    {
+        return di('translation')->translate($id, $bind);
+    }
+}
+
 if (!function_exists('size_to_str')) {
     /**
      * @param int $size
