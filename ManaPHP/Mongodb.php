@@ -110,7 +110,6 @@ class Mongodb extends Component implements MongodbInterface
 
         if (microtime(true) - $this->_lastIoTime > 1.0) {
             try {
-                $this->logger->debug('probe the connection on first or long time idle', 'mongodb.ping');
                 $command = new Command(['ping' => 1]);
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $this->_manager->executeCommand('admin', $command);
