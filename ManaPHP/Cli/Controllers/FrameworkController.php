@@ -75,7 +75,6 @@ class FrameworkController extends Controller
                     $implements = '';
                 }
                 $classContent = str_replace($matches[0], $implements, $classContent);
-
             }
 
             if (!$whitespaces_keep) {
