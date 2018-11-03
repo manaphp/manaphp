@@ -9,7 +9,6 @@ namespace ManaPHP\Http;
  */
 interface ResponseInterface
 {
-
     /**
      * Sets the HTTP response code
      *
@@ -24,6 +23,18 @@ interface ResponseInterface
      * @return string
      */
     public function getStatus();
+
+    /**
+     * @return int
+     */
+    public function getStatusCode();
+
+    /**
+     * @param int $code
+     *
+     * @return string
+     */
+    public function getStatusText($code = null);
 
     /**
      * send a header in the response

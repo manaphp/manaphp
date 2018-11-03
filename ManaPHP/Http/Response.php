@@ -72,7 +72,37 @@ class Response extends Component implements ResponseInterface
      */
     public function setStatus($code, $text = null)
     {
-        if ($text === null) {
+        $this->_status = $code . ' ' . ($text ?: $this->getStatusText($code));
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->_status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return $this->_status ? substr($this->_status, 0, strpos($this->_status, ' ')) : 200;
+    }
+
+    /**
+     * @param int $code
+     *
+     * @return string
+     */
+    public function getStatusText($code = null)
+    {
+        if ($code === null) {
+            return $this->_status === null ? 'OK' : substr($this->_status, strpos($this->_status, ' ') + 1);
+        } else {
             $texts = [
                 200 => 'OK',
                 400 => 'Bad Request',
@@ -118,20 +148,8 @@ class Response extends Component implements ResponseInterface
                 511 => 'Network Authentication Required',
             ];
 
-            $text = isset($texts[$code]) ? $texts[$code] : 'App Error';
+            return isset($texts[$code]) ? $texts[$code] : 'App Error';
         }
-
-        $this->_status = $code . ' ' . $text;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->_status;
     }
 
     /**
