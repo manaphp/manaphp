@@ -20,7 +20,9 @@ class SessionController extends Controller
     public function loginAction()
     {
         if ($this->request->isPost()) {
-            $this->captcha->verify();
+            if (!$this->configure->debug) {
+                $this->captcha->verify();
+            }
 
             try {
                 $user_name = $this->request->get('user_name', '*|account');
