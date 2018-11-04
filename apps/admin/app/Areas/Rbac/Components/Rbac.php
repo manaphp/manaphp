@@ -81,7 +81,7 @@ class Rbac extends Authorization
             }
 
             $rolesByPermissionId = RolePermission::values('role_id', ['permission_id' => $permissionModel->permission_id]);
-            return Role::exists(['role_name' => $role, 'role_id' => $rolesByPermissionId]);
+            return Role::exists(['role_name' => explode(',', $role), 'role_id' => $rolesByPermissionId]);
         }
     }
 }
