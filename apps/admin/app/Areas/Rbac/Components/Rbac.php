@@ -71,6 +71,9 @@ class Rbac extends Authorization
         } elseif ($this->isAclAllow($acl, 'user', $action)) {
             return true;
         } else {
+            if (!$permission) {
+                $permission = $this->_generatePath($controllerClassName, $permission);
+            }
             $permissionModel = Permission::first(['path' => $permission]);
 
             if (!$permissionModel) {
