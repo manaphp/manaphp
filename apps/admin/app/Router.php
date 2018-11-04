@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use App\Areas\User\Controllers\SessionController;
+
 class Router extends \ManaPHP\Router
 {
     public function __construct()
@@ -8,5 +10,7 @@ class Router extends \ManaPHP\Router
         parent::__construct(true);
 
         $this->_areas = ['Menu', 'Rbac', 'User'];
+        $this->add('/login', [SessionController::class, 'login']);
+        $this->add('/logout', [SessionController::class, 'logout']);
     }
 }
