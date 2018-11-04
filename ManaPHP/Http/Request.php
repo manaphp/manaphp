@@ -38,15 +38,20 @@ class Request extends Component implements RequestInterface
 
     /**
      *
-     * @param array  $source
-     * @param string $name
-     * @param string $rule
-     * @param mixed  $default
+     * @param array            $source
+     * @param string           $name
+     * @param string|int|array $rule
+     * @param mixed            $default
      *
      * @return array|string|null
      */
     protected function _getHelper($source, $name = null, $rule = null, $default = '')
     {
+        if (is_int($rule) || is_array($rule)) {
+            $default = $rule;
+            $rule = null;
+        }
+
         if ($name === null) {
             return $source;
         } elseif ($current = strpos($name, '[')) {
@@ -91,9 +96,9 @@ class Request extends Component implements RequestInterface
      *    $userEmail = $request->get("user_email", "email");
      *</code>
      *
-     * @param string $name
-     * @param string $rule
-     * @param mixed  $default
+     * @param string           $name
+     * @param string|int|array $rule
+     * @param mixed            $default
      *
      * @return mixed
      */
@@ -117,9 +122,9 @@ class Request extends Component implements RequestInterface
      *    $id = $request->getGet("id", null, 150);
      *</code>
      *
-     * @param string $name
-     * @param string $rule
-     * @param mixed  $default
+     * @param string           $name
+     * @param string|int|array $rule
+     * @param mixed            $default
      *
      * @return mixed
      */
@@ -140,9 +145,9 @@ class Request extends Component implements RequestInterface
      *    $userEmail = $request->getPost("user_email", "email");
      *</code>
      *
-     * @param string $name
-     * @param string $rule
-     * @param mixed  $default
+     * @param string           $name
+     * @param string|int|array $rule
+     * @param mixed            $default
      *
      * @return mixed
      */
@@ -177,9 +182,9 @@ class Request extends Component implements RequestInterface
      *    $userEmail = $request->getPut("user_email", "email");
      *</code>
      *
-     * @param string $name
-     * @param string $rule
-     * @param mixed  $default
+     * @param string           $name
+     * @param string|int|array $rule
+     * @param mixed            $default
      *
      * @return mixed
      */
@@ -203,9 +208,9 @@ class Request extends Component implements RequestInterface
      *    $id = $request->getQuery("id", null, 150);
      *</code>
      *
-     * @param string $name
-     * @param string $rule
-     * @param mixed  $default
+     * @param string           $name
+     * @param string|int|array $rule
+     * @param mixed            $default
      *
      * @return mixed
      */
@@ -215,9 +220,9 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @param string $name
-     * @param string $rule
-     * @param mixed  $default
+     * @param string           $name
+     * @param string|int|array $rule
+     * @param mixed            $default
      *
      * @return mixed
      */
