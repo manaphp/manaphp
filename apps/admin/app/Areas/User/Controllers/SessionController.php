@@ -64,7 +64,12 @@ class SessionController extends Controller
 
             return $this->response->setJsonContent(0);
         } else {
-            $this->view->setVar('redirect', $this->request->get('redirect', null, '/'));
+            if ($this->request->has('redirect')) {
+                $this->view->setVar('redirect', $this->request->get('redirect'));
+            } else {
+                $this->view->setVar('redirect', $this->router->createUrl('/'));
+            }
+
             $this->view->setVar('user_name', $this->cookies->has('user_name') ? $this->cookies->get('user_name') : '');
         }
     }
