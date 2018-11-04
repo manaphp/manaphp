@@ -66,22 +66,23 @@ class Rbac extends Authorization
         }
 
         $acl = $this->_acl[$controllerClassName];
-        if ($role === 'guest') {
-            return $this->isAclAllow($acl, 'guest', $action);
-        } elseif ($this->isAclAllow($acl, 'user', $action)) {
-            return true;
-        } else {
-            if (!$permission) {
-                $permission = $this->_generatePath($controllerClassName, $action);
-            }
-            $permissionModel = Permission::first(['path' => $permission]);
 
-            if (!$permissionModel) {
-                throw new InvalidValueException(['`:permission` permission is not exists'/**m06ab9af781c2de7f2*/, 'permission' => $permission]);
+        foreach (explode(',', $role) as $role) {
+            if ($this->isAclAllow($acl, 'user', $action)) {
+                return true;
             }
-
-            $rolesByPermissionId = RolePermission::values('role_id', ['permission_id' => $permissionModel->permission_id]);
-            return Role::exists(['role_name' => explode(',', $role), 'role_id' => $rolesByPermissionId]);
         }
+
+        if (!$permission) {
+            $permission = $this->generatePath($controllerClassName, isset($acl[$action]) ? substr($acl[$action], 1) : $action);
+        }
+        $permissionModel = Permission::first(['path' => $permission]);
+
+        if (!$permissionModel) {
+            throw new InvalidValueException(['`:permission` permission is not exists'/**m06ab9af781c2de7f2*/, 'permission' => $permission]);
+        }
+
+        $rolesByPermissionId = RolePermission::values('role_id', ['permission_id' => $permissionModel->permission_id]);
+        return Role::exists(['role_name' => explode(',', $role), 'role_id' => $rolesByPermissionId]);
     }
 }

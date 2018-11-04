@@ -126,7 +126,7 @@ class Authorization extends Component implements AuthorizationInterface
      *
      * @return string
      */
-    protected function _generatePath($controllerClassName, $action)
+    public function generatePath($controllerClassName, $action)
     {
         $controllerClassName = str_replace('\\', '/', $controllerClassName);
         $action = Text::underscore($action);
@@ -185,7 +185,7 @@ class Authorization extends Component implements AuthorizationInterface
                 if (preg_match('#^(.*)Action$#', $method, $match)) {
                     $action = $match[1];
                     if ($this->isAclAllow($acl, $role, $action)) {
-                        $paths[] = $this->_generatePath($controller, $action);
+                        $paths[] = $this->generatePath($controller, $action);
                     }
                 }
             }
