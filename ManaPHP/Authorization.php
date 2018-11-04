@@ -139,7 +139,11 @@ class Authorization extends Component implements AuthorizationInterface
                     return '/' . Text::underscore($a) . '/' . Text::underscore($c);
                 }
             } else {
-                return '/' . Text::underscore($a) . '/' . Text::underscore($c) . '/' . Text::underscore($action);
+                if ($c === 'Index') {
+                    return '/' . Text::underscore($a);
+                } else {
+                    return '/' . Text::underscore($a) . '/' . Text::underscore($c) . '/' . Text::underscore($action);
+                }
             }
         } elseif (preg_match('#/Controllers/(.*)Controller#', $controller, $match)) {
             $c = $match[1];
