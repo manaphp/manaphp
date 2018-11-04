@@ -33,7 +33,7 @@ class RolePermissionController extends ControllerBase
         if ($this->request->isPost()) {
             try {
                 $role_id = $this->request->get('role_id');
-                $permission_ids = $this->request->get('permission_ids', null, []);
+                $permission_ids = $this->request->get('permission_ids', []);
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
@@ -50,7 +50,7 @@ class RolePermissionController extends ControllerBase
             }
 
             $role = Role::get($role_id);
-	    
+
             $paths = $this->authorization->getAllowed($role->role_name);
             sort($paths);
 
