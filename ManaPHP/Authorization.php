@@ -21,33 +21,6 @@ class Authorization extends Component implements AuthorizationInterface
     protected $_acl;
 
     /**
-     * @param string $roles
-     * @param string $role
-     *
-     * @return bool
-     */
-    public function isRoleAllowed($roles, $role)
-    {
-        if ($roles === null || $roles === '') {
-            return $role === 'admin';
-        } elseif ($roles === '*' || $roles === 'guest') {
-            return true;
-        } elseif ($roles === 'user') {
-            return $role !== 'guest';
-        } elseif ($roles === 'admin') {
-            return $role === 'admin';
-        } elseif ($roles === $role) {
-            return true;
-        } elseif ($role === 'guest') {
-            return false;
-        } elseif ($role === 'admin') {
-            return true;
-        } else {
-            return preg_match("#\b$role\b#", $roles) === 1;
-        }
-    }
-
-    /**
      * @param array  $acl
      * @param string $role
      * @param string $action
@@ -77,15 +50,22 @@ class Authorization extends Component implements AuthorizationInterface
             $roles = $acl['*'];
         }
 
-        if (strpos($role, ',') === false) {
-            return $this->isRoleAllowed($roles, $role);
-        } else {
-            foreach (explode($role, ',') as $r) {
-                if ($this->isRoleAllowed($roles, $r)) {
-                    return true;
-                }
-            }
+        if ($roles === null || $roles === '') {
+            return $role === 'admin';
+        } elseif ($roles === '*' || $roles === 'guest') {
+            return true;
+        } elseif ($roles === 'user') {
+            return $role !== 'guest';
+        } elseif ($roles === 'admin') {
+            return $role === 'admin';
+        } elseif ($roles === $role) {
+            return true;
+        } elseif ($role === 'guest') {
             return false;
+        } elseif ($role === 'admin') {
+            return true;
+        } else {
+            return preg_match("#\b$role\b#", $roles) === 1;
         }
     }
 
@@ -171,7 +151,17 @@ class Authorization extends Component implements AuthorizationInterface
         $acl = $this->_acl[$controllerClassName];
 
         $role = $role ?: $this->identity->getRole();
-        return $this->isAllowRoleAction($acl, $role, $action);
+        if (strpos($role, ',') === false) {
+            return $this->isAllowRoleAction($acl, $role, $action);
+        } else {
+            foreach (explode($role, ',') as $r) {
+                if ($this->isAllowRoleAction($acl, $r, $action)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     /**
