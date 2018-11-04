@@ -9,6 +9,13 @@ namespace ManaPHP;
 interface AuthorizationInterface
 {
     /**
+     * @param string $role
+     *
+     * @return array
+     */
+    public function getAllowedPermissions($role);
+    
+    /**
      * Check whether a user is allowed to access a permission
      *
      * @param string $permission

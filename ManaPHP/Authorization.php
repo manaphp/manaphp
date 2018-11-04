@@ -121,6 +121,76 @@ class Authorization extends Component implements AuthorizationInterface
     }
 
     /**
+     * @param string $controller
+     * @param string $action
+     *
+     * @return string
+     */
+    protected function _generatePermission($controller, $action)
+    {
+        $controller = str_replace('\\', '/', $controller);
+        if (preg_match('#Areas/([^/]+)/Controllers/(.*)Controller$#', $controller, $match)) {
+            $a = $match[1];
+            $c = $match[2];
+            if ($action === 'index') {
+                if ($c === 'Index') {
+                    return $a === 'Index' ? '/' : '/' . Text::underscore($a);
+                } else {
+                    return '/' . Text::underscore($a) . '/' . Text::underscore($c);
+                }
+            } else {
+                return '/' . Text::underscore($a) . '/' . Text::underscore($c) . '/' . Text::underscore($action);
+            }
+        } elseif (preg_match('#/Controllers/(.*)Controller#', $controller, $match)) {
+            $c = $match[1];
+            if ($action === 'index') {
+                return $c === 'Index' ? '/' : '/' . Text::underscore($c);
+            } else {
+                return '/' . Text::underscore($c) . '/' . Text::underscore($action);
+            }
+        } else {
+            throw new MisuseException(['invalid controller `:controller`', 'controller' => $controller]);
+        }
+    }
+
+    /**
+     * @param string $role
+     *
+     * @return array
+     */
+    public function getAllowedPermissions($role)
+    {
+        $permissions = [];
+
+        $controllers = [];
+        foreach (glob($this->alias->resolve('@app/Areas/*/Controllers/*Controller.php')) as $item) {
+            $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+            $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
+        }
+
+        foreach (glob($this->alias->resolve('@app/Controllers/*Controller.php')) as $item) {
+            $controllers[] = $this->alias->resolveNS('@ns.app\\Controllers\\' . basename($item, '.php'));
+        }
+
+        foreach ($controllers as $controller) {
+            /** @var  \ManaPHP\Controller $controllerInstance */
+            $controllerInstance = new $controller();
+            $acl = $controllerInstance->getAcl();
+
+            foreach (get_class_methods($controller) as $method) {
+                if (preg_match('#^(.*)Action$#', $method, $match)) {
+                    $action = $match[1];
+                    if ($this->isAclAllow($acl, $role, $action)) {
+                        $permissions[] = $this->_generatePermission($controller, $action);
+                    }
+                }
+            }
+        }
+
+        return $permissions;
+    }
+
+    /**
      * Check whether a user is allowed to access a permission
      *
      * @param string $permission
