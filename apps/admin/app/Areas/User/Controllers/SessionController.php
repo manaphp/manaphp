@@ -1,6 +1,7 @@
 <?php
 namespace App\Areas\User\Controllers;
 
+use App\Areas\Rbac\Models\AdminRole;
 use App\Models\Admin;
 use App\Models\AdminLoginLog;
 use ManaPHP\Mvc\Controller;
@@ -62,7 +63,11 @@ class SessionController extends Controller
 
             $adminLoginLog->create();
 
-            $this->session->set('auth', ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name]);
+            $roles = AdminRole::values('role_name', ['admin_id' => $admin->admin_id]);
+            $auth = ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name, 'role' => implode(',', $roles)];
+            $this->session->set('auth', $auth);
+
+            $this->identity->setClaims($auth);
 
             return $this->response->setJsonContent(0);
         } else {
