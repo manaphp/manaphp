@@ -175,7 +175,7 @@ class Authorization extends Component implements AuthorizationInterface
         } else {
             $controllerInstance = $this->dispatcher->getController();
             $controllerClassName = get_class($controllerInstance);
-            $action = $permission ?: $this->dispatcher->getActionName();
+            $action = $permission ? lcfirst(Text::camelize($permission)) : $this->dispatcher->getActionName();
 
             if (!isset($this->_acl[$controllerClassName])) {
                 $this->_acl[$controllerClassName] = $controllerInstance->getAcl();
