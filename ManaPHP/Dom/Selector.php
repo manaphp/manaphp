@@ -188,11 +188,11 @@ class Selector
 
     /**
      * @param string|array $attr
-     * @param string       $defaultValue
+     * @param string       $default
      *
      * @return array|string
      */
-    public function attr($attr = null, $defaultValue = null)
+    public function attr($attr = null, $default = null)
     {
         if ($this->_node instanceof \DOMElement) {
             $attributes = $this->_node->attributes;
@@ -207,7 +207,7 @@ class Selector
                 }
             }
 
-            return $defaultValue;
+            return $default;
         }
 
         $data = [];

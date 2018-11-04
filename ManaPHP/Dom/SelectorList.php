@@ -481,17 +481,17 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * @param string $attr
-     * @param string $defaultValue
+     * @param string $default
      *
      * @return string[][]
      */
-    public function attr($attr = null, $defaultValue = null)
+    public function attr($attr = null, $default = null)
     {
         $data = [];
 
         foreach ($this->_nodes as $node) {
             $selector = new Selector($this->_document, $node);
-            $data[$node->getNodePath()] = $selector->attr($attr, $defaultValue);
+            $data[$node->getNodePath()] = $selector->attr($attr, $default);
         }
 
         return $data;
