@@ -17,11 +17,11 @@ interface ArgumentsInterface
 
     /**
      * @param string|int $name
-     * @param mixed      $defaultValue
+     * @param mixed      $default
      *
      * @return mixed
      */
-    public function getOption($name = null, $defaultValue = null);
+    public function getOption($name = null, $default = null);
 
     /**
      * @param string $name

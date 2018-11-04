@@ -113,12 +113,12 @@ class Arguments extends Component implements ArgumentsInterface
 
     /**
      * @param string|int $name
-     * @param mixed      $defaultValue
+     * @param mixed      $default
      *
      * @return mixed
      * @throws \ManaPHP\Cli\Arguments\Exception
      */
-    public function getOption($name = null, $defaultValue = null)
+    public function getOption($name = null, $default = null)
     {
         if ($name === null) {
             return $this->_options;
@@ -134,7 +134,7 @@ class Arguments extends Component implements ArgumentsInterface
             }
         }
 
-        if ($defaultValue === null) {
+        if ($default === null) {
             $options = [];
             foreach (preg_split('#[|,:]+#', $name) as $opt) {
                 $options[] = (strlen($opt) === 1 ? '-' : '--') . $opt;
@@ -143,7 +143,7 @@ class Arguments extends Component implements ArgumentsInterface
             throw new ArgumentsException('missing required options `' . implode('` or `', $options) . '` option');
         }
 
-        return $defaultValue;
+        return $default;
     }
 
     /**
