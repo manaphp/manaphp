@@ -126,7 +126,7 @@ class Authorization extends Component implements AuthorizationInterface
      *
      * @return string
      */
-    protected function _generatePermission($controller, $action)
+    protected function _generatePath($controller, $action)
     {
         $controller = str_replace('\\', '/', $controller);
         if (preg_match('#Areas/([^/]+)/Controllers/(.*)Controller$#', $controller, $match)) {
@@ -158,9 +158,9 @@ class Authorization extends Component implements AuthorizationInterface
      *
      * @return array
      */
-    public function getAllowedPermissions($role)
+    public function getAllowed($role)
     {
-        $permissions = [];
+        $paths = [];
 
         $controllers = [];
         foreach (glob($this->alias->resolve('@app/Areas/*/Controllers/*Controller.php')) as $item) {
@@ -181,13 +181,13 @@ class Authorization extends Component implements AuthorizationInterface
                 if (preg_match('#^(.*)Action$#', $method, $match)) {
                     $action = $match[1];
                     if ($this->isAclAllow($acl, $role, $action)) {
-                        $permissions[] = $this->_generatePermission($controller, $action);
+                        $paths[] = $this->_generatePath($controller, $action);
                     }
                 }
             }
         }
 
-        return $permissions;
+        return $paths;
     }
 
     /**

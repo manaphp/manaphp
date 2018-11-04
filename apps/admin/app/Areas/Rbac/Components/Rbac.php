@@ -19,19 +19,19 @@ class Rbac extends Authorization
      *
      * @return array
      */
-    public function getAllowedPermissions($role)
+    public function getAllowed($role)
     {
         $role_id = Role::value(['role_name' => $role], 'role_id');
         if ($role_id) {
             $permission_ids = RolePermission::values('permission_id', ['role_id' => $role_id]);
-            $permission_db = array_flip(Permission::values('path', ['permission_id' => $permission_ids]));
+            $paths_db = array_flip(Permission::values('path', ['permission_id' => $permission_ids]));
         } else {
-            $permission_db = [];
+            $paths_db = [];
         }
 
-        $permission_acl = array_flip(parent::getAllowedPermissions($role));
+        $paths_acl = array_flip(parent::getAllowed($role));
 
-        return array_keys($permission_db + $permission_acl);
+        return array_keys($paths_db + $paths_acl);
     }
 
     /**
