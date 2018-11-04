@@ -70,11 +70,11 @@ class Bag extends Component implements BagInterface
      *</code>
      *
      * @param string $property
-     * @param string $defaultValue
+     * @param string $default
      *
      * @return mixed
      */
-    public function get($property = null, $defaultValue = null)
+    public function get($property = null, $default = null)
     {
         $defaultCurrentValue = [];
         $data = $this->session->get($this->_name, $defaultCurrentValue);
@@ -82,7 +82,7 @@ class Bag extends Component implements BagInterface
         if ($property === null) {
             return $data;
         } else {
-            return isset($data[$property]) ? $data[$property] : $defaultValue;
+            return isset($data[$property]) ? $data[$property] : $default;
         }
     }
 

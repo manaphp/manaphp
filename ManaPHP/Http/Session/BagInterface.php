@@ -26,11 +26,11 @@ interface BagInterface
      * Getter of values
      *
      * @param string $property
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($property = null, $defaultValue = null);
+    public function get($property = null, $default = null);
 
     /**
      * Isset property
