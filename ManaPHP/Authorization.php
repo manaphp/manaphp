@@ -121,39 +121,41 @@ class Authorization extends Component implements AuthorizationInterface
     }
 
     /**
-     * @param string $controller
+     * @param string $controllerClassName
      * @param string $action
      *
      * @return string
      */
-    protected function _generatePath($controller, $action)
+    protected function _generatePath($controllerClassName, $action)
     {
-        $controller = str_replace('\\', '/', $controller);
-        if (preg_match('#Areas/([^/]+)/Controllers/(.*)Controller$#', $controller, $match)) {
-            $a = $match[1];
-            $c = $match[2];
+        $controllerClassName = str_replace('\\', '/', $controllerClassName);
+        $action = Text::underscore($action);
+
+        if (preg_match('#Areas/([^/]+)/Controllers/(.*)Controller$#', $controllerClassName, $match)) {
+            $area = Text::underscore($match[1]);
+            $controller = Text::underscore($match[2]);
             if ($action === 'index') {
-                if ($c === 'Index') {
-                    return $a === 'Index' ? '/' : '/' . Text::underscore($a);
+                if ($controller === 'index') {
+                    return $area === 'index' ? '/' : "/$area";
                 } else {
-                    return '/' . Text::underscore($a) . '/' . Text::underscore($c);
+                    return "/$area/$controller";
                 }
             } else {
-                if ($c === 'Index') {
-                    return '/' . Text::underscore($a);
+                if ($controller === 'index') {
+                    return "/$area";
                 } else {
-                    return '/' . Text::underscore($a) . '/' . Text::underscore($c) . '/' . Text::underscore($action);
+                    return "/$area/$controller/$action";
                 }
             }
-        } elseif (preg_match('#/Controllers/(.*)Controller#', $controller, $match)) {
-            $c = $match[1];
+        } elseif (preg_match('#/Controllers/(.*)Controller#', $controllerClassName, $match)) {
+            $controller = Text::underscore($match[1]);
             if ($action === 'index') {
-                return $c === 'Index' ? '/' : '/' . Text::underscore($c);
+                return $controller === 'index' ? '/' : "/$controller";
             } else {
-                return '/' . Text::underscore($c) . '/' . Text::underscore($action);
+                return "/$controller/$action";
             }
         } else {
-            throw new MisuseException(['invalid controller `:controller`', 'controller' => $controller]);
+            throw new MisuseException(['invalid controller `:controller`', 'controller' => $controllerClassName]);
         }
     }
 
