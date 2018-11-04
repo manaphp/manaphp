@@ -62,9 +62,7 @@ class Authorization extends Component implements AuthorizationInterface
     {
         if ($roles === null || $roles === '') {
             return $role === 'admin';
-        } elseif ($roles === '*') {
-            return true;
-        } elseif ($roles === 'guest') {
+        } elseif ($roles === '*' || $roles === 'guest') {
             return true;
         } elseif ($roles === 'user') {
             return $role !== 'guest';
