@@ -119,6 +119,9 @@ class Application extends Component implements ApplicationInterface
         return $this->_di;
     }
 
+    /**
+     * @param array $listeners
+     */
     protected function _loadListeners($listeners)
     {
         foreach ($listeners as $listener) {
