@@ -63,7 +63,7 @@ class SessionController extends Controller
 
             $adminLoginLog->create();
 
-            $roles = AdminRole::values('role_name', ['admin_id' => $admin->admin_id]);
+            $roles = $admin->admin_id === 1 ? ['admin'] : AdminRole::values('role_name', ['admin_id' => $admin->admin_id]);
             $auth = ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name, 'role' => implode(',', $roles)];
             $this->session->set('auth', $auth);
 
