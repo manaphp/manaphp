@@ -29,5 +29,12 @@
 <script src="{{asset('/assets/js/app.js')}}"></script>
 @yield('script')
 @debugger()
+<script>
+    if (typeof vm === 'undefined') {
+        vm = new Vue({
+            el: '#app'
+        });
+    }
+</script>
 </body>
 </html>
