@@ -114,9 +114,9 @@ class Authorization extends Component implements AuthorizationInterface
         }
 
         if ($area) {
-            return ["@ns.app/Areas/$area/Controllers/{$controller}Controller", $action];
+            return ["@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller", $action];
         } else {
-            return ["@ns.app/Controllers/{$controller}Controller", $action];
+            return ["@ns.app\\Controllers\\{$controller}Controller", $action];
         }
     }
 
