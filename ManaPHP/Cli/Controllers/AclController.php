@@ -27,7 +27,7 @@ class AclController extends Controller
             if ($role) {
                 $actions = [];
                 foreach ($this->aclBuilder->getActions($controller) as $action) {
-                    if ($authorization->isAllowRoleAction($acl, $role, $action)) {
+                    if ($authorization->isAclAllow($acl, $role, $action)) {
                         $actions[] = $action;
                     }
                 }

@@ -27,7 +27,7 @@ class Authorization extends Component implements AuthorizationInterface
      *
      * @return bool
      */
-    public function isAllowRoleAction($acl, $role, $action)
+    public function isAclAllow($acl, $role, $action)
     {
         if (isset($acl[$action])) {
             $roles = $acl[$action];
@@ -152,10 +152,10 @@ class Authorization extends Component implements AuthorizationInterface
 
         $role = $role ?: $this->identity->getRole();
         if (strpos($role, ',') === false) {
-            return $this->isAllowRoleAction($acl, $role, $action);
+            return $this->isAclAllow($acl, $role, $action);
         } else {
             foreach (explode($role, ',') as $r) {
-                if ($this->isAllowRoleAction($acl, $r, $action)) {
+                if ($this->isAclAllow($acl, $r, $action)) {
                     return true;
                 }
             }

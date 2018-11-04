@@ -47,8 +47,8 @@ class Rbac extends Authorization
 
         $acl = $this->_acl[$controllerClassName];
         if ($role === 'guest') {
-            return $this->isAllowRoleAction($acl, 'guest', $action);
-        } elseif ($this->isAllowRoleAction($acl, 'user', $action)) {
+            return $this->isAclAllow($acl, 'guest', $action);
+        } elseif ($this->isAclAllow($acl, 'user', $action)) {
             return true;
         } else {
             $permissionModel = Permission::first(['path' => $permission]);
