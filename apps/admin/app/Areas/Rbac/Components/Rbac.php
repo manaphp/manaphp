@@ -72,7 +72,7 @@ class Rbac extends Authorization
             return true;
         } else {
             if (!$permission) {
-                $permission = $this->_generatePath($controllerClassName, $permission);
+                $permission = $this->_generatePath($controllerClassName, $action);
             }
             $permissionModel = Permission::first(['path' => $permission]);
 
