@@ -134,6 +134,7 @@ class Authorization extends Component implements AuthorizationInterface
         if (preg_match('#Areas/([^/]+)/Controllers/(.*)Controller$#', $controllerClassName, $match)) {
             $area = Text::underscore($match[1]);
             $controller = Text::underscore($match[2]);
+
             if ($action === 'index') {
                 if ($controller === 'index') {
                     return $area === 'index' ? '/' : "/$area";
@@ -141,14 +142,11 @@ class Authorization extends Component implements AuthorizationInterface
                     return "/$area/$controller";
                 }
             } else {
-                if ($controller === 'index') {
-                    return "/$area";
-                } else {
-                    return "/$area/$controller/$action";
-                }
+                return "/$area/$controller/$action";
             }
         } elseif (preg_match('#/Controllers/(.*)Controller#', $controllerClassName, $match)) {
             $controller = Text::underscore($match[1]);
+
             if ($action === 'index') {
                 return $controller === 'index' ? '/' : "/$controller";
             } else {
