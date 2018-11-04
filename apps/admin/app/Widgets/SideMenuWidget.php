@@ -6,6 +6,11 @@ use App\Areas\Menu\Models\Item;
 use App\Areas\Rbac\Models\Permission;
 use ManaPHP\View\Widget;
 
+/**
+ * Class SideMenuWidget
+ * @package App\Widgets
+ * @property-read \ManaPHP\AuthorizationInterface $authorization
+ */
 class SideMenuWidget extends Widget
 {
     public function run($vars = [])
@@ -20,7 +25,14 @@ class SideMenuWidget extends Widget
                 ->where(['group_id' => $group['group_id']])
                 ->orderBy('display_order DESC, item_id ASC')
                 ->fetch(true);
-            if (count($items) === 0) {
+		
+            foreach ($items as $k => $item) {
+                if (!$this->authorization->isAllowed($item['url'])) {
+                    unset($items[$k]);
+                }
+            }
+
+            if (!$items) {
                 continue;
             }
 
