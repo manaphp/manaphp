@@ -21,38 +21,6 @@ class Authorization extends Component implements AuthorizationInterface
     protected $_acl;
 
     /**
-     * @param array  $acl
-     * @param string $action
-     *
-     * @return string|null
-     */
-    public function getActionAllowedRoles($acl, $action)
-    {
-        if (isset($acl[$action])) {
-            $roles = $acl[$action];
-            if ($roles[0] === '@') {
-                $original_action = substr($roles, 1);
-                if (isset($acl[$original_action])) {
-                    $roles = $acl[$original_action];
-                    if ($roles[0] === '@') {
-                        throw new MisuseException(['`:action` original action is not allow indirect.', 'action' => $original_action]);
-                    }
-                } else {
-                    $roles = null;
-                }
-            }
-        } else {
-            $roles = null;
-        }
-
-        if ($roles === null && isset($acl['*'])) {
-            $roles = $acl['*'];
-        }
-
-        return $roles;
-    }
-
-    /**
      * @param string $roles
      * @param string $role
      *
@@ -88,12 +56,32 @@ class Authorization extends Component implements AuthorizationInterface
      */
     public function isAllowRoleAction($acl, $role, $action)
     {
-        $allowedRoles = $this->getActionAllowedRoles($acl, $action);
+        if (isset($acl[$action])) {
+            $roles = $acl[$action];
+            if ($roles[0] === '@') {
+                $original_action = substr($roles, 1);
+                if (isset($acl[$original_action])) {
+                    $roles = $acl[$original_action];
+                    if ($roles[0] === '@') {
+                        throw new MisuseException(['`:action` original action is not allow indirect.', 'action' => $original_action]);
+                    }
+                } else {
+                    $roles = null;
+                }
+            }
+        } else {
+            $roles = null;
+        }
+
+        if ($roles === null && isset($acl['*'])) {
+            $roles = $acl['*'];
+        }
+
         if (strpos($role, ',') === false) {
-            return $this->isRoleAllowed($allowedRoles, $role);
+            return $this->isRoleAllowed($roles, $role);
         } else {
             foreach (explode($role, ',') as $r) {
-                if ($this->isRoleAllowed($allowedRoles, $r)) {
+                if ($this->isRoleAllowed($roles, $r)) {
                     return true;
                 }
             }
