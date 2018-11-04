@@ -82,11 +82,11 @@ class File extends Component implements EngineInterface
     /**
      * @param string $session_id
      * @param string $data
-     * @param array  $context
+     * @param int    $ttl
      *
      * @return bool
      */
-    public function write($session_id, $data, $context)
+    public function write($session_id, $data, $ttl)
     {
         $file = $this->_getFileName($session_id);
         $dir = dirname($file);
@@ -98,7 +98,7 @@ class File extends Component implements EngineInterface
             trigger_error(strtr('write `:file` session file failed: :last_error_message', [':file' => $file]));
         }
 
-        @touch($file, time() + $context['ttl']);
+        @touch($file, time() + $ttl);
         clearstatcache(true, $file);
 
         return true;

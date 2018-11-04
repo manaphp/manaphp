@@ -22,11 +22,11 @@ interface EngineInterface
      *
      * @param string $session_id
      * @param string $data
-     * @param array  $context
+     * @param int    $ttl
      *
      * @return bool
      */
-    public function write($session_id, $data, $context);
+    public function write($session_id, $data, $ttl);
 
     /**
      * executed when a session is destroyed with session_destroy()

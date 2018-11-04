@@ -68,14 +68,14 @@ class Redis extends Component implements EngineInterface
     /**
      * @param string $session_id
      * @param string $data
-     * @param array  $context
+     * @param int    $ttl
      *
      * @return bool
      */
-    public function write($session_id, $data, $context)
+    public function write($session_id, $data, $ttl)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        return $redis->set($this->_prefix . $session_id, $data, $context['ttl']);
+        return $redis->set($this->_prefix . $session_id, $data, $ttl);
     }
 
     /**

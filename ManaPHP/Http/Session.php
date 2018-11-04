@@ -159,12 +159,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     {
         $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
 
-        $context = [];
-        $context['ttl'] = $this->_ttl;
-        $context['client_ip'] = $this->request->getClientIp();
-        $context['user_id'] = $this->identity->getId(0);
-
-        return $engine->write($session_id, $data, $context);
+        return $engine->write($session_id, $data, $this->_ttl);
     }
 
     /**

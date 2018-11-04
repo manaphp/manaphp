@@ -8,6 +8,7 @@ use ManaPHP\Http\Session\EngineInterface;
  * Class ManaPHP\Http\Session\Engine\Db
  *
  * @package session\engine
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Db extends Component implements EngineInterface
 {
@@ -50,11 +51,11 @@ class Db extends Component implements EngineInterface
     /**
      * @param string $session_id
      * @param string $data
-     * @param array  $context
+     * @param int    $ttl
      *
      * @return bool
      */
-    public function write($session_id, $data, $context)
+    public function write($session_id, $data, $ttl)
     {
         /**
          * @var \ManaPHP\Http\Session\Engine\Db\Model $model
@@ -62,11 +63,11 @@ class Db extends Component implements EngineInterface
         $model = new $this->_model;
 
         $model->session_id = $session_id;
-        $model->user_id = $context['user_id'];
-        $model->client_ip = $context['client_ip'];
+        $model->user_id = $this->identity->getId(0);
+        $model->client_ip = $this->request->getClientIp();
         $model->data = $data;
         $model->updated_time = time();
-        $model->expired_time = $model->updated_time + $context['ttl'];
+        $model->expired_time = $model->updated_time + $ttl;
 
         $model->save();
 
