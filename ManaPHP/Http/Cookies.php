@@ -133,12 +133,12 @@ class Cookies extends Component implements CookiesInterface
      * Gets a cookie
      *
      * @param string $name
-     * @param string $defaultValue
+     * @param string $default
      *
      * @return mixed|null
      * @throws \ManaPHP\Http\Cookies\Exception
      */
-    public function get($name, $defaultValue = null)
+    public function get($name, $default = null)
     {
         if ($name[0] === '!') {
             $name = (string)substr($name, 1);
@@ -151,7 +151,7 @@ class Cookies extends Component implements CookiesInterface
             }
         }
 
-        return $defaultValue;
+        return $default;
     }
 
     /**

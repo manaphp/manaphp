@@ -28,11 +28,11 @@ interface CookiesInterface
      * Gets a cookie from the bag
      *
      * @param string $name
-     * @param string $defaultValue
+     * @param string $default
      *
      * @return mixed
      */
-    public function get($name, $defaultValue = null);
+    public function get($name, $default = null);
 
     /**
      * Check if a cookie is defined in the bag or exists in the $_COOKIE
