@@ -67,10 +67,14 @@ class Rbac extends Authorization
 
         $acl = $this->_acl[$controllerClassName];
 
-        foreach (explode(',', $role) as $role) {
-            if ($this->isAclAllow($acl, 'user', $action)) {
+        foreach (explode(',', $role) as $r) {
+            if ($this->isAclAllow($acl, $r, $action)) {
                 return true;
             }
+        }
+
+        if (isset($acl[$action])) {
+            return false;
         }
 
         if (!$permission) {
