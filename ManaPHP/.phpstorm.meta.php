@@ -69,6 +69,7 @@ namespace PHPSTORM_META {
             'mailer' instanceof \ManaPHP\MailerInterface,
             'swooleHttpServer' instanceof \ManaPHP\Swoole\Http\ServerInterface,
             'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
+            'aclbuilder' instanceof \ManaPHP\Authorization\AclBuilderInterface,
         ],
         \di('') => [
             'di' instanceof \ManaPHP\DiInterface,
@@ -137,6 +138,7 @@ namespace PHPSTORM_META {
             'mailer' instanceof \ManaPHP\MailerInterface,
             'swooleHttpServer' instanceof \ManaPHP\Swoole\Http\ServerInterface,
             'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
+            'aclbuilder' instanceof \ManaPHP\Authorization\AclBuilderInterface,
         ],
         \ManaPHP\DiInterface::get('') => [
             '' == '@',
