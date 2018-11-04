@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="{{asset('/static/css/manaphp.css')}}">
     <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{asset('/assets/css/app.css')}}">
     @yield('css')
 </head>
@@ -15,7 +16,26 @@
 <el-container id="app">
     <el-aside width="200px">@widget('SideMenu')</el-aside>
     <el-container>
-        <el-header></el-header>
+        <el-header>
+            <el-row>
+                <el-col :span="2" :offset="22">
+                    <div>
+                        <el-dropdown>
+                    <span class="el-dropdown-link">
+                    <i class="fa fa-user-circle"></i> {{$di->identity->getName('')}}<i
+                                class="el-icon-arrow-down el-icon--left"></i>
+                    </span>
+                            <el-dropdown-menu slot="dropdown" trigger="click">
+                                <el-dropdown-item><a href="{{action('/user/account/change_password')}}" target="_self">修改密码</a>
+                                <el-dropdown-item><a href="{{action('/user/session/logout')}}" target="_self">退出</a>
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+
+                </el-col>
+            </el-row>
+        </el-header>
         <el-main>@content()</el-main>
     </el-container>
 </el-container>
