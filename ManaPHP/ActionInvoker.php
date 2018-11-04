@@ -140,7 +140,7 @@ class ActionInvoker extends Component implements ActionInvokerInterface
             return $r;
         }
 
-        if (($r = $this->fireEvent('actionInvoker:beforeInvoke')) !== null) {
+        if (($r = $this->fireEvent('actionInvoker:beforeInvoke', $action)) !== null) {
             return $r;
         }
 
@@ -168,7 +168,7 @@ class ActionInvoker extends Component implements ActionInvokerInterface
                 break;
         }
 
-        $this->fireEvent('actionInvoker:afterInvoke');
+        $this->fireEvent('actionInvoker:afterInvoke', ['action' => $action, 'return' => $r]);
 
         if (method_exists($controller, 'afterInvoke')) {
             $controller->afterInvoke($action, $r);
