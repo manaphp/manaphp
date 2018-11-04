@@ -15,6 +15,26 @@ use ManaPHP\Exception\InvalidValueException;
 class Rbac extends Authorization
 {
     /**
+     * @param string $role
+     *
+     * @return array
+     */
+    public function getAllowedPermissions($role)
+    {
+        $role_id = Role::value(['role_name' => $role], 'role_id');
+        if ($role_id) {
+            $permission_ids = RolePermission::values('permission_id', ['role_id' => $role_id]);
+            $permission_db = array_flip(Permission::values('path', ['permission_id' => $permission_ids]));
+        } else {
+            $permission_db = [];
+        }
+
+        $permission_acl = array_flip(parent::getAllowedPermissions($role));
+
+        return array_keys($permission_db + $permission_acl);
+    }
+
+    /**
      * @param string $permission
      * @param string $role
      *
