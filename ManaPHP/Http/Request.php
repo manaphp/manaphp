@@ -41,11 +41,11 @@ class Request extends Component implements RequestInterface
      * @param array  $source
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return array|string|null
      */
-    protected function _getHelper($source, $name = null, $rule = null, $defaultValue = '')
+    protected function _getHelper($source, $name = null, $rule = null, $default = '')
     {
         if ($name === null) {
             return $source;
@@ -53,22 +53,22 @@ class Request extends Component implements RequestInterface
             $value = $this->get();
             $var = substr($name, 0, $current);
             if (!isset($value[$var])) {
-                return $defaultValue;
+                return $default;
             }
             $value = $value[$var];
             while ($next = strpos($name, ']', $current)) {
                 $var = substr($name, $current + 1, $next - $current - 1);
                 if (!is_array($value) || !isset($value[$var])) {
-                    return $defaultValue;
+                    return $default;
                 }
                 $value = $value[$var];
                 $current = $next + 1;
             }
         } else {
-            $value = (isset($source[$name]) && $source[$name] !== '') ? $source[$name] : $defaultValue;
+            $value = (isset($source[$name]) && $source[$name] !== '') ? $source[$name] : $default;
         }
 
-        if (is_array($value) && is_scalar($defaultValue)) {
+        if (is_array($value) && is_scalar($default)) {
             throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
         }
 
@@ -93,13 +93,13 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($name = null, $rule = null, $defaultValue = '')
+    public function get($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_REQUEST, $name, $rule, $defaultValue);
+        return $this->_getHelper($_REQUEST, $name, $rule, $default);
     }
 
     /**
@@ -119,13 +119,13 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getGet($name = null, $rule = null, $defaultValue = '')
+    public function getGet($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_GET, $name, $rule, $defaultValue);
+        return $this->_getHelper($_GET, $name, $rule, $default);
     }
 
     /**
@@ -142,29 +142,29 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getPost($name = null, $rule = null, $defaultValue = '')
+    public function getPost($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_POST, $name, $rule, $defaultValue);
+        return $this->_getHelper($_POST, $name, $rule, $default);
     }
 
     /**
      * Gets variable from $_SERVER
      *
      * @param string $name
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getServer($name = null, $defaultValue = '')
+    public function getServer($name = null, $default = '')
     {
         if ($name === null) {
             return $_SERVER;
         } else {
-            return isset($_SERVER[$name]) ? $_SERVER[$name] : $defaultValue;
+            return isset($_SERVER[$name]) ? $_SERVER[$name] : $default;
         }
     }
 
@@ -179,13 +179,13 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getPut($name = null, $rule = null, $defaultValue = '')
+    public function getPut($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_POST, $name, $rule, $defaultValue);
+        return $this->_getHelper($_POST, $name, $rule, $default);
     }
 
     /**
@@ -205,23 +205,23 @@ class Request extends Component implements RequestInterface
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getQuery($name = null, $rule = null, $defaultValue = '')
+    public function getQuery($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_GET, $name, $rule, $defaultValue);
+        return $this->_getHelper($_GET, $name, $rule, $default);
     }
 
     /**
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getInput($name = null, $rule = null, $defaultValue = '')
+    public function getInput($name = null, $rule = null, $default = '')
     {
         if ($name === null) {
             $params = $this->dispatcher->getParams();
@@ -232,7 +232,7 @@ class Request extends Component implements RequestInterface
         } elseif ($this->dispatcher->hasParam($name)) {
             return $this->dispatcher->getParam($name);
         } else {
-            return $this->get($name, $rule, $defaultValue);
+            return $this->get($name, $rule, $default);
         }
     }
 
@@ -344,11 +344,11 @@ class Request extends Component implements RequestInterface
 
     /**
      * @param string $name
-     * @param string $defaultValue
+     * @param string $default
      *
      * @return array|string|null
      */
-    public function getHeader($name = null, $defaultValue = '')
+    public function getHeader($name = null, $default = '')
     {
         if ($name !== null) {
             $name = strtoupper($name);
@@ -365,7 +365,7 @@ class Request extends Component implements RequestInterface
                 return $_SERVER['HTTP_' . $name];
             }
 
-            return $defaultValue;
+            return $default;
         } else {
             $headers = [];
             foreach ($_SERVER as $k => $v) {

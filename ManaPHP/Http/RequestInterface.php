@@ -14,33 +14,33 @@ interface RequestInterface
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($name = null, $rule = null, $defaultValue = '');
+    public function get($name = null, $rule = null, $default = '');
 
     /**
      * Gets variable from $_GET applying filters if needed
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getGet($name = null, $rule = null, $defaultValue = '');
+    public function getGet($name = null, $rule = null, $default = '');
 
     /**
      * Gets a variable from the $_POST applying filters if needed
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getPost($name = null, $rule = null, $defaultValue = '');
+    public function getPost($name = null, $rule = null, $default = '');
 
     /**
      * Gets a variable from put request
@@ -53,41 +53,41 @@ interface RequestInterface
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getPut($name = null, $rule = null, $defaultValue = '');
+    public function getPut($name = null, $rule = null, $default = '');
 
     /**
      * Gets variable from $_GET applying filters if needed
      *
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getQuery($name = null, $rule = null, $defaultValue = '');
+    public function getQuery($name = null, $rule = null, $default = '');
 
     /**
      * @param string $name
      * @param string $rule
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getInput($name = null, $rule = null, $defaultValue = '');
+    public function getInput($name = null, $rule = null, $default = '');
 
     /**
      * Gets variable from $_SERVER
      *
      * @param string $name
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function getServer($name = null, $defaultValue = '');
+    public function getServer($name = null, $default = '');
 
     /**
      * Checks whether $_SERVER has certain index
@@ -164,11 +164,11 @@ interface RequestInterface
 
     /**
      * @param string $name
-     * @param string $defaultValue
+     * @param string $default
      *
      * @return string|null
      */
-    public function getHeader($name = null, $defaultValue = '');
+    public function getHeader($name = null, $default = '');
 
     /**
      * Gets HTTP schema (http/https)
