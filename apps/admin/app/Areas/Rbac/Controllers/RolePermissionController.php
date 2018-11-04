@@ -2,8 +2,15 @@
 
 namespace App\Areas\Rbac\Controllers;
 
+use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
 
+/**
+ * Class RolePermission
+ * @package App\Areas\Rbac\Models
+ *
+ * @property-read \ManaPHP\AuthorizationInterface $authorization
+ */
 class RolePermissionController extends ControllerBase
 {
     public function indexAction()
@@ -26,7 +33,7 @@ class RolePermissionController extends ControllerBase
         if ($this->request->isPost()) {
             try {
                 $role_id = $this->request->get('role_id');
-                $permission_ids = $this->request->get('permission_ids');
+                $permission_ids = $this->request->get('permission_ids', null, []);
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
@@ -41,6 +48,14 @@ class RolePermissionController extends ControllerBase
                 $rolePermission->permission_id = $permission_id;
                 $rolePermission->create();
             }
+
+            $role = Role::get($role_id);
+	    
+            $paths = $this->authorization->getAllowed($role->role_name);
+            sort($paths);
+
+            $role->permissions = ',' . implode(',', $paths) . ',';
+            $role->update();
 
             return 0;
         }

@@ -8,6 +8,7 @@ class Role extends Model
     public $role_id;
     public $role_name;
     public $enabled;
+    public $permissions;
     public $creator_name;
     public $updator_name;
     public $created_time;
