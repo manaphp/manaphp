@@ -442,7 +442,9 @@ class Filter extends Component implements FilterInterface
     protected function _filter_length($value, $parameters)
     {
         $length = $this->_strlen($value);
-
+        if (count($parameters) === 1) {
+            $parameters = explode('-', $parameters[0]);
+        }
         return $length >= $parameters[0] && $length <= $parameters[1] ? $value : null;
     }
 
