@@ -13,11 +13,11 @@ interface SessionInterface
      * Gets a session variable from an application context
      *
      * @param string $name
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($name = null, $defaultValue = null);
+    public function get($name = null, $default = null);
 
     /**
      * Sets a session variable in an application context

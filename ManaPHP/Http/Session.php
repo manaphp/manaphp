@@ -212,11 +212,11 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      * Gets a session variable from an application context
      *
      * @param string $name
-     * @param mixed  $defaultValue
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($name = null, $defaultValue = null)
+    public function get($name = null, $default = null)
     {
         $this->_started || $this->_start();
 
@@ -225,7 +225,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
         } elseif (isset($_SESSION[$name])) {
             return $_SESSION[$name];
         } else {
-            return $defaultValue;
+            return $default;
         }
     }
 
