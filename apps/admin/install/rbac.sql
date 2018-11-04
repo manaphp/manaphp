@@ -12,6 +12,10 @@ MySQL - 5.7.9 : Database - manaphp
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`manaphp` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE `manaphp`;
+
 /*Table structure for table `admin` */
 
 CREATE TABLE `admin` (
@@ -30,27 +34,8 @@ CREATE TABLE `admin` (
   PRIMARY KEY (`admin_id`),
   UNIQUE KEY `admin_name` (`admin_name`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
-
-/*Data for the table `admin` */
-
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 insert  into `admin`(`admin_id`,`admin_name`,`email`,`status`,`salt`,`password`,`login_ip`,`login_time`,`creator_name`,`updator_name`,`created_time`,`updated_time`) values (1,'admin','manaphp@qq.com',1,'caBdg7IdpL6BcZvk','10e7bd2d7e098255e7e2b9e07c3f038e','127.0.0.1',0,'','',0,0);
-
-
-/*Table structure for table `rbac_role` */
-
-CREATE TABLE `rbac_role` (
-  `role_id` int(11) NOT NULL AUTO_INCREMENT,
-  `role_name` varchar(64) NOT NULL,
-  `enabled` tinyint(4) NOT NULL DEFAULT '1',
-  `creator_name` varchar(32) CHARACTER SET ascii NOT NULL,
-  `updator_name` varchar(32) CHARACTER SET ascii NOT NULL,
-  `created_time` int(11) NOT NULL,
-  `updated_time` int(11) NOT NULL,
-  PRIMARY KEY (`role_id`),
-  UNIQUE KEY `role_name` (`role_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
-
 
 /*Table structure for table `rbac_admin_role` */
 
@@ -64,20 +49,34 @@ CREATE TABLE `rbac_admin_role` (
   `created_time` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id_role_id` (`admin_id`,`role_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `rbac_permission` */
 
 CREATE TABLE `rbac_permission` (
   `permission_id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` tinyint(4) NOT NULL,
   `path` varchar(64) CHARACTER SET ascii NOT NULL,
   `description` varchar(128) NOT NULL,
   `created_time` int(11) NOT NULL,
   `updated_time` int(11) NOT NULL,
-  PRIMARY KEY (`permission_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`permission_id`),
+  UNIQUE KEY `path` (`path`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Table structure for table `rbac_role` */
+
+CREATE TABLE `rbac_role` (
+  `role_id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(64) NOT NULL,
+  `enabled` tinyint(4) NOT NULL DEFAULT '1',
+  `permissions` text CHARACTER SET ascii NOT NULL,
+  `creator_name` varchar(32) CHARACTER SET ascii NOT NULL,
+  `updator_name` varchar(32) CHARACTER SET ascii NOT NULL,
+  `created_time` int(11) NOT NULL,
+  `updated_time` int(11) NOT NULL,
+  PRIMARY KEY (`role_id`),
+  UNIQUE KEY `role_name` (`role_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `rbac_role_permission` */
 
@@ -89,7 +88,7 @@ CREATE TABLE `rbac_role_permission` (
   `created_time` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permission_id_role_id` (`permission_id`,`role_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=158 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
