@@ -49,8 +49,8 @@ class AccountController extends Controller
             } catch (\Exception $e) {
                 return $this->response->setJsonContent($e);
             }
-            $admin = Admin::first(['admin_id' => $this->identity->getId()]);
-            if (!$admin || !$this->password->verify($old_password, $admin->password, $admin->salt)) {
+            $admin = Admin::get($this->identity->getId());
+            if (!$this->password->verify($old_password, $admin->password, $admin->salt)) {
                 return $this->response->setJsonError('旧密码不正确');
             }
 
