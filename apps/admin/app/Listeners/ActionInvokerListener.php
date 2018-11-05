@@ -35,7 +35,7 @@ class ActionInvokerListener extends Listener
         $adminActionLog->user_name = $this->identity->getName('');
         $adminActionLog->ip = substr($this->request->getClientIp(), 0, 16);
         $adminActionLog->method = $this->request->getMethod();
-        $adminActionLog->url = $this->request->getUri();
+        $adminActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);
         $adminActionLog->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $adminActionLog->path = $this->authorization->generatePath(get_class($actionInvoker->getController()), $action);
         $adminActionLog->udid = $this->cookies->get('CLIENT_UDID');
