@@ -43,7 +43,7 @@ class AdminRoleController extends ControllerBase
             } catch (\Exception $e) {
                 return $e;
             }
-            $admin = Admin::firstOrFail();
+            $admin = Admin::get();
 
             $old_roles = AdminRole::values('role_id', ['admin_id' => $admin->admin_id]);
             AdminRole::deleteAll(['role_id' => array_values(array_diff($old_roles, $new_roles))]);
@@ -54,7 +54,7 @@ class AdminRoleController extends ControllerBase
                 $adminRole->admin_id = $admin->admin_id;
                 $adminRole->admin_name = $admin->admin_name;
                 $adminRole->role_id = $role_id;
-                $adminRole->role_name = Role::firstOrFail($role_id)->role_name;
+                $adminRole->role_name = Role::value($role_id, 'role_name');
 
                 $adminRole->create();
             }
