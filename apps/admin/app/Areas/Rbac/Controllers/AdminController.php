@@ -64,7 +64,7 @@ class AdminController extends ControllerBase
     {
         if ($this->request->isPost()) {
             $data = $this->request->getPost();
-            $admin = Admin::firstOrFail()->assign($data);
+            $admin = Admin::get()->assign($data);
             if ($data['password'] !== '') {
                 $admin->salt = $this->password->salt();
                 $admin->password = $this->password->hash($data['password'], $admin->salt);
