@@ -1457,26 +1457,29 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
     /**
      * @return int
      */
-    protected function _getTotalRows()
+    public function count($field = '*')
     {
         if ($this->_union) {
             throw new NotSupportedException('Union query is not support to get total rows');
         }
 
-        $this->_fields = 'COUNT(*) as [row_count]';
-        $this->_limit = null;
-        $this->_offset = null;
-        $this->_order = null;
+        $copy = clone $this;
 
-        $this->_sql = $this->_buildSql();
+        $copy->_fields = 'COUNT(*) as [row_count]';
+        $copy->_limit = null;
+        $copy->_offset = null;
+        $copy->_order = null;
+        $copy->_index = null;
 
-        if ($this->_group === null) {
-            $result = $this->_db->fetchOne($this->_sql, $this->_bind);
+        $copy->_sql = $copy->_buildSql();
+
+        if ($copy->_group === null) {
+            $result = $copy->_db->fetchOne($copy->_sql, $copy->_bind);
 
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $rowCount = (int)$result['row_count'];
         } else {
-            $result = $this->_db->fetchAll($this->_sql, $this->_bind);
+            $result = $copy->_db->fetchAll($copy->_sql, $copy->_bind);
             $rowCount = count($result);
         }
 
@@ -1495,8 +1498,6 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
 
         $this->_hiddenParamNumber = 0;
 
-        $copy = clone $this;
-
         $this->_sql = $this->_buildSql();
 
         /** @noinspection SuspiciousAssignmentsInspection */
@@ -1506,7 +1507,7 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
             $count = count($items);
         } else {
             if (count($items) % $this->_limit === 0) {
-                $count = $copy->_getTotalRows();
+                $count = $this->count();
             } else {
                 $count = $this->_offset + count($items);
             }
@@ -1529,23 +1530,6 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
         $rs = $this->execute();
 
         return isset($rs[0]);
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return int
-     */
-    public function count($field = '*')
-    {
-        $copy = clone $this;
-
-        $copy->_limit = null;
-        $copy->_offset = null;
-        $copy->_order = null;
-        $copy->_index = null;
-
-        return $copy->aggregate(['count' => "COUNT($field)"])[0]['count'];
     }
 
     /**
