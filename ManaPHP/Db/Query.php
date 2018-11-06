@@ -1077,13 +1077,8 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
      */
     public function limit($limit, $offset = null)
     {
-        if ($limit > 0) {
-            $this->_limit = (int)$limit;
-        }
-
-        if ($offset > 0) {
-            $this->_offset = (int)$offset;
-        }
+        $this->_limit = $limit > 0 ? (int)$limit : null;
+        $this->_offset = $offset > 0 ? (int)$offset : null;
 
         return $this;
     }
