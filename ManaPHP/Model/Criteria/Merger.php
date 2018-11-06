@@ -544,13 +544,12 @@ class Merger extends Component
             foreach ($this->_criterias as $criteria) {
                 $c_limit = $this->_limit - count($r);
                 $c_offset = max(0, $this->_offset - $count);
-                $copy = clone $criteria;
                 $t = $criteria->limit($c_limit, $c_offset)->fetch($asArray);
                 $r = $r ? array_merge($r, $t) : $t;
                 if (count($r) === $this->_limit) {
                     break;
                 }
-                $count += $t ? count($t) + $c_offset : $copy->count();
+                $count += $t ? count($t) + $c_offset : $criteria->count();
             }
         } else {
             if ($this->_limit) {
