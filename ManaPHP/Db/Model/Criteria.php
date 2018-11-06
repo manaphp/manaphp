@@ -47,6 +47,11 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
         }
     }
 
+    public function __clone()
+    {
+        $this->_query = clone $this->_query;
+    }
+
     /**
      * Sets SELECT DISTINCT / SELECT ALL flag
      *
