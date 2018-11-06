@@ -1035,6 +1035,24 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
+     * @param string $field
+     *
+     * @return int
+     */
+    public function count($field = '*')
+    {
+        $copy = clone $this;
+
+        $copy->_limit = null;
+        $copy->_offset = null;
+        $copy->_order = null;
+        $copy->_aggregate['count'] = ['$sum' => 1];
+        $r = $copy->_execute();
+
+        return $r[0]['count'];
+    }
+
+    /**
      * @return array
      */
     public function execute()
@@ -1042,18 +1060,6 @@ class Criteria extends \ManaPHP\Model\Criteria
         return $this->_execute();
     }
 
-    /**
-     * @return int
-     */
-    protected function _getTotalRows()
-    {
-        $this->_limit = null;
-        $this->_offset = null;
-        $this->_order = null;
-        $this->_aggregate['count'] = ['$sum' => 1];
-        $r = $this->_execute();
-        return $r[0]['count'];
-    }
 
     /**
      * @param int $size
@@ -1065,21 +1071,20 @@ class Criteria extends \ManaPHP\Model\Criteria
     {
         $this->page($size, $page);
 
-        $copy = clone $this;
         $items = $this->fetch();
 
         if ($this->_limit === null) {
             $count = count($items);
         } else {
             if (count($items) % $this->_limit === 0) {
-                $count = $copy->_getTotalRows();
+                $count = $this->count();
             } else {
                 $count = $this->_offset + count($items);
             }
         }
 
         $paginator = $this->paginator;
-		
+
         $paginator->items = $items;
 
         if ($this->_with) {

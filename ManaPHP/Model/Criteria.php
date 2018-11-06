@@ -342,21 +342,6 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
     }
 
     /**
-     * @param string $field
-     *
-     * @return int
-     */
-    public function count($field = '*')
-    {
-        if ($rs = $this->aggregate(['r' => "COUNT($field)"])) {
-            $r = $rs[0]['r'];
-            return is_string($r) ? (int)$r : $r;
-        } else {
-            return 0;
-        }
-    }
-
-    /**
      * @param array $options
      *
      * @return static

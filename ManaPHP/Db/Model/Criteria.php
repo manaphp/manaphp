@@ -564,6 +564,16 @@ class Criteria extends \ManaPHP\Model\Criteria implements CriteriaInterface
     }
 
     /**
+     * @param string $field
+     *
+     * @return int
+     */
+    public function count($field = '*')
+    {
+        return $this->_replaceModelInfo()->_query->count($field);
+    }
+
+    /**
      * @return array
      */
     public function execute()
