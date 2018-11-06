@@ -672,14 +672,6 @@ class Merger extends Component
     }
 
     /**
-     * @return int
-     */
-    protected function _getTotalRows()
-    {
-        return 0;
-    }
-
-    /**
      * @param int $size
      * @param int $page
      *
@@ -689,14 +681,13 @@ class Merger extends Component
     {
         $this->page($size, $page);
 
-        $copy = clone $this;
-        $items = $this->fetch();
+        $items = $this->fetch(true);
 
         if ($this->_limit === null) {
             $count = count($items);
         } else {
             if (count($items) % $this->_limit === 0) {
-                $count = $copy->_getTotalRows();
+                $count = $this->count();
             } else {
                 $count = $this->_offset + count($items);
             }
@@ -705,10 +696,6 @@ class Merger extends Component
         $paginator = $this->paginator;
 
         $paginator->items = $items;
-
-        if ($this->_with) {
-            $paginator->items = $this->relationsManager->earlyLoad($this->_model, $paginator->items, $this->_with);
-        }
 
         return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
     }
