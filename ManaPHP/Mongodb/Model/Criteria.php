@@ -1071,7 +1071,7 @@ class Criteria extends \ManaPHP\Model\Criteria
     {
         $this->page($size, $page);
 
-        $items = $this->fetch();
+        $items = $this->fetch(true);
 
         if ($this->_limit === null) {
             $count = count($items);
