@@ -43,6 +43,13 @@ class Merger extends Component
         }
     }
 
+    public function __clone()
+    {
+        foreach ($this->_criterias as $k => $v) {
+            $this->_criterias[$k] = clone $v;
+        }
+    }
+
     /**
      * @param string[]|\ManaPHP\ModelInterface[]|\ManaPHP\Model\CriteriaInterface[] $criterias
      *
