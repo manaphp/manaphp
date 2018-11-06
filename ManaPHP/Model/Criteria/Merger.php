@@ -465,8 +465,8 @@ class Merger extends Component
      */
     public function limit($limit, $offset = null)
     {
-        $this->_limit = $limit;
-        $this->_offset = $offset;
+        $this->_limit = $limit > 0 ? (int)$limit : null;
+        $this->_offset = $offset > 0 ? (int)$offset : null;
 
         return $this;
     }
