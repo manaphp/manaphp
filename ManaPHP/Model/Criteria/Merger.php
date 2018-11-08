@@ -837,6 +837,16 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     }
 
     /**
+     * @param string|array $fields
+     *
+     * @return array
+     */
+    public function all($fields = null)
+    {
+        return $this->select($fields)->fetch(true);
+    }
+
+    /**
      * @param string $field
      * @param mixed  $default
      *
