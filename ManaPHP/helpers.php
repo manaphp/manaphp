@@ -1131,3 +1131,35 @@ if (!function_exists('array_trim')) {
         return $ar;
     }
 }
+
+if (!function_exists('collection_sort')) {
+    /**
+     * @param array        $ar
+     * @param string|array $sort
+     *
+     * @return array
+     */
+    function collection_sort(&$ar, $sort)
+    {
+        if (is_string($sort)) {
+            /** @noinspection PassingByReferenceCorrectnessInspection */
+            array_multisort(array_field($ar, $sort), SORT_ASC, $ar);
+        } else {
+            $params = [];
+            foreach ((array)$sort as $k => $v) {
+                if (is_int($k)) {
+                    $params[] = array_field($ar, $v);
+                } else {
+                    $params[] = array_field($ar, $k);
+                    $params[] = $v;
+                }
+            }
+            $params[] = &$ar;
+            /** @noinspection ArgumentUnpackingCanBeUsedInspection */
+            /** @noinspection SpellCheckingInspection */
+            call_user_func_array('array_multisort', $params);
+        }
+
+        return $ar;
+    }
+}
