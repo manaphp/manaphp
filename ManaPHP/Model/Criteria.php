@@ -302,6 +302,17 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
     }
 
     /**
+     * @param string|array $fields
+     *
+     * @return array|null
+     */
+    public function first($fields = null)
+    {
+        $r = $this->select($fields)->limit(1)->fetch(true);
+        return $r ? $r[0] : null;
+    }
+
+    /**
      * @param string $field
      *
      * @return int|float|null

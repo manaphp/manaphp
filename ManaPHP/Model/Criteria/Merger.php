@@ -819,4 +819,20 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
 
         return $this;
     }
+
+    /**
+     * @param string|array $fields
+     *
+     * @return array|null
+     */
+    public function first($fields = null)
+    {
+        foreach ($this->_criterias as $criteria) {
+            if ($r = $criteria->select($fields)->limit(1)->fetch(true)) {
+                return $r[0];
+            }
+        }
+
+        return null;
+    }
 }
