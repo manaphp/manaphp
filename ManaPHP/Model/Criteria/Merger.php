@@ -11,7 +11,7 @@ use ManaPHP\Model\Criteria;
  * @package ManaPHP\Model\Criteria
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Merger extends Component
+class Merger extends Component implements Model\CriteriaInterface, \IteratorAggregate
 {
     /**
      * @var \ManaPHP\Model\CriteriaInterface[]
@@ -48,6 +48,16 @@ class Merger extends Component
         foreach ($this->_criterias as $k => $v) {
             $this->_criterias[$k] = clone $v;
         }
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->fetch(true));
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->fetch(true);
     }
 
     /**
