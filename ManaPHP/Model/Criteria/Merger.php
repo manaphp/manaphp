@@ -835,4 +835,16 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
 
         return null;
     }
+
+    /**
+     * @param string $field
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function value($field, $default = null)
+    {
+        $r = $this->first([$field]);
+        return isset($r[$field]) ? $r[$field] : $default;
+    }
 }
