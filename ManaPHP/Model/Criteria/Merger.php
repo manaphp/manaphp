@@ -26,7 +26,7 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     /**
      * @var int
      */
-    public $_offset;
+    protected $_offset;
 
     /**
      * Merger constructor.
