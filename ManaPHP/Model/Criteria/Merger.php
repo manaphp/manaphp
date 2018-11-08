@@ -143,7 +143,7 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function aggregate($expr)
     {
-        throw new NotSupportedException('');
+        throw new NotSupportedException(__METHOD__);
     }
 
     /**
@@ -533,7 +533,7 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function groupBy($groupBy)
     {
-        throw new NotSupportedException('');
+        throw new NotSupportedException(__METHOD__);
     }
 
     /**
