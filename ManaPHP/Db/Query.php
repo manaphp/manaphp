@@ -1608,6 +1608,16 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
     }
 
     /**
+     * @param string|array $fields
+     *
+     * @return array
+     */
+    public function all($fields = null)
+    {
+        return $this->select($fields)->execute();
+    }
+
+    /**
      * @param string $field
      * @param mixed  $default
      *

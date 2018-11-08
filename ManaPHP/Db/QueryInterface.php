@@ -485,6 +485,13 @@ interface QueryInterface
     public function first($fields = null);
 
     /**
+     * @param string|array $fields
+     *
+     * @return array
+     */
+    public function all($fields = null);
+
+    /**
      * @param string $field
      * @param mixed  $default
      *
