@@ -11,6 +11,7 @@ use ManaPHP\Model\Criteria;
  * Class Merger
  * @package ManaPHP\Model\Criteria
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Paginator             $paginator
  */
 class Merger extends Component implements Model\CriteriaInterface, \IteratorAggregate
 {
