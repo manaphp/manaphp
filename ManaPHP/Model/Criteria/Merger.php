@@ -29,6 +29,11 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     protected $_offset;
 
     /**
+     * @var array
+     */
+    protected $_order;
+
+    /**
      * Merger constructor.
      *
      * @param array        $criterias
@@ -467,8 +472,14 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function orderBy($orderBy)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->orderBy($orderBy);
+        if (is_string($orderBy)) {
+            if ($this->_order) {
+                $this->_order[] = $orderBy;
+            } else {
+                $this->_order = [$orderBy];
+            }
+        } else {
+            $this->_order = $this->_order ? array_merge($this->_order, $orderBy) : $orderBy;
         }
 
         return $this;
@@ -556,31 +567,70 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     {
         $r = [];
 
-        if ($this->_offset) {
-            $count = 0;
+        if ($this->_order) {
             foreach ($this->_criterias as $criteria) {
-                $c_limit = $this->_limit - count($r);
-                $c_offset = max(0, $this->_offset - $count);
-                $t = $criteria->limit($c_limit, $c_offset)->fetch($asArray);
-                $r = $r ? array_merge($r, $t) : $t;
-                if (count($r) === $this->_limit) {
-                    break;
+                if ($this->_limit) {
+                    $t = $criteria->limit($this->_limit + $this->_offset)->fetch($asArray);
+                } else {
+                    $t = $criteria->fetch($asArray);
                 }
-                $count += $t ? count($t) + $c_offset : $criteria->count();
+                $r = $r ? array_merge($r, $t) : $t;
             }
-        } else {
-            if ($this->_limit) {
-                foreach ($this->_criterias as $criteria) {
-                    $t = $criteria->limit($this->_limit - count($r))->fetch($asArray);
-                    $r = $r ? array_merge($r, $t) : $t;
-                    if (count($r) >= $this->_limit) {
-                        break;
-                    }
+
+            if (count($this->_order) === 1) {
+                $k = key($this->_order);
+                $v = current($this->_order);
+                if (is_int($k)) {
+                    array_multisort(array_column($r, $v), $r);
+                } else {
+                    array_multisort(array_column($r, $k), $v, $r);
                 }
             } else {
+                $params = [];
+                foreach ($this->_order as $k => $v) {
+                    if (is_int($k)) {
+                        $params[] = array_column($r, $v);
+                    } else {
+                        $params[] = array_column($r, $k);
+                        $params[] = $v;
+                    }
+                }
+                $params[] = &$r;
+                /** @noinspection ArgumentUnpackingCanBeUsedInspection */
+                /** @noinspection SpellCheckingInspection */
+                call_user_func_array('array_multisort', $params);
+            }
+
+            if ($this->_offset) {
+                $r = array_slice($r, $this->_offset ?: 0, $this->_limit);
+            }
+        } else {
+            if ($this->_offset) {
+                $count = 0;
                 foreach ($this->_criterias as $criteria) {
-                    $t = $criteria->fetch($asArray);
+                    $c_limit = $this->_limit - count($r);
+                    $c_offset = max(0, $this->_offset - $count);
+                    $t = $criteria->limit($c_limit, $c_offset)->fetch($asArray);
                     $r = $r ? array_merge($r, $t) : $t;
+                    if (count($r) === $this->_limit) {
+                        break;
+                    }
+                    $count += $t ? count($t) + $c_offset : $criteria->count();
+                }
+            } else {
+                if ($this->_limit) {
+                    foreach ($this->_criterias as $criteria) {
+                        $t = $criteria->limit($this->_limit - count($r))->fetch($asArray);
+                        $r = $r ? array_merge($r, $t) : $t;
+                        if (count($r) >= $this->_limit) {
+                            break;
+                        }
+                    }
+                } else {
+                    foreach ($this->_criterias as $criteria) {
+                        $t = $criteria->fetch($asArray);
+                        $r = $r ? array_merge($r, $t) : $t;
+                    }
                 }
             }
         }
