@@ -317,6 +317,13 @@ interface CriteriaInterface
      *
      * @return array
      */
+    public function get($fields = null);
+
+    /**
+     * @param string|array $fields
+     *
+     * @return array
+     */
     public function all($fields = null);
 
     /**

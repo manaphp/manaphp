@@ -317,6 +317,20 @@ abstract class Criteria extends Component implements CriteriaInterface, \Iterato
      *
      * @return array
      */
+    public function get($fields = null)
+    {
+        if (!$r = $this->first($fields)) {
+            throw new NotFoundException('record is not exists');
+        }
+
+        return $r;
+    }
+
+    /**
+     * @param string|array $fields
+     *
+     * @return array
+     */
     public function all($fields = null)
     {
         return $this->select($fields)->fetch(true);

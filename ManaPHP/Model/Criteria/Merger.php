@@ -841,6 +841,20 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      *
      * @return array
      */
+    public function get($fields = null)
+    {
+        if (!$r = $this->first($fields)) {
+            throw new Model\NotFoundException('record is not exists');
+        }
+
+        return $r;
+    }
+
+    /**
+     * @param string|array $fields
+     *
+     * @return array
+     */
     public function all($fields = null)
     {
         return $this->select($fields)->fetch(true);
