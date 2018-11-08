@@ -928,7 +928,7 @@ class Criteria extends \ManaPHP\Model\Criteria
     /**
      * @return array
      */
-    protected function _execute()
+    public function execute()
     {
         /**
          * @var \ManaPHP\MongodbInterface $mongodb
@@ -1047,19 +1047,10 @@ class Criteria extends \ManaPHP\Model\Criteria
         $copy->_offset = null;
         $copy->_order = null;
         $copy->_aggregate['count'] = ['$sum' => 1];
-        $r = $copy->_execute();
+        $r = $copy->execute();
 
         return $r[0]['count'];
     }
-
-    /**
-     * @return array
-     */
-    public function execute()
-    {
-        return $this->_execute();
-    }
-
 
     /**
      * @param int $size
@@ -1111,7 +1102,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function exists()
     {
-        return (bool)$this->select(['_id'])->limit(1)->_execute();
+        return (bool)$this->select(['_id'])->limit(1)->execute();
     }
 
     /**
