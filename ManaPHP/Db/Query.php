@@ -6,6 +6,7 @@ use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Model\NotFoundException;
 
 /**
  * Class ManaPHP\Db\Model\QueryBuilder
@@ -1605,6 +1606,20 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
     {
         $r = $this->select($fields)->limit(1)->fetchAll();
         return $r ? $r[0] : null;
+    }
+
+    /**
+     * @param string|array $fields
+     *
+     * @return array
+     */
+    public function get($fields = null)
+    {
+        if (!$r = $this->first($fields)) {
+            throw new NotFoundException(['record is not exists: :condition', 'condition' => json_encode($this->_bind)]);
+        }
+
+        return $r;
     }
 
     /**
