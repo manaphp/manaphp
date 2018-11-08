@@ -611,34 +611,30 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
             if ($this->_offset) {
                 $r = array_slice($r, $this->_offset ?: 0, $this->_limit);
             }
+        } elseif ($this->_offset) {
+            $count = 0;
+            foreach ($this->_criterias as $criteria) {
+                $c_limit = $this->_limit - count($r);
+                $c_offset = max(0, $this->_offset - $count);
+                $t = $criteria->limit($c_limit, $c_offset)->fetch($asArray);
+                $r = $r ? array_merge($r, $t) : $t;
+                if (count($r) === $this->_limit) {
+                    break;
+                }
+                $count += $t ? count($t) + $c_offset : $criteria->count();
+            }
+        } elseif ($this->_limit) {
+            foreach ($this->_criterias as $criteria) {
+                $t = $criteria->limit($this->_limit - count($r))->fetch($asArray);
+                $r = $r ? array_merge($r, $t) : $t;
+                if (count($r) >= $this->_limit) {
+                    break;
+                }
+            }
         } else {
-            if ($this->_offset) {
-                $count = 0;
-                foreach ($this->_criterias as $criteria) {
-                    $c_limit = $this->_limit - count($r);
-                    $c_offset = max(0, $this->_offset - $count);
-                    $t = $criteria->limit($c_limit, $c_offset)->fetch($asArray);
-                    $r = $r ? array_merge($r, $t) : $t;
-                    if (count($r) === $this->_limit) {
-                        break;
-                    }
-                    $count += $t ? count($t) + $c_offset : $criteria->count();
-                }
-            } else {
-                if ($this->_limit) {
-                    foreach ($this->_criterias as $criteria) {
-                        $t = $criteria->limit($this->_limit - count($r))->fetch($asArray);
-                        $r = $r ? array_merge($r, $t) : $t;
-                        if (count($r) >= $this->_limit) {
-                            break;
-                        }
-                    }
-                } else {
-                    foreach ($this->_criterias as $criteria) {
-                        $t = $criteria->fetch($asArray);
-                        $r = $r ? array_merge($r, $t) : $t;
-                    }
-                }
+            foreach ($this->_criterias as $criteria) {
+                $t = $criteria->fetch($asArray);
+                $r = $r ? array_merge($r, $t) : $t;
             }
         }
 
