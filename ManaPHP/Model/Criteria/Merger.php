@@ -2,6 +2,7 @@
 namespace ManaPHP\Model\Criteria;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model;
 use ManaPHP\Model\Criteria;
@@ -473,14 +474,19 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     public function orderBy($orderBy)
     {
         if (is_string($orderBy)) {
-            if ($this->_order) {
-                $this->_order[] = $orderBy;
-            } else {
-                $this->_order = [$orderBy];
+            $order = [];
+            foreach (explode(',', $orderBy) as $item) {
+                $item = trim($item);
+                if (preg_match('#^([\w\.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
+                    throw new InvalidValueException(['unknown `:order` order by for `:model` model', 'order' => $orderBy, 'model' => get_class($this->getModel())]);
+                }
+                $order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? SORT_ASC : SORT_DESC;
             }
         } else {
-            $this->_order = $this->_order ? array_merge($this->_order, $orderBy) : $orderBy;
+            $order = $orderBy;
         }
+
+        $this->_order = $this->_order ? array_merge($this->_order, $order) : $order;
 
         return $this;
     }
