@@ -486,6 +486,14 @@ interface QueryInterface
 
     /**
      * @param string $field
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function value($field, $default = null);
+
+    /**
+     * @param string $field
      *
      * @return array
      */

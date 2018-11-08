@@ -1609,6 +1609,18 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
 
     /**
      * @param string $field
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function value($field, $default = null)
+    {
+        $r = $this->first([$field]);
+        return isset($r[$field]) ? $r[$field] : $default;
+    }
+
+    /**
+     * @param string $field
      *
      * @return array
      */
