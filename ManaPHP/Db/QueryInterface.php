@@ -478,6 +478,13 @@ interface QueryInterface
     public function fetchAll();
 
     /**
+     * @param string|array $fields
+     *
+     * @return array|null
+     */
+    public function first($fields = null);
+
+    /**
      * @param string $field
      *
      * @return array

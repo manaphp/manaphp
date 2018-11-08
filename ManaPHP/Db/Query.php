@@ -1597,6 +1597,17 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
     }
 
     /**
+     * @param string|array $fields
+     *
+     * @return array|null
+     */
+    public function first($fields = null)
+    {
+        $r = $this->select($fields)->limit(1)->fetchAll();
+        return $r ? $r[0] : null;
+    }
+
+    /**
      * @param string $field
      *
      * @return array
