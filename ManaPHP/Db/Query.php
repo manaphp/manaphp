@@ -1362,7 +1362,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         $copy = clone $this;
 
-        $copy->_fields = 'COUNT(*) as [row_count]';
+        $copy->_fields = "COUNT($field) as [row_count]";
         $copy->_limit = null;
         $copy->_offset = null;
         $copy->_order = null;
