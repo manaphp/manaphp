@@ -150,22 +150,22 @@ class DbQueryTest extends TestCase
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id]>=:c_city_id',
             (new Query())->from('city')->where('c.city_id>=', 1)->getSql());
 
-        $result = (new Query())->from('city')->where('city^=', 'Ab')->fetchAll();
+        $result = (new Query())->from('city')->where('city^=', 'Ab')->all();
         $this->assertCount(2, $result);
 
-        $result = (new Query())->from('city')->where('city$=', 'a')->fetchAll();
+        $result = (new Query())->from('city')->where('city$=', 'a')->all();
         $this->assertCount(125, $result);
 
-        $result = (new Query())->from('city')->where('city*=', 'a')->fetchAll();
+        $result = (new Query())->from('city')->where('city*=', 'a')->all();
         $this->assertCount(450, $result);
 
-        $result = (new Query())->from('city')->where('city_id', [1, 2, 3, 4])->fetchAll();
+        $result = (new Query())->from('city')->where('city_id', [1, 2, 3, 4])->all();
         $this->assertCount(4, $result);
 
-        $result = (new Query())->from('city')->where('city_id~=', [1, 4])->fetchAll();
+        $result = (new Query())->from('city')->where('city_id~=', [1, 4])->all();
         $this->assertCount(4, $result);
 
-        $result = (new Query())->from('city')->where('city_id', [])->fetchAll();
+        $result = (new Query())->from('city')->where('city_id', [])->all();
         $this->assertCount(0, $result);
     }
 
@@ -192,7 +192,7 @@ class DbQueryTest extends TestCase
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) BETWEEN :_min_0 AND :_max_0',
             (new Query())->from('city')->whereBetween('DATE(created_time)', 2000, 2100)->getSql());
 
-        $this->assertCount(20, (new Query)->from('city')->whereBetween('city_id', 1, 20)->fetchAll());
+        $this->assertCount(20, (new Query)->from('city')->whereBetween('city_id', 1, 20)->all());
     }
 
     public function test_whereNotBetween()
@@ -206,7 +206,7 @@ class DbQueryTest extends TestCase
         $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) NOT BETWEEN :_min_0 AND :_max_0',
             (new Query())->from('city')->whereNotBetween('DATE(created_time)', 2000, 2100)->getSql());
 
-        $this->assertCount(580, (new Query)->from('city')->whereNotBetween('city_id', 1, 20)->fetchAll());
+        $this->assertCount(580, (new Query)->from('city')->whereNotBetween('city_id', 1, 20)->all());
     }
 
     public function test_whereIn()

@@ -468,16 +468,6 @@ interface QueryInterface
     public function count($field = '*');
 
     /**
-     * @return array|false
-     */
-    public function fetchOne();
-
-    /**
-     * @return array
-     */
-    public function fetchAll();
-
-    /**
      * @param string|array $fields
      *
      * @return array|null

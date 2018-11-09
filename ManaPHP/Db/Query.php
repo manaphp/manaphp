@@ -144,12 +144,12 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->fetchAll());
+        return new \ArrayIterator($this->all());
     }
 
     public function jsonSerialize()
     {
-        return $this->fetchAll();
+        return $this->all();
     }
 
     /**
@@ -1579,17 +1579,18 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
     }
 
     /**
+     * @deprecated
      * @return array|false
      */
     public function fetchOne()
     {
-        $r = $this->limit(1)->fetchAll();
+        $r = $this->limit(1)->execute();
 
         return $r ? $r[0] : false;
     }
 
     /**
-     *
+     * @deprecated
      * @return array
      */
     public function fetchAll()
@@ -1604,7 +1605,7 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
      */
     public function first($fields = null)
     {
-        $r = $this->select($fields)->limit(1)->fetchAll();
+        $r = $this->select($fields)->limit(1)->execute();
         return $r ? $r[0] : null;
     }
 
@@ -1652,7 +1653,7 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
     public function values($field)
     {
         $values = [];
-        foreach ($this->distinct()->select([$field])->fetchAll() as $v) {
+        foreach ($this->distinct()->select([$field])->all() as $v) {
             $values[] = $v[$field];
         }
 
