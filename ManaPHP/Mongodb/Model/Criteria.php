@@ -315,6 +315,29 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
+     * @param string $type
+     * @param array  $values
+     *
+     * @return array
+     */
+    public function normalizeValues($field, $values)
+    {
+        $fieldTypes = $this->getFieldTypes();
+        $fieldType = $fieldTypes[$field];
+
+        $map = ['integer' => 'intval', 'double' => 'floatval', 'string' => 'strval', 'boolean' => 'boolval'];
+        if (isset($map[$fieldType])) {
+            $values = array_map($map[$fieldType], $values);
+        } else {
+            foreach ($values as $k => $value) {
+                $values[$k] = $this->normalizeValue($field, $value);
+            }
+        }
+
+        return $values;
+    }
+
+    /**
      * Appends a condition to the current conditions using a AND operator
      *
      *<code>
@@ -514,19 +537,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereIn($field, $values)
     {
-        $fieldTypes = $this->getFieldTypes();
-        $fieldType = $fieldTypes[$field];
-
-        $map = ['integer' => 'intval', 'double' => 'floatval', 'string' => 'strval', 'boolean' => 'boolval'];
-        if (isset($map[$fieldType])) {
-            $values = array_map($map[$fieldType], $values);
-        } else {
-            foreach ($values as $k => $value) {
-                $values[$k] = $this->normalizeValue($field, $value);
-            }
-        }
-
-        $this->_filters[] = [$field => ['$in' => $values]];
+        $this->_filters[] = [$field => ['$in' => $this->normalizeValues($field, $values)]];
 
         return $this;
     }
@@ -545,19 +556,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotIn($field, $values)
     {
-        $fieldTypes = $this->getFieldTypes();
-        $fieldType = $fieldTypes[$field];
-
-        $map = ['integer' => 'intval', 'double' => 'floatval', 'string' => 'strval', 'boolean' => 'boolval'];
-        if (isset($map[$fieldType])) {
-            $values = array_map($map[$fieldType], $values);
-        } else {
-            foreach ($values as $k => $value) {
-                $values[$k] = $this->normalizeValue($field, $value);
-            }
-        }
-
-        $this->_filters[] = [$field => ['$nin' => $values]];
+        $this->_filters[] = [$field => ['$nin' => $this->normalizeValues($field, $values)]];
 
         return $this;
     }
