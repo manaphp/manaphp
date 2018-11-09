@@ -407,12 +407,10 @@ class Criteria extends \ManaPHP\Model\Criteria
             } elseif (!$value || isset($value[0])) {
                 if (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
+                } elseif (in_array(null, $value, true)) {
+                    $this->_filters[] = [$filter => ['$in' => $value]];
                 } else {
-                    if (in_array(null, $value, true)) {
-                        $this->_filters[] = [$filter => ['$in' => $value]];
-                    } else {
-                        $this->whereIn(rtrim($filter, '='), $value);
-                    }
+                    $this->whereIn(rtrim($filter, '='), $value);
                 }
             } else {
                 $this->_filters[] = [$filter => $value];
