@@ -1,7 +1,7 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Authentication\Password;
+use ManaPHP\Password;
 use PHPUnit\Framework\TestCase;
 
 class AuthenticationPasswordTest extends TestCase
