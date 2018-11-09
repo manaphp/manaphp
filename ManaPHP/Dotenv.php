@@ -184,7 +184,7 @@ class Dotenv extends Component implements DotenvInterface
                     foreach ((array)$matches[1] as $match) {
                         $ref_name = $match;
                         if (!isset($data[$ref_name])) {
-                            throw new InvalidValueException('`:ref` ref variable is not exists: :value', ['ref' => $ref_name, 'value' => $value]);
+                            throw new InvalidValueException(['`:ref` ref variable is not exists: :value', 'ref' => $ref_name, 'value' => $value]);
                         }
                         $value = strtr($value, ['$' . $ref_name => $data[$ref_name]]);
                     }
