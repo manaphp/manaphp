@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Db;
 
-interface QueryInterface
+interface QueryInterface extends \ManaPHP\QueryInterface
 {
     /**
      * Sets SELECT DISTINCT / SELECT ALL flag
