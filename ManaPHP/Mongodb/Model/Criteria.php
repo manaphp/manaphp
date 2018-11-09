@@ -294,6 +294,14 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
+     * @return array
+     */
+    public function getFieldTypes()
+    {
+        return $this->_model->getFieldTypes();
+    }
+
+    /**
      * @param string $type
      * @param mixed  $value
      *
@@ -371,7 +379,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             list(, $field, $operator) = $matches;
 
             if ($operator === '' || $operator === '=') {
-                $fieldTypes = $this->_model->getFieldTypes();
+                $fieldTypes = $this->getFieldTypes();
                 $this->_filters[] = [$field => $this->normalizeValue($fieldTypes[$field], $value)];
             } elseif ($operator === '~=') {
                 $field = substr($filter, 0, -2);
@@ -406,7 +414,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 if (!isset($operator_map[$operator])) {
                     throw new InvalidValueException(['unknown `:where` where filter', 'where' => $filter]);
                 }
-                $fieldTypes = $this->_model->getFieldTypes();
+                $fieldTypes = $this->getFieldTypes();
                 $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($fieldTypes[$field], $value)]];
             }
         } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
@@ -451,7 +459,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             return $min === null || $min === '' ? $this : $this->where($field . '>=', $min);
         }
 
-        $fieldTypes = $this->_model->getFieldTypes();
+        $fieldTypes = $this->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
@@ -485,7 +493,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             return $min === null || $min === '' ? $this : $this->where($field . '<', $min);
         }
 
-        $fieldTypes = $this->_model->getFieldTypes();
+        $fieldTypes = $this->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
@@ -512,7 +520,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereIn($field, $values)
     {
-        $fieldTypes = $this->_model->getFieldTypes();
+        $fieldTypes = $this->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
         $map = ['integer' => 'intval', 'double' => 'floatval', 'string' => 'strval', 'boolean' => 'boolval'];
@@ -543,7 +551,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function whereNotIn($field, $values)
     {
-        $fieldTypes = $this->_model->getFieldTypes();
+        $fieldTypes = $this->getFieldTypes();
         $fieldType = $fieldTypes[$field];
 
         $map = ['integer' => 'intval', 'double' => 'floatval', 'string' => 'strval', 'boolean' => 'boolval'];
