@@ -1081,12 +1081,10 @@ class Criteria extends \ManaPHP\Model\Criteria
 
         if ($this->_limit === null) {
             $count = count($items);
+        } elseif (count($items) % $this->_limit === 0) {
+            $count = $this->count();
         } else {
-            if (count($items) % $this->_limit === 0) {
-                $count = $this->count();
-            } else {
-                $count = $this->_offset + count($items);
-            }
+            $count = $this->_offset + count($items);
         }
 
         $paginator = $this->paginator;
