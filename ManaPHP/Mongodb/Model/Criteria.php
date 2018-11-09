@@ -89,7 +89,15 @@ class Criteria extends \ManaPHP\Model\Criteria
     {
         return $this->_model->getSource($this);
     }
-    
+
+    /**
+     * @return \ManaPHP\MongodbInterface
+     */
+    public function getDb()
+    {
+        return $this->_di->getShared($this->_model->getDb());
+    }
+
     /**
      * Sets SELECT DISTINCT / SELECT ALL flag
      *
@@ -109,10 +117,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $collection = $source;
         }
 
-        /**
-         * @var \ManaPHP\MongodbInterface $mongodb
-         */
-        $mongodb = $this->_di->getShared($this->_model->getDb());
+        $mongodb = $this->getDb();
 
         $cmd = ['distinct' => $collection, 'key' => $field];
         if ($this->_filters) {
@@ -944,10 +949,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function execute()
     {
-        /**
-         * @var \ManaPHP\MongodbInterface $mongodb
-         */
-        $mongodb = $this->_di->getShared($this->_model->getDb());
+        $mongodb = $this->getDb();
         if (!$this->_aggregate) {
             $options = [];
 
@@ -1135,7 +1137,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $filters[$key] = $value;
         }
 
-        return $this->_di->getShared($this->_model->getDb($this))->delete($this->getSource(), $filters);
+        return $this->getDb()->delete($this->getSource(), $filters);
     }
 
     /**
@@ -1176,6 +1178,6 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
         }
 
-        return $this->_di->getShared($this->_model->getDb($this))->update($this->getSource(), $filters, $fieldValues);
+        return $this->getDb()->update($this->getSource(), $filters, $fieldValues);
     }
 }
