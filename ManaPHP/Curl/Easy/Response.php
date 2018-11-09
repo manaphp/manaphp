@@ -52,7 +52,7 @@ class Response
     {
         $headers = [];
         foreach ($this->headers as $i => $header) {
-            if ($i === 0) {
+            if ($i === 0 || $header === '') {
                 continue;
             }
 
