@@ -314,7 +314,7 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param string $type
+     * @param string $field
      * @param mixed  $value
      *
      * @return bool|float|int|string|array|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
@@ -329,7 +329,7 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @param string $type
+     * @param string $field
      * @param array  $values
      *
      * @return array
