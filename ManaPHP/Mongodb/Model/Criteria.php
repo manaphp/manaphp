@@ -307,9 +307,11 @@ class Criteria extends \ManaPHP\Model\Criteria
      *
      * @return bool|float|int|string|array|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
      */
-    public function normalizeValue($type, $value)
+    public function normalizeValue($field, $value)
     {
-        return $this->_model->normalizeValue($type, $value);
+        $fieldTypes = $this->getFieldTypes();
+
+        return $this->_model->normalizeValue($fieldTypes[$field], $value);
     }
 
     /**
@@ -379,8 +381,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             list(, $field, $operator) = $matches;
 
             if ($operator === '' || $operator === '=') {
-                $fieldTypes = $this->getFieldTypes();
-                $this->_filters[] = [$field => $this->normalizeValue($fieldTypes[$field], $value)];
+                $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
             } elseif ($operator === '~=') {
                 $field = substr($filter, 0, -2);
                 if (!$this->_model->hasField($field)) {
@@ -414,8 +415,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 if (!isset($operator_map[$operator])) {
                     throw new InvalidValueException(['unknown `:where` where filter', 'where' => $filter]);
                 }
-                $fieldTypes = $this->getFieldTypes();
-                $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($fieldTypes[$field], $value)]];
+                $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($field, $value)]];
             }
         } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
             $this->_filters[] = [$matches[1] => ['$mod' => [(int)$matches[2], (int)$value]]];
@@ -459,13 +459,10 @@ class Criteria extends \ManaPHP\Model\Criteria
             return $min === null || $min === '' ? $this : $this->where($field . '>=', $min);
         }
 
-        $fieldTypes = $this->getFieldTypes();
-        $fieldType = $fieldTypes[$field];
-
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $min = $this->normalizeValue($fieldType, $min);
+        $min = $this->normalizeValue($field, $min);
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $max = $this->normalizeValue($fieldType, $max);
+        $max = $this->normalizeValue($field, $max);
 
         $this->_filters[] = [$field => ['$gte' => $min, '$lte' => $max]];
 
@@ -493,13 +490,10 @@ class Criteria extends \ManaPHP\Model\Criteria
             return $min === null || $min === '' ? $this : $this->where($field . '<', $min);
         }
 
-        $fieldTypes = $this->getFieldTypes();
-        $fieldType = $fieldTypes[$field];
-
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $min = $this->normalizeValue($fieldType, $min);
+        $min = $this->normalizeValue($field, $min);
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $max = $this->normalizeValue($fieldType, $max);
+        $max = $this->normalizeValue($field, $max);
 
         $this->_filters[] = ['$or' => [[$field => ['$lt' => $min]], [$field => ['$gt' => $max]]]];
 
@@ -528,7 +522,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $values = array_map($map[$fieldType], $values);
         } else {
             foreach ($values as $k => $value) {
-                $values[$k] = $this->normalizeValue($fieldType, $value);
+                $values[$k] = $this->normalizeValue($field, $value);
             }
         }
 
@@ -559,7 +553,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $values = array_map($map[$fieldType], $values);
         } else {
             foreach ($values as $k => $value) {
-                $values[$k] = $this->normalizeValue($fieldType, $value);
+                $values[$k] = $this->normalizeValue($field, $value);
             }
         }
 
