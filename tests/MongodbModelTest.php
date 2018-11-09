@@ -148,11 +148,8 @@ class MongodbModelTest extends TestCase
 
     public function test_values()
     {
-        $cities = City::values('city', [], ['size' => 10]);
-        $this->assertCount(10, $cities);
-
-        $cities = City::values('city', [], ['size' => 10, 'page' => 100000]);
-        $this->assertCount(0, $cities);
+        $cities = City::values('city', []);
+        $this->assertCount(599, $cities);
     }
 
     public function test_all_usage()
