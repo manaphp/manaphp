@@ -24,6 +24,11 @@ class Criteria extends \ManaPHP\Model\Criteria
     /**
      * @var array
      */
+    protected $_types;
+
+    /**
+     * @var array
+     */
     protected $_projection;
 
     /**
@@ -80,6 +85,8 @@ class Criteria extends \ManaPHP\Model\Criteria
         if ($fields !== null) {
             $this->select($fields);
         }
+
+        $this->_types = $this->_model->getFieldTypes();
     }
 
     /**
@@ -307,14 +314,6 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * @return array
-     */
-    public function getFieldTypes()
-    {
-        return $this->_model->getFieldTypes();
-    }
-
-    /**
      * @param string $type
      * @param mixed  $value
      *
@@ -322,9 +321,11 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function normalizeValue($field, $value)
     {
-        $fieldTypes = $this->getFieldTypes();
+        if (!$this->_types) {
+            return $value;
+        }
 
-        return $this->_model->normalizeValue($fieldTypes[$field], $value);
+        return $this->_model->normalizeValue($this->_types[$field], $value);
     }
 
     /**
@@ -335,12 +336,15 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function normalizeValues($field, $values)
     {
-        $fieldTypes = $this->getFieldTypes();
-        $fieldType = $fieldTypes[$field];
+        if (!$this->_types) {
+            return $values;
+        }
+
+        $type = $this->_types[$field];
 
         $map = ['integer' => 'intval', 'double' => 'floatval', 'string' => 'strval', 'boolean' => 'boolval'];
-        if (isset($map[$fieldType])) {
-            $values = array_map($map[$fieldType], $values);
+        if (isset($map[$type])) {
+            $values = array_map($map[$type], $values);
         } else {
             foreach ($values as $k => $value) {
                 $values[$k] = $this->normalizeValue($field, $value);
@@ -420,7 +424,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
             } elseif ($operator === '~=') {
                 $field = substr($filter, 0, -2);
-                if (!$this->_model->hasField($field)) {
+                if ($this->_types && !isset($this->_types[$field])) {
                     throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
                         'field' => $field,
                         'collection' => $this->getSource()
