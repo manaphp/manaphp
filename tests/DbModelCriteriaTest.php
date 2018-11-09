@@ -61,7 +61,7 @@ class DbModelCriteriaTest extends TestCase
 
     public function test_whereIn()
     {
-        $this->assertEquals('SELECT * FROM [city] WHERE 1=2',
+        $this->assertEquals('SELECT * FROM [city] WHERE FALSE',
             City::criteria()->whereIn('city_id', [])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (1)',
