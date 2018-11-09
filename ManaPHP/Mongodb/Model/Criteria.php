@@ -3,11 +3,11 @@ namespace ManaPHP\Mongodb\Model;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\ExpressionInterface;
-use ManaPHP\Mongodb\Model\Criteria\Exception as CriteriaException;
 use MongoDB\BSON\Regex;
 
 /**
@@ -111,7 +111,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param string $field
      *
      * @return array
-     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
     public function values($field)
     {
@@ -141,10 +140,9 @@ class Criteria extends \ManaPHP\Model\Criteria
             $cmd['query'] = $filters;
         }
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $r = $mongodb->command($cmd, $db)[0];
         if (!$r['ok']) {
-            throw new CriteriaException([
+            throw new InvalidFormatException([
                 '`:distinct` distinct for `:collection` collection failed `:code`: `:msg`',
                 'distinct' => $field,
                 'code' => $r['code'],
