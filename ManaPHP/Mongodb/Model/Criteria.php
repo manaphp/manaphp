@@ -226,7 +226,6 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param array $expr
      *
      * @return array
-     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
     public function aggregate($expr)
     {
