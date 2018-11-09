@@ -494,12 +494,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             return $min === null || $min === '' ? $this : $this->where($field . '>=', $min);
         }
 
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $min = $this->normalizeValue($field, $min);
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $max = $this->normalizeValue($field, $max);
-
-        $this->_filters[] = [$field => ['$gte' => $min, '$lte' => $max]];
+        $this->_filters[] = [$field => ['$gte' => $this->normalizeValue($field, $min), '$lte' => $this->normalizeValue($field, $max)]];
 
         return $this;
     }
@@ -525,12 +520,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             return $min === null || $min === '' ? $this : $this->where($field . '<', $min);
         }
 
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $min = $this->normalizeValue($field, $min);
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $max = $this->normalizeValue($field, $max);
-
-        $this->_filters[] = ['$or' => [[$field => ['$lt' => $min]], [$field => ['$gt' => $max]]]];
+        $this->_filters[] = [$field => ['$not' => ['$gte' => $this->normalizeValue($field, $min), '$lte' => $this->normalizeValue($field, $max)]]];
 
         return $this;
     }
