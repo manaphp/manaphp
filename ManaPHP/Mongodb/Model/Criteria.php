@@ -231,7 +231,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             }
 
             if (preg_match('#^(\w+)\((.*)\)$#', $v, $match) !== 1) {
-                throw new CriteriaException(['`:aggregate` aggregate is invalid.', 'aggregate' => $v]);
+                throw new MisuseException(['`:aggregate` aggregate is invalid.', 'aggregate' => $v]);
             }
 
             $accumulator = strtolower($match[1]);
@@ -279,10 +279,10 @@ class Criteria extends \ManaPHP\Model\Criteria
                 } elseif ($cond = $this->_compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$' . $accumulator => $this->_compileCondExpression($operand)];
                 } else {
-                    throw new CriteriaException(['unknown `:operand` operand of `:aggregate` aggregate', 'operand' => $operand, 'aggregate' => $v]);
+                    throw new MisuseException(['unknown `:operand` operand of `:aggregate` aggregate', 'operand' => $operand, 'aggregate' => $v]);
                 }
             } else {
-                throw new CriteriaException([
+                throw new MisuseException([
                     'unknown `:accumulator` accumulator of `:aggregate` aggregate',
                     'accumulator' => $accumulator,
                     'aggregate' => $v
@@ -820,14 +820,13 @@ class Criteria extends \ManaPHP\Model\Criteria
      * @param string|array $orderBy
      *
      * @return static
-     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
     public function orderBy($orderBy)
     {
         if (is_string($orderBy)) {
             foreach (explode(',', $orderBy) as $item) {
                 if (preg_match('#^\s*([\w\.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
-                    throw new CriteriaException(['unknown `:order` order by for `:model` model', 'order' => $orderBy, 'model' => get_class($this->_model)]);
+                    throw new MisuseException(['unknown `:order` order by for `:model` model', 'order' => $orderBy, 'model' => get_class($this->_model)]);
                 }
                 $this->_order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? 1 : -1;
             }
@@ -869,14 +868,9 @@ class Criteria extends \ManaPHP\Model\Criteria
     /**
      * Sets a GROUP BY clause
      *
-     *<code>
-     *    $builder->groupBy(array('Robots.name'));
-     *</code>
-     *
      * @param string|array $groupBy
      *
      * @return static
-     * @throws \ManaPHP\Mongodb\Model\Criteria\Exception
      */
     public function groupBy($groupBy)
     {
@@ -888,12 +882,12 @@ class Criteria extends \ManaPHP\Model\Criteria
                         $parts = explode(',', $match[2]);
 
                         if ($parts[1] === '0') {
-                            throw new CriteriaException(['`:group` substr index is 1-based', 'group' => $groupBy]);
+                            throw new MisuseException(['`:group` substr index is 1-based', 'group' => $groupBy]);
                         }
                         $this->_group[$parts[0]] = ['$substr' => ['$' . $parts[0], $parts[1] - 1, (int)$parts[2]]];
                     }
                 } else {
-                    throw new CriteriaException(['`:group` group is not supported. ', 'group' => $groupBy]);
+                    throw new MisuseException(['`:group` group is not supported. ', 'group' => $groupBy]);
                 }
             } else {
                 foreach (explode(',', str_replace(' ', '', $groupBy)) as $field) {
