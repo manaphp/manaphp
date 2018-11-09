@@ -31,23 +31,23 @@ class MongodbModelTest extends TestCase
     public function test_getConsistentValue()
     {
         $dt = new DataType();
-        $this->assertSame('manaphp', $dt->getNormalizedValue('string', 'manaphp'));
-        $this->assertSame('123', $dt->getNormalizedValue('string', 123));
+        $this->assertSame('manaphp', $dt->normalizeValue('string', 'manaphp'));
+        $this->assertSame('123', $dt->normalizeValue('string', 123));
 
-        $this->assertSame(123, $dt->getNormalizedValue('integer', 123));
-        $this->assertSame(123, $dt->getNormalizedValue('integer', '123'));
+        $this->assertSame(123, $dt->normalizeValue('integer', 123));
+        $this->assertSame(123, $dt->normalizeValue('integer', '123'));
 
-        $this->assertSame(1.23, $dt->getNormalizedValue('double', 1.23));
-        $this->assertSame(1.23, $dt->getNormalizedValue('double', '1.23'));
+        $this->assertSame(1.23, $dt->normalizeValue('double', 1.23));
+        $this->assertSame(1.23, $dt->normalizeValue('double', '1.23'));
 
         $objectId = new ObjectID();
-        $this->assertEquals($objectId, $dt->getNormalizedValue('objectid', $objectId));
+        $this->assertEquals($objectId, $dt->normalizeValue('objectid', $objectId));
 
-        $this->assertEquals(new ObjectID('123456789012345678901234'), $dt->getNormalizedValue('objectid', '123456789012345678901234'));
+        $this->assertEquals(new ObjectID('123456789012345678901234'), $dt->normalizeValue('objectid', '123456789012345678901234'));
 
-        $this->assertTrue($dt->getNormalizedValue('boolean', true));
-        $this->assertTrue($dt->getNormalizedValue('boolean', 1));
-        $this->assertFalse($dt->getNormalizedValue('boolean', 0));
+        $this->assertTrue($dt->normalizeValue('boolean', true));
+        $this->assertTrue($dt->normalizeValue('boolean', 1));
+        $this->assertFalse($dt->normalizeValue('boolean', 0));
     }
 
     public function test_count()

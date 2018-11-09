@@ -361,7 +361,7 @@ class Criteria extends \ManaPHP\Model\Criteria
 
             if ($operator === '' || $operator === '=') {
                 $fieldTypes = $this->_model->getFieldTypes();
-                $this->_filters[] = [$field => $this->_model->getNormalizedValue($fieldTypes[$field], $value)];
+                $this->_filters[] = [$field => $this->_model->normalizeValue($fieldTypes[$field], $value)];
             } elseif ($operator === '~=') {
                 $field = substr($filter, 0, -2);
                 if (!$this->_model->hasField($field)) {
@@ -396,7 +396,7 @@ class Criteria extends \ManaPHP\Model\Criteria
                     throw new InvalidValueException(['unknown `:where` where filter', 'where' => $filter]);
                 }
                 $fieldTypes = $this->_model->getFieldTypes();
-                $this->_filters[] = [$field => [$operator_map[$operator] => $this->_model->getNormalizedValue($fieldTypes[$field], $value)]];
+                $this->_filters[] = [$field => [$operator_map[$operator] => $this->_model->normalizeValue($fieldTypes[$field], $value)]];
             }
         } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
             $this->_filters[] = [$matches[1] => ['$mod' => [(int)$matches[2], (int)$value]]];
@@ -444,9 +444,9 @@ class Criteria extends \ManaPHP\Model\Criteria
         $fieldType = $fieldTypes[$field];
 
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $min = $this->_model->getNormalizedValue($fieldType, $min);
+        $min = $this->_model->normalizeValue($fieldType, $min);
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $max = $this->_model->getNormalizedValue($fieldType, $max);
+        $max = $this->_model->normalizeValue($fieldType, $max);
 
         $this->_filters[] = [$field => ['$gte' => $min, '$lte' => $max]];
 
@@ -478,9 +478,9 @@ class Criteria extends \ManaPHP\Model\Criteria
         $fieldType = $fieldTypes[$field];
 
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $min = $this->_model->getNormalizedValue($fieldType, $min);
+        $min = $this->_model->normalizeValue($fieldType, $min);
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $max = $this->_model->getNormalizedValue($fieldType, $max);
+        $max = $this->_model->normalizeValue($fieldType, $max);
 
         $this->_filters[] = ['$or' => [[$field => ['$lt' => $min]], [$field => ['$gt' => $max]]]];
 
@@ -509,7 +509,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $values = array_map($map[$fieldType], $values);
         } else {
             foreach ($values as $k => $value) {
-                $values[$k] = $this->_model->getNormalizedValue($fieldType, $value);
+                $values[$k] = $this->_model->normalizeValue($fieldType, $value);
             }
         }
 
@@ -540,7 +540,7 @@ class Criteria extends \ManaPHP\Model\Criteria
             $values = array_map($map[$fieldType], $values);
         } else {
             foreach ($values as $k => $value) {
-                $values[$k] = $this->_model->getNormalizedValue($fieldType, $value);
+                $values[$k] = $this->_model->normalizeValue($fieldType, $value);
             }
         }
 

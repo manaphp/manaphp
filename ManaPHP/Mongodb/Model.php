@@ -287,7 +287,7 @@ class Model extends \ManaPHP\Model
      *
      * @return bool|float|int|string|array|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
      */
-    public function getNormalizedValue($type, $value)
+    public function normalizeValue($type, $value)
     {
         if ($value === null) {
             return null;
@@ -361,10 +361,10 @@ class Model extends \ManaPHP\Model
 
             if ($this->$field !== null) {
                 if (is_scalar($this->$field)) {
-                    $this->$field = $this->getNormalizedValue($type, $this->$field);
+                    $this->$field = $this->normalizeValue($type, $this->$field);
                 }
             } else {
-                $this->$field = $allowNull ? null : $this->getNormalizedValue($type, '');
+                $this->$field = $allowNull ? null : $this->normalizeValue($type, '');
             }
         }
 
@@ -425,12 +425,12 @@ class Model extends \ManaPHP\Model
             } else {
                 if (!isset($snapshot[$field])) {
                     if (is_scalar($this->$field)) {
-                        $this->$field = $this->getNormalizedValue($fieldTypes[$field], $this->$field);
+                        $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
                     }
                     $changedFields[] = $field;
                 } elseif ($snapshot[$field] !== $this->$field) {
                     if (is_scalar($this->$field)) {
-                        $this->$field = $this->getNormalizedValue($fieldTypes[$field], $this->$field);
+                        $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
                     }
 
                     /** @noinspection NotOptimalIfConditionsInspection */
@@ -543,9 +543,9 @@ class Model extends \ManaPHP\Model
             }
             foreach ((array)$fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
-                    $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
+                    $document[$field] = $instance->normalizeValue($type, $document[$field]);
                 } elseif ($field !== '_id') {
-                    $document[$field] = $allowNull ? null : $instance->getNormalizedValue($type, '');
+                    $document[$field] = $allowNull ? null : $instance->normalizeValue($type, '');
                 }
             }
             $documents[$i] = $document;
@@ -572,9 +572,9 @@ class Model extends \ManaPHP\Model
             }
             foreach ((array)$document as $field => $value) {
                 if ($value === null) {
-                    $document[$field] = $allowNull ? null : $instance->getNormalizedValue($fieldTypes[$field], '');
+                    $document[$field] = $allowNull ? null : $instance->normalizeValue($fieldTypes[$field], '');
                 } else {
-                    $document[$field] = $instance->getNormalizedValue($fieldTypes[$field], $value);
+                    $document[$field] = $instance->normalizeValue($fieldTypes[$field], $value);
                 }
             }
         }
@@ -604,9 +604,9 @@ class Model extends \ManaPHP\Model
             }
             foreach ((array)$fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
-                    $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
+                    $document[$field] = $instance->normalizeValue($type, $document[$field]);
                 } elseif ($field !== '_id') {
-                    $document[$field] = $allowNull ? null : $instance->getNormalizedValue($type, '');
+                    $document[$field] = $allowNull ? null : $instance->normalizeValue($type, '');
                 }
             }
             $documents[$i] = $document;
@@ -638,9 +638,9 @@ class Model extends \ManaPHP\Model
 
         foreach ((array)$fieldTypes as $field => $type) {
             if (isset($document[$field])) {
-                $document[$field] = $instance->getNormalizedValue($type, $document[$field]);
+                $document[$field] = $instance->normalizeValue($type, $document[$field]);
             } elseif ($field !== '_id') {
-                $document[$field] = $allowNull ? null : $instance->getNormalizedValue($type, '');
+                $document[$field] = $allowNull ? null : $instance->normalizeValue($type, '');
             }
         }
         return $instance->getConnection($document)->insert($instance->getSource($document), $document, $instance->getPrimaryKey(), $skipIfExists);
