@@ -1043,7 +1043,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         $copy->_aggregate['count'] = ['$sum' => 1];
         $r = $copy->execute();
 
-        return $r[0]['count'];
+        return $r ? $r[0]['count'] : 0;
     }
 
     /**
