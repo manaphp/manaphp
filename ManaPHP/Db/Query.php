@@ -1497,12 +1497,8 @@ class Query extends Component implements QueryInterface, \IteratorAggregate
     {
         $this->page($size, $page);
 
-        $this->_hiddenParamNumber = 0;
-
-        $this->_sql = $this->_buildSql();
-
         /** @noinspection SuspiciousAssignmentsInspection */
-        $items = $this->_db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
+        $items = $this->all();
 
         if ($this->_limit === null) {
             $count = count($items);
