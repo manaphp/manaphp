@@ -214,11 +214,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_model = $this->_di->getShared($table);
             }
 
-            if ($alias) {
-                $this->_tables = [$alias => $table];
-            } else {
-                $this->_tables = [$table];
-            }
+            $this->_tables = $alias ? [$alias => $table] : [$table];
 
             if ($table instanceof self) {
                 $this->_db = $table->_db;
@@ -1346,7 +1342,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     {
         return $this->_tables;
     }
-    
+
     /**
      *
      * @return array
