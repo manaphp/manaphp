@@ -21,10 +21,8 @@ class Cookie extends Component implements EngineInterface
     {
         if (is_string($options)) {
             $this->_key = $options;
-        } else {
-            if (isset($options['key'])) {
-                $this->_key = $options['key'];
-            }
+        } elseif (isset($options['key'])) {
+            $this->_key = $options['key'];
         }
     }
 
