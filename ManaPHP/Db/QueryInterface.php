@@ -5,15 +5,6 @@ namespace ManaPHP\Db;
 interface QueryInterface extends \ManaPHP\QueryInterface
 {
     /**
-     * Sets SELECT DISTINCT / SELECT ALL flag
-     *
-     * @param bool $distinct
-     *
-     * @return static
-     */
-    public function distinct($distinct = true);
-
-    /**
      * Adds a join to the query
      *
      *<code>

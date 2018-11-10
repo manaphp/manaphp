@@ -64,11 +64,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     protected $_bind = [];
 
     /**
-     * @var bool
-     */
-    protected $_distinct;
-
-    /**
      * @var int
      */
     protected $_hiddenParamNumber = 0;
@@ -130,20 +125,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function setDb($db)
     {
         $this->_db = $db;
-
-        return $this;
-    }
-
-    /**
-     * Sets SELECT DISTINCT / SELECT ALL flag
-     *
-     * @param bool $distinct
-     *
-     * @return static
-     */
-    public function distinct($distinct = true)
-    {
-        $this->_distinct = $distinct;
 
         return $this;
     }

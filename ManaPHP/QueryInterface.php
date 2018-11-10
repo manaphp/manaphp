@@ -31,6 +31,15 @@ interface QueryInterface
     public function select($fields);
 
     /**
+     * Sets SELECT DISTINCT / SELECT ALL flag
+     *
+     * @param bool $distinct
+     *
+     * @return static
+     */
+    public function distinct($distinct = true);
+
+    /**
      * Appends a condition to the current conditions using a AND operator
      *
      *<code>
@@ -259,6 +268,20 @@ interface QueryInterface
     public function groupBy($groupBy);
 
     /**
+     * @param array $options
+     *
+     * @return static
+     */
+    public function options($options);
+
+    /**
+     * @param string|array $with
+     *
+     * @return static
+     */
+    public function with($with);
+
+    /**
      * Sets a LIMIT clause, optionally a offset clause
      *
      *<code>
@@ -309,6 +332,20 @@ interface QueryInterface
     public function paginate($size = null, $page = null);
 
     /**
+     * @param bool $multiple
+     *
+     * @return static
+     */
+    public function setFetchType($multiple);
+
+    /**
+     * @param bool $asArray
+     *
+     * @return \ManaPHP\Model[]|\ManaPHP\Model|array
+     */
+    public function fetch($asArray = false);
+
+    /**
      * @param string|array $fields
      *
      * @return array|null
@@ -355,6 +392,34 @@ interface QueryInterface
      * @return int
      */
     public function count($field = '*');
+
+    /**
+     * @param string $field
+     *
+     * @return int|float|null
+     */
+    public function sum($field);
+
+    /**
+     * @param string $field
+     *
+     * @return int|float|null
+     */
+    public function max($field);
+
+    /**
+     * @param string $field
+     *
+     * @return int|float|null
+     */
+    public function min($field);
+
+    /**
+     * @param string $field
+     *
+     * @return double|null
+     */
+    public function avg($field);
 
     /**
      * @return int
