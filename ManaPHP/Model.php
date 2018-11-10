@@ -68,14 +68,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                 if (isset($data[$field]) && is_string($data[$field])) {
                     if ($data[$field] === '') {
                         $data[$field] = [];
+                    } elseif (($json = json_decode($data[$field], true)) === null) {
+                        throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
+                            'field' => $field,
+                            'model' => get_class($this)]);
                     } else {
-                        if (($json = json_decode($data[$field], true)) === null) {
-                            throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
-                                'field' => $field,
-                                'model' => get_class($this)]);
-                        } else {
-                            $data[$field] = $json;
-                        }
+                        $data[$field] = $json;
                     }
                 }
             }
@@ -262,10 +260,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $query = static::query(null, $model)->where($filters);
 
         $list = [];
-        if ($field === null) {
-            if (!$field = $model->getDisplayField()) {
-                throw new PreconditionException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
-            }
+        if ($field === null && !$field = $model->getDisplayField()) {
+            throw new PreconditionException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
         }
 
         if (is_string($field)) {
@@ -342,7 +338,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         if (!$ttl) {
             if (!$rs = static::query(null, $model)->select($fields)->where($pkName, $id)->limit(1)->fetch()) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             } else {
                 return $rs[0];
@@ -374,7 +369,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         if (!$r) {
             if (!$rs = static::query(null, $model)->select($fields)->where($pkName, $id)->limit(1)->fetch()) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             }
 
@@ -453,8 +447,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $exception->model = static::class;
             $exception->filters = $filters;
 
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection PhpUnhandledExceptionInspection */
             throw $exception;
         }
 
@@ -568,7 +560,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         $value = static::value($filters, $field, $ttl);
         if ($value === null) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new NotFoundException(['valueOrFail: `:model` model with `:query` query record is not exists',
                 'model' => get_called_class(),
                 'query' => json_encode($filters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
@@ -600,10 +591,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     public static function kvalues($field = null, $filters = null)
     {
         $model = new static();
-        if ($field === null) {
-            if (!$field = $model->getDisplayField()) {
-                throw new PreconditionException(['invoke :model:kvalues method must provide displayField', 'model' => get_called_class()]);
-            }
+        if ($field === null && !$field = $model->getDisplayField()) {
+            throw new PreconditionException(['invoke :model:kvalues method must provide displayField', 'model' => get_called_class()]);
         }
 
         $pkField = $model->getPrimaryKey();
@@ -1151,10 +1140,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable
                 if ($this->{$field} !== $this->_snapshot[$field]) {
                     $changed[] = $field;
                 }
-            } else {
-                if ($this->$field !== null) {
-                    $changed[] = $field;
-                }
+            } elseif ($this->$field !== null) {
+                $changed[] = $field;
             }
         }
 
@@ -1202,7 +1189,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         $r = static::query(null, $this)->select($fields)->where($this->getPrimaryKeyValuePairs())->fetch(true);
         if (!$r) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), json_encode($this->getPrimaryKeyValuePairs())]);
         }
 
@@ -1211,14 +1197,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             if (isset($data[$field]) && is_string($data[$field])) {
                 if ($data[$field] === '') {
                     $data[$field] = [];
+                } elseif (($json = json_decode($data[$field], true)) === null) {
+                    throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
+                        'field' => $field,
+                        'model' => get_class($this)]);
                 } else {
-                    if (($json = json_decode($data[$field], true)) === null) {
-                        throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
-                            'field' => $field,
-                            'model' => get_class($this)]);
-                    } else {
-                        $data[$field] = $json;
-                    }
+                    $data[$field] = $json;
                 }
             }
         }
