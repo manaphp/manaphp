@@ -127,24 +127,22 @@ abstract class Db extends Component implements DbInterface
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
-        } else {
-            if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0) {
+        } elseif ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0) {
+            try {
+                @$this->_pdo->query($this->_pingSql)->fetchAll();
+            } catch (\Exception $exception) {
                 try {
-                    @$this->_pdo->query($this->_pingSql)->fetchAll();
-                } catch (\Exception $exception) {
-                    try {
-                        $this->close();
+                    $this->close();
 
-                        $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
-                        $pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
-                        $this->fireEvent('db:afterConnect');
-                        $this->_pdo = $pdo;
-                    } catch (\Exception $e) {
-                        /** @noinspection PhpUnhandledExceptionInspection */
-                        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                        throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(),
-                            $e);
-                    }
+                    $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
+                    $pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+                    $this->fireEvent('db:afterConnect');
+                    $this->_pdo = $pdo;
+                } catch (\Exception $e) {
+                    /** @noinspection PhpUnhandledExceptionInspection */
+                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+                    throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(),
+                        $e);
                 }
             }
         }
@@ -571,16 +569,14 @@ abstract class Db extends Component implements DbInterface
         foreach ($fieldValues as $k => $v) {
             if (is_int($k)) {
                 $setFields[] = $v;
+            } elseif ($v instanceof AssignmentInterface) {
+                $v->setFieldName($k);
+                $setFields[] = $v->getSql();
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $bind = array_merge($bind, $v->getBind());
             } else {
-                if ($v instanceof AssignmentInterface) {
-                    $v->setFieldName($k);
-                    $setFields[] = $v->getSql();
-                    /** @noinspection SlowArrayOperationsInLoopInspection */
-                    $bind = array_merge($bind, $v->getBind());
-                } else {
-                    $setFields[] = "[$k]=:$k";
-                    $bind[$k] = $v;
-                }
+                $setFields[] = "[$k]=:$k";
+                $bind[$k] = $v;
             }
         }
 
