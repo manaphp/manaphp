@@ -267,12 +267,10 @@ class View extends Component implements ViewInterface
             $this->fireEvent('view:hitCache', ['key' => $cacheOptions['key'], 'view' => $view]);
 
             echo $content;
+        } elseif (is_string($vars)) {
+            echo $vars;
         } else {
-            if (is_string($vars)) {
-                echo $vars;
-            } else {
-                $this->_render($view, $vars, true);
-            }
+            $this->_render($view, $vars, true);
         }
     }
 
