@@ -402,12 +402,10 @@ class Router extends Component implements RouterInterface
             $ca = '';
         } elseif ($path[0] === '/') {
             $ca = substr($path, 1);
+        } elseif (($pos = strpos($this->_controller, '/')) !== false) {
+            $ca = substr($this->_controller, 0, $pos + 1) . $path;
         } else {
-            if (($pos = strpos($this->_controller, '/')) !== false) {
-                $ca = substr($this->_controller, 0, $pos + 1) . $path;
-            } else {
-                $ca = rtrim($path, '/');
-            }
+            $ca = rtrim($path, '/');
         }
 
         while (($pos = strrpos($ca, '/index')) !== false && $pos + 6 === strlen($ca)) {
