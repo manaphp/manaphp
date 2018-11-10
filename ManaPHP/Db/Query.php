@@ -1186,12 +1186,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $selectedTables[] = '(' . $table->getSql() . ') AS [' . $alias . ']';
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $table->getBind());
+            } elseif (is_string($alias)) {
+                $selectedTables[] = '[' . $table . '] AS [' . $alias . ']';
             } else {
-                if (is_string($alias)) {
-                    $selectedTables[] = '[' . $table . '] AS [' . $alias . ']';
-                } else {
-                    $selectedTables[] = '[' . $table . ']';
-                }
+                $selectedTables[] = '[' . $table . ']';
             }
         }
 
