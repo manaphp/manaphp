@@ -291,12 +291,10 @@ class Compiler extends Component
 
             if (preg_match('#^[\w\.\[\]"\']+$#', $matches[2]) || preg_match('#^\\$[\w]+\(#', $matches[2])) {
                 return $matches[0];
+            } elseif ($this->_isSafeEchos($matches[2])) {
+                return "<?php echo $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);
             } else {
-                if ($this->_isSafeEchos($matches[2])) {
-                    return "<?php echo $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);
-                } else {
-                    return '<?php echo e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? '' : $matches[3]);
-                }
+                return '<?php echo e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? '' : $matches[3]);
             }
         };
 
