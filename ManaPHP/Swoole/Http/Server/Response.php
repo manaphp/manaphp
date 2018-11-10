@@ -62,10 +62,8 @@ class Response extends \ManaPHP\Http\Response
 
         if ($this->_content !== null) {
             $this->swooleHttpServer->sendContent($this->_content);
-        } else {
-            if ($this->_file) {
-                $this->swooleHttpServer->sendFile($this->_file);
-            }
+        } elseif ($this->_file) {
+            $this->swooleHttpServer->sendFile($this->_file);
         }
 
         $this->_sent = true;
