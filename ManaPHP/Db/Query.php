@@ -181,12 +181,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } else {
                     $r .= preg_replace('#\w+#', '[\\0]', $v) . ' AS [' . $k . '], ';
                 }
+            } elseif (is_int($k)) {
+                $r .= $v . ', ';
             } else {
-                if (is_int($k)) {
-                    $r .= $v . ', ';
-                } else {
-                    $r .= $v . ' AS [' . $k . '], ';
-                }
+                $r .= $v . ' AS [' . $k . '], ';
             }
         }
         $this->_fields = substr($r, 0, -2);
@@ -360,12 +358,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } elseif (strpos($filter, '@=')) {
                     $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                } elseif (strpos($filter, ' ') !== false) {
+                    $this->_conditions[] = $filter;
                 } else {
-                    if (strpos($filter, ' ') !== false) {
-                        $this->_conditions[] = $filter;
-                    } else {
-                        $this->whereIn(rtrim($filter, '='), $value);
-                    }
+                    $this->whereIn(rtrim($filter, '='), $value);
                 }
             } else {
                 $this->_conditions[] = $filter;
@@ -1167,17 +1163,15 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         if ($this->_fields !== null) {
             $fields = $this->_fields;
+        } elseif (count($this->_tables) === 1) {
+            $fields = '*';
         } else {
-            if (count($this->_tables) === 1) {
-                $fields = '*';
-            } else {
-                $fields = '';
-                $selectedFields = [];
-                foreach ($this->_tables as $alias => $table) {
-                    $selectedFields[] = '[' . (is_int($alias) ? $table : $alias) . '].*';
-                }
-                $fields .= implode(', ', $selectedFields);
+            $fields = '';
+            $selectedFields = [];
+            foreach ($this->_tables as $alias => $table) {
+                $selectedFields[] = '[' . (is_int($alias) ? $table : $alias) . '].*';
             }
+            $fields .= implode(', ', $selectedFields);
         }
         $params['fields'] = $fields;
 
@@ -1186,7 +1180,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         foreach ($this->_tables as $alias => $table) {
             if ($table instanceof $this) {
                 if (is_int($alias)) {
-                    /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                     throw new NotSupportedException('if using SubQuery, you must assign an alias for it');
                 }
 
