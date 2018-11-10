@@ -13,15 +13,6 @@ interface QueryInterface extends \ManaPHP\QueryInterface
     public function addFrom($table, $alias = null);
 
     /**
-     * Adds a join to the query
-     *
-     *<code>
-     *    $builder->join('Robots');
-     *    $builder->join('Robots', 'r.id = RobotsParts.robots_id');
-     *    $builder->join('Robots', 'r.id = RobotsParts.robots_id', 'r');
-     *    $builder->join('Robots', 'r.id = RobotsParts.robots_id', 'r', 'LEFT');
-     *</code>
-     *
      * @param string|\ManaPHP\Db\QueryInterface $table
      * @param string                            $condition
      * @param string                            $alias
@@ -32,14 +23,6 @@ interface QueryInterface extends \ManaPHP\QueryInterface
     public function join($table, $condition = null, $alias = null, $type = null);
 
     /**
-     * Adds a INNER join to the query
-     *
-     *<code>
-     *    $builder->innerJoin('Robots');
-     *    $builder->innerJoin('Robots', 'r.id = RobotsParts.robots_id');
-     *    $builder->innerJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
-     *</code>
-     *
      * @param string|\ManaPHP\Db\QueryInterface $table
      * @param string                            $condition
      * @param string                            $alias
@@ -49,12 +32,6 @@ interface QueryInterface extends \ManaPHP\QueryInterface
     public function innerJoin($table, $condition = null, $alias = null);
 
     /**
-     * Adds a LEFT join to the query
-     *
-     *<code>
-     *    $builder->leftJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
-     *</code>
-     *
      * @param string|\ManaPHP\Db\QueryInterface $table
      * @param string                            $condition
      * @param string                            $alias
@@ -64,12 +41,6 @@ interface QueryInterface extends \ManaPHP\QueryInterface
     public function leftJoin($table, $condition = null, $alias = null);
 
     /**
-     * Adds a RIGHT join to the query
-     *
-     *<code>
-     *    $builder->rightJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
-     *</code>
-     *
      * @param string|\ManaPHP\Db\QueryInterface $table
      * @param string                            $condition
      * @param string                            $alias
@@ -87,12 +58,6 @@ interface QueryInterface extends \ManaPHP\QueryInterface
     public function whereRaw($filter, $bind = null);
 
     /**
-     * Sets a HAVING condition clause. You need to escape SQL reserved words using [ and ] delimiters
-     *
-     *<code>
-     *    $builder->having('SUM(Robots.price) > 0');
-     *</code>
-     *
      * @param string|array $having
      * @param array        $bind
      *
@@ -101,11 +66,6 @@ interface QueryInterface extends \ManaPHP\QueryInterface
     public function having($having, $bind = []);
 
     /**
-     * Sets a FOR UPDATE clause
-     *
-     *<code>
-     *    $builder->forUpdate(true);
-     *</code>
      *
      * @param bool $forUpdate
      *
@@ -126,8 +86,6 @@ interface QueryInterface extends \ManaPHP\QueryInterface
     public function getBind($key = null);
 
     /**
-     * Set default bind parameters
-     *
      * @param array $bind
      * @param bool  $merge
      *

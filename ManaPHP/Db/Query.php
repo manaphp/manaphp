@@ -87,30 +87,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     protected $_db;
 
     /**
-     * \ManaPHP\Mvc\Model\Query\Builder constructor
-     *
-     *<code>
-     * $params = array(
-     *    'models'     => array('Users'),
-     *    'columns'    => array('id', 'name', 'status'),
-     *    'conditions' => array(
-     *        array(
-     *            "created > :min: AND created < :max:",
-     *            array("min" => '2013-01-01',   'max' => '2015-01-01'),
-     *            array("min" => PDO::PARAM_STR, 'max' => PDO::PARAM_STR),
-     *        ),
-     *    ),
-     *    // or 'conditions' => "created > '2013-01-01' AND created < '2015-01-01'",
-     *    'group'      => array('id', 'name'),
-     *    'having'     => "name = 'lily'",
-     *    'order'      => array('name', 'id'),
-     *    'limit'      => 20,
-     *    'offset'     => 20,
-     *    // or 'limit' => array(20, 20),
-     *);
-     *$queryBuilder = new \ManaPHP\Mvc\Model\Query\Builder($params);
-     *</code>
-     *
      * @param \ManaPHP\DbInterface|string $db
      */
     public function __construct($db = null)
@@ -197,11 +173,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     *
-     *<code>
-     *    $builder->from('Robots');
-     *</code>
-     *
      * @param string $table
      * @param string $alias
      *
@@ -242,15 +213,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Adds a join to the query
-     *
-     *<code>
-     *    $builder->join('Robots');
-     *    $builder->join('Robots', 'r.id = RobotsParts.robots_id');
-     *    $builder->join('Robots', 'r.id = RobotsParts.robots_id', 'r');
-     *    $builder->join('Robots', 'r.id = RobotsParts.robots_id', 'r', 'LEFT');
-     *</code>
-     *
      * @param string|\ManaPHP\Db\QueryInterface $table
      * @param string                            $condition
      * @param string                            $alias
@@ -276,14 +238,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Adds a INNER join to the query
-     *
-     *<code>
-     *    $builder->innerJoin('Robots');
-     *    $builder->innerJoin('Robots', 'r.id = RobotsParts.robots_id');
-     *    $builder->innerJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
-     *</code>
-     *
      * @param string|\ManaPHP\Db\QueryInterface $table
      * @param string                            $condition
      * @param string                            $alias
@@ -296,12 +250,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Adds a LEFT join to the query
-     *
-     *<code>
-     *    $builder->leftJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
-     *</code>
-     *
      * @param string|\ManaPHP\Db\QueryInterface $table
      * @param string                            $condition
      * @param string                            $alias
@@ -314,12 +262,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Adds a RIGHT join to the query
-     *
-     *<code>
-     *    $builder->rightJoin('Robots', 'r.id = RobotsParts.robots_id', 'r');
-     *</code>
-     *
      * @param string|\ManaPHP\Db\QueryInterface $table
      * @param string                            $condition
      * @param string                            $alias
@@ -332,12 +274,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Appends a condition to the current conditions using a AND operator
-     *
-     *<code>
-     *    $builder->andWhere('name = "Peter"');
-     *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
-     *</code>
      *
      * @param string|array           $filter
      * @param int|float|string|array $value
@@ -426,12 +362,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Appends a BETWEEN condition to the current conditions
-     *
-     *<code>
-     *    $builder->betweenWhere('price', 100.25, 200.50);
-     *</code>
-     *
      * @param string           $expr
      * @param int|float|string $min
      * @param int|float|string $max
@@ -489,12 +419,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Appends a NOT BETWEEN condition to the current conditions
-     *
-     *<code>
-     *    $builder->notBetweenWhere('price', 100.25, 200.50);
-     *</code>
-     *
      * @param string           $expr
      * @param int|float|string $min
      * @param int|float|string $max
@@ -531,8 +455,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * alias of whereNotBetween
-     *
      * @param string           $expr
      * @param int|float|string $min
      * @param int|float|string $max
@@ -546,12 +468,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Appends an IN condition to the current conditions
-     *
-     *<code>
-     *    $builder->inWhere('id', [1, 2, 3]);
-     *</code>
-     *
      * @param string                           $expr
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
@@ -624,12 +540,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Appends a NOT IN condition to the current conditions
-     *
-     *<code>
-     *    $builder->notInWhere('id', [1, 2, 3]);
-     *</code>
-     *
      * @param string                           $expr
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
@@ -670,8 +580,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * alias of whereNotIn
-     *
      * @param string                           $expr
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
@@ -930,13 +838,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Sets a ORDER BY condition clause
-     *
-     *<code>
-     *    $builder->orderBy('Robots.name');
-     *    $builder->orderBy(array('1', 'Robots.name'));
-     *</code>
-     *
      * @param string|array $orderBy
      *
      * @return static
@@ -980,12 +881,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Sets a HAVING condition clause. You need to escape SQL reserved words using [ and ] delimiters
-     *
-     *<code>
-     *    $builder->having('SUM(Robots.price) > 0');
-     *</code>
-     *
      * @param string|array $having
      * @param array        $bind
      *
@@ -1016,12 +911,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Sets a FOR UPDATE clause
-     *
-     *<code>
-     *    $builder->forUpdate(true);
-     *</code>
-     *
      * @param bool $forUpdate
      *
      * @return static
@@ -1034,12 +923,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Sets a GROUP BY clause
-     *
-     *<code>
-     *    $builder->groupBy(array('Robots.name'));
-     *</code>
-     *
      * @param string|array $groupBy
      *
      * @return static
@@ -1321,8 +1204,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * Set default bind parameters
-     *
      * @param array $bind
      * @param bool  $merge
      *

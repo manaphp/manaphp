@@ -384,13 +384,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * Appends a condition to the current conditions using a AND operator
-     *
-     *<code>
-     *    $builder->andWhere('name = "Peter"');
-     *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
-     *</code>
-     *
      * @param string|array           $filter
      * @param int|float|string|array $value
      *
@@ -506,12 +499,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * Appends a BETWEEN condition to the current conditions
-     *
-     *<code>
-     *    $builder->betweenWhere('price', 100.25, 200.50);
-     *</code>
-     *
      * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
@@ -532,12 +519,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * Appends a NOT BETWEEN condition to the current conditions
-     *
-     *<code>
-     *    $builder->notBetweenWhere('price', 100.25, 200.50);
-     *</code>
-     *
      * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
@@ -558,12 +539,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * Appends an IN condition to the current conditions
-     *
-     *<code>
-     *    $builder->inWhere('id', [1, 2, 3]);
-     *</code>
-     *
      * @param string $field
      * @param array  $values
      *
@@ -577,12 +552,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * Appends a NOT IN condition to the current conditions
-     *
-     *<code>
-     *    $builder->notInWhere('id', [1, 2, 3]);
-     *</code>
-     *
      * @param string $field
      * @param array  $values
      *
@@ -856,13 +825,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * Sets a ORDER BY condition clause
-     *
-     *<code>
-     *    $builder->orderBy('Robots.name');
-     *    $builder->orderBy(array('1', 'Robots.name'));
-     *</code>
-     *
      * @param string|array $orderBy
      *
      * @return static
@@ -891,8 +853,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * Sets a GROUP BY clause
-     *
      * @param string|array $groupBy
      *
      * @return static
