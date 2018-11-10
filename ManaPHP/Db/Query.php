@@ -179,6 +179,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         /** @noinspection ForeachSourceInspection */
         foreach ($fields as $k => $v) {
             if (strpos($v, '[') === false && strpos($v, '(') === false) {
+                /** @noinspection NotOptimalIfConditionsInspection */
                 if (is_int($k)) {
                     $r .= preg_replace('#\w+#', '[\\0]', $v) . ', ';
                 } else {
