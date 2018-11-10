@@ -262,6 +262,12 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $condition = (string)preg_replace('#\w+#', '[\\0]', $condition);
         }
 
+        if (is_string($table) && strpos($table, '\\') !== false) {
+            /** @var \ManaPHP\Model $model */
+            $model = $this->_di->getShared($table);
+            $table = $model->getSource($this->_bind);
+        }
+
         $this->_joins[] = [$table, $condition, $alias, $type];
 
         return $this;
@@ -1342,15 +1348,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
                     $model = $this->_di->getShared($table);
                     $this->_tables[$alias] = $model->getSource($this->_bind);
                 }
-            }
-        }
-
-        foreach ($this->_joins as $k => $join) {
-            $table = $join[0];
-            if (is_string($table) && strpos($table, '\\') !== false) {
-                /** @var \ManaPHP\Model $model */
-                $model = $this->_di->getShared($table);
-                $this->_joins[$k][0] = $model->getSource($this->_bind);
             }
         }
 
