@@ -1,24 +1,25 @@
 <?php
-namespace ManaPHP\Model\Criteria;
+namespace ManaPHP\Query;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model;
-use ManaPHP\Model\Criteria;
+use ManaPHP\Query;
 
 /**
  * Class Merger
- * @package ManaPHP\Model\Criteria
+ * @package ManaPHP\Query
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Paginator             $paginator
  */
-class Merger extends Component implements Model\CriteriaInterface, \IteratorAggregate
+class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggregate
 {
     /**
-     * @var \ManaPHP\Model\CriteriaInterface[]
+     * @var \ManaPHP\QueryInterface[]
      */
-    protected $_criterias;
+    protected $queries;
 
     /**
      * @var int
@@ -38,12 +39,12 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     /**
      * Merger constructor.
      *
-     * @param array        $criterias
+     * @param array        $queries
      * @param string|array $fields
      */
-    public function __construct($criterias, $fields = null)
+    public function __construct($queries, $fields = null)
     {
-        $this->setCriterias($criterias);
+        $this->setQueries($queries);
 
         if ($fields) {
             $this->select($fields);
@@ -52,8 +53,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
 
     public function __clone()
     {
-        foreach ($this->_criterias as $k => $v) {
-            $this->_criterias[$k] = clone $v;
+        foreach ($this->queries as $k => $v) {
+            $this->queries[$k] = clone $v;
         }
     }
 
@@ -67,24 +68,39 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
         return $this->fetch(true);
     }
 
+    public function setDb($db)
+    {
+        throw new MisuseException(__METHOD__);
+    }
+
+    public function from($table, $alias = null)
+    {
+        throw new MisuseException(__METHOD__);
+    }
+
+    public function execute()
+    {
+        throw new MisuseException(__METHOD__);
+    }
+
     /**
-     * @param string[]|\ManaPHP\ModelInterface[]|\ManaPHP\Model\CriteriaInterface[] $criterias
+     * @param string[]|\ManaPHP\ModelInterface[]|\ManaPHP\QueryInterface[] $queries
      *
      * @return static
      */
-    public function setCriterias($criterias)
+    public function setQueries($queries)
     {
-        if (is_string($criterias[0])) {
-            foreach ($criterias as $k => $criteria) {
-                $criterias[$k] = new $criteria();
+        if (is_string($queries[0])) {
+            foreach ($queries as $k => $query) {
+                $queries[$k] = new $query();
             }
         }
 
-        foreach ($criterias as $criteria) {
-            if ($criteria instanceof Criteria) {
-                $this->_criterias[] = $criteria;
-            } elseif ($criteria instanceof Model) {
-                $this->_criterias[] = $criteria::criteria(null, $criteria);
+        foreach ($queries as $query) {
+            if ($query instanceof Query) {
+                $this->queries[] = $query;
+            } elseif ($query instanceof Model) {
+                $this->queries[] = $query::query(null, $query);
             }
         }
 
@@ -92,11 +108,11 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     }
 
     /**
-     * @return \ManaPHP\Model\CriteriaInterface[]
+     * @return \ManaPHP\QueryInterface[]
      */
-    public function getCriterias()
+    public function getQueries()
     {
-        return $this->_criterias;
+        return $this->queries;
     }
 
     /**
@@ -104,7 +120,7 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function getModel()
     {
-        return $this->_criterias[0]->getModel();
+        return $this->queries[0]->getModel();
     }
 
     /**
@@ -114,8 +130,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function select($fields)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->select($fields);
+        foreach ($this->queries as $query) {
+            $query->select($fields);
         }
 
         return $this;
@@ -130,8 +146,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function distinct($distinct = true)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->distinct($distinct);
+        foreach ($this->queries as $query) {
+            $query->distinct($distinct);
         }
 
         return $this;
@@ -156,8 +172,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function where($filter, $value = null)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->where($filter, $value);
+        foreach ($this->queries as $query) {
+            $query->where($filter, $value);
         }
 
         return $this;
@@ -170,8 +186,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereSearch($filters)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereSearch($filters);
+        foreach ($this->queries as $query) {
+            $query->whereSearch($filters);
         }
 
         return $this;
@@ -186,8 +202,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereBetween($field, $min, $max)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereBetween($field, $min, $max);
+        foreach ($this->queries as $query) {
+            $query->whereBetween($field, $min, $max);
         }
 
         return $this;
@@ -202,8 +218,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereDateBetween($field, $min, $max)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereDateBetween($field, $min, $max);
+        foreach ($this->queries as $query) {
+            $query->whereDateBetween($field, $min, $max);
         }
 
         return $this;
@@ -219,8 +235,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereNotBetween($field, $min, $max)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereNotBetween($field, $min, $max);
+        foreach ($this->queries as $query) {
+            $query->whereNotBetween($field, $min, $max);
         }
 
         return $this;
@@ -234,8 +250,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereIn($field, $values)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereIn($field, $values);
+        foreach ($this->queries as $query) {
+            $query->whereIn($field, $values);
         }
 
         return $this;
@@ -248,8 +264,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereNotIn($field, $values)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereNotIn($field, $values);
+        foreach ($this->queries as $query) {
+            $query->whereNotIn($field, $values);
         }
 
         return $this;
@@ -263,8 +279,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereInset($field, $value)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereInset($field, $value);
+        foreach ($this->queries as $query) {
+            $query->whereInset($field, $value);
         }
 
         return $this;
@@ -278,8 +294,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereNotInset($field, $value)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereNotInset($field, $value);
+        foreach ($this->queries as $query) {
+            $query->whereNotInset($field, $value);
         }
 
         return $this;
@@ -293,8 +309,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereContains($field, $value)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereContains($field, $value);
+        foreach ($this->queries as $query) {
+            $query->whereContains($field, $value);
         }
 
         return $this;
@@ -308,8 +324,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereNotContains($field, $value)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereNotContains($field, $value);
+        foreach ($this->queries as $query) {
+            $query->whereNotContains($field, $value);
         }
 
         return $this;
@@ -324,8 +340,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereStartsWith($field, $value, $length = null)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereStartsWith($field, $value, $length);
+        foreach ($this->queries as $query) {
+            $query->whereStartsWith($field, $value, $length);
         }
 
         return $this;
@@ -340,8 +356,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereNotStartsWith($field, $value, $length = null)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereNotStartsWith($field, $value, $length);
+        foreach ($this->queries as $query) {
+            $query->whereNotStartsWith($field, $value, $length);
         }
 
         return $this;
@@ -355,8 +371,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereEndsWith($field, $value)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereEndsWith($field, $value);
+        foreach ($this->queries as $query) {
+            $query->whereEndsWith($field, $value);
         }
 
         return $this;
@@ -370,8 +386,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereNotEndsWith($field, $value)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereNotEndsWith($field, $value);
+        foreach ($this->queries as $query) {
+            $query->whereNotEndsWith($field, $value);
         }
 
         return $this;
@@ -385,8 +401,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereLike($expr, $value)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereLike($expr, $value);
+        foreach ($this->queries as $query) {
+            $query->whereLike($expr, $value);
         }
 
         return $this;
@@ -400,8 +416,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereNotLike($expr, $value)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereNotLike($expr, $value);
+        foreach ($this->queries as $query) {
+            $query->whereNotLike($expr, $value);
         }
 
         return $this;
@@ -416,8 +432,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereRegex($field, $regex, $flags = '')
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereRegex($field, $regex, $flags);
+        foreach ($this->queries as $query) {
+            $query->whereRegex($field, $regex, $flags);
         }
 
         return $this;
@@ -432,8 +448,36 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function whereNotRegex($field, $regex, $flags = '')
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->whereNotRegex($field, $regex, $flags);
+        foreach ($this->queries as $query) {
+            $query->whereNotRegex($field, $regex, $flags);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNull($expr)
+    {
+        foreach ($this->queries as $query) {
+            $query->whereNull($expr);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $expr
+     *
+     * @return static
+     */
+    public function whereNotNull($expr)
+    {
+        foreach ($this->queries as $query) {
+            $query->whereNotNull($expr);
         }
 
         return $this;
@@ -446,8 +490,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function options($options)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->options($options);
+        foreach ($this->queries as $query) {
+            $query->options($options);
         }
 
         return $this;
@@ -460,8 +504,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function with($with)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->with($with);
+        foreach ($this->queries as $query) {
+            $query->with($with);
         }
 
         return $this;
@@ -544,8 +588,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function indexBy($indexBy)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->indexBy($indexBy);
+        foreach ($this->queries as $query) {
+            $query->indexBy($indexBy);
         }
 
         return $this;
@@ -558,8 +602,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function setFetchType($multiple)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->setFetchType($multiple);
+        foreach ($this->queries as $query) {
+            $query->setFetchType($multiple);
         }
 
         return $this;
@@ -575,11 +619,11 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
         $r = [];
 
         if ($this->_order) {
-            foreach ($this->_criterias as $criteria) {
+            foreach ($this->queries as $query) {
                 if ($this->_limit) {
-                    $t = $criteria->limit($this->_limit + $this->_offset)->fetch($asArray);
+                    $t = $query->limit($this->_limit + $this->_offset)->fetch($asArray);
                 } else {
-                    $t = $criteria->fetch($asArray);
+                    $t = $query->fetch($asArray);
                 }
                 $r = $r ? array_merge($r, $t) : $t;
             }
@@ -613,27 +657,27 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
             }
         } elseif ($this->_offset) {
             $count = 0;
-            foreach ($this->_criterias as $criteria) {
+            foreach ($this->queries as $query) {
                 $c_limit = $this->_limit - count($r);
                 $c_offset = max(0, $this->_offset - $count);
-                $t = $criteria->limit($c_limit, $c_offset)->fetch($asArray);
+                $t = $query->limit($c_limit, $c_offset)->fetch($asArray);
                 $r = $r ? array_merge($r, $t) : $t;
                 if (count($r) === $this->_limit) {
                     break;
                 }
-                $count += $t ? count($t) + $c_offset : $criteria->count();
+                $count += $t ? count($t) + $c_offset : $query->count();
             }
         } elseif ($this->_limit) {
-            foreach ($this->_criterias as $criteria) {
-                $t = $criteria->limit($this->_limit - count($r))->fetch($asArray);
+            foreach ($this->queries as $query) {
+                $t = $query->limit($this->_limit - count($r))->fetch($asArray);
                 $r = $r ? array_merge($r, $t) : $t;
                 if (count($r) >= $this->_limit) {
                     break;
                 }
             }
         } else {
-            foreach ($this->_criterias as $criteria) {
-                $t = $criteria->fetch($asArray);
+            foreach ($this->queries as $query) {
+                $t = $query->fetch($asArray);
                 $r = $r ? array_merge($r, $t) : $t;
             }
         }
@@ -649,8 +693,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     public function values($field)
     {
         $values = [];
-        foreach ($this->_criterias as $criteria) {
-            $t = $criteria->values($field);
+        foreach ($this->queries as $query) {
+            $t = $query->values($field);
             /** @noinspection SlowArrayOperationsInLoopInspection */
             $values = array_merge($values, $t);
         }
@@ -666,8 +710,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     public function count($field = '*')
     {
         $r = 0;
-        foreach ($this->_criterias as $criteria) {
-            $t = $criteria->count($field);
+        foreach ($this->queries as $query) {
+            $t = $query->count($field);
             $r += $t;
         }
 
@@ -683,8 +727,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     public function sum($field)
     {
         $r = 0;
-        foreach ($this->_criterias as $criteria) {
-            $t = $criteria->sum($field);
+        foreach ($this->queries as $query) {
+            $t = $query->sum($field);
             $r += $t;
         }
 
@@ -699,8 +743,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     public function max($field)
     {
         $r = null;
-        foreach ($this->_criterias as $criteria) {
-            $r = $r === null ? $criteria->max($field) : max($r, $criteria->max($field));
+        foreach ($this->queries as $query) {
+            $r = $r === null ? $query->max($field) : max($r, $query->max($field));
         }
 
         return $r;
@@ -714,8 +758,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     public function min($field)
     {
         $r = null;
-        foreach ($this->_criterias as $criteria) {
-            $r = $r === null ? $criteria->min($field) : max($r, $criteria->min($field));
+        foreach ($this->queries as $query) {
+            $r = $r === null ? $query->min($field) : max($r, $query->min($field));
         }
 
         return $r;
@@ -768,8 +812,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function exists()
     {
-        foreach ($this->_criterias as $criteria) {
-            if ($criteria->exists()) {
+        foreach ($this->queries as $query) {
+            if ($query->exists()) {
                 return true;
             }
         }
@@ -784,8 +828,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     public function update($fieldValues)
     {
         $r = 0;
-        foreach ($this->_criterias as $criteria) {
-            $t = $criteria->update($fieldValues);
+        foreach ($this->queries as $query) {
+            $t = $query->update($fieldValues);
             $r += $t;
         }
 
@@ -798,8 +842,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
     public function delete()
     {
         $r = 0;
-        foreach ($this->_criterias as $criteria) {
-            $t = $criteria->delete();
+        foreach ($this->queries as $query) {
+            $t = $query->delete();
             $r += $t;
         }
 
@@ -813,8 +857,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function forceUseMaster($forceUseMaster = true)
     {
-        foreach ($this->_criterias as $criteria) {
-            $criteria->forceUseMaster($forceUseMaster);
+        foreach ($this->queries as $query) {
+            $query->forceUseMaster($forceUseMaster);
         }
 
         return $this;
@@ -827,8 +871,8 @@ class Merger extends Component implements Model\CriteriaInterface, \IteratorAggr
      */
     public function first($fields = null)
     {
-        foreach ($this->_criterias as $criteria) {
-            if ($r = $criteria->select($fields)->limit(1)->fetch(true)) {
+        foreach ($this->queries as $query) {
+            if ($r = $query->select($fields)->limit(1)->fetch(true)) {
                 return $r[0];
             }
         }
