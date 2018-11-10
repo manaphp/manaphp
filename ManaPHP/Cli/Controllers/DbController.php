@@ -124,7 +124,7 @@ class DbController extends Controller
         }
 
         $primaryKey = $metadata[Db::METADATA_PRIMARY_KEY];
-        if (true && $primaryKey) {
+        if ($primaryKey) {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
