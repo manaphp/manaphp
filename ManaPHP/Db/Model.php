@@ -225,18 +225,17 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $changedFields = [];
         foreach ($fields as $field) {
             if ($this->$field === null) {
+                /** @noinspection NotOptimalIfConditionsInspection */
                 if (isset($snapshot[$field])) {
                     $changedFields[] = $field;
                 }
-            } else {
-                if (!isset($snapshot[$field])) {
+            } elseif (!isset($snapshot[$field])) {
+                $changedFields[] = $field;
+            } elseif ($snapshot[$field] !== $this->$field) {
+                if (is_string($this->$field) && !is_string($snapshot[$field]) && (string)$snapshot[$field] === $this->$field) {
+                    $this->$field = $snapshot[$field];
+                } else {
                     $changedFields[] = $field;
-                } elseif ($snapshot[$field] !== $this->$field) {
-                    if (is_string($this->$field) && !is_string($snapshot[$field]) && (string)$snapshot[$field] === $this->$field) {
-                        $this->$field = $snapshot[$field];
-                    } else {
-                        $changedFields[] = $field;
-                    }
                 }
             }
         }
@@ -263,10 +262,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 if (isset($snapshot[$field])) {
                     $fieldValues[$field] = null;
                 }
-            } else {
-                if (!isset($snapshot[$field]) || $snapshot[$field] !== $this->$field) {
-                    $fieldValues[$field] = $this->$field;
-                }
+            } elseif (!isset($snapshot[$field]) || $snapshot[$field] !== $this->$field) {
+                $fieldValues[$field] = $this->$field;
             }
         }
 
