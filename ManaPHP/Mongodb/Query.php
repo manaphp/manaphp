@@ -217,7 +217,9 @@ class Query extends \ManaPHP\Query
      */
     public function from($table, $alias = null)
     {
-        $this->_source = $table;
+        if ($table) {
+            $this->_source = $table;
+        }
 
         return $this;
     }
