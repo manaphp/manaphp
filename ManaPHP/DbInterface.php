@@ -158,11 +158,6 @@ interface DbInterface
     public function rawQuery($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
 
     /**
-     * @return \ManaPHP\Db\Query
-     */
-    public function createQuery();
-
-    /**
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server don't return any row
      *

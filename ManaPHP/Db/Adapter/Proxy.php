@@ -203,14 +203,6 @@ class Proxy extends Component implements DbInterface
     }
 
     /**
-     * @return \ManaPHP\Db\QueryInterface
-     */
-    public function createQuery()
-    {
-        return $this->_di->get('ManaPHP\Db\Query', [$this]);
-    }
-
-    /**
      * @param string $sql
      * @param array  $bind
      *
