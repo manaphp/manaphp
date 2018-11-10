@@ -120,13 +120,15 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $source = new $source;
         }
 
-        if (is_string($source)) {
+        if ($source === null) {
+            $this->_di = Di::getDefault();
+        } elseif (is_string($source)) {
             $this->_di = Di::getDefault();
             $this->from($source);
         } else {
             $this->_di = $source->getDi();
             $this->_model = $source;
-            $this->from($source->getSource());
+            $this->from(get_class($source));
             $this->_db = $source->getDb();
         }
 
@@ -145,6 +147,14 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $this->_db = $db;
 
         return $this;
+    }
+
+    /**
+     * @return \ManaPHP\DbInterface
+     */
+    public function getConnection()
+    {
+        return $this->_di->getShared($this->_db ?: 'db');
     }
 
     /**
@@ -1127,6 +1137,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
             throw new MisuseException('at least one model is required to build the query');
         }
 
+        $this->_replaceModelInfo();
+
         $params = [];
         if ($this->_distinct) {
             $params['distinct'] = true;
@@ -1299,6 +1311,39 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function getTables()
     {
         return $this->_tables;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function _replaceModelInfo()
+    {
+        foreach ($this->_tables as $alias => $table) {
+            /** @var \ManaPHP\Model $model */
+            if (is_int($alias)) {
+                if (is_string($table) && strpos($table, '\\') !== false) {
+                    $model = $this->_di->getShared($table);
+                    $this->_tables[$alias] = $model->getSource($this->_bind);
+                }
+            } else {
+                if (strpos($table, '\\') !== false) {
+                    $model = $this->_di->getShared($alias);
+                    unset($this->_tables[$alias]);
+                    $this->_tables[$model->getSource($this->_bind)] = $table;
+                }
+            }
+        }
+
+        foreach ($this->_joins as $k => $join) {
+            $table = $join[0];
+            if (is_string($table) && strpos($table, '\\') !== false) {
+                /** @var \ManaPHP\Model $model */
+                $model = $this->_di->getShared($table);
+                $this->_joins[$k][0] = $model->getSource($this->_bind);
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -1483,7 +1528,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         }
 
-        return $this->_db->update($this->_tables[0], $fieldValues, $this->_conditions, $this->_bind);
+        return $this->_replaceModelInfo()->getConnection()->update($this->_tables[0], $fieldValues, $this->_conditions, $this->_bind);
     }
 
     /**
@@ -1491,6 +1536,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function delete()
     {
-        return $this->_db->delete($this->_tables[0], $this->_conditions, $this->_bind);
+        return $this->_replaceModelInfo()->getConnection()->delete($this->_tables[0], $this->_conditions, $this->_bind);
     }
 }
