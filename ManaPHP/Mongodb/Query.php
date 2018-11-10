@@ -93,14 +93,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @return \ManaPHP\MongodbInterface
-     */
-    public function getDb()
-    {
-        return $this->_di->getShared($this->_db);
-    }
-
-    /**
      * @param array $types
      *
      * @return static
