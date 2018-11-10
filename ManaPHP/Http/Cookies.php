@@ -145,10 +145,8 @@ class Cookies extends Component implements CookiesInterface
             if (isset($_COOKIE[$name])) {
                 return $this->_decrypt($name, $_COOKIE[$name]);
             }
-        } else {
-            if (isset($_COOKIE[$name])) {
-                return $_COOKIE[$name];
-            }
+        } elseif (isset($_COOKIE[$name])) {
+            return $_COOKIE[$name];
         }
 
         return $default;
