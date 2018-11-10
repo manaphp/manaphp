@@ -11,10 +11,16 @@ interface QueryInterface
     public function setDb($db);
 
     /**
+     * @param string|\ManaPHP\Model $model
+     *
+     * @return static
+     */
+    public function setModel($model);
+
+    /**
      * @return \ManaPHP\Model
      */
     public function getModel();
-
     /**
      *
      *<code>
