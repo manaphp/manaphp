@@ -1169,7 +1169,20 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         }
 
-        $this->_replaceModelInfo();
+        foreach ($this->_tables as $alias => $table) {
+            /** @var \ManaPHP\Model $model */
+            if (is_int($alias)) {
+                if (is_string($table) && strpos($table, '\\') !== false) {
+                    $model = $this->_di->getShared($table);
+                    $this->_tables[$alias] = $model->getSource($this->_bind);
+                }
+            } else {
+                if (strpos($table, '\\') !== false) {
+                    $model = $this->_di->getShared($table);
+                    $this->_tables[$alias] = $model->getSource($this->_bind);
+                }
+            }
+        }
 
         $params = [];
         if ($this->_distinct) {
@@ -1345,20 +1358,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     protected function _replaceModelInfo()
     {
-        foreach ($this->_tables as $alias => $table) {
-            /** @var \ManaPHP\Model $model */
-            if (is_int($alias)) {
-                if (is_string($table) && strpos($table, '\\') !== false) {
-                    $model = $this->_di->getShared($table);
-                    $this->_tables[$alias] = $model->getSource($this->_bind);
-                }
-            } else {
-                if (strpos($table, '\\') !== false) {
-                    $model = $this->_di->getShared($table);
-                    $this->_tables[$alias] = $model->getSource($this->_bind);
-                }
-            }
-        }
+
 
         return $this;
     }
@@ -1545,7 +1545,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         }
 
-        return $this->_replaceModelInfo()->getConnection()->update($this->getSource(), $fieldValues, $this->_conditions, $this->_bind);
+        return $this->getConnection()->update($this->getSource(), $fieldValues, $this->_conditions, $this->_bind);
     }
 
     /**
@@ -1553,6 +1553,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function delete()
     {
-        return $this->_replaceModelInfo()->getConnection()->delete($this->getSource(), $this->_conditions, $this->_bind);
+        return $this->getConnection()->delete($this->getSource(), $this->_conditions, $this->_bind);
     }
 }
