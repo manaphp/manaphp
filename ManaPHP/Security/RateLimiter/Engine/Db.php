@@ -56,14 +56,13 @@ class Db extends Component implements EngineInterface
             $rateLimiter->id = $id;
             $rateLimiter->times = 1;
             $rateLimiter->expired_time = time() + $duration;
+        } elseif (time() > $rateLimiter->expired_time) {
+            $rateLimiter->expired_time = time() + $duration;
+            $rateLimiter->times = 1;
         } else {
-            if (time() > $rateLimiter->expired_time) {
-                $rateLimiter->expired_time = time() + $duration;
-                $rateLimiter->times = 1;
-            } else {
-                $rateLimiter->times++;
-            }
+            $rateLimiter->times++;
         }
+
         $rateLimiter->save();
 
         return $rateLimiter->times;
