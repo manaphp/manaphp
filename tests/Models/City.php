@@ -16,8 +16,8 @@ use ManaPHP\Mvc\Model;
  * @package Tests\Models
  * @property \Tests\Models\Country|false $country
  * @property \Tests\Models\Country|false $countryExplicit
- * @method \ManaPHP\Model\Criteria getCountry
- * @method \ManaPHP\Model\Criteria getCountryExplicit
+ * @method \ManaPHP\Query getCountry
+ * @method \ManaPHP\Query getCountryExplicit
  */
 class City extends Model
 {
