@@ -191,15 +191,13 @@ if (!function_exists('cache')) {
                 di('cache')->set($name, $default, $ttl);
             }
             return null;
+        } elseif (!$name) {
+            return di('cache');
+        } elseif (strpos($name, ':') === false) {
+            return di("${name}Cache");
         } else {
-            if (!$name) {
-                return di('cache');
-            } elseif (strpos($name, ':') === false) {
-                return di("${name}Cache");
-            } else {
-                $value = di('cache')->get($name);
-                return $value === false ? $value : $default;
-            }
+            $value = di('cache')->get($name);
+            return $value === false ? $value : $default;
         }
     }
 }
