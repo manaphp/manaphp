@@ -122,10 +122,8 @@ class Redis extends Component
             } catch (\Exception $exception) {
                 throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
             }
-        } else {
-            if (!@$redis->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval)) {
-                throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
-            }
+        } elseif (!@$redis->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval)) {
+            throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
         }
 
         if ($this->_auth !== '' && !$redis->auth($this->_auth)) {
@@ -178,13 +176,11 @@ class Redis extends Component
     {
         if (!$this->_redis) {
             $this->connect();
-        } else {
-            if (microtime(true) - $this->_lastIoTime > 1.0) {
-                try {
-                    @$this->_redis->ping();
-                } catch (\Exception $exception) {
-                    null;
-                }
+        } elseif (microtime(true) - $this->_lastIoTime > 1.0) {
+            try {
+                @$this->_redis->ping();
+            } catch (\Exception $exception) {
+                null;
             }
         }
 
