@@ -406,16 +406,14 @@ class Smtp extends Mailer
             }
             $this->_sendAttachments($attachments, $boundary);
             $this->_writeLine("--$boundary--");
+        } elseif ($embeddedFiles = $message->getEmbeddedFiles()) {
+            $this->_writeLine('Content-Type: multipart/related;');
+            $this->_writeLine("\tboundary=$boundary");
+            $this->_sendHtmlBody($htmlBody, $boundary);
+            $this->_sendEmbeddedFiles($embeddedFiles, $boundary);
+            $this->_writeLine("--$boundary--");
         } else {
-            if ($embeddedFiles = $message->getEmbeddedFiles()) {
-                $this->_writeLine('Content-Type: multipart/related;');
-                $this->_writeLine("\tboundary=$boundary");
-                $this->_sendHtmlBody($htmlBody, $boundary);
-                $this->_sendEmbeddedFiles($embeddedFiles, $boundary);
-                $this->_writeLine("--$boundary--");
-            } else {
-                $this->_sendHtmlBody($htmlBody);
-            }
+            $this->_sendHtmlBody($htmlBody);
         }
 
         $this->_transmit("\r\n.\r\n", [250]);
