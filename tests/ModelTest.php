@@ -3,13 +3,14 @@ namespace Tests;
 
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\DbInterface;
-use ManaPHP\Model\Criteria;
+use ManaPHP\QueryInterface;
+use PHPUnit\Framework\TestCase;
 use Tests\Models\City;
 use ManaPHP\Di\FactoryDefault;
 use Tests\Models\Country;
 use Tests\Models\Rental;
 
-class ModelTest extends \PHPUnit_Framework_TestCase
+class ModelTest extends TestCase
 {
     /**
      * @var \ManaPHP\DiInterface
@@ -67,16 +68,16 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(87, $city->country->country_id);
 
         //criteria with closure and implicit fetch()
-        $city = City::first(1, null, ['with' => ['country' => function (Criteria $criteria) {
-            return $criteria->select(['country_id']);
+        $city = City::first(1, null, ['with' => ['country' => function (QueryInterface $query) {
+            return $query->select(['country_id']);
         }]]);
         $this->assertNull($city->country->last_update);
         $this->assertEquals(87, $city->country->country_id);
         $this->assertCount(1, $city->country->toArray());
 
         //criteria with closure explicit fetch()
-        $city = City::first(1, null, ['with' => ['country' => function (Criteria $criteria) {
-            return $criteria->select(['country_id'])->fetch();
+        $city = City::first(1, null, ['with' => ['country' => function (QueryInterface $query) {
+            return $query->select(['country_id'])->fetch();
         }]]);
         $this->assertNull($city->country->last_update);
         $this->assertEquals(87, $city->country->country_id);
@@ -117,16 +118,16 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(87, $city->countryExplicit->country_id);
 
         //criteria with closure and implicit fetch()
-        $city = City::first(1, null, ['with' => ['countryExplicit' => function (Criteria $criteria) {
-            return $criteria->select(['country_id']);
+        $city = City::first(1, null, ['with' => ['countryExplicit' => function (QueryInterface $query) {
+            return $query->select(['country_id']);
         }]]);
         $this->assertNull($city->countryExplicit->last_update);
         $this->assertEquals(87, $city->countryExplicit->country_id);
         $this->assertCount(1, $city->countryExplicit->toArray());
 
         //criteria with closure explicit fetch()
-        $city = City::first(1, null, ['with' => ['countryExplicit' => function (Criteria $criteria) {
-            return $criteria->select(['country_id'])->fetch();
+        $city = City::first(1, null, ['with' => ['countryExplicit' => function (QueryInterface $query) {
+            return $query->select(['country_id'])->fetch();
         }]]);
         $this->assertNull($city->countryExplicit->last_update);
         $this->assertEquals(87, $city->countryExplicit->country_id);
@@ -195,14 +196,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $country->citiesExplicit[8]->toArray());
 
         //criteria with closure and implicit fetch()
-        $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (Criteria $criteria) {
-            return $criteria->select(['city_id', 'city']);
+        $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (QueryInterface $query) {
+            return $query->select(['city_id', 'city']);
         }]]);
         $this->assertCount(2, $country->citiesExplicit[8]->toArray());
 
         //criteria with closure explicit fetch()
-        $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (Criteria $criteria) {
-            return $criteria->select(['city_id', 'city'])->fetch();
+        $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (QueryInterface $query) {
+            return $query->select(['city_id', 'city'])->fetch();
         }]]);
         $this->assertCount(2, $country->citiesExplicit[8]->toArray());
     }
