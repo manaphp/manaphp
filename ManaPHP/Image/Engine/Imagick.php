@@ -232,11 +232,9 @@ class Imagick extends Component implements EngineInterface
 
         if ($ext === 'gif') {
             $this->_image->optimizeImageLayers();
-        } else {
-            if ($ext === 'jpg' || $ext === 'jpeg') {
-                $this->_image->setImageCompression(\Imagick::COMPRESSION_JPEG);
-                $this->_image->setImageCompressionQuality($quality);
-            }
+        } elseif ($ext === 'jpg' || $ext === 'jpeg') {
+            $this->_image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+            $this->_image->setImageCompressionQuality($quality);
         }
 
         $dir = dirname($file);
