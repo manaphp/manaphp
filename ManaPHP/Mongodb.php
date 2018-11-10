@@ -389,7 +389,7 @@ class Mongodb extends Component implements MongodbInterface
      *
      * @return array[]
      */
-    public function query($source, $filter = [], $options = [], $secondaryPreferred = true)
+    public function fetchAll($source, $filter = [], $options = [], $secondaryPreferred = true)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
         if (is_bool($secondaryPreferred)) {

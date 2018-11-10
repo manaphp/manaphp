@@ -87,7 +87,7 @@ interface MongodbInterface
      *
      * @return array
      */
-    public function query($source, $filter = [], $options = [], $secondaryPreferred = true);
+    public function fetchAll($source, $filter = [], $options = [], $secondaryPreferred = true);
 
     /**
      * @param array  $command

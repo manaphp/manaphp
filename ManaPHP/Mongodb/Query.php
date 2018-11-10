@@ -1017,7 +1017,7 @@ class Query extends \ManaPHP\Query
                 $filters[$key] = $value;
             }
 
-            $r = $mongodb->query($this->getSource(), $filters, $options, !$this->_forceUseMaster);
+            $r = $mongodb->fetchAll($this->getSource(), $filters, $options, !$this->_forceUseMaster);
         } else {
             $pipeline = [];
             if ($this->_filters) {

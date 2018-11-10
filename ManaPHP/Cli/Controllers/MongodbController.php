@@ -376,7 +376,7 @@ class MongodbController extends Controller
                         fprintf($file, "\xEF\xBB\xBF");
                     }
 
-                    $docs = $mongodb->query("$db.$collection");
+                    $docs = $mongodb->fetchAll("$db.$collection");
 
                     if ($docs) {
                         $columns = [];
@@ -448,11 +448,11 @@ class MongodbController extends Controller
                         continue;
                     }
                     if ($field) {
-                        if (!$docs = $mongodb->query("$cdb.$collection", [$field => ['$exists' => 1]], ['limit' => 1])) {
+                        if (!$docs = $mongodb->fetchAll("$cdb.$collection", [$field => ['$exists' => 1]], ['limit' => 1])) {
                             continue;
                         }
                     } else {
-                        $docs = $mongodb->query("$cdb.$collection", [], ['limit' => 1]);
+                        $docs = $mongodb->fetchAll("$cdb.$collection", [], ['limit' => 1]);
                     }
                     $columns = $docs ? array_keys($docs[0]) : [];
 

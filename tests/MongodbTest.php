@@ -25,7 +25,7 @@ class MongodbTest extends TestCase
     public function test_query()
     {
         //general usage
-        $documents = $this->mongodb->query('city', [], ['limit' => 3]);
+        $documents = $this->mongodb->fetchAll('city', [], ['limit' => 3]);
         $this->assertCount(3, $documents);
     }
 }
