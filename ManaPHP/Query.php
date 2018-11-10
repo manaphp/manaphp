@@ -328,7 +328,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
      */
     public function first($fields = null)
     {
-        $r = $this->select($fields)->limit(1)->execute();
+        $r = $this->select($fields)->limit(1)->fetch(true);
         return $r ? $r[0] : null;
     }
 
@@ -353,7 +353,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
      */
     public function all($fields = null)
     {
-        return $this->select($fields)->execute();
+        return $this->select($fields)->fetch(true);
     }
 
     /**
