@@ -491,6 +491,21 @@ class Proxy extends Component implements DbInterface
         }
     }
 
+    /**
+     * @param string $table
+     * @param string $alias
+     *
+     * @return \ManaPHP\Db\Query
+     */
+    public function newQuery($table = null, $alias = null)
+    {
+        if ($this->_masterConnection !== null) {
+            return $this->_masterConnection->newQuery($table, $alias);
+        } else {
+            return $this->getSlaveConnection()->newQuery($table, $alias);
+        }
+    }
+
     public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false)
     {
         return $this->getMasterConnection()->bulkInsert($table, $records, $primaryKey, $skipIfExists);

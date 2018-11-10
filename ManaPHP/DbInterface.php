@@ -278,4 +278,12 @@ interface DbInterface
      * @return mixed
      */
     public function close();
+
+    /**
+     * @param string $table
+     * @param string $alias
+     *
+     * @return \ManaPHP\Db\Query
+     */
+    public function newQuery($table = null, $alias = null);
 }

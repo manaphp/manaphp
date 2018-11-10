@@ -836,4 +836,15 @@ abstract class Db extends Component implements DbInterface
             $this->_lastIoTime = null;
         }
     }
+
+    /**
+     * @param string $table
+     * @param string $alias
+     *
+     * @return \ManaPHP\Db\Query
+     */
+    public function newQuery($table = null, $alias = null)
+    {
+        return $this->_di->get('ManaPHP\Db\Query')->setDi($this->_di)->from($table, $alias);
+    }
 }
