@@ -96,12 +96,12 @@ interface ModelInterface
     public function rules();
 
     /**
-     * @param array          $fields
+     * @param string         $alias
      * @param \ManaPHP\Model $model
      *
      * @return \ManaPHP\QueryInterface
      */
-    public static function query($fields = null, $model = null);
+    public static function query($alias = null, $model = null);
 
     /**
      * Allows to query a set of records that match the specified conditions

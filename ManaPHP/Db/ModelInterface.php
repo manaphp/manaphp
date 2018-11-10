@@ -17,12 +17,12 @@ interface ModelInterface extends \ManaPHP\ModelInterface
     public function getConnection($context = null);
 
     /**
-     * @param array          $fields
+     * @param string         $alias
      * @param \ManaPHP\Model $model
      *
      * @return \ManaPHP\Db\Query
      */
-    public static function query($fields = null, $model = null);
+    public static function query($alias = null, $model = null);
 
     /**
      * @param array|string $sql

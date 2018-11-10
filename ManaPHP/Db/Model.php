@@ -129,20 +129,23 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param array             $fields
-     * @param \ManaPHP\Db\Model $model
+     * @param string         $alias
+     * @param \ManaPHP\Model $model
      *
      * @return \ManaPHP\Db\Query
      */
-    public static function query($fields = null, $model = null)
+    public static function query($alias = null, $model = null)
     {
         if (!$model) {
-            $model = Di::getDefault()->get(get_called_class());
-        } elseif (!$model->_di) {
-            $model->_di = Di::getDefault();
+            $model = Di::getDefault()->getShared(get_called_class());
         }
 
-        return $model->_di->get('ManaPHP\Db\Query', [$model])->select($fields);
+        $query = $model->_di->get('ManaPHP\Db\Query', [$model]);
+        if ($alias) {
+            $query->from(get_class($model), $alias);
+        }
+
+        return $query;
     }
 
     /**

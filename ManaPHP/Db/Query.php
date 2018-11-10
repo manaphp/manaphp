@@ -207,6 +207,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function from($table, $alias = null)
     {
+        if (!$this->_model && strpos($table, '\\') !== false) {
+            $this->_model = $this->_di->getShared($table);
+        }
+
         if (is_string($alias)) {
             $this->_tables[$alias] = $table;
         } else {
@@ -1327,9 +1331,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 }
             } else {
                 if (strpos($table, '\\') !== false) {
-                    $model = $this->_di->getShared($alias);
-                    unset($this->_tables[$alias]);
-                    $this->_tables[$model->getSource($this->_bind)] = $table;
+                    $model = $this->_di->getShared($table);
+                    $this->_tables[$alias] = $model->getSource($this->_bind);
                 }
             }
         }
