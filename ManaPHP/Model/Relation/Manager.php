@@ -5,8 +5,8 @@ use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Model\Criteria;
 use ManaPHP\Model\Relation;
+use ManaPHP\Query;
 
 class Manager extends Component implements ManagerInterface
 {
@@ -237,40 +237,40 @@ class Manager extends Component implements ManagerInterface
              * @var \ManaPHP\Model $referenceModel
              */
             $referenceModel = $relation->referenceModel;
-            $criteria = $referenceModel::criteria();
+            $query = $referenceModel::query();
             if ($child_name) {
-                $criteria->with([$child_name]);
+                $query->with([$child_name]);
             }
             if (is_int($k)) {
                 null;
             } elseif (is_string($v)) {
-                $criteria->select($v);
+                $query->select($v);
             } elseif (is_array($v)) {
                 if ($v) {
                     if (isset($v[count($v) - 1])) {
-                        $criteria->select($v);
+                        $query->select($v);
                     } elseif (isset($v[0])) {
-                        $criteria->select($v[0]);
+                        $query->select($v[0]);
                         unset($v[0]);
-                        $criteria->where($v);
+                        $query->where($v);
                     } else {
-                        $criteria->where($v);
+                        $query->where($v);
                     }
                 }
             } elseif (is_callable($v)) {
-                $criteria = $v($criteria);
+                $query = $v($query);
             } else {
                 throw new InvalidValueException(['`:with` with is invalid', 'with' => $name]);
             }
 
             $method = 'get' . ucfirst($name);
             if (method_exists($model, $method)) {
-                $criteria = $model->$method($criteria);
+                $query = $model->$method($query);
             }
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
                 $ids = array_values(array_unique(array_column($r, $valueField)));
-                $data = $criteria->where($keyField, $ids)->indexBy($keyField)->fetch(true);
+                $data = $query->where($keyField, $ids)->indexBy($keyField)->fetch(true);
 
                 foreach ($r as $ri => $rv) {
                     $key = $rv[$valueField];
@@ -291,7 +291,7 @@ class Manager extends Component implements ManagerInterface
                 }
 
                 $ids = array_column($r, $valueField);
-                $data = $criteria->where($keyField, $ids)->fetch(true);
+                $data = $query->where($keyField, $ids)->fetch(true);
                 foreach ($data as $dv) {
                     $r[$r_index[$dv[$keyField]]][$name][] = $dv;
                 }
@@ -325,27 +325,27 @@ class Manager extends Component implements ManagerInterface
         foreach ($withs as $k => $v) {
             $name = is_string($k) ? $k : $v;
 
-            $criteria = $this->lazyLoad($instance, $name);
+            $query = $this->lazyLoad($instance, $name);
             if (is_int($k)) {
-                $data = $criteria->fetch();
+                $data = $query->fetch();
             } elseif (is_string($v)) {
-                $data = $criteria->select($v)->fetch();
+                $data = $query->select($v)->fetch();
             } elseif (is_array($v)) {
                 if ($v) {
                     if (isset($v[count($v) - 1])) {
-                        $criteria->select($v);
+                        $query->select($v);
                     } elseif (isset($v[0])) {
-                        $criteria->select($v[0]);
+                        $query->select($v[0]);
                         unset($v[0]);
-                        $criteria->where($v);
+                        $query->where($v);
                     } else {
-                        $criteria->where($v);
+                        $query->where($v);
                     }
                 }
-                $data = $criteria->fetch();
+                $data = $query->fetch();
             } elseif (is_callable($v)) {
-                $data = $v($criteria);
-                if ($data instanceof Criteria) {
+                $data = $v($query);
+                if ($data instanceof Query) {
                     $data = $data->fetch();
                 }
             } else {
@@ -362,7 +362,7 @@ class Manager extends Component implements ManagerInterface
      * @param \ManaPHP\Model $instance
      * @param string         $relation_name
      *
-     * @return \ManaPHP\Model\CriteriaInterface
+     * @return \ManaPHP\QueryInterface
      */
     public function lazyLoad($instance, $relation_name)
     {
@@ -374,18 +374,18 @@ class Manager extends Component implements ManagerInterface
         $referenceModel = $relation->referenceModel;
         $valueField = $relation->valueField;
         if ($type === Relation::TYPE_HAS_ONE) {
-            return $referenceModel::criteria()->where($relation->keyField, $instance->$valueField)->setFetchType(false);
+            return $referenceModel::query()->where($relation->keyField, $instance->$valueField)->setFetchType(false);
         } elseif ($type === Relation::TYPE_BELONGS_TO) {
-            return $referenceModel::criteria()->where($relation->keyField, $instance->$valueField)->setFetchType(false);
+            return $referenceModel::query()->where($relation->keyField, $instance->$valueField)->setFetchType(false);
         } elseif ($type === Relation::TYPE_HAS_MANY) {
-            return $referenceModel::criteria()->where($relation->keyField, $instance->$valueField)->setFetchType(true);
+            return $referenceModel::query()->where($relation->keyField, $instance->$valueField)->setFetchType(true);
         } elseif ($type === Relation::TYPE_HAS_MANY_TO_MANY) {
             $ids = $instance::values($relation->keyField, [$valueField => $instance->$valueField]);
             /**
              * @var \ManaPHP\Model $referenceInstance
              */
             $referenceInstance = is_string($referenceModel) ? new $referenceModel : $referenceModel;
-            return $referenceModel::criteria()->where($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
+            return $referenceModel::query()->where($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
         } elseif ($type === Relation::TYPE_HAS_MANY_VIA) {
             $via = $relation->keyField;
             /**
@@ -393,7 +393,7 @@ class Manager extends Component implements ManagerInterface
              */
             $reference = new $referenceModel();
             $ids = $via::values($reference->getPrimaryKey(), [$valueField => $instance->$valueField]);
-            return $referenceModel::criteria()->where($reference->getPrimaryKey(), $ids)->setFetchType(true);
+            return $referenceModel::query()->where($reference->getPrimaryKey(), $ids)->setFetchType(true);
         } else {
             throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
         }

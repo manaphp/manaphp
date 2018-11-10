@@ -220,7 +220,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function all($filters = [], $options = null, $fields = null)
     {
-        return static::criteria($fields ?: null)->where($filters)->options($options)->fetch();
+        return static::query($fields ?: null)->where($filters)->options($options)->fetch();
     }
 
     /**
@@ -232,7 +232,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function paginate($filters = [], $options = null, $fields = null)
     {
-        return static::criteria($fields)->where($filters)->options($options)
+        return static::query($fields)->where($filters)->options($options)
             ->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
     }
 
@@ -245,7 +245,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function search($filters = [], $options = null, $fields = null)
     {
-        return static::criteria($fields)->whereSearch($filters)->options($options)
+        return static::query($fields)->whereSearch($filters)->options($options)
             ->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
     }
 
@@ -259,7 +259,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         $model = new static;
 
-        $criteria = static::criteria(null, $model)->where($filters);
+        $query = static::query(null, $model)->where($filters);
 
         $list = [];
         if ($field === null) {
@@ -272,17 +272,17 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $keyField = $model->getPrimaryKey();
             $valueField = $field;
 
-            $criteria = $criteria->select([$keyField, $valueField]);
+            $query = $query->select([$keyField, $valueField]);
             if (in_array('display_order', $model->getFields(), true)) {
-                return $criteria->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
+                return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
             } else {
-                return $criteria->orderBy($keyField)->fetch(true);
+                return $query->orderBy($keyField)->fetch(true);
             }
         } else {
             $keyField = key($field);
             $valueField = current($field);
             /** @noinspection ForeachSourceInspection */
-            foreach ($criteria->select([$keyField, $valueField])->fetch() as $v) {
+            foreach ($query->select([$keyField, $valueField])->fetch() as $v) {
                 $keyValue = $v->{$keyField};
 
                 if (!isset($list[$keyValue])) {
@@ -341,7 +341,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if (!$ttl) {
-            if (!$rs = static::criteria($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
+            if (!$rs = static::query($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             } else {
@@ -373,7 +373,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if (!$r) {
-            if (!$rs = static::criteria($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
+            if (!$rs = static::query($fields, $model)->where($pkName, $id)->limit(1)->fetch()) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             }
@@ -431,7 +431,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $filters = [$model->getPrimaryKey() => $filters];
         }
 
-        $rs = static::criteria($fields ?: null, $model)->where($filters)->options($options)->limit(1)->fetch();
+        $rs = static::query($fields ?: null, $model)->where($filters)->options($options)->limit(1)->fetch();
         return isset($rs[0]) ? $rs[0] : null;
     }
 
@@ -446,9 +446,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         if (!$r = static::first($filters, $fields, $options)) {
             $exception = new NotFoundException([
-                'No record for `:model` model with `:criteria` criteria',
+                'No record for `:model` model with `:query` query',
                 'model' => static::class,
-                'criteria' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)
+                'query' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)
             ]);
             $exception->model = static::class;
             $exception->filters = $filters;
@@ -485,7 +485,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             }
         }
 
-        $rs = static::criteria($fields, $model)->where($filters)->options($options)->limit(1)->fetch();
+        $rs = static::query($fields, $model)->where($filters)->options($options)->limit(1)->fetch();
         return isset($rs[0]) ? $rs[0] : null;
     }
 
@@ -515,7 +515,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if ($ttl === null || $pkValue === null) {
-            $rs = static::criteria([$field], $model)->where($filters)->limit(1)->fetch(true);
+            $rs = static::query([$field], $model)->where($filters)->limit(1)->fetch(true);
             return $rs ? $rs[0][$field] : null;
         }
 
@@ -543,7 +543,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if ($value === null) {
-            $rs = static::criteria([$field], $model)->where($pkName, $pkValue)->limit(1)->fetch(true);
+            $rs = static::query([$field], $model)->where($pkName, $pkValue)->limit(1)->fetch(true);
             $value = $rs ? $rs[0][$field] : null;
 
             $model->_di->ipcCache->set($key, [$current, $value], $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
@@ -569,9 +569,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $value = static::value($filters, $field, $ttl);
         if ($value === null) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new NotFoundException(['valueOrFail: `:model` model with `:criteria` criteria record is not exists',
+            throw new NotFoundException(['valueOrFail: `:model` model with `:query` query record is not exists',
                 'model' => get_called_class(),
-                'criteria' => json_encode($filters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+                'query' => json_encode($filters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
         } else {
             return $value;
         }
@@ -588,7 +588,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         if (!is_string($field)) {
             throw new ParameterOrderException(__METHOD__ . ' field');
         }
-        return static::criteria()->where($filters)->values($field);
+        return static::query()->where($filters)->values($field);
     }
 
     /**
@@ -608,12 +608,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         $pkField = $model->getPrimaryKey();
 
-        $criteria = static::criteria([$pkField, $field], $model)->where($filters)->indexBy([$pkField => $field]);
+        $query = static::query([$pkField, $field], $model)->where($filters)->indexBy([$pkField => $field]);
         if (in_array('display_order', $model->getFields(), true)) {
-            $criteria->orderBy(['display_order' => SORT_DESC, $pkField => SORT_ASC]);
+            $query->orderBy(['display_order' => SORT_DESC, $pkField => SORT_ASC]);
         }
 
-        return $criteria->fetch(true);
+        return $query->fetch(true);
     }
 
     /**
@@ -630,12 +630,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable
 
         $pkField = $model->getPrimaryKey();
 
-        $criteria = static::criteria(['value' => $pkField, 'label' => $field], $model)->where($filters);
+        $query = static::query(['value' => $pkField, 'label' => $field], $model)->where($filters);
         if (in_array('display_order', $model->getFields(), true)) {
-            $criteria->orderBy(['display_order' => SORT_DESC, $pkField => SORT_ASC]);
+            $query->orderBy(['display_order' => SORT_DESC, $pkField => SORT_ASC]);
         }
 
-        return $criteria->fetch(true);
+        return $query->fetch(true);
     }
 
     /**
@@ -647,9 +647,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable
     {
         if (is_scalar($filters)) {
             $model = new static;
-            return static::criteria(null, $model)->where($model->getPrimaryKey(), $filters)->exists();
+            return static::query(null, $model)->where($model->getPrimaryKey(), $filters)->exists();
         } else {
-            return static::criteria()->where($filters)->exists();
+            return static::query()->where($filters)->exists();
         }
     }
 
@@ -665,7 +665,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         if (is_string($options)) {
             $options = ['group' => $options];
         }
-        return static::criteria()->where($filters)->options($options)->aggregate($aggregation);
+        return static::query()->where($filters)->options($options)->aggregate($aggregation);
     }
 
     /**
@@ -678,7 +678,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function count($filters = null, $field = '*')
     {
-        return static::criteria()->where($filters)->count($field);
+        return static::query()->where($filters)->count($field);
     }
 
     /**
@@ -691,7 +691,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function sum($field, $filters = null)
     {
-        return static::criteria()->where($filters)->sum($field);
+        return static::query()->where($filters)->sum($field);
     }
 
     /**
@@ -704,7 +704,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function max($field, $filters = null)
     {
-        return static::criteria()->where($filters)->max($field);
+        return static::query()->where($filters)->max($field);
     }
 
     /**
@@ -718,7 +718,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function min($field, $filters = null)
     {
-        return static::criteria()->where($filters)->min($field);
+        return static::query()->where($filters)->min($field);
     }
 
     /**
@@ -731,7 +731,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function avg($field, $filters = null)
     {
-        return (double)static::criteria()->where($filters)->avg($field);
+        return (double)static::query()->where($filters)->avg($field);
     }
 
     /**
@@ -911,7 +911,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     protected function _exists()
     {
-        return static::criteria(null, $this)->where($this->getPrimaryKeyValuePairs())->forceUseMaster()->exists();
+        return static::query(null, $this)->where($this->getPrimaryKeyValuePairs())->forceUseMaster()->exists();
     }
 
     /**
@@ -1000,7 +1000,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             return $this;
         }
 
-        static::criteria(null, $this)->where($this->getPrimaryKeyValuePairs())->delete();
+        static::query(null, $this)->where($this->getPrimaryKeyValuePairs())->delete();
 
         $this->_fireEvent('afterDelete');
 
@@ -1046,7 +1046,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function updateAll($fieldValues, $filters)
     {
-        return static::criteria()->where($filters)->update($fieldValues);
+        return static::query()->where($filters)->update($fieldValues);
     }
 
     /**
@@ -1062,7 +1062,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         $instance = new static();
-        return static::criteria()->where($instance->getPrimaryKey(), $primaryKey)->update($fieldValues);
+        return static::query()->where($instance->getPrimaryKey(), $primaryKey)->update($fieldValues);
     }
 
     /**
@@ -1072,7 +1072,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      */
     public static function deleteAll($filters)
     {
-        return static::criteria()->where($filters)->delete();
+        return static::query()->where($filters)->delete();
     }
 
     /**
@@ -1200,7 +1200,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             $this->_last_refresh = microtime(true);
         }
 
-        $r = static::criteria($fields, $this)->where($this->getPrimaryKeyValuePairs())->fetch(true);
+        $r = static::query($fields, $this)->where($this->getPrimaryKeyValuePairs())->fetch(true);
         if (!$r) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), json_encode($this->getPrimaryKeyValuePairs())]);
@@ -1345,7 +1345,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
      * @param $name
      * @param $arguments
      *
-     * @return \ManaPHP\Model\CriteriaInterface
+     * @return \ManaPHP\QueryInterface
      * @throws \ManaPHP\Exception\BadMethodCallException
      * @throws \ManaPHP\Exception\NotSupportedException
      */

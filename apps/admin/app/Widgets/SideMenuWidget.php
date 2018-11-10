@@ -15,13 +15,13 @@ class SideMenuWidget extends Widget
 {
     public function run($vars = [])
     {
-        $groups = Group::criteria()
+        $groups = Group::query()
             ->orderBy('display_order DESC, group_id ASC')
             ->fetch(true);
 
         $menu = [];
         foreach ($groups as $group) {
-            $items = Item::criteria()
+            $items = Item::query()
                 ->where(['group_id' => $group['group_id']])
                 ->orderBy('display_order DESC, item_id ASC')
                 ->fetch(true);

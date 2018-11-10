@@ -12,6 +12,7 @@ use Tests\Models\Address;
 use Tests\Models\City;
 use Tests\Models\Country;
 use Tests\Models\Payment;
+use Tests\Models\Actor;
 
 class DbModelQueryTest extends TestCase
 {
@@ -34,6 +35,13 @@ class DbModelQueryTest extends TestCase
             return $db;
         });
     }
+
+    public function test_select()
+    {
+        $this->assertEquals('SELECT [city_id] FROM [city]',
+            City::query()->select(['city_id'])->getSql());
+    }
+
 
     public function test_distinct()
     {
@@ -246,6 +254,9 @@ class DbModelQueryTest extends TestCase
 
     public function test_where()
     {
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
+            City::query()->where('city_id', 1)->getSql());
+
         $query = Address::query()->where('address_id<=', 100);
         $this->assertCount(100, $query->execute());
 
@@ -261,6 +272,12 @@ class DbModelQueryTest extends TestCase
             ->where('address_id >=:min_address_id AND address_id <=:max_address_id',
                 ['min_address_id' => 51, 'max_address_id' => 100]);
         $this->assertCount(50, $query->execute());
+    }
+
+    public function test_whereRaw()
+    {
+        $this->assertEquals('SELECT * FROM [city] WHERE city_id >1',
+            City::query()->whereRaw('city_id >1')->getSql());
     }
 
     public function test_andWhere()
@@ -301,6 +318,9 @@ class DbModelQueryTest extends TestCase
 
     public function test_whereBetween()
     {
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',
+            City::query()->whereBetween('city_id', 1, 10)->getSql());
+
         $this->assertCount(50, Address::query()->whereBetween('address_id', 51, 100)->execute());
         $this->assertCount(100, Address::query()->whereBetween('address_id', null, 100)->execute());
         $this->assertCount(100, Address::query()->whereBetween('address_id', '', 100)->execute());
@@ -310,6 +330,9 @@ class DbModelQueryTest extends TestCase
 
     public function test_whereNotBetween()
     {
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT BETWEEN :_min_0 AND :_max_0',
+            City::query()->whereNotBetween('city_id', 1, 10)->getSql());
+
         $this->assertCount(553, Address::query()->whereNotBetween('address_id', 51, 100)->execute());
         $this->assertCount(503, Address::query()->whereNotBetween('address_id', null, 100)->execute());
         $this->assertCount(503, Address::query()->whereNotBetween('address_id', '', 100)->execute());
@@ -323,6 +346,15 @@ class DbModelQueryTest extends TestCase
 
     public function test_whereIn()
     {
+        $this->assertEquals('SELECT * FROM [city] WHERE FALSE',
+            City::query()->whereIn('city_id', [])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (1)',
+            City::query()->whereIn('city_id', [1])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0)',
+            City::query()->whereIn('city_id', ['1'])->getSql());
+
         $query = Address::query()->whereIn('address_id', []);
         $this->assertCount(0, $query->execute());
 
@@ -345,19 +377,119 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(4, $query->execute());
     }
 
+    public function test_whereNotIn()
+    {
+        $this->assertEquals('SELECT * FROM [city]',
+            City::query()->whereNotIn('city_id', [])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (1)',
+            City::query()->whereNotIn('city_id', [1])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] NOT IN (:_in_0_0)',
+            City::query()->whereNotIn('city_id', ['1'])->getSql());
+    }
+
     public function test_whereContains()
     {
-        $documents = Address::criteria()->whereContains('address', 'as')->fetch();
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_name] LIKE :city_name',
+            City::query()->whereContains('city_name', 'A')->getSql());
+
+        $documents = Address::query()->whereContains('address', 'as')->fetch();
         $this->assertCount(24, $documents);
-        $documents = Address::criteria()->whereContains('district', 'as')->fetch();
+        $documents = Address::query()->whereContains('district', 'as')->fetch();
         $this->assertCount(48, $documents);
 
-        $documents = Address::criteria()->whereContains(['address', 'district'], 'as')->fetch();
+        $documents = Address::query()->whereContains(['address', 'district'], 'as')->fetch();
         $this->assertCount(71, $documents);
+    }
+
+    public function test_whereNotContains()
+    {
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_name] NOT LIKE :city_name',
+            City::query()->whereNotContains('city_name', 'A')->getSql());
+    }
+
+    public function test_whereStartsWith()
+    {
+        $this->assertEquals(43, City::query()->whereStartsWith('city', 'A')->count());
+        $this->assertEquals(4, City::query()->whereStartsWith('city', 'A', 4)->count());
+    }
+
+    public function test_whereNotStartsWith()
+    {
+        $this->assertEquals(557, City::query()->whereNotStartsWith('city', 'A')->count());
+        $this->assertEquals(596, City::query()->whereNotStartsWith('city', 'A', 4)->count());
+    }
+
+    public function test_whereEndsWith()
+    {
+        $this->assertEquals(125, City::query()->whereEndsWith('city', 'a')->count());
+    }
+
+    public function test_whereNotEndsWith()
+    {
+        $this->assertEquals(475, City::query()->whereNotEndsWith('city', 'a')->count());
+    }
+
+    public function test_whereLike()
+    {
+        $this->assertEquals(0, City::query()->whereLike('city', 'A')->count());
+        $this->assertEquals(43, City::query()->whereLike('city', 'A%')->count());
+        $this->assertEquals(125, City::query()->whereLike('city', '%a')->count());
+        $this->assertEquals(450, City::query()->whereLike('city', '%A%')->count());
+        $this->assertEquals(4, City::query()->whereLike('city', 'A___')->count());
+        $this->assertEquals(83, City::query()->whereLike('city', '%A___')->count());
+    }
+
+    public function test_whereNotLike()
+    {
+        $this->assertEquals(600, City::query()->whereNotLike('city', 'A')->count());
+        $this->assertEquals(557, City::query()->whereNotLike('city', 'A%')->count());
+        $this->assertEquals(475, City::query()->whereNotLike('city', '%A')->count());
+        $this->assertEquals(150, City::query()->whereNotLike('city', '%A%')->count());
+        $this->assertEquals(596, City::query()->whereNotLike('city', 'A___')->count());
+        $this->assertEquals(517, City::query()->whereNotLike('city', '%A___')->count());
+    }
+
+    public function test_whereRegex()
+    {
+        $this->assertEquals(46, City::query()->whereRegex('city', 'A')->count());
+        $this->assertEquals(125, City::query()->whereRegex('city', 'a$')->count());
+        $this->assertEquals(38, City::query()->whereRegex('city', '^A')->count());
+        $this->assertEquals(262, City::query()->whereRegex('city', 'a....')->count());
+        $this->assertEquals(34, City::query()->whereRegex('city', '^A....')->count());
+
+        $this->assertEquals(450, City::query()->whereRegex('city', 'a', 'i')->count());
+        $this->assertEquals(450, City::query()->whereRegex('city', 'A', 'i')->count());
+    }
+
+    public function test_whereNotRegex()
+    {
+        $this->assertEquals(554, City::query()->whereNotRegex('city', 'A')->count());
+        $this->assertEquals(475, City::query()->whereNotRegex('city', 'a$')->count());
+        $this->assertEquals(562, City::query()->whereNotRegex('city', '^A')->count());
+        $this->assertEquals(338, City::query()->whereNotRegex('city', 'a....')->count());
+        $this->assertEquals(566, City::query()->whereNotRegex('city', '^A....')->count());
+
+        $this->assertEquals(150, City::query()->whereNotRegex('city', 'a', 'i')->count());
+        $this->assertEquals(150, City::query()->whereNotRegex('city', 'A', 'i')->count());
+    }
+
+    public function test_whereNull()
+    {
+        $this->assertEquals(0, City::query()->whereNull('city_id')->count());
+    }
+
+    public function test_whereNotNull()
+    {
+        $this->assertEquals(600, City::query()->whereNotNull('city_id')->count());
     }
 
     public function test_orderBy()
     {
+        $this->assertEquals('SELECT * FROM [city] ORDER BY [city_id]',
+            City::query()->orderBy('city_id')->getSql());
+
         $query = Address::query()
             ->select(['address_id'])
             ->where('address_id <=:max_address_id', ['max_address_id' => 10])
@@ -466,6 +598,9 @@ class DbModelQueryTest extends TestCase
 
     public function test_limit()
     {
+        $this->assertEquals('SELECT * FROM [city] LIMIT 10',
+            City::query()->limit(10)->getSql());
+
         //limit without offset
         $query = City::query()->select(['city_id'])->limit(1);
         $this->assertCount(1, $query->execute());
@@ -484,6 +619,9 @@ class DbModelQueryTest extends TestCase
 
     public function test_page()
     {
+        $this->assertEquals('SELECT * FROM [city] LIMIT 10 OFFSET 20',
+            City::query()->page(10, 3)->getSql());
+
         //limit without offset
         $query = City::query()->select(['city_id'])->limit(1);
         $this->assertCount(1, $query->execute());
@@ -502,6 +640,9 @@ class DbModelQueryTest extends TestCase
 
     public function test_groupBy()
     {
+        $this->assertEquals('SELECT * FROM [city] GROUP BY [city_id]',
+            City::query()->groupBy('city_id')->getSql());
+
         $query = City::query()
             ->select(['count_city' => 'COUNT(city_id)', 'country_id'])
             ->groupBy('country_id');
@@ -544,29 +685,79 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(599, $query->execute());
     }
 
+    public function test_exists()
+    {
+        $this->assertTrue(City::query()->exists());
+        $this->assertTrue(City::query()->where('city_id', 1)->exists());
+        $this->assertFalse(City::query()->where('city_id', 0)->exists());
+    }
+
+    public function test_count()
+    {
+        $this->assertInternalType('int', Actor::query()->count());
+
+        $this->assertEquals(200, Actor::query()->count());
+
+        $this->assertEquals(1, Actor::query()->where(['actor_id' => 1])->count());
+
+        $this->assertEquals(128, Actor::query()->count(' DISTINCT first_name'));
+    }
+
+    public function test_sum()
+    {
+        $sum = Payment::query()->sum('amount');
+        $this->assertEquals('string', gettype($sum));
+        $this->assertEquals(67417.0, round($sum, 0));
+
+        $sum = Payment::query()->where(['customer_id' => 1])->sum('amount');
+        $this->assertEquals('118.68', $sum);
+    }
+
+    public function test_max()
+    {
+        $max = Payment::query()->max('amount');
+        $this->assertEquals('string', gettype($max));
+        $this->assertEquals('11.99', $max);
+    }
+
+    public function test_min()
+    {
+        $min = Payment::query()->min('amount');
+        $this->assertEquals('string', gettype($min));
+        $this->assertEquals('0.00', $min);
+    }
+
+    public function test_avg()
+    {
+        $avg = Payment::query()->avg('amount');
+        $this->assertEquals('double', gettype($avg));
+
+        $this->assertEquals(4.20, round($avg, 2));
+    }
+
     public function test_paginate()
     {
-        $pagination = City::criteria()->paginate(1000, 1);
+        $pagination = City::query()->paginate(1000, 1);
         $this->assertCount(600, $pagination->items);
         $this->assertEquals(600, $pagination->count);
 
-        $pagination = City::criteria()->paginate(100, 1);
+        $pagination = City::query()->paginate(100, 1);
         $this->assertCount(100, $pagination->items);
         $this->assertEquals(600, $pagination->count);
 
-        $pagination = City::criteria()->paginate(1000, 1);
+        $pagination = City::query()->paginate(1000, 1);
         $this->assertCount(600, $pagination->items);
         $this->assertEquals(600, $pagination->count);
 
-        $pagination = City::criteria()->paginate(200, 2);
+        $pagination = City::query()->paginate(200, 2);
         $this->assertCount(200, $pagination->items);
         $this->assertEquals(600, $pagination->count);
 
-        $pagination = City::criteria()->paginate(30, 100);
+        $pagination = City::query()->paginate(30, 100);
         $this->assertCount(0, $pagination->items);
         $this->assertEquals(600, $pagination->count);
 
-        $pagination = City::criteria()->groupBy('country_id')->paginate(10, 2);
+        $pagination = City::query()->groupBy('country_id')->paginate(10, 2);
         $this->assertCount(10, $pagination->items);
         $this->assertEquals(109, $pagination->count);
     }

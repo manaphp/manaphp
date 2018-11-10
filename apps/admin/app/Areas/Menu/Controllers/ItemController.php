@@ -9,7 +9,7 @@ class ItemController extends Controller
     public function indexAction()
     {
         if ($this->request->isAjax()) {
-            return Item::criteria()
+            return Item::query()
                 ->whereSearch(['group_id'])
                 ->orderBy(['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC])
                 ->fetch(true);

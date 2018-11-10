@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Mongodb\Model;
+namespace ManaPHP\Mongodb;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -8,19 +8,21 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\ExpressionInterface;
+use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
 
-/**
- * Class ManaPHP\Mongodb\Model\Criteria
- *
- * @package ManaPHP\Mongodb\Model
- *
- * @property-read \ManaPHP\Paginator             $paginator
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Mongodb\Model         $_model
- */
-class Criteria extends \ManaPHP\Model\Criteria
+class Query extends \ManaPHP\Query
 {
+    /**
+     * @var \ManaPHP\MongodbInterface|string
+     */
+    protected $_db;
+
+    /**
+     * @var string
+     */
+    protected $_source;
+
     /**
      * @var array
      */
@@ -47,46 +49,54 @@ class Criteria extends \ManaPHP\Model\Criteria
     protected $_order;
 
     /**
-     * @var int
-     */
-    protected $_limit;
-
-    /**
-     * @var int
-     */
-    protected $_offset;
-
-    /**
-     * @var bool
-     */
-    protected $_distinct;
-
-    /**
      * @var array
      */
     protected $_group;
 
     /**
-     * @var bool
+     * @var string|callable
      */
-    protected $_forceUseMaster = false;
+    protected $_index;
 
     /**
-     * Criteria constructor.
+     * Query constructor.
      *
-     * @param string|\ManaPHP\Mongodb\Model $model
-     * @param string|array                  $fields
+     * @param string|\ManaPHP\Mongodb\Model    $source
+     * @param \ManaPHP\MongodbInterface|string $db
      */
-    public function __construct($model, $fields = null)
+    public function __construct($source, $db = null)
     {
-        $this->_model = is_string($model) ? new $model : $model;
-        $this->_di = Di::getDefault();
-
-        if ($fields !== null) {
-            $this->select($fields);
+        if (is_string($source) && strpos($source, '\\') !== false) {
+            $source = new $source;
         }
 
-        $this->_types = $this->_model->getFieldTypes();
+        if (is_string($source)) {
+            $this->_di = Di::getDefault();
+            $this->_source = $source;
+
+        } else {
+            $this->_di = $source->getDi();
+            $this->_model = $source;
+            $this->_source = $source->getSource();
+            $this->_db = $source->getDb();
+            $this->_types = $source->getFieldTypes();
+        }
+
+        if ($db) {
+            $this->_db = $db;
+        }
+    }
+
+    /**
+     * @param \ManaPHP\MongodbInterface|string $db
+     *
+     * @return static
+     */
+    public function setDb($db)
+    {
+        $this->_db = $db;
+
+        return $this;
     }
 
     /**
@@ -94,7 +104,7 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function getSource()
     {
-        return $this->_model->getSource($this);
+        return $this->_source;
     }
 
     /**
@@ -102,7 +112,19 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function getDb()
     {
-        return $this->_di->getShared($this->_model->getDb());
+        return $this->_di->getShared($this->_db);
+    }
+
+    /**
+     * @param array $types
+     *
+     * @return static
+     */
+    public function setTypes($types)
+    {
+        $this->_types = $types;
+
+        return $this;
     }
 
     /**
@@ -184,6 +206,19 @@ class Criteria extends \ManaPHP\Model\Criteria
                 $this->_projection = $projection;
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $table
+     * @param string $alias
+     *
+     * @return static
+     */
+    public function from($table, $alias = null)
+    {
+        $this->_source = $table;
 
         return $this;
     }
@@ -316,11 +351,28 @@ class Criteria extends \ManaPHP\Model\Criteria
      */
     public function normalizeValue($field, $value)
     {
-        if (!$this->_types) {
+        if ($value === null || !$this->_types) {
             return $value;
         }
 
-        return $this->_model->normalizeValue($this->_types[$field], $value);
+        $type = $this->_types[$field];
+
+        if ($type === 'string') {
+            return is_string($value) ? $value : (string)$value;
+        } elseif ($type === 'integer') {
+            return is_int($value) ? $value : (int)$value;
+        } elseif ($type === 'double') {
+            return is_float($value) ? $value : (double)$value;
+        } elseif ($type === 'objectid') {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            return is_scalar($type) ? new ObjectId($value) : $value;
+        } elseif ($type === 'boolean') {
+            return is_bool($value) ? $value : (bool)$value;
+        } elseif ($type === 'array') {
+            return (array)$value;
+        } else {
+            throw new InvalidValueException(['normalize `:type` type value is not supported', 'type' => $type]);
+        }
     }
 
     /**
@@ -453,7 +505,7 @@ class Criteria extends \ManaPHP\Model\Criteria
         } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
             $this->_filters[] = [$matches[1] => ['$mod' => [(int)$matches[2], (int)$value]]];
         } else {
-            throw new InvalidValueException(['unknown mongodb criteria `filter` filter', 'filter' => $filter]);
+            throw new InvalidValueException(['unknown mongodb query `filter` filter', 'filter' => $filter]);
         }
 
         return $this;
@@ -857,27 +909,6 @@ class Criteria extends \ManaPHP\Model\Criteria
     }
 
     /**
-     * Sets a LIMIT clause, optionally a offset clause
-     *
-     *<code>
-     *    $builder->limit(100);
-     *    $builder->limit(100, 20);
-     *</code>
-     *
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return static
-     */
-    public function limit($limit, $offset = null)
-    {
-        $this->_limit = $limit > 0 ? (int)$limit : null;
-        $this->_offset = $offset > 0 ? (int)$offset : null;
-
-        return $this;
-    }
-
-    /**
      * Sets a GROUP BY clause
      *
      * @param string|array $groupBy
@@ -944,11 +975,11 @@ class Criteria extends \ManaPHP\Model\Criteria
                 if (!isset($this->_projection['*'])) {
                     $options['projection'] = $this->_projection;
                 }
-            } else {
+            } elseif ($this->_model) {
                 $options['projection'] = array_fill_keys($this->_model->getFields(), 1);
             }
 
-            if (isset($options['projection']) && !isset($options['projection']['_id']) && $this->_model->getPrimaryKey() !== '_id') {
+            if ($this->_model && isset($options['projection']) && !isset($options['projection']['_id']) && $this->_model->getPrimaryKey() !== '_id') {
                 $options['projection']['_id'] = false;
             }
 
@@ -1084,18 +1115,6 @@ class Criteria extends \ManaPHP\Model\Criteria
         }
 
         return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
-    }
-
-    /**
-     * @param bool $forceUseMaster
-     *
-     * @return static
-     */
-    public function forceUseMaster($forceUseMaster = true)
-    {
-        $this->_forceUseMaster = $forceUseMaster;
-
-        return $this;
     }
 
     /**

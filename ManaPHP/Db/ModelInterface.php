@@ -17,13 +17,12 @@ interface ModelInterface extends \ManaPHP\ModelInterface
     public function getConnection($context = null);
 
     /**
-     * Create a criteria for a specific model
+     * @param array          $fields
+     * @param \ManaPHP\Model $model
      *
-     * @param string $alias
-     *
-     * @return \ManaPHP\Db\Model\QueryInterface
+     * @return \ManaPHP\Db\Query
      */
-    public static function query($alias = null);
+    public static function query($fields = null, $model = null);
 
     /**
      * @param array|string $sql

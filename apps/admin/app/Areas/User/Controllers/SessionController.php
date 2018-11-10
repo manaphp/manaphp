@@ -91,7 +91,7 @@ class SessionController extends Controller
     public function logAction()
     {
         if ($this->request->isAjax()) {
-            $builder = AdminLoginLog::criteria()
+            $builder = AdminLoginLog::query()
                 ->select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
                 ->orderBy('login_id DESC');
 

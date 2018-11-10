@@ -99,9 +99,9 @@ interface ModelInterface
      * @param array          $fields
      * @param \ManaPHP\Model $model
      *
-     * @return \ManaPHP\Db\Model\CriteriaInterface
+     * @return \ManaPHP\QueryInterface
      */
-    public static function criteria($fields = null, $model = null);
+    public static function query($fields = null, $model = null);
 
     /**
      * Allows to query a set of records that match the specified conditions

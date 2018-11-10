@@ -315,11 +315,17 @@ class Model extends \ManaPHP\Model
      * @param array                  $fields
      * @param \ManaPHP\Mongodb\Model $model
      *
-     * @return \ManaPHP\Mongodb\Model\Criteria
+     * @return \ManaPHP\Mongodb\Query
      */
-    public static function criteria($fields = null, $model = null)
+    public static function query($fields = null, $model = null)
     {
-        return Di::getDefault()->get('ManaPHP\Mongodb\Model\Criteria', [$model ?: get_called_class(), $fields]);
+        if (!$model) {
+            $model = Di::getDefault()->get(get_called_class());
+        } elseif (!$model->_di) {
+            $model->_di = Di::getDefault();
+        }
+
+        return $model->_di->get('ManaPHP\Mongodb\Query', [$model])->select($fields);
     }
 
     /**
@@ -484,8 +490,8 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        $criteria = static::criteria(null, $this)->where($primaryKeyValuePairs);
-        $criteria->update($fieldValues);
+        $query = static::query(null, $this)->where($primaryKeyValuePairs);
+        $query->update($fieldValues);
 
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
@@ -496,7 +502,7 @@ class Model extends \ManaPHP\Model
 
         if ($expressionFields) {
             $expressionFields['_id'] = false;
-            if ($rs = $criteria->select($expressionFields)->execute()) {
+            if ($rs = $query->select($expressionFields)->execute()) {
                 foreach ((array)$rs[0] as $field => $value) {
                     $this->$field = $value;
                 }

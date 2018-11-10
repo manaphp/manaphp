@@ -132,23 +132,17 @@ class Model extends \ManaPHP\Model implements ModelInterface
      * @param array             $fields
      * @param \ManaPHP\Db\Model $model
      *
-     * @return \ManaPHP\Db\Model\CriteriaInterface
+     * @return \ManaPHP\Db\Query
      */
-    public static function criteria($fields = null, $model = null)
+    public static function query($fields = null, $model = null)
     {
-        return Di::getDefault()->get('ManaPHP\Db\Model\Criteria', [$model ?: get_called_class(), $fields]);
-    }
+        if (!$model) {
+            $model = Di::getDefault()->get(get_called_class());
+        } elseif (!$model->_di) {
+            $model->_di = Di::getDefault();
+        }
 
-    /**
-     * Create a criteria for a specific model
-     *
-     * @param string $alias
-     *
-     * @return \ManaPHP\Db\Model\QueryInterface
-     */
-    public static function query($alias = null)
-    {
-        return Di::getDefault()->get('ManaPHP\Db\Model\Query')->from(get_called_class(), $alias);
+        return $model->_di->get('ManaPHP\Db\Query', [$model])->select($fields);
     }
 
     /**
@@ -287,8 +281,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $criteria = static::criteria(null, $this)->where($primaryKeyValuePairs);
-        $criteria->update($fieldValues);
+        $query = static::query(null, $this)->where($primaryKeyValuePairs);
+        $query->update($fieldValues);
 
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
@@ -297,7 +291,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        if ($expressionFields && $rs = $criteria->select($expressionFields)->fetch(true)) {
+        if ($expressionFields && $rs = $query->select($expressionFields)->fetch(true)) {
             foreach ((array)$rs[0] as $field => $value) {
                 $this->$field = $value;
             }

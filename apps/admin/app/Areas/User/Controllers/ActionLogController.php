@@ -10,7 +10,7 @@ class ActionLogController extends Controller
     {
         if ($this->request->isAjax()) {
 
-            $criteria = AdminActionLog::criteria(['id', 'user_name', 'ip', 'udid', 'method', 'url', 'created_time'])
+            $criteria = AdminActionLog::query(['id', 'user_name', 'ip', 'udid', 'method', 'url', 'created_time'])
                 ->whereSearch(['user_name', 'url'])
                 ->orderBy(['id' => SORT_DESC]);
             return $this->response->setJsonContent($criteria->paginate());

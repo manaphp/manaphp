@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Model\Hierarchy\Adapter;
 
-use ManaPHP\Model\CriteriaInterface;
 use ManaPHP\Model\Hierarchy\Exception as HierarchyException;
 use ManaPHP\Utility\Text;
 
@@ -10,7 +9,7 @@ use ManaPHP\Utility\Text;
  * Class ManaPHP\Hierarchy
  *
  * @package ManaPHP
- * @method static CriteriaInterface criteria()
+ * @method static \ManaPHP\QueryInterface query()
  */
 trait Path
 {
@@ -200,7 +199,7 @@ trait Path
         }
 
         $hierarchyField = static::getHierarchyField();
-        return static::criteria()->whereStartsWith($hierarchyField, $code, $length)->values($hierarchyField);
+        return static::query()->whereStartsWith($hierarchyField, $code, $length)->values($hierarchyField);
     }
 
     /**
@@ -216,7 +215,7 @@ trait Path
 
         $parent = static::getHierarchyParent($code);
         $hierarchyField = static::getHierarchyField();
-        return static::criteria()->whereStartsWith($hierarchyField, $parent, strlen($code))->values($hierarchyField);
+        return static::query()->whereStartsWith($hierarchyField, $parent, strlen($code))->values($hierarchyField);
     }
 
     /**
@@ -254,7 +253,7 @@ trait Path
      */
     public static function hierarchyExists($code)
     {
-        return static::criteria()->where(static::getHierarchyField(), $code)->exists();
+        return static::query()->where(static::getHierarchyField(), $code)->exists();
     }
 
     /**
@@ -295,7 +294,7 @@ trait Path
             return false;
         }
 
-        $max = static::criteria()->whereStartsWith($hierarchyField, $code, $child_length)->max($hierarchyField);
+        $max = static::query()->whereStartsWith($hierarchyField, $code, $child_length)->max($hierarchyField);
         if ($max === null) {
             return $code . str_pad('', $child_length - strlen($code) - 1, '0') . '1';
         } else {
