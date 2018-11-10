@@ -144,7 +144,7 @@ class DbModelQueryTest extends TestCase
         //multi-models with alias
         $query = Address::query('a')
             ->select(['a.*', 'c.*'])
-            ->from(get_class(new City()), 'c')
+            ->addFrom(get_class(new City()), 'c')
             ->limit(2);
 
         $rows = $query->execute();

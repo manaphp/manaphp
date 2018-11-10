@@ -211,14 +211,31 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $this->_model = $this->_di->getShared($table);
         }
 
-        if (is_string($alias)) {
-            $this->_tables[$alias] = $table;
+        if ($alias) {
+            $this->_tables = [$alias => $table];
         } else {
-            $this->_tables[] = $table;
+            $this->_tables = [$table];
         }
 
         if ($this->_db === null && $table instanceof self) {
             $this->_db = $table->_db;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $table
+     * @param string $alias
+     *
+     * @return static
+     */
+    public function addFrom($table, $alias = null)
+    {
+        if ($alias) {
+            $this->_tables[$alias] = $table;
+        } else {
+            $this->_tables[] = $table;
         }
 
         return $this;

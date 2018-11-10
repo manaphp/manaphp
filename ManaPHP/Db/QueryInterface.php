@@ -5,6 +5,14 @@ namespace ManaPHP\Db;
 interface QueryInterface extends \ManaPHP\QueryInterface
 {
     /**
+     * @param string $table
+     * @param string $alias
+     *
+     * @return static
+     */
+    public function addFrom($table, $alias = null);
+
+    /**
      * Adds a join to the query
      *
      *<code>
