@@ -558,10 +558,8 @@ class Response extends Component implements ResponseInterface
 
         if ($this->_content !== null) {
             echo $this->_content;
-        } else {
-            if ($this->_file) {
-                readfile($this->alias->resolve($this->_file));
-            }
+        } elseif ($this->_file) {
+            readfile($this->alias->resolve($this->_file));
         }
 
         $this->_sent = true;
