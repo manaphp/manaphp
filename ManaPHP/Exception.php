@@ -83,7 +83,7 @@ class Exception extends \Exception
      */
     public function getJson()
     {
-        return $this->_json ? $this->_json : ['code' => 1, 'message' => $this->getMessage()];
+        return $this->_json ?: ['code' => 1, 'message' => $this->getMessage()];
     }
 
     /**
