@@ -979,8 +979,10 @@ class Query extends \ManaPHP\Query
         if (!$this->_aggregate) {
             $options = [];
 
-            if ($this->_projection !== null) {
-                if (!isset($this->_projection['*'])) {
+            if ($this->_projection) {
+                if (isset($this->_projection['*'])) {
+                    $options['projection'] = ['_id' => false];
+                } else {
                     $options['projection'] = $this->_projection;
                 }
             } elseif ($this->_model) {
