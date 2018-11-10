@@ -64,7 +64,7 @@ class Query extends \ManaPHP\Query
      * @param string|\ManaPHP\Mongodb\Model    $source
      * @param \ManaPHP\MongodbInterface|string $db
      */
-    public function __construct($source, $db = null)
+    public function __construct($source = null, $db = null)
     {
         if (is_string($source) && strpos($source, '\\') !== false) {
             $source = new $source;
@@ -73,8 +73,7 @@ class Query extends \ManaPHP\Query
         if (is_string($source)) {
             $this->_di = Di::getDefault();
             $this->_source = $source;
-
-        } else {
+        } elseif ($source) {
             $this->_di = $source->getDi();
             $this->_model = $source;
             $this->_source = $source->getSource();
@@ -145,7 +144,7 @@ class Query extends \ManaPHP\Query
             $collection = $source;
         }
 
-        $mongodb = $this->getDb();
+        $mongodb = $this->getConnection();
 
         $cmd = ['distinct' => $collection, 'key' => $field];
         if ($this->_filters) {
@@ -963,11 +962,23 @@ class Query extends \ManaPHP\Query
     }
 
     /**
+     * @return \ManaPHP\MongodbInterface
+     */
+    public function getConnection()
+    {
+        if (is_object($this->_db)) {
+            return $this->_db;
+        } else {
+            return $this->_di->getShared($this->_db ?: 'mongodb');
+        }
+    }
+
+    /**
      * @return array
      */
     public function execute()
     {
-        $mongodb = $this->getDb();
+        $mongodb = $this->getConnection();
         if (!$this->_aggregate) {
             $options = [];
 
@@ -1141,7 +1152,7 @@ class Query extends \ManaPHP\Query
             $filters[$key] = $value;
         }
 
-        return $this->getDb()->delete($this->getSource(), $filters);
+        return $this->getConnection()->delete($this->getSource(), $filters);
     }
 
     /**
@@ -1182,6 +1193,6 @@ class Query extends \ManaPHP\Query
             }
         }
 
-        return $this->getDb()->update($this->getSource(), $filters, $fieldValues);
+        return $this->getConnection()->update($this->getSource(), $filters, $fieldValues);
     }
 }

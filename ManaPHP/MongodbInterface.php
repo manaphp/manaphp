@@ -124,4 +124,11 @@ interface MongodbInterface
      * @return array
      */
     public function listCollections($db = null);
+
+    /**
+     * @param string $collection
+     *
+     * @return \ManaPHP\Mongodb\Query
+     */
+    public function newQuery($collection = null);
 }
