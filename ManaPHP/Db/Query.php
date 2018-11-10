@@ -1346,17 +1346,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     {
         return $this->_tables;
     }
-
-    /**
-     * @return $this
-     */
-    protected function _replaceModelInfo()
-    {
-
-
-        return $this;
-    }
-
+    
     /**
      *
      * @return array
