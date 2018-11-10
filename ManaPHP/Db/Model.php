@@ -104,7 +104,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 }
             }
 
-            $cached[$className] = $fields;
+            $cached[$className] = $fields ?: $this->_di->modelsMetadata->getAttributes($this);
         }
 
         return $cached[$className];
