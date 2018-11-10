@@ -256,6 +256,7 @@ class View extends Component implements ViewInterface
             $content = $this->viewsCache->get($cacheOptions['key']);
             if ($content === false) {
                 $this->fireEvent('view:missCache', ['key' => $cacheOptions['key'], 'view' => $view]);
+                /** @noinspection NotOptimalIfConditionsInspection */
                 if (is_string($vars)) {
                     $content = $vars;
                 } else {
