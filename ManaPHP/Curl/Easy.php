@@ -215,10 +215,8 @@ class Easy extends Component implements EasyInterface
                     $str = 'http://TRACK/';
                 }
                 $options[CURLOPT_REFERER] = $str . (strpos($str, '?') ? '&' : '?') . http_build_query($referer);
-            } else {
-                if (!strpos($options[CURLOPT_REFERER], '://')) {
-                    $options[CURLOPT_REFERER] = 'http://TRACE/' . $options[CURLOPT_REFERER];
-                }
+            } elseif (!strpos($options[CURLOPT_REFERER], '://')) {
+                $options[CURLOPT_REFERER] = 'http://TRACE/' . $options[CURLOPT_REFERER];
             }
         }
 
