@@ -144,7 +144,7 @@ class DbModelQueryTest extends TestCase
         //multi-models with alias
         $query = Address::query('a')
             ->select(['a.*', 'c.*'])
-            ->addFrom(get_class(new City()), 'c')
+            ->from(get_class(new City()), 'c')
             ->limit(2);
 
         $rows = $query->execute();
@@ -283,36 +283,36 @@ class DbModelQueryTest extends TestCase
     public function test_andWhere()
     {
         $query = Address::query()
-            ->andWhere('address_id<=', 100);
+            ->where('address_id<=', 100);
         $this->assertCount(100, $query->execute());
 
         $query = Address::query()
-            ->andWhere('address_id <=:max_address_id', ['max_address_id' => 100]);
+            ->where('address_id <=:max_address_id', ['max_address_id' => 100]);
         $this->assertCount(100, $query->execute());
 
         $query = Address::query()
-            ->andWhere('address_id>=:min_address_id', ['min_address_id' => 51])
-            ->andWhere('address_id<=:max_address_id', ['max_address_id' => 100]);
+            ->where('address_id>=:min_address_id', ['min_address_id' => 51])
+            ->where('address_id<=:max_address_id', ['max_address_id' => 100]);
         $this->assertCount(50, $query->execute());
 
         $query = Address::query()
-            ->andWhere('address_id', 1);
+            ->where('address_id', 1);
         $this->assertCount(1, $query->execute());
 
         $query = Address::query()
-            ->andWhere('address_id=', 1);
+            ->where('address_id=', 1);
         $this->assertCount(1, $query->execute());
 
         $query = Address::query()
-            ->andWhere('address_id<', 2);
+            ->where('address_id<', 2);
         $this->assertCount(1, $query->execute());
 
         $query = Address::query('a')
-            ->andWhere('a.address_id', 1);
+            ->where('a.address_id', 1);
         $this->assertCount(1, $query->execute());
 
         $query = Address::query('a')
-            ->andWhere('a.address_id', 1);
+            ->where('a.address_id', 1);
         $this->assertCount(1, $query->execute());
     }
 
