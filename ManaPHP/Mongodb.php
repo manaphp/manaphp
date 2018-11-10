@@ -560,7 +560,7 @@ class Mongodb extends Component implements MongodbInterface
      *
      * @return \ManaPHP\Mongodb\Query
      */
-    public function newQuery($collection = null)
+    public function query($collection = null)
     {
         return $this->_di->get('ManaPHP\Mongodb\Query')->setDb($this)->from($collection);
     }

@@ -489,12 +489,12 @@ class Proxy extends Component implements DbInterface
      *
      * @return \ManaPHP\Db\Query
      */
-    public function newQuery($table = null, $alias = null)
+    public function query($table = null, $alias = null)
     {
         if ($this->_masterConnection !== null) {
-            return $this->_masterConnection->newQuery($table, $alias);
+            return $this->_masterConnection->query($table, $alias);
         } else {
-            return $this->getSlaveConnection()->newQuery($table, $alias);
+            return $this->getSlaveConnection()->query($table, $alias);
         }
     }
 

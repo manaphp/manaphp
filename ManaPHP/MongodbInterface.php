@@ -130,5 +130,5 @@ interface MongodbInterface
      *
      * @return \ManaPHP\Mongodb\Query
      */
-    public function newQuery($collection = null);
+    public function query($collection = null);
 }

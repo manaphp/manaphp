@@ -280,5 +280,5 @@ interface DbInterface
      *
      * @return \ManaPHP\Db\Query
      */
-    public function newQuery($table = null, $alias = null);
+    public function query($table = null, $alias = null);
 }
