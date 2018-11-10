@@ -423,24 +423,23 @@ class Model extends \ManaPHP\Model
         $changedFields = [];
         foreach ($fields as $field) {
             if ($this->$field === null) {
+                /** @noinspection NotOptimalIfConditionsInspection */
                 if (isset($snapshot[$field])) {
                     $changedFields[] = $field;
                 }
-            } else {
-                if (!isset($snapshot[$field])) {
-                    if (is_scalar($this->$field)) {
-                        $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
-                    }
-                    $changedFields[] = $field;
-                } elseif ($snapshot[$field] !== $this->$field) {
-                    if (is_scalar($this->$field)) {
-                        $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
-                    }
+            } elseif (!isset($snapshot[$field])) {
+                if (is_scalar($this->$field)) {
+                    $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
+                }
+                $changedFields[] = $field;
+            } elseif ($snapshot[$field] !== $this->$field) {
+                if (is_scalar($this->$field)) {
+                    $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
+                }
 
-                    /** @noinspection NotOptimalIfConditionsInspection */
-                    if ($snapshot[$field] !== $this->$field) {
-                        $changedFields[] = $field;
-                    }
+                /** @noinspection NotOptimalIfConditionsInspection */
+                if ($snapshot[$field] !== $this->$field) {
+                    $changedFields[] = $field;
                 }
             }
         }
@@ -467,10 +466,8 @@ class Model extends \ManaPHP\Model
                 if (isset($snapshot[$field])) {
                     $fieldValues[$field] = null;
                 }
-            } else {
-                if (!isset($snapshot[$field]) || $snapshot[$field] !== $this->$field) {
-                    $fieldValues[$field] = $this->$field;
-                }
+            } elseif (!isset($snapshot[$field]) || $snapshot[$field] !== $this->$field) {
+                $fieldValues[$field] = $this->$field;
             }
         }
 
