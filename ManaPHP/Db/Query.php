@@ -5,6 +5,9 @@ use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Model\Expression\Increment;
+use ManaPHP\Model\Expression\Raw;
+use ManaPHP\Model\ExpressionInterface;
 
 /**
  * Class ManaPHP\Db\Model\QueryBuilder
@@ -108,13 +111,28 @@ class Query extends \ManaPHP\Query implements QueryInterface
      *$queryBuilder = new \ManaPHP\Mvc\Model\Query\Builder($params);
      *</code>
      *
+     * @param \ManaPHP\Model|string       $source
      * @param \ManaPHP\DbInterface|string $db
      */
-    public function __construct($db = null)
+    public function __construct($source = null, $db = null)
     {
-        $this->_db = $db;
+        if (is_string($source) && strpos($source, '\\') !== false) {
+            $source = new $source;
+        }
 
-        $this->_di = Di::getDefault();
+        if (is_string($source)) {
+            $this->_di = Di::getDefault();
+            $this->from($source);
+        } else {
+            $this->_di = $source->getDi();
+            $this->_model = $source;
+            $this->from($source->getSource());
+            $this->_db = $source->getDb();
+        }
+
+        if ($db) {
+            $this->_db = $db;
+        }
     }
 
     /**
@@ -310,7 +328,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
                     $this->whereNotIn(substr($filter, 0, -2), $value);
                 } elseif (strpos($filter, '@=')) {
-                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                    $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
                 } else {
                     if (strpos($filter, ' ') !== false) {
                         $this->_conditions[] = $filter;
@@ -1454,6 +1472,17 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function update($fieldValues)
     {
+        foreach ($fieldValues as $field => $value) {
+            if ($value instanceof ExpressionInterface) {
+                if ($value instanceof Increment) {
+                    $fieldValues[] = "[$field]=[$field]" . ($value->step >= 0 ? '+' : '') . $value->step;
+                } elseif ($value instanceof Raw) {
+                    $fieldValues[] = "[$field]=" . $value->expression;
+                }
+                unset($fieldValues[$field]);
+            }
+        }
+
         return $this->_db->update($this->_tables[0], $fieldValues, $this->_conditions, $this->_bind);
     }
 

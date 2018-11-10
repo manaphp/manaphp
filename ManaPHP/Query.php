@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Model\NotFoundException;
 
 /**
@@ -70,6 +71,14 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     }
 
     /**
+     * @return \ManaPHP\Model|null
+     */
+    public function getModel()
+    {
+        return $this->_model;
+    }
+
+    /**
      * Sets SELECT DISTINCT / SELECT ALL flag
      *
      * @param bool $distinct
@@ -84,37 +93,75 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     }
 
     /**
-     * @param array $fields
+     * @param array $filters
      *
      * @return static
      */
-    public function whereRequest($fields)
+    public function whereSearch($filters)
     {
-        foreach ($fields as $k => $v) {
-            if (strpos($v, '.') === false) {
-                $field = $v;
-            } else {
-                $parts = explode('.', $v);
-                $field = $parts[1];
-            }
-            $value = $this->request->get(rtrim($field, '=!<>~*^@$'));
-            if ($value === null) {
-                continue;
-            } elseif (is_string($value)) {
-                $value = trim($value);
-                if ($value === '') {
-                    continue;
-                }
-            } elseif (is_array($value)) {
-                if (count($value) === 1 && trim($value[0]) === '') {
-                    continue;
-                }
-            }
+        $data = $this->request->get();
 
-            $this->where($v, $value);
+        foreach ($filters as $k => $v) {
+            preg_match('#^(\w+)(.*)$#', is_int($k) ? $v : $k, $match);
+            $field = $match[1];
+
+            if (is_int($k)) {
+                if (!isset($data[$field])) {
+                    continue;
+                }
+                $value = $data[$field];
+                if (is_string($value)) {
+                    $value = trim($value);
+                    if ($value === '') {
+                        continue;
+                    }
+                }
+                $this->where($v, $value);
+            } else {
+                $this->where($k, $v);
+            }
         }
 
         return $this;
+    }
+
+    /**
+     * @param string     $field
+     * @param int|string $min
+     * @param int|string $max
+     *
+     * @return static
+     */
+    public function whereDateBetween($field, $min, $max)
+    {
+        if (!$this->_model) {
+            throw new MisuseException('use whereDateBetween must provide model');
+        }
+
+        if ($min && strpos($min, ':') === false) {
+            $min = (int)(is_numeric($min) ? $min : strtotime($min . ' 00:00:00'));
+        }
+        if ($max && strpos($max, ':') === false) {
+            $max = (int)(is_numeric($max) ? $max : strtotime($max . ' 23:59:59'));
+        }
+
+        if ($format = $this->_model->getDateFormat($field)) {
+            if (is_int($min)) {
+                $min = date($format, $min);
+            }
+            if (is_int($max)) {
+                $max = date($format, $max);
+            }
+        } else {
+            if ($min && !is_int($min)) {
+                $min = (int)strtotime($min);
+            }
+            if ($max && !is_int($max)) {
+                $max = (int)strtotime($max);
+            }
+        }
+
+        return $this->whereBetween($field, $min ?: null, $max ?: null);
     }
 
     /**

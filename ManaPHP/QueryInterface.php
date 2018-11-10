@@ -11,6 +11,11 @@ interface QueryInterface
     public function setDb($db);
 
     /**
+     * @return \ManaPHP\Model
+     */
+    public function getModel();
+
+    /**
      *
      *<code>
      *    $builder->from('Robots');
@@ -55,11 +60,11 @@ interface QueryInterface
     public function where($filter, $value = null);
 
     /**
-     * @param array $fields
+     * @param array $filters
      *
      * @return static
      */
-    public function whereRequest($fields);
+    public function whereSearch($filters);
 
     /**
      * Appends a BETWEEN condition to the current conditions
@@ -90,6 +95,15 @@ interface QueryInterface
      * @return static
      */
     public function whereNotBetween($expr, $min, $max);
+
+    /**
+     * @param string     $field
+     * @param int|string $min
+     * @param int|string $max
+     *
+     * @return static
+     */
+    public function whereDateBetween($field, $min, $max);
 
     /**
      * Appends an IN condition to the current conditions
