@@ -325,7 +325,7 @@ class Model extends \ManaPHP\Model
             $model->_di = Di::getDefault();
         }
 
-        return $model->_di->get('ManaPHP\Mongodb\Query', [$model])->select($fields);
+        return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model)->select($fields);
     }
 
     /**

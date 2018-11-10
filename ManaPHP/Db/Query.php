@@ -111,30 +111,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
      *$queryBuilder = new \ManaPHP\Mvc\Model\Query\Builder($params);
      *</code>
      *
-     * @param \ManaPHP\Model|string       $source
      * @param \ManaPHP\DbInterface|string $db
      */
-    public function __construct($source = null, $db = null)
+    public function __construct($db = null)
     {
-        if (is_string($source) && strpos($source, '\\') !== false) {
-            $source = new $source;
-        }
-
-        if ($source === null) {
-            $this->_di = Di::getDefault();
-        } elseif (is_string($source)) {
-            $this->_di = Di::getDefault();
-            $this->from($source);
-        } else {
-            $this->_di = $source->getDi();
-            $this->_model = $source;
-            $this->from(get_class($source));
-            $this->_db = $source->getDb();
-        }
-
-        if ($db) {
-            $this->_db = $db;
-        }
+        $this->_db = $db;
     }
 
     /**
@@ -154,10 +135,28 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function getConnection()
     {
+        if (!$this->_di) {
+            $this->_di = Di::getDefault();
+        }
+
         if (is_object($this->_db)) {
             return $this->_db;
+        } elseif ($this->_model) {
+            return $this->_di->getShared($this->_model->getDb($this->_bind));
         } else {
             return $this->_di->getShared($this->_db ?: 'db');
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+        if ($this->_model) {
+            return $this->_model->getSource($this->_bind);
+        } else {
+            return current($this->_tables);
         }
     }
 
@@ -209,7 +208,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function from($table, $alias = null)
     {
-        if ($this->_table) {
+        if ($table) {
             if (!$this->_model && strpos($table, '\\') !== false) {
                 $this->_model = $this->_di->getShared($table);
             }
@@ -220,7 +219,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_tables = [$table];
             }
 
-            if ($this->_db === null && $table instanceof self) {
+            if ($table instanceof self) {
                 $this->_db = $table->_db;
             }
         }
@@ -1163,7 +1162,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
         }
 
         if (!$this->_tables) {
-            throw new MisuseException('at least one model is required to build the query');
+            if ($this->_model) {
+                $this->_tables[] = $this->getSource();
+            } else {
+                throw new MisuseException('at least one model is required to build the query');
+            }
         }
 
         $this->_replaceModelInfo();
@@ -1542,7 +1545,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         }
 
-        return $this->_replaceModelInfo()->getConnection()->update($this->_tables[0], $fieldValues, $this->_conditions, $this->_bind);
+        return $this->_replaceModelInfo()->getConnection()->update($this->getSource(), $fieldValues, $this->_conditions, $this->_bind);
     }
 
     /**
@@ -1550,6 +1553,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function delete()
     {
-        return $this->_replaceModelInfo()->getConnection()->delete($this->_tables[0], $this->_conditions, $this->_bind);
+        return $this->_replaceModelInfo()->getConnection()->delete($this->getSource(), $this->_conditions, $this->_bind);
     }
 }

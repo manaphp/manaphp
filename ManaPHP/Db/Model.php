@@ -140,7 +140,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $model = Di::getDefault()->getShared(get_called_class());
         }
 
-        $query = $model->_di->get('ManaPHP\Db\Query', [$model]);
+        $query = $model->_di->get('ManaPHP\Db\Query')->setModel($model);
         if ($alias) {
             $query->from(get_class($model), $alias);
         }

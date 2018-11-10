@@ -61,29 +61,11 @@ class Query extends \ManaPHP\Query
     /**
      * Query constructor.
      *
-     * @param string|\ManaPHP\Mongodb\Model    $source
      * @param \ManaPHP\MongodbInterface|string $db
      */
-    public function __construct($source = null, $db = null)
+    public function __construct($db = null)
     {
-        if (is_string($source) && strpos($source, '\\') !== false) {
-            $source = new $source;
-        }
-
-        if (is_string($source)) {
-            $this->_di = Di::getDefault();
-            $this->_source = $source;
-        } elseif ($source) {
-            $this->_di = $source->getDi();
-            $this->_model = $source;
-            $this->_source = $source->getSource();
-            $this->_db = $source->getDb();
-            $this->_types = $source->getFieldTypes();
-        }
-
-        if ($db) {
-            $this->_db = $db;
-        }
+        $this->_db = $db;
     }
 
     /**
@@ -968,8 +950,14 @@ class Query extends \ManaPHP\Query
      */
     public function getConnection()
     {
+        if (!$this->_di) {
+            $this->_di = Di::getDefault();
+        }
+
         if (is_object($this->_db)) {
             return $this->_db;
+        } elseif ($this->_model) {
+            return $this->_di->getShared($this->_model->getDb());
         } else {
             return $this->_di->getShared($this->_db ?: 'mongodb');
         }
