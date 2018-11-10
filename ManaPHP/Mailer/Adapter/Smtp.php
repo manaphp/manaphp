@@ -401,6 +401,7 @@ class Smtp extends Mailer
             $this->_writeLine('Content-Type: multipart/mixed;');
             $this->_writeLine("\tboundary=$boundary");
             $this->_sendHtmlBody($htmlBody, $boundary);
+            /** @noinspection NotOptimalIfConditionsInspection */
             if ($embeddedFiles = $message->getEmbeddedFiles()) {
                 $this->_sendEmbeddedFiles($embeddedFiles, $boundary);
             }
