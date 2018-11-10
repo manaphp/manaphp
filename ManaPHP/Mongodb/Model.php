@@ -312,20 +312,18 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param array                  $fields
+     * @param array                  $alias
      * @param \ManaPHP\Mongodb\Model $model
      *
      * @return \ManaPHP\Mongodb\Query
      */
-    public static function query($fields = null, $model = null)
+    public static function query($alias = null, $model = null)
     {
         if (!$model) {
-            $model = Di::getDefault()->get(get_called_class());
-        } elseif (!$model->_di) {
-            $model->_di = Di::getDefault();
+            $model = Di::getDefault()->getShared(get_called_class());
         }
 
-        return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model)->select($fields);
+        return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model);
     }
 
     /**

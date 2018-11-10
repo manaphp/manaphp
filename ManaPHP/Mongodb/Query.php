@@ -85,7 +85,11 @@ class Query extends \ManaPHP\Query
      */
     public function getSource()
     {
-        return $this->_source;
+        if ($this->_model) {
+            return $this->_model->getSource();
+        } else {
+            return $this->_source;
+        }
     }
 
     /**
@@ -200,7 +204,11 @@ class Query extends \ManaPHP\Query
     public function from($table, $alias = null)
     {
         if ($table) {
-            $this->_source = $table;
+            if (!$this->_model && strpos($table, '\\') !== false) {
+                $this->_model = $this->_di->getShared($table);
+            } else {
+                $this->_source = $table;
+            }
         }
 
         return $this;
