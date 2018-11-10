@@ -987,8 +987,14 @@ class Query extends \ManaPHP\Query
                 $options['projection'] = array_fill_keys($this->_model->getFields(), 1);
             }
 
-            if ($this->_model && isset($options['projection']) && !isset($options['projection']['_id']) && $this->_model->getPrimaryKey() !== '_id') {
-                $options['projection']['_id'] = false;
+            if (isset($options['projection']) && !isset($options['projection']['_id'])) {
+                if ($this->_model) {
+                    if ($this->_model->getPrimaryKey() !== '_id') {
+                        $options['projection']['_id'] = false;
+                    }
+                } else {
+                    $options['projection']['_id'] = false;
+                }
             }
 
             if ($this->_order !== null) {
