@@ -1170,17 +1170,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
         }
 
         foreach ($this->_tables as $alias => $table) {
-            /** @var \ManaPHP\Model $model */
-            if (is_int($alias)) {
-                if (is_string($table) && strpos($table, '\\') !== false) {
-                    $model = $this->_di->getShared($table);
-                    $this->_tables[$alias] = $model->getSource($this->_bind);
-                }
-            } else {
-                if (strpos($table, '\\') !== false) {
-                    $model = $this->_di->getShared($table);
-                    $this->_tables[$alias] = $model->getSource($this->_bind);
-                }
+            if (is_string($table) && strpos($table, '\\') !== false) {
+                /** @var \ManaPHP\Model $model */
+                $model = $this->_di->getShared($table);
+                $this->_tables[$alias] = $model->getSource($this->_bind);
             }
         }
 
