@@ -355,7 +355,6 @@ class Query extends \ManaPHP\Query
         } elseif ($type === 'double') {
             return is_float($value) ? $value : (double)$value;
         } elseif ($type === 'objectid') {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             return is_scalar($type) ? new ObjectId($value) : $value;
         } elseif ($type === 'boolean') {
             return is_bool($value) ? $value : (bool)$value;
