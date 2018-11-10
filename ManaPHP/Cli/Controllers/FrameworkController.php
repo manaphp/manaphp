@@ -128,10 +128,8 @@ class FrameworkController extends Controller
             if (is_dir($file)) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $files = array_merge($files, $this->_getSourceFiles($file));
-            } else {
-                if (fnmatch('*.php', $file)) {
-                    $files[] = $file;
-                }
+            } elseif (fnmatch('*.php', $file)) {
+                $files[] = $file;
             }
         }
 
