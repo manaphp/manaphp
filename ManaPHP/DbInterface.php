@@ -155,7 +155,7 @@ interface DbInterface
      *
      * @return \PDOStatement
      */
-    public function query($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
+    public function rawQuery($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
 
     /**
      * @return \ManaPHP\Db\Query
