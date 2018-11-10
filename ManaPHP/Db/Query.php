@@ -154,7 +154,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function getConnection()
     {
-        return $this->_di->getShared($this->_db ?: 'db');
+        if (is_object($this->_db)) {
+            return $this->_db;
+        } else {
+            return $this->_di->getShared($this->_db ?: 'db');
+        }
     }
 
     /**
@@ -1122,7 +1126,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $params['offset'] = $this->_offset;
         }
 
-        $sql .= $this->_db->buildSql($params);
+        $sql .= $this->getConnection()->buildSql($params);
 
         $this->_tables[] = $queries->getTables()[0];
 
@@ -1149,7 +1153,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     protected function _buildSql()
     {
         if ($this->_db === null || is_string($this->_db)) {
-            $this->_db = $this->_di->getShared($this->_db ?: 'db');
+            $this->_db = $this->getConnection();
         }
 
         if ($this->_union) {
@@ -1369,7 +1373,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             return [];
         }
 
-        $db = $this->_forceUseMaster ? $this->_db->getMasterConnection() : $this->_db;
+        $db = $this->_forceUseMaster ? $this->getConnection()->getMasterConnection() : $this->_db;
         return $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
     }
 
@@ -1423,12 +1427,12 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $copy->_sql = $copy->_buildSql();
 
         if ($copy->_group === null) {
-            $result = $copy->_db->fetchOne($copy->_sql, $copy->_bind);
+            $result = $copy->getConnection()->fetchOne($copy->_sql, $copy->_bind);
 
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $rowCount = (int)$result['row_count'];
         } else {
-            $result = $copy->_db->fetchAll($copy->_sql, $copy->_bind);
+            $result = $copy->getConnection()->fetchAll($copy->_sql, $copy->_bind);
             $rowCount = count($result);
         }
 
