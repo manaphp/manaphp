@@ -123,6 +123,11 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
         return $this->queries[0]->getModel();
     }
 
+    public function setModel($model)
+    {
+        return $this;
+    }
+
     /**
      * @param string|array $fields
      *
