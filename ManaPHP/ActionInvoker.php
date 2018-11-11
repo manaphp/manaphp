@@ -136,22 +136,22 @@ class ActionInvoker extends Component implements ActionInvokerInterface
         $this->_controller = $controller;
         $this->_action = $action;
 
+        $actionMethod = $action . 'Action';
+
+        if (!method_exists($controller, $actionMethod)) {
+            throw new NotFoundException([
+                '`:controller:::action` method does not exist',
+                'action' => $actionMethod,
+                'controller' => get_class($controller)
+            ]);
+        }
+
         if (method_exists($controller, 'beforeInvoke') && ($r = $controller->beforeInvoke($action)) !== null) {
             return $r;
         }
 
         if (($r = $this->fireEvent('actionInvoker:beforeInvoke', $action)) !== null) {
             return $r;
-        }
-
-        $actionMethod = $action . 'Action';
-
-        if (!method_exists($controller, $actionMethod)) {
-            throw new NotFoundException([
-                '`:controller:::action` is not found',
-                'action' => $actionMethod,
-                'controller' => get_class($controller)
-            ]);
         }
 
         $args = $this->_buildArgs($controller, $action, $params);
