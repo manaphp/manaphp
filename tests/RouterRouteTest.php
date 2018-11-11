@@ -19,9 +19,12 @@ class RouterRouteTest extends TestCase
         $route = new Route('/blog/edit');
         $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => []], $route->match('/blog/edit'));
 
-        // :module, :controller, :action, :params
         $route = new Route('/{controller}/{action}/{params}');
         $this->assertEquals(['controller' => 'blog', 'action' => 'edit', 'params' => ['a/b/c']], $route->match('/blog/edit/a/b/c'));
+
+        $route = new Route('/{area}/{controller}/{action}/{id}');
+        $this->assertEquals(['area' => 'api', 'controller' => 'blog', 'action' => 'view', 'params' => ['id' => '100']], $route->match('/api/blog/view/100'));
+
         //  normal pcre
         $route = new Route('/blog/{user:[a-z0-9]{4,}}/view-{id:\d+}.html');
         $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => ['user' => 'mana', 'id' => '1234']],
@@ -38,6 +41,7 @@ class RouterRouteTest extends TestCase
 
         $route = new Route('/b/{id}', ['controller' => 'blog', 'action' => 'view']);
         $this->assertEquals(['controller' => 'blog', 'action' => 'view', 'params' => ['id' => '1234']], $route->match('/b/1234'));
+
     }
 
     public function test_params()
