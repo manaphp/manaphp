@@ -89,17 +89,15 @@ class Application extends \ManaPHP\Application
         $actionName = $this->router->getActionName();
         $params = $this->router->getParams();
 
-        $ret = $this->dispatcher->dispatch($controllerName, $actionName, $params);
-        if ($ret !== false) {
-            $actionReturnValue = $this->dispatcher->getReturnedValue();
-            if ($actionReturnValue === null || $actionReturnValue instanceof View) {
-                $this->view->render();
-                $this->response->setContent($this->view->getContent());
-            } elseif ($actionReturnValue instanceof Response) {
-                null;
-            } else {
-                $this->response->setJsonContent($actionReturnValue);
-            }
+        $this->dispatcher->dispatch($controllerName, $actionName, $params);
+        $actionReturnValue = $this->dispatcher->getReturnedValue();
+        if ($actionReturnValue === null || $actionReturnValue instanceof View) {
+            $this->view->render();
+            $this->response->setContent($this->view->getContent());
+        } elseif ($actionReturnValue instanceof Response) {
+            null;
+        } else {
+            $this->response->setJsonContent($actionReturnValue);
         }
 
         return $this->response;

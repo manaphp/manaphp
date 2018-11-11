@@ -81,7 +81,7 @@ interface DispatcherInterface
      * @param string $action
      * @param array  $params
      *
-     * @return bool
+     * @return void
      */
     public function dispatch($controller, $action, $params = []);
 

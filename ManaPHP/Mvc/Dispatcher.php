@@ -181,7 +181,7 @@ class Dispatcher extends Component implements DispatcherInterface
      * @param string $action
      * @param array  $params
      *
-     * @return bool
+     * @return void
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
      */
     public function dispatch($controller, $action, $params = [])
@@ -196,7 +196,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->_params = $params;
 
         if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
-            return false;
+            return;
         }
 
         $controllerInstance = null;
@@ -216,8 +216,6 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->_returnedValue = $this->actionInvoker->invoke($controllerInstance, $this->_actionName, $this->_params);
 
         $this->fireEvent('dispatcher:afterDispatch');
-
-        return true;
     }
 
     /**
