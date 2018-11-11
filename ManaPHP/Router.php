@@ -349,7 +349,7 @@ class Router extends Component implements RouterInterface
      *
      * @return string
      */
-    public function getControllerName()
+    public function getController()
     {
         return $this->_controller;
     }
@@ -359,7 +359,7 @@ class Router extends Component implements RouterInterface
      *
      * @return string
      */
-    public function getActionName()
+    public function getAction()
     {
         return $this->_action;
     }

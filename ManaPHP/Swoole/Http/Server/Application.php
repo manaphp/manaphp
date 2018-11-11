@@ -59,11 +59,11 @@ class Application extends \ManaPHP\Application
                 throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
             }
 
-            $controllerName = $this->router->getControllerName();
-            $actionName = $this->router->getActionName();
+            $controller = $this->router->getController();
+            $action = $this->router->getAction();
             $params = $this->router->getParams();
 
-            $this->dispatcher->dispatch($controllerName, $actionName, $params);
+            $this->dispatcher->dispatch($controller, $action, $params);
             $actionReturnValue = $this->dispatcher->getReturnedValue();
             if ($actionReturnValue !== null && !$actionReturnValue instanceof Response) {
                 $this->response->setJsonContent($actionReturnValue);

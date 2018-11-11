@@ -67,8 +67,8 @@ class RouterRouteTest extends TestCase
 
         foreach ($tests as $n => $test) {
             $this->assertTrue($router->match($test['uri'], 'GET'));
-            $this->assertEquals($test['controller'], $router->getControllerName());
-            $this->assertEquals($test['action'], $router->getActionName());
+            $this->assertEquals($test['controller'], $router->getController());
+            $this->assertEquals($test['action'], $router->getAction());
             $this->assertEquals($test['params'], $router->getParams());
         }
     }

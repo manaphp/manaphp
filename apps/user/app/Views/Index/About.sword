@@ -33,7 +33,7 @@
     @if(!isset($di->configure->params['manaphp_brand_show']) || $di->configure->params['manaphp_brand_show'])
         <h1>ManaPHP <sub>v{{ $version }}</sub></h1>
         {{ $current_time }}
-        {{ $di->router->getControllerName() . ':' . $di->router->getActionName() }}
+        {{ $di->router->getController() . ':' . $di->router->getAction() }}
         @block('profiler')
     @endif
 </div>

@@ -150,14 +150,14 @@ interface RouterInterface
      *
      * @return string
      */
-    public function getControllerName();
+    public function getController();
 
     /**
      * Returns processed action name
      *
      * @return string
      */
-    public function getActionName();
+    public function getAction();
 
     /**
      * Returns processed extra params

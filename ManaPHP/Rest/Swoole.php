@@ -57,7 +57,7 @@ class Swoole extends Application
         }
 
         $router = $this->router;
-        $this->dispatcher->dispatch($router->getControllerName(), $router->getActionName(), $router->getParams());
+        $this->dispatcher->dispatch($router->getController(), $router->getAction(), $router->getParams());
         $this->swooleHttpServer
             ->sendHeaders($this->response->getHeaders())
             ->sendContent($this->response->getContent());
