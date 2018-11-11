@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Mvc\Dispatcher\Exception as DispatcherException;
 use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
 use ManaPHP\Utility\Text;
@@ -13,7 +14,6 @@ use ManaPHP\Utility\Text;
  * @package dispatcher
  * @property-read \ManaPHP\Http\FilterInterface   $filter
  * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\ActionInvokerInterface $actionInvoker
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -175,6 +175,144 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
+     * @param \ManaPHP\Controller $controller
+     * @param string              $action
+     * @param array               $params
+     *
+     * @return array
+     */
+    protected function _buildActionArgs($controller, $action, $params)
+    {
+        $args = [];
+        $missing = [];
+
+        $di = $this->_di;
+
+        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        $parameters = (new \ReflectionMethod($controller, $action . 'Action'))->getParameters();
+        foreach ($parameters as $parameter) {
+            $name = $parameter->getName();
+            $value = null;
+
+            $type = $parameter->getClass();
+            if ($type !== null) {
+                $type = $type->getName();
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $type = gettype($parameter->getDefaultValue());
+            }
+
+            if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
+                if ($di->has($name)) {
+                    $value = $di->get($name);
+                } elseif ($di->has($className)) {
+                    $value = $di->get($className);
+                } else {
+                    $value = $di->getShared($className);
+                }
+            } elseif (isset($params[$name])) {
+                $value = $params[$name];
+            } elseif ($this->request->has($name)) {
+                $value = $this->request->get($name);
+            } elseif (count($params) === 1 && count($parameters) === 1) {
+                $value = $params[0];
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $value = $parameter->getDefaultValue();
+            }
+
+            if ($value === null) {
+                $missing[] = $name;
+                continue;
+            }
+
+            switch ($type) {
+                case 'boolean':
+                    $value = (bool)$value;
+                    break;
+                case 'integer':
+                    $value = (int)$value;
+                    break;
+                case 'double':
+                    $value = (float)$value;
+                    break;
+                case 'string':
+                    $value = (string)$value;
+                    break;
+                case 'array':
+                    $value = (array)$value;
+                    break;
+            }
+
+            if ($parameter->isArray()) {
+                $args[] = (array)$value;
+            } else {
+                $args[] = $value;
+            }
+        }
+
+        if (count($missing) !== 0) {
+            throw new MissingFieldException(['Missing required parameters: `:parameters`', 'parameters' => implode(',', $missing)]);
+        }
+
+        return $args;
+    }
+
+    /**
+     * @param \ManaPHP\Controller $controller
+     * @param string              $action
+     * @param array               $params
+     *
+     * @return mixed
+     */
+    public function invokeAction($controller, $action, $params)
+    {
+        $actionMethod = $action . 'Action';
+
+        if (!method_exists($controller, $actionMethod)) {
+            throw new NotFoundException([
+                '`:controller:::action` method does not exist',
+                'action' => $actionMethod,
+                'controller' => get_class($controller)
+            ]);
+        }
+
+        if (method_exists($controller, 'beforeInvoke') && ($r = $controller->beforeInvoke($action)) !== null) {
+            return $r;
+        }
+
+        if (($r = $this->fireEvent('dispatcher:beforeInvoke', $action)) !== null) {
+            return $r;
+        }
+
+        $args = $this->_buildActionArgs($controller, $action, $params);
+
+        switch (count($args)) {
+            case 0:
+                $r = $controller->$actionMethod();
+                break;
+            case 1:
+                $r = $controller->$actionMethod($args[0]);
+                break;
+            case 2:
+                $r = $controller->$actionMethod($args[0], $args[1]);
+                break;
+            case 3:
+                $r = $controller->$actionMethod($args[0], $args[1], $args[2]);
+                break;
+            default:
+                $r = call_user_func_array([$controller, $actionMethod], $args);
+                break;
+        }
+
+        $this->fireEvent('dispatcher:afterInvoke', ['action' => $action, 'return' => $r]);
+
+        if (method_exists($controller, 'afterInvoke')) {
+            $controller->afterInvoke($action, $r);
+        }
+
+        return $r;
+    }
+
+    /**
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param \ManaPHP\RouterInterface $router
@@ -214,7 +352,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $this->_controller = $controllerInstance;
 
-        $this->_returnedValue = $this->actionInvoker->invoke($controllerInstance, $this->_actionName, $this->_params);
+        $this->_returnedValue = $this->invokeAction($controllerInstance, $this->_actionName, $this->_params);
 
         $this->fireEvent('dispatcher:afterDispatch');
     }

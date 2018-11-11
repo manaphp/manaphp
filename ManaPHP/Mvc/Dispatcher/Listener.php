@@ -22,4 +22,26 @@ class Listener extends \ManaPHP\Event\Listener
     {
 
     }
+
+    /**
+     * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
+     * @param string                           $action
+     *
+     * @return mixed|void
+     */
+    public function onBeforeInvoke($dispatcher, $action)
+    {
+
+    }
+
+    /**
+     * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
+     * @param array                            $data
+     *
+     * @return mixed|void
+     */
+    public function onAfterInvoke($dispatcher, $data)
+    {
+
+    }
 }
