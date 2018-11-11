@@ -3,27 +3,26 @@ namespace App\Listeners;
 
 use App\Areas\User\Controllers\SessionController;
 use App\Models\AdminActionLog;
-use ManaPHP\ActionInvoker\Listener;
+use ManaPHP\Dispatcher\Listener;
 
 /**
  * Class ActionInvokerListener
  * @package App\Listeners
- * @property-read \ManaPHP\AuthorizationInterface $authorization
  */
-class ActionInvokerListener extends Listener
+class DispatcherListener extends Listener
 {
     /**
-     * @param \ManaPHP\ActionInvokerInterface $actionInvoker
-     * @param string                          $action
+     * @param \ManaPHP\DispatcherInterface $dispatcher
+     * @param string                       $action
      *
      * @return mixed|void
      */
-    public function onBeforeInvoke($actionInvoker, $action)
+    public function onBeforeInvoke($dispatcher, $action)
     {
         if ($this->request->isGet()) {
             return;
         }
-        if ($actionInvoker->getController() instanceof SessionController) {
+        if ($dispatcher->getController() instanceof SessionController) {
             return;
         }
 
@@ -37,7 +36,7 @@ class ActionInvokerListener extends Listener
         $adminActionLog->method = $this->request->getMethod();
         $adminActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);
         $adminActionLog->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $adminActionLog->path = $this->authorization->generatePath(get_class($actionInvoker->getController()), $action);
+        $adminActionLog->path = $this->authorization->generatePath(get_class($dispatcher->getControllerInstance()), $action);
         $adminActionLog->udid = $this->cookies->get('CLIENT_UDID');
         $adminActionLog->created_time = time();
         $adminActionLog->create();
