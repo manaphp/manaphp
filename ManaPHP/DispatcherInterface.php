@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Mvc;
+namespace ManaPHP;
 
 /**
- * Interface ManaPHP\Mvc\DispatcherInterface
+ * Interface ManaPHP\DispatcherInterface
  *
  * @package dispatcher
  */
@@ -70,11 +70,11 @@ interface DispatcherInterface
      * Gets a param by its name or numeric index
      *
      * @param  string|int $param
-     * @param  string     $rule
+     * @param  mixed      $default
      *
      * @return mixed
      */
-    public function getParam($param, $rule = null);
+    public function getParam($param, $default = null);
 
     /**
      * @param string $param

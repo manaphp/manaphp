@@ -1,15 +1,14 @@
 <?php
 
-namespace ManaPHP\Mvc;
+namespace ManaPHP;
 
-use ManaPHP\Component;
+use ManaPHP\Dispatcher\NotFoundActionException;
 use ManaPHP\Exception\MissingFieldException;
-use ManaPHP\Mvc\Dispatcher\Exception as DispatcherException;
-use ManaPHP\Mvc\Dispatcher\NotFoundControllerException;
+use ManaPHP\Dispatcher\NotFoundControllerException;
 use ManaPHP\Utility\Text;
 
 /**
- * Class ManaPHP\Mvc\Dispatcher
+ * Class ManaPHP\Dispatcher
  *
  * @package dispatcher
  * @property-read \ManaPHP\Http\FilterInterface  $filter
@@ -155,18 +154,13 @@ class Dispatcher extends Component implements DispatcherInterface
      * Gets a param by its name or numeric index
      *
      * @param  string|int $param
-     * @param  string     $rule
+     * @param  mixed     default
      *
      * @return mixed
-     * @throws \ManaPHP\Mvc\Dispatcher\Exception
      */
-    public function getParam($param, $rule = null)
+    public function getParam($param, $default = null)
     {
-        if (!isset($this->_params[$param])) {
-            throw new DispatcherException(['`:param` param is not exists', 'param' => $param]);
-        }
-
-        return $rule ? $this->filter->sanitize($param, $rule, $this->_params[$param]) : $this->_params[$param];
+        return isset($this->_params[$param]) ? $this->_params[$param] : $default;
     }
 
     /**
@@ -315,7 +309,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $actionMethod = $action . 'Action';
 
         if (!method_exists($controller, $actionMethod)) {
-            throw new NotFoundException([
+            throw new NotFoundActionException([
                 '`:controller:::action` method does not exist',
                 'action' => $actionMethod,
                 'controller' => get_class($controller)
@@ -365,7 +359,7 @@ class Dispatcher extends Component implements DispatcherInterface
      * @param \ManaPHP\RouterInterface $router
      *
      * @return void
-     * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
+     * @throws \ManaPHP\Dispatcher\NotFoundControllerException
      */
     public function dispatch($router)
     {

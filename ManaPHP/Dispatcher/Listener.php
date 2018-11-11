@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Mvc\Dispatcher;
+namespace ManaPHP\Dispatcher;
 
 class Listener extends \ManaPHP\Event\Listener
 {
     /**
-     * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
+     * @param \ManaPHP\DispatcherInterface $dispatcher
      *
      * @return void|false
      */
@@ -14,7 +14,7 @@ class Listener extends \ManaPHP\Event\Listener
     }
 
     /**
-     * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
+     * @param \ManaPHP\DispatcherInterface $dispatcher
      *
      * @return void
      */
@@ -24,7 +24,7 @@ class Listener extends \ManaPHP\Event\Listener
     }
 
     /**
-     * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
+     * @param \ManaPHP\DispatcherInterface $dispatcher
      * @param string                           $action
      *
      * @return mixed|void
@@ -35,7 +35,7 @@ class Listener extends \ManaPHP\Event\Listener
     }
 
     /**
-     * @param \ManaPHP\Mvc\DispatcherInterface $dispatcher
+     * @param \ManaPHP\DispatcherInterface $dispatcher
      * @param array                            $data
      *
      * @return mixed|void

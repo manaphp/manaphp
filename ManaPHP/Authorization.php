@@ -10,8 +10,8 @@ use ManaPHP\Utility\Text;
  * Class Authorization
  * @package ManaPHP
  *
- * @property \ManaPHP\Mvc\DispatcherInterface $dispatcher
- * @property \ManaPHP\RouterInterface         $router
+ * @property \ManaPHP\DispatcherInterface $dispatcher
+ * @property \ManaPHP\RouterInterface     $router
  */
 class Authorization extends Component implements AuthorizationInterface
 {

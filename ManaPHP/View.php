@@ -10,9 +10,9 @@ use ManaPHP\Exception\MisuseException;
  *
  * @package view
  *
- * @property-read \ManaPHP\RendererInterface       $renderer
- * @property-read \ManaPHP\Cache\EngineInterface   $viewsCache
- * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\RendererInterface     $renderer
+ * @property-read \ManaPHP\Cache\EngineInterface $viewsCache
+ * @property-read \ManaPHP\DispatcherInterface   $dispatcher
  */
 class View extends Component implements ViewInterface
 {

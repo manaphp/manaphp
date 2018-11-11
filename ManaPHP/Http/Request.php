@@ -11,8 +11,8 @@ use ManaPHP\Http\Request\File;
  *
  * @package request
  *
- * @property-read \ManaPHP\Http\FilterInterface    $filter
- * @property-read \ManaPHP\Mvc\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\Http\FilterInterface $filter
+ * @property-read \ManaPHP\DispatcherInterface  $dispatcher
  */
 class Request extends Component implements RequestInterface
 {

@@ -1,12 +1,13 @@
 <?php
 
-namespace ManaPHP\Mvc\Dispatcher;
+namespace ManaPHP\Dispatcher;
 
 /**
  * Class ManaPHP\Mvc\Dispatcher\Exception
  *
  * @package dispatcher
  */
-class Exception extends \ManaPHP\Mvc\Exception
+class Exception extends \ManaPHP\Exception
 {
+
 }

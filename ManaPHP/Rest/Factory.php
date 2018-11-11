@@ -11,7 +11,7 @@ class Factory extends FactoryDefault
 
         $this->_components = array_merge($this->_components, [
             'router' => 'ManaPHP\Router',
-            'dispatcher' => 'ManaPHP\Mvc\Dispatcher',
+            'dispatcher' => 'ManaPHP\Dispatcher',
             'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
             'url' => 'ManaPHP\Url',
             'response' => 'ManaPHP\Http\Response',

@@ -12,7 +12,7 @@ use ManaPHP\Swoole\Exception as SwooleException;
  *
  * @property-read \ManaPHP\Http\ResponseInterface      $response
  * @property-read \ManaPHP\RouterInterface             $router
- * @property-read \ManaPHP\Mvc\DispatcherInterface     $dispatcher
+ * @property-read \ManaPHP\DispatcherInterface         $dispatcher
  * @property-read \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
  */
 class Swoole extends Application
