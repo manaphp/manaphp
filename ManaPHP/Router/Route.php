@@ -200,7 +200,7 @@ class Route implements RouteInterface
                     if (isset($matches['params'])) {
                         $methodAction = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
                     } else {
-                        $methodAction = ['GET' => 'list', 'POST' => 'create'];
+                        $methodAction = ['GET' => 'index', 'POST' => 'create'];
                     }
                     if (isset($methodAction[$method])) {
                         $parts['action'] = $methodAction[$method];
