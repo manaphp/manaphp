@@ -56,12 +56,12 @@ class Application extends \ManaPHP\Application
 
     public function main()
     {
-        $this->dotenv->load();
-        $this->configure->load();
-
-        $this->registerServices();
-
         try {
+            $this->dotenv->load();
+            $this->configure->load();
+
+            $this->registerServices();
+
             $this->authenticate();
 
             if (!$this->router->match()) {
