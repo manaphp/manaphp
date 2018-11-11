@@ -287,7 +287,7 @@ class Router extends Component implements RouterInterface
      *
      * @return bool
      */
-    public function handle($uri = null, $method = null)
+    public function match($uri = null, $method = null)
     {
         $uri = $this->getRewriteUri($uri);
 

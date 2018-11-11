@@ -55,7 +55,7 @@ class Application extends \ManaPHP\Application
         try {
             $this->authenticate();
 
-            if (!$this->router->handle()) {
+            if (!$this->router->match()) {
                 throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
             }
 

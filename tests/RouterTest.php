@@ -66,7 +66,7 @@ class MvcRouterTest extends TestCase
     {
         $router = new Router();
 
-        $router->handle('/article/list', 'GET');
+        $router->match('/article/list', 'GET');
 
         Di::getDefault()->alias->set('@web', '');
 
@@ -97,27 +97,27 @@ class MvcRouterTest extends TestCase
     {
         $router = new Router();
 
-        $this->assertTrue($router->handle('/', 'GET'));
+        $this->assertTrue($router->match('/', 'GET'));
         $this->assertEquals('index', $router->getControllerName());
         $this->assertEquals('index', $router->getActionName());
         $this->assertEquals([], $router->getParams());
 
-        $this->assertTrue($router->handle('/a', 'GET'));
+        $this->assertTrue($router->match('/a', 'GET'));
         $this->assertEquals('a', $router->getControllerName());
         $this->assertEquals('index', $router->getActionName());
         $this->assertEquals([], $router->getParams());
 
-        $this->assertTrue($router->handle('/a/b', 'GET'));
+        $this->assertTrue($router->match('/a/b', 'GET'));
         $this->assertEquals('a', $router->getControllerName());
         $this->assertEquals('b', $router->getActionName());
         $this->assertEquals([], $router->getParams());
 
-        $this->assertTrue($router->handle('/a/b/c', 'GET'));
+        $this->assertTrue($router->match('/a/b/c', 'GET'));
         $this->assertEquals('a', $router->getControllerName());
         $this->assertEquals('b', $router->getActionName());
         $this->assertEquals(['c'], $router->getParams());
 
-        $this->assertTrue($router->handle('/a/b/c/d/e', 'GET'));
+        $this->assertTrue($router->match('/a/b/c/d/e', 'GET'));
         $this->assertEquals('a', $router->getControllerName());
         $this->assertEquals('b', $router->getActionName());
         $this->assertEquals(['c/d/e'], $router->getParams());
@@ -256,7 +256,7 @@ class MvcRouterTest extends TestCase
         $router->add('/show/{id:video([0-9]+)}/{title:[a-z\-]+}', 'videos::show');
 
         foreach ($tests as $n => $test) {
-            $this->assertTrue($router->handle($test['uri'], 'GET'));
+            $this->assertTrue($router->match($test['uri'], 'GET'));
             $this->assertEquals($test['controller'], $router->getControllerName(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $router->getActionName(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['params'], $router->getParams(), 'Testing ' . $test['uri']);
@@ -333,7 +333,7 @@ class MvcRouterTest extends TestCase
         $router->addHead('/docs/index', 'documentation8::index');
 
         foreach ($tests as $n => $test) {
-            $this->assertTrue($router->handle($test['uri'], $test['method'] ?: 'GET'));
+            $this->assertTrue($router->match($test['uri'], $test['method'] ?: 'GET'));
             $this->assertEquals($test['controller'], $router->getControllerName(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $router->getActionName(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['params'], $router->getParams(), 'Testing ' . $test['uri']);
@@ -346,7 +346,7 @@ class MvcRouterTest extends TestCase
 
         $router->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params', 'posts::show');
 
-        $this->assertTrue($router->handle('/news/2016/03/12/china', 'GET'));
+        $this->assertTrue($router->match('/news/2016/03/12/china', 'GET'));
         $this->assertEquals('posts', $router->getControllerName());
         $this->assertEquals('show', $router->getActionName());
         $this->assertEquals(['year' => '2016', 'month' => '03', 'day' => '12', 'china'], $router->getParams());
@@ -383,7 +383,7 @@ class MvcRouterTest extends TestCase
         $router->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
-            $this->assertTrue($router->handle($test['uri'], $test['method'] ?: 'GET'));
+            $this->assertTrue($router->match($test['uri'], $test['method'] ?: 'GET'));
             $this->assertEquals($test['controller'], $router->getControllerName(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $router->getActionName(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['params'], $router->getParams(), 'Testing ' . $test['uri']);
@@ -408,7 +408,7 @@ class MvcRouterTest extends TestCase
         );
         $router = new Router();
         foreach ($routes as $route => $paths) {
-            $this->assertTrue($router->handle($route, 'GET'));
+            $this->assertTrue($router->match($route, 'GET'));
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->assertEquals($paths['controller'], $router->getControllerName());
             $this->assertEquals($paths['action'], $router->getActionName());
@@ -420,19 +420,19 @@ class MvcRouterTest extends TestCase
         $router = new Router();
         $router->add('/', 'user::list');
 
-        $this->assertTrue($router->handle('/', 'GET'));
+        $this->assertTrue($router->match('/', 'GET'));
         $this->assertEquals('user', $router->getControllerName());
         $this->assertEquals('list', $router->getActionName());
 
         $router = new Router();
         $router->add('/', 'user::list');
-        $this->assertTrue($router->handle('/', 'GET'));
+        $this->assertTrue($router->match('/', 'GET'));
         $this->assertEquals('user', $router->getControllerName());
         $this->assertEquals('list', $router->getActionName());
 
         $router = new Router();
         $router->add('/', 'user');
-        $this->assertTrue($router->handle('/', 'GET'));
+        $this->assertTrue($router->match('/', 'GET'));
 
         $this->assertEquals('user', $router->getControllerName());
         $this->assertEquals('index', $router->getActionName());

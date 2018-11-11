@@ -66,7 +66,7 @@ class RouterRouteTest extends TestCase
         $router->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
-            $this->assertTrue($router->handle($test['uri'], 'GET'));
+            $this->assertTrue($router->match($test['uri'], 'GET'));
             $this->assertEquals($test['controller'], $router->getControllerName());
             $this->assertEquals($test['action'], $router->getActionName());
             $this->assertEquals($test['params'], $router->getParams());

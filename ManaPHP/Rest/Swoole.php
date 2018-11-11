@@ -52,7 +52,7 @@ class Swoole extends Application
 
         $this->authenticate();
 
-        if (!$this->router->handle()) {
+        if (!$this->router->match()) {
             throw new SwooleException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
         }
 
