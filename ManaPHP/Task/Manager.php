@@ -30,7 +30,7 @@ class Manager extends Component implements ManagerInterface, LogCategorizable
     /**
      * @var int
      */
-    protected $_lastHeartBeat = 0;
+    protected $_last_heartbeat = 0;
 
     /**
      * Manager constructor.
@@ -69,7 +69,6 @@ class Manager extends Component implements ManagerInterface, LogCategorizable
     {
         return 'task:' . $task . ':' . gethostname();
     }
-
 
     /**
      * @return \Redis
@@ -213,8 +212,8 @@ class Manager extends Component implements ManagerInterface, LogCategorizable
     public function heartbeat($task)
     {
         $current = time();
-        if ($current - $this->_lastHeartBeat >= $this->_heartbeat_interval) {
-            $this->_lastHeartBeat = $current;
+        if ($current - $this->_last_heartbeat >= $this->_heartbeat_interval) {
+            $this->_last_heartbeat = $current;
             if ($redis = $this->_getRedis()) {
                 $redis->hSet($this->getTaskMetaKey($task), self::FIELD_HEARTBEAT_TIME, date('c', $current));
             }
