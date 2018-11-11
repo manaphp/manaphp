@@ -14,7 +14,7 @@ class RouterListener extends Listener
     {
         $router || $data;
 
-        $this->logger->debug($event);
+//        $this->logger->debug($event);
     }
 
     /**
@@ -22,6 +22,6 @@ class RouterListener extends Listener
      */
     public function onBeforeRoute($router)
     {
-        $this->logger->debug($router->getRewriteUri());
+//        $this->logger->debug($router->getRewriteUri());
     }
 }
