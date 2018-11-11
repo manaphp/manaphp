@@ -105,33 +105,40 @@ class Route implements RouteInterface
     {
         $routePaths = [];
 
-        if (is_string($paths)) {
+        if ($paths === null) {
+            return ['controller' => 'index', 'action' => 'index', 'params' => []];
+        } elseif (is_string($paths)) {
             if (($pos = strpos($paths, '::')) !== false) {
                 $routePaths['controller'] = substr($paths, 0, $pos);
                 $routePaths['action'] = substr($paths, $pos + 2);
             } else {
                 $routePaths['controller'] = $paths;
+                $routePaths['action'] = 'index';
             }
+            $routePaths['params'] = [];
         } elseif (is_array($paths)) {
+            if (isset($paths['area'])) {
+                $routePaths['area'] = $paths['area'];
+            }
+
             if (isset($paths[0])) {
                 if (($pos = strpos($paths[0], '::')) !== false) {
                     $routePaths['controller'] = substr($paths[0], 0, $pos);
                     $routePaths['action'] = substr($paths[0], $pos + 2);
                 } else {
                     $routePaths['controller'] = $paths[0];
+                    $routePaths['action'] = isset($paths[1]) ? $paths[1] : 'index';
                 }
             }
 
-            if (isset($paths[1])) {
-                $routePaths['action'] = $paths[1];
-            }
-
+            $params = [];
             /** @noinspection ForeachSourceInspection */
             foreach ($paths as $k => $v) {
-                if (is_string($k)) {
-                    $routePaths[$k] = $v;
+                if (is_string($k) && !in_array($k, ['area', 'controller', 'action'], true)) {
+                    $params[$k] = $v;
                 }
             }
+            $routePaths['params'] = $params;
         }
 
         if (isset($routePaths['controller']) && strpos($routePaths['controller'], '\\') !== false) {
@@ -162,7 +169,7 @@ class Route implements RouteInterface
 
         if ($this->_compiledPattern[0] !== '#') {
             if ($this->_compiledPattern === $uri) {
-                $parts = $this->_paths;
+                return $this->_paths;
             } else {
                 return false;
             }
