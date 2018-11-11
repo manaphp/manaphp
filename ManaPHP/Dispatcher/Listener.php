@@ -1,6 +1,13 @@
 <?php
 namespace ManaPHP\Dispatcher;
 
+/**
+ * Class Listener
+ * @package ManaPHP\Dispatcher
+ * @property-read \ManaPHP\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\CookiesInterface  $cookies
+ */
 class Listener extends \ManaPHP\Event\Listener
 {
     /**
@@ -25,7 +32,7 @@ class Listener extends \ManaPHP\Event\Listener
 
     /**
      * @param \ManaPHP\DispatcherInterface $dispatcher
-     * @param string                           $action
+     * @param string                       $action
      *
      * @return mixed|void
      */
@@ -36,7 +43,7 @@ class Listener extends \ManaPHP\Event\Listener
 
     /**
      * @param \ManaPHP\DispatcherInterface $dispatcher
-     * @param array                            $data
+     * @param array                        $data
      *
      * @return mixed|void
      */
