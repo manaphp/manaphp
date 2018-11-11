@@ -55,6 +55,28 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->_controllerInstance = null;
         $this->_returnedValue = null;
     }
+    
+    /**
+     * Gets last dispatched controller name
+     *
+     * @return string
+     */
+    public function getController()
+    {
+        return $this->_controller;
+    }
+
+    /**
+     * @param string $controller
+     *
+     * @return static
+     */
+    public function setController($controller)
+    {
+        $this->_controller = Text::camelize($controller);
+
+        return $this;
+    }
 
     /**
      * Gets the latest dispatched action name
@@ -362,28 +384,6 @@ class Dispatcher extends Component implements DispatcherInterface
     public function getControllerInstance()
     {
         return $this->_controllerInstance;
-    }
-
-    /**
-     * Gets last dispatched controller name
-     *
-     * @return string
-     */
-    public function getController()
-    {
-        return $this->_controller;
-    }
-
-    /**
-     * @param string $controller
-     *
-     * @return static
-     */
-    public function setController($controller)
-    {
-        $this->_controller = Text::camelize($controller);
-
-        return $this;
     }
 
     /**

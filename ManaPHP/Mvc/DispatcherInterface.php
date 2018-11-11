@@ -10,6 +10,20 @@ namespace ManaPHP\Mvc;
 interface DispatcherInterface
 {
     /**
+     * Gets last dispatched controller name
+     *
+     * @return string
+     */
+    public function getController();
+
+    /**
+     * @param string $controller
+     *
+     * @return static
+     */
+    public function setController($controller);
+
+    /**
      * Gets last dispatched action name
      *
      * @return string
@@ -82,20 +96,6 @@ interface DispatcherInterface
      * @return void
      */
     public function dispatch($router);
-
-    /**
-     * Gets last dispatched controller name
-     *
-     * @return string
-     */
-    public function getController();
-
-    /**
-     * @param string $controller
-     *
-     * @return static
-     */
-    public function setController($controller);
 
     /**
      * @param string $glue
