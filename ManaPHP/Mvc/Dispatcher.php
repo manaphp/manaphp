@@ -20,7 +20,7 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @var string
      */
-    protected $_controllerName;
+    protected $_controller;
 
     /**
      * @var string
@@ -35,13 +35,12 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @var \ManaPHP\Mvc\Controller
      */
-    protected $_controller;
+    protected $_controllerInstance;
 
     /**
      * @var mixed
      */
     protected $_returnedValue;
-
 
     public function saveInstanceState()
     {
@@ -50,10 +49,10 @@ class Dispatcher extends Component implements DispatcherInterface
 
     public function restoreInstanceState($data)
     {
-        $this->_controllerName = null;
+        $this->_controller = null;
         $this->_action = null;
         $this->_params = [];
-        $this->_controller = null;
+        $this->_controllerInstance = null;
         $this->_returnedValue = null;
     }
 
@@ -162,7 +161,7 @@ class Dispatcher extends Component implements DispatcherInterface
     public function getControllerClassName($controllerName = null)
     {
         if (!$controllerName) {
-            $controllerName = $this->_controllerName;
+            $controllerName = $this->_controller;
         }
 
         if (($pos = strpos($controllerName, '/')) !== false) {
@@ -326,9 +325,9 @@ class Dispatcher extends Component implements DispatcherInterface
         $action = $router->getAction();
 
         if (($pos = strpos($controller, '/')) !== false) {
-            $this->_controllerName = Text::camelize(substr($controller, 0, $pos + 1)) . Text::camelize(substr($controller, $pos + 1));
+            $this->_controller = Text::camelize(substr($controller, 0, $pos + 1)) . Text::camelize(substr($controller, $pos + 1));
         } else {
-            $this->_controllerName = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+            $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
         }
 
         $this->_action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
@@ -350,7 +349,7 @@ class Dispatcher extends Component implements DispatcherInterface
          * @var \ManaPHP\Mvc\Controller $controllerInstance
          */
         $controllerInstance = $this->_di->getShared($controllerClassName);
-        $this->_controller = $controllerInstance;
+        $this->_controllerInstance = $controllerInstance;
 
         $this->_returnedValue = $this->invokeAction($controllerInstance, $this->_action, $this->_params);
 
@@ -362,7 +361,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getControllerInstance()
     {
-        return $this->_controller;
+        return $this->_controllerInstance;
     }
 
     /**
@@ -372,7 +371,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getController()
     {
-        return $this->_controllerName;
+        return $this->_controller;
     }
 
     /**
@@ -382,7 +381,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function setController($controller)
     {
-        $this->_controllerName = Text::camelize($controller);
+        $this->_controller = Text::camelize($controller);
 
         return $this;
     }
@@ -394,6 +393,6 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getMCA($glue = '/')
     {
-        return Text::underscore($this->_controllerName) . $glue . Text::underscore($this->_action);
+        return Text::underscore($this->_controller) . $glue . Text::underscore($this->_action);
     }
 }
