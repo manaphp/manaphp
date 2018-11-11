@@ -232,7 +232,7 @@ if (!function_exists('constants')) {
                 break;
             }
 
-            $controller = $di->dispatcher->getControllerName();
+            $controller = $di->dispatcher->getController();
             if ($pos = strpos($controller, '/')) {
                 $tryClass = $di->alias->resolveNS('@ns.app\\Areas\\' . substr($controller, 0, $pos) . '\\Models\\' . $ucfClass);
                 if (class_exists($tryClass)) {

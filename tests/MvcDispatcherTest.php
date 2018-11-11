@@ -91,8 +91,8 @@ class MvcDispatcherTest extends TestCase
 
         //normal usage without return value
         $dispatcher->dispatch('Test', 'test2', 'other');
-        $this->assertInstanceOf('App\\Test\\Controllers\\Test2Controller', $dispatcher->getController());
-        $this->assertEquals('other', $dispatcher->getActionName());
+        $this->assertInstanceOf('App\\Test\\Controllers\\Test2Controller', $dispatcher->getControllerInstance());
+        $this->assertEquals('other', $dispatcher->getAction());
         $this->assertNull($dispatcher->getReturnedValue());
 
         //normal usage with return value
@@ -112,7 +112,7 @@ class MvcDispatcherTest extends TestCase
         $dispatcher->dispatch('Test', 'test7', 'service');
         $this->assertEquals('hello', $dispatcher->getReturnedValue());
 
-        $this->assertEquals(strtolower('test7'), strtolower($dispatcher->getControllerName()));
+        $this->assertEquals(strtolower('test7'), strtolower($dispatcher->getController()));
     }
 
     public function test_getReturnedValue()

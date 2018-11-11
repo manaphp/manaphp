@@ -62,7 +62,7 @@ class Dispatcher extends Component implements DispatcherInterface
      *
      * @return string
      */
-    public function getActionName()
+    public function getAction()
     {
         return $this->_actionName;
     }
@@ -72,7 +72,7 @@ class Dispatcher extends Component implements DispatcherInterface
      *
      * @return static
      */
-    public function setActionName($actionName)
+    public function setAction($actionName)
     {
         $this->_actionName = lcfirst(Text::camelize($actionName));
 
@@ -360,7 +360,7 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @return \ManaPHP\Mvc\Controller
      */
-    public function getController()
+    public function getControllerInstance()
     {
         return $this->_controller;
     }
@@ -370,7 +370,7 @@ class Dispatcher extends Component implements DispatcherInterface
      *
      * @return string
      */
-    public function getControllerName()
+    public function getController()
     {
         return $this->_controllerName;
     }
@@ -380,7 +380,7 @@ class Dispatcher extends Component implements DispatcherInterface
      *
      * @return static
      */
-    public function setControllerName($controllerName)
+    public function setController($controllerName)
     {
         $this->_controllerName = Text::camelize($controllerName);
 

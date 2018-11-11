@@ -91,7 +91,7 @@ class Authorization extends Component implements AuthorizationInterface
                 $permission = substr($permission, 1);
             }
         } else {
-            $c = $this->dispatcher->getControllerName();
+            $c = $this->dispatcher->getController();
             if ($pos = strpos($c, '/')) {
                 $area = substr($c, $pos);
             }
@@ -213,9 +213,9 @@ class Authorization extends Component implements AuthorizationInterface
                 $this->_acl[$controllerClassName] = $controllerInstance->getAcl();
             }
         } else {
-            $controllerInstance = $this->dispatcher->getController();
+            $controllerInstance = $this->dispatcher->getControllerInstance();
             $controllerClassName = get_class($controllerInstance);
-            $action = $permission ? lcfirst(Text::camelize($permission)) : $this->dispatcher->getActionName();
+            $action = $permission ? lcfirst(Text::camelize($permission)) : $this->dispatcher->getAction();
 
             if (!isset($this->_acl[$controllerClassName])) {
                 $this->_acl[$controllerClassName] = $controllerInstance->getAcl();

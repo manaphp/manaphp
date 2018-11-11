@@ -14,14 +14,14 @@ interface DispatcherInterface
      *
      * @return string
      */
-    public function getActionName();
+    public function getAction();
 
     /**
      * @param string $actionName
      *
      * @return static
      */
-    public function setActionName($actionName);
+    public function setAction($actionName);
 
     /**
      * @param array $params
@@ -58,7 +58,7 @@ interface DispatcherInterface
     /**
      * @return \ManaPHP\Mvc\Controller
      */
-    public function getController();
+    public function getControllerInstance();
 
     /**
      * Returns value returned by the latest dispatched action
@@ -88,14 +88,14 @@ interface DispatcherInterface
      *
      * @return string
      */
-    public function getControllerName();
+    public function getController();
 
     /**
      * @param string $controllerName
      *
      * @return static
      */
-    public function setControllerName($controllerName);
+    public function setController($controllerName);
 
     /**
      * @param string $glue

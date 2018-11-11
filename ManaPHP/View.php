@@ -145,7 +145,7 @@ class View extends Component implements ViewInterface
      */
     public function render($template = null)
     {
-        $controllerName = $this->dispatcher->getControllerName();
+        $controllerName = $this->dispatcher->getController();
 
         if (!$template) {
             if (($pos = strpos($controllerName, '/')) !== false) {
@@ -156,7 +156,7 @@ class View extends Component implements ViewInterface
             }
 
             if ($this->filesystem->dirExists($dir)) {
-                $template = $dir . '/' . ucfirst($this->dispatcher->getActionName());
+                $template = $dir . '/' . ucfirst($this->dispatcher->getAction());
             } else {
                 $template = $dir;
             }
@@ -170,7 +170,7 @@ class View extends Component implements ViewInterface
             if ($this->_layout[0] === '@') {
                 $layout = $this->_layout;
             } else {
-                $controllerName = $this->dispatcher->getControllerName();
+                $controllerName = $this->dispatcher->getController();
                 if (($pos = strpos($controllerName, '/')) !== false) {
                     $area = substr($controllerName, 0, $pos);
                     $layout = "@app/Areas/$area/Views/Layouts" . substr($controllerName, $pos);
@@ -211,7 +211,7 @@ class View extends Component implements ViewInterface
             throw new MisuseException(['it is not allowed to access other area `:widget` widget', 'widget' => $widget]);
         }
 
-        $controllerName = $this->dispatcher->getControllerName();
+        $controllerName = $this->dispatcher->getController();
         if (($pos = strpos($controllerName, '/')) !== false) {
             $area = substr($controllerName, 0, $pos);
             if (class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Widgets\\{$widget}Widget"))) {
@@ -234,7 +234,7 @@ class View extends Component implements ViewInterface
         }
 
         if (strpos($widgetClassName, '\\Areas\\')) {
-            $controllerName = $this->dispatcher->getControllerName();
+            $controllerName = $this->dispatcher->getController();
             $area = substr($controllerName, 0, strpos($controllerName, '/'));
             $view = "@app/Areas/$area/Views/Widgets/$widget";
         } else {
