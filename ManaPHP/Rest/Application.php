@@ -54,8 +54,13 @@ class Application extends \ManaPHP\Application
         $this->authorization->authorize();
     }
 
-    public function handle()
+    public function main()
     {
+        $this->dotenv->load();
+        $this->configure->load();
+
+        $this->registerServices();
+
         try {
             $this->authenticate();
 
@@ -75,15 +80,5 @@ class Application extends \ManaPHP\Application
         }
 
         $this->response->send();
-    }
-
-    public function main()
-    {
-        $this->dotenv->load();
-        $this->configure->load();
-
-        $this->registerServices();
-
-        $this->handle();
     }
 }

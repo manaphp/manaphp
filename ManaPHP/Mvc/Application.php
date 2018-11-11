@@ -73,32 +73,6 @@ class Application extends \ManaPHP\Application
         return null;
     }
 
-    /**
-     * @return \ManaPHP\Http\ResponseInterface
-     * @throws \ManaPHP\Router\NotFoundRouteException
-     */
-    public function handle()
-    {
-        $this->authenticate();
-
-        if (!$this->router->match()) {
-            throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
-        }
-
-        $this->dispatcher->dispatch($this->router);
-        $actionReturnValue = $this->dispatcher->getReturnedValue();
-        if ($actionReturnValue === null || $actionReturnValue instanceof View) {
-            $this->view->render();
-            $this->response->setContent($this->view->getContent());
-        } elseif ($actionReturnValue instanceof Response) {
-            null;
-        } else {
-            $this->response->setJsonContent($actionReturnValue);
-        }
-
-        return $this->response;
-    }
-
     public function main()
     {
         $this->dotenv->load();
@@ -107,11 +81,26 @@ class Application extends \ManaPHP\Application
         $this->registerServices();
 
         try {
-            $this->handle();
+            $this->authenticate();
+
+            if (!$this->router->match()) {
+                throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
+            }
+
+            $this->dispatcher->dispatch($this->router);
+            $actionReturnValue = $this->dispatcher->getReturnedValue();
+            if ($actionReturnValue === null || $actionReturnValue instanceof View) {
+                $this->view->render();
+                $this->response->setContent($this->view->getContent());
+            } elseif ($actionReturnValue instanceof Response) {
+                null;
+            } else {
+                $this->response->setJsonContent($actionReturnValue);
+            }
         } catch (\Exception $e) {
-            $this->errorHandler->handle($e);
+            $this->handleException($e);
         } catch (\Error $e) {
-            $this->errorHandler->handle($e);
+            $this->handleException($e);
         }
 
         $this->response->send();
