@@ -228,9 +228,9 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Router\RouteInterface
      */
-    public function addOptions($pattern, $paths = null)
+    public function addOptions($pattern = '{all:.*}', $paths = ['controller' => 'cors'])
     {
-        return $this->_addRoute($pattern, $paths, 'OPTIONS');
+        return $this->_addRoute($pattern ?: '{all:.*}', $paths, 'OPTIONS');
     }
 
     /**

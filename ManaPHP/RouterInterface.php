@@ -106,7 +106,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Router\RouteInterface
      */
-    public function addOptions($pattern, $paths = null);
+    public function addOptions($pattern = '{all:.*}', $paths = ['controller' => 'cors']);
 
     /**
      * Adds a route to the router that only match if the HTTP method is HEAD
