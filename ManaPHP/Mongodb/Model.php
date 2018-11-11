@@ -312,7 +312,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param array                  $alias
+     * @param string                 $alias
      * @param \ManaPHP\Mongodb\Model $model
      *
      * @return \ManaPHP\Mongodb\Query
@@ -323,7 +323,7 @@ class Model extends \ManaPHP\Model
             $model = Di::getDefault()->getShared(get_called_class());
         }
 
-        return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model);
+        return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model)->setTypes($model->getFieldTypes());
     }
 
     /**
