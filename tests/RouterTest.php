@@ -233,13 +233,13 @@ class MvcRouterTest extends TestCase
         $router = new Router();
         $router->add('/', 'index::index');
 
-        $router->add('/system/:controller/a/:action/:params');
+        $router->add('/system/{controller}/a/{action}/{params}');
 
-        $router->add('/{language:[a-z]{2}}/:controller');
+        $router->add('/{language:[a-z]{2}}/{controller}');
 
-        $router->add('/admin/:controller/:action/{id:\d+}');
+        $router->add('/admin/{controller}/{action}/{id:int}');
 
-        $router->add('/posts/{year:\d{4}}/{month:\d{2}}/{day:\d{2}}/:params', 'posts::show');
+        $router->add('/posts/{year:\d{4}}/{month:\d{2}}/{day:\d{2}}/{params}', 'posts::show');
 
         $router->add('/manual/{language:[a-z]{2}}/{file:[a-z\.]+}\.html', 'manual::show');
 
@@ -344,7 +344,7 @@ class MvcRouterTest extends TestCase
     {
         $router = new Router();
 
-        $router->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/:params', 'posts::show');
+        $router->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/{params}', 'posts::show');
 
         $this->assertTrue($router->match('/news/2016/03/12/china', 'GET'));
         $this->assertEquals('posts', $router->getController());

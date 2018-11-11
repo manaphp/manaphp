@@ -55,13 +55,13 @@ class Route implements RouteInterface
      */
     protected function _compilePattern($pattern)
     {
-        // If a pattern contains ':', maybe there are placeholders to replace
-        if (strpos($pattern, ':') !== false) {
+        if (strpos($pattern, '{') !== false) {
             $tr = [
-                '/:area' => '/({area:[a-z\d_-]*})?',
-                '/:controller' => '(/{controller:[a-z\d_-]*})?',
-                '/:action' => '(/{action:[a-z\d_-]*})?',
-                '/:params' => '(/{params:.*})?',
+                '{area}' => '{area:[a-z\d_-]*}',
+                '{controller}' => '{controller:[a-z\d_-]*}',
+                '{action}' => '{action:[a-z\d_-]*}',
+                '{params}' => '{params:.*}',
+                '{id}' => '{id:[^/]+}',
                 ':int' => ':\d+',
             ];
             $pattern = strtr($pattern, $tr);

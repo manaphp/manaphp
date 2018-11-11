@@ -20,7 +20,7 @@ class RouterRouteTest extends TestCase
         $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => []], $route->match('/blog/edit'));
 
         // :module, :controller, :action, :params
-        $route = new Route('/:controller/:action/:params');
+        $route = new Route('/{controller}/{action}/{params}');
         $this->assertEquals(['controller' => 'blog', 'action' => 'edit', 'params' => ['a/b/c']], $route->match('/blog/edit/a/b/c'));
         //  normal pcre
         $route = new Route('/blog/{user:[a-z0-9]{4,}}/view-{id:\d+}.html');
