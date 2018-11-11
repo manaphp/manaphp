@@ -12,8 +12,8 @@ use ManaPHP\Utility\Text;
  * Class ManaPHP\Mvc\Dispatcher
  *
  * @package dispatcher
- * @property-read \ManaPHP\Http\FilterInterface   $filter
- * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\FilterInterface  $filter
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -25,7 +25,7 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @var string
      */
-    protected $_actionName;
+    protected $_action;
 
     /**
      * @var array
@@ -51,7 +51,7 @@ class Dispatcher extends Component implements DispatcherInterface
     public function restoreInstanceState($data)
     {
         $this->_controllerName = null;
-        $this->_actionName = null;
+        $this->_action = null;
         $this->_params = [];
         $this->_controller = null;
         $this->_returnedValue = null;
@@ -64,17 +64,17 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getAction()
     {
-        return $this->_actionName;
+        return $this->_action;
     }
 
     /**
-     * @param string $actionName
+     * @param string $action
      *
      * @return static
      */
-    public function setAction($actionName)
+    public function setAction($action)
     {
-        $this->_actionName = lcfirst(Text::camelize($actionName));
+        $this->_action = lcfirst(Text::camelize($action));
 
         return $this;
     }
@@ -331,7 +331,7 @@ class Dispatcher extends Component implements DispatcherInterface
             $this->_controllerName = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
         }
 
-        $this->_actionName = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
+        $this->_action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
         $this->_params = $router->getParams();
 
         if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
@@ -352,7 +352,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $this->_controller = $controllerInstance;
 
-        $this->_returnedValue = $this->invokeAction($controllerInstance, $this->_actionName, $this->_params);
+        $this->_returnedValue = $this->invokeAction($controllerInstance, $this->_action, $this->_params);
 
         $this->fireEvent('dispatcher:afterDispatch');
     }
@@ -376,13 +376,13 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param string $controllerName
+     * @param string $controller
      *
      * @return static
      */
-    public function setController($controllerName)
+    public function setController($controller)
     {
-        $this->_controllerName = Text::camelize($controllerName);
+        $this->_controllerName = Text::camelize($controller);
 
         return $this;
     }
@@ -394,6 +394,6 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getMCA($glue = '/')
     {
-        return Text::underscore($this->_controllerName) . $glue . Text::underscore($this->_actionName);
+        return Text::underscore($this->_controllerName) . $glue . Text::underscore($this->_action);
     }
 }

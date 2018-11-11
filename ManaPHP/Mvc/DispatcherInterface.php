@@ -17,11 +17,11 @@ interface DispatcherInterface
     public function getAction();
 
     /**
-     * @param string $actionName
+     * @param string $action
      *
      * @return static
      */
-    public function setAction($actionName);
+    public function setAction($action);
 
     /**
      * @param array $params
@@ -91,11 +91,11 @@ interface DispatcherInterface
     public function getController();
 
     /**
-     * @param string $controllerName
+     * @param string $controller
      *
      * @return static
      */
-    public function setController($controllerName);
+    public function setController($controller);
 
     /**
      * @param string $glue
