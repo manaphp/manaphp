@@ -62,7 +62,7 @@ class Router extends Component implements RouterInterface
     public function __construct($useDefaultRoutes = true)
     {
         if ($useDefaultRoutes) {
-            $this->add('(/{controller})?(/{action})?(/{params})?');
+            $this->add('(/{controller})?(/{action})?(/{id})?');
         }
     }
 
