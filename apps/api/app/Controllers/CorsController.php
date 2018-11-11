@@ -17,6 +17,6 @@ class CorsController extends Controller
             ->setHeader('Access-Control-Allow-Headers', 'Origin, Accept, Authorization, Content-Type, X-Requested-With')
             ->setHeader('Access-Control-Allow-Methods', 'HEAD,GET,POST,PUT,DELETE');
 
-        return $this->response->setJsonContent(get_included_files());
+        return $this->response->setContent('');
     }
 }
