@@ -424,7 +424,7 @@ class Response extends Component implements ResponseInterface
                 $content = $content->getJson();
             } else {
                 $this->setStatus(500);
-                $content = ['code' => -1, 'message' => 'Server Internal Error'];
+                $content = ['code' => 500, 'message' => 'Server Internal Error'];
             }
         }
 
