@@ -20,10 +20,9 @@
         "ManaPHP\\Logger\\Appender\\File",
         "ManaPHP\\Logger\\Log",
         "ManaPHP\\Http\\Request",
-        "ManaPHP\\Mvc\\Dispatcher",
+        "ManaPHP\\Dispatcher",
         "ManaPHP\\Controller",
         "ManaPHP\\Rest\\Controller",
-        "ManaPHP\\ActionInvoker",
         "ManaPHP\\I18n\\Translator"
     ]
 }
