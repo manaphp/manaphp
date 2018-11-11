@@ -2,8 +2,8 @@
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Component;
 use ManaPHP\Cli\CommandInvoker\NotFoundException;
+use ManaPHP\Component;
 
 /**
  * Class Invoker

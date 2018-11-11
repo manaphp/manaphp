@@ -33,7 +33,8 @@ class AclBuilder extends Component implements AclBuilderInterface
      *
      * @return array
      */
-    public function getActions($controller)    {
+    public function getActions($controller)
+    {
         $actions = [];
         foreach (get_class_methods($controller) as $method) {
             if (preg_match('#^(.*)Action$#', $method, $match)) {

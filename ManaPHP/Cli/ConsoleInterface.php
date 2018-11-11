@@ -42,7 +42,7 @@ interface ConsoleInterface
      * @return static
      */
     public function writeLn($str = '', $options = 0);
-	
+
     /**
      * @param string|array $message
      * @param int          $options

@@ -28,7 +28,8 @@ class FrameworkController extends Controller
         $interfaces_keep = 0,
         $whitespaces_keep = 0,
         $namespace_keep = 0
-    ) {
+    )
+    {
         if (!$this->filesystem->fileExists('@root/manaphp_lite.json')) {
             $this->filesystem->fileCopy('@manaphp/manaphp_lite.json', '@root/manaphp_lite.json');
         }

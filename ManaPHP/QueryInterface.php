@@ -21,6 +21,7 @@ interface QueryInterface
      * @return \ManaPHP\Model
      */
     public function getModel();
+
     /**
      *
      *<code>

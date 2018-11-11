@@ -22,7 +22,7 @@ interface AuthorizationInterface
      * @return array
      */
     public function getAllowed($role);
-    
+
     /**
      * Check whether a user is allowed to access a permission
      *

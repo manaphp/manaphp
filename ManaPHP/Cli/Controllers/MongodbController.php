@@ -232,7 +232,7 @@ class MongodbController extends Controller
         }
 
         if ($namespace) {
-            $source = ($pos = strpos($namespace, '.')) ? substr($namespace, $pos + 1):$namespace;
+            $source = ($pos = strpos($namespace, '.')) ? substr($namespace, $pos + 1) : $namespace;
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @param mixed $context' . PHP_EOL;
@@ -358,7 +358,7 @@ class MongodbController extends Controller
                 if (in_array($db, ['admin', 'local'], true)) {
                     continue;
                 }
-				
+
                 foreach ($mongodb->listCollections($db) as $collection) {
                     if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
                         continue;

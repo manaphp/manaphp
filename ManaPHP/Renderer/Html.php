@@ -98,7 +98,7 @@ class Html extends Component
         foreach ((array)$options as $value => $label) {
             $r .= '    <option value="' . (is_numeric($value) ? $value : htmlspecialchars($value)) . '"';
             /** @noinspection TypeUnsafeComparisonInspection */
-	    
+
             $selected = false;
             if ($value === '') {
                 if ($current_value === null || $current_value === '') {

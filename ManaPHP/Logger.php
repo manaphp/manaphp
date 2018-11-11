@@ -10,7 +10,7 @@ use ManaPHP\Logger\LogCategorizable;
  * Class ManaPHP\Logger
  *
  * @package logger
- * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Logger extends Component implements LoggerInterface
 {
