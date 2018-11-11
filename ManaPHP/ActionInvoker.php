@@ -163,6 +163,12 @@ class ActionInvoker extends Component implements ActionInvokerInterface
             case 1:
                 $r = $controller->$actionMethod($args[0]);
                 break;
+            case 2:
+                $r = $controller->$actionMethod($args[0], $args[1]);
+                break;
+            case 3:
+                $r = $controller->$actionMethod($args[0], $args[1], $args[2]);
+                break;
             default:
                 $r = call_user_func_array([$controller, $actionMethod], $args);
                 break;
