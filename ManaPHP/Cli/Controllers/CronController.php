@@ -67,8 +67,7 @@ class CronController extends Controller
             $use_time = round(microtime(true) - $start_time, 3);
             $this->logger->info(['end: `:command`, :time seconds elapsed.', 'command' => $commandLine, 'time' => $use_time], 'cron');
         } catch (\Exception $e) {
-            $this->logger->info(['failed because of exception: `:command`', 'command' => $commandLine]);
-            $this->logger->error($e, 'cron');
+            $this->logger->error($e, $controllerInstance->categorizeLog());
         }
 
         return 0;
