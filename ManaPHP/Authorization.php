@@ -91,10 +91,7 @@ class Authorization extends Component implements AuthorizationInterface
                 $permission = substr($permission, 1);
             }
         } else {
-            $c = $this->dispatcher->getController();
-            if ($pos = strpos($c, '/')) {
-                $area = substr($c, $pos);
-            }
+            $area = $this->dispatcher->getArea();
         }
 
         if ($permission === '') {
