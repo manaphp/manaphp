@@ -57,11 +57,11 @@ class Route implements RouteInterface
     {
         if (strpos($pattern, '{') !== false) {
             $tr = [
-                '{area}' => '{area:[a-z\d_-]*}',
-                '{controller}' => '{controller:[a-z\d_-]*}',
-                '{action}' => '{action:[a-z\d_-]*}',
+                '{area}' => '{area:[a-z]\w*}',
+                '{controller}' => '{controller:[a-z]\w*}',
+                '{action}' => '{action:[a-z]\w*}',
                 '{params}' => '{params:.*}',
-                '{id}' => '{id:[^/]+}',
+                '{id}' => '{id:[^/]*}',
                 ':int' => ':\d+',
             ];
             $pattern = strtr($pattern, $tr);
