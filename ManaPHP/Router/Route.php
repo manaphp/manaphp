@@ -209,6 +209,21 @@ class Route implements RouteInterface
             unset($parts['action']);
         }
 
-        return $parts;
+        $r = [];
+        $r['controller'] = isset($parts['controller']) ? $parts['controller'] : 'index';
+        if (isset($parts['area'])) {
+            $parts['controller'] = $parts['area'] . '/' . $parts['controller'];
+        }
+
+        $r['action'] = isset($parts['action']) ? $parts['action'] : 'index';
+        $params = isset($parts['params']) ? $parts['params'] : '';
+
+        unset($parts['area'], $parts['controller'], $parts['action'], $parts['params']);
+        if ($params) {
+            $parts[0] = $params;
+        }
+        $r['params'] = $parts;
+
+        return $r;
     }
 }

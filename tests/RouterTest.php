@@ -30,16 +30,16 @@ class MvcRouterTest extends TestCase
     public function test_shortPaths()
     {
         $route = new Route('/', 'feed');
-        $this->assertEquals(['controller' => 'feed'], $route->match('/'));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'index', 'params' => []], $route->match('/'));
 
         $route = new Route('/', 'feed::get');
-        $this->assertEquals(['controller' => 'feed', 'action' => 'get'], $route->match('/'));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'get', 'params' => []], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show', 'params' => []], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show', 'params' => []], $route->match('/'));
     }
 
     public function test_getRewriteUri()
@@ -101,7 +101,7 @@ class MvcRouterTest extends TestCase
         $this->assertEquals(['controller' => 'a', 'action' => 'index', 'params' => []], $router->matchRoute('/a'));
         $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => []], $router->matchRoute('/a/b'));
         $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => ['c']], $router->matchRoute('/a/b/c'));
-        $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => ['c', 'd', 'e']], $router->matchRoute('/a/b/c/d/e'));
+        $this->assertEquals(['controller' => 'a', 'action' => 'b', 'params' => ['c/d/e']], $router->matchRoute('/a/b/c/d/e'));
     }
 
     public function test_router()
@@ -123,7 +123,7 @@ class MvcRouterTest extends TestCase
                 'uri' => '/documentation/index/hello/ñda/dld/cc-ccc',
                 'controller' => 'documentation',
                 'action' => 'index',
-                'params' => array('hello', 'ñda', 'dld', 'cc-ccc')
+                'params' => ['hello/ñda/dld/cc-ccc']
             ),
             array(
                 'uri' => '/documentation/index/',
@@ -153,7 +153,7 @@ class MvcRouterTest extends TestCase
                 'uri' => '/system/admin/a/edit/hello/adp',
                 'controller' => 'admin',
                 'action' => 'edit',
-                'params' => array('hello', 'adp')
+                'params' => ['hello/adp']
             ),
             array(
                 'uri' => '/es/news',
@@ -171,7 +171,7 @@ class MvcRouterTest extends TestCase
                 'uri' => '/posts/2010/02/10/title/content',
                 'controller' => 'posts',
                 'action' => 'show',
-                'params' => array('year' => '2010', 'month' => '02', 'day' => '10', 0 => 'title', 1 => 'content')
+                'params' => array('year' => '2010', 'month' => '02', 'day' => '10', 0 => 'title/content')
             ),
             array(
                 'uri' => '/manual/en/translate.adapter.html',

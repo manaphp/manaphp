@@ -17,17 +17,18 @@ class RouterRouteTest extends TestCase
     {
         //  literal route test
         $route = new Route('/blog/edit');
-        $this->assertEquals([], $route->match('/blog/edit'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => []], $route->match('/blog/edit'));
 
         // :module, :controller, :action, :params
         $route = new Route('/:controller/:action/:params');
-        $this->assertEquals(['controller' => 'blog', 'action' => 'edit', 'params' => 'a/b/c'], $route->match('/blog/edit/a/b/c'));
+        $this->assertEquals(['controller' => 'blog', 'action' => 'edit', 'params' => ['a/b/c']], $route->match('/blog/edit/a/b/c'));
         //  normal pcre
         $route = new Route('/blog/{user:[a-z0-9]{4,}}/view-{id:\d+}.html');
-        $this->assertEquals(['user' => 'mana', 'id' => '1234'], $route->match('/blog/mana/view-1234.html'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => ['user' => 'mana', 'id' => '1234']],
+            $route->match('/blog/mana/view-1234.html'));
 
         $route = new Route('/blog/{id:\d+}');
-        $this->assertEquals(['id' => '1234'], $route->match('/blog/1234'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => ['id' => '1234']], $route->match('/blog/1234'));
     }
 
     public function test_params()
@@ -72,35 +73,36 @@ class RouterRouteTest extends TestCase
     public function test_shortPaths()
     {
         $route = new Route('/', 'feed');
-        $this->assertEquals(['controller' => 'feed'], $route->match('/'));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'index', 'params' => []], $route->match('/'));
 
         $route = new Route('/', 'feed::get');
-        $this->assertEquals(['controller' => 'feed', 'action' => 'get'], $route->match('/'));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'get', 'params' => []], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show', 'params' => []], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show', 'params' => []], $route->match('/'));
     }
 
     public function test_rest()
     {
         $route = new Route('/users', [], 'REST');
-        $this->assertEquals(['action' => 'list'], $route->match('/users', 'GET'));
-        $this->assertEquals(['action' => 'create'], $route->match('/users', 'POST'));
-        $this->assertEquals(['action' => 'detail', 'params' => '123'], $route->match('/users/123', 'GET'));
-        $this->assertEquals(['action' => 'update', 'params' => '123'], $route->match('/users/123', 'POST'));
-        $this->assertEquals(['action' => 'update', 'params' => '123'], $route->match('/users/123', 'PUT'));
-        $this->assertEquals(['action' => 'delete', 'params' => '123'], $route->match('/users/123', 'DELETE'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'list', 'params' => []], $route->match('/users', 'GET'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'create', 'params' => []], $route->match('/users', 'POST'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'detail', 'params' => ['123']], $route->match('/users/123', 'GET'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'update', 'params' => ['123']], $route->match('/users/123', 'POST'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'update', 'params' => ['123']], $route->match('/users/123', 'PUT'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'delete', 'params' => ['123']], $route->match('/users/123', 'DELETE'));
 
         $route = new Route('/users/{user_id:int}/orders', [], 'REST');
-        $this->assertEquals(['action' => 'list', 'user_id' => 1], $route->match('/users/1/orders', 'GET'));
-        $this->assertEquals(['action' => 'create', 'user_id' => 1], $route->match('/users/1/orders', 'POST'));
-        $this->assertEquals(['action' => 'detail', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'GET'));
-        $this->assertEquals(['action' => 'update', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'POST'));
-        $this->assertEquals(['action' => 'update', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'PUT'));
-        $this->assertEquals(['action' => 'delete', 'user_id' => 1, 'params' => '123'], $route->match('/users/1/orders/123', 'DELETE'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'list', 'params' => ['user_id' => 1]], $route->match('/users/1/orders', 'GET'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'create', 'params' => ['user_id' => 1]], $route->match('/users/1/orders', 'POST'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'detail', 'params' => ['user_id' => 1, '123']], $route->match('/users/1/orders/123', 'GET'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'update', 'params' => ['user_id' => 1, '123']], $route->match('/users/1/orders/123', 'POST'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'update', 'params' => ['user_id' => 1, '123']], $route->match('/users/1/orders/123', 'PUT'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'delete', 'params' => ['user_id' => 1, '123']],
+            $route->match('/users/1/orders/123', 'DELETE'));
     }
 
 
