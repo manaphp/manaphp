@@ -3,7 +3,7 @@
 namespace ManaPHP\Dispatcher;
 
 /**
- * Class ManaPHP\Mvc\Dispatcher\Exception
+ * Class ManaPHP\Dispatcher\Exception
  *
  * @package dispatcher
  */

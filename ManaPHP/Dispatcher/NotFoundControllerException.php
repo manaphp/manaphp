@@ -4,7 +4,7 @@ namespace ManaPHP\Dispatcher;
 use ManaPHP\Exception\NotFoundException;
 
 /**
- * Class ManaPHP\Mvc\Dispatcher\NotFoundControllerException
+ * Class ManaPHP\Dispatcher\NotFoundControllerException
  *
  * @package dispatcher
  */
