@@ -7,7 +7,7 @@
  */
 namespace Tests\Models;
 
-use ManaPHP\Mvc\Model;
+use ManaPHP\Db\Model;
 
 class Address extends Model
 {

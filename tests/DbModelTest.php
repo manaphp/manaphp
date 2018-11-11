@@ -13,7 +13,7 @@ use ManaPHP\Db\Assignment;
 use ManaPHP\DbInterface;
 use ManaPHP\Exception;
 use ManaPHP\Mvc\Factory;
-use ManaPHP\Mvc\Model;
+use ManaPHP\Db\Model;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\Actor;
 use Tests\Models\City;
@@ -118,7 +118,7 @@ class DbModelTest extends TestCase
         $actor = Actor::first([]);
         $this->assertTrue(is_object($actor));
         $this->assertInstanceOf(get_class(new Actor()), $actor);
-        $this->assertInstanceOf('ManaPHP\Mvc\Model', $actor);
+        $this->assertInstanceOf('ManaPHP\Db\Model', $actor);
 
         $this->assertTrue(is_object(Actor::first(['actor_id' => '1'])));
 
@@ -151,7 +151,7 @@ class DbModelTest extends TestCase
         $this->assertInternalType('array', $actors);
         $this->assertCount(200, $actors);
         $this->assertInstanceOf(get_class(new Actor()), $actors[0]);
-        $this->assertInstanceOf('ManaPHP\Mvc\Model', $actors[0]);
+        $this->assertInstanceOf('ManaPHP\Db\Model', $actors[0]);
 
         $this->assertCount(200, Actor::all([]));
 

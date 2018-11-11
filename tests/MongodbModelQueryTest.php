@@ -21,9 +21,6 @@ class MongodbModelQueryTest extends TestCase
     {
         $document = City::query()->fetch();
         $this->assertEquals(['city_id', 'city', 'country_id', 'last_update'], array_keys($document[0]->toArray()));
-
-        $document = City::query(['city_id', 'city'])->fetch();
-        $this->assertEquals(['city_id', 'city'], array_keys(array_filter($document[0]->toArray())));
     }
 
     public function test_values()

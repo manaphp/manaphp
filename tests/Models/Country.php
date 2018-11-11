@@ -8,7 +8,7 @@
 namespace Tests\Models;
 
 use ManaPHP\Model\Relation;
-use ManaPHP\Mvc\Model;
+use ManaPHP\Db\Model;
 
 /**
  * Class Country
