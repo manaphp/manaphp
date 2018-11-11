@@ -30,27 +30,16 @@ class MvcRouterTest extends TestCase
     public function test_shortPaths()
     {
         $route = new Route('/', 'feed');
-        $this->assertEquals($route->match('/'), array(
-            'controller' => 'feed'
-        ));
+        $this->assertEquals(['controller' => 'feed'], $route->match('/'));
 
         $route = new Route('/', 'feed::get');
-        $this->assertEquals($route->match('/'), array(
-            'controller' => 'feed',
-            'action' => 'get',
-        ));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'get'], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals($route->match('/'), array(
-            'controller' => 'posts',
-            'action' => 'show',
-        ));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals($route->match('/'), array(
-            'controller' => 'posts',
-            'action' => 'show',
-        ));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
     }
 
     public function test_getRewriteUri()
@@ -77,7 +66,7 @@ class MvcRouterTest extends TestCase
     {
         $router = new Router();
 
-        $router->handle('/article/list','GET');
+        $router->handle('/article/list', 'GET');
 
         Di::getDefault()->alias->set('@web', '');
 
