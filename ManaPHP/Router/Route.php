@@ -162,39 +162,43 @@ class Route implements RouteInterface
         }
 
         if ($this->_compiledPattern[0] !== '#') {
-            return $this->_compiledPattern === $uri ? $this->_paths : false;
-        }
-
-        $r = preg_match($this->_compiledPattern, $uri, $matches);
-        if ($r === false) {
-            throw new InvalidFormatException([
-                '`:compiled` pcre pattern is invalid for `:pattern`',
-                'compiled' => $this->_compiledPattern,
-                'pattern' => $this->_pattern
-            ]);
-        } elseif ($r === 1) {
-            $parts = $this->_paths;
-
-            foreach ($matches as $k => $v) {
-                if (is_string($k)) {
-                    $parts[$k] = $v;
-                }
-            }
-
-            if ($this->_method === 'REST') {
-                if (isset($matches['params'])) {
-                    $methodAction = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
-                } else {
-                    $methodAction = ['GET' => 'list', 'POST' => 'create'];
-                }
-                if (isset($methodAction[$method])) {
-                    $parts['action'] = $methodAction[$method];
-                } else {
-                    return false;
-                }
+            if ($this->_compiledPattern === $uri) {
+                $parts = $this->_paths;
+            } else {
+                return false;
             }
         } else {
-            return false;
+            $r = preg_match($this->_compiledPattern, $uri, $matches);
+            if ($r === false) {
+                throw new InvalidFormatException([
+                    '`:compiled` pcre pattern is invalid for `:pattern`',
+                    'compiled' => $this->_compiledPattern,
+                    'pattern' => $this->_pattern
+                ]);
+            } elseif ($r === 1) {
+                $parts = $this->_paths;
+
+                foreach ($matches as $k => $v) {
+                    if (is_string($k)) {
+                        $parts[$k] = $v;
+                    }
+                }
+
+                if ($this->_method === 'REST') {
+                    if (isset($matches['params'])) {
+                        $methodAction = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
+                    } else {
+                        $methodAction = ['GET' => 'list', 'POST' => 'create'];
+                    }
+                    if (isset($methodAction[$method])) {
+                        $parts['action'] = $methodAction[$method];
+                    } else {
+                        return false;
+                    }
+                }
+            } else {
+                return false;
+            }
         }
 
         return $parts;
