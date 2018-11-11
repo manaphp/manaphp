@@ -137,6 +137,41 @@ class View extends Component implements ViewInterface
     }
 
     /**
+     * @return string
+     */
+    protected function _findLayout()
+    {
+        if ($this->_layout === null) {
+            $controller = $this->dispatcher->getController();
+            if ($area = $this->dispatcher->getArea()) {
+                if ($this->renderer->exists("@app/Areas/$area/Views/Layouts/$controller")) {
+                    $layout = "@app/Areas/$area/Views/Layouts/$controller";
+                } elseif ($this->renderer->exists("@app/Areas/$area/Views/Layouts/Default")) {
+                    $layout = "@app/Areas/$area/Views/Layouts/Default";
+                } else {
+                    $layout = '@views/Layouts/Default';
+                }
+            } else {
+                $layout = $this->renderer->exists("@views/Layouts/$controller") ? "@views/Layouts/$controller" : '@views/Layouts/Default';
+            }
+        } elseif (is_string($this->_layout)) {
+            $layout = $this->_layout;
+            if ($layout[0] !== '@') {
+                $layout = ucfirst($layout);
+                if (($area = $this->dispatcher->getArea()) && $this->renderer->exists("@app/Areas/$area/Views/Layouts/$layout")) {
+                    $layout = "@app/Areas/$area/Views/Layouts/$layout";
+                } else {
+                    $layout = "@views/Layouts/$layout";
+                }
+            }
+        } else {
+            $layout = false;
+        }
+
+        return $layout;
+    }
+
+    /**
      * Executes render process from dispatching data
      *
      * @param string $template
@@ -167,16 +202,7 @@ class View extends Component implements ViewInterface
         $this->_content = $this->_render($template, $this->_vars, false);
 
         if ($this->_layout !== false) {
-            if ($this->_layout[0] === '@') {
-                $layout = $this->_layout;
-            } elseif ($area) {
-                $layout = "@app/Areas/$area/Views/Layouts/$controller";
-                if (!$this->filesystem->dirExists(dirname($layout))) {
-                    $layout = '@views/Layouts/' . ucfirst($this->_layout ?: 'Default');
-                }
-            } else {
-                $layout = '@views/Layouts/' . ucfirst($this->_layout ?: 'Default');
-            }
+            $layout = $this->_findLayout();
             $this->_content = $this->_render($layout, $this->_vars, false);
         }
 
