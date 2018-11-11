@@ -145,14 +145,14 @@ class View extends Component implements ViewInterface
      */
     public function render($template = null)
     {
-        $controllerName = $this->dispatcher->getController();
+        $controller = $this->dispatcher->getController();
 
         if (!$template) {
-            if (($pos = strpos($controllerName, '/')) !== false) {
-                $area = substr($controllerName, 0, $pos);
-                $dir = "@app/Areas/$area/Views/" . substr($controllerName, $pos + 1);
+            if (($pos = strpos($controller, '/')) !== false) {
+                $area = substr($controller, 0, $pos);
+                $dir = "@app/Areas/$area/Views/" . substr($controller, $pos + 1);
             } else {
-                $dir = "@views/$controllerName";
+                $dir = "@views/$controller";
             }
 
             if ($this->filesystem->dirExists($dir)) {
@@ -170,15 +170,15 @@ class View extends Component implements ViewInterface
             if ($this->_layout[0] === '@') {
                 $layout = $this->_layout;
             } else {
-                $controllerName = $this->dispatcher->getController();
-                if (($pos = strpos($controllerName, '/')) !== false) {
-                    $area = substr($controllerName, 0, $pos);
-                    $layout = "@app/Areas/$area/Views/Layouts" . substr($controllerName, $pos);
+                $controller = $this->dispatcher->getController();
+                if (($pos = strpos($controller, '/')) !== false) {
+                    $area = substr($controller, 0, $pos);
+                    $layout = "@app/Areas/$area/Views/Layouts" . substr($controller, $pos);
                     if (!$this->filesystem->dirExists(dirname($layout))) {
                         $layout = '@views/Layouts/' . ucfirst($this->_layout ?: 'Default');
                     }
                 } else {
-                    $layout = '@views/Layouts/' . ucfirst($this->_layout ?: $controllerName);
+                    $layout = '@views/Layouts/' . ucfirst($this->_layout ?: $controller);
                 }
             }
             $this->_content = $this->_render($layout, $this->_vars, false);
@@ -211,9 +211,9 @@ class View extends Component implements ViewInterface
             throw new MisuseException(['it is not allowed to access other area `:widget` widget', 'widget' => $widget]);
         }
 
-        $controllerName = $this->dispatcher->getController();
-        if (($pos = strpos($controllerName, '/')) !== false) {
-            $area = substr($controllerName, 0, $pos);
+        $controller = $this->dispatcher->getController();
+        if (($pos = strpos($controller, '/')) !== false) {
+            $area = substr($controller, 0, $pos);
             if (class_exists($widgetClassName = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Widgets\\{$widget}Widget"))) {
                 return $widgetClassName;
             }
@@ -234,8 +234,8 @@ class View extends Component implements ViewInterface
         }
 
         if (strpos($widgetClassName, '\\Areas\\')) {
-            $controllerName = $this->dispatcher->getController();
-            $area = substr($controllerName, 0, strpos($controllerName, '/'));
+            $controller = $this->dispatcher->getController();
+            $area = substr($controller, 0, strpos($controller, '/'));
             $view = "@app/Areas/$area/Views/Widgets/$widget";
         } else {
             $view = "@views/Widgets/$widget";
