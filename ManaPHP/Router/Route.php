@@ -139,8 +139,7 @@ class Route implements RouteInterface
             $routePaths['controller'] = basename(strtr($controller, '\\', '/'), 'Controller');
             if (($pos = strpos($controller, '\Areas\\')) !== false) {
                 $pos2 = strpos($controller, '\\', $pos + 7);
-
-                $routePaths['controller'] = substr($controller, $pos + 7, $pos2 - $pos - 7) . '/' . $routePaths['controller'];
+                $routePaths['area'] = substr($controller, $pos + 7, $pos2 - $pos - 7);
             }
         }
 
@@ -212,7 +211,7 @@ class Route implements RouteInterface
         $r = [];
         $r['controller'] = isset($parts['controller']) ? $parts['controller'] : 'index';
         if (isset($parts['area'])) {
-            $parts['controller'] = $parts['area'] . '/' . $parts['controller'];
+            $r['area'] = $parts['area'];
         }
 
         $r['action'] = isset($parts['action']) ? $parts['action'] : 'index';

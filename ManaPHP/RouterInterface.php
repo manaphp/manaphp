@@ -146,6 +146,13 @@ interface RouterInterface
     public function getRewriteUri($uri = null);
 
     /**
+     * Returns processed area name
+     *
+     * @return string
+     */
+    public function getArea();
+
+    /**
      * Returns processed controller name
      *
      * @return string

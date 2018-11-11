@@ -10,6 +10,20 @@ namespace ManaPHP\Mvc;
 interface DispatcherInterface
 {
     /**
+     * Gets last dispatched area name
+     *
+     * @return string
+     */
+    public function getArea();
+
+    /**
+     * @param string $area
+     *
+     * @return static
+     */
+    public function setArea($area);
+
+    /**
      * Gets last dispatched controller name
      *
      * @return string
@@ -82,11 +96,11 @@ interface DispatcherInterface
     public function getReturnedValue();
 
     /**
-     * @param string $controllerName
+     * @param string $controller
      *
      * @return string
      */
-    public function getControllerClassName($controllerName = null);
+    public function getControllerClassName($controller = null);
 
     /**
      * Dispatches a handle action taking into account the routing parameters

@@ -20,6 +20,11 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @var string
      */
+    protected $_area;
+
+    /**
+     * @var string
+     */
     protected $_controller;
 
     /**
@@ -49,13 +54,36 @@ class Dispatcher extends Component implements DispatcherInterface
 
     public function restoreInstanceState($data)
     {
+        $this->_area = null;
         $this->_controller = null;
         $this->_action = null;
         $this->_params = [];
         $this->_controllerInstance = null;
         $this->_returnedValue = null;
     }
-    
+
+    /**
+     * Gets last dispatched area name
+     *
+     * @return string
+     */
+    public function getArea()
+    {
+        return $this->_area;
+    }
+
+    /**
+     * @param string $area
+     *
+     * @return static
+     */
+    public function setArea($area)
+    {
+        $this->_area = Text::camelize($area);
+
+        return $this;
+    }
+
     /**
      * Gets last dispatched controller name
      *
@@ -176,22 +204,20 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param string $controllerName
+     * @param string $controller
      *
      * @return string
      */
-    public function getControllerClassName($controllerName = null)
+    public function getControllerClassName($controller = null)
     {
-        if (!$controllerName) {
-            $controllerName = $this->_controller;
+        if (!$controller) {
+            $controller = $this->_controller;
         }
 
-        if (($pos = strpos($controllerName, '/')) !== false) {
-            $area = substr($controllerName, 0, $pos);
-            $controller = substr($controllerName, $pos + 1);
-            return $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller");
+        if ($this->_area) {
+            return $this->alias->resolveNS("@ns.app\\Areas\\$this->_area\\Controllers\\{$controller}Controller");
         } else {
-            return $this->alias->resolveNS("@ns.app\\Controllers\\{$controllerName}Controller");
+            return $this->alias->resolveNS("@ns.app\\Controllers\\{$controller}Controller");
         }
     }
 
@@ -343,16 +369,15 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function dispatch($router)
     {
+        $area = $router->getArea();
+        $this->_area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
+
         $controller = $router->getController();
+        $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+
         $action = $router->getAction();
-
-        if (($pos = strpos($controller, '/')) !== false) {
-            $this->_controller = Text::camelize(substr($controller, 0, $pos + 1)) . Text::camelize(substr($controller, $pos + 1));
-        } else {
-            $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
-        }
-
         $this->_action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
+
         $this->_params = $router->getParams();
 
         if ($this->fireEvent('dispatcher:beforeDispatch') === false) {

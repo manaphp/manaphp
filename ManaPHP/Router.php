@@ -22,6 +22,11 @@ class Router extends Component implements RouterInterface
     /**
      * @var string
      */
+    protected $_area;
+
+    /**
+     * @var string
+     */
     protected $_controller;
 
     /**
@@ -68,6 +73,7 @@ class Router extends Component implements RouterInterface
 
     public function restoreInstanceState($data)
     {
+        $this->_area = null;
         $this->_controller = null;
         $this->_action = null;
         $this->_params = [];
@@ -335,13 +341,25 @@ class Router extends Component implements RouterInterface
         }
 
         $this->_wasMatched = true;
-        $this->_controller = $area ? (Text::underscore($area) . '/' . $parts['controller']) : $parts['controller'];
+
+        if ($area) {
+            $this->_area = $area;
+        } elseif (isset($parts['area'])) {
+            $this->_area = $parts['area'];
+        }
+
+        $this->_controller = $parts['controller'];
         $this->_action = $parts['action'];
         $this->_params = $parts['params'];
 
         $this->fireEvent('router:afterRoute');
 
         return $this->_wasMatched;
+    }
+
+    public function getArea()
+    {
+        return $this->_area;
     }
 
     /**
@@ -407,15 +425,15 @@ class Router extends Component implements RouterInterface
         }
 
         if ($path === '') {
-            $ca = $this->_controller . '/' . $this->_action;
+            $ca = $this->_area ? "{$this->_area}/{$this->_controller}/$this->_action" : "{$this->_controller}/$this->_action";
         } elseif (strpos($path, '/') === false) {
-            $ca = $this->_controller . '/' . $path;
+            $ca = $this->_area ? "{$this->_area}/{$this->_controller}/$path" : "{$this->_controller}/$path";
         } elseif ($path === '/') {
             $ca = '';
         } elseif ($path[0] === '/') {
             $ca = substr($path, 1);
-        } elseif (($pos = strpos($this->_controller, '/')) !== false) {
-            $ca = substr($this->_controller, 0, $pos + 1) . $path;
+        } elseif ($this->_area) {
+            $ca = $this->_area . '/' . $path;
         } else {
             $ca = rtrim($path, '/');
         }
