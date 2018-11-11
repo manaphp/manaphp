@@ -319,13 +319,25 @@ class Router extends Component implements RouterInterface
             }
         }
 
-        $parts = $this->matchRoute($handledUri, $method);
-        if ($parts !== false) {
-            $this->_wasMatched = true;
-            $this->_controller = $area ? (Text::underscore($area) . '/' . $parts['controller']) : $parts['controller'];
-            $this->_action = $parts['action'];
-            $this->_params = $parts['params'];
+        $handledUri = rtrim($handledUri, '/') ?: '/';
+
+        $parts = false;
+        for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
+            $route = $this->_routes[$i];
+            $parts = $route->match($handledUri, $method);
+            if ($parts !== false) {
+                break;
+            }
         }
+
+        if ($parts === false) {
+            return false;
+        }
+
+        $this->_wasMatched = true;
+        $this->_controller = $area ? (Text::underscore($area) . '/' . $parts['controller']) : $parts['controller'];
+        $this->_action = $parts['action'];
+        $this->_params = $parts['params'];
 
         $this->fireEvent('router:afterRoute');
 
@@ -442,26 +454,5 @@ class Router extends Component implements RouterInterface
         }
 
         return $url;
-    }
-
-    /**
-     * @param string $uri
-     * @param string $method
-     *
-     * @return array|false
-     */
-    public function matchRoute($uri, $method = 'GET')
-    {
-        $uri = rtrim($uri, '/') ?: '/';
-
-        for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
-            $route = $this->_routes[$i];
-            $parts = $route->match($uri, $method);
-            if ($parts !== false) {
-                return $parts;
-            }
-        }
-
-        return false;
     }
 }
