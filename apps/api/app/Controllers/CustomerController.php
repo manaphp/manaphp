@@ -5,7 +5,7 @@ use App\Models\Customer;
 
 class CustomerController extends ControllerBase
 {
-    public function listAction()
+    public function indexAction()
     {
         return $this->response->setJsonContent(Customer::paginate($this->request->get('filters', null, [])));
     }
