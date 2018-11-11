@@ -543,6 +543,10 @@ class Response extends Component implements ResponseInterface
             throw new ResponseException('Response was already sent');
         }
 
+        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !isset($this->_headers['X-Request-Id'])) {
+            $this->_headers['X-Request-Id'] = $_SERVER['HTTP_X_REQUEST_ID'];
+        }
+
         $this->fireEvent('response:beforeSend');
 
         if ($this->_file) {
