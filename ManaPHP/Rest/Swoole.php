@@ -56,8 +56,7 @@ class Swoole extends Application
             throw new SwooleException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
         }
 
-        $router = $this->router;
-        $this->dispatcher->dispatch($router->getController(), $router->getAction(), $router->getParams());
+        $this->dispatcher->dispatch($this->router);
         $this->swooleHttpServer
             ->sendHeaders($this->response->getHeaders())
             ->sendContent($this->response->getContent());

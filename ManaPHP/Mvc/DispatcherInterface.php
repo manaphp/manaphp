@@ -77,13 +77,11 @@ interface DispatcherInterface
     /**
      * Dispatches a handle action taking into account the routing parameters
      *
-     * @param string $controller
-     * @param string $action
-     * @param array  $params
+     * @param \ManaPHP\RouterInterface $router
      *
      * @return void
      */
-    public function dispatch($controller, $action, $params = []);
+    public function dispatch($router);
 
     /**
      * Gets last dispatched controller name

@@ -177,15 +177,16 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * Dispatches a handle action taking into account the routing parameters
      *
-     * @param string $controller
-     * @param string $action
-     * @param array  $params
+     * @param \ManaPHP\RouterInterface $router
      *
      * @return void
      * @throws \ManaPHP\Mvc\Dispatcher\NotFoundControllerException
      */
-    public function dispatch($controller, $action, $params = [])
+    public function dispatch($router)
     {
+        $controller = $router->getController();
+        $action = $router->getAction();
+
         if (($pos = strpos($controller, '/')) !== false) {
             $this->_controllerName = Text::camelize(substr($controller, 0, $pos + 1)) . Text::camelize(substr($controller, $pos + 1));
         } else {
@@ -193,7 +194,7 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         $this->_actionName = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
-        $this->_params = $params;
+        $this->_params = $router->getParams();
 
         if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
             return;
