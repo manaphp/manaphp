@@ -24,10 +24,15 @@ class Router extends Component implements RouterInterface
      */
     protected $_areas = [];
 
-     /**
+    /**
+     * @var \ManaPHP\Router\RouteInterface[][]
+     */
+    protected $_simple_routes = [];
+
+    /**
      * @var \ManaPHP\Router\RouteInterface[]
      */
-    protected $_routes = [];
+    protected $_regex_routes = [];
 
     /**
      * @var string
@@ -132,10 +137,10 @@ class Router extends Component implements RouterInterface
     protected function _addRoute($pattern, $paths = null, $httpMethod = null)
     {
         $route = new Route($pattern, $paths, $httpMethod);
-        if ($httpMethod === null && strpos($pattern, '{') === false) {
-            $this->_routes[$pattern] = $route;
+        if ($httpMethod !== 'REST' && strpos($pattern, '{') === false) {
+            $this->_simple_routes[$httpMethod][$pattern] = $route;
         } else {
-            $this->_routes[] = $route;
+            $this->_regex_routes[] = $route;
         }
 
         return $route;
@@ -317,15 +322,20 @@ class Router extends Component implements RouterInterface
 
         $handledUri = rtrim($handledUri, '/') ?: '/';
 
-        $parts = false;
-        if (isset($this->_routes[$handledUri])) {
-            $parts = $this->_routes[$handledUri]->match($handledUri, $method);
+        $routes = $this->_simple_routes;
+        if (isset($routes[$method][$handledUri])) {
+            $parts = $routes[$method][$handledUri]->match($handledUri, $method);
+        } elseif (isset($routes[''][$handledUri])) {
+            $parts = $routes[''][$handledUri]->match($handledUri, $method);
         } else {
-            for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
-                $route = $this->_routes[$i];
-                $parts = $route->match($handledUri, $method);
-                if ($parts !== false) {
-                    break;
+            $parts = false;
+            $routes = $this->_regex_routes;
+            for ($i = count($routes) - 1; $i >= 0; $i--) {
+                if (isset($routes[$i])) {
+                    $route = $routes[$i];
+                    if (($parts = $route->match($handledUri, $method)) !== false) {
+                        break;
+                    }
                 }
             }
         }
