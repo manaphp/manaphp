@@ -15,9 +15,19 @@ use ManaPHP\Utility\Text;
 class Router extends Component implements RouterInterface
 {
     /**
+     * @var string
+     */
+    protected $_prefix = '';
+
+    /**
      * @var array
      */
     protected $_areas = [];
+
+     /**
+     * @var \ManaPHP\Router\RouteInterface[]
+     */
+    protected $_routes = [];
 
     /**
      * @var string
@@ -43,16 +53,6 @@ class Router extends Component implements RouterInterface
      * @var bool
      */
     protected $_wasMatched = false;
-
-    /**
-     * @var \ManaPHP\Router\RouteInterface[]
-     */
-    protected $_routes = [];
-
-    /**
-     * @var string
-     */
-    protected $_prefix = '';
 
     /**
      * Group constructor.
