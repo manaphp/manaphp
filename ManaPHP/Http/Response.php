@@ -390,6 +390,16 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * @param string|array $data
+     *
+     * @return string
+     */
+    protected function _jsonEncode($data)
+    {
+        return is_string($data) ? $data : json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL;
+    }
+
+    /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
      *<code>
      *    $response->setJsonContent(array("status" => "OK"));
@@ -428,7 +438,7 @@ class Response extends Component implements ResponseInterface
             }
         }
 
-        $this->_content = is_string($content) ? $content : json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL;
+        $this->_content = $this->_jsonEncode($content);
 
         return $this;
     }
