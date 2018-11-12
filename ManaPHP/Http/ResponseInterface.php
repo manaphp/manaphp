@@ -214,7 +214,12 @@ interface ResponseInterface
      *
      * @return static
      */
-    public function setFileToSend($file, $attachmentName = null);
+    public function setFile($file, $attachmentName = null);
+
+    /**
+     * @return string|null
+     */
+    public function getFile();
 
     /**
      * @param string $attachmentName

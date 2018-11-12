@@ -3,6 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Http\Filter\Exception as FilterException;
 use ManaPHP\Http\Response\Exception as ResponseException;
 
@@ -559,13 +560,6 @@ class Response extends Component implements ResponseInterface
 
         $this->fireEvent('response:beforeSend');
 
-        if ($this->_file) {
-            if (!$this->filesystem->fileExists($this->_file)) {
-                throw new ResponseException(['Sent file is not exists: `:file`', 'file' => $this->_file]);
-            }
-            $this->setHeader('Content-Length', $this->filesystem->fileSize($this->_file));
-        }
-
         if (!headers_sent()) {
             $this->sendHeaders();
         }
@@ -591,17 +585,30 @@ class Response extends Component implements ResponseInterface
      *
      * @return static
      */
-    public function setFileToSend($file, $attachmentName = null)
+    public function setFile($file, $attachmentName = null)
     {
         if ($attachmentName === null) {
             $attachmentName = basename($file);
         }
+
+        if (!$this->filesystem->fileExists($file)) {
+            throw new FileNotFoundException(['Sent file is not exists: `:file`', 'file' => $file]);
+        }
+        $this->setHeader('Content-Length', $this->filesystem->fileSize($file));
 
         $this->_file = $file;
 
         $this->setAttachment($attachmentName);
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFile()
+    {
+        return $this->_file;
     }
 
     /**
