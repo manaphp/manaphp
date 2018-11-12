@@ -50,6 +50,9 @@ class Request extends Component implements RequestInterface
         if (is_int($rule) || is_array($rule)) {
             $default = $rule;
             $rule = null;
+        } elseif ($rule === '') {
+            $rule = null;
+            $default = '';
         }
 
         if ($name === null) {
