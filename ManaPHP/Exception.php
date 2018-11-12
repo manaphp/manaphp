@@ -63,7 +63,7 @@ class Exception extends \Exception
     }
 
     /**
-     * @param array|string $data
+     * @param array|string|int $data
      *
      * @return static
      */
@@ -73,6 +73,10 @@ class Exception extends \Exception
             $this->_json = $data;
         } elseif (is_string($data)) {
             $this->_json = ['code' => 1, 'message' => $data];
+        } elseif (is_int($data)) {
+            $this->_json = ['code' => $data, 'message' => $this->getMessage()];
+        } else {
+            $this->_json = $data;
         }
 
         return $this;
