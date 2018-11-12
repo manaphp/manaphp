@@ -12,9 +12,9 @@ interface RequestInterface
     /**
      * Gets a variable from the $_REQUEST applying filters if needed
      *
-     * @param string           $name
-     * @param string|int|array $rule
-     * @param mixed            $default
+     * @param string $name
+     * @param mixed  $rule
+     * @param mixed  $default
      *
      * @return mixed
      */
@@ -23,9 +23,9 @@ interface RequestInterface
     /**
      * Gets variable from $_GET applying filters if needed
      *
-     * @param string           $name
-     * @param string|int|array $rule
-     * @param mixed            $default
+     * @param string $name
+     * @param mixed  $rule
+     * @param mixed  $default
      *
      * @return mixed
      */
@@ -34,9 +34,9 @@ interface RequestInterface
     /**
      * Gets a variable from the $_POST applying filters if needed
      *
-     * @param string           $name
-     * @param string|int|array $rule
-     * @param mixed            $default
+     * @param string $name
+     * @param mixed  $rule
+     * @param mixed  $default
      *
      * @return mixed
      */
@@ -51,9 +51,9 @@ interface RequestInterface
      *    $userEmail = $request->getPut("user_email", "email");
      *</code>
      *
-     * @param string           $name
-     * @param string|int|array $rule
-     * @param mixed            $default
+     * @param string $name
+     * @param mixed  $rule
+     * @param mixed  $default
      *
      * @return mixed
      */
@@ -62,18 +62,18 @@ interface RequestInterface
     /**
      * Gets variable from $_GET applying filters if needed
      *
-     * @param string           $name
-     * @param string|int|array $rule
-     * @param mixed            $default
+     * @param string $name
+     * @param mixed  $rule
+     * @param mixed  $default
      *
      * @return mixed
      */
     public function getQuery($name = null, $rule = null, $default = '');
 
     /**
-     * @param string           $name
-     * @param string|int|array $rule
-     * @param mixed            $default
+     * @param string $name
+     * @param mixed  $rule
+     * @param mixed  $default
      *
      * @return mixed
      */
