@@ -45,21 +45,14 @@ class MvcRouterTest extends TestCase
     public function test_getRewriteUri()
     {
         $_GET['_url'] = '/some/route';
-        $_SERVER['PATH_INFO'] = '/another/route';
 
         $router = new Router();
 
         //first try getting from url
         $this->assertEquals('/some/route', $router->getRewriteUri());
 
-        //second try getting form request_uri
         unset($_GET['_url']);
-        $this->assertEquals('/another/route', $router->getRewriteUri());
-
-        //second try getting form request_uri
-        unset($_GET['_url']);
-        $_SERVER['PATH_INFO'] = '/another/route2';
-        $this->assertEquals('/another/route2', $router->getRewriteUri());
+        $this->assertEquals('/', $router->getRewriteUri());
     }
 
     public function test_createUrl()

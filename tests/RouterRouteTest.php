@@ -104,7 +104,7 @@ class RouterRouteTest extends TestCase
     public function test_rest()
     {
         $route = new Route('/users', [], 'REST');
-        $this->assertEquals(['controller' => 'index', 'action' => 'list', 'params' => []], $route->match('/users', 'GET'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => []], $route->match('/users', 'GET'));
         $this->assertEquals(['controller' => 'index', 'action' => 'create', 'params' => []], $route->match('/users', 'POST'));
         $this->assertEquals(['controller' => 'index', 'action' => 'detail', 'params' => ['123']], $route->match('/users/123', 'GET'));
         $this->assertEquals(['controller' => 'index', 'action' => 'update', 'params' => ['123']], $route->match('/users/123', 'POST'));
@@ -112,7 +112,7 @@ class RouterRouteTest extends TestCase
         $this->assertEquals(['controller' => 'index', 'action' => 'delete', 'params' => ['123']], $route->match('/users/123', 'DELETE'));
 
         $route = new Route('/users/{user_id:int}/orders', [], 'REST');
-        $this->assertEquals(['controller' => 'index', 'action' => 'list', 'params' => ['user_id' => 1]], $route->match('/users/1/orders', 'GET'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => ['user_id' => 1]], $route->match('/users/1/orders', 'GET'));
         $this->assertEquals(['controller' => 'index', 'action' => 'create', 'params' => ['user_id' => 1]], $route->match('/users/1/orders', 'POST'));
         $this->assertEquals(['controller' => 'index', 'action' => 'detail', 'params' => ['user_id' => 1, '123']], $route->match('/users/1/orders/123', 'GET'));
         $this->assertEquals(['controller' => 'index', 'action' => 'update', 'params' => ['user_id' => 1, '123']], $route->match('/users/1/orders/123', 'POST'));
