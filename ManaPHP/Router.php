@@ -130,15 +130,15 @@ class Router extends Component implements RouterInterface
      *
      * @param string       $pattern
      * @param string|array $paths
-     * @param string       $httpMethod
+     * @param string       $method
      *
      * @return \ManaPHP\Router\RouteInterface
      */
-    protected function _addRoute($pattern, $paths = null, $httpMethod = null)
+    protected function _addRoute($pattern, $paths = null, $method = null)
     {
-        $route = new Route($pattern, $paths, $httpMethod);
-        if ($httpMethod !== 'REST' && strpos($pattern, '{') === false) {
-            $this->_simple_routes[$httpMethod][$pattern] = $route;
+        $route = new Route($pattern, $paths, $method);
+        if ($method !== 'REST' && strpos($pattern, '{') === false) {
+            $this->_simple_routes[$method][$pattern] = $route;
         } else {
             $this->_regex_routes[] = $route;
         }
@@ -155,13 +155,13 @@ class Router extends Component implements RouterInterface
      *
      * @param string       $pattern
      * @param string|array $paths
-     * @param string|array $httpMethod
+     * @param string|array $method
      *
      * @return \ManaPHP\Router\RouteInterface
      */
-    public function add($pattern, $paths = null, $httpMethod = null)
+    public function add($pattern, $paths = null, $method = null)
     {
-        return $this->_addRoute($pattern, $paths, $httpMethod);
+        return $this->_addRoute($pattern, $paths, $method);
     }
 
     /**
