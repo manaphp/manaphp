@@ -132,7 +132,11 @@ class Router extends Component implements RouterInterface
     protected function _addRoute($pattern, $paths = null, $httpMethod = null)
     {
         $route = new Route($pattern, $paths, $httpMethod);
-        $this->_routes[] = $route;
+        if ($httpMethod === null && strpos($pattern, '{') === false) {
+            $this->_routes[$pattern] = $route;
+        } else {
+            $this->_routes[] = $route;
+        }
 
         return $route;
     }
@@ -314,11 +318,15 @@ class Router extends Component implements RouterInterface
         $handledUri = rtrim($handledUri, '/') ?: '/';
 
         $parts = false;
-        for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
-            $route = $this->_routes[$i];
-            $parts = $route->match($handledUri, $method);
-            if ($parts !== false) {
-                break;
+        if (isset($this->_routes[$handledUri])) {
+            $parts = $this->_routes[$handledUri]->match($handledUri, $method);
+        } else {
+            for ($i = count($this->_routes) - 1; $i >= 0; $i--) {
+                $route = $this->_routes[$i];
+                $parts = $route->match($handledUri, $method);
+                if ($parts !== false) {
+                    break;
+                }
             }
         }
 
