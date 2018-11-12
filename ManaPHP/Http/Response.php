@@ -415,7 +415,7 @@ class Response extends Component implements ResponseInterface
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
         if (is_array($content)) {
-            if (!isset($content['code']) || !isset($content['data'])) {
+            if (!isset($content['code'])) {
                 $content = ['code' => 0, 'message' => '', 'data' => $content];
             }
         } elseif ($content instanceof \JsonSerializable) {
