@@ -295,7 +295,7 @@ if (!function_exists('input')) {
      * @param string $name
      * @param mixed  $default
      *
-     * @return string|array|\ManaPHP\Http\RequestInterface
+     * @return string|array
      */
     function input($name = null, $default = '')
     {
@@ -311,7 +311,7 @@ if (!function_exists('input')) {
             }
         }
 
-        if (($value = $request->getInput($name, false, null)) === null) {
+        if (($value = $request->getInput($name, null, $default === '' ? null : $default)) === null) {
             if ($default === null) {
                 $exception = new \ManaPHP\Exception\RequiredValidatorException($name);
                 $exception->parameter_name = $name;
