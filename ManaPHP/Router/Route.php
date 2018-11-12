@@ -42,7 +42,7 @@ class Route implements RouteInterface
     {
         $this->_pattern = $pattern;
         $this->_compiledPattern = $this->_compilePattern($method !== 'REST' ? $pattern : ($pattern . '(/{params:[a-z0-9_-]+})?'));
-        $this->_paths = $this->_getRoutePaths($paths);
+        $this->_paths = $this->_normalizePaths($paths);
         $this->_method = $method;
     }
 
@@ -101,7 +101,7 @@ class Route implements RouteInterface
      *
      * @return array
      */
-    public function _getRoutePaths($paths = [])
+    public function _normalizePaths($paths = [])
     {
         $routePaths = [];
 
