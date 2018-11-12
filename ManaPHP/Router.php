@@ -258,31 +258,16 @@ class Router extends Component implements RouterInterface
     }
 
     /**
-     * Get rewrite info. This info is read from $_GET['_url'] or _SERVER["REQUEST_URI"].
-     *
-     * @param string $uri
+     * Get rewrite info. This info is read from $_GET['_url']
      *
      * @return string
      */
     public function getRewriteUri()
     {
         if (isset($_GET['_url'])) {
-            $uri = $_GET['_url'];
-        } elseif (isset($_SERVER['REQUEST_URI'])) {
-            $uri = $_SERVER['REQUEST_URI'];
-            if ($pos = strpos($uri, '?')) {
-                $uri = substr($uri, 0, $pos);
-            }
+            return rtrim($_GET['_url'], '/') ?: '/';
         } else {
             return '/';
-        }
-
-        if ($uri === '/') {
-            return '/';
-        } else {
-            $uri = rtrim($uri, '/');
-
-            return $uri === '' ? '/' : $uri;
         }
     }
 

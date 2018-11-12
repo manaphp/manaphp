@@ -137,7 +137,7 @@ interface RouterInterface
     public function match($uri = null, $method = null);
 
     /**
-     * Get rewrite info. This info is read from $_GET['_url'] or _SERVER["REQUEST_URI"].
+     * Get rewrite info. This info is read from $_GET['_url']
      *
      * @return string
      */
