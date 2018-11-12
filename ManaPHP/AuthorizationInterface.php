@@ -34,11 +34,10 @@ interface AuthorizationInterface
     public function isAllowed($permission = null, $role = null);
 
     /**
-     * @param string $permission
      * @param string $role
      *
      * @throws \ManaPHP\Identity\NoCredentialException
      * @throws \ManaPHP\Exception\ForbiddenException
      */
-    public function authorize($permission = null, $role = null);
+    public function authorize($role = null);
 }

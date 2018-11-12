@@ -236,17 +236,16 @@ class Authorization extends Component implements AuthorizationInterface
     }
 
     /**
-     * @param string $permission
      * @param string $role
      *
      * @throws \ManaPHP\Identity\NoCredentialException
      * @throws \ManaPHP\Exception\ForbiddenException
      */
-    public function authorize($permission = null, $role = null)
+    public function authorize($role = null)
     {
         $role = $role ?: $this->identity->getRole();
 
-        if (!$this->isAllowed($permission, $role)) {
+        if (!$this->isAllowed(null, $role)) {
             if ($role === 'guest') {
                 throw new NoCredentialException('No Credential or Invalid Credential');
             } else {
