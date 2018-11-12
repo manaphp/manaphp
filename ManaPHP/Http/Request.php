@@ -233,12 +233,24 @@ class Request extends Component implements RequestInterface
             if (isset($params[0]) && count($params) === 1) {
                 $params = ['id' => $params[0]];
             }
-            return array_merge($this->get(), $params);
+            $value = array_merge($this->get(), $params);
         } elseif ($this->dispatcher->hasParam($name)) {
-            return $this->dispatcher->getParam($name);
+            $value = $this->dispatcher->getParam($name);
         } else {
-            return $this->get($name, $rule, $default);
+            $value = $this->get($name, $rule, $default);
         }
+
+        if (is_int($default)) {
+            $value = (int)$value;
+        } elseif (is_string($default)) {
+            $value = (string)$value;
+        } elseif (is_float($default)) {
+            $value = (double)$value;
+        } elseif (is_bool($default)) {
+            $value = (bool)$value;
+        }
+
+        return $value;
     }
 
     /**
