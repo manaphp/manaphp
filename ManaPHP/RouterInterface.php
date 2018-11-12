@@ -139,11 +139,9 @@ interface RouterInterface
     /**
      * Get rewrite info. This info is read from $_GET['_url'] or _SERVER["REQUEST_URI"].
      *
-     * @param string $uri
-     *
      * @return string
      */
-    public function getRewriteUri($uri = null);
+    public function getRewriteUri();
 
     /**
      * Returns processed area name

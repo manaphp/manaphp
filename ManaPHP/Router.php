@@ -264,16 +264,17 @@ class Router extends Component implements RouterInterface
      *
      * @return string
      */
-    public function getRewriteUri($uri = null)
+    public function getRewriteUri()
     {
-        if ($uri === null) {
-            if (isset($_GET['_url'])) {
-                $uri = $_GET['_url'];
-            } elseif (isset($_SERVER['PATH_INFO'])) {
-                $uri = $_SERVER['PATH_INFO'];
-            } else {
-                return '/';
+        if (isset($_GET['_url'])) {
+            $uri = $_GET['_url'];
+        } elseif (isset($_SERVER['REQUEST_URI'])) {
+            $uri = $_SERVER['REQUEST_URI'];
+            if ($pos = strpos($uri, '?')) {
+                $uri = substr($uri, 0, $pos);
             }
+        } else {
+            return '/';
         }
 
         if ($uri === '/') {
@@ -295,7 +296,7 @@ class Router extends Component implements RouterInterface
      */
     public function match($uri = null, $method = null)
     {
-        $uri = $this->getRewriteUri($uri);
+        $uri = $uri ?: $this->getRewriteUri();
 
         if ($method === null) {
             $method = $_SERVER['REQUEST_METHOD'];
