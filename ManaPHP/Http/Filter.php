@@ -2,6 +2,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Http\Filter\Exception as FilterException;
 
 /**
@@ -155,6 +156,10 @@ class Filter extends Component implements FilterInterface
         }
 
         $filters = $this->_parseRule($rule);
+
+        if (isset($filters['required']) && ($value === '' || $value === null)) {
+            throw new MissingRequiredFieldsException($attribute);
+        }
 
         if (is_int($value)) {
             $value = (string)$value;
