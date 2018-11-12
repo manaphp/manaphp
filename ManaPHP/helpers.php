@@ -297,7 +297,7 @@ if (!function_exists('input')) {
      *
      * @return string|array
      */
-    function input($name = null, $default = '')
+    function input($name = null, $default = null)
     {
         static $request;
         if (!$request) {
@@ -311,13 +311,12 @@ if (!function_exists('input')) {
             }
         }
 
-        if (($value = $request->getInput($name, null, $default === '' ? null : $default)) === null) {
+        if (($value = $request->getInput($name, null, $default)) === null) {
             if ($default === null) {
-                $exception = new \ManaPHP\Exception\RequiredValidatorException($name);
-                $exception->parameter_name = $name;
-                throw $exception;
+                throw new \ManaPHP\Exception\MissingRequiredFieldsException($name);
+            } else {
+                return $default;
             }
-            return $default;
         } else {
             return (is_array($value) && is_scalar($default)) ? $default : $value;
         }

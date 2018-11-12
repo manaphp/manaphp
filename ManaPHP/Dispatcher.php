@@ -3,8 +3,8 @@
 namespace ManaPHP;
 
 use ManaPHP\Dispatcher\NotFoundActionException;
-use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Dispatcher\NotFoundControllerException;
+use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Utility\Text;
 
 /**
@@ -291,7 +291,7 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         if (count($missing) !== 0) {
-            throw new MissingFieldException(['Missing required parameters: `:parameters`', 'parameters' => implode(',', $missing)]);
+            throw new MissingRequiredFieldsException($missing);
         }
 
         return $args;
