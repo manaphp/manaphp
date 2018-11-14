@@ -533,11 +533,10 @@ class Response extends Component implements ResponseInterface
 
         header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
 
-
-        if ($this->_content !== null) {
-            echo $this->_content;
-        } elseif ($this->_file) {
+        if ($this->_file) {
             readfile($this->alias->resolve($this->_file));
+        } else {
+            echo $this->_content;
         }
 
         $this->fireEvent('response:afterSend');
