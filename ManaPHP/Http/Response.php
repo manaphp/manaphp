@@ -517,23 +517,22 @@ class Response extends Component implements ResponseInterface
 
         $this->fireEvent('response:beforeSend');
 
-        if (!headers_sent()) {
-            if ($this->_status) {
-                header('HTTP/1.1 ' . $this->_status);
-            }
-
-            foreach ($this->_headers as $header => $value) {
-                if ($value !== null) {
-                    header($header . ': ' . $value, true);
-                } else {
-                    header($header, true);
-                }
-            }
-
-            $this->cookies->send();
-
-            header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
+        if ($this->_status) {
+            header('HTTP/1.1 ' . $this->_status);
         }
+
+        foreach ($this->_headers as $header => $value) {
+            if ($value !== null) {
+                header($header . ': ' . $value, true);
+            } else {
+                header($header, true);
+            }
+        }
+
+        $this->cookies->send();
+
+        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
+
 
         if ($this->_content !== null) {
             echo $this->_content;
