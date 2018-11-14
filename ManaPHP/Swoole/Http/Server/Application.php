@@ -38,8 +38,8 @@ class Application extends \ManaPHP\Application
     {
         if (!$this->_di) {
             $this->_di = new Factory();
-            $this->_di->setShared('swooleHttpServer', 'ManaPHP\Swoole\Http\Server');
             $this->_di->keepInstanceState(true);
+            $this->_di->setShared('swooleHttpServer', 'ManaPHP\Swoole\Http\Server');
         }
 
         return $this->_di;
