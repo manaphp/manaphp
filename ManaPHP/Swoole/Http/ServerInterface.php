@@ -4,7 +4,7 @@ namespace ManaPHP\Swoole\Http;
 interface ServerInterface
 {
     /**
-     * @param callable $handler
+     * @param callable|array $handler
      *
      * @return static
      */

@@ -41,7 +41,7 @@ class Server extends Component implements ServerInterface
     protected $_response;
 
     /**
-     * @var callable
+     * @var callable|array
      */
     protected $_handler;
 
@@ -101,7 +101,7 @@ class Server extends Component implements ServerInterface
     }
 
     /**
-     * @param callable $handler
+     * @param callable|array $handler
      *
      * @return static
      */
@@ -137,7 +137,13 @@ class Server extends Component implements ServerInterface
             $this->_request = $request;
             $this->_response = $response;
             $this->_prepareGlobals($request);
-            call_user_func($this->_handler);
+
+            if (is_array($this->_handler)) {
+                $this->_handler[0]->{$this->_handler[1]}();
+            } else {
+                $method = $this->_handler;
+                $method();
+            }
         } catch (\Exception $exception) {
             $this->logger->error($exception);
             $response->status(500);
