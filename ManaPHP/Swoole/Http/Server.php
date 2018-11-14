@@ -170,16 +170,10 @@ class Server extends Component implements ServerInterface
     {
         $response = $this->_response;
 
-        if (isset($headers['Status'])) {
-            $parts = explode(' ', $headers['Status']);
-            $response->status($parts[0]);
-            unset($headers['Status']);
-        }
         foreach ($headers as $k => $v) {
             $response->header($k, $v);
         }
 
-        $response->header('X-Response-Time', round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3));
         $response->header('X-WORKER-ID', $_SERVER['WORKER_ID']);
 
         return $this;
@@ -194,13 +188,11 @@ class Server extends Component implements ServerInterface
     {
         $response = $this->_response;
 
-        $this->fireEvent('cookies:beforeSend');
         foreach ($cookies as $cookie) {
             $response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
                 $cookie['path'], $cookie['domain'], $cookie['secure'],
                 $cookie['httpOnly']);
         }
-        $this->fireEvent('cookies:afterSend');
 
         return $this;
     }

@@ -11,6 +11,7 @@ use ManaPHP\Router\NotFoundRouteException;
  * @package application
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Http\ResponseInterface      $response
+ * @property-read \ManaPHP\Http\CookiesInterface       $cookies
  * @property-read \ManaPHP\RouterInterface             $router
  * @property-read \ManaPHP\DispatcherInterface         $dispatcher
  * @property-read \ManaPHP\Http\SessionInterface       $session
@@ -37,7 +38,6 @@ class Application extends \ManaPHP\Application
     {
         if (!$this->_di) {
             $this->_di = new Factory();
-            $this->_di->setShared('response', '\ManaPHP\Swoole\Http\Server\Response');
             $this->_di->setShared('swooleHttpServer', 'ManaPHP\Swoole\Http\Server');
             $this->_di->keepInstanceState(true);
         }
@@ -50,9 +50,42 @@ class Application extends \ManaPHP\Application
 
     }
 
+    public function send()
+    {
+        $swoole = $this->swooleHttpServer;
+        $response = $this->response;
+        $cookies = $this->cookies;
+
+        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !isset($this->_headers['X-Request-Id'])) {
+            $this->_headers['X-Request-Id'] = $_SERVER['HTTP_X_REQUEST_ID'];
+        }
+
+        $this->eventsManager->fireEvent('response:beforeSend', $response);
+
+        $swoole->setStatus($response->getStatusCode());
+        $swoole->sendHeaders($response->getHeaders());
+
+        $this->eventsManager->fireEvent('cookies:beforeSend', $cookies);
+        $swoole->sendCookies($this->cookies->get(null));
+        $this->eventsManager->fireEvent('cookies:afterSend', $cookies);
+
+        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
+
+        if ($file = $response->getFile()) {
+            $swoole->sendContent($file);
+        } else {
+            $swoole->sendContent($response->getContent());
+        }
+
+        $this->eventsManager->fireEvent('response:afterSend', $response);
+    }
+
     public function handle()
     {
         try {
+            $request_uri = $_SERVER['REQUEST_URI'];
+            $_GET['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
+
             $this->authenticate();
 
             if (!$this->router->match()) {
@@ -70,7 +103,7 @@ class Application extends \ManaPHP\Application
             $this->handleException($error);
         }
 
-        $this->response->send();
+        $this->send();
         $this->_di->restoreInstancesState();
     }
 
