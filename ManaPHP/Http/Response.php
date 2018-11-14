@@ -515,6 +515,8 @@ class Response extends Component implements ResponseInterface
             $this->_headers['X-Request-Id'] = $_SERVER['HTTP_X_REQUEST_ID'];
         }
 
+        $this->_headers['X-Response-Time'] = sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
+
         $this->fireEvent('response:beforeSend');
 
         if ($this->_status) {
@@ -530,8 +532,6 @@ class Response extends Component implements ResponseInterface
         }
 
         $this->cookies->send();
-
-        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
 
         if ($this->_file) {
             readfile($this->alias->resolve($this->_file));
