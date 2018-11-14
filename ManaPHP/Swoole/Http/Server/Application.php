@@ -9,6 +9,7 @@ use ManaPHP\Router\NotFoundRouteException;
  * Class ManaPHP\Mvc\Application
  *
  * @package application
+ * @property-read \ManaPHP\AuthorizationInterface      $authorization
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Http\ResponseInterface      $response
  * @property-read \ManaPHP\Http\CookiesInterface       $cookies
@@ -32,6 +33,8 @@ class Application extends \ManaPHP\Application
         if (class_exists($routerClass)) {
             $this->_di->setShared('router', $routerClass);
         }
+
+        $this->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
     }
 
     public function getDi()
@@ -47,7 +50,12 @@ class Application extends \ManaPHP\Application
 
     public function authenticate()
     {
+        $this->identity->authenticate();
+    }
 
+    public function authorize()
+    {
+        $this->authorization->authorize();
     }
 
     public function send()
@@ -56,9 +64,11 @@ class Application extends \ManaPHP\Application
         $response = $this->response;
         $cookies = $this->cookies;
 
-        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !isset($this->_headers['X-Request-Id'])) {
-            $this->_headers['X-Request-Id'] = $_SERVER['HTTP_X_REQUEST_ID'];
+        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !$response->hasHeader('X-Request-Id')) {
+            $response->setHeader('X-Request-Id', $_SERVER['HTTP_X_REQUEST_ID']);
         }
+
+        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
 
         $this->eventsManager->fireEvent('response:beforeSend', $response);
 
@@ -69,10 +79,8 @@ class Application extends \ManaPHP\Application
         $swoole->sendCookies($this->cookies->get(null));
         $this->eventsManager->fireEvent('cookies:afterSend', $cookies);
 
-        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
-
         if ($file = $response->getFile()) {
-            $swoole->sendContent($file);
+            $swoole->sendFile($file);
         } else {
             $swoole->sendContent($response->getContent());
         }
