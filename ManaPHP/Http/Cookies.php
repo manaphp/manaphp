@@ -209,14 +209,7 @@ class Cookies extends Component implements CookiesInterface
      */
     public function send()
     {
-        $file = null;
-        $line = null;
-
         $this->fireEvent('cookies:beforeSend');
-
-        if (headers_sent($file, $line)) {
-            trigger_error("Headers has been sent in $file:$line", E_USER_WARNING);
-        }
 
         foreach ($this->_cookies as $cookie) {
             setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
