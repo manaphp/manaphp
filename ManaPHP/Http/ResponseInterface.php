@@ -193,13 +193,6 @@ interface ResponseInterface
     public function getContent();
 
     /**
-     * Sends headers to the client
-     *
-     * @return static
-     */
-    public function sendHeaders();
-
-    /**
      * Prints out HTTP response to the client
      *
      * @return static

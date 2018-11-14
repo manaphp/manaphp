@@ -4,8 +4,8 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\FileNotFoundException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Filter\Exception as FilterException;
-use ManaPHP\Http\Response\Exception as ResponseException;
 
 /**
  * Class ManaPHP\Http\Response
@@ -18,11 +18,6 @@ use ManaPHP\Http\Response\Exception as ResponseException;
  */
 class Response extends Component implements ResponseInterface
 {
-    /**
-     * @var bool
-     */
-    protected $_sent = false;
-
     /**
      * @var string
      */
@@ -53,7 +48,6 @@ class Response extends Component implements ResponseInterface
 
     public function restoreInstanceState($data)
     {
-        $this->_sent = false;
         $this->_content = null;
         $this->_headers = [];
         $this->_status = null;
@@ -507,51 +501,14 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
-     * Check if the response is already sent
-     *
-     * @return bool
-     */
-    public function isSent()
-    {
-        return $this->_sent;
-    }
-
-    /**
-     * Sends headers to the client
-     *
-     * @return static
-     */
-    public function sendHeaders()
-    {
-        if ($this->_status) {
-            header('HTTP/1.1 ' . $this->_status);
-        }
-
-        foreach ($this->_headers as $header => $value) {
-            if ($value !== null) {
-                header($header . ': ' . $value, true);
-            } else {
-                header($header, true);
-            }
-        }
-
-        $this->cookies->send();
-
-        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
-
-        return $this;
-    }
-
-    /**
      * Prints out HTTP response to the client
      *
      * @return static
-     * @throws \ManaPHP\Http\Response\Exception
      */
     public function send()
     {
-        if ($this->_sent === true) {
-            throw new ResponseException('Response was already sent');
+        if (headers_sent($file, $line)) {
+            throw new MisuseException("Headers has been sent in $file:$line");
         }
 
         if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !isset($this->_headers['X-Request-Id'])) {
@@ -561,7 +518,21 @@ class Response extends Component implements ResponseInterface
         $this->fireEvent('response:beforeSend');
 
         if (!headers_sent()) {
-            $this->sendHeaders();
+            if ($this->_status) {
+                header('HTTP/1.1 ' . $this->_status);
+            }
+
+            foreach ($this->_headers as $header => $value) {
+                if ($value !== null) {
+                    header($header . ': ' . $value, true);
+                } else {
+                    header($header, true);
+                }
+            }
+
+            $this->cookies->send();
+
+            header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
         }
 
         if ($this->_content !== null) {
@@ -569,8 +540,6 @@ class Response extends Component implements ResponseInterface
         } elseif ($this->_file) {
             readfile($this->alias->resolve($this->_file));
         }
-
-        $this->_sent = true;
 
         $this->fireEvent('response:afterSend');
 
