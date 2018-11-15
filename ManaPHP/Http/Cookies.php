@@ -140,7 +140,7 @@ class Cookies extends Component implements CookiesInterface
      */
     public function get($name, $default = null)
     {
-        if ($name == null) {
+        if ($name === null) {
             return $this->_cookies;
         } elseif ($name[0] === '!') {
             $name = (string)substr($name, 1);
