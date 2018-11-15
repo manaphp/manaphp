@@ -811,7 +811,7 @@ class Compiler extends Component
         $expression
     )
     {
-        return '<?php if($di->configure->debug){?><div class="debugger"><a target="_self" href="<?php echo $di->debugger->getUrl(); ?>">Debugger</a></div><?php }?> ';
+        return '<?php if($di->has("debuggerPlugin")){?><div class="debugger"><a target="_self" href="<?php echo $di->debuggerPlugin->getUrl(); ?>">Debugger</a></div><?php }?> ';
     }
 
     /**
