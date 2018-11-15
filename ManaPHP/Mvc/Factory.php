@@ -24,7 +24,6 @@ class Factory extends FactoryDefault
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
             'viewsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/viewsCache', 'extension' => '.html'],
             'cookies' => 'ManaPHP\Http\Cookies',
-            'debugger' => 'ManaPHP\Debugger',
             'authorization' => 'ManaPHP\Authorization',
         ]);
     }

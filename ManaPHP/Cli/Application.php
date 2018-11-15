@@ -51,13 +51,6 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         return $this->_di;
     }
 
-    public function registerServices()
-    {
-        $this->configure->bootstraps = array_diff($this->configure->bootstraps, ['debugger']);
-
-        parent::registerServices();
-    }
-
     public function main()
     {
         $this->dotenv->load();

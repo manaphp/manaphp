@@ -21,5 +21,7 @@ return [
             'appenders' => ['ManaPHP\Logger\Appender\File'],
         ],
     ],
-    'bootstraps' => ['debugger']
+    'plugins' => [
+        'debugger'
+    ]
 ];

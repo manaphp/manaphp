@@ -1,14 +1,17 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Plugins;
 
 use ManaPHP\Exception\HttpStatusException;
 use ManaPHP\Logger\Log;
+use ManaPHP\Plugin;
+use ManaPHP\Component;
+use ManaPHP\Version;
 
 /**
- * Class ManaPHP\Debugger
+ * Class ManaPHP\Plugins\DebuggerPlugin
  *
- * @package debugger
+ * @package plugins
  *
  * @property-read \ManaPHP\RouterInterface        $router
  * @property-read \ManaPHP\UrlInterface           $url
@@ -16,7 +19,7 @@ use ManaPHP\Logger\Log;
  * @property-read \ManaPHP\RendererInterface      $renderer
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class Debugger extends Component implements DebuggerInterface
+class DebuggerPlugin extends Plugin
 {
     /**
      * @var string
@@ -40,13 +43,9 @@ class Debugger extends Component implements DebuggerInterface
 
     protected $_events = [];
 
-    /**
-     * Debugger constructor.
-     */
-    public function __construct()
+    public function init()
     {
-        $handler = [$this, '_eventHandlerPeek'];
-        $this->eventsManager->peekEvent('*', $handler);
+        $this->eventsManager->peekEvent('*', [$this, '_eventHandlerPeek']);
 
         $this->attachEvent('router:beforeRoute');
     }
@@ -245,7 +244,7 @@ class Debugger extends Component implements DebuggerInterface
 
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_di->__debugInfo()['_instances'] as $k => $v) {
-            if ($k === 'configure' || $k === 'debugger') {
+            if ($k === 'configure' || $k === 'debuggerPlugin') {
                 continue;
             }
 
@@ -262,7 +261,7 @@ class Debugger extends Component implements DebuggerInterface
             $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
         }
 
-        $template = strpos($this->_template, '/') !== false ? $this->_template : ('@manaphp/Debugger/Template/' . $this->_template);
+        $template = strpos($this->_template, '/') !== false ? $this->_template : ('@manaphp/Plugins/DebuggerPlugin/Template/' . $this->_template);
 
         return $this->renderer->render($template, ['data' => $data], false);
     }

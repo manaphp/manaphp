@@ -20,7 +20,6 @@ class Factory extends FactoryDefault
             'cookies' => 'ManaPHP\Http\Cookies',
             'captcha' => 'ManaPHP\Security\Captcha',
             'csrfToken' => 'ManaPHP\Security\CsrfToken',
-            'debugger' => 'ManaPHP\Debugger',
             'authorization' => 'ManaPHP\Authorization',
         ]);
     }
