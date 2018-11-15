@@ -143,6 +143,33 @@ class Application extends Component implements ApplicationInterface
         }
     }
 
+    protected function _loadPlugins($plugins)
+    {
+        $app_plugins = [];
+        foreach ($this->filesystem->glob('@app/Plugins/*Plugin.php') as $item) {
+            $app_plugins[basename($item, '.php')] = 1;
+        }
+
+        foreach ($plugins as $k => $v) {
+            if ($v !== '*') {
+                $plugin = is_int($k) ? $v : $k;
+                $plugin = ($pos = strrpos($plugin, 'Plugin')) !== false && $pos === strlen($plugin) - 6 ? ucfirst($plugin) : (ucfirst($plugin) . 'Plugin');
+                $var = lcfirst($plugin);
+                $pluginClassName = isset($app_plugins[$plugin]) ? $this->alias->resolveNS("@ns.app\\Plugins\\$plugin") : "ManaPHP\Plugins\\$plugin";
+                $this->_di->setShared($var, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($var)->init();
+                unset($app_plugins[$plugin]);
+            }
+        }
+
+        if (in_array('*', $plugins, true)) {
+            foreach ($app_plugins as $plugin => $_) {
+                $var = lcfirst($plugin);
+                $pluginClassName = $this->alias->resolveNS("@ns.app\\Plugins\\$plugin");
+                $this->_di->setShared($var, $pluginClassName)->getShared($var)->init();
+            }
+        }
+    }
+
     public function registerServices()
     {
         $configure = $this->configure;
@@ -170,7 +197,13 @@ class Application extends Component implements ApplicationInterface
             }
         }
 
-        $this->_loadListeners($configure->listeners);
+        if ($configure->plugins) {
+            $this->_loadPlugins($configure->plugins);
+        }
+
+        if ($configure->listeners) {
+            $this->_loadListeners($configure->listeners);
+        }
     }
 
     /**
