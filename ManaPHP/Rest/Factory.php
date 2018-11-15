@@ -19,7 +19,6 @@ class Factory extends FactoryDefault
             'session' => 'ManaPHP\Http\Session',
             'cookies' => 'ManaPHP\Http\Cookies',
             'captcha' => 'ManaPHP\Security\Captcha',
-            'csrfToken' => 'ManaPHP\Security\CsrfToken',
             'authorization' => 'ManaPHP\Authorization',
         ]);
     }

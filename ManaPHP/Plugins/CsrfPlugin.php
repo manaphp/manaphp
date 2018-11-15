@@ -1,20 +1,20 @@
 <?php
-namespace ManaPHP\Security;
+namespace ManaPHP\Plugins;
 
-use ManaPHP\Component;
-use ManaPHP\Security\CsrfToken\Exception as CsrfTokenException;
+use ManaPHP\Exception\CsrfTokenException;
+use ManaPHP\Plugin;
 
 /**
- * Class ManaPHP\Security\CsrfToken
+ * Class ManaPHP\Plugins\CsrfPlugin
  *
- * @package csrfToken
+ * @package csrfPlugin
  *
  * @property-read \ManaPHP\Http\CookiesInterface  $cookies
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\SessionInterface  $session
  */
-class CsrfToken extends Component implements CsrfTokenInterface
+class CsrfPlugin extends Plugin
 {
     /**
      * @var string
@@ -30,10 +30,6 @@ class CsrfToken extends Component implements CsrfTokenInterface
      * @var bool
      */
     protected $_useCookie = true;
-    /**
-     * @var bool
-     */
-    protected $_enabled = true;
 
     /**
      * @var string
@@ -41,7 +37,7 @@ class CsrfToken extends Component implements CsrfTokenInterface
     protected $_name = 'csrf_token';
 
     /**
-     * CsrfToken constructor.
+     * CsrfPlugin constructor.
      *
      * @param int|string|array $options
      */
@@ -66,6 +62,11 @@ class CsrfToken extends Component implements CsrfTokenInterface
         if (isset($_options['name'])) {
             $this->_name = $_options['name'];
         }
+    }
+
+    public function init()
+    {
+        $this->attachEvent('dispatcher:beforeDispatch', [$this, 'onBeforeDispatch']);
     }
 
     /**
@@ -106,12 +107,21 @@ class CsrfToken extends Component implements CsrfTokenInterface
     }
 
     /**
-     * @return void
-     * @throws \ManaPHP\Security\CsrfToken\Exception
+     * @return bool
      */
-    public function verify()
+    protected function _isSafe()
     {
-        if (!$this->_enabled) {
+        $request = $this->request;
+        return $request->isGet() || $request->isOptions() || $request->isHead();
+    }
+
+    /**
+     * @return void
+     * @throws \ManaPHP\Exception\CsrfTokenException
+     */
+    public function onBeforeDispatch()
+    {
+        if ($this->_isSafe()) {
             return;
         }
 
@@ -135,16 +145,6 @@ class CsrfToken extends Component implements CsrfTokenInterface
                 throw new CsrfTokenException('The CSRF token could not be verified: not match');
             }
         }
-    }
-
-    /**
-     * @return static
-     */
-    public function disable()
-    {
-        $this->_enabled = false;
-
-        return $this;
     }
 
     /**

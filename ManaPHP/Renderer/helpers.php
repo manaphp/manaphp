@@ -120,7 +120,7 @@ if (!function_exists('csrf_token')) {
      */
     function csrf_token()
     {
-        return di('csrfToken')->get();
+        return di('csrfPlugin')->get();
     }
 }
 
@@ -130,7 +130,7 @@ if (!function_exists('csrf_field')) {
      */
     function csrf_field()
     {
-        $csrfToken = di('csrfToken');
+        $csrfToken = di('csrfPlugin');
         return sprintf('<input type="hidden" name="%s" value="%s" />', $csrfToken->getName(), $csrfToken->get());
     }
 }
