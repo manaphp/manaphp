@@ -156,9 +156,9 @@ class Component implements ComponentInterface, \JsonSerializable
      *
      * @return static
      */
-    public function attachEvent($event, $handler = null)
+    public function attachEvent($event, $handler)
     {
-        $this->eventsManager->attachEvent($event, $handler ?: $this);
+        $this->eventsManager->attachEvent($event, $handler);
 
         return $this;
     }
@@ -178,7 +178,7 @@ class Component implements ComponentInterface, \JsonSerializable
 
     /**
      * @param string $event
-     * @param string $handler
+     * @param callable $handler
      */
     public static function peekEvent($event, $handler)
     {

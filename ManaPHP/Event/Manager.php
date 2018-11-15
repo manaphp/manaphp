@@ -59,13 +59,6 @@ class Manager implements ManagerInterface
      */
     public function attachEvent($event, $handler)
     {
-        if (!$handler instanceof \Closure && is_object($handler)) {
-            $parts = explode(':', $event);
-
-            $method = 'on' . ucfirst($parts[0]) . ucfirst($parts[1]);
-            $handler = [$handler, $method];
-        }
-
         $this->_events[$event][] = $handler;
     }
 

@@ -39,7 +39,7 @@ interface ComponentInterface
      *
      * @return static
      */
-    public function attachEvent($event, $handler = null);
+    public function attachEvent($event, $handler);
 
     /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
@@ -52,8 +52,8 @@ interface ComponentInterface
     public function fireEvent($event, $data = []);
 
     /**
-     * @param string $event
-     * @param string $handler
+     * @param string   $event
+     * @param callable $handler
      */
     public static function peekEvent($event, $handler);
 
