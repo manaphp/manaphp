@@ -18,5 +18,6 @@ return [
             'appenders' => ['file' => ['file' => '@data/logger/app.log']],
         ]
     ],
-    'listeners' => ['*']
+    'listeners' => ['*'],
+    'plugins' => ['corsPlugin' => ['max_age' => 3600]]
 ];
