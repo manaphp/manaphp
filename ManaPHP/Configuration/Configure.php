@@ -74,6 +74,11 @@ class Configure extends Component implements ConfigureInterface
     public $listeners = ['*'];
 
     /**
+     * @var array
+     */
+    public $plugins = ['*'];
+
+    /**
      * @param string $file
      *
      * @return static
