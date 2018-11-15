@@ -72,7 +72,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
             throw new SessionException('session_start() has been called, use session component is too late');
         }
 
-        $this->attachEvent('response:beforeSend');
+        $this->attachEvent('response:beforeSend', [$this, 'onBeforeSendResponse']);
     }
 
     public function saveInstanceState()
@@ -93,7 +93,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     /**
      * @ignore
      */
-    public function onResponseBeforeSend()
+    public function onBeforeSendResponse()
     {
         $this->save();
     }

@@ -45,9 +45,9 @@ class DebuggerPlugin extends Plugin
 
     public function init()
     {
-        $this->eventsManager->peekEvent('*', [$this, '_eventHandlerPeek']);
+        $this->peekEvent('*', [$this, '_eventHandlerPeek']);
 
-        $this->attachEvent('router:beforeRoute');
+        $this->attachEvent('router:beforeRoute', [$this, 'onBeforeRoute']);
     }
 
     public function saveInstanceState()
@@ -182,7 +182,7 @@ class DebuggerPlugin extends Plugin
         }
     }
 
-    public function onRouterBeforeRoute()
+    public function onBeforeRoute()
     {
         if (isset($_GET['_debugger']) && preg_match('#^[a-zA-Z0-9_/]+\.html$#', $_GET['_debugger'])) {
             $file = '@data/debugger' . $_GET['_debugger'];
