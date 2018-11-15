@@ -48,7 +48,6 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\Curl\EasyInterface              $httpClient
  * @property-read \ManaPHP\AuthorizationInterface          $authorization
  * @property-read \ManaPHP\Security\CaptchaInterface       $captcha
- * @property-read \ManaPHP\Security\CsrfTokenInterface     $csrfToken
  * @property-read \ManaPHP\IdentityInterface               $identity
  * @property-read \ManaPHP\Paginator                       $paginator
  * @property-read \ManaPHP\FilesystemInterface             $filesystem

@@ -11,7 +11,6 @@ namespace ManaPHP;
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Http\ResponseInterface         $response
  * @property-read \ManaPHP\DispatcherInterface            $dispatcher
- * @property-read \ManaPHP\Security\CsrfTokenInterface    $csrfToken
  * @property-read \ManaPHP\Paginator                      $paginator
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
  * @property-read \ManaPHP\Security\RateLimiterInterface  $rateLimiter

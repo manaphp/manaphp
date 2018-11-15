@@ -21,7 +21,6 @@ namespace ManaPHP\Mvc;
  * @property-read \ManaPHP\Http\ResponseInterface         $response
  * @property-read \ManaPHP\DispatcherInterface            $dispatcher
  * @property-read \ManaPHP\Http\SessionInterface          $session
- * @property-read \ManaPHP\Security\CsrfTokenInterface    $csrfToken
  * @property-read \ManaPHP\Paginator                      $paginator
  * @property-read \ManaPHP\Cache\EngineInterface          $viewsCache
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
