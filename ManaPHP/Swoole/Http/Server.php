@@ -177,10 +177,10 @@ class Server extends Component implements ServerInterface
         $response = $this->_response;
 
         foreach ($headers as $k => $v) {
-            $response->header($k, $v);
+            $response->header($k, $v, false);
         }
 
-        $response->header('X-WORKER-ID', $_SERVER['WORKER_ID']);
+        $response->header('X-Worker-Id', $_SERVER['WORKER_ID'], false);
 
         return $this;
     }
