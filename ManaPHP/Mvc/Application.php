@@ -81,6 +81,8 @@ class Application extends \ManaPHP\Application
 
             $this->registerServices();
 
+            $this->fireEvent('app:beginRequest');
+
             $this->authenticate();
 
             if (!$this->router->match()) {
@@ -104,5 +106,7 @@ class Application extends \ManaPHP\Application
         }
 
         $this->response->send();
+
+        $this->fireEvent('app:endRequest');
     }
 }

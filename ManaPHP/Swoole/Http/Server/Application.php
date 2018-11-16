@@ -94,6 +94,8 @@ class Application extends \ManaPHP\Application
             $request_uri = $_SERVER['REQUEST_URI'];
             $_GET['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
 
+            $this->fireEvent('app:beginRequest');
+
             $this->authenticate();
 
             if (!$this->router->match()) {
@@ -112,6 +114,9 @@ class Application extends \ManaPHP\Application
         }
 
         $this->send();
+
+        $this->fireEvent('app:endRequest');
+
         $this->_di->restoreInstancesState();
     }
 
