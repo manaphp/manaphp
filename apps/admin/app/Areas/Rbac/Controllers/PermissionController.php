@@ -10,7 +10,6 @@ use ManaPHP\Utility\Text;
  *
  * @package App\Controllers
  *
- * @property \ManaPHP\Mvc\Application $application
  */
 class PermissionController extends ControllerBase
 {
