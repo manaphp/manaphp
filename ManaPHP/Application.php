@@ -40,7 +40,7 @@ class Application extends Component implements ApplicationInterface
         $GLOBALS['DI'] = $this->getDi();
 
         $this->_di->setShared('loader', $loader ?: new Loader());
-        $this->_di->setShared('application', $this);
+        $this->_di->setShared('app', $this);
 
         $rootDir = $this->getRootDir();
         $appDir = $rootDir . '/app';
