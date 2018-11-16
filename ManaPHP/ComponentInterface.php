@@ -55,7 +55,7 @@ interface ComponentInterface
      * @param string   $event
      * @param callable $handler
      */
-    public static function peekEvent($event, $handler);
+    public function peekEvent($event, $handler);
 
     /**
      * @return array

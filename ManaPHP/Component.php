@@ -180,7 +180,7 @@ class Component implements ComponentInterface, \JsonSerializable
      * @param string   $event
      * @param callable $handler
      */
-    public static function peekEvent($event, $handler)
+    public function peekEvent($event, $handler)
     {
         if ($event !== '*' && strpos($event, ':') === false) {
             $type = $className = get_called_class();
