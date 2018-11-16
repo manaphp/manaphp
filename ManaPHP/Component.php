@@ -177,12 +177,12 @@ class Component implements ComponentInterface, \JsonSerializable
     }
 
     /**
-     * @param string $event
+     * @param string   $event
      * @param callable $handler
      */
     public static function peekEvent($event, $handler)
     {
-        if (strpos($event, ':') === false) {
+        if ($event !== '*' && strpos($event, ':') === false) {
             $type = $className = get_called_class();
             while (true) {
                 if (strpos($className, 'ManaPHP\\') === 0) {
