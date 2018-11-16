@@ -143,6 +143,12 @@ class Application extends Component implements ApplicationInterface
         }
     }
 
+    /**
+     * @param array $plugins
+     *
+     * @throws \ManaPHP\Exception\RuntimeException
+     * @throws \ManaPHP\Exception\UnexpectedValueException
+     */
     protected function _loadPlugins($plugins)
     {
         $app_plugins = [];
@@ -170,6 +176,27 @@ class Application extends Component implements ApplicationInterface
         }
     }
 
+    /**
+     * @param array $components
+     *
+     * @throws \ManaPHP\Exception\PreconditionException
+     * @throws \ManaPHP\Exception\RuntimeException
+     * @throws \ManaPHP\Exception\UnexpectedValueException
+     */
+    protected function _loadComponents($components)
+    {
+        foreach ($components as $component => $definition) {
+            if (is_int($component)) {
+                $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
+                $this->_di->setShared($component, $definition);
+            } elseif ($definition === null) {
+                $this->_di->remove($component);
+            } elseif ($component[0] !== '!' || $this->_di->has($component = substr($component, 1))) {
+                $this->_di->setShared($component, $definition);
+            }
+        }
+    }
+
     public function registerServices()
     {
         $configure = $this->configure;
@@ -183,16 +210,7 @@ class Application extends Component implements ApplicationInterface
             $this->_di->alias->set($alias, $path);
         }
 
-        foreach ($configure->components as $component => $definition) {
-            if (is_int($component)) {
-                $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
-                $this->_di->setShared($component, $definition);
-            } elseif ($definition === null) {
-                $this->_di->remove($component);
-            } elseif ($component[0] !== '!' || $this->_di->has($component = substr($component, 1))) {
-                $this->_di->setShared($component, $definition);
-            }
-        }
+        $this->_loadComponents($configure->components);
 
         foreach ($configure->bootstraps as $bootstrap) {
             if ($bootstrap) {
