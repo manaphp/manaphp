@@ -26,11 +26,6 @@ class Logger extends Component implements LoggerInterface
     protected $_level;
 
     /**
-     * @var string
-     */
-    protected $_category;
-
-    /**
      * @var array
      */
     protected $_appenders = [];
@@ -59,11 +54,7 @@ class Logger extends Component implements LoggerInterface
                 $this->setLevel($options['level']);
             }
 
-            if (!empty($options['category'])) {
-                $this->_category = $options['category'];
-            }
-
-            unset($options['level'], $options['category']);
+            unset($options['level']);
 
             if (isset($options['appenders'])) {
                 $options = $options['appenders'];
@@ -140,17 +131,6 @@ class Logger extends Component implements LoggerInterface
     public function getLevel()
     {
         return $this->_level;
-    }
-
-    /**
-     * @param string $category
-     *
-     * @return static
-     */
-    public function setCategory($category)
-    {
-        $this->_category = $category;
-        return $this;
     }
 
     /**
@@ -422,7 +402,7 @@ class Logger extends Component implements LoggerInterface
         $log->level = $this->_levels[$level];
         $log->request_id = isset($_SERVER['HTTP_X_REQUEST_ID']) ? preg_replace('#[^a-zA-Z\d-_\.]#', 'X', $_SERVER['HTTP_X_REQUEST_ID']) : '';
         /** @noinspection NestedTernaryOperatorInspection */
-        $log->category = $category ?: ($this->_category ?: $this->_inferCategory($traces));
+        $log->category = $category ?: $this->_inferCategory($traces);
         $log->location = $this->_getLocation($traces);
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = microtime(true);

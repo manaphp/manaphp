@@ -22,13 +22,6 @@ interface LoggerInterface
     public function getLevel();
 
     /**
-     * @param string $category
-     *
-     * @return static
-     */
-    public function setCategory($category);
-
-    /**
      * @return array
      */
     public function getLevels();
