@@ -52,12 +52,6 @@ interface ComponentInterface
     public function fireEvent($event, $data = []);
 
     /**
-     * @param string   $event
-     * @param callable $handler
-     */
-    public function peekEvent($event, $handler);
-
-    /**
      * @return array
      */
     public function dump();

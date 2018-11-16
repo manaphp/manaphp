@@ -177,28 +177,6 @@ class Component implements ComponentInterface, \JsonSerializable
     }
 
     /**
-     * @param string   $event
-     * @param callable $handler
-     */
-    public function peekEvent($event, $handler)
-    {
-        if ($event !== '*' && strpos($event, ':') === false) {
-            $type = $className = get_called_class();
-            while (true) {
-                if (strpos($className, 'ManaPHP\\') === 0) {
-                    $type = lcfirst(substr($className, strrpos($className, '\\') + 1));
-                    break;
-                } else {
-                    $className = get_parent_class($className);
-                }
-            }
-            $event = "$type:$event";
-        }
-
-        Di::getDefault()->eventsManager->peekEvent($event, $handler);
-    }
-
-    /**
      * @return array
      */
     public function __debugInfo()
