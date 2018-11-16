@@ -17,10 +17,7 @@ return [
         'db' => env('DB_URL'),
         'redis' => env('REDIS_URL'),
         'mongodb' => env('MONGODB_URL'),
-        'logger' => [
-            'level' => env('LOGGER_LEVEL', 'info'),
-            'appenders' => ['ManaPHP\Logger\Appender\File'],
-        ],
+        'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
         'authorization' => \App\Areas\Rbac\Components\Rbac::class
     ],
     'bootstraps' => explode(',', env('BOOTSTRAPS'))

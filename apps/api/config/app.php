@@ -13,10 +13,7 @@ return [
         'db' => [env('DB_URL')],
         'redis' => [env('REDIS_URL')],
         'mongodb' => [env('MONGODB_URL')],
-        'logger' => [
-            'level' => env('LOGGER_LEVEL', 'info'),
-            'appenders' => ['file' => ['file' => '@data/logger/app.log']],
-        ]
+        'logger' => ['level' => env('LOGGER_LEVEL', 'info')]
     ],
     'listeners' => ['*'],
     'plugins' => ['corsPlugin' => ['max_age' => 3600]]

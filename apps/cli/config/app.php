@@ -16,10 +16,7 @@ return [
         'db' => env('DB_URL'),
         'redis' => env('REDIS_URL'),
         'mongodb' => env('MONGODB_URL'),
-        'logger' => [
-            'level' => env('LOGGER_LEVEL', 'info'),
-            'appenders' => ['ManaPHP\Logger\Appender\Db'],
-        ]
+        'logger' => ['level' => env('LOGGER_LEVEL', 'info')]
     ],
     'bootstraps' => env('BOOTSTRAPS', []),
 ];
