@@ -77,7 +77,7 @@ class Manager implements ManagerInterface
      */
     public function fireEvent($event, $source, $data = [])
     {
-        list($p1, $p2) = explode(':', $event);
+        list($p1, $p2) = explode(':', $event, 2);
 
         if (isset($this->_listeners[$p1])) {
             foreach ($this->_listeners[$p1] as $k => $v) {
