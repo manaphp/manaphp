@@ -186,7 +186,7 @@ class Application extends Component implements ApplicationInterface
         foreach ($configure->components as $component => $definition) {
             if ($definition === null) {
                 $this->_di->remove($component);
-            } else {
+            } elseif ($component[0] !== '!' || $this->_di->has($component = substr($component, 1))) {
                 $this->_di->setShared($component, $definition);
             }
         }
