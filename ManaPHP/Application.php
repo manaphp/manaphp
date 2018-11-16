@@ -210,12 +210,12 @@ class Application extends Component implements ApplicationInterface
             $this->_di->alias->set($alias, $path);
         }
 
-        $this->_loadComponents($configure->components);
+        if ($configure->components) {
+            $this->_loadComponents($configure->components);
+        }
 
         foreach ($configure->bootstraps as $bootstrap) {
-            if ($bootstrap) {
-                $this->_di->getShared($bootstrap);
-            }
+            $this->_di->getShared($bootstrap);
         }
 
         if ($configure->plugins) {
