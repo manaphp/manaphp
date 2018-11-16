@@ -184,7 +184,10 @@ class Application extends Component implements ApplicationInterface
         }
 
         foreach ($configure->components as $component => $definition) {
-            if ($definition === null) {
+            if (is_int($component)) {
+                $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
+                $this->_di->setShared($component, $definition);
+            } elseif ($definition === null) {
                 $this->_di->remove($component);
             } elseif ($component[0] !== '!' || $this->_di->has($component = substr($component, 1))) {
                 $this->_di->setShared($component, $definition);
