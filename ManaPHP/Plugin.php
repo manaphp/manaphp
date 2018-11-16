@@ -23,6 +23,9 @@ namespace ManaPHP;
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\RouterInterface                $router
  * @property-read \ManaPHP\AuthorizationInterface         $authorization
+ * @property-read \ManaPHP\Http\CookiesInterface          $cookies
+ * @property-read \ManaPHP\Http\SessionInterface          $session
+ * @property-read \ManaPHP\RendererInterface              $renderer
  */
 abstract class Plugin extends Component implements PluginInterface
 {

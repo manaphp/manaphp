@@ -2,23 +2,12 @@
 
 namespace ManaPHP\Plugins;
 
+use ManaPHP\Component;
 use ManaPHP\Exception\HttpStatusException;
 use ManaPHP\Logger\Log;
 use ManaPHP\Plugin;
-use ManaPHP\Component;
 use ManaPHP\Version;
 
-/**
- * Class ManaPHP\Plugins\DebuggerPlugin
- *
- * @package plugins
- *
- * @property-read \ManaPHP\RouterInterface        $router
- * @property-read \ManaPHP\UrlInterface           $url
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\RendererInterface      $renderer
- * @property-read \ManaPHP\Http\ResponseInterface $response
- */
 class DebuggerPlugin extends Plugin
 {
     /**

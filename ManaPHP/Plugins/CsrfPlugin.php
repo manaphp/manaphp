@@ -4,16 +4,6 @@ namespace ManaPHP\Plugins;
 use ManaPHP\Exception\CsrfTokenException;
 use ManaPHP\Plugin;
 
-/**
- * Class ManaPHP\Plugins\CsrfPlugin
- *
- * @package csrfPlugin
- *
- * @property-read \ManaPHP\Http\CookiesInterface  $cookies
- * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\SessionInterface  $session
- */
 class CsrfPlugin extends Plugin
 {
     /**
