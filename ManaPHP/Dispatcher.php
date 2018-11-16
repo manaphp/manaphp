@@ -290,7 +290,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
         }
 
-        if (count($missing) !== 0) {
+        if ($missing) {
             throw new MissingRequiredFieldsException($missing);
         }
 
