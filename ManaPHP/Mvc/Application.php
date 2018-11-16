@@ -81,6 +81,8 @@ class Application extends \ManaPHP\Application
 
             $this->registerServices();
 
+            $this->fireEvent('app:start');
+
             $this->fireEvent('app:beginRequest');
 
             $this->authenticate();

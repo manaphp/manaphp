@@ -127,6 +127,8 @@ class Application extends \ManaPHP\Application
 
         $this->registerServices();
 
+        $this->fireEvent('app:start');
+
         $this->swooleHttpServer->start([$this, 'handle']);
     }
 }
