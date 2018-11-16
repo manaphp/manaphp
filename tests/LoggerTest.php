@@ -22,15 +22,40 @@ class LoggerTest extends TestCase
 
     public function test_construct()
     {
+        $logger = $this->_di->getInstance('ManaPHP\Logger');
+        $this->assertEquals(['file' => 'ManaPHP\Logger\Appender\File'], $logger->__debugInfo()['_appenders']);
+        $this->assertInstanceOf('ManaPHP\Logger\Appender\File', $logger->getAppender('file'));
+
+        $logger = $this->_di->getInstance('ManaPHP\Logger', []);
+        $this->assertEquals(['file' => 'ManaPHP\Logger\Appender\File'], $logger->__debugInfo()['_appenders']);
+        $this->assertInstanceOf('ManaPHP\Logger\Appender\File', $logger->getAppender('file'));
+
+        $logger = $this->_di->getInstance('ManaPHP\Logger', ['level' => 'error']);
+        $this->assertEquals(Logger::LEVEL_ERROR, $logger->getLevel());
+        $this->assertEquals(['file' => 'ManaPHP\Logger\Appender\File'], $logger->__debugInfo()['_appenders']);
+        $this->assertInstanceOf('ManaPHP\Logger\Appender\File', $logger->getAppender('file'));
+
+        $logger = $this->_di->getInstance('ManaPHP\Logger', ['level' => 'error', 'file' => ['level' => 'debug']]);
+        $this->assertEquals(Logger::LEVEL_ERROR, $logger->getLevel());
+        $this->assertEquals(['file' => ['level' => 'debug']], $logger->__debugInfo()['_appenders']);
+        $this->assertInstanceOf('ManaPHP\Logger\Appender\File', $logger->getAppender('file'));
+
+        $logger = $this->_di->getInstance('ManaPHP\Logger', ['level' => 'error', 'file' => ['level' => 'debug']]);
+        $this->assertEquals(Logger::LEVEL_ERROR, $logger->getLevel());
+        $this->assertEquals(['file' => ['level' => 'debug']], $logger->__debugInfo()['_appenders']);
+        $this->assertInstanceOf('ManaPHP\Logger\Appender\File', $logger->getAppender('file'));
+
+        $logger = $this->_di->getInstance('ManaPHP\Logger', ['level' => 'error', 'file' => ['level' => 'debug', 'file' => '@log/app.log']]);
+        $this->assertEquals(Logger::LEVEL_ERROR, $logger->getLevel());
+        $this->assertEquals(['file' => ['level' => 'debug', 'file' => '@log/app.log']], $logger->__debugInfo()['_appenders']);
+        $this->assertInstanceOf('ManaPHP\Logger\Appender\File', $logger->getAppender('file'));
+        $this->assertEquals('@log/app.log', $logger->getAppender('file')->__debugInfo()['_file']);
+
         /**
          * @var \ManaPHP\Logger\Appender\Memory $appender
          */
         $logger = $this->_di->getInstance(Logger::class, [Memory::class]);
-        $appender = $logger->getAppender(0);
-        $this->assertInstanceOf(Memory::class, $appender);
-
-        $logger = $this->_di->getInstance(Logger::class, [[Memory::class]]);
-        $appender = $logger->getAppender(0);
+        $appender = $logger->getAppender('memory');
         $this->assertInstanceOf(Memory::class, $appender);
 
         $logger = $this->_di->getInstance(Logger::class, [['memory' => [Memory::class]]]);
@@ -45,51 +70,55 @@ class LoggerTest extends TestCase
     public function test_debug()
     {
         $logger = $this->_di->getInstance(Logger::class, [Memory::class]);
+        $logger->setLevel(Logger::LEVEL_DEBUG);
         /**
          * @var \ManaPHP\Logger\Appender\Memory $appender
          */
-        $appender = $logger->getAppender(0);
+        $appender = $logger->getAppender('memory');
 
         $logger->debug('**debug**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $appender->getLogs());
         $log = $appender->getLogs()[0];
-        $this->assertEquals(Logger::LEVEL_DEBUG, $log->level);
+        $this->assertEquals('debug', $log->level);
         $this->assertContains('**debug**', $log->message);
     }
 
     public function test_info()
     {
         $logger = $this->_di->getInstance(Logger::class, [Memory::class]);
+        $logger->setLevel(Logger::LEVEL_DEBUG);
         /**
          * @var \ManaPHP\Logger\Appender\Memory $appender
          */
-        $appender = $logger->getAppender(0);
+        $appender = $logger->getAppender('memory');
 
         $logger->info('**info**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $appender->getLogs());
         $log = $appender->getLogs()[0];
-        $this->assertEquals(Logger::LEVEL_INFO, $log->level);
+        $this->assertEquals('info', $log->level);
         $this->assertContains('**info**', $log->message);
     }
 
     public function test_warn()
     {
         $logger = $this->_di->getInstance(Logger::class, [Memory::class]);
+        $logger->setLevel(Logger::LEVEL_DEBUG);
+
         /**
          * @var \ManaPHP\Logger\Appender\Memory $appender
          */
-        $appender = $logger->getAppender(0);
+        $appender = $logger->getAppender('memory');
 
         $logger->warn('**warning**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $appender->getLogs());
         $log = $appender->getLogs()[0];
-        $this->assertEquals(Logger::LEVEL_WARN, $log->level);
+        $this->assertEquals('warn', $log->level);
         $this->assertContains('**warning**', $log->message);
     }
 
@@ -99,14 +128,14 @@ class LoggerTest extends TestCase
         /**
          * @var \ManaPHP\Logger\Appender\Memory $appender
          */
-        $appender = $logger->getAppender(0);
+        $appender = $logger->getAppender('memory');
 
         $logger->error('**error**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $appender->getLogs());
         $log = $appender->getLogs()[0];
-        $this->assertEquals(Logger::LEVEL_ERROR, $log->level);
+        $this->assertEquals('error', $log->level);
         $this->assertContains('**error**', $log->message);
     }
 
@@ -116,14 +145,14 @@ class LoggerTest extends TestCase
         /**
          * @var \ManaPHP\Logger\Appender\Memory $appender
          */
-        $appender = $logger->getAppender(0);
+        $appender = $logger->getAppender('memory');
 
         $logger->fatal('**fatal**');
 
         // To confirm the debug message correctly
         $this->assertCount(1, $appender->getLogs());
         $log = $appender->getLogs()[0];
-        $this->assertEquals(Logger::LEVEL_FATAL, $log->level);
+        $this->assertEquals('fatal', $log->level);
         $this->assertContains('**fatal**', $log->message);
     }
 
