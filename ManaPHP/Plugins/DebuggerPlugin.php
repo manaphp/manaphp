@@ -45,7 +45,7 @@ class DebuggerPlugin extends Plugin
 
     public function init()
     {
-        $this->peekEvent('*', [$this, '_eventHandlerPeek']);
+        $this->eventsManager->peekEvent('*', [$this, '_eventHandlerPeek']);
 
         $this->attachEvent('router:beforeRoute', [$this, 'onBeforeRoute']);
     }
