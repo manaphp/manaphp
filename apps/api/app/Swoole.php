@@ -1,7 +1,15 @@
 <?php
 namespace App;
 
-class Swoole extends \ManaPHP\Swoole\Http\Server\Application
+class Swoole extends \ManaPHP\Rest\Swoole
 {
+    public function authenticate()
+    {
+//        parent::authenticate();
+    }
 
+    public function authorize()
+    {
+//        parent::authorize();
+    }
 }
