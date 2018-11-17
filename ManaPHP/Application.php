@@ -210,6 +210,11 @@ class Application extends Component implements ApplicationInterface
             $this->_di->alias->set($alias, $path);
         }
 
+        $routerClass = $this->alias->resolveNS('@ns.app\Router');
+        if (class_exists($routerClass)) {
+            $this->_di->setShared('router', $routerClass);
+        }
+
         if ($configure->components) {
             $this->_loadComponents($configure->components);
         }

@@ -29,10 +29,6 @@ class Application extends \ManaPHP\Application
     {
         ini_set('html_errors', 'off');
         parent::__construct($loader);
-        $routerClass = $this->alias->resolveNS('@ns.app\Router');
-        if (class_exists($routerClass)) {
-            $this->_di->setShared('router', $routerClass);
-        }
 
         $this->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
     }
