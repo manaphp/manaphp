@@ -102,11 +102,7 @@ class Manager implements ManagerInterface
         if (isset($this->_peeks[$p1]['*'])) {
             $handlers = array_merge($handlers, $this->_peeks[$p1]['*']);
         }
-
-        if (isset($this->_peeks[$p1][$p2])) {
-            $handlers = array_merge($handlers, $this->_peeks[$p1][$p2]);
-        }
-
+        
         foreach ((array)$handlers as $handler) {
             if ($handler instanceof \Closure) {
                 $handler($event, $source, $data);
