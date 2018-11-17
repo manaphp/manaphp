@@ -3,12 +3,32 @@ namespace ManaPHP\Message\Queue\Adapter;
 
 use ManaPHP\Message\Queue;
 
+/**
+ * Class Db
+ * @package ManaPHP\Message\Queue\Adapter
+ *
+ *CREATE TABLE `manaphp_message_queue` (
+ * `id` int(11) NOT NULL AUTO_INCREMENT,
+ * `priority` tinyint(4) NOT NULL,
+ * `topic` char(16) NOT NULL,
+ * `body` varchar(4000) NOT NULL,
+ * `created_time` int(11) NOT NULL,
+ * `deleted_time` int(11) NOT NULL,
+ * PRIMARY KEY (`id`)
+ * ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
+ *
+ */
 class Db extends Queue
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Message\Queue\Adapter\Db\Model';
+    protected $_db = 'db';
+
+    /**
+     * @var string
+     */
+    protected $_source = 'manaphp_message_queue';
 
     /**
      *
@@ -18,8 +38,12 @@ class Db extends Queue
      */
     public function __construct($options = [])
     {
-        if (isset($options['model'])) {
-            $this->_model = $options['model'];
+        if (isset($options['db'])) {
+            $this->_db = $options['db'];
+        }
+
+        if (isset($options['source'])) {
+            $this->_source = $options['source'];
         }
     }
 
@@ -32,18 +56,10 @@ class Db extends Queue
      */
     public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
-        /**
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
-         */
-        $model = new $this->_model();
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
-        $model->priority = $priority;
-        $model->topic = $topic;
-        $model->body = $body;
-        $model->created_time = time();
-        $model->deleted_time = 0;
-
-        $model->create();
+        $db->insert($this->_source, ['topic' => $topic, 'body' => $body, 'priority' => $priority, 'created_time' => time(), 'deleted_time' => 0]);
     }
 
     /**
@@ -54,25 +70,22 @@ class Db extends Queue
      */
     public function do_pop($topic, $timeout = PHP_INT_MAX)
     {
-        /**
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $modelInstance
-         */
-        $modelInstance = new $this->_model();
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
         $startTime = time();
 
         $prev_max = null;
         do {
-            $max_id = $modelInstance::max('id');
+            $max_id = $db->query($this->_source)->max('id');
             if ($prev_max !== $max_id) {
                 $prev_max = $max_id;
 
-                $models = $modelInstance::all(['topic' => $topic, 'deleted_time' => 0], ['order' => 'priority ASC, id ASC', 'limit' => 1]);
-                $model = isset($models[0]) ? $models[0] : false;
+                $rs = $db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0], ['order' => 'priority ASC, id ASC', 'limit' => 1])->all();
+                $r = isset($rs[0]) ? $rs[0] : false;
 
-                if ($model && $modelInstance::updateAll(['deleted_time' => time()], ['id' => $model->id])) {
-                    return $model->body;
+                if ($r && $db->update($this->_source, ['deleted_time' => time()], ['id' => $r['id']])) {
+                    return $r['body'];
                 }
             }
             sleep(1);
@@ -88,12 +101,10 @@ class Db extends Queue
      */
     public function do_delete($topic)
     {
-        /**
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
-         */
-        $model = new $this->_model();
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
-        $model::deleteAll(['topic' => $topic]);
+        $db->delete($this->_source, ['topic' => $topic]);
     }
 
     /**
@@ -104,15 +115,13 @@ class Db extends Queue
      */
     public function do_length($topic, $priority = null)
     {
-        /**
-         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
-         */
-        $model = new $this->_model();
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
         if ($priority === null) {
-            return $model::count(['topic' => $topic, 'deleted_time' => 0]);
+            return $db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0])->count();
         } else {
-            return $model::count(['topic' => $topic, 'deleted_time' => 0, 'priority' => $priority]);
+            return $db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0, 'priority' => $priority])->count();
         }
     }
 }
