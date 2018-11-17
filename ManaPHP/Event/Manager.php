@@ -22,7 +22,7 @@ class Manager implements ManagerInterface
     /**
      * @var array
      */
-    protected $_peeks = [];
+    protected $_peekers = [];
 
     /**
      * @var array
@@ -77,33 +77,25 @@ class Manager implements ManagerInterface
      */
     public function fireEvent($event, $source, $data = [])
     {
-        list($p1, $p2) = explode(':', $event, 2);
+        if ($this->_listeners) {
+            list($p1, $p2) = explode(':', $event, 2);
+            if (isset($this->_listeners[$p1])) {
+                foreach ($this->_listeners[$p1] as $k => $v) {
+                    /**@var \ManaPHP\Event\Listener $listener */
+                    if (is_int($v)) {
+                        $this->_listeners[$p1][$k] = $listener = $this->_di->getShared($k);
+                    } else {
+                        $listener = $v;
+                    }
 
-        if (isset($this->_listeners[$p1])) {
-            foreach ($this->_listeners[$p1] as $k => $v) {
-                /**@var \ManaPHP\Event\Listener $listener */
-                if (is_int($v)) {
-                    $this->_listeners[$p1][$k] = $listener = $this->_di->getShared($k);
-                } else {
-                    $listener = $v;
-                }
-
-                if (($ret = $listener->process($p2, $source, $data)) !== null) {
-                    return $ret;
+                    if (($ret = $listener->process($p2, $source, $data)) !== null) {
+                        return $ret;
+                    }
                 }
             }
         }
 
-        $handlers = [];
-        if (isset($this->_peeks['*'])) {
-            $handlers = $this->_peeks['*'];
-        }
-
-        if (isset($this->_peeks[$p1]['*'])) {
-            $handlers = array_merge($handlers, $this->_peeks[$p1]['*']);
-        }
-        
-        foreach ((array)$handlers as $handler) {
+        foreach ($this->_peekers as $handler) {
             if ($handler instanceof \Closure) {
                 $handler($event, $source, $data);
             } else {
@@ -133,19 +125,13 @@ class Manager implements ManagerInterface
     }
 
     /**
-     * @param string   $event
      * @param callable $handler
      *
      * @return static
      */
-    public function peekEvent($event, $handler)
+    public function peekEvent($handler)
     {
-        if ($event === '*') {
-            $this->_peeks['*'][] = $handler;
-        } else {
-            list($p1, $p2) = explode(':', $event);
-            $this->_peeks[$p1][$p2][] = $handler;
-        }
+        $this->_peekers[] = $handler;
 
         return $this;
     }
