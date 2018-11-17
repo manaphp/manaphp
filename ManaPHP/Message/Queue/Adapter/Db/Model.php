@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Message\Queue\Engine\Db;
+namespace ManaPHP\Message\Queue\Adapter\Db;
 
 /**
- * Class ManaPHP\Message\Queue\Engine\Db\Model
+ * Class ManaPHP\Message\Queue\Adapter\Db\Model
  *
  * @package messageQueue\engine
  */

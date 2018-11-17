@@ -1,21 +1,14 @@
 <?php
-namespace ManaPHP\Message\Queue\Engine;
+namespace ManaPHP\Message\Queue\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\Message\Queue;
-use ManaPHP\Message\Queue\EngineInterface;
 
-/**
- * Class ManaPHP\Message\Queue\Engine\Db
- *
- * @package messageQueue\engine
- */
-class Db extends Component implements EngineInterface
+class Db extends Queue
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Message\Queue\Engine\Db\Model';
+    protected $_model = 'ManaPHP\Message\Queue\Adapter\Db\Model';
 
     /**
      *
@@ -37,10 +30,10 @@ class Db extends Component implements EngineInterface
      *
      * @return void
      */
-    public function push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
+    public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
         /**
-         * @var \ManaPHP\Message\Queue\Engine\Db\Model $model
+         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
          */
         $model = new $this->_model();
 
@@ -59,11 +52,11 @@ class Db extends Component implements EngineInterface
      *
      * @return string|false
      */
-    public function pop($topic, $timeout = PHP_INT_MAX)
+    public function do_pop($topic, $timeout = PHP_INT_MAX)
     {
         /**
-         * @var \ManaPHP\Message\Queue\Engine\Db\Model $model
-         * @var \ManaPHP\Message\Queue\Engine\Db\Model $modelInstance
+         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
+         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $modelInstance
          */
         $modelInstance = new $this->_model();
 
@@ -93,10 +86,10 @@ class Db extends Component implements EngineInterface
      *
      * @return void
      */
-    public function delete($topic)
+    public function do_delete($topic)
     {
         /**
-         * @var \ManaPHP\Message\Queue\Engine\Db\Model $model
+         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
          */
         $model = new $this->_model();
 
@@ -109,10 +102,10 @@ class Db extends Component implements EngineInterface
      *
      * @return int
      */
-    public function length($topic, $priority = null)
+    public function do_length($topic, $priority = null)
     {
         /**
-         * @var \ManaPHP\Message\Queue\Engine\Db\Model $model
+         * @var \ManaPHP\Message\Queue\Adapter\Db\Model $model
          */
         $model = new $this->_model();
 

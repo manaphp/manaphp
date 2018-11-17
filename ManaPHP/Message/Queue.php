@@ -3,38 +3,16 @@ namespace ManaPHP\Message;
 
 use ManaPHP\Component;
 
-class Queue extends Component implements QueueInterface
+abstract class Queue extends Component implements QueueInterface
 {
     /**
-     * @var string|\ManaPHP\Message\Queue\EngineInterface
-     */
-    protected $_engine;
-
-    /**
-     * Queue constructor.
+     * @param string $topic
+     * @param string $body
+     * @param int    $priority
      *
-     * @param string|array $options
+     * @return void
      */
-    public function __construct($options = 'ManaPHP\Message\Queue\Engine\Redis')
-    {
-        if (is_string($options)) {
-            $this->_engine = $options;
-        } else {
-            $this->_engine = $options;
-        }
-    }
-
-    /**
-     * @return \ManaPHP\Message\Queue\EngineInterface
-     */
-    protected function _getEngine()
-    {
-        if (is_string($this->_engine)) {
-            return $this->_engine = $this->_di->getShared($this->_engine);
-        } else {
-            return $this->_engine = $this->_di->getInstance($this->_engine);
-        }
-    }
+    abstract public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL);
 
     /**
      * @param string $topic
@@ -45,9 +23,16 @@ class Queue extends Component implements QueueInterface
     {
         $this->fireEvent('messageQueue:push', ['topic' => $topic]);
 
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        $engine->push($topic, $body, $priority);
+        $this->do_push($topic, $body, $priority);
     }
+
+    /**
+     * @param string $topic
+     * @param int    $timeout
+     *
+     * @return string|false
+     */
+    abstract public function do_pop($topic, $timeout = PHP_INT_MAX);
 
     /**
      * @param string $topic
@@ -57,8 +42,7 @@ class Queue extends Component implements QueueInterface
      */
     public function pop($topic, $timeout = PHP_INT_MAX)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        if (($msg = $engine->pop($topic, $timeout)) !== false) {
+        if (($msg = $this->do_pop($topic, $timeout)) !== false) {
             $this->fireEvent('messageQueue:pop', ['topic' => $topic, 'msg' => $msg]);
         }
 
@@ -70,12 +54,26 @@ class Queue extends Component implements QueueInterface
      *
      * @return void
      */
+    abstract public function do_delete($topic);
+
+    /**
+     * @param string $topic
+     *
+     * @return void
+     */
     public function delete($topic)
     {
         $this->fireEvent('messageQueue:delete', ['topic' => $topic]);
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        $engine->delete($topic);
+        $this->do_delete($topic);
     }
+
+    /**
+     * @param string $topic
+     * @param int    $priority
+     *
+     * @return int
+     */
+    abstract public function do_length($topic, $priority = null);
 
     /**
      * @param string $topic
@@ -85,7 +83,6 @@ class Queue extends Component implements QueueInterface
      */
     public function length($topic, $priority = null)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        return $engine->length($topic, $priority);
+        return $this->do_length($topic, $priority);
     }
 }

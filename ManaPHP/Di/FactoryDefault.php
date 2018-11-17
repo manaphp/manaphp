@@ -40,7 +40,7 @@ class FactoryDefault extends Di
             'paginator' => 'ManaPHP\Paginator',
             'filesystem' => 'ManaPHP\Filesystem\Adapter\File',
             'random' => 'ManaPHP\Security\Random',
-            'messageQueue' => 'ManaPHP\Message\Queue',
+            'messageQueue' => 'ManaPHP\Message\Queue\Adapter\Redis',
             'secint' => 'ManaPHP\Security\Secint',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',

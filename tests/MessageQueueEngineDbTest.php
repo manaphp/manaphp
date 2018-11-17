@@ -4,7 +4,7 @@ namespace Tests;
 
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Message\Queue\Engine\Db;
+use ManaPHP\Message\Queue\Adapter\Db;
 use PHPUnit\Framework\TestCase;
 
 class MessageQueueEngineDbTest extends TestCase
@@ -33,48 +33,48 @@ class MessageQueueEngineDbTest extends TestCase
     public function test_push()
     {
         $messageQueue = new Db();
-        $messageQueue->delete('test');
-        $messageQueue->push('test', 'manaphp');
-        $this->assertEquals('manaphp', $messageQueue->pop('test'));
+        $messageQueue->do_delete('test');
+        $messageQueue->do_push('test', 'manaphp');
+        $this->assertEquals('manaphp', $messageQueue->do_pop('test'));
     }
 
     public function test_pop()
     {
         $messageQueue = new Db();
-        $messageQueue->delete('test');
+        $messageQueue->do_delete('test');
 
-        $this->assertFalse($messageQueue->pop('test', 0));
+        $this->assertFalse($messageQueue->do_pop('test', 0));
 
-        $this->assertFalse($messageQueue->pop('test', 1));
+        $this->assertFalse($messageQueue->do_pop('test', 1));
 
-        $messageQueue->push('test', 'manaphp');
-        $this->assertEquals('manaphp', $messageQueue->pop('test'));
-        $this->assertFalse($messageQueue->pop('test', 0));
-        $this->assertFalse($messageQueue->pop('test', 1));
+        $messageQueue->do_push('test', 'manaphp');
+        $this->assertEquals('manaphp', $messageQueue->do_pop('test'));
+        $this->assertFalse($messageQueue->do_pop('test', 0));
+        $this->assertFalse($messageQueue->do_pop('test', 1));
     }
 
     public function test_delete()
     {
         $messageQueue = new Db();
 
-        $this->assertEquals(0, $messageQueue->length('test'));
-        $messageQueue->delete('test');
+        $this->assertEquals(0, $messageQueue->do_length('test'));
+        $messageQueue->do_delete('test');
 
-        $messageQueue->push('test', 'manaphp');
-        $this->assertEquals(1, $messageQueue->length('test'));
-        $messageQueue->delete('test');
-        $this->assertEquals(0, $messageQueue->length('test'));
+        $messageQueue->do_push('test', 'manaphp');
+        $this->assertEquals(1, $messageQueue->do_length('test'));
+        $messageQueue->do_delete('test');
+        $this->assertEquals(0, $messageQueue->do_length('test'));
     }
 
     public function test_length()
     {
         $messageQueue = new Db();
 
-        $messageQueue->delete('test');
+        $messageQueue->do_delete('test');
 
-        $this->assertEquals(0, $messageQueue->length('test'));
+        $this->assertEquals(0, $messageQueue->do_length('test'));
 
-        $messageQueue->push('test', 'manaphp');
-        $this->assertEquals(1, $messageQueue->length('test'));
+        $messageQueue->do_push('test', 'manaphp');
+        $this->assertEquals(1, $messageQueue->do_length('test'));
     }
 }

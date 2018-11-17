@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Message\Queue\Engine;
+namespace ManaPHP\Message\Queue\Adapter;
 
 /**
  * Class ManaPHP\Message\Queue\Adapter\Exception

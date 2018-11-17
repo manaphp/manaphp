@@ -1,17 +1,10 @@
 <?php
-namespace ManaPHP\Message\Queue\Engine;
+namespace ManaPHP\Message\Queue\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\Message\Queue;
-use ManaPHP\Message\Queue\Engine\Redis\Exception as RedisException;
-use ManaPHP\Message\Queue\EngineInterface;
+use ManaPHP\Message\Queue\Adapter\Redis\Exception as RedisException;
 
-/**
- * Class ManaPHP\Message\Queue\Engine\Redis
- *
- * @package messageQueue\engine
- */
-class Redis extends Component implements EngineInterface
+class Redis extends Queue
 {
     /**
      * @var string|\Redis
@@ -36,24 +29,20 @@ class Redis extends Component implements EngineInterface
     /**
      * Redis constructor.
      *
-     * @param string|\Redis|array $options
+     * @param array $options
      */
-    public function __construct($options = 'redis')
+    public function __construct($options = [])
     {
-        if (is_string($options) || is_object($options)) {
-            $this->_redis = $options;
-        } else {
-            if (isset($options['redis'])) {
-                $this->_redis = $options['redis'];
-            }
+        if (isset($options['redis'])) {
+            $this->_redis = $options['redis'];
+        }
 
-            if (isset($options['prefix'])) {
-                $this->_prefix = $options['prefix'];
-            }
+        if (isset($options['prefix'])) {
+            $this->_prefix = $options['prefix'];
+        }
 
-            if (isset($options['priorities'])) {
-                $this->_priorities = (array)$options['priorities'];
-            }
+        if (isset($options['priorities'])) {
+            $this->_priorities = (array)$options['priorities'];
         }
     }
 
@@ -74,9 +63,9 @@ class Redis extends Component implements EngineInterface
      * @param string $body
      * @param int    $priority
      *
-     * @throws \ManaPHP\Message\Queue\Engine\Redis\Exception
+     * @throws \ManaPHP\Message\Queue\Adapter\Redis\Exception
      */
-    public function push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
+    public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
         if (!in_array($priority, $this->_priorities, true)) {
             throw new RedisException(['`:priority` priority of `:topic is invalid`', 'priority' => $priority, 'topic' => $topic]);
@@ -92,7 +81,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return string|false
      */
-    public function pop($topic, $timeout = PHP_INT_MAX)
+    public function do_pop($topic, $timeout = PHP_INT_MAX)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         if (!isset($this->_topicKeys[$topic])) {
@@ -123,7 +112,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return void
      */
-    public function delete($topic)
+    public function do_delete($topic)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         foreach ($this->_priorities as $priority) {
@@ -137,7 +126,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return         int
      */
-    public function length($topic, $priority = null)
+    public function do_length($topic, $priority = null)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         if ($priority === null) {
