@@ -14,7 +14,7 @@
     <el-form :model="edit" ref="edit">
         <el-form-item label="ID:"><div>@{{edit.permission_id}}</div></el-form-item>
         <el-form-item label="路径:"><div>@{{edit.path}}</div></el-form-item>
-        <el-form-item label="描述:"><el-input v-model="edit.description"></el-input></el-form-item>
+        <el-form-item label="描述:"><el-input v-model="edit.display_name"></el-input></el-form-item>
     </el-form>
     <div slot="footer">
         <el-button type="primary" @click="do_edit">保存</el-button>
@@ -26,7 +26,7 @@
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="permission_id" label="ID" width="50"></el-table-column>
         <el-table-column prop="path" label="路径" width="250"></el-table-column>
-        <el-table-column prop="description" label="简述" width="250"></el-table-column>
+        <el-table-column prop="display_name" label="简述" width="250"></el-table-column>
         <el-table-column label="角色列表">
             <template slot-scope="scope">
                 <el-tag size="small" v-for="role in scope.row.roles">@{{role.role_name}}</el-tag>

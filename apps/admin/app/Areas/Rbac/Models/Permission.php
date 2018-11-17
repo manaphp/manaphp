@@ -8,7 +8,7 @@ class Permission extends Model
 {
     public $permission_id;
     public $path;
-    public $description;
+    public $display_name;
     public $created_time;
     public $updated_time;
 
@@ -20,7 +20,7 @@ class Permission extends Model
     public function rules()
     {
         return [
-            'description' => ['length' => '0-128']
+            'display_name' => ['length' => '0-128']
         ];
     }
 }

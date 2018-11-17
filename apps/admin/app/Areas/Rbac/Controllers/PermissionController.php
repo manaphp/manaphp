@@ -32,7 +32,7 @@ class PermissionController extends ControllerBase
     public function listAction()
     {
         if ($this->request->isAjax()) {
-            return Permission::all([], [], ['permission_id', 'path', 'description']);
+            return Permission::all([], [], ['permission_id', 'path', 'display_name']);
         }
     }
 
@@ -89,7 +89,7 @@ class PermissionController extends ControllerBase
 
                     $permission = new Permission();
                     $permission->path = $path;
-                    $permission->description = $path;
+                    $permission->display_name = $path;
                     $permission->create();
                     $count++;
                 }

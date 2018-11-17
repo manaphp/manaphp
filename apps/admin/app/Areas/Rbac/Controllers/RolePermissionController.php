@@ -23,7 +23,7 @@ class RolePermissionController extends ControllerBase
             }
 
             return RolePermission::all(['role_id' => $role_id],
-                ['with' => ['permission' => 'description, path', 'roles' => 'role_id, role_name']],
+                ['with' => ['permission' => 'display_name, path', 'roles' => 'role_id, role_name']],
                 ['id', 'permission_id', 'creator_name', 'created_time']);
         }
     }
