@@ -37,7 +37,7 @@ class Dispatcher extends Component implements DispatcherInterface
     protected $_params = [];
 
     /**
-     * @var \ManaPHP\Mvc\Controller
+     * @var \ManaPHP\Rest\Controller
      */
     protected $_controllerInstance;
 
@@ -388,7 +388,7 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         /**
-         * @var \ManaPHP\Mvc\Controller $controllerInstance
+         * @var \ManaPHP\Rest\Controller $controllerInstance
          */
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $this->_controllerInstance = $controllerInstance;
@@ -399,7 +399,7 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @return \ManaPHP\Mvc\Controller
+     * @return \ManaPHP\Rest\Controller
      */
     public function getControllerInstance()
     {

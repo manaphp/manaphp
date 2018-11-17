@@ -84,7 +84,7 @@ interface DispatcherInterface
     public function hasParam($param);
 
     /**
-     * @return \ManaPHP\Mvc\Controller
+     * @return \ManaPHP\Rest\Controller
      */
     public function getControllerInstance();
 
