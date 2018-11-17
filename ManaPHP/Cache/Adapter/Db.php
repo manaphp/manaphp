@@ -6,6 +6,15 @@ use ManaPHP\Cache;
 /**
  * Class ManaPHP\Cache\Adapter\Db
  *
+ * CREATE TABLE `manaphp_cache` (
+ * `hash` char(32) CHARACTER SET ascii NOT NULL,
+ * `key` varchar(255) NOT NULL,
+ * `value` text NOT NULL,
+ * `ttl` int(11) NOT NULL,
+ * `expired_time` int(11) NOT NULL,
+ * PRIMARY KEY (`hash`)
+ * ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+ *
  * @package cache\adapter
  */
 class Db extends Cache
@@ -13,7 +22,12 @@ class Db extends Cache
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Cache\Adapter\Db\Model';
+    protected $_db = 'db';
+
+    /**
+     * @var string
+     */
+    protected $_source = 'manaphp_cache';
 
     /**
      * Db constructor.
@@ -22,8 +36,12 @@ class Db extends Cache
      */
     public function __construct($options = [])
     {
-        if (isset($options['model'])) {
-            $this->_model = $options['model'];
+        if (isset($options['db'])) {
+            $this->_db = $options['db'];
+        }
+
+        if (isset($options['source'])) {
+            $this->_source = $options['source'];
         }
     }
 
@@ -34,13 +52,10 @@ class Db extends Cache
      */
     public function do_exists($key)
     {
-        /**
-         * @var \ManaPHP\Cache\Adapter\Db\Model $model
-         */
-        $model = new $this->_model;
-        $model = $model::first(['hash' => md5($key)]);
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
-        return $model && $model->expired_time >= time();
+        return $db->query($this->_source)->where('hash', md5($key))->value('expired_time') >= time();
     }
 
     /**
@@ -50,14 +65,12 @@ class Db extends Cache
      */
     public function do_get($key)
     {
-        /**
-         * @var \ManaPHP\Cache\Adapter\Db\Model $model
-         */
-        $model = new $this->_model;
-        $model = $model::first(['hash' => md5($key)]);
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
-        if ($model && $model->expired_time > time()) {
-            return $model->value;
+        $r = $db->query($this->_source)->where('hash', md5($key))->first();
+        if ($r && $r['expired_time'] > time()) {
+            return $r['value'];
         } else {
             return false;
         }
@@ -72,25 +85,15 @@ class Db extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        /**
-         * @var \ManaPHP\Cache\Adapter\Db\Model $model
-         */
-        $modelClass = $this->_model;
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
         $hash = md5($key);
-        if ($model = $modelClass::first(['hash' => $hash])) {
-            $model->value = $value;
-            $model->ttl = $ttl;
-            $model->expired_time = time() + $ttl;
-            $model->update();
+
+        if ($db->query($this->_source)->where('hash', $hash)->exists()) {
+            $db->update($this->_source, ['value' => $value, 'ttl' => $ttl, 'expired_time' => time() + $ttl], ['hash' => $hash]);
         } else {
-            $model = new $modelClass();
-            $model->hash = $hash;
-            $model->key = $key;
-            $model->value = $value;
-            $model->ttl = $ttl;
-            $model->expired_time = time() + $ttl;
-            $model->create();
+            $db->insert($this->_source, ['hash' => $hash, 'key' => $key, 'value' => $value, 'ttl' => $ttl, 'expired_time' => time() + $ttl]);
         }
     }
 
@@ -101,11 +104,8 @@ class Db extends Cache
      */
     public function do_delete($key)
     {
-        /**
-         * @var \ManaPHP\Cache\Adapter\Db\Model $model
-         */
-        $model = new $this->_model;
-
-        $model::deleteAll(['hash' => md5($key)]);
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
+        $db->delete($this->_source, ['hash' => md5($key)]);
     }
 }
