@@ -1,66 +1,115 @@
 <?php
-
 namespace ManaPHP\Rest;
 
-use ManaPHP\Application;
-use ManaPHP\Swoole\Exception as SwooleException;
+use ManaPHP\Http\Response;
+use ManaPHP\Router\NotFoundRouteException;
 
 /**
  * Class ManaPHP\Rest\Swoole
  *
  * @package application
- *
+ * @property-read \ManaPHP\AuthorizationInterface      $authorization
+ * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Http\ResponseInterface      $response
  * @property-read \ManaPHP\RouterInterface             $router
  * @property-read \ManaPHP\DispatcherInterface         $dispatcher
+ * @property-read \ManaPHP\Http\SessionInterface       $session
  * @property-read \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
  */
-class Swoole extends Application
+class Swoole extends \ManaPHP\Application
 {
     /**
-     * HttpServer constructor.
+     * Application constructor.
      *
-     * @param  \ManaPHP\Loader $loader
+     * @param \ManaPHP\Loader $loader
      */
     public function __construct($loader = null)
     {
+        ini_set('html_errors', 'off');
         parent::__construct($loader);
-        $this->_di->keepInstanceState();
+        $routerClass = $this->alias->resolveNS('@ns.app\Router');
+        if (class_exists($routerClass)) {
+            $this->_di->setShared('router', $routerClass);
+        }
+
+        $this->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
     }
 
-    protected function _beforeRequest()
+    public function getDi()
     {
+        if (!$this->_di) {
+            $this->_di = new Factory();
+            $this->_di->keepInstanceState(true);
+            $this->_di->setShared('swooleHttpServer', 'ManaPHP\Swoole\Http\Server');
+        }
 
-    }
-
-    protected function _afterRequest()
-    {
-
+        return $this->_di;
     }
 
     public function authenticate()
     {
-        return $this->identity->authenticate();
+        $this->identity->authenticate();
     }
 
-    /**
-     * @throws \ManaPHP\Swoole\Exception
-     */
-    public function handle()
+    public function authorize()
     {
-        $this->_beforeRequest();
+        $this->authorization->authorize();
+    }
 
-        $this->authenticate();
+    public function send()
+    {
+        $swoole = $this->swooleHttpServer;
+        $response = $this->response;
 
-        if (!$this->router->match()) {
-            throw new SwooleException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
+        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !$response->hasHeader('X-Request-Id')) {
+            $response->setHeader('X-Request-Id', $_SERVER['HTTP_X_REQUEST_ID']);
         }
 
-        $this->dispatcher->dispatch($this->router);
-        $this->swooleHttpServer
-            ->sendHeaders($this->response->getHeaders())
-            ->sendContent($this->response->getContent());
-        $this->_afterRequest();
+        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
+
+        $this->eventsManager->fireEvent('response:beforeSend', $response);
+
+        $swoole->setStatus($response->getStatusCode());
+        $swoole->sendHeaders($response->getHeaders());
+
+        if ($file = $response->getFile()) {
+            $swoole->sendFile($file);
+        } else {
+            $swoole->sendContent($response->getContent());
+        }
+
+        $this->eventsManager->fireEvent('response:afterSend', $response);
+    }
+
+    public function handle()
+    {
+        try {
+            $request_uri = $_SERVER['REQUEST_URI'];
+            $_GET['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
+
+            $this->fireEvent('app:beginRequest');
+
+            $this->authenticate();
+
+            if (!$this->router->match()) {
+                throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
+            }
+
+            $this->dispatcher->dispatch($this->router);
+            $actionReturnValue = $this->dispatcher->getReturnedValue();
+            if ($actionReturnValue !== null && !$actionReturnValue instanceof Response) {
+                $this->response->setJsonContent($actionReturnValue);
+            }
+        } catch (\Exception $exception) {
+            $this->handleException($exception);
+        } catch (\Error $error) {
+            $this->handleException($error);
+        }
+
+        $this->send();
+
+        $this->fireEvent('app:endRequest');
+
         $this->_di->restoreInstancesState();
     }
 
@@ -70,6 +119,8 @@ class Swoole extends Application
         $this->configure->load();
 
         $this->registerServices();
+
+        $this->fireEvent('app:start');
 
         $this->swooleHttpServer->start([$this, 'handle']);
     }
