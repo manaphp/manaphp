@@ -46,6 +46,7 @@
 <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
 <script src="https://cdn.bootcss.com/lodash.js/4.17.5/lodash.js"></script>
+<script src="https://cdn.bootcss.com/vue-i18n/8.3.0/vue-i18n.min.js"></script>
 <script src="{{asset('/assets/js/app.js')}}"></script>
 @yield('script')
 @debugger()
