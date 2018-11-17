@@ -7,6 +7,6 @@ namespace ManaPHP\Db\Model;
  *
  * @package model
  */
-class Exception extends \ManaPHP\Mvc\Exception
+class Exception extends \ManaPHP\Db\Exception
 {
 }
