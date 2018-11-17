@@ -6,6 +6,16 @@ use ManaPHP\Http\Session;
 /**
  * Class ManaPHP\Http\Session\Adapter\Db
  *
+ * CREATE TABLE `manaphp_session` (
+ * `session_id` char(32) CHARACTER SET ascii NOT NULL,
+ * `user_id` int(11) NOT NULL,
+ * `client_ip` char(15) NOT NULL,
+ * `data` text NOT NULL,
+ * `updated_time` int(11) NOT NULL,
+ * `expired_time` int(11) NOT NULL,
+ * PRIMARY KEY (`session_id`)
+ * ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+ *
  * @package session\adapter
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
@@ -14,7 +24,12 @@ class Db extends Session
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Http\Session\Adapter\Db\Model';
+    protected $_db = 'db';
+
+    /**
+     * @var string
+     */
+    protected $_source = 'manaphp_session';
 
     /**
      * Db constructor.
@@ -25,8 +40,12 @@ class Db extends Session
     {
         parent::__construct($options);
 
-        if (isset($options['model'])) {
-            $this->_model = $options['model'];
+        if (isset($options['db'])) {
+            $this->_db = $options['db'];
+        }
+
+        if (isset($options['source'])) {
+            $this->_source = $options['source'];
         }
     }
 
@@ -37,16 +56,10 @@ class Db extends Session
      */
     public function do_read($session_id)
     {
-        /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
-         */
-        $model = new $this->_model;
-        $model = $model::first(['session_id' => $session_id]);
-        if ($model && $model->expired_time > time()) {
-            return $model->data;
-        } else {
-            return '';
-        }
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
+
+        return $db->query($this->_source)->where('session_id', $session_id)->value('data', '');
     }
 
     /**
@@ -58,19 +71,24 @@ class Db extends Session
      */
     public function do_write($session_id, $data, $ttl)
     {
-        /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
-         */
-        $model = new $this->_model;
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
-        $model->session_id = $session_id;
-        $model->user_id = $this->identity->getId(0);
-        $model->client_ip = $this->request->getClientIp();
-        $model->data = $data;
-        $model->updated_time = time();
-        $model->expired_time = $model->updated_time + $ttl;
+        $data = [
+            'user_id' => $this->identity->getId(0),
+            'client_ip' => $this->request->getClientIp(),
+            'data' => $data,
+            'updated_time' => time(),
+            'expired_time' => $ttl + time()
+        ];
 
-        $model->save();
+        if ($db->query($this->_source)->exists()) {
+            $db->update($this->_source, $data, ['session_id' => $session_id]);
+        } else {
+            $data['session_id'] = $session_id;
+            $data['created_time'] = time();
+            $db->insert($this->_source, $data);
+        }
 
         return true;
     }
@@ -82,12 +100,10 @@ class Db extends Session
      */
     public function do_destroy($session_id)
     {
-        /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
-         */
-        $model = new $this->_model;
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
-        $model::deleteAll(['session_id' => $session_id]);
+        $db->delete($this->_source, ['session_id' => $session_id]);
 
         return true;
     }
@@ -99,12 +115,10 @@ class Db extends Session
      */
     public function do_gc($ttl)
     {
-        /**
-         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
-         */
-        $model = new $this->_model;
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
 
-        $model::deleteAll(['expired_time<=' => time()]);
+        $db->query($this->_source)->where('expired_time<=', time())->delete();
 
         return true;
     }
