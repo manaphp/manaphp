@@ -8,7 +8,6 @@ use ManaPHP\Router\NotFoundRouteException;
  * Class ManaPHP\Rest\Swoole
  *
  * @package application
- * @property-read \ManaPHP\AuthorizationInterface      $authorization
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Http\ResponseInterface      $response
  * @property-read \ManaPHP\RouterInterface             $router
