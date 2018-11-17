@@ -48,7 +48,6 @@ class FactoryDefault extends Di
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'stopwatch' => 'ManaPHP\Stopwatch',
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
-            'netConnectivity' => 'ManaPHP\Net\Connectivity',
             'db' => 'ManaPHP\Db\Adapter\Mysql',
             'redis' => 'ManaPHP\Redis',
             'mongodb' => 'ManaPHP\Mongodb',

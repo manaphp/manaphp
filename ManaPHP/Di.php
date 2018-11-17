@@ -58,7 +58,6 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler  $swordCompiler
  * @property-read \ManaPHP\StopwatchInterface              $stopwatch
  * @property-read \ManaPHP\Security\HtmlPurifierInterface  $htmlPurifier
- * @property-read \ManaPHP\Net\ConnectivityInterface       $netConnectivity
  * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
  * @property-read \ManaPHP\Model\Relation\Manager          $relationsManager
  * @property-read \ManaPHP\MailerInterface                 $mailer

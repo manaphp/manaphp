@@ -31,7 +31,6 @@ namespace ManaPHP\Mvc;
  * @property-read \ManaPHP\UrlInterface                   $url
  * @property-read \ManaPHP\StopwatchInterface             $stopwatch
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
- * @property-read \ManaPHP\Net\ConnectivityInterface      $netConnectivity
  * @property-read \ManaPHP\RouterInterface                $router
  */
 abstract class Controller extends \ManaPHP\Controller

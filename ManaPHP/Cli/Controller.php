@@ -14,7 +14,6 @@ namespace ManaPHP\Cli;
  * @property-read \ManaPHP\Cli\ConsoleInterface      $console
  * @property-read \ManaPHP\Cli\ArgumentsInterface    $arguments
  * @property-read \ManaPHP\Text\CrosswordInterface   $crossword
- * @property-read \ManaPHP\Net\ConnectivityInterface $netConnectivity
  * @property-read \ManaPHP\Cli\HandlerInterface      $cliHandler
  */
 abstract class Controller extends \ManaPHP\Controller
