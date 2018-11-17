@@ -1,19 +1,18 @@
 <?php
-namespace ManaPHP\Image\Engine;
+namespace ManaPHP\Image\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\PreconditionException;
-use ManaPHP\Image\EngineInterface;
+use ManaPHP\Image;
 
 /**
- * Class ManaPHP\Image\Engine\Gd
+ * Class ManaPHP\Image\Adapter\Gd
  *
  * @package image\adapter
  */
-class Gd extends Component implements EngineInterface
+class Gd extends Image
 {
     /**
      * @var string
@@ -68,7 +67,7 @@ class Gd extends Component implements EngineInterface
      *
      * @return int
      */
-    public function getWidth()
+    public function do_getWidth()
     {
         return $this->_width;
     }
@@ -78,7 +77,7 @@ class Gd extends Component implements EngineInterface
      *
      * @return int
      */
-    public function getHeight()
+    public function do_getHeight()
     {
         return $this->_height;
     }
@@ -94,7 +93,7 @@ class Gd extends Component implements EngineInterface
      *
      * @return static
      */
-    public function resize($width, $height)
+    public function do_resize($width, $height)
     {
         if (version_compare(PHP_VERSION, '5.5.0') < 0) {
             $image = imagecreatetruecolor($width, $height);
@@ -123,7 +122,7 @@ class Gd extends Component implements EngineInterface
      *
      * @return static
      */
-    public function rotate($degrees, $background = 0xffffff, $alpha = 1.0)
+    public function do_rotate($degrees, $background = 0xffffff, $alpha = 1.0)
     {
         $transparent = imagecolorallocatealpha($this->_image, ($background >> 16) & 0xFF, ($background >> 8) & 0xFF,
             $background & 0xFF, $alpha * 127);
@@ -147,7 +146,7 @@ class Gd extends Component implements EngineInterface
      *
      * @return static
      */
-    public function crop($width, $height, $offsetX = 0, $offsetY = 0)
+    public function do_crop($width, $height, $offsetX = 0, $offsetY = 0)
     {
         if (version_compare(PHP_VERSION, '5.5.0') < 0) {
             $image = imagecreatetruecolor($width, $height);
@@ -180,7 +179,7 @@ class Gd extends Component implements EngineInterface
      *
      * @return static
      */
-    public function text(
+    public function do_text(
         $text,
         $offsetX = 0,
         $offsetY = 0,
@@ -209,7 +208,7 @@ class Gd extends Component implements EngineInterface
      *
      * @return static
      */
-    public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
+    public function do_watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
         $file = $this->alias->resolve($file);
 
@@ -248,7 +247,7 @@ class Gd extends Component implements EngineInterface
      * @param string $file
      * @param int    $quality
      */
-    public function save($file, $quality = 80)
+    public function do_save($file, $quality = 80)
     {
         $file = $this->alias->resolve($file);
 

@@ -1,22 +1,21 @@
 <?php
 
-namespace ManaPHP\Image\Engine;
+namespace ManaPHP\Image\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Image\EngineInterface;
+use ManaPHP\Image;
 
 /**
- * Class ManaPHP\Image\Engine\Imagick
+ * Class ManaPHP\Image\Adapter\Imagick
  *
  * @package image\adapter
  */
-class Imagick extends Component implements EngineInterface
+class Imagick extends Image
 {
     /**
      * @var string
@@ -74,7 +73,7 @@ class Imagick extends Component implements EngineInterface
      *
      * @return int
      */
-    public function getWidth()
+    public function do_getWidth()
     {
         return $this->_width;
     }
@@ -84,7 +83,7 @@ class Imagick extends Component implements EngineInterface
      *
      * @return int
      */
-    public function getHeight()
+    public function do_getHeight()
     {
         return $this->_height;
     }
@@ -100,7 +99,7 @@ class Imagick extends Component implements EngineInterface
      *
      * @return static
      */
-    public function resize($width, $height)
+    public function do_resize($width, $height)
     {
         $this->_image->scaleImage($width, $height);
 
@@ -119,7 +118,7 @@ class Imagick extends Component implements EngineInterface
      *
      * @return static
      */
-    public function rotate($degrees, $background = 0xffffff, $alpha = 1.0)
+    public function do_rotate($degrees, $background = 0xffffff, $alpha = 1.0)
     {
         $backgroundColor = sprintf('rgba(%u,%u,%u,%f)', ($background >> 16) & 0xFF, ($background >> 8) & 0xFF,
             $background & 0xFF, $alpha);
@@ -140,7 +139,7 @@ class Imagick extends Component implements EngineInterface
      *
      * @return static
      */
-    public function crop($width, $height, $offsetX = 0, $offsetY = 0)
+    public function do_crop($width, $height, $offsetX = 0, $offsetY = 0)
     {
         $this->_image->cropImage($width, $height, $offsetX, $offsetY);
         $this->_image->setImagePage($width, $height, 0, 0);
@@ -164,7 +163,7 @@ class Imagick extends Component implements EngineInterface
      *
      * @return static
      */
-    public function text(
+    public function do_text(
         $text,
         $offsetX = 0,
         $offsetY = 0,
@@ -197,7 +196,7 @@ class Imagick extends Component implements EngineInterface
      *
      * @return static
      */
-    public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
+    public function do_watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
         $watermark = new \Imagick($this->alias->resolve($file));
 
@@ -223,7 +222,7 @@ class Imagick extends Component implements EngineInterface
      * @param string $file
      * @param int    $quality
      */
-    public function save($file, $quality = 80)
+    public function do_save($file, $quality = 80)
     {
         $file = $this->alias->resolve($file);
 
