@@ -4,7 +4,7 @@ namespace ManaPHP\Message\Queue\Adapter\Db;
 /**
  * Class ManaPHP\Message\Queue\Adapter\Db\Model
  *
- * @package messageQueue\engine
+ * @package messageQueue\adapter
  */
 class Model extends \ManaPHP\Db\Model
 {
