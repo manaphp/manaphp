@@ -302,7 +302,7 @@ class Router extends Component implements RouterInterface
 
         $this->_wasMatched = false;
 
-        $this->fireEvent('router:beforeRoute');
+        $this->eventsManager->fireEvent('router:beforeRoute', $this);
 
         $area = null;
         $handledUri = $this->_prefix ? substr($uri, strlen($this->_prefix)) : $uri;
@@ -354,7 +354,7 @@ class Router extends Component implements RouterInterface
         $this->_action = $parts['action'];
         $this->_params = $parts['params'];
 
-        $this->fireEvent('router:afterRoute');
+        $this->eventsManager->fireEvent('router:afterRoute', $this);
 
         return $this->_wasMatched;
     }
