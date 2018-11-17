@@ -13,46 +13,46 @@
     <![endif]-->
     <style>
         .el-row {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .login-box {
-            margin-top: 10%;
-            margin-left: 40%;
+            margin: 10% auto;
+            width: 270px;
         }
     </style>
 </head>
 <body>
 <div id="app" class="login-box">
     <el-row>
-        <el-col :span="6" align="center"><h1>登录</h1></el-col>
+        <el-col :span="24" align="center"><h1>登录</h1></el-col>
     </el-row>
     <el-row>
-        <el-col :span="6">
-            <el-input v-model="request.user_name" placeholder="user name" autofocus>
+        <el-col :span="24">
+            <el-input v-model="request.user_name" placeholder="用户名" autofocus>
                 <template slot="prepend">账号</template>
             </el-input>
         </el-col>
     </el-row>
     <el-row>
-        <el-col :span="6">
-            <el-input v-model="request.password" type="password" placeholder="请输入密码">
+        <el-col :span="24">
+            <el-input v-model="request.password" type="password" placeholder="密码">
                 <template slot="prepend">密码</template>
             </el-input>
         </el-col>
     </el-row>
     <el-row>
-        <el-col :span="4">
+        <el-col :span="15">
             <el-input v-model="request.code" placeholder="验证码">
                 <template slot="prepend">验证码</template>
             </el-input>
         </el-col>
-        <el-col :span="2"><span><img :src="captcha_url"
-                                     @click="captcha_url='{{action('captcha')}}'+'?t='+new Date().getTime()"></span>
+        <el-col :offset="1" :span="8"><span><img :src="captcha_url"
+                                                 @click="request.code=''; captcha_url='{{action('captcha')}}'+'?t='+new Date().getTime()"></span>
         </el-col>
     </el-row>
     <el-row>
-        <el-col :span="6">
+        <el-col :span="24">
             <el-button @click="login" style="width:100%" type="primary">登录</el-button>
         </el-col>
     </el-row>
@@ -84,7 +84,7 @@
                         window.location.href = "{{$redirect}}";
                     } else {
                         this.$alert(res.data.message);
-                        this.captcha_url="{{action('captcha')}}"+'?t='+new Date().getTime();
+                        this.captcha_url = "{{action('captcha')}}" + '?t=' + new Date().getTime();
                     }
                 }.bind(this));
             },
