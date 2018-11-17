@@ -10,7 +10,7 @@ use ManaPHP\Component;
  * @package controller
  *
  * @property-read \ManaPHP\Di|\ManaPHP\DiInterface $di
- * @property-read \ManaPHP\Cache\EngineInterface   $viewsCache
+ * @property-read \ManaPHP\CacheInterface          $viewsCache
  * @property-read \ManaPHP\Message\QueueInterface  $messageQueue
  * @property-read \ManaPHP\Cli\ConsoleInterface    $console
  * @property-read \ManaPHP\Cli\ArgumentsInterface  $arguments

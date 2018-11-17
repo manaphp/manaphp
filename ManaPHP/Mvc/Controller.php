@@ -23,7 +23,7 @@ use ManaPHP\Component;
  * @property-read \ManaPHP\DispatcherInterface            $dispatcher
  * @property-read \ManaPHP\Http\SessionInterface          $session
  * @property-read \ManaPHP\Paginator                      $paginator
- * @property-read \ManaPHP\Cache\EngineInterface          $viewsCache
+ * @property-read \ManaPHP\CacheInterface                 $viewsCache
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
  * @property-read \ManaPHP\Security\SecintInterface       $secint
  * @property-read \ManaPHP\Http\FilterInterface           $filter

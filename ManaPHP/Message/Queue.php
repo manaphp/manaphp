@@ -25,7 +25,7 @@ class Queue extends Component implements QueueInterface
     }
 
     /**
-     * @return \ManaPHP\Cache\EngineInterface
+     * @return \ManaPHP\Message\Queue\EngineInterface
      */
     protected function _getEngine()
     {
