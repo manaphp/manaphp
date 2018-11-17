@@ -4,7 +4,7 @@ namespace ManaPHP\Http\Session\Adapter\Db;
 /**
  * Class ManaPHP\Http\Session\Adapter\Db\Model
  *
- * @package session\engine
+ * @package session\adapter
  */
 class Model extends \ManaPHP\Db\Model
 {
