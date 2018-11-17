@@ -1,11 +1,11 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Cache\Engine\File;
+use ManaPHP\Cache\Adapter\File;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class CacheEngineFileTest extends TestCase
+class CacheAdapterFileTest extends TestCase
 {
     protected $_di;
 

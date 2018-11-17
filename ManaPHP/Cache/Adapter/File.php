@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
-use ManaPHP\Component;
+use ManaPHP\Cache;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\WriteFileFailedException;
 
@@ -11,7 +10,7 @@ use ManaPHP\Exception\WriteFileFailedException;
  *
  * @package cache\adapter
  */
-class File extends Component implements EngineInterface
+class File extends Cache
 {
     /**
      * @var string
@@ -86,7 +85,7 @@ class File extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function exists($key)
+    public function do_exists($key)
     {
         $file = $this->_getFileName($key);
 
@@ -98,7 +97,7 @@ class File extends Component implements EngineInterface
      *
      * @return string|false
      */
-    public function get($key)
+    public function do_get($key)
     {
         $file = $this->_getFileName($key);
 
@@ -116,7 +115,7 @@ class File extends Component implements EngineInterface
      *
      * @return void
      */
-    public function set($key, $value, $ttl)
+    public function do_set($key, $value, $ttl)
     {
         $file = $this->_getFileName($key);
 
@@ -138,7 +137,7 @@ class File extends Component implements EngineInterface
      *
      * @return void
      */
-    public function delete($key)
+    public function do_delete($key)
     {
         $file = $this->_getFileName($key);
 

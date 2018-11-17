@@ -21,7 +21,7 @@ class Factory extends FactoryDefault
             'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
             'session' => 'ManaPHP\Http\Session',
             'captcha' => 'ManaPHP\Security\Captcha',
-            'viewsCache' => ['class' => 'ManaPHP\Cache\Engine\File', 'dir' => '@data/viewsCache', 'extension' => '.html'],
+            'viewsCache' => ['ManaPHP\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
             'cookies' => 'ManaPHP\Http\Cookies',
             'authorization' => 'ManaPHP\Authorization',
         ]);

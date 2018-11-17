@@ -1,32 +1,27 @@
 <?php
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
-use ManaPHP\Component;
+use ManaPHP\Cache;
 
 /**
  * Class ManaPHP\Cache\Adapter\Db
  *
  * @package cache\adapter
  */
-class Db extends Component implements EngineInterface
+class Db extends Cache
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Cache\Engine\Db\Model';
+    protected $_model = 'ManaPHP\Cache\Adapter\Db\Model';
 
     /**
      * Db constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
     public function __construct($options = [])
     {
-        if (is_string($options)) {
-            $options = ['model' => $options];
-        }
-
         if (isset($options['model'])) {
             $this->_model = $options['model'];
         }
@@ -37,10 +32,10 @@ class Db extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function exists($key)
+    public function do_exists($key)
     {
         /**
-         * @var \ManaPHP\Cache\Engine\Db\Model $model
+         * @var \ManaPHP\Cache\Adapter\Db\Model $model
          */
         $model = new $this->_model;
         $model = $model::first(['hash' => md5($key)]);
@@ -53,10 +48,10 @@ class Db extends Component implements EngineInterface
      *
      * @return string|false
      */
-    public function get($key)
+    public function do_get($key)
     {
         /**
-         * @var \ManaPHP\Cache\Engine\Db\Model $model
+         * @var \ManaPHP\Cache\Adapter\Db\Model $model
          */
         $model = new $this->_model;
         $model = $model::first(['hash' => md5($key)]);
@@ -75,10 +70,10 @@ class Db extends Component implements EngineInterface
      *
      * @return void
      */
-    public function set($key, $value, $ttl)
+    public function do_set($key, $value, $ttl)
     {
         /**
-         * @var \ManaPHP\Cache\Engine\Db\Model $model
+         * @var \ManaPHP\Cache\Adapter\Db\Model $model
          */
         $modelClass = $this->_model;
 
@@ -104,10 +99,10 @@ class Db extends Component implements EngineInterface
      *
      * @return void
      */
-    public function delete($key)
+    public function do_delete($key)
     {
         /**
-         * @var \ManaPHP\Cache\Engine\Db\Model $model
+         * @var \ManaPHP\Cache\Adapter\Db\Model $model
          */
         $model = new $this->_model;
 

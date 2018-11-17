@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Cache\Engine\Db;
+namespace ManaPHP\Cache\Adapter\Db;
 
 /**
  * Class ManaPHP\Cache\Adapter\Db\Model

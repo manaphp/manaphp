@@ -2,22 +2,20 @@
 
 namespace Tests;
 
-use ManaPHP\Cache\Engine\Apcu;
+use ManaPHP\Cache\Adapter\Memory;
+use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class CacheEngineApcuTest extends TestCase
+class CacheAdapterMemoryTest extends TestCase
 {
-    /**
-     * @requires  extension apc
-     */
+    public function setUp()
+    {
+        new FactoryDefault();
+    }
+
     public function test_exists()
     {
-        if (!function_exists('apcu_exists')) {
-            $this->markTestSkipped();
-            return;
-        }
-
-        $cache = new Apcu();
+        $cache = new Memory();
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
         $cache->set('var', 'value', 1000);
@@ -26,12 +24,7 @@ class CacheEngineApcuTest extends TestCase
 
     public function test_get()
     {
-        if (!function_exists('apcu_exists')) {
-            $this->markTestSkipped();
-            return;
-        }
-
-        $cache = new Apcu();
+        $cache = new Memory();
         $cache->delete('var');
 
         $this->assertFalse($cache->get('var'));
@@ -41,12 +34,7 @@ class CacheEngineApcuTest extends TestCase
 
     public function test_set()
     {
-        if (!function_exists('apcu_exists')) {
-            $this->markTestSkipped();
-            return;
-        }
-
-        $cache = new Apcu();
+        $cache = new Memory();
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -61,20 +49,12 @@ class CacheEngineApcuTest extends TestCase
         $cache->set('var', 'value', 1);
         $this->assertTrue($cache->exists('var'));
         sleep(2);
-        /**
-         * After the ttl has passed, the stored variable will be expunged from the cache (on the next request). If no ttl is supplied (or if the ttl is 0), the value will persist until it is removed from the cache manually, or otherwise fails to exist in the cache (clear, restart, etc.).
-         */
-        $this->assertTrue($cache->exists('var'));
+        $this->assertFalse($cache->exists('var'));
     }
 
     public function test_delete()
     {
-        if (!function_exists('apcu_exists')) {
-            $this->markTestSkipped();
-            return;
-        }
-
-        $cache = new Apcu();
+        $cache = new Memory();
 
         //exists and delete
         $cache->set('var', 'value', 100);

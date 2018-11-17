@@ -1,45 +1,40 @@
 <?php
 
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
-use ManaPHP\Component;
+use ManaPHP\Cache;
 
 /**
  * Class ManaPHP\Cache\Adapter\Redis
  *
  * @package cache\adapter
  */
-class Redis extends Component implements EngineInterface
+class Redis extends Cache
 {
-    /**
-     * @var string|\Redis
-     */
-    protected $_redis = 'redis';
-
     /**
      * @var string
      */
     protected $_prefix = 'cache:';
 
     /**
+     * @var string|\Redis
+     */
+    protected $_redis = 'redis';
+
+    /**
      * Redis constructor.
      *
-     * @param string|\Redis|array $options
+     * @param array $options
      *
      */
-    public function __construct($options = 'redis')
+    public function __construct($options = [])
     {
-        if (is_string($options) || is_object($options)) {
-            $this->_redis = $options;
-        } else {
-            if (isset($options['redis'])) {
-                $this->_redis = $options['redis'];
-            }
+        if (isset($options['prefix'])) {
+            $this->_prefix = $options['prefix'];
+        }
 
-            if (isset($options['prefix'])) {
-                $this->_prefix = $options['prefix'];
-            }
+        if (isset($options['redis'])) {
+            $this->_redis = $options['redis'];
         }
     }
 
@@ -60,7 +55,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return string|false
      */
-    public function get($key)
+    public function do_get($key)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         return $redis->get($this->_prefix . $key);
@@ -73,7 +68,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return void
      */
-    public function set($key, $value, $ttl)
+    public function do_set($key, $value, $ttl)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         $redis->set($this->_prefix . $key, $value, $ttl);
@@ -84,7 +79,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return void
      */
-    public function delete($key)
+    public function do_delete($key)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         $redis->delete($this->_prefix . $key);
@@ -95,9 +90,9 @@ class Redis extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function exists($key)
+    public function do_exists($key)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        return $redis->exists($this->_prefix . $key);
+        return (bool)$redis->exists($this->_prefix . $key);
     }
 }

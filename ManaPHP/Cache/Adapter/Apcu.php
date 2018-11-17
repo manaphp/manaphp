@@ -1,34 +1,29 @@
 <?php
 
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
-use ManaPHP\Component;
+use ManaPHP\Cache;
 use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Cache\Adapter\Apcu
  *
- * @package cache\engine
+ * @package cache\adapter
  */
-class Apcu extends Component implements EngineInterface
+class Apcu extends Cache
 {
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $_prefix = 'cache:';
 
     /**
-     * Apcu constructor.
+     * Cache constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
     public function __construct($options = [])
     {
-        if (is_string($options)) {
-            $options = ['prefix' => $options];
-        }
-
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
         }
@@ -39,7 +34,7 @@ class Apcu extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function exists($key)
+    public function do_exists($key)
     {
         return apcu_exists($this->_prefix . $key);
     }
@@ -49,7 +44,7 @@ class Apcu extends Component implements EngineInterface
      *
      * @return mixed
      */
-    public function get($key)
+    public function do_get($key)
     {
         return apcu_fetch($this->_prefix . $key);
     }
@@ -59,7 +54,7 @@ class Apcu extends Component implements EngineInterface
      * @param string $value
      * @param int    $ttl
      */
-    public function set($key, $value, $ttl)
+    public function do_set($key, $value, $ttl)
     {
         $r = apcu_store($this->_prefix . $key, $value, $ttl);
         if (!$r) {
@@ -72,7 +67,7 @@ class Apcu extends Component implements EngineInterface
      *
      * @return void
      */
-    public function delete($key)
+    public function do_delete($key)
     {
         apcu_delete($this->_prefix . $key);
     }

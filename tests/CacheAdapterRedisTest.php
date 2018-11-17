@@ -1,11 +1,11 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Cache\Engine\Redis;
+use ManaPHP\Cache\Adapter\Redis;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class CacheEngineRedisTest extends TestCase
+class CacheAdapterRedisTest extends TestCase
 {
     public function test_construct()
     {
@@ -15,12 +15,6 @@ class CacheEngineRedisTest extends TestCase
         $cache = new Redis();
         $cache->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $cache);
-        $this->assertAttributeSame('cache:', '_prefix', $cache);
-
-        //string redis
-        $cache = new Redis('abc');
-        $cache->setDi($di);
-        $this->assertAttributeSame('abc', '_redis', $cache);
         $this->assertAttributeSame('cache:', '_prefix', $cache);
 
         //array redis
@@ -40,13 +34,6 @@ class CacheEngineRedisTest extends TestCase
         $cache->setDi($di);
         $this->assertAttributeSame('xx', '_redis', $cache);
         $this->assertAttributeSame('yy:', '_prefix', $cache);
-
-        //object redis
-        $redis = new \ManaPHP\Redis();
-        $cache = new Redis($redis);
-        $cache->setDi($di);
-        $this->assertAttributeSame($redis, '_redis', $cache);
-        $this->assertAttributeSame('cache:', '_prefix', $cache);
     }
 
     public function test_exists()

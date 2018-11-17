@@ -11,49 +11,9 @@ use ManaPHP\Exception\RuntimeException;
  *
  * @package cache
  */
-class Cache extends Component implements CacheInterface
+abstract class Cache extends Component implements CacheInterface
 {
-    /**
-     * @var string|\ManaPHP\Cache\EngineInterface
-     */
-    protected $_engine;
-
-    /**
-     * @var string
-     */
-    protected $_prefix = '';
-
-    /**
-     * Cache constructor.
-     *
-     * @param string|array|\ManaPHP\Cache\EngineInterface $options
-     */
-    public function __construct($options = 'ManaPHP\Cache\Engine\Redis')
-    {
-        if (is_string($options) || is_object($options)) {
-            $this->_engine = $options;
-        } else {
-            if (isset($options['engine'])) {
-                $this->_engine = $options['engine'];
-            }
-
-            if (isset($options['prefix'])) {
-                $this->_prefix = $options['prefix'];
-            }
-        }
-    }
-
-    /**
-     * @return \ManaPHP\Cache\EngineInterface
-     */
-    protected function _getEngine()
-    {
-        if (is_string($this->_engine)) {
-            return $this->_engine = $this->_di->getShared($this->_engine);
-        } else {
-            return $this->_engine = $this->_di->getInstance($this->_engine);
-        }
-    }
+    abstract public function do_get($key);
 
     /**
      * @param string $key
@@ -62,13 +22,12 @@ class Cache extends Component implements CacheInterface
      */
     public function get($key)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        if (($data = $engine->get($this->_prefix . $key)) === false) {
-            $this->fireEvent('cache:miss', ['key' => $this->_prefix . $key]);
+        if (($data = $this->do_get($key)) === false) {
+            $this->fireEvent('cache:miss', ['key' =>$key]);
             return false;
         }
 
-        $this->fireEvent('cache:hit', ['key' => $this->_prefix . $key]);
+        $this->fireEvent('cache:hit', ['key' => $key]);
 
         if ($data[0] !== '{' && $data[0] !== '[') {
             return $data;
@@ -90,6 +49,15 @@ class Cache extends Component implements CacheInterface
             return $json;
         }
     }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     * @param int    $ttl
+     *
+     * @return void
+     */
+    abstract public function do_set($key, $value, $ttl);
 
     /**
      * @param string $key
@@ -123,9 +91,10 @@ class Cache extends Component implements CacheInterface
             ]);
         }
 
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        $engine->set($this->_prefix . $key, $data, $ttl);
+        $this->do_set($key, $data, $ttl);
     }
+
+    abstract public function do_delete($key);
 
     /**
      * @param string $key
@@ -134,9 +103,10 @@ class Cache extends Component implements CacheInterface
      */
     public function delete($key)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        $engine->delete($this->_prefix . $key);
+        $this->do_delete($key);
     }
+
+    abstract public function do_exists($key);
 
     /**
      * @param string $key
@@ -145,8 +115,7 @@ class Cache extends Component implements CacheInterface
      */
     public function exists($key)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        return $engine->exists($this->_prefix . $key);
+        return $this->do_exists($key);
     }
 
     /**

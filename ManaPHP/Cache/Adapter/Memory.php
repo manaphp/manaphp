@@ -1,14 +1,14 @@
 <?php
-namespace ManaPHP\Cache\Engine;
+namespace ManaPHP\Cache\Adapter;
 
-use ManaPHP\Cache\EngineInterface;
+use ManaPHP\Cache;
 
 /**
  * Class ManaPHP\Cache\Adapter\Memory
  *
  * @package cache\adapter
  */
-class Memory implements EngineInterface
+class Memory extends Cache
 {
     /**
      * @var array
@@ -20,7 +20,7 @@ class Memory implements EngineInterface
      *
      * @return string|false
      */
-    public function get($key)
+    public function do_get($key)
     {
         if (isset($this->_data[$key])) {
             if ($this->_data[$key]['deadline'] >= time()) {
@@ -42,7 +42,7 @@ class Memory implements EngineInterface
      *
      * @return void
      */
-    public function set($key, $value, $ttl)
+    public function do_set($key, $value, $ttl)
     {
         $this->_data[$key] = ['deadline' => time() + $ttl, 'data' => $value];
     }
@@ -52,7 +52,7 @@ class Memory implements EngineInterface
      *
      * @return void
      */
-    public function delete($key)
+    public function do_delete($key)
     {
         unset($this->_data[$key]);
     }
@@ -62,7 +62,7 @@ class Memory implements EngineInterface
      *
      * @return bool
      */
-    public function exists($key)
+    public function do_exists($key)
     {
         return isset($this->_data[$key]) && $this->_data[$key]['deadline'] >= time();
     }
