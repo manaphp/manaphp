@@ -43,6 +43,10 @@ class SessionController extends Controller
                 return $this->response->setJsonError('account or password is wrong.');
             }
 
+            $roles = $admin->admin_id === 1 ? ['admin'] : AdminRole::values('role_name', ['admin_id' => $admin->admin_id]);
+            $claims = ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name, 'role' => implode(',', $roles)];
+            $this->identity->setClaims($claims);
+
             $admin->login_ip = $this->request->getClientIp();
             $admin->login_time = time();
             $admin->update();
@@ -62,12 +66,6 @@ class SessionController extends Controller
             $adminLoginLog->user_agent = $this->request->getUserAgent();
 
             $adminLoginLog->create();
-
-            $roles = $admin->admin_id === 1 ? ['admin'] : AdminRole::values('role_name', ['admin_id' => $admin->admin_id]);
-            $auth = ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name, 'role' => implode(',', $roles)];
-            $this->session->set('auth', $auth);
-
-            $this->identity->setClaims($auth);
 
             return $this->response->setJsonContent(0);
         } else {
