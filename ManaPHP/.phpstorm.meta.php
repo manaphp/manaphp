@@ -122,7 +122,6 @@ namespace PHPSTORM_META {
             'relationsManager' instanceof \ManaPHP\Model\Relation\Manager,
             'di' instanceof \ManaPHP\Di | \ManaPHP\DiInterface,
             'application' instanceof \ManaPHP\ApplicationInterface,
-            'authenticationToken' instanceof \ManaPHP\Authentication\Token\Adapter\Mwt,
             'jwt' instanceof \ManaPHP\Authentication\Token\Adapter\Jwt,
             'mwt' instanceof \ManaPHP\Authentication\Token\Adapter\Mwt,
             'mailer' instanceof \ManaPHP\MailerInterface,

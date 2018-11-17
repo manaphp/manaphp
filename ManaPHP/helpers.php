@@ -232,24 +232,6 @@ if (!function_exists('abort')) {
     }
 }
 
-if (!function_exists('token')) {
-    /**
-     * @param string|array $data
-     * @param int          $ttl
-     *
-     * @return array|false|string
-     */
-    function token($data = null, $ttl = null)
-    {
-        if ($ttl) {
-            $data['exp'] = time() + $ttl;
-            return di('authenticationToken')->encode($data);
-        } else {
-            return di('authenticationToken')->decode($data ?: di('request')->getAccessToken());
-        }
-    }
-}
-
 if (!function_exists('jwt')) {
     /**
      * @param string       $scope
