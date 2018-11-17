@@ -2,6 +2,7 @@
 namespace App\Areas\User\Controllers;
 
 use App\Areas\Rbac\Models\AdminRole;
+use App\Areas\Rbac\Models\Role;
 use App\Models\Admin;
 use App\Models\AdminLoginLog;
 use ManaPHP\Mvc\Controller;
@@ -43,7 +44,13 @@ class SessionController extends Controller
                 return $this->response->setJsonError('account or password is wrong.');
             }
 
-            $roles = $admin->admin_id === 1 ? ['admin'] : AdminRole::values('role_name', ['admin_id' => $admin->admin_id]);
+            if ($admin->admin_id === 1) {
+                $roles = ['admin'];
+            } else {
+                $roles = AdminRole::values('role_name', ['admin_id' => $admin->admin_id]);
+                $roles = Role::values('role_name', ['enabled' => 1, 'role_name' => $roles]);
+            }
+
             $claims = ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name, 'role' => implode(',', $roles)];
             $this->identity->setClaims($claims);
 
