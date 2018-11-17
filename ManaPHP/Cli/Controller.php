@@ -2,21 +2,28 @@
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Component;
+
 /**
  * Class ManaPHP\Cli\Controller
  *
  * @package controller
  *
- * @property-read \ManaPHP\Di|\ManaPHP\DiInterface   $di
- * @property-read \ManaPHP\Cache\EngineInterface     $viewsCache
- * @property-read \ManaPHP\Message\QueueInterface    $messageQueue
- * @property-read \ManaPHP\Cli\ConsoleInterface      $console
- * @property-read \ManaPHP\Cli\ArgumentsInterface    $arguments
- * @property-read \ManaPHP\Text\CrosswordInterface   $crossword
- * @property-read \ManaPHP\Cli\HandlerInterface      $cliHandler
+ * @property-read \ManaPHP\Di|\ManaPHP\DiInterface $di
+ * @property-read \ManaPHP\Cache\EngineInterface   $viewsCache
+ * @property-read \ManaPHP\Message\QueueInterface  $messageQueue
+ * @property-read \ManaPHP\Cli\ConsoleInterface    $console
+ * @property-read \ManaPHP\Cli\ArgumentsInterface  $arguments
+ * @property-read \ManaPHP\Text\CrosswordInterface $crossword
+ * @property-read \ManaPHP\Cli\HandlerInterface    $cliHandler
  */
-abstract class Controller extends \ManaPHP\Controller
+abstract class Controller extends Component
 {
+    public function categorizeLog()
+    {
+        return basename(str_replace('\\', '.', get_called_class()), 'Controller');
+    }
+
     /**
      * show this help information
      */

@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Rest;
 
+use ManaPHP\Component;
+
 /**
  * Class ManaPHP\Mvc\Controller
  *
@@ -23,7 +25,18 @@ namespace ManaPHP\Rest;
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\RouterInterface                $router
  */
-abstract class Controller extends \ManaPHP\Controller
+abstract class Controller extends Component
 {
+    public function categorizeLog()
+    {
+        return basename(str_replace('\\', '.', get_called_class()), 'Controller');
+    }
 
+    /**
+     * @return array
+     */
+    public function getAcl()
+    {
+        return [];
+    }
 }

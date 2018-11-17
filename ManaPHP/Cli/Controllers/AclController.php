@@ -20,7 +20,7 @@ class AclController extends Controller
         $authorization = new Authorization();
         foreach ($this->aclBuilder->getControllers() as $controller) {
             /**
-             * @var \ManaPHP\Controller $controllerInstance
+             * @var \ManaPHP\Rest\Controller $controllerInstance
              */
             $controllerInstance = new $controller;
             $acl = $controllerInstance->getAcl();

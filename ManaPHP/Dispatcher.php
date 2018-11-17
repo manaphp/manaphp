@@ -216,9 +216,9 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param \ManaPHP\Controller $controller
-     * @param string              $action
-     * @param array               $params
+     * @param \ManaPHP\Rest\Controller $controller
+     * @param string                   $action
+     * @param array                    $params
      *
      * @return array
      */
@@ -298,9 +298,9 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param \ManaPHP\Controller $controller
-     * @param string              $action
-     * @param array               $params
+     * @param \ManaPHP\Rest\Controller $controller
+     * @param string                   $action
+     * @param array                    $params
      *
      * @return mixed
      */

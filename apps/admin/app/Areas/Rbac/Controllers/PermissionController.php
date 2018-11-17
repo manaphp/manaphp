@@ -52,7 +52,7 @@ class PermissionController extends ControllerBase
 
             $count = 0;
             foreach ($controllers as $controller) {
-                /**@var \ManaPHP\Controller $controllerInstance */
+                /**@var \ManaPHP\Rest\Controller $controllerInstance */
                 $controllerInstance = new $controller;
                 $acl = $controllerInstance->getAcl();
 
