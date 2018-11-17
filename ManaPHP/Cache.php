@@ -31,13 +31,15 @@ class Cache extends Component implements CacheInterface
     public function __construct($options = 'ManaPHP\Cache\Engine\Redis')
     {
         if (is_string($options) || is_object($options)) {
-            $options = ['engine' => $options];
-        }
+            $this->_engine = $options;
+        } else {
+            if (isset($options['engine'])) {
+                $this->_engine = $options['engine'];
+            }
 
-        $this->_engine = $options['engine'];
-
-        if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            if (isset($options['prefix'])) {
+                $this->_prefix = $options['prefix'];
+            }
         }
     }
 
