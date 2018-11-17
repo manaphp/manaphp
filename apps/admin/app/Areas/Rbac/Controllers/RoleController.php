@@ -29,7 +29,9 @@ class RoleController extends ControllerBase
     public function createAction()
     {
         if ($this->request->isPost()) {
-            return Role::createOrFail();
+            $role = Role::newOrFail();
+            $role->permissions = '';
+            return $role->create();
         }
     }
 

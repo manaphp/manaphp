@@ -7,6 +7,7 @@ class Role extends Model
 {
     public $role_id;
     public $role_name;
+    public $display_name;
     public $enabled;
     public $permissions;
     public $creator_name;
@@ -23,6 +24,7 @@ class Role extends Model
     {
         return [
             'role_name' => ['lower', 'length' => '3-15', 'unique'],
+            'display_name' => ['lower', 'length' => '3-15', 'unique'],
             'enabled' => 'bool'
         ];
     }
