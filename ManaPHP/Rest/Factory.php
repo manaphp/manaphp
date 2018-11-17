@@ -16,7 +16,7 @@ class Factory extends FactoryDefault
             'url' => 'ManaPHP\Url',
             'response' => 'ManaPHP\Http\Response',
             'request' => 'ManaPHP\Http\Request',
-            'session' => 'ManaPHP\Http\Session',
+            'session' => 'ManaPHP\Http\Session\Adapter\File',
             'cookies' => 'ManaPHP\Http\Cookies',
             'captcha' => 'ManaPHP\Security\Captcha',
             'authorization' => 'ManaPHP\Authorization',

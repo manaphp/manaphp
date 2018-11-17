@@ -1,11 +1,10 @@
 <?php
-namespace ManaPHP\Http\Session\Engine;
+namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Http\Session\Engine\Cookie\Exception as CookieException;
-use ManaPHP\Http\Session\EngineInterface;
+use ManaPHP\Http\Session;
+use ManaPHP\Http\Session\Adapter\Cookie\Exception as CookieException;
 
-class Cookie extends Component implements EngineInterface
+class Cookie extends Session
 {
     /**
      * @var string
@@ -15,13 +14,13 @@ class Cookie extends Component implements EngineInterface
     /**
      * Cookie constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
     public function __construct($options = [])
     {
-        if (is_string($options)) {
-            $this->_key = $options;
-        } elseif (isset($options['key'])) {
+        parent::__construct($options);
+
+        if (isset($options['key'])) {
             $this->_key = $options['key'];
         }
     }
@@ -38,9 +37,9 @@ class Cookie extends Component implements EngineInterface
      * @param string $session_id
      *
      * @return string
-     * @throws \ManaPHP\Http\Session\Engine\Cookie\Exception
+     * @throws \ManaPHP\Http\Session\Adapter\Cookie\Exception
      */
-    public function read($session_id)
+    public function do_read($session_id)
     {
         $data = $this->_di->cookies->get($session_id) ?: '';
         if ($data === '') {
@@ -77,7 +76,7 @@ class Cookie extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function write($session_id, $data, $ttl)
+    public function do_write($session_id, $data, $ttl)
     {
         $params = session_get_cookie_params();
 
@@ -94,7 +93,7 @@ class Cookie extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function destroy($session_id)
+    public function do_destroy($session_id)
     {
         $this->_di->cookies->delete($session_id);
 
@@ -106,7 +105,7 @@ class Cookie extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function gc($ttl)
+    public function do_gc($ttl)
     {
         return true;
     }

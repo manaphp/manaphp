@@ -2,10 +2,10 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Http\Session\Engine\Redis;
+use ManaPHP\Http\Session\Adapter\Redis;
 use PHPUnit\Framework\TestCase;
 
-class HttpSessionEngineRedisTest extends TestCase
+class HttpSessionAdapterRedisTest extends TestCase
 {
     public function test_construct()
     {
@@ -15,12 +15,6 @@ class HttpSessionEngineRedisTest extends TestCase
         $session = new Redis();
         $session->setDi($di);
         $this->assertAttributeSame('redis', '_redis', $session);
-        $this->assertAttributeSame('session:', '_prefix', $session);
-
-        //string redis
-        $session = new Redis('abc');
-        $session->setDi($di);
-        $this->assertAttributeSame('abc', '_redis', $session);
         $this->assertAttributeSame('session:', '_prefix', $session);
 
         //array redis
@@ -40,13 +34,6 @@ class HttpSessionEngineRedisTest extends TestCase
         $session->setDi($di);
         $this->assertAttributeSame('xx', '_redis', $session);
         $this->assertAttributeSame('yy:', '_prefix', $session);
-
-        //object redis
-        $redis = new \ManaPHP\Redis();
-        $session = new Redis($redis);
-        $session->setDi($di);
-        $this->assertAttributeSame($redis, '_redis', $session);
-        $this->assertAttributeSame('session:', '_prefix', $session);
     }
 
     public function test_read()
@@ -57,10 +44,10 @@ class HttpSessionEngineRedisTest extends TestCase
         $redis = new Redis();
         $redis->setDi($di);
 
-        $this->assertEquals('', $redis->read($session_id));
+        $this->assertEquals('', $redis->do_read($session_id));
 
-        $redis->write($session_id, 'manaphp', ['ttl' => 100]);
-        $this->assertEquals('manaphp', $redis->read($session_id));
+        $redis->do_write($session_id, 'manaphp', 100);
+        $this->assertEquals('manaphp', $redis->do_read($session_id));
     }
 
     public function test_write()
@@ -71,11 +58,11 @@ class HttpSessionEngineRedisTest extends TestCase
         $redis = new Redis();
         $redis->setDi($di);
 
-        $redis->write($session_id, '', ['ttl' => 100]);
-        $this->assertEquals('', $redis->read($session_id));
+        $redis->do_write($session_id, '', 100);
+        $this->assertEquals('', $redis->do_read($session_id));
 
-        $redis->write($session_id, 'manaphp', ['ttl' => 100]);
-        $this->assertEquals('manaphp', $redis->read($session_id));
+        $redis->do_write($session_id, 'manaphp', 100);
+        $this->assertEquals('manaphp', $redis->do_read($session_id));
     }
 
     public function test_destory()
@@ -86,13 +73,13 @@ class HttpSessionEngineRedisTest extends TestCase
         $redis = new Redis();
         $redis->setDi($di);
 
-        $this->assertTrue($redis->destroy($session_id));
+        $this->assertTrue($redis->do_destroy($session_id));
 
-        $redis->write($session_id, 'manaphp', ['ttl' => 100]);
-        $this->assertEquals('manaphp', $redis->read($session_id));
-        $this->assertTrue($redis->destroy($session_id));
+        $redis->do_write($session_id, 'manaphp', 100);
+        $this->assertEquals('manaphp', $redis->do_read($session_id));
+        $this->assertTrue($redis->do_destroy($session_id));
 
-        $this->assertEquals('', $redis->read($session_id));
+        $this->assertEquals('', $redis->do_read($session_id));
     }
 
     public function test_gc()
@@ -103,6 +90,6 @@ class HttpSessionEngineRedisTest extends TestCase
         $redis = new Redis();
         $redis->setDi($di);
 
-        $this->assertTrue($redis->gc(100));
+        $this->assertTrue($redis->do_gc(100));
     }
 }

@@ -19,7 +19,7 @@ class Factory extends FactoryDefault
             'view' => 'ManaPHP\View',
             'flash' => 'ManaPHP\View\Flash\Adapter\Direct',
             'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
-            'session' => 'ManaPHP\Http\Session',
+            'session' => 'ManaPHP\Http\Session\Adapter\File',
             'captcha' => 'ManaPHP\Security\Captcha',
             'viewsCache' => ['ManaPHP\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
             'cookies' => 'ManaPHP\Http\Cookies',

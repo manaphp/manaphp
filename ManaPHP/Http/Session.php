@@ -11,13 +11,8 @@ use ManaPHP\Http\Session\Exception as SessionException;
  * @property-read \ManaPHP\Http\CookiesInterface $cookies
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Session extends Component implements SessionInterface, \ArrayAccess
+abstract class Session extends Component implements SessionInterface, \ArrayAccess
 {
-    /**
-     * @var \ManaPHP\Http\Session\EngineInterface
-     */
-    protected $_engine = 'ManaPHP\Http\Session\Engine\File';
-
     /**
      * @var int
      */
@@ -36,26 +31,14 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     /**
      * Session constructor.
      *
-     * @param string|array|\ManaPHP\Http\Session\EngineInterface $options
+     * @param array $options
      *
      * @throws \ManaPHP\Http\Session\Exception
      */
-    public function __construct($options = 'ManaPHP\Http\Session\Engine\File')
+    public function __construct($options = [])
     {
-        if (is_string($options) || is_object($options)) {
-            $this->_engine = $options;
-        } else {
-            if (isset($options['ttl'])) {
-                $this->_ttl = (int)$options['ttl'];
-            }
-            if (isset($options['engine'])) {
-                $this->_engine = $options['engine'];
-            }
-
-            if (isset($options['session_name'])) {
-                $this->_session_name = $options['session_name'];
-                $this->setName($this->_session_name);
-            }
+        if (isset($options['ttl'])) {
+            $this->_ttl = (int)$options['ttl'];
         }
 
         if (!is_int($this->_ttl)) {
@@ -99,18 +82,6 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     }
 
     /**
-     * @return \ManaPHP\Http\Session\EngineInterface
-     */
-    protected function _getEngine()
-    {
-        if (is_string($this->_engine)) {
-            return $this->_engine = $this->_di->getShared($this->_engine);
-        } else {
-            return $this->_engine = $this->_di->getInstance($this->_engine);
-        }
-    }
-
-    /**
      * @ignore
      *
      * @param string $save_path
@@ -135,6 +106,13 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     }
 
     /**
+     * @param string $session_id
+     *
+     * @return string
+     */
+    abstract public function do_read($session_id);
+
+    /**
      * @ignore
      *
      * @param string $session_id
@@ -143,9 +121,17 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function _handler_read($session_id)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        return $engine->read($session_id);
+        return $this->do_read($session_id);
     }
+
+    /**
+     * @param string $session_id
+     * @param string $data
+     * @param int    $ttl
+     *
+     * @return bool
+     */
+    abstract public function do_write($session_id, $data, $ttl);
 
     /**
      * @ignore
@@ -157,9 +143,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function _handler_write($session_id, $data)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-
-        return $engine->write($session_id, $data, $this->_ttl);
+        return $this->do_write($session_id, $data, $this->_ttl);
     }
 
     /**
@@ -171,9 +155,10 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function _handler_destroy($session_id)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        return $engine->destroy($session_id);
+        return $this->do_destroy($session_id);
     }
+
+    abstract public function do_gc($ttl);
 
     /**
      * @ignore
@@ -184,8 +169,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
      */
     public function _handler_gc($ttl)
     {
-        $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-        return $engine->gc($ttl);
+        return $this->do_gc($ttl);
     }
 
     /**
@@ -308,6 +292,8 @@ class Session extends Component implements SessionInterface, \ArrayAccess
         return session_name($name);
     }
 
+    abstract public function do_destroy($session_id);
+
     /**
      * Destroys the active session or assigned session
      *
@@ -319,8 +305,7 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     public function destroy($session_id = null)
     {
         if ($session_id) {
-            $engine = is_object($this->_engine) ? $this->_engine : $this->_getEngine();
-            $engine->destroy($session_id);
+            $this->do_destroy($session_id);
         } else {
             $this->_started || $this->_start();
 
@@ -392,10 +377,6 @@ class Session extends Component implements SessionInterface, \ArrayAccess
     {
         $this->_started || $this->_start();
 
-        $data = (array)$_SESSION;
-
-        $data['_internal_'] = ['engine' => get_class($this->_engine)];
-
-        return $data;
+        return $_SESSION;
     }
 }

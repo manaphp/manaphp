@@ -1,16 +1,10 @@
 <?php
-namespace ManaPHP\Http\Session\Engine;
+namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
-use ManaPHP\Http\Session\EngineInterface;
+use ManaPHP\Http\Session;
 
-/**
- * Class ManaPHP\Http\Session\Engine\File
- *
- * @package session\engine
- */
-class File extends Component implements EngineInterface
+class File extends Session
 {
     /**
      * @var string
@@ -34,6 +28,8 @@ class File extends Component implements EngineInterface
      */
     public function __construct($options = [])
     {
+        parent::__construct($options);
+
         if (isset($options['dir'])) {
             $this->_dir = ltrim($options['dir'], '\\/');
         }
@@ -68,7 +64,7 @@ class File extends Component implements EngineInterface
      *
      * @return string
      */
-    public function read($session_id)
+    public function do_read($session_id)
     {
         $file = $this->_getFileName($session_id);
 
@@ -86,7 +82,7 @@ class File extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function write($session_id, $data, $ttl)
+    public function do_write($session_id, $data, $ttl)
     {
         $file = $this->_getFileName($session_id);
         $dir = dirname($file);
@@ -109,7 +105,7 @@ class File extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function destroy($session_id)
+    public function do_destroy($session_id)
     {
         $file = $this->_getFileName($session_id);
 
@@ -125,7 +121,7 @@ class File extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function gc($ttl)
+    public function do_gc($ttl)
     {
         $dir = $this->alias->resolve($this->_dir);
         if (is_dir($dir)) {

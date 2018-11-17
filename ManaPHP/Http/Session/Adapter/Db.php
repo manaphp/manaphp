@@ -1,21 +1,20 @@
 <?php
-namespace ManaPHP\Http\Session\Engine;
+namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Http\Session\EngineInterface;
+use ManaPHP\Http\Session;
 
 /**
- * Class ManaPHP\Http\Session\Engine\Db
+ * Class ManaPHP\Http\Session\Adapter\Db
  *
- * @package session\engine
+ * @package session\adapter
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Db extends Component implements EngineInterface
+class Db extends Session
 {
     /**
      * @var string
      */
-    protected $_model = 'ManaPHP\Http\Session\Engine\Db\Model';
+    protected $_model = 'ManaPHP\Http\Session\Adapter\Db\Model';
 
     /**
      * Db constructor.
@@ -24,6 +23,8 @@ class Db extends Component implements EngineInterface
      */
     public function __construct($options = [])
     {
+        parent::__construct($options);
+
         if (isset($options['model'])) {
             $this->_model = $options['model'];
         }
@@ -34,10 +35,10 @@ class Db extends Component implements EngineInterface
      *
      * @return string
      */
-    public function read($session_id)
+    public function do_read($session_id)
     {
         /**
-         * @var \ManaPHP\Http\Session\Engine\Db\Model $model
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
          */
         $model = new $this->_model;
         $model = $model::first(['session_id' => $session_id]);
@@ -55,10 +56,10 @@ class Db extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function write($session_id, $data, $ttl)
+    public function do_write($session_id, $data, $ttl)
     {
         /**
-         * @var \ManaPHP\Http\Session\Engine\Db\Model $model
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
          */
         $model = new $this->_model;
 
@@ -79,10 +80,10 @@ class Db extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function destroy($session_id)
+    public function do_destroy($session_id)
     {
         /**
-         * @var \ManaPHP\Http\Session\Engine\Db\Model $model
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
          */
         $model = new $this->_model;
 
@@ -96,10 +97,10 @@ class Db extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function gc($ttl)
+    public function do_gc($ttl)
     {
         /**
-         * @var \ManaPHP\Http\Session\Engine\Db\Model $model
+         * @var \ManaPHP\Http\Session\Adapter\Db\Model $model
          */
         $model = new $this->_model;
 

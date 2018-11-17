@@ -1,15 +1,14 @@
 <?php
-namespace ManaPHP\Http\Session\Engine;
+namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Http\Session\EngineInterface;
+use ManaPHP\Http\Session;
 
 /**
- * Class ManaPHP\Http\Session\Engine\Redis
+ * Class ManaPHP\Http\Session\Adapter\Redis
  *
- * @package session\engine
+ * @package session\adapter
  */
-class Redis extends Component implements EngineInterface
+class Redis extends Session
 {
     /**
      * @var string|\Redis
@@ -24,20 +23,18 @@ class Redis extends Component implements EngineInterface
     /**
      * Redis constructor.
      *
-     * @param string|\Redis|array $options
+     * @param array $options
      */
-    public function __construct($options = 'redis')
+    public function __construct($options = [])
     {
-        if (is_string($options) || is_object($options)) {
-            $this->_redis = $options;
-        } else {
-            if (isset($options['redis'])) {
-                $this->_redis = $options['redis'];
-            }
+        parent::__construct($options);
 
-            if (isset($options['prefix'])) {
-                $this->_prefix = $options['prefix'];
-            }
+        if (isset($options['redis'])) {
+            $this->_redis = $options['redis'];
+        }
+
+        if (isset($options['prefix'])) {
+            $this->_prefix = $options['prefix'];
         }
     }
 
@@ -58,7 +55,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return string
      */
-    public function read($session_id)
+    public function do_read($session_id)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         $data = $redis->get($this->_prefix . $session_id);
@@ -72,7 +69,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function write($session_id, $data, $ttl)
+    public function do_write($session_id, $data, $ttl)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         return $redis->set($this->_prefix . $session_id, $data, $ttl);
@@ -83,7 +80,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function destroy($session_id)
+    public function do_destroy($session_id)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         $redis->delete($this->_prefix . $session_id);
@@ -96,7 +93,7 @@ class Redis extends Component implements EngineInterface
      *
      * @return bool
      */
-    public function gc($ttl)
+    public function do_gc($ttl)
     {
         return true;
     }

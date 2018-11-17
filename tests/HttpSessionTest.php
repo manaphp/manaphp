@@ -1,7 +1,7 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Http\Session;
+use ManaPHP\Http\Session\Adapter\Redis;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +16,7 @@ class HttpSessionTest extends TestCase
 
     public function test_get()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $this->assertFalse($session->has('some'));
         $session->set('some', 'value');
@@ -28,7 +28,7 @@ class HttpSessionTest extends TestCase
 
     public function test_offsetGet()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $session->set('some', 'value');
         $this->assertEquals('value', $session['some']);
@@ -36,7 +36,7 @@ class HttpSessionTest extends TestCase
 
     public function test_set()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $this->assertFalse($session->has('some'));
         $session->set('some', 'value');
@@ -45,7 +45,7 @@ class HttpSessionTest extends TestCase
 
     public function test_offsetSet()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $this->assertFalse($session->has('some'));
         $session['some'] = 'value';
@@ -54,7 +54,7 @@ class HttpSessionTest extends TestCase
 
     public function test_has()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $this->assertFalse($session->has('some'));
 
@@ -64,7 +64,7 @@ class HttpSessionTest extends TestCase
 
     public function test_offsetExists()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $this->assertFalse(isset($session['some']));
 
@@ -74,14 +74,14 @@ class HttpSessionTest extends TestCase
 
     public function test_destroy()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $session->destroy();
     }
 
     public function test_remove()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $session->set('some', 'value');
         $this->assertTrue($session->has('some'));
@@ -92,7 +92,7 @@ class HttpSessionTest extends TestCase
 
     public function test_offsetUnset()
     {
-        $session = new Session();
+        $session = new Redis();
 
         $session->set('some', 'value');
         $this->assertTrue($session->has('some'));

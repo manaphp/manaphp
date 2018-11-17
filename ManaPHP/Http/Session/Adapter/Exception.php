@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Http\Session\Engine;
+namespace ManaPHP\Http\Session\Adapter;
 
 /**
- * Class ManaPHP\Http\Session\Engine\Exception
+ * Class ManaPHP\Http\Session\Adapter\Exception
  *
  * @package session\engine
  */

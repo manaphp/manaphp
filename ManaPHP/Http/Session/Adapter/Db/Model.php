@@ -1,8 +1,8 @@
 <?php
-namespace ManaPHP\Http\Session\Engine\Db;
+namespace ManaPHP\Http\Session\Adapter\Db;
 
 /**
- * Class ManaPHP\Http\Session\Engine\Db\Model
+ * Class ManaPHP\Http\Session\Adapter\Db\Model
  *
  * @package session\engine
  */
