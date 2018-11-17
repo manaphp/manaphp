@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Message\Queue\Adapter;
 
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Message\Queue;
-use ManaPHP\Message\Queue\Adapter\Redis\Exception as RedisException;
 
 class Redis extends Queue
 {
@@ -62,13 +62,11 @@ class Redis extends Queue
      * @param string $topic
      * @param string $body
      * @param int    $priority
-     *
-     * @throws \ManaPHP\Message\Queue\Adapter\Redis\Exception
      */
     public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
         if (!in_array($priority, $this->_priorities, true)) {
-            throw new RedisException(['`:priority` priority of `:topic is invalid`', 'priority' => $priority, 'topic' => $topic]);
+            throw new MisuseException(['`:priority` priority of `:topic is invalid`', 'priority' => $priority, 'topic' => $topic]);
         }
 
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
