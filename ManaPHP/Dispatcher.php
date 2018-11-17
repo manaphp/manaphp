@@ -320,7 +320,7 @@ class Dispatcher extends Component implements DispatcherInterface
             return $r;
         }
 
-        if (($r = $this->fireEvent('dispatcher:beforeInvoke', $action)) !== null) {
+        if (($r = $this->eventsManager->fireEvent('dispatcher:beforeInvoke', $this, $action)) !== null) {
             return $r;
         }
 
@@ -344,7 +344,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 break;
         }
 
-        $this->fireEvent('dispatcher:afterInvoke', ['action' => $action, 'return' => $r]);
+        $this->eventsManager->fireEvent('dispatcher:afterInvoke', $this, ['action' => $action, 'return' => $r]);
 
         if (method_exists($controller, 'afterInvoke')) {
             $controller->afterInvoke($action, $r);
@@ -375,7 +375,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $this->_params = $router->getParams();
 
-        if ($this->fireEvent('dispatcher:beforeDispatch') === false) {
+        if ($this->eventsManager->fireEvent('dispatcher:beforeDispatch', $this) === false) {
             return;
         }
 
@@ -395,7 +395,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $this->_returnedValue = $this->invokeAction($controllerInstance, $this->_action, $this->_params);
 
-        $this->fireEvent('dispatcher:afterDispatch');
+        $this->eventsManager->fireEvent('dispatcher:afterDispatch', $this);
     }
 
     /**
