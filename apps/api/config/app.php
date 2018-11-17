@@ -13,8 +13,9 @@ return [
         'db' => [env('DB_URL')],
         'redis' => [env('REDIS_URL')],
         'mongodb' => [env('MONGODB_URL')],
-        'logger' => ['level' => env('LOGGER_LEVEL', 'info')]
+        'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
+        '!swooleHttpServer' => ['worker_num' => 1, 'max_request' => 10000, 'dispatch_mode' => 1]
     ],
-    'listeners' => ['*'],
-    'plugins' => ['corsPlugin' => ['max_age' => 3600]]
+    'listeners' => [],
+    'plugins' => []
 ];
