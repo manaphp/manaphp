@@ -17,7 +17,6 @@ namespace ManaPHP\Rest;
  * @property-read \ManaPHP\DispatcherInterface            $dispatcher
  * @property-read \ManaPHP\Paginator                      $paginator
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
- * @property-read \ManaPHP\Security\RateLimiterInterface  $rateLimiter
  * @property-read \ManaPHP\Security\SecintInterface       $secint
  * @property-read \ManaPHP\Http\FilterInterface           $filter
  * @property-read \ManaPHP\Db\Model\MetadataInterface     $modelsMetadata

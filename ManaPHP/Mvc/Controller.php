@@ -23,7 +23,6 @@ namespace ManaPHP\Mvc;
  * @property-read \ManaPHP\Paginator                      $paginator
  * @property-read \ManaPHP\Cache\EngineInterface          $viewsCache
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
- * @property-read \ManaPHP\Security\RateLimiterInterface  $rateLimiter
  * @property-read \ManaPHP\Security\SecintInterface       $secint
  * @property-read \ManaPHP\Http\FilterInterface           $filter
  * @property-read \ManaPHP\Db\Model\MetadataInterface     $modelsMetadata
