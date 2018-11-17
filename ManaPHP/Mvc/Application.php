@@ -26,18 +26,6 @@ class Application extends \ManaPHP\Application
      */
     protected $_loginUrl = '/user/session/login';
 
-    /**
-     * Application constructor.
-     *
-     * @param \ManaPHP\Loader $loader
-     */
-    public function __construct($loader = null)
-    {
-        parent::__construct($loader);
-
-        $this->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
-    }
-
     public function getDi()
     {
         if (!$this->_di) {

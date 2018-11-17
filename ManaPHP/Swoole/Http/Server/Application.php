@@ -20,19 +20,6 @@ use ManaPHP\Router\NotFoundRouteException;
  */
 class Application extends \ManaPHP\Application
 {
-    /**
-     * Application constructor.
-     *
-     * @param \ManaPHP\Loader $loader
-     */
-    public function __construct($loader = null)
-    {
-        ini_set('html_errors', 'off');
-        parent::__construct($loader);
-
-        $this->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
-    }
-
     public function getDi()
     {
         if (!$this->_di) {

@@ -36,6 +36,7 @@ class Application extends Component implements ApplicationInterface
         $calledClass = get_called_class();
         $this->_classFileName = (new \ReflectionClass($calledClass))->getFileName();
 
+        ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);
 
         $GLOBALS['DI'] = $this->getDi();
@@ -77,6 +78,8 @@ class Application extends Component implements ApplicationInterface
         $this->alias->set('@asset', $web);
 
         $this->loader->registerFiles('@manaphp/helpers.php');
+
+        $this->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
     }
 
     /**
