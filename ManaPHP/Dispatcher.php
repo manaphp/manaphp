@@ -363,8 +363,9 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function dispatch($router)
     {
-        $area = $router->getArea();
-        $this->_area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
+        if ($area = $router->getArea()) {
+            $this->_area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
+        }
 
         $controller = $router->getController();
         $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
