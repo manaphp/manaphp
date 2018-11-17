@@ -9,11 +9,6 @@ use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\Expression\Raw;
 use ManaPHP\Model\ExpressionInterface;
 
-/**
- * Class ManaPHP\Db\Model\QueryBuilder
- *
- * @package queryBuilder
- */
 class Query extends \ManaPHP\Query implements QueryInterface
 {
     /**

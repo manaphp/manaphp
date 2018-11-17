@@ -26,7 +26,6 @@ class FactoryDefault extends Di
             'settings' => 'ManaPHP\Configuration\Settings\Adapter\Redis',
             'modelsMetadata' => 'ManaPHP\Db\Model\Metadata\Adapter\Memory',
             'modelsValidator' => 'ManaPHP\Model\Validator',
-            'queryBuilder' => ['class' => 'ManaPHP\Db\Model\Query', 'shared' => false],
             'filter' => 'ManaPHP\Http\Filter',
             'crypt' => 'ManaPHP\Security\Crypt',
             'logger' => 'ManaPHP\Logger',
