@@ -4,6 +4,16 @@ namespace App\Controllers;
 
 class TimeController extends ControllerBase
 {
+    public function getAcl()
+    {
+        return ['*' => '*'];
+    }
+
+    public function helloAction()
+    {
+        return $this->response->setContent('hello world!');
+    }
+
     public function currentAction()
     {
         $data = [];
