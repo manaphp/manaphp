@@ -22,7 +22,6 @@ namespace ManaPHP\Rest;
  * @property-read \ManaPHP\Security\SecintInterface       $secint
  * @property-read \ManaPHP\Http\FilterInterface           $filter
  * @property-read \ManaPHP\Db\Model\MetadataInterface     $modelsMetadata
- * @property-read \ManaPHP\StopwatchInterface             $stopwatch
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\RouterInterface                $router
  */

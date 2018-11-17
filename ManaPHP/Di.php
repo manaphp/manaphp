@@ -56,7 +56,6 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\Security\SecintInterface        $secint
  * @property-read \ManaPHP\I18n\Translator                 $translation
  * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler  $swordCompiler
- * @property-read \ManaPHP\StopwatchInterface              $stopwatch
  * @property-read \ManaPHP\Security\HtmlPurifierInterface  $htmlPurifier
  * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
  * @property-read \ManaPHP\Model\Relation\Manager          $relationsManager

@@ -45,7 +45,6 @@ class FactoryDefault extends Di
             'rateLimiter' => 'ManaPHP\Security\RateLimiter',
             'secint' => 'ManaPHP\Security\Secint',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
-            'stopwatch' => 'ManaPHP\Stopwatch',
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
             'db' => 'ManaPHP\Db\Adapter\Mysql',
             'redis' => 'ManaPHP\Redis',

@@ -29,7 +29,6 @@ namespace ManaPHP\Mvc;
  * @property-read \ManaPHP\Http\FilterInterface           $filter
  * @property-read \ManaPHP\Db\Model\MetadataInterface     $modelsMetadata
  * @property-read \ManaPHP\UrlInterface                   $url
- * @property-read \ManaPHP\StopwatchInterface             $stopwatch
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\RouterInterface                $router
  */
