@@ -22,13 +22,12 @@
                     <div>
                         <el-dropdown>
                     <span class="el-dropdown-link">
-                    <i class="fa fa-user-circle"></i> {{$di->identity->getName('')}}<i
-                                class="el-icon-arrow-down el-icon--left"></i>
+                    <i class="fa fa-user-circle"></i>
+                        {{$di->identity->getName('')}}<i class="el-icon-arrow-down el-icon--left"></i>
                     </span>
                             <el-dropdown-menu slot="dropdown" trigger="click">
-                                <el-dropdown-item><a href="{{action('/user/account/change_password')}}" target="_self">修改密码</a>
-                                <el-dropdown-item><a href="{{action('/user/session/logout')}}" target="_self">退出</a>
-                                </el-dropdown-item>
+                                <el-dropdown-item><a href="{{action('/user/account/change_password')}}" target="_self">修改密码</a></el-dropdown-item>
+                                <el-dropdown-item><a href="{{action('/user/session/logout')}}" target="_self">退出</a></el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </div>
