@@ -10,8 +10,9 @@ use ManaPHP\Mvc\Factory as MvcFactory;
  *
  * @package application
  *
- * @property-read \ManaPHP\DotenvInterface       $dotenv
- * @property-read \ManaPHP\ErrorHandlerInterface $errorHandler
+ * @property-read \ManaPHP\DotenvInterface        $dotenv
+ * @property-read \ManaPHP\ErrorHandlerInterface  $errorHandler
+ * @property-read \ManaPHP\AuthorizationInterface $authorization
  */
 class Application extends Component implements ApplicationInterface
 {
@@ -117,6 +118,17 @@ class Application extends Component implements ApplicationInterface
             $this->_di = isset($_SERVER['DOCUMENT_ROOT']) ? new MvcFactory() : new CliFactory();
         }
         return $this->_di;
+    }
+
+
+    public function authenticate()
+    {
+        $this->identity->authenticate();
+    }
+
+    public function authorize()
+    {
+        $this->authorization->authorize();
     }
 
     /**

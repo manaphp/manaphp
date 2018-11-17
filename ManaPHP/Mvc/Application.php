@@ -46,11 +46,6 @@ class Application extends \ManaPHP\Application
         return $this->_di;
     }
 
-    public function authenticate()
-    {
-        return $this->identity->authenticate();
-    }
-
     public function authorize()
     {
         try {
