@@ -42,7 +42,6 @@ class FactoryDefault extends Di
             'filesystem' => 'ManaPHP\Filesystem\Adapter\File',
             'random' => 'ManaPHP\Security\Random',
             'messageQueue' => 'ManaPHP\Message\Queue',
-            'crossword' => 'ManaPHP\Text\Crossword',
             'rateLimiter' => 'ManaPHP\Security\RateLimiter',
             'secint' => 'ManaPHP\Security\Secint',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',

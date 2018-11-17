@@ -16,6 +16,7 @@ class Factory extends FactoryDefault
             'commandInvoker' => 'ManaPHP\Cli\CommandInvoker',
             'errorHandler' => 'ManaPHP\Cli\ErrorHandler',
             'tasksManager' => 'ManaPHP\Task\Manager',
+            'crossword' => 'ManaPHP\Text\Crossword',
         ]);
     }
 }
