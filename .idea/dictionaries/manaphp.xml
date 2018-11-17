@@ -42,6 +42,7 @@
       <w>gitattributes</w>
       <w>groupby</w>
       <w>helo</w>
+      <w>htmlspecialchars</w>
       <w>httponly</w>
       <w>ifunused</w>
       <w>imagic</w>
@@ -67,6 +68,7 @@
       <w>objectid</w>
       <w>paginator</w>
       <w>pbkdf</w>
+      <w>peeker</w>
       <w>phalcon</w>
       <w>phtml</w>
       <w>pkeys</w>
