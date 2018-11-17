@@ -331,11 +331,9 @@ class Router extends Component implements RouterInterface
             $parts = false;
             $routes = $this->_regex_routes;
             for ($i = count($routes) - 1; $i >= 0; $i--) {
-                if (isset($routes[$i])) {
-                    $route = $routes[$i];
-                    if (($parts = $route->match($handledUri, $method)) !== false) {
-                        break;
-                    }
+                $route = $routes[$i];
+                if (($parts = $route->match($handledUri, $method)) !== false) {
+                    break;
                 }
             }
         }
