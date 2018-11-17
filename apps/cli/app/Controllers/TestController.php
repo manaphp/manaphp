@@ -11,6 +11,6 @@ class TestController extends Controller
      */
     public function defaultCommand()
     {
-        dd(Country::query()->where(['country_id' => 87])->with('cities')->first());
+        var_dump(get_included_files());
     }
 }
