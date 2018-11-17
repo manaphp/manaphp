@@ -28,7 +28,7 @@ class Cache extends Component implements CacheInterface
      *
      * @param string|array|\ManaPHP\Cache\EngineInterface $options
      */
-    public function __construct($options = 'ManaPHP\Cache\Engine\File')
+    public function __construct($options = 'ManaPHP\Cache\Engine\Redis')
     {
         if (is_string($options) || is_object($options)) {
             $options = ['engine' => $options];
