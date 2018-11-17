@@ -35,7 +35,6 @@ class FactoryDefault extends Di
             'password' => 'ManaPHP\Password',
             'cache' => 'ManaPHP\Cache',
             'ipcCache' => 'ManaPHP\IpcCache',
-            'counter' => 'ManaPHP\Counter',
             'httpClient' => 'ManaPHP\Curl\Easy',
             'identity' => 'ManaPHP\Identity\Adapter\Session',
             'paginator' => 'ManaPHP\Paginator',

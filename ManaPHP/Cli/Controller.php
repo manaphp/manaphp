@@ -7,7 +7,6 @@ namespace ManaPHP\Cli;
  *
  * @package controller
  *
- * @property-read \ManaPHP\CounterInterface          $counter
  * @property-read \ManaPHP\Di|\ManaPHP\DiInterface   $di
  * @property-read \ManaPHP\Cache\EngineInterface     $viewsCache
  * @property-read \ManaPHP\Message\QueueInterface    $messageQueue

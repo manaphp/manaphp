@@ -12,7 +12,6 @@ namespace ManaPHP\Rest;
  *
  * @property-read \ManaPHP\Security\CaptchaInterface      $captcha
  * @property-read \ManaPHP\PasswordInterface              $password
- * @property-read \ManaPHP\CounterInterface               $counter
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Http\ResponseInterface         $response
  * @property-read \ManaPHP\DispatcherInterface            $dispatcher
