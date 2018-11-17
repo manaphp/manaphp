@@ -46,8 +46,6 @@ class FactoryDefault extends Di
             'messageQueue' => 'ManaPHP\Message\Queue',
             'crossword' => 'ManaPHP\Text\Crossword',
             'rateLimiter' => 'ManaPHP\Security\RateLimiter',
-            'linearMeter' => 'ManaPHP\Meter\Linear',
-            'roundMeter' => 'ManaPHP\Meter\Round',
             'secint' => 'ManaPHP\Security\Secint',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'stopwatch' => 'ManaPHP\Stopwatch',
