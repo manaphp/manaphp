@@ -57,9 +57,9 @@
         </el-col>
     </el-row>
 </div>
-<script src="https://cdn.bootcss.com/vue/2.5.9/vue.js"></script>
-<script src="https://cdn.bootcss.com/element-ui/2.0.5/index.js"></script>
-<script src="https://cdn.bootcss.com/axios/0.17.1/axios.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/2.4.7/index.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
 <script>
     Vue.prototype.$axios = axios;
