@@ -41,6 +41,16 @@ class Model extends \ManaPHP\Model implements ModelInterface
      *
      * @return \ManaPHP\DbInterface
      */
+    public static function connection($context = null)
+    {
+        return (new static())->getConnection($context);
+    }
+
+    /**
+     * @param mixed $context
+     *
+     * @return \ManaPHP\DbInterface
+     */
     public function getMasterConnection($context = null)
     {
         return $this->getConnection($context)->getMasterConnection();

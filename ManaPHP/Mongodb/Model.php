@@ -61,6 +61,16 @@ class Model extends \ManaPHP\Model
     }
 
     /**
+     * @param mixed $context
+     *
+     * @return \ManaPHP\MongodbInterface
+     */
+    public static function connection($context = null)
+    {
+        return (new static())->getConnection($context);
+    }
+
+    /**
      * @return string
      */
     public function getPrimaryKey()
