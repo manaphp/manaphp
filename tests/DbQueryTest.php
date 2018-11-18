@@ -5,7 +5,6 @@ namespace Tests;
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Db\Query;
 use ManaPHP\DbInterface;
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
@@ -125,6 +124,12 @@ class DbQueryTest extends TestCase
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
             (new Query())->from('city')->where('city_id', 1)->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
+            (new Query())->from('city')->where(['city_id' => 1])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE city_id = 1',
+            (new Query())->from('city')->where(['city_id = 1'])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
             (new Query())->from('city')->where('city_id=', 1)->getSql());
