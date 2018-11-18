@@ -3,6 +3,7 @@
 namespace Tests;
 
 use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Message\Queue\Adapter\Db;
 use PHPUnit\Framework\TestCase;
@@ -33,6 +34,8 @@ class MessageQueueEngineDbTest extends TestCase
     public function test_push()
     {
         $messageQueue = new Db();
+        $messageQueue->setDi(Di::getDefault());
+
         $messageQueue->do_delete('test');
         $messageQueue->do_push('test', 'manaphp');
         $this->assertEquals('manaphp', $messageQueue->do_pop('test'));
@@ -41,6 +44,8 @@ class MessageQueueEngineDbTest extends TestCase
     public function test_pop()
     {
         $messageQueue = new Db();
+        $messageQueue->setDi(Di::getDefault());
+
         $messageQueue->do_delete('test');
 
         $this->assertFalse($messageQueue->do_pop('test', 0));
@@ -56,6 +61,7 @@ class MessageQueueEngineDbTest extends TestCase
     public function test_delete()
     {
         $messageQueue = new Db();
+        $messageQueue->setDi(Di::getDefault());
 
         $this->assertEquals(0, $messageQueue->do_length('test'));
         $messageQueue->do_delete('test');
@@ -69,6 +75,7 @@ class MessageQueueEngineDbTest extends TestCase
     public function test_length()
     {
         $messageQueue = new Db();
+        $messageQueue->setDi(Di::getDefault());
 
         $messageQueue->do_delete('test');
 
