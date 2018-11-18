@@ -453,4 +453,13 @@ interface QueryInterface
      * @return int
      */
     public function update($fieldValues);
+
+    /**
+     * @param mixed    $value
+     * @param callable $true_call
+     * @param callable $false_call
+     *
+     * @return static
+     */
+    public function when($value, $true_call, $false_call = null);
 }

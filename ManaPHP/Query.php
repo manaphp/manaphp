@@ -447,4 +447,22 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
 
         return $this;
     }
+
+    /**
+     * @param mixed    $value
+     * @param callable $true_call
+     * @param callable $false_call
+     *
+     * @return static
+     */
+    public function when($value, $true_call, $false_call = null)
+    {
+        if ($value) {
+            $true_call($this, $value);
+        } elseif ($false_call) {
+            $false_call($this, $value);
+        }
+		
+        return $this;
+    }
 }
