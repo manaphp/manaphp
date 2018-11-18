@@ -5,9 +5,9 @@ namespace ManaPHP;
 use ManaPHP\Di\InstanceState;
 use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\PreconditionException;
-use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Exception\UnexpectedValueException;
 
 /**
@@ -233,7 +233,7 @@ class Di implements DiInterface
     public function setShared($name, $definition)
     {
         if (isset($this->_instances[$name])) {
-            throw new RuntimeException(['it\'s too late to setShared(): `:name` instance has been created', 'name' => $name]);
+            throw new MisuseException(['it\'s too late to setShared(): `:name` instance has been created', 'name' => $name]);
         }
 
         if (is_string($definition)) {
