@@ -37,12 +37,12 @@ interface MongodbInterface
 
     /**
      * @param string $source
-     * @param array  $filter
      * @param array  $document
+     * @param array  $filter
      *
      * @return int
      */
-    public function update($source, $filter, $document);
+    public function update($source, $document, $filter);
 
     /**
      * @param string $source

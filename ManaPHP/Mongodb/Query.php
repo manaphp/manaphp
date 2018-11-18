@@ -1150,6 +1150,6 @@ class Query extends \ManaPHP\Query
             }
         }
 
-        return $this->getConnection()->update($this->getSource(), $filters, $fieldValues);
+        return $this->getConnection()->update($this->getSource(), $fieldValues, $filters);
     }
 }

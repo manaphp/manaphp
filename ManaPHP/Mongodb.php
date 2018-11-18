@@ -238,13 +238,13 @@ class Mongodb extends Component implements MongodbInterface
 
     /**
      * @param string $source
-     * @param array  $filter
      * @param array  $document
+     * @param array  $filter
      *
      * @return int
      * @throws \ManaPHP\Mongodb\Exception
      */
-    public function update($source, $filter, $document)
+    public function update($source, $document, $filter)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
 
