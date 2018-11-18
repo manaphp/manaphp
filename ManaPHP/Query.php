@@ -462,7 +462,37 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
         } elseif ($false_call) {
             $false_call($this, $value);
         }
-		
+
         return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param string $date
+     * @param string $format
+     *
+     * @return static
+     */
+    public function whereDate($field, $date, $format = null)
+    {
+        if ($format === null) {
+            if ($this->_model) {
+                $format = $this->_model->getDateFormat($field);
+            } else {
+                $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
+            }
+        }
+
+        $ts = is_int($date) ? $date : strtotime($date);
+
+        if ($format === 'U') {
+            $min = date('Y-m-d 00:00:00', $ts);
+            $max = date('Y-m-d 23:59:59', $ts);
+            return $this->whereBetween($field, strtotime($min), strtotime($max));
+        } else {
+            $min = date(str_replace('H:i:s', '00:00:00', $format), $ts);
+            $max = date(str_replace('H:i:s', '23:59:59', $format), $ts);
+            return $this->whereBetween($field, $min, $max);
+        }
     }
 }
