@@ -471,4 +471,13 @@ interface QueryInterface
      * @return static
      */
     public function whereDate($field, $date, $format = null);
+
+    /**
+     * @param string $field
+     * @param string $date
+     * @param string $format
+     *
+     * @return static
+     */
+    public function whereMonth($field, $date, $format = null);
 }

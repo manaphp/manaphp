@@ -495,4 +495,37 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
             return $this->whereBetween($field, $min, $max);
         }
     }
+
+    /**
+     * @param string $field
+     * @param string $date
+     * @param string $format
+     *
+     * @return static
+     */
+    public function whereMonth($field, $date, $format = null)
+    {
+        if ($format === null) {
+            if ($this->_model) {
+                $format = $this->_model->getDateFormat($field);
+            } else {
+                $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
+            }
+        }
+
+        if (is_string($date)) {
+            $date = str_replace('/', '-', $date);
+        }
+        $ts = is_int($date) ? $date : strtotime($date);
+
+        if ($format === 'U') {
+            $min = date('Y-m-01 00:00:00', $ts);
+            $max = date('Y-m-t 23:59:59', $ts);
+            return $this->whereBetween($field, strtotime($min), strtotime($max));
+        } else {
+            $min = date(strtr($format, ['H:i:s' => '00:00:00', 'd' => '01']), $ts);
+            $max = date(strtr($format, ['H:i:s' => '23:59:59', 'd' => date('t', $ts)]), $ts);
+            return $this->whereBetween($field, $min, $max);
+        }
+    }
 }

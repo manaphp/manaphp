@@ -936,4 +936,13 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
 
         return $this;
     }
+
+    public function whereMonth($field, $date, $format = null)
+    {
+        foreach ($this->queries as $query) {
+            $query->whereMonth($field, $date, $format);
+        }
+
+        return $this;
+    }
 }
