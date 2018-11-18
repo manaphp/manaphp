@@ -74,7 +74,7 @@ class Db extends Session
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($this->_db);
 
-        $data = [
+        $field_values = [
             'user_id' => $this->identity->getId(0),
             'client_ip' => $this->request->getClientIp(),
             'data' => $data,
@@ -83,11 +83,10 @@ class Db extends Session
         ];
 
         if ($db->query($this->_source)->exists()) {
-            $db->update($this->_source, $data, ['session_id' => $session_id]);
+            $db->update($this->_source, $field_values, ['session_id' => $session_id]);
         } else {
-            $data['session_id'] = $session_id;
-            $data['created_time'] = time();
-            $db->insert($this->_source, $data);
+            $field_values['session_id'] = $session_id;
+            $db->insert($this->_source, $field_values);
         }
 
         return true;
