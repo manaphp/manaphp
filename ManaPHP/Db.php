@@ -7,8 +7,8 @@ use ManaPHP\Db\ConnectionException;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Db
@@ -774,7 +774,7 @@ abstract class Db extends Component implements DbInterface
         $this->logger->info('transaction rollback', 'db.transaction.rollback');
 
         if ($this->_transactionLevel === 0) {
-            throw new RuntimeException('There is no active transaction');
+            throw new MisuseException('There is no active transaction');
         }
 
         if ($this->_transactionLevel === 1) {
@@ -800,7 +800,7 @@ abstract class Db extends Component implements DbInterface
         $this->logger->info('transaction commit', 'db.transaction.commit');
 
         if ($this->_transactionLevel === 0) {
-            throw new RuntimeException('There is no active transaction');
+            throw new MisuseException('There is no active transaction');
         }
 
         if ($this->_transactionLevel === 1) {
