@@ -5,10 +5,10 @@ use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;
 use ManaPHP\Exception\PreconditionException;
-use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\NotFoundException;
@@ -1268,7 +1268,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         if (!$constants) {
-            throw new RuntimeException(['starts with `:constants` constants is not exists in `:model` model', 'constants' => $name, 'model' => get_called_class()]);
+            throw new MisuseException(['starts with `:constants` constants is not exists in `:model` model', 'constants' => $name, 'model' => get_called_class()]);
         }
 
         return $constants;
