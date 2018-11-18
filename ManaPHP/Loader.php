@@ -30,7 +30,7 @@ class Loader
     public function __construct()
     {
         $this->_namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? strtr(__DIR__, '\\', '/') : __DIR__;
-        spl_autoload_register([$this, '_autoload'], true, true);
+        spl_autoload_register([$this, 'load'], true, true);
     }
 
     /**
@@ -121,9 +121,9 @@ class Loader
      *
      * @param string $file The file to require.
      *
-     * @return true
+     * @return void
      */
-    protected function _requireFile($file)
+    public function requireFile($file)
     {
         if (PHP_EOL !== "\n" && strpos($file, 'phar://') !== 0) {
             $realPath = strtr(realpath($file), '\\', '/');
@@ -133,7 +133,6 @@ class Loader
         }
         /** @noinspection PhpIncludeInspection */
         require $file;
-        return true;
     }
 
     /**
@@ -143,7 +142,7 @@ class Loader
      *
      * @return bool
      */
-    public function _autoload($className)
+    public function load($className)
     {
         if (isset($this->_classes[$className])) {
             $file = $this->_classes[$className];
@@ -155,10 +154,11 @@ class Loader
             if (PHP_EOL === "\n" || $file[0] === 'p') {
                 /** @noinspection PhpIncludeInspection */
                 require $file;
-                return true;
             } else {
-                return $this->_requireFile($file);
+                $this->requireFile($file);
             }
+
+            return true;
         }
 
         /** @noinspection LoopWhichDoesNotLoopInspection */
@@ -173,10 +173,11 @@ class Loader
                 if (PHP_EOL === "\n" || $file[0] === 'p') {
                     /** @noinspection PhpIncludeInspection */
                     require $file;
-                    return true;
                 } else {
-                    return $this->_requireFile($file);
+                    $this->requireFile($file);
                 }
+
+                return true;
             }
         }
 
