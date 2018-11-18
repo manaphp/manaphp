@@ -89,12 +89,6 @@ interface DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
-     * <code>
-     *  $db->update('_student',['name'=>'mark'],'id=2');
-     *  $db->update('_student',['name'=>'mark'],['id'=>2]);
-     *  $db->update('_student',['name'=>'mark'],'id=:id',['id'=>2]);
-     * </code>
-     *
      * @param    string       $table
      * @param    array        $fieldValues
      * @param    string|array $conditions
@@ -106,13 +100,6 @@ interface DbInterface
 
     /**
      * Deletes data from a table using custom SQL syntax
-     *
-     * <code>
-     *  $db->delete('_student','id=1');
-     *  $db->delete('_student',['id'=>1]);
-     *  $db->delete('_student',['id'=>1]);
-     *  $db->delete('_student','id=:id',['id'=>1]);
-     * </code>
      *
      * @param  string       $table
      * @param  string|array $conditions

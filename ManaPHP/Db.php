@@ -523,17 +523,6 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * Updates data on a table using custom SQL syntax
-     * <code>
-     * //Updating existing robot
-     * $success = $connection->update(
-     *     "robots",
-     *     array("name"),
-     *     array("New Boy"),
-     *     "id = 101"
-     * );
-     * //Next SQL sentence is sent to the database system
-     * UPDATE `robots` SET `name` = "boy" WHERE id = 101
-     * </code>
      *
      * @param    string       $table
      * @param    array        $fieldValues
@@ -589,15 +578,6 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * Deletes data from a table using custom SQL syntax
-     * <code>
-     * //Deleting existing robot
-     * $success = $connection->delete(
-     *     "robots",
-     *     "id = 101"
-     * );
-     * //Next SQL sentence is generated
-     * DELETE FROM `robots` WHERE `id` = 101
-     * </code>
      *
      * @param  string       $table
      * @param  string|array $conditions
