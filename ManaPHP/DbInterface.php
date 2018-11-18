@@ -99,6 +99,18 @@ interface DbInterface
     public function update($table, $fieldValues, $conditions, $bind = []);
 
     /**
+     * Updates data on a table using custom SQL syntax
+     *
+     * @param string $table
+     * @param array  $insertFieldValues
+     * @param array  $updateFieldValues
+     * @param string $primaryKey
+     *
+     * @return    int
+     */
+    public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null);
+
+    /**
      * Deletes data from a table using custom SQL syntax
      *
      * @param  string       $table

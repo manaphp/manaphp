@@ -381,7 +381,7 @@ abstract class Db extends Component implements DbInterface
         }
 
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-        if (!isset($backtrace['function']) || !in_array($backtrace['function'], ['insert', 'delete', 'update'], true)) {
+        if (!isset($backtrace['function']) || !in_array($backtrace['function'], ['insert', 'delete', 'update', 'upsert'], true)) {
             $this->logger->info($event_data, 'db.execute');
         }
         return $count;
@@ -574,6 +574,49 @@ abstract class Db extends Component implements DbInterface
         $count = $this->execute($sql, $bind);
         $this->logger->info(compact('count', 'table', 'fieldValues', 'conditions', 'bind'), 'db.update');
         return $count;
+    }
+
+    /**
+     * Updates data on a table using custom SQL syntax
+     *
+     * @param string $table
+     * @param array  $insertFieldValues
+     * @param array  $updateFieldValues
+     * @param string $primaryKey
+     *
+     * @return    int
+     */
+    public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null)
+    {
+        if (!$primaryKey) {
+            $primaryKey = key($insertFieldValues);
+        }
+
+        if ($this->query($table)->where($primaryKey, $insertFieldValues[$primaryKey])->exists()) {
+            $bind = [];
+            $updates = [];
+            foreach ($updateFieldValues as $k => $v) {
+                $field = is_int($k) ? $v : $k;
+                if ($primaryKey === $field) {
+                    continue;
+                }
+
+                if (is_int($k)) {
+                    $updates[] = "[$field]=:$field";
+                    $bind[$field] = $insertFieldValues[$field];
+                } elseif ($v instanceof AssignmentInterface) {
+                    $v->setFieldName($k);
+                    $updates[] = $v->getSql();
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
+                    $bind = array_merge($bind, $v->getBind());
+                } else {
+                    $updates[] = $v;
+                }
+            }
+            return $this->update($table, $updates, [$primaryKey => $insertFieldValues[$primaryKey]], $bind);
+        } else {
+            return $this->insert($table, $insertFieldValues, $primaryKey);
+        }
     }
 
     /**

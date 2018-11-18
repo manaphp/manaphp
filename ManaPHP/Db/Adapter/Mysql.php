@@ -4,6 +4,7 @@ namespace ManaPHP\Db\Adapter;
 use ManaPHP\Db;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Db\AssignmentInterface;
 
 /**
  * Class ManaPHP\Db\Adapter\Mysql
@@ -286,6 +287,63 @@ class Mysql extends Db
         $count = $this->execute($sql, []);
         $this->logger->debug(compact('count', 'table', 'records', 'skipIfExists'), 'db.bulk.insert');
 
+        return $count;
+    }
+
+    /**
+     * Updates data on a table using custom SQL syntax
+     *
+     * @param string $table
+     * @param array  $insertFieldValues
+     * @param array  $updateFieldValues
+     * @param string $primaryKey
+     *
+     * @return    int
+     */
+    public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null)
+    {
+        if (!$primaryKey) {
+            $primaryKey = key($insertFieldValues);
+        }
+
+        if (!$updateFieldValues) {
+            $updateFieldValues = $insertFieldValues;
+        }
+
+        $fields = array_keys($insertFieldValues);
+
+        $bind = $insertFieldValues;
+        $updates = [];
+        foreach ($updateFieldValues as $k => $v) {
+            $field = is_int($k) ? $v : $k;
+            if ($primaryKey === $field) {
+                continue;
+            }
+
+            if (is_int($k)) {
+                $updates[] = "[$field]=:{$field}_dku";
+                $bind["{$field}_dku"] = $insertFieldValues[$field];
+            } elseif ($v instanceof AssignmentInterface) {
+                $v->setFieldName($k);
+                $updates[] = $v->getSql();
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $bind = array_merge($bind, $v->getBind());
+            } else {
+                $updates[] = $v;
+            }
+        }
+
+        $insertFieldsSql = '[' . implode('],[', $fields) . ']';
+        $insertValuesSql = ':' . implode(',:', $fields);
+
+        $updateFieldsSql = implode(',', $updates);
+
+        /** @noinspection SqlDialectInspection */
+        /** @noinspection SqlNoDataSourceInspection */
+        $sql = "INSERT INTO {$this->_escapeIdentifier($table)}($insertFieldsSql) VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
+
+        $count = $this->execute($sql, $bind);
+        $this->logger->info(compact('count', 'table', 'insertFieldValues', 'updateFieldValues', 'primaryKey'), 'db.upsert');
         return $count;
     }
 }

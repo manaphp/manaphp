@@ -507,4 +507,9 @@ class Proxy extends Component implements DbInterface
     {
         return $this->getSQL();
     }
+
+    public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null)
+    {
+        return $this->getMasterConnection()->upsert($table, $insertFieldValues, $updateFieldValues, $primaryKey);
+    }
 }
