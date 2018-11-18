@@ -208,14 +208,14 @@ class DbController extends Controller
     /**
      * generate model file in online
      *
-     * @param string $service   service name
      * @param string $table     table name
+     * @param string $service   service name
      * @param string $namespace
      * @param bool   $optimized output as more methods as possible
      *
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
-    public function modelCommand($service = '', $table, $namespace = 'App\Models', $optimized = false)
+    public function modelCommand($table, $service = '', $namespace = 'App\Models', $optimized = false)
     {
         if (strpos($namespace, '\\') === false) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
