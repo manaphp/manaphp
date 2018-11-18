@@ -918,4 +918,22 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
         $r = $this->first([$field]);
         return isset($r[$field]) ? $r[$field] : $default;
     }
+
+    public function when($value, $true_call, $false_call = null)
+    {
+        foreach ($this->queries as $query) {
+            $query->when($value, $true_call, $false_call);
+        }
+
+        return $this;
+    }
+
+    public function whereDate($field, $date, $format = null)
+    {
+        foreach ($this->queries as $query) {
+            $query->whereDate($field, $date, $format);
+        }
+
+        return $this;
+    }
 }
