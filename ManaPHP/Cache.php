@@ -4,7 +4,6 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\RuntimeException;
 
 /**
  * Class ManaPHP\Cache
@@ -83,7 +82,7 @@ abstract class Cache extends Component implements CacheInterface
         }
 
         if ($data === false) {
-            throw new RuntimeException([
+            throw new InvalidValueException([
                 '`:key` key cache value json_encode failed: `:code` `:message`',
                 'key' => $key,
                 'code' => json_last_error(),
