@@ -164,14 +164,13 @@ class HttpResponseTest extends TestCase
     /**
      * @
      */
-    public function test_setFileToSend()
+    public function test_setFile()
     {
         $response = new Response();
 
-        $response->setFileToSend(__FILE__);
+        $response->setFile(__FILE__);
         ob_start();
         $response->send();
         $this->assertStringEqualsFile(__FILE__, ob_get_clean());
-        $this->assertTrue($response->isSent());
     }
 }
