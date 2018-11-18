@@ -437,7 +437,7 @@ class Query extends \ManaPHP\Query
             } else {
                 $this->_filters[] = [$filter => $value];
             }
-        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~,@dm]*)$#', $filter, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
 
             if ($operator === '' || $operator === '=') {
@@ -474,6 +474,11 @@ class Query extends \ManaPHP\Query
                 $this->whereDate($field, $value);
             } elseif ($operator === '@m=') {
                 $this->whereMonth($field, $value);
+            } elseif ($operator === '?=' || $operator === '?') {
+                $value = is_string($value) ? trim($value) : $value;
+                if ($value !== '' && $value !== null) {
+                    $this->where($field, $value);
+                }
             } else {
                 $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
                 if (!isset($operator_map[$operator])) {

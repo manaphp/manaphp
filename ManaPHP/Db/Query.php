@@ -319,7 +319,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_conditions[] = $filter;
                 $this->_bind = array_merge($this->_bind, $value);
             }
-        } elseif (preg_match('#^([\w\.]+)([<>=!^$*~,@dm]*)$#', $filter, $matches) === 1) {
+        } elseif (preg_match('#^([\w\.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
             list(, $field, $operator) = $matches;
             $bind_key = strtr($field, '.', '_');
             $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
@@ -361,6 +361,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->whereDate($field, $value);
             } elseif ($operator === '@m=') {
                 $this->whereMonth($field, $value);
+            } elseif ($operator === '?=' || $operator === '?') {
+                $value = is_string($value) ? trim($value) : $value;
+                if ($value !== '' && $value !== null) {
+                    $this->where($field, $value);
+                }
             } else {
                 throw new NotSupportedException(['unknown `:where` where filter', 'where' => $filter]);
             }
