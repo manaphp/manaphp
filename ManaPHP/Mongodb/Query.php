@@ -488,6 +488,8 @@ class Query extends \ManaPHP\Query
             }
         } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
             $this->_filters[] = [$matches[1] => ['$mod' => [(int)$matches[2], (int)$value]]];
+        } elseif (strpos($filter, ',') !== false) {
+            $this->where1v1($filter, $value);
         } else {
             throw new InvalidValueException(['unknown mongodb query `filter` filter', 'filter' => $filter]);
         }
@@ -829,6 +831,29 @@ class Query extends \ManaPHP\Query
     public function whereNotNull($expr)
     {
         $this->_filters[] = [$expr => ['$ne' => null]];
+
+        return $this;
+    }
+
+    /**
+     * @param string $id
+     * @param string $value
+     *
+     * @return static
+     */
+    public function where1v1($id, $value)
+    {
+        list($id_a, $id_b) = explode(',', $id);
+
+        if (($pos = strpos($value, ',')) === false) {
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+            $value = $this->normalizeValue($id_a, $value);
+            $this->_filters[] = ['$or' => [[$id_a => $value], [$id_b => $value]]];
+        } else {
+            $value_a = $this->normalizeValue($id_a, substr($value, 0, $pos));
+            $value_b = $this->normalizeValue($id_b, substr($value, $pos + 1));
+            $this->_filters[] = ['$or' => [[$id_a => $value_a, $id_b => $value_b], [$id_a => $value_b, $id_b => $value_a]]];
+        }
 
         return $this;
     }

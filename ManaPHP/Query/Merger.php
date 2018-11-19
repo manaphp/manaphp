@@ -945,4 +945,13 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
 
         return $this;
     }
+
+    public function where1v1($id, $value)
+    {
+        foreach ($this->queries as $query) {
+            $query->where1v1($id, $value);
+        }
+
+        return $this;
+    }
 }

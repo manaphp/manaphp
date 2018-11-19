@@ -329,6 +329,18 @@ class DbQueryTest extends TestCase
         $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
         $this->assertEquals(['last_update_min' => '1538323200', 'last_update_max' => '1541001599'], $query->getBind());
     }
+
+    public function test_where1v1()
+    {
+        $query = (new Query())->from('city')->where1v1('city_id,country_id', '10');
+        $this->assertEquals('SELECT * FROM [city] WHERE (city_id=:city_id OR country_id=:country_id)', $query->getSql());
+        $this->assertEquals(['city_id' => '10', 'country_id' => '10'], $query->getBind());
+
+        $query = (new Query())->from('city')->where1v1('city_id,country_id', '10,20');
+        $this->assertEquals('SELECT * FROM [city] WHERE ((city_id=:city_id_a AND country_id=:country_id_b) OR (city_id=:city_id_b AND country_id=:country_id_a))', $query->getSql());
+        $this->assertEquals(['city_id_a' => '10', 'country_id_b' => '20', 'city_id_b' => '20', 'country_id_a' => '10'], $query->getBind());
+    }
+
     public function test_limit()
     {
         $this->assertEquals('SELECT * FROM [city] LIMIT 10',

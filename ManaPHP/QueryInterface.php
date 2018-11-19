@@ -480,4 +480,12 @@ interface QueryInterface
      * @return static
      */
     public function whereMonth($field, $date, $format = null);
+
+    /**
+     * @param string $id
+     * @param string $value
+     *
+     * @return static
+     */
+    public function where1v1($id, $value);
 }

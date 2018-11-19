@@ -10,10 +10,10 @@ namespace Tests;
 
 use ManaPHP\Db\Adapter\Proxy;
 use ManaPHP\Db\Assignment;
+use ManaPHP\Db\Model;
 use ManaPHP\DbInterface;
 use ManaPHP\Exception;
 use ManaPHP\Mvc\Factory;
-use ManaPHP\Db\Model;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\Actor;
 use Tests\Models\City;
@@ -79,6 +79,14 @@ class DbModelTest extends TestCase
         $this->assertEquals(1, Actor::count(['actor_id' => 1]));
 
         $this->assertEquals(128, Actor::count([], ' DISTINCT first_name'));
+    }
+
+    public function test_where1v1()
+    {
+        $this->assertEquals(2, City::count(['city_id,country_id' => '1']));
+        $this->assertEquals(1, City::count(['city_id,country_id' => '1,87']));
+        $this->assertEquals(1, City::count(['city_id,country_id' => '87,1']));
+        $this->assertEquals(0, City::count(['city_id,country_id' => '1,1']));
     }
 
     public function test_sum()

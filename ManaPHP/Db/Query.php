@@ -371,6 +371,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
             $this->_conditions[] = $matches[0] . (int)$value;
+        } elseif (strpos($filter, ',') !== false) {
+            $this->where1v1($filter, $value);
         } else {
             throw new NotSupportedException(['unknown `:filter` filter', 'filter' => $filter]);
         }
@@ -850,6 +852,33 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereNotNull($expr)
     {
         $this->_conditions[] = $expr . ' IS NOT NULL';
+
+        return $this;
+    }
+
+    /**
+     * @param string $id
+     * @param string $value
+     *
+     * @return static
+     */
+    public function where1v1($id, $value)
+    {
+        list($id_a, $id_b) = explode(',', $id);
+        if (($pos = strpos($value, ',')) === false) {
+            $this->_conditions[] = "$id_a=:$id_a OR $id_b=:$id_b";
+            $this->_bind[$id_a] = $value;
+            $this->_bind[$id_b] = $value;
+        } else {
+            $value_a = substr($value, 0, $pos);
+            $value_b = substr($value, $pos + 1);
+
+            $this->_conditions[] = "($id_a=:${id_a}_a AND $id_b=:${id_b}_b) OR ($id_a=:${id_a}_b AND $id_b=:${id_b}_a)";
+            $this->_bind["${id_a}_a"] = $value_a;
+            $this->_bind["${id_b}_b"] = $value_b;
+            $this->_bind["${id_a}_b"] = $value_b;
+            $this->_bind["${id_b}_a"] = $value_a;
+        }
 
         return $this;
     }
