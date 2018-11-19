@@ -182,6 +182,10 @@ class Query extends \ManaPHP\Query
                 }
                 $this->_projection = $projection;
             }
+
+            if (!isset($this->_projection['_id'])) {
+                $this->_projection['_id'] = false;
+            }
         }
 
         return $this;
