@@ -349,6 +349,10 @@ class Query extends \ManaPHP\Query
             return $value;
         }
 
+        if (!isset($this->_types[$field])) {
+            throw new MisuseException(['`:field` field type is not defined', 'field' => $field]);
+        }
+
         $type = $this->_types[$field];
 
         if ($type === 'string') {
