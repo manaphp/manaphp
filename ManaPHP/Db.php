@@ -777,20 +777,19 @@ abstract class Db extends Component implements DbInterface
             throw new MisuseException('There is no active transaction');
         }
 
-        if ($this->_transactionLevel === 1) {
+        $this->_transactionLevel--;
+
+        if ($this->_transactionLevel === 0) {
             $this->fireEvent('db:rollbackTransaction');
 
             try {
-                if (!$this->_getPdo()->rollBack()) {
-                    $this->_transactionLevel--;
+                if (!$this->_pdo->rollBack()) {
                     throw new DbException('rollBack failed.');
                 }
             } catch (\PDOException $exception) {
                 throw new DbException('rollBack failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             }
         }
-
-        $this->_transactionLevel--;
     }
 
     /**
@@ -807,20 +806,19 @@ abstract class Db extends Component implements DbInterface
             throw new MisuseException('There is no active transaction');
         }
 
-        if ($this->_transactionLevel === 1) {
+        $this->_transactionLevel--;
+
+        if ($this->_transactionLevel === 0) {
             $this->fireEvent('db:commitTransaction');
 
             try {
-                if (!$this->_getPdo()->commit()) {
-                    $this->_transactionLevel--;
+                if (!$this->_pdo->commit()) {
                     throw new DbException('commit failed.');
                 }
             } catch (\PDOException $exception) {
                 throw new DbException('commit failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             }
         }
-
-        $this->_transactionLevel--;
     }
 
     /**
@@ -830,7 +828,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function lastInsertId()
     {
-        return (int)$this->_getPdo()->lastInsertId();
+        return (int)$this->_pdo->lastInsertId();
     }
 
     /**
