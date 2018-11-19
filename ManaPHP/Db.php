@@ -780,9 +780,13 @@ abstract class Db extends Component implements DbInterface
         if ($this->_transactionLevel === 1) {
             $this->fireEvent('db:rollbackTransaction');
 
-            if (!$this->_getPdo()->rollBack()) {
-                $this->_transactionLevel--;
-                throw new DbException('rollBack failed.');
+            try {
+                if (!$this->_getPdo()->rollBack()) {
+                    $this->_transactionLevel--;
+                    throw new DbException('rollBack failed.');
+                }
+            } catch (\PDOException $exception) {
+                throw new DbException('rollBack failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             }
         }
 
@@ -806,9 +810,13 @@ abstract class Db extends Component implements DbInterface
         if ($this->_transactionLevel === 1) {
             $this->fireEvent('db:commitTransaction');
 
-            if (!$this->_getPdo()->commit()) {
-                $this->_transactionLevel--;
-                throw new DbException('commit failed.');
+            try {
+                if (!$this->_getPdo()->commit()) {
+                    $this->_transactionLevel--;
+                    throw new DbException('commit failed.');
+                }
+            } catch (\PDOException $exception) {
+                throw new DbException('commit failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             }
         }
 
