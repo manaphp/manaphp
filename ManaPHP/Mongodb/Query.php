@@ -36,6 +36,10 @@ class Query extends \ManaPHP\Query
     /**
      * @var array
      */
+    protected $_projection_alias;
+    /**
+     * @var array
+     */
     protected $_aggregate = [];
 
     /**
@@ -169,6 +173,8 @@ class Query extends \ManaPHP\Query
         }
 
         if ($fields) {
+            $this->_projection_alias = [];
+
             if (isset($fields[count($fields) - 1])) {
                 $this->_projection = array_fill_keys($fields, 1);
             } else {
@@ -177,7 +183,8 @@ class Query extends \ManaPHP\Query
                     if (is_int($k)) {
                         $projection[$v] = 1;
                     } else {
-                        $projection[$k] = $v;
+                        $this->_projection_alias[$k] = $v;
+                        $projection[$v] = 1;
                     }
                 }
                 $this->_projection = $projection;
@@ -1013,6 +1020,17 @@ class Query extends \ManaPHP\Query
             }
 
             $r = $mongodb->fetchAll($this->getSource(), $filters, $options, !$this->_forceUseMaster);
+            if ($this->_projection_alias) {
+                foreach ($r as $k => $v) {
+                    foreach ($this->_projection_alias as $ak => $av) {
+                        if (isset($v[$av])) {
+                            $v[$ak] = $v[$av];
+                            unset($v[$av]);
+                        }
+                    }
+                    $r[$k] = $v;
+                }
+            }
         } else {
             $pipeline = [];
             if ($this->_filters) {
