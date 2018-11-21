@@ -434,6 +434,9 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->fireEvent('mongodb:beforeCommand', compact('db', 'command'));
         $start_time = microtime(true);
+        if ($start_time - $this->_lastIoTime > 1.0) {
+            $this->_lastIoTime = null;
+        }
         try {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $cursor = $this->_getManager()->executeCommand($db, new Command($command));
