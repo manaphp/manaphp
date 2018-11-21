@@ -258,11 +258,7 @@ abstract class Db extends Component implements DbInterface
         $this->fireEvent('db:beforeQuery');
         $start_time = microtime(true);
         try {
-            if ($bind) {
-                $result = $this->_execute($statement, $bind);
-            } else {
-                $result = $this->_getPdo()->query($this->_sql);
-            }
+            $result = $bind ? $this->_execute($statement, $bind) : $this->_getPdo()->query($this->_sql);
         } catch (\PDOException $e) {
             throw new DbException([
                 ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
