@@ -229,7 +229,7 @@ abstract class Db extends Component implements DbInterface
             }
         }
 
-        $statement->execute();
+        @$statement->execute();
 
         return $statement;
     }
