@@ -333,12 +333,9 @@ abstract class Db extends Component implements DbInterface
         $this->fireEvent('db:beforeExecute');
         $start_time = microtime(true);
         try {
-            if ($bind) {
-                $result = $this->_execute($statement, $bind);
-                $this->_affectedRows = $result->rowCount();
-            } else {
-                $this->_affectedRows = $this->_getPdo()->exec($this->_sql);
-            }
+            $this->_affectedRows = $bind
+                ? $this->_execute(is_string($statement) ? $this->_sql : $statement, $bind)->rowCount()
+                : $this->_getPdo()->exec($this->_sql);
         } catch (\PDOException $e) {
             throw new DbException([
                 ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
