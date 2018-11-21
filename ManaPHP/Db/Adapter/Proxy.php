@@ -166,15 +166,6 @@ class Proxy extends Component implements DbInterface
         return $this->_currentConnection;
     }
 
-    public function prepare($sql)
-    {
-        if ($this->isUnderTransaction()) {
-            return $this->getMasterConnection()->prepare($sql);
-        } else {
-            return $this->getSlaveConnection()->prepare($sql);
-        }
-    }
-
     /**
      * @param string $sql
      * @param array  $bind

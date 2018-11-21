@@ -20,13 +20,6 @@ interface DbInterface
     public function getSlaveConnection();
 
     /**
-     * @param string $sql
-     *
-     * @return \PDOStatement
-     */
-    public function prepare($sql);
-
-    /**
      * Returns the first row in a SQL query result
      *
      * <code>
