@@ -245,12 +245,11 @@ abstract class Db extends Component implements DbInterface
      *
      * @param string|\PDOStatement $statement
      * @param array                $bind
-     * @param int                  $fetchMode
      *
      * @return \PdoStatement
      * @throws \ManaPHP\Db\Exception
      */
-    protected function _query($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
+    protected function _query($statement, $bind = [])
     {
         $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
         $this->_bind = $bind;
@@ -264,9 +263,6 @@ abstract class Db extends Component implements DbInterface
             } else {
                 $result = $this->_getPdo()->query($this->_sql);
             }
-
-            $this->_affectedRows = $result->rowCount();
-            $result->setFetchMode($fetchMode);
         } catch (\PDOException $e) {
             throw new DbException([
                 ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
@@ -277,7 +273,7 @@ abstract class Db extends Component implements DbInterface
         }
 
         $elapsed = round(microtime(true) - $start_time, 3);
-        $count = $this->_affectedRows;
+        $count = $this->_affectedRows = $result->rowCount();
 
         $event_data = compact('count', 'sql', 'bind', 'elapsed');
         $this->fireEvent('db:afterQuery', $event_data);
@@ -420,7 +416,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
-        $rs = $this->_query($statement, $bind, $fetchMode)->fetchAll($fetchMode);
+        $rs = $this->_query($statement, $bind)->fetchAll($fetchMode);
 
         if ($indexBy === null) {
             $rows = $rs;
