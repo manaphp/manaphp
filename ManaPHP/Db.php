@@ -305,7 +305,7 @@ abstract class Db extends Component implements DbInterface
             $this->_prepared = array_slice($this->_prepared, -100);
         }
 
-        return $this->_prepared[$sql] = $this->_getPdo()->prepare($this->replaceQuoteCharacters($sql));
+        return $this->_prepared[$sql] = @$this->_getPdo()->prepare($this->replaceQuoteCharacters($sql));
     }
 
     /**
@@ -339,7 +339,7 @@ abstract class Db extends Component implements DbInterface
         try {
             $this->_affectedRows = $bind
                 ? $this->_execute(is_string($statement) ? $this->_sql : $statement, $bind)->rowCount()
-                : $this->_getPdo()->exec($this->_sql);
+                : @$this->_getPdo()->exec($this->_sql);
         } catch (\PDOException $e) {
             throw new DbException([
                 ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
