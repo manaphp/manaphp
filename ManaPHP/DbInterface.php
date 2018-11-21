@@ -139,18 +139,6 @@ interface DbInterface
 
     /**
      * Sends SQL statements to the database server returning the success state.
-     * Use this method only when the SQL statement sent to the server return rows
-     *
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
-     * @param int                  $fetchMode
-     *
-     * @return \PDOStatement
-     */
-    public function rawQuery($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
-
-    /**
-     * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server don't return any row
      *
      * @param  string|\PDOStatement $statement

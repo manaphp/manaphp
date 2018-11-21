@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class DbTest extends TestCase
 {
     /**
-     * @var \ManaPHP\DbInterface
+     * @var \ManaPHP\Db
      */
     protected $db;
 
