@@ -258,14 +258,26 @@ abstract class Db extends Component implements DbInterface
         $this->fireEvent('db:beforeQuery');
         $start_time = microtime(true);
         try {
-            $result = $bind ? $this->_execute($statement, $bind) : $this->_getPdo()->query($this->_sql);
+            $result = $bind ? $this->_execute(is_string($statement) ? $this->_sql : $statement, $bind) : @$this->_getPdo()->query($this->_sql);
         } catch (\PDOException $e) {
-            throw new DbException([
-                ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                'message' => $e->getMessage(),
-                'sql' => $this->_sql,
-                'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-            ]);
+            $result = null;
+            $failed = true;
+            if ($this->_transactionLevel === 0 && !$this->_ping()) {
+                try {
+                    $this->close();
+                    $result = $bind ? $this->_execute($this->_sql, $bind) : @$this->_getPdo()->query($this->_sql);
+                    $failed = false;
+                } catch (\PDOException $e) {
+                }
+            }
+            if ($failed) {
+                throw new DbException([
+                    ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+                    'message' => $e->getMessage(),
+                    'sql' => $this->_sql,
+                    'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                ], $e->getCode(), $e);
+            }
         }
 
         $elapsed = round(microtime(true) - $start_time, 3);
