@@ -43,6 +43,11 @@ abstract class Db extends Component implements DbInterface
     protected $_options = [];
 
     /**
+     * @var float
+     */
+    protected $_ping_interval = 60.0;
+
+    /**
      * Active SQL Statement
      *
      * @var string
@@ -135,7 +140,7 @@ abstract class Db extends Component implements DbInterface
             }
         }
 
-        if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0 && !$this->_ping()) {
+        if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime >= $this->_ping_interval && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
             $this->fireEvent('db:reconnect', ['dsn' => $this->_dsn]);

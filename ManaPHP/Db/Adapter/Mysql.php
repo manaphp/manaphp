@@ -65,6 +65,10 @@ class Mysql extends Db
             $this->_options[\PDO::ATTR_PERSISTENT] = $parts2['persistent'] === '1';
         }
 
+        if (isset($parts2['ping_interval'])) {
+            $this->_ping_interval = $parts2['ping_interval'];
+        }
+
         $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
 
         $dsn_parts = [];
