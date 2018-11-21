@@ -422,25 +422,25 @@ abstract class Db extends Component implements DbInterface
      */
     public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
-        $result = $this->_query($statement, $bind, $fetchMode);
+        $rs = $this->_query($statement, $bind, $fetchMode)->fetchAll($fetchMode);
 
         if ($indexBy === null) {
-            $rows = $result->fetchAll($fetchMode);
+            $rows = $rs;
         } elseif (is_scalar($indexBy)) {
             $rows = [];
-            while ($row = $result->fetch($fetchMode)) {
+            foreach ($rs as $row) {
                 $rows[$row[$indexBy]] = $row;
             }
         } elseif (is_array($indexBy)) {
-            $rows = [];
             $k = key($indexBy);
             $v = current($indexBy);
-            while ($row = $result->fetch($fetchMode)) {
+            $rows = [];
+            foreach ($rs as $row) {
                 $rows[$row[$k]] = $row[$v];
             }
         } else {
             $rows = [];
-            while ($row = $result->fetch($fetchMode)) {
+            foreach ($rs as $row) {
                 $rows[$indexBy($row)] = $row;
             }
         }
