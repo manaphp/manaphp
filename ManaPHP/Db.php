@@ -389,9 +389,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
-        $result = $this->_query($statement, $bind, $fetchMode);
-
-        return $result->fetch();
+        return ($rs = $this->fetchAll($statement, $bind, $fetchMode)) ? $rs[0] : false;
     }
 
     /**
