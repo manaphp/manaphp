@@ -188,12 +188,6 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * Executes a prepared statement binding. This function uses integer indexes starting from zero
-     *<code>
-     * $statement = $db->prepare('SELECT * FROM robots WHERE name = :name');
-     * $result = $connection->executePrepared($statement, array('name' => 'mana'));
-     *</code>
-     *
      * @param string|\PDOStatement $statement
      * @param array                $bind
      *
@@ -202,7 +196,13 @@ abstract class Db extends Component implements DbInterface
     protected function _execute($statement, $bind)
     {
         if (is_string($statement)) {
-            $statement = $this->prepare($statement);
+            if (!isset($this->_prepared[$statement])) {
+                if (count($this->_prepared) > 8) {
+                    array_shift($this->_prepared);
+                }
+                $this->_prepared[$statement] = @$this->_getPdo()->prepare($this->replaceQuoteCharacters($statement));
+            }
+            $statement = $this->_prepared[$statement];
         }
 
         foreach ($bind as $parameter => $value) {
@@ -293,24 +293,6 @@ abstract class Db extends Component implements DbInterface
         $this->logger->debug($event_data, 'db.query');
 
         return $result;
-    }
-
-    /**
-     * @param string $sql
-     *
-     * @return \PDOStatement
-     */
-    public function prepare($sql)
-    {
-        if (isset($this->_prepared[$sql])) {
-            return $this->_prepared[$sql];
-        }
-
-        if (count($this->_prepared) > 120) {
-            $this->_prepared = array_slice($this->_prepared, -100);
-        }
-
-        return $this->_prepared[$sql] = @$this->_getPdo()->prepare($this->replaceQuoteCharacters($sql));
     }
 
     /**
