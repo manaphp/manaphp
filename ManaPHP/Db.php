@@ -151,8 +151,9 @@ abstract class Db extends Component implements DbInterface
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
             $this->fireEvent('db:afterConnect');
-            $this->_lastIoTime = microtime(true);
         }
+
+        $this->_lastIoTime = microtime(true);
 
         return $this->_pdo;
     }
