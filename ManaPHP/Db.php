@@ -153,34 +153,6 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * Pings a server connection, or tries to reconnect if the connection has gone down
-     *
-     * @return void
-     * @throws \ManaPHP\Db\ConnectionException
-     */
-    public function ping()
-    {
-        if ($this->_pdo) {
-            try {
-                $this->_getPdo()->query($this->_pingSql)->fetchAll();
-            } catch (\Exception $e) {
-                $this->close();
-                try {
-                    $this->_getPdo()->query($this->_pingSql)->fetchAll();
-                } catch (\Exception $exception) {
-                    throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_dsn], 0, $exception);
-                }
-            }
-        } else {
-            try {
-                $this->_getPdo()->query($this->_pingSql)->fetchAll();
-            } catch (\Exception $exception) {
-                throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_dsn], 0, $exception);
-            }
-        }
-    }
-
-    /**
      * @return \ManaPHP\DbInterface
      */
     public function getMasterConnection()

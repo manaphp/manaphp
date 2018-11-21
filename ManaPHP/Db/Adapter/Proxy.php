@@ -74,15 +74,6 @@ class Proxy extends Component implements DbInterface
         $this->_slaves = $slaves;
     }
 
-    public function ping()
-    {
-        if ($this->_currentConnection !== null) {
-            return $this->_currentConnection->ping();
-        } else {
-            return true;
-        }
-    }
-
     /**
      * @param array $ar
      *
