@@ -250,7 +250,7 @@ abstract class Db extends Component implements DbInterface
      * @return \PdoStatement
      * @throws \ManaPHP\Db\Exception
      */
-    public function rawQuery($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
+    protected function _query($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
         $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
         $this->_bind = $bind;
@@ -389,7 +389,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
-        $result = $this->rawQuery($statement, $bind, $fetchMode);
+        $result = $this->_query($statement, $bind, $fetchMode);
 
         return $result->fetch();
     }
@@ -422,7 +422,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
-        $result = $this->rawQuery($statement, $bind, $fetchMode);
+        $result = $this->_query($statement, $bind, $fetchMode);
 
         if ($indexBy === null) {
             $rows = $result->fetchAll($fetchMode);

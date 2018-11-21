@@ -166,24 +166,6 @@ class Proxy extends Component implements DbInterface
         return $this->_currentConnection;
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
-     *
-     * @return \PDOStatement
-     * @throws \ManaPHP\Db\Adapter\Proxy\Exception
-     * @throws \ManaPHP\Db\Exception
-     */
-    public function rawQuery($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
-    {
-        if ($this->isUnderTransaction()) {
-            return $this->getMasterConnection()->rawQuery($sql, $bind, $fetchMode);
-        } else {
-            return $this->getSlaveConnection()->rawQuery($sql, $bind, $fetchMode);
-        }
-    }
-
     public function prepare($sql)
     {
         if ($this->isUnderTransaction()) {

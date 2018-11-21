@@ -29,65 +29,6 @@ class DbTest extends TestCase
         echo get_class($this->db), PHP_EOL;
     }
 
-    public function test_query()
-    {
-        //general usage
-        $statement = $this->db->rawQuery('SELECT city_id, city, country_id, last_update FROM city LIMIT 3');
-        $this->assertInstanceOf('\PDOStatement', $statement);
-        for ($i = 0; $i < 3; $i++) {
-            $row = $statement->fetch();
-            $this->assertCount(4, $row);
-        }
-
-        $row = $statement->fetch();
-        $this->assertFalse($row);
-
-        //check fetched rows is correct
-        $statement = $this->db->rawQuery('SELECT city_id, city, country_id, last_update FROM city LIMIT 5');
-        $this->assertTrue(is_object($statement));
-        $rowCount = 0;
-        while ($statement->fetch()) {
-            $rowCount++;
-        }
-        $this->assertEquals(5, $rowCount);
-
-        //general usage in FETCH_NUM mode
-        $statement = $this->db->rawQuery('SELECT city_id, city, country_id, last_update FROM city LIMIT 5', null,
-            PDO::FETCH_NUM);
-        $row = $statement->fetch();
-        $this->assertCount(4, $row);
-        $this->assertTrue(isset($row[0]));
-        $this->assertFalse(isset($row['city']));
-
-        //general usage in explicit FETCH_ASSOC mode
-        $rows = $this->db->rawQuery('SELECT city_id, city, country_id, last_update FROM city LIMIT 5', null,
-            PDO::FETCH_ASSOC);
-        $row = $rows->fetch();
-        $this->assertInternalType('array', $row);
-        $this->assertCount(4, $row);
-        $this->assertFalse(isset($row[0]));
-        $this->assertTrue(isset($row['city']));
-
-        //general usage in explicit FETCH_OBJ mode
-        $statement = $this->db->rawQuery('SELECT city_id, city, country_id, last_update FROM city LIMIT 5', null,
-            PDO::FETCH_OBJ);
-        $row = $statement->fetch();
-        $this->assertTrue(is_object($row));
-        $this->assertTrue(isset($row->city));
-
-        //query with bind and has related records
-        $statement = $this->db->rawQuery('SELECT city_id, city, country_id, last_update FROM city WHERE city_id=:city_id',
-            ['city_id' => 1]);
-        $row = $statement->fetch();
-        $this->assertCount(4, $row);
-
-        //query with bind and has not related records
-        $statement = $this->db->rawQuery('SELECT city_id, city, country_id, last_update FROM city WHERE city_id=:city_id',
-            ['city_id' => -1]);
-        $row = $statement->fetch();
-        $this->assertFalse($row);
-    }
-
     public function test_execute()
     {
         $this->db->truncate('_student');
