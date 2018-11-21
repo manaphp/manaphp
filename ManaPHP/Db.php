@@ -428,21 +428,21 @@ abstract class Db extends Component implements DbInterface
         $rs = $this->_query($statement, $bind)->fetchAll($fetchMode);
 
         if ($indexBy === null) {
-            $rows = $rs;
-        } elseif (is_scalar($indexBy)) {
-            $rows = [];
+            return $rs;
+        }
+
+        $rows = [];
+        if (is_scalar($indexBy)) {
             foreach ($rs as $row) {
                 $rows[$row[$indexBy]] = $row;
             }
         } elseif (is_array($indexBy)) {
             $k = key($indexBy);
             $v = current($indexBy);
-            $rows = [];
             foreach ($rs as $row) {
                 $rows[$row[$k]] = $row[$v];
             }
         } else {
-            $rows = [];
             foreach ($rs as $row) {
                 $rows[$indexBy($row)] = $row;
             }
