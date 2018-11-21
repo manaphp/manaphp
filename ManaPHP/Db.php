@@ -564,7 +564,7 @@ abstract class Db extends Component implements DbInterface
     public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null)
     {
         if (!$primaryKey) {
-            $primaryKey = key($insertFieldValues);
+            $primaryKey = (string)key($insertFieldValues);
         }
 
         if ($this->query($table)->where($primaryKey, $insertFieldValues[$primaryKey])->exists()) {
