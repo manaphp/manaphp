@@ -67,6 +67,21 @@ class Mongodb extends Component implements MongodbInterface
     }
 
     /**
+     * @return bool
+     */
+    protected function _ping()
+    {
+        try {
+            $command = new Command(['ping' => 1]);
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $this->_manager->executeCommand('admin', $command);
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
+    }
+
+    /**
      * @return \MongoDB\Driver\Manager
      */
     protected function _getManager()
@@ -80,14 +95,14 @@ class Mongodb extends Component implements MongodbInterface
             $this->fireEvent('mongodb:afterConnect');
         }
 
-        if (microtime(true) - $this->_lastIoTime > $this->_ping_interval) {
-            try {
-                $command = new Command(['ping' => 1]);
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                $this->_manager->executeCommand('admin', $command);
-            } catch (\Exception $exception) {
-                null;
-            }
+        if (microtime(true) - $this->_lastIoTime > $this->_ping_interval && !$this->_ping()) {
+            $this->close();
+            $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.reconnect');
+
+            $this->fireEvent('mongodb:beforeConnect', ['dsn' => $this->_dsn]);
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            $this->_manager = new Manager($this->_dsn);
+            $this->fireEvent('mongodb:afterConnect');
         }
 
         $this->_lastIoTime = microtime(true);
@@ -381,8 +396,22 @@ class Mongodb extends Component implements MongodbInterface
             $cursor->setTypeMap(['root' => 'array']);
             $result = $cursor->toArray();
         } catch (\Exception $exception) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            $result = null;
+            $failed = true;
+            if (!$this->_ping()) {
+                try {
+                    $this->close();
+                    $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), new ReadPreference($readPreference));
+                    $cursor->setTypeMap(['root' => 'array']);
+                    $result = $cursor->toArray();
+                    $failed = false;
+                } catch (\Exception $e) {
+                }
+            }
+
+            if ($failed) {
+                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            }
         }
 
         $elapsed = round(microtime(true) - $start_time, 3);
@@ -538,5 +567,11 @@ class Mongodb extends Component implements MongodbInterface
     public function query($collection = null)
     {
         return $this->_di->get('ManaPHP\Mongodb\Query', [$this])->from($collection);
+    }
+
+    public function close()
+    {
+        $this->_manager = null;
+        $this->_lastIoTime = null;
     }
 }
