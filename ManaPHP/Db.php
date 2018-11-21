@@ -103,10 +103,17 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * @param \PDO $pdo
+     *
+     * @return bool
      */
     protected function _ping($pdo)
     {
-        @$pdo->query("SELECT 'PING'")->fetchAll();
+        try {
+            @$pdo->query("SELECT 'PING'")->fetchAll();
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
     /**
@@ -130,22 +137,17 @@ abstract class Db extends Component implements DbInterface
             }
         }
 
-        if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0) {
+        if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0 && !$this->_ping($this->_pdo)) {
+            $this->close();
+            $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
+            $this->fireEvent('db:reconnect', ['dsn' => $this->_dsn]);
+            $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
             try {
-                $this->_ping($this->_pdo);
-            } catch (\PDOException $exception) {
-                $this->close();
-                $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
-                $this->fireEvent('db:reconnect', ['dsn' => $this->_dsn]);
-                $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
-                try {
-                    $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
-                } catch (\PDOException $e) {
-                    throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
-                }
-                $this->fireEvent('db:afterConnect');
+                $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+            } catch (\PDOException $e) {
+                throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
-
+            $this->fireEvent('db:afterConnect');
             $this->_lastIoTime = microtime(true);
         }
 
