@@ -21,6 +21,11 @@ class Mongodb extends Component implements MongodbInterface
     protected $_dsn;
 
     /**
+     * @var float
+     */
+    protected $_ping_interval = 60.0;
+
+    /**
      * @var string
      */
     protected $_defaultDb;
@@ -60,7 +65,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         return $this->_defaultDb;
     }
-    
+
     /**
      * @return \MongoDB\Driver\Manager
      */
@@ -75,7 +80,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->fireEvent('mongodb:afterConnect');
         }
 
-        if (microtime(true) - $this->_lastIoTime > 1.0) {
+        if (microtime(true) - $this->_lastIoTime > $this->_ping_interval) {
             try {
                 $command = new Command(['ping' => 1]);
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -111,6 +116,9 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->fireEvent('mongodb:beforeBulkWrite', compact('namespace', 'bulk'));
         $start_time = microtime(true);
+        if ($start_time - $this->_lastIoTime > 1.0) {
+            $this->_lastIoTime = null;
+        }
         try {
             $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
         } catch (\Exception $exception) {
