@@ -328,6 +328,10 @@ abstract class Db extends Component implements DbInterface
         $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
         $this->_bind = $bind;
 
+        if (microtime(true) - $this->_lastIoTime > 1.0) {
+            $this->_lastIoTime = null;
+        }
+
         $this->_affectedRows = 0;
 
         $this->fireEvent('db:beforeExecute');
