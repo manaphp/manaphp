@@ -405,7 +405,7 @@ class Mongodb extends Component implements MongodbInterface
                     $cursor->setTypeMap(['root' => 'array']);
                     $result = $cursor->toArray();
                     $failed = false;
-                } catch (\Exception $e) {
+                } catch (\Exception $exception) {
                 }
             }
 
