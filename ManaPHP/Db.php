@@ -817,15 +817,14 @@ abstract class Db extends Component implements DbInterface
     public function close()
     {
         if ($this->_pdo) {
-            if ($this->_transactionLevel !== 0) {
-                $this->logger->warn('transaction is not close correctly', 'db.transaction.abnormal');
-                $this->_pdo->rollBack();
-                $this->_transactionLevel = 0;
-            }
-
             $this->_pdo = null;
             $this->_prepared = [];
             $this->_lastIoTime = null;
+            if ($this->_transactionLevel !== 0) {
+                $this->_transactionLevel = 0;
+                $this->_pdo->rollBack();
+                $this->logger->warn('transaction is not close correctly', 'db.transaction.abnormal');
+            }
         }
     }
 
