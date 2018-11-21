@@ -86,11 +86,6 @@ abstract class Db extends Component implements DbInterface
     protected $_prepared = [];
 
     /**
-     * @var string
-     */
-    protected $_pingSql = "SELECT 'PING'";
-
-    /**
      * @var float
      */
     protected $_lastIoTime;
@@ -107,6 +102,14 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
+     * @param \PDO $pdo
+     */
+    protected function _ping($pdo)
+    {
+        @$pdo->query("SELECT 'PING'")->fetchAll();
+    }
+
+    /**
      * @return \PDO
      */
     protected function _getPdo()
@@ -119,7 +122,7 @@ abstract class Db extends Component implements DbInterface
 
                 /** @noinspection NotOptimalIfConditionsInspection */
                 if (isset($this->_options[\PDO::ATTR_PERSISTENT]) && $this->_options[\PDO::ATTR_PERSISTENT]) {
-                    $pdo->query($this->_pingSql)->fetchAll();
+                    $this->_ping($pdo);
                 }
                 $this->_pdo = $pdo;
             } catch (\Exception $e) {
@@ -129,7 +132,7 @@ abstract class Db extends Component implements DbInterface
             }
         } elseif ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0) {
             try {
-                @$this->_pdo->query($this->_pingSql)->fetchAll();
+                $this->_ping($this->_pdo);
             } catch (\Exception $exception) {
                 try {
                     $this->close();
