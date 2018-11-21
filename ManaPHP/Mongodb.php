@@ -60,40 +60,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         return $this->_defaultDb;
     }
-
-    /**
-     * Pings a server connection, or tries to reconnect if the connection has gone down
-     *
-     * @return void
-     * @throws \ManaPHP\Mongodb\ConnectionException
-     */
-    public function ping()
-    {
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $command = new Command(['ping' => 1]);
-
-        if ($this->_manager) {
-            try {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                $this->_getManager()->executeCommand('admin', $command);
-            } catch (\Exception $exception) {
-                $this->_manager = null;
-                try {
-                    $this->_getManager()->executeCommand('admin', $command);
-                } catch (\Exception $exception) {
-                    throw new ConnectionException(['connection failed: `:dsn`', 'dsn' => $this->_dsn], 0, $exception);
-                }
-            }
-        } else {
-            try {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                $this->_getManager()->executeCommand('admin', $command);
-            } catch (\Exception $exception) {
-                throw new ConnectionException(['connection failed: `:dsn`', 'dsn' => $this->_dsn], 0, $exception);
-            }
-        }
-    }
-
+    
     /**
      * @return \MongoDB\Driver\Manager
      */

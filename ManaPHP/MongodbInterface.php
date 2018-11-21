@@ -9,13 +9,6 @@ interface MongodbInterface
     public function getDefaultDb();
 
     /**
-     * Pings a server connection, or tries to reconnect if the connection has gone down
-     *
-     * @return void
-     */
-    public function ping();
-
-    /**
      * @param string $source
      * @param array  $document
      * @param string $primaryKey
