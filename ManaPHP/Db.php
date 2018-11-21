@@ -710,6 +710,10 @@ abstract class Db extends Component implements DbInterface
         $this->logger->info('transaction begin', 'db.transaction.begin');
 
         if ($this->_transactionLevel === 0) {
+            if (microtime(true) - $this->_lastIoTime > 1.0) {
+                $this->_lastIoTime = null;
+            }
+
             $this->fireEvent('db:beginTransaction');
 
             try {
