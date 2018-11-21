@@ -102,14 +102,12 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * @param \PDO $pdo
-     *
      * @return bool
      */
-    protected function _ping($pdo)
+    protected function _ping()
     {
         try {
-            @$pdo->query("SELECT 'PING'")->fetchAll();
+            @$this->_pdo->query("SELECT 'PING'")->fetchAll();
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -137,7 +135,7 @@ abstract class Db extends Component implements DbInterface
             }
         }
 
-        if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0 && !$this->_ping($this->_pdo)) {
+        if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime > 1.0 && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
             $this->fireEvent('db:reconnect', ['dsn' => $this->_dsn]);
