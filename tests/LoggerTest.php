@@ -22,14 +22,6 @@ class LoggerTest extends TestCase
 
     public function test_construct()
     {
-        $logger = $this->_di->getInstance('ManaPHP\Logger');
-        $this->assertEquals(['file' => 'ManaPHP\Logger\Appender\File'], $logger->__debugInfo()['_appenders']);
-        $this->assertInstanceOf('ManaPHP\Logger\Appender\File', $logger->getAppender('file'));
-
-        $logger = $this->_di->getInstance('ManaPHP\Logger', []);
-        $this->assertEquals(['file' => 'ManaPHP\Logger\Appender\File'], $logger->__debugInfo()['_appenders']);
-        $this->assertInstanceOf('ManaPHP\Logger\Appender\File', $logger->getAppender('file'));
-
         $logger = $this->_di->getInstance('ManaPHP\Logger', ['level' => 'error']);
         $this->assertEquals(Logger::LEVEL_ERROR, $logger->getLevel());
         $this->assertEquals(['file' => 'ManaPHP\Logger\Appender\File'], $logger->__debugInfo()['_appenders']);

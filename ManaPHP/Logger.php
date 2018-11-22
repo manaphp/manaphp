@@ -42,7 +42,7 @@ class Logger extends Component implements LoggerInterface
      * @param string|array|\ManaPHP\Logger\AppenderInterface $options
      *
      */
-    public function __construct($options = 'ManaPHP\Logger\Appender\File')
+    public function __construct($options = [])
     {
         $this->_levels = $this->getConstants('level');
 
@@ -50,7 +50,7 @@ class Logger extends Component implements LoggerInterface
             $this->_appenders[($pos = strrpos($options, '\\')) !== false ? lcfirst(substr($options, $pos + 1)) : $options] = $options;
         } elseif (is_object($options)) {
             $this->_appenders[] = ['appender' => ['instance' => $options]];
-        } else {
+        } elseif ($options) {
             if (isset($options['level'])) {
                 $this->setLevel($options['level']);
                 unset($options['level']);
