@@ -464,18 +464,18 @@ interface QueryInterface
     public function when($value, $true_call, $false_call = null);
 
     /**
-     * @param string $field
-     * @param string $date
-     * @param string $format
+     * @param string     $field
+     * @param string|int $date
+     * @param string     $format
      *
      * @return static
      */
     public function whereDate($field, $date, $format = null);
 
     /**
-     * @param string $field
-     * @param string $date
-     * @param string $format
+     * @param string     $field
+     * @param string|int $date
+     * @param string     $format
      *
      * @return static
      */

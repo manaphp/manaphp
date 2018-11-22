@@ -467,9 +467,9 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     }
 
     /**
-     * @param string $field
-     * @param string $date
-     * @param string $format
+     * @param string     $field
+     * @param string|int $date
+     * @param string     $format
      *
      * @return static
      */
@@ -497,9 +497,9 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     }
 
     /**
-     * @param string $field
-     * @param string $date
-     * @param string $format
+     * @param string     $field
+     * @param string|int $date
+     * @param string     $format
      *
      * @return static
      */
