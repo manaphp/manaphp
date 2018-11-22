@@ -315,7 +315,7 @@
 <script src='http://cdn.bootcss.com/vue/2.2.4/vue.min.js'></script>
 
 <?php
-$data['included_files'] = get_included_files();
+$data['included_files'] = @get_included_files() ?: [];
 $data['request'] = $_REQUEST;
 $data['get'] = $_GET;
 $data['post'] = $_POST;
