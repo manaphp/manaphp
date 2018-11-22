@@ -85,10 +85,10 @@ class Authorization extends Component implements AuthorizationInterface
                     $permission = $pos === false || $pos === strlen($permission) - 1 ? '' : (string)substr($permission, $pos + 1);
                 } else {
                     $area = null;
-                    $permission = $permission === '/' ? '' : substr($permission, 1);
+                    $permission = $permission === '/' ? '' : (string)substr($permission, 1);
                 }
             } else {
-                $permission = $permission === '/' ? '' : substr($permission, 1);
+                $permission = $permission === '/' ? '' : (string)substr($permission, 1);
             }
         } else {
             $area = $this->dispatcher->getArea();
