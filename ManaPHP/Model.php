@@ -494,6 +494,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable
             throw new ParameterOrderException(__METHOD__ . ' field');
         }
 
+        if ($ttl !== null && !is_int($ttl)) {
+            throw new MisuseException('ttl must be a integer');
+        }
+
         $model = new static;
         $pkName = $model->getPrimaryKey();
 
