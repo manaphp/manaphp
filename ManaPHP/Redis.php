@@ -186,25 +186,25 @@ class Redis extends Component
 
         switch (count($arguments)) {
             case 0:
-                $r = $this->_redis->$name();
+                $r = @$this->_redis->$name();
                 break;
             case 1:
-                $r = $this->_redis->$name($arguments[0]);
+                $r = @$this->_redis->$name($arguments[0]);
                 break;
             case 2:
-                $r = $this->_redis->$name($arguments[0], $arguments[1]);
+                $r = @$this->_redis->$name($arguments[0], $arguments[1]);
                 break;
             case 3:
-                $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
+                $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
                 break;
             case 4:
-                $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
                 break;
             case 5:
-                $r = $this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+                $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
                 break;
             default:
-                $r = call_user_func_array([$this->_redis, $name], $arguments);
+                $r = @call_user_func_array([$this->_redis, $name], $arguments);
                 break;
         }
 
