@@ -5,6 +5,7 @@ use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Redis\AuthException;
 use ManaPHP\Redis\ConnectionException;
+use ManaPHP\Redis\Exception as RedisException;
 
 class Redis extends Component
 {
@@ -109,8 +110,16 @@ class Redis extends Component
         }
     }
 
-    protected function _connect()
+
+    protected function _connect($isFirst)
     {
+        if ($isFirst) {
+            $this->logger->debug(['connect to `:url`', 'url' => $this->_url], 'redis.connect');
+        } else {
+            $this->close();
+            $this->logger->info(['reconnect to `:url`', 'url' => $this->_url], 'redis.reconnect');
+        }
+
         $redis = new \Redis();
 
         if ($this->_persistent) {
@@ -169,11 +178,10 @@ class Redis extends Component
 
         if ($this->_redis) {
             if ($current - $this->_lastIoTime >= $this->_ping_interval && !$this->_ping()) {
-                $this->close();
-                $this->_connect();
+                $this->_connect(false);
             }
         } else {
-            $this->_connect();
+            $this->_connect(true);
         }
 
         $this->_lastIoTime = $current;
@@ -183,29 +191,46 @@ class Redis extends Component
                 'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
             ], 'redis.' . $name);
         }
+	
+        try {
+            switch (count($arguments)) {
+                case 0:
+                    $r = @$this->_redis->$name();
+                    break;
+                case 1:
+                    $r = @$this->_redis->$name($arguments[0]);
+                    break;
+                case 2:
+                    $r = @$this->_redis->$name($arguments[0], $arguments[1]);
+                    break;
+                case 3:
+                    $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
+                    break;
+                case 4:
+                    $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                    break;
+                case 5:
+                    $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+                    break;
+                default:
+                    $r = @call_user_func_array([$this->_redis, $name], $arguments);
+                    break;
+            }
+        } catch (\Exception  $exception) {
+            $failed = true;
+            if (!$this->_ping()) {
+                $this->_connect(false);
 
-        switch (count($arguments)) {
-            case 0:
-                $r = @$this->_redis->$name();
-                break;
-            case 1:
-                $r = @$this->_redis->$name($arguments[0]);
-                break;
-            case 2:
-                $r = @$this->_redis->$name($arguments[0], $arguments[1]);
-                break;
-            case 3:
-                $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2]);
-                break;
-            case 4:
-                $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
-                break;
-            case 5:
-                $r = @$this->_redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
-                break;
-            default:
-                $r = @call_user_func_array([$this->_redis, $name], $arguments);
-                break;
+                try {
+                    $r = @call_user_func_array([$this->_redis, $name], $arguments);
+                    $failed = false;
+                } catch (\RedisException $exception) {
+                }
+            }
+
+            if ($failed) {
+                throw new RedisException($exception->getMessage(), $exception->getCode(), $exception);
+            }
         }
 
         /** @noinspection SpellCheckingInspection */
