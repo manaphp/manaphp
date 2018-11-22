@@ -427,4 +427,15 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         return $instance->getMasterConnection()->bulkInsert($instance->getSource(), $records, $instance->getPrimaryKey(), $skipIfExists);
     }
+
+    /**
+     * @param string|array           $filter
+     * @param int|float|string|array $value
+     *
+     * @return \ManaPHP\Db\Query
+     */
+    public static function where($filter, $value = null)
+    {
+        return static::query()->where($filter, $value);
+    }
 }

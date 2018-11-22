@@ -657,6 +657,17 @@ class Model extends \ManaPHP\Model
         return $instance->getConnection($document)->insert($instance->getSource($document), $document, $instance->getPrimaryKey(), $skipIfExists);
     }
 
+    /**
+     * @param string|array           $filter
+     * @param int|float|string|array $value
+     *
+     * @return \ManaPHP\Mongodb\Query
+     */
+    public static function where($filter, $value = null)
+    {
+        return static::query()->where($filter, $value);
+    }
+
     public function __debugInfo()
     {
         $data = parent::__debugInfo();
