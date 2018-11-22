@@ -382,16 +382,16 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
         if (is_bool($secondaryPreferred)) {
-            $readPreference = $secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY;
+            $readPreference = new ReadPreference($secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY);
         } else {
-            $readPreference = $secondaryPreferred;
+            $readPreference = new ReadPreference($secondaryPreferred);
         }
         $this->fireEvent('mongodb:beforeQuery', compact('namespace', 'filter', 'options'));
         $start_time = microtime(true);
 
         try {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), new ReadPreference($readPreference));
+            $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), $readPreference);
             $cursor->setTypeMap(['root' => 'array']);
             $result = $cursor->toArray();
         } catch (\Exception $exception) {
@@ -400,7 +400,7 @@ class Mongodb extends Component implements MongodbInterface
             if (!$this->_ping()) {
                 try {
                     $this->close();
-                    $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), new ReadPreference($readPreference));
+                    $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), $readPreference);
                     $cursor->setTypeMap(['root' => 'array']);
                     $result = $cursor->toArray();
                     $failed = false;
