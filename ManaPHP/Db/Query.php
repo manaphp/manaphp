@@ -283,7 +283,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 return $this;
             }
             $value = current($filter);
-            $filter = key($filter);
+            $filter = (string)key($filter);
         }
 
         if ($filter === null) {
