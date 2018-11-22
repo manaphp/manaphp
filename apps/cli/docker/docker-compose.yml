@@ -1,7 +1,7 @@
 version: "2"
 services:
   cli:
-    image: manaphp/php70:1.0
+    image: manaphp/php70:1.1
     volumes: 
       - ../:/var/www/html
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
