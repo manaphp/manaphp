@@ -15,7 +15,8 @@ class DbTest extends TestCase
 
     public function setUp()
     {
-        new FactoryDefault();
+        $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp/data');
 
         $config = require __DIR__ . '/config.database.php';
         $this->db = new Mysql($config['mysql']);

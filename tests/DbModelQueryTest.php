@@ -19,6 +19,7 @@ class DbModelQueryTest extends TestCase
     public function setUp()
     {
         $di = new FactoryDefault();
+        $di->alias->set('@data', __DIR__ . '/tmp/data');
 
         $di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';

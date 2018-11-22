@@ -53,6 +53,7 @@ class DbModelTest extends TestCase
     public function setUp()
     {
         $this->di = new Factory();
+        $this->di->alias->set('@data', __DIR__ . '/tmp/data');
 
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';

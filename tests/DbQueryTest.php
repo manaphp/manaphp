@@ -13,9 +13,11 @@ class DbQueryTest extends TestCase
     public function setUp()
     {
         $di = new Factory();
+        $di->alias->set('@data', __DIR__ . '/tmp/data');
 
         $config = require __DIR__ . '/config.database.php';
         $di->db = $db = new Mysql($config['mysql']);
+
         // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
 
         $db->attachEvent('db:beforeQuery', function (DbInterface $source, $data) {
@@ -337,7 +339,8 @@ class DbQueryTest extends TestCase
         $this->assertEquals(['city_id' => '10', 'country_id' => '10'], $query->getBind());
 
         $query = (new Query())->from('city')->where1v1('city_id,country_id', '10,20');
-        $this->assertEquals('SELECT * FROM [city] WHERE ((city_id=:city_id_a AND country_id=:country_id_b) OR (city_id=:city_id_b AND country_id=:country_id_a))', $query->getSql());
+        $this->assertEquals('SELECT * FROM [city] WHERE ((city_id=:city_id_a AND country_id=:country_id_b) OR (city_id=:city_id_b AND country_id=:country_id_a))',
+            $query->getSql());
         $this->assertEquals(['city_id_a' => '10', 'country_id_b' => '20', 'city_id_b' => '20', 'country_id_a' => '10'], $query->getBind());
     }
 
