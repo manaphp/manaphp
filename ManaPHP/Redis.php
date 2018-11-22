@@ -64,6 +64,11 @@ class Redis extends Component
     protected $_lastIoTime;
 
     /**
+     * @var float
+     */
+    protected $_ping_interval = 60.0;
+
+    /**
      * Redis constructor.
      *
      * @param string $url
@@ -101,25 +106,12 @@ class Redis extends Component
         $this->_persistent = isset($parts2['persistent']) && $parts2['persistent'] === '1';
     }
 
-    /**
-     * @throws \ManaPHP\Redis\ConnectionException
-     * @throws \ManaPHP\Redis\AuthException
-     */
-    public function connect()
+    protected function _connect()
     {
-        if ($this->_redis) {
-            $this->close();
-        }
-
         $redis = new \Redis();
 
         if ($this->_persistent) {
             if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
-                throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
-            }
-            try {
-                $redis->ping();
-            } catch (\Exception $exception) {
                 throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
             }
         } elseif (!@$redis->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval)) {
@@ -135,7 +127,8 @@ class Redis extends Component
         }
 
         $this->_redis = $redis;
-        $this->_lastIoTime = microtime(true);
+
+        return $redis;
     }
 
     public function close()
@@ -147,21 +140,16 @@ class Redis extends Component
         }
     }
 
-    public function ping()
+    /**
+     * @return bool
+     */
+    protected function _ping()
     {
-        if (!$this->_redis) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $this->connect();
-        } else {
-            try {
-                $this->_redis->ping();
-            } catch (\Exception  $exception) {
-                try {
-                    $this->connect();
-                } catch (\Exception $exception) {
-                    throw new ConnectionException(['connection failed: `:url`', 'url' => $this->_url]);
-                }
-            }
+        try {
+            $this->_redis->ping();
+            return true;
+        } catch (\Exception  $exception) {
+            return false;
         }
     }
 
@@ -174,17 +162,18 @@ class Redis extends Component
      */
     public function __call($name, $arguments)
     {
-        if (!$this->_redis) {
-            $this->connect();
-        } elseif (microtime(true) - $this->_lastIoTime > 1.0) {
-            try {
-                @$this->_redis->ping();
-            } catch (\Exception $exception) {
-                null;
+        $current = microtime(true);
+
+        if ($this->_redis) {
+            if ($current - $this->_lastIoTime >= $this->_ping_interval && !$this->_ping()) {
+                $this->close();
+                $this->_connect();
             }
+        } else {
+            $this->_connect();
         }
 
-        $this->_lastIoTime = microtime(true);
+        $this->_lastIoTime = $current;
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
             $this->logger->debug(["\$redis->$name(:args) ... blocking",
