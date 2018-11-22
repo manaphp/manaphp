@@ -191,7 +191,7 @@ class Redis extends Component
                 'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
             ], 'redis.' . $name);
         }
-	
+
         try {
             switch (count($arguments)) {
                 case 0:
@@ -217,6 +217,7 @@ class Redis extends Component
                     break;
             }
         } catch (\Exception  $exception) {
+            $r = null;
             $failed = true;
             if (!$this->_ping()) {
                 $this->_connect(false);
@@ -224,7 +225,8 @@ class Redis extends Component
                 try {
                     $r = @call_user_func_array([$this->_redis, $name], $arguments);
                     $failed = false;
-                } catch (\RedisException $exception) {
+                } /** @noinspection PhpRedundantCatchClauseInspection */
+                catch (\RedisException $exception) {
                 }
             }
 
