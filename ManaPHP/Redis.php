@@ -66,7 +66,7 @@ class Redis extends Component
     /**
      * @var float
      */
-    protected $_ping_interval = 60.0;
+    protected $_ping_interval = 10.0;
 
     /**
      * Redis constructor.
