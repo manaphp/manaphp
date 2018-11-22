@@ -371,6 +371,21 @@ class Mongodb extends Component implements MongodbInterface
     }
 
     /**
+     * @param string         $namespace
+     * @param array          $filter
+     * @param array          $options
+     * @param ReadPreference $readPreference
+     *
+     * @return array
+     */
+    protected function _fetchAll($namespace, $filter, $options, $readPreference)
+    {
+        $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), $readPreference);
+        $cursor->setTypeMap(['root' => 'array']);
+        return $cursor->toArray();
+    }
+
+    /**
      * @param string   $source
      * @param array    $filter
      * @param array    $options
@@ -390,19 +405,14 @@ class Mongodb extends Component implements MongodbInterface
         $start_time = microtime(true);
 
         try {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), $readPreference);
-            $cursor->setTypeMap(['root' => 'array']);
-            $result = $cursor->toArray();
+            $result = $this->_fetchAll($namespace, $filter, $options, $readPreference);
         } catch (\Exception $exception) {
             $result = null;
             $failed = true;
             if (!$this->_ping()) {
                 try {
                     $this->close();
-                    $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), $readPreference);
-                    $cursor->setTypeMap(['root' => 'array']);
-                    $result = $cursor->toArray();
+                    $result = $this->_fetchAll($namespace, $filter, $options, $readPreference);
                     $failed = false;
                 } catch (\Exception $exception) {
                 }
