@@ -282,7 +282,7 @@ abstract class Db extends Component implements DbInterface
                     'message' => $e->getMessage(),
                     'sql' => $this->_sql,
                     'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-                ], $e->getCode(), $e);
+                ], 0, $e);
             }
         }
 
