@@ -153,12 +153,13 @@ class Component implements ComponentInterface, \JsonSerializable
      *
      * @param string   $event
      * @param callable $handler
+     * @param bool     $appended
      *
      * @return static
      */
-    public function attachEvent($event, $handler)
+    public function attachEvent($event, $handler, $appended = true)
     {
-        $this->eventsManager->attachEvent($event, $handler);
+        $this->eventsManager->attachEvent($event, $handler, $appended);
 
         return $this;
     }

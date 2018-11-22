@@ -54,12 +54,17 @@ class Manager implements ManagerInterface
      *
      * @param string           $event
      * @param callable|\object $handler
+     * @param bool             $appended
      *
      * @return void
      */
-    public function attachEvent($event, $handler)
+    public function attachEvent($event, $handler, $appended = true)
     {
-        $this->_events[$event][] = $handler;
+        if ($appended) {
+            $this->_events[$event][] = $handler;
+        } else {
+            array_unshift($this->_events[$event], $handler);
+        }
     }
 
     /**

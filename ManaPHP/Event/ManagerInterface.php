@@ -26,10 +26,11 @@ interface ManagerInterface
      *
      * @param string           $event
      * @param callable|\object $handler
+     * @param bool             $appended
      *
      * @return void
      */
-    public function attachEvent($event, $handler);
+    public function attachEvent($event, $handler, $appended = true);
 
     /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
