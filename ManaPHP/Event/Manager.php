@@ -15,7 +15,7 @@ class Manager implements ManagerInterface
     protected $_di;
 
     /**
-     * @var array
+     * @var array[]
      */
     protected $_events = [];
 
@@ -73,7 +73,7 @@ class Manager implements ManagerInterface
      * @param mixed  $source
      * @param array  $data
      *
-     * @return bool|null
+     * @return mixed|null
      */
     public function fireEvent($event, $source, $data = [])
     {
@@ -107,21 +107,19 @@ class Manager implements ManagerInterface
             return null;
         }
 
-        $ret = null;
-        /** @noinspection ForeachSourceInspection */
-        foreach ($this->_events[$event] as $i => $handler) {
+        foreach ($this->_events[$event] as $handler) {
             if ($handler instanceof \Closure) {
                 $ret = $handler($source, $data, $event);
             } else {
                 $ret = $handler[0]->{$handler[1]}($source, $data, $event);
             }
 
-            if ($ret === false) {
-                return false;
+            if ($ret !== null) {
+                return $ret;
             }
         }
 
-        return $ret;
+        return null;
     }
 
     /**
