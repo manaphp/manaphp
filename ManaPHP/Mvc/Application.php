@@ -77,7 +77,7 @@ class Application extends \ManaPHP\Application
             } elseif ($actionReturnValue instanceof Response) {
                 null;
             } else {
-                $this->response->setJsonContent($actionReturnValue);
+                $this->response->setContent($actionReturnValue);
             }
         } catch (\Exception $e) {
             $this->handleException($e);
