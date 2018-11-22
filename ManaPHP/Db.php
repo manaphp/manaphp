@@ -382,7 +382,20 @@ abstract class Db extends Component implements DbInterface
      */
     public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
-        return ($rs = $this->fetchAll($statement, $bind, $fetchMode)) ? $rs[0] : false;
+        return ($rs = $this->_fetchAll($statement, $bind, $fetchMode)) ? $rs[0] : false;
+    }
+
+    /**
+     * @param string|\PDOStatement $statement
+     * @param array                $bind
+     * @param int                  $fetchMode
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    protected function _fetchAll($statement, $bind, $fetchMode)
+    {
+        return $this->_query($statement, $bind)->fetchAll($fetchMode);
     }
 
     /**
@@ -413,7 +426,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
     {
-        $rs = $this->_query($statement, $bind)->fetchAll($fetchMode);
+        $rs = $this->_fetchAll($statement, $bind, $fetchMode);
 
         if ($indexBy === null) {
             return $rs;
