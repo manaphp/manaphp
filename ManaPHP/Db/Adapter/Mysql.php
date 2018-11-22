@@ -307,7 +307,7 @@ class Mysql extends Db
     public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null)
     {
         if (!$primaryKey) {
-            $primaryKey = key($insertFieldValues);
+            $primaryKey = (string)key($insertFieldValues);
         }
 
         if (!$updateFieldValues) {
