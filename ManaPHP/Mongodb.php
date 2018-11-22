@@ -3,7 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Mongodb\ConnectionException;
 use ManaPHP\Mongodb\Exception as MongodbException;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
