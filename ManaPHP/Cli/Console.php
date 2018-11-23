@@ -127,6 +127,24 @@ class Console extends Component implements ConsoleInterface
             return $this;
         }
 
+        if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
+            foreach ((array)$message as $k => $v) {
+                if ($k === 0 || is_scalar($v) || $v === null) {
+                    continue;
+                }
+
+                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+                    $message[$k] = $this->exceptionToString($v);
+                } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+                    $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                }
+            }
+            /** @noinspection ArgumentUnpackingCanBeUsedInspection */
+            echo call_user_func_array('sprintf', $message);
+
+            return $this;
+        }
+
         if (count($message) === 2) {
             if (isset($message[1]) && strpos($message[0], ':1') === false) {
                 if (is_scalar($message[1])) {
@@ -171,6 +189,12 @@ class Console extends Component implements ConsoleInterface
                     $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 } elseif ($v instanceof \Serializable) {
                     $v = serialize($v);
+                } elseif (is_string($v)) {
+                    null;
+                } elseif ($v === null || is_scalar($v)) {
+                    $v = json_encode($v);
+                } else {
+                    $v = (string)$v;
                 }
 
                 $replaces[':' . $k] = $v;
