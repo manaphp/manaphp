@@ -212,6 +212,9 @@ class MongodbController extends Controller
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fieldTypes as $field => $type) {
+                if ($field === '_id' && $type === 'objectid') {
+                    continue;
+                }
                 $str .= "            '$field' => '$type'," . PHP_EOL;
             }
             $str .= '        ];' . PHP_EOL;
