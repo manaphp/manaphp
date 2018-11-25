@@ -3,7 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\AuthenticationException;
-use ManaPHP\Exception\MisuseException;
 
 /**
  * Class ManaPHP\Identity
@@ -19,6 +18,20 @@ abstract class Identity extends Component implements IdentityInterface
      * @var array
      */
     protected $_claims = [];
+
+    /**
+     * Identity constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = null)
+    {
+        if (is_array($options)) {
+            if (isset($options['type'])) {
+                $this->_type = $options['type'];
+            }
+        }
+    }
 
     public function saveInstanceState()
     {
@@ -47,7 +60,7 @@ abstract class Identity extends Component implements IdentityInterface
                 return $default;
             }
         } elseif (!$this->_type) {
-            throw new MisuseException('type is unknown');
+            return $default;
         } else {
             $id = $this->_type . '_id';
             return isset($this->_claims[$id]) ? $this->_claims[$id] : 0;
@@ -68,7 +81,7 @@ abstract class Identity extends Component implements IdentityInterface
                 return $default;
             }
         } elseif (!$this->_type) {
-            throw new MisuseException('type is unknown');
+            return $default;
         } else {
             $name = $this->_type . '_name';
             return isset($this->_claims[$name]) ? $this->_claims[$name] : '';
