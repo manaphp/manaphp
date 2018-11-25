@@ -504,6 +504,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         $pkValue = null;
         if (is_scalar($filters)) {
             $pkValue = $filters;
+            $filters = [$pkName => $pkValue];
         } elseif (is_array($filters)) {
             if (count($filters) === 1 && isset($filters[$pkName])) {
                 $pkValue = $filters[$pkName];
