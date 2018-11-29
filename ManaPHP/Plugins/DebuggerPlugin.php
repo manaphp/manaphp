@@ -186,7 +186,7 @@ class DebuggerPlugin extends Plugin
     public function onEndRequest()
     {
         if ($this->_file) {
-            $this->logger->info('debugger-link: ' . $this->getUrl(), 'debugger.link');
+            $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
             $this->filesystem->filePut('@data/debugger/' . $this->_file, $this->output());
         }
     }
