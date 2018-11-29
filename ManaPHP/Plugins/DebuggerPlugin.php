@@ -36,7 +36,8 @@ class DebuggerPlugin extends Plugin
     {
         $this->eventsManager->peekEvent([$this, '_eventHandlerPeek']);
 
-        $this->attachEvent('router:beforeRoute', [$this, 'onBeforeRoute']);
+        $this->attachEvent('app:beginRequest', [$this, 'onBeginRequest']);
+        $this->attachEvent('app:endRequest', [$this, 'onEndRequest']);
     }
 
     public function saveInstanceState()
@@ -46,8 +47,6 @@ class DebuggerPlugin extends Plugin
 
     public function restoreInstanceState($data)
     {
-        $this->save();
-
         $this->_file = null;
         $this->_view = [];
         $this->_log = [];
@@ -171,7 +170,7 @@ class DebuggerPlugin extends Plugin
         }
     }
 
-    public function onBeforeRoute()
+    public function onBeginRequest()
     {
         if (isset($_GET['_debugger']) && preg_match('#^[a-zA-Z0-9_/]+\.html$#', $_GET['_debugger'])) {
             $file = '@data/debugger' . $_GET['_debugger'];
@@ -181,7 +180,15 @@ class DebuggerPlugin extends Plugin
             }
         }
 
-        return null;
+        $this->_file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+    }
+
+    public function onEndRequest()
+    {
+        if ($this->_file) {
+            $this->logger->info('debugger-link: ' . $this->getUrl(), 'debugger.link');
+            $this->filesystem->filePut('@data/debugger/' . $this->_file, $this->output());
+        }
     }
 
     /**
@@ -256,29 +263,10 @@ class DebuggerPlugin extends Plugin
     }
 
     /**
-     */
-    public function save()
-    {
-        if ($this->_file !== null) {
-            $this->logger->debug('debugger-link: ' . $this->getUrl(), 'debugger.link');
-            $this->filesystem->filePut('@data/debugger/' . $this->_file, $this->output());
-        }
-    }
-
-    /**
      * @return string
      */
     public function getUrl()
     {
-        if ($this->_file === null) {
-            $this->_file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
-        }
-
         return $this->router->createUrl('/?_debugger=' . $this->_file, true);
-    }
-
-    public function __destruct()
-    {
-        $this->save();
     }
 }
