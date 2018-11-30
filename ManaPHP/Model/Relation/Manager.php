@@ -219,6 +219,8 @@ class Manager extends Component implements ManagerInterface
      */
     public function earlyLoad($model, $r, $withs)
     {
+        $asArray = !isset($r[0]) || !is_object($r[0]);
+
         foreach ($withs as $k => $v) {
             $name = is_int($k) ? $v : $k;
             if ($pos = strpos($name, '.')) {
@@ -269,12 +271,17 @@ class Manager extends Component implements ManagerInterface
             }
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
-                $ids = array_values(array_unique(array_column($r, $valueField)));
+                $ids = array_values(array_unique(array_field($r, $valueField)));
                 $data = $query->where($keyField, $ids)->indexBy($keyField)->fetch(true);
 
                 foreach ($r as $ri => $rv) {
                     $key = $rv[$valueField];
-                    $rv[$name] = isset($data[$key]) ? $data[$key] : null;
+                    if (isset($data[$key])) {
+                        $rv[$name] = $asArray ? $data[$key] : new $referenceModel($data[$key]);
+                    } else {
+                        $rv[$name] = null;
+                    }
+
                     $r[$ri] = $rv;
                 }
 
@@ -290,10 +297,10 @@ class Manager extends Component implements ManagerInterface
                     $r_index[$rv[$valueField]] = $ri;
                 }
 
-                $ids = array_column($r, $valueField);
+                $ids = array_field($r, $valueField);
                 $data = $query->where($keyField, $ids)->fetch(true);
                 foreach ($data as $dv) {
-                    $r[$r_index[$dv[$keyField]]][$name][] = $dv;
+                    $r[$r_index[$dv[$keyField]]][$name][] = $asArray ? $dv : new $referenceModel($dv);
                 }
 
                 foreach ($r as $ri => $rv) {
@@ -311,53 +318,7 @@ class Manager extends Component implements ManagerInterface
 
         return $r;
     }
-
-    /**
-     * @param \ManaPHP\Model $instance
-     * @param array          $withs
-     *
-     * @return \ManaPHP\Model
-     *
-     * @throws \ManaPHP\Exception\InvalidValueException
-     */
-    public function lazyBindAll($instance, $withs)
-    {
-        foreach ($withs as $k => $v) {
-            $name = is_string($k) ? $k : $v;
-
-            $query = $this->lazyLoad($instance, $name);
-            if (is_int($k)) {
-                $data = $query->fetch();
-            } elseif (is_string($v)) {
-                $data = $query->select($v)->fetch();
-            } elseif (is_array($v)) {
-                if ($v) {
-                    if (isset($v[count($v) - 1])) {
-                        $query->select($v);
-                    } elseif (isset($v[0])) {
-                        $query->select($v[0]);
-                        unset($v[0]);
-                        $query->where($v);
-                    } else {
-                        $query->where($v);
-                    }
-                }
-                $data = $query->fetch();
-            } elseif (is_callable($v)) {
-                $data = $v($query);
-                if ($data instanceof Query) {
-                    $data = $data->fetch();
-                }
-            } else {
-                throw new InvalidValueException(['`:with` with is invalid', 'with' => $k]);
-            }
-
-            $instance->$name = $data;
-        }
-
-        return $instance;
-    }
-
+    
     /**
      * @param \ManaPHP\Model $instance
      * @param string         $relation_name

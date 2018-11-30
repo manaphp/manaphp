@@ -253,33 +253,22 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
             }
 
             return $r;
-        }
-        if ($this->_multiple === false) {
-            $rs = $this->execute();
-            if (isset($rs[0])) {
-                $modelName = get_class($this->_model);
-                $model = new $modelName($rs[0]);
-                if ($this->_with) {
-                    $this->relationsManager->lazyBindAll($model, $this->_with);
-                }
-                return $model;
-            } else {
-                return null;
-            }
         } else {
             $modelName = get_class($this->_model);
-
-            $models = [];
-            foreach ($this->execute() as $k => $result) {
-                $model = new $modelName($result);
-                if ($this->_with) {
-                    $this->relationsManager->lazyBindAll($model, $this->_with);
-                }
-
-                $models[$k] = $model;
+            $r = $this->execute();
+            foreach ($r as $k => $v) {
+                $r[$k] = new $modelName($v);
             }
 
-            return $models;
+            if ($this->_with) {
+                $r = $this->relationsManager->earlyLoad($this->_model, $r, $this->_with);
+            }
+
+            if ($this->_multiple === false) {
+                return isset($r[0]) ? $r[0] : null;
+            } else {
+                return $r;
+            }
         }
     }
 

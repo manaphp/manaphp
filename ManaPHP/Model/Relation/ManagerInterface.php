@@ -31,11 +31,9 @@ interface ManagerInterface
 
     /**
      * @param \ManaPHP\Model $instance
-     * @param array          $withs
+     * @param string         $relation_name
      *
-     * @return \ManaPHP\Model
-     *
-     * @throws \ManaPHP\Exception\InvalidValueException
+     * @return \ManaPHP\QueryInterface
      */
-    public function lazyBindAll($instance, $withs);
+    public function lazyLoad($instance, $relation_name);
 }
