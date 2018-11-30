@@ -52,11 +52,12 @@ class Response
     {
         $headers = [];
         foreach ($this->headers as $i => $header) {
-            if ($i === 0 || $header === '') {
+            if (($pos = strpos($header, ': ')) === false) {
                 continue;
             }
-
-            list($name, $value) = explode(': ', $header, 2);
+            
+            $name = substr($header, 0, $pos);
+            $value = substr($header, $pos + 2);
             if (isset($headers[$name])) {
                 if (!is_array($headers[$name])) {
                     $headers[$name] = [$headers[$name], $value];
