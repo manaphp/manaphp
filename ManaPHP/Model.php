@@ -36,7 +36,7 @@ use ManaPHP\Utility\Text;
  * method beforeDelete()
  * method afterDelete()
  */
-abstract class Model extends Component implements ModelInterface, \Serializable
+abstract class Model extends Component implements ModelInterface, \Serializable, \ArrayAccess
 {
     const OP_NONE = 0;
     const OP_CREATE = 1;
@@ -1396,6 +1396,26 @@ abstract class Model extends Component implements ModelInterface, \Serializable
         }
 
         return $data;
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->$offset);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->$offset;
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->$offset = $value;
+    }
+
+    public function offsetUnset($offset)
+    {
+        $this->$offset = null;
     }
 
     /**
