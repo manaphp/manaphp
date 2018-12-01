@@ -6,6 +6,7 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\Relation;
+use ManaPHP\QueryInterface;
 
 class Manager extends Component implements ManagerInterface
 {
@@ -207,6 +208,47 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
+     * @param \ManaPHP\Model          $model
+     * @param                         $name
+     * @param                         $data
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public function getQuery($model, $name, $data)
+    {
+        $relation = $this->get($model, $name);
+        /**
+         * @var \ManaPHP\Model $referenceModel
+         */
+        $referenceModel = $relation->referenceModel;
+        $query = $referenceModel::query();
+
+        if ($data === null) {
+            null;
+        } elseif (is_string($data)) {
+            $query->select($data);
+        } elseif (is_array($data)) {
+            if ($data) {
+                if (isset($data[count($data) - 1])) {
+                    $query->select($data);
+                } elseif (isset($data[0])) {
+                    $query->select($data[0]);
+                    unset($data[0]);
+                    $query->where($data);
+                } else {
+                    $query->where($data);
+                }
+            }
+        } elseif (is_callable($data)) {
+            $query = $data($query);
+        } else {
+            throw new InvalidValueException(['`:with` with is invalid', 'with' => $name]);
+        }
+
+        return $query;
+    }
+
+    /**
      * @param \ManaPHP\Model $model
      * @param array          $r
      * @param array          $withs
@@ -233,34 +275,11 @@ class Manager extends Component implements ManagerInterface
             }
             $keyField = $relation->keyField;
             $valueField = $relation->valueField;
-            /**
-             * @var \ManaPHP\Model $referenceModel
-             */
-            $referenceModel = $relation->referenceModel;
-            $query = $referenceModel::query();
+
+            $query = $v instanceof QueryInterface ? $v : $this->getQuery($model, $name, is_string($k) ? $v : null);
+
             if ($child_name) {
                 $query->with([$child_name]);
-            }
-            if (is_int($k)) {
-                null;
-            } elseif (is_string($v)) {
-                $query->select($v);
-            } elseif (is_array($v)) {
-                if ($v) {
-                    if (isset($v[count($v) - 1])) {
-                        $query->select($v);
-                    } elseif (isset($v[0])) {
-                        $query->select($v[0]);
-                        unset($v[0]);
-                        $query->where($v);
-                    } else {
-                        $query->where($v);
-                    }
-                }
-            } elseif (is_callable($v)) {
-                $query = $v($query);
-            } else {
-                throw new InvalidValueException(['`:with` with is invalid', 'with' => $name]);
             }
 
             $method = 'get' . ucfirst($name);

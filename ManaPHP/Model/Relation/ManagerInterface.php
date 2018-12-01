@@ -37,4 +37,13 @@ interface ManagerInterface
      * @return \ManaPHP\QueryInterface
      */
     public function lazyLoad($instance, $relation_name);
+
+    /**
+     * @param \ManaPHP\Model          $model
+     * @param                         $name
+     * @param                         $data
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public function getQuery($model, $name, $data);
 }

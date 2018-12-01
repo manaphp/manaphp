@@ -200,7 +200,28 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
             }
         }
 
-        $this->_with = $this->_with ? array_merge($this->_with, $with) : $with;
+        $with = $this->_with ? array_merge($this->_with, $with) : $with;
+
+        foreach ($with as $k => $v) {
+            if (is_int($k) || ($pos = strpos($k, '.')) === false) {
+                continue;
+            }
+            $parent_name = substr($k, 0, $pos);
+            $child_name = substr($k, $pos + 1);
+            if (!isset($with[$parent_name])) {
+                continue;
+            }
+
+            $parent_value = $with[$parent_name];
+            if (!$parent_value instanceof QueryInterface) {
+                $with[$parent_name] = $this->relationsManager->getQuery($this->_model, $parent_name, $parent_value);
+            }
+
+            $with[$parent_name]->with([$child_name => $v]);
+            unset($with[$k]);
+        }
+
+        $this->_with = $with;
 
         return $this;
     }
