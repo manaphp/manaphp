@@ -289,16 +289,7 @@ class Manager extends Component implements ManagerInterface
             }
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
-                if ($asArray) {
-                    $ids = array_values(array_unique(array_column($r, $valueField)));
-                } else {
-                    $ids = [];
-                    foreach ($r as $rv) {
-                        $ids[$rv->$valueField] = 1;
-                    }
-                    $ids = array_keys($ids);
-                }
-
+                $ids = array_values(array_unique(array_field($r, $valueField)));
                 $data = $query->whereIn($keyField, $ids)->indexBy($keyField)->fetch($asArray);
 
                 foreach ($r as $ri => $rv) {
@@ -311,20 +302,13 @@ class Manager extends Component implements ManagerInterface
                     $r_index[$rv[$valueField]] = $ri;
                 }
 
-                if ($asArray) {
-                    $ids = array_column($r, $valueField);
-                } else {
-                    $ids = [];
-                    foreach ($r as $rv) {
-                        $ids[] = $rv->$valueField;
-                    }
-                }
+                $ids = array_field($r, $valueField);
                 $data = $query->whereIn($keyField, $ids)->fetch($asArray);
 
                 if (isset($data[0]) && !isset($data[0][$relation->keyField])) {
                     throw new MisuseException(['missing `:field` field in `:name` with', 'field' => $relation->keyField, 'name' => $name]);
                 }
-		
+
                 $rd = [];
                 foreach ($data as $dv) {
                     $rd[$r_index[$dv[$keyField]]][] = $dv;
