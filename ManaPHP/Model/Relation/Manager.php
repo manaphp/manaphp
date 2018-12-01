@@ -3,6 +3,7 @@ namespace ManaPHP\Model\Relation;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\Relation;
@@ -320,6 +321,10 @@ class Manager extends Component implements ManagerInterface
                 }
                 $data = $query->whereIn($keyField, $ids)->fetch($asArray);
 
+                if (isset($data[0]) && !isset($data[0][$relation->keyField])) {
+                    throw new MisuseException(['missing `:field` field in `:name` with', 'field' => $relation->keyField, 'name' => $name]);
+                }
+		
                 $rd = [];
                 foreach ($data as $dv) {
                     $rd[$r_index[$dv[$keyField]]][] = $dv;
