@@ -270,7 +270,7 @@ class Manager extends Component implements ManagerInterface
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
                 $ids = array_values(array_unique(array_field($r, $valueField)));
-                $data = $query->where($keyField, $ids)->indexBy($keyField)->fetch($asArray);
+                $data = $query->whereIn($keyField, $ids)->indexBy($keyField)->fetch($asArray);
 
                 foreach ($r as $ri => $rv) {
                     $key = $rv[$valueField];
@@ -283,7 +283,7 @@ class Manager extends Component implements ManagerInterface
                 }
 
                 $ids = array_field($r, $valueField);
-                $data = $query->where($keyField, $ids)->fetch($asArray);
+                $data = $query->whereIn($keyField, $ids)->fetch($asArray);
 
                 $rd = [];
                 foreach ($data as $dv) {
@@ -330,7 +330,7 @@ class Manager extends Component implements ManagerInterface
              * @var \ManaPHP\Model $referenceInstance
              */
             $referenceInstance = is_string($referenceModel) ? new $referenceModel : $referenceModel;
-            return $referenceModel::query()->where($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
+            return $referenceModel::query()->whereIn($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
         } elseif ($type === Relation::TYPE_HAS_MANY_VIA) {
             $via = $relation->keyField;
             /**
@@ -338,7 +338,7 @@ class Manager extends Component implements ManagerInterface
              */
             $reference = new $referenceModel();
             $ids = $via::values($reference->getPrimaryKey(), [$valueField => $instance->$valueField]);
-            return $referenceModel::query()->where($reference->getPrimaryKey(), $ids)->setFetchType(true);
+            return $referenceModel::query()->whereIn($reference->getPrimaryKey(), $ids)->setFetchType(true);
         } else {
             throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
         }
