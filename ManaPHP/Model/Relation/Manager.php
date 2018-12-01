@@ -309,8 +309,6 @@ class Manager extends Component implements ManagerInterface
                 foreach ($r as $ri => $rv) {
                     $r[$ri][$name] = isset($rd[$ri]) ? $rd[$ri] : [];
                 }
-
-                return $r;
             } else {
                 throw new NotSupportedException($name);
             }
