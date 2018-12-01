@@ -173,7 +173,7 @@ class Application extends Component implements ApplicationInterface
 
         foreach ($plugins as $k => $v) {
             if ($v !== '*') {
-                $plugin = is_int($k) ? $v : $k;
+                $plugin = is_string($k) ? $k : $v;
                 $plugin = ($pos = strrpos($plugin, 'Plugin')) !== false && $pos === strlen($plugin) - 6 ? ucfirst($plugin) : (ucfirst($plugin) . 'Plugin');
                 $var = lcfirst($plugin);
                 $pluginClassName = isset($app_plugins[$plugin]) ? $this->alias->resolveNS("@ns.app\\Plugins\\$plugin") : "ManaPHP\Plugins\\$plugin";

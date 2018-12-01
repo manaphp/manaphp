@@ -572,7 +572,7 @@ abstract class Db extends Component implements DbInterface
             $bind = [];
             $updates = [];
             foreach ($updateFieldValues as $k => $v) {
-                $field = is_int($k) ? $v : $k;
+                $field = is_string($k) ? $k : $v;
                 if ($primaryKey === $field) {
                     continue;
                 }

@@ -319,7 +319,7 @@ class Mysql extends Db
         $bind = $insertFieldValues;
         $updates = [];
         foreach ($updateFieldValues as $k => $v) {
-            $field = is_int($k) ? $v : $k;
+            $field = is_string($k) ? $k : $v;
             if ($primaryKey === $field) {
                 continue;
             }

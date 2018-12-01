@@ -1116,7 +1116,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $fields = '';
             $selectedFields = [];
             foreach ($this->_tables as $alias => $table) {
-                $selectedFields[] = '[' . (is_int($alias) ? $table : $alias) . '].*';
+                $selectedFields[] = '[' . (is_string($alias) ? $alias : $table) . '].*';
             }
             $fields .= implode(', ', $selectedFields);
         }

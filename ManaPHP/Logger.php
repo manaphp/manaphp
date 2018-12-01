@@ -59,7 +59,7 @@ class Logger extends Component implements LoggerInterface
             if ($options) {
                 $appenders = isset($options['appenders']) ? $options['appenders'] : $options;
                 foreach ($appenders as $k => $v) {
-                    $this->_appenders[is_int($k) ? $v : $k] = $v;
+                    $this->_appenders[is_string($k) ? $k : $v] = $v;
                 }
             } else {
                 $this->_appenders['file'] = 'ManaPHP\Logger\Appender\File';

@@ -220,7 +220,7 @@ class Manager extends Component implements ManagerInterface
     public function earlyLoad($model, $r, $withs, $asArray)
     {
         foreach ($withs as $k => $v) {
-            $name = is_int($k) ? $v : $k;
+            $name = is_string($k) ? $k : $v;
             if ($pos = strpos($name, '.')) {
                 $child_name = substr($name, $pos + 1);
                 $name = substr($name, 0, $pos);
@@ -276,7 +276,6 @@ class Manager extends Component implements ManagerInterface
                     $key = $rv[$valueField];
                     $r[$ri][$name] = isset($data[$key]) ? $data[$key] : null;
                 }
-
             } elseif ($relation->type === Relation::TYPE_HAS_MANY) {
                 $r_index = [];
                 foreach ($r as $ri => $rv) {

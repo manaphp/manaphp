@@ -102,7 +102,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
         $data = $this->request->get();
 
         foreach ($filters as $k => $v) {
-            preg_match('#^(\w+)(.*)$#', is_int($k) ? $v : $k, $match);
+            preg_match('#^(\w+)(.*)$#', is_string($k) ? $k : $v, $match);
             $field = $match[1];
 
             if (is_int($k)) {

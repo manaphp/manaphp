@@ -363,7 +363,7 @@ class Smtp extends Mailer
 
         $success = 0;
         foreach (array_merge($to, $cc, $bcc) as $k => $v) {
-            $address = is_int($k) ? $v : $k;
+            $address = is_string($k) ? $k : $v;
             list($code, $msg) = $this->_transmit("RCPT TO:<$address>");
             if ($code !== 250) {
                 if ($failedRecipients !== null) {
