@@ -6,7 +6,6 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\Relation;
-use ManaPHP\Query;
 
 class Manager extends Component implements ManagerInterface
 {
@@ -211,16 +210,15 @@ class Manager extends Component implements ManagerInterface
      * @param \ManaPHP\Model $model
      * @param array          $r
      * @param array          $withs
+     * @param bool           $asArray
      *
      * @return array
      *
      * @throws \ManaPHP\Exception\InvalidValueException
      * @throws \ManaPHP\Exception\NotSupportedException
      */
-    public function earlyLoad($model, $r, $withs)
+    public function earlyLoad($model, $r, $withs, $asArray)
     {
-        $asArray = !isset($r[0]) || !is_object($r[0]);
-
         foreach ($withs as $k => $v) {
             $name = is_int($k) ? $v : $k;
             if ($pos = strpos($name, '.')) {
@@ -272,25 +270,13 @@ class Manager extends Component implements ManagerInterface
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
                 $ids = array_values(array_unique(array_field($r, $valueField)));
-                $data = $query->where($keyField, $ids)->indexBy($keyField)->fetch(true);
+                $data = $query->where($keyField, $ids)->indexBy($keyField)->fetch($asArray);
 
                 foreach ($r as $ri => $rv) {
                     $key = $rv[$valueField];
-                    if (isset($data[$key])) {
-                        $rv[$name] = $asArray ? $data[$key] : new $referenceModel($data[$key]);
-                    } else {
-                        $rv[$name] = null;
-                    }
-
-                    $r[$ri] = $rv;
+                    $r[$ri][$name] = isset($data[$key]) ? $data[$key] : null;
                 }
 
-                foreach ($r as $ri => $rv) {
-                    if (!isset($rv[$name])) {
-                        $rv[$name] = null;
-                        $r[$ri] = $rv;
-                    }
-                }
             } elseif ($relation->type === Relation::TYPE_HAS_MANY) {
                 $r_index = [];
                 foreach ($r as $ri => $rv) {
@@ -298,16 +284,15 @@ class Manager extends Component implements ManagerInterface
                 }
 
                 $ids = array_field($r, $valueField);
-                $data = $query->where($keyField, $ids)->fetch(true);
+                $data = $query->where($keyField, $ids)->fetch($asArray);
+
+                $rd = [];
                 foreach ($data as $dv) {
-                    $r[$r_index[$dv[$keyField]]][$name][] = $asArray ? $dv : new $referenceModel($dv);
+                    $rd[$r_index[$dv[$keyField]]][] = $dv;
                 }
 
                 foreach ($r as $ri => $rv) {
-                    if (!isset($rv[$name])) {
-                        $rv[$name] = [];
-                        $r[$ri] = $rv;
-                    }
+                    $r[$ri][$name] = isset($rd[$ri]) ? $rd[$ri] : [];
                 }
 
                 return $r;
@@ -318,7 +303,7 @@ class Manager extends Component implements ManagerInterface
 
         return $r;
     }
-    
+
     /**
      * @param \ManaPHP\Model $instance
      * @param string         $relation_name
