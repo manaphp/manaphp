@@ -269,7 +269,16 @@ class Manager extends Component implements ManagerInterface
             }
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
-                $ids = array_values(array_unique(array_field($r, $valueField)));
+                if ($asArray) {
+                    $ids = array_values(array_unique(array_column($r, $valueField)));
+                } else {
+                    $ids = [];
+                    foreach ($r as $rv) {
+                        $ids[$rv->$valueField] = 1;
+                    }
+                    $ids = array_keys($ids);
+                }
+
                 $data = $query->whereIn($keyField, $ids)->indexBy($keyField)->fetch($asArray);
 
                 foreach ($r as $ri => $rv) {
@@ -282,7 +291,14 @@ class Manager extends Component implements ManagerInterface
                     $r_index[$rv[$valueField]] = $ri;
                 }
 
-                $ids = array_field($r, $valueField);
+                if ($asArray) {
+                    $ids = array_column($r, $valueField);
+                } else {
+                    $ids = [];
+                    foreach ($r as $rv) {
+                        $ids[] = $rv->$valueField;
+                    }
+                }
                 $data = $query->whereIn($keyField, $ids)->fetch($asArray);
 
                 $rd = [];
