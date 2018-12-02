@@ -1139,7 +1139,7 @@ class Query extends \ManaPHP\Query
         $paginator->items = $items;
 
         if ($this->_with) {
-            $paginator->items = $this->relationsManager->earlyLoad($this->_model, $paginator->items, $this->_with);
+            $paginator->items = $this->relationsManager->earlyLoad($this->_model, $paginator->items, $this->_with, true);
         }
 
         return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
