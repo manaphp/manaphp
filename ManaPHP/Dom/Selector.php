@@ -288,7 +288,18 @@ class Selector
 
         return $data;
     }
-    
+
+    /**
+     * @param string $css
+     * @param array  $rules
+     *
+     * @return array
+     */
+    public function extract_first($css, $rules)
+    {
+        return $this->css($css)->extract_first();
+    }
+
     /**
      * @return string
      */
