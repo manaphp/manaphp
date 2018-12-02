@@ -237,6 +237,32 @@ class Selector
         return (string)$this->_node->textContent;
     }
 
+    /**
+     * @param array $rules
+     *
+     * @return array
+     */
+    public function extract($rules)
+    {
+        /** @var \DOMElement $node */
+        $node = $this->_node ?: $this->_document;
+
+        $data = [];
+        foreach ($rules as $name => $rule) {
+            if ($rule[0] === '@') {
+                $data[$name] = $node->getAttribute(substr($rule, 1));
+            } elseif (($pos = strpos($rule, '@')) === false) {
+                $nodes = $this->_document->getQuery()->css($rule, $node);
+                $data[$name] = $nodes->length ? $nodes->item(0)->textContent : null;
+            } else {
+                $nodes = $this->_document->getQuery()->css(substr($rule, 0, $pos), $node);
+                $data[$name] = $nodes->length ? $nodes->item(0)->getAttribute(substr($rule, $pos + 1)) : null;
+            }
+        }
+
+        return $data;
+    }
+
     /**@param bool $as_string
      *
      * @return string|array

@@ -622,17 +622,15 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @param array $rules
      *
-     * @return array
+     * @return array[]
      */
     public function extract($rules)
     {
-        $extractor = new Extractor($this->_document);
-
         $data = [];
-        foreach ($rules as $name => $rule) {
-            foreach ($this->_nodes as $node) {
-                $data[$name] = $extractor->extract($rule, $node);
-            }
+
+        foreach ($this->_nodes as $node) {
+            $selector = new Selector($this->_document, $node);
+            $data[] = $selector->extract($rules);
         }
 
         return $data;
