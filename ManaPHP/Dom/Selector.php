@@ -187,14 +187,48 @@ class Selector
     }
 
     /**
-     * @param string|array $attr
+     * @param string $attr
+     *
+     * @return string
+     */
+    public function attr($attr)
+    {
+        return $this->_node->getAttribute($attr);
+    }
+
+    /**
+     * @param string $css
+     * @param string $attr
      *
      * @return string|null
      */
-    public function attr($attr = null)
+    public function attr_first($css, $attr)
     {
-        if ($this->_node instanceof \DOMElement) {
-            return $this->_node->getAttribute($attr);
+        $nodes = $this->_document->getQuery()->css($css, $this->_node);
+        return $nodes ? $nodes->item(0)->getAttribute($attr) : null;
+    }
+
+    /**
+     * @param string $attr
+     *
+     * @return string
+     */
+    public function url($attr)
+    {
+        return $this->_document->absolutizeUrl($this->_node->getAttribute($attr));
+    }
+
+    /**
+     * @param string $css
+     * @param string $attr
+     *
+     * @return string|null
+     */
+    public function url_first($css, $attr)
+    {
+        $nodes = $this->_document->getQuery()->css($css, $this->_node);
+        if ($nodes) {
+            return $this->_document->absolutizeUrl($nodes->item(0)->getAttribute($attr));
         } else {
             return null;
         }
@@ -216,6 +250,17 @@ class Selector
     public function text()
     {
         return (string)$this->_node->textContent;
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return string|null
+     */
+    public function text_first($css)
+    {
+        $nodes = $this->_document->getQuery()->css($css, $this->_node);
+        return $nodes ? $nodes->item(0)->textContent : null;
     }
 
     /**
