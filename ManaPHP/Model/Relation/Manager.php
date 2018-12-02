@@ -225,7 +225,7 @@ class Manager extends Component implements ManagerInterface
         } elseif (is_array($data)) {
             if ($data) {
                 if (isset($data[count($data) - 1])) {
-                    $query->select($data);
+                    $query->select(count($data) > 1 ? $data : $data[0]);
                 } elseif (isset($data[0])) {
                     $query->select($data[0]);
                     unset($data[0]);
