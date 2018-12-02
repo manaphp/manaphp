@@ -49,7 +49,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-        return new SelectorList($this, $nodes);
+        return new SelectorList($this, array_values($nodes));
     }
 
     /**
@@ -74,7 +74,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-        return new SelectorList($this, $nodes);
+        return new SelectorList($this, array_values($nodes));
     }
 
     /**
@@ -351,7 +351,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-        return new SelectorList($this, $nodes);
+        return new SelectorList($this, array_values($nodes));
     }
 
     /**
@@ -615,7 +615,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-        return $data;
+        return array_values($data);
     }
 
     /**
@@ -656,7 +656,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-        return $data;
+        return array_values($data);
     }
 
     /**
