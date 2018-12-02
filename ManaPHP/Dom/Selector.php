@@ -188,35 +188,16 @@ class Selector
 
     /**
      * @param string|array $attr
-     * @param string       $default
      *
-     * @return array|string
+     * @return string|null
      */
-    public function attr($attr = null, $default = null)
+    public function attr($attr = null)
     {
         if ($this->_node instanceof \DOMElement) {
-            $attributes = $this->_node->attributes;
+            return $this->_node->getAttribute($attr);
         } else {
-            $attributes = [];
+            return null;
         }
-
-        if (is_string($attr)) {
-            foreach ($attributes as $attribute) {
-                if ($attribute->name === $attr) {
-                    return $attribute->value;
-                }
-            }
-
-            return $default;
-        }
-
-        $data = [];
-
-        foreach ($attributes as $attribute) {
-            $data[$attribute->name] = $attribute->value;
-        }
-
-        return $data;
     }
 
     /**
