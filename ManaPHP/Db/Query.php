@@ -1109,7 +1109,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         if ($this->_fields !== null) {
             $fields = $this->_fields;
         } elseif (count($this->_tables) === 1) {
-            $fields = '*';
+            $fields = $this->_model ? '[' . implode('], [', $this->_model->getFields()) . ']' : '*';
         } else {
             $fields = '';
             $selectedFields = [];
