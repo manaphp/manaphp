@@ -72,6 +72,7 @@ class Dotenv extends Component implements DotenvInterface
             throw new FileNotFoundException(['.env file is not found: :file', 'file' => $file]);
         }
 
+        /** @noinspection AdditionOperationOnArraysInspection */
         $this->_env += $env;
 
         if ($this->_toEnv) {
