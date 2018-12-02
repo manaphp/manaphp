@@ -241,21 +241,14 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * Sends SQL statements to the database server returning the success state.
-     * Use this method only when the SQL statement sent to the server is returning rows
-     *<code>
-     *    //Querying data
-     *    $resultset = $connection->query("SELECT * FROM robots WHERE type='mechanical'");
-     *    $resultset = $connection->query("SELECT * FROM robots WHERE type=?", array("mechanical"));
-     *</code>
-     *
      * @param string|\PDOStatement $statement
      * @param array                $bind
+     * @param int                  $fetchMode
      *
-     * @return \PdoStatement
+     * @return array
      * @throws \ManaPHP\Db\Exception
      */
-    protected function _query($statement, $bind = [])
+    protected function _fetchAll($statement, $bind, $fetchMode)
     {
         $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
         $this->_bind = $bind;
@@ -264,14 +257,14 @@ abstract class Db extends Component implements DbInterface
         $this->fireEvent('db:beforeQuery');
         $start_time = microtime(true);
         try {
-            $result = $bind ? $this->_execute(is_string($statement) ? $this->_sql : $statement, $bind) : @$this->_getPdo()->query($this->_sql);
+            $r = $bind ? $this->_execute(is_string($statement) ? $this->_sql : $statement, $bind) : @$this->_getPdo()->query($this->_sql);
         } catch (\PDOException $e) {
-            $result = null;
+            $r = null;
             $failed = true;
             if ($this->_transactionLevel === 0 && !$this->_ping()) {
                 try {
                     $this->close();
-                    $result = $bind ? $this->_execute($this->_sql, $bind) : @$this->_getPdo()->query($this->_sql);
+                    $r = $bind ? $this->_execute($this->_sql, $bind) : @$this->_getPdo()->query($this->_sql);
                     $failed = false;
                 } catch (\PDOException $e) {
                 }
@@ -286,10 +279,11 @@ abstract class Db extends Component implements DbInterface
             }
         }
 
+        $count = $this->_affectedRows = $r->rowCount();
+        $result = $r->fetchAll($fetchMode);
         $elapsed = round(microtime(true) - $start_time, 3);
-        $count = $this->_affectedRows = $result->rowCount();
 
-        $event_data = compact('count', 'sql', 'bind', 'elapsed');
+        $event_data = compact('count', 'sql', 'bind', 'elapsed', 'result');
         $this->fireEvent('db:afterQuery', $event_data);
         $this->logger->debug($event_data, 'db.query');
 
@@ -383,19 +377,6 @@ abstract class Db extends Component implements DbInterface
     public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
     {
         return ($rs = $this->_fetchAll($statement, $bind, $fetchMode)) ? $rs[0] : false;
-    }
-
-    /**
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
-     * @param int                  $fetchMode
-     *
-     * @return array
-     * @throws \ManaPHP\Db\Exception
-     */
-    protected function _fetchAll($statement, $bind, $fetchMode)
-    {
-        return $this->_query($statement, $bind)->fetchAll($fetchMode);
     }
 
     /**
