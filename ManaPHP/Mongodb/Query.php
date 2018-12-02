@@ -1115,37 +1115,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param int $size
-     * @param int $page
-     *
-     * @return \ManaPHP\PaginatorInterface
-     */
-    public function paginate($size = null, $page = null)
-    {
-        $this->page($size, $page);
-
-        $items = $this->all();
-
-        if ($this->_limit === null) {
-            $count = count($items);
-        } elseif (count($items) % $this->_limit === 0) {
-            $count = $this->count();
-        } else {
-            $count = $this->_offset + count($items);
-        }
-
-        $paginator = $this->paginator;
-
-        $paginator->items = $items;
-
-        if ($this->_with) {
-            $paginator->items = $this->relationsManager->earlyLoad($this->_model, $paginator->items, $this->_with, true);
-        }
-
-        return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
-    }
-
-    /**
      * @return bool
      */
     public function exists()
