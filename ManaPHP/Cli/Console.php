@@ -134,7 +134,7 @@ class Console extends Component implements ConsoleInterface
                 }
 
                 if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
-                    $message[$k] = $this->exceptionToString($v);
+                    $message[$k] = (string)$v;
                 } elseif (is_array($v) || $v instanceof \JsonSerializable) {
                     $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 }
