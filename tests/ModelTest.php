@@ -77,7 +77,7 @@ class ModelTest extends TestCase
 
         //criteria with closure explicit fetch()
         $city = City::first(1, null, ['with' => ['country' => function (QueryInterface $query) {
-            return $query->select(['country_id'])->fetch();
+            return $query->select(['country_id']);
         }]]);
         $this->assertNull($city->country->last_update);
         $this->assertEquals(87, $city->country->country_id);
@@ -127,7 +127,7 @@ class ModelTest extends TestCase
 
         //criteria with closure explicit fetch()
         $city = City::first(1, null, ['with' => ['countryExplicit' => function (QueryInterface $query) {
-            return $query->select(['country_id'])->fetch();
+            return $query->select(['country_id']);
         }]]);
         $this->assertNull($city->countryExplicit->last_update);
         $this->assertEquals(87, $city->countryExplicit->country_id);
@@ -160,9 +160,9 @@ class ModelTest extends TestCase
         $this->assertCount(4, $country->cities[8]->toArray());
 
         //criteria with explicit fields
-        $country = Country::first(44, null, ['with' => ['cities' => 'city_id, city']]);
+        $country = Country::first(44, null, ['with' => ['cities' => 'city_id, city,country_id']]);
         $this->assertCount(60, $country->cities);
-        $this->assertCount(2, $country->cities[8]->toArray());
+        $this->assertCount(3, $country->cities[8]->toArray());
     }
 
     public function test_explicit_hasMany()
