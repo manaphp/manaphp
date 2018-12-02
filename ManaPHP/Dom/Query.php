@@ -85,6 +85,10 @@ class Query
             $xpath = $this->_cssToXPath->transform($css);
         }
 
+        if ($context && $xpath[0] === '/') {
+            $xpath = '.' . $xpath;
+        }
+
         return $this->xpath($is_not ? "not($xpath)" : $xpath, $context);
     }
 }
