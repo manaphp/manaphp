@@ -481,22 +481,30 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * @param string $attr
-     * @param string $default
      *
-     * @return string[][]
+     * @return string[]
      */
-    public function attr($attr = null, $default = null)
+    public function attr($attr)
     {
         $data = [];
 
         foreach ($this->_nodes as $node) {
-            $selector = new Selector($this->_document, $node);
-            $data[$node->getNodePath()] = $selector->attr($attr, $default);
+            $data[] = $node->getAttribute($attr);
         }
 
         return $data;
     }
 
+    /**
+     * @param string $attr
+     *
+     * @return string|null
+     */
+    public function attr_first($attr)
+    {
+        return $this->_nodes ? current($this->_nodes)->getAttribute($attr) : null;
+    }
+	
     /**
      * @return string[]
      */
@@ -511,6 +519,40 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * @return string|null
+     */
+    public function text_first()
+    {
+        return $this->_nodes ? current($this->_nodes)->textContent : null;
+    }
+
+    /**
+     * @param string $attr
+     *
+     * @return array
+     */
+    public function url($attr)
+    {
+        $data = [];
+
+        foreach ($this->_nodes as $node) {
+            $data[] = $this->_document->absolutizeUrl($node->getAttribute($attr));
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $attr
+     *
+     * @return string|null
+     */
+    public function url_first($attr)
+    {
+        return $this->_nodes ? $this->_document->absolutizeUrl(current($this->_nodes)->getAttribute($attr)) : null;
+    }
+
+    /**
      * @return string[]
      */
     public function html()
@@ -521,6 +563,19 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         }
 
         return $data;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function html_first()
+    {
+        if ($this->_nodes) {
+            $node = current($this->_nodes);
+            return $node->ownerDocument->saveHTML($node);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -619,6 +674,21 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         }
 
         return $data;
+    }
+
+    /**
+     * @param array $rules
+     *
+     * @return array
+     */
+    public function extract_first($rules)
+    {
+        if ($this->_nodes) {
+            $selector = new Selector($this->_document, current($this->_nodes));
+            return $selector->extract($rules);
+        } else {
+            return [];
+        }
     }
 
     /**
