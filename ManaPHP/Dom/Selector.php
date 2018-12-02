@@ -317,6 +317,21 @@ class Selector
     }
 
     /**
+     * @param string $css
+     *
+     * @return string|null
+     */
+    public function html_first($css)
+    {
+        if ($nodes = $this->_document->getQuery()->css($css, $this->_node)) {
+            $node = $nodes->item(0);
+            return $node->ownerDocument->saveHTML($node);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @param string $regex
      *
      * @return array
