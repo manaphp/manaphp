@@ -209,6 +209,18 @@ class Document extends Component
     }
 
     /**
+     * @param string $url
+     *
+     * @return static
+     */
+    public function setBaseUrl($url)
+    {
+        $this->_baseUrl = $url;
+
+        return $this;
+    }
+
+    /**
      * @param \DOMElement $node
      *
      * @return string
@@ -229,7 +241,7 @@ class Document extends Component
      */
     public function absolutizeUrl($url)
     {
-        if (preg_match('#^https?://#i', $url) || strpos($url, 'javascript:') === 0) {
+        if (!$this->_baseUrl || preg_match('#^https?://#i', $url) || strpos($url, 'javascript:') === 0) {
             return $url;
         }
 
