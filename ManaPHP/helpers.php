@@ -638,9 +638,7 @@ if (!function_exists('transaction')) {
     function transaction($work, $service = 'db')
     {
         try {
-            /**
-             * @var \ManaPHP\DbInterface $db
-             */
+            /** @var \ManaPHP\DbInterface $db */
             $db = di($service);
             $db->begin();
             $work();

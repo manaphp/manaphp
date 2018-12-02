@@ -1020,9 +1020,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     {
         $unions = [];
 
-        /**
-         * @var \ManaPHP\Db\QueryInterface $queries
-         */
+        /** @var \ManaPHP\Db\QueryInterface $queries */
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_union['queries'] as $queries) {
             $unions[] = '(' . $queries->getSql() . ')';

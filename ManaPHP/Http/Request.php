@@ -538,9 +538,7 @@ class Request extends Component implements RequestInterface
      */
     public function hasFiles($onlySuccessful = false)
     {
-        /**
-         * @var $_FILES array
-         */
+        /** @var $_FILES array */
         foreach ($_FILES as $file) {
             if (is_int($file['error'])) {
                 $error = $file['error'];
@@ -572,9 +570,7 @@ class Request extends Component implements RequestInterface
     {
         $files = [];
 
-        /**
-         * @var $_FILES array
-         */
+        /** @var $_FILES array */
         foreach ($_FILES as $key => $file) {
             if (is_int($file['error'])) {
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {

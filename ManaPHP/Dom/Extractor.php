@@ -71,9 +71,7 @@ class Extractor
      */
     public function extract($rule, $context = null)
     {
-        /**
-         * @var \DOMElement $node
-         */
+        /** @var \DOMElement $node */
         $query = $this->_document->getQuery();
 
         $selector = $rule[0];

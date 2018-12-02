@@ -91,9 +91,7 @@ class Manager extends Component implements ManagerInterface
 
             $valueField = lcfirst($match[2]) . '_id';
             if (in_array($valueField, $model->getForeignKeys(), true)) {
-                /**
-                 * @var \ManaPHP\Model $reference
-                 */
+                /** @var \ManaPHP\Model $reference */
                 $reference = new $referenceName;
                 return [$referenceName, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), $valueField];
             } else {
@@ -106,9 +104,7 @@ class Manager extends Component implements ManagerInterface
                 return false;
             }
 
-            /**
-             * @var \ManaPHP\Model $reference
-             */
+            /** @var \ManaPHP\Model $reference */
             $reference = new $referenceName;
 
             $keys = $model->getForeignKeys();
@@ -218,9 +214,7 @@ class Manager extends Component implements ManagerInterface
     public function getQuery($model, $name, $data)
     {
         $relation = $this->get($model, $name);
-        /**
-         * @var \ManaPHP\Model $referenceModel
-         */
+        /** @var \ManaPHP\Model $referenceModel */
         $referenceModel = $relation->referenceModel;
         $query = $referenceModel::query();
 
@@ -348,16 +342,12 @@ class Manager extends Component implements ManagerInterface
             return $referenceModel::query()->where($relation->keyField, $instance->$valueField)->setFetchType(true);
         } elseif ($type === Relation::TYPE_HAS_MANY_TO_MANY) {
             $ids = $instance::values($relation->keyField, [$valueField => $instance->$valueField]);
-            /**
-             * @var \ManaPHP\Model $referenceInstance
-             */
+            /** @var \ManaPHP\Model $referenceInstance */
             $referenceInstance = is_string($referenceModel) ? new $referenceModel : $referenceModel;
             return $referenceModel::query()->whereIn($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
         } elseif ($type === Relation::TYPE_HAS_MANY_VIA) {
             $via = $relation->keyField;
-            /**
-             * @var \ManaPHP\Model $reference
-             */
+            /** @var \ManaPHP\Model $reference */
             $reference = new $referenceModel();
             $ids = $via::values($reference->getPrimaryKey(), [$valueField => $instance->$valueField]);
             return $referenceModel::query()->whereIn($reference->getPrimaryKey(), $ids)->setFetchType(true);

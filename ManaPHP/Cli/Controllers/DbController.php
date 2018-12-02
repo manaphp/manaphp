@@ -32,9 +32,7 @@ class DbController extends Controller
      */
     protected function _getTables($service, $pattern = null)
     {
-        /**
-         * @var \ManaPHP\DbInterface $db
-         */
+        /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($service);
         $tables = [];
         foreach ($db->getTables() as $table) {
@@ -182,9 +180,7 @@ class DbController extends Controller
     public function listCommand($services = [], $table_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
-            /**
-             * @var \ManaPHP\DbInterface $db
-             */
+            /** @var \ManaPHP\DbInterface $db */
             $db = $this->_di->getShared($service);
 
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
@@ -221,9 +217,7 @@ class DbController extends Controller
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
         }
 
-        /**
-         * @var \ManaPHP\DbInterface $db
-         */
+        /** @var \ManaPHP\DbInterface $db */
         if ($service) {
             $db = $this->_di->getShared($service);
             if (!in_array($table, $db->getTables(), true)) {
@@ -289,9 +283,7 @@ class DbController extends Controller
     public function jsonCommand($services = [], $table_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
-            /**
-             * @var \ManaPHP\DbInterface $db
-             */
+            /** @var \ManaPHP\DbInterface $db */
             $db = $this->_di->getShared($service);
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $fileName = "@tmp/db_json/$service/$table.json";
@@ -330,9 +322,7 @@ class DbController extends Controller
     public function csvCommand($services = [], $table_pattern = '', $bom = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
-            /**
-             * @var \ManaPHP\Db $db
-             */
+            /** @var \ManaPHP\Db $db */
             $db = $this->_di->getShared($service);
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');

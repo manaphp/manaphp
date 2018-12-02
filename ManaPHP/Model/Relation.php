@@ -46,10 +46,8 @@ class Relation
             $this->keyField = $definition[2];
             $this->valueField = $definition[3];
         } else {
-            /**
-             * @var \ManaPHP\Model $reference
-             * @var \ManaPHP\Model $referenceModel
-             */
+            /** @var \ManaPHP\Model $reference */
+            /** @var \ManaPHP\Model $referenceModel */
             $this->referenceModel = $referenceModel = $definition[0];
             $this->type = $type = $definition[1];
             $referenceField = isset($definition[2]) ? $definition[2] : null;
@@ -84,9 +82,7 @@ class Relation
      */
     protected function _inferReferenceField($primaryModel, $model)
     {
-        /**
-         * @var \ManaPHP\ModelInterface $model
-         */
+        /** @var \ManaPHP\ModelInterface $model */
         $modelTail = ($pos = strrpos($model, '\\')) !== false ? substr($model, $pos + 1) : $model;
         $tryField = lcfirst($modelTail) . '_id';
         $fields = $primaryModel->getFields();

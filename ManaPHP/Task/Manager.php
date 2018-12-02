@@ -103,9 +103,7 @@ class Manager extends Component implements ManagerInterface, LogCategorizable
             throw new InvalidArgumentException('task class is not exists: :task => :class', ['task' => $task, 'class' => $className]);
         }
 
-        /**
-         * @var \ManaPHP\TaskInterface $instance
-         */
+        /** @var \ManaPHP\TaskInterface $instance */
         $this->logger->info(['`:name`(:class) starting...', 'name' => $task, 'class' => $className]);
 
         $exception_times = 0;
@@ -127,9 +125,7 @@ class Manager extends Component implements ManagerInterface, LogCategorizable
         }
 
         $this->logger->info([':class start success.', 'class' => $className]);
-        /**
-         * @var \ManaPHP\TaskInterface $instance
-         */
+        /** @var \ManaPHP\TaskInterface $instance */
         while (true) {
             try {
                 $instance = new $className();
