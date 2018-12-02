@@ -511,21 +511,6 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * @param bool $as_string
-     *
-     * @return array
-     */
-    public function element($as_string = false)
-    {
-        $data = [];
-        foreach ($this->_nodes as $node) {
-            $data[] = (new Selector($node))->element($as_string);
-        }
-
-        return $data;
-    }
-
-    /**
      * @return string[]
      */
     public function html()

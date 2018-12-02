@@ -243,28 +243,7 @@ class Selector
 
         return $data;
     }
-
-    /**@param bool $as_string
-     *
-     * @return string|array
-     */
-    public function element($as_string = false)
-    {
-        if ($as_string) {
-            return $this->html();
-        }
-
-        $data = [
-            'name' => $this->_node->nodeName,
-            'html' => $this->html(),
-            'text' => $this->text(),
-            'attr' => $this->attr(),
-            'xpath' => $this->_node->getNodePath()
-        ];
-
-        return $data;
-    }
-
+    
     /**
      * @return string
      */
