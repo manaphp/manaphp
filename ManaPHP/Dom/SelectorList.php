@@ -504,7 +504,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         return $this->_nodes ? current($this->_nodes)->getAttribute($attr) : null;
     }
-	
+
     /**
      * @return string[]
      */
@@ -689,6 +689,20 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         } else {
             return [];
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function path()
+    {
+        $data = [];
+
+        foreach ($this->_nodes as $node) {
+            $data[] = $node->getNodePath();
+        }
+
+        return $data;
     }
 
     /**

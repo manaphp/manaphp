@@ -383,6 +383,14 @@ class Selector
     }
 
     /**
+     * @return string
+     */
+    public function path()
+    {
+        return $this->_node->getNodePath();
+    }
+
+    /**
      * @return \DOMNode
      */
     public function node()
