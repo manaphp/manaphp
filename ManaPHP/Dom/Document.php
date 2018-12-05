@@ -47,8 +47,6 @@ class Document extends Component
      * Document constructor.
      *
      * @param string $str
-     *
-     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function __construct($str = null)
     {
@@ -304,5 +302,23 @@ class Document extends Component
         }
 
         return $this;
+    }
+
+    /**
+     * @return \ManaPHP\Dom\Selector
+     */
+    public function selector()
+    {
+        return new Selector($this);
+    }
+
+    /**
+     * @param string|array $css
+     *
+     * @return \ManaPHP\Dom\SelectorList
+     */
+    public function css($css)
+    {
+        return $this->selector()->css($css);
     }
 }
