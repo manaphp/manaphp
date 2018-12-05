@@ -48,15 +48,15 @@ class Document extends Component
      *
      * @param string $str
      */
-    public function __construct($str = null)
+    public function __construct($str = null, $url = null)
     {
         if ($str !== null) {
             if (preg_match('#^https?://#', $str)) {
                 $this->loadUrl($str);
             } elseif ($str[0] === '@' || $str[0] === '/' || $str[1] === ':') {
-                $this->loadFile($str);
+                $this->loadFile($str, $url);
             } else {
-                $this->loadString($str);
+                $this->loadString($str, $url);
             }
         }
     }
