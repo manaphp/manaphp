@@ -272,6 +272,12 @@ class Selector
         foreach ($rules as $name => $rule) {
             if ($rule[0] === '@') {
                 $data[$name] = $node->getAttribute(substr($rule, 1));
+            } elseif ($rule === 'text()') {
+                $data[$name] = $node->textContent;
+            } elseif ($rule === 'html()') {
+                $data[$name] = $node->ownerDocument->saveHTML($node);
+            } elseif ($rule === 'path()') {
+                $data[$name] = $node->getNodePath();
             } elseif (($pos = strpos($rule, '@')) === false) {
                 $nodes = $this->_document->getQuery()->css($rule, $node);
                 $data[$name] = $nodes->length ? $nodes->item(0)->textContent : null;
