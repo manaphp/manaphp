@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP\Dom;
 
-use ManaPHP\Exception\NotSupportedException;
-
 class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
 {
     /**
@@ -158,57 +156,18 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * @param string          $field
-     * @param callable|string $func
+     * @param callable $func
      *
      * @return static
      */
-    public function filter($field = null, $func = null)
+    public function filter($func)
     {
-        if ($field === '') {
-            return clone $this;
-        }
-
-        if ($field !== null && $field[0] === '!') {
-            $field = substr($field, 1);
-            $not = true;
-        } else {
-            $not = false;
-        }
-
-        if (is_string($func)) {
-            $is_preg = in_array($func[0], ['@', '#'], true) && substr_count($func, $func[0]) >= 2;
-        }
-
+        $index = 0;
         $nodes = [];
-        foreach ($this->_nodes as $path => $node) {
-            $selector = new Selector($node);
-            if ($field === null) {
-                $value = $selector;
-            } elseif (strpos($field, '()') !== false) {
-                if ($field === 'text()') {
-                    $value = $selector->text();
-                } elseif ($field === 'html()') {
-                    $value = $selector->html();
-                } elseif ($field === 'node()') {
-                    $value = $node;
-                } else {
-                    throw new NotSupportedException('invalid field');
-                }
-            } else {
-                $value = $selector->attr($field);
-            }
-
-            if ($func === null) {
-                $r = $value !== '';
-            } elseif (is_string($func)) {
-                $r = $is_preg ? preg_match($func, $value) : strpos($value, $func) !== false;
-            } else {
-                $r = $func($value);
-            }
-
-            if (($not && !$r) || (!$not && $r)) {
-                $nodes[$path] = $node;
+        foreach ($this->_nodes as $node) {
+            $selector = new Selector($this->_document, $node);
+            if ($func($selector, $index++) !== false) {
+                $nodes[] = $node;
             }
         }
 
