@@ -3,6 +3,7 @@ namespace ManaPHP\Filesystem\Adapter;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
+use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\FilesystemInterface;
 
@@ -70,7 +71,11 @@ class File extends Component implements FilesystemInterface
      */
     public function fileGet($file)
     {
-        return @file_get_contents($this->alias->resolve($file));
+        if (($r = @file_get_contents($this->alias->resolve($file))) === false) {
+            throw new FileNotFoundException($file);
+        }
+
+        return $r;
     }
 
     /**
