@@ -53,39 +53,28 @@ class Document extends Component
     public function __construct($str = null)
     {
         if ($str !== null) {
-            $this->load($str);
+            if (preg_match('#^https?://#', $str)) {
+                $this->loadUrl($str);
+            } elseif ($str[0] === '@' || $str[0] === '/' || $str[1] === ':') {
+                $this->loadFile($str);
+            } else {
+                $this->loadString($str);
+            }
         }
-    }
-
-    /**
-     * @param string $str
-     *
-     * @return static
-     * @throws \ManaPHP\Curl\ConnectionException
-     */
-    public function load($str)
-    {
-        if (preg_match('#^https?://#', $str)) {
-            $this->loadUrl($str);
-        } elseif ($str[0] === '@' || $str[0] === '/' || $str[1] === ':') {
-            $this->loadFile($str);
-        } else {
-            $this->loadString($str);
-        }
-
-        return $this;
     }
 
     /**
      * @param string $file
+     * @param static $url
      *
      * @return static
      */
-    public function loadFile($file)
+    public function loadFile($file, $url = null)
     {
         $this->_sourceUrl = $file;
         $str = $this->filesystem->fileGet($file);
-        return $this->loadString($str);
+
+        return $this->loadString($str, $url);
     }
 
     /**
