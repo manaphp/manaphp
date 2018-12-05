@@ -266,7 +266,7 @@ class Selector
     public function extract($rules)
     {
         /** @var \DOMElement $node */
-        $node = $this->_node ?: $this->_document;
+        $node = $this->_node;
 
         $data = [];
         foreach ($rules as $name => $rule) {
