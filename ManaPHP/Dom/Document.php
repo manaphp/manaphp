@@ -215,7 +215,7 @@ class Document extends Component
      */
     public function setBaseUrl($url)
     {
-        $this->_baseUrl = $url;
+        $this->_baseUrl = rtrim($url, '/') . '/';
 
         return $this;
     }
