@@ -21,12 +21,7 @@ class Selector
      */
     public function __construct($document, $node = null)
     {
-        if (is_string($document)) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            $document = (new Document())->load($document);
-        }
-
-        $this->_document = $document;
+        $this->_document = is_string($document) ? new Document($document) : $document;
         $this->_node = $node;
     }
 
