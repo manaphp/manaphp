@@ -8,8 +8,6 @@ use ManaPHP\Dom\Document\Exception as DocumentException;
  * Class Document
  *
  * @package ManaPHP\Dom
- *
- * @property-read \ManaPHP\Curl\Easy $httpClient
  */
 class Document extends Component
 {
