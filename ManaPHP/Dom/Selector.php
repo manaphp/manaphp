@@ -298,7 +298,13 @@ class Selector
      */
     public function extract_first($css, $rules)
     {
-        return $this->css($css)->extract_first($rules);
+        $nodes = $this->_document->getQuery()->css($css);
+
+        if ($nodes) {
+            return (new static($this->_document, $nodes->item(0)))->extract($rules);
+        } else {
+            return [];
+        }
     }
 
     /**
