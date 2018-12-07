@@ -157,6 +157,7 @@ class Filter extends Component implements FilterInterface
 
         $filters = $this->_parseRule($rule);
 
+        /** @noinspection NotOptimalIfConditionsInspection */
         if (isset($filters['required']) && ($value === '' || $value === null)) {
             throw new MissingRequiredFieldsException($attribute);
         }
