@@ -298,7 +298,7 @@ class Selector
      */
     public function extract_first($css, $rules)
     {
-        return $this->css($css)->extract_first();
+        return $this->css($css)->extract_first($rules);
     }
 
     /**
