@@ -45,6 +45,7 @@ class Document extends Component
      * Document constructor.
      *
      * @param string $str
+     * @param string $url
      */
     public function __construct($str = null, $url = null)
     {
