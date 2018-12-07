@@ -3,7 +3,6 @@ namespace Tests;
 
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Di\FactoryDefault;
-use PDO;
 use PHPUnit\Framework\TestCase;
 
 class DbTest extends TestCase

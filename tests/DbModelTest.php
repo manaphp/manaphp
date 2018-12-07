@@ -46,7 +46,7 @@ class TestCity3 extends Model
 class DbModelTest extends TestCase
 {
     /**
-     * @var \ManaPHP\DiInterface
+     * @var \ManaPHP\Di
      */
     protected $di;
 

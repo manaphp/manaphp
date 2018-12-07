@@ -111,7 +111,7 @@ class DomCssToXPathTest extends \PHPUnit_Framework_TestCase
             'div > p.first' => "//div/p[contains(concat(' ', normalize-space(@class), ' '), ' first ')]",
             'a[rel="include"]' => "//a[@rel='include']",
             "a[rel='include']" => "//a[@rel='include']",
-            "a[rel=include]" => "//a[@rel='include']",
+            'a[rel=include]' => "//a[@rel='include']",
 
             'p:first' => '//p[first()]',
             'p:last' => '//p[last()]',

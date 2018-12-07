@@ -4,8 +4,6 @@ namespace Tests;
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\DbInterface;
 use ManaPHP\Di;
-use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Http\Session\Adapter\Db;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 

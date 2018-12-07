@@ -1,7 +1,6 @@
 <?php
 namespace App\Areas\Menu\Models;
 
-use App\Areas\Rbac\Models\Permission;
 use ManaPHP\Db\Model;
 
 class Item extends Model
