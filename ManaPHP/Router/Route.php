@@ -80,7 +80,7 @@ class Route implements RouteInterface
                 foreach ($matches as $match) {
                     $parts = explode(':', $match[1], 2);
                     $to = '(?<' . $parts[0] . '>' . (isset($parts[1]) ? $parts[1] : '[\w-]+') . ')';
-                    $pattern = str_replace($match[0], $to, $pattern);
+                    $pattern = (string)str_replace($match[0], $to, $pattern);
                 }
             }
 
