@@ -55,7 +55,7 @@ class Response
             if (($pos = strpos($header, ': ')) === false) {
                 continue;
             }
-            
+
             $name = substr($header, 0, $pos);
             $value = substr($header, $pos + 2);
             if (isset($headers[$name])) {
@@ -96,7 +96,7 @@ class Response
         $body = $this->body;
         if (preg_match('#charset=([\w-]+)#i', $this->content_type, $match) === 1) {
             $charset = strtoupper($match[1]);
-            if ($charset !== 'UTF-8') {
+            if ($charset !== 'UTF-8' && $charset !== 'UTF8') {
                 $body = iconv($charset, 'UTF-8', $body);
             }
         }
