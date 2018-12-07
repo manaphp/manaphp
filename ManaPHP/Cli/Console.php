@@ -189,8 +189,6 @@ class Console extends Component implements ConsoleInterface
                     $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 } elseif ($v instanceof \Serializable) {
                     $v = serialize($v);
-                } elseif (is_string($v)) {
-                    null;
                 } elseif ($v === null || is_scalar($v)) {
                     $v = json_encode($v);
                 } else {
