@@ -2,6 +2,7 @@
 namespace ManaPHP\View;
 
 use ManaPHP\Component;
+use ManaPHP\Logger\LogCategorizable;
 
 /**
  * Class ManaPHP\View\Widget
@@ -13,7 +14,10 @@ use ManaPHP\Component;
  * @property-read \ManaPHP\RendererInterface $renderer
  * @property-read \ManaPHP\DbInterface       $db
  */
-abstract class Widget extends Component implements WidgetInterface
+abstract class Widget extends Component implements WidgetInterface, LogCategorizable
 {
-
+    public function categorizeLog()
+    {
+        return basename(str_replace('\\', '.', get_called_class()), 'Widget');
+    }
 }

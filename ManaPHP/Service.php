@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP;
 
-class Service extends Component
+use ManaPHP\Logger\LogCategorizable;
+
+class Service extends Component implements LogCategorizable
 {
     public function categorizeLog()
     {

@@ -3,6 +3,7 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
+use ManaPHP\Logger\LogCategorizable;
 
 /**
  * Class ManaPHP\Cli\Controller
@@ -17,7 +18,7 @@ use ManaPHP\Component;
  * @property-read \ManaPHP\Text\CrosswordInterface $crossword
  * @property-read \ManaPHP\Cli\HandlerInterface    $cliHandler
  */
-abstract class Controller extends Component
+abstract class Controller extends Component implements LogCategorizable
 {
     public function categorizeLog()
     {

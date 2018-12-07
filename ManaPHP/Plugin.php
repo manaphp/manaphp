@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Logger\LogCategorizable;
+
 /**
  * Class Plugin
  * @package ManaPHP
@@ -22,7 +24,10 @@ namespace ManaPHP;
  * @property-read \ManaPHP\Http\SessionInterface          $session
  * @property-read \ManaPHP\RendererInterface              $renderer
  */
-abstract class Plugin extends Component implements PluginInterface
+abstract class Plugin extends Component implements PluginInterface, LogCategorizable
 {
-
+    public function categorizeLog()
+    {
+        return basename(str_replace('\\', '.', get_called_class()), 'Plugin');
+    }
 }

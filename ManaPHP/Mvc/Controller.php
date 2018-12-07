@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
+use ManaPHP\Logger\LogCategorizable;
 
 /**
  * Class ManaPHP\Mvc\Controller
@@ -32,7 +33,7 @@ use ManaPHP\Component;
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\RouterInterface                $router
  */
-abstract class Controller extends Component
+abstract class Controller extends Component implements LogCategorizable
 {
     public function categorizeLog()
     {
