@@ -110,16 +110,11 @@ class Redis extends Component
         }
     }
 
-
-    protected function _connect($isFirst)
+    /**
+     * @return \Redis
+     */
+    protected function _connect()
     {
-        if ($isFirst) {
-            $this->logger->debug(['connect to `:url`', 'url' => $this->_url], 'redis.connect');
-        } else {
-            $this->close();
-            $this->logger->info(['reconnect to `:url`', 'url' => $this->_url], 'redis.reconnect');
-        }
-
         $redis = new \Redis();
 
         if ($this->_persistent) {
@@ -138,9 +133,9 @@ class Redis extends Component
             throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
         }
 
-        $this->_redis = $redis;
+        $redis->setOption(\Redis::OPT_READ_TIMEOUT, -1);
 
-        return $redis;
+        return $this->_redis = $redis;
     }
 
     public function close()
@@ -178,10 +173,13 @@ class Redis extends Component
 
         if ($this->_redis) {
             if ($current - $this->_lastIoTime >= $this->_ping_interval && !$this->_ping()) {
-                $this->_connect(false);
+                $this->close();
+                $this->logger->info(['reconnect to `:url`', 'url' => $this->_url], 'redis.reconnect');
+                $this->_connect();
             }
         } else {
-            $this->_connect(true);
+            $this->logger->debug(['connect to `:url`', 'url' => $this->_url], 'redis.connect');
+            $this->_connect();
         }
 
         $this->_lastIoTime = $current;
@@ -220,7 +218,9 @@ class Redis extends Component
             $r = null;
             $failed = true;
             if (!$this->_ping()) {
-                $this->_connect(false);
+                $this->close();
+                $this->logger->info(['reconnect to `:url`', 'url' => $this->_url], 'redis.reconnect');
+                $this->_connect();
 
                 try {
                     $r = @call_user_func_array([$this->_redis, $name], $arguments);
@@ -257,5 +257,23 @@ class Redis extends Component
         }
 
         return $r;
+    }
+
+    /**
+     * @return \Redis
+     */
+    public function getConnection()
+    {
+        $current = microtime(true);
+        if ($this->_redis) {
+            if ($current - $this->_lastIoTime >= $this->_ping_interval && !$this->_ping()) {
+                $this->close();
+                return $this->_connect();
+            } else {
+                return $this->_redis;
+            }
+        } else {
+            return $this->_connect();
+        }
     }
 }
