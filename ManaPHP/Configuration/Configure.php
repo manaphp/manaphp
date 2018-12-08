@@ -16,6 +16,11 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
+    public $id = 'app';
+
+    /**
+     * @var string
+     */
     public $env = 'prod';
 
     /**
