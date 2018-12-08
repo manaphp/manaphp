@@ -10,7 +10,7 @@ class FiddlerPlugin extends Plugin
     /**
      * @var string
      */
-    protected $_entry = 'fiddler';
+    protected $_entry = 'fiddler:';
 
     /**
      * @var bool
@@ -121,7 +121,7 @@ class FiddlerPlugin extends Plugin
         /** @noinspection PhpUndefinedMethodInspection */
         /** @var \Redis $redis */
         $redis = $this->redis->getConnection();
-        return $redis->publish($this->_entry, json_encode($packet, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        return $redis->publish($this->_entry . $this->configure->id, json_encode($packet, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -135,7 +135,7 @@ class FiddlerPlugin extends Plugin
         /** @var \Redis $redis */
         $redis = $this->redis->getConnection();
 
-        $redis->subscribe([$this->_entry], [$this, 'processMessage']);
+        $redis->subscribe([$this->_entry . $this->configure->id], [$this, 'processMessage']);
     }
 
     public function processMessage($redis, $channel, $packet)
