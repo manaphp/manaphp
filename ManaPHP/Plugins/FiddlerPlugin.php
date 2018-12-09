@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Plugins;
 
+use ManaPHP\Logger;
 use ManaPHP\Plugin;
 
 class FiddlerPlugin extends Plugin
@@ -50,6 +51,10 @@ class FiddlerPlugin extends Plugin
         if ($current - $this->_last_checked >= 1.0) {
             $this->_last_checked = $current;
             $this->_enabled = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
+        }
+        
+        if ($this->_enabled) {
+            $this->logger->setLevel(Logger::LEVEL_DEBUG);
         }
     }
 
