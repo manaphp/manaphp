@@ -52,7 +52,7 @@ class FiddlerPlugin extends Plugin
             $this->_last_checked = $current;
             $this->_enabled = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
         }
-        
+
         if ($this->_enabled) {
             $this->logger->setLevel(Logger::LEVEL_DEBUG);
         }

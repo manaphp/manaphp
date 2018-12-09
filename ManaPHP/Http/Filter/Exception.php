@@ -10,5 +10,5 @@ use ManaPHP\Exception\BadRequestException;
  */
 class Exception extends BadRequestException
 {
-    
+
 }

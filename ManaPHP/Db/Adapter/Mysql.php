@@ -2,9 +2,9 @@
 namespace ManaPHP\Db\Adapter;
 
 use ManaPHP\Db;
+use ManaPHP\Db\AssignmentInterface;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidArgumentException;
-use ManaPHP\Db\AssignmentInterface;
 
 /**
  * Class ManaPHP\Db\Adapter\Mysql
