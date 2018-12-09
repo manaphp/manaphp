@@ -97,9 +97,13 @@ class Arguments extends Component implements ArgumentsInterface
 
                 $this->_options[substr($o, 2)] = !$args || $args[0] === '-' ? 1 : array_shift($args);
             } elseif (strlen($o) > 2) {
-                /** @noinspection PhpParamsInspection */
-                foreach (array_chunk(substr($o, 1), 1) as $c) {
-                    $this->_options[$c] = 1;
+                if (!$args || $args[0][0] === '-') {
+                    /** @noinspection PhpParamsInspection */
+                    foreach (str_split(substr($o, 1), 1) as $c) {
+                        $this->_options[$c] = 1;
+                    }
+                } else {
+                    $this->_options[substr($o, 1)] = array_shift($args);
                 }
             } else {
                 $this->_options[substr($o, 1)] = !$args || $args[0] === '-' ? 1 : array_shift($args);
