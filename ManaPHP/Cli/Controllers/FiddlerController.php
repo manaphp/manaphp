@@ -10,8 +10,48 @@ use ManaPHP\Cli\Controller;
  */
 class FiddlerController extends Controller
 {
-    public function defaultCommand()
+    public function setDi($di)
     {
-        $this->fiddlerPlugin->subscribe();
+        if (!$di->has('fiddlerPlugin')) {
+            $di->setShared('fiddlerPlugin', 'ManaPHP\Plugins\FiddlerPlugin');
+        }
+        return parent::setDi($di);
+    }
+
+    /**
+     * fiddler web app
+     *
+     * @param string $id application id
+     * @param string $ip client ip
+     */
+    public function webCommand($id = '', $ip = '')
+    {
+        $options = [];
+
+        if ($id) {
+            $options['id'] = $id;
+        }
+
+        if ($ip) {
+            $options['ip'] = $ip;
+        }
+
+        $this->fiddlerPlugin->subscribeWeb($options);
+    }
+
+    /**
+     * fiddler cli app
+     *
+     * @param string $id application id
+     */
+    public function cliCommand($id = '')
+    {
+        $options = [];
+
+        if ($id) {
+            $options['id'] = $id;
+        }
+
+        $this->fiddlerPlugin->subscribeCli($options);
     }
 }

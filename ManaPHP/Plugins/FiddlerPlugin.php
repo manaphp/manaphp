@@ -10,12 +10,12 @@ class FiddlerPlugin extends Plugin
     /**
      * @var string
      */
-    protected $_entry = 'fiddler:';
+    protected $_channel;
 
     /**
      * @var bool
      */
-    protected $_enabled = false;
+    protected $_enabled = true;
 
     /**
      * @var array
@@ -23,86 +23,93 @@ class FiddlerPlugin extends Plugin
     protected $_header;
 
     /**
-     * FiddlerPlugin constructor.
-     *
-     * @param array $options
+     * @var float
      */
-    public function __construct($options = [])
-    {
-        if (isset($options['entry'])) {
-            $this->_entry = $options['entry'];
-        }
-    }
+    protected $_last_checked;
 
     public function init()
     {
-        $this->eventsManager->peekEvent([$this, 'peek']);
+        $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
+        $this->eventsManager->attachEvent('app:beginRequest', [$this, 'checkEnabled']);
         $this->eventsManager->attachEvent('app:beginRequest', [$this, 'onBeginRequest']);
+        $this->eventsManager->attachEvent('response:afterSend', [$this, 'onAfterSendResponse']);
+        $this->_header = ['ip' => '-', 'url' => '-', 'uuid' => '-'];
+        $this->_channel = 'manaphp:fiddler:cli:' . $this->configure->id;
     }
 
-    public function onBeginRequest()
-    {
-        $this->publish_onBeginRequest();
-    }
-
-    public function peek($event, $source, $data)
-    {
-        if (!$this->_enabled) {
-            return;
-        }
-
-        if ($event === 'logger:log') {
-            $this->publish_onLoggerLog($data);
-        } elseif ($event === 'response:afterSend') {
-            $this->publish_onAfterSendResponse($source);
-        }
-    }
-
-    /**
-     * @param \ManaPHP\Logger\Log $log
-     */
-    public function publish_onLoggerLog($log)
-    {
-        $data = [
-            'category' => $log->category,
-            'location' => $log->location,
-            'level' => $log->level,
-            'message' => $log->message,
-        ];
-        $this->publish('logger', $data);
-    }
-
-    public function publish_onBeginRequest()
+    public function checkEnabled()
     {
         $this->_header = [
             'ip' => $this->request->getClientIp(),
             'url' => parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),
             'uuid' => substr(md5($_SERVER['REQUEST_TIME_FLOAT'] . mt_rand()), 0, 8)
         ];
+        $this->_channel = 'manaphp:fiddler:web:' . $this->configure->id . ':' . $this->request->getClientIp();
 
-        $server = [];
-        foreach ($_SERVER as $k => $v) {
-            if (strpos($k, 'HTTP_') !== 0) {
-                continue;
-            }
-            $server[$k] = $v;
+        $current = microtime(true);
+        if ($current - $this->_last_checked >= 1.0) {
+            $this->_last_checked = $current;
+            $this->_enabled = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
         }
-        $this->_enabled = $this->publish('request', ['GET' => $_GET, 'POST' => $_POST, 'SERVER' => $server]) > 0;
+    }
+
+    public function onBeginRequest()
+    {
+        if ($this->enabled()) {
+            $server = [];
+            foreach ($_SERVER as $k => $v) {
+                if (strpos($k, 'HTTP_') !== 0) {
+                    continue;
+                }
+                $server[$k] = $v;
+            }
+
+            $this->publish('request', ['GET' => $_GET, 'POST' => $_POST, 'SERVER' => $server]);
+        }
+    }
+
+    /**
+     * @param \ManaPHP\LoggerInterface $logger
+     * @param \ManaPHP\Logger\Log      $log
+     */
+    public function onLoggerLog($logger, $log)
+    {
+        0 && $logger;
+
+        if ($this->enabled()) {
+            $data = [
+                'category' => $log->category,
+                'location' => $log->location,
+                'level' => $log->level,
+                'message' => $log->message,
+            ];
+            $this->publish('logger', $data);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function enabled()
+    {
+        return $this->_enabled;
     }
 
     /**
      * @param \ManaPHP\Http\ResponseInterface $response
      */
-    public function publish_onAfterSendResponse($response)
+    public function onAfterSendResponse($response)
     {
-        /** @var \ManaPHP\Http\ResponseInterface $source */
-        $data = [
-            'uri' => $_SERVER['REQUEST_URI'],
-            'code' => $response->getStatusCode(),
-            'content-type' => $response->getContentType(),
-            'body' => $response->getContent(),
-            'elapsed' => round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3)];
-        $this->publish('response', $data);
+        if ($this->enabled()) {
+            /** @var \ManaPHP\Http\ResponseInterface $source */
+            $data = [
+                'uri' => $_SERVER['REQUEST_URI'],
+                'code' => $response->getStatusCode(),
+                'content-type' => $response->getContentType(),
+                'body' => $response->getContent(),
+                'elapsed' => round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3)];
+            $this->publish('response', $data);
+        }
     }
 
     /**
@@ -121,27 +128,67 @@ class FiddlerPlugin extends Plugin
         /** @noinspection PhpUndefinedMethodInspection */
         /** @var \Redis $redis */
         $redis = $this->redis->getConnection();
-        return $redis->publish($this->_entry . $this->configure->id, json_encode($packet, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $r = $redis->publish($this->_channel, json_encode($packet, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        if ($r <= 0) {
+            $this->_enabled = false;
+            $this->_last_checked = microtime(true);
+        }
+
+        return $r;
     }
 
     /**
-     * @param $filters
+     * @param array $options
      */
-    public function subscribe($filters = [])
+    public function subscribeWeb($options = [])
     {
-        0 && $filters;
+        $id = isset($options['id']) ? $options['id'] : $this->configure->id;
+        if (isset($options['ip'])) {
+            $channel = 'manaphp:fiddler:web:' . $id . ":$options[ip]";
+        } else {
+            $channel = 'manaphp:fiddler:web:' . $id . ':*';
+        }
 
         /** @noinspection PhpUndefinedMethodInspection */
         /** @var \Redis $redis */
         $redis = $this->redis->getConnection();
+        if (strpos($channel, '*') === false) {
+            echo "subscribe on `$channel`", PHP_EOL, PHP_EOL;
+            $redis->subscribe([$channel], function ($redis, $chan, $packet) {
+                0 && $redis && $chan;
 
-        $redis->subscribe([$this->_entry . $this->configure->id], [$this, 'processMessage']);
+                $this->processMessage($packet);
+            });
+        } else {
+            echo "psubscribe on `$channel`", PHP_EOL, PHP_EOL;
+            $redis->psubscribe([$channel], function ($redis, $pattern, $chan, $packet) {
+                0 && $redis && $chan && $pattern;
+
+                $this->processMessage($packet);
+            });
+        }
     }
 
-    public function processMessage($redis, $channel, $packet)
+    /**
+     * @param array $options
+     */
+    public function subscribeCli($options = [])
     {
-        0 && $redis && $channel;
+        $id = isset($options['id']) ? $options['id'] : $this->configure->id;
+        $channel = 'manaphp:fiddler:cli:' . $id;
 
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var \Redis $redis */
+        $redis = $this->redis->getConnection();
+        echo "subscribe on `$channel`", PHP_EOL, PHP_EOL;
+        $redis->subscribe([$channel], function ($redis, $chan, $packet) {
+            0 && $redis && $chan;
+            $this->processMessage($packet);
+        });
+    }
+
+    public function processMessage($packet)
+    {
         $ts = microtime(true);
 
         $message = json_decode($packet, true);
@@ -158,6 +205,18 @@ class FiddlerPlugin extends Plugin
         $date = date('H:i:s.', $ts) . sprintf('%03d', ($ts - (int)$ts) * 1000);
         $body = $this->$processor($message['data']);
         echo "[$ip][$date][$uuid][$type]$body", PHP_EOL;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return string
+     */
+    public function process_ping($data)
+    {
+        $ts = $data['timestamp'];
+
+        return 'remote time: ' . date('c', $ts) . sprintf('.%03d', ($ts - (int)$ts) * 1000);
     }
 
     /**
