@@ -17,7 +17,6 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\View\FlashInterface            $flash
  * @property-read \ManaPHP\View\FlashInterface            $flashSession
  * @property-read \ManaPHP\Security\CaptchaInterface      $captcha
- * @property-read \ManaPHP\PasswordInterface              $password
  * @property-read \ManaPHP\Http\CookiesInterface          $cookies
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Http\ResponseInterface         $response

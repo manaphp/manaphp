@@ -38,7 +38,6 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\RendererInterface               $renderer
  * @property-read \ManaPHP\Configuration\Configure         $configure
  * @property-read \ManaPHP\Configuration\SettingsInterface $settings
- * @property-read \ManaPHP\PasswordInterface               $password
  * @property-read \Redis                                   $redis
  * @property-read \ManaPHP\CacheInterface                  $cache
  * @property-read \ManaPHP\CacheInterface                  $viewsCache
