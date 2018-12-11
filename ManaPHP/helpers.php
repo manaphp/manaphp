@@ -216,10 +216,10 @@ if (!function_exists('path')) {
 
 if (!function_exists('abort')) {
     /**
-     * @param int          $code
      * @param string|array $message
+     * @param int          $code
      */
-    function abort($code, $message = null)
+    function abort($message = null, $code = 200)
     {
         if ($message) {
             if (is_string($message)) {
@@ -227,8 +227,9 @@ if (!function_exists('abort')) {
             } else {
                 di('response')->setStatus($code, $code === 200 ? 'OK' : 'Abort')->setJsonContent($message);
             }
-            throw new \ManaPHP\ExitException('');
         }
+
+        throw new \ManaPHP\Exception\AbortException();
     }
 }
 
