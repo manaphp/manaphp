@@ -1,7 +1,7 @@
 <?php
 namespace App\Listeners;
 
-use ManaPHP\Router\Listener;
+use ManaPHP\Event\Listener;
 
 class RouterListener extends Listener
 {
