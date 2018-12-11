@@ -15,7 +15,6 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\Message\QueueInterface  $messageQueue
  * @property-read \ManaPHP\Cli\ConsoleInterface    $console
  * @property-read \ManaPHP\Cli\ArgumentsInterface  $arguments
- * @property-read \ManaPHP\Text\CrosswordInterface $crossword
  * @property-read \ManaPHP\Cli\HandlerInterface    $cliHandler
  */
 abstract class Controller extends Component implements LogCategorizable
