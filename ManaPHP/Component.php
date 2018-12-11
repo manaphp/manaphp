@@ -24,7 +24,6 @@ namespace ManaPHP;
  * @property-read \ManaPHP\Mongodb                         $mongodb
  * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
  * @property-read \Elasticsearch\Client                    $elasticsearch
- * @property-read \ManaPHP\ZookeeperInterface              $zookeeper
  * @property-read \ManaPHP\MailerInterface                 $mailer
  * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
  */
