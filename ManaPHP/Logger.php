@@ -64,6 +64,8 @@ class Logger extends Component implements LoggerInterface
             } else {
                 $this->_appenders['file'] = 'ManaPHP\Logger\Appender\File';
             }
+        } else {
+            $this->_appenders['file'] = 'ManaPHP\Logger\Appender\File';
         }
 
         if ($this->_level === null) {
