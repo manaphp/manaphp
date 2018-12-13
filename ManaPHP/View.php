@@ -11,7 +11,6 @@ use ManaPHP\Exception\MisuseException;
  * @package view
  *
  * @property-read \ManaPHP\RendererInterface   $renderer
- * @property-read \ManaPHP\CacheInterface      $viewsCache
  * @property-read \ManaPHP\DispatcherInterface $dispatcher
  */
 class View extends Component implements ViewInterface
@@ -242,11 +241,10 @@ class View extends Component implements ViewInterface
     }
 
     /**
-     * @param string    $widget
-     * @param array     $options
-     * @param int|array $cacheOptions
+     * @param string $widget
+     * @param array  $options
      */
-    public function widget($widget, $options = [], $cacheOptions = null)
+    public function widget($widget, $options = [])
     {
         if (!$widgetClassName = $this->getWidgetClassName($widget)) {
             throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists', 'widget' => $widget, 'class' => $widgetClassName]);
@@ -264,28 +262,7 @@ class View extends Component implements ViewInterface
         $widgetInstance = $this->_di->get($widgetClassName);
         $vars = $widgetInstance->run($options);
 
-        if ($cacheOptions !== null) {
-            $cacheOptions = is_array($cacheOptions) ? $cacheOptions : ['ttl' => $cacheOptions];
-
-            $cacheOptions['key'] = $view . (isset($cacheOptions['key']) ? '/' . $cacheOptions['key'] : '');
-            $cacheOptions['key'] = str_replace($this->alias->resolve('@app') . '/', '', $this->alias->resolve($cacheOptions['key']));
-
-            $content = $this->viewsCache->get($cacheOptions['key']);
-            if ($content === false) {
-                $this->fireEvent('view:missCache', ['key' => $cacheOptions['key'], 'view' => $view]);
-                /** @noinspection NotOptimalIfConditionsInspection */
-                if (is_string($vars)) {
-                    $content = $vars;
-                } else {
-                    $content = $this->_render($view, $vars, false);
-                }
-
-                $this->viewsCache->set($cacheOptions['key'], $content, $cacheOptions['ttl']);
-            }
-            $this->fireEvent('view:hitCache', ['key' => $cacheOptions['key'], 'view' => $view]);
-
-            echo $content;
-        } elseif (is_string($vars)) {
+        if (is_string($vars)) {
             echo $vars;
         } else {
             $this->_render($view, $vars, true);

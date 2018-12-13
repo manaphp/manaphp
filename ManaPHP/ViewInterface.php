@@ -80,11 +80,10 @@ interface ViewInterface
     /**
      * Renders a widget
      *
-     * @param string    $widget
-     * @param array     $vars
-     * @param int|array $cacheOptions
+     * @param string $widget
+     * @param array  $vars
      */
-    public function widget($widget, $vars = [], $cacheOptions = null);
+    public function widget($widget, $vars = []);
 
     /**
      * @param string $path
