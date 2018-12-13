@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Dom;
 
-use ManaPHP\Dom\Query\Exception as QueryException;
+use ManaPHP\Exception\MisuseException;
 
 class Query
 {
@@ -55,9 +55,7 @@ class Query
 
         $r = @$this->_xpath->query($expression, $context);
         if ($r === false) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            /** @noinspection PhpUnhandledExceptionInspection */
-            throw new QueryException(['`:xpath` xpath is invalid expression', 'xpath' => $expression]);
+            throw new MisuseException(['`:xpath` xpath is invalid expression', 'xpath' => $expression]);
         }
 
         return $r;
