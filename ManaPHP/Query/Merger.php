@@ -160,8 +160,6 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
 
     /**
      * @param array $expr
-     *
-     * @return array
      */
     public function aggregate($expr)
     {
@@ -577,9 +575,7 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     }
 
     /**
-     * * @param string|array $groupBy
-     *
-     * @return static
+     * @param string|array $groupBy
      */
     public function groupBy($groupBy)
     {
