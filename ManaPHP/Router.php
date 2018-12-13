@@ -293,7 +293,7 @@ class Router extends Component implements RouterInterface
         $uri = $uri ?: $this->getRewriteUri();
 
         if ($method === null) {
-            $method = $_SERVER['REQUEST_METHOD'];
+            $method = (string)$_SERVER['REQUEST_METHOD'];
         }
 
         $this->_controller = null;
