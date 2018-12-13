@@ -17,7 +17,6 @@ use ManaPHP\View;
  * @property-read \ManaPHP\DispatcherInterface    $dispatcher
  * @property-read \ManaPHP\ViewInterface          $view
  * @property-read \ManaPHP\Http\SessionInterface  $session
- * @property-read \ManaPHP\AuthorizationInterface $authorization
  */
 class Application extends \ManaPHP\Application
 {
