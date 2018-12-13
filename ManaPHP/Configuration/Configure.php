@@ -21,12 +21,12 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
-    public $env = 'prod';
+    public $env = 'dev';
 
     /**
      * @var bool
      */
-    public $debug = false;
+    public $debug = true;
 
     /**
      * @var string
