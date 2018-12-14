@@ -64,7 +64,7 @@ class Di implements DiInterface
     /**
      * @var array
      */
-    protected $_components = [];
+    protected $_definitions = [];
 
     /**
      * @var array
@@ -118,10 +118,10 @@ class Di implements DiInterface
      */
     protected function _completeClassName($name, $className)
     {
-        if (isset($this->_components[$name])) {
-            $definition = $this->_components[$name];
+        if (isset($this->_definitions[$name])) {
+            $definition = $this->_definitions[$name];
         } elseif (isset($this->_aliases[$name])) {
-            $definition = $this->_components[$this->_aliases[$name]];
+            $definition = $this->_definitions[$this->_aliases[$name]];
         } else {
             return $className;
         }
@@ -150,30 +150,30 @@ class Di implements DiInterface
      */
     protected function _interClassName($name)
     {
-        $component = null;
-        if (isset($this->_components[$name])) {
-            $component = $this->_components[$name];
+        $definition = null;
+        if (isset($this->_definitions[$name])) {
+            $definition = $this->_definitions[$name];
         } elseif (isset($this->_aliases[$name])) {
-            $component = $this->_components[$this->_aliases[$name]];
+            $definition = $this->_definitions[$this->_aliases[$name]];
         } elseif (strpos($name, '\\') !== false) {
-            $component = $name;
+            $definition = $name;
         } elseif ($pos = strrpos($name, '_')) {
             $maybe = substr($name, $pos + 1);
-            if (isset($this->_components[$maybe])) {
-                $component = $this->_components[$maybe];
+            if (isset($this->_definitions[$maybe])) {
+                $definition = $this->_definitions[$maybe];
             }
         } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
             $maybe = lcfirst($match[2]);
-            if (isset($this->_components[$maybe])) {
-                $component = $this->_components[$maybe];
+            if (isset($this->_definitions[$maybe])) {
+                $definition = $this->_definitions[$maybe];
             }
         }
 
-        if ($component === null) {
-            throw new InvalidValueException(['`:component` component definition is invalid: missing class field', 'component' => $name]);
+        if ($definition === null) {
+            throw new InvalidValueException(['`:definition` definition is invalid: missing class field', 'definition' => $name]);
         }
 
-        return is_string($component) ? $component : $component['class'];
+        return is_string($definition) ? $definition : $definition['class'];
     }
 
     /**
@@ -212,10 +212,10 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $definition = ['class' => $definition, 'shared' => !$definition instanceof \Closure];
         } else {
-            throw new UnexpectedValueException(['`:component` component definition is unknown', 'component' => $name]);
+            throw new UnexpectedValueException(['`:definition` definition is unknown', 'definition' => $name]);
         }
 
-        $this->_components[$name] = $definition;
+        $this->_definitions[$name] = $definition;
 
         return $this;
     }
@@ -255,10 +255,10 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $definition = ['class' => $definition];
         } else {
-            throw new UnexpectedValueException(['`:component` component definition is unknown', 'component' => $name]);
+            throw new UnexpectedValueException(['`:definition` definition is unknown', 'definition' => $name]);
         }
 
-        $this->_components[$name] = $definition;
+        $this->_definitions[$name] = $definition;
 
         return $this;
     }
@@ -304,7 +304,7 @@ class Di implements DiInterface
         if (isset($this->_aliases[$name])) {
             unset($this->_aliases[$name]);
         } else {
-            unset($this->_components[$name], $this->_instances[$name], $this->{$name});
+            unset($this->_definitions[$name], $this->_instances[$name], $this->{$name});
         }
 
         return $this;
@@ -405,10 +405,10 @@ class Di implements DiInterface
             return $this->_instances[$this->_aliases[$name]];
         }
 
-        if (isset($this->_components[$name])) {
-            $definition = $this->_components[$name];
+        if (isset($this->_definitions[$name])) {
+            $definition = $this->_definitions[$name];
         } elseif (isset($this->_aliases[$name])) {
-            $definition = $this->_components[$this->_aliases[$name]];
+            $definition = $this->_definitions[$this->_aliases[$name]];
         } else {
             return $this->getInstance($name, $parameters, $name);
         }
@@ -416,7 +416,7 @@ class Di implements DiInterface
         $instance = $this->getInstance($definition, $parameters, $name);
 
         if (is_string($definition) || !isset($definition['shared']) || $definition['shared'] === true) {
-            if (isset($this->_components[$name])) {
+            if (isset($this->_definitions[$name])) {
                 $this->_instances[$name] = $instance;
             } else {
                 $this->_instances[$this->_aliases[$name]] = $instance;
@@ -443,10 +443,10 @@ class Di implements DiInterface
             return $this->_instances[$this->_aliases[$name]];
         }
 
-        if (isset($this->_components[$name])) {
-            return $this->_instances[$name] = $this->getInstance($this->_components[$name], null, $name);
+        if (isset($this->_definitions[$name])) {
+            return $this->_instances[$name] = $this->getInstance($this->_definitions[$name], null, $name);
         } elseif (isset($this->_aliases[$name])) {
-            return $this->_instances[$this->_aliases[$name]] = $this->getInstance($this->_components[$this->_aliases[$name]], null, $name);
+            return $this->_instances[$this->_aliases[$name]] = $this->getInstance($this->_definitions[$this->_aliases[$name]], null, $name);
         } else {
             return $this->_instances[$name] = $this->getInstance($name, null, $name);
         }
@@ -459,7 +459,7 @@ class Di implements DiInterface
      */
     public function getDefinition($name)
     {
-        return isset($this->_components[$name]) ? $this->_components[$name] : null;
+        return isset($this->_definitions[$name]) ? $this->_definitions[$name] : null;
     }
 
     /**
@@ -506,7 +506,7 @@ class Di implements DiInterface
      */
     public function has($name)
     {
-        return isset($this->_components[$name]) || isset($this->_aliases[$name]);
+        return isset($this->_definitions[$name]) || isset($this->_aliases[$name]);
     }
 
     /**

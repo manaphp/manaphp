@@ -9,7 +9,7 @@ class Factory extends FactoryDefault
     {
         parent::__construct();
 
-        $this->_components = array_merge($this->_components, [
+        $this->_definitions = array_merge($this->_definitions, [
             'router' => 'ManaPHP\Router',
             'dispatcher' => 'ManaPHP\Dispatcher',
             'errorHandler' => 'ManaPHP\Rest\ErrorHandler',

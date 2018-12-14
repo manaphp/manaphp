@@ -18,7 +18,7 @@ class FactoryDefault extends Di
     {
         parent::__construct();
 
-        $this->_components = [
+        $this->_definitions = [
             'eventsManager' => 'ManaPHP\Event\Manager',
             'alias' => 'ManaPHP\Alias',
             'dotenv' => 'ManaPHP\Dotenv',
