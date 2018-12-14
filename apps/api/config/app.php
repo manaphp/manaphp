@@ -6,7 +6,6 @@ return [
     'version' => '1.1.1',
     'timezone' => 'PRC',
     'master_key' => env('MASTER_KEY'),
-    'services' => [],
     'params' => [],
     'aliases' => [],
     'components' => [
@@ -16,6 +15,7 @@ return [
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
         '!swooleHttpServer' => ['worker_num' => 1, 'max_request' => 10000, 'dispatch_mode' => 1]
     ],
+    'services' => [],
     'listeners' => [],
     'plugins' => []
 ];

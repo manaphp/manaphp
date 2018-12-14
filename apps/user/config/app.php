@@ -5,7 +5,6 @@ return [
     'version' => '1.1.1',
     'timezone' => 'PRC',
     'master_key' => '',
-    'services' => [],
     'params' => ['manaphp_brand_show' => 1],
     'aliases' => [
         '@xxx' => '@root/xvdfd'
@@ -16,6 +15,8 @@ return [
         'mongodb' => 'mongodb://127.0.0.1/manaphp_unit_test',
         'logger' => ['level' => 'debug'],
     ],
+    'services' => [],
+    'listeners' => [],
     'plugins' => [
         'debugger'
     ]

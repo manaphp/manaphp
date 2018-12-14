@@ -6,7 +6,6 @@ return [
     'version' => '1.1.1',
     'timezone' => 'PRC',
     'master_key' => env('MASTER_KEY'),
-    'services' => [],
     'params' => ['manaphp_brand_show' => 1],
     'aliases' => [
         '@messages' => '@app/Messages'
@@ -17,5 +16,8 @@ return [
         'mongodb' => env('MONGODB_URL'),
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
         'authorization' => \App\Areas\Rbac\Components\Rbac::class
-    ]
+    ],
+    'services' => [],
+    'listeners' => [],
+    'plugins' => []
 ];
