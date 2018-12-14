@@ -81,7 +81,7 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var array
      */
-    public $plugins = ['*'];
+    public $plugins = [];
 
     /**
      * @param string $file
