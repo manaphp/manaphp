@@ -171,6 +171,8 @@ class Di implements DiInterface
             $maybe = lcfirst($match[2]);
             if (isset($this->_definitions[$maybe])) {
                 $definition = $this->_definitions[$maybe];
+            } else {
+                $definition = $this->_getPatterned($name);
             }
         }
 
