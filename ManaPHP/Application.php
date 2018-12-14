@@ -209,6 +209,18 @@ class Application extends Component implements ApplicationInterface
         }
     }
 
+    /**
+     * @param array $services
+     */
+    protected function _loadServices($services)
+    {
+        $this->_di->setPattern('*Service', $this->alias->resolveNS('@ns.app\\Services\\'));
+
+        foreach ($services as $service => $params) {
+            $this->_di->setShared($service, $params);
+        }
+    }
+
     public function registerServices()
     {
         $configure = $this->configure;
@@ -234,6 +246,8 @@ class Application extends Component implements ApplicationInterface
         foreach ($configure->bootstraps as $bootstrap) {
             $this->_di->getShared($bootstrap);
         }
+
+        $this->_loadServices($configure->services);
 
         if ($configure->plugins) {
             $this->_loadPlugins($configure->plugins);
