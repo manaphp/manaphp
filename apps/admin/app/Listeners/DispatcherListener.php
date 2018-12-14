@@ -3,7 +3,7 @@ namespace App\Listeners;
 
 use App\Areas\User\Controllers\SessionController;
 use App\Models\AdminActionLog;
-use ManaPHP\Dispatcher\Listener;
+use ManaPHP\Event\Listener;
 
 /**
  * Class ActionInvokerListener
