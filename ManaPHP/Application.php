@@ -171,22 +171,30 @@ class Application extends Component implements ApplicationInterface
             $app_plugins[basename($item, '.php')] = 1;
         }
 
-        foreach ($plugins as $k => $v) {
-            if ($v !== '*') {
+        if (in_array('*', $plugins, true)) {
+            foreach ($plugins as $k => $v) {
+                if ($v !== '*') {
+                    $plugin = is_string($k) ? $k : $v;
+                    $plugin = ($pos = strrpos($plugin, 'Plugin')) !== false && $pos === strlen($plugin) - 6 ? ucfirst($plugin) : (ucfirst($plugin) . 'Plugin');
+                    $pluginClassName = isset($app_plugins[$plugin]) ? $this->alias->resolveNS("@ns.app\\Plugins\\$plugin") : "ManaPHP\Plugins\\$plugin";
+                    $plugin = lcfirst($plugin);
+                    $this->_di->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin)->init();
+                    unset($app_plugins[$plugin]);
+                }
+            }
+
+            foreach ($app_plugins as $plugin => $_) {
+                $pluginClassName = $this->alias->resolveNS("@ns.app\\Plugins\\$plugin");
+                $plugin = lcfirst($plugin);
+                $this->_di->setShared($plugin, $pluginClassName)->getShared($plugin)->init();
+            }
+        } else {
+            foreach ($plugins as $k => $v) {
                 $plugin = is_string($k) ? $k : $v;
                 $plugin = ($pos = strrpos($plugin, 'Plugin')) !== false && $pos === strlen($plugin) - 6 ? ucfirst($plugin) : (ucfirst($plugin) . 'Plugin');
                 $pluginClassName = isset($app_plugins[$plugin]) ? $this->alias->resolveNS("@ns.app\\Plugins\\$plugin") : "ManaPHP\Plugins\\$plugin";
                 $plugin = lcfirst($plugin);
                 $this->_di->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin)->init();
-                unset($app_plugins[$plugin]);
-            }
-        }
-
-        if (in_array('*', $plugins, true)) {
-            foreach ($app_plugins as $plugin => $_) {
-                $pluginClassName = $this->alias->resolveNS("@ns.app\\Plugins\\$plugin");
-                $plugin = lcfirst($plugin);
-                $this->_di->setShared($plugin, $pluginClassName)->getShared($plugin)->init();
             }
         }
     }
