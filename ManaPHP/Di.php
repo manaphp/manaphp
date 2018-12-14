@@ -74,6 +74,11 @@ class Di implements DiInterface
     /**
      * @var array
      */
+    protected $_patterns = [];
+
+    /**
+     * @var array
+     */
     protected $_instances = [];
 
     /**
@@ -289,6 +294,19 @@ class Di implements DiInterface
     }
 
     /**
+     * @param string       $pattern
+     * @param string|array $namespaces
+     *
+     * @return static
+     */
+    public function setPattern($pattern, $namespaces)
+    {
+        $this->_patterns[$pattern] = $namespaces;
+
+        return $this;
+    }
+
+    /**
      * Removes a component in the components container
      *
      * @param string $name
@@ -427,6 +445,32 @@ class Di implements DiInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return string|null
+     */
+    protected function _getPatterned($name)
+    {
+        foreach ($this->_patterns as $pattern => $namespaces) {
+            if (fnmatch($pattern, $name)) {
+                if (is_string($namespaces)) {
+                    return strpos($namespaces, '@') === false ? $namespaces . ucfirst($name) : $this->alias->resolveNS($namespaces . ucfirst($name));
+                } else {
+                    foreach ($namespaces as $namespace) {
+                        $className = strpos($namespace, '@') === false ? $namespace . ucfirst($name) : $this->alias->resolveNS($namespace . ucfirst($name));
+                        if (class_exists($className)) {
+                            return $className;
+                        }
+                    }
+                    return null;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Resolves a component, the resolved component is stored in the DI, subsequent requests for this component will return the same instance
      *
      * @param string $name
@@ -447,8 +491,14 @@ class Di implements DiInterface
             return $this->_instances[$name] = $this->getInstance($this->_definitions[$name], null, $name);
         } elseif (isset($this->_aliases[$name])) {
             return $this->_instances[$this->_aliases[$name]] = $this->getInstance($this->_definitions[$this->_aliases[$name]], null, $name);
-        } else {
+        } elseif (strpos($name, '\\') !== false) {
             return $this->_instances[$name] = $this->getInstance($name, null, $name);
+        } else {
+            $className = $this->_getPatterned($name);
+            if ($className === null) {
+                throw new InvalidValueException(['`:component` component is not exists', 'component' => $name]);
+            }
+            return $this->_instances[$name] = $this->getInstance($className, null, $name);
         }
     }
 
