@@ -288,19 +288,6 @@ if (!function_exists('input')) {
     }
 }
 
-if (!function_exists('request')) {
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return string|array|\ManaPHP\Http\RequestInterface
-     */
-    function request($name = null, $default = null)
-    {
-        return $name === null ? di('request') : di('request')->get($name, false, $default);
-    }
-}
-
 if (!function_exists('session')) {
     /**
      * @param string|array $data
