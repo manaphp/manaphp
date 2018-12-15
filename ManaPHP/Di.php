@@ -58,6 +58,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\MailerInterface                 $mailer
  * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
  * @property-read \ManaPHP\IpcCacheInterface               $ipcCache
+ * @property-read \ManaPHP\MongodbInterface                $mongodb
  */
 class Di implements DiInterface
 {
