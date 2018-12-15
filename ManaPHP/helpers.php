@@ -255,28 +255,6 @@ if (!function_exists('input')) {
     }
 }
 
-if (!function_exists('session')) {
-    /**
-     * @param string|array $data
-     *
-     * @return mixed|\ManaPHP\Http\SessionInterface
-     */
-    function session($data = null)
-    {
-        if ($data === null) {
-            return di('session');
-        } elseif (is_array($data)) {
-            $session = di('session');
-            foreach ((array)$data as $k => $v) {
-                $session->set($k, $v);
-            }
-            return null;
-        } else {
-            return di('session')->get($data);
-        }
-    }
-}
-
 if (!function_exists('db')) {
     /**
      * @param string $name
