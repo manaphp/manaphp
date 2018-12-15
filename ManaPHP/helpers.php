@@ -43,24 +43,6 @@ if (!function_exists('env')) {
     }
 }
 
-if (!function_exists('config')) {
-    /**
-     * @param string $key
-     *
-     * @return mixed|array
-     */
-    function config($key)
-    {
-        static $config = [];
-
-        if (!isset($config[$key])) {
-            $config[$key] = di('configure')->$key;
-        }
-
-        return $config[$key];
-    }
-}
-
 if (!function_exists('settings')) {
     /**
      * @param string    $key
