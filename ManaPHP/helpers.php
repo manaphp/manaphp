@@ -255,42 +255,6 @@ if (!function_exists('input')) {
     }
 }
 
-if (!function_exists('db')) {
-    /**
-     * @param string $name
-     *
-     * @return \ManaPHP\DbInterface
-     */
-    function db($name = null)
-    {
-        return di($name ? "${name}Db" : 'db');
-    }
-}
-
-if (!function_exists('mongodb')) {
-    /**
-     * @param string $name
-     *
-     * @return \ManaPHP\MongodbInterface
-     */
-    function mongodb($name = null)
-    {
-        return di($name ? "${name}Mongodb" : 'mongodb');
-    }
-}
-
-if (!function_exists('redis')) {
-    /**
-     * @param string $name
-     *
-     * @return \Redis
-     */
-    function redis($name = null)
-    {
-        return di($name ? "${name}Redis" : 'redis');
-    }
-}
-
 if (!function_exists('client_ip')) {
     /**
      * @return string
