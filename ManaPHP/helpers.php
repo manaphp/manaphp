@@ -9,11 +9,11 @@ if (PHP_VERSION_ID < 70000) {
 if (!function_exists('di')) {
     /**
      * @param string $name
-     * @param array  $params
+     * @param string $child
      *
      * @return mixed
      */
-    function di($name = null, $params = null)
+    function di($name = null, $child = null)
     {
         static $di;
         if (!$di) {
@@ -22,10 +22,10 @@ if (!function_exists('di')) {
 
         if ($name === null || $name === 'di') {
             return $di;
-        } elseif ($params) {
-            return $di->getInstance($name, $params);
+        } elseif ($child) {
+            return $di->has("{$child}_{$name}") ? $di->{"{$child}_{$name}"} : $di->{$child . ucfirst($name)};
         } else {
-            return $di->getShared($name);
+            return $di->$name;
         }
     }
 }
