@@ -835,32 +835,6 @@ if (!function_exists('mbstr_contains')) {
     }
 }
 
-if (!function_exists('str_in_set')) {
-    /**
-     * @param string $needle
-     * @param string $haystack
-     *
-     * @return bool
-     */
-    function str_in_set($needle, $haystack)
-    {
-        return preg_match('#\b' . preg_quote($needle, '#') . '\b#', $haystack) === 1;
-    }
-}
-
-if (!function_exists('mbstr_in_set')) {
-    /**
-     * @param string $needle
-     * @param string $haystack
-     *
-     * @return bool
-     */
-    function mbstr_in_set($needle, $haystack)
-    {
-        return preg_match('#\b' . preg_quote($needle, '#') . '\b#u', $haystack) === 1;
-    }
-}
-
 if (!function_exists('array_field')) {
     /**
      * @param array  $input
