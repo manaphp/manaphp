@@ -172,13 +172,15 @@ if (!function_exists('abort')) {
     {
         if ($message) {
             if (is_string($message)) {
-                di('response')->setStatus($code, $code === 200 ? 'OK' : 'Abort')->setContent($message);
+                di('response')->setStatus($code)->setContent($message);
             } else {
-                di('response')->setStatus($code, $code === 200 ? 'OK' : 'Abort')->setJsonContent($message);
+                di('response')->setStatus($code)->setJsonContent($message);
             }
+        } else {
+            di('response')->setStatus($code);
         }
 
-        throw new \ManaPHP\Exception\AbortException();
+        throw new \ManaPHP\Exception\AbortException('abort');
     }
 }
 
