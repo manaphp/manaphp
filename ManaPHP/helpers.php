@@ -824,27 +824,45 @@ if (!function_exists('mbstr_ends_with')) {
 
 if (!function_exists('str_contains')) {
     /**
-     * @param string $haystack
-     * @param string $needle
+     * @param string       $haystack
+     * @param string|array $needle
      *
      * @return bool
      */
     function str_contains($haystack, $needle)
     {
-        return strpos($haystack, $needle) !== false;
+        if (is_array($needle)) {
+            foreach ($needle as $n) {
+                if (strpos($haystack, $n) !== false) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return strpos($haystack, $needle) !== false;
+        }
     }
 }
 
 if (!function_exists('mbstr_contains')) {
     /**
-     * @param string $haystack
-     * @param string $needle
+     * @param string       $haystack
+     * @param string|array $needle
      *
      * @return bool
      */
     function mbstr_contains($haystack, $needle)
     {
-        return mb_strpos($haystack, $needle) !== false;
+        if (is_array($needle)) {
+            foreach ($needle as $n) {
+                if (mb_strpos($haystack, $n) !== false) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return mb_strpos($haystack, $needle) !== false;
+        }
     }
 }
 
