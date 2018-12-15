@@ -654,40 +654,6 @@ if (!function_exists('t')) {
     }
 }
 
-if (!function_exists('size_to_str')) {
-    /**
-     * @param int $size
-     * @param int $precision
-     * @param int $base
-     *
-     * @return string
-     */
-    function size_to_str($size, $precision = 2, $base = 1024)
-    {
-        /** @noinspection PowerOperatorCanBeUsedInspection */
-        return round($size / pow($base, $i = (int)round(log($size, $base))), $precision) . ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'][$i];
-    }
-}
-
-if (!function_exists('size_to_int')) {
-    /**
-     * @param string $size
-     * @param int    $base
-     *
-     * @return int
-     */
-    function size_to_int($size, $base = 1024)
-    {
-        $size = strtolower(rtrim($size, 'b'));
-        if (is_numeric($size)) {
-            return (int)$size;
-        } else {
-            /** @noinspection PowerOperatorCanBeUsedInspection */
-            return (int)(substr($size, 0, -1) * pow($base, strpos('bkmgtpe', substr($size, -1))));
-        }
-    }
-}
-
 if (!function_exists('tap')) {
     /** @noinspection AutoloadingIssuesInspection */
 
