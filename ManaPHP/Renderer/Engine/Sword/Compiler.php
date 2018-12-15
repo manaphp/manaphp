@@ -888,16 +888,6 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_constants($expression)
-    {
-        return "<?php echo json_encode(constants{$expression}, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), PHP_EOL; ?>";
-    }
-
-    /**
-     * @param string $expression
-     *
-     * @return string
-     */
     protected function _compile_html($expression)
     {
         return "<?php echo html{$expression}; ?>";
