@@ -151,39 +151,6 @@ if (!function_exists('fatal')) {
     }
 }
 
-if (!function_exists('cache')) {
-    /**
-     * @param string                $name
-     * @param false|\Closure|string $default
-     * @param int                   $ttl
-     *
-     * @return bool|array|mixed|\ManaPHP\CacheInterface
-     */
-    function cache($name = null, $default = false, $ttl = null)
-    {
-        if ($ttl) {
-            if ($default instanceof \Closure) {
-                $value = di('cache')->get($name);
-                if ($value !== false) {
-                    return $value;
-                } else {
-                    di('cache')->set($name, $default(), $ttl);
-                }
-            } else {
-                di('cache')->set($name, $default, $ttl);
-            }
-            return null;
-        } elseif (!$name) {
-            return di('cache');
-        } elseif (strpos($name, ':') === false) {
-            return di("${name}Cache");
-        } else {
-            $value = di('cache')->get($name);
-            return $value === false ? $value : $default;
-        }
-    }
-}
-
 if (!function_exists('path')) {
     /**
      * @param string $path
