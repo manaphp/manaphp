@@ -3,7 +3,7 @@
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\HttpStatusException;
+use ManaPHP\Exception\AbortException;
 use ManaPHP\Logger\Log;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
@@ -176,7 +176,7 @@ class DebuggerPlugin extends Plugin
             $file = '@data/debugger' . $_GET['_debugger'];
             if ($this->filesystem->fileExists($file)) {
                 $this->response->setContent($this->filesystem->fileGet($file));
-                throw new HttpStatusException(200);
+                throw new AbortException('abort');
             }
         }
 
