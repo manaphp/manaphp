@@ -4,6 +4,7 @@ namespace ManaPHP\Plugins;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Logger;
 use ManaPHP\Logger\Log;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
@@ -226,7 +227,7 @@ class DebuggerPlugin extends Plugin
     {
         $data = [];
         $data['basic'] = $this->_getBasic();
-        $data['logger'] = ['log' => $this->_log, 'levels' => array_flip($this->logger->getLevels()), 'level' => 6];
+        $data['logger'] = ['log' => $this->_log, 'levels' => array_flip($this->logger->getLevels()), 'level' => Logger::LEVEL_DEBUG];
         $data['sql'] = ['prepared' => $this->_sql_prepared, 'executed' => $this->_sql_executed, 'count' => $this->_sql_count];
         $data['mongodb'] = $this->_mongodb;
 
