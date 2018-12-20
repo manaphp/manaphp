@@ -229,7 +229,6 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $di = $this->_di;
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $parameters = (new \ReflectionMethod($controller, $action . 'Action'))->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
@@ -364,11 +363,11 @@ class Dispatcher extends Component implements DispatcherInterface
     public function dispatch($router)
     {
         if ($area = $router->getArea()) {
-            $this->_area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
+            $area = $this->_area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
         }
 
         $controller = $router->getController();
-        $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+        $controller = $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
 
         $action = $router->getAction();
         $this->_action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
@@ -379,11 +378,16 @@ class Dispatcher extends Component implements DispatcherInterface
             return;
         }
 
-        $controllerInstance = null;
+        if ($area) {
+            $controllerClassName = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller");
+            if (!class_exists($controllerClassName)) {
+                $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\$area\\{$controller}Controller");
+            }
+        } else {
+            $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\{$controller}Controller");
+        }
 
-        $controllerClassName = $this->getControllerClassName();
-
-        if (!class_exists($controllerClassName) && !$this->_di->has($controllerClassName)) {
+        if (!class_exists($controllerClassName)) {
             throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
         }
 
