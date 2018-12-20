@@ -379,9 +379,9 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         if ($area) {
-            $controllerClassName = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller");
+            $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\$area\\{$controller}Controller");
             if (!class_exists($controllerClassName)) {
-                $controllerClassName2 = $this->alias->resolveNS("@ns.app\\Controllers\\$area\\{$controller}Controller");
+                $controllerClassName2 = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller");
                 if (class_exists($controllerClassName2)) {
                     $controllerClassName = $controllerClassName2;
                 } else {
