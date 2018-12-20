@@ -353,6 +353,38 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
+     * @return string
+     */
+    protected function _getControllerClassName()
+    {
+        $area = $this->_area;
+        $controller = $this->_controller;
+
+        if ($area) {
+            $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\$area\\{$controller}Controller");
+            if (class_exists($controllerClassName)) {
+                return $controllerClassName;
+            }
+
+            $controllerClassName2 = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller");
+            if (class_exists($controllerClassName2)) {
+                return $controllerClassName2;
+            } else {
+                throw new NotFoundControllerException(['both `:controller1` and `:controller2` class cannot be loaded',
+                    'controller1' => $controllerClassName,
+                    'controller2' => $controllerClassName2]);
+            }
+        } else {
+            $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\{$controller}Controller");
+            if (class_exists($controllerClassName)) {
+                return $controllerClassName;
+            } else {
+                throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
+            }
+        }
+    }
+
+    /**
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param \ManaPHP\RouterInterface $router
@@ -363,11 +395,11 @@ class Dispatcher extends Component implements DispatcherInterface
     public function dispatch($router)
     {
         if ($area = $router->getArea()) {
-            $area = $this->_area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
+            $this->_area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
         }
 
         $controller = $router->getController();
-        $controller = $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+        $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
 
         $action = $router->getAction();
         $this->_action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
@@ -378,24 +410,7 @@ class Dispatcher extends Component implements DispatcherInterface
             return;
         }
 
-        if ($area) {
-            $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\$area\\{$controller}Controller");
-            if (!class_exists($controllerClassName)) {
-                $controllerClassName2 = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller");
-                if (class_exists($controllerClassName2)) {
-                    $controllerClassName = $controllerClassName2;
-                } else {
-                    throw new NotFoundControllerException(['both `:controller1` and `:controller2` class cannot be loaded',
-                        'controller1' => $controllerClassName,
-                        'controller2' => $controllerClassName2]);
-                }
-            }
-        } else {
-            $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\{$controller}Controller");
-            if (!class_exists($controllerClassName)) {
-                throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
-            }
-        }
+        $controllerClassName = $this->_getControllerClassName();
 
         /**
          * @var \ManaPHP\Rest\Controller $controllerInstance
