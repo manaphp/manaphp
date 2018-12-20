@@ -175,7 +175,7 @@ class View extends Component implements ViewInterface
      *
      * @param string $template
      *
-     * @return static
+     * @return string
      */
     public function render($template = null)
     {
@@ -207,7 +207,7 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:afterRender');
 
-        return $this;
+        return $this->_content;
     }
 
     /**

@@ -56,6 +56,8 @@ interface ViewInterface
      * Executes render process from dispatching data
      *
      * @param string $template
+     *
+     * @return  string
      */
     public function render($template = null);
 
