@@ -189,6 +189,7 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city]',
             (new Query())->from('city')->where('city_id?', '')->getSql());
+
         $this->assertEquals('SELECT * FROM [city]',
             (new Query())->from('city')->where(['city_id?' => ''])->getSql());
 
@@ -197,6 +198,13 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city]',
             (new Query())->from('city')->where(['city_id?' => ' '])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
+            (new Query())->from('city')->where('city_id?', '12')->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
+            (new Query())->from('city')->where(['city_id?' => '12'])->getSql());
+
     }
 
     public function test_whereInset()

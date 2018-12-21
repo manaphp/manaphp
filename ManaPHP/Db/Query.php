@@ -270,108 +270,104 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
     /**
      *
-     * @param string|array           $filter
-     * @param int|float|string|array $value
+     * @param string|array           $filters
+     * @param int|float|string|array $values
      *
      * @return static
      */
-    public function where($filter, $value = null)
+    public function where($filters, $values = null)
     {
-        if ($filter === null) {
+        if ($filters === null) {
             return $this;
         }
 
-        if (is_array($filter)) {
-            foreach ($filter as $k => $v) {
-                if (is_int($k)) {
-                    $this->where($v, null);
-                } else {
-                    $this->where($k, $v);
+        foreach (is_array($filters) ? $filters : [$filters => $values] as $filter => $value) {
+            if (is_int($filter)) {
+                if (preg_match('#\?=?$#', $value) !== 1) {
+                    $this->_conditions[] = $value;
                 }
-            }
-            return $this;
-        }
-
-        if ($value === null) {
-            if (preg_match('#\?=?$#', $filter) !== 1) {
-                $this->_conditions[] = $filter;
-            }
-        } elseif (is_array($value)) {
-            if (!$value || isset($value[0])) {
-                if (strpos($filter, '~=')) {
-                    if (count($value) !== 2) {
-                        throw new InvalidArgumentException(['`value of :filter` filter is invalid', 'filter' => $filter]);
-                    }
-                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
-                    $this->whereNotIn(substr($filter, 0, -2), $value);
-                } elseif (strpos($filter, '@=')) {
-                    $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                } elseif (strpos($filter, ' ') !== false) {
+            } elseif ($value === null) {
+                if (preg_match('#\?=?$#', $filter) !== 1) {
                     $this->_conditions[] = $filter;
-                } else {
-                    $this->whereIn(rtrim($filter, '='), $value);
                 }
-            } else {
-                $this->_conditions[] = $filter;
-                $this->_bind = array_merge($this->_bind, $value);
-            }
-        } elseif (preg_match('#^([\w\.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
-            list(, $field, $operator) = $matches;
-            $bind_key = strtr($field, '.', '_');
-            $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
-            if ($operator === '' || $operator === '=') {
-                if ($value === null) {
-                    $this->_conditions[] = $normalizedField . ' IS NULL';
+            } elseif (is_array($value)) {
+                if (!$value || isset($value[0])) {
+                    if (strpos($filter, '~=')) {
+                        if (count($value) !== 2) {
+                            throw new InvalidArgumentException(['`value of :filter` filter is invalid', 'filter' => $filter]);
+                        }
+                        $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                    } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
+                        $this->whereNotIn(substr($filter, 0, -2), $value);
+                    } elseif (strpos($filter, '@=')) {
+                        $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                    } elseif (strpos($filter, ' ') !== false) {
+                        $this->_conditions[] = $filter;
+                    } else {
+                        $this->whereIn(rtrim($filter, '='), $value);
+                    }
                 } else {
-                    $this->_conditions[] = $normalizedField . '=:' . $bind_key;
-                    $this->_bind[$bind_key] = $value;
+                    $this->_conditions[] = $filter;
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
+                    $this->_bind = array_merge($this->_bind, $value);
                 }
-            } elseif ($operator === '~=') {
-                if ($value === 0 || $value === 0.0) {
-                    $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=0";
-                } elseif ($value === '') {
-                    $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=''";
-                } else {
-                    $this->_conditions[] = $normalizedField . '=' . $bind_key;
-                    $this->_bind[$bind_key] = $value;
-                }
-            } elseif ($operator === '!=' || $operator === '<>') {
-                if ($value === null) {
-                    $this->_conditions[] = $normalizedField . ' IS NOT NULL';
-                } else {
+            } elseif (preg_match('#^([\w\.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
+                list(, $field, $operator) = $matches;
+                $bind_key = strtr($field, '.', '_');
+                $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
+                if ($operator === '' || $operator === '=') {
+                    if ($value === null) {
+                        $this->_conditions[] = $normalizedField . ' IS NULL';
+                    } else {
+                        $this->_conditions[] = $normalizedField . '=:' . $bind_key;
+                        $this->_bind[$bind_key] = $value;
+                    }
+                } elseif ($operator === '~=') {
+                    if ($value === 0 || $value === 0.0) {
+                        $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=0";
+                    } elseif ($value === '') {
+                        $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=''";
+                    } else {
+                        $this->_conditions[] = $normalizedField . '=' . $bind_key;
+                        $this->_bind[$bind_key] = $value;
+                    }
+                } elseif ($operator === '!=' || $operator === '<>') {
+                    if ($value === null) {
+                        $this->_conditions[] = $normalizedField . ' IS NOT NULL';
+                    } else {
+                        $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
+                        $this->_bind[$bind_key] = $value;
+                    }
+                } elseif (in_array($operator, ['>', '>=', '<', '<='], true)) {
                     $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
                     $this->_bind[$bind_key] = $value;
+                } elseif ($operator === '^=') {
+                    $this->whereStartsWith($field, $value);
+                } elseif ($operator === '$=') {
+                    $this->whereEndsWith($field, $value);
+                } elseif ($operator === '*=') {
+                    $this->whereContains($field, $value);
+                } elseif ($operator === ',=') {
+                    $this->whereInset($field, $value);
+                } elseif ($operator === '@d=') {
+                    $this->whereDate($field, $value);
+                } elseif ($operator === '@m=') {
+                    $this->whereMonth($field, $value);
+                } elseif ($operator === '?=' || $operator === '?') {
+                    $value = is_string($value) ? trim($value) : $value;
+                    if ($value !== '' && $value !== null) {
+                        $this->where($field, $value);
+                    }
+                } else {
+                    throw new NotSupportedException(['unknown `:where` where filter', 'where' => $filter]);
                 }
-            } elseif (in_array($operator, ['>', '>=', '<', '<='], true)) {
-                $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
-                $this->_bind[$bind_key] = $value;
-            } elseif ($operator === '^=') {
-                $this->whereStartsWith($field, $value);
-            } elseif ($operator === '$=') {
-                $this->whereEndsWith($field, $value);
-            } elseif ($operator === '*=') {
-                $this->whereContains($field, $value);
-            } elseif ($operator === ',=') {
-                $this->whereInset($field, $value);
-            } elseif ($operator === '@d=') {
-                $this->whereDate($field, $value);
-            } elseif ($operator === '@m=') {
-                $this->whereMonth($field, $value);
-            } elseif ($operator === '?=' || $operator === '?') {
-                $value = is_string($value) ? trim($value) : $value;
-                if ($value !== '' && $value !== null) {
-                    $this->where($field, $value);
-                }
+            } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
+                $this->_conditions[] = $matches[0] . (int)$value;
+            } elseif (strpos($filter, ',') !== false) {
+                $this->where1v1($filter, $value);
             } else {
-                throw new NotSupportedException(['unknown `:where` where filter', 'where' => $filter]);
+                throw new NotSupportedException(['unknown `:filter` filter', 'filter' => $filter]);
             }
-        } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
-            $this->_conditions[] = $matches[0] . (int)$value;
-        } elseif (strpos($filter, ',') !== false) {
-            $this->where1v1($filter, $value);
-        } else {
-            throw new NotSupportedException(['unknown `:filter` filter', 'filter' => $filter]);
         }
 
         return $this;
