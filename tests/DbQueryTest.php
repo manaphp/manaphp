@@ -306,7 +306,7 @@ class DbQueryTest extends TestCase
 
         $query = (new Query())->from('city')->whereDate('last_update', '2018/10/01', 'U');
         $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => '1538323200', 'last_update_max' => '1538409599'], $query->getBind());
+        $this->assertEquals(['last_update_min' => strtotime('2018-10-01 00:00:00'), 'last_update_max' => strtotime('2018-10-01 23:59:59')], $query->getBind());
     }
 
     public function test_whereMonth()
@@ -329,7 +329,7 @@ class DbQueryTest extends TestCase
 
         $query = (new Query())->from('city')->whereMonth('last_update', '2018-10', 'U');
         $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => '1538323200', 'last_update_max' => '1541001599'], $query->getBind());
+        $this->assertEquals(['last_update_min' => strtotime('2018-10-01 00:00:00'), 'last_update_max' => strtotime('2018-10-31 23:59:59')], $query->getBind());
     }
 
     public function test_where1v1()
