@@ -284,12 +284,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         foreach (is_array($filters) ? $filters : [$filters => $values] as $filter => $value) {
             if (is_int($filter)) {
                 $this->_conditions[] = $value;
-            } elseif ($value === null) {
-                if (preg_match('#\?=?$#', $filter) === 1) {
-                    null;
-                } else {
-                    $this->_conditions[] = $filter;
-                }
             } elseif (is_array($value)) {
                 if (!$value || isset($value[0])) {
                     if (strpos($filter, '~=')) {
@@ -313,6 +307,14 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 }
             } elseif (preg_match('#^([\w\.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
                 list(, $field, $operator) = $matches;
+                if (strpos($operator, '?') !== false) {
+                    $value = is_string($value) ? trim($value) : $value;
+                    if ($value === '' || $value === null) {
+                        continue;
+                    }
+                    $operator = substr($operator, 0, -1);
+                }
+
                 $bind_key = strtr($field, '.', '_');
                 $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
                 if ($operator === '' || $operator === '=') {
@@ -366,7 +368,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             } elseif (strpos($filter, ',') !== false) {
                 $this->where1v1($filter, $value);
             } else {
-                throw new NotSupportedException(['unknown `:filter` filter', 'filter' => $filter]);
+                $this->_conditions[] = $filter;
             }
         }
 
