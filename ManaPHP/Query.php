@@ -270,7 +270,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
         if ($asArray) {
             $r = $this->execute();
 
-            if ($this->_with) {
+            if ($r && $this->_with) {
                 $r = $this->relationsManager->earlyLoad($this->_model, $r, $this->_with, $asArray);
             }
 
@@ -282,7 +282,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
                 $r[$k] = new $modelName($v);
             }
 
-            if ($this->_with) {
+            if ($r && $this->_with) {
                 $r = $this->relationsManager->earlyLoad($this->_model, $r, $this->_with, $asArray);
             }
 
