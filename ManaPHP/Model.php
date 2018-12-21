@@ -328,7 +328,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
                 $id = $params[0];
             } else {
-                throw new InvalidArgumentException('missing filters condition for Model::get method');
+                throw new InvalidArgumentException(['missing condition for `:class::get` method', 'class' => get_called_class()]);
             }
         }
 
