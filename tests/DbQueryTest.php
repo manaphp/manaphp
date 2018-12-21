@@ -178,8 +178,11 @@ class DbQueryTest extends TestCase
         $this->assertEquals('SELECT * FROM [city] WHERE city_id>0',
             (new Query())->from('city')->where('city_id>0')->getSql());
 
-        $this->assertEquals('SELECT * FROM [city] WHERE city_id>0',
-            (new Query())->from('city')->where(['city_id>0'])->getSql());
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IS NULL',
+            (new Query())->from('city')->where('city_id')->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IS NULL',
+            (new Query())->from('city')->where(['city_id' => null])->getSql());
 
         $this->assertEquals('SELECT * FROM [city]',
             (new Query())->from('city')->where('city_id?')->getSql());
