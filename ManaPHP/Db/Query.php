@@ -283,11 +283,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         foreach (is_array($filters) ? $filters : [$filters => $values] as $filter => $value) {
             if (is_int($filter)) {
-                if (preg_match('#\?=?$#', $value) !== 1) {
-                    $this->_conditions[] = $value;
-                }
+                $this->_conditions[] = $value;
             } elseif ($value === null) {
-                if (preg_match('#\?=?$#', $filter) !== 1) {
+                if (preg_match('#\?=?$#', $filter) === 1) {
+                    null;
+                } else {
                     $this->_conditions[] = $filter;
                 }
             } elseif (is_array($value)) {
