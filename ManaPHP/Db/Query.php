@@ -277,6 +277,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function where($filter, $value = null)
     {
+        if ($filter === null) {
+            return $this;
+        }
+
         if ($value === null && is_array($filter) && count($filter) === 1) {
             if (isset($filter[0])) {
                 $this->_conditions[] = $filter[0];
@@ -286,9 +290,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $filter = (string)key($filter);
         }
 
-        if ($filter === null) {
-            return $this;
-        } elseif (is_array($filter)) {
+        if (is_array($filter)) {
             /** @noinspection ForeachSourceInspection */
             foreach ($filter as $k => $v) {
                 if (is_int($k)) {

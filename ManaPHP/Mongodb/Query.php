@@ -408,7 +408,9 @@ class Query extends \ManaPHP\Query
     {
         if ($filter === null) {
             return $this;
-        } elseif (is_array($filter)) {
+        }
+
+        if (is_array($filter)) {
             /** @noinspection ForeachSourceInspection */
             foreach ($filter as $k => $v) {
                 if (is_int($k)) {
