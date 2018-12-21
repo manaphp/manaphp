@@ -399,116 +399,104 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array           $filter
-     * @param int|float|string|array $value
+     * @param string|array           $filters
+     * @param int|float|string|array $values
      *
      * @return static
      */
-    public function where($filter, $value = null)
+    public function where($filters, $values = null)
     {
-        if ($filter === null) {
+        if ($filters === null) {
             return $this;
         }
 
-        if (is_array($filter)) {
-            /** @noinspection ForeachSourceInspection */
-            foreach ($filter as $k => $v) {
-                if (is_int($k)) {
-                    $this->where($v, null);
-                } else {
-                    $this->where($k, $v);
-                }
-            }
-        } elseif ($value === null) {
-            if (is_string($filter)) {
-                if (preg_match('#^\w+$#', $filter) === 1) {
-                    $this->_filters[] = [$filter => null];
-                } elseif (strpos($filter, 'this.') !== false) {
-                    $this->_filters[] = ['$where' => $filter];
-                } else {
-                    $filter = preg_replace_callback('#\b\w+\b#', function ($match) {
-                        return (is_numeric($match[0]) ? '' : 'this.') . $match[0];
-                    }, $filter);
-                    $this->_filters[] = ['$where' => $filter];
-                }
-            } else {
-                $this->_filters[] = $filter;
-            }
-        } elseif (is_array($value)) {
-            if (strpos($filter, '~=')) {
-                if (count($value) === 2 && gettype($value[0]) === gettype($value[1])) {
-                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                } else {
-                    $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
-                }
-            } elseif (strpos($filter, '@=')) {
-                $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
-            } elseif (!$value || isset($value[0])) {
-                if (strpos($filter, '!=') || strpos($filter, '<>')) {
-                    $this->whereNotIn(substr($filter, 0, -2), $value);
-                } elseif (in_array(null, $value, true)) {
-                    $this->_filters[] = [$filter => ['$in' => $value]];
-                } else {
-                    $this->whereIn(rtrim($filter, '='), $value);
-                }
-            } else {
-                $this->_filters[] = [$filter => $value];
-            }
-        } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
-            list(, $field, $operator) = $matches;
-
-            if ($operator === '' || $operator === '=') {
-                $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
-            } elseif ($operator === '~=') {
-                $field = substr($filter, 0, -2);
-                if ($this->_types && !isset($this->_types[$field])) {
-                    throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
-                        'field' => $field,
-                        'collection' => $this->getSource()
-                    ]);
-                }
-
-                if (is_scalar($value)) {
-                    if (is_int($value)) {
-                        $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value]]];
-                    } elseif (is_float($value)) {
-                        $this->_filters[] = [$field => ['$in' => [(string)$value, (double)$value]]];
+        foreach (is_array($filters) ? $filters : [$filters => $values] as $filter => $value) {
+            if (is_int($filter)) {
+                $this->$filters[] = ['$where' => $value];
+            } elseif (is_array($value)) {
+                if (strpos($filter, '~=')) {
+                    if (count($value) === 2 && gettype($value[0]) === gettype($value[1])) {
+                        $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
                     } else {
-                        $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (double)$value]]];
+                        $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
+                    }
+                } elseif (strpos($filter, '@=')) {
+                    $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                } elseif (!$value || isset($value[0])) {
+                    if (strpos($filter, '!=') || strpos($filter, '<>')) {
+                        $this->whereNotIn(substr($filter, 0, -2), $value);
+                    } elseif (in_array(null, $value, true)) {
+                        $this->_filters[] = [$filter => ['$in' => $value]];
+                    } else {
+                        $this->whereIn(rtrim($filter, '='), $value);
                     }
                 } else {
-                    throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
+                    $this->_filters[] = [$filter => $value];
                 }
-            } elseif ($operator === '^=') {
-                $this->whereStartsWith($field, $value);
-            } elseif ($operator === '$=') {
-                $this->whereEndsWith($field, $value);
-            } elseif ($operator === '*=') {
-                $this->whereContains($field, $value);
-            } elseif ($operator === ',=') {
-                $this->whereInset($field, $value);
-            } elseif ($operator === '@d=') {
-                $this->whereDate($field, $value);
-            } elseif ($operator === '@m=') {
-                $this->whereMonth($field, $value);
-            } elseif ($operator === '?=' || $operator === '?') {
-                $value = is_string($value) ? trim($value) : $value;
-                if ($value !== '' && $value !== null) {
-                    $this->where($field, $value);
+            } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
+                list(, $field, $operator) = $matches;
+
+                if (strpos($operator, '?') !== false) {
+                    $value = is_string($value) ? trim($value) : $value;
+                    if ($value === '' || $value === null) {
+                        continue;
+                    }
+                    $operator = substr($operator, 0, -1);
                 }
+
+                if ($operator === '' || $operator === '=') {
+                    $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
+                } elseif ($operator === '~=') {
+                    $field = substr($filter, 0, -2);
+                    if ($this->_types && !isset($this->_types[$field])) {
+                        throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
+                            'field' => $field,
+                            'collection' => $this->getSource()
+                        ]);
+                    }
+
+                    if (is_scalar($value)) {
+                        if (is_int($value)) {
+                            $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value]]];
+                        } elseif (is_float($value)) {
+                            $this->_filters[] = [$field => ['$in' => [(string)$value, (double)$value]]];
+                        } else {
+                            $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (double)$value]]];
+                        }
+                    } else {
+                        throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
+                    }
+                } elseif ($operator === '^=') {
+                    $this->whereStartsWith($field, $value);
+                } elseif ($operator === '$=') {
+                    $this->whereEndsWith($field, $value);
+                } elseif ($operator === '*=') {
+                    $this->whereContains($field, $value);
+                } elseif ($operator === ',=') {
+                    $this->whereInset($field, $value);
+                } elseif ($operator === '@d=') {
+                    $this->whereDate($field, $value);
+                } elseif ($operator === '@m=') {
+                    $this->whereMonth($field, $value);
+                } elseif ($operator === '?=' || $operator === '?') {
+                    $value = is_string($value) ? trim($value) : $value;
+                    if ($value !== '' && $value !== null) {
+                        $this->where($field, $value);
+                    }
+                } else {
+                    $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
+                    if (!isset($operator_map[$operator])) {
+                        throw new InvalidValueException(['unknown `:where` where filter', 'where' => $filter]);
+                    }
+                    $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($field, $value)]];
+                }
+            } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
+                $this->_filters[] = [$matches[1] => ['$mod' => [(int)$matches[2], (int)$value]]];
+            } elseif (strpos($filter, ',') !== false) {
+                $this->where1v1($filter, $value);
             } else {
-                $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
-                if (!isset($operator_map[$operator])) {
-                    throw new InvalidValueException(['unknown `:where` where filter', 'where' => $filter]);
-                }
-                $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($field, $value)]];
+                throw new InvalidValueException(['unknown mongodb query `filter` filter', 'filter' => $filter]);
             }
-        } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
-            $this->_filters[] = [$matches[1] => ['$mod' => [(int)$matches[2], (int)$value]]];
-        } elseif (strpos($filter, ',') !== false) {
-            $this->where1v1($filter, $value);
-        } else {
-            throw new InvalidValueException(['unknown mongodb query `filter` filter', 'filter' => $filter]);
         }
 
         return $this;
