@@ -281,26 +281,21 @@ class Query extends \ManaPHP\Query implements QueryInterface
             return $this;
         }
 
-        if ($value === null && is_array($filter) && count($filter) === 1) {
-            if (isset($filter[0])) {
-                $this->_conditions[] = $filter[0];
-                return $this;
-            }
-            $value = current($filter);
-            $filter = (string)key($filter);
-        }
-
         if (is_array($filter)) {
-            /** @noinspection ForeachSourceInspection */
             foreach ($filter as $k => $v) {
                 if (is_int($k)) {
-                    $this->_conditions[] = $v;
+                    $this->where($v, null);
                 } else {
                     $this->where($k, $v);
                 }
             }
-        } elseif ($value === null && !is_string($filter)) {
-            $this->_conditions[] = $filter;
+            return $this;
+        }
+
+        if ($value === null) {
+            if (preg_match('#\?=?$#', $filter) !== 1) {
+                $this->_conditions[] = $filter;
+            }
         } elseif (is_array($value)) {
             if (!$value || isset($value[0])) {
                 if (strpos($filter, '~=')) {

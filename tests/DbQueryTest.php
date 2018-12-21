@@ -174,6 +174,29 @@ class DbQueryTest extends TestCase
 
         $result = (new Query())->from('city')->where('city_id', [])->all();
         $this->assertCount(0, $result);
+
+        $this->assertEquals('SELECT * FROM [city] WHERE city_id>0',
+            (new Query())->from('city')->where('city_id>0')->getSql());
+
+        $this->assertEquals('SELECT * FROM [city] WHERE city_id>0',
+            (new Query())->from('city')->where(['city_id>0'])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city]',
+            (new Query())->from('city')->where('city_id?')->getSql());
+
+        $this->assertEquals('SELECT * FROM [city]',
+            (new Query())->from('city')->where(['city_id?' => null])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city]',
+            (new Query())->from('city')->where('city_id?', '')->getSql());
+        $this->assertEquals('SELECT * FROM [city]',
+            (new Query())->from('city')->where(['city_id?' => ''])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city]',
+            (new Query())->from('city')->where('city_id?', ' ')->getSql());
+
+        $this->assertEquals('SELECT * FROM [city]',
+            (new Query())->from('city')->where(['city_id?' => ' '])->getSql());
     }
 
     public function test_whereInset()
