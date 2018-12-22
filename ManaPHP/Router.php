@@ -306,21 +306,6 @@ class Router extends Component implements RouterInterface
 
         $area = null;
         $handledUri = $this->_prefix ? substr($uri, strlen($this->_prefix)) : $uri;
-        if ($handledUri !== '/' && $this->_areas) {
-            if (substr_count($handledUri, '/') < 2) {
-                $handledUri .= '/';
-            }
-
-            $pos = strpos($handledUri, '/', 1);
-            $area = Text::camelize(substr($handledUri, 1, $pos - 1));
-            if (in_array($area, $this->_areas, true)) {
-                $handledUri = substr($handledUri, $pos);
-            } else {
-                $area = null;
-            }
-        }
-
-        $handledUri = rtrim($handledUri, '/') ?: '/';
 
         $routes = $this->_simple_routes;
         if (isset($routes[$method][$handledUri])) {
@@ -328,6 +313,22 @@ class Router extends Component implements RouterInterface
         } elseif (isset($routes[''][$handledUri])) {
             $parts = $routes[''][$handledUri]->match($handledUri, $method);
         } else {
+            if ($handledUri !== '/' && $this->_areas) {
+                if (substr_count($handledUri, '/') < 2) {
+                    $handledUri .= '/';
+                }
+
+                $pos = strpos($handledUri, '/', 1);
+                $area = Text::camelize(substr($handledUri, 1, $pos - 1));
+                if (in_array($area, $this->_areas, true)) {
+                    $handledUri = substr($handledUri, $pos);
+                } else {
+                    $area = null;
+                }
+            }
+
+            $handledUri = rtrim($handledUri, '/') ?: '/';
+
             $parts = false;
             $routes = $this->_regex_routes;
             for ($i = count($routes) - 1; $i >= 0; $i--) {
