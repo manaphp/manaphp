@@ -304,11 +304,23 @@ class Router extends Component implements RouterInterface
 
         $this->eventsManager->fireEvent('router:beforeRoute', $this);
 
-        $area = null;
-        $handledUri = $this->_prefix ? substr($uri, strlen($this->_prefix)) : $uri;
+        if ($this->_prefix) {
+            if (strpos($uri, $this->_prefix) === 0) {
+                if (($handledUri = substr($uri, strlen($this->_prefix))) === '') {
+                    $handledUri = '/';
+                }
+            } else {
+                $handledUri = false;
+            }
+        } else {
+            $handledUri = $uri;
+        }
 
+        $area = null;
         $routes = $this->_simple_routes;
-        if (isset($routes[$method][$handledUri])) {
+        if ($handledUri === false) {
+            $parts = false;
+        } elseif (isset($routes[$method][$handledUri])) {
             $parts = $routes[$method][$handledUri]->match($handledUri, $method);
         } elseif (isset($routes[''][$handledUri])) {
             $parts = $routes[''][$handledUri]->match($handledUri, $method);
