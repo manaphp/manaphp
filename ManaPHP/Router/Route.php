@@ -148,11 +148,20 @@ class Route implements RouteInterface
         }
 
         if (isset($routePaths['controller']) && strpos($routePaths['controller'], '\\') !== false) {
-            $controller = $routePaths['controller'];
-            $routePaths['controller'] = basename(strtr($controller, '\\', '/'), 'Controller');
-            if (($pos = strpos($controller, '\Areas\\')) !== false) {
-                $pos2 = strpos($controller, '\\', $pos + 7);
-                $routePaths['area'] = substr($controller, $pos + 7, $pos2 - $pos - 7);
+            $controller = strtr($routePaths['controller'], '\\', '/');
+
+            if (substr_count($controller, '/') === 2) {
+                $routePaths['controller'] = basename($controller, 'Controller');
+            } elseif (preg_match('#(?:/Controllers/([^/]+)/(\w+)Controller)|(?:/Areas/([^/]+)/Controllers/(\w+)Controller)$#', $controller, $match)) {
+                if (isset($match[3])) {
+                    $routePaths['area'] = $match[3];
+                    $routePaths['controller'] = $match[4];
+                } else {
+                    $routePaths['area'] = $match[1];
+                    $routePaths['controller'] = $match[2];
+                }
+            } else {
+                $routePaths['controller'] = basename($controller, 'Controller');
             }
         }
 
