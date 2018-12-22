@@ -180,7 +180,7 @@ if (!function_exists('abort')) {
             di('response')->setStatus($code);
         }
 
-        throw new \ManaPHP\Exception\AbortException('abort');
+        throw new \ManaPHP\Exception\AbortException();
     }
 }
 

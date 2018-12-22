@@ -176,7 +176,7 @@ class DebuggerPlugin extends Plugin
             $file = '@data/debugger' . $_GET['_debugger'];
             if ($this->filesystem->fileExists($file)) {
                 $this->response->setContent($this->filesystem->fileGet($file));
-                throw new AbortException('abort');
+                throw new AbortException();
             }
         }
 
