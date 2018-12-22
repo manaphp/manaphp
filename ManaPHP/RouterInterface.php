@@ -26,7 +26,7 @@ interface RouterInterface
      *
      * @return static
      */
-    public function setAreas($areas);
+    public function setAreas($areas = null);
 
     /**
      * @return array
