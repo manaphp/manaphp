@@ -17,7 +17,7 @@ class RouterRouteTest extends TestCase
     {
         //  literal route test
         $route = new Route('/blog/edit');
-        $this->assertEquals(['controller' => 'index', 'action' => 'index', 'params' => []], $route->match('/blog/edit'));
+        $this->assertEquals(['controller' => 'index', 'action' => 'index'], $route->match('/blog/edit'));
 
         $route = new Route('/{controller}/{action}/{params}');
         $this->assertEquals(['controller' => 'blog', 'action' => 'edit', 'params' => ['a/b/c']], $route->match('/blog/edit/a/b/c'));
@@ -43,16 +43,16 @@ class RouterRouteTest extends TestCase
         $this->assertEquals(['controller' => 'blog', 'action' => 'view', 'params' => ['id' => '1234']], $route->match('/b/1234'));
 
         $route = new Route('/blog', ['App\Controllers\BlogController']);
-        $this->assertEquals(['controller' => 'Blog', 'action' => 'index', 'params' => []], $route->match('/blog'));
+        $this->assertEquals(['controller' => 'Blog', 'action' => 'index'], $route->match('/blog'));
 
         $route = new Route('/blog', ['App\Controllers\BlogController']);
-        $this->assertEquals(['controller' => 'Blog', 'action' => 'index', 'params' => []], $route->match('/blog'));
+        $this->assertEquals(['controller' => 'Blog', 'action' => 'index'], $route->match('/blog'));
 
         $route = new Route('/blog', ['App\Controllers\Admin\BlogController']);
-        $this->assertEquals(['controller' => 'Blog', 'action' => 'index', 'params' => [], 'area' => 'Admin'], $route->match('/blog'));
+        $this->assertEquals(['controller' => 'Blog', 'action' => 'index', 'area' => 'Admin'], $route->match('/blog'));
 
         $route = new Route('/blog', ['App\Areas\Admin\Controllers\BlogController']);
-        $this->assertEquals(['controller' => 'Blog', 'action' => 'index', 'params' => [], 'area' => 'Admin'], $route->match('/blog'));
+        $this->assertEquals(['controller' => 'Blog', 'action' => 'index', 'area' => 'Admin'], $route->match('/blog'));
     }
 
     public function test_params()
@@ -100,16 +100,16 @@ class RouterRouteTest extends TestCase
     public function test_shortPaths()
     {
         $route = new Route('/', 'feed');
-        $this->assertEquals(['controller' => 'feed', 'action' => 'index', 'params' => []], $route->match('/'));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'index'], $route->match('/'));
 
         $route = new Route('/', 'feed::get');
-        $this->assertEquals(['controller' => 'feed', 'action' => 'get', 'params' => []], $route->match('/'));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'get'], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals(['controller' => 'posts', 'action' => 'show', 'params' => []], $route->match('/'));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals(['controller' => 'posts', 'action' => 'show', 'params' => []], $route->match('/'));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
     }
 
     public function test_rest()

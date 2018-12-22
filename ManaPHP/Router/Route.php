@@ -106,7 +106,7 @@ class Route implements RouteInterface
         $routePaths = [];
 
         if ($paths === null) {
-            return ['controller' => 'index', 'action' => 'index', 'params' => []];
+            return ['controller' => 'index', 'action' => 'index'];
         } elseif (is_string($paths)) {
             if (($pos = strpos($paths, '::')) !== false) {
                 $routePaths['controller'] = substr($paths, 0, $pos);
@@ -115,7 +115,6 @@ class Route implements RouteInterface
                 $routePaths['controller'] = $paths;
                 $routePaths['action'] = 'index';
             }
-            $routePaths['params'] = [];
         } elseif (is_array($paths)) {
             if (isset($paths['area'])) {
                 $routePaths['area'] = $paths['area'];
@@ -144,7 +143,10 @@ class Route implements RouteInterface
                     $params[$k] = $v;
                 }
             }
-            $routePaths['params'] = $params;
+			
+            if ($params) {
+                $routePaths['params'] = $params;
+            }
         }
 
         if (isset($routePaths['controller']) && strpos($routePaths['controller'], '\\') !== false) {

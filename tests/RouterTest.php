@@ -30,16 +30,16 @@ class MvcRouterTest extends TestCase
     public function test_shortPaths()
     {
         $route = new Route('/', 'feed');
-        $this->assertEquals(['controller' => 'feed', 'action' => 'index', 'params' => []], $route->match('/'));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'index'], $route->match('/'));
 
         $route = new Route('/', 'feed::get');
-        $this->assertEquals(['controller' => 'feed', 'action' => 'get', 'params' => []], $route->match('/'));
+        $this->assertEquals(['controller' => 'feed', 'action' => 'get'], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals(['controller' => 'posts', 'action' => 'show', 'params' => []], $route->match('/'));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
 
         $route = new Route('/', 'posts::show');
-        $this->assertEquals(['controller' => 'posts', 'action' => 'show', 'params' => []], $route->match('/'));
+        $this->assertEquals(['controller' => 'posts', 'action' => 'show'], $route->match('/'));
     }
 
     public function test_getRewriteUri()

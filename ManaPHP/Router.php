@@ -378,7 +378,7 @@ class Router extends Component implements RouterInterface
 
         $this->_controller = $parts['controller'];
         $this->_action = $parts['action'];
-        $this->_params = $parts['params'];
+        $this->_params = isset($parts['params']) ? $parts['params'] : [];
 
         $this->eventsManager->fireEvent('router:afterRoute', $this);
 
