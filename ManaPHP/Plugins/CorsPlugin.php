@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Plugins;
 
+use ManaPHP\Exception\AbortException;
 use ManaPHP\Plugin;
 
 class CorsPlugin extends Plugin
@@ -26,18 +27,20 @@ class CorsPlugin extends Plugin
 
     public function init()
     {
-        $this->attachEvent('response:beforeSend', [$this, 'onBeforeSend']);
+        $this->attachEvent('app:beginRequest', [$this, 'onBeginRequest']);
     }
 
-    /**
-     * @param \ManaPHP\Http\ResponseInterface $response
-     */
-    public function onBeforeSend($response)
+    public function onBeginRequest()
     {
-        $response->setHeader('Access-Control-Allow-Origin', '*')
+        $this->response
+            ->setHeader('Access-Control-Allow-Origin', '*')
             ->setHeader('Access-Control-Allow-Credentials', 'true')
             ->setHeader('Access-Control-Allow-Headers', 'Origin, Accept, Authorization, Content-Type, X-Requested-With')
             ->setHeader('Access-Control-Allow-Methods', 'HEAD,GET,POST,PUT,DELETE')
             ->setHeader('Access-Control-Max-Age', $this->_max_age);
+
+        if ($this->request->isOptions()) {
+            throw new AbortException();
+        }
     }
 }
