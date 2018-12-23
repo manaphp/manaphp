@@ -52,16 +52,16 @@ class Paginator extends Component implements PaginatorInterface
     /**
      * @var int
      */
-    protected $_numberOfLinks = 11;
+    protected $_links = 11;
 
     /**
      * @param int $number
      *
      * @return static
      */
-    public function setNumberOfLinks($number)
+    public function setLinks($number)
     {
-        $this->_numberOfLinks = $number;
+        $this->_links = $number;
 
         return $this;
     }
@@ -140,10 +140,10 @@ class Paginator extends Component implements PaginatorInterface
             $str .= '  <li class="prev"><a href="' . str_replace('{page}', $this->prev, $urlTemplate) . '">&lt;</a></li>' . PHP_EOL;
         }
 
-        $startPage = (int)min($this->page - ceil($this->_numberOfLinks / 2), $this->pages - $this->_numberOfLinks);
+        $startPage = (int)min($this->page - ceil($this->_links / 2), $this->pages - $this->_links);
         $startPage = max(0, $startPage) + 1;
 
-        $endPage = min($startPage + $this->_numberOfLinks - 1, $this->pages);
+        $endPage = min($startPage + $this->_links - 1, $this->pages);
 
         for ($i = $startPage; $i <= $endPage; $i++) {
             if ($i === $this->page) {

@@ -14,7 +14,7 @@ interface PaginatorInterface
      *
      * @return static
      */
-    public function setNumberOfLinks($number);
+    public function setLinks($number);
 
     /**
      * @param int $count
