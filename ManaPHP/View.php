@@ -174,11 +174,16 @@ class View extends Component implements ViewInterface
      * Executes render process from dispatching data
      *
      * @param string $template
+     * @param array  $vars
      *
      * @return string
      */
-    public function render($template = null)
+    public function render($template = null, $vars = null)
     {
+        if ($vars !== null) {
+            $this->_vars = $vars;
+        }
+
         $area = $this->dispatcher->getArea();
         $controller = $this->dispatcher->getController();
 
