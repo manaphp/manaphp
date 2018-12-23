@@ -412,7 +412,7 @@ class Query extends \ManaPHP\Query
 
         foreach (is_array($filters) ? $filters : [$filters => $values] as $filter => $value) {
             if (is_int($filter)) {
-                $this->$filters[] = ['$where' => $value];
+                $this->_filters[] = ['$where' => $value];
             } elseif (is_array($value)) {
                 if (strpos($filter, '~=')) {
                     if (count($value) !== 2) {
