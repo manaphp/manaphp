@@ -361,7 +361,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } elseif ($operator === '?=' || $operator === '?') {
                     $value = is_string($value) ? trim($value) : $value;
                     if ($value !== '' && $value !== null) {
-                        $this->where($field, $value);
+                        $this->whereEq($field, $value);
                     }
                 } else {
                     throw new NotSupportedException(['unknown `:where` where filter', 'where' => $filter]);

@@ -335,11 +335,11 @@ class Manager extends Component implements ManagerInterface
         $referenceModel = $relation->referenceModel;
         $valueField = $relation->valueField;
         if ($type === Relation::TYPE_HAS_ONE) {
-            return $referenceModel::query()->where($relation->keyField, $instance->$valueField)->setFetchType(false);
+            return $referenceModel::query()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(false);
         } elseif ($type === Relation::TYPE_BELONGS_TO) {
-            return $referenceModel::query()->where($relation->keyField, $instance->$valueField)->setFetchType(false);
+            return $referenceModel::query()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(false);
         } elseif ($type === Relation::TYPE_HAS_MANY) {
-            return $referenceModel::query()->where($relation->keyField, $instance->$valueField)->setFetchType(true);
+            return $referenceModel::query()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(true);
         } elseif ($type === Relation::TYPE_HAS_MANY_TO_MANY) {
             $ids = $instance::values($relation->keyField, [$valueField => $instance->$valueField]);
             /** @var \ManaPHP\Model $referenceInstance */

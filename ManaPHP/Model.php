@@ -337,7 +337,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         if (!$ttl) {
-            if (!$rs = static::query(null, $model)->select($fields)->where($pkName, $id)->limit(1)->fetch()) {
+            if (!$rs = static::query(null, $model)->select($fields)->whereEq($pkName, $id)->limit(1)->fetch()) {
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             } else {
                 return $rs[0];
@@ -368,7 +368,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         if (!$r) {
-            if (!$rs = static::query(null, $model)->select($fields)->where($pkName, $id)->limit(1)->fetch()) {
+            if (!$rs = static::query(null, $model)->select($fields)->whereEq($pkName, $id)->limit(1)->fetch()) {
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             }
 
@@ -540,7 +540,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         if ($value === null) {
-            $rs = static::query(null, $model)->select([$field])->where($pkName, $pkValue)->limit(1)->fetch(true);
+            $rs = static::query(null, $model)->select([$field])->whereEq($pkName, $pkValue)->limit(1)->fetch(true);
             $value = $rs ? $rs[0][$field] : null;
 
             $model->_di->ipcCache->set($key, [$current, $value], $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
@@ -641,7 +641,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     {
         if (is_scalar($filters)) {
             $model = new static;
-            return static::query(null, $model)->where($model->getPrimaryKey(), $filters)->exists();
+            return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filters)->exists();
         } else {
             return static::query()->where($filters)->exists();
         }
@@ -1056,7 +1056,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         $instance = new static();
-        return static::query()->where($instance->getPrimaryKey(), $primaryKey)->update($fieldValues);
+        return static::query()->whereEq($instance->getPrimaryKey(), $primaryKey)->update($fieldValues);
     }
 
     /**

@@ -59,7 +59,7 @@ class Db extends Session
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($this->_db);
 
-        return $db->query($this->_source)->where('session_id', $session_id)->value('data', '');
+        return $db->query($this->_source)->whereEq('session_id', $session_id)->value('data', '');
     }
 
     /**

@@ -55,7 +55,7 @@ class Db extends Cache
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($this->_db);
 
-        return $db->query($this->_source)->where('hash', md5($key))->value('expired_time') >= time();
+        return $db->query($this->_source)->whereEq('hash', md5($key))->value('expired_time') >= time();
     }
 
     /**
@@ -68,7 +68,7 @@ class Db extends Cache
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($this->_db);
 
-        $r = $db->query($this->_source)->where('hash', md5($key))->first();
+        $r = $db->query($this->_source)->whereEq('hash', md5($key))->first();
         if ($r && $r['expired_time'] > time()) {
             return $r['value'];
         } else {
@@ -90,7 +90,7 @@ class Db extends Cache
 
         $hash = md5($key);
 
-        if ($db->query($this->_source)->where('hash', $hash)->exists()) {
+        if ($db->query($this->_source)->whereEq('hash', $hash)->exists()) {
             $db->update($this->_source, ['value' => $value, 'ttl' => $ttl, 'expired_time' => time() + $ttl], ['hash' => $hash]);
         } else {
             $db->insert($this->_source, ['hash' => $hash, 'key' => $key, 'value' => $value, 'ttl' => $ttl, 'expired_time' => time() + $ttl]);

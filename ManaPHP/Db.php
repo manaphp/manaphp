@@ -549,7 +549,7 @@ abstract class Db extends Component implements DbInterface
             $primaryKey = (string)key($insertFieldValues);
         }
 
-        if ($this->query($table)->where($primaryKey, $insertFieldValues[$primaryKey])->exists()) {
+        if ($this->query($table)->whereEq($primaryKey, $insertFieldValues[$primaryKey])->exists()) {
             $bind = [];
             $updates = [];
             foreach ($updateFieldValues as $k => $v) {
