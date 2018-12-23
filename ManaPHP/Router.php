@@ -57,7 +57,7 @@ class Router extends Component implements RouterInterface
     /**
      * @var bool
      */
-    protected $_wasMatched = false;
+    protected $_matched = false;
 
     /**
      * Group constructor.
@@ -82,7 +82,7 @@ class Router extends Component implements RouterInterface
         $this->_controller = null;
         $this->_action = null;
         $this->_params = [];
-        $this->_wasMatched = false;
+        $this->_matched = false;
     }
 
     /**
@@ -313,7 +313,7 @@ class Router extends Component implements RouterInterface
         $this->_action = null;
         $this->_params = [];
 
-        $this->_wasMatched = false;
+        $this->_matched = false;
 
         $this->eventsManager->fireEvent('router:beforeRoute', $this);
 
@@ -368,7 +368,7 @@ class Router extends Component implements RouterInterface
             return false;
         }
 
-        $this->_wasMatched = true;
+        $this->_matched = true;
 
         if ($area) {
             $this->_area = $area;
@@ -382,7 +382,7 @@ class Router extends Component implements RouterInterface
 
         $this->eventsManager->fireEvent('router:afterRoute', $this);
 
-        return $this->_wasMatched;
+        return $this->_matched;
     }
 
     public function getArea()
@@ -427,7 +427,7 @@ class Router extends Component implements RouterInterface
      */
     public function wasMatched()
     {
-        return $this->_wasMatched;
+        return $this->_matched;
     }
 
     /**
