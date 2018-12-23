@@ -75,6 +75,15 @@ interface QueryInterface
     public function whereEq($field, $value);
 
     /**
+     * @param string $field
+     * @param string $operator
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function whereCmp($field, $operator, $value);
+
+    /**
      * @param array $filters
      *
      * @return static

@@ -197,6 +197,22 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     }
 
     /**
+     * @param string $field
+     * @param string $operator
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function whereCmp($field, $operator, $value)
+    {
+        foreach ($this->queries as $query) {
+            $query->whereCmp($field, $operator, $value);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param array $filters
      *
      * @return static

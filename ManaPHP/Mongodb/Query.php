@@ -519,6 +519,24 @@ class Query extends \ManaPHP\Query
     }
 
     /**
+     * @param string $field
+     * @param string $operator
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function whereCmp($field, $operator, $value)
+    {
+        $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
+        if (!isset($operator_map[$operator])) {
+            throw new InvalidValueException(['unknown `:operator` operator', 'operator' => $operator]);
+        }
+        $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($field, $value)]];
+
+        return $this;
+    }
+
+    /**
      * @param array $filter
      *
      * @return static
