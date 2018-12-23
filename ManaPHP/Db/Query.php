@@ -418,21 +418,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * alias of whereBetween
-     *
-     * @param string           $expr
-     * @param int|float|string $min
-     * @param int|float|string $max
-     *
-     * @return static
-     * @deprecated
-     */
-    public function betweenWhere($expr, $min, $max)
-    {
-        return $this->whereBetween($expr, $min, $max);
-    }
-
-    /**
      * @param string           $expr
      * @param int|float|string $min
      * @param int|float|string $max
@@ -466,19 +451,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $this->_bind[$maxKey] = $max;
 
         return $this;
-    }
-
-    /**
-     * @param string           $expr
-     * @param int|float|string $min
-     * @param int|float|string $max
-     *
-     * @return static
-     * @deprecated
-     */
-    public function notBetweenWhere($expr, $min, $max)
-    {
-        return $this->whereNotBetween($expr, $min, $max);
     }
 
     /**
@@ -520,20 +492,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         }
 
         return $this;
-    }
-
-    /**
-     * alias of whereIn
-     *
-     * @param string                           $expr
-     * @param array|\ManaPHP\Db\QueryInterface $values
-     *
-     * @return static
-     * @deprecated
-     */
-    public function inWhere($expr, $values)
-    {
-        return $this->whereIn($expr, $values);
     }
 
     /**
@@ -591,18 +549,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @param string                           $expr
-     * @param array|\ManaPHP\Db\QueryInterface $values
-     *
-     * @return static
-     * @deprecated
-     */
-    public function notInWhere($expr, $values)
-    {
-        return $this->whereNotIn($expr, $values);
     }
 
     /**

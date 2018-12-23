@@ -77,7 +77,7 @@ interface QueryInterface
      * Appends a BETWEEN condition to the current conditions
      *
      *<code>
-     *    $builder->betweenWhere('price', 100.25, 200.50);
+     *    $builder->whereBetween('price', 100.25, 200.50);
      *</code>
      *
      * @param string           $expr
@@ -92,7 +92,7 @@ interface QueryInterface
      * Appends a NOT BETWEEN condition to the current conditions
      *
      *<code>
-     *    $builder->notBetweenWhere('price', 100.25, 200.50);
+     *    $builder->whereNotBetween('price', 100.25, 200.50);
      *</code>
      *
      * @param string           $expr
@@ -116,7 +116,7 @@ interface QueryInterface
      * Appends an IN condition to the current conditions
      *
      *<code>
-     *    $builder->inWhere('id', [1, 2, 3]);
+     *    $builder->whereIn('id', [1, 2, 3]);
      *</code>
      *
      * @param string                           $expr
@@ -130,7 +130,7 @@ interface QueryInterface
      * Appends a NOT IN condition to the current conditions
      *
      *<code>
-     *    $builder->notInWhere('id', [1, 2, 3]);
+     *    $builder->whereNotIn('id', [1, 2, 3]);
      *</code>
      *
      * @param string                           $expr

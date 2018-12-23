@@ -657,7 +657,7 @@ class DbModelQueryTest extends TestCase
         $this->assertCount(4812, $rows);
     }
 
-    public function test_notInWhere()
+    public function test_whereNotIn()
     {
         $rowAddress = Address::count();
         $this->assertEquals(603, $rowAddress);
