@@ -526,7 +526,7 @@ class Query extends \ManaPHP\Query
                     $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (double)$value]]];
                 }
             } else {
-                throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
+                throw new InvalidValueException(['`:operator` operator is not  valid: value must be scalar value', 'operator' => $operator]);
             }
         } else {
             $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
