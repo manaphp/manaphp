@@ -284,21 +284,23 @@ class Query extends \ManaPHP\Query implements QueryInterface
             if (is_int($filter)) {
                 $this->_conditions[] = $value;
             } elseif (is_array($value)) {
-                if (strpos($filter, '~=')) {
-                    if (count($value) !== 2) {
-                        throw new MisuseException(['`value of :filter` filter is invalid', 'filter' => $filter]);
+                if (preg_match('#([~@!<>|=]+)$#', $filter, $match)) {
+                    $operator = $match[1];
+                    $field = substr($filter, 0, -strlen($operator));
+                    if ($operator === '~=') {
+                        if (count($value) !== 2) {
+                            throw new MisuseException(['`value of :filter` filter is invalid', 'filter' => $filter]);
+                        }
+                        $this->whereBetween($field, $value[0], $value[1]);
+                    } elseif ($operator === '@=') {
+                        $this->whereDateBetween($field, $value[0], $value[1]);
+                    } elseif ($operator === '|=') {
+                        $this->_filters[] = $this->whereIn($field, $value);
+                    } elseif ($operator === '!=' || $operator === '<>') {
+                        $this->whereNotIn($field, $value);
+                    } elseif ($operator === '=') {
+                        $this->whereIn($field, $value);
                     }
-                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                } elseif (strpos($filter, '@=')) {
-                    $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                } elseif (strpos($filter, '|=')) {
-                    $this->_filters[] = $this->whereIn(substr($filter, 0, -2), $value);
-                } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
-                    $this->whereNotIn(substr($filter, 0, -2), $value);
-                } elseif (strpos($filter, '=')) {
-                    $this->whereIn(substr($filter, 0, -1), $value);
-                } elseif (strpos($filter, ' ') !== false) {
-                    $this->_conditions[] = $filter;
                 } elseif (!$value || isset($value[0])) {
                     $this->whereIn($filter, $value);
                 } else {
@@ -366,7 +368,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 }
             } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
                 $this->_conditions[] = $matches[0] . (int)$value;
-            } elseif (strpos($filter, ',') !== false) {
+            } elseif (strpos($filter, '(') === false && strpos($filter, ',') !== false) {
                 $this->where1v1($filter, $value);
             } else {
                 $this->_conditions[] = $filter;
@@ -463,7 +465,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereIn($expr, $values)
     {
         if ($values instanceof $this) {
-            $this->where($expr . ' IN (' . $values->getSql() . ')', []);
+            $this->where($expr . ' IN (' . $values->getSql() . ')');
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } elseif ($values) {
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
@@ -521,7 +523,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereNotIn($expr, $values)
     {
         if ($values instanceof $this) {
-            $this->where($expr . ' NOT IN (' . $values->getSql() . ')', []);
+            $this->where($expr . ' NOT IN (' . $values->getSql() . ')');
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } elseif ($values) {
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
@@ -608,7 +610,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_bind[$key] = $like;
             }
 
-            $this->where(implode(' OR ', $conditions), []);
+            $this->where(implode(' OR ', $conditions));
         } else {
             $key = strtr($expr, '.', '_');
 
