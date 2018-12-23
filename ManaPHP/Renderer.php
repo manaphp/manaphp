@@ -32,7 +32,7 @@ class Renderer extends Component implements RendererInterface
     /**
      * @var array
      */
-    protected $_sectionStack = [];
+    protected $_stack = [];
 
     /**
      * @var array
@@ -209,7 +209,7 @@ class Renderer extends Component implements RendererInterface
         if ($default === null) {
             ob_start();
             ob_implicit_flush(false);
-            $this->_sectionStack[] = $section;
+            $this->_stack[] = $section;
         } else {
             $this->_sections[$section] = $default;
         }
@@ -224,11 +224,11 @@ class Renderer extends Component implements RendererInterface
      */
     public function stopSection($overwrite = false)
     {
-        if (!$this->_sectionStack) {
+        if (!$this->_stack) {
             throw new PreconditionException('cannot stop a section without first starting session');
         }
 
-        $last = array_pop($this->_sectionStack);
+        $last = array_pop($this->_stack);
         if ($overwrite || !isset($this->_sections[$last])) {
             $this->_sections[$last] = ob_get_clean();
         } else {
@@ -241,11 +241,11 @@ class Renderer extends Component implements RendererInterface
      */
     public function appendSection()
     {
-        if (!$this->_sectionStack) {
+        if (!$this->_stack) {
             throw new PreconditionException('Cannot append a section without first starting one:');
         }
 
-        $last = array_pop($this->_sectionStack);
+        $last = array_pop($this->_stack);
         if (isset($this->_sections[$last])) {
             $this->_sections[$last] .= ob_get_clean();
         } else {
