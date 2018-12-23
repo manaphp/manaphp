@@ -506,6 +506,19 @@ class Query extends \ManaPHP\Query
     }
 
     /**
+     * @param string $field
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function whereEq($field, $value)
+    {
+        $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
+
+        return $this;
+    }
+
+    /**
      * @param array $filter
      *
      * @return static

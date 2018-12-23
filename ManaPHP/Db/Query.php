@@ -379,6 +379,22 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
+     * @param string $field
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function whereEq($field, $value)
+    {
+        $bind_key = strpos($field, '.') !== false ? strtr($field, '.', '_') : $field;
+        $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
+        $this->_conditions[] = "$normalizedField=:$bind_key";
+        $this->_bind[$bind_key] = $value;
+
+        return $this;
+    }
+
+    /**
      * @param string           $expr
      * @param int|float|string $min
      * @param int|float|string $max

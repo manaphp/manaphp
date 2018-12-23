@@ -67,6 +67,14 @@ interface QueryInterface
     public function where($filter, $value = null);
 
     /**
+     * @param string $field
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function whereEq($field, $value);
+
+    /**
      * @param array $filters
      *
      * @return static
