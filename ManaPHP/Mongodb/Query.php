@@ -454,7 +454,6 @@ class Query extends \ManaPHP\Query
                 if ($operator === '=') {
                     $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
                 } elseif ($operator === '~=') {
-                    $field = substr($filter, 0, -2);
                     if ($this->_types && !isset($this->_types[$field])) {
                         throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
                             'field' => $field,
