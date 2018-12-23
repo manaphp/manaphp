@@ -1278,7 +1278,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             return [];
         }
 
-        $db = $this->_forceUseMaster ? $this->getConnection()->getMasterConnection() : $this->_db;
+        $db = $this->_force_master ? $this->getConnection()->getMasterConnection() : $this->_db;
         return $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
     }
 

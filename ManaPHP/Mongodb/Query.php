@@ -1013,7 +1013,7 @@ class Query extends \ManaPHP\Query
                 $filters[$key] = $value;
             }
 
-            $r = $mongodb->fetchAll($this->getSource(), $filters, $options, !$this->_forceUseMaster);
+            $r = $mongodb->fetchAll($this->getSource(), $filters, $options, !$this->_force_master);
             if ($this->_projection_alias) {
                 foreach ($r as $k => $v) {
                     foreach ($this->_projection_alias as $ak => $av) {

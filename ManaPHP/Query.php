@@ -46,7 +46,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     /**
      * @var bool
      */
-    protected $_forceUseMaster = false;
+    protected $_force_master = false;
 
     public function getIterator()
     {
@@ -329,7 +329,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
      */
     public function forceUseMaster($forceUseMaster = true)
     {
-        $this->_forceUseMaster = $forceUseMaster;
+        $this->_force_master = $forceUseMaster;
 
         return $this;
     }
