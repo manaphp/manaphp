@@ -282,7 +282,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         foreach (is_array($filters) ? $filters : [$filters => $values] as $filter => $value) {
             if (is_int($filter)) {
-                $this->_conditions[] = $value;
+                $this->whereExpr($value);
             } elseif (is_array($value)) {
                 if (preg_match('#([~@!<>|=%]+)$#', $filter, $match)) {
                     $operator = $match[1];
@@ -308,9 +308,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } elseif (!$value || isset($value[0])) {
                     $this->whereIn($filter, $value);
                 } else {
-                    $this->_conditions[] = $filter;
-                    /** @noinspection SlowArrayOperationsInLoopInspection */
-                    $this->_bind = array_merge($this->_bind, $value);
+                    $this->whereExpr($filter, $value);
                 }
             } elseif (preg_match('#^([\w\.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
                 list(, $field, $operator) = $matches;
@@ -351,7 +349,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             } elseif (strpos($filter, '(') === false && strpos($filter, ',') !== false) {
                 $this->where1v1($filter, $value);
             } else {
-                $this->_conditions[] = $filter;
+                $this->whereExpr($filter);
             }
         }
 
