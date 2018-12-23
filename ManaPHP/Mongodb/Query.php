@@ -564,6 +564,19 @@ class Query extends \ManaPHP\Query
     }
 
     /**
+     * @param string $expr
+     * @param array  $bind
+     *
+     * @return static
+     */
+    public function whereExpr($expr, $bind = null)
+    {
+        $this->_filters[] = ['$where' => $expr];
+
+        return $this;
+    }
+
+    /**
      * @param array $filter
      *
      * @return static

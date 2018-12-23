@@ -93,6 +93,14 @@ interface QueryInterface
     public function whereMod($field, $divisor, $remainder);
 
     /**
+     * @param string $expr
+     * @param array  $bind
+     *
+     * @return static
+     */
+    public function whereExpr($expr, $bind = null);
+
+    /**
      * @param array $filters
      *
      * @return static

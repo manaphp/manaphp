@@ -442,6 +442,23 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
+     * @param string $expr
+     * @param array  $bind
+     *
+     * @return static
+     */
+    public function whereExpr($expr, $bind = null)
+    {
+        $this->_conditions[] = $expr;
+		
+        if (is_array($bind)) {
+            $this->_bind = array_merge($this->_bind, $bind);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string           $expr
      * @param int|float|string $min
      * @param int|float|string $max

@@ -229,6 +229,21 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     }
 
     /**
+     * @param string $expr
+     * @param array  $bind
+     *
+     * @return static
+     */
+    public function whereExpr($expr, $bind = null)
+    {
+        foreach ($this->queries as $query) {
+            $query->whereExpr($expr, $bind);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param array $filters
      *
      * @return static
