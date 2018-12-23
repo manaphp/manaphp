@@ -414,19 +414,23 @@ class Query extends \ManaPHP\Query
             if (is_int($filter)) {
                 $this->_filters[] = ['$where' => $value];
             } elseif (is_array($value)) {
-                if (strpos($filter, '~=')) {
-                    if (count($value) !== 2) {
-                        throw new MisuseException(['`value of :filter` filter is invalid', 'filter' => $filter]);
+                if (preg_match('#([~@!<>|=]+)$#', $filter, $match)) {
+                    $operator = $match[1];
+                    $field = substr($filter, 0, -strlen($operator));
+                    if ($operator === '~=') {
+                        if (count($value) !== 2) {
+                            throw new MisuseException(['`value of :filter` filter is invalid', 'filter' => $filter]);
+                        }
+                        $this->whereBetween($field, $value[0], $value[1]);
+                    } elseif ($operator === '@=') {
+                        $this->whereDateBetween($field, $value[0], $value[1]);
+                    } elseif (strpos($filter, '|=')) {
+                        $this->_filters[] = [$field => ['$in' => $value]];
+                    } elseif ($operator === '!=' || $operator === '<>') {
+                        $this->whereNotIn($field, $value);
+                    } elseif ($operator === '=') {
+                        $this->whereIn($field, $value);
                     }
-                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                } elseif (strpos($filter, '@=')) {
-                    $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                } elseif (strpos($filter, '|=')) {
-                    $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
-                } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
-                    $this->whereNotIn(substr($filter, 0, -2), $value);
-                } elseif (strpos($filter, '=')) {
-                    $this->whereIn(substr($filter, 0, -1), $value);
                 } elseif (!$value || isset($value[0])) {
                     $this->whereIn($filter, $value);
                 } else {
