@@ -93,7 +93,7 @@ abstract class Db extends Component implements DbInterface
     /**
      * @var float
      */
-    protected $_lastIoTime;
+    protected $_last_io_time;
 
     /**
      * \ManaPHP\Db\Adapter constructor
@@ -135,12 +135,12 @@ abstract class Db extends Component implements DbInterface
             $this->fireEvent('db:afterConnect');
 
             if (!isset($this->_options[\PDO::ATTR_PERSISTENT]) || !$this->_options[\PDO::ATTR_PERSISTENT]) {
-                $this->_lastIoTime = microtime(true);
+                $this->_last_io_time = microtime(true);
                 return $this->_pdo;
             }
         }
 
-        if ($this->_transactionLevel === 0 && microtime(true) - $this->_lastIoTime >= $this->_ping_interval && !$this->_ping()) {
+        if ($this->_transactionLevel === 0 && microtime(true) - $this->_last_io_time >= $this->_ping_interval && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
             $this->fireEvent('db:reconnect', ['dsn' => $this->_dsn]);
@@ -153,7 +153,7 @@ abstract class Db extends Component implements DbInterface
             $this->fireEvent('db:afterConnect');
         }
 
-        $this->_lastIoTime = microtime(true);
+        $this->_last_io_time = microtime(true);
 
         return $this->_pdo;
     }
@@ -310,8 +310,8 @@ abstract class Db extends Component implements DbInterface
         $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
         $this->_bind = $bind;
 
-        if (microtime(true) - $this->_lastIoTime > 1.0) {
-            $this->_lastIoTime = null;
+        if (microtime(true) - $this->_last_io_time > 1.0) {
+            $this->_last_io_time = null;
         }
 
         $this->_affectedRows = 0;
@@ -692,8 +692,8 @@ abstract class Db extends Component implements DbInterface
         $this->logger->info('transaction begin', 'db.transaction.begin');
 
         if ($this->_transactionLevel === 0) {
-            if (microtime(true) - $this->_lastIoTime > 1.0) {
-                $this->_lastIoTime = null;
+            if (microtime(true) - $this->_last_io_time > 1.0) {
+                $this->_last_io_time = null;
             }
 
             $this->fireEvent('db:beginTransaction');
@@ -805,7 +805,7 @@ abstract class Db extends Component implements DbInterface
         if ($this->_pdo) {
             $this->_pdo = null;
             $this->_prepared = [];
-            $this->_lastIoTime = null;
+            $this->_last_io_time = null;
             if ($this->_transactionLevel !== 0) {
                 $this->_transactionLevel = 0;
                 $this->_pdo->rollBack();

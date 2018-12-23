@@ -62,7 +62,7 @@ class Redis extends Component
     /**
      * @var float
      */
-    protected $_lastIoTime;
+    protected $_last_io_time;
 
     /**
      * @var float
@@ -143,7 +143,7 @@ class Redis extends Component
         if ($this->_redis) {
             $this->_redis->close();
             $this->_redis = null;
-            $this->_lastIoTime = null;
+            $this->_last_io_time = null;
         }
     }
 
@@ -172,7 +172,7 @@ class Redis extends Component
         $current = microtime(true);
 
         if ($this->_redis) {
-            if ($current - $this->_lastIoTime >= $this->_ping_interval && !$this->_ping()) {
+            if ($current - $this->_last_io_time >= $this->_ping_interval && !$this->_ping()) {
                 $this->close();
                 $this->logger->info(['reconnect to `:url`', 'url' => $this->_url], 'redis.reconnect');
                 $this->_connect();
@@ -182,7 +182,7 @@ class Redis extends Component
             $this->_connect();
         }
 
-        $this->_lastIoTime = $current;
+        $this->_last_io_time = $current;
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
             $this->logger->debug(["\$redis->$name(:args) ... blocking",
@@ -266,7 +266,7 @@ class Redis extends Component
     {
         $current = microtime(true);
         if ($this->_redis) {
-            if ($current - $this->_lastIoTime >= $this->_ping_interval && !$this->_ping()) {
+            if ($current - $this->_last_io_time >= $this->_ping_interval && !$this->_ping()) {
                 $this->close();
                 return $this->_connect();
             } else {

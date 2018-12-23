@@ -42,7 +42,7 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @var float
      */
-    protected $_lastIoTime;
+    protected $_last_io_time;
 
     /**
      * Mongodb constructor.
@@ -94,7 +94,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->fireEvent('mongodb:afterConnect');
         }
 
-        if (microtime(true) - $this->_lastIoTime > $this->_ping_interval && !$this->_ping()) {
+        if (microtime(true) - $this->_last_io_time > $this->_ping_interval && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.reconnect');
 
@@ -104,7 +104,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->fireEvent('mongodb:afterConnect');
         }
 
-        $this->_lastIoTime = microtime(true);
+        $this->_last_io_time = microtime(true);
 
         return $this->_manager;
     }
@@ -130,8 +130,8 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->fireEvent('mongodb:beforeBulkWrite', compact('namespace', 'bulk'));
         $start_time = microtime(true);
-        if ($start_time - $this->_lastIoTime > 1.0) {
-            $this->_lastIoTime = null;
+        if ($start_time - $this->_last_io_time > 1.0) {
+            $this->_last_io_time = null;
         }
         try {
             $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
@@ -443,8 +443,8 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->fireEvent('mongodb:beforeCommand', compact('db', 'command'));
         $start_time = microtime(true);
-        if ($start_time - $this->_lastIoTime > 1.0) {
-            $this->_lastIoTime = null;
+        if ($start_time - $this->_last_io_time > 1.0) {
+            $this->_last_io_time = null;
         }
         try {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -584,6 +584,6 @@ class Mongodb extends Component implements MongodbInterface
     public function close()
     {
         $this->_manager = null;
-        $this->_lastIoTime = null;
+        $this->_last_io_time = null;
     }
 }
