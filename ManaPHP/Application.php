@@ -19,12 +19,12 @@ class Application extends Component implements ApplicationInterface
     /**
      * @var string
      */
-    protected $_classFileName;
+    protected $_class_file_name;
 
     /**
      * @var string
      */
-    protected $_rootDir;
+    protected $_root_dir;
 
     /**
      * Application constructor.
@@ -34,7 +34,7 @@ class Application extends Component implements ApplicationInterface
     public function __construct($loader = null)
     {
         $calledClass = get_called_class();
-        $this->_classFileName = (new \ReflectionClass($calledClass))->getFileName();
+        $this->_class_file_name = (new \ReflectionClass($calledClass))->getFileName();
 
         ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);
@@ -50,7 +50,7 @@ class Application extends Component implements ApplicationInterface
         $publicDir = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : $rootDir . '/public';
 
         if (strpos($calledClass, 'ManaPHP\\') !== 0) {
-            $appDir = dirname($this->_classFileName);
+            $appDir = dirname($this->_class_file_name);
             $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
             $publicDir = $rootDir . '/public';
         }
@@ -87,21 +87,21 @@ class Application extends Component implements ApplicationInterface
      */
     public function getRootDir()
     {
-        if (!$this->_rootDir) {
+        if (!$this->_root_dir) {
             if (strpos(get_called_class(), 'ManaPHP\\') !== 0) {
-                $this->_rootDir = dirname(dirname($this->_classFileName));
+                $this->_root_dir = dirname(dirname($this->_class_file_name));
             } elseif (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
-                $this->_rootDir = dirname($_SERVER['DOCUMENT_ROOT']);
+                $this->_root_dir = dirname($_SERVER['DOCUMENT_ROOT']);
             } else {
                 $rootDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
                 if (is_file($rootDir . '/index.php')) {
                     $rootDir = dirname($rootDir);
                 }
-                $this->_rootDir = $rootDir;
+                $this->_root_dir = $rootDir;
             }
         }
 
-        return $this->_rootDir;
+        return $this->_root_dir;
     }
 
     /**
@@ -111,7 +111,7 @@ class Application extends Component implements ApplicationInterface
      */
     public function setRootDir($rootDir)
     {
-        $this->_rootDir = $rootDir;
+        $this->_root_dir = $rootDir;
         return $this;
     }
 
