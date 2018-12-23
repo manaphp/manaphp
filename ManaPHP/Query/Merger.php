@@ -167,7 +167,6 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     }
 
     /**
-     *
      * @param string|array           $filter
      * @param int|float|string|array $value
      *
@@ -177,6 +176,21 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     {
         foreach ($this->queries as $query) {
             $query->where($filter, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function whereEq($field, $value)
+    {
+        foreach ($this->queries as $query) {
+            $query->where($field, $value);
         }
 
         return $this;
