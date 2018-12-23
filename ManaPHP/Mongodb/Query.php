@@ -558,9 +558,9 @@ class Query extends \ManaPHP\Query
     public function whereBetween($field, $min, $max)
     {
         if ($min === null || $min === '') {
-            return $max === null || $max === '' ? $this : $this->where($field . '<=', $max);
+            return $max === null || $max === '' ? $this : $this->whereCmp($field, '<=', $max);
         } elseif ($max === null || $max === '') {
-            return $min === null || $min === '' ? $this : $this->where($field . '>=', $min);
+            return $min === null || $min === '' ? $this : $this->whereCmp($field, '>=', $min);
         }
 
         $this->_filters[] = [$field => ['$gte' => $this->normalizeValue($field, $min), '$lte' => $this->normalizeValue($field, $max)]];
@@ -578,9 +578,9 @@ class Query extends \ManaPHP\Query
     public function whereNotBetween($field, $min, $max)
     {
         if ($min === null || $min === '') {
-            return $max === null || $max === '' ? $this : $this->where($field . '>', $max);
+            return $max === null || $max === '' ? $this : $this->whereCmp($field, '>', $max);
         } elseif ($max === null || $max === '') {
-            return $min === null || $min === '' ? $this : $this->where($field . '<', $min);
+            return $min === null || $min === '' ? $this : $this->whereCmp($field, '<', $min);
         }
 
         $this->_filters[] = [$field => ['$not' => ['$gte' => $this->normalizeValue($field, $min), '$lte' => $this->normalizeValue($field, $max)]]];

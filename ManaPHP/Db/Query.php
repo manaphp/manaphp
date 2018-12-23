@@ -422,9 +422,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereBetween($expr, $min, $max)
     {
         if ($min === null || $min === '') {
-            return $max === null || $max === '' ? $this : $this->where($expr . '<=', $max);
+            return $max === null || $max === '' ? $this : $this->whereCmp($expr, '<=', $max);
         } elseif ($max === null || $max === '') {
-            return $min === null || $min === '' ? $this : $this->where($expr . '>=', $min);
+            return $min === null || $min === '' ? $this : $this->whereCmp($expr, '>=', $min);
         }
 
         if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
@@ -464,9 +464,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereNotBetween($expr, $min, $max)
     {
         if ($min === null || $min === '') {
-            return $max === null || $max === '' ? $this : $this->where($expr . '>', $max);
+            return $max === null || $max === '' ? $this : $this->whereCmp($expr, '>', $max);
         } elseif ($max === null || $max === '') {
-            return $min === null || $min === '' ? $this : $this->where($expr . '<', $min);
+            return $min === null || $min === '' ? $this : $this->whereCmp($expr, '<', $min);
         }
 
         $minKey = '_min_' . $this->_hiddenParamNumber;

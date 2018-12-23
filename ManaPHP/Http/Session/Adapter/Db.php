@@ -117,7 +117,7 @@ class Db extends Session
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($this->_db);
 
-        $db->query($this->_source)->where('expired_time<=', time())->delete();
+        $db->query($this->_source)->whereCmp('expired_time', '<=', time())->delete();
 
         return true;
     }
