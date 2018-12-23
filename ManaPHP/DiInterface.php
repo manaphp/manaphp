@@ -45,15 +45,6 @@ interface DiInterface
     public function getDefinition($name);
 
     /**
-     * @param string       $component
-     * @param string|array $aliases
-     * @param bool         $force
-     *
-     * @return static
-     */
-    public function setAliases($component, $aliases, $force = false);
-
-    /**
      * Removes a component from the components container
      *
      * @param string $name

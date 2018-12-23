@@ -126,8 +126,6 @@ class Di implements DiInterface
     {
         if (isset($this->_definitions[$name])) {
             $definition = $this->_definitions[$name];
-        } elseif (isset($this->_aliases[$name])) {
-            $definition = $this->_definitions[$this->_aliases[$name]];
         } else {
             return $className;
         }
@@ -159,8 +157,6 @@ class Di implements DiInterface
         $definition = null;
         if (isset($this->_definitions[$name])) {
             $definition = $this->_definitions[$name];
-        } elseif (isset($this->_aliases[$name])) {
-            $definition = $this->_definitions[$this->_aliases[$name]];
         } elseif (strpos($name, '\\') !== false) {
             $definition = $name;
         } elseif ($pos = strrpos($name, '_')) {
@@ -272,31 +268,6 @@ class Di implements DiInterface
     }
 
     /**
-     * @param string       $component
-     * @param string|array $aliases
-     * @param bool         $force
-     *
-     * @return static
-     */
-    public function setAliases($component, $aliases, $force = false)
-    {
-        if (is_string($aliases)) {
-            if ($force || !isset($this->_aliases[$aliases])) {
-                $this->_aliases[$aliases] = $component;
-            }
-        } else {
-            /** @noinspection ForeachSourceInspection */
-            foreach ($aliases as $alias) {
-                if ($force || !isset($this->_aliases[$alias])) {
-                    $this->_aliases[$alias] = $component;
-                }
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @param string       $pattern
      * @param string|array $namespaces
      *
@@ -322,11 +293,7 @@ class Di implements DiInterface
             throw new PreconditionException(['`:name` component is being used by alias, please remove alias first', 'name' => $name]);
         }
 
-        if (isset($this->_aliases[$name])) {
-            unset($this->_aliases[$name]);
-        } else {
-            unset($this->_definitions[$name], $this->_instances[$name], $this->{$name});
-        }
+        unset($this->_definitions[$name], $this->_instances[$name], $this->{$name});
 
         return $this;
     }
@@ -383,8 +350,6 @@ class Di implements DiInterface
             } elseif ($count === 3) {
                 $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
             } else {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                /** @noinspection PhpUnhandledExceptionInspection */
                 $reflection = new \ReflectionClass($definition);
                 $instance = $reflection->newInstanceArgs($parameters);
             }
@@ -422,14 +387,8 @@ class Di implements DiInterface
             return $this->_instances[$name];
         }
 
-        if (isset($this->_aliases[$name], $this->_instances[$this->_aliases[$name]])) {
-            return $this->_instances[$this->_aliases[$name]];
-        }
-
         if (isset($this->_definitions[$name])) {
             $definition = $this->_definitions[$name];
-        } elseif (isset($this->_aliases[$name])) {
-            $definition = $this->_definitions[$this->_aliases[$name]];
         } else {
             return $this->getInstance($name, $parameters, $name);
         }
@@ -437,11 +396,7 @@ class Di implements DiInterface
         $instance = $this->getInstance($definition, $parameters, $name);
 
         if (is_string($definition) || !isset($definition['shared']) || $definition['shared'] === true) {
-            if (isset($this->_definitions[$name])) {
-                $this->_instances[$name] = $instance;
-            } else {
-                $this->_instances[$this->_aliases[$name]] = $instance;
-            }
+            $this->_instances[$name] = $instance;
         }
 
         return $instance;
@@ -486,15 +441,9 @@ class Di implements DiInterface
             return $this->_instances[$name];
         }
 
-        if (isset($this->_aliases[$name], $this->_instances[$this->_aliases[$name]])) {
-            return $this->_instances[$this->_aliases[$name]];
-        }
-
         if (isset($this->_definitions[$name])) {
             return $this->_instances[$name] = $this->getInstance($this->_definitions[$name], null, $name);
-        } elseif (isset($this->_aliases[$name])) {
-            return $this->_instances[$this->_aliases[$name]] = $this->getInstance($this->_definitions[$this->_aliases[$name]], null, $name);
-        } elseif (strpos($name, '\\') !== false) {
+        }elseif (strpos($name, '\\') !== false) {
             return $this->_instances[$name] = $this->getInstance($name, null, $name);
         } else {
             $className = $this->_getPatterned($name);
@@ -559,7 +508,7 @@ class Di implements DiInterface
      */
     public function has($name)
     {
-        return isset($this->_definitions[$name]) || isset($this->_aliases[$name]);
+        return isset($this->_definitions[$name]);
     }
 
     /**

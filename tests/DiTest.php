@@ -146,31 +146,11 @@ class DiTest extends TestCase
         $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
     }
 
-    public function test_setAlias()
-    {
-        //anonymous function
-        $di = new Di();
-        $di->setShared('request', function () {
-            return new Request();
-        })->setAliases('request', ['request1', 'request2']);
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request1'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request2'));
-    }
-
     public function test_has()
     {
         $di = new Di();
         $di->set('request', 'ManaPHP\Http\Request');
         $this->assertTrue($di->has('request'));
-        $this->assertFalse($di->has('request_missing'));
-
-        //alias
-        $di = new Di();
-        $di->set('request', 'ManaPHP\Http\Request');
-        $di->setAliases('request', ['request2', 'request3']);
-        $this->assertTrue($di->has('request'));
-        $this->assertTrue($di->has('request2'));
-        $this->assertTrue($di->has('request3'));
         $this->assertFalse($di->has('request_missing'));
     }
 
