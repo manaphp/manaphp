@@ -16,9 +16,9 @@ use ManaPHP\Exception\MisuseException;
 class View extends Component implements ViewInterface
 {
     /**
-     * @var string
+     * @var false|string|null
      */
-    protected $_content;
+    protected $_layout;
 
     /**
      * @var array
@@ -26,20 +26,34 @@ class View extends Component implements ViewInterface
     protected $_vars = [];
 
     /**
-     * @var false|string|null
+     * @var string
      */
-    protected $_layout;
+    protected $_content;
+
+    /**
+     * View constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = null)
+    {
+        if (is_array($options)) {
+            if (isset($options['layout'])) {
+                $this->_layout = $options['layout'];
+            }
+        }
+    }
 
     public function saveInstanceState()
     {
-        return true;
+        return ['layout' => $this->_layout];
     }
 
     public function restoreInstanceState($data)
     {
-        $this->_content = null;
+        $this->_layout = $data['layout'];
         $this->_vars = [];
-        $this->_layout = null;
+        $this->_content = null;
     }
 
     /**
