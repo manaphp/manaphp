@@ -27,7 +27,7 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @var string
      */
-    protected $_defaultDb;
+    protected $_default_db;
 
     /**
      * @var \MongoDB\Driver\Manager
@@ -54,7 +54,7 @@ class Mongodb extends Component implements MongodbInterface
         $this->_dsn = $dsn;
 
         $path = parse_url($dsn, PHP_URL_PATH);
-        $this->_defaultDb = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
+        $this->_default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
     }
 
     /**
@@ -62,7 +62,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function getDefaultDb()
     {
-        return $this->_defaultDb;
+        return $this->_default_db;
     }
 
     /**
@@ -118,7 +118,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkWrite($source, $bulk)
     {
-        $namespace = strpos($source, '.') === false ? ($this->_defaultDb . '.' . $source) : $source;
+        $namespace = strpos($source, '.') === false ? ($this->_default_db . '.' . $source) : $source;
 
         if ($this->_writeConcern === null) {
             try {
@@ -165,7 +165,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function insert($source, $document, $primaryKey = null, $skipIfExists = false)
     {
-        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
         $bulk = new BulkWrite();
         if ($skipIfExists) {
@@ -198,7 +198,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkInsert($source, $documents, $primaryKey = null, $skipIfExists = false)
     {
-        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
         if ($skipIfExists && $primaryKey === null) {
             throw new InvalidValueException('when insert type is skipIfExists must provide primaryKey name');
@@ -235,7 +235,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function update($source, $document, $filter)
     {
-        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
@@ -263,7 +263,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkUpdate($source, $documents, $primaryKey)
     {
-        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
@@ -295,7 +295,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function upsert($source, $document, $primaryKey)
     {
-        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
@@ -323,7 +323,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkUpsert($source, $documents, $primaryKey)
     {
-        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
@@ -352,7 +352,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function delete($source, $filter)
     {
-        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
@@ -395,7 +395,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function fetchAll($source, $filter = [], $options = [], $secondaryPreferred = true)
     {
-        $namespace = strpos($source, '.') !== false ? $source : ($this->_defaultDb . '.' . $source);
+        $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
         if (is_bool($secondaryPreferred)) {
             $readPreference = new ReadPreference($secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY);
         } else {
@@ -438,7 +438,7 @@ class Mongodb extends Component implements MongodbInterface
     public function command($command, $db = null)
     {
         if (!$db) {
-            $db = $this->_defaultDb;
+            $db = $this->_default_db;
         }
 
         $this->fireEvent('mongodb:beforeCommand', compact('db', 'command'));
@@ -486,7 +486,7 @@ class Mongodb extends Component implements MongodbInterface
             $db = substr($source, 0, $pos);
             $collection = substr($source, $pos + 1);
         } else {
-            $db = $this->_defaultDb;
+            $db = $this->_default_db;
             $collection = $source;
         }
 
@@ -520,7 +520,7 @@ class Mongodb extends Component implements MongodbInterface
             $db = substr($source, 0, $pos);
             $collection = substr($source, $pos + 1);
         } else {
-            $db = $this->_defaultDb;
+            $db = $this->_default_db;
             $collection = $source;
         }
 
