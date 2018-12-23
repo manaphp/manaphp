@@ -450,28 +450,9 @@ class Query extends \ManaPHP\Query
                 if ($operator === '') {
                     $operator = '=';
                 }
-				
-                if ($operator === '=') {
-                    $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
-                } elseif ($operator === '~=') {
-                    if ($this->_types && !isset($this->_types[$field])) {
-                        throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
-                            'field' => $field,
-                            'collection' => $this->getSource()
-                        ]);
-                    }
 
-                    if (is_scalar($value)) {
-                        if (is_int($value)) {
-                            $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value]]];
-                        } elseif (is_float($value)) {
-                            $this->_filters[] = [$field => ['$in' => [(string)$value, (double)$value]]];
-                        } else {
-                            $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (double)$value]]];
-                        }
-                    } else {
-                        throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
-                    }
+                if (in_array($operator, ['=', '~=', '!=', '<>', '>', '>=', '<', '<='], true)) {
+                    $this->whereCmp($field, $operator, $value);
                 } elseif ($operator === '^=') {
                     $this->whereStartsWith($field, $value);
                 } elseif ($operator === '$=') {
@@ -490,11 +471,7 @@ class Query extends \ManaPHP\Query
                         $this->where($field, $value);
                     }
                 } else {
-                    $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
-                    if (!isset($operator_map[$operator])) {
-                        throw new InvalidValueException(['unknown `:where` where filter', 'where' => $filter]);
-                    }
-                    $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($field, $value)]];
+                    throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                 }
             } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
                 $this->_filters[] = [$matches[1] => ['$mod' => [(int)$matches[2], (int)$value]]];
@@ -530,11 +507,34 @@ class Query extends \ManaPHP\Query
      */
     public function whereCmp($field, $operator, $value)
     {
-        $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
-        if (!isset($operator_map[$operator])) {
-            throw new InvalidValueException(['unknown `:operator` operator', 'operator' => $operator]);
+        if ($operator === '=') {
+            $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
+        } elseif ($operator === '~=') {
+            if ($this->_types && !isset($this->_types[$field])) {
+                throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
+                    'field' => $field,
+                    'collection' => $this->getSource()
+                ]);
+            }
+
+            if (is_scalar($value)) {
+                if (is_int($value)) {
+                    $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value]]];
+                } elseif (is_float($value)) {
+                    $this->_filters[] = [$field => ['$in' => [(string)$value, (double)$value]]];
+                } else {
+                    $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (double)$value]]];
+                }
+            } else {
+                throw new InvalidValueException(['`:filter` filter is not  valid: value must be scalar value', 'filter' => $filter]);
+            }
+        } else {
+            $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
+            if (!isset($operator_map[$operator])) {
+                throw new InvalidValueException(['unknown `:operator` operator', 'operator' => $operator]);
+            }
+            $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($field, $value)]];
         }
-        $this->_filters[] = [$field => [$operator_map[$operator] => $this->normalizeValue($field, $value)]];
 
         return $this;
     }
