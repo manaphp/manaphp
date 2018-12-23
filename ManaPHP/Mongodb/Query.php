@@ -430,6 +430,8 @@ class Query extends \ManaPHP\Query
                         $this->whereNotIn($field, $value);
                     } elseif ($operator === '=') {
                         $this->whereIn($field, $value);
+                    } else {
+                        throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                     }
                 } elseif (!$value || isset($value[0])) {
                     $this->whereIn($filter, $value);
