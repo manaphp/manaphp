@@ -190,7 +190,7 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     public function whereEq($field, $value)
     {
         foreach ($this->queries as $query) {
-            $query->where($field, $value);
+            $query->whereEq($field, $value);
         }
 
         return $this;
