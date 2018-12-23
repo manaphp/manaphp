@@ -318,34 +318,12 @@ class Query extends \ManaPHP\Query implements QueryInterface
                     $operator = substr($operator, 0, -1);
                 }
 
-                $bind_key = strtr($field, '.', '_');
-                $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
-                if ($operator === '' || $operator === '=') {
-                    if ($value === null) {
-                        $this->_conditions[] = $normalizedField . ' IS NULL';
-                    } else {
-                        $this->_conditions[] = $normalizedField . '=:' . $bind_key;
-                        $this->_bind[$bind_key] = $value;
-                    }
-                } elseif ($operator === '~=') {
-                    if ($value === 0 || $value === 0.0) {
-                        $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=0";
-                    } elseif ($value === '') {
-                        $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=''";
-                    } else {
-                        $this->_conditions[] = $normalizedField . '=' . $bind_key;
-                        $this->_bind[$bind_key] = $value;
-                    }
-                } elseif ($operator === '!=' || $operator === '<>') {
-                    if ($value === null) {
-                        $this->_conditions[] = $normalizedField . ' IS NOT NULL';
-                    } else {
-                        $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
-                        $this->_bind[$bind_key] = $value;
-                    }
-                } elseif (in_array($operator, ['>', '>=', '<', '<='], true)) {
-                    $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
-                    $this->_bind[$bind_key] = $value;
+                if ($operator === '') {
+                    $operator = '=';
+                }
+
+                if (in_array($operator, ['=', '~=', '!=', '<>', '>', '>=', '<', '<='], true)) {
+                    $this->whereCmp($field, $operator, $value);
                 } elseif ($operator === '^=') {
                     $this->whereStartsWith($field, $value);
                 } elseif ($operator === '$=') {
@@ -364,7 +342,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                         $this->whereEq($field, $value);
                     }
                 } else {
-                    throw new NotSupportedException(['unknown `:where` where filter', 'where' => $filter]);
+                    throw new MisuseException(['unknown `:where` where filter', 'where' => $filter]);
                 }
             } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
                 $this->_conditions[] = $matches[0] . (int)$value;
@@ -406,8 +384,35 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $bind_key = strpos($field, '.') ? strtr($field, '.', '_') : $field;
         $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
 
-        $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
-        $this->_bind[$bind_key] = $value;
+        if ($operator === '=') {
+            if ($value === null) {
+                $this->_conditions[] = $normalizedField . ' IS NULL';
+            } else {
+                $this->_conditions[] = $normalizedField . '=:' . $bind_key;
+                $this->_bind[$bind_key] = $value;
+            }
+        } elseif ($operator === '~=') {
+            if ($value === 0 || $value === 0.0) {
+                $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=0";
+            } elseif ($value === '') {
+                $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=''";
+            } else {
+                $this->_conditions[] = $normalizedField . '=' . $bind_key;
+                $this->_bind[$bind_key] = $value;
+            }
+        } elseif ($operator === '!=' || $operator === '<>') {
+            if ($value === null) {
+                $this->_conditions[] = $normalizedField . ' IS NOT NULL';
+            } else {
+                $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
+                $this->_bind[$bind_key] = $value;
+            }
+        } elseif (in_array($operator, ['>', '>=', '<', '<='], true)) {
+            $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
+            $this->_bind[$bind_key] = $value;
+        } else {
+            throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
+        }
 
         return $this;
     }
