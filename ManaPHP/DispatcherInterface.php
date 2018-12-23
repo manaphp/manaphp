@@ -96,13 +96,6 @@ interface DispatcherInterface
     public function getReturnedValue();
 
     /**
-     * @param string $controller
-     *
-     * @return string
-     */
-    public function getControllerClassName($controller = null);
-
-    /**
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param \ManaPHP\RouterInterface $router

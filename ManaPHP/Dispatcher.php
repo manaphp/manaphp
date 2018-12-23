@@ -198,24 +198,6 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param string $controller
-     *
-     * @return string
-     */
-    public function getControllerClassName($controller = null)
-    {
-        if (!$controller) {
-            $controller = $this->_controller;
-        }
-
-        if ($this->_area) {
-            return $this->alias->resolveNS("@ns.app\\Areas\\$this->_area\\Controllers\\{$controller}Controller");
-        } else {
-            return $this->alias->resolveNS("@ns.app\\Controllers\\{$controller}Controller");
-        }
-    }
-
-    /**
      * @param \ManaPHP\Rest\Controller $controller
      * @param string                   $action
      * @param array                    $params
