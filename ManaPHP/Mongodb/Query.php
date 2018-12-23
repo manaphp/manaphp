@@ -412,7 +412,7 @@ class Query extends \ManaPHP\Query
 
         foreach (is_array($filters) ? $filters : [$filters => $values] as $filter => $value) {
             if (is_int($filter)) {
-                $this->_filters[] = ['$where' => $value];
+                $this->whereExpr($value);
             } elseif (is_array($value)) {
                 if (preg_match('#([~@!<>|=%]+)$#', $filter, $match)) {
                     $operator = $match[1];
