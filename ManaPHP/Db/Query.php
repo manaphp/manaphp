@@ -2,7 +2,6 @@
 namespace ManaPHP\Db;
 
 use ManaPHP\Di;
-use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\Expression\Increment;
@@ -285,21 +284,23 @@ class Query extends \ManaPHP\Query implements QueryInterface
             if (is_int($filter)) {
                 $this->_conditions[] = $value;
             } elseif (is_array($value)) {
-                if (!$value || isset($value[0])) {
-                    if (strpos($filter, '~=')) {
-                        if (count($value) !== 2) {
-                            throw new InvalidArgumentException(['`value of :filter` filter is invalid', 'filter' => $filter]);
-                        }
-                        $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                    } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
-                        $this->whereNotIn(substr($filter, 0, -2), $value);
-                    } elseif (strpos($filter, '@=')) {
-                        $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                    } elseif (strpos($filter, ' ') !== false) {
-                        $this->_conditions[] = $filter;
-                    } else {
-                        $this->whereIn(rtrim($filter, '='), $value);
+                if (strpos($filter, '~=')) {
+                    if (count($value) !== 2) {
+                        throw new MisuseException(['`value of :filter` filter is invalid', 'filter' => $filter]);
                     }
+                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                } elseif (strpos($filter, '@=')) {
+                    $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                } elseif (strpos($filter, '|=')) {
+                    $this->_filters[] = $this->whereIn(substr($filter, 0, -2), $value);
+                } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
+                    $this->whereNotIn(substr($filter, 0, -2), $value);
+                } elseif (strpos($filter, '=')) {
+                    $this->whereIn(substr($filter, 0, -1), $value);
+                } elseif (strpos($filter, ' ') !== false) {
+                    $this->_conditions[] = $filter;
+                } elseif (!$value || isset($value[0])) {
+                    $this->whereIn($filter, $value);
                 } else {
                     $this->_conditions[] = $filter;
                     /** @noinspection SlowArrayOperationsInLoopInspection */
