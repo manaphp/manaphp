@@ -284,7 +284,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             if (is_int($filter)) {
                 $this->_conditions[] = $value;
             } elseif (is_array($value)) {
-                if (preg_match('#([~@!<>|=]+)$#', $filter, $match)) {
+                if (preg_match('#([~@!<>|=%]+)$#', $filter, $match)) {
                     $operator = $match[1];
                     $field = substr($filter, 0, -strlen($operator));
                     if ($operator === '~=') {
@@ -300,6 +300,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
                         $this->whereNotIn($field, $value);
                     } elseif ($operator === '=') {
                         $this->whereIn($field, $value);
+                    } elseif ($operator === '%=') {
+                        $this->whereMod($field, $value[0], $value[1]);
                     } else {
                         throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                     }
@@ -346,8 +348,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } else {
                     throw new MisuseException(['unknown `:where` where filter', 'where' => $filter]);
                 }
-            } elseif (preg_match('#^([\w\.]+)%(\d+)=$#', $filter, $matches) === 1) {
-                $this->_conditions[] = $matches[0] . (int)$value;
             } elseif (strpos($filter, '(') === false && strpos($filter, ',') !== false) {
                 $this->where1v1($filter, $value);
             } else {
