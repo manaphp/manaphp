@@ -85,7 +85,7 @@ class Di implements DiInterface
     /**
      * @var bool
      */
-    protected $_keepInstanceState = false;
+    protected $_keep_instance_state = false;
 
     /**
      * @var \ManaPHP\Di\InstanceState[]
@@ -398,7 +398,7 @@ class Di implements DiInterface
 
         if ($instance instanceof Component) {
             $instance->setDi($this);
-            if ($this->_keepInstanceState && ($state = $instance->saveInstanceState()) !== false) {
+            if ($this->_keep_instance_state && ($state = $instance->saveInstanceState()) !== false) {
                 $this->_instancesState[] = new InstanceState($name, $instance, $state);
             }
         } elseif (method_exists($instance, 'setDi')) {
@@ -590,7 +590,7 @@ class Di implements DiInterface
      */
     public function keepInstanceState($keep = true)
     {
-        $this->_keepInstanceState = $keep;
+        $this->_keep_instance_state = $keep;
     }
 
     public function restoreInstancesState()
