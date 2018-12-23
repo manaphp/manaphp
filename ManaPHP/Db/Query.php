@@ -295,7 +295,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                     } elseif ($operator === '@=') {
                         $this->whereDateBetween($field, $value[0], $value[1]);
                     } elseif ($operator === '|=') {
-                        $this->_filters[] = $this->whereIn($field, $value);
+                        $this->whereIn($field, $value);
                     } elseif ($operator === '!=' || $operator === '<>') {
                         $this->whereNotIn($field, $value);
                     } elseif ($operator === '=') {
