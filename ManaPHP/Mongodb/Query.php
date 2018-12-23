@@ -415,21 +415,20 @@ class Query extends \ManaPHP\Query
                 $this->$filters[] = ['$where' => $value];
             } elseif (is_array($value)) {
                 if (strpos($filter, '~=')) {
-                    if (count($value) === 2 && gettype($value[0]) === gettype($value[1])) {
-                        $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
-                    } else {
-                        $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
+                    if (count($value) !== 2) {
+                        throw new MisuseException(['`value of :filter` filter is invalid', 'filter' => $filter]);
                     }
+                    $this->whereBetween(substr($filter, 0, -2), $value[0], $value[1]);
                 } elseif (strpos($filter, '@=')) {
                     $this->whereDateBetween(substr($filter, 0, -2), $value[0], $value[1]);
+                } elseif (strpos($filter, '|=')) {
+                    $this->_filters[] = [substr($filter, 0, -2) => ['$in' => $value]];
+                } elseif (strpos($filter, '!=') || strpos($filter, '<>')) {
+                    $this->whereNotIn(substr($filter, 0, -2), $value);
+                } elseif (strpos($filter, '=')) {
+                    $this->whereIn(substr($filter, 0, -1), $value);
                 } elseif (!$value || isset($value[0])) {
-                    if (strpos($filter, '!=') || strpos($filter, '<>')) {
-                        $this->whereNotIn(substr($filter, 0, -2), $value);
-                    } elseif (in_array(null, $value, true)) {
-                        $this->_filters[] = [$filter => ['$in' => $value]];
-                    } else {
-                        $this->whereIn(rtrim($filter, '='), $value);
-                    }
+                    $this->whereIn($filter, $value);
                 } else {
                     $this->_filters[] = [$filter => $value];
                 }
