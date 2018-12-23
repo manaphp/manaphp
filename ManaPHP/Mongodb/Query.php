@@ -447,7 +447,11 @@ class Query extends \ManaPHP\Query
                     $operator = substr($operator, 0, -1);
                 }
 
-                if ($operator === '' || $operator === '=') {
+                if ($operator === '') {
+                    $operator = '=';
+                }
+				
+                if ($operator === '=') {
                     $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
                 } elseif ($operator === '~=') {
                     $field = substr($filter, 0, -2);
