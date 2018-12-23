@@ -44,7 +44,7 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @var mixed
      */
-    protected $_returnedValue;
+    protected $_returned_value;
 
     public function saveInstanceState()
     {
@@ -58,7 +58,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->_action = null;
         $this->_params = [];
         $this->_controllerInstance = null;
-        $this->_returnedValue = null;
+        $this->_returned_value = null;
     }
 
     /**
@@ -182,7 +182,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function setReturnedValue($value)
     {
-        $this->_returnedValue = $value;
+        $this->_returned_value = $value;
 
         return $this;
     }
@@ -194,7 +194,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getReturnedValue()
     {
-        return $this->_returnedValue;
+        return $this->_returned_value;
     }
 
     /**
@@ -418,7 +418,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $this->_controllerInstance = $controllerInstance;
 
-        $this->_returnedValue = $this->invokeAction($controllerInstance, $this->_action, $this->_params);
+        $this->_returned_value = $this->invokeAction($controllerInstance, $this->_action, $this->_params);
 
         $this->eventsManager->fireEvent('dispatcher:afterDispatch', $this);
     }
