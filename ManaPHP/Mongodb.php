@@ -8,7 +8,7 @@ use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Exception\RuntimeException;
 use MongoDB\Driver\Manager;
-use MongoDB\Driver\Query;
+use MongoDB\Driver\Query  as MongodbQuery;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\WriteConcern;
 
@@ -380,7 +380,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     protected function _fetchAll($namespace, $filter, $options, $readPreference)
     {
-        $cursor = $this->_getManager()->executeQuery($namespace, new Query($filter, $options), $readPreference);
+        $cursor = $this->_getManager()->executeQuery($namespace, new MongodbQuery($filter, $options), $readPreference);
         $cursor->setTypeMap(['root' => 'array']);
         return $cursor->toArray();
     }
