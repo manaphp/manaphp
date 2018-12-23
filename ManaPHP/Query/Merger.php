@@ -213,6 +213,22 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     }
 
     /**
+     * @param string  $field
+     * @param integer $divisor
+     * @param integer $remainder
+     *
+     * @return static
+     */
+    public function whereMod($field, $divisor, $remainder)
+    {
+        foreach ($this->queries as $query) {
+            $query->whereMod($field, $divisor, $remainder);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param array $filters
      *
      * @return static

@@ -418,6 +418,28 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
+     * @param string  $field
+     * @param integer $divisor
+     * @param integer $remainder
+     *
+     * @return static
+     */
+    public function whereMod($field, $divisor, $remainder)
+    {
+        if (!is_int($divisor)) {
+            throw new MisuseException('divisor must be an integer');
+        }
+
+        if (!is_int($remainder)) {
+            throw new MisuseException('remainder must be an integer');
+        }
+
+        $this->_conditions[] = "$field%$divisor=$remainder";
+
+        return $this;
+    }
+
+    /**
      * @param string           $expr
      * @param int|float|string $min
      * @param int|float|string $max

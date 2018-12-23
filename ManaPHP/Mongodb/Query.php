@@ -540,6 +540,28 @@ class Query extends \ManaPHP\Query
     }
 
     /**
+     * @param string  $field
+     * @param integer $divisor
+     * @param integer $remainder
+     *
+     * @return static
+     */
+    public function whereMod($field, $divisor, $remainder)
+    {
+        if (!is_int($divisor)) {
+            throw new MisuseException('divisor must be an integer');
+        }
+
+        if (!is_int($remainder)) {
+            throw new MisuseException('remainder must be an integer');
+        }
+
+        $this->_filters[] = [$field => ['$mod' => [$divisor, $remainder]]];
+
+        return $this;
+    }
+
+    /**
      * @param array $filter
      *
      * @return static
