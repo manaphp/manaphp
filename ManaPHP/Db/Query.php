@@ -338,11 +338,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
                     $this->whereDate($field, $value);
                 } elseif ($operator === '@m=') {
                     $this->whereMonth($field, $value);
-                } elseif ($operator === '?=' || $operator === '?') {
-                    $value = is_string($value) ? trim($value) : $value;
-                    if ($value !== '' && $value !== null) {
-                        $this->whereEq($field, $value);
-                    }
                 } else {
                     throw new MisuseException(['unknown `:where` where filter', 'where' => $filter]);
                 }
@@ -448,7 +443,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereExpr($expr, $bind = null)
     {
         $this->_conditions[] = $expr;
-		
+
         if (is_array($bind)) {
             $this->_bind = array_merge($this->_bind, $bind);
         }
