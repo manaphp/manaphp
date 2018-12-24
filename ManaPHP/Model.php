@@ -905,7 +905,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     protected function _exists()
     {
-        return static::query(null, $this)->where($this->getPrimaryKeyValuePairs())->forceUseMaster()->exists();
+        return static::query(null, $this)->where($this->_getPrimaryKeyValuePairs())->forceUseMaster()->exists();
     }
 
     /**
@@ -961,7 +961,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * @return array
      */
-    public function getPrimaryKeyValuePairs()
+    protected function _getPrimaryKeyValuePairs()
     {
         $primaryKey = $this->getPrimaryKey();
         if (is_string($primaryKey)) {
@@ -994,7 +994,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             return $this;
         }
 
-        static::query(null, $this)->where($this->getPrimaryKeyValuePairs())->delete();
+        static::query(null, $this)->where($this->_getPrimaryKeyValuePairs())->delete();
 
         $this->_fireEvent('afterDelete');
 
@@ -1192,9 +1192,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             $this->_last_refresh = microtime(true);
         }
 
-        $r = static::query(null, $this)->select($fields)->where($this->getPrimaryKeyValuePairs())->fetch(true);
+        $r = static::query(null, $this)->select($fields)->where($this->_getPrimaryKeyValuePairs())->fetch(true);
         if (!$r) {
-            throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), json_encode($this->getPrimaryKeyValuePairs())]);
+            throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), json_encode($this->_getPrimaryKeyValuePairs())]);
         }
 
         $data = (array)$r[0];

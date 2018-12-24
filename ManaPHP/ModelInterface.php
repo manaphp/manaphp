@@ -32,11 +32,6 @@ interface ModelInterface
     /**
      * @return array
      */
-    public function getPrimaryKeyValuePairs();
-
-    /**
-     * @return array
-     */
     public function getForeignKeys();
 
     /**
