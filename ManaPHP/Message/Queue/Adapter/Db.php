@@ -81,8 +81,10 @@ class Db extends Queue
             if ($prev_max !== $max_id) {
                 $prev_max = $max_id;
 
-                $rs = $db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0], ['order' => 'priority ASC, id ASC', 'limit' => 1])->all();
-                $r = isset($rs[0]) ? $rs[0] : false;
+                $r = $db->query($this->_source)
+                    ->where(['topic' => $topic, 'deleted_time' => 0])
+                    ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
+                    ->first();
 
                 if ($r && $db->update($this->_source, ['deleted_time' => time()], ['id' => $r['id']])) {
                     return $r['body'];
