@@ -424,7 +424,7 @@ class Query extends \ManaPHP\Query
                         $this->whereBetween($field, $value[0], $value[1]);
                     } elseif ($operator === '@=') {
                         $this->whereDateBetween($field, $value[0], $value[1]);
-                    } elseif (strpos($filter, '|=')) {
+                    } elseif ($operator === '|=') {
                         $this->_filters[] = [$field => ['$in' => $value]];
                     } elseif ($operator === '!=' || $operator === '<>') {
                         $this->whereNotIn($field, $value);
