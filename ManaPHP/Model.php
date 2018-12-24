@@ -979,7 +979,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             }
             return $keyValue;
         } else {
-            return [];
+            throw new NotSupportedException(['`:model` model does not has primary key', 'model' => get_called_class()]);
         }
     }
 
