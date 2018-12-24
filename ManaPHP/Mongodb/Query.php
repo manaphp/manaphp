@@ -469,11 +469,6 @@ class Query extends \ManaPHP\Query
                     $this->whereDate($field, $value);
                 } elseif ($operator === '@m=') {
                     $this->whereMonth($field, $value);
-                } elseif ($operator === '?=' || $operator === '?') {
-                    $value = is_string($value) ? trim($value) : $value;
-                    if ($value !== '' && $value !== null) {
-                        $this->where($field, $value);
-                    }
                 } else {
                     throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                 }
