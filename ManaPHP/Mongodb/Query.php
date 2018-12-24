@@ -472,7 +472,7 @@ class Query extends \ManaPHP\Query
                 } else {
                     throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                 }
-            } elseif (strpos($filter, ',') !== false) {
+            } elseif (strpos($filter, ',') !== false && preg_match('#^[\w,\.]+$#', $filter)) {
                 $this->where1v1($filter, $value);
             } else {
                 throw new InvalidValueException(['unknown mongodb query `filter` filter', 'filter' => $filter]);

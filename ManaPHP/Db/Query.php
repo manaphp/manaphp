@@ -341,7 +341,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } else {
                     throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                 }
-            } elseif (strpos($filter, '(') === false && strpos($filter, ',') !== false) {
+            } elseif (strpos($filter, ',') !== false && preg_match('#^[\w,\.]+$#', $filter)) {
                 $this->where1v1($filter, $value);
             } else {
                 $this->whereExpr($filter);
