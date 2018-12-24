@@ -439,7 +439,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         if (is_scalar($filter)) {
             /** @var \ManaPHP\ModelInterface $model */
             $model = Di::getDefault()->getShared(get_called_class());
-            return static::query(null, $model)->where($model->getPrimaryKey(), $filter);
+            return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filter);
         } else {
             return static::query()->where($filter, $value);
         }
