@@ -538,7 +538,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereIn($expr, $values)
     {
         if ($values instanceof $this) {
-            $this->where($expr . ' IN (' . $values->getSql() . ')');
+            $this->_conditions[] = $expr . ' IN (' . $values->getSql() . ')';
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } elseif ($values) {
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
@@ -596,7 +596,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereNotIn($expr, $values)
     {
         if ($values instanceof $this) {
-            $this->where($expr . ' NOT IN (' . $values->getSql() . ')');
+            $this->_conditions[] = $expr . ' NOT IN (' . $values->getSql() . ')';
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } elseif ($values) {
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
@@ -683,7 +683,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_bind[$key] = $like;
             }
 
-            $this->where(implode(' OR ', $conditions));
+            $this->_conditions[] = implode(' OR ', $conditions);
         } else {
             $key = strtr($expr, '.', '_');
 
@@ -729,7 +729,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_bind[$key] = $like;
             }
 
-            $this->where(implode(' AND ', $conditions));
+            $this->_conditions[] = implode(' AND ', $conditions);
         } else {
             $key = strtr($expr, '.', '_');
 
