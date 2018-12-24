@@ -339,7 +339,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } elseif ($operator === '@m=') {
                     $this->whereMonth($field, $value);
                 } else {
-                    throw new MisuseException(['unknown `:where` where filter', 'where' => $filter]);
+                    throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                 }
             } elseif (strpos($filter, '(') === false && strpos($filter, ',') !== false) {
                 $this->where1v1($filter, $value);
