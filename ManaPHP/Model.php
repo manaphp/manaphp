@@ -399,29 +399,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      *
      * @return static|null
      */
-    public static function first($filters = null, $fields = null, $options = null)
+    public static function first($filters, $fields = null, $options = null)
     {
         $model = new static;
 
         if ($filters === null) {
-            $di = $model->_di;
-            $pkName = $model->getPrimaryKey();
+            throw new MisuseException('Model:first is not support null value filters');
+        }
 
-            if ($di->request->has($pkName)) {
-                $pkValue = $di->request->get($pkName);
-            } elseif ($di->dispatcher->hasParam($pkName)) {
-                $pkValue = $di->dispatcher->getParam($pkName);
-            } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
-                $pkValue = $params[0];
-            } else {
-                throw new InvalidArgumentException('missing filters condition for Model::first method');
-            }
-
-            if (!is_scalar($pkValue)) {
-                throw new InvalidValueException('Model::first primary key value is not scalar');
-            }
-            $filters = [$pkName => $pkValue];
-        } elseif (is_scalar($filters)) {
+        if (is_scalar($filters)) {
             $filters = [$model->getPrimaryKey() => $filters];
         }
 
@@ -436,7 +422,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      *
      * @return static
      */
-    public static function firstOrFail($filters = null, $fields = null, $options = null)
+    public static function firstOrFail($filters, $fields = null, $options = null)
     {
         if (!$r = static::first($filters, $fields, $options)) {
             $exception = new NotFoundException([
