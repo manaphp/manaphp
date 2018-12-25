@@ -19,16 +19,6 @@ class Redis extends Component implements SettingsInterface
     protected $_prefix = 'settings:';
 
     /**
-     * @var array
-     */
-    protected $_cached;
-
-    /**
-     * @var int
-     */
-    protected $_maxDelay = 1;
-
-    /**
      * Settings constructor.
      *
      * @param string|array|\object $options
@@ -44,10 +34,6 @@ class Redis extends Component implements SettingsInterface
 
             if (isset($options['prefix'])) {
                 $this->_prefix = $options['prefix'];
-            }
-
-            if (isset($options['maxDelay'])) {
-                $this->_maxDelay = $options['maxDelay'];
             }
         }
     }
@@ -72,20 +58,12 @@ class Redis extends Component implements SettingsInterface
      */
     public function get($key, $maxDelay = null)
     {
-        if ($maxDelay && isset($this->_cached[$key]) && microtime(true) - $this->_cached[$key][0] > $maxDelay) {
-            unset($this->_cached[$key]);
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        $value = json_decode($redis->get($this->_prefix . $key) ?: '[]', true);
+        if (!is_array($value)) {
+            throw new InvalidJsonException('the settings of `:key` key value is not json format', ['key' => $key]);
         }
-
-        if (!isset($this->_cached[$key])) {
-            $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-            $value = json_decode($redis->get($this->_prefix . $key) ?: '[]', true);
-            if (!is_array($value)) {
-                throw new InvalidJsonException('the settings of `:key` key value is not json format', ['key' => $key]);
-            }
-            $this->_cached[$key] = [microtime(true), $value];
-        }
-
-        return $this->_cached[$key][1];
+        return $value;
     }
 
     /**
@@ -101,7 +79,6 @@ class Redis extends Component implements SettingsInterface
         }
 
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        $this->_cached[$key] = [microtime(true), $value];
         $redis->set($this->_prefix . $key, json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return $this;
@@ -125,7 +102,6 @@ class Redis extends Component implements SettingsInterface
      */
     public function delete($key)
     {
-        unset($this->_cached[$key]);
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         $redis->delete($this->_prefix . $key);
 
