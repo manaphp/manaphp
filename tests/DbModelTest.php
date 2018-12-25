@@ -170,6 +170,9 @@ class DbModelTest extends TestCase
         $cities = City::all(['country_id' => 2], ['order' => 'city desc']);
         $this->assertCount(3, $cities);
         $this->assertEquals(483, $cities[0]->city_id);
+
+        $this->assertCount(6, City::all(['city_id%=' => [100, 1]]));
+        $this->assertCount(11, City::all(['city_id~=' => [10, 20]]));
     }
 
     public function test_lists()
