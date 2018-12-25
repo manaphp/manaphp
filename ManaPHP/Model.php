@@ -261,7 +261,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $list = [];
         if ($field === null && !$field = $model->getDisplayField()) {
-            throw new PreconditionException(['invoke :model:lists method must provide displayField', 'model' => get_called_class()]);
+            throw new MisuseException(['invoke :model:lists method must provide displayField', 'model' => get_called_class()]);
         }
 
         if (is_string($field)) {
@@ -292,11 +292,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
             return $list;
         }
-    }
-
-    public function getCacheCapacity()
-    {
-        return 100;
     }
 
     /**
@@ -359,7 +354,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $cached[$className][$id] = [$current, $r];
         /** @noinspection PhpUndefinedVariableInspection */
-        if (count($cached[$className]) > $model->getCacheCapacity()) {
+        if (count($cached[$className]) > 128) {
             unset($cached[$className][key($cached[$className])]);
         }
 
@@ -512,7 +507,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         $cached[$className][$field][$pkValue] = [$current, $value];
-        if (count($cached[$className][$field]) > $model->getCacheCapacity()) {
+        if (count($cached[$className][$field]) > 128) {
             unset($cached[$className][$field][key($cached[$className][$field])]);
         }
 
