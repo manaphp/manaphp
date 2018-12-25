@@ -43,24 +43,6 @@ if (!function_exists('env')) {
     }
 }
 
-if (!function_exists('settings')) {
-    /**
-     * @param string    $key
-     * @param int|array $maxDelay
-     *
-     * @return array
-     */
-    function settings($key, $maxDelay = null)
-    {
-        if (is_array($maxDelay)) {
-            di('settings')->set($key, $maxDelay);
-            return $maxDelay;
-        } else {
-            return di('settings')->get($key, $maxDelay);
-        }
-    }
-}
-
 if (!function_exists('debug')) {
     /**
      * @param string|array $message
