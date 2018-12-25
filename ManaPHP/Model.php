@@ -401,17 +401,20 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public static function first($filters, $fields = null, $options = null)
     {
-        $model = new static;
-
         if ($filters === null) {
             throw new MisuseException('Model:first is not support null value filters');
         }
 
+        $model = new static;
+        $query = static::query(null, $model)->select($fields ?: null)->options($options)->limit(1);
+
         if (is_scalar($filters)) {
-            $filters = [$model->getPrimaryKey() => $filters];
+            $query->whereEq($model->getPrimaryKey(), $filters);
+        } else {
+            $query->where($filters);
         }
 
-        $rs = static::query(null, $model)->select($fields ?: null)->where($filters)->options($options)->limit(1)->fetch();
+        $rs = $query->fetch();
         return isset($rs[0]) ? $rs[0] : null;
     }
 
