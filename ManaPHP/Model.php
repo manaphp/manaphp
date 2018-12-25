@@ -261,7 +261,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $list = [];
         if ($field === null && !$field = $model->getDisplayField()) {
-            throw new PreconditionException(['invoke :model:findList method must provide displayField', 'model' => get_called_class()]);
+            throw new PreconditionException(['invoke :model:lists method must provide displayField', 'model' => get_called_class()]);
         }
 
         if (is_string($field)) {
