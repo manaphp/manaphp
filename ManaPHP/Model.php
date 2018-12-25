@@ -311,23 +311,17 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             throw new InvalidValueException('Model::get id is not scalar');
         }
 
-        if (is_int($fieldsOrTtl)) {
-            $ttl = $fieldsOrTtl;
-            $fields = null;
-        } else {
-            $ttl = null;
-            $fields = $fieldsOrTtl;
-        }
-
         $model = new static;
 
-        if (!$ttl) {
-            if (!$rs = static::query(null, $model)->select($fields)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
+        if (!is_int($fieldsOrTtl)) {
+            if (!$rs = static::query(null, $model)->select($fieldsOrTtl)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             } else {
                 return $rs[0];
             }
         }
+
+        $ttl = $fieldsOrTtl;
 
         static $cached = [];
 
@@ -353,7 +347,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         if (!$r) {
-            if (!$rs = static::query(null, $model)->select($fields)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
+            if (!$rs = static::query(null, $model)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             }
 
