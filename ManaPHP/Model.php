@@ -318,27 +318,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $ttl = $fieldsOrTtl;
 
-        static $cached = [];
-
-        $current = microtime(true);
-        $className = get_class($model);
-        if (isset($cached[$className][$id])) {
-            $cache = $cached[$className][$id];
-            if ($ttl === -1 || $current - $cache[0] <= $ttl) {
-                return $cache[1];
-            } else {
-                unset($cached[$className][$id]);
-            }
-        }
-
-        $r = null;
         $key = '_mp:models:get:' . $model->getSource() . ":$id";
-        if ($cache = $model->_di->ipcCache->get($key)) {
-            /** @noinspection NestedPositiveIfStatementsInspection */
-            if ($ttl === -1 || $current - $cache[0] <= $ttl) {
-                $current = $cache[0];
-                $r = $cache[1];
-            }
+        if ($r = $model->_di->ipcCache->get($key)) {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
+            return $r;
         }
 
         if (!$r) {
@@ -349,13 +332,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             $r = $rs[0];
             $r->_snapshot = false;
 
-            $model->_di->ipcCache->set($key, [$current, $r], $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
-        }
-
-        $cached[$className][$id] = [$current, $r];
-        /** @noinspection PhpUndefinedVariableInspection */
-        if (count($cached[$className]) > 128) {
-            unset($cached[$className][key($cached[$className])]);
+            $model->_di->ipcCache->set($key, $r, $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
         }
 
         return $r;
