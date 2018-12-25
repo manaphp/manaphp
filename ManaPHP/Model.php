@@ -977,30 +977,13 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      *
      * @return static|null
      */
-    public static function deleteOrFail($id = null)
+    public static function deleteOrFail($id)
     {
-        $model = new static;
-        $di = $model->_di;
-
-        $pkName = $model->getPrimaryKey();
-
-        if ($id === null) {
-            if ($di->request->has($pkName)) {
-                $id = $di->request->get($pkName);
-            } elseif ($di->dispatcher->hasParam($pkName)) {
-                $id = $di->dispatcher->getParam($pkName);
-            } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
-                $id = $params[0];
-            } else {
-                throw new PreconditionException('missing primary key value');
-            }
-        }
-
         if (!is_scalar($id)) {
             throw new InvalidValueException('primary key value is not scalar');
         }
 
-        return ($instance = static::first([$pkName => $id])) ? $instance->delete() : null;
+        return ($instance = static::first($id)) ? $instance->delete() : null;
     }
 
     /**

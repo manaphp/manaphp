@@ -403,7 +403,7 @@ interface ModelInterface
      *
      * @return static|null
      */
-    public static function deleteOrFail($id = null);
+    public static function deleteOrFail($id);
 
     /**
      * @param array $filters
