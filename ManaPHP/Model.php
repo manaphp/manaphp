@@ -305,8 +305,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      *
      * @return static
      */
-    public static function get($id = null, $fieldsOrTtl = null)
+    public static function get($id, $fieldsOrTtl = null)
     {
+        if (!is_scalar($id)) {
+            throw new InvalidValueException('Model::get id is not scalar');
+        }
+
         if (is_int($fieldsOrTtl)) {
             $ttl = $fieldsOrTtl;
             $fields = null;
@@ -318,24 +322,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         $model = new static;
 
         $pkName = $model->getPrimaryKey();
-
-        if ($id === null) {
-            $di = $model->_di;
-            if ($di->request->has($pkName)) {
-                $id = $di->request->get($pkName);
-            } elseif ($di->dispatcher->hasParam($pkName)) {
-                $id = $di->dispatcher->getParam($pkName);
-            } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
-                $id = $params[0];
-            } else {
-                throw new InvalidArgumentException(['missing condition for `:class::get` method', 'class' => get_called_class()]);
-            }
-        }
-
-        if (!is_scalar($id)) {
-            throw new InvalidValueException('Model::get id is not scalar');
-        }
-
+        
         if (!$ttl) {
             if (!$rs = static::query(null, $model)->select($fields)->whereEq($pkName, $id)->limit(1)->fetch()) {
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);

@@ -148,7 +148,7 @@ interface ModelInterface
      *
      * @return static
      */
-    public static function get($id = null, $fieldsOrTtl = null);
+    public static function get($id, $fieldsOrTtl = null);
 
     /**
      * Allows to query the first record that match the specified conditions
