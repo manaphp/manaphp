@@ -8,7 +8,7 @@ use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Exception\RuntimeException;
 use MongoDB\Driver\Manager;
-use MongoDB\Driver\Query  as MongodbQuery;
+use MongoDB\Driver\Query as MongodbQuery;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\WriteConcern;
 

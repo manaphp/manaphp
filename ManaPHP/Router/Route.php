@@ -143,7 +143,7 @@ class Route implements RouteInterface
                     $params[$k] = $v;
                 }
             }
-			
+
             if ($params) {
                 $routePaths['params'] = $params;
             }

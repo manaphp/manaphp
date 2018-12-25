@@ -443,7 +443,7 @@ class Di implements DiInterface
 
         if (isset($this->_definitions[$name])) {
             return $this->_instances[$name] = $this->getInstance($this->_definitions[$name], null, $name);
-        }elseif (strpos($name, '\\') !== false) {
+        } elseif (strpos($name, '\\') !== false) {
             return $this->_instances[$name] = $this->getInstance($name, null, $name);
         } else {
             $className = $this->_getPatterned($name);
