@@ -453,40 +453,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             return $rs ? $rs[0][$field] : null;
         }
 
-        static $cached = [];
-
-        $current = microtime(true);
-        $className = get_called_class();
-
-        if (isset($cached[$className][$field][$pkValue])) {
-            $cache = $cached[$className][$field][$pkValue];
-            if ($ttl === -1 || $current - $cache[0] <= $ttl) {
-                return $cache[1];
-            }
-            unset($cached[$className][$field][$pkValue]);
-        }
-
-        $value = null;
         $key = '_mp:models:value:' . $model->getSource() . ":$field:$pkValue";
-        if ($cache = $model->_di->ipcCache->get($key)) {
-            /** @noinspection NestedPositiveIfStatementsInspection */
-            if ($ttl === -1 || $current - $cache[0] <= $ttl) {
-                $current = $cache[0];
-                $value = $cache[1];
-            }
+        if (($value = $model->_di->ipcCache->get($key)) !== false) {
+            return $value;
         }
 
-        if ($value === null) {
-            $rs = static::query(null, $model)->select([$field])->whereEq($pkName, $pkValue)->limit(1)->fetch(true);
-            $value = $rs ? $rs[0][$field] : null;
+        $rs = static::query(null, $model)->select([$field])->whereEq($pkName, $pkValue)->limit(1)->fetch(true);
+        $value = $rs ? $rs[0][$field] : null;
 
-            $model->_di->ipcCache->set($key, [$current, $value], $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
-        }
-
-        $cached[$className][$field][$pkValue] = [$current, $value];
-        if (count($cached[$className][$field]) > 128) {
-            unset($cached[$className][$field][key($cached[$className][$field])]);
-        }
+        $model->_di->ipcCache->set($key, $value, $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
 
         return $value;
     }
