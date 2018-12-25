@@ -322,7 +322,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         $model = new static;
 
         $pkName = $model->getPrimaryKey();
-        
+
         if (!$ttl) {
             if (!$rs = static::query(null, $model)->select($fields)->whereEq($pkName, $id)->limit(1)->fetch()) {
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
@@ -360,9 +360,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             }
 
             $r = $rs[0];
-            /**
-             * @var \ManaPHP\Model $r
-             */
             $r->_snapshot = false;
 
             $model->_di->ipcCache->set($key, [$current, $r], $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
