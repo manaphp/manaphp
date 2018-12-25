@@ -5,11 +5,10 @@ interface SettingsInterface
 {
     /**
      * @param string $key
-     * @param int    $maxDelay
      *
      * @return array
      */
-    public function get($key, $maxDelay = null);
+    public function get($key);
 
     /**
      * @param string $key

@@ -52,11 +52,10 @@ class Redis extends Component implements SettingsInterface
 
     /**
      * @param string $key
-     * @param int    $maxDelay
      *
      * @return array
      */
-    public function get($key, $maxDelay = null)
+    public function get($key)
     {
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         $value = json_decode($redis->get($this->_prefix . $key) ?: '[]', true);
