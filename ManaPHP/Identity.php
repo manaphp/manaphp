@@ -55,7 +55,7 @@ abstract class Identity extends Component implements IdentityInterface
     {
         if (!$this->_claims) {
             if ($default === null) {
-                throw new AuthenticationException();
+                throw new AuthenticationException('Not Authenticated');
             } else {
                 return $default;
             }
@@ -76,7 +76,7 @@ abstract class Identity extends Component implements IdentityInterface
     {
         if (!$this->_claims) {
             if ($default === null) {
-                throw new AuthenticationException();
+                throw new AuthenticationException('Not Authenticated');
             } else {
                 return $default;
             }
