@@ -321,10 +321,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $model = new static;
 
-        $pkName = $model->getPrimaryKey();
-
         if (!$ttl) {
-            if (!$rs = static::query(null, $model)->select($fields)->whereEq($pkName, $id)->limit(1)->fetch()) {
+            if (!$rs = static::query(null, $model)->select($fields)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             } else {
                 return $rs[0];
@@ -355,7 +353,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         if (!$r) {
-            if (!$rs = static::query(null, $model)->select($fields)->whereEq($pkName, $id)->limit(1)->fetch()) {
+            if (!$rs = static::query(null, $model)->select($fields)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
             }
 
