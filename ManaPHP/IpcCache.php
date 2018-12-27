@@ -2,6 +2,8 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Exception\MisuseException;
+
 class IpcCache implements IpcCacheInterface
 {
     /**
@@ -39,6 +41,10 @@ class IpcCache implements IpcCacheInterface
      */
     public function set($key, $value, $ttl)
     {
+        if ($value === false) {
+            throw new MisuseException(['value of `:key` key can not be false', 'key' => $key]);
+        }
+
         if ($this->_enabled) {
             apcu_store($this->_prefix ? ($this->_prefix . $key) : $key, $value, $ttl);
         }
@@ -51,10 +57,6 @@ class IpcCache implements IpcCacheInterface
      */
     public function get($key)
     {
-        if ($this->_enabled) {
-            return apcu_fetch($this->_prefix ? ($this->_prefix . $key) : $key);
-        } else {
-            return false;
-        }
+        return $this->_enabled ? apcu_fetch($this->_prefix ? ($this->_prefix . $key) : $key) : false;
     }
 }
