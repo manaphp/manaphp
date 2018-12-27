@@ -1,10 +1,12 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Ipc\Cache\Adapter;
 
+use ManaPHP\Component;
+use ManaPHP\Ipc\CacheInterface;
 use ManaPHP\Exception\MisuseException;
 
-class IpcCache extends Component implements IpcCacheInterface
+class Apcu extends Component implements CacheInterface
 {
     /**
      * @var bool
@@ -22,7 +24,7 @@ class IpcCache extends Component implements IpcCacheInterface
     protected $_cache;
 
     /**
-     * IpcCache constructor.
+     * Apcu constructor.
      *
      * @param array $options
      */

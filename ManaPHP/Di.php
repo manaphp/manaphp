@@ -57,7 +57,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\Model\Relation\Manager          $relationsManager
  * @property-read \ManaPHP\MailerInterface                 $mailer
  * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
- * @property-read \ManaPHP\IpcCacheInterface               $ipcCache
+ * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
  * @property-read \ManaPHP\MongodbInterface                $mongodb
  */
 class Di implements DiInterface
@@ -337,7 +337,9 @@ class Di implements DiInterface
             }
 
             if (!class_exists($definition)) {
-                throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists', 'name' => $name, 'class' => $definition]);
+                throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists',
+                    'name' => $name,
+                    'class' => $definition]);
             }
             $count = count($parameters);
 

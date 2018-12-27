@@ -33,7 +33,7 @@ class FactoryDefault extends Di
             'html' => 'ManaPHP\Renderer\Html',
             'assetBundle' => 'ManaPHP\Renderer\AssetBundle',
             'cache' => 'ManaPHP\Cache\Adapter\Redis',
-            'ipcCache' => 'ManaPHP\IpcCache',
+            'ipcCache' => 'ManaPHP\Ipc\Cache\Adapter\Apcu',
             'httpClient' => 'ManaPHP\Curl\Easy',
             'identity' => 'ManaPHP\Identity\Adapter\Session',
             'paginator' => 'ManaPHP\Paginator',

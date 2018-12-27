@@ -1,11 +1,11 @@
 <?php
-namespace ManaPHP;
+namespace ManaPHP\Ipc;
 
 /**
- * Interface IpcCacheInterface
- * @package ManaPHP
+ * Interface CacheInterface
+ * @package ipc
  */
-interface IpcCacheInterface
+interface CacheInterface
 {
     /**
      * @param string $key
