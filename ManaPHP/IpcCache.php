@@ -4,7 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\MisuseException;
 
-class IpcCache implements IpcCacheInterface
+class IpcCache extends Component implements IpcCacheInterface
 {
     /**
      * @var bool
@@ -15,6 +15,11 @@ class IpcCache implements IpcCacheInterface
      * @var string
      */
     protected $_prefix;
+
+    /**
+     * @var array
+     */
+    protected $_cache;
 
     /**
      * IpcCache constructor.
@@ -34,6 +39,16 @@ class IpcCache implements IpcCacheInterface
         }
     }
 
+    public function saveInstanceState()
+    {
+        return true;
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_cache = null;
+    }
+
     /**
      * @param string $key
      * @param mixed  $value
@@ -45,8 +60,12 @@ class IpcCache implements IpcCacheInterface
             throw new MisuseException(['value of `:key` key can not be false', 'key' => $key]);
         }
 
-        if ($this->_enabled) {
-            apcu_store($this->_prefix ? ($this->_prefix . $key) : $key, $value, $ttl);
+        if ($ttl < 0) {
+            $this->_cache[$key] = $value;
+        } else {
+            if ($this->_enabled) {
+                apcu_store($this->_prefix ? ($this->_prefix . $key) : $key, $value, $ttl);
+            }
         }
     }
 
@@ -57,6 +76,10 @@ class IpcCache implements IpcCacheInterface
      */
     public function get($key)
     {
-        return $this->_enabled ? apcu_fetch($this->_prefix ? ($this->_prefix . $key) : $key) : false;
+        if ($this->_cache !== null && array_key_exists($key, $this->_cache)) {
+            return $this->_cache[$key];
+        } else {
+            return $this->_enabled ? apcu_fetch($this->_prefix ? ($this->_prefix . $key) : $key) : false;
+        }
     }
 }
