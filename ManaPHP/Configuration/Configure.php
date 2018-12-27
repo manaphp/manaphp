@@ -93,9 +93,8 @@ class Configure extends Component implements ConfigureInterface
         /** @noinspection PhpIncludeInspection */
         $data = require $this->alias->resolve($file);
 
-        $properties = get_object_vars($this);
         foreach ((array)$data as $field => $value) {
-            if (!isset($properties[$field]) && !array_key_exists($field, $properties)) {
+            if (!property_exists($this, $field)) {
                 throw new NotSupportedException(['`:item` item is not allowed: it must be a public property of `configure` component', 'item' => $field]);
             }
 

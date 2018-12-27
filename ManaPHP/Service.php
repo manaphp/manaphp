@@ -13,11 +13,10 @@ class Service extends Component implements LogCategorizable
     public function __construct($options = null)
     {
         if (is_array($options)) {
-            $vars = get_object_vars($this);
             foreach ($options as $name => $value) {
                 $property = '_' . $name;
 
-                if (isset($vars[$property]) || array_key_exists($property, $vars)) {
+                if (property_exists($this, $property)) {
                     $this->$property = $value;
                 }
             }
