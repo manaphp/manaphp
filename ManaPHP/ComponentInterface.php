@@ -53,11 +53,6 @@ interface ComponentInterface
     public function fireEvent($event, $data = []);
 
     /**
-     * @return array
-     */
-    public function dump();
-
-    /**
      * @return array|false
      */
     public function saveInstanceState();

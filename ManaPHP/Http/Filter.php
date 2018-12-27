@@ -640,16 +640,4 @@ class Filter extends Component implements FilterInterface
     {
         return htmlspecialchars($value);
     }
-
-    /**
-     * @return array
-     */
-    public function dump()
-    {
-        $data = parent::dump();
-        $data['_filters'] = array_keys($this->_filters);
-
-        return $data;
-    }
-
 }

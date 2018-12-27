@@ -124,17 +124,4 @@ class Bag extends Component implements BagInterface
 
         $this->session->set($this->_name, $data);
     }
-
-    /**
-     * @return array
-     */
-    public function dump()
-    {
-        $defaultCurrentValue = [];
-
-        $data = parent::dump();
-        $data['_data'] = $this->session->get($this->_name, $defaultCurrentValue);
-
-        return $data;
-    }
 }

@@ -194,39 +194,6 @@ class Component implements ComponentInterface, \JsonSerializable
     /**
      * @return array
      */
-    public function dump()
-    {
-        $data = [];
-
-        foreach (get_object_vars($this) as $k => $v) {
-            if ($v === null) {
-                continue;
-            }
-
-            if (is_scalar($v) || $v === null) {
-                $data[$k] = $v;
-            } elseif (is_array($v)) {
-                $isPlain = true;
-
-                foreach ($v as $vv) {
-                    if (!is_scalar($vv) && $vv !== null) {
-                        $isPlain = false;
-                        break;
-                    }
-                }
-
-                if ($isPlain) {
-                    $data[$k] = $v;
-                }
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * @return array
-     */
     public function toArray()
     {
         $data = [];

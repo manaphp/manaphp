@@ -330,12 +330,4 @@ class View extends Component implements ViewInterface
     {
         return $this->_content;
     }
-
-    public function dump()
-    {
-        $data = parent::dump();
-        unset($data['_content']);
-
-        return $data;
-    }
 }

@@ -244,12 +244,22 @@ class DebuggerPlugin extends Plugin
                 continue;
             }
 
-            $properties = $v instanceof Component ? $v->dump() : '';
+            $properties = $v instanceof Component ? $v->__debugInfo() : [];
+
+            foreach ($properties as $pk => $pv) {
+                if ($pv instanceof Component || $pk === 'eventsManager') {
+                    unset($properties[$pk]);
+                }
+            }
 
             if ($k === 'response' && isset($properties['_content'])) {
                 $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
             }
-
+			
+            if ($k === 'view' && isset($properties['_content'])) {
+                $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
+            }
+            
             if ($k === 'renderer') {
                 $properties['_sections'] = array_keys($properties['_sections']);
             }
