@@ -30,10 +30,10 @@ class Apcu extends Component implements CacheInterface
      */
     public function __construct($options = [])
     {
-        $this->_enabled = function_exists('apcu_fetch');
+        $this->_enabled = ini_get('apc.enable_cli') || ini_get('apcu.enable_cli');
 
         if (isset($options['enabled'])) {
-            $this->_enabled = $options['enabled'] && function_exists('apcu_fetch');
+            $this->_enabled = $options['enabled'] && $this->_enabled;
         }
 
         if (isset($options['prefix'])) {
