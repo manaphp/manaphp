@@ -40,13 +40,11 @@ class Manager implements ManagerInterface
     /**
      * @param \ManaPHP\DiInterface $di
      *
-     * @return static
+     * @return void
      */
     public function setDi($di)
     {
         $this->_di = $di;
-
-        return $this;
     }
 
     /**

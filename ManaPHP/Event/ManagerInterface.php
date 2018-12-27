@@ -17,7 +17,7 @@ interface ManagerInterface
     /**
      * @param \ManaPHP\DiInterface $di
      *
-     * @return static
+     * @return void
      */
     public function setDi($di);
 

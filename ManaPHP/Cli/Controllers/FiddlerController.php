@@ -15,7 +15,7 @@ class FiddlerController extends Controller
         if (!$di->has('fiddlerPlugin')) {
             $di->setShared('fiddlerPlugin', 'ManaPHP\Plugins\FiddlerPlugin');
         }
-        return parent::setDi($di);
+        parent::setDi($di);
     }
 
     /**
