@@ -332,7 +332,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             $r = $rs[0];
             $r->_snapshot = false;
 
-            $model->_di->ipcCache->set($key, $r, $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
+            $model->_di->ipcCache->set($key, $r, $ttl);
         }
 
         return $r;
@@ -461,7 +461,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         $rs = static::query(null, $model)->select([$field])->whereEq($pkName, $pkValue)->limit(1)->fetch(true);
         $value = $rs ? $rs[0][$field] : null;
 
-        $model->_di->ipcCache->set($key, $value, $ttl !== -1 ? $ttl : mt_rand(3000, 3600));
+        $model->_di->ipcCache->set($key, $value, $ttl);
 
         return $value;
     }
