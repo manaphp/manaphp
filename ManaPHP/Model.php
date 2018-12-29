@@ -318,7 +318,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $ttl = $fieldsOrTtl;
 
-        $key = '_mp:models:get:' . $model->getSource() . ":$id";
+        $key = '_mp:models:get:' . $model->getSource() . ":$id:$ttl";
         if ($r = $model->_di->ipcCache->get($key)) {
             /** @noinspection PhpIncompatibleReturnTypeInspection */
             return $r;
@@ -453,7 +453,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             return $rs ? $rs[0][$field] : null;
         }
 
-        $key = '_mp:models:value:' . $model->getSource() . ":$field:$pkValue";
+        $key = '_mp:models:value:' . $model->getSource() . ":$field:$pkValue:$ttl";
         if (($value = $model->_di->ipcCache->get($key)) !== false) {
             return $value;
         }
