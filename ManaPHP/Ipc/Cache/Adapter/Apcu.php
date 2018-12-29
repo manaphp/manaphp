@@ -3,8 +3,8 @@
 namespace ManaPHP\Ipc\Cache\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Ipc\CacheInterface;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Ipc\CacheInterface;
 
 class Apcu extends Component implements CacheInterface
 {
@@ -70,7 +70,7 @@ class Apcu extends Component implements CacheInterface
             throw new MisuseException(['value of `:key` key can not be false', 'key' => $key]);
         }
 
-        if ($ttl < 0) {
+        if ($ttl === 0) {
             $this->_cache[$key] = $value;
         } else {
             if ($this->_enabled) {
