@@ -262,7 +262,7 @@ interface RequestInterface
      *
      * @return bool
      */
-    public function hasFiles($onlySuccessful = false);
+    public function hasFiles($onlySuccessful = true);
 
     /**
      * Gets attached files as \ManaPHP\Http\Request\FileInterface compatible instances
@@ -271,7 +271,7 @@ interface RequestInterface
      *
      * @return \ManaPHP\Http\Request\FileInterface[]
      */
-    public function getFiles($onlySuccessful = false);
+    public function getFiles($onlySuccessful = true);
 
     /**
      * Gets web page that refers active request. ie: http://www.google.com

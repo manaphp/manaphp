@@ -536,7 +536,7 @@ class Request extends Component implements RequestInterface
      *
      * @return bool
      */
-    public function hasFiles($onlySuccessful = false)
+    public function hasFiles($onlySuccessful = true)
     {
         /** @var $_FILES array */
         foreach ($_FILES as $file) {
@@ -566,7 +566,7 @@ class Request extends Component implements RequestInterface
      *
      * @return \ManaPHP\Http\Request\File[]
      */
-    public function getFiles($onlySuccessful = false)
+    public function getFiles($onlySuccessful = true)
     {
         $files = [];
 
