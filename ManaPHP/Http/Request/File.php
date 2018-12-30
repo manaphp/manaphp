@@ -70,14 +70,17 @@ class File extends Component implements FileInterface
     }
 
     /**
-     * Returns the mime type reported by the browser
-     * This mime type is not completely secure, use getRealType() instead
+     * @param bool $real
      *
      * @return string
      */
-    public function getType()
+    public function getType($real = true)
     {
-        return $this->_file['type'];
+        if ($real) {
+            return mime_content_type($this->_file['tmp_name']) ?: '';
+        } else {
+            return $this->_file['type'];
+        }
     }
 
     /**

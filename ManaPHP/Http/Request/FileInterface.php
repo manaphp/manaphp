@@ -39,12 +39,11 @@ interface FileInterface
     public function getTempName();
 
     /**
-     * Returns the mime type reported by the browser
-     * This mime type is not completely secure, use getRealType() instead
+     * @param bool $real
      *
      * @return string
      */
-    public function getType();
+    public function getType($real = true);
 
     /**
      * Move the temporary file to a destination
