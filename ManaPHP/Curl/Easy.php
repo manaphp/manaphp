@@ -252,25 +252,10 @@ class Easy extends Component implements EasyInterface
                 $hasFiles = false;
                 /** @noinspection ForeachSourceInspection */
                 foreach ($body as $k => $v) {
-                    if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && is_file(substr($v, 1))) {
+                    if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && $this->filesystem->fileExists($v)) {
                         $hasFiles = true;
-                        if (class_exists('CURLFile')) {
-                            $file = substr($v, 1);
-
-                            $parts = explode(';', $file);
-
-                            if (count($parts) === 1) {
-                                $body[$k] = new \CURLFile($file);
-                            } else {
-                                $file = $parts[0];
-                                $types = explode('=', $parts[1]);
-                                if ($types[0] !== 'type' || count($types) !== 2) {
-                                    throw new NotSupportedException(['`:file` file name format is invalid', 'file' => $v]);
-                                } else {
-                                    $body[$k] = new \CURLFile($file, $types[1]);
-                                }
-                            }
-                        }
+                        $file = $this->alias->resolve($v);
+                        $body[$k] = curl_file_create($file, mime_content_type($file) ?: null, basename($file));
                     } elseif (is_object($v)) {
                         $hasFiles = true;
                     }
