@@ -173,4 +173,12 @@ class File extends Component implements FileInterface
     {
         return pathinfo($this->_file['name'], PATHINFO_EXTENSION);
     }
+
+    /**
+     * @return void
+     */
+    public function delete()
+    {
+        @unlink($this->_file['tmp_name']);
+    }
 }

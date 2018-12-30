@@ -59,4 +59,9 @@ interface FileInterface
      * @return string
      */
     public function getExtension();
+
+    /**
+     * @return void
+     */
+    public function delete();
 }
