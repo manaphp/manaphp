@@ -383,6 +383,25 @@ if (!function_exists('rest_put')) {
     }
 }
 
+if (!function_exists('rest_patch')) {
+    /**
+     * @param string|array $url
+     * @param string|array $body
+     * @param array        $options
+     *
+     * @return array
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\Easy\ContentTypeException
+     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
+     * @throws \ManaPHP\Curl\ConnectionException
+     */
+    function rest_patch($url, $body = null, $options = [])
+    {
+        return di('httpClient')->rest('PATCH', $url, $body, $options);
+    }
+}
+
 if (!function_exists('rest_delete')) {
     /**
      * @param string|array $url
