@@ -289,6 +289,12 @@ class Easy extends Component implements EasyInterface
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'HEAD');
                 curl_setopt($curl, CURLOPT_NOBODY, true);
                 break;
+            case 'OPTIONS':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
+                break;
+            default:
+                throw new NotSupportedException(['`:method` method is not support', 'method' => $type]);
+                break;
         }
 
         if (isset($options['timeout'])) {
