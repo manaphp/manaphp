@@ -176,7 +176,7 @@ if (!function_exists('jwt')) {
      */
     function jwt($scope, $data, $ttl = null)
     {
-        $jwt = di('ManaPHP\Authentication\Token\Adapter\Jwt', ['key' => di('crypt')->getDerivedKey("jwt:$scope")]);
+        $jwt = di('di')->getInstance('ManaPHP\Identity\Adapter\Jwt', ['key' => di('crypt')->getDerivedKey("jwt:$scope")]);
         if ($ttl) {
             return $jwt->encode(array_merge(['scope' => $scope, 'exp' => time() + $ttl], $data));
         } else {
