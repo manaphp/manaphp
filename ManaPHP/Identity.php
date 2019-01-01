@@ -179,24 +179,4 @@ abstract class Identity extends Component implements IdentityInterface
     {
         return isset($this->_claims[$claim]);
     }
-
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    public function base64urlEncode($str)
-    {
-        return strtr(rtrim(base64_encode($str), '='), '+/', '-_');
-    }
-
-    /**
-     * @param string $str
-     *
-     * @return bool|string
-     */
-    public function base64urlDecode($str)
-    {
-        return base64_decode(strtr($str, '-_', '+/'));
-    }
 }
