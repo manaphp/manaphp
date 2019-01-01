@@ -31,13 +31,14 @@ class Mwt extends Token
 
     /**
      * @param array $claims
+     * @param int   $ttl
      *
      * @return string
      */
-    public function encode($claims)
+    public function encode($claims, $ttl = null)
     {
         $claims['iat'] = time();
-        $claims['exp'] = time() + $this->_ttl;
+        $claims['exp'] = time() + ($ttl ?: $this->_ttl);
 
         $payload = $this->base64urlEncode(json_encode($claims, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $signature = $this->base64urlEncode(hash_hmac($this->_alg, $payload, $this->_key[0], true));

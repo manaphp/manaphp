@@ -31,13 +31,14 @@ class Jwt extends Token
 
     /**
      * @param array $claims
+     * @param int   $ttl
      *
      * @return string
      */
-    public function encode($claims)
+    public function encode($claims, $ttl = null)
     {
         $claims['iat'] = time();
-        $claims['exp'] = time() + $this->_ttl;
+        $claims['exp'] = time() + ($ttl ?: $this->_ttl);
 
         $header = $this->base64urlEncode(json_encode(['alg' => $this->_alg, 'typ' => 'JWT']));
         $payload = $this->base64urlEncode(json_encode($claims, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
