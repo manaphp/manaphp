@@ -47,28 +47,20 @@ class Mwt extends Token
 
     /**
      * @param string $token
+     * @param bool   $verify
      *
      * @return array
      */
-    public function decode($token)
+    public function decode($token, $verify = true)
     {
         $parts = explode('.', $token, 5);
         if (count($parts) !== 2) {
             throw new InvalidCredentialException(['The MWT `:token` must have one dot', 'token' => $token]);
         }
-        list($payload, $signature) = $parts;
+        list($payload) = $parts;
 
-        $success = false;
-        /** @noinspection ForeachSourceInspection */
-        foreach ($this->_key as $key) {
-            if ($this->base64urlEncode(hash_hmac($this->_alg, $payload, $key, true)) === $signature) {
-                $success = true;
-                break;
-            }
-        }
-
-        if (!$success) {
-            throw new InvalidCredentialException(['signature is not corrected: :signature', 'signature' => $signature]);
+        if ($verify) {
+            $this->verify($token);
         }
 
         $claims = json_decode($this->base64urlDecode($payload), true);
@@ -88,23 +80,30 @@ class Mwt extends Token
     }
 
     /**
-     * @param string $token
-     *
-     * @return array
+     * @param string       $token
+     * @param string|array $keys
      */
-    public function decodeClaims($token)
+    public function verify($token, $keys = null)
     {
-        $parts = explode('.', $token, 5);
-        if (count($parts) !== 2) {
-            throw new InvalidCredentialException(['The MWT `:token` must have one dot', 'token' => $token]);
-        }
-        list($payload,) = $parts;
+        $keys = $keys ? (array)$keys : $this->_key;
 
-        $claims = json_decode($this->base64urlDecode($payload), true);
-        if (!is_array($claims)) {
-            throw new InvalidCredentialException('payload is not array.');
+        if (($pos = strrpos($token, '.')) === false) {
+            throw new InvalidCredentialException(['`:token` token is not distinguished', 'token' => $token]);
         }
 
-        return $claims;
+        $data = substr($token, 0, $pos);
+        $signature = substr($token, $pos + 1);
+        $success = false;
+        /** @noinspection ForeachSourceInspection */
+        foreach ($keys as $key) {
+            if ($this->base64urlEncode(hash_hmac($this->_alg, $data, $key, true)) === $signature) {
+                $success = true;
+                break;
+            }
+        }
+
+        if (!$success) {
+            throw new InvalidCredentialException(['signature is not corrected: :signature', 'signature' => $signature]);
+        }
     }
 }
