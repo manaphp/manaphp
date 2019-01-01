@@ -178,10 +178,11 @@ if (!function_exists('jwt')) {
     {
         $jwt = di('di')->getInstance('ManaPHP\Identity\Adapter\Jwt', ['key' => di('crypt')->getDerivedKey("jwt:$scope")]);
         if ($ttl) {
-            return $jwt->encode(array_merge(['scope' => $scope, 'exp' => time() + $ttl], $data));
+            $data['scope'] = $scope;
+            return $jwt->encode($data, $ttl);
         } else {
             $r = $jwt->decode($data);
-            return !$r || !isset($r['scope']) || $r['scope'] !== $scope ? false : $r;
+            return (!$r || !isset($r['scope']) || $r['scope'] !== $scope) ? false : $r;
         }
     }
 }
