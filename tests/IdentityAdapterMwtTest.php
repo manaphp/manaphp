@@ -17,7 +17,7 @@ class  IdentityAdapterMwtTest extends TestCase
 
     public function test_encode()
     {
-        $mwt = new Mwt();
+        $mwt = new Mwt(['key' => 'manaphp']);
         $decoded = $mwt->decode($mwt->encode(['id' => 100, 'name' => 'mana']));
         $this->assertEquals(100, $decoded['id']);
         $this->assertEquals('mana', $decoded['name']);
@@ -25,7 +25,7 @@ class  IdentityAdapterMwtTest extends TestCase
 
     public function test_decode()
     {
-        $mwt = new Mwt();
+        $mwt = new Mwt(['key' => 'manaphp']);
         $decoded = $mwt->decode($mwt->encode(['id' => 100, 'name' => 'mana']));
         $this->assertEquals(100, $decoded['id']);
         $this->assertEquals('mana', $decoded['name']);
@@ -33,13 +33,13 @@ class  IdentityAdapterMwtTest extends TestCase
 
     public function test_expire()
     {
-        $mwt = new Mwt();
+        $mwt = new Mwt(['key' => 'manaphp']);
         $encoded = $mwt->encode(['id' => 100, 'name' => 'mana', 'exp' => 1]);
         sleep(2);
-        try{
+        try {
             $this->assertFalse($mwt->decode($encoded));
             $this->fail('why not?');
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
         }
 
