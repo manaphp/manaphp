@@ -23,7 +23,7 @@ class File extends Component implements FilesystemInterface
      */
     public function fileExists($file)
     {
-        return file_exists($this->alias->resolve($file));
+        return is_file($this->alias->resolve($file));
     }
 
     /**
