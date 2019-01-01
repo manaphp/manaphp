@@ -48,17 +48,18 @@ class Jwt extends Token
 
     /**
      * @param string $token
+     * @param bool   $verify
      *
      * @return array
      */
-    public function decode($token)
+    public function decode($token, $verify = true)
     {
         $parts = explode('.', $token, 5);
         if (count($parts) !== 3) {
             throw new InvalidCredentialException(['The JWT `:token` must have one dot', 'token' => $token]);
         }
 
-        list($header, $payload, $signature) = $parts;
+        list($header, $payload) = $parts;
         $decoded_header = json_decode($this->base64urlDecode($header), true);
         if (!$decoded_header) {
             throw new InvalidCredentialException(['The JWT header `:header` is not distinguished', 'header' => $header]);
@@ -80,17 +81,8 @@ class Jwt extends Token
             throw new InvalidCredentialException(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
         }
 
-        $success = false;
-        /** @noinspection ForeachSourceInspection */
-        foreach ($this->_key as $key) {
-            if ($this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $key, true)) === $signature) {
-                $success = true;
-                break;
-            }
-        }
-
-        if (!$success) {
-            throw new InvalidCredentialException(['signature is not corrected: :signature', 'signature' => $signature]);
+        if ($verify) {
+            $this->verify($token);
         }
 
         $claims = json_decode($this->base64urlDecode($payload), true);
@@ -110,24 +102,31 @@ class Jwt extends Token
     }
 
     /**
-     * @param string $token
-     *
-     * @return array
+     * @param string       $token
+     * @param string|array $keys
      */
-    public function decodeClaims($token)
+    public function verify($token, $keys = null)
     {
-        $parts = explode('.', $token, 5);
-        if (count($parts) !== 3) {
-            throw new InvalidCredentialException(['The JWT `:token` must have one dot', 'token' => $token]);
+        $keys = $keys ? (array)$keys : $this->_key;
+
+        if (($pos = strrpos($token, '.')) === false) {
+            throw new InvalidCredentialException(['`:token` token is not distinguished', 'token' => $token]);
         }
 
-        list(, $payload,) = $parts;
+        $data = substr($token, 0, $pos);
+        $signature = substr($token, $pos + 1);
 
-        $claims = json_decode($this->base64urlDecode($payload), true);
-        if (!is_array($claims)) {
-            throw new InvalidCredentialException('payload is not array.');
+        $success = false;
+        /** @noinspection ForeachSourceInspection */
+        foreach ($keys as $key) {
+            if ($this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), $data, $key, true)) === $signature) {
+                $success = true;
+                break;
+            }
         }
 
-        return $claims;
+        if (!$success) {
+            throw new InvalidCredentialException(['signature is not corrected: :signature', 'signature' => $signature]);
+        }
     }
 }
