@@ -17,7 +17,7 @@ class  IdentityAdapterJwtTest extends TestCase
 
     public function test_encode()
     {
-        $jwt = new Jwt();
+        $jwt = new Jwt(['key' => 'manaphp']);
         $decoded = $jwt->decode($jwt->encode(['id' => 100, 'name' => 'mana']));
         $this->assertEquals(100, $decoded['id']);
         $this->assertEquals('mana', $decoded['name']);
@@ -25,7 +25,7 @@ class  IdentityAdapterJwtTest extends TestCase
 
     public function test_decode()
     {
-        $jwt = new Jwt();
+        $jwt = new Jwt(['key' => 'manaphp']);
         $decoded = $jwt->decode($jwt->encode(['id' => 100, 'name' => 'mana']));
         $this->assertEquals(100, $decoded['id']);
         $this->assertEquals('mana', $decoded['name']);
@@ -39,13 +39,13 @@ class  IdentityAdapterJwtTest extends TestCase
 
     public function test_expire()
     {
-        $jwt = new Jwt();
+        $jwt = new Jwt(['key' => 'manaphp']);
         $encoded = $jwt->encode(['id' => 100, 'name' => 'mana', 'exp' => 1]);
         sleep(2);
-        try{
+        try {
             $this->assertFalse($jwt->decode($encoded));
             $this->fail('why not');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
 
         }
 

@@ -15,7 +15,7 @@ abstract class Token extends Identity
      */
     protected $_alg;
     /**
-     * @var array
+     * @var string|array
      */
     protected $_key = [];
 

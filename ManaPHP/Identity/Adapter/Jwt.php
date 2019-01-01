@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Identity\Adapter;
 
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Identity\ExpiredCredentialException;
 use ManaPHP\Identity\InvalidCredentialException;
 use ManaPHP\Identity\NotBeforeCredentialException;
@@ -22,10 +23,22 @@ class Jwt extends Token
         parent::__construct($options);
 
         $this->_alg = isset($options['alg']) ? $options['alg'] : 'HS256';
-        $this->_key = isset($options['key']) ? (array)$options['key'] : [$this->crypt->getDerivedKey('jwt')];
+
+        if (isset($options['key'])) {
+            $this->_key = $options['key'];
+        }
 
         if (isset($options['ttl'])) {
             $this->_ttl = $options['ttl'];
+        }
+    }
+
+    public function setDi($di)
+    {
+        parent::setDi($di);
+
+        if ($this->_key === null) {
+            $this->_key = $this->crypt->getDerivedKey('jwt');
         }
     }
 
@@ -37,12 +50,18 @@ class Jwt extends Token
      */
     public function encode($claims, $ttl = null)
     {
+        if (!$this->_key) {
+            throw new MisuseException('Jwt key is not set');
+        }
+
+        $key = is_string($this->_key) ? $this->_key : $this->_key[0];
+
         $claims['iat'] = time();
         $claims['exp'] = time() + ($ttl ?: $this->_ttl);
 
         $header = $this->base64urlEncode(json_encode(['alg' => $this->_alg, 'typ' => 'JWT']));
         $payload = $this->base64urlEncode(json_encode($claims, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        $signature = $this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $this->_key[0], true));
+        $signature = $this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $key, true));
 
         return "$header.$payload.$signature";
     }
@@ -108,7 +127,9 @@ class Jwt extends Token
      */
     public function verify($token, $keys = null)
     {
-        $keys = $keys ? (array)$keys : $this->_key;
+        if (!$keys = $keys ?: $this->_key) {
+            throw new MisuseException('Jwt key is not set');
+        }
 
         if (($pos = strrpos($token, '.')) === false) {
             throw new InvalidCredentialException(['`:token` token is not distinguished', 'token' => $token]);
@@ -119,7 +140,7 @@ class Jwt extends Token
 
         $success = false;
         /** @noinspection ForeachSourceInspection */
-        foreach ($keys as $key) {
+        foreach ((array)$keys as $key) {
             if ($this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), $data, $key, true)) === $signature) {
                 $success = true;
                 break;
