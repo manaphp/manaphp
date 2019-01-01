@@ -3,16 +3,34 @@
 namespace ManaPHP\Identity\Adapter;
 
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Identity;
 use ManaPHP\Identity\ExpiredCredentialException;
 use ManaPHP\Identity\InvalidCredentialException;
+use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Identity\NotBeforeCredentialException;
 
 /**
  * Class Jwt
  * @package ManaPHP\Identity\Adapter
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Jwt extends Token
+class Jwt extends Identity
 {
+    /**
+     * @var string
+     */
+    protected $_alg = 'HS256';
+
+    /**
+     * @var string|array
+     */
+    protected $_key;
+
+    /**
+     * @var int
+     */
+    protected $_ttl = 86400;
+
     /**
      * Jwt constructor.
      *
@@ -22,7 +40,9 @@ class Jwt extends Token
     {
         parent::__construct($options);
 
-        $this->_alg = isset($options['alg']) ? $options['alg'] : 'HS256';
+        if (isset($options['alg'])) {
+            $this->_alg = $options['alg'];
+        }
 
         if (isset($options['key'])) {
             $this->_key = $options['key'];
@@ -40,6 +60,54 @@ class Jwt extends Token
         if ($this->_key === null) {
             $this->_key = $this->crypt->getDerivedKey('jwt');
         }
+    }
+
+    /**
+     * @param int $ttl
+     *
+     * @return static
+     */
+    public function setTtl($ttl)
+    {
+        $this->_ttl = $ttl;
+	
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTtl()
+    {
+        return $this->_ttl;
+    }
+
+    /**
+     * @param string|array $key
+     *
+     * @return static
+     */
+    public function setKey($key)
+    {
+        $this->_key = (array)$key;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getKey()
+    {
+        return $this->_key;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getExpiredTime()
+    {
+        return isset($this->_claims['exp']) ? $this->_claims['exp'] : null;
     }
 
     /**
@@ -150,5 +218,20 @@ class Jwt extends Token
         if (!$success) {
             throw new InvalidCredentialException(['signature is not corrected: :signature', 'signature' => $signature]);
         }
+    }
+
+    /**
+     * @param bool $silent
+     *
+     * @return static
+     */
+    public function authenticate($silent = true)
+    {
+        $token = $this->request->getAccessToken();
+        if (!$token && !$silent) {
+            throw new NoCredentialException('no token');
+        }
+        $claims = $this->decode($token);
+        return $this->setClaims($claims);
     }
 }
