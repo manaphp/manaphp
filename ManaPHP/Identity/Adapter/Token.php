@@ -72,12 +72,26 @@ abstract class Token extends Identity
     }
 
     /**
+     * @param array $claims
+     * @param int   $ttl
+     *
+     * @return string
+     */
+    abstract public function encode($claims, $ttl = null);
+
+    /**
      * @param string $token
      * @param bool   $verify
      *
      * @return array
      */
     abstract public function decode($token, $verify = true);
+
+    /**
+     * @param string       $token
+     * @param string|array $keys
+     */
+    abstract public function verify($token, $keys = null);
 
     /**
      * @param bool $silent
