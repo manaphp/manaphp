@@ -186,26 +186,6 @@ if (!function_exists('jwt')) {
     }
 }
 
-if (!function_exists('mwt')) {
-    /**
-     * @param string       $scope
-     * @param string|array $data
-     * @param int          $ttl
-     *
-     * @return string|array|false
-     */
-    function mwt($scope, $data, $ttl = null)
-    {
-        $mwt = di('ManaPHP\Authentication\Token\Adapter\Mwt', ['key' => di('crypt')->getDerivedKey("mwt:$scope")]);
-        if ($ttl) {
-            return $mwt->encode(array_merge(['scope' => $scope, 'exp' => time() + $ttl], $data));
-        } else {
-            $r = $mwt->decode($data);
-            return !$r || !isset($r['scope']) || $r['scope'] !== $scope ? false : $r;
-        }
-    }
-}
-
 if (!function_exists('input')) {
     /**
      * @param string $name
