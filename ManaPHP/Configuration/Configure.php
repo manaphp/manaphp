@@ -3,6 +3,7 @@
 namespace ManaPHP\Configuration;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 
 /**
@@ -102,5 +103,25 @@ class Configure extends Component implements ConfigureInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getParam($name, $default = null)
+    {
+        $value = array_get($this->params, $name);
+        if ($value === null) {
+            if ($default === null) {
+                throw new InvalidValueException(['`:param` param is not exists in $configure->params', 'param' => $name]);
+            } else {
+                return $default;
+            }
+        } else {
+            return $value;
+        }
     }
 }

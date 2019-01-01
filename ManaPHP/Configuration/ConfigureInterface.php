@@ -15,4 +15,12 @@ interface ConfigureInterface
      * @return static
      */
     public function load($file = '@config/app.php');
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getParam($name, $default = null);
 }
