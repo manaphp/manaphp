@@ -168,9 +168,9 @@ if (!function_exists('abort')) {
 
 if (!function_exists('jwt_encode')) {
     /**
-     * @param string|array $claims
-     * @param int          $ttl
-     * @param string       $key
+     * @param array  $claims
+     * @param int    $ttl
+     * @param string $key
      *
      * @return string
      */
@@ -186,9 +186,9 @@ if (!function_exists('jwt_encode')) {
 
 if (!function_exists('jwt_decode')) {
     /**
-     * @param string|array $token
-     * @param int          $scope
-     * @param string       $key
+     * @param string $token
+     * @param string $scope
+     * @param string $key
      *
      * @return array
      */
