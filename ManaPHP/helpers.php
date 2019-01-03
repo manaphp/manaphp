@@ -43,6 +43,19 @@ if (!function_exists('env')) {
     }
 }
 
+if (!function_exists('param_get')) {
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    function param_get($name, $default = null)
+    {
+        return Di::getDefault()->configure->getParam($name, $default);
+    }
+}
+
 if (!function_exists('debug')) {
     /**
      * @param string|array $message
