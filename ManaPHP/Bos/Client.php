@@ -87,7 +87,7 @@ class Client extends Component implements ClientInterface
             throw new AuthenticationException('bucket is not exists');
         }
 
-        $bucket = $claims['bucket_name'];
+        $bucket = $claims['bucket'];
 
         if (!isset($this->_keys[$bucket])) {
             throw new AuthenticationException('bucket access key is not config');
@@ -119,6 +119,10 @@ class Client extends Component implements ClientInterface
 
         if ($response['code'] !== 0) {
             throw new UploadFailedException(['upload `:file` file failed: :message', 'file' => $file, 'message' => $response['message']]);
+        }
+
+        if (!isset($response['data']['token'])) {
+            throw new MissingFieldException('token');
         }
 
         return $this->verifyToken($response['data']['token']);
