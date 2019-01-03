@@ -178,6 +178,11 @@ interface RequestInterface
     public function getScheme();
 
     /**
+     * @return string
+     */
+    public function getHost();
+
+    /**
      * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
      *
      * @return bool

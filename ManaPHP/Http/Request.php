@@ -415,6 +415,14 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $_SERVER['HTTP_HOST'];
+    }
+
+    /**
      * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
      *
      * @return bool
