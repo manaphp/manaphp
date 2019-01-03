@@ -166,24 +166,53 @@ if (!function_exists('abort')) {
     }
 }
 
-if (!function_exists('jwt')) {
+if (!function_exists('jwt_encode')) {
     /**
-     * @param string       $scope
-     * @param string|array $data
+     * @param string|array $claims
      * @param int          $ttl
+     * @param string       $key
      *
-     * @return string|array|false
+     * @return string
      */
-    function jwt($scope, $data, $ttl = null)
+    function jwt_encode($claims, $ttl, $key = null)
     {
-        $jwt = di('di')->getInstance('ManaPHP\Identity\Adapter\Jwt', ['key' => di('crypt')->getDerivedKey("jwt:$scope")]);
-        if ($ttl) {
-            $data['scope'] = $scope;
-            return $jwt->encode($data, $ttl);
-        } else {
-            $r = $jwt->decode($data);
-            return (!$r || !isset($r['scope']) || $r['scope'] !== $scope) ? false : $r;
+        if (!$key && !isset($claims['scope'])) {
+            throw new \ManaPHP\Exception\MisuseException('neither key nor scope field exists');
         }
+        $jwt = new ManaPHP\Identity\Adapter\Jwt(['key' => $key ?: di('crypt')->getDerivedKey('jwt:' . $claims['scope'])]);
+        return $jwt->encode($claims, $ttl);
+    }
+}
+
+if (!function_exists('jwt_decode')) {
+    /**
+     * @param string|array $token
+     * @param int          $scope
+     * @param string       $key
+     *
+     * @return array
+     */
+    function jwt_decode($token, $scope, $key = null)
+    {
+        $jwt = new ManaPHP\Identity\Adapter\Jwt();
+
+        $claims = $jwt->decode($token, false);
+        if ($scope) {
+            if (!isset($claims['scope'])) {
+                throw new \ManaPHP\Identity\InvalidFormatException('Jwt claims missing scope field');
+            }
+            if ($scope !== $claims['scope']) {
+                throw new \ManaPHP\Identity\InvalidFormatException(['Jwt `:scope1` scope is not wanted `:scope2`', 'scope1' => $claims['scope'], 'scope2' => $scope]);
+            }
+        } else {
+            if (!$key) {
+                throw new \ManaPHP\Identity\InvalidFormatException('Jwt claims missing scope field');
+            }
+        }
+        $jwt->setKey($key ?: di('crypt')->getDerivedKey('jwt:' . $scope));
+        $jwt->verify($token);
+
+        return $claims;
     }
 }
 
