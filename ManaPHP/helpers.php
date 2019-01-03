@@ -216,6 +216,29 @@ if (!function_exists('jwt_decode')) {
     }
 }
 
+if (!function_exists('jwt_get_claim')) {
+    /**
+     * @param string $token
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return array|string
+     */
+    function jwt_get_claim($token, $name = null, $default = null)
+    {
+        $claims = (new ManaPHP\Identity\Adapter\Jwt())->decode($token, false);
+        if (!$name) {
+            return $claims;
+        } elseif (isset($name)) {
+            return $claims[$name];
+        } elseif ($default === null) {
+            throw new \ManaPHP\Exception\AuthenticationException(['`claim` claim is not exists in token', 'claim' => $name]);
+        } else {
+            return $default;
+        }
+    }
+}
+
 if (!function_exists('input')) {
     /**
      * @param string $name
