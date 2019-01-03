@@ -9,6 +9,7 @@ use ManaPHP\Curl\Easy\JsonDecodeException;
 use ManaPHP\Curl\Easy\Response;
 use ManaPHP\Curl\Easy\ServiceUnavailableException;
 use ManaPHP\Curl\Easy\TooManyRequestsException;
+use ManaPHP\Curl\Easy\UnauthorizedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
@@ -173,6 +174,7 @@ class Easy extends Component implements EasyInterface
      * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
      * @throws \ManaPHP\Curl\Easy\BadRequestException
      * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Curl\Easy\UnauthorizedException
      */
     public function request($type, $url, $body = null, $options = [])
     {
@@ -421,6 +423,8 @@ class Easy extends Component implements EasyInterface
             throw new TooManyRequestsException($response->url, $response);
         } elseif ($response->http_code === 403) {
             throw new ForbiddenException($response->url, $response);
+        } elseif ($response->http_code === 401) {
+            throw new UnauthorizedException($response->url, $response);
         }
 
         if ($response->http_code >= 500) {
@@ -448,6 +452,7 @@ class Easy extends Component implements EasyInterface
      * @throws \ManaPHP\Curl\Easy\ContentTypeException
      * @throws \ManaPHP\Curl\Easy\JsonDecodeException
      * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Curl\Easy\UnauthorizedException
      */
     public function rest($type, $url, $body = null, $options = [])
     {
