@@ -168,6 +168,11 @@ class Easy extends Component implements EasyInterface
      *
      * @return \ManaPHP\Curl\Easy\Response
      * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Curl\Easy\ForbiddenException
+     * @throws \ManaPHP\Curl\Easy\TooManyRequestsException
+     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
+     * @throws \ManaPHP\Curl\Easy\BadRequestException
+     * @throws \ManaPHP\Curl\ConnectionException
      */
     public function request($type, $url, $body = null, $options = [])
     {
@@ -410,7 +415,23 @@ class Easy extends Component implements EasyInterface
             'BODY' => strpos($response->content_type, 'json') !== false ? $response->getJsonBody() : $response->getUtf8Body()]],
             'httpClient.response');
 
-        return $this->_lastResponse = $response;
+        $this->_lastResponse = $response;
+
+        if ($response->http_code === 429) {
+            throw new TooManyRequestsException($response->url, $response);
+        } elseif ($response->http_code === 403) {
+            throw new ForbiddenException($response->url, $response);
+        }
+
+        if ($response->http_code >= 500) {
+            throw new ServiceUnavailableException(['service is unavailable: :http_code => `:url`', 'http_code' => $response->http_code, 'url' => $response->url], $response);
+        }
+
+        if ($response->http_code >= 400) {
+            throw new BadRequestException(['bad request: :http_code => `:url`', 'http_code' => $response->http_code, 'url' => $response->url], $response);
+        }
+
+        return $this->_lastResponse;
     }
 
     /**
@@ -449,23 +470,6 @@ class Easy extends Component implements EasyInterface
         }
 
         $response = $this->request($type, $url, $body, $options);
-        if ($response->http_code === 429) {
-            throw new TooManyRequestsException($response->url, $response);
-        } elseif ($response->http_code === 403) {
-            throw new ForbiddenException($response->url, $response);
-        }
-
-        if ($response->http_code >= 500) {
-            throw new ServiceUnavailableException(['service is unavailable: :http_code => `:url`',
-                'http_code' => $response->http_code, 'url' => $response->url],
-                $response);
-        }
-
-        if ($response->http_code >= 400) {
-            throw new BadRequestException(['bad request: :http_code => `:url`',
-                'http_code' => $response->http_code, 'url' => $response->url],
-                $response);
-        }
 
         if (strpos($response->content_type, 'json') === false) {
             throw new ContentTypeException(['content-type of response is not application/json: :content-type => `:url`',
