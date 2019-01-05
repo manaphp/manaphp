@@ -24,13 +24,18 @@ class Apcu extends Component implements CacheInterface
     protected $_cache;
 
     /**
+     * @var bool
+     */
+    protected $_is_cli;
+
+    /**
      * Apcu constructor.
      *
      * @param array $options
      */
     public function __construct($options = [])
     {
-        $this->_enabled = ini_get('apc.enable_cli') || ini_get('apcu.enable_cli');
+        $this->_enabled = function_exists('apcu_fetch');
 
         if (isset($options['enabled'])) {
             $this->_enabled = $options['enabled'] && $this->_enabled;
@@ -39,6 +44,8 @@ class Apcu extends Component implements CacheInterface
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
         }
+
+        $this->_is_cli = (PHP_SAPI === 'cli');
     }
 
     public function saveInstanceState()
@@ -72,10 +79,8 @@ class Apcu extends Component implements CacheInterface
 
         if ($ttl === 0) {
             $this->_cache[$key] = $value;
-        } else {
-            if ($this->_enabled) {
-                apcu_store($this->_prefix ? ($this->_prefix . $key) : $key, $value, $ttl);
-            }
+        } elseif ($this->_enabled) {
+            apcu_store($this->_prefix ? ($this->_prefix . $key) : $key, $this->_is_cli ? [time() + $ttl, $value] : $value, $ttl);
         }
     }
 
@@ -88,8 +93,17 @@ class Apcu extends Component implements CacheInterface
     {
         if ($this->_cache !== null && array_key_exists($key, $this->_cache)) {
             return $this->_cache[$key];
+        } elseif ($this->_enabled) {
+            if ($this->_is_cli) {
+                if (($r = apcu_fetch($this->_prefix ? ($this->_prefix . $key) : $key)) === false) {
+                    return false;
+                }
+                return time() <= $r[0] ? $r[1] : false;
+            } else {
+                return apcu_fetch($this->_prefix ? ($this->_prefix . $key) : $key);
+            }
         } else {
-            return $this->_enabled ? apcu_fetch($this->_prefix ? ($this->_prefix . $key) : $key) : false;
+            return false;
         }
     }
 }
