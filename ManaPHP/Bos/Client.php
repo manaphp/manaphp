@@ -168,7 +168,7 @@ class Client extends Component implements ClientInterface
 
         $jwt->verify($token, is_string($this->_access_key) ? $this->_access_key : $this->_access_key[$bucket]);
 
-        return $claims;
+        return array_except($claims, ['scope', 'iat', 'exp']);
     }
 
     /**
