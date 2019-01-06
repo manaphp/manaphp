@@ -151,7 +151,8 @@ class File extends Component implements FileInterface
      */
     public function getExtension()
     {
-        return pathinfo($this->_file['name'], PATHINFO_EXTENSION);
+        $name = $this->_file['name'];
+        return ($extension = pathinfo($name, PATHINFO_EXTENSION)) === $name ? '' : $extension;
     }
 
     /**
