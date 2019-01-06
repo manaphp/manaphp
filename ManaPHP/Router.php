@@ -365,21 +365,24 @@ class Router extends Component implements RouterInterface
 
             if ($parts === false) {
                 if ($handledUri !== '/' && $this->_areas) {
-                    if (substr_count($handledUri, '/') < 2) {
-                        $handledUri .= '/';
-                    }
-
-                    $pos = strpos($handledUri, '/', 1);
-                    $area = Text::camelize(substr($handledUri, 1, $pos - 1));
-                    if (in_array($area, $this->_areas, true)) {
-                        $handledUri = substr($handledUri, $pos);
+                    if (($pos = strpos($handledUri, '/', 1)) !== false) {
+                        $area = Text::camelize(substr($handledUri, 1, $pos - 1));
+                        if (in_array($area, $this->_areas, true)) {
+                            $handledUri = substr($handledUri, $pos);
+                        } else {
+                            $area = null;
+                        }
                     } else {
-                        $area = null;
+                        $area = Text::camelize(substr($handledUri, 1));
+                        if (in_array($area, $this->_areas, true)) {
+                            $handledUri = '/';
+                        } else {
+                            $area = null;
+                        }
                     }
                 }
-
-                $handledUri = rtrim($handledUri, '/') ?: '/';
-
+		
+                $handledUri = $handledUri === '/' ? '/' : rtrim($handledUri, '/');
                 $parts = $this->_default_route->match($handledUri, $method);
             }
         }
