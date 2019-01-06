@@ -26,6 +26,7 @@ namespace ManaPHP;
  * @property-read \Elasticsearch\Client                    $elasticsearch
  * @property-read \ManaPHP\MailerInterface                 $mailer
  * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
+ * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
  */
 class Component implements ComponentInterface, \JsonSerializable

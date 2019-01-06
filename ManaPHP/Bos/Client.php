@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Bos;
 
-use http\Exception\RuntimeException;
 use ManaPHP\Component;
 use ManaPHP\Exception\AuthenticationException;
 use ManaPHP\Exception\MissingFieldException;
@@ -15,9 +14,14 @@ class Client extends Component implements ClientInterface
     protected $_endpoint;
 
     /**
+     * @var string
+     */
+    protected $_admin_key;
+
+    /**
      * @var array
      */
-    protected $_keys;
+    protected $_access_key;
 
     /**
      * Client constructor.
@@ -30,20 +34,92 @@ class Client extends Component implements ClientInterface
             $this->_endpoint = $options['endpoint'];
         }
 
-        if (isset($options['keys'])) {
-            $this->_keys = $options['keys'];
+        if (isset($options['admin_key'])) {
+            $this->_admin_key = $options['admin_key'];
+        }
+
+        if (isset($options['access_key'])) {
+            $this->_access_key = $options['access_key'];
         }
     }
 
     /**
-     * create token for create object request
+     * @param array $params
      *
+     * @return array
+     */
+    public function createBucket($params)
+    {
+        $params['token'] = jwt_encode(['scope' => 'bos.bucket.create'], 60, $this->_admin_key);
+
+        $endpoint = preg_replace('#\{bucket\}[-.]*#', '', $this->_endpoint);
+
+        if (str_contains($this->_endpoint, '{bucket}')) {
+            $params['base_url'] = str_replace('{bucket}', $params['bucket'], $this->_endpoint);
+        }
+
+        $body = rest_post($endpoint . '/api/buckets', $params)['body'];
+
+        $this->logger->info($body, 'bosClient.createBucket');
+
+        if ($body['code'] !== 0) {
+            throw new Exception($body['message'], $body['code']);
+        }
+
+        return $body['data'];
+    }
+
+    /**
+     * @return array
+     */
+    public function listBuckets()
+    {
+        $token = jwt_encode(['scope' => 'bos.bucket.list'], 60, $this->_admin_key);
+        $endpoint = preg_replace('#\{bucket\}[-.]*#', '', $this->_endpoint);
+        $body = rest_get([$endpoint . '/api/buckets', 'token' => $token])['body'];
+
+        $this->logger->debug($body, 'bosClient.listBuckets');
+
+        if ($body['code'] !== 0) {
+            throw new Exception($body['message'], $body['code']);
+        }
+
+        return $body['data'];
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    public function listObjects($params = [])
+    {
+        $bucket = $params['bucket'];
+
+        $endpoint = str_replace('{bucket}', $bucket, $this->_endpoint);
+
+        $params[] = $endpoint . '/api/objects';
+        $access_key = is_string($this->_access_key) ? $this->_access_key : $this->_access_key[$bucket];
+        $params['token'] = jwt_encode(['scope' => 'bos.object.list', 'bucket' => $bucket], 60, $access_key);
+
+        $body = rest_get($params)['body'];
+
+        $this->logger->debug($body, 'bosClient.listObjects');
+
+        if ($body['code'] !== 0) {
+            throw new Exception($body['message'], $body['code']);
+        }
+
+        return $body['data']['items'];
+    }
+
+    /**
      * @param array $policy
      * @param int   $ttl
      *
      * @return string
      */
-    public function createToken($policy, $ttl = 3600)
+    public function createUploadToken($policy, $ttl = 3600)
     {
         $policy['scope'] = 'bos.object.create.request';
 
@@ -52,14 +128,13 @@ class Client extends Component implements ClientInterface
         }
         $bucket = $policy['bucket'];
 
-        if (!isset($this->_keys[$bucket])) {
-            throw new RuntimeException('bucket access key is not config');
-        }
-        $access_key = $this->_keys[$bucket];
+        $jwt = new Jwt(['key' => is_string($this->_access_key) ? $this->_access_key : $this->_access_key[$bucket]]);
 
-        $jwt = new Jwt(['key' => $access_key]);
+        $token = $jwt->encode($policy, $ttl);
 
-        return $jwt->encode($policy, $ttl);
+        $this->logger->info($token, 'bosClient.createUploadToken');
+
+        return $token;
     }
 
     /**
@@ -69,7 +144,7 @@ class Client extends Component implements ClientInterface
      *
      * @return array
      */
-    public function verifyToken($token)
+    public function getUploadResult($token)
     {
         $jwt = new Jwt();
 
@@ -89,42 +164,48 @@ class Client extends Component implements ClientInterface
 
         $bucket = $claims['bucket'];
 
-        if (!isset($this->_keys[$bucket])) {
-            throw new AuthenticationException('bucket access key is not config');
-        }
+        $this->logger->info($token, 'bosClient.getUploadResult');
 
-        $access_key = $this->_keys[$bucket];
-
-        $jwt->verify($token, $access_key);
+        $jwt->verify($token, is_string($this->_access_key) ? $this->_access_key : $this->_access_key[$bucket]);
 
         return $claims;
     }
 
     /**
+     * @param array  $params
      * @param string $file
-     * @param string $bucket
-     * @param string $key
      *
      * @return array
      */
-    public function upload($file, $bucket, $key)
+    public function putObject($params, $file)
     {
-        $policy = [];
-        $policy['bucket'] = $bucket;
-        $policy['key'] = $key;
+        $token = $this->createUploadToken($params, 86400);
 
-        $token = $this->createToken($policy, 86400);
+        $bucket = $params['bucket'];
 
-        $response = $this->httpClient->post($this->_endpoint . '/objects', ['token' => $token, 'file' => $file])->getJsonBody();
+        $endpoint = str_replace('{bucket}', $bucket, $this->_endpoint);
 
-        if ($response['code'] !== 0) {
-            throw new UploadFailedException(['upload `:file` file failed: :message', 'file' => $file, 'message' => $response['message']]);
+        $body = $this->httpClient->post($endpoint . '/api/objects', ['token' => $token, 'file' => $file])->getJsonBody();
+
+        if ($body['code'] !== 0) {
+            throw new Exception($body['message'], $body['code']);
         }
 
-        if (!isset($response['data']['token'])) {
+        if (!isset($body['data']['token'])) {
             throw new MissingFieldException('token');
         }
 
-        return $this->verifyToken($response['data']['token']);
+        return $this->getUploadResult($body['data']['token']);
+    }
+
+    /**
+     * @param array  $params
+     * @param string $file
+     *
+     * @return array
+     */
+    public function upload($params, $file)
+    {
+        return $this->putObject($params, $file);
     }
 }

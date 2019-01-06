@@ -4,14 +4,39 @@ namespace ManaPHP\Bos;
 interface ClientInterface
 {
     /**
-     * create token for create object request
+     * @param array $params
      *
+     * @return array
+     */
+    public function createBucket($params);
+
+    /**
+     * @return array
+     */
+    public function listBuckets();
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    public function listObjects($params = []);
+
+    /**
+     * @param $params
+     * @param $file
+     *
+     * @return array
+     */
+    public function putObject($params, $file);
+
+    /**
      * @param array $policy
      * @param int   $ttl
      *
      * @return string
      */
-    public function createToken($policy, $ttl = 3600);
+    public function createUploadToken($policy, $ttl = 3600);
 
     /**
      * verify token of create object response
@@ -20,14 +45,15 @@ interface ClientInterface
      *
      * @return array
      */
-    public function verifyToken($token);
+    public function getUploadResult($token);
 
     /**
-     * @param string $file
-     * @param string $bucket
-     * @param string $key
+     * alias of putObjectByFile
+     *
+     * @param $params
+     * @param $file
      *
      * @return array
      */
-    public function upload($file, $bucket, $key);
+    public function upload($params, $file);
 }
