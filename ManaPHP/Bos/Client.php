@@ -185,7 +185,11 @@ class Client extends Component implements ClientInterface
 
         $endpoint = str_replace('{bucket}', $bucket, $this->_endpoint);
 
-        $body = $this->httpClient->post($endpoint . '/api/objects', ['token' => $token, 'file' => $file])->getJsonBody();
+        $file = $this->alias->resolve($file);
+
+        $curl_file = curl_file_create($file, mime_content_type($file), basename($file));
+
+        $body = $this->httpClient->post($endpoint . '/api/objects', ['token' => $token, 'file' => $curl_file])->getJsonBody();
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
