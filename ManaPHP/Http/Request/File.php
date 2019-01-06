@@ -23,11 +23,6 @@ class File extends Component implements FileInterface
     protected $_file;
 
     /**
-     * @var string
-     */
-    protected static $_alwaysRejectedExtensions = 'php,pl,py,cgi,asp,jsp,sh,cgi';
-
-    /**
      * \ManaPHP\Http\Request\File constructor
      *
      * @param string $key
@@ -116,32 +111,17 @@ class File extends Component implements FileInterface
     /**
      * Moves the temporary file to a destination within the application
      *
-     * @param string       $dst
-     * @param string|false $allowedExtensions
+     * @param string $dst
+     * @param string $allowedExtensions
      *
      * @throws \ManaPHP\Http\Request\File\Exception
      */
     public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip')
     {
-        $extension = pathinfo($dst, PATHINFO_EXTENSION);
-        if ($extension) {
-            $extension = ',' . $extension . ',';
-
-            if (is_string($allowedExtensions)) {
-                $allowedExtensions = ',' . str_replace(' ', '', $allowedExtensions) . ',';
-                $allowedExtensions = str_replace(',.', ',', $allowedExtensions);
-
-                if (stripos($allowedExtensions, $extension) === false) {
-                    throw new FileException(['`:extension` file type is not allowed upload', 'extension' => $extension]);
-                }
-            }
-
-            if (is_string(self::$_alwaysRejectedExtensions)) {
-                $alwaysRejectedExtensions = ',' . str_replace(' ', '', self::$_alwaysRejectedExtensions) . ',';
-                $alwaysRejectedExtensions = str_replace(',.', ',', $alwaysRejectedExtensions);
-                if (stripos($alwaysRejectedExtensions, $extension) !== false) {
-                    throw new FileException(['`:extension` file types is not allowed upload always', 'extensions' => self::$_alwaysRejectedExtensions]);
-                }
+        if ($allowedExtensions !== '*') {
+            $extension = pathinfo($dst, PATHINFO_EXTENSION);
+            if (!$extension || preg_match("#\b$extension\b#", $allowedExtensions) !== 1) {
+                throw new FileException(['`:extension` file type is not allowed upload', 'extension' => $extension]);
             }
         }
 

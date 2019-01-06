@@ -48,8 +48,8 @@ interface FileInterface
     /**
      * Move the temporary file to a destination
      *
-     * @param string       $dst
-     * @param string|false $allowedExtensions
+     * @param string $dst
+     * @param string $allowedExtensions
      */
     public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip');
 
