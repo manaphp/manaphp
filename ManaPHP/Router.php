@@ -349,12 +349,12 @@ class Router extends Component implements RouterInterface
                 $route = $routes[$i];
                 if (($parts = $route->match($handledUri, $method)) !== false) {
                     if ($handledUri !== '/' && $this->_areas) {
-                        if (substr_count($handledUri, '/') < 2) {
-                            $handledUri .= '/';
+                        if (($pos = strpos($handledUri, '/', 1)) === false) {
+                            $area = Text::camelize(substr($handledUri, 1));
+                        } else {
+                            $area = Text::camelize(substr($handledUri, 1, $pos - 1));
                         }
 
-                        $pos = strpos($handledUri, '/', 1);
-                        $area = Text::camelize(substr($handledUri, 1, $pos - 1));
                         if (!in_array($area, $this->_areas, true)) {
                             $area = null;
                         }
