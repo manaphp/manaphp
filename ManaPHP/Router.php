@@ -25,6 +25,11 @@ class Router extends Component implements RouterInterface
     protected $_areas = [];
 
     /**
+     * @var \ManaPHP\Router\RouteInterface
+     */
+    protected $_default_route;
+
+    /**
      * @var \ManaPHP\Router\RouteInterface[][]
      */
     protected $_simple_routes = [];
@@ -67,7 +72,7 @@ class Router extends Component implements RouterInterface
     public function __construct($useDefaultRoutes = true)
     {
         if ($useDefaultRoutes) {
-            $this->add('/(?:{controller}(?:/{action}(?:/{params})?)?)?');
+            $this->_default_route = new Route('/(?:{controller}(?:/{action}(?:/{params})?)?)?');
         }
     }
 
@@ -338,29 +343,44 @@ class Router extends Component implements RouterInterface
         } elseif (isset($routes[''][$handledUri])) {
             $parts = $routes[''][$handledUri]->match($handledUri, $method);
         } else {
-            if ($handledUri !== '/' && $this->_areas) {
-                if (substr_count($handledUri, '/') < 2) {
-                    $handledUri .= '/';
-                }
-
-                $pos = strpos($handledUri, '/', 1);
-                $area = Text::camelize(substr($handledUri, 1, $pos - 1));
-                if (in_array($area, $this->_areas, true)) {
-                    $handledUri = substr($handledUri, $pos);
-                } else {
-                    $area = null;
-                }
-            }
-
-            $handledUri = rtrim($handledUri, '/') ?: '/';
-
             $parts = false;
             $routes = $this->_regex_routes;
             for ($i = count($routes) - 1; $i >= 0; $i--) {
                 $route = $routes[$i];
                 if (($parts = $route->match($handledUri, $method)) !== false) {
+                    if ($handledUri !== '/' && $this->_areas) {
+                        if (substr_count($handledUri, '/') < 2) {
+                            $handledUri .= '/';
+                        }
+
+                        $pos = strpos($handledUri, '/', 1);
+                        $area = Text::camelize(substr($handledUri, 1, $pos - 1));
+                        if (!in_array($area, $this->_areas, true)) {
+                            $area = null;
+                        }
+                    }
                     break;
                 }
+            }
+
+            if ($parts === false) {
+                if ($handledUri !== '/' && $this->_areas) {
+                    if (substr_count($handledUri, '/') < 2) {
+                        $handledUri .= '/';
+                    }
+
+                    $pos = strpos($handledUri, '/', 1);
+                    $area = Text::camelize(substr($handledUri, 1, $pos - 1));
+                    if (in_array($area, $this->_areas, true)) {
+                        $handledUri = substr($handledUri, $pos);
+                    } else {
+                        $area = null;
+                    }
+                }
+
+                $handledUri = rtrim($handledUri, '/') ?: '/';
+
+                $parts = $this->_default_route->match($handledUri, $method);
             }
         }
 
