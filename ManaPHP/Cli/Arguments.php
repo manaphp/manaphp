@@ -133,6 +133,11 @@ class Arguments extends Component implements ArgumentsInterface
         foreach (preg_split('#[|,:]+#', $name) as $o) {
             if (isset($this->_options[$o])) {
                 return $this->_options[$o];
+            } elseif (strpos($o, '_') !== false) {
+                $o = strtr($o, '_', '-');
+                if (isset($this->_options[$o])) {
+                    return $this->_options[$o];
+                }
             }
         }
 
@@ -158,6 +163,11 @@ class Arguments extends Component implements ArgumentsInterface
         foreach (preg_split('#[|,:]+#', $name) as $p) {
             if (isset($this->_options[$p])) {
                 return true;
+            } elseif (strpos($p, '_') !== false) {
+                $p = strtr($p, '_', '-');
+                if (isset($this->_options[$p])) {
+                    return true;
+                }
             }
         }
 
