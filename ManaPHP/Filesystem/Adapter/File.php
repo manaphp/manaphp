@@ -130,6 +130,10 @@ class File extends Component implements FilesystemInterface
             throw new RuntimeException(['move `:src` to `:dst` failed: file exists already', 'src' => $src, 'dst' => $dst]);
         }
 
+        if (!is_dir($dir = dirname($dst))) {
+            $this->_dirCreate($dir);
+        }
+
         if (!rename($src, $dst)) {
             throw new RuntimeException(['move `:src` to `:dst` failed: :last_error_message', 'src' => $src, 'dst' => $dst]);
         }
@@ -251,6 +255,10 @@ class File extends Component implements FilesystemInterface
 
         if (!$overwrite && is_dir($dst)) {
             throw new RuntimeException(['move `:src` to `:dst` failed: destination directory is exists already', 'src' => $src, 'dst' => $dst]);
+        }
+
+        if (!is_dir($dir = dirname($dst))) {
+            $this->_dirCreate($dir);
         }
 
         if (!rename($src, $dst)) {
