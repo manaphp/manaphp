@@ -71,11 +71,6 @@ class Di implements DiInterface
     /**
      * @var array
      */
-    protected $_aliases = [];
-
-    /**
-     * @var array
-     */
     protected $_patterns = [];
 
     /**
@@ -290,10 +285,6 @@ class Di implements DiInterface
      */
     public function remove($name)
     {
-        if (in_array($name, $this->_aliases, true)) {
-            throw new PreconditionException(['`:name` component is being used by alias, please remove alias first', 'name' => $name]);
-        }
-
         unset($this->_definitions[$name], $this->_instances[$name], $this->{$name});
 
         return $this;
