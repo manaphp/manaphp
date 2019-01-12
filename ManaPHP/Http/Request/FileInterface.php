@@ -50,8 +50,9 @@ interface FileInterface
      *
      * @param string $dst
      * @param string $allowedExtensions
+     * @param bool   $overwrite
      */
-    public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip');
+    public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip', $overwrite = false);
 
     /**
      * Returns the file extension

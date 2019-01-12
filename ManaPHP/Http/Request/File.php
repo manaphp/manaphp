@@ -113,10 +113,11 @@ class File extends Component implements FileInterface
      *
      * @param string $dst
      * @param string $allowedExtensions
+     * @param bool   $overwrite
      *
      * @throws \ManaPHP\Http\Request\File\Exception
      */
-    public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip')
+    public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip', $overwrite = false)
     {
         if ($allowedExtensions !== '*') {
             $extension = pathinfo($dst, PATHINFO_EXTENSION);
@@ -130,7 +131,11 @@ class File extends Component implements FileInterface
         }
 
         if ($this->filesystem->fileExists($dst)) {
-            throw new FileException(['`:file` file already exists', 'file' => $dst]);
+            if ($overwrite) {
+                $this->filesystem->fileDelete($dst);
+            } else {
+                throw new FileException(['`:file` file already exists', 'file' => $dst]);
+            }
         }
 
         $this->filesystem->dirCreate(dirname($dst));
