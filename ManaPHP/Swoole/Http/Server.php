@@ -88,7 +88,11 @@ class Server extends Component implements ServerInterface
         $_SERVER += $this->_server;
 
         foreach ($request->header ?: [] as $k => $v) {
-            $_SERVER['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
+            if (in_array($k, ['content-type', 'content-length'], true)) {
+                $_SERVER[strtoupper(strtr($k, '-', '_'))] = $v;
+            } else {
+                $_SERVER['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
+            }
         }
 
         $_SERVER['WORKER_ID'] = $this->_swoole->worker_pid;
