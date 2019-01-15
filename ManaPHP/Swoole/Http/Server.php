@@ -105,6 +105,22 @@ class Server extends Component implements ServerInterface
 
         $_COOKIE = $request->cookie ?: [];
         $_FILES = $request->files ?: [];
+
+        if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+            $data = $request->rawContent();
+
+            if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                $_POST = json_decode($data, true, 32);
+            } else {
+                parse_str($data, $_POST);
+            }
+
+            if (is_array($_POST)) {
+                $_REQUEST = array_merge($_GET, $_POST);
+            } else {
+                $_POST = [];
+            }
+        }
     }
 
     /**
