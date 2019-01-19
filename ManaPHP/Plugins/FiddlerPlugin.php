@@ -84,7 +84,7 @@ class FiddlerPlugin extends Plugin
         if ($this->enabled()) {
             $data = [
                 'category' => $log->category,
-                'location' => $log->location,
+                'location' => "$log->file:$log->line",
                 'level' => $log->level,
                 'message' => $log->message,
             ];

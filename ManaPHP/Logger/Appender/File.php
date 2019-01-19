@@ -66,7 +66,7 @@ class File extends Component implements AppenderInterface
         $replaced[':request_id'] = $log->request_id ?: '-';
         $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
         $replaced[':category'] = $log->category;
-        $replaced[':location'] = $log->location;
+        $replaced[':location'] = "$log->file:$log->line";
         $replaced[':level'] = strtoupper($log->level);
         $replaced[':message'] = $log->message . PHP_EOL;
 

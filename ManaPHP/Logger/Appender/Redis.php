@@ -47,7 +47,7 @@ class Redis extends Component implements AppenderInterface
             'host' => $log->host,
             'category' => $log->category,
             'level' => $log->level,
-            'location' => $log->location,
+            'location' => "$log->file:$log->line",
             'message' => $log->message];
 
         $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();

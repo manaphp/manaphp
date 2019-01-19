@@ -5,6 +5,7 @@ namespace Tests;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Logger;
 use ManaPHP\Logger\Appender\Memory;
+use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\City;
 
@@ -17,7 +18,7 @@ class LoggerTest extends TestCase
 
     public function setUp()
     {
-        $this->_di = new FactoryDefault();
+        $this->_di = new Factory();
     }
 
     public function test_construct()

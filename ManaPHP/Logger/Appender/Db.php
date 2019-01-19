@@ -55,14 +55,6 @@ class Db extends Component implements AppenderInterface
          */
         $db = $this->_di->getShared($this->_db);
 
-        if ($pos = strpos($log->location, ':')) {
-            $file = substr($log->location, 0, $pos);
-            $line = substr($log->location, $pos + 1);
-        } else {
-            $file = '';
-            $line = '';
-        }
-
         $level = $this->logger->getLevel();
         $this->logger->setLevel(Logger::LEVEL_FATAL);
         try {
@@ -72,8 +64,8 @@ class Db extends Component implements AppenderInterface
                 'request_id' => $log->request_id,
                 'category' => $log->category,
                 'level' => $log->level,
-                'file' => $file,
-                'line' => $line,
+                'file' => $log->file,
+                'line' => $log->line,
                 'message' => $log->message,
                 'timestamp' => $log->timestamp - (int)$log->timestamp,
                 'created_time' => (int)$log->timestamp]);

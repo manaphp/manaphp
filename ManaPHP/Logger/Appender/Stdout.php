@@ -41,7 +41,7 @@ class Stdout extends Component implements AppenderInterface
         $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
         $replaced[':level'] = $log->level;
         $replaced[':category'] = $log->category;
-        $replaced[':location'] = $log->location;
+        $replaced[':location'] = "$log->file:$log->line";
         $replaced[':message'] = $log->message;
 
         echo strtr($this->_format, $replaced), PHP_EOL;

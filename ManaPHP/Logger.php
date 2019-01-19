@@ -118,23 +118,18 @@ class Logger extends Component implements LoggerInterface
     /**
      * @param array $traces
      *
-     * @return string
+     * @return array
      */
     protected function _getLocation($traces)
     {
         for ($i = count($traces) - 1; $i >= 0; $i--) {
             $trace = $traces[$i];
             if ($trace['function'] === '__call' || in_array($trace['function'], $this->_levels, true)) {
-                break;
+                return $trace;
             }
         }
 
-        if (isset($trace['file'], $trace['line'])) {
-            /** @noinspection PhpUndefinedVariableInspection */
-            return basename($trace['file']) . ':' . $trace['line'];
-        }
-
-        return '';
+        return [];
     }
 
     /**
@@ -392,7 +387,14 @@ class Logger extends Component implements LoggerInterface
         $log->request_id = isset($_SERVER['HTTP_X_REQUEST_ID']) ? preg_replace('#[^a-zA-Z\d-_\.]#', 'X', $_SERVER['HTTP_X_REQUEST_ID']) : '';
         /** @noinspection NestedTernaryOperatorInspection */
         $log->category = $category ?: $this->_inferCategory($traces);
-        $log->location = $this->_getLocation($traces);
+        $location = $this->_getLocation($traces);
+        if (isset($location['file'])) {
+            $log->file = basename($location['file']);
+            $log->line = $location['line'];
+        } else {
+            $log->file = '';
+            $log->line = 0;
+        }
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = microtime(true);
 

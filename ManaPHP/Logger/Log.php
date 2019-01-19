@@ -8,7 +8,8 @@ class Log
     public $client_ip;
     public $request_id;
     public $category;
-    public $location;
+    public $file;
+    public $line;
     public $level;
     public $message;
 }
