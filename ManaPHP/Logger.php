@@ -377,24 +377,31 @@ class Logger extends Component implements LoggerInterface
             $message = $message[0];
         }
 
-        $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
-
         $log = new Log();
 
         $log->host = gethostname();
         $log->client_ip = isset($_SERVER['DOCUMENT_ROOT']) ? $this->request->getClientIp() : '';
         $log->level = $this->_levels[$level];
         $log->request_id = isset($_SERVER['HTTP_X_REQUEST_ID']) ? preg_replace('#[^a-zA-Z\d-_\.]#', 'X', $_SERVER['HTTP_X_REQUEST_ID']) : '';
-        /** @noinspection NestedTernaryOperatorInspection */
-        $log->category = $category ?: $this->_inferCategory($traces);
-        $location = $this->_getLocation($traces);
-        if (isset($location['file'])) {
-            $log->file = basename($location['file']);
-            $log->line = $location['line'];
+
+        if ($message instanceof \Exception) {
+            $log->category = $category ?: ('exception.' . str_replace('\\', '.', get_class($message)));
+            $log->file = basename($message->getFile());
+            $log->line = $message->getLine();
         } else {
-            $log->file = '';
-            $log->line = 0;
+            $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
+            /** @noinspection NestedTernaryOperatorInspection */
+            $log->category = $category ?: $this->_inferCategory($traces);
+            $location = $this->_getLocation($traces);
+            if (isset($location['file'])) {
+                $log->file = basename($location['file']);
+                $log->line = $location['line'];
+            } else {
+                $log->file = '';
+                $log->line = 0;
+            }
         }
+
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = microtime(true);
 
