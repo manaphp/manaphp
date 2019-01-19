@@ -387,7 +387,7 @@ class Logger extends Component implements LoggerInterface
         $log = new Log();
 
         $log->host = gethostname();
-        $log->client_ip = isset($_SERVER['SERVER_ADDR']) ? $this->request->getClientIp() : '';
+        $log->client_ip = isset($_SERVER['DOCUMENT_ROOT']) ? $this->request->getClientIp() : '';
         $log->level = $this->_levels[$level];
         $log->request_id = isset($_SERVER['HTTP_X_REQUEST_ID']) ? preg_replace('#[^a-zA-Z\d-_\.]#', 'X', $_SERVER['HTTP_X_REQUEST_ID']) : '';
         /** @noinspection NestedTernaryOperatorInspection */
