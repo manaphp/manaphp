@@ -106,6 +106,16 @@ class Easy extends Component implements EasyInterface
         }
     }
 
+    public function saveInstanceState()
+    {
+        return true;
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_lastResponse = null;
+    }
+
     /**
      * @param string $proxy
      * @param bool   $peek
