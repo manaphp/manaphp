@@ -53,6 +53,19 @@ class Renderer extends Component implements RendererInterface
         $this->loader->registerFiles('@manaphp/Renderer/helpers.php');
     }
 
+    public function saveInstanceState()
+    {
+        return true;
+    }
+
+
+    public function restoreInstanceState($data)
+    {
+        $this->_sections = [];
+        $this->_stack = [];
+        $this->_templates = [];
+    }
+
     /**
      * Checks whether $template exists on registered extensions and render it
      *
