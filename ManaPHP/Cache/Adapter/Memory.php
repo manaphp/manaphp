@@ -15,6 +15,16 @@ class Memory extends Cache
      */
     protected $_data = [];
 
+    public function saveInstanceState()
+    {
+        return true;
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_data = [];
+    }
+
     /**
      * @param string $key
      *
