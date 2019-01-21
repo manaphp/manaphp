@@ -16,6 +16,16 @@ class Memory extends Component implements AppenderInterface
      */
     protected $_logs = [];
 
+    public function saveInstanceState()
+    {
+        return true;
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_logs = [];
+    }
+
     /**
      * @param \ManaPHP\Logger\Log $log
      *
