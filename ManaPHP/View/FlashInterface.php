@@ -9,7 +9,6 @@ namespace ManaPHP\View;
  */
 interface FlashInterface
 {
-
     /**
      * Shows a HTML error message
      *

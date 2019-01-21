@@ -18,6 +18,11 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
     protected $_cssClasses;
 
     /**
+     * @var string[]
+     */
+    protected $_messages = [];
+
+    /**
      * \ManaPHP\Flash constructor
      *
      * @param array $cssClasses
@@ -30,6 +35,16 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
             'success' => 'flash-success',
             'warning' => 'flash-warning'
         ];
+    }
+
+    public function saveInstanceState()
+    {
+        return true;
+    }
+
+    public function restoreInstanceState($data)
+    {
+        $this->_messages = [];
     }
 
     /**
@@ -105,6 +120,12 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
      */
     public function output($remove = true)
     {
-        $this->_output($remove);
+        foreach ($this->_messages as $message) {
+            echo $message;
+        }
+
+        if ($remove) {
+            $this->_messages = [];
+        }
     }
 }
