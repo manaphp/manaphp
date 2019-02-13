@@ -114,7 +114,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
     {
         /** @noinspection JSUnresolvedVariable */
         /** @noinspection BadExpressionStatementJS */
-        $html = (string)preg_replace('#<script.*>.*</script>#isU', '', $html);
+        $html = (string)preg_replace('@<script.*>.*</script>@isU', '', $html);
         if ($html === '') {
             return '';
         }
