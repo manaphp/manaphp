@@ -120,6 +120,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
         }
 
         if (strpos($html, '<body>') === false) {
+            /** @noinspection HtmlRequiredLangAttribute */
             $html = '<!doctype html><html><body>' . $html . '</body></html>';
         }
 

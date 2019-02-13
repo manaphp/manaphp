@@ -78,6 +78,6 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
             }
         }
         $status = $this->response->getStatus();
-        return "<html><title>$status</title><body>$status</body></html>";
+        return "<html lang='en'><title>$status</title><body>$status</body></html>";
     }
 }
