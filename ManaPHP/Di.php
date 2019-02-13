@@ -7,7 +7,6 @@ use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\UnexpectedValueException;
 
 /**
