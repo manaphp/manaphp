@@ -204,7 +204,6 @@ class Application extends Component implements ApplicationInterface
     /**
      * @param array $components
      *
-     * @throws \ManaPHP\Exception\PreconditionException
      * @throws \ManaPHP\Exception\RuntimeException
      * @throws \ManaPHP\Exception\UnexpectedValueException
      */
