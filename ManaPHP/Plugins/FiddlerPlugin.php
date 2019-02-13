@@ -31,11 +31,16 @@ class FiddlerPlugin extends Plugin
     public function init()
     {
         $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
-        $this->eventsManager->attachEvent('app:beginRequest', [$this, 'checkEnabled']);
+
+        if (empty($_SERVER['DOCUMENT_ROOT'])) {
+            $this->_header = ['ip' => '-', 'url' => '-', 'uuid' => '-'];
+            $this->_channel = 'manaphp:fiddler:cli:' . $this->configure->id;
+        } else {
+            $this->eventsManager->attachEvent('app:beginRequest', [$this, 'checkEnabled']);
+        }
+
         $this->eventsManager->attachEvent('app:beginRequest', [$this, 'onBeginRequest']);
         $this->eventsManager->attachEvent('response:afterSend', [$this, 'onAfterSendResponse']);
-        $this->_header = ['ip' => '-', 'url' => '-', 'uuid' => '-'];
-        $this->_channel = 'manaphp:fiddler:cli:' . $this->configure->id;
     }
 
     public function checkEnabled()
