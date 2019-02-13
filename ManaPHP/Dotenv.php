@@ -115,7 +115,7 @@ class Dotenv extends Component implements DotenvInterface
                     throw new InvalidValueException(['the value of `:key` key is not valid json format array', 'key' => $key]);
                 }
             } else {
-                preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
+                return preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
             }
         } elseif (is_int($default)) {
             return (int)$value;
