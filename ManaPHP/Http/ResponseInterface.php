@@ -98,6 +98,14 @@ interface ResponseInterface
     public function setCacheControl($control);
 
     /**
+     * @param int    $age
+     * @param string $extra
+     *
+     * @return static
+     */
+    public function setMaxAge($age, $extra = null);
+
+    /**
      * Sets the response content-type mime, optionally the charset
      *
      * @param string $contentType

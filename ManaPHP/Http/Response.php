@@ -277,6 +277,20 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * @param int    $age
+     * @param string $extra
+     *
+     * @return static
+     */
+    public function setMaxAge($age, $extra = null)
+    {
+        $this->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
+        $this->setExpires(time() + $age);
+
+        return $this;
+    }
+
+    /**
      * Sets the response content-type mime, optionally the charset
      *<code>
      *    $response->setContentType('application/pdf');
