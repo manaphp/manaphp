@@ -91,6 +91,13 @@ interface ResponseInterface
     public function setEtag($etag);
 
     /**
+     * @param string $control
+     *
+     * @return static
+     */
+    public function setCacheControl($control);
+
+    /**
      * Sets the response content-type mime, optionally the charset
      *
      * @param string $contentType

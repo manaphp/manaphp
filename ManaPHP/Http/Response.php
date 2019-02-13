@@ -267,6 +267,16 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * @param string $control
+     *
+     * @return static
+     */
+    public function setCacheControl($control)
+    {
+        return $this->setHeader('Cache-Control', $control);
+    }
+
+    /**
      * Sets the response content-type mime, optionally the charset
      *<code>
      *    $response->setContentType('application/pdf');
