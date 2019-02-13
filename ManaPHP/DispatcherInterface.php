@@ -103,11 +103,4 @@ interface DispatcherInterface
      * @return void
      */
     public function dispatch($router);
-
-    /**
-     * @param string $glue
-     *
-     * @return string
-     */
-    public function getMCA($glue = '/');
 }
