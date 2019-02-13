@@ -232,7 +232,6 @@ class Response extends Component implements ResponseInterface
         $date = new \DateTime('now', new \DateTimeZone('UTC'));
         $date->setTimestamp($timestamp);
 
-        $date->setTimezone(new \DateTimeZone('UTC'));
         $this->setHeader('Expires', $date->format('D, d M Y H:i:s') . ' GMT');
 
         return $this;
