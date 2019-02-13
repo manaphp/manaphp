@@ -38,8 +38,12 @@ abstract class Plugin extends Component implements PluginInterface, LogCategoriz
         $rc = new \ReflectionClass($called_class);
 
         foreach ($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            if (!$method->isStatic() && $method->getDeclaringClass()->getName() === $called_class) {
-               $this->eventsManager->attachEvent('app:beginRequest', [$this, $method->name]);
+            if (!$method->isStatic()
+                && $method->getDeclaringClass()->getName() === $called_class
+                && $method->name[0] !== '_'
+                && $method->name !== 'init'
+            ) {
+                $this->eventsManager->attachEvent('app:beginRequest', [$this, $method->name]);
             }
         }
     }
