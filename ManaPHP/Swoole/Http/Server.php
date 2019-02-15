@@ -98,6 +98,9 @@ class Server extends Component implements ServerInterface
         $_SERVER['WORKER_ID'] = $this->_swoole->worker_pid;
 
         $_GET = $request->get ?: [];
+        $request_uri = $_SERVER['REQUEST_URI'];
+        $_GET['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
+
         $_POST = $request->post ?: [];
 
         /** @noinspection AdditionOperationOnArraysInspection */

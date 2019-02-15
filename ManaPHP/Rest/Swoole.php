@@ -56,9 +56,6 @@ class Swoole extends \ManaPHP\Application
     public function handle()
     {
         try {
-            $request_uri = $_SERVER['REQUEST_URI'];
-            $_GET['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
-
             $this->eventsManager->fireEvent('app:beginRequest', $this);
 
             $this->authenticate();
