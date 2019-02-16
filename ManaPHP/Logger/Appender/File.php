@@ -70,11 +70,11 @@ class File extends Component implements AppenderInterface
     }
 
     /**
-     * @param \ManaPHP\Logger\Log $log
+     * @param string $str
      *
      * @return void
      */
-    public function append($log)
+    protected function _write($str)
     {
         $file = $this->alias->resolve($this->_file);
         if (!is_file($file)) {
@@ -86,9 +86,19 @@ class File extends Component implements AppenderInterface
             }
         }
 
-        if (file_put_contents($file, $this->_format($log), FILE_APPEND | LOCK_EX) === false) {
+        if (file_put_contents($file, $str, FILE_APPEND | LOCK_EX) === false) {
             /** @noinspection ForgottenDebugOutputInspection */
             trigger_error('Write log to file failed: ' . $file, E_USER_WARNING);
         }
+    }
+
+    /**
+     * @param \ManaPHP\Logger\Log $log
+     *
+     * @return void
+     */
+    public function append($log)
+    {
+        $this->_write($this->_format($log));
     }
 }
