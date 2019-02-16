@@ -45,20 +45,10 @@ class File extends Component implements AppenderInterface
     /**
      * @param \ManaPHP\Logger\Log $log
      *
-     * @return void
+     * @return string
      */
-    public function append($log)
+    protected function _format($log)
     {
-        $file = $this->alias->resolve($this->_file);
-        if (!is_file($file)) {
-            $dir = dirname($file);
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                /** @noinspection ForgottenDebugOutputInspection */
-                trigger_error("Unable to create $dir directory: " . error_get_last()['message'], E_USER_WARNING);
-            }
-        }
-
         $replaced = [];
 
         $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
@@ -76,7 +66,27 @@ class File extends Component implements AppenderInterface
             $replaced[':message'] = $log->message . PHP_EOL;
         }
 
-        if (file_put_contents($file, strtr($this->_format, $replaced), FILE_APPEND | LOCK_EX) === false) {
+        return strtr($this->_format, $replaced);
+    }
+
+    /**
+     * @param \ManaPHP\Logger\Log $log
+     *
+     * @return void
+     */
+    public function append($log)
+    {
+        $file = $this->alias->resolve($this->_file);
+        if (!is_file($file)) {
+            $dir = dirname($file);
+            /** @noinspection NotOptimalIfConditionsInspection */
+            if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
+                /** @noinspection ForgottenDebugOutputInspection */
+                trigger_error("Unable to create $dir directory: " . error_get_last()['message'], E_USER_WARNING);
+            }
+        }
+
+        if (file_put_contents($file, $this->_format($log), FILE_APPEND | LOCK_EX) === false) {
             /** @noinspection ForgottenDebugOutputInspection */
             trigger_error('Write log to file failed: ' . $file, E_USER_WARNING);
         }
