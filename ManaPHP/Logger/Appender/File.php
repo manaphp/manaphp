@@ -68,7 +68,13 @@ class File extends Component implements AppenderInterface
         $replaced[':category'] = $log->category;
         $replaced[':location'] = "$log->file:$log->line";
         $replaced[':level'] = strtoupper($log->level);
-        $replaced[':message'] = $log->message . PHP_EOL;
+        if (strpos($log->category, 'exception.') === 0) {
+            $replaced[':message'] = '';
+            /** @noinspection SuspiciousAssignmentsInspection */
+            $replaced[':message'] = preg_replace('#[\\r\\n]+#', '\0' . strtr($this->_format, $replaced), $log->message) . PHP_EOL;
+        } else {
+            $replaced[':message'] = $log->message . PHP_EOL;
+        }
 
         if (file_put_contents($file, strtr($this->_format, $replaced), FILE_APPEND | LOCK_EX) === false) {
             /** @noinspection ForgottenDebugOutputInspection */
