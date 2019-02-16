@@ -60,10 +60,10 @@ class File extends Component implements AppenderInterface
     {
         if ($this->_lazy) {
             $this->_write(implode($this->_lazy, PHP_EOL));
+        }
 
-            if ($this->_lazy !== null) {
-                $this->_lazy = [];
-            }
+        if ($this->_lazy !== null) {
+            $this->_lazy = [];
         }
     }
 
