@@ -23,6 +23,11 @@ class File extends Component implements AppenderInterface
     protected $_format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
     /**
+     * @var array
+     */
+    protected $_lazy;
+
+    /**
      * \ManaPHP\Logger\Adapter\File constructor.
      *
      * @param string|array $options
@@ -39,6 +44,26 @@ class File extends Component implements AppenderInterface
 
         if (isset($options['format'])) {
             $this->_format = $options['format'];
+        }
+
+        if (!empty($_SERVER['DOCUMENT_ROOT']) && !empty($options['lazy'])) {
+            $this->_lazy = [];
+        }
+    }
+
+    public function saveInstanceState()
+    {
+        return true;
+    }
+
+    public function restoreInstanceState($data)
+    {
+        if ($this->_lazy) {
+            $this->_write(implode($this->_lazy, PHP_EOL));
+
+            if ($this->_lazy !== null) {
+                $this->_lazy = [];
+            }
         }
     }
 
@@ -99,6 +124,17 @@ class File extends Component implements AppenderInterface
      */
     public function append($log)
     {
-        $this->_write($this->_format($log));
+        if ($this->_lazy === null) {
+            $this->_write($this->_format($log));
+        } else {
+            $this->_lazy[] = $this->_format($log);
+        }
+    }
+
+    public function __destruct()
+    {
+        if ($this->_lazy) {
+            $this->_write(implode($this->_lazy, PHP_EOL));
+        }
     }
 }
