@@ -80,24 +80,8 @@ class BashCompletionController extends Controller
         }
 
         $arguments = [];
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $docs = (new \ReflectionMethod($controllerClassName, $command))->getDocComment();
-        $lines = explode("\n", $docs);
-        foreach ($lines as $line) {
-            $line = trim($line, "/\r\n\\ \t*");
-            $parts = explode(' ', $line, 2);
-            if (count($parts) !== 2) {
-                continue;
-            }
-
-            $tag = $parts[0];
-            if ($tag === '@CliParam') {
-                $parts = explode(' ', trim($parts[1]), 2);
-                foreach (explode(',', $parts[0]) as $item) {
-                    $arguments[] = trim($item);
-                }
-            }
+        foreach ((new \ReflectionMethod($controllerClassName, $command))->getParameters() as $parameter) {
+            $arguments[] = '--' . strtr($parameter->name, '_', '-');
         }
 
         return $arguments;
@@ -129,7 +113,6 @@ class BashCompletionController extends Controller
      */
     protected function _getArgumentValues($controller, $command, $argumentName)
     {
-
         $controllerClassName = $this->_getControllerClassName($controller);
         if (!class_exists($controllerClassName)) {
             return [];
@@ -174,7 +157,7 @@ class BashCompletionController extends Controller
      */
     public function completeCommand()
     {
-        $arguments = $this->arguments->getValues();
+        $arguments = array_slice($GLOBALS['argv'], 3);
         $position = (int)$arguments[0];
 
         $arguments = array_slice($arguments, 1);
@@ -189,6 +172,9 @@ class BashCompletionController extends Controller
         $command = null;
         if ($count > 2) {
             $command = $arguments[2];
+            if ($command !== '' && $command[0] === '-') {
+                $command = 'default';
+            }
         }
 
         $previous = $position > 0 ? $arguments[$position - 1] : null;
@@ -197,10 +183,10 @@ class BashCompletionController extends Controller
 
         if ($position === 1) {
             $words = $this->_getControllers();
+        } elseif ($current !== '' && $current[0] === '-') {
+            $words = $this->_getArgumentNames($controller, $command);
         } elseif ($position === 2) {
             $words = $this->_getCommands($controller);
-        } elseif (($position === 3 && $current === '') || ($current !== '' && $current[0] === '-')) {
-            $words = $this->_getArgumentNames($controller, $command);
         } else {
             $words = $this->_getArgumentValues($controller, $command, $previous);
         }
