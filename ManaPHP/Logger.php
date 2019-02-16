@@ -385,7 +385,7 @@ class Logger extends Component implements LoggerInterface
         $log->request_id = isset($_SERVER['HTTP_X_REQUEST_ID']) ? preg_replace('#[^a-zA-Z\d-_\.]#', 'X', $_SERVER['HTTP_X_REQUEST_ID']) : '';
 
         if ($message instanceof \Exception) {
-            $log->category = $category ?: ('exception.' . str_replace('\\', '.', get_class($message)));
+            $log->category = $category ?: 'exception';
             $log->file = basename($message->getFile());
             $log->line = $message->getLine();
         } else {
