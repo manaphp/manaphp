@@ -1,7 +1,6 @@
 AddDefaultCharset UTF-8
 
 <IfModule mod_rewrite.c>
-    SetEnv MANAPHP_REWRITE_ON ON
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
