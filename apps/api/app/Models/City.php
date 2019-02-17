@@ -3,6 +3,7 @@ namespace App\Models;
 
 /**
  * Class City
+ * @property \App\Models\Country $country
  */
 class City extends \ManaPHP\Db\Model
 {
@@ -10,9 +11,4 @@ class City extends \ManaPHP\Db\Model
     public $city;
     public $country_id;
     public $last_update;
-
-    public function getDisplayField()
-    {
-        return 'city';
-    }
 }

@@ -11,12 +11,4 @@ class City extends \ManaPHP\Db\Model
     public $city;
     public $country_id;
     public $last_update;
-
-    /**
-     * @return \ManaPHP\Model\CriteriaInterface
-     */
-    public function getCountry()
-    {
-        return $this->hasOne(Country::class);
-    }
 }

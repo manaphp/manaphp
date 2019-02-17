@@ -3,6 +3,7 @@ namespace App\Models;
 
 /**
  * Class Customer
+ * @property-read \App\Models\Address $address
  */
 class Customer extends \ManaPHP\Db\Model
 {

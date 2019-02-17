@@ -3,6 +3,7 @@ namespace App\Models;
 
 /**
  * Class Country
+ * @property-read \App\Models\City $cities
  */
 class Country extends \ManaPHP\Db\Model
 {
