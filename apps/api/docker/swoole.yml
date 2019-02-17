@@ -1,12 +1,14 @@
 version: "2"
 services:
-  swoole:
+  api_swoole:
     image: manaphp/php70:1.0
     volumes: 
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/api/data:/var/www/html/data
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/api/tmp:/var/www/html/tmp
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
     command: php /var/www/html/swoole.php
     ports:
-      - 9501:9501
+      - ${WEB_PORT}:9501
     restart: always
