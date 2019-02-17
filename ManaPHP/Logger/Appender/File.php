@@ -46,8 +46,10 @@ class File extends Component implements AppenderInterface
             $this->_format = $options['format'];
         }
 
-        if (!empty($_SERVER['DOCUMENT_ROOT']) && !empty($options['lazy'])) {
-            $this->_lazy = [];
+        if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+            if (!isset($options['lazy']) || $options['lazy']) {
+                $this->_lazy = [];
+            }
         }
     }
 
