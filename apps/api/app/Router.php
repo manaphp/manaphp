@@ -13,6 +13,5 @@ class Router extends \ManaPHP\Router
         $this->add('/time/current', [TimeController::class, 'current']);
         $this->add('/time/timestamp', [TimeController::class, 'timestamp']);
         $this->addRest('/customers', CustomerController::class);
-        $this->addOptions();
     }
 }
