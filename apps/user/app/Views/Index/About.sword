@@ -23,13 +23,13 @@
 
 @js
 <script>
-        //test
+    //test
 </script>
 @endjs
 
 <div class="copyright"> @widget('Copyright')</div>
 <div class="mana_container">
-    @if(!isset($di->configure->params['manaphp_brand_show']) || $di->configure->params['manaphp_brand_show'])
+    @if(param_get('manaphp_brand_show', true))
         <h1>ManaPHP <sub>v{{ $version }}</sub></h1>
         {{ $current_time }}
         {{ $di->router->getController() . ':' . $di->router->getAction() }}
