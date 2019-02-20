@@ -61,7 +61,7 @@ class File extends Component implements AppenderInterface
     public function restoreInstanceState($data)
     {
         if ($this->_lazy) {
-            $this->_write(implode($this->_lazy, PHP_EOL));
+            $this->_write(implode($this->_lazy, ''));
 
             $this->_lazy = [];
         }
@@ -134,7 +134,7 @@ class File extends Component implements AppenderInterface
     public function __destruct()
     {
         if ($this->_lazy) {
-            $this->_write(implode($this->_lazy, PHP_EOL));
+            $this->_write(implode($this->_lazy, ''));
         }
     }
 }
