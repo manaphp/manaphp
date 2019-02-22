@@ -253,8 +253,7 @@ class Easy extends Component implements EasyInterface
             throw new NotSupportedException(['only HTTP requests can be handled: `:url`', 'url' => $url]);
         }
 
-        $request_id = substr(md5(microtime() . mt_rand()), 0, 16);
-        $this->logger->debug([['REQUEST_ID' => $request_id, 'METHOD' => $type, 'URL' => $url, 'OPTIONS' => $options, 'BODY' => $body]], 'httpClient.request');
+        $this->logger->debug([['METHOD' => $type, 'URL' => $url, 'OPTIONS' => $options, 'BODY' => $body]], 'httpClient.request');
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_AUTOREFERER, true);
@@ -416,7 +415,6 @@ class Easy extends Component implements EasyInterface
         $this->fireEvent('curl:afterRequest', compact('type', 'url', 'body', 'options', 'response'));
 
         $this->logger->debug([[
-            'REQUEST_ID' => $request_id,
             'METHOD' => $type,
             'URL' => $response->url,
             'HTTP_CODE' => $response->http_code,
