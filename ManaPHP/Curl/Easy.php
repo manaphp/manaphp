@@ -379,7 +379,7 @@ class Easy extends Component implements EasyInterface
 
         /** @noinspection NotOptimalIfConditionsInspection */
         if (($errno = curl_errno($curl)) === CURLE_SSL_CACERT && !$this->_caFile && DIRECTORY_SEPARATOR === '\\') {
-            $this->logger->warn('ca.pem file is not exists,so https verify is disabled, you should download from https://curl.haxx.se/ca/cacert.pem');
+            $this->logger->warn('ca.pem file is not exists,so https verify is disabled, you should download from https://curl.haxx.se/ca/cacert.pem','httpClient.noCaCert');
             /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             /** @noinspection CurlSslServerSpoofingInspection */
