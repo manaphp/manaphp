@@ -7,14 +7,14 @@ use ManaPHP\Plugin;
 class CorsPlugin extends Plugin
 {
     /**
-     * @var int
-     */
-    protected $_max_age = 86400;
-
-    /**
      * @var bool
      */
     protected $_force = false;
+
+    /**
+     * @var int
+     */
+    protected $_max_age = 86400;
 
     /**
      * @var string
@@ -34,12 +34,12 @@ class CorsPlugin extends Plugin
     public function __construct($options = null)
     {
         if (is_array($options)) {
-            if (isset($options['max_age'])) {
-                $this->_max_age = $options['max_age'];
-            }
-
             if (isset($options['force'])) {
                 $this->_force = (bool)$options['force'];
+            }
+
+            if (isset($options['max_age'])) {
+                $this->_max_age = $options['max_age'];
             }
 
             if (isset($options['origin'])) {
