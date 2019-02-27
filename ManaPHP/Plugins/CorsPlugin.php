@@ -12,6 +12,11 @@ class CorsPlugin extends Plugin
     protected $_max_age = 86400;
 
     /**
+     * @var bool
+     */
+    protected $_force = false;
+
+    /**
      * CorsPlugin constructor.
      *
      * @param array $options
@@ -21,6 +26,10 @@ class CorsPlugin extends Plugin
         if (is_array($options)) {
             if (isset($options['max_age'])) {
                 $this->_max_age = $options['max_age'];
+            }
+
+            if (isset($options['force'])) {
+                $this->_force = (bool)$options['force'];
             }
         }
     }
@@ -32,12 +41,14 @@ class CorsPlugin extends Plugin
 
     public function onBeginRequest()
     {
-        $this->response
-            ->setHeader('Access-Control-Allow-Origin', '*')
-            ->setHeader('Access-Control-Allow-Credentials', 'true')
-            ->setHeader('Access-Control-Allow-Headers', 'Origin, Accept, Authorization, Content-Type, X-Requested-With')
-            ->setHeader('Access-Control-Allow-Methods', 'HEAD,GET,POST,PUT,DELETE')
-            ->setHeader('Access-Control-Max-Age', $this->_max_age);
+        if ($this->_force || isset($_SERVER['HTTP_ORIGIN'])) {
+            $this->response
+                ->setHeader('Access-Control-Allow-Origin', '*')
+                ->setHeader('Access-Control-Allow-Credentials', 'true')
+                ->setHeader('Access-Control-Allow-Headers', 'Origin, Accept, Authorization, Content-Type, X-Requested-With')
+                ->setHeader('Access-Control-Allow-Methods', 'HEAD,GET,POST,PUT,DELETE')
+                ->setHeader('Access-Control-Max-Age', $this->_max_age);
+        }
 
         if ($this->request->isOptions()) {
             throw new AbortException();
