@@ -22,6 +22,11 @@ class CorsPlugin extends Plugin
     protected $_origin = '*';
 
     /**
+     * @var bool
+     */
+    protected $_credentials = true;
+
+    /**
      * CorsPlugin constructor.
      *
      * @param array $options
@@ -40,6 +45,10 @@ class CorsPlugin extends Plugin
             if (isset($options['origin'])) {
                 $this->_origin = $options['origin'];
             }
+
+            if (isset($options['credentials'])) {
+                $this->_credentials = $options['credentials'];
+            }
         }
     }
 
@@ -53,7 +62,7 @@ class CorsPlugin extends Plugin
         if ($this->_force || isset($_SERVER['HTTP_ORIGIN'])) {
             $this->response
                 ->setHeader('Access-Control-Allow-Origin', $this->_origin)
-                ->setHeader('Access-Control-Allow-Credentials', 'true')
+                ->setHeader('Access-Control-Allow-Credentials', $this->_credentials ? 'true' : 'false')
                 ->setHeader('Access-Control-Allow-Headers', 'Origin, Accept, Authorization, Content-Type, X-Requested-With')
                 ->setHeader('Access-Control-Allow-Methods', 'HEAD,GET,POST,PUT,DELETE')
                 ->setHeader('Access-Control-Max-Age', $this->_max_age);
