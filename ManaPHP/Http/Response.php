@@ -650,6 +650,8 @@ class Response extends Component implements ResponseInterface
     {
         if (is_string($fields)) {
             $fields = explode(',', $fields);
+        } elseif ($fields === null && $first = current($rows)) {
+            $fields = array_keys(is_array($first) ? $first : $first->toArray());
         }
 
         if (pathinfo($attachmentName, PATHINFO_EXTENSION) !== 'csv') {
@@ -663,27 +665,11 @@ class Response extends Component implements ResponseInterface
         fprintf($file, "\xEF\xBB\xBF");
 
         if ($fields !== null) {
-            if (strpos($fields[0], 'ID') === 0) {
-                $fields[0] = strtolower($fields[0]);
-            }
-
             fputcsv($file, $fields);
         }
 
         foreach ($rows as $row) {
-            if (is_object($row)) {
-                if (method_exists($row, 'toArray')) {
-                    $data = $row->toArray();
-                } else {
-                    $data = (array)$row;
-                }
-            } elseif (!is_array($row)) {
-                $data = [$row];
-            } else {
-                $data = $row;
-            }
-
-            fputcsv($file, $data);
+            fputcsv($file, is_array($row) ? $row : $row->toArray());
         }
 
         rewind($file);
