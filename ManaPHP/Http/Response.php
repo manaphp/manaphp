@@ -641,12 +641,12 @@ class Response extends Component implements ResponseInterface
 
     /**
      * @param array        $rows
-     * @param string       $attachmentName
+     * @param string       $name
      * @param array|string $fields
      *
      * @return static
      */
-    public function setCsvContent($rows, $attachmentName, $fields = null)
+    public function setCsvContent($rows, $name, $fields = null)
     {
         if (is_string($fields)) {
             $fields = explode(',', $fields);
@@ -654,11 +654,7 @@ class Response extends Component implements ResponseInterface
             $fields = array_keys(is_array($first) ? $first : $first->toArray());
         }
 
-        if (pathinfo($attachmentName, PATHINFO_EXTENSION) !== 'csv') {
-            $attachmentName .= '.csv';
-        }
-
-        $this->setAttachment($attachmentName);
+        $this->setAttachment(pathinfo($name, PATHINFO_EXTENSION) === 'csv' ? $name : $name . '.csv');
 
         $file = fopen('php://temp', 'rb+');
 

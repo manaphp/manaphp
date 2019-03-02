@@ -238,12 +238,12 @@ interface ResponseInterface
 
     /**
      * @param array        $rows
-     * @param string       $attachmentName
+     * @param string       $name
      * @param array|string $fields
      *
      * @return static
      */
-    public function setCsvContent($rows, $attachmentName, $fields = null);
+    public function setCsvContent($rows, $name, $fields = null);
 
     /**
      * @return array
