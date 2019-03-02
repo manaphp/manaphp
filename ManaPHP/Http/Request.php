@@ -520,8 +520,6 @@ class Request extends Component implements RequestInterface
     {
         if ($this->has('access_token')) {
             return $this->get('access_token');
-        } elseif (isset($_SERVER['HTTP_X_ACCESS_TOKEN'])) {
-            return $_SERVER['HTTP_X_ACCESS_TOKEN'];
         } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $parts = explode(' ', $_SERVER['HTTP_AUTHORIZATION'], 2);
             if ($parts[0] === 'Bearer' && count($parts) === 2) {
