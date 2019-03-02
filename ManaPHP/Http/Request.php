@@ -29,7 +29,7 @@ class Request extends Component implements RequestInterface
             }
 
             if (is_array($_POST)) {
-                $_REQUEST = array_merge($_GET, $_POST);
+                $_REQUEST = $_POST + $_GET;
             } else {
                 $_POST = [];
             }
