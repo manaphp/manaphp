@@ -83,45 +83,43 @@ class Server extends Component implements ServerInterface
      */
     public function _prepareGlobals($request)
     {
-        $_SERVER = array_change_key_case($request->server, CASE_UPPER);
-        unset($_SERVER['SERVER_SOFTWARE']);
-        $_SERVER += $this->_server;
+        $_server = array_change_key_case($request->server, CASE_UPPER);
+        unset($_server['SERVER_SOFTWARE']);
+        $_server += $this->_server;
 
         foreach ($request->header ?: [] as $k => $v) {
             if (in_array($k, ['content-type', 'content-length'], true)) {
-                $_SERVER[strtoupper(strtr($k, '-', '_'))] = $v;
+                $_server[strtoupper(strtr($k, '-', '_'))] = $v;
             } else {
-                $_SERVER['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
+                $_server['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
             }
         }
 
-        $_GET = $request->get ?: [];
-        $request_uri = $_SERVER['REQUEST_URI'];
-        $_GET['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
+        $_get = $request->get ?: [];
+        $request_uri = $_server['REQUEST_URI'];
+        $_get['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
 
-        $_POST = $request->post ?: [];
+        $_post = $request->post ?: [];
 
-        /** @noinspection AdditionOperationOnArraysInspection */
-        $_REQUEST = $_POST + $_GET;
-
-        $_COOKIE = $request->cookie ?: [];
-        $_FILES = $request->files ?: [];
-
-        if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+        if (!$_post && isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
             $data = $request->rawContent();
 
-            if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-                $_POST = json_decode($data, true, 32);
+            if (isset($_server['CONTENT_TYPE']) && strpos($_server['CONTENT_TYPE'], 'application/json') !== false) {
+                $_post = json_decode($data, true, 32);
             } else {
-                parse_str($data, $_POST);
+                parse_str($data, $_post);
             }
-
-            if (is_array($_POST)) {
-                $_REQUEST = array_merge($_GET, $_POST);
-            } else {
-                $_POST = [];
+            if (!is_array($_post)) {
+                $_post = [];
             }
         }
+
+        $_GET = $_get;
+        $_POST = $_post;
+        $_REQUEST = $_post + $_get;
+        $_SERVER = $_server;
+        $_COOKIE = $request->cookie ?: [];
+        $_FILES = $request->files ?: [];
     }
 
     /**
