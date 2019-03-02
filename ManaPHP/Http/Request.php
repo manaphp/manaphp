@@ -514,22 +514,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @return bool
-     */
-    public function hasAccessToken()
-    {
-        if ($this->has('access_token')) {
-            return true;
-        } elseif (isset($_SERVER['HTTP_X_ACCESS_TOKEN'])) {
-            return true;
-        } elseif ($this->hasHeader('Authorization')) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * @return string|null
      */
     public function getAccessToken()

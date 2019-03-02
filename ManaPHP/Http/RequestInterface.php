@@ -234,11 +234,6 @@ interface RequestInterface
     public function getUri();
 
     /**
-     * @return bool
-     */
-    public function hasAccessToken();
-
-    /**
      * @return string|null
      */
     public function getAccessToken();
