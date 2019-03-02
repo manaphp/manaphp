@@ -642,16 +642,16 @@ class Response extends Component implements ResponseInterface
     /**
      * @param array        $rows
      * @param string       $name
-     * @param array|string $fields
+     * @param array|string $header
      *
      * @return static
      */
-    public function setCsvContent($rows, $name, $fields = null)
+    public function setCsvContent($rows, $name, $header = null)
     {
-        if (is_string($fields)) {
-            $fields = explode(',', $fields);
-        } elseif ($fields === null && $first = current($rows)) {
-            $fields = array_keys(is_array($first) ? $first : $first->toArray());
+        if (is_string($header)) {
+            $header = explode(',', $header);
+        } elseif ($header === null && $first = current($rows)) {
+            $header = array_keys(is_array($first) ? $first : $first->toArray());
         }
 
         $this->setAttachment(pathinfo($name, PATHINFO_EXTENSION) === 'csv' ? $name : $name . '.csv');
@@ -660,8 +660,8 @@ class Response extends Component implements ResponseInterface
 
         fprintf($file, "\xEF\xBB\xBF");
 
-        if ($fields !== null) {
-            fputcsv($file, $fields);
+        if ($header !== null) {
+            fputcsv($file, $header);
         }
 
         foreach ($rows as $row) {

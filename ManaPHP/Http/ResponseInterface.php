@@ -239,11 +239,11 @@ interface ResponseInterface
     /**
      * @param array        $rows
      * @param string       $name
-     * @param array|string $fields
+     * @param array|string $header
      *
      * @return static
      */
-    public function setCsvContent($rows, $name, $fields = null);
+    public function setCsvContent($rows, $name, $header = null);
 
     /**
      * @return array
