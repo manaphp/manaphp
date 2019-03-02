@@ -35,8 +35,6 @@ interface CookiesInterface
     public function get($name, $default = null);
 
     /**
-     * Check if a cookie is defined in the bag or exists in the $_COOKIE
-     *
      * @param string $name
      *
      * @return bool
@@ -45,7 +43,6 @@ interface CookiesInterface
 
     /**
      * Deletes a cookie by its name
-     * This method does not removes cookies from the $_COOKIE
      *
      * @param string $name
      * @param string $path

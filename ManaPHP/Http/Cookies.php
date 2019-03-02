@@ -155,8 +155,6 @@ class Cookies extends Component implements CookiesInterface
     }
 
     /**
-     * Check if a cookie is defined in the bag or exists in the $_COOKIE
-     *
      * @param string $name
      *
      * @return bool
