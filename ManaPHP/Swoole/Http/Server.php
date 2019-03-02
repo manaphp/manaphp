@@ -105,7 +105,7 @@ class Server extends Component implements ServerInterface
             $data = $request->rawContent();
 
             if (isset($_server['CONTENT_TYPE']) && strpos($_server['CONTENT_TYPE'], 'application/json') !== false) {
-                $_post = json_decode($data, true, 32);
+                $_post = json_decode($data, true, 16);
             } else {
                 parse_str($data, $_post);
             }
