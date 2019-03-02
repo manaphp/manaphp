@@ -318,16 +318,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Gets HTTP raw request body
-     *
-     * @return string
-     */
-    public function getRawBody()
-    {
-        return file_get_contents('php://input');
-    }
-
-    /**
      * @return string
      */
     public function getClientIp()

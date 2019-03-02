@@ -133,13 +133,6 @@ interface RequestInterface
     public function isAjax();
 
     /**
-     * Gets HTTP raw request body
-     *
-     * @return string
-     */
-    public function getRawBody();
-
-    /**
      * @return string
      */
     public function getClientIp();
