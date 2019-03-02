@@ -113,20 +113,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Gets variable from $_GET applying filters if needed
-     * If no parameters are given the $_GET is returned
-     *
-     *<code>
-     *    //Returns value from $_GET["id"] without sanitizing
-     *    $id = $request->getGet("id");
-     *
-     *    //Returns value from $_GET["id"] with sanitizing
-     *    $id = $request->getGet("id", "int");
-     *
-     *    //Returns value from $_GET["id"] with a default value
-     *    $id = $request->getGet("id", null, 150);
-     *</code>
-     *
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default
@@ -139,17 +125,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Gets a variable from the $_POST applying filters if needed
-     * If no parameters are given the $_POST is returned
-     *
-     *<code>
-     *    //Returns value from $_POST["user_email"] without sanitizing
-     *    $userEmail = $request->getPost("user_email");
-     *
-     *    //Returns value from $_POST["user_email"] with sanitizing
-     *    $userEmail = $request->getPost("user_email", "email");
-     *</code>
-     *
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default
@@ -199,20 +174,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Gets variable from $_GET applying filters if needed
-     * If no parameters are given the $_GET is returned
-     *
-     *<code>
-     *    //Returns value from $_GET["id"] without sanitizing
-     *    $id = $request->getQuery("id");
-     *
-     *    //Returns value from $_GET["id"] with sanitizing
-     *    $id = $request->getQuery("id", "int");
-     *
-     *    //Returns value from $_GET["id"] with a default value
-     *    $id = $request->getQuery("id", null, 150);
-     *</code>
-     *
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default
@@ -271,8 +232,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether $_GET has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -283,8 +242,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether $_POST has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -307,8 +264,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether $_GET has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -329,8 +284,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether $_GET has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -338,66 +291,6 @@ class Request extends Component implements RequestInterface
     public function hasServer($name)
     {
         return isset($_SERVER[$name]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $_SERVER['REQUEST_METHOD'];
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasHeader($name)
-    {
-        $name = strtoupper($name);
-        if (strpos($name, '-') !== false) {
-            $name = strtr($name, '-', '_');
-        }
-
-        /** @noinspection UnSafeIsSetOverArrayInspection */
-        return isset($_SERVER[$name]) || isset($_SERVER['HTTP_' . $name]);
-    }
-
-    /**
-     * @param string $name
-     * @param string $default
-     *
-     * @return array|string|null
-     */
-    public function getHeader($name = null, $default = '')
-    {
-        if ($name !== null) {
-            $name = strtoupper($name);
-            if (strpos($name, '-') !== false) {
-                $name = strtr($name, '-', '_');
-            }
-
-            if (isset($_SERVER[$name])) {
-                return $_SERVER[$name];
-            }
-
-            /** @noinspection UnSafeIsSetOverArrayInspection */
-            if (isset($_SERVER['HTTP_' . $name])) {
-                return $_SERVER['HTTP_' . $name];
-            }
-
-            return $default;
-        } else {
-            $headers = [];
-            foreach ($_SERVER as $k => $v) {
-                if (strpos($k, 'HTTP_') === 0) {
-                    $headers[$k] = $v;
-                }
-            }
-
-            return $headers;
-        }
     }
 
     /**
@@ -415,15 +308,7 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @return string
-     */
-    public function getHost()
-    {
-        return $_SERVER['HTTP_HOST'];
-    }
-
-    /**
-     * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
+     * Checks whether request has been made using ajax
      *
      * @return bool
      */
@@ -443,8 +328,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Gets most possible client IPv4 Address. This method search in $_SERVER['REMOTE_ADDR'] and optionally in $_SERVER['HTTP_X_REAL_IP']
-     *
      * @return string
      */
     public function getClientIp()
@@ -467,7 +350,7 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether HTTP method is POST. if $_SERVER['REQUEST_METHOD']=='POST'
+     * Checks whether HTTP method is POST.
      *
      * @return bool
      */
@@ -477,7 +360,7 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether HTTP method is GET. if $_SERVER['REQUEST_METHOD']=='GET'
+     * Checks whether HTTP method is GET.
      *
      * @return bool
      */
@@ -487,7 +370,7 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether HTTP method is PUT. if $_SERVER['REQUEST_METHOD']=='PUT'
+     * Checks whether HTTP method is PUT.
      *
      * @return bool
      */
@@ -497,7 +380,7 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether HTTP method is PATCH. if $_SERVER['REQUEST_METHOD']=='PATCH'
+     * Checks whether HTTP method is PATCH.
      *
      * @return bool
      */
@@ -507,7 +390,7 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether HTTP method is HEAD. if $_SERVER['REQUEST_METHOD']=='HEAD'
+     * Checks whether HTTP method is HEAD.
      *
      * @return bool
      */
@@ -517,7 +400,7 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether HTTP method is DELETE. if $_SERVER['REQUEST_METHOD']=='DELETE'
+     * Checks whether HTTP method is DELETE.
      *
      * @return bool
      */
@@ -527,7 +410,7 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Checks whether HTTP method is OPTIONS. if $_SERVER['REQUEST_METHOD']=='OPTIONS'
+     * Checks whether HTTP method is OPTIONS.
      *
      * @return bool
      */

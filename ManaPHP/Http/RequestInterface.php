@@ -10,8 +10,6 @@ namespace ManaPHP\Http;
 interface RequestInterface
 {
     /**
-     * Gets a variable from the $_REQUEST applying filters if needed
-     *
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default
@@ -21,8 +19,6 @@ interface RequestInterface
     public function get($name = null, $rule = null, $default = '');
 
     /**
-     * Gets variable from $_GET applying filters if needed
-     *
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default
@@ -32,8 +28,6 @@ interface RequestInterface
     public function getGet($name = null, $rule = null, $default = '');
 
     /**
-     * Gets a variable from the $_POST applying filters if needed
-     *
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default
@@ -43,14 +37,6 @@ interface RequestInterface
     public function getPost($name = null, $rule = null, $default = '');
 
     /**
-     * Gets a variable from put request
-     *
-     *<code>
-     *    $userEmail = $request->getPut("user_email");
-     *
-     *    $userEmail = $request->getPut("user_email", "email");
-     *</code>
-     *
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default
@@ -60,8 +46,6 @@ interface RequestInterface
     public function getPut($name = null, $rule = null, $default = '');
 
     /**
-     * Gets variable from $_GET applying filters if needed
-     *
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default
@@ -80,8 +64,6 @@ interface RequestInterface
     public function getInput($name = null, $rule = null, $default = '');
 
     /**
-     * Gets variable from $_SERVER
-     *
      * @param string $name
      * @param mixed  $default
      *
@@ -90,8 +72,6 @@ interface RequestInterface
     public function getServer($name = null, $default = '');
 
     /**
-     * Checks whether $_SERVER has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -99,8 +79,6 @@ interface RequestInterface
     public function has($name);
 
     /**
-     * Checks whether $_GET has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -108,8 +86,6 @@ interface RequestInterface
     public function hasGet($name);
 
     /**
-     * Checks whether $_POST has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -117,8 +93,6 @@ interface RequestInterface
     public function hasPost($name);
 
     /**
-     * Checks whether has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -126,8 +100,6 @@ interface RequestInterface
     public function hasPut($name);
 
     /**
-     * Checks whether $_GET has certain index
-     *
      * @param string $name
      *
      * @return bool
@@ -142,33 +114,11 @@ interface RequestInterface
     public function hasInput($name);
 
     /**
-     * @return string
-     */
-    public function getMethod();
-
-    /**
-     * Checks whether $_GET has certain index
-     *
      * @param string $name
      *
      * @return bool
      */
     public function hasServer($name);
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasHeader($name);
-
-    /**
-     * @param string $name
-     * @param string $default
-     *
-     * @return string|null
-     */
-    public function getHeader($name = null, $default = '');
 
     /**
      * Gets HTTP schema (http/https)
@@ -178,13 +128,6 @@ interface RequestInterface
     public function getScheme();
 
     /**
-     * @return string
-     */
-    public function getHost();
-
-    /**
-     * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
-     *
      * @return bool
      */
     public function isAjax();
@@ -197,21 +140,17 @@ interface RequestInterface
     public function getRawBody();
 
     /**
-     * Gets most possibly client IPv4 Address. This methods search in $_SERVER['REMOTE_ADDR'] and optionally in $_SERVER['HTTP_X_FORWARDED_FOR']
-     *
      * @return string
      */
     public function getClientIp();
 
     /**
-     * Gets HTTP user agent used to made the request
-     *
      * @return string
      */
     public function getUserAgent();
 
     /**
-     * Checks whether HTTP method is POST. if $_SERVER['REQUEST_METHOD']=='POST'
+     * Checks whether HTTP method is POST.
      *
      * @return bool
      */
@@ -219,42 +158,42 @@ interface RequestInterface
 
     /**
      *
-     * Checks whether HTTP method is GET. if $_SERVER['REQUEST_METHOD']=='GET'
+     * Checks whether HTTP method is GET.
      *
      * @return bool
      */
     public function isGet();
 
     /**
-     * Checks whether HTTP method is PUT. if $_SERVER['REQUEST_METHOD']=='PUT'
+     * Checks whether HTTP method is PUT.
      *
      * @return bool
      */
     public function isPut();
 
     /**
-     * Checks whether HTTP method is HEAD. if $_SERVER['REQUEST_METHOD']=='HEAD'
+     * Checks whether HTTP method is HEAD.
      *
      * @return bool
      */
     public function isHead();
 
     /**
-     * Checks whether HTTP method is DELETE. if $_SERVER['REQUEST_METHOD']=='DELETE'
+     * Checks whether HTTP method is DELETE.
      *
      * @return bool
      */
     public function isDelete();
 
     /**
-     * Checks whether HTTP method is OPTIONS. if $_SERVER['REQUEST_METHOD']=='OPTIONS'
+     * Checks whether HTTP method is OPTIONS.
      *
      * @return bool
      */
     public function isOptions();
 
     /**
-     * Checks whether HTTP method is PATCH. if $_SERVER['REQUEST_METHOD']=='PATCH'
+     * Checks whether HTTP method is PATCH.
      *
      * @return bool
      */
