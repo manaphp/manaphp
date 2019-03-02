@@ -378,16 +378,20 @@ class Dispatcher extends Component implements DispatcherInterface
     public function dispatch($router)
     {
         if ($area = $router->getArea()) {
-            $this->_area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
+            $area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
+            $this->_area = $area;
         }
 
         $controller = $router->getController();
-        $this->_controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+        $controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+        $this->_controller = $controller;
 
         $action = $router->getAction();
-        $this->_action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
+        $action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
+        $this->_action = $action;
 
-        $this->_params = $router->getParams();
+        $params = $router->getParams();
+        $this->_params = $params;
 
         if ($this->eventsManager->fireEvent('dispatcher:beforeDispatch', $this) === false) {
             return;
@@ -401,7 +405,8 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $this->_controllerInstance = $controllerInstance;
 
-        $this->_returned_value = $this->invokeAction($controllerInstance, $this->_action, $this->_params);
+        $returned_value = $this->invokeAction($controllerInstance, $action, $params);
+        $this->_returned_value = $returned_value;
 
         $this->eventsManager->fireEvent('dispatcher:afterDispatch', $this);
     }
