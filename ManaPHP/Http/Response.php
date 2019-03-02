@@ -648,17 +648,16 @@ class Response extends Component implements ResponseInterface
      */
     public function setCsvContent($rows, $name, $header = null)
     {
+        $this->setAttachment(pathinfo($name, PATHINFO_EXTENSION) === 'csv' ? $name : $name . '.csv');
+
+        $file = fopen('php://temp', 'rb+');
+        fprintf($file, "\xEF\xBB\xBF");
+
         if (is_string($header)) {
             $header = explode(',', $header);
         } elseif ($header === null && $first = current($rows)) {
             $header = array_keys(is_array($first) ? $first : $first->toArray());
         }
-
-        $this->setAttachment(pathinfo($name, PATHINFO_EXTENSION) === 'csv' ? $name : $name . '.csv');
-
-        $file = fopen('php://temp', 'rb+');
-
-        fprintf($file, "\xEF\xBB\xBF");
 
         if ($header !== null) {
             fputcsv($file, $header);
