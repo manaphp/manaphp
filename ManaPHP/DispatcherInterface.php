@@ -69,19 +69,19 @@ interface DispatcherInterface
     /**
      * Gets a param by its name or numeric index
      *
-     * @param  string|int $param
+     * @param  string|int $name
      * @param  mixed      $default
      *
      * @return mixed
      */
-    public function getParam($param, $default = null);
+    public function getParam($name, $default = null);
 
     /**
-     * @param string $param
+     * @param string $name
      *
      * @return bool
      */
-    public function hasParam($param);
+    public function hasParam($name);
 
     /**
      * @return \ManaPHP\Rest\Controller

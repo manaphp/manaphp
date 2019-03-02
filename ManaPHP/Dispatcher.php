@@ -153,24 +153,25 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * Gets a param by its name or numeric index
      *
-     * @param  string|int $param
+     * @param  string|int $name
      * @param  mixed     default
      *
      * @return mixed
      */
-    public function getParam($param, $default = null)
+    public function getParam($name, $default = null)
     {
-        return isset($this->_params[$param]) ? $this->_params[$param] : $default;
+        $params = $this->_params;
+        return isset($params[$name]) ? $params[$name] : $default;
     }
 
     /**
-     * @param string $param
+     * @param string $name
      *
      * @return bool
      */
-    public function hasParam($param)
+    public function hasParam($name)
     {
-        return isset($this->_params[$param]);
+        return isset($this->_params[$name]);
     }
 
     /**
