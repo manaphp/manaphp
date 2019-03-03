@@ -12,6 +12,7 @@ use ManaPHP\Http\Filter\Exception as FilterException;
  *
  * @package response
  *
+ * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\CookiesInterface $cookies
  * @property-read \ManaPHP\UrlInterface          $url
  * @property-read \ManaPHP\RouterInterface       $router
@@ -623,8 +624,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setAttachment($attachmentName)
     {
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        if ($userAgent = $this->request->getServer('HTTP_USER_AGENT')) {
             if (strpos($userAgent, 'Trident') !== false || strpos($userAgent, 'MSIE') !== false) {
                 $attachmentName = urlencode($attachmentName);
             }
