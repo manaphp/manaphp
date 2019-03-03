@@ -59,7 +59,7 @@ class CorsPlugin extends Plugin
 
     public function onBeginRequest()
     {
-        if ($this->_force || isset($_SERVER['HTTP_ORIGIN'])) {
+        if ($this->_force || $this->request->hasServer('HTTP_ORIGIN')) {
             $this->response
                 ->setHeader('Access-Control-Allow-Origin', $this->_origin)
                 ->setHeader('Access-Control-Allow-Credentials', $this->_credentials ? 'true' : 'false')
