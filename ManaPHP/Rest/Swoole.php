@@ -33,11 +33,11 @@ class Swoole extends \ManaPHP\Application
         $swoole = $this->swooleHttpServer;
         $response = $this->response;
 
-        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !$response->hasHeader('X-Request-Id')) {
-            $response->setHeader('X-Request-Id', $_SERVER['HTTP_X_REQUEST_ID']);
+        if (($request_id = $this->request->getServer('HTTP_X_REQUEST_ID')) && !$response->hasHeader('X-Request-Id')) {
+            $response->setHeader('X-Request-Id', $request_id);
         }
 
-        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
+        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')));
 
         $this->eventsManager->fireEvent('response:beforeSend', $response);
 
