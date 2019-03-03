@@ -172,8 +172,8 @@ class DebuggerPlugin extends Plugin
 
     public function onBeginRequest()
     {
-        if (isset($_GET['_debugger']) && preg_match('#^[a-zA-Z0-9_/]+\.html$#', $_GET['_debugger'])) {
-            $file = '@data/debugger' . $_GET['_debugger'];
+        if (preg_match('#^[a-zA-Z0-9_/]+\.html$#', $debugger = $this->request->getGet('_debugger'))) {
+            $file = '@data/debugger' . $debugger;
             if ($this->filesystem->fileExists($file)) {
                 $this->response->setContent($this->filesystem->fileGet($file));
                 throw new AbortException();
@@ -200,14 +200,14 @@ class DebuggerPlugin extends Plugin
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
         $r = [
             'mvc' => $this->router->getController() . '::' . $this->router->getAction(),
-            'request_method' => $_SERVER['REQUEST_METHOD'],
+            'request_method' => $this->request->getServer('REQUEST_METHOD'),
             'request_url' => $this->request->getUrl(),
             'query_count' => $this->_sql_count,
-            'execute_time' => round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 4),
+            'execute_time' => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 4),
             'memory_usage' => (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k',
             'system_time' => date('Y-m-d H:i:s'),
-            'server_ip' => isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '',
-            'client_ip' => $_SERVER['REMOTE_ADDR'],
+            'server_ip' => $this->request->getServer('SERVER_ADDR'),
+            'client_ip' => $this->request->getClientIp(),
             'operating_system' => isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '',
             'manaphp_version' => Version::get(),
             'php_version' => PHP_VERSION,
