@@ -285,17 +285,13 @@ class Router extends Component implements RouterInterface
     }
 
     /**
-     * Get rewrite info. This info is read from $_GET['_url']
+     * Get rewrite info.
      *
      * @return string
      */
     public function getRewriteUri()
     {
-        if (isset($_GET['_url'])) {
-            return rtrim($_GET['_url'], '/') ?: '/';
-        } else {
-            return '/';
-        }
+        return rtrim($this->request->getGet('_url'), '/') ?: '/';
     }
 
     /**
@@ -311,7 +307,7 @@ class Router extends Component implements RouterInterface
         $uri = $uri ?: $this->getRewriteUri();
 
         if ($method === null) {
-            $method = (string)$_SERVER['REQUEST_METHOD'];
+            $method = $this->request->getServer('REQUEST_METHOD');
         }
 
         $this->_controller = null;
@@ -475,16 +471,19 @@ class Router extends Component implements RouterInterface
             $params = $args;
         }
 
+        $area = $this->_area;
+        $controller = $this->_controller;
         if ($path === '') {
-            $ca = $this->_area ? "{$this->_area}/{$this->_controller}/$this->_action" : "{$this->_controller}/$this->_action";
+            $action = $this->_action;
+            $ca = $area ? "{$area}/{$controller}/$action" : "{$controller}/$action";
         } elseif (strpos($path, '/') === false) {
-            $ca = $this->_area ? "{$this->_area}/{$this->_controller}/$path" : "{$this->_controller}/$path";
+            $ca = $area ? "{$area}/{$controller}/$path" : "{$controller}/$path";
         } elseif ($path === '/') {
             $ca = '';
         } elseif ($path[0] === '/') {
             $ca = substr($path, 1);
-        } elseif ($this->_area) {
-            $ca = $this->_area . '/' . $path;
+        } elseif ($area) {
+            $ca = $area . '/' . $path;
         } else {
             $ca = rtrim($path, '/');
         }
@@ -519,7 +518,7 @@ class Router extends Component implements RouterInterface
         }
 
         if ($scheme) {
-            $url = $scheme . '://' . $_SERVER['HTTP_HOST'] . $url;
+            $url = $scheme . '://' . $this->request->getServer('HTTP_HOST') . $url;
         }
 
         return $url;
