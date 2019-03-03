@@ -260,7 +260,7 @@ class Request extends Component implements RequestInterface
      */
     public function hasPut($name)
     {
-        return isset($_POST[$name]);
+        return $this->hasPost($name);
     }
 
     /**
@@ -270,7 +270,7 @@ class Request extends Component implements RequestInterface
      */
     public function hasQuery($name)
     {
-        return isset($_GET[$name]);
+        return $this->hasGet($name);
     }
 
     /**
@@ -300,10 +300,10 @@ class Request extends Component implements RequestInterface
      */
     public function getScheme()
     {
-        if (isset($_SERVER['REQUEST_SCHEME'])) {
-            return $_SERVER['REQUEST_SCHEME'];
+        if ($scheme = $this->getServer('REQUEST_SCHEME')) {
+            return $scheme;
         } else {
-            return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+            return $this->getServer('HTTPS') === 'on' ? 'https' : 'http';
         }
     }
 
@@ -314,7 +314,7 @@ class Request extends Component implements RequestInterface
      */
     public function isAjax()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        return $this->getServer('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest';
     }
 
     /**
@@ -322,11 +322,7 @@ class Request extends Component implements RequestInterface
      */
     public function getClientIp()
     {
-        if (isset($_SERVER['HTTP_X_REAL_IP'])) {
-            return $_SERVER['HTTP_X_REAL_IP'];
-        } else {
-            return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-        }
+        return $this->getServer('HTTP_X_REAL_IP') ?: $this->getServer('REMOTE_ADDR');
     }
 
     /**
@@ -336,7 +332,7 @@ class Request extends Component implements RequestInterface
      */
     public function getUserAgent()
     {
-        return strip_tags(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
+        return strip_tags($this->getServer('HTTP_USER_AGENT'));
     }
 
     /**
@@ -346,7 +342,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPost()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'POST';
+        return $this->getServer('REQUEST_METHOD') === 'POST';
     }
 
     /**
@@ -356,7 +352,7 @@ class Request extends Component implements RequestInterface
      */
     public function isGet()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'GET';
+        return $this->getServer('REQUEST_METHOD') === 'GET';
     }
 
     /**
@@ -366,7 +362,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPut()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'PUT';
+        return $this->getServer('REQUEST_METHOD') === 'PUT';
     }
 
     /**
@@ -376,7 +372,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPatch()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'PATCH';
+        return $this->getServer('REQUEST_METHOD') === 'PATCH';
     }
 
     /**
@@ -386,7 +382,7 @@ class Request extends Component implements RequestInterface
      */
     public function isHead()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'HEAD';
+        return $this->getServer('REQUEST_METHOD') === 'HEAD';
     }
 
     /**
@@ -396,7 +392,7 @@ class Request extends Component implements RequestInterface
      */
     public function isDelete()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'DELETE';
+        return $this->getServer('REQUEST_METHOD') === 'DELETE';
     }
 
     /**
@@ -406,7 +402,7 @@ class Request extends Component implements RequestInterface
      */
     public function isOptions()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'OPTIONS';
+        return $this->getServer('REQUEST_METHOD') === 'OPTIONS';
     }
 
     /**
@@ -492,7 +488,7 @@ class Request extends Component implements RequestInterface
      */
     public function getReferer()
     {
-        return strip_tags(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
+        return strip_tags($this->getServer('HTTP_REFERER'));
     }
 
     /**
@@ -500,9 +496,7 @@ class Request extends Component implements RequestInterface
      */
     public function getUrl()
     {
-        $url = $this->getScheme() . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-        return strip_tags($url);
+        return strip_tags($this->getScheme() . '://' . $this->getServer('HTTP_HOST') . $this->getServer('REQUEST_URI'));
     }
 
     /**
@@ -510,7 +504,7 @@ class Request extends Component implements RequestInterface
      */
     public function getUri()
     {
-        return strip_tags($_SERVER['REQUEST_URI']);
+        return strip_tags($this->getServer('REQUEST_URI'));
     }
 
     /**
@@ -518,10 +512,10 @@ class Request extends Component implements RequestInterface
      */
     public function getAccessToken()
     {
-        if ($this->has('access_token')) {
-            return $this->get('access_token');
-        } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            $parts = explode(' ', $_SERVER['HTTP_AUTHORIZATION'], 2);
+        if ($token = $this->get('access_token')) {
+            return $token;
+        } elseif ($token = $this->getServer('HTTP_AUTHORIZATION')) {
+            $parts = explode(' ', $token, 2);
             if ($parts[0] === 'Bearer' && count($parts) === 2) {
                 return $parts[1];
             }
