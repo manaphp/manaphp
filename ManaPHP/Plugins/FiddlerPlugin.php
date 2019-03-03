@@ -47,8 +47,8 @@ class FiddlerPlugin extends Plugin
     {
         $this->_header = [
             'ip' => $this->request->getClientIp(),
-            'url' => parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),
-            'uuid' => substr(md5($_SERVER['REQUEST_TIME_FLOAT'] . mt_rand()), 0, 8)
+            'url' => parse_url($this->request->getServer('REQUEST_URI'), PHP_URL_PATH),
+            'uuid' => substr(md5($this->request->getServer('REQUEST_TIME_FLOAT') . mt_rand()), 0, 8)
         ];
         $this->_channel = 'manaphp:fiddler:web:' . $this->configure->id . ':' . $this->request->getClientIp();
 
@@ -67,14 +67,14 @@ class FiddlerPlugin extends Plugin
     {
         if ($this->enabled()) {
             $server = [];
-            foreach ($_SERVER as $k => $v) {
+            foreach ($this->request->getServer() as $k => $v) {
                 if (strpos($k, 'HTTP_') !== 0) {
                     continue;
                 }
                 $server[$k] = $v;
             }
 
-            $this->publish('request', ['GET' => $_GET, 'POST' => $_POST, 'SERVER' => $server]);
+            $this->publish('request', ['GET' => $this->request->getGet(), 'POST' => $this->request->getPost(), 'SERVER' => $server]);
         }
     }
 
@@ -113,11 +113,11 @@ class FiddlerPlugin extends Plugin
         if ($this->enabled()) {
             /** @var \ManaPHP\Http\ResponseInterface $source */
             $data = [
-                'uri' => $_SERVER['REQUEST_URI'],
+                'uri' => $this->request->getServer('REQUEST_URI'),
                 'code' => $response->getStatusCode(),
                 'content-type' => $response->getContentType(),
                 'body' => $response->getContent(),
-                'elapsed' => round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3)];
+                'elapsed' => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 3)];
             $this->publish('response', $data);
         }
     }
