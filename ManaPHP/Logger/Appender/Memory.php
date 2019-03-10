@@ -4,6 +4,14 @@ namespace ManaPHP\Logger\Appender;
 use ManaPHP\Component;
 use ManaPHP\Logger\AppenderInterface;
 
+class _MemoryContext
+{
+    /**
+     * @var \ManaPHP\Logger\Log[]
+     */
+    public $logs = [];
+}
+
 /**
  * Class ManaPHP\Logger\Appender\Memory
  *
@@ -11,19 +19,9 @@ use ManaPHP\Logger\AppenderInterface;
  */
 class Memory extends Component implements AppenderInterface
 {
-    /**
-     * @var \ManaPHP\Logger\Log[]
-     */
-    protected $_logs = [];
-
-    public function saveInstanceState()
+    public function __construct()
     {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_logs = [];
+        $this->_context = new _MemoryContext();
     }
 
     /**
@@ -33,7 +31,9 @@ class Memory extends Component implements AppenderInterface
      */
     public function append($log)
     {
-        $this->_logs[] = $log;
+        $context = $this->_context;
+
+        $context->logs[] = $log;
     }
 
     /**
@@ -41,6 +41,6 @@ class Memory extends Component implements AppenderInterface
      */
     public function getLogs()
     {
-        return $this->_logs;
+        return $this->_context->logs;
     }
 }

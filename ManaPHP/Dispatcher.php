@@ -7,6 +7,39 @@ use ManaPHP\Dispatcher\NotFoundControllerException;
 use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Utility\Text;
 
+class _DispatcherContext
+{
+    /**
+     * @var string
+     */
+    public $area;
+
+    /**
+     * @var string
+     */
+    public $controller;
+
+    /**
+     * @var string
+     */
+    public $action;
+
+    /**
+     * @var array
+     */
+    public $params = [];
+
+    /**
+     * @var \ManaPHP\Rest\Controller
+     */
+    public $controllerInstance;
+
+    /**
+     * @var mixed
+     */
+    public $returned_value;
+}
+
 /**
  * Class ManaPHP\Dispatcher
  *
@@ -16,49 +49,9 @@ use ManaPHP\Utility\Text;
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
-    /**
-     * @var string
-     */
-    protected $_area;
-
-    /**
-     * @var string
-     */
-    protected $_controller;
-
-    /**
-     * @var string
-     */
-    protected $_action;
-
-    /**
-     * @var array
-     */
-    protected $_params = [];
-
-    /**
-     * @var \ManaPHP\Rest\Controller
-     */
-    protected $_controllerInstance;
-
-    /**
-     * @var mixed
-     */
-    protected $_returned_value;
-
-    public function saveInstanceState()
+    public function __construct()
     {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_area = null;
-        $this->_controller = null;
-        $this->_action = null;
-        $this->_params = [];
-        $this->_controllerInstance = null;
-        $this->_returned_value = null;
+        $this->_context = new _DispatcherContext();
     }
 
     /**
@@ -68,7 +61,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getArea()
     {
-        return $this->_area;
+        return $this->_context->area;
     }
 
     /**
@@ -78,7 +71,9 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function setArea($area)
     {
-        $this->_area = Text::camelize($area);
+        $context = $this->_context;
+
+        $context->area = Text::camelize($area);
 
         return $this;
     }
@@ -90,7 +85,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getController()
     {
-        return $this->_controller;
+        return $this->_context->controller;
     }
 
     /**
@@ -100,7 +95,9 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function setController($controller)
     {
-        $this->_controller = Text::camelize($controller);
+        $context = $this->_context;
+
+        $context->controller = Text::camelize($controller);
 
         return $this;
     }
@@ -112,7 +109,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getAction()
     {
-        return $this->_action;
+        return $this->_context->action;
     }
 
     /**
@@ -122,7 +119,9 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function setAction($action)
     {
-        $this->_action = lcfirst(Text::camelize($action));
+        $context = $this->_context;
+
+        $context->action = lcfirst(Text::camelize($action));
 
         return $this;
     }
@@ -135,7 +134,9 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function setParams($params, $merge = true)
     {
-        $this->_params = $merge ? array_merge($this->_params, $params) : $params;
+        $context = $this->_context;
+
+        $context->params = $merge ? array_merge($context->params, $params) : $params;
 
         return $this;
     }
@@ -147,7 +148,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getParams()
     {
-        return $this->_params;
+        return $this->_context->params;
     }
 
     /**
@@ -160,7 +161,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getParam($name, $default = null)
     {
-        $params = $this->_params;
+        $params = $this->_context->params;
         return isset($params[$name]) ? $params[$name] : $default;
     }
 
@@ -171,7 +172,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function hasParam($name)
     {
-        return isset($this->_params[$name]);
+        return isset($this->_context->params[$name]);
     }
 
     /**
@@ -183,7 +184,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function setReturnedValue($value)
     {
-        $this->_returned_value = $value;
+        $this->_context->returned_value = $value;
 
         return $this;
     }
@@ -195,7 +196,7 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getReturnedValue()
     {
-        return $this->_returned_value;
+        return $this->_context->returned_value;
     }
 
     /**
@@ -340,8 +341,10 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     protected function _getControllerClassName()
     {
-        $area = $this->_area;
-        $controller = $this->_controller;
+        $context = $this->_context;
+
+        $area = $context->area;
+        $controller = $context->controller;
 
         if ($area) {
             $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\$area\\{$controller}Controller");
@@ -377,21 +380,23 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function dispatch($router)
     {
+        $context = $this->_context;
+
         if ($area = $router->getArea()) {
             $area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
-            $this->_area = $area;
+            $context->area = $area;
         }
 
         $controller = $router->getController();
         $controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
-        $this->_controller = $controller;
+        $context->controller = $controller;
 
         $action = $router->getAction();
         $action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
-        $this->_action = $action;
+        $context->action = $action;
 
         $params = $router->getParams();
-        $this->_params = $params;
+        $context->params = $params;
 
         if ($this->eventsManager->fireEvent('dispatcher:beforeDispatch', $this) === false) {
             return;
@@ -403,10 +408,10 @@ class Dispatcher extends Component implements DispatcherInterface
          * @var \ManaPHP\Rest\Controller $controllerInstance
          */
         $controllerInstance = $this->_di->getShared($controllerClassName);
-        $this->_controllerInstance = $controllerInstance;
+        $context->controllerInstance = $controllerInstance;
 
         $returned_value = $this->invokeAction($controllerInstance, $action, $params);
-        $this->_returned_value = $returned_value;
+        $context->returned_value = $returned_value;
 
         $this->eventsManager->fireEvent('dispatcher:afterDispatch', $this);
     }
@@ -416,6 +421,6 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getControllerInstance()
     {
-        return $this->_controllerInstance;
+        return $this->_context->controllerInstance;
     }
 }

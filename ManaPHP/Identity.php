@@ -4,21 +4,25 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\AuthenticationException;
 
-/**
- * Class ManaPHP\Identity
- */
-abstract class Identity extends Component implements IdentityInterface
+class _IdentityContext
 {
     /**
      * @var string
      */
-    protected $_type;
+    public $type;
 
     /**
      * @var array
      */
-    protected $_claims = [];
+    public $claims = [];
+}
 
+/**
+ * Class ManaPHP\Identity
+ * @property \ManaPHP\_IdentityContext $_context
+ */
+abstract class Identity extends Component implements IdentityInterface
+{
     /**
      * Identity constructor.
      *
@@ -26,16 +30,13 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function __construct($options = null)
     {
+        $context = $this->_context = new _IdentityContext();
+
         if (is_array($options)) {
             if (isset($options['type'])) {
-                $this->_type = $options['type'];
+                $context->type = $options['type'];
             }
         }
-    }
-
-    public function saveInstanceState()
-    {
-        return ['_type' => $this->_type, '_claims' => $this->_claims];
     }
 
     /**
@@ -43,7 +44,9 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function isGuest()
     {
-        return !$this->_claims;
+        $context = $this->_context;
+
+        return !$context->claims;
     }
 
     /**
@@ -53,17 +56,19 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getId($default = null)
     {
-        if (!$this->_claims) {
+        $context = $this->_context;
+
+        if (!$context->claims) {
             if ($default === null) {
                 throw new AuthenticationException('Not Authenticated');
             } else {
                 return $default;
             }
-        } elseif (!$this->_type) {
+        } elseif (!$context->type) {
             return $default;
         } else {
-            $id = $this->_type . '_id';
-            return isset($this->_claims[$id]) ? $this->_claims[$id] : 0;
+            $id = $context->type . '_id';
+            return isset($context->claims[$id]) ? $context->claims[$id] : 0;
         }
     }
 
@@ -74,17 +79,19 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getName($default = null)
     {
-        if (!$this->_claims) {
+        $context = $this->_context;
+
+        if (!$context->claims) {
             if ($default === null) {
                 throw new AuthenticationException('Not Authenticated');
             } else {
                 return $default;
             }
-        } elseif (!$this->_type) {
+        } elseif (!$context->type) {
             return $default;
         } else {
-            $name = $this->_type . '_name';
-            return isset($this->_claims[$name]) ? $this->_claims[$name] : '';
+            $name = $context->type . '_name';
+            return isset($context->claims[$name]) ? $context->claims[$name] : '';
         }
     }
 
@@ -95,11 +102,13 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getRole($default = 'guest')
     {
-        if ($this->_claims) {
-            if (isset($this->_claims['role'])) {
-                return $this->_claims['role'];
+        $context = $this->_context;
+
+        if ($context->claims) {
+            if (isset($context->claims['role'])) {
+                return $context->claims['role'];
             } else {
-                return isset($this->_claims['admin_id']) && $this->_claims['admin_id'] === 1 ? 'admin' : 'user';
+                return isset($context->claims['admin_id']) && $context->claims['admin_id'] === 1 ? 'admin' : 'user';
             }
         } else {
             return $default;
@@ -113,7 +122,9 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function setRole($role)
     {
-        $this->_claims['role'] = $role;
+        $context = $this->_context;
+
+        $context->claims['role'] = $role;
 
         return $this;
     }
@@ -126,7 +137,9 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function setClaim($claim, $value)
     {
-        $this->_claims[$claim] = $value;
+        $context = $this->_context;
+
+        $context->claims[$claim] = $value;
 
         return $this;
     }
@@ -138,15 +151,17 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function setClaims($claims)
     {
-        if ($claims && (!$this->_type || !isset($claims[$this->_type]))) {
+        $context = $this->_context;
+
+        if ($claims && (!$context->type || !isset($claims[$context->type]))) {
             foreach ($claims as $claim => $value) {
                 if (strlen($claim) > 3 && strrpos($claim, '_id', -3) !== false) {
-                    $this->_type = substr($claim, 0, -3);
+                    $context->type = substr($claim, 0, -3);
                     break;
                 }
             }
         }
-        $this->_claims = $claims;
+        $context->claims = $claims;
 
         return $this;
     }
@@ -159,7 +174,9 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getClaim($claim, $default = null)
     {
-        return isset($this->_claims[$claim]) ? $this->_claims[$claim] : $default;
+        $context = $this->_context;
+
+        return isset($context->claims[$claim]) ? $context->claims[$claim] : $default;
     }
 
     /**
@@ -167,7 +184,7 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function getClaims()
     {
-        return $this->_claims;
+        return $this->_context->claims;
     }
 
     /**
@@ -177,6 +194,8 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function hasClaim($claim)
     {
-        return isset($this->_claims[$claim]);
+        $context = $this->_context;
+
+        return isset($context->claims[$claim]);
     }
 }

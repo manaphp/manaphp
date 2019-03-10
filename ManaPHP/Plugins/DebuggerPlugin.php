@@ -9,6 +9,26 @@ use ManaPHP\Logger\Log;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
 
+class _DebuggerPluginContext
+{
+    /**
+     * @var string
+     */
+    public $file;
+
+    public $view = [];
+
+    public $log = [];
+
+    public $sql_prepared = [];
+    public $sql_executed = [];
+    public $sql_count = 0;
+
+    public $mongodb = [];
+
+    public $events = [];
+}
+
 class DebuggerPlugin extends Plugin
 {
     /**
@@ -16,22 +36,10 @@ class DebuggerPlugin extends Plugin
      */
     protected $_template = 'Default';
 
-    /**
-     * @var string
-     */
-    protected $_file;
-
-    protected $_view = [];
-
-    protected $_log = [];
-
-    protected $_sql_prepared = [];
-    protected $_sql_executed = [];
-    protected $_sql_count = 0;
-
-    protected $_mongodb = [];
-
-    protected $_events = [];
+    public function __construct()
+    {
+        $this->_context = new _DebuggerPluginContext();
+    }
 
     public function init()
     {
@@ -39,23 +47,6 @@ class DebuggerPlugin extends Plugin
 
         $this->attachEvent('app:beginRequest', [$this, 'onBeginRequest']);
         $this->attachEvent('app:endRequest', [$this, 'onEndRequest']);
-    }
-
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_file = null;
-        $this->_view = [];
-        $this->_log = [];
-        $this->_sql_prepared = [];
-        $this->_sql_executed = [];
-        $this->_sql_count = 0;
-        $this->_mongodb = [];
-        $this->_events = [];
     }
 
     /**
@@ -67,7 +58,9 @@ class DebuggerPlugin extends Plugin
      */
     public function _eventHandlerPeek($event, $source, $data)
     {
-        $this->_events[] = $event;
+        $context = $this->_context;
+
+        $context->events[] = $event;
 
         if ($event === 'logger:log') {
             /**
@@ -80,7 +73,7 @@ class DebuggerPlugin extends Plugin
                 '%level%' => $log->level,
                 '%message%' => $log->message
             ];
-            $this->_log[] = [
+            $context->log[] = [
                 'level' => $log->level,
                 'message' => strtr($format, $replaces)
             ];
@@ -89,14 +82,14 @@ class DebuggerPlugin extends Plugin
              * @var \ManaPHP\DbInterface $source
              */
             $preparedSQL = $source->getSQL();
-            if (!isset($this->_sql_prepared[$preparedSQL])) {
-                $this->_sql_prepared[$preparedSQL] = 1;
+            if (!isset($context->sql_prepared[$preparedSQL])) {
+                $context->sql_prepared[$preparedSQL] = 1;
             } else {
-                $this->_sql_prepared[$preparedSQL]++;
+                $context->sql_prepared[$preparedSQL]++;
             }
 
-            $this->_sql_count++;
-            $this->_sql_executed[] = [
+            $context->sql_count++;
+            $context->sql_executed[] = [
                 'prepared' => $source->getSQL(),
                 'bind' => $source->getBind(),
                 'emulated' => $source->getEmulatedSQL()
@@ -105,15 +98,15 @@ class DebuggerPlugin extends Plugin
             /**
              * @var \ManaPHP\DbInterface $source
              */
-            $this->_sql_executed[$this->_sql_count - 1]['elapsed'] = $data['elapsed'];
-            $this->_sql_executed[$this->_sql_count - 1]['row_count'] = $source->affectedRows();
+            $context->sql_executed[$context->sql_count - 1]['elapsed'] = $data['elapsed'];
+            $context->sql_executed[$context->sql_count - 1]['row_count'] = $source->affectedRows();
         } elseif ($event === 'db:beginTransaction' || $event === 'db:rollbackTransaction' || $event === 'db:commitTransaction') {
-            $this->_sql_count++;
+            $context->sql_count++;
 
             $parts = explode(':', $event);
             $name = $parts[1];
 
-            $this->_sql_executed[] = [
+            $context->sql_executed[] = [
                 'prepared' => $name,
                 'bind' => [],
                 'emulated' => $name,
@@ -122,10 +115,10 @@ class DebuggerPlugin extends Plugin
             ];
 
             $preparedSQL = $name;
-            if (!isset($this->_sql_prepared[$preparedSQL])) {
-                $this->_sql_prepared[$preparedSQL] = 1;
+            if (!isset($context->_sql_prepared[$preparedSQL])) {
+                $context->sql_prepared[$preparedSQL] = 1;
             } else {
-                $this->_sql_prepared[$preparedSQL]++;
+                $context->sql_prepared[$preparedSQL]++;
             }
         } elseif ($event === 'renderer:beforeRender') {
             $vars = $data['vars'];
@@ -135,7 +128,7 @@ class DebuggerPlugin extends Plugin
                 }
             }
             unset($vars['di']);
-            $this->_view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
+            $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
         } elseif ($event === 'mongodb:afterQuery') {
             $item = [];
             $item['type'] = 'query';
@@ -152,26 +145,28 @@ class DebuggerPlugin extends Plugin
 
             $item['shell'] = $shell;
             $item['elapsed'] = $data['elapsed'];
-            $this->_mongodb[] = $item;
+            $context->mongodb[] = $item;
         } elseif ($event === 'mongodb:afterCommand') {
             $item = [];
             $item['type'] = 'command';
             $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
             $item['shell'] = [];
             $item['elapsed'] = $data['elapsed'];
-            $this->_mongodb[] = $item;
+            $context->mongodb[] = $item;
         } elseif ($event === 'mongodb:afterBulkWrite') {
             $item = [];
             $item['type'] = 'bulkWrite';
             $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
             $item['shell'] = [];
             $item['elapsed'] = $data['elapsed'];
-            $this->_mongodb = [];
+            $context->mongodb = [];
         }
     }
 
     public function onBeginRequest()
     {
+        $context = $this->_context;
+
         if (preg_match('#^[a-zA-Z0-9_/]+\.html$#', $debugger = $this->request->getGet('_debugger'))) {
             $file = '@data/debugger' . $debugger;
             if ($this->filesystem->fileExists($file)) {
@@ -180,14 +175,16 @@ class DebuggerPlugin extends Plugin
             }
         }
 
-        $this->_file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+        $context->file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
     }
 
     public function onEndRequest()
     {
-        if ($this->_file) {
+        $context = $this->_context;
+
+        if ($context->file) {
             $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
-            $this->filesystem->filePut('@data/debugger/' . $this->_file, $this->output());
+            $this->filesystem->filePut('@data/debugger/' . $context->file, $this->output());
         }
     }
 
@@ -196,13 +193,15 @@ class DebuggerPlugin extends Plugin
      */
     protected function _getBasic()
     {
+        $context = $this->_context;
+
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
         $r = [
             'mvc' => $this->router->getController() . '::' . $this->router->getAction(),
             'request_method' => $this->request->getServer('REQUEST_METHOD'),
             'request_url' => $this->request->getUrl(),
-            'query_count' => $this->_sql_count,
+            'query_count' => $context->sql_count,
             'execute_time' => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 4),
             'memory_usage' => (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k',
             'system_time' => date('Y-m-d H:i:s'),
@@ -224,19 +223,21 @@ class DebuggerPlugin extends Plugin
      */
     public function output()
     {
+        $context = $this->_context;
+
         $data = [];
         $data['basic'] = $this->_getBasic();
-        $data['logger'] = ['log' => $this->_log, 'levels' => array_flip($this->logger->getLevels()), 'level' => Logger::LEVEL_DEBUG];
-        $data['sql'] = ['prepared' => $this->_sql_prepared, 'executed' => $this->_sql_executed, 'count' => $this->_sql_count];
-        $data['mongodb'] = $this->_mongodb;
+        $data['logger'] = ['log' => $context->log, 'levels' => array_flip($this->logger->getLevels()), 'level' => Logger::LEVEL_DEBUG];
+        $data['sql'] = ['prepared' => $context->sql_prepared, 'executed' => $context->sql_executed, 'count' => $context->sql_count];
+        $data['mongodb'] = $context->mongodb;
 
         $configure = isset($this->configure) ? $this->configure->__debugInfo() : [];
         unset($configure['alias']);
         $data['configure'] = $configure;
 
-        $data['view'] = $this->_view;
+        $data['view'] = $context->view;
         $data['components'] = [];
-        $data['events'] = $this->_events;
+        $data['events'] = $context->events;
 
         /** @noinspection ForeachSourceInspection */
         foreach ($this->_di->__debugInfo()['_instances'] as $k => $v) {
@@ -255,13 +256,13 @@ class DebuggerPlugin extends Plugin
             if ($k === 'response' && isset($properties['_content'])) {
                 $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
             }
-			
+
             if ($k === 'view' && isset($properties['_content'])) {
                 $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
             }
-            
+
             if ($k === 'renderer') {
-                $properties['_sections'] = array_keys($properties['_sections']);
+                $properties['_sections'] = array_keys($properties['_context']->sections);
             }
 
             $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
@@ -277,6 +278,8 @@ class DebuggerPlugin extends Plugin
      */
     public function getUrl()
     {
-        return $this->router->createUrl('/?_debugger=' . $this->_file, true);
+        $context = $this->_context;
+
+        return $this->router->createUrl('/?_debugger=' . $context->file, true);
     }
 }

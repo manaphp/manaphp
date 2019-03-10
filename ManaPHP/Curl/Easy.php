@@ -14,6 +14,14 @@ use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 
+class _EasyContext
+{
+    /**
+     * @var \ManaPHP\Curl\Easy\Response
+     */
+    public $lastResponse;
+}
+
 /**
  * Class ManaPHP\Curl\Easy
  *
@@ -63,11 +71,6 @@ class Easy extends Component implements EasyInterface
     protected $_sslVerify = true;
 
     /**
-     * @var \ManaPHP\Curl\Easy\Response
-     */
-    protected $_lastResponse;
-
-    /**
      * Client constructor.
      *
      * @param array $options
@@ -77,6 +80,8 @@ class Easy extends Component implements EasyInterface
      */
     public function __construct($options = [])
     {
+        $this->_context = new _EasyContext();
+
         if (!function_exists('curl_init')) {
             throw new ExtensionNotInstalledException('curl');
         }
@@ -104,16 +109,6 @@ class Easy extends Component implements EasyInterface
         if (isset($options['options'])) {
             $this->_options = $options['options'];
         }
-    }
-
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_lastResponse = null;
     }
 
     /**
@@ -188,7 +183,9 @@ class Easy extends Component implements EasyInterface
      */
     public function request($type, $url, $body = null, $options = [])
     {
-        $this->_lastResponse = null;
+        $context = $this->_context;
+
+        $context->lastResponse = null;
 
         if (is_array($url)) {
             if (count($url) > 1) {
@@ -425,7 +422,7 @@ class Easy extends Component implements EasyInterface
             'BODY' => strpos($response->content_type, 'json') !== false ? $response->getJsonBody() : $response->getUtf8Body()]],
             'httpClient.response');
 
-        $this->_lastResponse = $response;
+        $context->lastResponse = $response;
 
         if ($response->http_code === 429) {
             throw new TooManyRequestsException($response->url, $response);
@@ -443,7 +440,7 @@ class Easy extends Component implements EasyInterface
             throw new BadRequestException(['bad request: :http_code => `:url`', 'http_code' => $response->http_code, 'url' => $response->url], $response);
         }
 
-        return $this->_lastResponse;
+        return $context->lastResponse;
     }
 
     /**
@@ -719,6 +716,6 @@ class Easy extends Component implements EasyInterface
      */
     public function getLastResponse()
     {
-        return $this->_lastResponse;
+        return $this->_context->lastResponse;
     }
 }

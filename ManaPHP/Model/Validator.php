@@ -9,6 +9,24 @@ use ManaPHP\Model\Validator\Message;
 use ManaPHP\Model\Validator\ValidateFailedException;
 use ManaPHP\Utility\Text;
 
+class _ValidatorContext
+{
+    /**
+     * @var array
+     */
+    public $messages;
+
+    /**
+     * @var \ManaPHP\Model
+     */
+    public $model;
+
+    /**
+     * @var string
+     */
+    public $field;
+}
+
 /**
  * Class ManaPHP\Model\Validator
  *
@@ -17,16 +35,6 @@ use ManaPHP\Utility\Text;
  */
 class Validator extends Component implements ValidatorInterface
 {
-    /**
-     * @var \ManaPHP\Model
-     */
-    protected $_model;
-
-    /**
-     * @var string
-     */
-    protected $_field;
-
     /**
      * @var string
      */
@@ -37,10 +45,6 @@ class Validator extends Component implements ValidatorInterface
      */
     protected $_templates;
 
-    /**
-     * @var array
-     */
-    protected $_messages;
 
     /**
      * Validator constructor.
@@ -49,6 +53,8 @@ class Validator extends Component implements ValidatorInterface
      */
     public function __construct($options = [])
     {
+        $this->_context = new _ValidatorContext();
+
         if (isset($options['templates_dir'])) {
             $this->_templates_dir = $options['templates_dir'];
         }
@@ -57,17 +63,6 @@ class Validator extends Component implements ValidatorInterface
             $this->_templates = $options['templates'];
             $this->_templates_dir = null;
         }
-    }
-
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_model = null;
-        $this->_field = null;
     }
 
     /**
@@ -91,7 +86,9 @@ class Validator extends Component implements ValidatorInterface
      */
     public function appendMessage($message)
     {
-        $this->_messages[$message->field][] = $message;
+        $context = $this->_context;
+
+        $context->messages[$message->field][] = $message;
 
         return $this;
     }
@@ -103,10 +100,12 @@ class Validator extends Component implements ValidatorInterface
      */
     public function getMessages($field = null)
     {
+        $context = $this->_context;
+
         if ($field) {
-            return isset($this->_messages[$field]) ? $this->_messages[$field] : [];
+            return isset($context->messages[$field]) ? $context->messages[$field] : [];
         } else {
-            return $this->_messages;
+            return $context->messages;
         }
     }
 
@@ -119,20 +118,22 @@ class Validator extends Component implements ValidatorInterface
      */
     public function validate($model, $fields = [])
     {
-        $this->_messages = [];
+        $context = $this->_context;
+
+        $context->messages = [];
 
         if (!$rules = $model->rules()) {
             return;
         }
 
-        $this->_model = $model;
+        $context->model = $model;
 
         $templates = null;
         foreach ($fields ?: $model->getChangedFields() as $field) {
             if (!isset($rules[$field])) {
                 continue;
             }
-            $this->_field = $field;
+            $context->field = $field;
 
             foreach ((array)$rules[$field] as $k => $v) {
                 if (is_int($k)) {
@@ -147,15 +148,15 @@ class Validator extends Component implements ValidatorInterface
                 if ($value === null) {
                     $templates = $this->_templates ?: $this->_loadTemplates();
                     $template = isset($templates[$name]) ? $templates[$name] : $templates['default'];
-                    $this->appendMessage(new Message($template, $this->_model, $this->_field, $parameters));
+                    $this->appendMessage(new Message($template, $context->model, $context->field, $parameters));
                 } else {
                     $model->$field = $value;
                 }
             }
         }
 
-        if ($this->_messages) {
-            throw new ValidateFailedException('validate failed: ' . json_encode($this->_messages));
+        if ($context->messages) {
+            throw new ValidateFailedException('validate failed: ' . json_encode($context->messages));
         }
     }
 
@@ -261,12 +262,14 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_date($value, $parameter = null)
     {
+        $context = $this->_context;
+
         $ts = is_numeric($value) ? (int)$value : strtotime($value);
         if ($ts === false) {
             return null;
         }
 
-        $r = date($this->_model->getDateFormat($this->_field), $ts);
+        $r = date($context->model->getDateFormat($context->field), $ts);
         return $r !== false ? $r : null;
     }
 
@@ -467,8 +470,10 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_unique($value)
     {
-        $modelName = $this->_model;
-        return ($value && $modelName::exists([$this->_field => $value])) ? null : $value;
+        $context = $this->_context;
+
+        $modelName = $context->model;
+        return ($value && $modelName::exists([$context->field => $value])) ? null : $value;
     }
 
     /**
@@ -479,14 +484,16 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_exists($value, $parameter = null)
     {
+        $context = $this->_context;
+
         if (!$value) {
             return $value;
         }
-        $field = $this->_field;
+        $field = $context->field;
         if ($parameter) {
             $className = $parameter;
         } else {
-            $modelName = get_class($this->_model);
+            $modelName = get_class($context->model);
             if (preg_match('#^(.*)_id$#', $field, $match)) {
                 $className = substr($modelName, 0, strrpos($modelName, '\\') + 1) . Text::camelize($match[1]);
                 if (!class_exists($className)) {
@@ -517,7 +524,9 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_const($value, $parameter = null)
     {
-        $constants = $this->_model->getConstants($parameter ?: $this->_field);
+        $context = $this->_context;
+
+        $constants = $context->model->getConstants($parameter ?: $context->field);
         if (isset($constants[$value])) {
             return $value;
         } else {

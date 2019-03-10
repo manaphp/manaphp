@@ -37,22 +37,39 @@ class Component implements ComponentInterface, \JsonSerializable
     protected $_di;
 
     /**
-     * @return array|bool
+     * @var mixed
+     */
+    protected $_context;
+
+    /**
+     * @return mixed
      */
     public function saveInstanceState()
     {
-        return false;
+        $context = $this->_context;
+
+        if ($context === null) {
+            return false;
+        } elseif (is_object($context)) {
+            return clone $context;
+        } else {
+            return $context;
+        }
     }
 
     /**
-     * @param array $data
+     * @param object|array $data
      *
      * @return void
      */
     public function restoreInstanceState($data)
     {
-        foreach ($data as $k => $v) {
-            $this->$k = $v;
+        if (is_object($data)) {
+            $this->_context = clone $data;
+        } else {
+            foreach ($data as $k => $v) {
+                $this->$k = $v;
+            }
         }
     }
 

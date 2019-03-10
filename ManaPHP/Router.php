@@ -5,6 +5,34 @@ namespace ManaPHP;
 use ManaPHP\Router\Route;
 use ManaPHP\Utility\Text;
 
+class _RouterContext
+{
+    /**
+     * @var string
+     */
+    public $area;
+
+    /**
+     * @var string
+     */
+    public $controller;
+
+    /**
+     * @var string
+     */
+    public $action;
+
+    /**
+     * @var array
+     */
+    public $params = [];
+
+    /**
+     * @var bool
+     */
+    public $matched = false;
+}
+
 /**
  * Class ManaPHP\Router
  *
@@ -40,54 +68,17 @@ class Router extends Component implements RouterInterface
     protected $_regex_routes = [];
 
     /**
-     * @var string
-     */
-    protected $_area;
-
-    /**
-     * @var string
-     */
-    protected $_controller;
-
-    /**
-     * @var string
-     */
-    protected $_action;
-
-    /**
-     * @var array
-     */
-    protected $_params = [];
-
-    /**
-     * @var bool
-     */
-    protected $_matched = false;
-
-    /**
      * Group constructor.
      *
      * @param bool $useDefaultRoutes
      */
     public function __construct($useDefaultRoutes = true)
     {
+        $this->_context = new _RouterContext();
+
         if ($useDefaultRoutes) {
             $this->_default_route = new Route('/(?:{controller}(?:/{action}(?:/{params})?)?)?');
         }
-    }
-
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_area = null;
-        $this->_controller = null;
-        $this->_action = null;
-        $this->_params = [];
-        $this->_matched = false;
     }
 
     /**
@@ -304,17 +295,19 @@ class Router extends Component implements RouterInterface
      */
     public function match($uri = null, $method = null)
     {
+        $context = $this->_context;
+
         $uri = $uri ?: $this->getRewriteUri();
 
         if ($method === null) {
             $method = $this->request->getServer('REQUEST_METHOD');
         }
 
-        $this->_controller = null;
-        $this->_action = null;
-        $this->_params = [];
+        $context->controller = null;
+        $context->action = null;
+        $context->params = [];
 
-        $this->_matched = false;
+        $context->matched = false;
 
         $this->eventsManager->fireEvent('router:beforeRoute', $this);
 
@@ -377,7 +370,7 @@ class Router extends Component implements RouterInterface
                         }
                     }
                 }
-		
+
                 $handledUri = $handledUri === '/' ? '/' : rtrim($handledUri, '/');
                 $parts = $this->_default_route->match($handledUri, $method);
             }
@@ -387,26 +380,26 @@ class Router extends Component implements RouterInterface
             return false;
         }
 
-        $this->_matched = true;
+        $context->matched = true;
 
         if ($area) {
-            $this->_area = $area;
+            $context->area = $area;
         } elseif (isset($parts['area'])) {
-            $this->_area = $parts['area'];
+            $context->area = $parts['area'];
         }
 
-        $this->_controller = $parts['controller'];
-        $this->_action = $parts['action'];
-        $this->_params = isset($parts['params']) ? $parts['params'] : [];
+        $context->controller = $parts['controller'];
+        $context->action = $parts['action'];
+        $context->params = isset($parts['params']) ? $parts['params'] : [];
 
         $this->eventsManager->fireEvent('router:afterRoute', $this);
 
-        return $this->_matched;
+        return $context->matched;
     }
 
     public function getArea()
     {
-        return $this->_area;
+        return $this->_context->area;
     }
 
     /**
@@ -416,7 +409,7 @@ class Router extends Component implements RouterInterface
      */
     public function getController()
     {
-        return $this->_controller;
+        return $this->_context->controller;
     }
 
     /**
@@ -426,7 +419,7 @@ class Router extends Component implements RouterInterface
      */
     public function getAction()
     {
-        return $this->_action;
+        return $this->_context->action;
     }
 
     /**
@@ -436,7 +429,7 @@ class Router extends Component implements RouterInterface
      */
     public function getParams()
     {
-        return $this->_params;
+        return $this->_context->params;
     }
 
     /**
@@ -446,7 +439,7 @@ class Router extends Component implements RouterInterface
      */
     public function wasMatched()
     {
-        return $this->_matched;
+        return $this->_context->matched;
     }
 
     /**
@@ -457,6 +450,8 @@ class Router extends Component implements RouterInterface
      */
     public function createUrl($args, $scheme = false)
     {
+        $context = $this->_context;
+
         if (is_string($args)) {
             if (($pos = strpos($args, '?')) !== false) {
                 $path = substr($args, 0, $pos);
@@ -471,10 +466,10 @@ class Router extends Component implements RouterInterface
             $params = $args;
         }
 
-        $area = $this->_area;
-        $controller = $this->_controller;
+        $area = $context->area;
+        $controller = $context->controller;
         if ($path === '') {
-            $action = $this->_action;
+            $action = $context->action;
             $ca = $area ? "{$area}/{$controller}/$action" : "{$controller}/$action";
         } elseif (strpos($path, '/') === false) {
             $ca = $area ? "{$area}/{$controller}/$path" : "{$controller}/$path";

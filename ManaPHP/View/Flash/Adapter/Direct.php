@@ -21,8 +21,10 @@ class Direct extends Flash
      */
     public function _message($type, $message)
     {
+        $context = $this->_context;
+
         $cssClasses = isset($this->_cssClasses[$type]) ? $this->_cssClasses[$type] : '';
 
-        $this->_messages[] = '<div class="' . $cssClasses . '">' . $message . '</div>' . PHP_EOL;
+        $context->messages[] = '<div class="' . $cssClasses . '">' . $message . '</div>' . PHP_EOL;
     }
 }

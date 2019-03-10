@@ -7,6 +7,29 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Filter\Exception as FilterException;
 
+class _ResponseContext
+{
+    /**
+     * @var string
+     */
+    public $content;
+
+    /**
+     * @var array
+     */
+    public $headers = [];
+
+    /**
+     * @var string
+     */
+    public $status;
+
+    /**
+     * @var string
+     */
+    public $file;
+}
+
 /**
  * Class ManaPHP\Http\Response
  *
@@ -19,40 +42,9 @@ use ManaPHP\Http\Filter\Exception as FilterException;
  */
 class Response extends Component implements ResponseInterface
 {
-    /**
-     * @var string
-     */
-    protected $_content;
-
-    /**
-     * @var array
-     */
-    protected $_headers = [];
-
-    /**
-     * @var string
-     */
-    protected $_status;
-
-    /**
-     * @var string
-     */
-    protected $_file;
-
-    /**
-     * @return array|bool
-     */
-    public function saveInstanceState()
+    public function __construct()
     {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_content = null;
-        $this->_headers = [];
-        $this->_status = null;
-        $this->_file = null;
+        $this->_context = new _ResponseContext();
     }
 
     /**
@@ -68,7 +60,9 @@ class Response extends Component implements ResponseInterface
      */
     public function setStatus($code, $text = null)
     {
-        $this->_status = $code . ' ' . ($text ?: $this->getStatusText($code));
+        $context = $this->_context;
+
+        $context->status = $code . ' ' . ($text ?: $this->getStatusText($code));
 
         return $this;
     }
@@ -78,7 +72,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getStatus()
     {
-        return $this->_status;
+        return $this->_context->status;
     }
 
     /**
@@ -86,7 +80,8 @@ class Response extends Component implements ResponseInterface
      */
     public function getStatusCode()
     {
-        return $this->_status ? (int)substr($this->_status, 0, strpos($this->_status, ' ')) : 200;
+        $context = $this->_context;
+        return $context->status ? (int)substr($context->status, 0, strpos($context->status, ' ')) : 200;
     }
 
     /**
@@ -97,7 +92,8 @@ class Response extends Component implements ResponseInterface
     public function getStatusText($code = null)
     {
         if ($code === null) {
-            return $this->_status === null ? 'OK' : substr($this->_status, strpos($this->_status, ' ') + 1);
+            $context = $this->_context;
+            return $context->status === null ? 'OK' : substr($context->status, strpos($context->status, ' ') + 1);
         } else {
             $texts = [
                 200 => 'OK',
@@ -176,7 +172,9 @@ class Response extends Component implements ResponseInterface
      */
     public function setHeader($name, $value)
     {
-        $this->_headers[$name] = $value;
+        $context = $this->_context;
+
+        $context->headers[$name] = $value;
 
         return $this;
     }
@@ -189,7 +187,9 @@ class Response extends Component implements ResponseInterface
      */
     public function getHeader($name, $default = null)
     {
-        return isset($this->_headers[$name]) ? $this->_headers[$name] : $default;
+        $context = $this->_context;
+
+        return isset($context->headers[$name]) ? $context->headers[$name] : $default;
     }
 
     /**
@@ -199,7 +199,9 @@ class Response extends Component implements ResponseInterface
      */
     public function hasHeader($name)
     {
-        return isset($this->_headers[$name]);
+        $context = $this->_context;
+
+        return isset($context->headers[$name]);
     }
 
     /**
@@ -209,7 +211,9 @@ class Response extends Component implements ResponseInterface
      */
     public function removeHeader($name)
     {
-        unset($this->_headers[$name]);
+        $context = $this->_context;
+
+        unset($context->headers[$name]);
 
         return $this;
     }
@@ -319,7 +323,9 @@ class Response extends Component implements ResponseInterface
      */
     public function getContentType()
     {
-        return isset($this->_headers['Content-Type']) ? $this->_headers['Content-Type'] : null;
+        $context = $this->_context;
+
+        return isset($context->headers['Content-Type']) ? $context->headers['Content-Type'] : null;
     }
 
     /**
@@ -386,7 +392,9 @@ class Response extends Component implements ResponseInterface
      */
     public function setContent($content)
     {
-        $this->_content = (string)$content;
+        $context = $this->_context;
+
+        $context->content = (string)$content;
 
         return $this;
     }
@@ -446,6 +454,8 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonContent($content)
     {
+        $context = $this->_context;
+
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
         if (is_array($content)) {
@@ -472,7 +482,7 @@ class Response extends Component implements ResponseInterface
             }
         }
 
-        $this->_content = $this->_jsonEncode($content);
+        $context->content = $this->_jsonEncode($content);
 
         return $this;
     }
@@ -484,6 +494,8 @@ class Response extends Component implements ResponseInterface
      */
     public function setXmlContent($content)
     {
+        $context = $this->_context;
+
         $this->setContentType('text/xml');
 
         $writer = new \XMLWriter();
@@ -491,7 +503,7 @@ class Response extends Component implements ResponseInterface
         $writer->openMemory();
         $writer->startDocument();
         $this->_toXml($writer, (count($content) !== 1) ? ['xml' => $content] : $content);
-        $this->_content = $writer->outputMemory();
+        $context->content = $writer->outputMemory();
 
         return $this;
     }
@@ -524,7 +536,9 @@ class Response extends Component implements ResponseInterface
      */
     public function appendContent($content)
     {
-        $this->_content .= $content;
+        $context = $this->_context;
+
+        $context->content .= $content;
 
         return $this;
     }
@@ -536,7 +550,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getContent()
     {
-        return $this->_content;
+        return $this->_context->content;
     }
 
     /**
@@ -546,23 +560,25 @@ class Response extends Component implements ResponseInterface
      */
     public function send()
     {
+        $context = $this->_context;
+
         if (headers_sent($file, $line)) {
             throw new MisuseException("Headers has been sent in $file:$line");
         }
 
-        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !isset($this->_headers['X-Request-Id'])) {
-            $this->_headers['X-Request-Id'] = $_SERVER['HTTP_X_REQUEST_ID'];
+        if (isset($_SERVER['HTTP_X_REQUEST_ID']) && !isset($context->headers['X-Request-Id'])) {
+            $context->headers['X-Request-Id'] = $_SERVER['HTTP_X_REQUEST_ID'];
         }
 
-        $this->_headers['X-Response-Time'] = sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
+        $context->headers['X-Response-Time'] = sprintf('%.3f', microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
 
         $this->fireEvent('response:beforeSend');
 
-        if ($this->_status) {
-            header('HTTP/1.1 ' . $this->_status);
+        if ($context->status) {
+            header('HTTP/1.1 ' . $context->status);
         }
 
-        foreach ($this->_headers as $header => $value) {
+        foreach ($context->headers as $header => $value) {
             if ($value !== null) {
                 header($header . ': ' . $value, true);
             } else {
@@ -572,10 +588,10 @@ class Response extends Component implements ResponseInterface
 
         $this->cookies->send();
 
-        if ($this->_file) {
-            readfile($this->alias->resolve($this->_file));
+        if ($context->file) {
+            readfile($this->alias->resolve($context->file));
         } else {
-            echo $this->_content;
+            echo $context->content;
         }
 
         $this->fireEvent('response:afterSend');
@@ -593,6 +609,8 @@ class Response extends Component implements ResponseInterface
      */
     public function setFile($file, $attachmentName = null)
     {
+        $context = $this->_context;
+
         if ($attachmentName === null) {
             $attachmentName = basename($file);
         }
@@ -602,7 +620,7 @@ class Response extends Component implements ResponseInterface
         }
         $this->setHeader('Content-Length', $this->filesystem->fileSize($file));
 
-        $this->_file = $file;
+        $context->file = $file;
 
         $this->setAttachment($attachmentName);
 
@@ -614,7 +632,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getFile()
     {
-        return $this->_file;
+        return $this->_context->file;
     }
 
     /**
@@ -682,6 +700,6 @@ class Response extends Component implements ResponseInterface
      */
     public function getHeaders()
     {
-        return $this->_headers;
+        return $this->_context->headers;
     }
 }

@@ -5,10 +5,19 @@ namespace ManaPHP\View;
 use ManaPHP\Component;
 use ManaPHP\View\Flash\AdapterInterface;
 
+class _FlashContext
+{
+    /**
+     * @var string[]
+     */
+    public $messages = [];
+}
+
 /**
  * Class ManaPHP\View\Flash
  *
  * @package flash
+ * @property \ManaPHP\View\_FlashContext $_context
  */
 abstract class Flash extends Component implements FlashInterface, AdapterInterface
 {
@@ -18,33 +27,20 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
     protected $_cssClasses;
 
     /**
-     * @var string[]
-     */
-    protected $_messages = [];
-
-    /**
      * \ManaPHP\Flash constructor
      *
      * @param array $cssClasses
      */
     public function __construct($cssClasses = [])
     {
+        $this->_context = new _FlashContext();
+
         $this->_cssClasses = $cssClasses ?: [
             'error' => 'flash-error',
             'notice' => 'flash-notice',
             'success' => 'flash-success',
             'warning' => 'flash-warning'
         ];
-    }
-
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_messages = [];
     }
 
     /**
@@ -120,12 +116,14 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
      */
     public function output($remove = true)
     {
-        foreach ($this->_messages as $message) {
+        $context = $this->_context;
+
+        foreach ($context->messages as $message) {
             echo $message;
         }
 
         if ($remove) {
-            $this->_messages = [];
+            $context->messages = [];
         }
     }
 }

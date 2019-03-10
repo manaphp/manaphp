@@ -26,8 +26,10 @@ class Session extends Flash
     {
         parent::__construct($cssClasses);
 
+        $context = $this->_context;
+
         $defaultMessages = [];
-        $this->_messages = (array)$this->session->get($this->_sessionKey, $defaultMessages);
+        $context->messages = (array)$this->session->get($this->_sessionKey, $defaultMessages);
         $this->session->remove($this->_sessionKey);
     }
 

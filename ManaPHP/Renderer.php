@@ -5,6 +5,24 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
 
+class _RendererContext
+{
+    /**
+     * @var array
+     */
+    public $sections = [];
+
+    /**
+     * @var array
+     */
+    public $stack = [];
+
+    /**
+     * @var array
+     */
+    public $templates = [];
+}
+
 /**
  * Class ManaPHP\Renderer
  *
@@ -25,45 +43,19 @@ class Renderer extends Component implements RendererInterface
         '.phtml' => 'ManaPHP\Renderer\Engine\Php'];
 
     /**
-     * @var array
-     */
-    protected $_sections = [];
-
-    /**
-     * @var array
-     */
-    protected $_stack = [];
-
-    /**
-     * @var array
-     */
-    protected $_templates = [];
-
-    /**
      * Renderer constructor.
      *
      * @param array $options
      */
     public function __construct($options = [])
     {
+        $this->_context = new _RendererContext();
+
         if (isset($options['engines'])) {
             $this->_engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Renderer\Engine\Php'];
         }
 
         $this->loader->registerFiles('@manaphp/Renderer/helpers.php');
-    }
-
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
-
-    public function restoreInstanceState($data)
-    {
-        $this->_sections = [];
-        $this->_stack = [];
-        $this->_templates = [];
     }
 
     /**
@@ -77,6 +69,8 @@ class Renderer extends Component implements RendererInterface
      */
     public function render($template, $vars = [], $directOutput = false)
     {
+        $context = $this->_context;
+
         $content = null;
 
         if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
@@ -90,7 +84,7 @@ class Renderer extends Component implements RendererInterface
         } elseif (strpos($template, '/') !== false) {
             throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
         } else {
-            $template = dirname(end($this->_templates)) . '/' . $template;
+            $template = dirname(end($context->templates)) . '/' . $template;
         }
 
         if (!$file = $this->exists($template)) {
@@ -125,7 +119,7 @@ class Renderer extends Component implements RendererInterface
         }
         $vars['di'] = $this->_di;
 
-        $this->_templates[] = $template;
+        $context->templates[] = $template;
 
         $eventArguments = ['file' => $file, 'vars' => $vars];
         $this->fireEvent('renderer:beforeRender', $eventArguments);
@@ -142,7 +136,7 @@ class Renderer extends Component implements RendererInterface
 
         $this->fireEvent('renderer:afterRender', $eventArguments);
 
-        array_pop($this->_templates);
+        array_pop($context->templates);
 
         return $content;
     }
@@ -165,6 +159,8 @@ class Renderer extends Component implements RendererInterface
      */
     public function exists($template)
     {
+        $context = $this->_context;
+
         if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
             $template = str_replace('\\', '/', $template);
         }
@@ -176,7 +172,7 @@ class Renderer extends Component implements RendererInterface
         } elseif (strpos($template, '/') !== false) {
             throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
         } else {
-            $template = dirname(end($this->_templates)) . '/' . $template;
+            $template = dirname(end($context->templates)) . '/' . $template;
         }
 
         if (($extension = pathinfo($template, PATHINFO_EXTENSION)) && isset($this->_engines[".$extension"])) {
@@ -202,8 +198,10 @@ class Renderer extends Component implements RendererInterface
      */
     public function getSection($section, $default = '')
     {
-        if (isset($this->_sections[$section])) {
-            return $this->_sections[$section];
+        $context = $this->_context;
+
+        if (isset($context->sections[$section])) {
+            return $context->sections[$section];
         } else {
             return $default;
         }
@@ -219,12 +217,14 @@ class Renderer extends Component implements RendererInterface
      */
     public function startSection($section, $default = null)
     {
+        $context = $this->_context;
+
         if ($default === null) {
             ob_start();
             ob_implicit_flush(false);
-            $this->_stack[] = $section;
+            $context->stack[] = $section;
         } else {
-            $this->_sections[$section] = $default;
+            $context->sections[$section] = $default;
         }
     }
 
@@ -237,15 +237,17 @@ class Renderer extends Component implements RendererInterface
      */
     public function stopSection($overwrite = false)
     {
-        if (!$this->_stack) {
+        $context = $this->_context;
+
+        if (!$context->stack) {
             throw new PreconditionException('cannot stop a section without first starting session');
         }
 
-        $last = array_pop($this->_stack);
-        if ($overwrite || !isset($this->_sections[$last])) {
-            $this->_sections[$last] = ob_get_clean();
+        $last = array_pop($context->stack);
+        if ($overwrite || !isset($context->sections[$last])) {
+            $context->sections[$last] = ob_get_clean();
         } else {
-            $this->_sections[$last] .= ob_get_clean();
+            $context->sections[$last] .= ob_get_clean();
         }
     }
 
@@ -254,15 +256,17 @@ class Renderer extends Component implements RendererInterface
      */
     public function appendSection()
     {
-        if (!$this->_stack) {
+        $context = $this->_context;
+
+        if (!$context->stack) {
             throw new PreconditionException('Cannot append a section without first starting one:');
         }
 
-        $last = array_pop($this->_stack);
-        if (isset($this->_sections[$last])) {
-            $this->_sections[$last] .= ob_get_clean();
+        $last = array_pop($context->stack);
+        if (isset($context->sections[$last])) {
+            $context->sections[$last] .= ob_get_clean();
         } else {
-            $this->_sections[$last] = ob_get_clean();
+            $context->sections[$last] = ob_get_clean();
         }
     }
 }

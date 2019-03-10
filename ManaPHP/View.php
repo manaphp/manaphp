@@ -5,6 +5,24 @@ namespace ManaPHP;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 
+class _ViewContext
+{
+    /**
+     * @var false|string|null
+     */
+    public $layout;
+
+    /**
+     * @var array
+     */
+    public $vars = [];
+
+    /**
+     * @var string
+     */
+    public $content;
+}
+
 /**
  * Class ManaPHP\View
  *
@@ -16,44 +34,11 @@ use ManaPHP\Exception\MisuseException;
 class View extends Component implements ViewInterface
 {
     /**
-     * @var false|string|null
-     */
-    protected $_layout;
-
-    /**
-     * @var array
-     */
-    protected $_vars = [];
-
-    /**
-     * @var string
-     */
-    protected $_content;
-
-    /**
      * View constructor.
-     *
-     * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct()
     {
-        if (is_array($options)) {
-            if (isset($options['layout'])) {
-                $this->_layout = $options['layout'];
-            }
-        }
-    }
-
-    public function saveInstanceState()
-    {
-        return ['layout' => $this->_layout];
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_layout = $data['layout'];
-        $this->_vars = [];
-        $this->_content = null;
+        $this->_context = new _ViewContext();
     }
 
     /**
@@ -63,7 +48,9 @@ class View extends Component implements ViewInterface
      */
     public function setLayout($layout = 'Default')
     {
-        $this->_layout = $layout;
+        $context = $this->_context;
+
+        $context->layout = $layout;
 
         return $this;
     }
@@ -82,7 +69,9 @@ class View extends Component implements ViewInterface
      */
     public function setVar($name, $value)
     {
-        $this->_vars[$name] = $value;
+        $context = $this->_context;
+
+        $context->vars[$name] = $value;
 
         return $this;
     }
@@ -96,7 +85,9 @@ class View extends Component implements ViewInterface
      */
     public function setVars($vars)
     {
-        $this->_vars = array_merge($this->_vars, $vars);
+        $context = $this->_context;
+
+        $context->vars = array_merge($context->vars, $vars);
 
         return $this;
     }
@@ -110,10 +101,12 @@ class View extends Component implements ViewInterface
      */
     public function getVar($name = null)
     {
+        $context = $this->_context;
+
         if ($name === null) {
-            return $this->_vars;
+            return $context->vars;
         } else {
-            return isset($this->_vars[$name]) ? $this->_vars[$name] : null;
+            return isset($context->vars[$name]) ? $context->vars[$name] : null;
         }
     }
 
@@ -124,7 +117,9 @@ class View extends Component implements ViewInterface
      */
     public function hasVar($name)
     {
-        return isset($this->_vars[$name]);
+        $context = $this->_context;
+
+        return isset($context->_vars[$name]);
     }
 
     /**
@@ -154,7 +149,9 @@ class View extends Component implements ViewInterface
      */
     protected function _findLayout()
     {
-        if ($this->_layout === null) {
+        $context = $this->_context;
+
+        if ($context->layout === null) {
             $controller = $this->dispatcher->getController();
             if ($area = $this->dispatcher->getArea()) {
                 if ($this->renderer->exists("@app/Areas/$area/Views/Layouts/$controller")) {
@@ -167,8 +164,8 @@ class View extends Component implements ViewInterface
             } else {
                 $layout = $this->renderer->exists("@views/Layouts/$controller") ? "@views/Layouts/$controller" : '@views/Layouts/Default';
             }
-        } elseif (is_string($this->_layout)) {
-            $layout = $this->_layout;
+        } elseif (is_string($context->layout)) {
+            $layout = $context->layout;
             if ($layout[0] !== '@') {
                 $layout = ucfirst($layout);
                 if (($area = $this->dispatcher->getArea()) && $this->renderer->exists("@app/Areas/$area/Views/Layouts/$layout")) {
@@ -194,8 +191,10 @@ class View extends Component implements ViewInterface
      */
     public function render($template = null, $vars = null)
     {
+        $context = $this->_context;
+
         if ($vars !== null) {
-            $this->_vars = $vars;
+            $context->vars = $vars;
         }
 
         $area = $this->dispatcher->getArea();
@@ -217,16 +216,16 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:beforeRender');
 
-        $this->_content = $this->_render($template, $this->_vars, false);
+        $context->content = $this->_render($template, $context->vars, false);
 
-        if ($this->_layout !== false) {
+        if ($context->layout !== false) {
             $layout = $this->_findLayout();
-            $this->_content = $this->_render($layout, $this->_vars, false);
+            $context->content = $this->_render($layout, $context->vars, false);
         }
 
         $this->fireEvent('view:afterRender');
 
-        return $this->_content;
+        return $context->content;
     }
 
     /**
@@ -316,7 +315,9 @@ class View extends Component implements ViewInterface
      */
     public function setContent($content)
     {
-        $this->_content = $content;
+        $context = $this->_context;
+
+        $context->content = $content;
 
         return $this;
     }
@@ -328,6 +329,6 @@ class View extends Component implements ViewInterface
      */
     public function getContent()
     {
-        return $this->_content;
+        return $this->_context->content;
     }
 }

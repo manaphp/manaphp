@@ -5,6 +5,14 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Http\Cookies\Exception as CookiesException;
 
+class _CookiesContext
+{
+    /**
+     * @var array
+     */
+    public $cookies = [];
+}
+
 /**
  * Class ManaPHP\Http\Cookies
  *
@@ -14,11 +22,6 @@ use ManaPHP\Http\Cookies\Exception as CookiesException;
  */
 class Cookies extends Component implements CookiesInterface
 {
-    /**
-     * @var array
-     */
-    protected $_cookies = [];
-
     /**
      * @var string
      */
@@ -31,6 +34,8 @@ class Cookies extends Component implements CookiesInterface
      */
     public function __construct($options = [])
     {
+        $this->_context = new _CookiesContext();
+
         if (is_string($options)) {
             $options = ['key' => $options];
         }
@@ -38,16 +43,6 @@ class Cookies extends Component implements CookiesInterface
         if (isset($options['key'])) {
             $this->_key = $options['key'];
         }
-    }
-
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_cookies = [];
     }
 
     /**
@@ -65,6 +60,8 @@ class Cookies extends Component implements CookiesInterface
      */
     public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
     {
+        $context = $this->_context;
+
         if ($expire > 0) {
             $current = time();
             if ($expire < $current) {
@@ -77,7 +74,7 @@ class Cookies extends Component implements CookiesInterface
             $value = $this->_encrypt($name, $value);
         }
 
-        $this->_cookies[$name] = [
+        $context->cookies[$name] = [
             'name' => $name,
             'value' => $value,
             'expire' => $expire,
@@ -140,8 +137,10 @@ class Cookies extends Component implements CookiesInterface
      */
     public function get($name, $default = null)
     {
+        $context = $this->_context;
+
         if ($name === null) {
-            return $this->_cookies;
+            return $context->cookies;
         } elseif ($name[0] === '!') {
             $name = (string)substr($name, 1);
             if (isset($_COOKIE[$name])) {
@@ -181,12 +180,14 @@ class Cookies extends Component implements CookiesInterface
      */
     public function delete($name, $path = null, $domain = null, $secure = false, $httpOnly = true)
     {
+        $context = $this->_context;
+
         if ($name[0] === '!') {
             $name = (string)substr($name, 1);
         }
 
         unset($_COOKIE[$name]);
-        $this->_cookies[$name] = [
+        $context->cookies[$name] = [
             'name' => $name,
             'value' => 'deleted',
             'expire' => 1,
@@ -207,9 +208,11 @@ class Cookies extends Component implements CookiesInterface
      */
     public function send()
     {
+        $context = $this->_context;
+
         $this->fireEvent('cookies:beforeSend');
 
-        foreach ($this->_cookies as $cookie) {
+        foreach ($context->cookies as $cookie) {
             setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
                 $cookie['path'], $cookie['domain'], $cookie['secure'],
                 $cookie['httpOnly']);
@@ -223,6 +226,6 @@ class Cookies extends Component implements CookiesInterface
      */
     public function getSent()
     {
-        return $this->_cookies;
+        return $this->_context->cookies;
     }
 }

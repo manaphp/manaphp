@@ -6,6 +6,14 @@ use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Ipc\CacheInterface;
 
+class  _ApcuContext
+{
+    /**
+     * @var array
+     */
+    public $cache;
+}
+
 class Apcu extends Component implements CacheInterface
 {
     /**
@@ -19,11 +27,6 @@ class Apcu extends Component implements CacheInterface
     protected $_prefix;
 
     /**
-     * @var array
-     */
-    protected $_cache;
-
-    /**
      * @var bool
      */
     protected $_is_cli;
@@ -35,6 +38,8 @@ class Apcu extends Component implements CacheInterface
      */
     public function __construct($options = [])
     {
+        $this->_context = new _ApcuContext();
+
         $this->_enabled = function_exists('apcu_fetch');
 
         if (isset($options['enabled'])) {
@@ -46,16 +51,6 @@ class Apcu extends Component implements CacheInterface
         }
 
         $this->_is_cli = (PHP_SAPI === 'cli');
-    }
-
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_cache = null;
     }
 
     public function setDi($di)
@@ -73,12 +68,14 @@ class Apcu extends Component implements CacheInterface
      */
     public function set($key, $value, $ttl)
     {
+        $context = $this->_context;
+
         if ($value === false) {
             throw new MisuseException(['value of `:key` key can not be false', 'key' => $key]);
         }
 
         if ($ttl === 0) {
-            $this->_cache[$key] = $value;
+            $context->cache[$key] = $value;
         } elseif ($this->_enabled) {
             apcu_store($this->_prefix ? ($this->_prefix . $key) : $key, $this->_is_cli ? [time() + $ttl, $value] : $value, $ttl);
         }
@@ -91,8 +88,10 @@ class Apcu extends Component implements CacheInterface
      */
     public function get($key)
     {
-        if ($this->_cache !== null && array_key_exists($key, $this->_cache)) {
-            return $this->_cache[$key];
+        $context = $this->_context;
+
+        if ($context->cache !== null && array_key_exists($key, $context->cache)) {
+            return $context->cache[$key];
         } elseif ($this->_enabled) {
             if ($this->_is_cli) {
                 if (($r = apcu_fetch($this->_prefix ? ($this->_prefix . $key) : $key)) === false) {

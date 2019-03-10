@@ -3,6 +3,14 @@ namespace ManaPHP\Cache\Adapter;
 
 use ManaPHP\Cache;
 
+class _MemoryContext
+{
+    /**
+     * @var array
+     */
+    public $data = [];
+}
+
 /**
  * Class ManaPHP\Cache\Adapter\Memory
  *
@@ -10,19 +18,9 @@ use ManaPHP\Cache;
  */
 class Memory extends Cache
 {
-    /**
-     * @var array
-     */
-    protected $_data = [];
-
-    public function saveInstanceState()
+    public function __construct()
     {
-        return true;
-    }
-
-    public function restoreInstanceState($data)
-    {
-        $this->_data = [];
+        $this->_context = new _MemoryContext();
     }
 
     /**
@@ -32,11 +30,13 @@ class Memory extends Cache
      */
     public function do_get($key)
     {
-        if (isset($this->_data[$key])) {
-            if ($this->_data[$key]['deadline'] >= time()) {
-                return $this->_data[$key]['data'];
+        $context = $this->_context;
+
+        if (isset($context->data[$key])) {
+            if ($context->data[$key]['deadline'] >= time()) {
+                return $context->data[$key]['data'];
             } else {
-                unset($this->_data[$key]);
+                unset($context->data[$key]);
 
                 return false;
             }
@@ -54,7 +54,9 @@ class Memory extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        $this->_data[$key] = ['deadline' => time() + $ttl, 'data' => $value];
+        $context = $this->_context;
+
+        $context->data[$key] = ['deadline' => time() + $ttl, 'data' => $value];
     }
 
     /**
@@ -64,7 +66,9 @@ class Memory extends Cache
      */
     public function do_delete($key)
     {
-        unset($this->_data[$key]);
+        $context = $this->_context;
+
+        unset($context->data[$key]);
     }
 
     /**
@@ -74,6 +78,8 @@ class Memory extends Cache
      */
     public function do_exists($key)
     {
-        return isset($this->_data[$key]) && $this->_data[$key]['deadline'] >= time();
+        $context = $this->_context;
+
+        return isset($context->data[$key]) && $context->data[$key]['deadline'] >= time();
     }
 }

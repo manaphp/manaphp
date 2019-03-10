@@ -5,6 +5,14 @@ namespace ManaPHP\Logger\Appender;
 use ManaPHP\Component;
 use ManaPHP\Logger\AppenderInterface;
 
+class _FileContext
+{
+    /**
+     * @var array
+     */
+    public $logs = [];
+}
+
 /**
  * Class ManaPHP\Logger\Appender\File
  *
@@ -25,7 +33,7 @@ class File extends Component implements AppenderInterface
     /**
      * @var array
      */
-    protected $_lazy;
+    protected $_lazy = false;
 
     /**
      * \ManaPHP\Logger\Adapter\File constructor.
@@ -34,6 +42,8 @@ class File extends Component implements AppenderInterface
      */
     public function __construct($options = [])
     {
+        $this->_context = new _FileContext();
+
         if (is_string($options)) {
             $options = [strpos($options, ':') === false ? 'file' : 'format' => $options];
         }
@@ -48,22 +58,19 @@ class File extends Component implements AppenderInterface
 
         if (!empty($_SERVER['DOCUMENT_ROOT'])) {
             if (!isset($options['lazy']) || $options['lazy']) {
-                $this->_lazy = [];
+                $this->_lazy = true;
+                $this->eventsManager->attachEvent('app:endRequest', [$this, '_writeLazyLog']);
             }
         }
     }
 
-    public function saveInstanceState()
+    public function _writeLazyLog()
     {
-        return true;
-    }
+        $context = $this->_context;
 
-    public function restoreInstanceState($data)
-    {
-        if ($this->_lazy) {
-            $this->_write(implode($this->_lazy, ''));
-
-            $this->_lazy = [];
+        if ($context->logs) {
+            $this->_write(implode($context->logs, ''));
+            $context->logs = [];
         }
     }
 
@@ -124,17 +131,19 @@ class File extends Component implements AppenderInterface
      */
     public function append($log)
     {
-        if ($this->_lazy === null) {
-            $this->_write($this->_format($log));
+        if ($this->_lazy) {
+            $context = $this->_context;
+
+            $context->logs[] = $this->_format($log);
         } else {
-            $this->_lazy[] = $this->_format($log);
+            $this->_write($this->_format($log));
         }
     }
 
     public function __destruct()
     {
         if ($this->_lazy) {
-            $this->_write(implode($this->_lazy, ''));
+            $this->_writeLazyLog();
         }
     }
 }

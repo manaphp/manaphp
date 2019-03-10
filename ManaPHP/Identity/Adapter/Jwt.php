@@ -108,7 +108,9 @@ class Jwt extends Identity
      */
     public function getExpiredTime()
     {
-        return isset($this->_claims['exp']) ? $this->_claims['exp'] : null;
+        $context = $this->_context;
+
+        return isset($context->claims['exp']) ? $context->claims['exp'] : null;
     }
 
     /**
