@@ -33,7 +33,7 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
      */
     public function __construct($cssClasses = [])
     {
-        $this->_context = new FlashContext();
+        $this->_configureContext('ManaPHP\View\FlashContext');
 
         $this->_cssClasses = $cssClasses ?: [
             'error' => 'flash-error',

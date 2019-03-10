@@ -32,6 +32,7 @@ class ValidatorContext
  *
  * @package ManaPHP\Model
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
+ * @property \ManaPHP\Model\ValidatorContext              $_context
  */
 class Validator extends Component implements ValidatorInterface
 {
@@ -45,7 +46,6 @@ class Validator extends Component implements ValidatorInterface
      */
     protected $_templates;
 
-
     /**
      * Validator constructor.
      *
@@ -53,7 +53,7 @@ class Validator extends Component implements ValidatorInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new ValidatorContext();
+        $this->_configureContext('ManaPHP\Model\ValidatorContext');
 
         if (isset($options['templates_dir'])) {
             $this->_templates_dir = $options['templates_dir'];

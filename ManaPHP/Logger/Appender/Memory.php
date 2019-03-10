@@ -16,12 +16,13 @@ class MemoryContext
  * Class ManaPHP\Logger\Appender\Memory
  *
  * @package logger
+ * @property \ManaPHP\Logger\Appender\MemoryContext $_context
  */
 class Memory extends Component implements AppenderInterface
 {
     public function __construct()
     {
-        $this->_context = new MemoryContext();
+        $this->_configureContext('ManaPHP\Logger\Appender\MemoryContext');
     }
 
     /**

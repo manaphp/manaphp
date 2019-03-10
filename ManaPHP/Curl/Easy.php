@@ -26,6 +26,7 @@ class EasyContext
  * Class ManaPHP\Curl\Easy
  *
  * @package Curl
+ * @property \ManaPHP\Curl\EasyContext $_context
  */
 class Easy extends Component implements EasyInterface
 {
@@ -80,7 +81,7 @@ class Easy extends Component implements EasyInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new EasyContext();
+        $this->_configureContext('ManaPHP\Curl\EasyContext');
 
         if (!function_exists('curl_init')) {
             throw new ExtensionNotInstalledException('curl');

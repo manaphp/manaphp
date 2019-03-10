@@ -39,12 +39,13 @@ class ResponseContext
  * @property-read \ManaPHP\Http\CookiesInterface $cookies
  * @property-read \ManaPHP\UrlInterface          $url
  * @property-read \ManaPHP\RouterInterface       $router
+ * @property \ManaPHP\Http\ResponseContext       $_context
  */
 class Response extends Component implements ResponseInterface
 {
     public function __construct()
     {
-        $this->_context = new ResponseContext();
+        $this->_configureContext('ManaPHP\Http\ResponseContext');
     }
 
     /**

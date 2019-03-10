@@ -29,6 +29,11 @@ class DebuggerPluginContext
     public $events = [];
 }
 
+/**
+ * Class DebuggerPlugin
+ * @package ManaPHP\Plugins
+ * @property \ManaPHP\Plugins\DebuggerPluginContext $_context
+ */
 class DebuggerPlugin extends Plugin
 {
     /**
@@ -38,7 +43,7 @@ class DebuggerPlugin extends Plugin
 
     public function __construct()
     {
-        $this->_context = new DebuggerPluginContext();
+        $this->_configureContext('ManaPHP\Plugins\DebuggerPluginContext');
     }
 
     public function init()

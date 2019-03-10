@@ -30,6 +30,7 @@ class ViewContext
  *
  * @property-read \ManaPHP\RendererInterface   $renderer
  * @property-read \ManaPHP\DispatcherInterface $dispatcher
+ * @property \ManaPHP\ViewContext              $_context
  */
 class View extends Component implements ViewInterface
 {
@@ -38,7 +39,7 @@ class View extends Component implements ViewInterface
      */
     public function __construct()
     {
-        $this->_context = new ViewContext();
+        $this->_configureContext('ManaPHP\ViewContext');
     }
 
     /**

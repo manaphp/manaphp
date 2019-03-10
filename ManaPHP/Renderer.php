@@ -27,6 +27,7 @@ class RendererContext
  * Class ManaPHP\Renderer
  *
  * @package renderer
+ * @property \ManaPHP\RendererContext $_context
  */
 class Renderer extends Component implements RendererInterface
 {

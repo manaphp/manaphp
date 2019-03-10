@@ -19,6 +19,7 @@ class CookiesContext
  * @package cookies
  *
  * @property-read \ManaPHP\Security\CryptInterface $crypt
+ * @property \ManaPHP\Http\CookiesContext          $_context
  */
 class Cookies extends Component implements CookiesInterface
 {
@@ -34,7 +35,7 @@ class Cookies extends Component implements CookiesInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new CookiesContext();
+        $this->_configureContext('ManaPHP\Http\CookiesContext');
 
         if (is_string($options)) {
             $options = ['key' => $options];

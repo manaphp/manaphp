@@ -46,12 +46,13 @@ class DispatcherContext
  * @package dispatcher
  * @property-read \ManaPHP\Http\FilterInterface  $filter
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\DispatcherContext          $_context
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
     public function __construct()
     {
-        $this->_context = new DispatcherContext();
+        $this->_configureContext('ManaPHP\DispatcherContext');
     }
 
     /**

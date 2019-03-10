@@ -15,12 +15,13 @@ class MemoryContext
  * Class ManaPHP\Cache\Adapter\Memory
  *
  * @package cache\adapter
+ * @property \ManaPHP\Cache\Adapter\MemoryContext $_context
  */
 class Memory extends Cache
 {
     public function __construct()
     {
-        $this->_context = new MemoryContext();
+        $this->_configureContext('ManaPHP\Cache\Adapter\MemoryContext');
     }
 
     /**

@@ -42,6 +42,14 @@ class Component implements ComponentInterface, \JsonSerializable
     protected $_context;
 
     /**
+     * @param string $class
+     */
+    protected function _configureContext($class)
+    {
+        $this->_context = new $class;
+    }
+    
+    /**
      * @return mixed
      */
     public function saveInstanceState()

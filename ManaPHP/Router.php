@@ -39,6 +39,7 @@ class RouterContext
  * @package router
  *
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\RouterContext              $_context
  */
 class Router extends Component implements RouterInterface
 {
@@ -74,7 +75,7 @@ class Router extends Component implements RouterInterface
      */
     public function __construct($useDefaultRoutes = true)
     {
-        $this->_context = new RouterContext();
+        $this->_configureContext('ManaPHP\RouterContext');
 
         if ($useDefaultRoutes) {
             $this->_default_route = new Route('/(?:{controller}(?:/{action}(?:/{params})?)?)?');
