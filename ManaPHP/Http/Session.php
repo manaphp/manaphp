@@ -58,11 +58,6 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
         $this->attachEvent('response:beforeSend', [$this, 'onBeforeSendResponse']);
     }
 
-    public function saveInstanceState()
-    {
-        return true;
-    }
-
     public function restoreInstanceState($data)
     {
         if ($this->_started) {
