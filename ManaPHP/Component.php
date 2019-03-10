@@ -46,6 +46,10 @@ class Component implements ComponentInterface, \JsonSerializable
      */
     protected function _configureContext($class)
     {
+        if (!$class) {
+            $class = get_called_class() . 'Context';
+        }
+
         $this->_context = new $class;
     }
     
