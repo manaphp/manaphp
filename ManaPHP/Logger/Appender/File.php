@@ -5,7 +5,7 @@ namespace ManaPHP\Logger\Appender;
 use ManaPHP\Component;
 use ManaPHP\Logger\AppenderInterface;
 
-class _FileContext
+class FileContext
 {
     /**
      * @var array
@@ -42,7 +42,7 @@ class File extends Component implements AppenderInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new _FileContext();
+        $this->_context = new FileContext();
 
         if (is_string($options)) {
             $options = [strpos($options, ':') === false ? 'file' : 'format' => $options];

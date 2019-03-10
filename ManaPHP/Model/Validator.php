@@ -9,7 +9,7 @@ use ManaPHP\Model\Validator\Message;
 use ManaPHP\Model\Validator\ValidateFailedException;
 use ManaPHP\Utility\Text;
 
-class _ValidatorContext
+class ValidatorContext
 {
     /**
      * @var array
@@ -53,7 +53,7 @@ class Validator extends Component implements ValidatorInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new _ValidatorContext();
+        $this->_context = new ValidatorContext();
 
         if (isset($options['templates_dir'])) {
             $this->_templates_dir = $options['templates_dir'];

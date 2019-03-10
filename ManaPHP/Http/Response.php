@@ -7,7 +7,7 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Filter\Exception as FilterException;
 
-class _ResponseContext
+class ResponseContext
 {
     /**
      * @var string
@@ -44,7 +44,7 @@ class Response extends Component implements ResponseInterface
 {
     public function __construct()
     {
-        $this->_context = new _ResponseContext();
+        $this->_context = new ResponseContext();
     }
 
     /**

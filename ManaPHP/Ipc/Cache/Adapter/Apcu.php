@@ -6,7 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Ipc\CacheInterface;
 
-class  _ApcuContext
+class  ApcuContext
 {
     /**
      * @var array
@@ -38,7 +38,7 @@ class Apcu extends Component implements CacheInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new _ApcuContext();
+        $this->_context = new ApcuContext();
 
         $this->_enabled = function_exists('apcu_fetch');
 

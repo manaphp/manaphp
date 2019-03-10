@@ -14,7 +14,7 @@ use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 
-class _EasyContext
+class EasyContext
 {
     /**
      * @var \ManaPHP\Curl\Easy\Response
@@ -80,7 +80,7 @@ class Easy extends Component implements EasyInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new _EasyContext();
+        $this->_context = new EasyContext();
 
         if (!function_exists('curl_init')) {
             throw new ExtensionNotInstalledException('curl');

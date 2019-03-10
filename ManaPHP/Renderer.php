@@ -5,7 +5,7 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
 
-class _RendererContext
+class RendererContext
 {
     /**
      * @var array
@@ -49,7 +49,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new _RendererContext();
+        $this->_context = new RendererContext();
 
         if (isset($options['engines'])) {
             $this->_engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Renderer\Engine\Php'];

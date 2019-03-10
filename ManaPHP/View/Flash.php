@@ -5,7 +5,7 @@ namespace ManaPHP\View;
 use ManaPHP\Component;
 use ManaPHP\View\Flash\AdapterInterface;
 
-class _FlashContext
+class FlashContext
 {
     /**
      * @var string[]
@@ -17,7 +17,7 @@ class _FlashContext
  * Class ManaPHP\View\Flash
  *
  * @package flash
- * @property \ManaPHP\View\_FlashContext $_context
+ * @property \ManaPHP\View\FlashContext $_context
  */
 abstract class Flash extends Component implements FlashInterface, AdapterInterface
 {
@@ -33,7 +33,7 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
      */
     public function __construct($cssClasses = [])
     {
-        $this->_context = new _FlashContext();
+        $this->_context = new FlashContext();
 
         $this->_cssClasses = $cssClasses ?: [
             'error' => 'flash-error',

@@ -5,7 +5,7 @@ namespace ManaPHP;
 use ManaPHP\Router\Route;
 use ManaPHP\Utility\Text;
 
-class _RouterContext
+class RouterContext
 {
     /**
      * @var string
@@ -74,7 +74,7 @@ class Router extends Component implements RouterInterface
      */
     public function __construct($useDefaultRoutes = true)
     {
-        $this->_context = new _RouterContext();
+        $this->_context = new RouterContext();
 
         if ($useDefaultRoutes) {
             $this->_default_route = new Route('/(?:{controller}(?:/{action}(?:/{params})?)?)?');

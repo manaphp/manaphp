@@ -4,7 +4,7 @@ namespace ManaPHP\Logger\Appender;
 use ManaPHP\Component;
 use ManaPHP\Logger\AppenderInterface;
 
-class _MemoryContext
+class MemoryContext
 {
     /**
      * @var \ManaPHP\Logger\Log[]
@@ -21,7 +21,7 @@ class Memory extends Component implements AppenderInterface
 {
     public function __construct()
     {
-        $this->_context = new _MemoryContext();
+        $this->_context = new MemoryContext();
     }
 
     /**

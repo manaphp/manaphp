@@ -4,7 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\AuthenticationException;
 
-class _IdentityContext
+class IdentityContext
 {
     /**
      * @var string
@@ -19,7 +19,7 @@ class _IdentityContext
 
 /**
  * Class ManaPHP\Identity
- * @property \ManaPHP\_IdentityContext $_context
+ * @property \ManaPHP\IdentityContext $_context
  */
 abstract class Identity extends Component implements IdentityInterface
 {
@@ -30,7 +30,7 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function __construct($options = null)
     {
-        $context = $this->_context = new _IdentityContext();
+        $context = $this->_context = new IdentityContext();
 
         if (is_array($options)) {
             if (isset($options['type'])) {

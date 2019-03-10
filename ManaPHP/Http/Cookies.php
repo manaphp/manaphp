@@ -5,7 +5,7 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Http\Cookies\Exception as CookiesException;
 
-class _CookiesContext
+class CookiesContext
 {
     /**
      * @var array
@@ -34,7 +34,7 @@ class Cookies extends Component implements CookiesInterface
      */
     public function __construct($options = [])
     {
-        $this->_context = new _CookiesContext();
+        $this->_context = new CookiesContext();
 
         if (is_string($options)) {
             $options = ['key' => $options];

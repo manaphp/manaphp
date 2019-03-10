@@ -5,7 +5,7 @@ namespace ManaPHP;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 
-class _ViewContext
+class ViewContext
 {
     /**
      * @var false|string|null
@@ -38,7 +38,7 @@ class View extends Component implements ViewInterface
      */
     public function __construct()
     {
-        $this->_context = new _ViewContext();
+        $this->_context = new ViewContext();
     }
 
     /**

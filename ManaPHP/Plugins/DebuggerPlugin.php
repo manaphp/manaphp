@@ -9,7 +9,7 @@ use ManaPHP\Logger\Log;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
 
-class _DebuggerPluginContext
+class DebuggerPluginContext
 {
     /**
      * @var string
@@ -38,7 +38,7 @@ class DebuggerPlugin extends Plugin
 
     public function __construct()
     {
-        $this->_context = new _DebuggerPluginContext();
+        $this->_context = new DebuggerPluginContext();
     }
 
     public function init()

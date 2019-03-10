@@ -7,7 +7,7 @@ use ManaPHP\Dispatcher\NotFoundControllerException;
 use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Utility\Text;
 
-class _DispatcherContext
+class DispatcherContext
 {
     /**
      * @var string
@@ -51,7 +51,7 @@ class Dispatcher extends Component implements DispatcherInterface
 {
     public function __construct()
     {
-        $this->_context = new _DispatcherContext();
+        $this->_context = new DispatcherContext();
     }
 
     /**

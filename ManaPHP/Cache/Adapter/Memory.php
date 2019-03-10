@@ -3,7 +3,7 @@ namespace ManaPHP\Cache\Adapter;
 
 use ManaPHP\Cache;
 
-class _MemoryContext
+class MemoryContext
 {
     /**
      * @var array
@@ -20,7 +20,7 @@ class Memory extends Cache
 {
     public function __construct()
     {
-        $this->_context = new _MemoryContext();
+        $this->_context = new MemoryContext();
     }
 
     /**
