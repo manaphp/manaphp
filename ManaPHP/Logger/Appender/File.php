@@ -43,7 +43,7 @@ class File extends Component implements AppenderInterface
      */
     public function __construct($options = [])
     {
-        $this->_configureContext('\ManaPHP\Logger\Appender\File');
+        $this->_configureContext('\ManaPHP\Logger\Appender\FileContext');
 
         if (is_string($options)) {
             $options = [strpos($options, ':') === false ? 'file' : 'format' => $options];
