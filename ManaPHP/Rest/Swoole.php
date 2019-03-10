@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Rest;
 
-use ManaPHP\Component;
+use ManaPHP\ContextManager;
 use ManaPHP\Http\Response;
 use ManaPHP\Router\NotFoundRouteException;
 
@@ -21,7 +21,7 @@ class Swoole extends \ManaPHP\Application
     public function getDi()
     {
         if (!$this->_di) {
-            Component::useDynamicContext();
+            ContextManager::useDynamic();
             $this->_di = new Factory();
             $this->_di->setShared('swooleHttpServer', 'ManaPHP\Swoole\Http\Server');
         }
@@ -80,7 +80,7 @@ class Swoole extends \ManaPHP\Application
 
         $this->eventsManager->fireEvent('app:endRequest', $this);
 
-        Component::resetContexts();
+        ContextManager::reset();
     }
 
     public function main()

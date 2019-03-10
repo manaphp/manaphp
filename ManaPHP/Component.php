@@ -32,21 +32,6 @@ namespace ManaPHP;
 class Component implements ComponentInterface, \JsonSerializable
 {
     /**
-     * @var bool
-     */
-    public static $__use_dynamic_context = false;
-
-    /**
-     * @var array
-     */
-    public static $__context_classes = [];
-
-    /**
-     * @var array
-     */
-    public static $__contexts = [];
-
-    /**
      * @var \ManaPHP\Di
      */
     protected $_di;
@@ -65,20 +50,12 @@ class Component implements ComponentInterface, \JsonSerializable
             $class = get_called_class() . 'Context';
         }
 
-        if (self::$__use_dynamic_context) {
+        if (ContextManager::isUseDynamic()) {
             unset($this->_context);
-            self::$__context_classes[get_called_class()] = $class;
+            ContextManager::configure(get_called_class(), $class);
         } else {
             $this->_context = new $class;
         }
-    }
-
-    /**
-     * @param bool $dynamic
-     */
-    public static function useDynamicContext($dynamic = true)
-    {
-        self::$__use_dynamic_context = $dynamic;
     }
 
     /**
@@ -133,11 +110,7 @@ class Component implements ComponentInterface, \JsonSerializable
     public function __get($name)
     {
         if ($name === '_context') {
-            $id = spl_object_id($this);
-            if (!isset(self::$__contexts[$id])) {
-                return self::$__contexts[$id] = new self::$__context_classes[get_called_class()];
-            }
-            return self::$__contexts[$id];
+            return ContextManager::get($this);
         }
 
         if ($this->_di === null) {
@@ -245,10 +218,5 @@ class Component implements ComponentInterface, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    public static function resetContexts()
-    {
-        self::$__contexts = [];
     }
 }
