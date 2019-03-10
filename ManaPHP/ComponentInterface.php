@@ -51,16 +51,4 @@ interface ComponentInterface
      * @return mixed|null
      */
     public function fireEvent($event, $data = []);
-
-    /**
-     * @return array|false
-     */
-    public function saveInstanceState();
-
-    /**
-     * @param array $data
-     *
-     * @return void
-     */
-    public function restoreInstanceState($data);
 }

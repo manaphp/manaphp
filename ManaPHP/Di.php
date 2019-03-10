@@ -2,7 +2,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Di\InstanceState;
 use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
@@ -76,16 +75,6 @@ class Di implements DiInterface
      * @var array
      */
     protected $_instances = [];
-
-    /**
-     * @var bool
-     */
-    protected $_keep_instance_state = false;
-
-    /**
-     * @var \ManaPHP\Di\InstanceState[]
-     */
-    protected $_instancesState = [];
 
     /**
      * First DI build
@@ -354,12 +343,7 @@ class Di implements DiInterface
             throw new NotSupportedException(['`:name` component cannot be resolved: component implement type is not supported', 'name' => $name]);
         }
 
-        if ($instance instanceof Component) {
-            $instance->setDi($this);
-            if ($this->_keep_instance_state && ($state = $instance->saveInstanceState()) !== false) {
-                $this->_instancesState[] = new InstanceState($name, $instance, $state);
-            }
-        } elseif (method_exists($instance, 'setDi')) {
+        if ($instance instanceof Component || method_exists($instance, 'setDi')) {
             $instance->setDi($this);
         }
 
@@ -523,22 +507,5 @@ class Di implements DiInterface
     public function __debugInfo()
     {
         return get_object_vars($this);
-    }
-
-    /**
-     * @param bool $keep
-     *
-     * @return void
-     */
-    public function keepInstanceState($keep = true)
-    {
-        $this->_keep_instance_state = $keep;
-    }
-
-    public function restoreInstancesState()
-    {
-        foreach ($this->_instancesState as $item) {
-            $item->instance->restoreInstanceState($item->state);
-        }
     }
 }

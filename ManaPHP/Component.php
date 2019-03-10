@@ -32,6 +32,21 @@ namespace ManaPHP;
 class Component implements ComponentInterface, \JsonSerializable
 {
     /**
+     * @var bool
+     */
+    public static $__use_dynamic_context = false;
+
+    /**
+     * @var array
+     */
+    public static $__context_classes = [];
+
+    /**
+     * @var array
+     */
+    public static $__contexts = [];
+
+    /**
      * @var \ManaPHP\Di
      */
     protected $_di;
@@ -50,39 +65,20 @@ class Component implements ComponentInterface, \JsonSerializable
             $class = get_called_class() . 'Context';
         }
 
-        $this->_context = new $class;
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function saveInstanceState()
-    {
-        $context = $this->_context;
-
-        if ($context === null) {
-            return false;
-        } elseif (is_object($context)) {
-            return clone $context;
+        if (self::$__use_dynamic_context) {
+            unset($this->_context);
+            self::$__context_classes[get_called_class()] = $class;
         } else {
-            return $context;
+            $this->_context = new $class;
         }
     }
 
     /**
-     * @param object|array $data
-     *
-     * @return void
+     * @param bool $dynamic
      */
-    public function restoreInstanceState($data)
+    public static function useDynamicContext($dynamic = true)
     {
-        if (is_object($data)) {
-            $this->_context = clone $data;
-        } else {
-            foreach ($data as $k => $v) {
-                $this->$k = $v;
-            }
-        }
+        self::$__use_dynamic_context = $dynamic;
     }
 
     /**
@@ -136,6 +132,14 @@ class Component implements ComponentInterface, \JsonSerializable
      */
     public function __get($name)
     {
+        if ($name === '_context') {
+            $id = spl_object_id($this);
+            if (!isset(self::$__contexts[$id])) {
+                return self::$__contexts[$id] = new self::$__context_classes[get_called_class()];
+            }
+            return self::$__contexts[$id];
+        }
+
         if ($this->_di === null) {
             $this->_di = Di::getDefault();
         }
@@ -241,5 +245,10 @@ class Component implements ComponentInterface, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    public static function resetContexts()
+    {
+        self::$__contexts = [];
     }
 }
