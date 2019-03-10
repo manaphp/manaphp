@@ -6,6 +6,15 @@ if (PHP_VERSION_ID < 70000) {
     require_once __DIR__ . '/polyfill.php';
 }
 
+if (!function_exists('spl_object_id')) {
+    function spl_object_id($object)
+    {
+        // https://github.com/akihiromukae/sample1/blob/1dc7b6e49684c882ef39476071179421fbd1e18e/vendor/phan/phan/src/spl_object_id.php
+        $hash = spl_object_hash($object);
+        return intval(PHP_INT_SIZE === 8 ? substr($hash, 1, 15) : substr($hash, 9, 7), 16);
+    }
+}
+
 if (!function_exists('di')) {
     /**
      * @param string $name
