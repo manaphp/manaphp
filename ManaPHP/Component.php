@@ -193,6 +193,10 @@ class Component implements ComponentInterface, \JsonSerializable
                 continue;
             }
 
+            if ($k === '_context' && $v === null) {
+                continue;
+            }
+
             $data[$k] = $v;
         }
 
