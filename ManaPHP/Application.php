@@ -13,6 +13,7 @@ use ManaPHP\Mvc\Factory as MvcFactory;
  * @property-read \ManaPHP\DotenvInterface        $dotenv
  * @property-read \ManaPHP\ErrorHandlerInterface  $errorHandler
  * @property-read \ManaPHP\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Http\RequestInterface  $request
  */
 class Application extends Component implements ApplicationInterface
 {
@@ -85,7 +86,7 @@ class Application extends Component implements ApplicationInterface
 
     public function generateRequestId()
     {
-        if (!isset($_SERVER['HTTP_X_REQUEST_ID'])) {
+        if (!$this->request->hasServer('HTTP_X_REQUEST_ID')) {
             if (function_exists('random_bytes')) {
                 $request_id = random_bytes(15);
             } else {

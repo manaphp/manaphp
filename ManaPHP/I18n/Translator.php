@@ -62,8 +62,7 @@ class Translator extends Component implements TranslatorInterface
 
         if ($this->_locale) {
             $context->locale = $this->_locale;
-        } elseif (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $accept_lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        } elseif ($accept_lang = $this->request->getServer('HTTP_ACCEPT_LANGUAGE')) {
             if (($pos = strpos($accept_lang, ',')) !== false) {
                 $context->locale = substr($accept_lang, 0, $pos);
             } else {
