@@ -226,14 +226,16 @@ class Response extends Component implements ResponseInterface
      */
     public function setExpires($timestamp)
     {
-        if ($timestamp <= 2592000) {
-            $timestamp += time();
+        if (strpos('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD')) !== false) {
+            if ($timestamp <= 2592000) {
+                $timestamp += time();
+            }
+
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+            $date->setTimestamp($timestamp);
+
+            $this->setHeader('Expires', $date->format('D, d M Y H:i:s') . ' GMT');
         }
-
-        $date = new \DateTime('now', new \DateTimeZone('UTC'));
-        $date->setTimestamp($timestamp);
-
-        $this->setHeader('Expires', $date->format('D, d M Y H:i:s') . ' GMT');
 
         return $this;
     }
@@ -274,7 +276,11 @@ class Response extends Component implements ResponseInterface
      */
     public function setCacheControl($control)
     {
-        return $this->setHeader('Cache-Control', $control);
+        if (strpos('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD')) !== false) {
+            return $this->setHeader('Cache-Control', $control);
+        }
+
+        return $this;
     }
 
     /**
@@ -285,8 +291,10 @@ class Response extends Component implements ResponseInterface
      */
     public function setMaxAge($age, $extra = null)
     {
-        $this->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
-        $this->setExpires(time() + $age);
+        if (strpos('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD')) !== false) {
+            $this->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
+            $this->setExpires(time() + $age);
+        }
 
         return $this;
     }
