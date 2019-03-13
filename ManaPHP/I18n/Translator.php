@@ -3,10 +3,17 @@ namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
 
+class TranslatorContext
+{
+    public $locale;
+}
+
 /**
  * Class ManaPHP\Message\Translator
  *
  * @package i18n
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\I18n\TranslatorContext     $_context
  */
 class Translator extends Component implements TranslatorInterface
 {
@@ -43,19 +50,28 @@ class Translator extends Component implements TranslatorInterface
         $this->_files = $files;
 
         if (isset($options['locale'])) {
-            $locale = $options['locale'];
+            $this->_locale = $options['locale'];
+        }
+
+        $this->eventsManager->attachEvent('app:beginRequest', [$this, '_onBeginRequest']);
+    }
+
+    public function _onBeginRequest()
+    {
+        $context = $this->_context;
+
+        if ($this->_locale) {
+            $context->locale = $this->_locale;
         } elseif (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $accept_lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
             if (($pos = strpos($accept_lang, ',')) !== false) {
-                $locale = substr($accept_lang, 0, $pos);
+                $context->locale = substr($accept_lang, 0, $pos);
             } else {
-                $locale = $accept_lang;
+                $context->locale = $accept_lang;
             }
         } else {
-            $locale = 'en';
+            $context->locale = 'en';
         }
-
-        $this->_locale = $locale;
     }
 
     /**
@@ -65,7 +81,9 @@ class Translator extends Component implements TranslatorInterface
      */
     public function setLocale($locale)
     {
-        $this->_locale = $locale;
+        $context = $this->_context;
+
+        $context->locale = $locale;
 
         return $this;
     }
@@ -75,7 +93,7 @@ class Translator extends Component implements TranslatorInterface
      */
     public function getLocale()
     {
-        return $this->_locale;
+        return $this->_context->locale;
     }
 
     /**
@@ -86,7 +104,9 @@ class Translator extends Component implements TranslatorInterface
      */
     public function translate($template, $placeholders = null)
     {
-        $locale = $this->_locale;
+        $context = $this->_context;
+
+        $locale = $context->locale;
         if ($pos = strpos($locale, '-')) {
             $fallback = substr($locale, 0, $pos);
         } else {
