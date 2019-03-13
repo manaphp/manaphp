@@ -19,11 +19,6 @@ class MemoryContext
  */
 class Memory extends Cache
 {
-    public function __construct()
-    {
-        $this->_configureContext('ManaPHP\Cache\Adapter\MemoryContext');
-    }
-
     /**
      * @param string $key
      *

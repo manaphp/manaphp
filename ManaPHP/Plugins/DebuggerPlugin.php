@@ -41,11 +41,6 @@ class DebuggerPlugin extends Plugin
      */
     protected $_template = 'Default';
 
-    public function __construct()
-    {
-        $this->_configureContext('ManaPHP\Plugins\DebuggerPluginContext');
-    }
-
     public function init()
     {
         $this->eventsManager->peekEvent([$this, '_eventHandlerPeek']);

@@ -50,11 +50,6 @@ class DispatcherContext
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
-    public function __construct()
-    {
-        $this->_configureContext('ManaPHP\DispatcherContext');
-    }
-
     /**
      * Gets last dispatched area name
      *

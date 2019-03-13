@@ -35,14 +35,6 @@ class ViewContext
 class View extends Component implements ViewInterface
 {
     /**
-     * View constructor.
-     */
-    public function __construct()
-    {
-        $this->_configureContext('ManaPHP\ViewContext');
-    }
-
-    /**
      * @param false|string $layout
      *
      * @return static

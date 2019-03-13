@@ -43,11 +43,6 @@ class ResponseContext
  */
 class Response extends Component implements ResponseInterface
 {
-    public function __construct()
-    {
-        $this->_configureContext('ManaPHP\Http\ResponseContext');
-    }
-
     /**
      * Sets the HTTP response code
      *<code>

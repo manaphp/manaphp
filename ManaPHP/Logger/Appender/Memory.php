@@ -20,11 +20,6 @@ class MemoryContext
  */
 class Memory extends Component implements AppenderInterface
 {
-    public function __construct()
-    {
-        $this->_configureContext('ManaPHP\Logger\Appender\MemoryContext');
-    }
-
     /**
      * @param \ManaPHP\Logger\Log $log
      *

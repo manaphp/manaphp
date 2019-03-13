@@ -19,15 +19,6 @@ class ContextManager
     protected static $_contexts = [];
 
     /**
-     * @param string $component
-     * @param string t$context
-     */
-    public static function configure($component, $context)
-    {
-        self::$_configure[$component] = $context;
-    }
-
-    /**
      * @param $object
      *
      * @return mixed
@@ -36,9 +27,28 @@ class ContextManager
     {
         $id = spl_object_id($object);
         if (!isset(self::$_contexts[$id])) {
-            return self::$_contexts[$id] = new self::$_configure[get_class($object)];
+            $object_class = get_class($object);
+            if (!isset(self::$_configure[$object_class])) {
+                $context_class = null;
+                $parent_class = $object_class;
+                do {
+                    $try = $parent_class . 'Context';
+                    if (class_exists($try, false)) {
+                        $context_class = $try;
+                        break;
+                    }
+                } while ($parent_class = get_parent_class($parent_class));
+		
+                if (!$context_class) {
+                    throw new Exception(['`:context` context class is not exists', 'context' => $object_class . 'Context']);
+                }
+                self::$_configure[$object_class] = $context_class;
+            }
+
+            return self::$_contexts[$id] = new self::$_configure[$object_class];
+        } else {
+            return self::$_contexts[$id];
         }
-        return self::$_contexts[$id];
     }
 
     /**

@@ -28,6 +28,7 @@ namespace ManaPHP;
  * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
  * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
+ * @property \object                                       $_context
  */
 class Component implements ComponentInterface, \JsonSerializable
 {
@@ -35,28 +36,6 @@ class Component implements ComponentInterface, \JsonSerializable
      * @var \ManaPHP\Di
      */
     protected $_di;
-
-    /**
-     * @var mixed
-     */
-    protected $_context;
-
-    /**
-     * @param string $class
-     */
-    protected function _configureContext($class)
-    {
-        if (!$class) {
-            $class = get_called_class() . 'Context';
-        }
-
-        if (ContextManager::isUseDynamic()) {
-            unset($this->_context);
-            ContextManager::configure(get_called_class(), $class);
-        } else {
-            $this->_context = new $class;
-        }
-    }
 
     /**
      * Sets the dependency injector
@@ -110,7 +89,12 @@ class Component implements ComponentInterface, \JsonSerializable
     public function __get($name)
     {
         if ($name === '_context') {
-            return ContextManager::get($this);
+            $context = ContextManager::get($this);
+            if (ContextManager::isUseDynamic()) {
+                return $context;
+            } else {
+                return $this->_context = $context;
+            }
         }
 
         if ($this->_di === null) {

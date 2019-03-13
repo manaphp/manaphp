@@ -53,8 +53,6 @@ class Validator extends Component implements ValidatorInterface
      */
     public function __construct($options = [])
     {
-        $this->_configureContext('ManaPHP\Model\ValidatorContext');
-
         if (isset($options['templates_dir'])) {
             $this->_templates_dir = $options['templates_dir'];
         }

@@ -75,8 +75,6 @@ class Router extends Component implements RouterInterface
      */
     public function __construct($useDefaultRoutes = true)
     {
-        $this->_configureContext('ManaPHP\RouterContext');
-
         if ($useDefaultRoutes) {
             $this->_default_route = new Route('/(?:{controller}(?:/{action}(?:/{params})?)?)?');
         }

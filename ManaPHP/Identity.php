@@ -30,11 +30,9 @@ abstract class Identity extends Component implements IdentityInterface
      */
     public function __construct($options = null)
     {
-        $context = $this->_configureContext('ManaPHP\IdentityContext');
-
         if (is_array($options)) {
             if (isset($options['type'])) {
-                $context->type = $options['type'];
+                $this->context->type = $options['type'];
             }
         }
     }

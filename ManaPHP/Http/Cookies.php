@@ -35,8 +35,6 @@ class Cookies extends Component implements CookiesInterface
      */
     public function __construct($options = [])
     {
-        $this->_configureContext('ManaPHP\Http\CookiesContext');
-
         if (is_string($options)) {
             $options = ['key' => $options];
         }

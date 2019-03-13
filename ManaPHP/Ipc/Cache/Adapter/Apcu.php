@@ -43,8 +43,6 @@ class Apcu extends Component implements CacheInterface
      */
     public function __construct($options = [])
     {
-        $this->_configureContext('ManaPHP\Ipc\Cache\Adapter\ApcuContext');
-
         $this->_enabled = function_exists('apcu_fetch');
 
         if (isset($options['enabled'])) {
