@@ -6,6 +6,7 @@ return [
     'version' => '1.1.1',
     'timezone' => 'PRC',
     'master_key' => env('MASTER_KEY'),
+    'compatible_globals' => false,
     'params' => [],
     'aliases' => [],
     'components' => [
