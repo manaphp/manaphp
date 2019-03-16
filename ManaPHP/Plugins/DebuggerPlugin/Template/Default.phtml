@@ -315,13 +315,15 @@
 <script src='https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js'></script>
 
 <?php
+$globals = di('request')->getGlobals();
+
 $data['included_files'] = @get_included_files() ?: [];
-$data['request'] = $_REQUEST;
-$data['get'] = $_GET;
-$data['post'] = $_POST;
-$data['cookie'] = $_COOKIE;
-$data['session'] = isset($_SESSION) ? $_SESSION : [];
-$data['server'] = $_SERVER;
+$data['request'] = $globals->_REQUEST;
+$data['get'] = $globals->_GET;
+$data['post'] = $globals->_POST;
+$data['cookie'] = $globals->_COOKIE;
+$data['session'] = $globals->_SESSION;
+$data['server'] = $globals->_SERVER;
 unset($data['server']['PATH']);
 ?>
 <!--suppress JSUnresolvedFunction -->

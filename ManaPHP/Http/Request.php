@@ -6,6 +6,17 @@ use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File;
 
+class RequestContext
+{
+    public $_GET = [];
+    public $_POST = [];
+    public $_REQUEST = [];
+    public $_SERVER = [];
+    public $_COOKIE = [];
+    public $_FILES = [];
+    public $_SESSION;
+}
+
 /**
  * Class ManaPHP\Http\Request
  *
@@ -13,27 +24,38 @@ use ManaPHP\Http\Request\File;
  *
  * @property-read \ManaPHP\Http\FilterInterface $filter
  * @property-read \ManaPHP\DispatcherInterface  $dispatcher
+ * @property \ManaPHP\Http\RequestContext       $_context
  */
 class Request extends Component implements RequestInterface
 {
     public function __construct()
     {
-        if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+        $context = $this->_context;
+
+        if (!$context->_POST && isset($context->_SERVER['REQUEST_METHOD']) && !in_array($context->_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
             $data = file_get_contents('php://input');
 
-            if (isset($_SERVER['CONTENT_TYPE'])
-                && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-                $_POST = json_decode($data, true, 16);
+            if (isset($context->_SERVER['CONTENT_TYPE'])
+                && strpos($context->_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                $context->_POST = json_decode($data, true, 16);
             } else {
-                parse_str($data, $_POST);
+                parse_str($data, $context->_POST);
             }
 
-            if (is_array($_POST)) {
-                $_REQUEST = $_POST + $_GET;
+            if (is_array($context->_POST)) {
+                $context->_REQUEST = $context->_POST + $context->_GET;
             } else {
-                $_POST = [];
+                $context->_POST = [];
             }
         }
+    }
+
+    /**
+     * @return \ManaPHP\Http\RequestContext
+     */
+    public function getGlobals()
+    {
+        return $this->_context;
     }
 
     /**
@@ -109,7 +131,9 @@ class Request extends Component implements RequestInterface
      */
     public function get($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_REQUEST, $name, $rule, $default);
+        $context = $this->_context;
+
+        return $this->_getHelper($context->_REQUEST, $name, $rule, $default);
     }
 
     /**
@@ -121,7 +145,9 @@ class Request extends Component implements RequestInterface
      */
     public function getGet($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_GET, $name, $rule, $default);
+        $context = $this->_context;
+
+        return $this->_getHelper($context->_GET, $name, $rule, $default);
     }
 
     /**
@@ -133,7 +159,9 @@ class Request extends Component implements RequestInterface
      */
     public function getPost($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_POST, $name, $rule, $default);
+        $context = $this->_context;
+
+        return $this->_getHelper($context->_POST, $name, $rule, $default);
     }
 
     /**
@@ -146,10 +174,12 @@ class Request extends Component implements RequestInterface
      */
     public function getServer($name = null, $default = '')
     {
+        $context = $this->_context;
+	
         if ($name === null) {
-            return $_SERVER;
+            return $context->_SERVER;
         } else {
-            return isset($_SERVER[$name]) ? $_SERVER[$name] : $default;
+            return isset($context->_SERVER[$name]) ? $context->_SERVER[$name] : $default;
         }
     }
 
@@ -170,7 +200,9 @@ class Request extends Component implements RequestInterface
      */
     public function getPut($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_POST, $name, $rule, $default);
+        $context = $this->_context;
+
+        return $this->_getHelper($context->_POST, $name, $rule, $default);
     }
 
     /**
@@ -182,7 +214,9 @@ class Request extends Component implements RequestInterface
      */
     public function getQuery($name = null, $rule = null, $default = '')
     {
-        return $this->_getHelper($_GET, $name, $rule, $default);
+        $context = $this->_context;
+
+        return $this->_getHelper($context->_GET, $name, $rule, $default);
     }
 
     /**
@@ -228,7 +262,9 @@ class Request extends Component implements RequestInterface
      */
     public function has($name)
     {
-        return isset($_REQUEST[$name]);
+        $context = $this->_context;
+
+        return isset($context->_REQUEST[$name]);
     }
 
     /**
@@ -238,7 +274,9 @@ class Request extends Component implements RequestInterface
      */
     public function hasGet($name)
     {
-        return isset($_GET[$name]);
+        $context = $this->_context;
+
+        return isset($context->_GET[$name]);
     }
 
     /**
@@ -248,7 +286,9 @@ class Request extends Component implements RequestInterface
      */
     public function hasPost($name)
     {
-        return isset($_POST[$name]);
+        $context = $this->_context;
+
+        return isset($context->_POST[$name]);
     }
 
     /**
@@ -290,7 +330,9 @@ class Request extends Component implements RequestInterface
      */
     public function hasServer($name)
     {
-        return isset($_SERVER[$name]);
+        $context = $this->_context;
+
+        return isset($context->_SERVER[$name]);
     }
 
     /**
@@ -415,8 +457,10 @@ class Request extends Component implements RequestInterface
      */
     public function hasFiles($onlySuccessful = true)
     {
+        $context = $this->_context;
+
         /** @var $_FILES array */
-        foreach ($_FILES as $file) {
+        foreach ($context->_FILES as $file) {
             if (is_int($file['error'])) {
                 $error = $file['error'];
 
@@ -445,10 +489,12 @@ class Request extends Component implements RequestInterface
      */
     public function getFiles($onlySuccessful = true)
     {
+        $context = $this->_context;
+
         $files = [];
 
         /** @var $_FILES array */
-        foreach ($_FILES as $key => $file) {
+        foreach ($context->_FILES as $key => $file) {
             if (is_int($file['error'])) {
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $fileInfo = [

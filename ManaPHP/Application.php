@@ -92,7 +92,10 @@ class Application extends Component implements ApplicationInterface
             } else {
                 $request_id = substr(md5(microtime() . mt_rand(), true), 0, 15);
             }
-            $_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex($request_id);
+	    
+            $globals = $this->request->getGlobals();
+
+            $globals->_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex($request_id);
         }
     }
 

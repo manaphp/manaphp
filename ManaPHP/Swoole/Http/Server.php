@@ -3,6 +3,11 @@ namespace ManaPHP\Swoole\Http;
 
 use ManaPHP\Component;
 
+/**
+ * Class Server
+ * @package ManaPHP\Swoole\Http
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ */
 class Server extends Component implements ServerInterface
 {
     /**
@@ -67,15 +72,20 @@ class Server extends Component implements ServerInterface
 
         $script_filename = get_included_files()[0];
         $parts = explode('-', phpversion());
-        $this->_server = [
+        $_SERVER = [
             'DOCUMENT_ROOT' => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME' => '/' . basename($script_filename),
-            'PHP_SELF' => '/' . basename($script_filename),
-            'QUERY_STRING' => '',
-            'REQUEST_SCHEME' => 'http',
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' ' . php_uname('s') . '/' . $parts[1] . ' PHP/' . $parts[0]
         ];
+
+        $this->_server = $_SERVER + [
+                'PHP_SELF' => '/' . basename($script_filename),
+                'QUERY_STRING' => '',
+                'REQUEST_SCHEME' => 'http',
+            ];
+
+        unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
     }
 
     /**
@@ -114,12 +124,14 @@ class Server extends Component implements ServerInterface
             }
         }
 
-        $_GET = $_get;
-        $_POST = $_post;
-        $_REQUEST = $_post + $_get;
-        $_SERVER = $_server;
-        $_COOKIE = $request->cookie ?: [];
-        $_FILES = $request->files ?: [];
+        $globals = $this->request->getGlobals();
+
+        $globals->_GET = $_get;
+        $globals->_POST = $_post;
+        $globals->_REQUEST = $_post + $_get;
+        $globals->_SERVER = $_server;
+        $globals->_COOKIE = $request->cookie ?: [];
+        $globals->_FILES = $request->files ?: [];
     }
 
     /**

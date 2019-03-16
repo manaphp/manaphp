@@ -10,6 +10,11 @@ namespace ManaPHP\Http;
 interface RequestInterface
 {
     /**
+     * @return \ManaPHP\Http\RequestContext
+     */
+    public function getGlobals();
+
+    /**
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default

@@ -26,6 +26,25 @@ class Application extends \ManaPHP\Application
         return $this->_di;
     }
 
+    protected function _prepareGlobals()
+    {
+        $globals = $this->request->getGlobals();
+
+        $globals->_GET = $_GET;
+        $globals->_POST = $_POST;
+        $globals->_REQUEST = $_REQUEST;
+        $globals->_FILES = $_FILES;
+        $globals->_COOKIE = $_COOKIE;
+        unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
+
+        $globals->_SERVER = $_SERVER;
+        foreach ($_SERVER as $k => $v) {
+            if (strpos('DOCUMENT_ROOT,SERVER_SOFTWARE,SCRIPT_NAME,SCRIPT_FILENAME', $k) === false) {
+                unset($_SERVER[$k]);
+            }
+        }
+    }
+
     public function main()
     {
         try {
@@ -35,6 +54,8 @@ class Application extends \ManaPHP\Application
             $this->registerServices();
 
             $this->fireEvent('app:start');
+
+            $this->_prepareGlobals();
 
             $this->fireEvent('app:beginRequest');
 
