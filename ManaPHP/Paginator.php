@@ -115,7 +115,7 @@ class Paginator extends Component implements PaginatorInterface
     {
         if ($urlTemplate === null) {
             if (!$this->request->hasServer('REQUEST_URI')) {
-                throw new PreconditionException('REQUEST_URI is not exist in $_SERVER');
+                throw new PreconditionException('REQUEST_URI is not exist');
             } else {
                 $urlTemplate = $this->request->getServer('REQUEST_URI', 'ignore');
             }
