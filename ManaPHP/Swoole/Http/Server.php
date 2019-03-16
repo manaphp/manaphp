@@ -132,6 +132,15 @@ class Server extends Component implements ServerInterface
         $globals->_SERVER = $_server;
         $globals->_COOKIE = $request->cookie ?: [];
         $globals->_FILES = $request->files ?: [];
+
+        if ($this->configure->compatible_globals) {
+            $_GET = $globals->_GET;
+            $_POST = $globals->_POST;
+            $_REQUEST = $globals->_REQUEST;
+            $_SERVER = $globals->_SERVER;
+            $_COOKIE = $globals->_COOKIE;
+            $_FILES = $globals->_FILES;
+        }
     }
 
     /**
