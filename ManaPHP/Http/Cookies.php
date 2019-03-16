@@ -18,6 +18,7 @@ class CookiesContext
  *
  * @package cookies
  *
+ * @property-read \ManaPHP\Http\RequestInterface   $request
  * @property-read \ManaPHP\Security\CryptInterface $crypt
  * @property \ManaPHP\Http\CookiesContext          $_context
  */
@@ -83,7 +84,9 @@ class Cookies extends Component implements CookiesInterface
             'httpOnly' => $httpOnly
         ];
 
-        $_COOKIE[$name] = $value;
+        $globals = $this->request->getGlobals();
+
+        $globals->_COOKIE[$name] = $value;
 
         return $this;
     }
@@ -136,17 +139,17 @@ class Cookies extends Component implements CookiesInterface
      */
     public function get($name, $default = null)
     {
-        $context = $this->_context;
+        $globals = $this->request->getGlobals();
 
         if ($name === null) {
-            return $context->cookies;
+            return $globals->_COOKIE;
         } elseif ($name[0] === '!') {
             $name = (string)substr($name, 1);
-            if (isset($_COOKIE[$name])) {
-                return $this->_decrypt($name, $_COOKIE[$name]);
+            if (isset($globals->_COOKIE[$name])) {
+                return $this->_decrypt($name, $globals->_COOKIE[$name]);
             }
-        } elseif (isset($_COOKIE[$name])) {
-            return $_COOKIE[$name];
+        } elseif (isset($globals->_COOKIE[$name])) {
+            return $globals->_COOKIE[$name];
         }
 
         return $default;
@@ -159,11 +162,13 @@ class Cookies extends Component implements CookiesInterface
      */
     public function has($name)
     {
+        $globals = $this->request->getGlobals();
+
         if ($name[0] === '!') {
             $name = (string)substr($name, 1);
         }
 
-        return isset($_COOKIE[$name]);
+        return isset($globals->_COOKIE[$name]);
     }
 
     /**
@@ -185,7 +190,6 @@ class Cookies extends Component implements CookiesInterface
             $name = (string)substr($name, 1);
         }
 
-        unset($_COOKIE[$name]);
         $context->cookies[$name] = [
             'name' => $name,
             'value' => 'deleted',
@@ -195,6 +199,10 @@ class Cookies extends Component implements CookiesInterface
             'secure' => $secure,
             'httpOnly' => $httpOnly
         ];
+
+        $globals = $this->request->getGlobals();
+
+        unset($globals->_COOKIE[$name]);
 
         return $this;
     }
