@@ -90,6 +90,17 @@ class Cookie extends Session
 
     /**
      * @param string $session_id
+     * @param int    $ttl
+     *
+     * @return bool
+     */
+    public function do_touch($session_id, $ttl)
+    {
+        return false;
+    }
+
+    /**
+     * @param string $session_id
      *
      * @return bool
      */

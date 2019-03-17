@@ -94,6 +94,27 @@ class Db extends Session
 
     /**
      * @param string $session_id
+     * @param int    $ttl
+     *
+     * @return bool
+     */
+    public function do_touch($session_id, $ttl)
+    {
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($this->_db);
+
+        $field_values = [
+            'user_id' => $this->identity->getId(0),
+            'client_ip' => $this->request->getClientIp(),
+            'updated_time' => time(),
+            'expired_time' => $ttl + time()
+        ];
+
+        return $db->update($this->_source, $field_values, ['session_id' => $session_id]) > 0;
+    }
+
+    /**
+     * @param string $session_id
      *
      * @return bool
      */

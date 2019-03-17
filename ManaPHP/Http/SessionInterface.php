@@ -68,18 +68,4 @@ interface SessionInterface
      * @return string
      */
     public function getName();
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    public function setName($name);
-
-    /**
-     * Force the session to be saved and closed.
-     *
-     * This method is generally not required for real sessions as the session will be automatically saved at the end of code execution.
-     */
-    public function save();
 }

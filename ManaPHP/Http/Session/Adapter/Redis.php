@@ -77,6 +77,20 @@ class Redis extends Session
 
     /**
      * @param string $session_id
+     * @param int    $ttl
+     *
+     * @return bool
+     */
+    public function do_touch($session_id, $ttl)
+    {
+        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        $redis->setTimeout($session_id, $ttl);
+
+        return true;
+    }
+
+    /**
+     * @param string $session_id
      *
      * @return bool
      */

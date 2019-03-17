@@ -102,6 +102,22 @@ class File extends Session
 
     /**
      * @param string $session_id
+     * @param int    $ttl
+     *
+     * @return bool
+     */
+    public function do_touch($session_id, $ttl)
+    {
+        $file = $this->_getFileName($session_id);
+
+        @touch($file, time() + $ttl);
+        clearstatcache(true, $file);
+
+        return true;
+    }
+
+    /**
+     * @param string $session_id
      *
      * @return bool
      */
