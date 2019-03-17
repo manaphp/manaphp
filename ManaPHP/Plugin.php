@@ -43,7 +43,7 @@ abstract class Plugin extends Component implements PluginInterface, LogCategoriz
                 && $method->name[0] !== '_'
                 && $method->name !== 'init'
             ) {
-                $this->eventsManager->attachEvent('app:beginRequest', [$this, $method->name]);
+                $this->eventsManager->attachEvent('request:begin', [$this, $method->name]);
             }
         }
     }

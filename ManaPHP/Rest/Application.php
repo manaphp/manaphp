@@ -59,7 +59,7 @@ class Application extends \ManaPHP\Application
 
             $this->_prepareGlobals();
 
-            $this->fireEvent('app:beginRequest');
+            $this->fireEvent('request:begin');
 
             $this->authenticate();
 
@@ -80,6 +80,6 @@ class Application extends \ManaPHP\Application
 
         $this->response->send();
 
-        $this->fireEvent('app:endRequest');
+        $this->fireEvent('request:end');
     }
 }

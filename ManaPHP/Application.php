@@ -80,7 +80,7 @@ class Application extends Component implements ApplicationInterface
 
         $this->loader->registerFiles('@manaphp/helpers.php');
 
-        $this->attachEvent('app:beginRequest', [$this, 'generateRequestId']);
+        $this->attachEvent('request:begin', [$this, 'generateRequestId']);
         $this->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
     }
 
@@ -92,7 +92,7 @@ class Application extends Component implements ApplicationInterface
             } else {
                 $request_id = substr(md5(microtime() . mt_rand(), true), 0, 15);
             }
-	    
+
             $globals = $this->request->getGlobals();
 
             $globals->_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex($request_id);
@@ -305,7 +305,7 @@ class Application extends Component implements ApplicationInterface
         $this->registerServices();
 
         if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-            $this->fireEvent('app:beginRequest');
+            $this->fireEvent('request:begin');
         }
     }
 }

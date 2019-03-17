@@ -36,10 +36,10 @@ class FiddlerPlugin extends Plugin
             $this->_header = ['ip' => '-', 'url' => '-', 'uuid' => '-'];
             $this->_channel = 'manaphp:fiddler:cli:' . $this->configure->id;
         } else {
-            $this->eventsManager->attachEvent('app:beginRequest', [$this, 'checkEnabled']);
+            $this->eventsManager->attachEvent('request:begin', [$this, 'checkEnabled']);
         }
 
-        $this->eventsManager->attachEvent('app:beginRequest', [$this, 'onBeginRequest']);
+        $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
         $this->eventsManager->attachEvent('response:afterSend', [$this, 'onAfterSendResponse']);
     }
 
@@ -63,7 +63,7 @@ class FiddlerPlugin extends Plugin
         }
     }
 
-    public function onBeginRequest()
+    public function onRequestBegin()
     {
         if ($this->enabled()) {
             $server = [];
