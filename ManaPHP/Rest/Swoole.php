@@ -57,8 +57,8 @@ class Swoole extends \ManaPHP\Application
     public function handle()
     {
         try {
-            $this->eventsManager->fireEvent('request:init', $this);
             $this->eventsManager->fireEvent('request:begin', $this);
+            $this->eventsManager->fireEvent('request:init', $this);
 
             $this->authenticate();
 
@@ -79,8 +79,8 @@ class Swoole extends \ManaPHP\Application
 
         $this->send();
 
-        $this->eventsManager->fireEvent('request:end', $this);
         $this->eventsManager->fireEvent('request:destroy', $this);
+        $this->eventsManager->fireEvent('request:end', $this);
 
         ContextManager::reset();
     }

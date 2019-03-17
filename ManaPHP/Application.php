@@ -305,8 +305,8 @@ class Application extends Component implements ApplicationInterface
         $this->registerServices();
 
         if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-            $this->fireEvent('request:init');
             $this->fireEvent('request:begin');
+            $this->fireEvent('request:init');
         }
     }
 }
