@@ -113,7 +113,7 @@ class Component implements ComponentInterface, \JsonSerializable
     public function __set($name, $value)
     {
         if (is_scalar($value)) {
-            $this->fireEvent('component:setUndefinedProperty', ['name' => $name, 'class' => get_called_class()]);
+            $this->eventsManager->fireEvent('component:setUndefinedProperty', $this, ['name' => $name, 'class' => get_called_class()]);
         }
 
         $this->$name = $value;

@@ -135,7 +135,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
 
         $context->session_id = $session_id;
 
-        $this->eventsManager->fireEvent('session:start', ['context' => $this->_context]);
+        $this->eventsManager->fireEvent('session:start', $this, ['context' => $this->_context]);
     }
 
     public function save()
@@ -150,7 +150,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
             if (!$context->_SESSION) {
                 return;
             }
-            $this->eventsManager->fireEvent('session:create', ['context' => $this->_context]);
+            $this->eventsManager->fireEvent('session:create', $this, ['context' => $this->_context]);
         } elseif ($context->is_dirty) {
             null;
         } elseif ($this->_lazy) {
@@ -163,7 +163,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
             }
         }
 
-        $this->eventsManager->fireEvent('session:update', ['context' => $this->_context]);
+        $this->eventsManager->fireEvent('session:update', $this, ['context' => $this->_context]);
 
         if ($this->_lazy) {
             $context->_SESSION['__T'] = time();
@@ -186,7 +186,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
     public function destroy($session_id = null)
     {
         if ($session_id) {
-            $this->fireEvent('session:destroy', ['session_id' => $session_id]);
+            $this->eventsManager->fireEvent('session:destroy', $this, ['session_id' => $session_id]);
             $this->do_destroy($session_id);
         } else {
 
@@ -196,7 +196,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
                 $this->_start();
             }
 
-            $this->fireEvent('session:destroy', ['session_id' => $session_id, 'context' => $context]);
+            $this->eventsManager->fireEvent('session:destroy', $this, ['session_id' => $session_id, 'context' => $context]);
 
             $context->started = false;
             $context->is_dirty = false;

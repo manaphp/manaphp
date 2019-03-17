@@ -198,7 +198,7 @@ class Easy extends Component implements EasyInterface
 
         $curl = curl_init();
 
-        $this->fireEvent('curl:beforeRequest', compact('type', 'url', 'body', 'options', 'curl'));
+        $this->eventsManager->fireEvent('curl:beforeRequest', $this, compact('type', 'url', 'body', 'options', 'curl'));
 
         if (is_int($options) || is_float($options)) {
             $options = ['timeout' => $options];
@@ -408,7 +408,7 @@ class Easy extends Component implements EasyInterface
 
         curl_close($curl);
 
-        $this->fireEvent('curl:afterRequest', compact('type', 'url', 'body', 'options', 'response'));
+        $this->eventsManager->fireEvent('curl:afterRequest', $this, compact('type', 'url', 'body', 'options', 'response'));
 
         $this->logger->debug([[
             'METHOD' => $type,

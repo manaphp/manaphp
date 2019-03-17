@@ -126,13 +126,13 @@ abstract class Db extends Component implements DbInterface
     {
         if ($this->_pdo === null) {
             $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'db.connect');
-            $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
+            $this->eventsManager->fireEvent('db:beforeConnect', $this, ['dsn' => $this->_dsn]);
             try {
                 $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
             } catch (\PDOException $e) {
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
-            $this->fireEvent('db:afterConnect');
+            $this->eventsManager->fireEvent('db:afterConnect', $this);
 
             if (!isset($this->_options[\PDO::ATTR_PERSISTENT]) || !$this->_options[\PDO::ATTR_PERSISTENT]) {
                 $this->_last_io_time = microtime(true);
@@ -143,14 +143,14 @@ abstract class Db extends Component implements DbInterface
         if ($this->_transactionLevel === 0 && microtime(true) - $this->_last_io_time >= $this->_ping_interval && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
-            $this->fireEvent('db:reconnect', ['dsn' => $this->_dsn]);
-            $this->fireEvent('db:beforeConnect', ['dsn' => $this->_dsn]);
+            $this->eventsManager->fireEvent('db:reconnect', $this, ['dsn' => $this->_dsn]);
+            $this->eventsManager->fireEvent('db:beforeConnect', $this, ['dsn' => $this->_dsn]);
             try {
                 $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
             } catch (\PDOException $e) {
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
-            $this->fireEvent('db:afterConnect');
+            $this->eventsManager->fireEvent('db:afterConnect', $this);
         }
 
         $this->_last_io_time = microtime(true);
@@ -254,7 +254,7 @@ abstract class Db extends Component implements DbInterface
         $this->_bind = $bind;
         $this->_affectedRows = 0;
 
-        $this->fireEvent('db:beforeQuery');
+        $this->eventsManager->fireEvent('db:beforeQuery', $this);
         $start_time = microtime(true);
         try {
             $r = $bind ? $this->_execute(is_string($statement) ? $this->_sql : $statement, $bind) : @$this->_getPdo()->query($this->_sql);
@@ -284,7 +284,7 @@ abstract class Db extends Component implements DbInterface
         $elapsed = round(microtime(true) - $start_time, 3);
 
         $event_data = compact('count', 'sql', 'bind', 'elapsed', 'result');
-        $this->fireEvent('db:afterQuery', $event_data);
+        $this->eventsManager->fireEvent('db:afterQuery', $this, $event_data);
         $this->logger->debug($event_data, 'db.query');
 
         return $result;
@@ -316,7 +316,7 @@ abstract class Db extends Component implements DbInterface
 
         $this->_affectedRows = 0;
 
-        $this->fireEvent('db:beforeExecute');
+        $this->eventsManager->fireEvent('db:beforeExecute', $this);
         $start_time = microtime(true);
         try {
             $this->_affectedRows = $bind
@@ -336,7 +336,7 @@ abstract class Db extends Component implements DbInterface
 
         $event_data = compact('count', 'sql', 'bind', 'elapsed');
         if (is_int($this->_affectedRows)) {
-            $this->fireEvent('db:afterExecute', $event_data);
+            $this->eventsManager->fireEvent('db:afterExecute', $this, $event_data);
         }
 
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
@@ -696,7 +696,7 @@ abstract class Db extends Component implements DbInterface
                 $this->_last_io_time = null;
             }
 
-            $this->fireEvent('db:beginTransaction');
+            $this->eventsManager->fireEvent('db:beginTransaction', $this);
 
             try {
                 if (!$this->_getPdo()->beginTransaction()) {
@@ -741,7 +741,7 @@ abstract class Db extends Component implements DbInterface
         $this->_transactionLevel--;
 
         if ($this->_transactionLevel === 0) {
-            $this->fireEvent('db:rollbackTransaction');
+            $this->eventsManager->fireEvent('db:rollbackTransaction', $this);
 
             try {
                 if (!$this->_pdo->rollBack()) {
@@ -770,7 +770,7 @@ abstract class Db extends Component implements DbInterface
         $this->_transactionLevel--;
 
         if ($this->_transactionLevel === 0) {
-            $this->fireEvent('db:commitTransaction');
+            $this->eventsManager->fireEvent('db:commitTransaction', $this);
 
             try {
                 if (!$this->_pdo->commit()) {

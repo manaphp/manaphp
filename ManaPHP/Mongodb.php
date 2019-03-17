@@ -88,20 +88,20 @@ class Mongodb extends Component implements MongodbInterface
         if ($this->_manager === null) {
             $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.connect');
 
-            $this->fireEvent('mongodb:beforeConnect', ['dsn' => $this->_dsn]);
+            $this->eventsManager->fireEvent('mongodb:beforeConnect', $this, ['dsn' => $this->_dsn]);
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_manager = new Manager($this->_dsn);
-            $this->fireEvent('mongodb:afterConnect');
+            $this->eventsManager->fireEvent('mongodb:afterConnect', $this);
         }
 
         if (microtime(true) - $this->_last_io_time > $this->_ping_interval && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.reconnect');
 
-            $this->fireEvent('mongodb:beforeConnect', ['dsn' => $this->_dsn]);
+            $this->eventsManager->fireEvent('mongodb:beforeConnect', $this, ['dsn' => $this->_dsn]);
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_manager = new Manager($this->_dsn);
-            $this->fireEvent('mongodb:afterConnect');
+            $this->eventsManager->fireEvent('mongodb:afterConnect', $this);
         }
 
         $this->_last_io_time = microtime(true);
@@ -128,7 +128,7 @@ class Mongodb extends Component implements MongodbInterface
             }
         }
 
-        $this->fireEvent('mongodb:beforeBulkWrite', compact('namespace', 'bulk'));
+        $this->eventsManager->fireEvent('mongodb:beforeBulkWrite', $this, compact('namespace', 'bulk'));
         $start_time = microtime(true);
         if ($start_time - $this->_last_io_time > 1.0) {
             $this->_last_io_time = null;
@@ -141,7 +141,7 @@ class Mongodb extends Component implements MongodbInterface
         }
 
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterBulkWrite', compact('namespace', 'bulk', 'result', 'elapsed'));
+        $this->eventsManager->fireEvent('mongodb:afterBulkWrite', $this, compact('namespace', 'bulk', 'result', 'elapsed'));
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         if ($bulk->count() !== 1) {
             $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
@@ -177,11 +177,11 @@ class Mongodb extends Component implements MongodbInterface
             $bulk->insert($document);
         }
 
-        $this->fireEvent('mongodb:beforeInsert', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:beforeInsert', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $count = $skipIfExists ? $result->getUpsertedCount() : $result->getInsertedCount();
 
-        $this->fireEvent('mongodb:afterInsert', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:afterInsert', $this, ['namespace' => $namespace]);
         $this->logger->info(compact('count', 'namespace', 'primaryKey', 'document', 'skipIfExists'), 'mongodb.insert');
 
         return $count;
@@ -217,9 +217,9 @@ class Mongodb extends Component implements MongodbInterface
                 $bulk->insert($document);
             }
         }
-        $this->fireEvent('mongodb:beforeBulkInsert', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:beforeBulkInsert', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $this->fireEvent('mongodb:afterBulkInsert', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:afterBulkInsert', $this, ['namespace' => $namespace]);
         $count = $skipIfExists ? $result->getUpsertedCount() : $result->getInsertedCount();
         $this->logger->info(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
         return $count;
@@ -245,9 +245,9 @@ class Mongodb extends Component implements MongodbInterface
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        $this->fireEvent('mongodb:beforeUpdate', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:beforeUpdate', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $this->fireEvent('mongodb:afterUpdate');
+        $this->eventsManager->fireEvent('mongodb:afterUpdate', $this);
         $count = $result->getModifiedCount();
         $this->logger->info(compact('namespace', 'document', 'filter', 'count'), 'mongodb.update');
         return $count;
@@ -277,9 +277,9 @@ class Mongodb extends Component implements MongodbInterface
             }
         }
 
-        $this->fireEvent('mongodb:beforeBulkUpdate', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:beforeBulkUpdate', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $this->fireEvent('mongodb:afterBulkUpdate', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:afterBulkUpdate', $this, ['namespace' => $namespace]);
         $count = $result->getModifiedCount();
         $this->logger->info(compact('namespace', 'documents', 'primaryKey', 'count'), 'mongodb.bulk.update');
         return $count;
@@ -305,9 +305,9 @@ class Mongodb extends Component implements MongodbInterface
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        $this->fireEvent('mongodb:beforeUpsert', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:beforeUpsert', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $this->fireEvent('mongodb:afterUpsert');
+        $this->eventsManager->fireEvent('mongodb:afterUpsert', $this);
         $count = $result->getUpsertedCount();
         $this->logger->info(compact('count', 'namespace', 'document'), 'mongodb.upsert');
         return $count;
@@ -335,9 +335,9 @@ class Mongodb extends Component implements MongodbInterface
             }
         }
 
-        $this->fireEvent('mongodb:beforeBulkUpsert', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:beforeBulkUpsert', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $this->fireEvent('mongodb:afterBulkUpsert');
+        $this->eventsManager->fireEvent('mongodb:afterBulkUpsert', $this);
         $count = $result->getUpsertedCount();
         $this->logger->info(compact('count', 'namespace', 'documents'), 'mongodb.bulk.upsert');
         return $count;
@@ -362,9 +362,9 @@ class Mongodb extends Component implements MongodbInterface
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        $this->fireEvent('mongodb:beforeDelete', ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:beforeDelete', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $this->fireEvent('mongodb:afterDelete');
+        $this->eventsManager->fireEvent('mongodb:afterDelete', $this);
         $count = $result->getDeletedCount();
         $this->logger->info(compact('namespace', 'filter', 'count'), 'mongodb.delete');
         return $count;
@@ -401,7 +401,7 @@ class Mongodb extends Component implements MongodbInterface
         } else {
             $readPreference = new ReadPreference($secondaryPreferred);
         }
-        $this->fireEvent('mongodb:beforeQuery', compact('namespace', 'filter', 'options'));
+        $this->eventsManager->fireEvent('mongodb:beforeQuery', $this, compact('namespace', 'filter', 'options'));
         $start_time = microtime(true);
 
         try {
@@ -424,7 +424,7 @@ class Mongodb extends Component implements MongodbInterface
         }
 
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterQuery', compact('namespace', 'filter', 'options', 'result', 'elapsed'));
+        $this->eventsManager->fireEvent('mongodb:afterQuery', $this, compact('namespace', 'filter', 'options', 'result', 'elapsed'));
         $this->logger->debug(compact('namespace', 'filter', 'options', 'result', 'elapsed'), 'mongodb.query');
         return $result;
     }
@@ -441,7 +441,7 @@ class Mongodb extends Component implements MongodbInterface
             $db = $this->_default_db;
         }
 
-        $this->fireEvent('mongodb:beforeCommand', compact('db', 'command'));
+        $this->eventsManager->fireEvent('mongodb:beforeCommand', $this, compact('db', 'command'));
         $start_time = microtime(true);
         if ($start_time - $this->_last_io_time > 1.0) {
             $this->_last_io_time = null;
@@ -459,7 +459,7 @@ class Mongodb extends Component implements MongodbInterface
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
 
         $elapsed = round(microtime(true) - $start_time, 3);
-        $this->fireEvent('mongodb:afterCommand', compact('db', 'command', 'result', 'elapsed'));
+        $this->eventsManager->fireEvent('mongodb:afterCommand', $this, compact('db', 'command', 'result', 'elapsed'));
         $count = count($result);
         $command_name = key($command);
         if (strpos('ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .

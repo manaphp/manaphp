@@ -79,12 +79,12 @@ class Application extends \ManaPHP\Application
 
             $this->registerServices();
 
-            $this->fireEvent('app:start');
+            $this->eventsManager->fireEvent('app:start', $this);
 
             $this->_prepareGlobals();
 
-            $this->fireEvent('request:begin');
-            $this->fireEvent('request:construct');
+            $this->eventsManager->fireEvent('request:begin', $this);
+            $this->eventsManager->fireEvent('request:construct', $this);
 
             $this->authenticate();
 
@@ -112,7 +112,7 @@ class Application extends \ManaPHP\Application
 
         $this->response->send();
 
-        $this->fireEvent('request:destruct');
-        $this->fireEvent('request:end');
+        $this->eventsManager->fireEvent('request:destruct', $this);
+        $this->eventsManager->fireEvent('request:end', $this);
     }
 }

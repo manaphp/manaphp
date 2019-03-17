@@ -121,13 +121,13 @@ class Proxy extends Component implements DbInterface
             }
             $options = $master['options'];
 
-            $this->fireEvent('db:createMaster', ['options' => $options]);
+            $this->eventsManager->fireEvent('db:createMaster', $this, ['options' => $options]);
 
             $this->_masterConnection = new Mysql($options);
         }
 
         if ($this->_currentConnection !== $this->_masterConnection) {
-            $this->fireEvent('db:switchToMaster');
+            $this->eventsManager->fireEvent('db:switchToMaster', $this);
         }
 
         return $this->_currentConnection = $this->_masterConnection;
@@ -146,13 +146,13 @@ class Proxy extends Component implements DbInterface
 
             $options = $slave['options'];
 
-            $this->fireEvent('db:createSlave', ['dsn' => $options]);
+            $this->eventsManager->fireEvent('db:createSlave', $this, ['dsn' => $options]);
 
             $this->_slaveConnection = new Mysql($options);
         }
 
         if ($this->_currentConnection !== $this->_slaveConnection) {
-            $this->fireEvent('db:switchToSlave');
+            $this->eventsManager->fireEvent('db:switchToSlave', $this);
         }
 
         return $this->_currentConnection = $this->_slaveConnection;

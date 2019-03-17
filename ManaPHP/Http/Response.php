@@ -576,7 +576,7 @@ class Response extends Component implements ResponseInterface
 
         $context->headers['X-Response-Time'] = sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'));
 
-        $this->fireEvent('response:beforeSend');
+        $this->eventsManager->fireEvent('response:beforeSend', $this);
 
         if ($context->status) {
             header('HTTP/1.1 ' . $context->status);
@@ -598,7 +598,7 @@ class Response extends Component implements ResponseInterface
             echo $context->content;
         }
 
-        $this->fireEvent('response:afterSend');
+        $this->eventsManager->fireEvent('response:afterSend', $this);
 
         return $this;
     }

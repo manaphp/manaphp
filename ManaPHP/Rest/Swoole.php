@@ -40,7 +40,7 @@ class Swoole extends \ManaPHP\Application
 
         $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')));
 
-        $this->eventsManager->fireEvent('response:beforeSend', $response);
+        $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
 
         $swoole->setStatus($response->getStatusCode());
         $swoole->sendHeaders($response->getHeaders());
@@ -51,7 +51,7 @@ class Swoole extends \ManaPHP\Application
             $swoole->sendContent($response->getContent());
         }
 
-        $this->eventsManager->fireEvent('response:afterSend', $response);
+        $this->eventsManager->fireEvent('response:afterSend', $this, $response);
     }
 
     public function handle()
@@ -92,7 +92,7 @@ class Swoole extends \ManaPHP\Application
 
         $this->registerServices();
 
-        $this->fireEvent('app:start');
+        $this->eventsManager->fireEvent('app:start', $this);
 
         $this->swooleHttpServer->start([$this, 'handle']);
     }

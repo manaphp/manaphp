@@ -653,7 +653,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             $this->{$eventName}();
         }
 
-        $this->fireEvent('model:' . $eventName);
+        $this->eventsManager->fireEvent('model:' . $eventName, $this);
     }
 
     /**
@@ -669,7 +669,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             return false;
         }
 
-        return $this->fireEvent('model:' . $eventName) !== false;
+        return $this->eventsManager->fireEvent('model:' . $eventName, $this) !== false;
     }
 
     /**
