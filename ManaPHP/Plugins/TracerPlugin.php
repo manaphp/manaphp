@@ -49,10 +49,7 @@ class TracerPlugin extends Plugin
                 $this->_mem_delta = $options['mem_delta'];
             }
         }
-    }
 
-    public function init()
-    {
         if (function_exists('xdebug_start_trace')) {
             ini_set('xdebug.collect_return', $this->_return);
             ini_set('xdebug.collect_params', $this->_params);

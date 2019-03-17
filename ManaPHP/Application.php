@@ -205,13 +205,13 @@ class Application extends Component implements ApplicationInterface
             unset($app_plugins[$plugin]);
 
             $plugin = lcfirst($plugin);
-            $this->_di->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin)->init();
+            $this->_di->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin);
         }
 
         foreach ($app_plugins as $plugin => $_) {
             $pluginClassName = $this->alias->resolveNS("@ns.app\\Plugins\\$plugin");
             $plugin = lcfirst($plugin);
-            $this->_di->setShared($plugin, $pluginClassName)->getShared($plugin)->init();
+            $this->_di->setShared($plugin, $pluginClassName)->getShared($plugin);
         }
     }
 

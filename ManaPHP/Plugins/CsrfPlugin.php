@@ -52,10 +52,7 @@ class CsrfPlugin extends Plugin
         if (isset($_options['name'])) {
             $this->_name = $_options['name'];
         }
-    }
 
-    public function init()
-    {
         $this->eventsManager->attachEvent('dispatcher:beforeDispatch', [$this, 'onBeforeDispatch']);
     }
 

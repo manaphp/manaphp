@@ -41,7 +41,7 @@ class DebuggerPlugin extends Plugin
      */
     protected $_template = 'Default';
 
-    public function init()
+    public function __construct()
     {
         $this->eventsManager->peekEvent([$this, '_eventHandlerPeek']);
 

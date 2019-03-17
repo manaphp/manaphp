@@ -50,10 +50,7 @@ class CorsPlugin extends Plugin
                 $this->_credentials = $options['credentials'];
             }
         }
-    }
 
-    public function init()
-    {
         $this->eventsManager->attachEvent('request:construct', [$this, 'onConstruct']);
     }
 

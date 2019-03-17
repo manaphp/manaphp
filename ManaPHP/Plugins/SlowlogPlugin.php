@@ -22,10 +22,7 @@ class SlowlogPlugin extends Plugin
         if (isset($options['threshold'])) {
             $this->_threshold = $options['threshold'] + $this->_threshold;
         }
-    }
 
-    public function init()
-    {
         $this->eventsManager->attachEvent('request:destruct', [$this, 'onDestruct']);
     }
 

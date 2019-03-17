@@ -36,7 +36,7 @@ class FiddlerPlugin extends Plugin
      */
     protected $_last_checked;
 
-    public function init()
+    public function __construct()
     {
         $context = $this->_context;
 

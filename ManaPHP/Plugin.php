@@ -29,22 +29,4 @@ abstract class Plugin extends Component implements PluginInterface, LogCategoriz
     {
         return basename(str_replace('\\', '.', get_called_class()), 'Plugin');
     }
-
-    public function init()
-    {
-        $called_class = get_called_class();
-
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $rc = new \ReflectionClass($called_class);
-
-        foreach ($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            if (!$method->isStatic()
-                && $method->getDeclaringClass()->getName() === $called_class
-                && $method->name[0] !== '_'
-                && $method->name !== 'init'
-            ) {
-                $this->eventsManager->attachEvent('request:begin', [$this, $method->name]);
-            }
-        }
-    }
 }
