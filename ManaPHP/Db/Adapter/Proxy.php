@@ -188,54 +188,78 @@ class Proxy extends Component implements DbInterface
     }
 
     /**
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
-     * @param int                  $fetchMode
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @param bool   $useMaster
      *
      * @return array|false
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
+    public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
         if ($this->isUnderTransaction()) {
-            return $this->getMasterConnection()->fetchOne($statement, $bind, $fetchMode);
+            return $this->getMasterConnection()->fetchOne($sql, $bind, $fetchMode, $useMaster);
         } else {
-            return $this->getSlaveConnection()->fetchOne($statement, $bind, $fetchMode);
+            return $this->getSlaveConnection()->fetchOne($sql, $bind, $fetchMode, $useMaster);
         }
     }
 
     /**
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
-     * @param int                  $fetchMode
-     * @param null                 $indexBy
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @param bool   $useMaster
      *
      * @return array
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
+    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
         if ($this->isUnderTransaction()) {
-            return $this->getMasterConnection()->fetchAll($statement, $bind, $fetchMode, $indexBy);
+            return $this->getMasterConnection()->fetchAll($sql, $bind, $fetchMode, $useMaster);
         } else {
-            return $this->getSlaveConnection()->fetchAll($statement, $bind, $fetchMode, $indexBy);
+            return $this->getSlaveConnection()->fetchAll($sql, $bind, $fetchMode, $useMaster);
         }
     }
 
     /**
      * @param string $table
      * @param array  $record
-     * @param string $primaryKey
-     * @param bool   $skipIfExists
+     * @param bool   $fetchInsertId
      *
+     * @return int
      * @throws \ManaPHP\Db\Adapter\Proxy\Exception
      * @throws \ManaPHP\Db\Exception
      */
-    public function insert($table, $record, $primaryKey = null, $skipIfExists = false)
+    public function insert($table, $record, $fetchInsertId = false)
     {
-        $this->getMasterConnection()->insert($table, $record, $primaryKey, $skipIfExists);
+        return $this->getMasterConnection()->insert($table, $record, $fetchInsertId);
+    }
+
+    /**
+     * @param string $table
+     * @param array  $record
+     * @param string $primaryKey
+     *
+     * @return int
+     */
+    public function insertOrSkip($table, $record, $primaryKey = null)
+    {
+        return $this->getMasterConnection()->insertOrSkip($table, $record, $primaryKey);
+    }
+
+    /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function insertBySql($sql, $bind = [])
+    {
+        return $this->getMasterConnection()->insertBySql($sql, $bind);
     }
 
     /**
@@ -254,6 +278,19 @@ class Proxy extends Component implements DbInterface
     }
 
     /**
+     * Updates data on a table using custom SQL syntax
+     *
+     * @param   string $sql
+     * @param   array  $bind
+     *
+     * @return    int
+     */
+    public function updateBySql($sql, $bind = [])
+    {
+        return $this->getMasterConnection()->updateBySql($sql, $bind);
+    }
+
+    /**
      * @param string       $table
      * @param array|string $conditions
      * @param array        $bind
@@ -265,6 +302,19 @@ class Proxy extends Component implements DbInterface
     public function delete($table, $conditions, $bind = [])
     {
         return $this->getMasterConnection()->delete($table, $conditions, $bind);
+    }
+
+    /**
+     * Deletes data from a table using custom SQL syntax
+     *
+     * @param  string $sql
+     * @param  array  $bind
+     *
+     * @return int
+     */
+    public function deleteBySql($sql, $bind = [])
+    {
+        return $this->getMasterConnection()->deleteBySql($sql, $bind);
     }
 
     public function getSQL()
@@ -319,14 +369,6 @@ class Proxy extends Component implements DbInterface
         $this->_currentConnection->commit();
 
         $this->_transactionLevel--;
-    }
-
-    /**
-     * @return int
-     */
-    public function lastInsertId()
-    {
-        return $this->_currentConnection->lastInsertId();
     }
 
     /**

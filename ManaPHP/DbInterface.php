@@ -10,47 +10,55 @@ namespace ManaPHP;
 interface DbInterface
 {
     /**
-     * @return \ManaPHP\DbInterface
-     */
-    public function getMasterConnection();
-
-    /**
-     * @return \ManaPHP\DbInterface
-     */
-    public function getSlaveConnection();
-
-    /**
      * Returns the first row in a SQL query result
      *
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
-     * @param int                  $fetchMode
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @param bool   $useMaster
      *
      * @return array|false
      */
-    public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC);
+    public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false);
 
     /**
      * Dumps the complete result of a query into an array
      *
-     * @param string|\PDOStatement  $statement
-     * @param array                 $bind
-     * @param int                   $fetchMode
-     * @param string|callable|array $indexBy
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @param bool   $useMaster
      *
      * @return array
      */
-    public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null);
+    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false);
+
+    /**
+     * @param string $table
+     * @param array  $record
+     * @param bool   $fetchInsertId
+     *
+     * @return int|string|null
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function insert($table, $record, $fetchInsertId = false);
 
     /**
      * @param string $table
      * @param array  $record
      * @param string $primaryKey
-     * @param bool   $skipIfExists
      *
      * @return int
      */
-    public function insert($table, $record, $primaryKey = null, $skipIfExists = false);
+    public function insertOrSkip($table, $record, $primaryKey = null);
+
+    /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function insertBySql($sql, $bind = []);
 
     /**
      * @param string  $table
@@ -65,14 +73,24 @@ interface DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
-     * @param    string       $table
-     * @param    array        $fieldValues
-     * @param    string|array $conditions
-     * @param   array         $bind
+     * @param   string       $table
+     * @param   array        $fieldValues
+     * @param   string|array $conditions
+     * @param   array        $bind
      *
      * @return    int
      */
     public function update($table, $fieldValues, $conditions, $bind = []);
+
+    /**
+     * Updates data on a table using custom SQL syntax
+     *
+     * @param   string $sql
+     * @param   array  $bind
+     *
+     * @return    int
+     */
+    public function updateBySql($sql, $bind = []);
 
     /**
      * Updates data on a table using custom SQL syntax
@@ -98,6 +116,16 @@ interface DbInterface
     public function delete($table, $conditions, $bind = []);
 
     /**
+     * Deletes data from a table using custom SQL syntax
+     *
+     * @param  string $sql
+     * @param  array  $bind
+     *
+     * @return int
+     */
+    public function deleteBySql($sql, $bind = []);
+
+    /**
      * Active SQL statement in the object
      *
      * @return string
@@ -121,29 +149,11 @@ interface DbInterface
     public function getBind();
 
     /**
-     * Sends SQL statements to the database server returning the success state.
-     * Use this method only when the SQL statement sent to the server don't return any row
-     *
-     * @param  string|\PDOStatement $statement
-     * @param  array                $bind
-     *
-     * @return int
-     */
-    public function execute($statement, $bind = []);
-
-    /**
      * Returns the number of affected rows by the last INSERT/UPDATE/DELETE reported by the database system
      *
      * @return int
      */
     public function affectedRows();
-
-    /**
-     * Returns insert id for the auto_increment field inserted in the last SQL statement
-     *
-     * @return int
-     */
-    public function lastInsertId();
 
     /**
      * Starts a transaction in the connection

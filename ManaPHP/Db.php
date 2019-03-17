@@ -158,22 +158,6 @@ abstract class Db extends Component implements DbInterface
         return $this->_pdo;
     }
 
-    /**
-     * @return \ManaPHP\DbInterface
-     */
-    public function getMasterConnection()
-    {
-        return $this;
-    }
-
-    /**
-     * @return \ManaPHP\DbInterface
-     */
-    public function getSlaveConnection()
-    {
-        return $this;
-    }
-
     protected function _escapeIdentifier($identifier)
     {
         $list = [];
@@ -189,22 +173,20 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
+     * @param string $sql
+     * @param array  $bind
      *
      * @return \PDOStatement
      */
-    protected function _execute($statement, $bind)
+    protected function _execute($sql, $bind)
     {
-        if (is_string($statement)) {
-            if (!isset($this->_prepared[$statement])) {
-                if (count($this->_prepared) > 8) {
-                    array_shift($this->_prepared);
-                }
-                $this->_prepared[$statement] = @$this->_getPdo()->prepare($this->replaceQuoteCharacters($statement));
+        if (!isset($this->_prepared[$sql])) {
+            if (count($this->_prepared) > 8) {
+                array_shift($this->_prepared);
             }
-            $statement = $this->_prepared[$statement];
+            $this->_prepared[$sql] = @$this->_getPdo()->prepare($this->replaceQuoteCharacters($sql));
         }
+        $statement = $this->_prepared[$sql];
 
         foreach ($bind as $parameter => $value) {
             if (is_string($value)) {
@@ -241,68 +223,32 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
-     * @param int                  $fetchMode
+     * @param string $sql
+     * @param array  $bind
      *
-     * @return array
-     * @throws \ManaPHP\Db\Exception
+     * @return int
+     * @throws \ManaPHP\Db\ConnectionException
+     * @throws \ManaPHP\Exception\InvalidValueException
+     * @throws \ManaPHP\Exception\NotSupportedException
      */
-    protected function _fetchAll($statement, $bind, $fetchMode)
+    protected function _executeModify($sql, $bind)
     {
-        $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
-        $this->_bind = $bind;
-        $this->_affectedRows = 0;
-
-        $this->eventsManager->fireEvent('db:beforeQuery', $this);
-        $start_time = microtime(true);
-        try {
-            $r = $bind ? $this->_execute(is_string($statement) ? $this->_sql : $statement, $bind) : @$this->_getPdo()->query($this->_sql);
-        } catch (\PDOException $e) {
-            $r = null;
-            $failed = true;
-            if ($this->_transactionLevel === 0 && !$this->_ping()) {
-                try {
-                    $this->close();
-                    $r = $bind ? $this->_execute($this->_sql, $bind) : @$this->_getPdo()->query($this->_sql);
-                    $failed = false;
-                } catch (\PDOException $e) {
-                }
-            }
-            if ($failed) {
-                throw new DbException([
-                    ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                    'message' => $e->getMessage(),
-                    'sql' => $this->_sql,
-                    'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-                ], 0, $e);
-            }
-        }
-
-        $count = $this->_affectedRows = $r->rowCount();
-        $result = $r->fetchAll($fetchMode);
-        $elapsed = round(microtime(true) - $start_time, 3);
-
-        $event_data = compact('count', 'sql', 'bind', 'elapsed', 'result');
-        $this->eventsManager->fireEvent('db:afterQuery', $this, $event_data);
-        $this->logger->debug($event_data, 'db.query');
-
-        return $result;
+        return $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
     }
 
     /**
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server does n't return any rows
      *
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    public function execute($statement, $bind = [])
+    public function execute($sql, $bind = [])
     {
-        $this->_sql = $sql = is_string($statement) ? $this->replaceQuoteCharacters($statement) : $statement->queryString;
+        $this->_sql = $this->replaceQuoteCharacters($sql);
         $this->_bind = $bind;
 
         if (microtime(true) - $this->_last_io_time > 1.0) {
@@ -314,9 +260,7 @@ abstract class Db extends Component implements DbInterface
         $this->eventsManager->fireEvent('db:beforeExecute', $this);
         $start_time = microtime(true);
         try {
-            $this->_affectedRows = $bind
-                ? $this->_execute(is_string($statement) ? $this->_sql : $statement, $bind)->rowCount()
-                : @$this->_getPdo()->exec($this->_sql);
+            $this->_affectedRows = $this->_executeModify($sql, $bind);
         } catch (\PDOException $e) {
             throw new DbException([
                 ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
@@ -354,67 +298,97 @@ abstract class Db extends Component implements DbInterface
     /**
      * Returns the first row in a SQL query result
      *
-     * @param string|\PDOStatement $statement
-     * @param array                $bind
-     * @param int                  $fetchMode
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @param bool   $useMaster
      *
      * @return array|false
      * @throws \ManaPHP\Db\Exception
      */
-    public function fetchOne($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC)
+    public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
-        return ($rs = $this->_fetchAll($statement, $bind, $fetchMode)) ? $rs[0] : false;
+        return ($rs = $this->fetchAll($sql, $bind, $fetchMode, $useMaster)) ? $rs[0] : false;
+    }
+
+    /**
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     *
+     * @return array
+     */
+    protected function _executeQuery($sql, $bind, $fetchMode)
+    {
+        $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
+
+        return $statement->fetchAll($fetchMode);
     }
 
     /**
      * Dumps the complete result of a query into an array
      *
-     * @param string|\PDOStatement  $statement
-     * @param array                 $bind
-     * @param int                   $fetchMode
-     * @param string|callable|array $indexBy
+     * @param string $sql
+     * @param array  $bind
+     * @param int    $fetchMode
+     * @param bool   $useMaster
      *
      * @return array
      * @throws \ManaPHP\Db\Exception
      */
-    public function fetchAll($statement, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $indexBy = null)
+    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
-        $rs = $this->_fetchAll($statement, $bind, $fetchMode);
+        $this->_sql = $this->replaceQuoteCharacters($sql);
+        $this->_bind = $bind;
+        $this->_affectedRows = 0;
 
-        if ($indexBy === null) {
-            return $rs;
+        $this->eventsManager->fireEvent('db:beforeQuery', $this);
+        $start_time = microtime(true);
+
+        $result = [];
+        try {
+            $result = $this->_executeQuery($this->_sql, $bind, $fetchMode);
+        } catch (\PDOException $e) {
+            $r = null;
+            $failed = true;
+            if ($this->_transactionLevel === 0 && !$this->_ping()) {
+                try {
+                    $this->close();
+                    $result = $this->_executeQuery($this->_sql, $bind, $fetchMode);
+                    $failed = false;
+                } catch (\PDOException $e) {
+                }
+            }
+            if ($failed) {
+                throw new DbException([
+                    ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+                    'message' => $e->getMessage(),
+                    'sql' => $this->_sql,
+                    'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                ], 0, $e);
+            }
         }
 
-        $rows = [];
-        if (is_scalar($indexBy)) {
-            foreach ($rs as $row) {
-                $rows[$row[$indexBy]] = $row;
-            }
-        } elseif (is_array($indexBy)) {
-            $k = key($indexBy);
-            $v = current($indexBy);
-            foreach ($rs as $row) {
-                $rows[$row[$k]] = $row[$v];
-            }
-        } else {
-            foreach ($rs as $row) {
-                $rows[$indexBy($row)] = $row;
-            }
-        }
+        $count = $this->_affectedRows = count($result);
 
-        return $rows;
+        $elapsed = round(microtime(true) - $start_time, 3);
+
+        $event_data = compact('count', 'sql', 'bind', 'elapsed', 'result');
+        $this->eventsManager->fireEvent('db:afterQuery', $this, $event_data);
+        $this->logger->debug($event_data, 'db.query');
+
+        return $result;
     }
 
     /**
      * @param string $table
      * @param array  $record
      * @param string $primaryKey
-     * @param bool   $skipIfExists
      *
      * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    public function insert($table, $record, $primaryKey = null, $skipIfExists = false)
+    public function insertOrSkip($table, $record, $primaryKey = null)
     {
         if (!$record) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
@@ -423,12 +397,38 @@ abstract class Db extends Component implements DbInterface
         $insertedValues = ':' . implode(',:', $fields);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $sql = 'INSERT' . ($skipIfExists ? ' IGNORE' : '') . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+        $sql = 'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
         $count = $this->execute($sql, $record);
-        $this->logger->info(compact('count', 'table', 'record', 'skipIfExists'), 'db.insert');
+        $this->logger->info(compact('count', 'table', 'record'), 'db.insert');
 
         return $count;
+    }
+
+    /**
+     * @param string $table
+     * @param array  $record
+     * @param bool   $fetchInsertId
+     *
+     * @return int
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function insert($table, $record, $fetchInsertId = false)
+    {
+        if (!$record) {
+            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
+        }
+        $fields = array_keys($record);
+        $insertedValues = ':' . implode(',:', $fields);
+        $insertedFields = '[' . implode('],[', $fields) . ']';
+
+        $sql = 'INSERT INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+
+        $this->execute($sql, $record);
+        $insert_id = $fetchInsertId ? (int)$this->_pdo->lastInsertId() : null;
+        $this->logger->info(compact('insert_id', 'table', 'record'), 'db.insert');
+
+        return $insert_id;
     }
 
     /**
@@ -444,10 +444,26 @@ abstract class Db extends Component implements DbInterface
     {
         $count = 0;
         foreach ($records as $record) {
-            $count += $this->insert($table, $record, $primaryKey, $skipIfExists);
+            if ($skipIfExists) {
+                $count += $this->insertOrSkip($table, $record, $primaryKey);
+            } else {
+                $this->insert($table, $record);
+                $count++;
+            }
         }
 
         return $count;
+    }
+
+    /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function insertBySql($sql, $bind = [])
+    {
+        return $this->execute($sql, $bind);
     }
 
     /**
@@ -508,6 +524,19 @@ abstract class Db extends Component implements DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
+     * @param   string $sql
+     * @param   array  $bind
+     *
+     * @return    int
+     */
+    public function updateBySql($sql, $bind = [])
+    {
+        return $this->execute($sql, $bind);
+    }
+
+    /**
+     * Updates data on a table using custom SQL syntax
+     *
      * @param string $table
      * @param array  $insertFieldValues
      * @param array  $updateFieldValues
@@ -544,7 +573,7 @@ abstract class Db extends Component implements DbInterface
             }
             return $this->update($table, $updates, [$primaryKey => $insertFieldValues[$primaryKey]], $bind);
         } else {
-            return $this->insert($table, $insertFieldValues, $primaryKey);
+            return $this->insert($table, $insertFieldValues);
         }
     }
 
@@ -583,6 +612,19 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
+     * Deletes data from a table using custom SQL syntax
+     *
+     * @param  string $sql
+     * @param  array  $bind
+     *
+     * @return int
+     */
+    public function deleteBySql($sql, $bind = [])
+    {
+        return $this->execute($sql, $bind);
+    }
+
+    /**
      * Active SQL statement in the object
      *
      * @return string
@@ -590,6 +632,16 @@ abstract class Db extends Component implements DbInterface
     public function getSQL()
     {
         return $this->_sql;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function _quote($value)
+    {
+        return "'" . str_replace($value, "'", "\\'") . "'";
     }
 
     /**
@@ -601,10 +653,11 @@ abstract class Db extends Component implements DbInterface
     protected function _parseBindValue($value, $preservedStrLength)
     {
         if (is_string($value)) {
-            if ($preservedStrLength > 0 && strlen($value) >= $preservedStrLength) {
-                return $this->_getPdo()->quote(substr($value, 0, $preservedStrLength) . '...');
+            $quoted = $this->_quote($value);
+            if ($preservedStrLength > 0 && strlen($quoted) >= $preservedStrLength) {
+                return substr($quoted, 0, $preservedStrLength) . '...';
             } else {
-                return $this->_getPdo()->quote($value);
+                return $quoted;
             }
         } elseif (is_int($value)) {
             return $value;
@@ -748,16 +801,6 @@ abstract class Db extends Component implements DbInterface
                 throw new DbException('commit failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             }
         }
-    }
-
-    /**
-     * Returns insert id for the auto_increment field inserted in the last SQL statement
-     *
-     * @return int
-     */
-    public function lastInsertId()
-    {
-        return (int)$this->_pdo->lastInsertId();
     }
 
     /**

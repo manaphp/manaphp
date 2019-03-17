@@ -1300,8 +1300,32 @@ class Query extends \ManaPHP\Query implements QueryInterface
             return [];
         }
 
-        $db = $this->_force_master ? $this->getConnection()->getMasterConnection() : $this->_db;
-        return $db->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_index);
+        $result = $this->getConnection()->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_force_master);
+
+        $indexBy = $this->_index;
+
+        if ($indexBy === null) {
+            return $result;
+        }
+
+        $rows = [];
+        if (is_scalar($indexBy)) {
+            foreach ($result as $row) {
+                $rows[$row[$indexBy]] = $row;
+            }
+        } elseif (is_array($indexBy)) {
+            $k = key($indexBy);
+            $v = current($indexBy);
+            foreach ($result as $row) {
+                $rows[$row[$k]] = $row[$v];
+            }
+        } else {
+            foreach ($result as $row) {
+                $rows[$indexBy($row)] = $row;
+            }
+        }
+
+        return $rows;
     }
 
     /**

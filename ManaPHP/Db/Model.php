@@ -47,26 +47,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param mixed $context
-     *
-     * @return \ManaPHP\DbInterface
-     */
-    public function getMasterConnection($context = null)
-    {
-        return $this->getConnection($context)->getMasterConnection();
-    }
-
-    /**
-     * @param mixed $context
-     *
-     * @return \ManaPHP\DbInterface
-     */
-    public function getSlaveConnection($context = null)
-    {
-        return $this->getConnection($context)->getMasterConnection();
-    }
-
-    /**
      * @return string|array
      */
     public function getPrimaryKey()
@@ -202,10 +182,11 @@ class Model extends \ManaPHP\Model implements ModelInterface
          * @var \ManaPHP\DbInterface $connection
          */
         $connection = $this->_di->getShared($this->getDb($this));
-        $connection->insert($this->getSource($this), $fieldValues);
 
         if ($autoIncrementField && $this->$autoIncrementField === null) {
-            $this->$autoIncrementField = $connection->lastInsertId();
+            $this->$autoIncrementField = $connection->insert($this->getSource($this), $fieldValues, true);
+        } else {
+            $connection->insert($this->getSource($this), $fieldValues);
         }
 
         $this->_snapshot = $this->toArray();
@@ -335,7 +316,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $table = $model->getSource($bind);
         /** @noinspection SqlDialectInspection */
         /** @noinspection SqlNoDataSourceInspection */
-        return $model->getMasterConnection($bind)->execute("INSERT INTO [$table] " . $sql, $bind);
+        return $model->getConnection($bind)->insertBySql("INSERT INTO [$table] " . $sql, $bind);
     }
 
     /**
@@ -358,7 +339,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $table = $model->getSource($bind);
         /** @noinspection SqlDialectInspection */
         /** @noinspection SqlNoDataSourceInspection */
-        return $model->getMasterConnection($bind)->execute("DELETE FROM [$table] WHERE " . $sql, $bind);
+        return $model->getConnection($bind)->deleteBySql("DELETE FROM [$table] WHERE " . $sql, $bind);
     }
 
     /**
@@ -379,7 +360,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $model = new static;
 
         $table = $model->getSource($bind);
-        return $model->getMasterConnection($bind)->execute("UPDATE [$table] SET " . $sql, $bind);
+        return $model->getConnection($bind)->updateBySql("UPDATE [$table] SET " . $sql, $bind);
     }
 
     /**
@@ -398,7 +379,14 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 unset($record[$field]);
             }
         }
-        return $instance->getMasterConnection($record)->insert($instance->getSource($record), $record, $instance->getPrimaryKey(), $skipIfExists);
+	
+        if ($skipIfExists) {
+            $instance->getConnection($record)->insertOrSkip($instance->getSource($record), $record, $instance->getPrimaryKey());
+        } else {
+            $instance->getConnection($record)->insert($instance->getSource($record), $record);
+        }
+
+        return 1;
     }
 
     /**
@@ -425,7 +413,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        return $instance->getMasterConnection()->bulkInsert($instance->getSource(), $records, $instance->getPrimaryKey(), $skipIfExists);
+        return $instance->getConnection()->bulkInsert($instance->getSource(), $records, $instance->getPrimaryKey(), $skipIfExists);
     }
 
     /**
