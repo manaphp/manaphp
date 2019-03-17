@@ -38,7 +38,7 @@ class ContextManager
                         break;
                     }
                 } while ($parent_class = get_parent_class($parent_class));
-		
+
                 if (!$context_class) {
                     throw new Exception(['`:context` context class is not exists', 'context' => $object_class . 'Context']);
                 }

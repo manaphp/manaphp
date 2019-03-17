@@ -81,7 +81,7 @@ class Arguments extends Component implements ArgumentsInterface
         if (in_array(end($args), ['', '-', '--'])) {
             array_pop($args);
         }
-        
+
         while ($args) {
             $o = array_shift($args);
             if ($o[0] !== '-') {
