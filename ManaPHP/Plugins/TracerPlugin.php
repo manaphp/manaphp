@@ -59,12 +59,12 @@ class TracerPlugin extends Plugin
             ini_set('xdebug.var_display_max_depth', $this->_max_depth);
             ini_set('xdebug.show_mem_delta', $this->_mem_delta);
 
-            $this->attachEvent('request:init', [$this, 'onRequestInit']);
-            $this->attachEvent('request:destroy', [$this, 'onRequestDestroy']);
+            $this->attachEvent('request:construct', [$this, 'onConstruct']);
+            $this->attachEvent('request:destruct', [$this, 'onDestruct']);
         }
     }
 
-    public function onRequestInit()
+    public function onConstruct()
     {
         $file = $this->alias->resolve('@data/tracer/trace_{ymd_His}_{8}.log');
         $dir = dirname($file);
@@ -77,7 +77,7 @@ class TracerPlugin extends Plugin
         xdebug_start_trace($file);
     }
 
-    public function onRequestDestroy()
+    public function onDestruct()
     {
         /** @noinspection ForgottenDebugOutputInspection */
         @xdebug_stop_trace();

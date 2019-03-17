@@ -48,7 +48,7 @@ class DebuggerPlugin extends Plugin
         $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);
 
-        $this->attachEvent('request:destroy', [$this, 'onDestroy']);
+        $this->attachEvent('request:destruct', [$this, 'onDestruct']);
     }
 
     public function onRequestBegin()
@@ -74,7 +74,7 @@ class DebuggerPlugin extends Plugin
         }
     }
 
-    public function onDestroy()
+    public function onDestruct()
     {
         $context = $this->_context;
         if ($context->file) {

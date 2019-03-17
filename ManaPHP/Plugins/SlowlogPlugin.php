@@ -26,7 +26,7 @@ class SlowlogPlugin extends Plugin
 
     public function init()
     {
-        $this->eventsManager->attachEvent('request:destroy', [$this, 'onDestroy']);
+        $this->eventsManager->attachEvent('request:destruct', [$this, 'onDestruct']);
     }
 
     protected function _write($type, $elapsed, $message)
@@ -84,7 +84,7 @@ class SlowlogPlugin extends Plugin
         return $id;
     }
 
-    public function onDestroy()
+    public function onDestruct()
     {
         if ($this->response->hasHeader('X-Response-Time')) {
             $elapsed = $this->response->getHeader('X-Response-Time');

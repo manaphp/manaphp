@@ -37,11 +37,11 @@ abstract class Identity extends Component implements IdentityInterface
     {
         if (isset($options['type'])) {
             $this->_type = $options['type'];
-            $this->eventsManager->attachEvent('request:init', [$this, 'onRequestInit']);
+            $this->eventsManager->attachEvent('request:construct', [$this, 'onConstruct']);
         }
     }
 
-    public function onRequestInit()
+    public function onConstruct()
     {
         $context = $this->_context;
 

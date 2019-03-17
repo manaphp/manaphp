@@ -60,7 +60,7 @@ class Application extends \ManaPHP\Application
             $this->_prepareGlobals();
 
             $this->fireEvent('request:begin');
-            $this->fireEvent('request:init');
+            $this->fireEvent('request:construct');
 
             $this->authenticate();
 
@@ -81,7 +81,7 @@ class Application extends \ManaPHP\Application
 
         $this->response->send();
 
-        $this->fireEvent('request:destroy');
+        $this->fireEvent('request:destruct');
         $this->fireEvent('request:end');
     }
 }
