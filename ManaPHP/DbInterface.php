@@ -22,11 +22,6 @@ interface DbInterface
     /**
      * Returns the first row in a SQL query result
      *
-     * <code>
-     *  $db->fetchOne('SELECT * FROM city');
-     *  $db->fetchOne('SELECT * FROM city WHERE city_id =:city_id',['city_id'=>5]);
-     * </code>
-     *
      * @param string|\PDOStatement $statement
      * @param array                $bind
      * @param int                  $fetchMode
@@ -37,11 +32,6 @@ interface DbInterface
 
     /**
      * Dumps the complete result of a query into an array
-     *
-     *  <code>
-     *  $db->fetchAll('SELECT * FROM city');
-     *  $db->fetchAll('SELECT * FROM city WHERE city_id <:city_id',['city_id'=>5]);
-     * </code>
      *
      * @param string|\PDOStatement  $statement
      * @param array                 $bind
@@ -164,11 +154,6 @@ interface DbInterface
 
     /**
      * Checks whether the connection is under a transaction
-     *
-     *<code>
-     *    $connection->begin();
-     *    var_dump($connection->isUnderTransaction()); //true
-     *</code>
      *
      * @return bool
      */

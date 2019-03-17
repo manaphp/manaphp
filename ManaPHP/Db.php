@@ -293,11 +293,6 @@ abstract class Db extends Component implements DbInterface
     /**
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server does n't return any rows
-     *<code>
-     *    //Inserting data
-     *    $success = $connection->execute("INSERT INTO robots VALUES (1, 'Boy')");
-     *    $success = $connection->execute("INSERT INTO robots VALUES (?, ?)", array(1, 'Boy'));
-     *</code>
      *
      * @param string|\PDOStatement $statement
      * @param array                $bind
@@ -358,14 +353,6 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * Returns the first row in a SQL query result
-     *<code>
-     *    //Getting first robot
-     *    $robot = $connection->fetchOne("SELECT * FROM robots");
-     *    print_r($robot);
-     *    //Getting first robot with associative indexes only
-     *    $robot = $connection->fetchOne("SELECT * FROM robots", \ManaPHP\Db::FETCH_ASSOC);
-     *    print_r($robot);
-     *</code>
      *
      * @param string|\PDOStatement $statement
      * @param array                $bind
@@ -381,21 +368,6 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * Dumps the complete result of a query into an array
-     *<code>
-     *    //Getting all robots with associative indexes only
-     *    $robots = $connection->fetchAll("SELECT * FROM robots", \ManaPHP\Db::FETCH_ASSOC);
-     *    foreach ($robots as $robot) {
-     *        print_r($robot);
-     *    }
-     *  //Getting all robots that contains word "robot" withing the name
-     *  $robots = $connection->fetchAll("SELECT * FROM robots WHERE name LIKE :name",
-     *        ManaPHP\Db::FETCH_ASSOC,
-     *        array('name' => '%robot%')
-     *  );
-     *    foreach($robots as $robot){
-     *        print_r($robot);
-     *    }
-     *</code>
      *
      * @param string|\PDOStatement  $statement
      * @param array                 $bind
@@ -712,10 +684,6 @@ abstract class Db extends Component implements DbInterface
 
     /**
      * Checks whether the connection is under a transaction
-     *<code>
-     *    $connection->begin();
-     *    var_dump($connection->isUnderTransaction()); //true
-     *</code>
      *
      * @return bool
      */
