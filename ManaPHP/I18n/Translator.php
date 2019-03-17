@@ -53,10 +53,10 @@ class Translator extends Component implements TranslatorInterface
             $this->_locale = $options['locale'];
         }
 
-        $this->eventsManager->attachEvent('request:begin', [$this, '_onRequestBegin']);
+        $this->eventsManager->attachEvent('request:init', [$this, 'onRequestInit']);
     }
 
-    public function _onRequestBegin()
+    public function onRequestInit()
     {
         $context = $this->_context;
 

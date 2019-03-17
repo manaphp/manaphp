@@ -58,12 +58,12 @@ class File extends Component implements AppenderInterface
         if (!empty($_SERVER['DOCUMENT_ROOT'])) {
             if (!isset($options['lazy']) || $options['lazy']) {
                 $this->_lazy = true;
-                $this->eventsManager->attachEvent('request:end', [$this, '_writeLazyLog']);
+                $this->eventsManager->attachEvent('request:destroy', [$this, 'writeLazyLog']);
             }
         }
     }
 
-    public function _writeLazyLog()
+    public function writeLazyLog()
     {
         $context = $this->_context;
 
@@ -142,7 +142,7 @@ class File extends Component implements AppenderInterface
     public function __destruct()
     {
         if ($this->_lazy) {
-            $this->_writeLazyLog();
+            $this->writeLazyLog();
         }
     }
 }

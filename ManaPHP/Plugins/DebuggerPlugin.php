@@ -45,8 +45,8 @@ class DebuggerPlugin extends Plugin
     {
         $this->eventsManager->peekEvent([$this, '_eventHandlerPeek']);
 
-        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
-        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
+        $this->attachEvent('request:init', [$this, 'onRequestInit']);
+        $this->attachEvent('request:destroy', [$this, 'onRequestDestroy']);
     }
 
     /**
@@ -163,7 +163,7 @@ class DebuggerPlugin extends Plugin
         }
     }
 
-    public function onRequestBegin()
+    public function onRequestInit()
     {
         $context = $this->_context;
 
@@ -178,7 +178,7 @@ class DebuggerPlugin extends Plugin
         $context->file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
     }
 
-    public function onRequestEnd()
+    public function onRequestDestroy()
     {
         $context = $this->_context;
 

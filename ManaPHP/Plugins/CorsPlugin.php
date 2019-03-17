@@ -54,10 +54,10 @@ class CorsPlugin extends Plugin
 
     public function init()
     {
-        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
+        $this->attachEvent('request:init', [$this, 'onRequestInit']);
     }
 
-    public function onRequestBegin()
+    public function onRequestInit()
     {
         if ($this->_force || $this->request->hasServer('HTTP_ORIGIN')) {
             $this->response
