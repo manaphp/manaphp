@@ -65,10 +65,6 @@ class Mysql extends Db
             $this->_options[\PDO::ATTR_PERSISTENT] = $parts2['persistent'] === '1';
         }
 
-        if (isset($parts2['ping_interval'])) {
-            $this->_ping_interval = $parts2['ping_interval'];
-        }
-
         $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
 
         $dsn_parts = [];
@@ -132,7 +128,7 @@ class Mysql extends Db
      */
     public function truncate($source)
     {
-        $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
+        $this->_execute('truncate', 'TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
 
         return $this;
     }
@@ -145,7 +141,7 @@ class Mysql extends Db
      */
     public function drop($source)
     {
-        $this->execute('DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
+        $this->_execute('drop', 'DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
 
         return $this;
     }
@@ -274,7 +270,7 @@ class Mysql extends Db
         $fields = array_keys($records[0]);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $pdo = $this->_getPdo();
+        $pdo = $this->_getConnection();
 
         $rows = [];
         foreach ($records as $record) {
@@ -288,7 +284,7 @@ class Mysql extends Db
 
         $sql = 'INSERT' . ($skipIfExists ? ' IGNORE' : '') . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
 
-        $count = $this->execute($sql, []);
+        $count = $this->_execute('bulkInsert', $sql, []);
         $this->logger->debug(compact('count', 'table', 'records', 'skipIfExists'), 'db.bulk.insert');
 
         return $count;
@@ -346,7 +342,7 @@ class Mysql extends Db
         /** @noinspection SqlNoDataSourceInspection */
         $sql = "INSERT INTO {$this->_escapeIdentifier($table)}($insertFieldsSql) VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
 
-        $count = $this->execute($sql, $bind);
+        $count = $this->_execute('insert', $sql, $bind);
         $this->logger->info(compact('count', 'table', 'insertFieldValues', 'updateFieldValues', 'primaryKey'), 'db.upsert');
         return $count;
     }

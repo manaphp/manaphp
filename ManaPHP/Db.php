@@ -3,12 +3,10 @@
 namespace ManaPHP;
 
 use ManaPHP\Db\AssignmentInterface;
-use ManaPHP\Db\ConnectionException;
+use ManaPHP\Db\Connection;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidArgumentException;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotSupportedException;
 
 /**
  * Class ManaPHP\Db
@@ -43,9 +41,9 @@ abstract class Db extends Component implements DbInterface
     protected $_options = [];
 
     /**
-     * @var float
+     * @var \ManaPHP\Db\Connection
      */
-    protected $_ping_interval = 10.0;
+    protected $_connection;
 
     /**
      * Active SQL Statement
@@ -66,34 +64,19 @@ abstract class Db extends Component implements DbInterface
      *
      * @var int
      */
-    protected $_transactionLevel = 0;
-
-    /**
-     * @var \PDO
-     */
-    protected $_pdo;
+    protected $_transaction_level = 0;
 
     /**
      * Last affected rows
      *
      * @var int
      */
-    protected $_affectedRows;
+    protected $_affected_rows;
 
     /**
      * @var int
      */
     protected $_timeout = 3;
-
-    /**
-     * @var \PDOStatement[]
-     */
-    protected $_prepared = [];
-
-    /**
-     * @var float
-     */
-    protected $_last_io_time;
 
     /**
      * \ManaPHP\Db\Adapter constructor
@@ -107,55 +90,15 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * @return bool
+     * @return \ManaPHP\Db\Connection
      */
-    protected function _ping()
+    protected function _getConnection()
     {
-        try {
-            @$this->_pdo->query("SELECT 'PING'")->fetchAll();
-            return true;
-        } catch (\Exception $exception) {
-            return false;
-        }
-    }
-
-    /**
-     * @return \PDO
-     */
-    protected function _getPdo()
-    {
-        if ($this->_pdo === null) {
-            $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'db.connect');
-            $this->eventsManager->fireEvent('db:beforeConnect', $this, ['dsn' => $this->_dsn]);
-            try {
-                $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
-            } catch (\PDOException $e) {
-                throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
-            }
-            $this->eventsManager->fireEvent('db:afterConnect', $this);
-
-            if (!isset($this->_options[\PDO::ATTR_PERSISTENT]) || !$this->_options[\PDO::ATTR_PERSISTENT]) {
-                $this->_last_io_time = microtime(true);
-                return $this->_pdo;
-            }
+        if ($this->_connection === null) {
+            $this->_connection = new Connection($this->_dsn, $this->_username, $this->_password, $this->_options);
         }
 
-        if ($this->_transactionLevel === 0 && microtime(true) - $this->_last_io_time >= $this->_ping_interval && !$this->_ping()) {
-            $this->close();
-            $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
-            $this->eventsManager->fireEvent('db:reconnect', $this, ['dsn' => $this->_dsn]);
-            $this->eventsManager->fireEvent('db:beforeConnect', $this, ['dsn' => $this->_dsn]);
-            try {
-                $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
-            } catch (\PDOException $e) {
-                throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
-            }
-            $this->eventsManager->fireEvent('db:afterConnect', $this);
-        }
-
-        $this->_last_io_time = microtime(true);
-
-        return $this->_pdo;
+        return $this->_connection;
     }
 
     protected function _escapeIdentifier($identifier)
@@ -173,94 +116,29 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return \PDOStatement
-     */
-    protected function _execute($sql, $bind)
-    {
-        if (!isset($this->_prepared[$sql])) {
-            if (count($this->_prepared) > 8) {
-                array_shift($this->_prepared);
-            }
-            $this->_prepared[$sql] = @$this->_getPdo()->prepare($this->replaceQuoteCharacters($sql));
-        }
-        $statement = $this->_prepared[$sql];
-
-        foreach ($bind as $parameter => $value) {
-            if (is_string($value)) {
-                $type = \PDO::PARAM_STR;
-            } elseif (is_int($value)) {
-                $type = \PDO::PARAM_INT;
-            } elseif (is_bool($value)) {
-                $type = \PDO::PARAM_BOOL;
-            } elseif ($value === null) {
-                $type = \PDO::PARAM_NULL;
-            } elseif (is_float($value)) {
-                $type = \PDO::PARAM_STR;
-            } elseif (is_array($value) || $value instanceof \JsonSerializable) {
-                $type = \PDO::PARAM_STR;
-                $value = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            } else {
-                throw new NotSupportedException(['The `:type` type of `:parameter` parameter is not support', 'parameter' => $parameter, 'type' => gettype($value)]);
-            }
-
-            if (is_int($parameter)) {
-                $statement->bindValue($parameter + 1, $value, $type);
-            } else {
-                if ($parameter[0] === ':') {
-                    throw new InvalidValueException(['Bind does not require started with `:` for `:parameter` parameter', 'parameter' => $parameter]);
-                }
-
-                $statement->bindValue(':' . $parameter, $value, $type);
-            }
-        }
-
-        @$statement->execute();
-
-        return $statement;
-    }
-
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     * @throws \ManaPHP\Db\ConnectionException
-     * @throws \ManaPHP\Exception\InvalidValueException
-     * @throws \ManaPHP\Exception\NotSupportedException
-     */
-    protected function _executeModify($sql, $bind)
-    {
-        return $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
-    }
-
-    /**
      * Sends SQL statements to the database server returning the success state.
      * Use this method only when the SQL statement sent to the server does n't return any rows
      *
+     * @param string $type
      * @param string $sql
      * @param array  $bind
      *
      * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    public function execute($sql, $bind = [])
+    public function _execute($type, $sql, $bind = [])
     {
         $this->_sql = $this->replaceQuoteCharacters($sql);
         $this->_bind = $bind;
 
-        if (microtime(true) - $this->_last_io_time > 1.0) {
-            $this->_last_io_time = null;
-        }
+        $this->_affected_rows = 0;
 
-        $this->_affectedRows = 0;
+        $this->eventsManager->fireEvent('db:before' . ucfirst($type), $this);
 
-        $this->eventsManager->fireEvent('db:beforeExecute', $this);
+        $connection = $this->_getConnection();
         $start_time = microtime(true);
         try {
-            $this->_affectedRows = $this->_executeModify($sql, $bind);
+            $this->_affected_rows = $connection->execute($sql, $bind);
         } catch (\PDOException $e) {
             throw new DbException([
                 ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
@@ -270,18 +148,15 @@ abstract class Db extends Component implements DbInterface
             ]);
         }
 
-        $count = $this->_affectedRows;
+        $count = $this->_affected_rows;
         $elapsed = round(microtime(true) - $start_time, 3);
 
         $event_data = compact('count', 'sql', 'bind', 'elapsed');
-        if (is_int($this->_affectedRows)) {
-            $this->eventsManager->fireEvent('db:afterExecute', $this, $event_data);
+        if (is_int($this->_affected_rows)) {
+            $this->eventsManager->fireEvent('db:after' . ucfirst($type), $this, $event_data);
         }
 
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-        if (!isset($backtrace['function']) || !in_array($backtrace['function'], ['insert', 'delete', 'update', 'upsert'], true)) {
-            $this->logger->info($event_data, 'db.execute');
-        }
+        $this->logger->info($event_data, 'db.' . $type);
         return $count;
     }
 
@@ -292,7 +167,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function affectedRows()
     {
-        return $this->_affectedRows;
+        return $this->_affected_rows;
     }
 
     /**
@@ -312,20 +187,6 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $fetchMode
-     *
-     * @return array
-     */
-    protected function _executeQuery($sql, $bind, $fetchMode)
-    {
-        $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
-
-        return $statement->fetchAll($fetchMode);
-    }
-
-    /**
      * Dumps the complete result of a query into an array
      *
      * @param string $sql
@@ -338,44 +199,27 @@ abstract class Db extends Component implements DbInterface
      */
     public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
-        $this->_sql = $this->replaceQuoteCharacters($sql);
+        $this->_sql = $sql = $this->replaceQuoteCharacters($sql);
         $this->_bind = $bind;
-        $this->_affectedRows = 0;
+        $this->_affected_rows = 0;
 
         $this->eventsManager->fireEvent('db:beforeQuery', $this);
+
+        $connection = $this->_getConnection();
+
         $start_time = microtime(true);
-
-        $result = [];
-        try {
-            $result = $this->_executeQuery($this->_sql, $bind, $fetchMode);
-        } catch (\PDOException $e) {
-            $r = null;
-            $failed = true;
-            if ($this->_transactionLevel === 0 && !$this->_ping()) {
-                try {
-                    $this->close();
-                    $result = $this->_executeQuery($this->_sql, $bind, $fetchMode);
-                    $failed = false;
-                } catch (\PDOException $e) {
-                }
-            }
-            if ($failed) {
-                throw new DbException([
-                    ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                    'message' => $e->getMessage(),
-                    'sql' => $this->_sql,
-                    'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-                ], 0, $e);
-            }
-        }
-
-        $count = $this->_affectedRows = count($result);
-
+        $result = $connection->query($sql, $bind, $fetchMode, $useMaster);
         $elapsed = round(microtime(true) - $start_time, 3);
 
-        $event_data = compact('count', 'sql', 'bind', 'elapsed', 'result');
-        $this->eventsManager->fireEvent('db:afterQuery', $this, $event_data);
+        $count = $this->_affected_rows = count($result);
+
+        $event_data = compact('elapsed', 'count', 'sql', 'bind', 'result');
+
         $this->logger->debug($event_data, 'db.query');
+
+        if (($r = $this->eventsManager->fireEvent('db:afterQuery', $this, $event_data)) !== null) {
+            $result = $r;
+        }
 
         return $result;
     }
@@ -397,9 +241,9 @@ abstract class Db extends Component implements DbInterface
         $insertedValues = ':' . implode(',:', $fields);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $sql = 'INSERT IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+        $sql = 'INSERT' . ' IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
-        $count = $this->execute($sql, $record);
+        $count = $this->_execute('insert', $sql, $record);
         $this->logger->info(compact('count', 'table', 'record'), 'db.insert');
 
         return $count;
@@ -410,7 +254,7 @@ abstract class Db extends Component implements DbInterface
      * @param array  $record
      * @param bool   $fetchInsertId
      *
-     * @return int
+     * @return int|string|null
      * @throws \ManaPHP\Db\Exception
      */
     public function insert($table, $record, $fetchInsertId = false)
@@ -422,11 +266,33 @@ abstract class Db extends Component implements DbInterface
         $insertedValues = ':' . implode(',:', $fields);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $sql = 'INSERT INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+        $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
-        $this->execute($sql, $record);
-        $insert_id = $fetchInsertId ? (int)$this->_pdo->lastInsertId() : null;
-        $this->logger->info(compact('insert_id', 'table', 'record'), 'db.insert');
+        $this->_sql = $sql = $this->replaceQuoteCharacters($sql);
+        $this->_bind = $bind = $record;
+
+        $this->_affected_rows = 0;
+
+        $connection = $this->_getConnection();
+
+        $this->eventsManager->fireEvent('db:beforeInsert', $this);
+
+        $start_time = microtime(true);
+        if ($fetchInsertId) {
+            $insert_id = $connection->execute($sql, $record, true);
+            $this->_affected_rows = 1;
+        } else {
+            $connection->execute($sql, $record, false);
+            $insert_id = null;
+        }
+
+        $elapsed = round(microtime(true) - $start_time, 3);
+
+        $event_data = compact('sql', 'record', 'elapsed');
+
+        $this->eventsManager->fireEvent('db:afterInsert', $this, $event_data);
+
+        $this->logger->info(compact('elapsed', 'insert_id', 'sql', 'bind'), 'db.insert');
 
         return $insert_id;
     }
@@ -463,7 +329,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function insertBySql($sql, $bind = [])
     {
-        return $this->execute($sql, $bind);
+        return $this->_execute('insert', $sql, $bind);
     }
 
     /**
@@ -516,9 +382,7 @@ abstract class Db extends Component implements DbInterface
 
         $sql = 'UPDATE ' . $this->_escapeIdentifier($table) . ' SET ' . implode(',', $setFields) . ' WHERE ' . implode(' AND ', $wheres);
 
-        $count = $this->execute($sql, $bind);
-        $this->logger->info(compact('count', 'table', 'fieldValues', 'conditions', 'bind'), 'db.update');
-        return $count;
+        return $this->_execute('update', $sql, $bind);
     }
 
     /**
@@ -531,7 +395,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function updateBySql($sql, $bind = [])
     {
-        return $this->execute($sql, $bind);
+        return $this->_execute('update', $sql, $bind);
     }
 
     /**
@@ -604,11 +468,8 @@ abstract class Db extends Component implements DbInterface
             }
         }
 
-        $sql = /**@lang Text */
-            'DELETE FROM ' . $this->_escapeIdentifier($table) . ' WHERE ' . implode(' AND ', $wheres);
-        $count = $this->execute($sql, $bind);
-        $this->logger->info(compact('count', 'table', 'conditions', 'bind'), 'db.delete');
-        return $count;
+        $sql = 'DELETE' . ' FROM ' . $this->_escapeIdentifier($table) . ' WHERE ' . implode(' AND ', $wheres);
+        return $this->_execute('delete', $sql, $bind);
     }
 
     /**
@@ -621,7 +482,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function deleteBySql($sql, $bind = [])
     {
-        return $this->execute($sql, $bind);
+        return $this->_execute('delete', $sql, $bind);
     }
 
     /**
@@ -716,15 +577,11 @@ abstract class Db extends Component implements DbInterface
     {
         $this->logger->info('transaction begin', 'db.transaction.begin');
 
-        if ($this->_transactionLevel === 0) {
-            if (microtime(true) - $this->_last_io_time > 1.0) {
-                $this->_last_io_time = null;
-            }
-
+        if ($this->_transaction_level === 0) {
             $this->eventsManager->fireEvent('db:beginTransaction', $this);
 
             try {
-                if (!$this->_getPdo()->beginTransaction()) {
+                if (!$this->_getConnection()->beginTransaction()) {
                     throw new DbException('beginTransaction failed.');
                 }
             } catch (\PDOException $exception) {
@@ -732,7 +589,7 @@ abstract class Db extends Component implements DbInterface
             }
         }
 
-        $this->_transactionLevel++;
+        $this->_transaction_level++;
     }
 
     /**
@@ -742,7 +599,7 @@ abstract class Db extends Component implements DbInterface
      */
     public function isUnderTransaction()
     {
-        return $this->_transactionLevel !== 0;
+        return $this->_transaction_level !== 0;
     }
 
     /**
@@ -755,17 +612,17 @@ abstract class Db extends Component implements DbInterface
     {
         $this->logger->info('transaction rollback', 'db.transaction.rollback');
 
-        if ($this->_transactionLevel === 0) {
+        if ($this->_transaction_level === 0) {
             throw new MisuseException('There is no active transaction');
         }
 
-        $this->_transactionLevel--;
+        $this->_transaction_level--;
 
-        if ($this->_transactionLevel === 0) {
+        if ($this->_transaction_level === 0) {
             $this->eventsManager->fireEvent('db:rollbackTransaction', $this);
 
             try {
-                if (!$this->_pdo->rollBack()) {
+                if (!$this->_connection->rollBack()) {
                     throw new DbException('rollBack failed.');
                 }
             } catch (\PDOException $exception) {
@@ -784,17 +641,17 @@ abstract class Db extends Component implements DbInterface
     {
         $this->logger->info('transaction commit', 'db.transaction.commit');
 
-        if ($this->_transactionLevel === 0) {
+        if ($this->_transaction_level === 0) {
             throw new MisuseException('There is no active transaction');
         }
 
-        $this->_transactionLevel--;
+        $this->_transaction_level--;
 
-        if ($this->_transactionLevel === 0) {
+        if ($this->_transaction_level === 0) {
             $this->eventsManager->fireEvent('db:commitTransaction', $this);
 
             try {
-                if (!$this->_pdo->commit()) {
+                if (!$this->_connection->commit()) {
                     throw new DbException('commit failed.');
                 }
             } catch (\PDOException $exception) {
@@ -813,15 +670,13 @@ abstract class Db extends Component implements DbInterface
 
     public function close()
     {
-        if ($this->_pdo) {
-            $this->_pdo = null;
-            $this->_prepared = [];
-            $this->_last_io_time = null;
-            if ($this->_transactionLevel !== 0) {
-                $this->_transactionLevel = 0;
-                $this->_pdo->rollBack();
-                $this->logger->warn('transaction is not close correctly', 'db.transaction.abnormal');
+        if ($this->_connection) {
+            if ($this->_transaction_level !== 0) {
+                $this->_transaction_level = 0;
+                $this->_connection->rollBack();
+                $this->logger->error('transaction is not close correctly', 'db.transaction.abnormal');
             }
+            $this->_connection = null;
         }
     }
 

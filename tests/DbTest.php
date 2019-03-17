@@ -33,26 +33,26 @@ class DbTest extends TestCase
     {
         $this->db->truncate('_student');
 
-        $affectedRows = $this->db->execute('INSERT INTO _student(id,age,name) VALUES(?,?,?)', [1, 20, 'mana']);
+        $affectedRows = $this->db->insertBySql('INSERT INTO _student(id,age,name) VALUES(?,?,?)', [1, 20, 'mana']);
         $this->assertEquals(1, $affectedRows);
 
-        $affectedRows = $this->db->execute('UPDATE _student set age=?, name=?', [22, 'mana2']);
+        $affectedRows = $this->db->updateBySql('UPDATE _student set age=?, name=?', [22, 'mana2']);
         $this->assertEquals(1, $affectedRows);
 
-        $affectedRows = $this->db->execute('DELETE FROM _student WHERE id=?', [1]);
+        $affectedRows = $this->db->deleteBySql('DELETE FROM _student WHERE id=?', [1]);
         $this->assertEquals(1, $affectedRows);
 
         $this->db->truncate('_student');
 
-        $affectedRows = $this->db->execute('INSERT INTO _student(id,age,name) VALUES(:id,:age,:name)',
+        $affectedRows = $this->db->insertBySql('INSERT INTO _student(id,age,name) VALUES(:id,:age,:name)',
             ['id' => 11, 'age' => 220, 'name' => 'mana2']);
         $this->assertEquals(1, $affectedRows);
 
-        $affectedRows = $this->db->execute('UPDATE _student set age=:age, name=:name',
+        $affectedRows = $this->db->updateBySql('UPDATE _student set age=:age, name=:name',
             ['age' => 22, 'name' => 'mana2']);
         $this->assertEquals(1, $affectedRows);
 
-        $affectedRows = $this->db->execute('DELETE FROM _student WHERE id=:id', ['id' => 11]);
+        $affectedRows = $this->db->deleteBySql('DELETE FROM _student WHERE id=:id', ['id' => 11]);
         $this->assertEquals(1, $affectedRows);
     }
 

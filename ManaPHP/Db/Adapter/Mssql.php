@@ -119,7 +119,7 @@ class Mssql extends Db
      */
     public function truncate($source)
     {
-        $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
+        $this->_execute('truncate', 'TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
 
         return $this;
     }

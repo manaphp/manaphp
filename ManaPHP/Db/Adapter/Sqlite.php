@@ -66,8 +66,8 @@ class Sqlite extends Db
      */
     public function truncate($source)
     {
-        $this->execute('DELETE ' . 'FROM ' . $this->_escapeIdentifier($source));
-        $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $source]);
+        $this->_execute('delete', 'DELETE ' . 'FROM ' . $this->_escapeIdentifier($source));
+        $this->_execute('delete', 'DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $source]);
 
         return $this;
     }
@@ -80,7 +80,7 @@ class Sqlite extends Db
      */
     public function drop($source)
     {
-        $this->execute('DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
+        $this->_execute('drop', 'DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
 
         return $this;
     }
