@@ -3,6 +3,7 @@
 // Its AST serves IDE as DATA source to make advanced type inference decisions.
 
 namespace PHPSTORM_META {
+
     $STATIC_METHOD_TYPES = [
         \ManaPHP\DiInterface::getShared('') => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
