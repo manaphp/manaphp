@@ -4,24 +4,32 @@ namespace ManaPHP\Plugins;
 use ManaPHP\Logger;
 use ManaPHP\Plugin;
 
+class FiddlerPluginContext
+{
+    /**
+     * @var string
+     */
+    public $channel;
+
+    /**
+     * @var array
+     */
+    public $header;
+}
+
+/**
+ * Class FiddlerPlugin
+ * @package ManaPHP\Plugins
+ * @property \ManaPHP\Plugins\FiddlerPluginContext $_context
+ */
 class FiddlerPlugin extends Plugin
 {
     const PROCESSOR_PREFIX = 'process_';
 
     /**
-     * @var string
-     */
-    protected $_channel;
-
-    /**
      * @var bool
      */
     protected $_enabled = true;
-
-    /**
-     * @var array
-     */
-    protected $_header;
 
     /**
      * @var float
@@ -30,27 +38,28 @@ class FiddlerPlugin extends Plugin
 
     public function init()
     {
-        $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
+        $context = $this->_context;
 
         if (empty($_SERVER['DOCUMENT_ROOT'])) {
-            $this->_header = ['ip' => '-', 'url' => '-', 'uuid' => '-'];
-            $this->_channel = 'manaphp:fiddler:cli:' . $this->configure->id;
-        } else {
-            $this->eventsManager->attachEvent('request:begin', [$this, 'checkEnabled']);
+            $context->header = ['ip' => '-', 'url' => '-', 'uuid' => '-'];
+            $context->channel = 'manaphp:fiddler:cli:' . $this->configure->id;
         }
 
+        $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
         $this->eventsManager->attachEvent('response:afterSend', [$this, 'onAfterSendResponse']);
     }
 
-    public function checkEnabled()
+    public function onRequestBegin()
     {
-        $this->_header = [
+        $context = $this->_context;
+
+        $context->header = [
             'ip' => $this->request->getClientIp(),
             'url' => parse_url($this->request->getServer('REQUEST_URI'), PHP_URL_PATH),
             'uuid' => substr(md5($this->request->getServer('REQUEST_TIME_FLOAT') . mt_rand()), 0, 8)
         ];
-        $this->_channel = 'manaphp:fiddler:web:' . $this->configure->id . ':' . $this->request->getClientIp();
+        $context->channel = 'manaphp:fiddler:web:' . $this->configure->id . ':' . $this->request->getClientIp();
 
         $current = microtime(true);
         if ($current - $this->_last_checked >= 1.0) {
@@ -60,12 +69,7 @@ class FiddlerPlugin extends Plugin
 
         if ($this->_enabled) {
             $this->logger->setLevel(Logger::LEVEL_DEBUG);
-        }
-    }
 
-    public function onRequestBegin()
-    {
-        if ($this->enabled()) {
             $server = [];
             foreach ($this->request->getServer() as $k => $v) {
                 if (strpos($k, 'HTTP_') !== 0) {
@@ -74,7 +78,7 @@ class FiddlerPlugin extends Plugin
                 $server[$k] = $v;
             }
 
-            $this->publish('request', ['GET' => $this->request->getGet(), 'POST' => $this->request->getPost(), 'SERVER' => $server]);
+            $this->publish('request', ['_REQUEST' => $this->request->get(), 'SERVER' => $server]);
         }
     }
 
@@ -102,6 +106,14 @@ class FiddlerPlugin extends Plugin
      */
     public function enabled()
     {
+        if (empty($_SERVER['DOCUMENT_ROOT'])) {
+            $current = microtime(true);
+            if ($this->_last_checked && $current - $this->_last_checked >= 1.0) {
+                $this->_last_checked = $current;
+                $this->_enabled = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
+            }
+        }
+
         return $this->_enabled;
     }
 
@@ -130,7 +142,9 @@ class FiddlerPlugin extends Plugin
      */
     public function publish($type, $data)
     {
-        $packet = $this->_header;
+        $context = $this->_context;
+
+        $packet = $context->header;
 
         $packet['type'] = $type;
         $packet['data'] = $data;
@@ -138,7 +152,7 @@ class FiddlerPlugin extends Plugin
         /** @noinspection PhpUndefinedMethodInspection */
         /** @var \Redis $redis */
         $redis = $this->redis->getConnection();
-        $r = $redis->publish($this->_channel, json_encode($packet, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $r = $redis->publish($context->channel, json_encode($packet, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         if ($r <= 0) {
             $this->_enabled = false;
             $this->_last_checked = microtime(true);
