@@ -45,8 +45,41 @@ class DebuggerPlugin extends Plugin
     {
         $this->eventsManager->peekEvent([$this, '_eventHandlerPeek']);
 
-        $this->attachEvent('request:init', [$this, 'onRequestInit']);
-        $this->attachEvent('request:destroy', [$this, 'onRequestDestroy']);
+        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
+        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
+
+        $this->attachEvent('request:destroy', [$this, 'onDestroy']);
+    }
+
+    public function onRequestBegin()
+    {
+        if (preg_match('#^[a-zA-Z0-9_/]+\.html$#', $debugger = $this->request->getGet('_debugger'))) {
+            $file = '@data/debugger' . $debugger;
+            if ($this->filesystem->fileExists($file)) {
+                $this->response->setContent($this->filesystem->fileGet($file));
+                throw new AbortException();
+            }
+        }
+
+        $context = $this->_context;
+        $context->file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+    }
+
+    public function onRequestEnd()
+    {
+        $context = $this->_context;
+
+        if ($context->file) {
+            $this->filesystem->filePut('@data/debugger/' . $context->file, $this->output());
+        }
+    }
+
+    public function onDestroy()
+    {
+        $context = $this->_context;
+        if ($context->file) {
+            $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
+        }
     }
 
     /**
@@ -160,31 +193,6 @@ class DebuggerPlugin extends Plugin
             $item['shell'] = [];
             $item['elapsed'] = $data['elapsed'];
             $context->mongodb = [];
-        }
-    }
-
-    public function onRequestInit()
-    {
-        $context = $this->_context;
-
-        if (preg_match('#^[a-zA-Z0-9_/]+\.html$#', $debugger = $this->request->getGet('_debugger'))) {
-            $file = '@data/debugger' . $debugger;
-            if ($this->filesystem->fileExists($file)) {
-                $this->response->setContent($this->filesystem->fileGet($file));
-                throw new AbortException();
-            }
-        }
-
-        $context->file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
-    }
-
-    public function onRequestDestroy()
-    {
-        $context = $this->_context;
-
-        if ($context->file) {
-            $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
-            $this->filesystem->filePut('@data/debugger/' . $context->file, $this->output());
         }
     }
 
