@@ -54,7 +54,7 @@ class CorsPlugin extends Plugin
 
     public function init()
     {
-        $this->attachEvent('request:construct', [$this, 'onConstruct']);
+        $this->eventsManager->attachEvent('request:construct', [$this, 'onConstruct']);
     }
 
     public function onConstruct()

@@ -59,8 +59,8 @@ class TracerPlugin extends Plugin
             ini_set('xdebug.var_display_max_depth', $this->_max_depth);
             ini_set('xdebug.show_mem_delta', $this->_mem_delta);
 
-            $this->attachEvent('request:construct', [$this, 'onConstruct']);
-            $this->attachEvent('request:destruct', [$this, 'onDestruct']);
+            $this->eventsManager->attachEvent('request:construct', [$this, 'onConstruct']);
+            $this->eventsManager->attachEvent('request:destruct', [$this, 'onDestruct']);
         }
     }
 

@@ -96,7 +96,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
             $this->_cookie_params = $options['cookie_params'] + $this->_cookie_params;
         }
 
-        $this->attachEvent('request:end', [$this, 'save']);
+        $this->eventsManager->attachEvent('request:end', [$this, 'save']);
     }
 
     /**

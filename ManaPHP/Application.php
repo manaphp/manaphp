@@ -80,8 +80,8 @@ class Application extends Component implements ApplicationInterface
 
         $this->loader->registerFiles('@manaphp/helpers.php');
 
-        $this->attachEvent('request:begin', [$this, 'generateRequestId']);
-        $this->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
+        $this->eventsManager->attachEvent('request:begin', [$this, 'generateRequestId']);
+        $this->eventsManager->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
     }
 
     public function generateRequestId()

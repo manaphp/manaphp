@@ -45,10 +45,10 @@ class DebuggerPlugin extends Plugin
     {
         $this->eventsManager->peekEvent([$this, '_eventHandlerPeek']);
 
-        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
-        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
+        $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
+        $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
 
-        $this->attachEvent('request:destruct', [$this, 'onDestruct']);
+        $this->eventsManager->attachEvent('request:destruct', [$this, 'onDestruct']);
     }
 
     public function onRequestBegin()

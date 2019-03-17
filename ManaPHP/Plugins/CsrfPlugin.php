@@ -56,7 +56,7 @@ class CsrfPlugin extends Plugin
 
     public function init()
     {
-        $this->attachEvent('dispatcher:beforeDispatch', [$this, 'onBeforeDispatch']);
+        $this->eventsManager->attachEvent('dispatcher:beforeDispatch', [$this, 'onBeforeDispatch']);
     }
 
     /**
