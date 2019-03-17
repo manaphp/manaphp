@@ -14,7 +14,6 @@ class RequestContext
     public $_SERVER = [];
     public $_COOKIE = [];
     public $_FILES = [];
-    public $_SESSION;
 }
 
 /**
@@ -175,7 +174,7 @@ class Request extends Component implements RequestInterface
     public function getServer($name = null, $default = '')
     {
         $context = $this->_context;
-	
+
         if ($name === null) {
             return $context->_SERVER;
         } else {

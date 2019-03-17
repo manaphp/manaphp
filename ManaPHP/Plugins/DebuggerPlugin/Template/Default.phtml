@@ -316,13 +316,14 @@
 
 <?php
 $globals = di('request')->getGlobals();
+$session = di('session');
 
 $data['included_files'] = @get_included_files() ?: [];
 $data['request'] = $globals->_REQUEST;
 $data['get'] = $globals->_GET;
 $data['post'] = $globals->_POST;
 $data['cookie'] = $globals->_COOKIE;
-$data['session'] = $globals->_SESSION;
+$data['session'] = isset($globals->_COOKIE[$session->getName()]) ? $session->get() : [];
 $data['server'] = $globals->_SERVER;
 unset($data['server']['PATH']);
 ?>
