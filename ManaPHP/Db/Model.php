@@ -314,9 +314,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $model = new static;
 
         $table = $model->getSource($bind);
-        /** @noinspection SqlDialectInspection */
-        /** @noinspection SqlNoDataSourceInspection */
-        return $model->getConnection($bind)->insertBySql("INSERT INTO [$table] " . $sql, $bind);
+        return $model->getConnection($bind)->insertBySql('INSERT' . " INTO [$table] " . $sql, $bind);
     }
 
     /**
@@ -337,9 +335,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $model = new static;
 
         $table = $model->getSource($bind);
-        /** @noinspection SqlDialectInspection */
-        /** @noinspection SqlNoDataSourceInspection */
-        return $model->getConnection($bind)->deleteBySql("DELETE FROM [$table] WHERE " . $sql, $bind);
+        return $model->getConnection($bind)->deleteBySql('DELETE' . " FROM [$table] WHERE " . $sql, $bind);
     }
 
     /**
@@ -360,16 +356,15 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $model = new static;
 
         $table = $model->getSource($bind);
-        return $model->getConnection($bind)->updateBySql("UPDATE [$table] SET " . $sql, $bind);
+        return $model->getConnection($bind)->updateBySql('UPDATE' . " [$table] SET " . $sql, $bind);
     }
 
     /**
      * @param array $record
-     * @param bool  $skipIfExists
      *
      * @return int
      */
-    public static function insert($record, $skipIfExists = false)
+    public static function insert($record)
     {
         $instance = new static();
         if ($fields = array_diff(array_keys($record), $instance->_di->modelsMetadata->getAttributes($instance))) {
@@ -379,41 +374,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 unset($record[$field]);
             }
         }
-	
-        if ($skipIfExists) {
-            $instance->getConnection($record)->insertOrSkip($instance->getSource($record), $record, $instance->getPrimaryKey());
-        } else {
-            $instance->getConnection($record)->insert($instance->getSource($record), $record);
-        }
+
+        $instance->getConnection($record)->insert($instance->getSource($record), $record);
 
         return 1;
-    }
-
-    /**
-     * @param array $records
-     * @param bool  $skipIfExists
-     *
-     * @return int
-     */
-    public static function bulkInsert($records, $skipIfExists = false)
-    {
-        if (!$records) {
-            return 0;
-        }
-
-        $instance = new static();
-        if ($fields = array_diff(array_keys($records[0]), $instance->_di->modelsMetadata->getAttributes($instance))) {
-            $instance->logger->debug(['bulkInsert `:1` table skip fields: :2', $instance->getSource(), array_values($fields)]);
-
-            foreach ($records as $k => $record) {
-                foreach ($fields as $field) {
-                    unset($record[$field]);
-                }
-                $records[$k] = $record;
-            }
-        }
-
-        return $instance->getConnection()->bulkInsert($instance->getSource(), $records, $instance->getPrimaryKey(), $skipIfExists);
     }
 
     /**

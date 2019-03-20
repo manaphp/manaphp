@@ -2,7 +2,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Mongodb\Exception as MongodbException;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
@@ -156,33 +155,25 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @param string $source
      * @param array  $document
-     * @param string $primaryKey
-     * @param bool   $skipIfExists
      *
      * @return int
      * @throws \ManaPHP\Mongodb\Exception
      * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
-    public function insert($source, $document, $primaryKey = null, $skipIfExists = false)
+    public function insert($source, $document)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
         $bulk = new BulkWrite();
-        if ($skipIfExists) {
-            if ($primaryKey === null) {
-                throw new InvalidValueException('when insert type is skipIfExists must provide primaryKey name');
-            }
-            $bulk->update([$primaryKey => $document[$primaryKey]], ['$setOnInsert' => $document], ['upsert' => true]);
-        } else {
-            $bulk->insert($document);
-        }
+
+        $bulk->insert($document);
 
         $this->eventsManager->fireEvent('mongodb:beforeInsert', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
-        $count = $skipIfExists ? $result->getUpsertedCount() : $result->getInsertedCount();
+        $count = $result->getInsertedCount();
 
         $this->eventsManager->fireEvent('mongodb:afterInsert', $this, ['namespace' => $namespace]);
-        $this->logger->info(compact('count', 'namespace', 'primaryKey', 'document', 'skipIfExists'), 'mongodb.insert');
+        $this->logger->info(compact('count', 'namespace', 'document'), 'mongodb.insert');
 
         return $count;
     }
@@ -190,37 +181,23 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @param string  $source
      * @param array[] $documents
-     * @param string  $primaryKey
-     * @param bool    $skipIfExists
      *
      * @return int
      * @throws \ManaPHP\Mongodb\Exception
      */
-    public function bulkInsert($source, $documents, $primaryKey = null, $skipIfExists = false)
+    public function bulkInsert($source, $documents)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
-
-        if ($skipIfExists && $primaryKey === null) {
-            throw new InvalidValueException('when insert type is skipIfExists must provide primaryKey name');
-        }
 
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
-            if ($skipIfExists) {
-                try {
-                    $bulk->update([$primaryKey => $document[$primaryKey]], ['$setOnInsert' => $document], ['upsert' => true]);
-                } catch (\Exception $exception) {
-                    throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-                }
-            } else {
-                $bulk->insert($document);
-            }
+            $bulk->insert($document);
         }
         $this->eventsManager->fireEvent('mongodb:beforeBulkInsert', $this, ['namespace' => $namespace]);
         $result = $this->bulkWrite($namespace, $bulk);
         $this->eventsManager->fireEvent('mongodb:afterBulkInsert', $this, ['namespace' => $namespace]);
-        $count = $skipIfExists ? $result->getUpsertedCount() : $result->getInsertedCount();
+        $count = $result->getInsertedCount();
         $this->logger->info(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
         return $count;
     }

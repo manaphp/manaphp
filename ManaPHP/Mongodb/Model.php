@@ -537,11 +537,10 @@ class Model extends \ManaPHP\Model
 
     /**
      * @param array[] $documents
-     * @param bool    $skipIfExists
      *
      * @return int
      */
-    public static function bulkInsert($documents, $skipIfExists = false)
+    public static function bulkInsert($documents)
     {
         $instance = new static();
 
@@ -562,7 +561,7 @@ class Model extends \ManaPHP\Model
             $documents[$i] = $document;
         }
 
-        return $instance->getConnection()->bulkInsert($instance->getSource(), $documents, $instance->getPrimaryKey(), $skipIfExists);
+        return $instance->getConnection()->bulkInsert($instance->getSource(), $documents);
     }
 
     /**
@@ -632,11 +631,10 @@ class Model extends \ManaPHP\Model
 
     /**
      * @param array $document
-     * @param bool  $skipIfExists
      *
      * @return int
      */
-    public static function insert($document, $skipIfExists = false)
+    public static function insert($document)
     {
         $instance = new static();
 
@@ -654,7 +652,7 @@ class Model extends \ManaPHP\Model
                 $document[$field] = $allowNull ? null : $instance->normalizeValue($type, '');
             }
         }
-        return $instance->getConnection($document)->insert($instance->getSource($document), $document, $instance->getPrimaryKey(), $skipIfExists);
+        return $instance->getConnection($document)->insert($instance->getSource($document), $document);
     }
 
     /**

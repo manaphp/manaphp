@@ -11,22 +11,18 @@ interface MongodbInterface
     /**
      * @param string $source
      * @param array  $document
-     * @param string $primaryKey
-     * @param bool   $skipIfExists
      *
      * @return int
      */
-    public function insert($source, $document, $primaryKey = null, $skipIfExists = false);
+    public function insert($source, $document);
 
     /**
      * @param string  $source
      * @param array[] $documents
-     * @param string  $primaryKey
-     * @param bool    $skipIfExists
      *
      * @return int
      */
-    public function bulkInsert($source, $documents, $primaryKey = null, $skipIfExists = false);
+    public function bulkInsert($source, $documents);
 
     /**
      * @param string $source

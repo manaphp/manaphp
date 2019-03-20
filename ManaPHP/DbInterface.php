@@ -44,31 +44,12 @@ interface DbInterface
     public function insert($table, $record, $fetchInsertId = false);
 
     /**
-     * @param string $table
-     * @param array  $record
-     * @param string $primaryKey
-     *
-     * @return int
-     */
-    public function insertOrSkip($table, $record, $primaryKey = null);
-
-    /**
      * @param string $sql
      * @param array  $bind
      *
      * @return int
      */
     public function insertBySql($sql, $bind = []);
-
-    /**
-     * @param string  $table
-     * @param array[] $records
-     * @param string  $primaryKey
-     * @param bool    $skipIfExists
-     *
-     * @return int
-     */
-    public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false);
 
     /**
      * Updates data on a table using custom SQL syntax
@@ -191,32 +172,11 @@ interface DbInterface
     public function getMetadata($source);
 
     /**
-     * @param string $source
-     *
-     * @return static
-     */
-    public function truncate($source);
-
-    /**
-     * @param string $source
-     *
-     * @return static
-     */
-    public function drop($source);
-
-    /**
      * @param string $schema
      *
      * @return array
      */
     public function getTables($schema = null);
-
-    /**
-     * @param string $source
-     *
-     * @return bool
-     */
-    public function tableExists($source);
 
     /**
      * @param array $params
@@ -226,21 +186,9 @@ interface DbInterface
     public function buildSql($params);
 
     /**
-     * @param string $sql
-     *
-     * @return string
-     */
-    public function replaceQuoteCharacters($sql);
-
-    /**
      * @return string
      */
     public function getLastSql();
-
-    /**
-     * @return mixed
-     */
-    public function close();
 
     /**
      * @param string $table

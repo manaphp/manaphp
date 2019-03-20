@@ -1,17 +1,13 @@
 <?php
-namespace ManaPHP\Db\Adapter;
+namespace ManaPHP\Db\Connection\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Db\AssignmentInterface;
+use ManaPHP\Db\Connection;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidArgumentException;
 
-/**
- * Class ManaPHP\Db\Adapter\Mysql
- *
- * @package db\adapter
- */
-class Mysql extends Db
+class Mysql extends Connection
 {
     /**
      * @var string
@@ -25,6 +21,8 @@ class Mysql extends Db
      */
     public function __construct($uri = 'mysql://root@localhost/test?charset=utf8')
     {
+        $this->_uri = $uri;
+
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mysql') {
@@ -65,6 +63,10 @@ class Mysql extends Db
             $this->_options[\PDO::ATTR_PERSISTENT] = $parts2['persistent'] === '1';
         }
 
+        if (isset($parts2['timeout'])) {
+            $this->_options[\PDO::ATTR_TIMEOUT] = (int)$parts2['timeout'];
+        }
+
         $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
 
         $dsn_parts = [];
@@ -84,7 +86,7 @@ class Mysql extends Db
      */
     public function getMetadata($source)
     {
-        $fields = $this->fetchAll('DESCRIBE ' . $this->_escapeIdentifier($source), [], \PDO::FETCH_NUM);
+        $fields = $this->query('DESCRIBE ' . $this->_escapeIdentifier($source), [], \PDO::FETCH_NUM);
 
         $attributes = [];
         $primaryKeys = [];
@@ -111,10 +113,10 @@ class Mysql extends Db
         }
 
         $r = [
-            self::METADATA_ATTRIBUTES => $attributes,
-            self::METADATA_PRIMARY_KEY => $primaryKeys,
-            self::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute,
-            self::METADATA_INT_TYPE_ATTRIBUTES => $intTypes,
+            Db::METADATA_ATTRIBUTES => $attributes,
+            Db::METADATA_PRIMARY_KEY => $primaryKeys,
+            Db::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute,
+            Db::METADATA_INT_TYPE_ATTRIBUTES => $intTypes,
         ];
 
         return $r;
@@ -128,7 +130,7 @@ class Mysql extends Db
      */
     public function truncate($source)
     {
-        $this->_execute('truncate', 'TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
+        $this->execute('TRUNCATE' . ' TABLE ' . $this->_escapeIdentifier($source));
 
         return $this;
     }
@@ -141,7 +143,7 @@ class Mysql extends Db
      */
     public function drop($source)
     {
-        $this->_execute('drop', 'DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
+        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
 
         return $this;
     }
@@ -161,7 +163,7 @@ class Mysql extends Db
         }
 
         $tables = [];
-        foreach ($this->fetchAll($sql, [], \PDO::FETCH_NUM) as $row) {
+        foreach ($this->query($sql, [], \PDO::FETCH_NUM) as $row) {
             $tables[] = $row[0];
         }
 
@@ -179,14 +181,14 @@ class Mysql extends Db
         $parts = explode('.', str_replace('[]`', '', $source));
 
         if (count($parts) === 2) {
-            $sql = "SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME`= '$parts[0]' AND `TABLE_SCHEMA` = '$parts[1]'";
+            $sql = 'SELECT' . " IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME`= '$parts[0]' AND `TABLE_SCHEMA` = '$parts[1]'";
         } else {
-            $sql = "SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = '$parts[0]' AND `TABLE_SCHEMA` = DATABASE()";
+            $sql = 'SELECT' . " IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = '$parts[0]' AND `TABLE_SCHEMA` = DATABASE()";
         }
 
-        $r = $this->fetchOne($sql, [], \PDO::FETCH_NUM);
+        $r = $this->query($sql, [], \PDO::FETCH_NUM);
 
-        return $r[0] === '1';
+        return $r && $r[0] === '1';
     }
 
     public function buildSql($params)
@@ -247,7 +249,7 @@ class Mysql extends Db
      *
      * @return string
      */
-    public function replaceQuoteCharacters($sql)
+    protected function _replaceQuoteCharacters($sql)
     {
         return preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
     }
@@ -255,13 +257,11 @@ class Mysql extends Db
     /**
      * @param string  $table
      * @param array[] $records
-     * @param string  $primaryKey
-     * @param bool    $skipIfExists
      *
      * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false)
+    public function bulkInsert($table, $records)
     {
         if (!$records) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
@@ -270,7 +270,7 @@ class Mysql extends Db
         $fields = array_keys($records[0]);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $pdo = $this->_getConnection();
+        $pdo = $this->_getPdo();
 
         $rows = [];
         foreach ($records as $record) {
@@ -282,12 +282,9 @@ class Mysql extends Db
             $rows[] = '(' . implode(',', $row) . ')';
         }
 
-        $sql = 'INSERT' . ($skipIfExists ? ' IGNORE' : '') . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
+        $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
 
-        $count = $this->_execute('bulkInsert', $sql, []);
-        $this->logger->debug(compact('count', 'table', 'records', 'skipIfExists'), 'db.bulk.insert');
-
-        return $count;
+        return $this->execute($sql, []);
     }
 
     /**
@@ -338,12 +335,8 @@ class Mysql extends Db
 
         $updateFieldsSql = implode(',', $updates);
 
-        /** @noinspection SqlDialectInspection */
-        /** @noinspection SqlNoDataSourceInspection */
-        $sql = "INSERT INTO {$this->_escapeIdentifier($table)}($insertFieldsSql) VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
+        $sql = 'INSERT' . " INTO {$this->_escapeIdentifier($table)}($insertFieldsSql) VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
 
-        $count = $this->_execute('insert', $sql, $bind);
-        $this->logger->info(compact('count', 'table', 'insertFieldValues', 'updateFieldValues', 'primaryKey'), 'db.upsert');
-        return $count;
+        return $this->execute('insert', $sql, $bind);
     }
 }

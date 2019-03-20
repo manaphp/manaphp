@@ -6,8 +6,13 @@ use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 
-class Connection extends Component
+abstract class Connection extends Component implements ConnectionInterface
 {
+    /**
+     * @var string
+     */
+    protected $_uri;
+
     /**
      * @var string
      */
@@ -33,7 +38,6 @@ class Connection extends Component
      */
     protected $_pdo;
 
-
     /**
      * Current transaction level
      *
@@ -56,12 +60,10 @@ class Connection extends Component
      */
     protected $_last_io_time;
 
-    public function __construct($dsn, $username, $password, $options)
+    public function __construct()
     {
-        $this->_dsn = $dsn;
-        $this->_username = $username;
-        $this->_password = $password;
-        $this->_options = $options;
+        $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
+        $this->_options[\PDO::ATTR_EMULATE_PREPARES] = false;
     }
 
     /**
@@ -116,13 +118,27 @@ class Connection extends Component
         return $this->_pdo;
     }
 
+    protected function _escapeIdentifier($identifier)
+    {
+        $list = [];
+        foreach (explode('.', $identifier) as $id) {
+            if ($identifier[0] === '[') {
+                $list[] = $id;
+            } else {
+                $list[] = "[$id]";
+            }
+        }
+
+        return implode('.', $list);
+    }
+
     /**
      * @param string $sql
      * @param array  $bind
      *
      * @return \PDOStatement
      */
-    public function _execute($sql, $bind)
+    protected function _execute($sql, $bind)
     {
         if (!isset($this->_prepared[$sql])) {
             if (count($this->_prepared) > 8) {
@@ -166,6 +182,12 @@ class Connection extends Component
         return $statement;
     }
 
+    /**
+     * @param string $sql
+     *
+     * @return string
+     */
+    abstract protected function _replaceQuoteCharacters($sql);
 
     /**
      * @param string $sql
@@ -177,13 +199,24 @@ class Connection extends Component
      * @throws \ManaPHP\Exception\InvalidValueException
      * @throws \ManaPHP\Exception\NotSupportedException
      */
-    public function execute($sql, $bind, $has_insert_id = false)
+    public function execute($sql, $bind = [], $has_insert_id = false)
     {
-        $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
-        if ($has_insert_id) {
-            return $this->_getPdo()->lastInsertId();
-        } else {
-            return $r;
+        $sql = $this->_replaceQuoteCharacters($sql);
+
+        try {
+            $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
+            if ($has_insert_id) {
+                return $this->_getPdo()->lastInsertId();
+            } else {
+                return $r;
+            }
+        } catch (\PDOException $e) {
+            throw new DbException([
+                ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+                'message' => $e->getMessage(),
+                'sql' => $sql,
+                'bind' => json_encode($bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+            ]);
         }
     }
 
@@ -195,8 +228,10 @@ class Connection extends Component
      *
      * @return array
      */
-    public function query($sql, $bind, $fetchMode, $useMaster = false)
+    public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
+        $sql = $this->_replaceQuoteCharacters($sql);
+
         try {
             $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
         } catch (\PDOException $e) {

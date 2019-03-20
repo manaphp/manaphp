@@ -1,14 +1,10 @@
 <?php
-namespace ManaPHP\Db\Adapter;
+namespace ManaPHP\Db\Connection\Adapter;
 
 use ManaPHP\Db;
+use ManaPHP\Db\Connection;
 
-/**
- * Class ManaPHP\Db\Adapter\Sqlite
- *
- * @package db\adapter
- */
-class Sqlite extends Db
+class Sqlite extends Connection
 {
     /**
      * Sqlite constructor.
@@ -17,6 +13,8 @@ class Sqlite extends Db
      */
     public function __construct($file)
     {
+        $this->_uri = $file;
+
         $this->_dsn = 'sqlite:' . ($file[0] === '@' ? $this->alias->resolve($file) : $file);
         parent::__construct();
     }
@@ -29,7 +27,7 @@ class Sqlite extends Db
      */
     public function getMetadata($source)
     {
-        $fields = $this->fetchAll('PRAGMA table_info(' . $this->_escapeIdentifier($source) . ')', null, \PDO::FETCH_ASSOC);
+        $fields = $this->query('PRAGMA table_info(' . $this->_escapeIdentifier($source) . ')', null, \PDO::FETCH_ASSOC);
 
         $attributes = [];
         $primaryKeys = [];
@@ -50,9 +48,9 @@ class Sqlite extends Db
         }
 
         $r = [
-            self::METADATA_ATTRIBUTES => $attributes,
-            self::METADATA_PRIMARY_KEY => $primaryKeys,
-            self::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute,
+            Db::METADATA_ATTRIBUTES => $attributes,
+            Db::METADATA_PRIMARY_KEY => $primaryKeys,
+            Db::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute,
         ];
 
         return $r;
@@ -66,8 +64,8 @@ class Sqlite extends Db
      */
     public function truncate($source)
     {
-        $this->_execute('delete', 'DELETE ' . 'FROM ' . $this->_escapeIdentifier($source));
-        $this->_execute('delete', 'DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $source]);
+        $this->execute('DELETE' . ' FROM ' . $this->_escapeIdentifier($source));
+        $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $source]);
 
         return $this;
     }
@@ -80,7 +78,7 @@ class Sqlite extends Db
      */
     public function drop($source)
     {
-        $this->_execute('drop', 'DROP TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
+        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
 
         return $this;
     }
@@ -93,9 +91,9 @@ class Sqlite extends Db
      */
     public function getTables($schema = null)
     {
-        $sql = "SELECT tbl_name FROM sqlite_master WHERE type = 'table' ORDER BY tbl_name";
+        $sql = 'SELECT' . " tbl_name FROM sqlite_master WHERE type = 'table' ORDER BY tbl_name";
         $tables = [];
-        foreach ($this->fetchAll($sql, [], \PDO::FETCH_ASSOC) as $row) {
+        foreach ($this->query($sql, [], \PDO::FETCH_ASSOC) as $row) {
             $tables[] = $row['tbl_name'];
         }
 
@@ -112,11 +110,11 @@ class Sqlite extends Db
     {
         $parts = explode('.', str_replace('[]`', '', $source));
 
-        $sql = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master WHERE type='table' AND tbl_name='$parts[0]'";
+        $sql = 'SELECT' . " CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master WHERE type='table' AND tbl_name='$parts[0]'";
 
-        $r = $this->fetchOne($sql, [], \PDO::FETCH_NUM);
+        $r = $this->query($sql, [], \PDO::FETCH_NUM);
 
-        return $r[0] === '1';
+        return $r && $r[0] === '1';
     }
 
     public function buildSql($params)
@@ -177,7 +175,7 @@ class Sqlite extends Db
      *
      * @return string
      */
-    public function replaceQuoteCharacters($sql)
+    protected function _replaceQuoteCharacters($sql)
     {
         return preg_replace('#\[([a-z_][a-z0-9_]*)\]#i', '`\\1`', $sql);
     }

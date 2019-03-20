@@ -3,7 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Db\AssignmentInterface;
-use ManaPHP\Db\Connection;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
@@ -13,7 +12,7 @@ use ManaPHP\Exception\MisuseException;
  *
  * @package db
  */
-abstract class Db extends Component implements DbInterface
+class Db extends Component implements DbInterface
 {
     const METADATA_ATTRIBUTES = 0;
     const METADATA_PRIMARY_KEY = 1;
@@ -23,25 +22,10 @@ abstract class Db extends Component implements DbInterface
     /**
      * @var string
      */
-    protected $_dsn;
+    protected $_uri;
 
     /**
-     * @var string
-     */
-    protected $_username;
-
-    /**
-     * @var string
-     */
-    protected $_password;
-
-    /**
-     * @var array
-     */
-    protected $_options = [];
-
-    /**
-     * @var \ManaPHP\Db\Connection
+     * @var \ManaPHP\Db\ConnectionInterface
      */
     protected $_connection;
 
@@ -74,28 +58,23 @@ abstract class Db extends Component implements DbInterface
     protected $_affected_rows;
 
     /**
-     * @var int
-     */
-    protected $_timeout = 3;
-
-    /**
-     * \ManaPHP\Db\Adapter constructor
+     * Db constructor.
      *
+     * @param string $uri
      */
-    public function __construct()
+    public function __construct($uri)
     {
-        $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
-        $this->_options[\PDO::ATTR_EMULATE_PREPARES] = false;
-        $this->_options[\PDO::ATTR_TIMEOUT] = $this->_timeout;
+        $this->_uri = $uri;
     }
 
     /**
-     * @return \ManaPHP\Db\Connection
+     * @return \ManaPHP\Db\ConnectionInterface
      */
     protected function _getConnection()
     {
         if ($this->_connection === null) {
-            $this->_connection = new Connection($this->_dsn, $this->_username, $this->_password, $this->_options);
+            $scheme = ucfirst(parse_url($this->_uri, PHP_URL_SCHEME));
+            $this->_connection = $this->_di->get("ManaPHP\Db\Connection\Adapter\\$scheme", [$this->_uri]);
         }
 
         return $this->_connection;
@@ -116,9 +95,6 @@ abstract class Db extends Component implements DbInterface
     }
 
     /**
-     * Sends SQL statements to the database server returning the success state.
-     * Use this method only when the SQL statement sent to the server does n't return any rows
-     *
      * @param string $type
      * @param string $sql
      * @param array  $bind
@@ -126,9 +102,9 @@ abstract class Db extends Component implements DbInterface
      * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    public function _execute($type, $sql, $bind = [])
+    protected function _execute($type, $sql, $bind = [])
     {
-        $this->_sql = $this->replaceQuoteCharacters($sql);
+        $this->_sql = $sql;
         $this->_bind = $bind;
 
         $this->_affected_rows = 0;
@@ -137,16 +113,8 @@ abstract class Db extends Component implements DbInterface
 
         $connection = $this->_getConnection();
         $start_time = microtime(true);
-        try {
-            $this->_affected_rows = $connection->execute($sql, $bind);
-        } catch (\PDOException $e) {
-            throw new DbException([
-                ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                'message' => $e->getMessage(),
-                'sql' => $this->_sql,
-                'bind' => json_encode($this->_bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-            ]);
-        }
+
+        $this->_affected_rows = $connection->execute($sql, $bind);
 
         $count = $this->_affected_rows;
         $elapsed = round(microtime(true) - $start_time, 3);
@@ -179,7 +147,6 @@ abstract class Db extends Component implements DbInterface
      * @param bool   $useMaster
      *
      * @return array|false
-     * @throws \ManaPHP\Db\Exception
      */
     public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
@@ -195,11 +162,10 @@ abstract class Db extends Component implements DbInterface
      * @param bool   $useMaster
      *
      * @return array
-     * @throws \ManaPHP\Db\Exception
      */
     public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
-        $this->_sql = $sql = $this->replaceQuoteCharacters($sql);
+        $this->_sql = $sql;
         $this->_bind = $bind;
         $this->_affected_rows = 0;
 
@@ -227,31 +193,6 @@ abstract class Db extends Component implements DbInterface
     /**
      * @param string $table
      * @param array  $record
-     * @param string $primaryKey
-     *
-     * @return int
-     * @throws \ManaPHP\Db\Exception
-     */
-    public function insertOrSkip($table, $record, $primaryKey = null)
-    {
-        if (!$record) {
-            throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
-        }
-        $fields = array_keys($record);
-        $insertedValues = ':' . implode(',:', $fields);
-        $insertedFields = '[' . implode('],[', $fields) . ']';
-
-        $sql = 'INSERT' . ' IGNORE INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
-
-        $count = $this->_execute('insert', $sql, $record);
-        $this->logger->info(compact('count', 'table', 'record'), 'db.insert');
-
-        return $count;
-    }
-
-    /**
-     * @param string $table
-     * @param array  $record
      * @param bool   $fetchInsertId
      *
      * @return int|string|null
@@ -266,9 +207,8 @@ abstract class Db extends Component implements DbInterface
         $insertedValues = ':' . implode(',:', $fields);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+        $this->_sql = $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
-        $this->_sql = $sql = $this->replaceQuoteCharacters($sql);
         $this->_bind = $bind = $record;
 
         $this->_affected_rows = 0;
@@ -295,30 +235,6 @@ abstract class Db extends Component implements DbInterface
         $this->logger->info(compact('elapsed', 'insert_id', 'sql', 'bind'), 'db.insert');
 
         return $insert_id;
-    }
-
-    /**
-     * @param string  $table
-     * @param array[] $records
-     * @param null    $primaryKey
-     * @param bool    $skipIfExists
-     *
-     * @return int
-     * @throws \ManaPHP\Db\Exception
-     */
-    public function bulkInsert($table, $records, $primaryKey = null, $skipIfExists = false)
-    {
-        $count = 0;
-        foreach ($records as $record) {
-            if ($skipIfExists) {
-                $count += $this->insertOrSkip($table, $record, $primaryKey);
-            } else {
-                $this->insert($table, $record);
-                $count++;
-            }
-        }
-
-        return $count;
     }
 
     /**
@@ -610,23 +526,20 @@ abstract class Db extends Component implements DbInterface
      */
     public function rollback()
     {
-        $this->logger->info('transaction rollback', 'db.transaction.rollback');
+        if ($this->_transaction_level > 0) {
+            $this->logger->info('transaction rollback', 'db.transaction.rollback');
+            $this->_transaction_level--;
 
-        if ($this->_transaction_level === 0) {
-            throw new MisuseException('There is no active transaction');
-        }
+            if ($this->_transaction_level === 0) {
+                $this->eventsManager->fireEvent('db:rollbackTransaction', $this);
 
-        $this->_transaction_level--;
-
-        if ($this->_transaction_level === 0) {
-            $this->eventsManager->fireEvent('db:rollbackTransaction', $this);
-
-            try {
-                if (!$this->_connection->rollBack()) {
-                    throw new DbException('rollBack failed.');
+                try {
+                    if (!$this->_connection->rollBack()) {
+                        throw new DbException('rollBack failed.');
+                    }
+                } catch (\PDOException $exception) {
+                    throw new DbException('rollBack failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
                 }
-            } catch (\PDOException $exception) {
-                throw new DbException('rollBack failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             }
         }
     }
@@ -666,6 +579,44 @@ abstract class Db extends Component implements DbInterface
     public function getLastSql()
     {
         return $this->_sql;
+    }
+
+    /**
+     * @param string $schema
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function getTables($schema = null)
+    {
+        return $this->_getConnection()->getTables($schema);
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function buildSql($params)
+    {
+        return $this->_getConnection()->buildSql($params);
+    }
+
+    /**
+     * @param $source
+     *
+     * @return array
+     * @throws \ManaPHP\Db\Exception
+     */
+    public function getMetadata($source)
+    {
+        $start_time = microtime(true);
+        $meta = $this->_getConnection()->getMetadata($source);
+        $elapsed = round(microtime(true) - $start_time, 3);
+
+        $this->logger->debug(compact('elapsed', 'source', 'meta'), 'db.metadata');
+
+        return $meta;
     }
 
     public function close()

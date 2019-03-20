@@ -1,12 +1,13 @@
 <?php
-namespace ManaPHP\Db\Adapter;
+namespace ManaPHP\Db\Connection\Adapter;
 
 use ManaPHP\Db;
+use ManaPHP\Db\Connection;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
 
-class Mssql extends Db
+class Mssql extends Connection
 {
     /**
      * SqlSrv constructor.
@@ -15,6 +16,8 @@ class Mssql extends Db
      */
     public function __construct($uri)
     {
+        $this->_uri = $uri;
+
         $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mssql') {
@@ -62,17 +65,17 @@ class Mssql extends Db
         $parts = explode('.', $source);
 
         if (count($parts) === 1) {
-            $fields = $this->fetchAll("exec sp_pkeys '$parts[0]'");
+            $fields = $this->query("exec sp_pkeys '$parts[0]'");
         } else {
-            $fields = $this->fetchAll("exec sp_pkeys @table_name ='$parts[1]', @table_owner ='$parts[0]'");
+            $fields = $this->query("exec sp_pkeys @table_name ='$parts[1]', @table_owner ='$parts[0]'");
         }
 
         $primaryKeys = count($fields) === 1 ? [$fields[0]['COLUMN_NAME']] : [];
 
         if (count($parts) === 1) {
-            $fields = $this->fetchAll("exec sp_columns '$parts[0]'");
+            $fields = $this->query("exec sp_columns '$parts[0]'");
         } else {
-            $fields = $this->fetchAll("exec sp_columns @table_name ='$parts[1]', @table_owner ='$parts[0]'");
+            $fields = $this->query("exec sp_columns @table_name ='$parts[1]', @table_owner ='$parts[0]'");
         }
 
         $attributes = [];
@@ -93,9 +96,9 @@ class Mssql extends Db
         }
 
         $r = [
-            self::METADATA_ATTRIBUTES => $attributes,
-            self::METADATA_PRIMARY_KEY => $primaryKeys,
-            self::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute
+            Db::METADATA_ATTRIBUTES => $attributes,
+            Db::METADATA_PRIMARY_KEY => $primaryKeys,
+            Db::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute
         ];
 
         return $r;
@@ -107,8 +110,8 @@ class Mssql extends Db
      */
     public function lastInsertId()
     {
-        $row = $this->fetchOne('SELECT @@IDENTITY AS lid');
-        return $row['lid'];
+        $row = $this->query('SELECT @@IDENTITY AS lid');
+        return $row[0]['lid'];
     }
 
     /**
@@ -119,7 +122,7 @@ class Mssql extends Db
      */
     public function truncate($source)
     {
-        $this->_execute('truncate', 'TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
+        $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
 
         return $this;
     }
@@ -224,7 +227,7 @@ class Mssql extends Db
      *
      * @return string
      */
-    public function replaceQuoteCharacters($sql)
+    protected function _replaceQuoteCharacters($sql)
     {
         return $sql;
     }

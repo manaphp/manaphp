@@ -43,7 +43,7 @@ class FactoryDefault extends Di
             'secint' => 'ManaPHP\Security\Secint',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
-            'db' => 'ManaPHP\Db\Adapter\Mysql',
+            'db' => 'ManaPHP\Db',
             'redis' => 'ManaPHP\Redis',
             'mongodb' => 'ManaPHP\Mongodb',
             'translator' => 'ManaPHP\I18n\Translator',

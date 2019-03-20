@@ -414,19 +414,10 @@ interface ModelInterface
 
     /**
      * @param array $record
-     * @param bool  $skipIfExists
      *
      * @return int
      */
-    public static function insert($record, $skipIfExists = false);
-
-    /**
-     * @param array $records
-     * @param bool  $skipIfExists
-     *
-     * @return int
-     */
-    public static function bulkInsert($records, $skipIfExists = false);
+    public static function insert($record);
 
     /**
      * Returns the instance as an array representation
