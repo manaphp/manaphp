@@ -8,10 +8,47 @@ use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 
+class DbContext
+{
+    /**
+     * @var \ManaPHP\Db\ConnectionInterface
+     */
+    public $connection;
+
+    /**
+     * Active SQL Statement
+     *
+     * @var string
+     */
+    public $sql;
+
+    /**
+     * Active SQL bound parameter variables
+     *
+     * @var array
+     */
+    public $bind = [];
+
+    /**
+     * Current transaction level
+     *
+     * @var int
+     */
+    public $transaction_level = 0;
+
+    /**
+     * Last affected rows
+     *
+     * @var int
+     */
+    public $affected_rows;
+}
+
 /**
  * Class ManaPHP\Db
  *
  * @package db
+ * @property-read \ManaPHP\DbContext $_context
  */
 class Db extends Component implements DbInterface
 {
@@ -26,49 +63,18 @@ class Db extends Component implements DbInterface
     protected $_uri;
 
     /**
-     * @var \ManaPHP\Db\ConnectionInterface
-     */
-    protected $_connection;
-
-    /**
-     * Active SQL Statement
-     *
-     * @var string
-     */
-    protected $_sql;
-
-    /**
-     * Active SQL bound parameter variables
-     *
-     * @var array
-     */
-    protected $_bind = [];
-
-    /**
-     * Current transaction level
-     *
-     * @var int
-     */
-    protected $_transaction_level = 0;
-
-    /**
-     * Last affected rows
-     *
-     * @var int
-     */
-    protected $_affected_rows;
-
-    /**
      * Db constructor.
      *
      * @param string|\ManaPHP\Db\Connection $uri
      */
     public function __construct($uri)
     {
+        $context = $this->_context;
+
         if (is_string($uri)) {
             $this->_uri = $uri;
         } elseif ($uri instanceof Connection) {
-            $this->_connection = $uri;
+            $context->connection = $uri;
             $this->_uri = $uri->getUri();
         }
     }
@@ -78,12 +84,14 @@ class Db extends Component implements DbInterface
      */
     protected function _getConnection()
     {
-        if ($this->_connection === null) {
+        $context = $this->_context;
+
+        if ($context->connection === null) {
             $scheme = ucfirst(parse_url($this->_uri, PHP_URL_SCHEME));
-            $this->_connection = $this->_di->get("ManaPHP\Db\Connection\Adapter\\$scheme", [$this->_uri]);
+            $context->connection = $this->_di->get("ManaPHP\Db\Connection\Adapter\\$scheme", [$this->_uri]);
         }
 
-        return $this->_connection;
+        return $context->connection;
     }
 
     protected function _escapeIdentifier($identifier)
@@ -110,23 +118,25 @@ class Db extends Component implements DbInterface
      */
     protected function _execute($type, $sql, $bind = [])
     {
-        $this->_sql = $sql;
-        $this->_bind = $bind;
+        $context = $this->_context;
 
-        $this->_affected_rows = 0;
+        $context->sql = $sql;
+        $context->bind = $bind;
+
+        $context->affected_rows = 0;
 
         $this->eventsManager->fireEvent('db:before' . ucfirst($type), $this);
 
         $connection = $this->_getConnection();
         $start_time = microtime(true);
 
-        $this->_affected_rows = $connection->execute($sql, $bind);
+        $context->affected_rows = $connection->execute($sql, $bind);
 
-        $count = $this->_affected_rows;
+        $count = $context->affected_rows;
         $elapsed = round(microtime(true) - $start_time, 3);
 
         $event_data = compact('count', 'sql', 'bind', 'elapsed');
-        if (is_int($this->_affected_rows)) {
+        if (is_int($context->affected_rows)) {
             $this->eventsManager->fireEvent('db:after' . ucfirst($type), $this, $event_data);
         }
 
@@ -141,7 +151,7 @@ class Db extends Component implements DbInterface
      */
     public function affectedRows()
     {
-        return $this->_affected_rows;
+        return $this->_context->affected_rows;
     }
 
     /**
@@ -171,9 +181,11 @@ class Db extends Component implements DbInterface
      */
     public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
     {
-        $this->_sql = $sql;
-        $this->_bind = $bind;
-        $this->_affected_rows = 0;
+        $context = $this->_context;
+
+        $context->sql = $sql;
+        $context->bind = $bind;
+        $context->affected_rows = 0;
 
         $this->eventsManager->fireEvent('db:beforeQuery', $this);
 
@@ -183,7 +195,7 @@ class Db extends Component implements DbInterface
         $result = $connection->query($sql, $bind, $fetchMode, $useMaster);
         $elapsed = round(microtime(true) - $start_time, 3);
 
-        $count = $this->_affected_rows = count($result);
+        $count = $context->affected_rows = count($result);
 
         $event_data = compact('elapsed', 'count', 'sql', 'bind', 'result');
 
@@ -206,6 +218,8 @@ class Db extends Component implements DbInterface
      */
     public function insert($table, $record, $fetchInsertId = false)
     {
+        $context = $this->_context;
+
         if (!$record) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
         }
@@ -213,11 +227,11 @@ class Db extends Component implements DbInterface
         $insertedValues = ':' . implode(',:', $fields);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $this->_sql = $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+        $context->sql = $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
 
-        $this->_bind = $bind = $record;
+        $context->bind = $bind = $record;
 
-        $this->_affected_rows = 0;
+        $context->affected_rows = 0;
 
         $connection = $this->_getConnection();
 
@@ -226,7 +240,7 @@ class Db extends Component implements DbInterface
         $start_time = microtime(true);
         if ($fetchInsertId) {
             $insert_id = $connection->execute($sql, $record, true);
-            $this->_affected_rows = 1;
+            $context->affected_rows = 1;
         } else {
             $connection->execute($sql, $record, false);
             $insert_id = null;
@@ -414,7 +428,7 @@ class Db extends Component implements DbInterface
      */
     public function getSQL()
     {
-        return $this->_sql;
+        return $this->_context->sql;
     }
 
     /**
@@ -462,20 +476,22 @@ class Db extends Component implements DbInterface
      */
     public function getEmulatedSQL($preservedStrLength = -1)
     {
-        if (!$this->_bind) {
-            return (string)$this->_sql;
+        $context = $this->_context;
+
+        if (!$context->bind) {
+            return (string)$context->sql;
         }
 
-        $bind = $this->_bind;
+        $bind = $context->bind;
         if (isset($bind[0])) {
-            return (string)$this->_sql;
+            return (string)$context->sql;
         } else {
             $replaces = [];
             foreach ($bind as $key => $value) {
                 $replaces[':' . $key] = $this->_parseBindValue($value, $preservedStrLength);
             }
 
-            return strtr($this->_sql, $replaces);
+            return strtr($context->sql, $replaces);
         }
     }
 
@@ -486,7 +502,7 @@ class Db extends Component implements DbInterface
      */
     public function getBind()
     {
-        return $this->_bind;
+        return $this->_context->bind;
     }
 
     /**
@@ -497,9 +513,11 @@ class Db extends Component implements DbInterface
      */
     public function begin()
     {
+        $context = $this->_context;
+
         $this->logger->info('transaction begin', 'db.transaction.begin');
 
-        if ($this->_transaction_level === 0) {
+        if ($context->transaction_level === 0) {
             $this->eventsManager->fireEvent('db:beginTransaction', $this);
 
             try {
@@ -511,7 +529,7 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $this->_transaction_level++;
+        $context->transaction_level++;
     }
 
     /**
@@ -521,7 +539,9 @@ class Db extends Component implements DbInterface
      */
     public function isUnderTransaction()
     {
-        return $this->_transaction_level !== 0;
+        $context = $this->_context;
+
+        return $context->transaction_level !== 0;
     }
 
     /**
@@ -532,15 +552,17 @@ class Db extends Component implements DbInterface
      */
     public function rollback()
     {
-        if ($this->_transaction_level > 0) {
-            $this->logger->info('transaction rollback', 'db.transaction.rollback');
-            $this->_transaction_level--;
+        $context = $this->_context;
 
-            if ($this->_transaction_level === 0) {
+        if ($context->transaction_level > 0) {
+            $this->logger->info('transaction rollback', 'db.transaction.rollback');
+            $context->transaction_level--;
+
+            if ($context->transaction_level === 0) {
                 $this->eventsManager->fireEvent('db:rollbackTransaction', $this);
 
                 try {
-                    if (!$this->_connection->rollBack()) {
+                    if (!$context->connection->rollBack()) {
                         throw new DbException('rollBack failed.');
                     }
                 } catch (\PDOException $exception) {
@@ -558,19 +580,21 @@ class Db extends Component implements DbInterface
      */
     public function commit()
     {
+        $context = $this->_context;
+
         $this->logger->info('transaction commit', 'db.transaction.commit');
 
-        if ($this->_transaction_level === 0) {
+        if ($context->transaction_level === 0) {
             throw new MisuseException('There is no active transaction');
         }
 
-        $this->_transaction_level--;
+        $context->transaction_level--;
 
-        if ($this->_transaction_level === 0) {
+        if ($context->transaction_level === 0) {
             $this->eventsManager->fireEvent('db:commitTransaction', $this);
 
             try {
-                if (!$this->_connection->commit()) {
+                if (!$context->connection->commit()) {
                     throw new DbException('commit failed.');
                 }
             } catch (\PDOException $exception) {
@@ -584,7 +608,7 @@ class Db extends Component implements DbInterface
      */
     public function getLastSql()
     {
-        return $this->_sql;
+        return $this->_context->sql;
     }
 
     /**
@@ -627,13 +651,15 @@ class Db extends Component implements DbInterface
 
     public function close()
     {
-        if ($this->_connection) {
-            if ($this->_transaction_level !== 0) {
-                $this->_transaction_level = 0;
-                $this->_connection->rollBack();
+        $context = $this->_context;
+
+        if ($context->connection) {
+            if ($context->transaction_level !== 0) {
+                $context->transaction_level = 0;
+                $context->connection->rollBack();
                 $this->logger->error('transaction is not close correctly', 'db.transaction.abnormal');
             }
-            $this->_connection = null;
+            $context->connection = null;
         }
     }
 
