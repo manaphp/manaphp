@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Db\Query;
 use ManaPHP\DbInterface;
@@ -16,9 +17,7 @@ class DbQueryTest extends TestCase
         $di->alias->set('@data', __DIR__ . '/tmp/data');
 
         $config = require __DIR__ . '/config.database.php';
-        $di->db = $db = new Mysql($config['mysql']);
-
-        // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
+        $di->db = $db = new Db($config['mysql']);
 
         $db->attachEvent('db:beforeQuery', function (DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);

@@ -8,7 +8,7 @@
  */
 namespace Tests;
 
-use ManaPHP\Db\Adapter\Proxy;
+use ManaPHP\Db;
 use ManaPHP\Db\Assignment;
 use ManaPHP\Db\Model;
 use ManaPHP\DbInterface;
@@ -50,25 +50,25 @@ class DbModelTest extends TestCase
      */
     protected $di;
 
+    /**
+     * @var \ManaPHP\Db\ConnectionInterface
+     */
+    public $connection;
+
     public function setUp()
     {
         $this->di = new Factory();
         $this->di->alias->set('@data', __DIR__ . '/tmp/data');
 
-        $this->di->set('db', function () {
-            $config = require __DIR__ . '/config.database.php';
-            //$db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-            $db = new Proxy(['masters' => ['mysql://root@localhost:/manaphp_unit_test'], 'slaves' => ['mysql://root@localhost:/manaphp_unit_test']]);
-            // $db= new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
-
-            echo get_class($db), PHP_EOL;
-            $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
-                // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
-                var_dump($source->getEmulatedSQL());
-            });
-            $this->di->identity->setClaims([]);
-            return $db;
+        $config = require __DIR__ . '/config.database.php';
+        $this->connection = new Db\Connection\Adapter\Mysql($config['mysql']);
+        $db = new Db($this->connection);
+        $this->di->set('db', $db);
+        $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
+            // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
+            var_dump($source->getEmulatedSQL());
         });
+        $this->di->identity->setClaims([]);
     }
 
     public function test_count()
@@ -200,11 +200,7 @@ class DbModelTest extends TestCase
      */
     protected function _truncateTable($model)
     {
-        /**
-         * @var \ManaPHP\Db $db
-         */
-        $db = $this->di->getShared('db');
-        $db->truncate($model->getSource());
+        $this->connection->truncate($model->getSource());
     }
 
     public function test_create()

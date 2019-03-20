@@ -1,8 +1,10 @@
 <?php
 namespace Tests;
 
+use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Proxy;
 use ManaPHP\Db\Adapter\Sqlite;
+use ManaPHP\Db\Connection\Adapter\Mysql;
 use ManaPHP\Db\Query;
 use ManaPHP\DbInterface;
 use ManaPHP\Di;
@@ -23,9 +25,7 @@ class DbModelQueryTest extends TestCase
 
         $di->setShared('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            //$db = new ManaPHP\Db\Adapter\Mysql($config['mysql']);
-            $db = new Proxy(['masters' => ['mysql://root@localhost:/manaphp_unit_test'], 'slaves' => ['mysql://root@localhost:/manaphp_unit_test']]);
-            //   $db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
+            $db = new Db($config['mysql']);
 
             $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
                 var_dump($source->getSQL());
