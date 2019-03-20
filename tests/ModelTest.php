@@ -1,7 +1,7 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Db;
 use ManaPHP\DbInterface;
 use ManaPHP\QueryInterface;
 use PHPUnit\Framework\TestCase;
@@ -20,10 +20,10 @@ class ModelTest extends TestCase
     public function setUp()
     {
         $this->di = new FactoryDefault();
-
+        $this->di->alias->set('@data', __DIR__ . '/tmp/data');
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            $db = new Mysql($config['mysql']);
+            $db = new Db($config['mysql']);
 
             $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
@@ -191,21 +191,21 @@ class ModelTest extends TestCase
         $this->assertCount(4, $country->citiesExplicit[8]->toArray());
 
         //criteria with explicit fields
-        $country = Country::first(44, null, ['with' => ['citiesExplicit' => 'city_id, city']]);
+        $country = Country::first(44, null, ['with' => ['citiesExplicit' => 'city_id, city, country_id']]);
         $this->assertCount(60, $country->citiesExplicit);
-        $this->assertCount(2, $country->citiesExplicit[8]->toArray());
+        $this->assertCount(3, $country->citiesExplicit[8]->toArray());
 
         //criteria with closure and implicit fetch()
         $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (QueryInterface $query) {
-            return $query->select(['city_id', 'city']);
+            return $query->select(['city_id', 'city', 'country_id']);
         }]]);
-        $this->assertCount(2, $country->citiesExplicit[8]->toArray());
+        $this->assertCount(3, $country->citiesExplicit[8]->toArray());
 
         //criteria with closure explicit fetch()
         $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (QueryInterface $query) {
-            return $query->select(['city_id', 'city'])->fetch();
+            return $query->select(['city_id', 'city', 'country_id']);
         }]]);
-        $this->assertCount(2, $country->citiesExplicit[8]->toArray());
+        $this->assertCount(3, $country->citiesExplicit[8]->toArray());
     }
 
     public function test_hasManyToMany()

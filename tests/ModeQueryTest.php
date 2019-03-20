@@ -1,7 +1,7 @@
 <?php
 namespace Tests;
 
-use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Db;
 use ManaPHP\DbInterface;
 use ManaPHP\Di\FactoryDefault;
 use Tests\Models\City;
@@ -19,7 +19,7 @@ class ModeQueryTest extends \PHPUnit_Framework_TestCase
         $this->di->alias->set('@data', __DIR__);
         $this->di->set('db', function () {
             $config = require __DIR__ . '/config.database.php';
-            $db = new Mysql($config['mysql']);
+            $db = new Db($config['mysql']);
 
             $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
