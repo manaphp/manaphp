@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Db\AssignmentInterface;
+use ManaPHP\Db\Connection;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
@@ -60,11 +61,16 @@ class Db extends Component implements DbInterface
     /**
      * Db constructor.
      *
-     * @param string $uri
+     * @param string|\ManaPHP\Db\Connection $uri
      */
     public function __construct($uri)
     {
-        $this->_uri = $uri;
+        if (is_string($uri)) {
+            $this->_uri = $uri;
+        } elseif ($uri instanceof Connection) {
+            $this->_connection = $uri;
+            $this->_uri = $uri->getUri();
+        }
     }
 
     /**

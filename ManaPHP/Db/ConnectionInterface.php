@@ -4,6 +4,11 @@ namespace ManaPHP\Db;
 interface ConnectionInterface
 {
     /**
+     * @return string
+     */
+    public function getUri();
+
+    /**
      * @param string $sql
      * @param array  $bind
      * @param bool   $has_insert_id

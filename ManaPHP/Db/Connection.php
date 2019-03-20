@@ -67,6 +67,14 @@ abstract class Connection extends Component implements ConnectionInterface
     }
 
     /**
+     * @return string
+     */
+    public function getUri()
+    {
+        return $this->_uri;
+    }
+
+    /**
      * @return bool
      */
     protected function _ping()
