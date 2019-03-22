@@ -53,12 +53,12 @@ abstract class Connection extends Component implements ConnectionInterface
     /**
      * @var int
      */
-    protected $_ping_interval = 60;
+    protected $_heartbeat = 60;
 
     /**
      * @var float
      */
-    protected $_last_io_time;
+    protected $_last_heartbeat;
 
     public function __construct()
     {
@@ -71,7 +71,7 @@ abstract class Connection extends Component implements ConnectionInterface
         $this->_pdo = null;
         $this->_transaction_level = 0;
         $this->_prepared = [];
-        $this->_last_io_time = null;
+        $this->_last_heartbeat = null;
     }
 
     /**
@@ -109,12 +109,12 @@ abstract class Connection extends Component implements ConnectionInterface
             }
 
             if (!isset($this->_options[\PDO::ATTR_PERSISTENT]) || !$this->_options[\PDO::ATTR_PERSISTENT]) {
-                $this->_last_io_time = microtime(true);
+                $this->_last_heartbeat = microtime(true);
                 return $this->_pdo;
             }
         }
 
-        if ($this->_transaction_level === 0 && microtime(true) - $this->_last_io_time >= $this->_ping_interval && !$this->_ping()) {
+        if ($this->_transaction_level === 0 && microtime(true) - $this->_last_heartbeat >= $this->_heartbeat && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
             try {
@@ -124,7 +124,7 @@ abstract class Connection extends Component implements ConnectionInterface
             }
         }
 
-        $this->_last_io_time = microtime(true);
+        $this->_last_heartbeat = microtime(true);
 
         return $this->_pdo;
     }
@@ -276,7 +276,7 @@ abstract class Connection extends Component implements ConnectionInterface
         if ($this->_pdo) {
             $this->_pdo = null;
             $this->_prepared = [];
-            $this->_last_io_time = null;
+            $this->_last_heartbeat = null;
             if ($this->_transaction_level !== 0) {
                 $this->_transaction_level = 0;
                 $this->_pdo->rollBack();

@@ -67,6 +67,10 @@ class Mysql extends Connection
             $this->_options[\PDO::ATTR_TIMEOUT] = (int)$parts2['timeout'];
         }
 
+        if (isset($parts2['heartbeat'])) {
+            $this->_heartbeat = (int)$parts2['heartbeat'];
+        }
+
         $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
 
         $dsn_parts = [];
