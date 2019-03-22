@@ -19,11 +19,6 @@ class Mongodb extends Component implements MongodbInterface
     protected $_dsn;
 
     /**
-     * @var float
-     */
-    protected $_ping_interval = 10.0;
-
-    /**
      * @var string
      */
     protected $_default_db;
@@ -39,9 +34,14 @@ class Mongodb extends Component implements MongodbInterface
     protected $_writeConcern;
 
     /**
+     * @var int
+     */
+    protected $_heartbeat = 60;
+
+    /**
      * @var float
      */
-    protected $_last_io_time;
+    protected $_last_heartbeat;
 
     /**
      * Mongodb constructor.
@@ -93,7 +93,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->eventsManager->fireEvent('mongodb:afterConnect', $this);
         }
 
-        if (microtime(true) - $this->_last_io_time > $this->_ping_interval && !$this->_ping()) {
+        if (microtime(true) - $this->_last_heartbeat > $this->_heartbeat && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.reconnect');
 
@@ -103,7 +103,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->eventsManager->fireEvent('mongodb:afterConnect', $this);
         }
 
-        $this->_last_io_time = microtime(true);
+        $this->_last_heartbeat = microtime(true);
 
         return $this->_manager;
     }
@@ -129,8 +129,8 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->eventsManager->fireEvent('mongodb:beforeBulkWrite', $this, compact('namespace', 'bulk'));
         $start_time = microtime(true);
-        if ($start_time - $this->_last_io_time > 1.0) {
-            $this->_last_io_time = null;
+        if ($start_time - $this->_last_heartbeat > 1.0) {
+            $this->_last_heartbeat = null;
         }
         try {
             $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
@@ -420,8 +420,8 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->eventsManager->fireEvent('mongodb:beforeCommand', $this, compact('db', 'command'));
         $start_time = microtime(true);
-        if ($start_time - $this->_last_io_time > 1.0) {
-            $this->_last_io_time = null;
+        if ($start_time - $this->_last_heartbeat > 1.0) {
+            $this->_last_heartbeat = null;
         }
         try {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
@@ -561,6 +561,6 @@ class Mongodb extends Component implements MongodbInterface
     public function close()
     {
         $this->_manager = null;
-        $this->_last_io_time = null;
+        $this->_last_heartbeat = null;
     }
 }
