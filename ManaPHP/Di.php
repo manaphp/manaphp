@@ -88,6 +88,8 @@ class Di implements DiInterface
         if (self::$_default === null) {
             self::$_default = $this;
         }
+
+        $this->_instances['di'] = $this;
     }
 
     /**
