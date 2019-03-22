@@ -48,6 +48,10 @@ class Redis extends Component
             $this->_uri = $uri->getUri();
         }
 
+        if (strpos($this->_uri, 'timeout=') !== false && preg_match('#timeout=([\d\\.]+)#', $this->_uri, $matches) === 1) {
+            $this->_timeout = (float)$matches[1];
+        }
+
         $this->_pool_size = $pool_size;
 
         $this->poolManager->add($this, $connection, $pool_size);
