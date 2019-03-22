@@ -24,14 +24,14 @@ interface ManagerInterface
 
     /**
      * @param object $owner
-     * @param string $type
      * @param float  $timeout
+     * @param string $type
      *
      * @return mixed
      *
      * @throws \ManaPHP\Pool\NotExistsException
      */
-    public function pop($owner, $type = 'default', $timeout = null);
+    public function pop($owner, $timeout = null, $type = 'default');
 
     /**
      * @param object $owner

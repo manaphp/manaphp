@@ -68,6 +68,11 @@ class Db extends Component implements DbInterface
     protected $_has_slave;
 
     /**
+     * @var float
+     */
+    protected $_timeout = 1.0;
+
+    /**
      * @var int
      */
     protected $_pool_size;
@@ -132,7 +137,7 @@ class Db extends Component implements DbInterface
         if ($context->connection) {
             $connection = $context->connection;
         } else {
-            $connection = $this->poolManager->pop($this);
+            $connection = $this->poolManager->pop($this, $this->_timeout);
         }
 
         try {
@@ -205,7 +210,7 @@ class Db extends Component implements DbInterface
             $connection = $context->connection;
         } else {
             $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $type);
+            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
         try {
@@ -260,7 +265,7 @@ class Db extends Component implements DbInterface
             $connection = $context->connection;
         } else {
             $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $type);
+            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
         $this->eventsManager->fireEvent('db:beforeInsert', $this);
@@ -554,7 +559,7 @@ class Db extends Component implements DbInterface
             $this->eventsManager->fireEvent('db:beginTransaction', $this);
 
             try {
-                $connection = $this->poolManager->pop($this);
+                $connection = $this->poolManager->pop($this, $this->_timeout);
 
                 if (!$connection->beginTransaction()) {
                     throw new DbException('beginTransaction failed.');
@@ -672,7 +677,7 @@ class Db extends Component implements DbInterface
             $connection = $context->connection;
         } else {
             $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $type);
+            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
         try {
@@ -698,7 +703,7 @@ class Db extends Component implements DbInterface
             $connection = $context->connection;
         } else {
             $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $type);
+            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
         try {
@@ -725,7 +730,7 @@ class Db extends Component implements DbInterface
             $connection = $context->connection;
         } else {
             $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $type);
+            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
         try {

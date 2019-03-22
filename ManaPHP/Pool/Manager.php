@@ -100,14 +100,14 @@ class Manager extends Component implements ManagerInterface
 
     /**
      * @param object $owner
-     * @param string $type
      * @param float  $timeout
+     * @param string $type
      *
      * @return object
      *
      * @throws \ManaPHP\Pool\NotExistsException
      */
-    public function pop($owner, $type = 'default', $timeout = null)
+    public function pop($owner, $timeout = null, $type = 'default')
     {
         $owner_id = spl_object_id($owner);
 

@@ -27,6 +27,11 @@ class Redis extends Component
     protected $_pool_size;
 
     /**
+     * @var float
+     */
+    protected $_timeout = 1.0;
+
+    /**
      * Redis constructor.
      *
      * @param string|\ManaPHP\Redis\Connection $uri
@@ -67,7 +72,7 @@ class Redis extends Component
         if ($context->connection) {
             $connection = $context->connection;
         } else {
-            $connection = $this->poolManager->pop($this);
+            $connection = $this->poolManager->pop($this, $this->_timeout);
         }
 
         try {
