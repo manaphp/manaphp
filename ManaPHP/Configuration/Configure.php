@@ -55,6 +55,11 @@ class Configure extends Component implements ConfigureInterface
     public $compatible_globals = false;
 
     /**
+     * @var bool
+     */
+    public $use_coroutine;
+
+    /**
      * @var array
      */
     public $services = [];
