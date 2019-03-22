@@ -59,7 +59,7 @@ class Mysql extends Connection
             $this->_charset = $parts2['charset'];
         }
 
-        if (isset($parts2['persistent'])) {
+        if (!$this->configure->use_coroutine && isset($parts2['persistent'])) {
             $this->_options[\PDO::ATTR_PERSISTENT] = $parts2['persistent'] === '1';
         }
 
@@ -284,7 +284,7 @@ class Mysql extends Connection
 
         $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
 
-        return $this->execute($sql, []);
+        return $this->execute($sql);
     }
 
     /**
