@@ -28,6 +28,7 @@ namespace ManaPHP;
  * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
  * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
+ * @property-read \ManaPHP\Pool\ManagerInterface           $poolManager
  * @property \object                                       $_context
  */
 class Component implements ComponentInterface, \JsonSerializable

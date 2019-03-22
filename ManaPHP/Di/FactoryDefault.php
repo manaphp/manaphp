@@ -20,6 +20,7 @@ class FactoryDefault extends Di
 
         $this->_definitions = [
             'eventsManager' => 'ManaPHP\Event\Manager',
+            'poolManager' => 'ManaPHP\Pool\Manager',
             'alias' => 'ManaPHP\Alias',
             'dotenv' => 'ManaPHP\Dotenv',
             'configure' => 'ManaPHP\Configuration\Configure',
