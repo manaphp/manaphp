@@ -94,7 +94,7 @@ class Connection extends Component
 
         $this->_timeout = isset($parts2['timeout']) ? (float)$parts2['timeout'] : 0.0;
         $this->_auth = isset($parts2['auth']) ? $parts2['auth'] : '';
-        $this->_persistent = isset($parts2['persistent']) && $parts2['persistent'] === '1';
+        $this->_persistent = !$this->configure->use_coroutine && isset($parts2['persistent']) && $parts2['persistent'] === '1';
         if (isset($parts2['ping_interval'])) {
             $this->_ping_interval = $parts2['ping_interval'];
         }
