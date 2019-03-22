@@ -29,16 +29,6 @@ class Connection extends Component
     protected $_timeout;
 
     /**
-     * @var int
-     */
-    protected $_retry_interval;
-
-    /**
-     * @var int
-     */
-    protected $_retry_seconds = 60;
-
-    /**
      * @var string
      */
     protected $_auth;
@@ -103,7 +93,6 @@ class Connection extends Component
         }
 
         $this->_timeout = isset($parts2['timeout']) ? (float)$parts2['timeout'] : 0.0;
-        $this->_retry_interval = isset($parts2['retry_interval']) ? (int)$parts2['retry_interval'] : 0;
         $this->_auth = isset($parts2['auth']) ? $parts2['auth'] : '';
         $this->_persistent = isset($parts2['persistent']) && $parts2['persistent'] === '1';
         if (isset($parts2['ping_interval'])) {
@@ -137,7 +126,7 @@ class Connection extends Component
                 if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
                     throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
                 }
-            } elseif (!@$redis->connect($this->_host, $this->_port, $this->_timeout, null, $this->_retry_interval)) {
+            } elseif (!@$redis->connect($this->_host, $this->_port, $this->_timeout)) {
                 throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
             }
 
