@@ -44,9 +44,9 @@ class Connection extends Component
     protected $_persistent = false;
 
     /**
-     * @var float
+     * @var int
      */
-    protected $_ping_interval = 10.0;
+    protected $_heartbeat = 60;
 
     /**
      * @var \Redis
@@ -56,7 +56,7 @@ class Connection extends Component
     /**
      * @var float
      */
-    protected $_last_io_time;
+    protected $_last_heartbeat;
 
     /**
      * Connection constructor.
@@ -95,15 +95,15 @@ class Connection extends Component
         $this->_timeout = isset($parts2['timeout']) ? (float)$parts2['timeout'] : 0.0;
         $this->_auth = isset($parts2['auth']) ? $parts2['auth'] : '';
         $this->_persistent = !$this->configure->use_coroutine && isset($parts2['persistent']) && $parts2['persistent'] === '1';
-        if (isset($parts2['ping_interval'])) {
-            $this->_ping_interval = $parts2['ping_interval'];
+        if (isset($parts2['heartbeat'])) {
+            $this->_heartbeat = $parts2['heartbeat'];
         }
     }
 
     public function __clone()
     {
         $this->_redis = null;
-        $this->_last_io_time = null;
+        $this->_last_heartbeat = null;
     }
 
     /**
@@ -163,7 +163,7 @@ class Connection extends Component
         if ($this->_redis) {
             $this->_redis->close();
             $this->_redis = null;
-            $this->_last_io_time = null;
+            $this->_last_heartbeat = null;
         }
     }
 
