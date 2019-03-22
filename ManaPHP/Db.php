@@ -75,7 +75,7 @@ class Db extends Component implements DbInterface
     /**
      * @var int
      */
-    protected $_pool_size;
+    protected $_pool_size = 4;
 
     /**
      * Db constructor.
@@ -87,22 +87,45 @@ class Db extends Component implements DbInterface
         if (is_string($uri)) {
             $this->_uri = $uri;
 
-            $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
-            $scheme = ucfirst(parse_url($this->_uri, PHP_URL_SCHEME));
-            $connection = $this->di->get("ManaPHP\Db\Connection\Adapter\\$scheme", [$this->_uri]);
+            if (strpos($this->_uri, 'timeout=') !== false && preg_match('#timeout=([\d\\.]+)#', $this->_uri, $matches) === 1) {
+                $this->_timeout = (float)$matches[1];
+            }
+
+            if (preg_match('#pool_size=(\d+)#', $uri, $matches)) {
+                $this->_pool_size = (int)$matches[1];
+            }
+
+            if (strpos($uri, ',') !== false) {
+                $host_str = parse_url($uri, PHP_URL_HOST);
+                $hosts = explode(',', $host_str);
+                if ($hosts[0] !== '') {
+                    $this->poolManager->add($this, $this->_getConnection(str_replace($host_str, $hosts[0], $uri)), $this->_pool_size);
+                }
+                array_shift($hosts);
+                foreach ($hosts as $host) {
+                    $this->poolManager->add($this, $this->_getConnection(str_replace($host_str, $host, $uri)), $this->_pool_size, 'slave');
+                }
+                $this->_has_slave = $hosts ? true : false;
+            } else {
+                $this->poolManager->add($this, $this->_getConnection($uri), $this->_pool_size);
+            }
         } elseif ($uri instanceof Connection) {
-            $pool_size = 1;
+            $this->_pool_size = 1;
             $connection = $uri;
             $this->_uri = $uri->getUri();
+            $this->poolManager->add($this, $connection, $this->_pool_size);
         }
+    }
 
-        if (strpos($this->_uri, 'timeout=') !== false && preg_match('#timeout=([\d\\.]+)#', $this->_uri, $matches) === 1) {
-            $this->_timeout = (float)$matches[1];
-        }
-
-        $this->_pool_size = $pool_size;
-
-        $this->poolManager->add($this, $connection, $pool_size);
+    /**
+     * @param string $uri
+     *
+     * @return \ManaPHP\Db\ConnectionInterface
+     */
+    protected function _getConnection($uri)
+    {
+        $scheme = ucfirst(parse_url($uri, PHP_URL_SCHEME));
+        return $this->di->get("ManaPHP\Db\Connection\Adapter\\$scheme", [$uri]);
     }
 
     protected function _escapeIdentifier($identifier)
