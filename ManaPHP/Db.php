@@ -63,35 +63,37 @@ class Db extends Component implements DbInterface
     protected $_uri;
 
     /**
+     * @var bool
+     */
+    protected $_has_slave;
+
+    /**
+     * @var int
+     */
+    protected $_pool_size;
+
+    /**
      * Db constructor.
      *
      * @param string|\ManaPHP\Db\Connection $uri
      */
     public function __construct($uri)
     {
-        $context = $this->_context;
-
         if (is_string($uri)) {
             $this->_uri = $uri;
+
+            $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
+            $scheme = ucfirst(parse_url($this->_uri, PHP_URL_SCHEME));
+            $connection = $this->di->get("ManaPHP\Db\Connection\Adapter\\$scheme", [$this->_uri]);
         } elseif ($uri instanceof Connection) {
-            $context->connection = $uri;
+            $pool_size = 1;
+            $connection = $uri;
             $this->_uri = $uri->getUri();
         }
-    }
 
-    /**
-     * @return \ManaPHP\Db\ConnectionInterface
-     */
-    protected function _getConnection()
-    {
-        $context = $this->_context;
+        $this->_pool_size = $pool_size;
 
-        if ($context->connection === null) {
-            $scheme = ucfirst(parse_url($this->_uri, PHP_URL_SCHEME));
-            $context->connection = $this->_di->get("ManaPHP\Db\Connection\Adapter\\$scheme", [$this->_uri]);
-        }
-
-        return $context->connection;
+        $this->poolManager->add($this, $connection, $pool_size);
     }
 
     protected function _escapeIdentifier($identifier)
@@ -127,14 +129,23 @@ class Db extends Component implements DbInterface
 
         $this->eventsManager->fireEvent('db:before' . ucfirst($type), $this);
 
-        $connection = $this->_getConnection();
-        $start_time = microtime(true);
+        if ($context->connection) {
+            $connection = $context->connection;
+        } else {
+            $connection = $this->poolManager->pop($this);
+        }
 
-        $context->affected_rows = $connection->execute($sql, $bind);
+        try {
+            $start_time = microtime(true);
+            $context->affected_rows = $connection->execute($sql, $bind);
+            $elapsed = round(microtime(true) - $start_time, 3);
+        } finally {
+            if (!$context->connection) {
+                $this->poolManager->push($this, $connection);
+            }
+        }
 
         $count = $context->affected_rows;
-        $elapsed = round(microtime(true) - $start_time, 3);
-
         $event_data = compact('count', 'sql', 'bind', 'elapsed');
         if (is_int($context->affected_rows)) {
             $this->eventsManager->fireEvent('db:after' . ucfirst($type), $this, $event_data);
@@ -189,11 +200,23 @@ class Db extends Component implements DbInterface
 
         $this->eventsManager->fireEvent('db:beforeQuery', $this);
 
-        $connection = $this->_getConnection();
+        if ($context->connection) {
+            $type = null;
+            $connection = $context->connection;
+        } else {
+            $type = $this->_has_slave ? 'slave' : 'default';
+            $connection = $this->poolManager->pop($this, $type);
+        }
 
-        $start_time = microtime(true);
-        $result = $connection->query($sql, $bind, $fetchMode, $useMaster);
-        $elapsed = round(microtime(true) - $start_time, 3);
+        try {
+            $start_time = microtime(true);
+            $result = $connection->query($sql, $bind, $fetchMode, $useMaster);
+            $elapsed = round(microtime(true) - $start_time, 3);
+        } finally {
+            if ($type) {
+                $this->poolManager->push($this, $connection, $type);
+            }
+        }
 
         $count = $context->affected_rows = count($result);
 
@@ -214,7 +237,6 @@ class Db extends Component implements DbInterface
      * @param bool   $fetchInsertId
      *
      * @return int|string|null
-     * @throws \ManaPHP\Db\Exception
      */
     public function insert($table, $record, $fetchInsertId = false)
     {
@@ -233,20 +255,31 @@ class Db extends Component implements DbInterface
 
         $context->affected_rows = 0;
 
-        $connection = $this->_getConnection();
+        if ($context->connection) {
+            $type = null;
+            $connection = $context->connection;
+        } else {
+            $type = $this->_has_slave ? 'slave' : 'default';
+            $connection = $this->poolManager->pop($this, $type);
+        }
 
         $this->eventsManager->fireEvent('db:beforeInsert', $this);
 
-        $start_time = microtime(true);
-        if ($fetchInsertId) {
-            $insert_id = $connection->execute($sql, $record, true);
-            $context->affected_rows = 1;
-        } else {
-            $connection->execute($sql, $record, false);
-            $insert_id = null;
+        try {
+            $start_time = microtime(true);
+            if ($fetchInsertId) {
+                $insert_id = $connection->execute($sql, $record, true);
+                $context->affected_rows = 1;
+            } else {
+                $connection->execute($sql, $record, false);
+                $insert_id = null;
+            }
+            $elapsed = round(microtime(true) - $start_time, 3);
+        } finally {
+            if ($type) {
+                $this->poolManager->push($this, $connection, $type);
+            }
         }
-
-        $elapsed = round(microtime(true) - $start_time, 3);
 
         $event_data = compact('sql', 'record', 'elapsed');
 
@@ -521,11 +554,18 @@ class Db extends Component implements DbInterface
             $this->eventsManager->fireEvent('db:beginTransaction', $this);
 
             try {
-                if (!$this->_getConnection()->beginTransaction()) {
+                $connection = $this->poolManager->pop($this);
+
+                if (!$connection->beginTransaction()) {
                     throw new DbException('beginTransaction failed.');
                 }
+                $context->connection = $connection;
             } catch (\PDOException $exception) {
                 throw new DbException('beginTransaction failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
+            } finally {
+                if (!$context->connection) {
+                    $this->poolManager->push($this, $context);
+                }
             }
         }
 
@@ -567,6 +607,9 @@ class Db extends Component implements DbInterface
                     }
                 } catch (\PDOException $exception) {
                     throw new DbException('rollBack failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
+                } finally {
+                    $this->poolManager->push($this, $context->connection);
+                    $context->connection = null;
                 }
             }
         }
@@ -599,6 +642,9 @@ class Db extends Component implements DbInterface
                 }
             } catch (\PDOException $exception) {
                 throw new DbException('commit failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
+            } finally {
+                $this->poolManager->push($this, $context->connection);
+                $context->connection = null;
             }
         }
     }
@@ -619,7 +665,23 @@ class Db extends Component implements DbInterface
      */
     public function getTables($schema = null)
     {
-        return $this->_getConnection()->getTables($schema);
+        $context = $this->_context;
+
+        if ($context->connection) {
+            $type = null;
+            $connection = $context->connection;
+        } else {
+            $type = $this->_has_slave ? 'slave' : 'default';
+            $connection = $this->poolManager->pop($this, $type);
+        }
+
+        try {
+            return $connection->getTables($schema);
+        } finally {
+            if ($type) {
+                $this->poolManager->push($this, $connection, $type);
+            }
+        }
     }
 
     /**
@@ -629,7 +691,23 @@ class Db extends Component implements DbInterface
      */
     public function buildSql($params)
     {
-        return $this->_getConnection()->buildSql($params);
+        $context = $this->_context;
+
+        if ($context->connection) {
+            $type = null;
+            $connection = $context->connection;
+        } else {
+            $type = $this->_has_slave ? 'slave' : 'default';
+            $connection = $this->poolManager->pop($this, $type);
+        }
+
+        try {
+            return $connection->buildSql($params);
+        } finally {
+            if ($type) {
+                $this->poolManager->push($this, $connection, $type);
+            }
+        }
     }
 
     /**
@@ -640,9 +718,25 @@ class Db extends Component implements DbInterface
      */
     public function getMetadata($source)
     {
-        $start_time = microtime(true);
-        $meta = $this->_getConnection()->getMetadata($source);
-        $elapsed = round(microtime(true) - $start_time, 3);
+        $context = $this->_context;
+
+        if ($context->connection) {
+            $type = null;
+            $connection = $context->connection;
+        } else {
+            $type = $this->_has_slave ? 'slave' : 'default';
+            $connection = $this->poolManager->pop($this, $type);
+        }
+
+        try {
+            $start_time = microtime(true);
+            $meta = $connection->getMetadata($source);
+            $elapsed = round(microtime(true) - $start_time, 3);
+        } finally {
+            if ($type) {
+                $this->poolManager->push($this, $connection, $type);
+            }
+        }
 
         $this->logger->debug(compact('elapsed', 'source', 'meta'), 'db.metadata');
 
@@ -656,7 +750,12 @@ class Db extends Component implements DbInterface
         if ($context->connection) {
             if ($context->transaction_level !== 0) {
                 $context->transaction_level = 0;
-                $context->connection->rollBack();
+                try {
+                    $context->connection->rollBack();
+                } finally {
+                    $this->poolManager->push($this, $context->connection);
+                }
+
                 $this->logger->error('transaction is not close correctly', 'db.transaction.abnormal');
             }
             $context->connection = null;

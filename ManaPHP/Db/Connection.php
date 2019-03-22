@@ -66,6 +66,14 @@ abstract class Connection extends Component implements ConnectionInterface
         $this->_options[\PDO::ATTR_EMULATE_PREPARES] = false;
     }
 
+    public function __clone()
+    {
+        $this->_pdo = null;
+        $this->_transactionLevel = 0;
+        $this->_prepared = [];
+        $this->_last_io_time = null;
+    }
+
     /**
      * @return string
      */
