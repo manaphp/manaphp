@@ -43,7 +43,7 @@ abstract class Connection extends Component implements ConnectionInterface
      *
      * @var int
      */
-    protected $_transactionLevel = 0;
+    protected $_transaction_level = 0;
 
     /**
      * @var \PDOStatement[]
@@ -69,7 +69,7 @@ abstract class Connection extends Component implements ConnectionInterface
     public function __clone()
     {
         $this->_pdo = null;
-        $this->_transactionLevel = 0;
+        $this->_transaction_level = 0;
         $this->_prepared = [];
         $this->_last_io_time = null;
     }
@@ -102,13 +102,11 @@ abstract class Connection extends Component implements ConnectionInterface
     {
         if ($this->_pdo === null) {
             $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'db.connect');
-            $this->eventsManager->fireEvent('db:beforeConnect', $this, ['dsn' => $this->_dsn]);
             try {
                 $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
             } catch (\PDOException $e) {
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
-            $this->eventsManager->fireEvent('db:afterConnect', $this);
 
             if (!isset($this->_options[\PDO::ATTR_PERSISTENT]) || !$this->_options[\PDO::ATTR_PERSISTENT]) {
                 $this->_last_io_time = microtime(true);
@@ -116,17 +114,14 @@ abstract class Connection extends Component implements ConnectionInterface
             }
         }
 
-        if ($this->_transactionLevel === 0 && microtime(true) - $this->_last_io_time >= $this->_ping_interval && !$this->_ping()) {
+        if ($this->_transaction_level === 0 && microtime(true) - $this->_last_io_time >= $this->_ping_interval && !$this->_ping()) {
             $this->close();
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
-            $this->eventsManager->fireEvent('db:reconnect', $this, ['dsn' => $this->_dsn]);
-            $this->eventsManager->fireEvent('db:beforeConnect', $this, ['dsn' => $this->_dsn]);
             try {
                 $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
             } catch (\PDOException $e) {
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
-            $this->eventsManager->fireEvent('db:afterConnect', $this);
         }
 
         $this->_last_io_time = microtime(true);
@@ -253,7 +248,7 @@ abstract class Connection extends Component implements ConnectionInterface
         } catch (\PDOException $e) {
             $failed = true;
 
-            if ($this->_transactionLevel === 0 && !$this->_ping()) {
+            if ($this->_transaction_level === 0 && !$this->_ping()) {
                 try {
                     $this->close();
                     $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
@@ -282,8 +277,8 @@ abstract class Connection extends Component implements ConnectionInterface
             $this->_pdo = null;
             $this->_prepared = [];
             $this->_last_io_time = null;
-            if ($this->_transactionLevel !== 0) {
-                $this->_transactionLevel = 0;
+            if ($this->_transaction_level !== 0) {
+                $this->_transaction_level = 0;
                 $this->_pdo->rollBack();
                 $this->logger->warn('transaction is not close correctly', 'db.transaction.abnormal');
             }
