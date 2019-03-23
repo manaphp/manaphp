@@ -196,7 +196,7 @@ class DbController extends Controller
                 $this->console->writeLn([' :row :table(:columns)',
                     'row' => sprintf('%2d ', $row + 1),
                     'table' => $this->console->colorize($table, Console::FC_GREEN),
-                    'columns' => implode($columns, ', ')]);
+                    'columns' => implode(', ', $columns)]);
             }
         }
     }

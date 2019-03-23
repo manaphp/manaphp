@@ -462,7 +462,7 @@ class MongodbController extends Controller
                     $this->console->writeLn([' :row :namespace(:columns)',
                         'row' => sprintf('%2d ', $row + 1),
                         'namespace' => $this->console->colorize("$cdb.$collection", Console::FC_GREEN),
-                        'columns' => implode($columns, ', ')]);
+                        'columns' => implode(', ', $columns)]);
                 }
             }
         }

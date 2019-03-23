@@ -68,7 +68,7 @@ class File extends Component implements AppenderInterface
         $context = $this->_context;
 
         if ($context->logs) {
-            $this->_write(implode($context->logs, ''));
+            $this->_write(implode('', $context->logs));
             $context->logs = [];
         }
     }
