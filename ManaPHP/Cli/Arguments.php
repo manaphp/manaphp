@@ -78,7 +78,7 @@ class Arguments extends Component implements ArgumentsInterface
         $this->_values = [];
         $this->_options = [];
 
-        if (in_array(end($args), ['', '-', '--'])) {
+        if (in_array(end($args), ['', '-', '--'], true)) {
             array_pop($args);
         }
 
