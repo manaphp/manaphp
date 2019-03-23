@@ -84,9 +84,9 @@ interface QueryInterface
     public function whereCmp($field, $operator, $value);
 
     /**
-     * @param string  $field
-     * @param integer $divisor
-     * @param integer $remainder
+     * @param string $field
+     * @param int    $divisor
+     * @param int    $remainder
      *
      * @return static
      */

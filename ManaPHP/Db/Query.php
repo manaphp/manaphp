@@ -413,9 +413,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string  $field
-     * @param integer $divisor
-     * @param integer $remainder
+     * @param string $field
+     * @param int    $divisor
+     * @param int    $remainder
      *
      * @return static
      */
@@ -1439,8 +1439,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @deprecated
      * @return array|false
+     * @deprecated
      */
     public function fetchOne()
     {
@@ -1450,8 +1450,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @deprecated
      * @return array
+     * @deprecated
      */
     public function fetchAll()
     {

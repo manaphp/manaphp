@@ -11,7 +11,7 @@ interface ServerInterface
     public function start($handler);
 
     /**
-     * @param integer $code
+     * @param int $code
      *
      * @return static
      */

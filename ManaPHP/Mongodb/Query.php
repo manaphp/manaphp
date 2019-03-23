@@ -537,9 +537,9 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string  $field
-     * @param integer $divisor
-     * @param integer $remainder
+     * @param string $field
+     * @param int    $divisor
+     * @param int    $remainder
      *
      * @return static
      */

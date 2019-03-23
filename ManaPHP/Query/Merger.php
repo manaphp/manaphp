@@ -213,9 +213,9 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     }
 
     /**
-     * @param string  $field
-     * @param integer $divisor
-     * @param integer $remainder
+     * @param string $field
+     * @param int    $divisor
+     * @param int    $remainder
      *
      * @return static
      */
