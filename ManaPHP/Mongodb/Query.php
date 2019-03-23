@@ -942,7 +942,7 @@ class Query extends \ManaPHP\Query
         if (is_string($orderBy)) {
             foreach (explode(',', $orderBy) as $item) {
                 if (preg_match('#^\s*([\w\.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
-                    throw new MisuseException(['unknown `:order` order by for `:collection` collection', 'order' => $orderBy, 'collection' => get_class($this->getSource())]);
+                    throw new MisuseException(['unknown `:1` order by for `:2` collection', $orderBy, get_class($this->getSource())]);
                 }
                 $this->_order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? 1 : -1;
             }

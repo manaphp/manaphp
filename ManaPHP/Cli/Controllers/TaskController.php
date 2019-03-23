@@ -33,7 +33,7 @@ class TaskController extends Controller
                 return strlen($v['name']);
             }, $tasks)) + 3;
         foreach ($tasks as $task) {
-            $this->console->writeLn(['    :task :desc', 'task' => $this->console->colorize($task['name'], Console::FC_MAGENTA, $width), 'desc' => $task['desc']]);
+            $this->console->writeLn(['    :1 :2', $this->console->colorize($task['name'], Console::FC_MAGENTA, $width), $task['desc']]);
         }
     }
 

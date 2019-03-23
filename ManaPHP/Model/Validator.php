@@ -503,7 +503,7 @@ class Validator extends Component implements ValidatorInterface
         }
 
         if (!class_exists($className)) {
-            throw new InvalidValueException(['validate `:field` field failed: related `:model` model class is not exists.', 'field' => $field, 'model' => $className]);
+            throw new InvalidValueException(['validate `:1` field failed: related `:2` model class is not exists.', $field, $className]);
         }
 
         /**

@@ -357,16 +357,14 @@ class Amqp extends Component implements AmqpInterface
     public function publishMessage($message, $exchange, $routing_key = '', $flags = AMQP_NOPARAM, $attributes = [])
     {
         if (!isset($this->_exchanges[$exchange])) {
-            throw new InvalidKeyException(['publish message to `:exchange` exchange with `:routing_key` routing_key failed: exchange is NOT exists',
-                'exchange' => $exchange, 'routing_key' => $routing_key]);
+            throw new InvalidKeyException(['publish message to `:1` exchange with `:2` routing_key failed: exchange is NOT exists', $exchange, $routing_key]);
         }
 
         try {
             $this->_exchanges[$exchange]->publish($message, $routing_key, $flags, $attributes);
         } catch (\Exception $e) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['publish message to `:exchange` exchange with `:routing_key` routing_key failed: `:error`',
-                'exchange' => $exchange, 'routing_key' => $routing_key, 'error' => $e->getMessage()]);
+            throw new AmqpException(['publish message to `:1` exchange with `:2` routing_key failed: `:3`', $exchange, $routing_key, $e->getMessage()]);
         }
 
         return $this;
@@ -433,8 +431,7 @@ class Amqp extends Component implements AmqpInterface
             $json = json_decode($envelope->getBody(), true);
             if ($json === null) {
                 /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-                throw new AmqpException(['json_decode `:queue` queue `:message` message failed: :error',
-                    'queue' => $queue, 'message' => $envelope->getBody(), 'error' => json_last_error_msg()]);
+                throw new AmqpException(['json_decode `:1` queue `:2` message failed: :3', $queue, $envelope->getBody(), json_last_error_msg()]);
             }
 
             $json[self::MESSAGE_METADATA] = ['queue' => $queue, 'delivery_tag' => $envelope->getDeliveryTag(), 'is_redelivery' => $envelope->isRedelivery()];

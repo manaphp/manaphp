@@ -224,7 +224,7 @@ if (!function_exists('jwt_decode')) {
                 throw new \ManaPHP\Identity\InvalidFormatException('Jwt claims missing scope field');
             }
             if ($scope !== $claims['scope']) {
-                throw new \ManaPHP\Identity\InvalidFormatException(['Jwt `:scope1` scope is not wanted `:scope2`', 'scope1' => $claims['scope'], 'scope2' => $scope]);
+                throw new \ManaPHP\Identity\InvalidFormatException(['Jwt `:1` scope is not wanted `:2`', $claims['scope'], $scope]);
             }
         } else {
             if (!$key) {

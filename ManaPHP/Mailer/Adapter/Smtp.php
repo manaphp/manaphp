@@ -112,8 +112,7 @@ class Smtp extends Mailer
 
         $url = ($this->_scheme === 'smtp' ? '' : "$this->_scheme://") . $this->_host;
         if (!$socket = fsockopen($url, $this->_port, $errno, $errstr, $this->_timeout)) {
-            throw new ConnectionException(['connect to `:url::port` mailer server failed: :message',
-                'url' => $url, 'port' => $this->_port, 'message' => $errstr]);
+            throw new ConnectionException(['connect to `:1::2` mailer server failed: :3', $url, $this->_port, $errstr]);
         }
 
         $response = fgets($socket);

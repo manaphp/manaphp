@@ -257,7 +257,7 @@ class Gd extends Image
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new CreateDirectoryFailedException(['create `:dir` image directory failed: :message', 'dir' => $dir, 'message' => error_get_last()['message']]);
+            throw new CreateDirectoryFailedException(['create `:1` image directory failed: :2', $dir, error_get_last()['message']]);
         }
         if ($ext === 'gif') {
             imagegif($this->_image, $file);

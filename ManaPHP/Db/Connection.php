@@ -174,7 +174,7 @@ abstract class Connection extends Component implements ConnectionInterface
                 $type = \PDO::PARAM_STR;
                 $value = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             } else {
-                throw new NotSupportedException(['The `:type` type of `:parameter` parameter is not support', 'parameter' => $parameter, 'type' => gettype($value)]);
+                throw new NotSupportedException(['The `:1` type of `:2` parameter is not support', $parameter, gettype($value)]);
             }
 
             if (is_int($parameter)) {

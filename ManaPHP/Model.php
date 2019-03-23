@@ -885,7 +885,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             $keyValue = [];
             foreach ($primaryKey as $key) {
                 if (!isset($this->$key)) {
-                    throw new PreconditionException(['`:model` model cannot be updated because some primary key value is not provided', 'model' => get_class($this)]);
+                    throw new PreconditionException(['`:1` model cannot be updated because some primary key value is not provided', get_class($this)]);
                 }
                 $keyValue[$key] = $this->$key;
             }
@@ -1089,7 +1089,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $r = static::query(null, $this)->select($fields)->where($this->_getPrimaryKeyValuePairs())->fetch(true);
         if (!$r) {
-            throw new NotFoundException(['`:model` model refresh failed: `:key` record is not exists now! ', 'model' => get_called_class(), json_encode($this->_getPrimaryKeyValuePairs())]);
+            throw new NotFoundException(['`:1` model refresh failed: `:2` record is not exists now! ',
+                get_called_class(),
+                json_encode($this->_getPrimaryKeyValuePairs())]);
         }
 
         $data = (array)$r[0];
@@ -1168,7 +1170,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         if (!$constants) {
-            throw new MisuseException(['starts with `:constants` constants is not exists in `:model` model', 'constants' => $name, 'model' => get_called_class()]);
+            throw new MisuseException(['starts with `:1` constants is not exists in `:2` model', $name, get_called_class()]);
         }
 
         return $constants;
