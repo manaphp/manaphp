@@ -830,7 +830,7 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     /**
      * @param string $field
      *
-     * @return double|null
+     * @return float|null
      */
     public function avg($field)
     {

@@ -230,8 +230,8 @@ class Query extends \ManaPHP\Query
             $true = trim($parts[1]);
             $false = isset($parts[2]) ? trim($parts[2]) : 0;
 
-            $true = is_numeric($true) ? (double)$true : '$' . $true;
-            $false = is_numeric($false) ? (double)$false : '$' . $false;
+            $true = is_numeric($true) ? (float)$true : '$' . $true;
+            $false = is_numeric($false) ? (float)$false : '$' . $false;
         } else {
             $cond = $expr;
             $true = 1;
@@ -243,7 +243,7 @@ class Query extends \ManaPHP\Query
             $op2 = $match[2];
             $op3 = $match[3];
             $alg = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$neq', '<>' => '$neq'];
-            return ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (double)$op1 : '$' . $op1, is_numeric($op3) ? (double)$op3 : '$' . $op3]], $true, $false]];
+            return ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (float)$op1 : '$' . $op1, is_numeric($op3) ? (float)$op3 : '$' . $op3]], $true, $false]];
         } else {
             return null;
         }
@@ -264,11 +264,11 @@ class Query extends \ManaPHP\Query
                 } elseif (isset($v['$sum_if'])) {
                     $field = isset($v['$sum_if'][0]) ? $v['$sum_if'][0] : 1;
                     unset($v['$sum_if'][0]);
-                    $v = ['$sum' => ['$cond' => [$v['$sum_if'], is_numeric($field) ? (double)$field : '$' . $field, 0]]];
+                    $v = ['$sum' => ['$cond' => [$v['$sum_if'], is_numeric($field) ? (float)$field : '$' . $field, 0]]];
                 } elseif (isset($v['$avg_if'])) {
                     $field = isset($v['$avg_if'][0]) ? $v['$avg_if'][0] : 1;
                     unset($v['$avg_if'][0]);
-                    $v = ['$avg' => ['$cond' => [$v['$avg_if'], is_numeric($field) ? (double)$field : '$' . $field, 0]]];
+                    $v = ['$avg' => ['$cond' => [$v['$avg_if'], is_numeric($field) ? (float)$field : '$' . $field, 0]]];
                 }
                 $this->_aggregate[$k] = $v;
                 continue;
@@ -317,8 +317,8 @@ class Query extends \ManaPHP\Query
                 } elseif (preg_match('#^([\w\.]+)\s*([\+\-\*/%])\s*([\w\.]+)$#', $operand, $match2) === 1) {
                     $operator_map = ['+' => '$add', '-' => '$subtract', '*' => '$multiply', '/' => '$divide', '%' => '$mod'];
                     $sub_operand = $operator_map[$match2[2]];
-                    $sub_operand1 = is_numeric($match2[1]) ? (double)$match2[1] : ('$' . $match2[1]);
-                    $sub_operand2 = is_numeric($match2[3]) ? (double)$match2[3] : ('$' . $match2[3]);
+                    $sub_operand1 = is_numeric($match2[1]) ? (float)$match2[1] : ('$' . $match2[1]);
+                    $sub_operand2 = is_numeric($match2[3]) ? (float)$match2[3] : ('$' . $match2[3]);
                     $this->_aggregate[$k] = ['$' . $accumulator => [$sub_operand => [$sub_operand1, $sub_operand2]]];
                 } elseif ($cond = $this->_compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$' . $accumulator => $this->_compileCondExpression($operand)];
@@ -360,7 +360,7 @@ class Query extends \ManaPHP\Query
         } elseif ($type === 'integer') {
             return is_int($value) ? $value : (int)$value;
         } elseif ($type === 'double') {
-            return is_float($value) ? $value : (double)$value;
+            return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
             return is_scalar($type) ? new ObjectId($value) : $value;
         } elseif ($type === 'boolean') {
@@ -518,9 +518,9 @@ class Query extends \ManaPHP\Query
                 if (is_int($value)) {
                     $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value]]];
                 } elseif (is_float($value)) {
-                    $this->_filters[] = [$field => ['$in' => [(string)$value, (double)$value]]];
+                    $this->_filters[] = [$field => ['$in' => [(string)$value, (float)$value]]];
                 } else {
-                    $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (double)$value]]];
+                    $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (float)$value]]];
                 }
             } else {
                 throw new InvalidValueException(['`:operator` operator is not  valid: value must be scalar value', 'operator' => $operator]);

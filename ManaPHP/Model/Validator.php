@@ -272,10 +272,10 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param int|double $value
-     * @param string     $parameter
+     * @param int|float $value
+     * @param string    $parameter
      *
-     * @return int|double|null
+     * @return int|float|null
      */
     protected function _validate_range($value, $parameter)
     {
@@ -287,10 +287,10 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param int|double $value
-     * @param int|float  $parameter
+     * @param int|float $value
+     * @param int|float $parameter
      *
-     * @return int|double|null
+     * @return int|float|null
      */
     protected function _validate_min($value, $parameter)
     {
@@ -298,10 +298,10 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param int|double $value
-     * @param int|double $parameter
+     * @param int|float $value
+     * @param int|float $parameter
      *
-     * @return int|double|null
+     * @return int|float|null
      */
     protected function _validate_max($value, $parameter)
     {
@@ -309,10 +309,10 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param int|double $value
-     * @param string     $parameter
+     * @param int|float $value
+     * @param string    $parameter
      *
-     * @return int|double|null
+     * @return int|float|null
      */
     protected function _validate_length($value, $parameter)
     {

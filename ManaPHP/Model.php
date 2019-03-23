@@ -423,7 +423,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      * @param string           $field
      * @param int              $ttl
      *
-     * @return int|double|string|null
+     * @return int|float|string|null
      */
     public static function value($filters, $field, $ttl = null)
     {
@@ -471,7 +471,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      * @param string           $field
      * @param int              $ttl
      *
-     * @return int|double|string
+     * @return int|float|string
      */
     public static function valueOrFail($filters, $field, $ttl = null)
     {
@@ -633,11 +633,11 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      * @param string $field
      * @param array  $filters
      *
-     * @return double|null
+     * @return float|null
      */
     public static function avg($field, $filters = null)
     {
-        return (double)static::query()->where($filters)->avg($field);
+        return (float)static::query()->where($filters)->avg($field);
     }
 
     /**
@@ -1175,8 +1175,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string     $field
-     * @param int|double $step
+     * @param string    $field
+     * @param int|float $step
      *
      * @return static
      */
@@ -1192,8 +1192,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string     $field
-     * @param int|double $step
+     * @param string    $field
+     * @param int|float $step
      *
      * @return static
      */

@@ -193,7 +193,7 @@ interface ModelInterface
      * @param string           $field
      * @param int              $ttl
      *
-     * @return int|double|string|null
+     * @return int|float|string|null
      */
     public static function value($filters, $field, $ttl = null);
 
@@ -202,7 +202,7 @@ interface ModelInterface
      * @param string           $field
      * @param int              $ttl
      *
-     * @return int|double|string
+     * @return int|float|string
      */
     public static function valueOrFail($filters, $field, $ttl = null);
 
@@ -295,7 +295,7 @@ interface ModelInterface
      * @param string $field
      * @param array  $filters
      *
-     * @return double|null
+     * @return float|null
      */
     public static function avg($field, $filters = null);
 
@@ -468,16 +468,16 @@ interface ModelInterface
     public function refresh($interval, $fields = null);
 
     /**
-     * @param string     $field
-     * @param int|double $step
+     * @param string    $field
+     * @param int|float $step
      *
      * @return static
      */
     public function increment($field, $step = 1);
 
     /**
-     * @param string     $field
-     * @param int|double $step
+     * @param string    $field
+     * @param int|float $step
      *
      * @return static
      */

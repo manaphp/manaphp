@@ -472,7 +472,7 @@ interface QueryInterface
     /**
      * @param string $field
      *
-     * @return double|null
+     * @return float|null
      */
     public function avg($field);
 

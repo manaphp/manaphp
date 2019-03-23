@@ -244,7 +244,7 @@ class Request extends Component implements RequestInterface
         } elseif (is_string($default)) {
             $value = (string)$value;
         } elseif (is_float($default)) {
-            $value = (double)$value;
+            $value = (float)$value;
         } elseif (is_bool($default)) {
             $value = (bool)$value;
         }

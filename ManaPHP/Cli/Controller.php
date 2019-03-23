@@ -98,7 +98,7 @@ abstract class Controller extends Component implements LogCategorizable
                     } elseif ($type === 'int' || $type === 'integer') {
                         $defaultValues[$name] = (int)$defaultValues[$name];
                     } elseif ($type === 'float' || $type === 'double') {
-                        $defaultValues[$name] = (double)$defaultValues[$name];
+                        $defaultValues[$name] = (float)$defaultValues[$name];
                     } elseif ($type === 'string') {
                         $defaultValues[$name] = json_encode($defaultValues[$name], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                     } elseif ($type === 'array') {

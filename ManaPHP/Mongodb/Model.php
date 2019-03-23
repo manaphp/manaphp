@@ -308,7 +308,7 @@ class Model extends \ManaPHP\Model
         } elseif ($type === 'integer') {
             return is_int($value) ? $value : (int)$value;
         } elseif ($type === 'double') {
-            return is_float($value) ? $value : (double)$value;
+            return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             return is_scalar($type) ? new ObjectID($value) : $value;

@@ -414,11 +414,11 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     /**
      * @param string $field
      *
-     * @return double|null
+     * @return float|null
      */
     public function avg($field)
     {
-        return (double)$this->aggregate(['r' => "AVG($field)"])[0]['r'];
+        return (float)$this->aggregate(['r' => "AVG($field)"])[0]['r'];
     }
 
     /**
