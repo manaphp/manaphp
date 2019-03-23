@@ -24,7 +24,7 @@ class Session extends Identity
         if (!$claims && !$silent) {
             throw new NoCredentialException('');
         }
-        Identity::setClaims($claims);
+        parent::setClaims($claims);
 
         return $this;
     }
@@ -32,6 +32,6 @@ class Session extends Identity
     public function setClaims($claims)
     {
         $this->session->set($this->_name, $claims);
-        return Identity::setClaims($claims);
+        return parent::setClaims($claims);
     }
 }
