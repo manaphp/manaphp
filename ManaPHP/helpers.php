@@ -311,8 +311,7 @@ if (!function_exists('curl')) {
      * @param string|array $body
      * @param array        $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
      */
     function curl($type, $url, $body = null, $options = [])
     {
@@ -325,8 +324,7 @@ if (!function_exists('curl_get')) {
      * @param string|array $url
      * @param array        $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
      */
     function curl_get($url, $options = [])
     {
@@ -340,8 +338,7 @@ if (!function_exists('curl_post')) {
      * @param string|array $body
      * @param array        $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
      */
     function curl_post($url, $body = null, $options = [])
     {
@@ -370,11 +367,10 @@ if (!function_exists('rest')) {
      * @param array        $options
      *
      * @return array
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\Easy\ContentTypeException
-     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ContentTypeException
+     * @throws \ManaPHP\Http\Client\JsonDecodeException
      */
     function rest($type, $url, $body = null, $options = [])
     {
@@ -388,11 +384,10 @@ if (!function_exists('rest_get')) {
      * @param array        $options
      *
      * @return array
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\Easy\ContentTypeException
-     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ContentTypeException
+     * @throws \ManaPHP\Http\Client\JsonDecodeException
      */
     function rest_get($url, $options = [])
     {
@@ -407,11 +402,10 @@ if (!function_exists('rest_post')) {
      * @param array        $options
      *
      * @return array
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\Easy\ContentTypeException
-     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ContentTypeException
+     * @throws \ManaPHP\Http\Client\JsonDecodeException
      */
     function rest_post($url, $body = null, $options = [])
     {
@@ -426,11 +420,10 @@ if (!function_exists('rest_put')) {
      * @param array        $options
      *
      * @return array
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\Easy\ContentTypeException
-     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ContentTypeException
+     * @throws \ManaPHP\Http\Client\JsonDecodeException
      */
     function rest_put($url, $body = null, $options = [])
     {
@@ -445,11 +438,10 @@ if (!function_exists('rest_patch')) {
      * @param array        $options
      *
      * @return array
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\Easy\ContentTypeException
-     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ContentTypeException
+     * @throws \ManaPHP\Http\Client\JsonDecodeException
      */
     function rest_patch($url, $body = null, $options = [])
     {
@@ -463,11 +455,10 @@ if (!function_exists('rest_delete')) {
      * @param array        $options
      *
      * @return array
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\Easy\ContentTypeException
-     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ContentTypeException
+     * @throws \ManaPHP\Http\Client\JsonDecodeException
      */
     function rest_delete($url, $options = [])
     {

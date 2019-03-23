@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Curl\Easy;
+namespace ManaPHP\Http\Client;
 
 class Exception extends \ManaPHP\Exception
 {
     /**
-     * @var \ManaPHP\Curl\Easy\Response
+     * @var \ManaPHP\Http\Client\Response
      */
     protected $_response;
 
@@ -12,7 +12,7 @@ class Exception extends \ManaPHP\Exception
      * Exception constructor.
      *
      * @param string|array                $message
-     * @param \ManaPHP\Curl\Easy\Response $response
+     * @param \ManaPHP\Http\Client\Response $response
      * @param \Exception|null             $previous
      */
     public function __construct($message = '', $response = null, \Exception $previous = null)
@@ -22,7 +22,7 @@ class Exception extends \ManaPHP\Exception
     }
 
     /**
-     * @param \ManaPHP\Curl\Easy\Response $response
+     * @param \ManaPHP\Http\Client\Response $response
      */
     public function setResponse($response)
     {
@@ -30,7 +30,7 @@ class Exception extends \ManaPHP\Exception
     }
 
     /**
-     * @return \ManaPHP\Curl\Easy\Response
+     * @return \ManaPHP\Http\Client\Response
      */
     public function getResponse()
     {

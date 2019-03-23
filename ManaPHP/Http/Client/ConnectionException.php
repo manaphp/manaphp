@@ -1,8 +1,6 @@
 <?php
 
-namespace ManaPHP\Curl;
-
-use ManaPHP\Exception;
+namespace ManaPHP\Http\Client;
 
 class ConnectionException extends Exception
 {

@@ -1,34 +1,35 @@
 <?php
-namespace ManaPHP\Curl;
+namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Curl\Easy\BadRequestException;
-use ManaPHP\Curl\Easy\ContentTypeException;
-use ManaPHP\Curl\Easy\ForbiddenException;
-use ManaPHP\Curl\Easy\JsonDecodeException;
-use ManaPHP\Curl\Easy\Response;
-use ManaPHP\Curl\Easy\ServiceUnavailableException;
-use ManaPHP\Curl\Easy\TooManyRequestsException;
-use ManaPHP\Curl\Easy\UnauthorizedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Http\Client\BadRequestException;
+use ManaPHP\Http\Client\ConnectionException;
+use ManaPHP\Http\Client\ContentTypeException;
+use ManaPHP\Http\Client\ForbiddenException;
+use ManaPHP\Http\Client\JsonDecodeException;
+use ManaPHP\Http\Client\Response;
+use ManaPHP\Http\Client\ServiceUnavailableException;
+use ManaPHP\Http\Client\TooManyRequestsException;
+use ManaPHP\Http\Client\UnauthorizedException;
 
-class EasyContext
+class ClientContext
 {
     /**
-     * @var \ManaPHP\Curl\Easy\Response
+     * @var \ManaPHP\Http\Client\Response
      */
     public $lastResponse;
 }
 
 /**
- * Class ManaPHP\Curl\Easy
+ * Class ManaPHP\Http\Client
  *
  * @package Curl
- * @property \ManaPHP\Curl\EasyContext $_context
+ * @property \ManaPHP\Http\ClientContext $_context
  */
-class Easy extends Component implements EasyInterface
+class Client extends Component implements ClientInterface
 {
     const HEADER_USER_AGENT = CURLOPT_USERAGENT;
     const HEADER_REFERER = CURLOPT_REFERER;
@@ -171,14 +172,14 @@ class Easy extends Component implements EasyInterface
      * @param string|array           $body
      * @param array|string|int|float $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
-     * @throws \ManaPHP\Curl\Easy\ForbiddenException
-     * @throws \ManaPHP\Curl\Easy\TooManyRequestsException
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\ConnectionException
-     * @throws \ManaPHP\Curl\Easy\UnauthorizedException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
+     * @throws \ManaPHP\Http\Client\ForbiddenException
+     * @throws \ManaPHP\Http\Client\TooManyRequestsException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ConnectionException
+     * @throws \ManaPHP\Http\Client\UnauthorizedException
      */
     public function request($type, $url, $body = null, $options = [])
     {
@@ -375,7 +376,7 @@ class Easy extends Component implements EasyInterface
 
         /** @noinspection NotOptimalIfConditionsInspection */
         if (($errno = curl_errno($curl)) === CURLE_SSL_CACERT && !$this->_caFile && DIRECTORY_SEPARATOR === '\\') {
-            $this->logger->warn('ca.pem file is not exists,so https verify is disabled, you should download from https://curl.haxx.se/ca/cacert.pem','httpClient.noCaCert');
+            $this->logger->warn('ca.pem file is not exists,so https verify is disabled, you should download from https://curl.haxx.se/ca/cacert.pem', 'httpClient.noCaCert');
             /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             /** @noinspection CurlSslServerSpoofingInspection */
@@ -449,14 +450,14 @@ class Easy extends Component implements EasyInterface
      * @param array|string|int $options
      *
      * @return array
-     * @throws \ManaPHP\Curl\Easy\ForbiddenException
-     * @throws \ManaPHP\Curl\Easy\TooManyRequestsException
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\Easy\ContentTypeException
-     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
-     * @throws \ManaPHP\Curl\ConnectionException
-     * @throws \ManaPHP\Curl\Easy\UnauthorizedException
+     * @throws \ManaPHP\Http\Client\ForbiddenException
+     * @throws \ManaPHP\Http\Client\TooManyRequestsException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ContentTypeException
+     * @throws \ManaPHP\Http\Client\JsonDecodeException
+     * @throws \ManaPHP\Http\Client\ConnectionException
+     * @throws \ManaPHP\Http\Client\UnauthorizedException
      */
     public function rest($type, $url, $body = null, $options = [])
     {
@@ -499,8 +500,8 @@ class Easy extends Component implements EasyInterface
      * @param array|string     $url
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function get($url, $options = [])
     {
@@ -512,8 +513,8 @@ class Easy extends Component implements EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function post($url, $body = [], $options = [])
     {
@@ -524,8 +525,8 @@ class Easy extends Component implements EasyInterface
      * @param array|string     $url
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function delete($url, $options = [])
     {
@@ -537,8 +538,8 @@ class Easy extends Component implements EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function put($url, $body = [], $options = [])
     {
@@ -550,8 +551,8 @@ class Easy extends Component implements EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function patch($url, $body = [], $options = [])
     {
@@ -563,8 +564,8 @@ class Easy extends Component implements EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function head($url, $body = [], $options = [])
     {
@@ -711,7 +712,7 @@ class Easy extends Component implements EasyInterface
     }
 
     /**
-     * @return \ManaPHP\Curl\Easy\Response
+     * @return \ManaPHP\Http\Client\Response
      */
     public function getLastResponse()
     {

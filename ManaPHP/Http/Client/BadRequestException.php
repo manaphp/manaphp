@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Curl\Easy;
+namespace ManaPHP\Http\Client;
 
 class BadRequestException extends Exception
 {

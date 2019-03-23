@@ -18,7 +18,7 @@ namespace ManaPHP;
  * @property-read \ManaPHP\CacheInterface                  $cache
  * @property-read \ManaPHP\CacheInterface                  $redisCache
  * @property-read \ManaPHP\Security\RandomInterface        $random
- * @property-read \ManaPHP\Curl\EasyInterface              $httpClient
+ * @property-read \ManaPHP\Http\ClientInterface            $httpClient
  * @property-read \ManaPHP\DbInterface                     $db
  * @property-read \Redis                                   $redis
  * @property-read \ManaPHP\Mongodb                         $mongodb

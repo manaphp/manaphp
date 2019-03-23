@@ -78,7 +78,7 @@ class Document extends Component
      * @param string $url
      *
      * @return static
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function loadUrl($url)
     {

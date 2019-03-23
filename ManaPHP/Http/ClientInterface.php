@@ -1,12 +1,7 @@
 <?php
-namespace ManaPHP\Curl;
+namespace ManaPHP\Http;
 
-/**
- * Interface ManaPHP\Curl\EasyInterface
- *
- * @package curl
- */
-interface EasyInterface
+interface ClientInterface
 {
     /**
      * @param string $proxy
@@ -44,11 +39,11 @@ interface EasyInterface
      * @param array|string|int $options
      *
      * @return array
-     * @throws \ManaPHP\Curl\Easy\ServiceUnavailableException
-     * @throws \ManaPHP\Curl\Easy\BadRequestException
-     * @throws \ManaPHP\Curl\Easy\ContentTypeException
-     * @throws \ManaPHP\Curl\Easy\JsonDecodeException
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
+     * @throws \ManaPHP\Http\Client\BadRequestException
+     * @throws \ManaPHP\Http\Client\ContentTypeException
+     * @throws \ManaPHP\Http\Client\JsonDecodeException
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function rest($type, $url, $body = null, $options = []);
 
@@ -58,8 +53,8 @@ interface EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function request($type, $url, $body = null, $options = []);
 
@@ -67,8 +62,8 @@ interface EasyInterface
      * @param string|array     $url
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function get($url, $options = []);
 
@@ -77,8 +72,8 @@ interface EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function post($url, $body = [], $options = []);
 
@@ -86,8 +81,8 @@ interface EasyInterface
      * @param string|array     $url
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function delete($url, $options = []);
 
@@ -96,8 +91,8 @@ interface EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function put($url, $body = [], $options = []);
 
@@ -106,8 +101,8 @@ interface EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function patch($url, $body = [], $options = []);
 
@@ -116,8 +111,8 @@ interface EasyInterface
      * @param string|array     $body
      * @param array|string|int $options
      *
-     * @return \ManaPHP\Curl\Easy\Response
-     * @throws \ManaPHP\Curl\ConnectionException
+     * @return \ManaPHP\Http\Client\Response
+     * @throws \ManaPHP\Http\Client\ConnectionException
      */
     public function head($url, $body = [], $options = []);
 
@@ -130,7 +125,7 @@ interface EasyInterface
     public function download($files, $options = []);
 
     /**
-     * @return \ManaPHP\Curl\Easy\Response
+     * @return \ManaPHP\Http\Client\Response
      */
     public function getLastResponse();
 }
