@@ -40,6 +40,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\CacheInterface                  $cache
  * @property-read \ManaPHP\CacheInterface                  $viewsCache
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
+ * @property-read \ManaPHP\Http\ClientInterface            $restClient
  * @property-read \ManaPHP\AuthorizationInterface          $authorization
  * @property-read \ManaPHP\Security\CaptchaInterface       $captcha
  * @property-read \ManaPHP\IdentityInterface               $identity

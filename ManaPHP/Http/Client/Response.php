@@ -3,12 +3,22 @@ namespace ManaPHP\Http\Client;
 
 use ManaPHP\Exception\InvalidJsonException;
 
-class Response
+class Response implements \JsonSerializable
 {
     /**
      * @var string
      */
     public $url;
+
+    /**
+     * @var array
+     */
+    public $user_data;
+
+    /**
+     * @var float
+     */
+    public $process_time;
 
     /**
      * @var string
@@ -26,17 +36,12 @@ class Response
     public $headers = [];
 
     /**
-     * @var float
-     */
-    public $process_time;
-
-    /**
      * @var string
      */
     public $content_type;
 
     /**
-     * @var string
+     * @var string|array
      */
     public $body;
 
@@ -44,6 +49,11 @@ class Response
      * @var array
      */
     public $stats;
+
+    /**
+     * @var \ManaPHP\Http\Client\Request
+     */
+    public $request;
 
     /**
      * @return array
@@ -102,5 +112,10 @@ class Response
         }
 
         return $body;
+    }
+
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 }

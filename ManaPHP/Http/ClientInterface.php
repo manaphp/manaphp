@@ -4,117 +4,84 @@ namespace ManaPHP\Http;
 interface ClientInterface
 {
     /**
-     * @param string $proxy
-     * @param bool   $peek
-     *
-     * @return static
-     */
-    public function setProxy($proxy = '127.0.0.1:8888', $peek = true);
-
-    /**
-     * @param string $file
-     *
-     * @return static
-     */
-    public function setCaFile($file);
-
-    /**
-     * @param int $seconds
-     *
-     * @return static
-     */
-    public function setTimeout($seconds);
-
-    /**
-     * @param bool $verify
-     *
-     * @return static
-     */
-    public function setSslVerify($verify);
-
-    /**
-     * @param string           $type
-     * @param string|array     $url
-     * @param string|array     $body
-     * @param array|string|int $options
-     *
-     * @return array
-     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
-     * @throws \ManaPHP\Http\Client\BadRequestException
-     * @throws \ManaPHP\Http\Client\ContentTypeException
-     * @throws \ManaPHP\Http\Client\JsonDecodeException
-     * @throws \ManaPHP\Http\Client\ConnectionException
-     */
-    public function rest($type, $url, $body = null, $options = []);
-
-    /**
-     * @param string           $type
-     * @param string|array     $url
-     * @param string|array     $body
-     * @param array|string|int $options
+     * @param string                $method
+     * @param string|array          $url
+     * @param string|array          $body
+     * @param array|string          $headers
+     * @param array|int|float|float $options
      *
      * @return \ManaPHP\Http\Client\Response
-     * @throws \ManaPHP\Http\Client\ConnectionException
      */
-    public function request($type, $url, $body = null, $options = []);
+    public function rest($method, $url, $body = null, $headers = [], $options = []);
 
     /**
-     * @param string|array     $url
-     * @param array|string|int $options
+     * @param string          $method
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
-     * @throws \ManaPHP\Http\Client\ConnectionException
      */
-    public function get($url, $options = []);
+    public function request($method, $url, $body = null, $headers = [], $options = []);
 
     /**
-     * @param string|array     $url
-     * @param string|array     $body
-     * @param array|string|int $options
+     * @param string|array    $url
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
-     * @throws \ManaPHP\Http\Client\ConnectionException
      */
-    public function post($url, $body = [], $options = []);
+    public function get($url, $headers = [], $options = []);
 
     /**
-     * @param string|array     $url
-     * @param array|string|int $options
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
-     * @throws \ManaPHP\Http\Client\ConnectionException
      */
-    public function delete($url, $options = []);
+    public function post($url, $body = [], $headers = [], $options = []);
 
     /**
-     * @param string|array     $url
-     * @param string|array     $body
-     * @param array|string|int $options
+     * @param string|array    $url
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
-     * @throws \ManaPHP\Http\Client\ConnectionException
      */
-    public function put($url, $body = [], $options = []);
+    public function delete($url, $headers = [], $options = []);
 
     /**
-     * @param string|array     $url
-     * @param string|array     $body
-     * @param array|string|int $options
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
-     * @throws \ManaPHP\Http\Client\ConnectionException
      */
-    public function patch($url, $body = [], $options = []);
+    public function put($url, $body = [], $headers = [], $options = []);
 
     /**
-     * @param string|array     $url
-     * @param string|array     $body
-     * @param array|string|int $options
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
-     * @throws \ManaPHP\Http\Client\ConnectionException
      */
-    public function head($url, $body = [], $options = []);
+    public function patch($url, $body = [], $headers = [], $options = []);
+
+    /**
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
+     *
+     * @return \ManaPHP\Http\Client\Response
+     */
+    public function head($url, $body = [], $headers = [], $options = []);
 
     /**
      * @param string|array           $files
@@ -123,9 +90,4 @@ interface ClientInterface
      * @return string|array
      */
     public function download($files, $options = []);
-
-    /**
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function getLastResponse();
 }

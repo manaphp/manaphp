@@ -306,43 +306,46 @@ if (!function_exists('client_ip')) {
 
 if (!function_exists('curl')) {
     /**
-     * @param string       $type
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string          $type
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    function curl($type, $url, $body = null, $options = [])
+    function curl($type, $url, $body = null, $headers = [], $options = [])
     {
-        return di('httpClient')->request($type, $url, $body, $options);
+        return di('httpClient')->request($type, $url, $body, $headers, $options);
     }
 }
 
 if (!function_exists('curl_get')) {
     /**
-     * @param string|array $url
-     * @param array        $options
+     * @param string|array    $url
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    function curl_get($url, $options = [])
+    function curl_get($url, $headers = [], $options = [])
     {
-        return di('httpClient')->get($url, $options);
+        return di('httpClient')->get($url, $headers, $options);
     }
 }
 
 if (!function_exists('curl_post')) {
     /**
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    function curl_post($url, $body = null, $options = [])
+    function curl_post($url, $body = null, $headers = [], $options = [])
     {
-        return di('httpClient')->post($url, $body, $options);
+        return di('httpClient')->post($url, $body, $headers, $options);
     }
 }
 
@@ -361,108 +364,90 @@ if (!function_exists('download')) {
 
 if (!function_exists('rest')) {
     /**
-     * @param string       $type
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string          $type
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
-     * @return array
-     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
-     * @throws \ManaPHP\Http\Client\BadRequestException
-     * @throws \ManaPHP\Http\Client\ContentTypeException
-     * @throws \ManaPHP\Http\Client\JsonDecodeException
+     * @return \ManaPHP\Http\Client\Response
      */
-    function rest($type, $url, $body = null, $options = [])
+    function rest($type, $url, $body = null, $headers = [], $options = [])
     {
-        return di('httpClient')->rest($type, $url, $body, $options);
+        return di('restClient')->rest($type, $url, $body, $headers, $options);
     }
 }
 
 if (!function_exists('rest_get')) {
     /**
-     * @param string|array $url
-     * @param array        $options
+     * @param string|array    $url
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
-     * @return array
-     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
-     * @throws \ManaPHP\Http\Client\BadRequestException
-     * @throws \ManaPHP\Http\Client\ContentTypeException
-     * @throws \ManaPHP\Http\Client\JsonDecodeException
+     * @return \ManaPHP\Http\Client\Response
      */
-    function rest_get($url, $options = [])
+    function rest_get($url, $headers = [], $options = [])
     {
-        return di('httpClient')->rest('GET', $url, null, $options);
+        return di('restClient')->rest('GET', $url, null, $headers, $options);
     }
 }
 
 if (!function_exists('rest_post')) {
     /**
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
-     * @return array
-     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
-     * @throws \ManaPHP\Http\Client\BadRequestException
-     * @throws \ManaPHP\Http\Client\ContentTypeException
-     * @throws \ManaPHP\Http\Client\JsonDecodeException
+     * @return \ManaPHP\Http\Client\Response
      */
-    function rest_post($url, $body = null, $options = [])
+    function rest_post($url, $body, $headers = [], $options = [])
     {
-        return di('httpClient')->rest('POST', $url, $body, $options);
+        return di('restClient')->rest('POST', $url, $body, $headers, $options);
     }
 }
 
 if (!function_exists('rest_put')) {
     /**
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
-     * @return array
-     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
-     * @throws \ManaPHP\Http\Client\BadRequestException
-     * @throws \ManaPHP\Http\Client\ContentTypeException
-     * @throws \ManaPHP\Http\Client\JsonDecodeException
+     * @return \ManaPHP\Http\Client\Response
      */
-    function rest_put($url, $body = null, $options = [])
+    function rest_put($url, $body, $headers = [], $options = [])
     {
-        return di('httpClient')->rest('PUT', $url, $body, $options);
+        return di('restClient')->rest('PUT', $url, $body, $headers, $options);
     }
 }
 
 if (!function_exists('rest_patch')) {
     /**
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $options
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
-     * @return array
-     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
-     * @throws \ManaPHP\Http\Client\BadRequestException
-     * @throws \ManaPHP\Http\Client\ContentTypeException
-     * @throws \ManaPHP\Http\Client\JsonDecodeException
+     * @return \ManaPHP\Http\Client\Response
      */
-    function rest_patch($url, $body = null, $options = [])
+    function rest_patch($url, $body, $headers = [], $options = [])
     {
-        return di('httpClient')->rest('PATCH', $url, $body, $options);
+        return di('restClient')->rest('PATCH', $url, $body, $headers, $options);
     }
 }
 
 if (!function_exists('rest_delete')) {
     /**
-     * @param string|array $url
-     * @param array        $options
+     * @param string|array    $url
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
-     * @return array
-     * @throws \ManaPHP\Http\Client\ServiceUnavailableException
-     * @throws \ManaPHP\Http\Client\BadRequestException
-     * @throws \ManaPHP\Http\Client\ContentTypeException
-     * @throws \ManaPHP\Http\Client\JsonDecodeException
+     * @return \ManaPHP\Http\Client\Response
      */
-    function rest_delete($url, $options = [])
+    function rest_delete($url, $headers = [], $options = [])
     {
-        return di('httpClient')->rest('DELETE', $url, null, $options);
+        return di('restClient')->rest('DELETE', $url, null, $headers, $options);
     }
 }
 
