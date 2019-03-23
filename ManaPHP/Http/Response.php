@@ -570,7 +570,7 @@ class Response extends Component implements ResponseInterface
             throw new MisuseException("Headers has been sent in $file:$line");
         }
 
-        if (($request_id = $this->request->getServer('HTTP_X_REQUEST_ID')) && !isset($context->headers['X-Request-Id'])) {
+        if (!isset($context->headers['X-Request-Id']) && ($request_id = $this->request->getServer('HTTP_X_REQUEST_ID'))) {
             $context->headers['X-Request-Id'] = $request_id;
         }
 
