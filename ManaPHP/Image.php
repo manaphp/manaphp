@@ -203,8 +203,7 @@ abstract class Image extends Component implements ImageInterface
         $color = 0x000000,
         $size = 12,
         $font_file = null
-    )
-    {
+    ) {
         $this->do_text($text, $offsetX, $offsetY, $opacity, $color, $size, $font_file);
 
         return $this;

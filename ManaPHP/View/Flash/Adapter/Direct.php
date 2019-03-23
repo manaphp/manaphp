@@ -14,8 +14,8 @@ class Direct extends Flash
     /**
      * Outputs a message
      *
-     * @param  string $type
-     * @param  string $message
+     * @param string $type
+     * @param string $message
      *
      * @return void
      */

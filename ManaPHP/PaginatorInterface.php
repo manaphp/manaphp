@@ -26,7 +26,7 @@ interface PaginatorInterface
     public function paginate($count, $size = null, $page = null);
 
     /**
-     * @param  false|string $itemsName
+     * @param false|string $itemsName
      *
      * @return array
      */

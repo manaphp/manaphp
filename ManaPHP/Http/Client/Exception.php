@@ -11,9 +11,9 @@ class Exception extends \ManaPHP\Exception
     /**
      * Exception constructor.
      *
-     * @param string|array                $message
+     * @param string|array                  $message
      * @param \ManaPHP\Http\Client\Response $response
-     * @param \Exception|null             $previous
+     * @param \Exception|null               $previous
      */
     public function __construct($message = '', $response = null, \Exception $previous = null)
     {

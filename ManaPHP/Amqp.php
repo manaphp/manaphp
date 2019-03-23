@@ -426,7 +426,7 @@ class Amqp extends Component implements AmqpInterface
             $envelope = $this->_queues[$queue]->get($auto_ack ? AMQP_AUTOACK : AMQP_NOPARAM);
         } catch (\Exception $e) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new AmqpException(['retrieve message from `:queue` queue failed: :error ', 'queue' => $queue, 'error' => $e->getMessage()]);
+            throw new AmqpException(['retrieve message from `:queue` queue failed: :error', 'queue' => $queue, 'error' => $e->getMessage()]);
         }
 
         if ($envelope !== false) {

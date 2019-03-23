@@ -113,7 +113,7 @@ class Selector
     }
 
     /**
-     * @param  string      $css
+     * @param string       $css
      * @param string|array $attr
      *
      * @return static
@@ -139,7 +139,7 @@ class Selector
     }
 
     /**
-     * @param  string      $css
+     * @param string       $css
      * @param string|array $attr
      *
      * @return static

@@ -86,7 +86,7 @@ class Paginator extends Component implements PaginatorInterface
     }
 
     /**
-     * @param  false|string $itemsName
+     * @param false|string $itemsName
      *
      * @return array
      */

@@ -346,7 +346,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * @param  string      $css
+     * @param string       $css
      * @param string|array $attr
      *
      * @return static
@@ -375,7 +375,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * @param  string      $css
+     * @param string       $css
      * @param string|array $attr
      *
      * @return static

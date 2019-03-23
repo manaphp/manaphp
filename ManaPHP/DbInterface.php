@@ -54,10 +54,10 @@ interface DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
-     * @param   string       $table
-     * @param   array        $fieldValues
-     * @param   string|array $conditions
-     * @param   array        $bind
+     * @param string       $table
+     * @param array        $fieldValues
+     * @param string|array $conditions
+     * @param array        $bind
      *
      * @return    int
      */
@@ -66,8 +66,8 @@ interface DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
-     * @param   string $sql
-     * @param   array  $bind
+     * @param string $sql
+     * @param array  $bind
      *
      * @return    int
      */
@@ -88,9 +88,9 @@ interface DbInterface
     /**
      * Deletes data from a table using custom SQL syntax
      *
-     * @param  string       $table
-     * @param  string|array $conditions
-     * @param  array        $bind
+     * @param string       $table
+     * @param string|array $conditions
+     * @param array        $bind
      *
      * @return int
      */
@@ -99,8 +99,8 @@ interface DbInterface
     /**
      * Deletes data from a table using custom SQL syntax
      *
-     * @param  string $sql
-     * @param  array  $bind
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      */

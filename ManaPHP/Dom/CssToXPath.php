@@ -49,7 +49,7 @@ class CssToXPath
     /**
      * Transform CSS expression to XPath
      *
-     * @param  string $path_src
+     * @param string $path_src
      *
      * @return string
      */
@@ -106,7 +106,7 @@ class CssToXPath
     /**
      * Tokenize CSS expressions to XPath
      *
-     * @param  string $expression_src
+     * @param string $expression_src
      *
      * @return string
      */

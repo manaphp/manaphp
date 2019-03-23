@@ -477,7 +477,7 @@ class Logger extends Component implements LoggerInterface
      * Sends/Writes an error message to the log
      *
      * @param string|array $message
-     * @param    string    $category
+     * @param string       $category
      *
      * @return static
      */

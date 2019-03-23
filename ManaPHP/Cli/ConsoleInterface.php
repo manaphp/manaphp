@@ -81,7 +81,7 @@ interface ConsoleInterface
     public function error($message, $code = 1);
 
     /**
-     * @param  string|array    $message
+     * @param string|array     $message
      * @param int|float|string $value
      */
     public function progress($message, $value = null);

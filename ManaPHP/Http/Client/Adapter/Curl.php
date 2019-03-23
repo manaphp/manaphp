@@ -129,7 +129,7 @@ class Curl extends Client
 
         /** @noinspection NotOptimalIfConditionsInspection */
         if (($errno = curl_errno($curl)) === CURLE_SSL_CACERT && !isset($options['cafile']) && DIRECTORY_SEPARATOR === '\\') {
-            $this->logger->warn('ca.pem file is not exists,so https verify is disabled, you should download from https://curl.haxx.se/ca/cacert.pem', 'httpClient.noCaCert');
+            $this->logger->warn('ca.pem file is not exists, you should download from https://curl.haxx.se/ca/cacert.pem', 'httpClient.noCaCert');
             /** @noinspection CurlSslServerSpoofingInspection */
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             /** @noinspection CurlSslServerSpoofingInspection */

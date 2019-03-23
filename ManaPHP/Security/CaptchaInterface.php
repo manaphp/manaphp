@@ -21,8 +21,8 @@ interface CaptchaInterface
      * @param string $code
      * @param bool   $isTry
      *
-     * @throws \ManaPHP\Security\Captcha\InvalidCaptchaException
      * @return void
+     * @throws \ManaPHP\Security\Captcha\InvalidCaptchaException
      */
     public function verify($code = null, $isTry = false);
 }

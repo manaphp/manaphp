@@ -26,9 +26,9 @@ class Assignment implements AssignmentInterface
     /**
      * Assignment constructor.
      *
-     * @param  string|float|int $value
-     * @param  string           $operator
-     * @param array             $bind
+     * @param string|float|int $value
+     * @param string           $operator
+     * @param array            $bind
      */
     public function __construct($value, $operator = null, $bind = [])
     {

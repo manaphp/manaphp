@@ -69,8 +69,8 @@ interface DispatcherInterface
     /**
      * Gets a param by its name or numeric index
      *
-     * @param  string|int $name
-     * @param  mixed      $default
+     * @param string|int $name
+     * @param mixed      $default
      *
      * @return mixed
      */

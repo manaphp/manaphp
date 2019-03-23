@@ -334,7 +334,7 @@ class Console extends Component implements ConsoleInterface
     }
 
     /**
-     * @param  string|array    $message
+     * @param string|array     $message
      * @param int|float|string $value
      */
     public function progress($message, $value = null)

@@ -37,8 +37,8 @@ interface RendererInterface
     /**
      * Get the string contents of a section.
      *
-     * @param  string $section
-     * @param  string $default
+     * @param string $section
+     * @param string $default
      *
      * @return string
      */
@@ -47,8 +47,8 @@ interface RendererInterface
     /**
      * Start injecting content into a section.
      *
-     * @param  string $section
-     * @param  string $default
+     * @param string $section
+     * @param string $default
      *
      * @return void
      */
@@ -57,7 +57,7 @@ interface RendererInterface
     /**
      * Stop injecting content into a section.
      *
-     * @param  bool $overwrite
+     * @param bool $overwrite
      *
      * @return void
      */

@@ -14,7 +14,7 @@ class FrameworkController extends Controller
     /**
      * build manaphp framework lite php file
      *
-     * @param string $input  input file name
+     * @param string $input input file name
      * @param string $output output file name
      * @param int    $interfaces_keep
      * @param int    $whitespaces_keep
@@ -28,8 +28,7 @@ class FrameworkController extends Controller
         $interfaces_keep = 0,
         $whitespaces_keep = 0,
         $namespace_keep = 0
-    )
-    {
+    ) {
         if (!$this->filesystem->fileExists('@root/manaphp_lite.json')) {
             $this->filesystem->fileCopy('@manaphp/manaphp_lite.json', '@root/manaphp_lite.json');
         }

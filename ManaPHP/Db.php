@@ -336,10 +336,10 @@ class Db extends Component implements DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
-     * @param    string       $table
-     * @param    array        $fieldValues
-     * @param    string|array $conditions
-     * @param    array        $bind
+     * @param string       $table
+     * @param array        $fieldValues
+     * @param string|array $conditions
+     * @param array        $bind
      *
      * @return    int
      * @throws \ManaPHP\Db\Exception
@@ -389,8 +389,8 @@ class Db extends Component implements DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
-     * @param   string $sql
-     * @param   array  $bind
+     * @param string $sql
+     * @param array  $bind
      *
      * @return    int
      */
@@ -445,9 +445,9 @@ class Db extends Component implements DbInterface
     /**
      * Deletes data from a table using custom SQL syntax
      *
-     * @param  string       $table
-     * @param  string|array $conditions
-     * @param  array        $bind
+     * @param string       $table
+     * @param string|array $conditions
+     * @param array        $bind
      *
      * @return int
      * @throws \ManaPHP\Db\Exception
@@ -476,8 +476,8 @@ class Db extends Component implements DbInterface
     /**
      * Deletes data from a table using custom SQL syntax
      *
-     * @param  string $sql
-     * @param  array  $bind
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      */

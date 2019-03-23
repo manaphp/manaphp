@@ -340,8 +340,8 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @param  string $file
-     * @param string  $name
+     * @param string $file
+     * @param string $name
      *
      *
      * @return static

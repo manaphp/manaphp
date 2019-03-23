@@ -82,7 +82,7 @@ class Compiler extends Component
     /**
      * Compile the given Sword template contents.
      *
-     * @param  string $value
+     * @param string $value
      *
      * @return string
      */
@@ -162,7 +162,7 @@ class Compiler extends Component
     /**
      * Compile Sword comments into valid PHP.
      *
-     * @param  string $value
+     * @param string $value
      *
      * @return string
      */
@@ -176,7 +176,7 @@ class Compiler extends Component
     /**
      * Compile Sword echos into valid PHP.
      *
-     * @param  string $value
+     * @param string $value
      *
      * @return string
      */
@@ -234,7 +234,7 @@ class Compiler extends Component
     /**
      * Compile Sword statements that start with "@".
      *
-     * @param  string $value
+     * @param string $value
      *
      * @return mixed
      */
@@ -256,7 +256,7 @@ class Compiler extends Component
     /**
      * Compile the "raw" echo statements.
      *
-     * @param  string $value
+     * @param string $value
      *
      * @return string
      */
@@ -276,7 +276,7 @@ class Compiler extends Component
     /**
      * Compile the escaped echo statements.
      *
-     * @param  string $value
+     * @param string $value
      *
      * @return string
      */
@@ -314,7 +314,7 @@ class Compiler extends Component
     /**
      * Compile the default values for the echo statement.
      *
-     * @param  string $value
+     * @param string $value
      *
      * @return string
      */
@@ -326,7 +326,7 @@ class Compiler extends Component
     /**
      * Compile the yield statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -338,7 +338,7 @@ class Compiler extends Component
     /**
      * Compile the section statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -350,67 +350,63 @@ class Compiler extends Component
     /**
      * Compile the append statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_append(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php $renderer->appendSection(); ?>';
     }
 
     /**
      * Compile the end-section statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_endSection(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php $renderer->stopSection(); ?>';
     }
 
     /**
      * Compile the stop statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_stop(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php $renderer->stopSection(); ?>';
     }
 
     /**
      * Compile the else statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_else(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php else: ?>';
     }
 
     /**
      * Compile the for statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -422,7 +418,7 @@ class Compiler extends Component
     /**
      * Compile the foreach statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -445,7 +441,7 @@ class Compiler extends Component
     /**
      * Compile the can statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -457,7 +453,7 @@ class Compiler extends Component
     /**
      * Compile the allow statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -471,7 +467,7 @@ class Compiler extends Component
     /**
      * Compile the cannot statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -483,7 +479,7 @@ class Compiler extends Component
     /**
      * Compile the if statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -495,7 +491,7 @@ class Compiler extends Component
     /**
      * Compile the else-if statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -507,7 +503,7 @@ class Compiler extends Component
     /**
      * Compile the while statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -519,45 +515,42 @@ class Compiler extends Component
     /**
      * Compile the end-while statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_endWhile(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endwhile; ?>';
     }
 
     /**
      * Compile the end-for statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_endFor(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endfor; ?>';
     }
 
     /**
      * Compile the end-for-each statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_endForeach(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         $r = $this->_foreachelse_used ? '<?php endif; ?>' : '<?php endforeach; ?>';
         $this->_foreachelse_used = false;
         return $r;
@@ -566,52 +559,49 @@ class Compiler extends Component
     /**
      * Compile the end-can statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_endCan(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endif; ?>';
     }
 
     /**
      * Compile the end-cannot statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_endCannot(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endif; ?>';
     }
 
     /**
      * Compile the end-if statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_endIf(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endif; ?>';
     }
 
     /**
      * Compile the include statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -623,7 +613,7 @@ class Compiler extends Component
     /**
      * Compile the partial statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -635,7 +625,7 @@ class Compiler extends Component
     /**
      * Compile the block statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -647,7 +637,7 @@ class Compiler extends Component
     /**
      * Compile the break statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -659,7 +649,7 @@ class Compiler extends Component
     /**
      * Compile the break statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -671,7 +661,7 @@ class Compiler extends Component
     /**
      * Compile the break statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -683,22 +673,21 @@ class Compiler extends Component
     /**
      * Compile the break statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_content(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php echo $view->getContent(); ?>';
     }
 
     /**
      * Compile the break statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -714,22 +703,21 @@ class Compiler extends Component
     /**
      * Compile the break statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_endPhp(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return ' ?>';
     }
 
     /**
      * Compile the widget statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -741,7 +729,7 @@ class Compiler extends Component
     /**
      * Compile the Url statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -757,7 +745,7 @@ class Compiler extends Component
     /**
      * Compile the Asset statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -774,22 +762,21 @@ class Compiler extends Component
     /**
      * Compile the flash statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_flash(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php $di->flash->output() ?>';
     }
 
     /**
      * Compile the json statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -802,22 +789,21 @@ class Compiler extends Component
     /**
      * Compile the json statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_debugger(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php if($di->has("debuggerPlugin")){?><div class="debugger"><a target="_self" href="<?php echo $di->debuggerPlugin->getUrl(); ?>">Debugger</a></div><?php }?> ';
     }
 
     /**
      * Compile the pager statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -829,30 +815,28 @@ class Compiler extends Component
     /**
      * Compile the eol statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_eol(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php echo PHP_EOL ?>';
     }
 
     /**
      * Compile the eol statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
     protected function _compile_date(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         $time = substr($expression, 1, -1);
         return "<?php echo date('Y-m-d H:i:s', $time) ?>";
     }
@@ -860,7 +844,7 @@ class Compiler extends Component
     /**
      * Compile the action statements into valid PHP.
      *
-     * @param  string $expression
+     * @param string $expression
      *
      * @return string
      */
@@ -930,8 +914,8 @@ class Compiler extends Component
     /**
      * Register a handler for custom directives.
      *
-     * @param  string   $name
-     * @param  callable $handler
+     * @param string   $name
+     * @param callable $handler
      *
      * @return static
      */

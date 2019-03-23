@@ -129,7 +129,7 @@ class Document extends Component
     }
 
     /**
-     * @param  bool $raw
+     * @param bool $raw
      *
      * @return string
      */

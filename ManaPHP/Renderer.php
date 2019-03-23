@@ -192,8 +192,8 @@ class Renderer extends Component implements RendererInterface
     /**
      * Get the string contents of a section.
      *
-     * @param  string $section
-     * @param  string $default
+     * @param string $section
+     * @param string $default
      *
      * @return string
      */
@@ -211,8 +211,8 @@ class Renderer extends Component implements RendererInterface
     /**
      * Start injecting content into a section.
      *
-     * @param  string $section
-     * @param string  $default
+     * @param string $section
+     * @param string $default
      *
      * @return void
      */
@@ -232,7 +232,7 @@ class Renderer extends Component implements RendererInterface
     /**
      * Stop injecting content into a section.
      *
-     * @param  bool $overwrite
+     * @param bool $overwrite
      *
      * @return void
      */
