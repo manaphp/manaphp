@@ -200,7 +200,9 @@ class Captcha extends Component implements CaptchaInterface
                 $draw->setFillColor($fgPixel);
                 $draw->setFontSize($fontSize * 0.4 * $this->_rand_amplitude(0.1));
                 $angle = mt_rand(-40, 40);
-                $image->annotateImage($draw, $x + mt_rand(-700, 700) / 1000 * $fontSize, $fontSize / 2 + mt_rand(-$fontSize * 0.5, $fontSize * 0.5), $angle, $letter);
+                $noise_x = $x + mt_rand(-700, 700) / 1000 * $fontSize;
+                $noise_y = $fontSize / 2 + mt_rand(-$fontSize * 0.5, $fontSize * 0.5);
+                $image->annotateImage($draw, $noise_x, $noise_y, $angle, $letter);
             }
         }
 
