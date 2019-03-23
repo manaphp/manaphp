@@ -383,7 +383,7 @@ class MongodbController extends Controller
 
                     if ($docs) {
                         $columns = [];
-                        foreach ((array)$docs[0] as $k => $v) {
+                        foreach ($docs[0] as $k => $v) {
                             if ($k === '_id' && is_object($v)) {
                                 continue;
                             }
@@ -398,7 +398,7 @@ class MongodbController extends Controller
                     if (count($docs) !== 0) {
                         foreach ($docs as $doc) {
                             $line = [];
-                            foreach ((array)$doc as $k => $v) {
+                            foreach ($doc as $k => $v) {
                                 if ($k === '_id' && is_object($v)) {
                                     continue;
                                 }
