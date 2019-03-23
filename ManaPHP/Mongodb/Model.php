@@ -310,7 +310,6 @@ class Model extends \ManaPHP\Model
         } elseif ($type === 'float') {
             return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             return is_scalar($type) ? new ObjectID($value) : $value;
         } elseif ($type === 'bool') {
             return is_bool($value) ? $value : (bool)$value;
@@ -359,11 +358,9 @@ class Model extends \ManaPHP\Model
 
         if ($this->_id) {
             if (is_string($this->_id) && strlen($this->_id) === 24) {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 $this->_id = new ObjectID($this->_id);
             }
         } else {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_id = new ObjectID();
         }
 

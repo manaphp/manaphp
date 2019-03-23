@@ -71,7 +71,6 @@ class Mongodb extends Component implements MongodbInterface
     {
         try {
             $command = new Command(['ping' => 1]);
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_manager->executeCommand('admin', $command);
             return true;
         } catch (\Exception $exception) {
@@ -88,7 +87,6 @@ class Mongodb extends Component implements MongodbInterface
             $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.connect');
 
             $this->eventsManager->fireEvent('mongodb:beforeConnect', $this, ['dsn' => $this->_dsn]);
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_manager = new Manager($this->_dsn);
             $this->eventsManager->fireEvent('mongodb:afterConnect', $this);
         }
@@ -98,7 +96,6 @@ class Mongodb extends Component implements MongodbInterface
             $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.reconnect');
 
             $this->eventsManager->fireEvent('mongodb:beforeConnect', $this, ['dsn' => $this->_dsn]);
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $this->_manager = new Manager($this->_dsn);
             $this->eventsManager->fireEvent('mongodb:afterConnect', $this);
         }
@@ -135,13 +132,11 @@ class Mongodb extends Component implements MongodbInterface
         try {
             $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
         } catch (\Exception $exception) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $elapsed = round(microtime(true) - $start_time, 3);
         $this->eventsManager->fireEvent('mongodb:afterBulkWrite', $this, compact('namespace', 'bulk', 'result', 'elapsed'));
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         if ($bulk->count() !== 1) {
             $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
             if (!isset($backtrace['function']) && !in_array($backtrace['function'], ['bulkInsert', 'bulkUpdate', 'bulkUpsert'], true)) {
@@ -189,7 +184,6 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
             $bulk->insert($document);
@@ -214,7 +208,6 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         try {
             $bulk->update($filter, key($document)[0] === '$' ? $document : ['$set' => $document], ['multi' => true]);
@@ -242,7 +235,6 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
             $pkValue = $document[$primaryKey];
@@ -274,7 +266,6 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         try {
             $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
@@ -302,7 +293,6 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         foreach ($documents as $document) {
             try {
@@ -331,7 +321,6 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $bulk = new BulkWrite();
         try {
             $bulk->delete($filter);
@@ -424,16 +413,12 @@ class Mongodb extends Component implements MongodbInterface
             $this->_last_heartbeat = null;
         }
         try {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             $cursor = $this->_getManager()->executeCommand($db, new Command($command));
             $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
             $result = $cursor->toArray();
         } catch (\Exception $exception) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
-
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
 
         $elapsed = round(microtime(true) - $start_time, 3);
         $this->eventsManager->fireEvent('mongodb:afterCommand', $this, compact('db', 'command', 'result', 'elapsed'));
@@ -512,7 +497,6 @@ class Mongodb extends Component implements MongodbInterface
             if ($e->getCode() === 26) {
                 return true;
             } else {
-                /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
                 throw $e;
             }
         }

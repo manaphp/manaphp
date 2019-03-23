@@ -14,7 +14,6 @@ class PharController extends Controller
         $pharFile = $this->alias->resolve('@root/manacli.phar');
 
         $this->console->writeLn(['cleaning `:dir` dir', 'dir' => $this->alias->resolve('@phar')]);
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $this->filesystem->dirReCreate('@phar');
 
         $this->console->writeLn('copying manaphp framework files.');
@@ -22,7 +21,6 @@ class PharController extends Controller
         //$di->filesystem->dirCopy('@root/Application', '@phar/Application');
         $this->filesystem->fileCopy('@root/manacli.php', '@phar/manacli.php');
 
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $phar = new \Phar($pharFile, \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME, basename($pharFile));
         $phar->buildFromDirectory($this->alias->resolve('@phar'));
         $phar->setStub($phar::createDefaultStub('manacli.php'));

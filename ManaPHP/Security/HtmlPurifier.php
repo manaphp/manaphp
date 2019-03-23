@@ -112,15 +112,12 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
      */
     public function purify($html, $allowedTags = null, $allowedAttributes = null)
     {
-        /** @noinspection JSUnresolvedVariable */
-        /** @noinspection BadExpressionStatementJS */
         $html = (string)preg_replace('@<script.*>.*</script>@isU', '', $html);
         if ($html === '') {
             return '';
         }
 
         if (strpos($html, '<body>') === false) {
-            /** @noinspection HtmlRequiredLangAttribute */
             $html = '<!doctype html><html><body>' . $html . '</body></html>';
         }
 

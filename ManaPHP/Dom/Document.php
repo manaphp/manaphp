@@ -116,7 +116,6 @@ class Document extends Component
         libxml_use_internal_errors($old_use_internal_errors);
 
         if (!$r) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new DocumentException('xx');
         }
 
