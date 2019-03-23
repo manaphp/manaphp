@@ -68,7 +68,7 @@ abstract class Cache extends Component implements CacheInterface
     public function set($key, $value, $ttl)
     {
         if ($value === false) {
-            throw new InvalidValueException(['`:key` key cache value can not `false` boolean value', 'key' => $key]);
+            throw new InvalidValueException(['`:key` key cache value can not `false` bool value', 'key' => $key]);
         } elseif (is_scalar($value) || $value === null) {
             if (is_string($value) && $value !== '' && $value[0] !== '{' && $value[0] !== '[') {
                 $data = $value;

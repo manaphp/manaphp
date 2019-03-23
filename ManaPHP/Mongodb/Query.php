@@ -357,13 +357,13 @@ class Query extends \ManaPHP\Query
 
         if ($type === 'string') {
             return is_string($value) ? $value : (string)$value;
-        } elseif ($type === 'integer') {
+        } elseif ($type === 'int') {
             return is_int($value) ? $value : (int)$value;
-        } elseif ($type === 'double') {
+        } elseif ($type === 'float') {
             return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
             return is_scalar($type) ? new ObjectId($value) : $value;
-        } elseif ($type === 'boolean') {
+        } elseif ($type === 'bool') {
             return is_bool($value) ? $value : (bool)$value;
         } elseif ($type === 'array') {
             return (array)$value;
@@ -386,7 +386,7 @@ class Query extends \ManaPHP\Query
 
         $type = $this->_types[$field];
 
-        $map = ['integer' => 'intval', 'double' => 'floatval', 'string' => 'strval', 'boolean' => 'boolval'];
+        $map = ['int' => 'intval', 'float' => 'floatval', 'string' => 'strval', 'bool' => 'boolval'];
         if (isset($map[$type])) {
             $values = array_map($map[$type], $values);
         } else {

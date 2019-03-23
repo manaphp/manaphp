@@ -147,7 +147,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * boolean, integer, double, string, array, objectid
+     * bool, int, float, string, array, objectid
      *
      * @return array
      */
@@ -185,15 +185,15 @@ class Model extends \ManaPHP\Model
                         break;
                     case 'int':
                     case 'integer':
-                        $type = 'integer';
+                        $type = 'int';
                         break;
                     case 'float':
                     case 'double':
-                        $type = 'double';
+                        $type = 'float';
                         break;
                     case 'bool':
                     case 'boolean':
-                        $type = 'boolean';
+                        $type = 'bool';
                         break;
                     case 'array':
                     case '[]':
@@ -305,14 +305,14 @@ class Model extends \ManaPHP\Model
 
         if ($type === 'string') {
             return is_string($value) ? $value : (string)$value;
-        } elseif ($type === 'integer') {
+        } elseif ($type === 'int') {
             return is_int($value) ? $value : (int)$value;
-        } elseif ($type === 'double') {
+        } elseif ($type === 'float') {
             return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             return is_scalar($type) ? new ObjectID($value) : $value;
-        } elseif ($type === 'boolean') {
+        } elseif ($type === 'bool') {
             return is_bool($value) ? $value : (bool)$value;
         } elseif ($type === 'array') {
             return (array)$value;
