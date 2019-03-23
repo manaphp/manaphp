@@ -8,10 +8,10 @@ use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ContentTypeException;
 use ManaPHP\Http\Client\ForbiddenException;
 use ManaPHP\Http\Client\JsonDecodeException;
+use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
-use ManaPHP\Http\Client\Request;
 
 /**
  * Class ManaPHP\Http\Client

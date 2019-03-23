@@ -3,8 +3,8 @@ namespace ManaPHP\Http\Client\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client;
-use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\Client\ConnectionException;
+use ManaPHP\Http\Client\Response;
 
 class Stream extends Client
 {
