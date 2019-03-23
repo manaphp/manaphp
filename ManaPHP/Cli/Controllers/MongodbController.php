@@ -260,7 +260,7 @@ class MongodbController extends Controller
             $str .= '    }' . PHP_EOL;
         }
 
-        if ($optimized && $primaryKey && $fieldTypes[$primaryKey] === 'integer') {
+        if ($optimized && $primaryKey && $fieldTypes[$primaryKey] === 'int') {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
@@ -295,7 +295,7 @@ class MongodbController extends Controller
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fieldTypes as $field => $type) {
-                if ($type !== 'integer') {
+                if ($type !== 'int') {
                     continue;
                 }
 

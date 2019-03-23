@@ -73,7 +73,7 @@ class Linter extends Component
                     $all = $this->modelsMetadata->getIntTypeAttributes($model);
                 } else {
                     $all = array_keys(array_filter($model->getFieldTypes(), function ($type) {
-                        return $type === 'integer';
+                        return $type === 'int';
                     }));
                 }
             } elseif ($methodName === 'getSafeFields') {

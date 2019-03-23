@@ -135,7 +135,7 @@ class Model extends \ManaPHP\Model
         if (!isset($cached[$calledClass])) {
             $fields = [];
             foreach ($this->getFieldTypes() as $field => $type) {
-                if ($type === 'integer') {
+                if ($type === 'int') {
                     $fields[] = $field;
                 }
             }
