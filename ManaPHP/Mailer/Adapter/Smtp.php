@@ -255,14 +255,15 @@ class Smtp extends Mailer
             if (!is_file($file)) {
                 throw new InvalidValueException(['`:file` attachment file is not exists', 'file' => $file]);
             }
-            $this->_writeLine();
-            $this->_writeLine("--$boundary");
-            $this->_writeLine('Content-Type: ' . mime_content_type($file));
-            $this->_writeLine('Content-Length: ' . filesize($file));
-            $this->_writeLine('Content-Disposition: attachment; filename="' . $attachment['name'] . '"');
-            $this->_writeLine('Content-Transfer-Encoding: base64');
-            $this->_writeLine();
-            $this->_writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
+
+            $this->_writeLine()
+                ->_writeLine("--$boundary")
+                ->_writeLine('Content-Type: ' . mime_content_type($file))
+                ->_writeLine('Content-Length: ' . filesize($file))
+                ->_writeLine('Content-Disposition: attachment; filename="' . $attachment['name'] . '"')
+                ->_writeLine('Content-Transfer-Encoding: base64')
+                ->_writeLine()
+                ->_writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
         }
 
         return $this;
@@ -282,15 +283,15 @@ class Smtp extends Mailer
             if (!is_file($file = $this->alias->resolve($embeddedFile['file']))) {
                 throw new InvalidValueException(['`:file` inline file is not exists', 'file' => $file]);
             }
-            $this->_writeLine();
-            $this->_writeLine("--$boundary");
-            $this->_writeLine('Content-Type: ' . mime_content_type($file));
-            $this->_writeLine('Content-Length: ' . filesize($file));
-            $this->_writeLine('Content-ID: <' . $embeddedFile['cid'] . '>');
-            $this->_writeLine('Content-Disposition: inline; filename="' . $embeddedFile['name'] . '"');
-            $this->_writeLine('Content-Transfer-Encoding: base64');
-            $this->_writeLine();
-            $this->_writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
+            $this->_writeLine()
+                ->_writeLine("--$boundary")
+                ->_writeLine('Content-Type: ' . mime_content_type($file))
+                ->_writeLine('Content-Length: ' . filesize($file))
+                ->_writeLine('Content-ID: <' . $embeddedFile['cid'] . '>')
+                ->_writeLine('Content-Disposition: inline; filename="' . $embeddedFile['name'] . '"')
+                ->_writeLine('Content-Transfer-Encoding: base64')
+                ->_writeLine()
+                ->_writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
         }
 
         return $this;
