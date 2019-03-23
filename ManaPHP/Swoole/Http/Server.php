@@ -95,6 +95,7 @@ class Server extends Component implements ServerInterface
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
         unset($_server['SERVER_SOFTWARE']);
+        /** @noinspection AdditionOperationOnArraysInspection */
         $_server += $this->_server;
 
         foreach ($request->header ?: [] as $k => $v) {
@@ -128,6 +129,7 @@ class Server extends Component implements ServerInterface
 
         $globals->_GET = $_get;
         $globals->_POST = $_post;
+        /** @noinspection AdditionOperationOnArraysInspection */
         $globals->_REQUEST = $_post + $_get;
         $globals->_SERVER = $_server;
         $globals->_COOKIE = $request->cookie ?: [];

@@ -42,6 +42,7 @@ class Request extends Component implements RequestInterface
             }
 
             if (is_array($context->_POST)) {
+                /** @noinspection AdditionOperationOnArraysInspection */
                 $context->_REQUEST = $context->_POST + $context->_GET;
             } else {
                 $context->_POST = [];
