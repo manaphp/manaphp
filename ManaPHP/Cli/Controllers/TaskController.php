@@ -29,7 +29,7 @@ class TaskController extends Controller
                 $tasks[] = ['name' => Text::underscore($task), 'desc' => $this->_getTaskDescription($task)];
             }
         }
-        $width = max(array_map(function ($v) {
+        $width = max(array_map(static function ($v) {
                 return strlen($v['name']);
             }, $tasks)) + 3;
         foreach ($tasks as $task) {

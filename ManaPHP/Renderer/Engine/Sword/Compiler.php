@@ -121,7 +121,7 @@ class Compiler extends Component
     {
         //   return $str;
         return preg_replace_callback('#\s(href|src)="(/[^/][^":<{*?$]+\.(css|js|jpg|png|gif))"#',
-            function ($match) {
+            static function ($match) {
                 $hash = $match[2] . '?v=' . substr(md5_file(path("@public{$match[2]}")), 0, 12);
                 return " $match[1]=\"<?php echo asset('$hash'); ?>\"";
             },
@@ -201,7 +201,7 @@ class Compiler extends Component
             '_compileEscapedEchos' => strlen(stripcslashes($this->_escapedTags[0])),
         ];
 
-        uksort($methods, function ($method1, $method2) use ($methods) {
+        uksort($methods, static function ($method1, $method2) use ($methods) {
             // Ensure the longest tags are processed first
             if ($methods[$method1] > $methods[$method2]) {
                 return -1;
@@ -797,7 +797,8 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php if($di->has("debuggerPlugin")){?><div class="debugger"><a target="_self" href="<?php echo $di->debuggerPlugin->getUrl(); ?>">Debugger</a></div><?php }?> ';
+        return '<?php if($di->has("debuggerPlugin")){?><div class="debugger"><a target="_self" href="' .
+            '<?php echo $di->debuggerPlugin->getUrl(); ?>">Debugger</a></div><?php }?> ';
     }
 
     /**

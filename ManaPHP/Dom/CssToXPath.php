@@ -8,7 +8,7 @@ class CssToXPath
         $path = $this->_transform($path);
         if (strpos($path, ':') !== false) {
 
-            $path = preg_replace_callback('#:(eq|gt|lt)\((-?\d+)\)#', function ($match) {
+            $path = preg_replace_callback('#:(eq|gt|lt)\((-?\d+)\)#', static function ($match) {
                 $word = $match[1];
                 if ($word === 'eq') {
                     if ($match[2] >= 0) {
@@ -122,7 +122,7 @@ class CssToXPath
         // arbitrary attribute strict equality
         $expression = preg_replace_callback(
             '|\[@?([a-z0-9_-]*)([~\*\^\$\|\!])?=([^\[]+)\]|i',
-            function ($matches) {
+            static function ($matches) {
                 $attr = strtolower($matches[1]);
                 $type = $matches[2];
                 $val = trim($matches[3], "'\" \t");
@@ -153,7 +153,7 @@ class CssToXPath
         //attribute contains specified content
         $expression = preg_replace_callback(
             '|\[(!?)([a-z][a-z0-9_-\|&]*)\]|i',
-            function ($matches) {
+            static function ($matches) {
                 $val = $matches[2];
                 $op = strpos($val, '|') !== false ? '|' : '&';
 
