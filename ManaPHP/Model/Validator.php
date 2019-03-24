@@ -524,7 +524,8 @@ class Validator extends Component implements ValidatorInterface
     {
         $context = $this->_context;
 
-        $constants = $context->model->getConstants($parameter ?: $context->field);
+        $model = $context->model;
+        $constants = $model::consts($parameter ?: $context->field);
         if (isset($constants[$value])) {
             return $value;
         } else {

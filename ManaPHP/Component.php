@@ -62,26 +62,6 @@ class Component implements ComponentInterface, \JsonSerializable
     }
 
     /**
-     * @param string $name
-     *
-     * @return array
-     */
-    public function getConstants($name)
-    {
-        $name = strtoupper($name) . '_';
-        $constants = [];
-        $rc = new \ReflectionClass($this);
-
-        foreach ($rc->getConstants() as $cName => $cValue) {
-            if (strpos($cName, $name) === 0) {
-                $constants[$cValue] = strtolower(substr($cName, strlen($name)));
-            }
-        }
-
-        return $constants;
-    }
-
-    /**
      * Magic method __get
      *
      * @param string $name
