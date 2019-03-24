@@ -11,43 +11,25 @@ class ContextManager
     /**
      * @var array
      */
-    protected static $_configure = [];
-
-    /**
-     * @var array
-     */
     protected static $_contexts = [];
 
     /**
-     * @param $object
+     * @param \ManaPHP\Component $object
      *
      * @return mixed
      */
     public static function get($object)
     {
-        $id = spl_object_id($object);
-        if (!isset(self::$_contexts[$id])) {
-            $object_class = get_class($object);
-            if (!isset(self::$_configure[$object_class])) {
-                $context_class = null;
-                $parent_class = $object_class;
-                do {
-                    $try = $parent_class . 'Context';
-                    if (class_exists($try, false)) {
-                        $context_class = $try;
-                        break;
-                    }
-                } while ($parent_class = get_parent_class($parent_class));
+        $cid = \Swoole\Coroutine::getuid();
 
-                if (!$context_class) {
-                    throw new Exception(['`:context` context class is not exists', 'context' => $object_class . 'Context']);
-                }
-                self::$_configure[$object_class] = $context_class;
+        $oid = spl_object_id($object);
+        if (!isset(self::$_contexts[$cid][$oid])) {
+            if (!$context_class = $object->getContextClass()) {
+                throw new Exception(['`:context` context class is not exists', 'context' => get_class($object) . 'Context']);
             }
-
-            return self::$_contexts[$id] = new self::$_configure[$object_class];
+            return self::$_contexts[$cid][$oid] = new $context_class;
         } else {
-            return self::$_contexts[$id];
+            return self::$_contexts[$cid][$oid];
         }
     }
 
@@ -69,6 +51,8 @@ class ContextManager
 
     public static function reset()
     {
-        self::$_contexts = [];
+        $cid = \Swoole\Coroutine::getuid();
+
+        self::$_contexts[$cid] = [];
     }
 }
