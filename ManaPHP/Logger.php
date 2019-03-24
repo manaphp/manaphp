@@ -34,7 +34,12 @@ class Logger extends Component implements LoggerInterface
     /**
      * @var array
      */
-    protected $_levels = [];
+    protected static $_levels = [
+        self::LEVEL_FATAL => 'fatal',
+        self::LEVEL_ERROR => 'error',
+        self::LEVEL_WARN => 'warn',
+        self::LEVEL_INFO => 'info',
+        self::LEVEL_DEBUG => 'debug'];
 
     /**
      * Logger constructor.
@@ -44,8 +49,6 @@ class Logger extends Component implements LoggerInterface
      */
     public function __construct($options = [])
     {
-        $this->_levels = $this->getConstants('level');
-
         if (is_string($options)) {
             $this->_appenders[($pos = strrpos($options, '\\')) !== false ? lcfirst(substr($options, $pos + 1)) : $options] = $options;
         } elseif (is_object($options)) {
@@ -93,7 +96,7 @@ class Logger extends Component implements LoggerInterface
         if (is_numeric($level)) {
             $this->_level = (int)$level;
         } else {
-            $this->_level = array_search($level, $this->_levels, true);
+            $this->_level = array_search($level, self::$_levels, true);
         }
 
         return $this;
@@ -112,7 +115,7 @@ class Logger extends Component implements LoggerInterface
      */
     public function getLevels()
     {
-        return $this->_levels;
+        return self::$_levels;
     }
 
     /**
@@ -124,7 +127,7 @@ class Logger extends Component implements LoggerInterface
     {
         for ($i = count($traces) - 1; $i >= 0; $i--) {
             $trace = $traces[$i];
-            if ($trace['function'] === '__call' || in_array($trace['function'], $this->_levels, true)) {
+            if ($trace['function'] === '__call' || in_array($trace['function'], self::$_levels, true)) {
                 return $trace;
             }
         }
@@ -182,7 +185,7 @@ class Logger extends Component implements LoggerInterface
                 return $appender['instance'];
             } else {
                 if (isset($appender['level'])) {
-                    $appender['level'] = array_search($appender['level'], $this->_levels, true);
+                    $appender['level'] = array_search($appender['level'], self::$_levels, true);
                 }
                 $className = isset($appender['class']) ? $appender['class'] : $name;
                 $className = strpos($className, '\\') ? $className : 'ManaPHP\Logger\Appender\\' . ucfirst($className);
@@ -207,7 +210,7 @@ class Logger extends Component implements LoggerInterface
         if (is_string($appender)) {
             $definition = $appender;
         } elseif (isset($appender['level'])) {
-            $level = is_numeric($appender['level']) ? (int)$appender['level'] : array_search(strtolower($appender['level']), $this->_levels, true);
+            $level = is_numeric($appender['level']) ? (int)$appender['level'] : array_search(strtolower($appender['level']), self::$_levels, true);
             unset($appender['level']);
             $definition = $appender;
         } else {
@@ -383,7 +386,7 @@ class Logger extends Component implements LoggerInterface
 
         $log->host = gethostname();
         $log->client_ip = empty($_SERVER['DOCUMENT_ROOT']) ? '' : $this->request->getClientIp();
-        $log->level = $this->_levels[$level];
+        $log->level = self::$_levels[$level];
         $log->request_id = $request_id ? preg_replace('#[^a-zA-Z\d-_\.]#', 'X', $request_id) : '';
 
         if ($message instanceof \Exception) {
