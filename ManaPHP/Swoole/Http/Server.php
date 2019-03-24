@@ -3,10 +3,24 @@ namespace ManaPHP\Swoole\Http;
 
 use ManaPHP\Component;
 
+class ServerContext
+{
+    /**
+     * @var \swoole_http_request
+     */
+    public $request;
+
+    /**
+     * @var \swoole_http_response
+     */
+    public $response;
+}
+
 /**
  * Class Server
  * @package ManaPHP\Swoole\Http
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\Swoole\Http\ServerContext  $_context
  */
 class Server extends Component implements ServerInterface
 {
@@ -34,16 +48,6 @@ class Server extends Component implements ServerInterface
      * @var \swoole_http_server
      */
     protected $_swoole;
-
-    /**
-     * @var \swoole_http_request
-     */
-    protected $_request;
-
-    /**
-     * @var \swoole_http_response
-     */
-    protected $_response;
 
     /**
      * @var callable|array
@@ -179,8 +183,11 @@ class Server extends Component implements ServerInterface
                 $response->end();
                 return;
             }
-            $this->_request = $request;
-            $this->_response = $response;
+            $context = $this->_context;
+
+            $context->request = $request;
+            $context->response = $response;
+
             $this->_prepareGlobals($request);
 
             if (is_array($this->_handler)) {
@@ -207,7 +214,9 @@ class Server extends Component implements ServerInterface
      */
     public function setStatus($code)
     {
-        $this->_response->status($code);
+        $context = $this->_context;
+
+        $context->response->status($code);
 
         return $this;
     }
@@ -219,7 +228,7 @@ class Server extends Component implements ServerInterface
      */
     public function sendHeaders($headers)
     {
-        $response = $this->_response;
+        $response = $this->_context->response;
 
         foreach ($headers as $k => $v) {
             $response->header($k, $v, false);
@@ -235,7 +244,7 @@ class Server extends Component implements ServerInterface
      */
     public function sendCookies($cookies)
     {
-        $response = $this->_response;
+        $response = $this->_context->response;
 
         foreach ($cookies as $cookie) {
             $response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
@@ -253,7 +262,7 @@ class Server extends Component implements ServerInterface
      */
     public function sendContent($content)
     {
-        $this->_response->end($content);
+        $this->_context->response->end($content);
         return $this;
     }
 
@@ -264,7 +273,7 @@ class Server extends Component implements ServerInterface
      */
     public function sendFile($file)
     {
-        $this->_response->sendfile($this->alias->resolve($file));
+        $this->_context->response->sendfile($this->alias->resolve($file));
 
         return $this;
     }
