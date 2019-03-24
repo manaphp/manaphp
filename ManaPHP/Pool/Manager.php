@@ -117,15 +117,27 @@ class Manager extends Component implements ManagerInterface
 
         $queue = $this->_pool[$owner_id][$type];
 
-        if ($timeout === null) {
-            if ($queue->isEmpty()) {
-                throw new BusyException(['`:type` pool ob `:owner` is busy', 'type' => $type, 'owner' => get_class($owner)]);
-            }
-        } else {
-            null;
+        if (!$queue->isEmpty()) {
+            return $queue->pop();
         }
 
-        return $queue->pop();
+        if (!$timeout) {
+            return null;
+        }
+
+        $end_time = microtime(true) + $timeout;
+        do {
+            if (!$queue->isEmpty()) {
+                return $queue->pop();
+            }
+            usleep(1000);
+        } while ($end_time > microtime(true));
+
+        if ($queue->isEmpty()) {
+            throw new BusyException(['`:type` pool of `:owner` is busy', 'type' => $type, 'owner' => get_class($owner)]);
+        } else {
+            return $queue->pop();
+        }
     }
 
     /**
