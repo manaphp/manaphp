@@ -117,7 +117,8 @@ class File extends Component implements AppenderInterface
             }
         }
 
-        if (file_put_contents($file, $str, FILE_APPEND | LOCK_EX) === false) {
+        //LOCK_EX flag fight with SWOOLE COROUTINE
+        if (file_put_contents($file, $str, FILE_APPEND) === false) {
             /** @noinspection ForgottenDebugOutputInspection */
             trigger_error('Write log to file failed: ' . $file, E_USER_WARNING);
         }
