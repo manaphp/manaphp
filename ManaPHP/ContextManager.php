@@ -4,11 +4,6 @@ namespace ManaPHP;
 class ContextManager
 {
     /**
-     * @var bool
-     */
-    protected static $_use_dynamic = false;
-
-    /**
      * @var array
      */
     protected static $_contexts = [];
@@ -20,7 +15,7 @@ class ContextManager
      */
     public static function get($object)
     {
-        $cid = \Swoole\Coroutine::getuid();
+        $cid = MANAPHP_COROUTINE ? \Swoole\Coroutine::getuid() : -1;
 
         $oid = spl_object_id($object);
         if (!isset(self::$_contexts[$cid][$oid])) {
@@ -33,25 +28,9 @@ class ContextManager
         }
     }
 
-    /**
-     * @param bool $dynamic
-     */
-    public static function useDynamic($dynamic = true)
-    {
-        self::$_use_dynamic = $dynamic;
-    }
-
-    /**
-     * @return bool
-     */
-    public static function isUseDynamic()
-    {
-        return self::$_use_dynamic;
-    }
-
     public static function reset()
     {
-        $cid = \Swoole\Coroutine::getuid();
+        $cid = MANAPHP_COROUTINE ? \Swoole\Coroutine::getuid() : -1;
 
         self::$_contexts[$cid] = [];
     }

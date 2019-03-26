@@ -22,7 +22,6 @@ class Swoole extends \ManaPHP\Application
     public function getDi()
     {
         if (!$this->_di) {
-            ContextManager::useDynamic();
             $this->_di = new Factory();
             $this->_di->setShared('swooleHttpServer', 'ManaPHP\Swoole\Http\Server');
         }
