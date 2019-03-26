@@ -394,7 +394,12 @@ class Logger extends Component implements LoggerInterface
             $log->file = basename($message->getFile());
             $log->line = $message->getLine();
         } else {
-            $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
+            if (MANAPHP_COROUTINE) {
+                /** @noinspection PhpUndefinedMethodInspection */
+                $traces = \Swoole\Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
+            } else {
+                $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
+            }
             /** @noinspection NestedTernaryOperatorInspection */
             $log->category = $category ?: $this->_inferCategory($traces);
             $location = $this->_getLocation($traces);
