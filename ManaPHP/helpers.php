@@ -464,35 +464,6 @@ if (!function_exists('render')) {
     }
 }
 
-if (!function_exists('elapsed')) {
-    /**
-     * @param float|string $previous
-     * @param int          $precision
-     *
-     * @return float
-     */
-    function elapsed($previous = null, $precision = 3)
-    {
-        static $stack;
-        if (is_float($previous)) {
-            return round(microtime(true) - $previous, 3);
-        } elseif (is_string($previous)) {
-            $key = $previous;
-        } else {
-            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-            $key = $backtrace['class'] . $backtrace['function'];
-        }
-
-        if (!isset($stack[$key]) || count($stack[$key]) % 2 === 0) {
-            $stack[$key][] = microtime(true);
-            return null;
-        } else {
-            $prev = array_pop($stack[$key]);
-            return round(microtime(true) - $prev, $precision);
-        }
-    }
-}
-
 if (!function_exists('dd')) {
     function dd()
     {
@@ -594,43 +565,6 @@ if (!function_exists('t')) {
     function t($id, $bind = [])
     {
         return di('translator')->translate($id, $bind);
-    }
-}
-
-if (!function_exists('tap')) {
-    /** @noinspection AutoloadingIssuesInspection */
-
-    class _manaphp_tap_proxy
-    {
-        public $target;
-
-        public function __construct($target)
-        {
-            $this->target = $target;
-        }
-
-        public function __call($method, $arguments)
-        {
-            call_user_func([$this->target, $method], $arguments);
-
-            return $this->target;
-        }
-    }
-
-    /**
-     * @param mixed         $value
-     * @param callable|null $callback
-     *
-     * @return mixed
-     */
-    function tap($value, $callback = null)
-    {
-        if ($callback === null) {
-            return new _manaphp_tap_proxy($value);
-        } else {
-            $callback($value);
-            return $value;
-        }
     }
 }
 
