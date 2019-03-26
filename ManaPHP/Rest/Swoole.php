@@ -4,6 +4,7 @@ namespace ManaPHP\Rest;
 use ManaPHP\ContextManager;
 use ManaPHP\Http\Response;
 use ManaPHP\Router\NotFoundRouteException;
+use Swoole\Runtime;
 
 /**
  * Class ManaPHP\Rest\Swoole
@@ -89,6 +90,10 @@ class Swoole extends \ManaPHP\Application
     {
         $this->dotenv->load();
         $this->configure->load();
+
+        if (MANAPHP_COROUTINE) {
+            Runtime::enableCoroutine();
+        }
 
         $this->registerServices();
 

@@ -82,6 +82,8 @@ class Application extends Component implements ApplicationInterface
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'generateRequestId']);
         $this->eventsManager->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
+
+        defined('MANAPHP_COROUTINE') or define('MANAPHP_COROUTINE', false);
     }
 
     public function generateRequestId()

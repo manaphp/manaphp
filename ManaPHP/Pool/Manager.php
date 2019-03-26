@@ -52,7 +52,7 @@ class Manager extends Component implements ManagerInterface
      */
     public function add($owner, $sample, $size = 1, $type = 'default')
     {
-        $size = defined('MANAPHP_CO') ? $size : 1;
+        $size = MANAPHP_COROUTINE ? $size : 1;
 
         $owner_id = spl_object_id($owner);
 

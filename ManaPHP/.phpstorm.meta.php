@@ -142,5 +142,6 @@ $view = null;
 $di = null;
 $request = null;
 unset($view, $renderer);
+define('MANAPHP_COROUTINE', true);
 
 class_exists('\Elasticsearch\Client') || class_alias('\stdClass', '\Elasticsearch\Client');
