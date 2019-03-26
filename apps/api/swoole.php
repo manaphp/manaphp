@@ -2,6 +2,8 @@
 
 ini_set('memory_limit', -1);
 
+//define('MANAPHP_COROUTINE', true);
+
 /** @noinspection PhpIncludeInspection */
 if (is_file(__DIR__ . '/vendor/autoload.php')) {
     require __DIR__ . '/vendor/autoload.php';
