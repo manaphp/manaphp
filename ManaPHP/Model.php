@@ -71,7 +71,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
                     } elseif (($json = json_decode($data[$field], true)) === null) {
                         throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
                             'field' => $field,
-                            'model' => get_class($this)]);
+                            'model' => static::class]);
                     } else {
                         $data[$field] = $json;
                     }
@@ -878,14 +878,14 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         $primaryKey = $this->getPrimaryKey();
         if (is_string($primaryKey)) {
             if (!isset($this->{$primaryKey})) {
-                throw new PreconditionException(['`:model` model cannot be updated because primary key value is not provided', 'model' => get_class($this)]);
+                throw new PreconditionException(['`:model` model cannot be updated because primary key value is not provided', 'model' => static::class]);
             }
             return [$primaryKey => $this->$primaryKey];
         } elseif (is_array($primaryKey)) {
             $keyValue = [];
             foreach ($primaryKey as $key) {
                 if (!isset($this->$key)) {
-                    throw new PreconditionException(['`:1` model cannot be updated because some primary key value is not provided', get_class($this)]);
+                    throw new PreconditionException(['`:1` model cannot be updated because some primary key value is not provided', static::class]);
                 }
                 $keyValue[$key] = $this->$key;
             }
@@ -1006,7 +1006,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     public function getSnapshotData()
     {
         if ($this->_snapshot === false) {
-            throw new PreconditionException(['getSnapshotData failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+            throw new PreconditionException(['getSnapshotData failed: `:model` instance is snapshot disabled', 'model' => static::class]);
         }
 
         return $this->_snapshot;
@@ -1030,7 +1030,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     public function getChangedFields()
     {
         if ($this->_snapshot === false) {
-            throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+            throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => static::class]);
         }
 
         $changed = [];
@@ -1059,7 +1059,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     public function hasChanged($fields)
     {
         if ($this->_snapshot === false) {
-            throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+            throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => static::class]);
         }
 
         /** @noinspection ForeachSourceInspection */
@@ -1102,7 +1102,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
                 } elseif (($json = json_decode($data[$field], true)) === null) {
                     throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
                         'field' => $field,
-                        'model' => get_class($this)]);
+                        'model' => static::class]);
                 } else {
                     $data[$field] = $json;
                 }

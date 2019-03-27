@@ -206,7 +206,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     {
         $snapshot = $this->_snapshot;
         if ($snapshot === false) {
-            throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => get_class($this)]);
+            throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => static::class]);
         }
 
         $primaryKeyValuePairs = $this->_getPrimaryKeyValuePairs();

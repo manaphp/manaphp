@@ -75,7 +75,7 @@ class Component implements ComponentInterface, \JsonSerializable
                 return ContextManager::get($this);
             } else {
                 if (!$context_class = $this->getContextClass()) {
-                    throw new Exception(['`:context` context class is not exists', 'context' => get_class($this) . 'Context']);
+                    throw new Exception(['`:context` context class is not exists', 'context' => static::class . 'Context']);
                 }
                 return $this->_context = new $context_class();
             }
