@@ -144,9 +144,7 @@ class Linter extends Component
 
         if (preg_match_all('#\*\s+@property\s+(\S+)\s+\$(\w+)#', $comment, $matches, PREG_SET_ORDER)) {
             foreach ((array)$matches as $match) {
-                $type = $match[1];
-                $field = $match[2];
-
+                list(, $type, $field) = $match;
                 $fields[$field] = $type;
             }
         }

@@ -239,9 +239,7 @@ class Query extends \ManaPHP\Query
         }
 
         if (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $cond, $match)) {
-            $op1 = $match[1];
-            $op2 = $match[2];
-            $op3 = $match[3];
+            list(, $op1, $op2, $op3) = $match;
             $alg = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$neq', '<>' => '$neq'];
             return ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (float)$op1 : '$' . $op1, is_numeric($op3) ? (float)$op3 : '$' . $op3]], $true, $false]];
         } else {
