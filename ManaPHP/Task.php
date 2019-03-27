@@ -12,7 +12,7 @@ abstract class Task extends Component implements TaskInterface, LogCategorizable
 {
     public function categorizeLog()
     {
-        return basename(str_replace('\\', '.', get_called_class()), 'Task');
+        return basename(str_replace('\\', '.', static::class), 'Task');
     }
 
     /**
@@ -33,6 +33,6 @@ abstract class Task extends Component implements TaskInterface, LogCategorizable
 
     public function heartbeat()
     {
-        $this->tasksManager->heartbeat(basename(get_called_class(), 'Task'));
+        $this->tasksManager->heartbeat(basename(static::class, 'Task'));
     }
 }

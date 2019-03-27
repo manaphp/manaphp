@@ -36,9 +36,9 @@ class Application extends \ManaPHP\Application implements LogCategorizable
                 if ($appNamespace = $this->alias->get('@ns.app')) {
                     $this->alias->set('@ns.cli', "$appNamespace\\Cli\\Controllers");
                 }
-            } elseif (($calledClass = get_called_class()) !== __CLASS__) {
+            } elseif (($class = static::class) !== __CLASS__) {
                 $this->alias->set('@cli', "$appDir/Controllers");
-                $this->alias->set('@ns.cli', substr($calledClass, 0, strrpos($calledClass, '\\') + 1) . 'Controllers');
+                $this->alias->set('@ns.cli', substr($class, 0, strrpos($class, '\\') + 1) . 'Controllers');
             }
         }
     }

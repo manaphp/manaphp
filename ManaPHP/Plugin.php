@@ -27,6 +27,6 @@ abstract class Plugin extends Component implements PluginInterface, LogCategoriz
 {
     public function categorizeLog()
     {
-        return basename(str_replace('\\', '.', get_called_class()), 'Plugin');
+        return basename(str_replace('\\', '.', static::class), 'Plugin');
     }
 }

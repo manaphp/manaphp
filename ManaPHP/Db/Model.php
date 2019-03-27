@@ -53,29 +53,29 @@ class Model extends \ManaPHP\Model implements ModelInterface
     {
         static $cached = [];
 
-        $calledClass = get_called_class();
-        if (!isset($cached[$calledClass])) {
+        $class = static::class;
+        if (!isset($cached[$class])) {
             $fields = $this->getFields();
 
             if (in_array('id', $fields, true)) {
-                return $cached[$calledClass] = 'id';
+                return $cached[$class] = 'id';
             }
 
-            $tryField = lcfirst(($pos = strrpos($calledClass, '\\')) === false ? $calledClass : substr($calledClass, $pos + 1)) . '_id';
+            $tryField = lcfirst(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1)) . '_id';
             if (in_array($tryField, $fields, true)) {
-                return $cached[$calledClass] = $tryField;
+                return $cached[$class] = $tryField;
             }
 
             $tryField = $this->getSource() . '_id';
             if (in_array($tryField, $fields, true)) {
-                return $cached[$calledClass] = $tryField;
+                return $cached[$class] = $tryField;
             }
 
             $primaryKey = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
-            return $cached[$calledClass] = count($primaryKey) === 1 ? $primaryKey[0] : $primaryKey;
+            return $cached[$class] = count($primaryKey) === 1 ? $primaryKey[0] : $primaryKey;
         }
 
-        return $cached[$calledClass];
+        return $cached[$class];
     }
 
     /**
@@ -85,19 +85,19 @@ class Model extends \ManaPHP\Model implements ModelInterface
     {
         static $cached = [];
 
-        $className = get_called_class();
-        if (!isset($cached[$className])) {
+        $class = static::class;
+        if (!isset($cached[$class])) {
             $fields = [];
-            foreach (get_class_vars($className) as $field => $value) {
+            foreach (get_class_vars($class) as $field => $value) {
                 if ($value === null && $field[0] !== '_') {
                     $fields[] = $field;
                 }
             }
 
-            $cached[$className] = $fields ?: $this->_di->modelsMetadata->getAttributes($this);
+            $cached[$class] = $fields ?: $this->_di->modelsMetadata->getAttributes($this);
         }
 
-        return $cached[$className];
+        return $cached[$class];
     }
 
     /**
@@ -127,7 +127,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     public static function query($alias = null, $model = null)
     {
         if (!$model) {
-            $model = Di::getDefault()->getShared(get_called_class());
+            $model = Di::getDefault()->getShared(static::class);
         }
 
         $query = $model->_di->get('ManaPHP\Db\Query')->setModel($model);
@@ -390,7 +390,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     {
         if (is_scalar($filter)) {
             /** @var \ManaPHP\ModelInterface $model */
-            $model = Di::getDefault()->getShared(get_called_class());
+            $model = Di::getDefault()->getShared(static::class);
             return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filter);
         } else {
             return static::query()->where($filter, $value);

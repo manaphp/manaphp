@@ -18,6 +18,6 @@ abstract class Widget extends Component implements WidgetInterface, LogCategoriz
 {
     public function categorizeLog()
     {
-        return basename(str_replace('\\', '.', get_called_class()), 'Widget');
+        return basename(str_replace('\\', '.', static::class), 'Widget');
     }
 }

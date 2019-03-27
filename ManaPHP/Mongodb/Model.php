@@ -77,30 +77,30 @@ class Model extends \ManaPHP\Model
     {
         static $cached = [];
 
-        $calledClass = get_called_class();
+        $class = static::class;
 
-        if (!isset($cached[$calledClass])) {
+        if (!isset($cached[$class])) {
             $fields = $this->getFields();
 
             if (in_array('id', $fields, true)) {
-                return $cached[$calledClass] = 'id';
+                return $cached[$class] = 'id';
             }
 
-            $tryField = lcfirst(($pos = strrpos($calledClass, '\\')) === false ? $calledClass : substr($calledClass, $pos + 1)) . '_id';
+            $tryField = lcfirst(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1)) . '_id';
             if (in_array($tryField, $fields, true)) {
-                return $cached[$calledClass] = $tryField;
+                return $cached[$class] = $tryField;
             }
 
             $source = $this->getSource();
             $tryField = (($pos = strpos($source, '.')) ? substr($source, $pos + 1) : $source) . '_id';
             if (in_array($tryField, $fields, true)) {
-                return $cached[$calledClass] = $tryField;
+                return $cached[$class] = $tryField;
             }
 
-            throw new NotImplementedException(['Primary key of `:model` model can not be inferred', 'model' => $calledClass]);
+            throw new NotImplementedException(['Primary key of `:model` model can not be inferred', 'model' => $class]);
         }
 
-        return $cached[$calledClass];
+        return $cached[$class];
     }
 
     /**
@@ -110,17 +110,17 @@ class Model extends \ManaPHP\Model
     {
         static $cached = [];
 
-        $calledClass = get_called_class();
+        $class = static::class;
 
-        if (!isset($cached[$calledClass])) {
+        if (!isset($cached[$class])) {
             $fieldTypes = $this->getFieldTypes();
             if (isset($fieldTypes['_id']) && $fieldTypes['_id'] === 'objectid') {
                 unset($fieldTypes['_id']);
             }
-            return $cached[$calledClass] = array_keys($fieldTypes);
+            return $cached[$class] = array_keys($fieldTypes);
         }
 
-        return $cached[$calledClass];
+        return $cached[$class];
     }
 
     /**
@@ -130,9 +130,9 @@ class Model extends \ManaPHP\Model
     {
         static $cached = [];
 
-        $calledClass = get_called_class();
+        $class = static::class;
 
-        if (!isset($cached[$calledClass])) {
+        if (!isset($cached[$class])) {
             $fields = [];
             foreach ($this->getFieldTypes() as $field => $type) {
                 if ($type === 'int') {
@@ -140,10 +140,10 @@ class Model extends \ManaPHP\Model
                 }
             }
 
-            return $cached[$calledClass] = $fields;
+            return $cached[$class] = $fields;
         }
 
-        return $cached[$calledClass];
+        return $cached[$class];
     }
 
     /**
@@ -155,11 +155,11 @@ class Model extends \ManaPHP\Model
     {
         static $cached = [];
 
-        $calledClass = get_called_class();
+        $class = static::class;
 
-        if (!isset($cached[$calledClass])) {
+        if (!isset($cached[$class])) {
             $fieldTypes = [];
-            $rc = new \ReflectionClass(get_called_class());
+            $rc = new \ReflectionClass(static::class);
 
             foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $rp) {
                 if ($rp->isStatic()) {
@@ -211,10 +211,10 @@ class Model extends \ManaPHP\Model
                 $fieldTypes[$rp->getName()] = $type;
             }
 
-            return $cached[$calledClass] = $fieldTypes;
+            return $cached[$class] = $fieldTypes;
         }
 
-        return $cached[$calledClass];
+        return $cached[$class];
     }
 
     /**
@@ -316,7 +316,7 @@ class Model extends \ManaPHP\Model
         } elseif ($type === 'array') {
             return (array)$value;
         } else {
-            throw new InvalidValueException(['`:model` model is not supported `:type` type', 'model' => get_called_class(), 'type' => $type]);
+            throw new InvalidValueException(['`:model` model is not supported `:type` type', 'model' => static::class, 'type' => $type]);
         }
     }
 
@@ -329,7 +329,7 @@ class Model extends \ManaPHP\Model
     public static function query($alias = null, $model = null)
     {
         if (!$model) {
-            $model = Di::getDefault()->getShared(get_called_class());
+            $model = Di::getDefault()->getShared(static::class);
         }
 
         return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model)->setTypes($model->getFieldTypes());
@@ -575,7 +575,7 @@ class Model extends \ManaPHP\Model
         $fieldTypes = $instance->getFieldTypes();
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
-                throw new InvalidValueException(['bulkUpdate `:model` model must set primary value', 'model' => get_called_class()]);
+                throw new InvalidValueException(['bulkUpdate `:model` model must set primary value', 'model' => static::class]);
             }
             foreach ((array)$document as $field => $value) {
                 if ($value === null) {
@@ -662,7 +662,7 @@ class Model extends \ManaPHP\Model
     {
         if (is_scalar($filter)) {
             /** @var \ManaPHP\ModelInterface $model */
-            $model = Di::getDefault()->getShared(get_called_class());
+            $model = Di::getDefault()->getShared(static::class);
             return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filter);
         } else {
             return static::query()->where($filter, $value);

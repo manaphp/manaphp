@@ -121,8 +121,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public function getSource($context = null)
     {
-        $modelName = get_called_class();
-        return Text::underscore(($pos = strrpos($modelName, '\\')) === false ? $modelName : substr($modelName, $pos + 1));
+        $class = static::class;
+        return Text::underscore(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
     }
 
     /**
@@ -261,7 +261,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $list = [];
         if ($field === null && !$field = $model->getDisplayField()) {
-            throw new MisuseException(['invoke :model:lists method must provide displayField', 'model' => get_called_class()]);
+            throw new MisuseException(['invoke :model:lists method must provide displayField', 'model' => static::class]);
         }
 
         if (is_string($field)) {
@@ -310,7 +310,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         if (!is_int($fieldsOrTtl)) {
             if (!$rs = static::query(null, $model)->select($fieldsOrTtl)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
-                throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
+                throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => static::class, 'id' => $id]);
             } else {
                 return $rs[0];
             }
@@ -326,7 +326,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         if (!$r) {
             if (!$rs = static::query(null, $model)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
-                throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => get_called_class(), 'id' => $id]);
+                throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => static::class, 'id' => $id]);
             }
 
             $r = $rs[0];
@@ -410,7 +410,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             if (is_string($primaryKey = $model->getPrimaryKey())) {
                 $options['order'] = [$primaryKey => SORT_DESC];
             } else {
-                throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => get_called_class()]);
+                throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => static::class]);
             }
         }
 
@@ -478,7 +478,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         $value = static::value($filters, $field, $ttl);
         if ($value === null) {
             throw new NotFoundException(['valueOrFail: `:model` model with `:query` query record is not exists',
-                'model' => get_called_class(),
+                'model' => static::class,
                 'query' => json_encode($filters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
         } else {
             return $value;
@@ -509,7 +509,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     {
         $model = new static();
         if ($field === null && !$field = $model->getDisplayField()) {
-            throw new PreconditionException(['invoke :model:kvalues method must provide displayField', 'model' => get_called_class()]);
+            throw new PreconditionException(['invoke :model:kvalues method must provide displayField', 'model' => static::class]);
         }
 
         $pkField = $model->getPrimaryKey();
@@ -531,7 +531,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     {
         $model = new static();
         if (!$field = $model->getDisplayField()) {
-            throw new PreconditionException(['invoke :model:vlabels method must provide displayField', 'model' => get_called_class()]);
+            throw new PreconditionException(['invoke :model:vlabels method must provide displayField', 'model' => static::class]);
         }
 
         $pkField = $model->getPrimaryKey();
@@ -687,7 +687,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         }
 
         if ($whiteList === null) {
-            throw new PreconditionException(['`:model` model do not define accessible fields.', 'model' => get_called_class()]);
+            throw new PreconditionException(['`:model` model do not define accessible fields.', 'model' => static::class]);
         }
 
         foreach ($whiteList ?: $this->getFields() as $field) {
@@ -891,7 +891,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             }
             return $keyValue;
         } else {
-            throw new NotSupportedException(['`:model` model does not has primary key', 'model' => get_called_class()]);
+            throw new NotSupportedException(['`:model` model does not has primary key', 'model' => static::class]);
         }
     }
 
@@ -1090,7 +1090,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         $r = static::query(null, $this)->select($fields)->where($this->_getPrimaryKeyValuePairs())->fetch(true);
         if (!$r) {
             throw new NotFoundException(['`:1` model refresh failed: `:2` record is not exists now! ',
-                get_called_class(),
+                static::class,
                 json_encode($this->_getPrimaryKeyValuePairs())]);
         }
 
@@ -1163,14 +1163,14 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     {
         $name = strtoupper($name) . '_';
         $constants = [];
-        foreach ((new \ReflectionClass(get_called_class()))->getConstants() as $cName => $cValue) {
+        foreach ((new \ReflectionClass(static::class))->getConstants() as $cName => $cValue) {
             if (strpos($cName, $name) === 0) {
                 $constants[$cValue] = strtolower(substr($cName, strlen($name)));
             }
         }
 
         if (!$constants) {
-            throw new MisuseException(['starts with `:1` constants is not exists in `:2` model', $name, get_called_class()]);
+            throw new MisuseException(['starts with `:1` constants is not exists in `:2` model', $name, static::class]);
         }
 
         return $constants;
@@ -1221,7 +1221,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             return $this->$name = $this->_di->relationsManager->lazyLoad($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException(['`:class` does not contain `:field` field: `:fields`',
-                'class' => get_called_class(),
+                'class' => static::class,
                 'field' => $name,
                 'fields' => implode(',', $this->getFields())]);
         }
@@ -1242,10 +1242,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             if ($this->_di->relationsManager->has($this, $relation)) {
                 return $this->_di->relationsManager->lazyLoad($this, $relation);
             } else {
-                throw new NotSupportedException(['`:class` model does not define `:method` relation', 'class' => get_called_class(), 'method' => $relation]);
+                throw new NotSupportedException(['`:class` model does not define `:method` relation', 'class' => static::class, 'method' => $relation]);
             }
         }
-        throw new BadMethodCallException(['`:class` does not contain `:method` method', 'class' => get_called_class(), 'method' => $name]);
+        throw new BadMethodCallException(['`:class` does not contain `:method` method', 'class' => static::class, 'method' => $name]);
     }
 
     /**
@@ -1283,7 +1283,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             }
 
             if (is_numeric($value)) {
-                foreach ((new \ReflectionClass(get_called_class()))->getConstants() as $cName => $cValue) {
+                foreach ((new \ReflectionClass(static::class))->getConstants() as $cName => $cValue) {
                     /** @noinspection TypeUnsafeComparisonInspection */
                     if ($cValue == $value && stripos($cName, $field) === 0) {
                         $data['*human_const*'][$field] = $cName;

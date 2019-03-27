@@ -97,7 +97,7 @@ class Component implements ComponentInterface, \JsonSerializable
     public function __set($name, $value)
     {
         if (is_scalar($value)) {
-            $this->eventsManager->fireEvent('component:setUndefinedProperty', $this, ['name' => $name, 'class' => get_called_class()]);
+            $this->eventsManager->fireEvent('component:setUndefinedProperty', $this, ['name' => $name, 'class' => static::class]);
         }
 
         $this->$name = $value;
@@ -194,22 +194,22 @@ class Component implements ComponentInterface, \JsonSerializable
     {
         static $cached = [];
 
-        $called_class = get_called_class();
-        if (!isset($cached[$called_class])) {
-            $context_class = null;
-            $parent_class = $called_class;
+        $class = static::class;
+        if (!isset($cached[$class])) {
+            $context = null;
+            $parent = $class;
             do {
-                $try = $parent_class . 'Context';
+                $try = $parent . 'Context';
                 if (class_exists($try, false)) {
-                    $context_class = $try;
+                    $context = $try;
                     break;
                 }
-            } while ($parent_class = get_parent_class($parent_class));
+            } while ($parent = get_parent_class($parent));
 
-            return $cached[$called_class] = $context_class;
+            return $cached[$class] = $context;
         }
 
-        return $cached[$called_class];
+        return $cached[$class];
     }
 
     public function jsonSerialize()

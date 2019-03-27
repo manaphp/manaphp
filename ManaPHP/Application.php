@@ -34,8 +34,8 @@ class Application extends Component implements ApplicationInterface
      */
     public function __construct($loader = null)
     {
-        $calledClass = get_called_class();
-        $this->_class_file_name = (new \ReflectionClass($calledClass))->getFileName();
+        $class = static::class;
+        $this->_class_file_name = (new \ReflectionClass($class))->getFileName();
 
         ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);
@@ -50,9 +50,9 @@ class Application extends Component implements ApplicationInterface
         $appNamespace = 'App';
         $publicDir = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : $rootDir . '/public';
 
-        if (strpos($calledClass, 'ManaPHP\\') !== 0) {
+        if (strpos($class, 'ManaPHP\\') !== 0) {
             $appDir = dirname($this->_class_file_name);
-            $appNamespace = substr($calledClass, 0, strrpos($calledClass, '\\'));
+            $appNamespace = substr($class, 0, strrpos($class, '\\'));
             $publicDir = $rootDir . '/public';
         }
 
@@ -107,7 +107,7 @@ class Application extends Component implements ApplicationInterface
     public function getRootDir()
     {
         if (!$this->_root_dir) {
-            if (strpos(get_called_class(), 'ManaPHP\\') !== 0) {
+            if (strpos(static::class, 'ManaPHP\\') !== 0) {
                 $this->_root_dir = dirname(dirname($this->_class_file_name));
             } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
                 $this->_root_dir = dirname($_SERVER['DOCUMENT_ROOT']);

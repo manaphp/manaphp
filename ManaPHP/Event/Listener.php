@@ -13,7 +13,7 @@ class Listener extends Component implements LogCategorizable
 
     public function categorizeLog()
     {
-        return basename(str_replace('\\', '.', get_called_class()), 'Listener');
+        return basename(str_replace('\\', '.', static::class), 'Listener');
     }
 
     public function __construct()
