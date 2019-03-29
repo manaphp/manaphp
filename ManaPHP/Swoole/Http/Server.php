@@ -225,14 +225,16 @@ class Server extends Component implements ServerInterface
         foreach ($response_context->headers as $name => $value) {
             $sw_response->header($name, $value, false);
         }
+	
+        $server = $this->request->getGlobals()->_SERVER;
 
-        if (($request_id = $this->request->getServer('HTTP_X_REQUEST_ID')) && !$response->hasHeader('X-Request-Id')) {
-            $sw_response->header('X-Request-Id', $request_id, false);
+        if (isset($server['HTTP_X_REQUEST_ID']) && !isset($response_context->headers['X-Request-Id'])) {
+            $sw_response->header('X-Request-Id', $server['HTTP_X_REQUEST_ID'], false);
         }
 
-        $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')), false);
+        $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);
 
-        foreach ($response_context->cookies as $cookie){
+        foreach ($response_context->cookies as $cookie) {
             $sw_response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
                 $cookie['path'], $cookie['domain'], $cookie['secure'],
                 $cookie['httpOnly']);
