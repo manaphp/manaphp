@@ -1,12 +1,12 @@
 <?php
-namespace ManaPHP\Http\Filter;
+namespace ManaPHP\Http\Validator;
 
 use ManaPHP\Exception\BadRequestException;
 
 /**
- * Class ManaPHP\Http\Filter\Exception
+ * Class ManaPHP\Http\Validator\Exception
  *
- * @package filter
+ * @package validator
  */
 class Exception extends BadRequestException
 {

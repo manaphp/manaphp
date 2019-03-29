@@ -2,23 +2,22 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\MissingRequiredFieldsException;
-use ManaPHP\Http\Filter\Exception as FilterException;
+use ManaPHP\Http\Validator\Exception as FilterException;
 
 /**
- * Class ManaPHP\Http\Filter
+ * Class ManaPHP\Http\Validator
  *
- * @package filter
+ * @package validator
  *
  * @property-read \ManaPHP\Security\SecintInterface       $secint
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  */
-class Filter extends Component implements FilterInterface
+class Validator extends Component implements ValidatorInterface
 {
     /**
      * @var array
      */
-    protected $_filters = [];
+    protected $_validators = [];
 
     /**
      * @var array|string
@@ -41,11 +40,6 @@ class Filter extends Component implements FilterInterface
     protected $_xssByReplace = true;
 
     /**
-     * @var array
-     */
-    protected $_rules = [];
-
-    /**
      * Filter constructor.
      *
      * @param array $options
@@ -53,8 +47,8 @@ class Filter extends Component implements FilterInterface
     public function __construct($options = [])
     {
         foreach (get_class_methods($this) as $method) {
-            if (strpos($method, '_filter_') === 0) {
-                $this->_filters[substr($method, 8)] = [$this, $method];
+            if (strpos($method, '_validate_') === 0) {
+                $this->_validators[substr($method, 10)] = [$this, $method];
             }
         }
 
@@ -72,96 +66,15 @@ class Filter extends Component implements FilterInterface
     }
 
     /**
-     * @param string   $name
-     * @param callable $method
-     *
-     * @return static
-     */
-    public function addFilter($name, $method)
-    {
-        $this->_filters[$name] = $method;
-
-        return $this;
-    }
-
-    /**
-     * @param string $attribute
-     * @param string $rule
-     * @param string $name
-     *
-     * @return static
-     */
-    public function addRule($attribute, $rule, $name = null)
-    {
-        $this->_rules[$attribute] = $rule;
-
-        if ($name !== null) {
-            $this->_attributes[$attribute] = $name;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $rule
-     *
-     * @return array
-     */
-    protected function _parseRule($rule)
-    {
-        $parts = explode('|', $rule);
-
-        $filters = [];
-        foreach ($parts as $part) {
-            if (strpos($part, ':') !== false) {
-                $parts2 = explode(':', $part, 2);
-                $filter = $parts2[0];
-                $parameters = explode(',', $parts2[1]);
-            } else {
-                $filter = $part;
-                $parameters = [];
-            }
-
-            $filter = trim($filter);
-            if ($filter === '') {
-                continue;
-            }
-
-            if ($filter === '*') {
-                $filter = 'required';
-            }
-
-            $filters[$filter] = $parameters;
-        }
-
-        return $filters;
-    }
-
-    /**
      * @param string                $attribute
-     * @param string                $rule
+     * @param array                 $rules
      * @param string|int|bool|array $value
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Filter\Exception
+     * @throws \ManaPHP\Http\Validator\Exception
      */
-    public function sanitize($attribute, $rule, $value)
+    public function validate($attribute, $rules, $value)
     {
-        if ($rule === null && isset($this->_rules[$attribute])) {
-            $rule = $this->_rules[$attribute];
-        }
-
-        if ($rule === null) {
-            return $value;
-        }
-
-        $filters = $this->_parseRule($rule);
-
-        /** @noinspection NotOptimalIfConditionsInspection */
-        if (isset($filters['required']) && ($value === '' || $value === null)) {
-            throw new MissingRequiredFieldsException($attribute);
-        }
-
         if (is_int($value)) {
             $value = (string)$value;
         } elseif (is_bool($value)) {
@@ -170,8 +83,12 @@ class Filter extends Component implements FilterInterface
             $value = '';
         }
 
-        foreach ($filters as $filter => $parameters) {
-            $value = $this->_sanitize($attribute, $filter, $parameters, $value);
+        foreach ($rules as $k => $v) {
+            if (is_int($k)) {
+                $value = $this->_validate($attribute, $v, [], $value);
+            } else {
+                $value = $this->_validate($attribute, $k, is_array($v) ? $v : explode('-', $v), $value);
+            }
         }
 
         return $value;
@@ -179,49 +96,49 @@ class Filter extends Component implements FilterInterface
 
     /**
      * @param string $attribute
-     * @param string $filter
+     * @param string $rule
      * @param array  $parameters
      * @param mixed  $value
      *
      * @return mixed
-     * @throws \ManaPHP\Http\Filter\Exception
+     * @throws \ManaPHP\Http\Validator\Exception
      */
-    protected function _sanitize($attribute, $filter, $parameters, $value)
+    protected function _validate($attribute, $rule, $parameters, $value)
     {
         $srcValue = $value;
 
-        if (isset($this->_filters[$filter])) {
+        if (isset($this->_validators[$rule])) {
             /** @noinspection VariableFunctionsUsageInspection */
-            $value = call_user_func_array($this->_filters[$filter], [$value, $parameters]);
-        } elseif (function_exists($filter)) {
-            $value = call_user_func_array($filter, array_merge([$value], $parameters));
+            $value = call_user_func_array($this->_validators[$rule], [$value, $parameters]);
+        } elseif (function_exists($rule)) {
+            $value = call_user_func_array($rule, array_merge([$value], $parameters));
         } else {
-            throw new FilterException(['`:name` filter is not be recognized', 'name' => $filter]);
+            throw new FilterException(['`:name` rule is not be recognized', 'name' => $rule]);
         }
 
         if ($value === null) {
             if (is_string($this->_messages)) {
                 if (strpos($this->_messages, '.') === false) {
-                    $file = '@manaphp/Http/Filter/Messages/' . $this->_messages . '.php';
+                    $file = '@manaphp/Http/Validator/Messages/' . $this->_messages . '.php';
                 } else {
                     $file = $this->_messages;
                 }
 
                 if (!$this->filesystem->fileExists($file)) {
-                    throw new FilterException(['`:file` filter message template file is not exists', 'file' => $file]);
+                    throw new FilterException(['`:file` rule message template file is not exists', 'file' => $file]);
                 }
 
                 /** @noinspection PhpIncludeInspection */
                 $this->_messages = require $this->alias->resolve($file);
             }
 
-            if (isset($this->_messages[$filter])) {
-                $message = [$this->_messages[$filter]];
+            if (isset($this->_messages[$rule])) {
+                $message = [$this->_messages[$rule]];
             } else {
                 $message = [$this->_defaultMessage];
             }
 
-            $message['filter'] = $filter;
+            $message['rule'] = $rule;
             $message['attribute'] = isset($this->_attributes[$attribute]) ? $this->_attributes[$attribute] : $attribute;
             $message['value'] = $srcValue;
             foreach ($parameters as $k => $parameter) {
@@ -239,7 +156,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_required($value)
+    protected function _validate_required($value)
     {
         return $value === '' ? null : $value;
     }
@@ -249,7 +166,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string
      */
-    protected function _filter_xss($value)
+    protected function _validate_xss($value)
     {
         if ($value === '') {
             return $value;
@@ -263,7 +180,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return bool|null
      */
-    protected function _filter_bool($value)
+    protected function _validate_bool($value)
     {
         $trueValues = ['1', 'true'];
         $falseValues = ['0', 'false'];
@@ -282,7 +199,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return int|null
      */
-    protected function _filter_int($value)
+    protected function _validate_int($value)
     {
         if (is_int($value)) {
             return $value;
@@ -296,7 +213,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return float|null
      */
-    protected function _filter_float($value)
+    protected function _validate_float($value)
     {
         if (is_int($value) || is_float($value)) {
             return $value;
@@ -317,7 +234,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return int|null
      */
-    protected function _filter_date($value, $parameters)
+    protected function _validate_date($value, $parameters)
     {
         $timestamp = is_numeric($value) ? $value : strtotime($value);
         if ($timestamp === false) {
@@ -343,7 +260,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return int|null
      */
-    protected function _filter_timestamp($value, $parameters)
+    protected function _validate_timestamp($value, $parameters)
     {
         $timestamp = is_numeric($value) ? (int)$value : strtotime($value);
         if ($timestamp === false) {
@@ -371,10 +288,10 @@ class Filter extends Component implements FilterInterface
      *
      * @return int|null
      */
-    protected function _filter_range($value, $parameters)
+    protected function _validate_range($value, $parameters)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $value = $this->_filter_float($value);
+        $value = $this->_validate_float($value);
 
         return $value === null || $value < $parameters[0] || $value > $parameters[1] ? null : $value;
     }
@@ -385,10 +302,10 @@ class Filter extends Component implements FilterInterface
      *
      * @return float|null
      */
-    protected function _filter_min($value, $parameters)
+    protected function _validate_min($value, $parameters)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $value = $this->_filter_float($value);
+        $value = $this->_validate_float($value);
 
         return $value === null || $value < $parameters[0] ? null : $value;
     }
@@ -399,10 +316,10 @@ class Filter extends Component implements FilterInterface
      *
      * @return float|null
      */
-    protected function _filter_max($value, $parameters)
+    protected function _validate_max($value, $parameters)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $value = $this->_filter_float($value);
+        $value = $this->_validate_float($value);
 
         return $value === null || $value > $parameters[0] ? null : $value;
     }
@@ -413,7 +330,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_minLength($value, $parameters)
+    protected function _validate_minLength($value, $parameters)
     {
         return $this->_strlen($value) >= $parameters[0] ? $value : null;
     }
@@ -424,7 +341,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_maxLength($value, $parameters)
+    protected function _validate_maxLength($value, $parameters)
     {
         return $this->_strlen($value) <= $parameters[0] ? $value : null;
     }
@@ -445,7 +362,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_length($value, $parameters)
+    protected function _validate_length($value, $parameters)
     {
         $length = $this->_strlen($value);
         if (count($parameters) === 1) {
@@ -460,7 +377,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_equal($value, $parameters)
+    protected function _validate_equal($value, $parameters)
     {
         /** @noinspection TypeUnsafeComparisonInspection */
         return $value == $parameters[0] ? $value : null;
@@ -472,7 +389,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_regex($value, $parameters)
+    protected function _validate_regex($value, $parameters)
     {
         return ($value === '' || preg_match($parameters[0], $value)) ? $value : null;
     }
@@ -482,7 +399,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_alpha($value)
+    protected function _validate_alpha($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
         return preg_match('#^[a-zA-Z]*$#', $value) ? $value : null;
@@ -493,7 +410,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_digit($value)
+    protected function _validate_digit($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
         return preg_match('#^\d*$#', $value) ? $value : null;
@@ -504,7 +421,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_alnum($value)
+    protected function _validate_alnum($value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
         return preg_match('#^[a-zA-Z0-9]*$#', $value) ? $value : null;
@@ -515,7 +432,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string
      */
-    protected function _filter_lower($value)
+    protected function _validate_lower($value)
     {
         return strtolower($value);
     }
@@ -525,7 +442,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string
      */
-    protected function _filter_upper($value)
+    protected function _validate_upper($value)
     {
         return strtoupper($value);
     }
@@ -535,7 +452,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_account($value)
+    protected function _validate_account($value)
     {
         return preg_match('#^[a-z][a-z_\d]{1,15}$#', $value) ? strtolower($value) : null;
     }
@@ -545,7 +462,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_password($value)
+    protected function _validate_password($value)
     {
         $value = trim($value);
 
@@ -557,7 +474,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_email($value)
+    protected function _validate_email($value)
     {
         $value = trim($value);
 
@@ -569,7 +486,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_url($value)
+    protected function _validate_url($value)
     {
         $value = trim($value);
 
@@ -596,7 +513,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_mobile($value)
+    protected function _validate_mobile($value)
     {
         $value = trim($value);
 
@@ -608,7 +525,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string|null
      */
-    protected function _filter_ip($value)
+    protected function _validate_ip($value)
     {
         $value = trim($value);
 
@@ -621,7 +538,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return int|null
      */
-    protected function _filter_secint($value, $parameters)
+    protected function _validate_secint($value, $parameters)
     {
         $v = $this->secint->decode($value, isset($parameters[0]) ? $parameters[0] : '');
         if ($v === false) {
@@ -636,7 +553,7 @@ class Filter extends Component implements FilterInterface
      *
      * @return string
      */
-    public function _filter_escape($value)
+    public function _validate_escape($value)
     {
         return htmlspecialchars($value);
     }
