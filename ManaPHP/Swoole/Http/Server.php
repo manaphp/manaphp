@@ -210,24 +210,6 @@ class Server extends Component implements ServerInterface
     }
 
     /**
-     * @param array $cookies
-     *
-     * @return static
-     */
-    public function sendCookies($cookies)
-    {
-        $response = $this->_context->response;
-
-        foreach ($cookies as $cookie) {
-            $response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'],
-                $cookie['httpOnly']);
-        }
-
-        return $this;
-    }
-
-    /**
      * @param \ManaPHP\Http\ResponseInterface $response
      */
     public function send($response)
@@ -250,6 +232,11 @@ class Server extends Component implements ServerInterface
 
         $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')), false);
 
+        foreach ($response_context->cookies as $cookie){
+            $sw_response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
+                $cookie['path'], $cookie['domain'], $cookie['secure'],
+                $cookie['httpOnly']);
+        }
 
         if ($response_context->file) {
             $sw_response->sendfile($this->alias->resolve($response_context->file));
