@@ -53,7 +53,7 @@ class DebuggerPlugin extends Plugin
 
     public function onRequestBegin()
     {
-        if (preg_match('#^[a-zA-Z0-9_/]+\.html$#', $debugger = $this->request->getGet('_debugger'))) {
+        if (preg_match('#^[a-zA-Z0-9_/]+\.html$#', $debugger = $this->request->get('_debugger', ''))) {
             $file = '@data/debugger' . $debugger;
             if ($this->filesystem->fileExists($file)) {
                 $this->response->setContent($this->filesystem->fileGet($file));

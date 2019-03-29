@@ -4,6 +4,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Http\Request\File;
 
 class RequestContext
@@ -21,9 +22,8 @@ class RequestContext
  *
  * @package request
  *
- * @property-read \ManaPHP\Http\FilterInterface $filter
- * @property-read \ManaPHP\DispatcherInterface  $dispatcher
- * @property \ManaPHP\Http\RequestContext       $_context
+ * @property-read \ManaPHP\DispatcherInterface $dispatcher
+ * @property \ManaPHP\Http\RequestContext      $_context
  */
 class Request extends Component implements RequestInterface
 {
@@ -92,109 +92,51 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * Gets a variable from the $_REQUEST
      *
-     * @param array  $source
      * @param string $name
-     * @param mixed  $rule
      * @param mixed  $default
      *
-     * @return array|string|null
+     * @return mixed
      */
-    protected function _getHelper($source, $name = null, $rule = null, $default = '')
+    public function get($name = null, $default = null)
     {
-        if (is_string($rule)) {
-            if ($rule === '') {
-                $default = '';
-                $rule = null;
-            }
-        } elseif ($rule !== null) {
-            $default = $rule;
-            $rule = null;
-        }
+        $source = $this->_context->_REQUEST;
 
         if ($name === null) {
             return $source;
-        } elseif ($current = strpos($name, '[')) {
-            $value = $this->get();
-            $var = substr($name, 0, $current);
-            if (!isset($value[$var])) {
-                return $default;
+        }
+
+        if (isset($source[$name]) && $source[$name] !== '') {
+            $value = $source[$name];
+
+            if (is_array($value) && is_scalar($default)) {
+                throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
             }
-            $value = $value[$var];
-            while ($next = strpos($name, ']', $current)) {
-                $var = substr($name, $current + 1, $next - $current - 1);
-                if (!is_array($value) || !isset($value[$var])) {
-                    return $default;
+
+            if ($default !== null) {
+                $type = gettype($default);
+                if ($type === 'string') {
+                    return (string)$value;
+                } elseif ($type === 'integer') {
+                    return (int)$value;
+                } elseif ($type === 'double') {
+                    return (float)$value;
+                } elseif ($type === 'boolean') {
+                    return (bool)$value;
+                } else {
+                    return $value;
                 }
-                $value = $value[$var];
-                $current = $next + 1;
+            } else {
+                return $value;
             }
         } else {
-            $value = (isset($source[$name]) && $source[$name] !== '') ? $source[$name] : $default;
+            if ($default === null) {
+                throw new MissingRequiredFieldsException($name);
+            }
+
+            return $default;
         }
-
-        if (is_array($value) && is_scalar($default)) {
-            throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
-        }
-
-        if ($rule === null || $rule === '') {
-            return $value;
-        }
-
-        return $this->filter->sanitize($name, $rule, $value);
-    }
-
-    /**
-     * Gets a variable from the $_REQUEST applying filters if needed.
-     * If no parameters are given the $_REQUEST is returned
-     *
-     *<code>
-     *    //Returns value from $_REQUEST["user_email"] without sanitizing
-     *    $userEmail = $request->get("user_email");
-     *
-     *    //Returns value from $_REQUEST["user_email"] with sanitizing
-     *    $userEmail = $request->get("user_email", "email");
-     *</code>
-     *
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function get($name = null, $rule = null, $default = '')
-    {
-        $context = $this->_context;
-
-        return $this->_getHelper($context->_REQUEST, $name, $rule, $default);
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getGet($name = null, $rule = null, $default = '')
-    {
-        $context = $this->_context;
-
-        return $this->_getHelper($context->_GET, $name, $rule, $default);
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getPost($name = null, $rule = null, $default = '')
-    {
-        $context = $this->_context;
-
-        return $this->_getHelper($context->_POST, $name, $rule, $default);
     }
 
     /**
@@ -217,73 +159,37 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Gets a variable from put request
-     *
-     *<code>
-     *    $userEmail = $request->getPut("user_email");
-     *
-     *    $userEmail = $request->getPut("user_email", "email");
-     *</code>
-     *
      * @param string $name
-     * @param mixed  $rule
      * @param mixed  $default
      *
      * @return mixed
      */
-    public function getPut($name = null, $rule = null, $default = '')
+    public function getInput($name = null, $default = null)
     {
-        $context = $this->_context;
+        $params = $this->dispatcher->getParams();
+        if (isset($params[0]) && count($params) === 1) {
+            $params = ['id' => $params[0]];
+        }
 
-        return $this->_getHelper($context->_POST, $name, $rule, $default);
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getQuery($name = null, $rule = null, $default = '')
-    {
-        $context = $this->_context;
-
-        return $this->_getHelper($context->_GET, $name, $rule, $default);
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getInput($name = null, $rule = null, $default = '')
-    {
         if ($name === null) {
-            $params = $this->dispatcher->getParams();
-            if (isset($params[0]) && count($params) === 1) {
-                $params = ['id' => $params[0]];
+            return array_merge($this->get(), $params);
+        } elseif (isset($params[$name])) {
+            $value = $params[$name];
+            $type = gettype($default);
+            if ($type === 'string') {
+                return (string)$value;
+            } elseif ($type === 'integer') {
+                return (int)$value;
+            } elseif ($type === 'double') {
+                return (float)$value;
+            } elseif ($type === 'boolean') {
+                return (bool)$value;
+            } else {
+                return $value;
             }
-            $value = array_merge($this->get(), $params);
-        } elseif ($this->dispatcher->hasParam($name)) {
-            $value = $this->dispatcher->getParam($name);
         } else {
-            $value = $this->get($name, $rule, $default);
+            return $this->get($name, $default);
         }
-
-        if (is_int($default)) {
-            $value = (int)$value;
-        } elseif (is_string($default)) {
-            $value = (string)$value;
-        } elseif (is_float($default)) {
-            $value = (float)$value;
-        } elseif (is_bool($default)) {
-            $value = (bool)$value;
-        }
-
-        return $value;
     }
 
     /**
@@ -298,52 +204,6 @@ class Request extends Component implements RequestInterface
         $context = $this->_context;
 
         return isset($context->_REQUEST[$name]);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasGet($name)
-    {
-        $context = $this->_context;
-
-        return isset($context->_GET[$name]);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasPost($name)
-    {
-        $context = $this->_context;
-
-        return isset($context->_POST[$name]);
-    }
-
-    /**
-     * Checks whether put has certain index
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasPut($name)
-    {
-        return $this->hasPost($name);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasQuery($name)
-    {
-        return $this->hasGet($name);
     }
 
     /**
@@ -587,11 +447,13 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param string $name
+     *
      * @return string|null
      */
-    public function getAccessToken()
+    public function getToken($name = 'token')
     {
-        if ($token = $this->get('access_token')) {
+        if ($token = $this->get($name, '')) {
             return $token;
         } elseif ($token = $this->getServer('HTTP_AUTHORIZATION')) {
             $parts = explode(' ', $token, 2);

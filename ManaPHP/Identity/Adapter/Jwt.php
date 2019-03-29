@@ -250,7 +250,7 @@ class Jwt extends Identity
      */
     public function authenticate($silent = true)
     {
-        $token = $this->request->getAccessToken();
+        $token = $this->request->getToken();
         if (!$token && !$silent) {
             throw new NoCredentialException('no token');
         }

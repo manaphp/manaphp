@@ -283,7 +283,7 @@ class Router extends Component implements RouterInterface
      */
     public function getRewriteUri()
     {
-        return rtrim($this->request->getGet('_url'), '/') ?: '/';
+        return rtrim($this->request->get('_url', '/'), '/') ?: '/';
     }
 
     /**
@@ -390,7 +390,7 @@ class Router extends Component implements RouterInterface
         $context->controller = $parts['controller'];
         $context->action = $parts['action'];
         $context->params = isset($parts['params']) ? $parts['params'] : [];
-        
+
         return $context;
     }
 

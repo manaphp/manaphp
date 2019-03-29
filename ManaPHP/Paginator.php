@@ -76,8 +76,8 @@ class Paginator extends Component implements PaginatorInterface
     public function paginate($count, $size = null, $page = null)
     {
         $this->count = (int)$count;
-        $this->size = (int)($size ?: $this->request->get('size', 'int', 10));
-        $this->page = (int)($page ?: $this->request->get('page', 'int', 1));
+        $this->size = (int)($size ?: $this->request->get('size', 10));
+        $this->page = (int)($page ?: $this->request->get('page', 1));
         $this->pages = (int)ceil($this->count / $this->size);
         $this->prev = ($this->page <= $this->pages && $this->page > 1) ? $this->page - 1 : -1;
         $this->next = $this->page < $this->pages ? $this->page + 1 : -1;

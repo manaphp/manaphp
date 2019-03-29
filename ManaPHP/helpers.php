@@ -266,7 +266,7 @@ if (!function_exists('input')) {
      * @param string $name
      * @param mixed  $default
      *
-     * @return string|array
+     * @return mixed
      */
     function input($name = null, $default = null)
     {
@@ -275,22 +275,7 @@ if (!function_exists('input')) {
             $request = di('request');
         }
 
-        if ($name === 'id') {
-            $params = di('dispatcher')->getParams();
-            if (count($params) === 1 && isset($params[0])) {
-                return $params[0];
-            }
-        }
-
-        if (($value = $request->getInput($name, null, $default)) === null) {
-            if ($default === null) {
-                throw new \ManaPHP\Exception\MissingRequiredFieldsException($name);
-            } else {
-                return $default;
-            }
-        } else {
-            return (is_array($value) && is_scalar($default)) ? $default : $value;
-        }
+        return $request->getInput($name, $default);
     }
 }
 

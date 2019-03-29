@@ -236,11 +236,11 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     public function page($size = null, $page = null)
     {
         if ($size === null) {
-            $size = $this->request->get('size', 'int', 10);
+            $size = (int)$this->request->get('size', 10);
         }
 
         if ($page === null) {
-            $page = $this->request->get('page', 'int', 1);
+            $page = (int)$this->request->get('page', 1);
         }
 
         $this->limit($size, $page ? ($page - 1) * $size : null);

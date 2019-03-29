@@ -26,7 +26,7 @@ class TimeController extends ControllerBase
 
     public function timestampAction()
     {
-        $access_token = $this->request->getAccessToken();
+        $access_token = $this->request->getToken();
         if ($access_token !== 'manaphp') {
             return $this->response->setJsonContent($access_token === '' ? 'access_token is missing.' : 'access_token is wrong.');
         }

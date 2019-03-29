@@ -7,13 +7,13 @@ class CustomerController extends ControllerBase
 {
     public function indexAction()
     {
-        return $this->response->setJsonContent(Customer::paginate($this->request->get('filters', null, [])));
+        return $this->response->setJsonContent(Customer::paginate($this->request->get('filters', [])));
     }
 
     public function createAction()
     {
-        $first_name = $this->request->get('first_name', 'maxLength:10');
-        $last_name = $this->request->get('last_name', 'maxLength:12');
+        $first_name = $this->request->get('first_name');
+        $last_name = $this->request->get('last_name');
 
         if (Customer::exists(['first_name' => $first_name, 'last_name' => $last_name])) {
             return $this->response->setJsonContent("CREATE FAILED: `$first_name-$last_name` customer is exists already.");

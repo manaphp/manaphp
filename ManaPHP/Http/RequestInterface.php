@@ -33,57 +33,19 @@ interface RequestInterface
 
     /**
      * @param string $name
-     * @param mixed  $rule
      * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($name = null, $rule = null, $default = '');
+    public function get($name = null, $default = null);
 
     /**
      * @param string $name
-     * @param mixed  $rule
      * @param mixed  $default
      *
      * @return mixed
      */
-    public function getGet($name = null, $rule = null, $default = '');
-
-    /**
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getPost($name = null, $rule = null, $default = '');
-
-    /**
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getPut($name = null, $rule = null, $default = '');
-
-    /**
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getQuery($name = null, $rule = null, $default = '');
-
-    /**
-     * @param string $name
-     * @param mixed  $rule
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getInput($name = null, $rule = null, $default = '');
+    public function getInput($name = null, $default = null);
 
     /**
      * @param string $name
@@ -99,34 +61,6 @@ interface RequestInterface
      * @return bool
      */
     public function has($name);
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasGet($name);
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasPost($name);
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasPut($name);
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasQuery($name);
 
     /**
      * @param string $name
@@ -256,7 +190,9 @@ interface RequestInterface
     public function getUri();
 
     /**
+     * @param string $name
+     *
      * @return string|null
      */
-    public function getAccessToken();
+    public function getToken($name = 'token');
 }

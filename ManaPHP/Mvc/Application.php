@@ -40,7 +40,7 @@ class Application extends \ManaPHP\Application
             if ($this->request->isAjax()) {
                 return $this->response->setJsonContent($exception);
             } else {
-                $redirect = $this->request->get('redirect', null, $this->request->getUrl());
+                $redirect = $this->request->get('redirect', $this->request->getUrl());
                 $sep = (strpos($this->_loginUrl, '?') ? '&' : '?');
                 return $this->response->redirect(["{$this->_loginUrl}{$sep}redirect=$redirect"]);
             }

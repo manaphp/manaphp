@@ -120,7 +120,7 @@ class CsrfPlugin extends Plugin
         if ($token_server === null) {
             throw new CsrfTokenException('The CSRF token could not be verified: missing in server');
         } else {
-            if ($this->request->get($this->_name)) {
+            if ($this->request->has($this->_name)) {
                 $token_client = $this->request->get($this->_name);
             } elseif ($this->request->hasServer($this->_header)) {
                 $token_client = $this->request->getServer($this->_header);
