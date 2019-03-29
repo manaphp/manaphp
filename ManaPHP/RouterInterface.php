@@ -137,6 +137,16 @@ interface RouterInterface
     public function match($uri = null, $method = null);
 
     /**
+     * Handles routing information received from the rewrite engine
+     *
+     * @param string $uri
+     * @param string $method
+     *
+     * @return mixed
+     */
+    public function dispatch($uri = null, $method = null);
+
+    /**
      * Get rewrite info.
      *
      * @return string

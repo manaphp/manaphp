@@ -3,7 +3,6 @@
 namespace ManaPHP\Rest;
 
 use ManaPHP\Http\Response;
-use ManaPHP\Router\NotFoundRouteException;
 
 /**
  * Class ManaPHP\Mvc\Application
@@ -64,11 +63,7 @@ class Application extends \ManaPHP\Application
 
             $this->authenticate();
 
-            if (!$this->router->match()) {
-                throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
-            }
-
-            $actionReturnValue = $this->dispatcher->dispatch($this->router);
+            $actionReturnValue = $this->router->dispatch();
             if ($actionReturnValue !== null && !$actionReturnValue instanceof Response) {
                 $this->response->setJsonContent($actionReturnValue);
             }

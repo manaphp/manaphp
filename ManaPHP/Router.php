@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Router\NotFoundRouteException;
 use ManaPHP\Router\Route;
 use ManaPHP\Utility\Text;
 
@@ -39,6 +40,7 @@ class RouterContext
  * @package router
  *
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\DispatcherInterface   $dispatcher
  * @property \ManaPHP\RouterContext              $_context
  */
 class Router extends Component implements RouterInterface
@@ -394,6 +396,23 @@ class Router extends Component implements RouterInterface
         $this->eventsManager->fireEvent('router:afterRoute', $this);
 
         return $context->matched;
+    }
+
+    /**
+     * Handles routing information received from the rewrite engine
+     *
+     * @param string $uri
+     * @param string $method
+     *
+     * @return mixed
+     */
+    public function dispatch($uri = null, $method = null)
+    {
+        if (!$this->match($uri, $method)) {
+            throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->getRewriteUri()]);
+        }
+
+        return $this->dispatcher->dispatch($this);
     }
 
     public function getArea()

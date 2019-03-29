@@ -3,7 +3,6 @@ namespace ManaPHP\Rest;
 
 use ManaPHP\ContextManager;
 use ManaPHP\Http\Response;
-use ManaPHP\Router\NotFoundRouteException;
 use Swoole\Runtime;
 
 /**
@@ -62,11 +61,7 @@ class Swoole extends \ManaPHP\Application
 
             $this->authenticate();
 
-            if (!$this->router->match()) {
-                throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
-            }
-
-            $actionReturnValue = $this->dispatcher->dispatch($this->router);
+            $actionReturnValue = $this->router->dispatch();
             if ($actionReturnValue !== null && !$actionReturnValue instanceof Response) {
                 $this->response->setJsonContent($actionReturnValue);
             }
