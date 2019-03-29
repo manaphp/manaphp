@@ -3,7 +3,6 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Http\Cookies\Exception as CookiesException;
 
 class CookiesContext
 {
@@ -18,33 +17,11 @@ class CookiesContext
  *
  * @package cookies
  *
- * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Security\CryptInterface $crypt
- * @property \ManaPHP\Http\CookiesContext          $_context
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property \ManaPHP\Http\CookiesContext        $_context
  */
 class Cookies extends Component implements CookiesInterface
 {
-    /**
-     * @var string
-     */
-    protected $_key;
-
-    /**
-     * Cookies constructor.
-     *
-     * @param string|array $options
-     */
-    public function __construct($options = [])
-    {
-        if (is_string($options)) {
-            $options = ['key' => $options];
-        }
-
-        if (isset($options['key'])) {
-            $this->_key = $options['key'];
-        }
-    }
-
     /**
      * Sets a cookie to be sent at the end of the request
      *
@@ -69,11 +46,6 @@ class Cookies extends Component implements CookiesInterface
             }
         }
 
-        if ($name[0] === '!') {
-            $name = (string)substr($name, 1);
-            $value = $this->_encrypt($name, $value);
-        }
-
         $context->cookies[$name] = [
             'name' => $name,
             'value' => $value,
@@ -92,50 +64,12 @@ class Cookies extends Component implements CookiesInterface
     }
 
     /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return string
-     * @throws \ManaPHP\Http\Cookies\Exception
-     */
-    protected function _decrypt($name, $value)
-    {
-        if ($this->_key === null) {
-            $this->_key = $this->crypt->getDerivedKey('cookies');
-        }
-
-        $data = $this->crypt->decrypt(base64_decode($value), $this->_key . $name);
-        $json = json_decode($data, true);
-        if (!is_array($json) || !isset($json['value'])) {
-            throw new CookiesException('cookie value is corrupted');
-        }
-
-        return $json['value'];
-    }
-
-    /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function _encrypt($name, $value)
-    {
-        if ($this->_key === null) {
-            $this->_key = $this->crypt->getDerivedKey('cookies');
-        }
-
-        return base64_encode($this->crypt->encrypt(json_encode(['value' => $value]), $this->_key . $name));
-    }
-
-    /**
      * Gets a cookie
      *
      * @param string $name
      * @param string $default
      *
      * @return mixed|null
-     * @throws \ManaPHP\Http\Cookies\Exception
      */
     public function get($name, $default = null)
     {
@@ -143,16 +77,11 @@ class Cookies extends Component implements CookiesInterface
 
         if ($name === null) {
             return $globals->_COOKIE;
-        } elseif ($name[0] === '!') {
-            $name = (string)substr($name, 1);
-            if (isset($globals->_COOKIE[$name])) {
-                return $this->_decrypt($name, $globals->_COOKIE[$name]);
-            }
         } elseif (isset($globals->_COOKIE[$name])) {
             return $globals->_COOKIE[$name];
+        } else {
+            return $default;
         }
-
-        return $default;
     }
 
     /**
@@ -163,10 +92,6 @@ class Cookies extends Component implements CookiesInterface
     public function has($name)
     {
         $globals = $this->request->getGlobals();
-
-        if ($name[0] === '!') {
-            $name = (string)substr($name, 1);
-        }
 
         return isset($globals->_COOKIE[$name]);
     }
@@ -185,10 +110,6 @@ class Cookies extends Component implements CookiesInterface
     public function delete($name, $path = null, $domain = null, $secure = false, $httpOnly = true)
     {
         $context = $this->_context;
-
-        if ($name[0] === '!') {
-            $name = (string)substr($name, 1);
-        }
 
         $context->cookies[$name] = [
             'name' => $name,
@@ -217,22 +138,10 @@ class Cookies extends Component implements CookiesInterface
     {
         $context = $this->_context;
 
-        $this->fireEvent('cookies:beforeSend');
-
         foreach ($context->cookies as $cookie) {
             setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
                 $cookie['path'], $cookie['domain'], $cookie['secure'],
                 $cookie['httpOnly']);
         }
-
-        $this->fireEvent('cookies:afterSend');
-    }
-
-    /**
-     * @return array
-     */
-    public function getSent()
-    {
-        return $this->_context->cookies;
     }
 }

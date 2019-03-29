@@ -58,9 +58,4 @@ interface CookiesInterface
      * Sends the cookies to the client
      */
     public function send();
-
-    /**
-     * @return array
-     */
-    public function getSent();
 }
