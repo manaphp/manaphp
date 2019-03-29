@@ -54,27 +54,9 @@ class Server extends Component implements ServerInterface
      */
     protected $_handler;
 
-    /**
-     * Http constructor.
-     *
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct()
     {
-        if (isset($options['host'])) {
-            $this->_host = $options['host'];
-            unset($options['host']);
-        }
-        if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
-            unset($options['port']);
-        }
-
         $this->alias->set('@web', '');
-
-        $options['enable_coroutine'] = MANAPHP_COROUTINE ? true : false;
-
-        $this->_settings = $options;
 
         $script_filename = get_included_files()[0];
         $parts = explode('-', phpversion());
@@ -158,6 +140,20 @@ class Server extends Component implements ServerInterface
      */
     public function start($handler)
     {
+        $settings = isset($this->configure->servers['http']) ? $this->configure->servers['http'] : [];
+
+        if (isset($settings['host'])) {
+            $this->_host = $settings['host'];
+        }
+
+        if (isset($settings['port'])) {
+            $this->_port = (int)$settings['port'];
+        }
+
+        $settings['enable_coroutine'] = MANAPHP_COROUTINE ? true : false;
+
+        $this->_settings = $settings;
+
         $this->_swoole = new \swoole_http_server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
         $this->_handler = $handler;
@@ -225,7 +221,7 @@ class Server extends Component implements ServerInterface
         foreach ($response_context->headers as $name => $value) {
             $sw_response->header($name, $value, false);
         }
-	
+
         $server = $this->request->getGlobals()->_SERVER;
 
         if (isset($server['HTTP_X_REQUEST_ID']) && !isset($response_context->headers['X-Request-Id'])) {

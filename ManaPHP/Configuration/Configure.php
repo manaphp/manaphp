@@ -57,6 +57,11 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var array
      */
+    public $servers = [];
+
+    /**
+     * @var array
+     */
     public $services = [];
 
     /**
