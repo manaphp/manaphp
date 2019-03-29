@@ -657,8 +657,6 @@ class Response extends Component implements ResponseInterface
             $context->headers['X-Request-Id'] = $request_id;
         }
 
-        $context->headers['X-Response-Time'] = sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'));
-
         $this->eventsManager->fireEvent('response:beforeSend', $this);
 
         header('HTTP/1.1 ' . $context->status_code . ' ' . $context->status_text);
@@ -670,6 +668,8 @@ class Response extends Component implements ResponseInterface
                 header($header, true);
             }
         }
+
+        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')), true);
 
         foreach ($context->cookies as $cookie) {
             setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
