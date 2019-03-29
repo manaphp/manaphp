@@ -39,10 +39,9 @@ class DispatcherContext
  * Class ManaPHP\Dispatcher
  *
  * @package dispatcher
- * @property-read \ManaPHP\Http\FilterInterface   $filter
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property \ManaPHP\DispatcherContext           $_context
+ * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\ResponseInterface  $response
+ * @property \ManaPHP\DispatcherContext            $_context
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -266,6 +265,8 @@ class Dispatcher extends Component implements DispatcherInterface
                 'controller' => get_class($controller)
             ]);
         }
+
+        $this->eventsManager->fireEvent('request:validate', $this, ['controller' => get_class($controller), 'action' => $action]);
 
         if (method_exists($controller, 'beforeInvoke') && ($r = $controller->beforeInvoke($action)) !== null) {
             return $r;
