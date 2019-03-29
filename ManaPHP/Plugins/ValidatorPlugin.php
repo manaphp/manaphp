@@ -1,12 +1,27 @@
 <?php
 namespace ManaPHP\Plugins;
 
+use ManaPHP\Http\Validator\NotFoundControllerValidatorClassException;
 use ManaPHP\Plugin;
 
 class ValidatorPlugin extends Plugin
 {
-    public function __construct()
+    /**
+     * @var bool
+     */
+    protected $_force = false;
+
+    /**
+     * ValidatorPlugin constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = null)
     {
+        if (isset($options['force'])) {
+            $this->_force = (bool)$options['force'];
+        }
+
         $this->eventsManager->attachEvent('request:validate', [$this, 'validate']);
     }
 
@@ -16,6 +31,10 @@ class ValidatorPlugin extends Plugin
         $validator = $controller . 'Validator';
 
         if (!class_exists($validator, false)) {
+            if ($this->_force) {
+                throw new NotFoundControllerValidatorClassException(['`:validator` controller validator class is not found', 'validator' => $validator]);
+            }
+
             return;
         }
 
