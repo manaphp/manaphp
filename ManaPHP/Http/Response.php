@@ -46,7 +46,6 @@ class ResponseContext
  * @package response
  *
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\CookiesInterface $cookies
  * @property-read \ManaPHP\UrlInterface          $url
  * @property-read \ManaPHP\RouterInterface       $router
  * @property \ManaPHP\Http\ResponseContext       $_context
