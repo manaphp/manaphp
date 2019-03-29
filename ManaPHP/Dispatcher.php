@@ -33,20 +33,16 @@ class DispatcherContext
      * @var \ManaPHP\Rest\Controller
      */
     public $controllerInstance;
-
-    /**
-     * @var mixed
-     */
-    public $returned_value;
 }
 
 /**
  * Class ManaPHP\Dispatcher
  *
  * @package dispatcher
- * @property-read \ManaPHP\Http\FilterInterface  $filter
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property \ManaPHP\DispatcherContext          $_context
+ * @property-read \ManaPHP\Http\FilterInterface   $filter
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\DispatcherContext           $_context
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -169,30 +165,6 @@ class Dispatcher extends Component implements DispatcherInterface
     public function hasParam($name)
     {
         return isset($this->_context->params[$name]);
-    }
-
-    /**
-     * Sets the latest returned value by an action manually
-     *
-     * @param mixed $value
-     *
-     * @return static
-     */
-    public function setReturnedValue($value)
-    {
-        $this->_context->returned_value = $value;
-
-        return $this;
-    }
-
-    /**
-     * Returns value returned by the latest dispatched action
-     *
-     * @return mixed
-     */
-    public function getReturnedValue()
-    {
-        return $this->_context->returned_value;
     }
 
     /**
@@ -371,7 +343,7 @@ class Dispatcher extends Component implements DispatcherInterface
      *
      * @param \ManaPHP\RouterInterface $router
      *
-     * @return void
+     * @return mixed
      * @throws \ManaPHP\Dispatcher\NotFoundControllerException
      */
     public function dispatch($router)
@@ -395,7 +367,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $context->params = $params;
 
         if ($this->eventsManager->fireEvent('dispatcher:beforeDispatch', $this) === false) {
-            return;
+            return $this->response;
         }
 
         $controllerClassName = $this->_getControllerClassName();
@@ -407,9 +379,10 @@ class Dispatcher extends Component implements DispatcherInterface
         $context->controllerInstance = $controllerInstance;
 
         $returned_value = $this->invokeAction($controllerInstance, $action, $params);
-        $context->returned_value = $returned_value;
 
         $this->eventsManager->fireEvent('dispatcher:afterDispatch', $this);
+
+        return $returned_value;
     }
 
     /**

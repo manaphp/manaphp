@@ -66,8 +66,7 @@ class Swoole extends \ManaPHP\Application
                 throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->router->getRewriteUri()]);
             }
 
-            $this->dispatcher->dispatch($this->router);
-            $actionReturnValue = $this->dispatcher->getReturnedValue();
+            $actionReturnValue = $this->dispatcher->dispatch($this->router);
             if ($actionReturnValue !== null && !$actionReturnValue instanceof Response) {
                 $this->response->setJsonContent($actionReturnValue);
             }

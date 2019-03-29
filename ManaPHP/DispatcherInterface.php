@@ -89,18 +89,11 @@ interface DispatcherInterface
     public function getControllerInstance();
 
     /**
-     * Returns value returned by the latest dispatched action
-     *
-     * @return mixed
-     */
-    public function getReturnedValue();
-
-    /**
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param \ManaPHP\RouterInterface $router
      *
-     * @return void
+     * @return mixed
      */
     public function dispatch($router);
 }
