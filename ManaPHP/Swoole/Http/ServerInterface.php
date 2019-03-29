@@ -44,4 +44,9 @@ interface ServerInterface
      * @return static
      */
     public function sendFile($file);
+
+    /**
+     * @param \ManaPHP\Http\ResponseInterface $response
+     */
+    public function send($response);
 }

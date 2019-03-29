@@ -279,4 +279,29 @@ class Server extends Component implements ServerInterface
 
         return $this;
     }
+
+    /**
+     * @param \ManaPHP\Http\ResponseInterface $response
+     */
+    public function send($response)
+    {
+        if (($request_id = $this->request->getServer('HTTP_X_REQUEST_ID')) && !$response->hasHeader('X-Request-Id')) {
+            $response->setHeader('X-Request-Id', $request_id);
+        }
+
+        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')));
+
+        $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
+
+        $this->setStatus($response->getStatusCode());
+        $this->sendHeaders($response->getHeaders());
+
+        if ($file = $response->getFile()) {
+            $this->sendFile($file);
+        } else {
+            $this->sendContent($response->getContent());
+        }
+
+        $this->eventsManager->fireEvent('response:afterSend', $this, $response);
+    }
 }

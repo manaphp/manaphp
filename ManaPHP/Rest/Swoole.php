@@ -28,31 +28,6 @@ class Swoole extends \ManaPHP\Application
         return $this->_di;
     }
 
-    public function send()
-    {
-        $swoole = $this->swooleHttpServer;
-        $response = $this->response;
-
-        if (($request_id = $this->request->getServer('HTTP_X_REQUEST_ID')) && !$response->hasHeader('X-Request-Id')) {
-            $response->setHeader('X-Request-Id', $request_id);
-        }
-
-        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')));
-
-        $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
-
-        $swoole->setStatus($response->getStatusCode());
-        $swoole->sendHeaders($response->getHeaders());
-
-        if ($file = $response->getFile()) {
-            $swoole->sendFile($file);
-        } else {
-            $swoole->sendContent($response->getContent());
-        }
-
-        $this->eventsManager->fireEvent('response:afterSend', $this, $response);
-    }
-
     public function handle()
     {
         try {
@@ -71,7 +46,7 @@ class Swoole extends \ManaPHP\Application
             $this->handleException($error);
         }
 
-        $this->send();
+        $this->swooleHttpServer->send($this->response);
 
         $this->eventsManager->fireEvent('request:destruct', $this);
         $this->eventsManager->fireEvent('request:end', $this);
