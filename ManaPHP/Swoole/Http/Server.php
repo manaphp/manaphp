@@ -210,36 +210,6 @@ class Server extends Component implements ServerInterface
     }
 
     /**
-     * @param int $code
-     *
-     * @return static
-     */
-    public function setStatus($code)
-    {
-        $context = $this->_context;
-
-        $context->response->status($code);
-
-        return $this;
-    }
-
-    /**
-     * @param array $headers
-     *
-     * @return static
-     */
-    public function sendHeaders($headers)
-    {
-        $response = $this->_context->response;
-
-        foreach ($headers as $k => $v) {
-            $response->header($k, $v, false);
-        }
-
-        return $this;
-    }
-
-    /**
      * @param array $cookies
      *
      * @return static
@@ -258,48 +228,33 @@ class Server extends Component implements ServerInterface
     }
 
     /**
-     * @param string $content
-     *
-     * @return static
-     */
-    public function sendContent($content)
-    {
-        $this->_context->response->end($content);
-        return $this;
-    }
-
-    /**
-     * @param string $file
-     *
-     * @return static
-     */
-    public function sendFile($file)
-    {
-        $this->_context->response->sendfile($this->alias->resolve($file));
-
-        return $this;
-    }
-
-    /**
      * @param \ManaPHP\Http\ResponseInterface $response
      */
     public function send($response)
     {
-        if (($request_id = $this->request->getServer('HTTP_X_REQUEST_ID')) && !$response->hasHeader('X-Request-Id')) {
-            $response->setHeader('X-Request-Id', $request_id);
-        }
-
-        $response->setHeader('X-Response-Time', sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')));
-
         $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
 
-        $this->setStatus($response->getStatusCode());
-        $this->sendHeaders($response->getHeaders());
+        /** @var \ManaPHP\Http\ResponseContext $response_context */
+        $response_context = $response->_context;
+        $sw_response = $this->_context->response;
 
-        if ($file = $response->getFile()) {
-            $this->sendFile($file);
+        $sw_response->status($response_context->status_code);
+
+        foreach ($response_context->headers as $name => $value) {
+            $sw_response->header($name, $value, false);
+        }
+
+        if (($request_id = $this->request->getServer('HTTP_X_REQUEST_ID')) && !$response->hasHeader('X-Request-Id')) {
+            $sw_response->header('X-Request-Id', $request_id, false);
+        }
+
+        $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')), false);
+
+
+        if ($response_context->file) {
+            $sw_response->sendfile($this->alias->resolve($response_context->file));
         } else {
-            $this->sendContent($response->getContent());
+            $sw_response->end($response_context->content);
         }
 
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);
