@@ -72,6 +72,8 @@ class Server extends Component implements ServerInterface
 
         $this->alias->set('@web', '');
 
+        $options['enable_coroutine'] = MANAPHP_COROUTINE ? true : false;
+
         $this->_settings = $options;
 
         $script_filename = get_included_files()[0];
@@ -161,10 +163,7 @@ class Server extends Component implements ServerInterface
         $this->_handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
-        echo sprintf('[%s][info]: starting listen on: %s:%d coroutine:%s with setting: %s',
-            date('c'), $this->_host, $this->_port,
-            MANAPHP_COROUTINE ? 'ON' : 'OFF',
-            json_encode($this->_settings)), PHP_EOL;
+        echo sprintf('[%s][info]: starting listen on: %s:%d with setting: %s', date('c'), $this->_host, $this->_port, json_encode($this->_settings)), PHP_EOL;
 
         $this->_swoole->on('request', [$this, 'onRequest']);
 
