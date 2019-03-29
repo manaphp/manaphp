@@ -32,7 +32,7 @@ interface CookiesInterface
      *
      * @return mixed
      */
-    public function get($name, $default = null);
+    public function get($name = null, $default = '');
 
     /**
      * @param string $name
@@ -53,9 +53,4 @@ interface CookiesInterface
      * @return bool
      */
     public function delete($name, $path = null, $domain = null, $secure = false, $httpOnly = true);
-
-    /**
-     * Sends the cookies to the client
-     */
-    public function send();
 }

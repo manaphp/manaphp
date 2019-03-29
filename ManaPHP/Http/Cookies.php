@@ -4,21 +4,13 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 
-class CookiesContext
-{
-    /**
-     * @var array
-     */
-    public $cookies = [];
-}
-
 /**
  * Class ManaPHP\Http\Cookies
  *
  * @package cookies
  *
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property \ManaPHP\Http\CookiesContext        $_context
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 class Cookies extends Component implements CookiesInterface
 {
@@ -37,28 +29,7 @@ class Cookies extends Component implements CookiesInterface
      */
     public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
     {
-        $context = $this->_context;
-
-        if ($expire > 0) {
-            $current = time();
-            if ($expire < $current) {
-                $expire += $current;
-            }
-        }
-
-        $context->cookies[$name] = [
-            'name' => $name,
-            'value' => $value,
-            'expire' => $expire,
-            'path' => $path,
-            'domain' => $domain,
-            'secure' => $secure,
-            'httpOnly' => $httpOnly
-        ];
-
-        $globals = $this->request->getGlobals();
-
-        $globals->_COOKIE[$name] = $value;
+        $this->response->setCookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
 
         return $this;
     }
@@ -69,19 +40,11 @@ class Cookies extends Component implements CookiesInterface
      * @param string $name
      * @param string $default
      *
-     * @return mixed|null
+     * @return string|array
      */
-    public function get($name, $default = null)
+    public function get($name = null, $default = '')
     {
-        $globals = $this->request->getGlobals();
-
-        if ($name === null) {
-            return $globals->_COOKIE;
-        } elseif (isset($globals->_COOKIE[$name])) {
-            return $globals->_COOKIE[$name];
-        } else {
-            return $default;
-        }
+        return $this->request->getCookie($name, $default);
     }
 
     /**
@@ -91,9 +54,7 @@ class Cookies extends Component implements CookiesInterface
      */
     public function has($name)
     {
-        $globals = $this->request->getGlobals();
-
-        return isset($globals->_COOKIE[$name]);
+        return $this->request->hasCookie($name);
     }
 
     /**
@@ -109,39 +70,8 @@ class Cookies extends Component implements CookiesInterface
      */
     public function delete($name, $path = null, $domain = null, $secure = false, $httpOnly = true)
     {
-        $context = $this->_context;
-
-        $context->cookies[$name] = [
-            'name' => $name,
-            'value' => 'deleted',
-            'expire' => 1,
-            'path' => $path,
-            'domain' => $domain,
-            'secure' => $secure,
-            'httpOnly' => $httpOnly
-        ];
-
-        $globals = $this->request->getGlobals();
-
-        unset($globals->_COOKIE[$name]);
+        $this->response->deleteCookie($name, $path, $domain, $secure, $httpOnly);
 
         return $this;
-    }
-
-    /**
-     * Sends the cookies to the client
-     * Cookies are not sent if headers are sent in the current request
-     *
-     * @return void
-     */
-    public function send()
-    {
-        $context = $this->_context;
-
-        foreach ($context->cookies as $cookie) {
-            setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'],
-                $cookie['httpOnly']);
-        }
     }
 }

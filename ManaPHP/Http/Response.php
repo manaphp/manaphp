@@ -25,6 +25,11 @@ class ResponseContext
     public $headers = [];
 
     /**
+     * @var array
+     */
+    public $cookies = [];
+
+    /**
      * @var string
      */
     public $content;
@@ -48,6 +53,79 @@ class ResponseContext
  */
 class Response extends Component implements ResponseInterface
 {
+    /**
+     * Sets a cookie to be sent at the end of the request
+     *
+     * @param string $name
+     * @param mixed  $value
+     * @param int    $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
+     *
+     * @return static
+     */
+    public function setCookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
+    {
+        $context = $this->_context;
+
+        if ($expire > 0) {
+            $current = time();
+            if ($expire < $current) {
+                $expire += $current;
+            }
+        }
+
+        $context->cookies[$name] = [
+            'name' => $name,
+            'value' => $value,
+            'expire' => $expire,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httpOnly' => $httpOnly
+        ];
+
+        $globals = $this->request->getGlobals();
+
+        $globals->_COOKIE[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Deletes a cookie by its name
+     *
+     * @param string $name
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
+     *
+     * @return static
+     */
+    public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httpOnly = true)
+    {
+        $context = $this->_context;
+
+        $context->cookies[$name] = [
+            'name' => $name,
+            'value' => 'deleted',
+            'expire' => 1,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httpOnly' => $httpOnly
+        ];
+
+        $globals = $this->request->getGlobals();
+
+        unset($globals->_COOKIE[$name]);
+
+        return $this;
+    }
+
     /**
      * Sets the HTTP response code
      *<code>
@@ -594,7 +672,11 @@ class Response extends Component implements ResponseInterface
             }
         }
 
-        $this->cookies->send();
+        foreach ($context->cookies as $cookie) {
+            setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
+                $cookie['path'], $cookie['domain'], $cookie['secure'],
+                $cookie['httpOnly']);
+        }
 
         if ($context->file) {
             readfile($this->alias->resolve($context->file));

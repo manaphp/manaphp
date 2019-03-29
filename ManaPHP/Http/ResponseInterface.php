@@ -10,6 +10,34 @@ namespace ManaPHP\Http;
 interface ResponseInterface
 {
     /**
+     * Sets a cookie to be sent at the end of the request
+     *
+     * @param string $name
+     * @param mixed  $value
+     * @param int    $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
+     *
+     * @return static
+     */
+    public function setCookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true);
+
+    /**
+     * Deletes a cookie by its name
+     *
+     * @param string $name
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
+     *
+     * @return static
+     */
+    public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httpOnly = true);
+
+    /**
      * Sets the HTTP response code
      *
      * @param int    $code

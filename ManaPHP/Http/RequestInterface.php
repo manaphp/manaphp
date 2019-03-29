@@ -15,6 +15,23 @@ interface RequestInterface
     public function getGlobals();
 
     /**
+     * Gets a cookie
+     *
+     * @param string $name
+     * @param string $default
+     *
+     * @return mixed|null
+     */
+    public function getCookie($name = null, $default = '');
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasCookie($name);
+
+    /**
      * @param string $name
      * @param mixed  $rule
      * @param mixed  $default

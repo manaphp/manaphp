@@ -59,6 +59,39 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * Gets a cookie
+     *
+     * @param string $name
+     * @param string $default
+     *
+     * @return string|array
+     */
+    public function getCookie($name = null, $default = '')
+    {
+        $context = $this->_context;
+
+        if ($name === null) {
+            return $context->_COOKIE;
+        } elseif (isset($globals->_COOKIE[$name])) {
+            return $context->_COOKIE[$name];
+        } else {
+            return $default;
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasCookie($name)
+    {
+        $context = $this->_context;
+
+        return isset($context->_COOKIE[$name]);
+    }
+
+    /**
      *
      * @param array  $source
      * @param string $name
