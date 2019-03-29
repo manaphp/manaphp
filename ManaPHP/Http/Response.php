@@ -10,9 +10,14 @@ use ManaPHP\Http\Filter\Exception as FilterException;
 class ResponseContext
 {
     /**
+     * @var int
+     */
+    public $status_code = 200;
+
+    /**
      * @var string
      */
-    public $content;
+    public $status_text = 'OK';
 
     /**
      * @var array
@@ -22,7 +27,7 @@ class ResponseContext
     /**
      * @var string
      */
-    public $status;
+    public $content;
 
     /**
      * @var string
@@ -58,7 +63,8 @@ class Response extends Component implements ResponseInterface
     {
         $context = $this->_context;
 
-        $context->status = $code . ' ' . ($text ?: $this->getStatusText($code));
+        $context->status_code = (int)$code;
+        $context->status_text = $text ?: $this->getStatusText($code);
 
         return $this;
     }
@@ -68,7 +74,9 @@ class Response extends Component implements ResponseInterface
      */
     public function getStatus()
     {
-        return $this->_context->status;
+        $context = $this->_context;
+
+        return $context->status_code . ' ' . $context->status_text;
     }
 
     /**
@@ -76,8 +84,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getStatusCode()
     {
-        $context = $this->_context;
-        return $context->status ? (int)substr($context->status, 0, strpos($context->status, ' ')) : 200;
+        return $this->_context->status_code;
     }
 
     /**
@@ -88,8 +95,7 @@ class Response extends Component implements ResponseInterface
     public function getStatusText($code = null)
     {
         if ($code === null) {
-            $context = $this->_context;
-            return $context->status === null ? 'OK' : substr($context->status, strpos($context->status, ' ') + 1);
+            return $this->_context->status_text;
         } else {
             $texts = [
                 200 => 'OK',
@@ -578,9 +584,7 @@ class Response extends Component implements ResponseInterface
 
         $this->eventsManager->fireEvent('response:beforeSend', $this);
 
-        if ($context->status) {
-            header('HTTP/1.1 ' . $context->status);
-        }
+        header('HTTP/1.1 ' . $context->status_code . ' ' . $context->status_text);
 
         foreach ($context->headers as $header => $value) {
             if ($value !== null) {
