@@ -310,8 +310,6 @@ class Router extends Component implements RouterInterface
 
         $context->matched = false;
 
-        $this->eventsManager->fireEvent('router:beforeRoute', $this);
-
         if ($this->_prefix) {
             if (strpos($uri, $this->_prefix) === 0) {
                 if (($handledUri = substr($uri, strlen($this->_prefix))) === '') {
@@ -392,9 +390,7 @@ class Router extends Component implements RouterInterface
         $context->controller = $parts['controller'];
         $context->action = $parts['action'];
         $context->params = isset($parts['params']) ? $parts['params'] : [];
-
-        $this->eventsManager->fireEvent('router:afterRoute', $this);
-
+        
         return $context;
     }
 
