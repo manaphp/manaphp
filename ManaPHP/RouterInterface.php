@@ -132,7 +132,7 @@ interface RouterInterface
      * @param string $uri
      * @param string $method
      *
-     * @return bool
+     * @return \ManaPHP\RouterContext|false
      */
     public function match($uri = null, $method = null);
 

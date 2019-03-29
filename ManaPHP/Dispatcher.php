@@ -350,20 +350,29 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->_context;
 
-        if ($area = $router->getArea()) {
+        if ($router instanceof RouterContext) {
+            $area = $router->area;
+            $controller = $router->controller;
+            $action = $router->action;
+            $params = $router->params;
+        } else {
+            $area = $router->getArea();
+            $controller = $router->getController();
+            $action = $router->getAction();
+            $params = $router->getParams();
+        }
+
+        if ($area) {
             $area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
             $context->area = $area;
         }
 
-        $controller = $router->getController();
         $controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
         $context->controller = $controller;
 
-        $action = $router->getAction();
         $action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
         $context->action = $action;
 
-        $params = $router->getParams();
         $context->params = $params;
 
         if ($this->eventsManager->fireEvent('dispatcher:beforeDispatch', $this) === false) {

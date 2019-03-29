@@ -292,7 +292,7 @@ class Router extends Component implements RouterInterface
      * @param string $uri
      * @param string $method
      *
-     * @return bool
+     * @return \ManaPHP\RouterContext|false
      */
     public function match($uri = null, $method = null)
     {
@@ -395,7 +395,7 @@ class Router extends Component implements RouterInterface
 
         $this->eventsManager->fireEvent('router:afterRoute', $this);
 
-        return $context->matched;
+        return $context;
     }
 
     /**
@@ -408,11 +408,11 @@ class Router extends Component implements RouterInterface
      */
     public function dispatch($uri = null, $method = null)
     {
-        if (!$this->match($uri, $method)) {
+        if (!$router_context = $this->match($uri, $method)) {
             throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->getRewriteUri()]);
         }
 
-        return $this->dispatcher->dispatch($this);
+        return $this->dispatcher->dispatch($router_context);
     }
 
     public function getArea()

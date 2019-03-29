@@ -91,7 +91,7 @@ interface DispatcherInterface
     /**
      * Dispatches a handle action taking into account the routing parameters
      *
-     * @param \ManaPHP\RouterInterface $router
+     * @param \ManaPHP\RouterInterface|\ManaPHP\RouterContext $router
      *
      * @return mixed
      */
