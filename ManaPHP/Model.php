@@ -21,20 +21,6 @@ use ManaPHP\Utility\Text;
  *
  * @property-read \ManaPHP\Model\ValidatorInterface $modelsValidator
  * @property-read \ManaPHP\Http\RequestInterface    $request
- *
- * method beforeCreate()
- * method afterCreate()
- *
- * method beforeSave()
- * method afterSave()
- *
- * method afterFetch()
- *
- * method beforeUpdate()
- * method afterUpdate()
- *
- * method beforeDelete()
- * method afterDelete()
  */
 abstract class Model extends Component implements ModelInterface, \Serializable, \ArrayAccess
 {

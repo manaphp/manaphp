@@ -404,7 +404,7 @@ class Model extends \ManaPHP\Model
         $this->_snapshot = $this->toArray();
 
         $this->eventsManager->fireEvent('model:afterCreate', $this);
-        $this->eventsManager->fireEvent('model:afterSave', $this);;
+        $this->eventsManager->fireEvent('model:afterSave', $this);
 
         return $this;
     }
