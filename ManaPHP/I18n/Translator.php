@@ -52,25 +52,6 @@ class Translator extends Component implements TranslatorInterface
         if (isset($options['locale'])) {
             $this->_locale = $options['locale'];
         }
-
-        $this->eventsManager->attachEvent('request:construct', [$this, 'onConstruct']);
-    }
-
-    public function onConstruct()
-    {
-        $context = $this->_context;
-
-        if ($this->_locale) {
-            $context->locale = $this->_locale;
-        } elseif ($accept_lang = $this->request->getServer('HTTP_ACCEPT_LANGUAGE')) {
-            if (($pos = strpos($accept_lang, ',')) !== false) {
-                $context->locale = substr($accept_lang, 0, $pos);
-            } else {
-                $context->locale = $accept_lang;
-            }
-        } else {
-            $context->locale = 'en';
-        }
     }
 
     /**
@@ -92,7 +73,23 @@ class Translator extends Component implements TranslatorInterface
      */
     public function getLocale()
     {
-        return $this->_context->locale;
+        $context = $this->_context;
+
+        if (!$context->locale) {
+            if ($this->_locale) {
+                $context->locale = $this->_locale;
+            } elseif ($accept_lang = $this->request->getServer('HTTP_ACCEPT_LANGUAGE')) {
+                if (($pos = strpos($accept_lang, ',')) !== false) {
+                    $context->locale = substr($accept_lang, 0, $pos);
+                } else {
+                    $context->locale = $accept_lang;
+                }
+            } else {
+                $context->locale = 'en';
+            }
+        }
+
+        return $context->locale;
     }
 
     /**
@@ -105,7 +102,8 @@ class Translator extends Component implements TranslatorInterface
     {
         $context = $this->_context;
 
-        $locale = $context->locale;
+        $locale = $context->locale ?: $this->getLocale();
+
         if ($pos = strpos($locale, '-')) {
             $fallback = substr($locale, 0, $pos);
         } else {
