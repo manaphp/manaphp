@@ -143,11 +143,11 @@ class Component implements ComponentInterface, \JsonSerializable
      * @param string $event
      * @param array  $data
      *
-     * @return mixed|null
+     * @return void
      */
     public function fireEvent($event, $data = [])
     {
-        return $this->eventsManager->fireEvent($event, $this, $data);
+        $this->eventsManager->fireEvent($event, $this, $data);
     }
 
     /**

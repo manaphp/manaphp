@@ -76,7 +76,7 @@ class Manager implements ManagerInterface
      * @param mixed  $source
      * @param array  $data
      *
-     * @return mixed|null
+     * @return void
      */
     public function fireEvent($event, $source, $data = [])
     {
@@ -91,9 +91,7 @@ class Manager implements ManagerInterface
                         $listener = $v;
                     }
 
-                    if (($ret = $listener->process($p2, $source, $data)) !== null) {
-                        return $ret;
-                    }
+                    $listener->process($p2, $source, $data);
                 }
             }
         }
@@ -107,22 +105,16 @@ class Manager implements ManagerInterface
         }
 
         if (!isset($this->_events[$event])) {
-            return null;
+            return;
         }
 
         foreach ($this->_events[$event] as $handler) {
             if ($handler instanceof \Closure) {
-                $ret = $handler($source, $data, $event);
+                $handler($source, $data, $event);
             } else {
-                $ret = $handler[0]->{$handler[1]}($source, $data, $event);
-            }
-
-            if ($ret !== null) {
-                return $ret;
+                $handler[0]->{$handler[1]}($source, $data, $event);
             }
         }
-
-        return null;
     }
 
     /**

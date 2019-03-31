@@ -41,7 +41,7 @@ interface ComponentInterface
      * @param string $event
      * @param array  $data
      *
-     * @return mixed|null
+     * @return void
      */
     public function fireEvent($event, $data = []);
 }

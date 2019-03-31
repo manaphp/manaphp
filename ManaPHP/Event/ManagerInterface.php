@@ -39,7 +39,7 @@ interface ManagerInterface
      * @param mixed  $source
      * @param array  $data
      *
-     * @return mixed|null
+     * @return void
      */
     public function fireEvent($event, $source, $data = []);
 
