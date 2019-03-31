@@ -43,10 +43,10 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param object $owner
-     * @param object $sample
-     * @param int    $size
-     * @param string $type
+     * @param object       $owner
+     * @param object|array $sample
+     * @param int          $size
+     * @param string       $type
      *
      * @return static
      */
@@ -60,6 +60,12 @@ class Manager extends Component implements ManagerInterface
             $this->_pool[$owner_id][$type] = $queue = new \SplQueue();
         } else {
             $queue = $this->_pool[$owner_id][$type];
+        }
+
+        if (is_array($sample)) {
+            $class = $sample['class'];
+            unset($sample['class']);
+            $sample = $this->_di->getInstance($class, $sample);
         }
 
         $queue->push(clone $sample);

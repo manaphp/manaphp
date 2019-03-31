@@ -4,10 +4,10 @@ namespace ManaPHP\Pool;
 interface ManagerInterface
 {
     /**
-     * @param object $owner
-     * @param object $sample
-     * @param int    $size
-     * @param string $type
+     * @param object       $owner
+     * @param object|array $sample
+     * @param int          $size
+     * @param string       $type
      *
      * @return static
      */
