@@ -378,10 +378,6 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $context->params = $params;
 
-        if ($this->eventsManager->fireEvent('dispatcher:beforeDispatch', $this) === false) {
-            return $this->response;
-        }
-
         $controllerClassName = $this->_getControllerClassName();
 
         /**
@@ -390,11 +386,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
-        $returned_value = $this->invokeAction($controllerInstance, $action, $params);
-
-        $this->eventsManager->fireEvent('dispatcher:afterDispatch', $this, compact('area', 'controller', 'action', 'params', 'returned_value'));
-
-        return $returned_value;
+        return $this->invokeAction($controllerInstance, $action, $params);
     }
 
     /**
