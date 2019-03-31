@@ -270,7 +270,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $this->eventsManager->fireEvent('request:validate', $this, ['controller' => get_class($controller), 'action' => $action]);
 
-        if (($r = $this->eventsManager->fireEvent('dispatcher:beforeInvoke', $this, $action)) !== null) {
+        if (($r = $this->eventsManager->fireEvent('request:invoke', $this, $action)) !== null) {
             return $r;
         }
 
@@ -294,7 +294,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 break;
         }
 
-        $this->eventsManager->fireEvent('dispatcher:afterInvoke', $this, ['action' => $action, 'return' => $r]);
+        $this->eventsManager->fireEvent('request:invoked', $this, ['action' => $action, 'return' => $r]);
 
         return $r;
     }
