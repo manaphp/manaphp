@@ -41,7 +41,7 @@ class Redis extends Component
         if (is_string($uri)) {
             $this->_uri = $uri;
             $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
-            $connection = $this->di->get('ManaPHP\Redis\Connection', [$this->_uri]);
+            $connection = ['class' => 'ManaPHP\Redis\Connection', $this->_uri];
         } else {
             $pool_size = 1;
             $connection = $uri;

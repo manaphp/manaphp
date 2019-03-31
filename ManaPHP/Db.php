@@ -95,19 +95,20 @@ class Db extends Component implements DbInterface
                 $this->_pool_size = (int)$matches[1];
             }
 
+            $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
             if (strpos($uri, ',') !== false) {
                 $host_str = parse_url($uri, PHP_URL_HOST);
                 $hosts = explode(',', $host_str);
                 if ($hosts[0] !== '') {
-                    $this->poolManager->add($this, $this->_getConnection(str_replace($host_str, $hosts[0], $uri)), $this->_pool_size);
+                    $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, $hosts[0], $uri)], $this->_pool_size);
                 }
                 array_shift($hosts);
                 foreach ($hosts as $host) {
-                    $this->poolManager->add($this, $this->_getConnection(str_replace($host_str, $host, $uri)), $this->_pool_size, 'slave');
+                    $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, $host, $uri)], $this->_pool_size, 'slave');
                 }
                 $this->_has_slave = $hosts ? true : false;
             } else {
-                $this->poolManager->add($this, $this->_getConnection($uri), $this->_pool_size);
+                $this->poolManager->add($this, ['class' => $adapter, $uri], $this->_pool_size);
             }
         } elseif ($uri instanceof Connection) {
             $this->_pool_size = 1;
@@ -115,17 +116,6 @@ class Db extends Component implements DbInterface
             $this->_uri = $uri->getUri();
             $this->poolManager->add($this, $connection, $this->_pool_size);
         }
-    }
-
-    /**
-     * @param string $uri
-     *
-     * @return \ManaPHP\Db\ConnectionInterface
-     */
-    protected function _getConnection($uri)
-    {
-        $scheme = ucfirst(parse_url($uri, PHP_URL_SCHEME));
-        return $this->di->get("ManaPHP\Db\Connection\Adapter\\$scheme", [$uri]);
     }
 
     protected function _escapeIdentifier($identifier)
