@@ -39,8 +39,6 @@ class Jwt extends Identity
      */
     public function __construct($options = [])
     {
-        parent::__construct($options);
-
         if (isset($options['alg'])) {
             $this->_alg = $options['alg'];
         }

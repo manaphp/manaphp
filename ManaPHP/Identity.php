@@ -24,31 +24,6 @@ class IdentityContext
 abstract class Identity extends Component implements IdentityInterface
 {
     /**
-     * @var string
-     */
-    protected $_type;
-
-    /**
-     * Identity constructor.
-     *
-     * @param array $options
-     */
-    public function __construct($options = null)
-    {
-        if (isset($options['type'])) {
-            $this->_type = $options['type'];
-            $this->eventsManager->attachEvent('request:construct', [$this, 'onConstruct']);
-        }
-    }
-
-    public function onConstruct()
-    {
-        $context = $this->_context;
-
-        $context->type = $this->_type;
-    }
-
-    /**
      * @return bool
      */
     public function isGuest()
