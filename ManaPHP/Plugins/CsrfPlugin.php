@@ -53,7 +53,7 @@ class CsrfPlugin extends Plugin
             $this->_name = $_options['name'];
         }
 
-        $this->eventsManager->attachEvent('dispatcher:beforeDispatch', [$this, 'onBeforeDispatch']);
+        $this->eventsManager->attachEvent('request:validate', [$this, 'validate']);
     }
 
     /**
@@ -106,7 +106,7 @@ class CsrfPlugin extends Plugin
      * @return void
      * @throws \ManaPHP\Exception\CsrfTokenException
      */
-    public function onBeforeDispatch()
+    public function validate()
     {
         if ($this->_isSafe()) {
             return;

@@ -78,14 +78,12 @@ class Application extends \ManaPHP\Application
 
             $this->registerServices();
 
-            $this->eventsManager->fireEvent('app:start', $this);
-
             $this->_prepareGlobals();
 
             $this->eventsManager->fireEvent('request:begin', $this);
             $this->eventsManager->fireEvent('request:construct', $this);
 
-            $this->authenticate();
+            $this->eventsManager->fireEvent('request:authenticate', $this);
 
             $actionReturnValue = $this->router->dispatch();
             if ($actionReturnValue === null || $actionReturnValue instanceof View) {

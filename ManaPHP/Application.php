@@ -81,7 +81,8 @@ class Application extends Component implements ApplicationInterface
         $this->loader->registerFiles('@manaphp/helpers.php');
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'generateRequestId']);
-        $this->eventsManager->attachEvent('dispatcher:beforeInvoke', [$this, 'authorize']);
+        $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
+        $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
 
         defined('MANAPHP_COROUTINE') or define('MANAPHP_COROUTINE', false);
     }
