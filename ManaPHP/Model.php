@@ -641,38 +641,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * Fires an event, implicitly calls behaviors and listeners in the events manager are notified
-     *
-     * @param string $eventName
-     *
-     * @return void
-     */
-    protected function _fireEvent($eventName)
-    {
-        if (method_exists($this, $eventName)) {
-            $this->{$eventName}();
-        }
-
-        $this->eventsManager->fireEvent('model:' . $eventName, $this);
-    }
-
-    /**
-     * Fires an internal event that cancels the operation
-     *
-     * @param string $eventName
-     *
-     * @return bool
-     */
-    protected function _fireEventCancel($eventName)
-    {
-        if (method_exists($this, $eventName) && $this->{$eventName}() === false) {
-            return false;
-        }
-
-        return $this->eventsManager->fireEvent('model:' . $eventName, $this) !== false;
-    }
-
-    /**
      * Assigns values to a model from an array
      *
      * @param array $data
@@ -902,13 +870,11 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public function delete()
     {
-        if ($this->_fireEventCancel('beforeDelete') === false) {
-            return $this;
-        }
+        $this->eventsManager->fireEvent('model:beforeDelete', $this);
 
         static::query(null, $this)->where($this->_getPrimaryKeyValuePairs())->delete();
 
-        $this->_fireEvent('afterDelete');
+        $this->eventsManager->fireEvent('model:afterDelete', $this);
 
         return $this;
     }
