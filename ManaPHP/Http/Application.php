@@ -1,6 +1,12 @@
 <?php
 namespace ManaPHP\Http;
 
+/**
+ * Class Application
+ * @package ManaPHP\Http
+ * @method void authenticate()
+ * @method void authorize()
+ */
 class Application extends \ManaPHP\Application
 {
     public function __construct($loader = null)
