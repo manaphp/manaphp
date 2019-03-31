@@ -1,13 +1,16 @@
 <?php
 
 return [
-    'debug' => true,
+    'debug' => false,
     'version' => '1.1.1',
     'timezone' => 'PRC',
     'master_key' => '',
     'params' => ['manaphp_brand_show' => 1],
     'aliases' => [
         '@xxx' => '@root/xvdfd'
+    ],
+    'servers' => [
+        'http' => ['worker_num' => 1, 'max_request' => 1000000, 'dispatch_mode' => 1]
     ],
     'components' => [
         'db' => 'mysql://root@localhost/manaphp?charset=utf8',
@@ -18,6 +21,6 @@ return [
     'services' => [],
     'listeners' => [],
     'plugins' => [
-        'debugger'
+        //  'debugger'
     ]
 ];
