@@ -3,14 +3,13 @@
 namespace ManaPHP;
 
 use ManaPHP\Mongodb\Exception as MongodbException;
-use MongoDB\Driver\BulkWrite;
-use MongoDB\Driver\Command;
 use MongoDB\Driver\Exception\RuntimeException;
-use MongoDB\Driver\Manager;
-use MongoDB\Driver\Query as MongodbQuery;
-use MongoDB\Driver\ReadPreference;
-use MongoDB\Driver\WriteConcern;
 
+/**
+ * Class Mongodb
+ * @package ManaPHP
+ * @property-read \ManaPHP\DiInterface $di
+ */
 class Mongodb extends Component implements MongodbInterface
 {
     /**
@@ -24,26 +23,6 @@ class Mongodb extends Component implements MongodbInterface
     protected $_default_db;
 
     /**
-     * @var \MongoDB\Driver\Manager
-     */
-    protected $_manager;
-
-    /**
-     * @var \MongoDB\Driver\WriteConcern
-     */
-    protected $_writeConcern;
-
-    /**
-     * @var int
-     */
-    protected $_heartbeat = 60;
-
-    /**
-     * @var float
-     */
-    protected $_last_heartbeat;
-
-    /**
      * Mongodb constructor.
      *
      * @param string|array $dsn
@@ -54,6 +33,8 @@ class Mongodb extends Component implements MongodbInterface
 
         $path = parse_url($dsn, PHP_URL_PATH);
         $this->_default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
+
+        $this->poolManager->add($this, $this->di->getInstance('ManaPHP\Mongodb\Connection', [$this->_dsn]));
     }
 
     /**
@@ -65,99 +46,26 @@ class Mongodb extends Component implements MongodbInterface
     }
 
     /**
-     * @return bool
-     */
-    protected function _ping()
-    {
-        try {
-            $command = new Command(['ping' => 1]);
-            $this->_manager->executeCommand('admin', $command);
-            return true;
-        } catch (\Exception $exception) {
-            return false;
-        }
-    }
-
-    /**
-     * @return \MongoDB\Driver\Manager
-     */
-    protected function _getManager()
-    {
-        if ($this->_manager === null) {
-            $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.connect');
-
-            $this->eventsManager->fireEvent('mongodb:beforeConnect', $this, ['dsn' => $this->_dsn]);
-            $this->_manager = new Manager($this->_dsn);
-            $this->eventsManager->fireEvent('mongodb:afterConnect', $this);
-        }
-
-        if (microtime(true) - $this->_last_heartbeat > $this->_heartbeat && !$this->_ping()) {
-            $this->close();
-            $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'mongodb.reconnect');
-
-            $this->eventsManager->fireEvent('mongodb:beforeConnect', $this, ['dsn' => $this->_dsn]);
-            $this->_manager = new Manager($this->_dsn);
-            $this->eventsManager->fireEvent('mongodb:afterConnect', $this);
-        }
-
-        $this->_last_heartbeat = microtime(true);
-
-        return $this->_manager;
-    }
-
-    /**
-     * @param string                    $source
-     * @param \MongoDb\Driver\BulkWrite $bulk
-     *
-     * @return \MongoDB\Driver\WriteResult
-     * @throws \ManaPHP\Mongodb\Exception
-     */
-    protected function _bulkWrite($source, $bulk)
-    {
-        $namespace = strpos($source, '.') === false ? ($this->_default_db . '.' . $source) : $source;
-
-        if ($this->_writeConcern === null) {
-            try {
-                $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
-            } catch (\Exception $exception) {
-                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-            }
-        }
-
-        $start_time = microtime(true);
-        if ($start_time - $this->_last_heartbeat > 1.0) {
-            $this->_last_heartbeat = null;
-        }
-        try {
-            $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
-        } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-        }
-
-        return $result;
-    }
-
-    /**
      * @param string $source
      * @param array  $document
      *
      * @return int
-     * @throws \ManaPHP\Mongodb\Exception
-     * @throws \MongoDB\Driver\Exception\InvalidArgumentException
      */
     public function insert($source, $document)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $bulk = new BulkWrite();
-
-        $bulk->insert($document);
-
         $this->eventsManager->fireEvent('mongodb:beforeInsert', $this, ['namespace' => $namespace]);
-        $result = $this->_bulkWrite($namespace, $bulk);
-        $count = $result->getInsertedCount();
 
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
+        try {
+            $count = $connection->insert($namespace, $document);
+        } finally {
+            $this->poolManager->push($this, $connection);
+        }
         $this->eventsManager->fireEvent('mongodb:afterInsert', $this, ['namespace' => $namespace]);
+
         $this->logger->info(compact('count', 'namespace', 'document'), 'mongodb.insert');
 
         return $count;
@@ -168,20 +76,22 @@ class Mongodb extends Component implements MongodbInterface
      * @param array[] $documents
      *
      * @return int
-     * @throws \ManaPHP\Mongodb\Exception
      */
     public function bulkInsert($source, $documents)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $bulk = new BulkWrite();
-        foreach ($documents as $document) {
-            $bulk->insert($document);
-        }
         $this->eventsManager->fireEvent('mongodb:beforeBulkInsert', $this, ['namespace' => $namespace]);
-        $result = $this->_bulkWrite($namespace, $bulk);
+
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
+        try {
+            $count = $connection->bulkInsert($namespace, $documents);
+        } finally {
+            $this->poolManager->push($this, $connection);
+        }
         $this->eventsManager->fireEvent('mongodb:afterBulkInsert', $this, ['namespace' => $namespace]);
-        $count = $result->getInsertedCount();
+
         $this->logger->info(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
         return $count;
     }
@@ -192,23 +102,21 @@ class Mongodb extends Component implements MongodbInterface
      * @param array  $filter
      *
      * @return int
-     * @throws \ManaPHP\Mongodb\Exception
      */
     public function update($source, $document, $filter)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $bulk = new BulkWrite();
-        try {
-            $bulk->update($filter, key($document)[0] === '$' ? $document : ['$set' => $document], ['multi' => true]);
-        } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-        }
-
         $this->eventsManager->fireEvent('mongodb:beforeUpdate', $this, ['namespace' => $namespace]);
-        $result = $this->_bulkWrite($namespace, $bulk);
+
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
+        try {
+            $count = $connection->update($namespace, $document, $filter);
+        } finally {
+            $this->poolManager->push($this, $connection);
+        }
         $this->eventsManager->fireEvent('mongodb:afterUpdate', $this);
-        $count = $result->getModifiedCount();
         $this->logger->info(compact('namespace', 'document', 'filter', 'count'), 'mongodb.update');
         return $count;
     }
@@ -225,21 +133,17 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $bulk = new BulkWrite();
-        foreach ($documents as $document) {
-            $pkValue = $document[$primaryKey];
-            unset($document[$primaryKey]);
-            try {
-                $bulk->update([$primaryKey => $pkValue], key($document)[0] === '$' ? $document : ['$set' => $document]);
-            } catch (\Exception $exception) {
-                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-            }
-        }
-
         $this->eventsManager->fireEvent('mongodb:beforeBulkUpdate', $this, ['namespace' => $namespace]);
-        $result = $this->_bulkWrite($namespace, $bulk);
+
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
+        try {
+            $count = $connection->bulkUpdate($namespace, $documents, $primaryKey);
+        } finally {
+            $this->poolManager->push($this, $connection);
+        }
         $this->eventsManager->fireEvent('mongodb:afterBulkUpdate', $this, ['namespace' => $namespace]);
-        $count = $result->getModifiedCount();
+
         $this->logger->info(compact('namespace', 'documents', 'primaryKey', 'count'), 'mongodb.bulk.update');
         return $count;
     }
@@ -256,17 +160,17 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $bulk = new BulkWrite();
-        try {
-            $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
-        } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-        }
-
         $this->eventsManager->fireEvent('mongodb:beforeUpsert', $this, ['namespace' => $namespace]);
-        $result = $this->_bulkWrite($namespace, $bulk);
+
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
+        try {
+            $count = $connection->upsert($namespace, $document, $primaryKey);
+        } finally {
+            $this->poolManager->push($this, $connection);
+        }
         $this->eventsManager->fireEvent('mongodb:afterUpsert', $this);
-        $count = $result->getUpsertedCount();
+
         $this->logger->info(compact('count', 'namespace', 'document'), 'mongodb.upsert');
         return $count;
     }
@@ -283,19 +187,17 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $bulk = new BulkWrite();
-        foreach ($documents as $document) {
-            try {
-                $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
-            } catch (\Exception $exception) {
-                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-            }
-        }
-
         $this->eventsManager->fireEvent('mongodb:beforeBulkUpsert', $this, ['namespace' => $namespace]);
-        $result = $this->_bulkWrite($namespace, $bulk);
+
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
+        try {
+            $count = $connection->bulkUpsert($namespace, $documents, $primaryKey);
+        } finally {
+            $this->poolManager->push($this, $connection);
+        }
         $this->eventsManager->fireEvent('mongodb:afterBulkUpsert', $this);
-        $count = $result->getUpsertedCount();
+
         $this->logger->info(compact('count', 'namespace', 'documents'), 'mongodb.bulk.upsert');
         return $count;
     }
@@ -311,34 +213,19 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $bulk = new BulkWrite();
-        try {
-            $bulk->delete($filter);
-        } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-        }
-
         $this->eventsManager->fireEvent('mongodb:beforeDelete', $this, ['namespace' => $namespace]);
-        $result = $this->_bulkWrite($namespace, $bulk);
+
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
+        try {
+            $count = $connection->delete($namespace, $filter);
+        } finally {
+            $this->poolManager->push($this, $connection);
+        }
         $this->eventsManager->fireEvent('mongodb:afterDelete', $this);
-        $count = $result->getDeletedCount();
+
         $this->logger->info(compact('namespace', 'filter', 'count'), 'mongodb.delete');
         return $count;
-    }
-
-    /**
-     * @param string         $namespace
-     * @param array          $filter
-     * @param array          $options
-     * @param ReadPreference $readPreference
-     *
-     * @return array
-     */
-    protected function _fetchAll($namespace, $filter, $options, $readPreference)
-    {
-        $cursor = $this->_getManager()->executeQuery($namespace, new MongodbQuery($filter, $options), $readPreference);
-        $cursor->setTypeMap(['root' => 'array']);
-        return $cursor->toArray();
     }
 
     /**
@@ -352,35 +239,21 @@ class Mongodb extends Component implements MongodbInterface
     public function fetchAll($source, $filter = [], $options = [], $secondaryPreferred = true)
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
-        if (is_bool($secondaryPreferred)) {
-            $readPreference = new ReadPreference($secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY);
-        } else {
-            $readPreference = new ReadPreference($secondaryPreferred);
-        }
+
         $this->eventsManager->fireEvent('mongodb:beforeQuery', $this, compact('namespace', 'filter', 'options'));
-        $start_time = microtime(true);
 
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
         try {
-            $result = $this->_fetchAll($namespace, $filter, $options, $readPreference);
-        } catch (\Exception $exception) {
-            $result = null;
-            $failed = true;
-            if (!$this->_ping()) {
-                try {
-                    $this->close();
-                    $result = $this->_fetchAll($namespace, $filter, $options, $readPreference);
-                    $failed = false;
-                } catch (\Exception $exception) {
-                }
-            }
-
-            if ($failed) {
-                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-            }
+            $start_time = microtime(true);
+            $result = $connection->fetchAll($namespace, $filter, $options, $secondaryPreferred);
+            $elapsed = round(microtime(true) - $start_time, 3);
+        } finally {
+            $this->poolManager->push($this, $connection);
         }
 
-        $elapsed = round(microtime(true) - $start_time, 3);
         $this->eventsManager->fireEvent('mongodb:afterQuery', $this, compact('namespace', 'filter', 'options', 'result', 'elapsed'));
+	
         $this->logger->debug(compact('namespace', 'filter', 'options', 'result', 'elapsed'), 'mongodb.query');
         return $result;
     }
@@ -398,20 +271,18 @@ class Mongodb extends Component implements MongodbInterface
         }
 
         $this->eventsManager->fireEvent('mongodb:beforeCommand', $this, compact('db', 'command'));
-        $start_time = microtime(true);
-        if ($start_time - $this->_last_heartbeat > 1.0) {
-            $this->_last_heartbeat = null;
-        }
-        try {
-            $cursor = $this->_getManager()->executeCommand($db, new Command($command));
-            $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-            $result = $cursor->toArray();
-        } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
-        }
 
-        $elapsed = round(microtime(true) - $start_time, 3);
+        /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
+        $connection = $this->poolManager->pop($this);
+        try {
+            $start_time = microtime(true);
+            $result = $connection->command($command, $db);
+            $elapsed = round(microtime(true) - $start_time, 3);
+        } finally {
+            $this->poolManager->push($this, $connection);
+        }
         $this->eventsManager->fireEvent('mongodb:afterCommand', $this, compact('db', 'command', 'result', 'elapsed'));
+
         $count = count($result);
         $command_name = key($command);
         if (strpos('ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
@@ -530,11 +401,5 @@ class Mongodb extends Component implements MongodbInterface
     public function query($collection = null)
     {
         return $this->_di->get('ManaPHP\Mongodb\Query', [$this])->from($collection);
-    }
-
-    public function close()
-    {
-        $this->_manager = null;
-        $this->_last_heartbeat = null;
     }
 }
