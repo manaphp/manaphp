@@ -127,6 +127,12 @@ namespace PHPSTORM_META {
             '' == '@',
         ]
     ];
+
+    registerArgumentsSet('eventsManager',
+        'request:construct', 'request:destruct', 'request:begin', 'request:end',
+        'request:validate', 'request:authorize', 'request:authenticate', 'request:invoke', 'request:invoked');
+    expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventsManager'));
+    expectedArguments(\ManaPHP\Component::attachEvent(), 0, argumentsSet('eventsManager'));
 }
 
 /**
