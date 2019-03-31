@@ -15,7 +15,7 @@ use Swoole\Runtime;
  * @property-read \ManaPHP\Http\SessionInterface       $session
  * @property-read \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
  */
-class Swoole extends \ManaPHP\Application
+class Swoole extends \ManaPHP\Http\Application
 {
     public function getDi()
     {

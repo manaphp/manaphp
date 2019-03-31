@@ -80,26 +80,8 @@ class Application extends Component implements ApplicationInterface
 
         $this->loader->registerFiles('@manaphp/helpers.php');
 
-        $this->eventsManager->attachEvent('request:begin', [$this, 'generateRequestId']);
-        $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
-        $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
 
         defined('MANAPHP_COROUTINE') or define('MANAPHP_COROUTINE', false);
-    }
-
-    public function generateRequestId()
-    {
-        if (!$this->request->hasServer('HTTP_X_REQUEST_ID')) {
-            if (function_exists('random_bytes')) {
-                $request_id = random_bytes(15);
-            } else {
-                $request_id = substr(md5(microtime() . mt_rand(), true), 0, 15);
-            }
-
-            $globals = $this->request->getGlobals();
-
-            $globals->_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex($request_id);
-        }
     }
 
     /**
@@ -141,17 +123,6 @@ class Application extends Component implements ApplicationInterface
             $this->_di = !empty($_SERVER['DOCUMENT_ROOT']) ? new MvcFactory() : new CliFactory();
         }
         return $this->_di;
-    }
-
-
-    public function authenticate()
-    {
-        $this->identity->authenticate();
-    }
-
-    public function authorize()
-    {
-        $this->authorization->authorize();
     }
 
     /**

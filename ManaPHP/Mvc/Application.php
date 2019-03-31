@@ -17,7 +17,7 @@ use ManaPHP\View;
  * @property-read \ManaPHP\ViewInterface          $view
  * @property-read \ManaPHP\Http\SessionInterface  $session
  */
-class Application extends \ManaPHP\Application
+class Application extends \ManaPHP\Http\Application
 {
     /**
      * @var string
@@ -47,27 +47,6 @@ class Application extends \ManaPHP\Application
         }
 
         return null;
-    }
-
-    protected function _prepareGlobals()
-    {
-        $globals = $this->request->getGlobals();
-
-        $globals->_GET = $_GET;
-        $globals->_POST = $_POST;
-        $globals->_REQUEST = $_REQUEST;
-        $globals->_FILES = $_FILES;
-        $globals->_COOKIE = $_COOKIE;
-        $globals->_SERVER = $_SERVER;
-
-        if (!$this->configure->compatible_globals) {
-            unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
-            foreach ($_SERVER as $k => $v) {
-                if (strpos('DOCUMENT_ROOT,SERVER_SOFTWARE,SCRIPT_NAME,SCRIPT_FILENAME', $k) === false) {
-                    unset($_SERVER[$k]);
-                }
-            }
-        }
     }
 
     public function main()
