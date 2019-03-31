@@ -246,9 +246,7 @@ class Db extends Component implements DbInterface
 
         $this->logger->debug($event_data, 'db.query');
 
-        if (($r = $this->eventsManager->fireEvent('db:afterQuery', $this, $event_data)) !== null) {
-            $result = $r;
-        }
+        $this->eventsManager->fireEvent('db:afterQuery', $this, $event_data);
 
         return $result;
     }
