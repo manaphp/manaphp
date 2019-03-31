@@ -2,6 +2,7 @@
 namespace ManaPHP\Swoole\Http;
 
 use ManaPHP\Component;
+use ManaPHP\ContextManager;
 
 class ServerContext
 {
@@ -194,14 +195,14 @@ class Server extends Component implements ServerInterface
                 $method = $this->_handler;
                 $method();
             }
-        } catch (\Exception $exception) {
-            $this->logger->error($exception);
-            $response->status(500);
-            $response->end('Internal Server Error');
-        } catch (\Error $error) {
-            $this->logger->error($error);
-            $response->status(500);
-            $response->end('Internal Server Error');
+        } catch (\Throwable $exception) {
+            $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
+            $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
+            $traces = $exception->getTraceAsString();
+            $str .= preg_replace('/#\d+\s/', '    at ', $traces);
+            echo $str . PHP_EOL;
+        } finally {
+            ContextManager::reset();
         }
     }
 

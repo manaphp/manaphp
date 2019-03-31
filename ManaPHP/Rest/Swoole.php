@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Rest;
 
-use ManaPHP\ContextManager;
 use ManaPHP\Http\Response;
 use Swoole\Runtime;
 
@@ -50,8 +49,6 @@ class Swoole extends \ManaPHP\Application
 
         $this->eventsManager->fireEvent('request:destruct', $this);
         $this->eventsManager->fireEvent('request:end', $this);
-
-        ContextManager::reset();
     }
 
     public function main()
