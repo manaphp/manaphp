@@ -8,8 +8,14 @@ class Application extends \ManaPHP\Application
         parent::__construct($loader);
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'generateRequestId']);
-        $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
-        $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
+
+        if (method_exists($this, 'authenticate')) {
+            $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
+        }
+
+        if (method_exists($this, 'authorize')) {
+            $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
+        }
     }
 
     public function generateRequestId()
@@ -46,15 +52,5 @@ class Application extends \ManaPHP\Application
                 }
             }
         }
-    }
-
-    public function authenticate()
-    {
-        $this->identity->authenticate();
-    }
-
-    public function authorize()
-    {
-        $this->authorization->authorize();
     }
 }

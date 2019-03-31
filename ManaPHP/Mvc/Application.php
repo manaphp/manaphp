@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Mvc;
 
-use ManaPHP\Exception\AuthenticationException;
 use ManaPHP\Http\Response;
 use ManaPHP\View;
 
@@ -19,34 +18,12 @@ use ManaPHP\View;
  */
 class Application extends \ManaPHP\Http\Application
 {
-    /**
-     * @var string
-     */
-    protected $_loginUrl = '/user/session/login';
-
     public function getDi()
     {
         if (!$this->_di) {
             $this->_di = new Factory();
         }
         return $this->_di;
-    }
-
-    public function authorize()
-    {
-        try {
-            $this->authorization->authorize();
-        } catch (AuthenticationException $exception) {
-            if ($this->request->isAjax()) {
-                return $this->response->setJsonContent($exception);
-            } else {
-                $redirect = $this->request->get('redirect', $this->request->getUrl());
-                $sep = (strpos($this->_loginUrl, '?') ? '&' : '?');
-                return $this->response->redirect(["{$this->_loginUrl}{$sep}redirect=$redirect"]);
-            }
-        }
-
-        return null;
     }
 
     public function main()
