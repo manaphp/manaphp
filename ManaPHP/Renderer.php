@@ -40,8 +40,8 @@ class Renderer extends Component implements RendererInterface
      * @var array
      */
     protected $_engines = [
-        '.sword' => 'ManaPHP\Renderer\Engine\Sword',
-        '.phtml' => 'ManaPHP\Renderer\Engine\Php'];
+        '.phtml' => 'ManaPHP\Renderer\Engine\Php',
+        '.sword' => 'ManaPHP\Renderer\Engine\Sword'];
 
     /**
      * @var array array
