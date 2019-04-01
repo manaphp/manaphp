@@ -1,5 +1,9 @@
 <?php
 
+ini_set('memory_limit', -1);
+
+PHP_EOL !== "\n" or define('MANAPHP_COROUTINE', true);
+
 /** @noinspection PhpIncludeInspection */
 if (is_file(dirname(__DIR__) . '/vendor/manaphp/framework/Loader.php')) {
     include dirname(__DIR__) . '/vendor/manaphp/framework/Loader.php';
