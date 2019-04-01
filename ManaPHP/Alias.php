@@ -88,6 +88,10 @@ class Alias extends Component implements AliasInterface
      */
     public function resolve($path)
     {
+        if ($path[0] !== '@') {
+            return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
+        }
+
         if (strpos($path, '{') !== false && preg_match_all('#{([^\}]+)}#', $path, $matches)) {
             foreach ((array)$matches[1] as $k => $match) {
                 if (is_numeric($match)) {
@@ -100,10 +104,6 @@ class Alias extends Component implements AliasInterface
 
                 $path = str_replace($matches[0][$k], $replaced, $path);
             }
-        }
-
-        if ($path[0] !== '@') {
-            return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
         }
 
         if (DIRECTORY_SEPARATOR === '\\') {
