@@ -44,6 +44,11 @@ class Renderer extends Component implements RendererInterface
         '.phtml' => 'ManaPHP\Renderer\Engine\Php'];
 
     /**
+     * @var array array
+     */
+    protected $_files = [];
+
+    /**
      * Renderer constructor.
      *
      * @param array $options
@@ -174,17 +179,21 @@ class Renderer extends Component implements RendererInterface
             $template = dirname(end($context->templates)) . '/' . $template;
         }
 
+        if (isset($this->_files[$template])) {
+            return $this->_files[$template];
+        }
+
         if (($extension = pathinfo($template, PATHINFO_EXTENSION)) && isset($this->_engines[".$extension"])) {
-            return $template;
+            return $this->_files[$template] = $template;
         }
 
         foreach ($this->_engines as $extension => $_) {
             if (is_file($file = $template . $extension)) {
-                return $file;
+                return $this->_files[$template] = $file;
             }
         }
 
-        return false;
+        return $this->_files[$template] = false;
     }
 
     /**
