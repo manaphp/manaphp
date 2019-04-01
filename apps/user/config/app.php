@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'debug' => false,
+    'debug' => env('APP_DEBUG', false),
     'version' => '1.1.1',
     'timezone' => 'PRC',
     'master_key' => '',
@@ -10,7 +10,7 @@ return [
         '@xxx' => '@root/xvdfd'
     ],
     'servers' => [
-        'http' => ['worker_num' => 1, 'max_request' => 1000000, 'dispatch_mode' => 1]
+        'http' => ['worker_num' => 2, 'max_request' => 1000000, 'dispatch_mode' => 1, 'enable_static_handler' => env('APP_DEBUG', false)]
     ],
     'components' => [
         'db' => 'mysql://root@localhost/manaphp?charset=utf8',

@@ -39,6 +39,11 @@ abstract class Application extends \ManaPHP\Application
         }
 
         $this->_use_swoole = PHP_SAPI === 'cli';
+
+        if ($this->_use_swoole) {
+            $this->alias->set('@web', '');
+            $this->alias->set('@asset', '');
+        }
     }
 
     public function generateRequestId()

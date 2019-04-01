@@ -57,8 +57,6 @@ class Server extends Component implements ServerInterface
 
     public function __construct()
     {
-        $this->alias->set('@web', '');
-
         $script_filename = get_included_files()[0];
         $parts = explode('-', phpversion());
         $_SERVER = [
@@ -134,6 +132,11 @@ class Server extends Component implements ServerInterface
         }
     }
 
+    public function log($level, $message)
+    {
+        echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
+    }
+
     /**
      * @param callable|array $handler
      *
@@ -141,7 +144,17 @@ class Server extends Component implements ServerInterface
      */
     public function start($handler)
     {
+        echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
+
         $settings = isset($this->configure->servers['http']) ? $this->configure->servers['http'] : [];
+
+        if (!empty($settings['enable_static_handler'])) {
+            $settings['document_root'] = $_SERVER['DOCUMENT_ROOT'];
+            if ($this->configure->debug) {
+                $this->log('warn', 'enable `enable_static_handler` setting of swoole will reduce performance!!!!');
+                sleep(3);
+            }
+        }
 
         if (isset($settings['host'])) {
             $this->_host = $settings['host'];
@@ -159,8 +172,8 @@ class Server extends Component implements ServerInterface
         $this->_swoole->set($this->_settings);
         $this->_handler = $handler;
 
-        echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
-        echo sprintf('[%s][info]: starting listen on: %s:%d with setting: %s', date('c'), $this->_host, $this->_port, json_encode($this->_settings)), PHP_EOL;
+        $this->log('info',
+            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
 
         $this->_swoole->on('request', [$this, 'onRequest']);
 
