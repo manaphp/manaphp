@@ -75,8 +75,6 @@ class Renderer extends Component implements RendererInterface
     {
         $context = $this->_context;
 
-        $content = null;
-
         if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
             $template = str_replace('\\', '/', $template);
         }
@@ -163,8 +161,6 @@ class Renderer extends Component implements RendererInterface
      */
     public function exists($template)
     {
-        $context = $this->_context;
-
         if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
             $template = str_replace('\\', '/', $template);
         }
@@ -176,7 +172,7 @@ class Renderer extends Component implements RendererInterface
         } elseif (strpos($template, '/') !== false) {
             throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
         } else {
-            $template = dirname(end($context->templates)) . '/' . $template;
+            $template = dirname(end($this->_context->templates)) . '/' . $template;
         }
 
         if (isset($this->_files[$template])) {
