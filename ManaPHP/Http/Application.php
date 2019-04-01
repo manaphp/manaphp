@@ -1,14 +1,29 @@
 <?php
 namespace ManaPHP\Http;
 
+use Swoole\Runtime;
+
 /**
  * Class Application
+ * @property-read \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
+ * @property-read \ManaPHP\Http\RequestInterface       $request
+ * @property-read \ManaPHP\Http\ResponseInterface      $response
+ * @property-read \ManaPHP\RouterInterface             $router
+ * @property-read \ManaPHP\DispatcherInterface         $dispatcher
+ * @property-read \ManaPHP\ViewInterface               $view
+ * @property-read \ManaPHP\Http\SessionInterface       $session
+ *
  * @package ManaPHP\Http
  * @method void authenticate()
  * @method void authorize()
  */
-class Application extends \ManaPHP\Application
+abstract class Application extends \ManaPHP\Application
 {
+    /**
+     * @var bool
+     */
+    protected $_use_swoole = false;
+
     public function __construct($loader = null)
     {
         parent::__construct($loader);
@@ -22,6 +37,8 @@ class Application extends \ManaPHP\Application
         if (method_exists($this, 'authorize')) {
             $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
         }
+
+        $this->_use_swoole = PHP_SAPI === 'cli';
     }
 
     public function generateRequestId()
@@ -57,6 +74,36 @@ class Application extends \ManaPHP\Application
                     unset($_SERVER[$k]);
                 }
             }
+        }
+    }
+
+    public function send()
+    {
+        if ($this->_use_swoole) {
+            $this->swooleHttpServer->send($this->response);
+        } else {
+            $this->response->send();
+        }
+    }
+
+    abstract public function handle();
+
+    public function main()
+    {
+        $this->dotenv->load();
+        $this->configure->load();
+
+        if (MANAPHP_COROUTINE) {
+            Runtime::enableCoroutine();
+        }
+
+        $this->registerServices();
+
+        if ($this->_use_swoole) {
+            $this->swooleHttpServer->start([$this, 'handle']);
+        } else {
+            $this->_prepareGlobals();
+            $this->handle();
         }
     }
 }

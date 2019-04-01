@@ -20,6 +20,7 @@ class Factory extends FactoryDefault
             'cookies' => 'ManaPHP\Http\Cookies',
             'captcha' => 'ManaPHP\Security\Captcha',
             'authorization' => 'ManaPHP\Authorization',
+            'swooleHttpServer' => 'ManaPHP\Swoole\Http\Server'
         ]);
     }
 }

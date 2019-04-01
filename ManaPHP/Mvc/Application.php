@@ -4,17 +4,12 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Http\Response;
 use ManaPHP\View;
+use Swoole\Runtime;
 
 /**
  * Class ManaPHP\Mvc\Application
  *
  * @package application
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\RouterInterface        $router
- * @property-read \ManaPHP\DispatcherInterface    $dispatcher
- * @property-read \ManaPHP\ViewInterface          $view
- * @property-read \ManaPHP\Http\SessionInterface  $session
  */
 class Application extends \ManaPHP\Http\Application
 {
@@ -26,16 +21,9 @@ class Application extends \ManaPHP\Http\Application
         return $this->_di;
     }
 
-    public function main()
+    public function handle()
     {
         try {
-            $this->dotenv->load();
-            $this->configure->load();
-
-            $this->registerServices();
-
-            $this->_prepareGlobals();
-
             $this->eventsManager->fireEvent('request:begin', $this);
             $this->eventsManager->fireEvent('request:construct', $this);
 
@@ -58,7 +46,7 @@ class Application extends \ManaPHP\Http\Application
             $this->handleException($e);
         }
 
-        $this->response->send();
+        $this->send();
 
         $this->eventsManager->fireEvent('request:destruct', $this);
         $this->eventsManager->fireEvent('request:end', $this);

@@ -24,6 +24,7 @@ class Factory extends FactoryDefault
             'viewsCache' => ['ManaPHP\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
             'cookies' => 'ManaPHP\Http\Cookies',
             'authorization' => 'ManaPHP\Authorization',
+            'swooleHttpServer' => 'ManaPHP\Swoole\Http\Server'
         ]);
     }
 }
