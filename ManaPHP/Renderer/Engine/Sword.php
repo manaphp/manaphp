@@ -14,6 +14,11 @@ use ManaPHP\Renderer\EngineInterface;
 class Sword extends Component implements EngineInterface
 {
     /**
+     * @var array
+     */
+    protected $_compiled = [];
+
+    /**
      * @param string $source
      *
      * @return string
@@ -33,9 +38,15 @@ class Sword extends Component implements EngineInterface
 
         $compiled = $this->alias->resolve($compiled);
 
+        if (isset($this->_compiled[$compiled])) {
+            return $compiled;
+        }
+
         if ($this->configure->debug || !file_exists($compiled) || filemtime($source) > filemtime($compiled)) {
             $this->swordCompiler->compileFile($source, $compiled);
         }
+
+        $this->_compiled[$compiled] = 1;
 
         return $compiled;
     }
