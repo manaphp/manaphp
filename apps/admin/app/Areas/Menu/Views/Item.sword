@@ -111,7 +111,7 @@
                 permissions: {}
             },
             mounted: function () {
-                this.ajax_get("{{action('group/list')}}", function (res) {
+                this.ajax_get("group/list", function (res) {
                     this.groups = res;
                     if (!this.request.group_id) {
                         this.request.group_id = this.groups[0].group_id;
@@ -128,7 +128,7 @@
             },
             methods: {
                 do_create: function () {
-                    this.ajax_post("{{action('create')}}", this.create, function (res) {
+                    this.ajax_post("create", this.create, function (res) {
                         this.$refs.create.resetFields();
                         this.createVisible = false;
                         this.reload_table();
@@ -139,14 +139,14 @@
                     this.editVisible = true;
                 },
                 do_edit: function () {
-                    this.ajax_post("{{action('edit')}}", this.edit, function (res) {
+                    this.ajax_post("edit", this.edit, function (res) {
                         this.editVisible = false;
                         this.reload_table();
                     });
                 },
                 do_delete: function (row) {
                     this.$confirm('delete?').then(function (value) {
-                        this.ajax_post("{{action('delete')}}", {item_id: row.item_id}).then(function (res) {
+                        this.ajax_post("delete", {item_id: row.item_id}).then(function (res) {
                             this.reload_table();
                         });
                     }.bind(this));

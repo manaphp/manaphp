@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>About</title>
-    <link rel="stylesheet" href="{{asset('/static/css/manaphp.css')}}">
+    <link rel="stylesheet" href="/static/css/manaphp.css">
     @yield('css')
 </head>
 <body>
 <div>
-     {{--<a href="{{action('/admin')}}">Admin</a> --}}
+     {{--<a href="/admin">Admin</a> --}}
     @flash()
 </div>

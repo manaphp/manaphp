@@ -29,7 +29,7 @@
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="ID" width="50"></el-table-column>
         <el-table-column label="权限ID" width="120">
-            <template slot-scope="scope"><a :href="'{{action('permission/')}}?permission_id='+scope.row.permission_id">@{{scope.row.permission_id}}</a>
+            <template slot-scope="scope"><a :href="'permission/?permission_id='+scope.row.permission_id">@{{scope.row.permission_id}}</a>
             </template>
         </el-table-column>
         <el-table-column prop="permission.path" label="权限路径"></el-table-column>
@@ -65,7 +65,7 @@
                 permissions: [],
             },
             mounted: function () {
-                this.ajax_get("{{action('role/list')}}", function (res) {
+                this.ajax_get("role/list", function (res) {
                     this.roles = res;
                     if (!this.request.role_id) {
                         this.request.role_id = this._.keys(this.roles)[0];
@@ -87,7 +87,7 @@
                     this.edit.role_id = this.request.role_id;
 
                     if (!this.permissions.length) {
-                        this.ajax_get("{{action('permission/list')}}", function (res) {
+                        this.ajax_get("permission/list", function (res) {
                             this.permissions = res;
                             this.editVisible = true;
                         });
@@ -96,7 +96,7 @@
                     }
                 },
                 do_edit: function () {
-                    this.ajax_post("{{action('save')}}", this.edit, function () {
+                    this.ajax_post("save", this.edit, function () {
                         this.editVisible = false;
                         this.reload_table();
                     });

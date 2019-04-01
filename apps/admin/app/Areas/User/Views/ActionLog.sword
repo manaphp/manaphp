@@ -62,7 +62,7 @@
             methods: {
                 show_detail: function (row) {
                     this.detailVisible = true;
-                    this.ajax_post("{{action('detail')}}", {id: row.id}, function (data) {
+                    this.ajax_post("detail", {id: row.id}, function (data) {
                         this.detail = data;
                     });
                 }

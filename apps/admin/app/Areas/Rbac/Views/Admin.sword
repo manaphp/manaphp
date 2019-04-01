@@ -69,7 +69,7 @@
                 <el-button v-if="scope.row.status!==1" @click="do_active(scope.row)" size="mini" plain
                            round>激活
                 </el-button>
-                <a :href="'{{action('admin_role/')}}?admin_id='+scope.row.admin_id">角色列表</a>
+                <a :href="'admin_role/?admin_id='+scope.row.admin_id">角色列表</a>
             </template>
         </el-table-column>
     </el-table>
@@ -116,17 +116,17 @@
             },
             methods: {
                 do_lock: function (row) {
-                    this.ajax_post("{{action('lock')}}", {admin_id: row.admin_id}, function () {
+                    this.ajax_post("lock", {admin_id: row.admin_id}, function () {
                         row.status = 2;
                     });
                 },
                 do_active: function (row) {
-                    this.ajax_post("{{action('active')}}", {admin_id: row.admin_id}, function () {
+                    this.ajax_post("active", {admin_id: row.admin_id}, function () {
                         row.status = 1;
                     });
                 },
                 do_create: function () {
-                    this.ajax_post('{{action('create')}}', this.create, function () {
+                    this.ajax_post('create', this.create, function () {
                         this.createVisible = false;
                         this.$refs.create.resetFields();
                         this.reload_table();
@@ -138,7 +138,7 @@
                     this.editVisible = true;
                 },
                 do_edit: function () {
-                    this.ajax_post("{{action('edit')}}", this.edit, function () {
+                    this.ajax_post("edit", this.edit, function () {
                         this.editVisible = false;
                         this.reload_table();
                     });

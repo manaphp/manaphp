@@ -86,7 +86,7 @@
             },
             methods: {
                 do_create: function () {
-                    this.ajax_post("{{action('create')}}", this.create, function (res) {
+                    this.ajax_post("create", this.create, function (res) {
                         this.createVisible = false;
                         this.$refs.create.resetFields();
                         this.reload_table();
@@ -100,14 +100,14 @@
                     this.editVisible = true;
                 },
                 do_edit: function () {
-                    this.ajax_post("{{action('edit')}}", this.edit, function (res) {
+                    this.ajax_post("edit", this.edit, function (res) {
                         this.editVisible = false;
                         this.reload_table();
                     });
                 },
                 do_delete: function (row) {
                     this.$confirm('删除菜单组: ' + row.group_name + '?').then(function (value) {
-                        this.ajax_post("{{action('delete')}}", {group_id: row.group_id}).then(function (res) {
+                        this.ajax_post("delete", {group_id: row.group_id}).then(function (res) {
                             this.reload_table();
                         });
                     }.bind(this));

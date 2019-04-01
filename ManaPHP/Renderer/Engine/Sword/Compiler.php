@@ -4,7 +4,9 @@ namespace ManaPHP\Renderer\Engine\Sword;
 use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Exception\InvalidUrlException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Renderer\Engine\Sword
@@ -16,6 +18,11 @@ use ManaPHP\Exception\RuntimeException;
  */
 class Compiler extends Component
 {
+    /**
+     * @var int
+     */
+    protected $_hash_length = 12;
+
     /**
      * All custom "directive" handlers.
      *
@@ -80,6 +87,158 @@ class Compiler extends Component
     }
 
     /**
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _addFileHash($str)
+    {
+        return preg_replace_callback('#="(/[^"\':{$?]+[^/])"#', function ($match) {
+            $url = $match[1];
+            $path = '@public' . $url;
+            if (strpos($path, '.') === false || strpos(basename($path), '.') === false || pathinfo($path, PATHINFO_EXTENSION) === 'html') {
+                return $match[0];
+            }
+            $file = $this->alias->resolve($path);
+            if (!is_file($file)) {
+                throw new InvalidUrlException(['`:file` file is not exists', 'file' => $path]);
+            }
+            $hash = substr(md5_file($file), 0, $this->_hash_length);
+
+            return '="' . $this->alias->get('@asset') . $url . "?v=$hash\"";
+        }, $str);
+    }
+
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _replaceAbsoluteLinks($str)
+    {
+        return preg_replace_callback('#(=\s*")(/[^":]+)"#', function ($match) {
+            $url = $match[2];
+            $path = parse_url($url, PHP_URL_PATH);
+            if (strpos($path, '.') !== false && pathinfo($path, PATHINFO_EXTENSION) !== 'html') {
+                return $match[0];
+            }
+
+            return $match[1] . $this->alias->get('@web') . $url . '"';
+        }, $str);
+    }
+
+    /**
+     * @param string $file
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _completeRelativeLinks($file, $str)
+    {
+        if ($str === '#' || strpos($str, '://') !== false || strpos($str, '//') === 0) {
+            return $str;
+        }
+
+        if ($str[0] === '/') {
+            return $this->alias->get('@web') . $str;
+        }
+
+        $area = preg_match('#/Areas/([^/]+)#i', $file, $match) ? Text::underscore($match[1]) : null;
+        if (($pos = strripos($file, '/views/')) === false || strrpos($file, '_layout')) {
+            return $str;
+        }
+
+        $parts = explode('/', substr($file, $pos + 7));
+        if (count($parts) === 1) {
+            $controller = Text::underscore(pathinfo($parts[0], PATHINFO_FILENAME));
+        } else {
+            $controller = Text::underscore($parts[0]);
+        }
+        if (strpos($str, '/') === false) {
+            if ($area) {
+                $absolute = "/$area/$controller/$str";
+            } else {
+                $absolute = "/$controller/$str";
+            }
+        } else {
+            if ($area) {
+                $absolute = "/$area/$str";
+            } else {
+                $absolute = "/$str";
+            }
+        }
+
+        return $this->alias->get('@web') . $absolute;
+    }
+
+    /**
+     * @param string $file
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _replaceAxiosLinks($file, $str)
+    {
+        return preg_replace_callback('#(axios\.[a-z]+\(["\'])([\w-/:]+)#', function ($match) use ($file) {
+            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
+        }, $str);
+    }
+
+    /**
+     * @param string $file
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _replaceAjaxLinks($file, $str)
+    {
+        $str = preg_replace_callback('#((?:\$\.|ajax_)\w+\\(["\'])([\w-/:]+)#', function ($match) use ($file) {
+            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
+        }, $str);
+
+        return $str;
+    }
+
+    /**
+     * @param string $file
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _replaceAttrLinks($file, $str)
+    {
+        return preg_replace_callback('#(\s+(?:href|action)=["\'])([\w-/:]+)#', function ($match) use ($file) {
+            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
+        }, $str);
+    }
+
+    /**
+     * @param string $file
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _replaceVueAttrLinks($file, $str)
+    {
+        return preg_replace_callback("#(:(?:href|action)=\"')([\w-/:]+)#", function ($match) use ($file) {
+            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
+        }, $str);
+    }
+
+    /**
+     * @param string $file
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function _replaceUrlValLinks($file, $str)
+    {
+        return preg_replace_callback('#((?:\s+|_)url\s*[:=]\s*[\"\'])([\w-/:]+)#', function ($match) use ($file) {
+            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
+        }, $str);
+    }
+
+    /**
      * Compile the given Sword template contents.
      *
      * @param string $value
@@ -89,7 +248,6 @@ class Compiler extends Component
     public function compileString($value)
     {
         $result = '';
-        $value = $this->_replaceLinks($value);
 
         // Here we will loop through all of the tokens returned by the Zend lexer and
         // parse each one into the corresponding valid PHP. We will then have this
@@ -109,23 +267,15 @@ class Compiler extends Component
             $result .= $content;
         }
 
-        return $result;
-    }
+        if ($this->_hash_length) {
+            $result = $this->_addFileHash($result);
+        }
 
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function _replaceLinks($str)
-    {
-        //   return $str;
-        return preg_replace_callback('#\s(href|src)="(/[^/][^":<{*?$]+\.(css|js|jpg|png|gif))"#',
-            static function ($match) {
-                $hash = $match[2] . '?v=' . substr(md5_file(path("@public{$match[2]}")), 0, 12);
-                return " $match[1]=\"<?php echo asset('$hash'); ?>\"";
-            },
-            $str);
+        if ($this->alias->get('@web') !== '') {
+            $result = $this->_replaceAbsoluteLinks($result);
+        }
+
+        return $result;
     }
 
     /**
@@ -150,7 +300,15 @@ class Compiler extends Component
             throw new InvalidArgumentException(['read `:file` sword source file failed: :last_error_message', 'file' => $source]);
         }
 
-        if (file_put_contents($compiled, $this->compileString($str), LOCK_EX) === false) {
+        $result = $this->compileString($str);
+
+        $result = $this->_replaceAjaxLinks($source, $result);
+        $result = $this->_replaceAxiosLinks($source, $result);
+        $result = $this->_replaceAttrLinks($source, $result);
+        $result = $this->_replaceVueAttrLinks($source, $result);
+        $result = $this->_replaceUrlValLinks($source, $result);
+
+        if (file_put_contents($compiled, $result, LOCK_EX) === false) {
             throw new RuntimeException(['write `:compiled` compiled file for `:source` file failed: :last_error_message',
                 'complied' => $compiled,
                 'source' => $source]);
@@ -267,7 +425,7 @@ class Compiler extends Component
         $callback = function ($matches) {
             $whitespace = empty($matches[3]) ? '' : $matches[3];
 
-            return $matches[1] ? substr($matches[0], 1) : '<?php echo ' . $this->_compileEchoDefaults($matches[2]) . '; ?>' . $whitespace;
+            return $matches[1] ? substr($matches[0], 1) : '<?= ' . $this->_compileEchoDefaults($matches[2]) . '; ?>' . $whitespace;
         };
 
         return preg_replace_callback($pattern, $callback, $value);
@@ -292,9 +450,9 @@ class Compiler extends Component
             if (preg_match('#^[\w\.\[\]"\']+$#', $matches[2]) || preg_match('#^\\$[\w]+\(#', $matches[2])) {
                 return $matches[0];
             } elseif ($this->_isSafeEchos($matches[2])) {
-                return "<?php echo $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);
+                return "<?= $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);
             } else {
-                return '<?php echo e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? '' : $matches[3]);
+                return '<?= e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? '' : $matches[3]);
             }
         };
 
@@ -332,7 +490,7 @@ class Compiler extends Component
      */
     protected function _compile_yield($expression)
     {
-        return "<?php echo \$renderer->getSection{$expression}; ?>";
+        return "<?= \$renderer->getSection{$expression}; ?>";
     }
 
     /**
@@ -681,7 +839,7 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php echo $view->getContent(); ?>';
+        return '<?= $view->getContent(); ?>';
     }
 
     /**
@@ -723,7 +881,7 @@ class Compiler extends Component
      */
     protected function _compile_widget($expression)
     {
-        return "<?php echo widget{$expression}; ?>";
+        return "<?= widget{$expression}; ?>";
     }
 
     /**
@@ -739,7 +897,7 @@ class Compiler extends Component
             $expression = '(\'' . trim($expression, '()') . '\')';
         }
 
-        return "<?php echo url{$expression}; ?>";
+        return "<?= url{$expression}; ?>";
     }
 
     /**
@@ -756,7 +914,7 @@ class Compiler extends Component
         }
 
         return asset(substr($expression, 2, -2));
-        /*return "<?php echo asset{$expression}; ?>";*/
+        /*return "<?= asset{$expression}; ?>";*/
     }
 
     /**
@@ -783,7 +941,7 @@ class Compiler extends Component
     protected function _compile_json($expression)
     {
         $expression = (string)substr($expression, 1, -1);
-        return "<?php echo json_encode({$expression}, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ;?>";
+        return "<?= json_encode({$expression}, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ;?>";
     }
 
     /**
@@ -798,7 +956,7 @@ class Compiler extends Component
         $expression
     ) {
         return '<?php if($di->has("debuggerPlugin")){?><div class="debugger"><a target="_self" href="' .
-            '<?php echo $di->debuggerPlugin->getUrl(); ?>">Debugger</a></div><?php }?> ';
+            '<?= $di->debuggerPlugin->getUrl(); ?>">Debugger</a></div><?php }?> ';
     }
 
     /**
@@ -810,7 +968,7 @@ class Compiler extends Component
      */
     protected function _compile_pager($expression)
     {
-        return "<?php echo pager{$expression}; ?>";
+        return "<?= pager{$expression}; ?>";
     }
 
     /**
@@ -824,7 +982,7 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php echo PHP_EOL ?>';
+        return '<?= PHP_EOL ?>';
     }
 
     /**
@@ -839,7 +997,7 @@ class Compiler extends Component
         $expression
     ) {
         $time = substr($expression, 1, -1);
-        return "<?php echo date('Y-m-d H:i:s', $time) ?>";
+        return "<?= date('Y-m-d H:i:s', $time) ?>";
     }
 
     /**
@@ -854,7 +1012,7 @@ class Compiler extends Component
         if (preg_match('#^\\(([\'"]?)([/_a-z\d]+)\1\\)$#i', $expression, $match)) {
             return action($match[2]);
         } else {
-            return "<?php echo action{$expression} ?>";
+            return "<?= action{$expression} ?>";
         }
     }
 
@@ -875,7 +1033,7 @@ class Compiler extends Component
      */
     protected function _compile_html($expression)
     {
-        return "<?php echo html{$expression}; ?>";
+        return "<?= html{$expression}; ?>";
     }
 
     /**

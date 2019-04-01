@@ -39,7 +39,7 @@
         </el-col>
         <el-col :offset="1" :span="7">
             <img :src="captcha_url"
-                 @click="request.code=''; captcha_url='{{action('captcha')}}'+'?t='+new Date().getTime()">
+                 @click="request.code=''; captcha_url='captcha'+'?t='+new Date().getTime()">
         </el-col>
     </el-row>
     <el-button @click="login" style="width:100%" type="primary">登录</el-button>
@@ -62,7 +62,7 @@
                 password: '',
                 code: ''
             },
-            captcha_url: "{{action('captcha')}}"
+            captcha_url: "captcha"
         },
         methods: {
             login: function () {
@@ -71,7 +71,7 @@
                         window.location.href = "{{$redirect}}";
                     } else {
                         this.$alert(res.data.message);
-                        this.captcha_url = "{{action('captcha')}}" + '?t=' + new Date().getTime();
+                        this.captcha_url = "captcha" + '?t=' + new Date().getTime();
                     }
                 }.bind(this));
             },
