@@ -39,7 +39,7 @@ class Handler extends Component implements HandlerInterface
         if ($this->alias->has('@cli')) {
             foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
                 if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
-                    $controllers[$matches[1]] = $this->alias->resolve("@ns.cli\\{$matches[1]}Controller");
+                    $controllers[$matches[1]] = $this->alias->resolveNS("@ns.cli\\{$matches[1]}Controller");
                 }
             }
         }

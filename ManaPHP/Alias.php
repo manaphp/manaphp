@@ -106,12 +106,8 @@ class Alias extends Component implements AliasInterface
             return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
         }
 
-        if (strpos($path, '@ns.') === 0) {
-            $parts = explode('\\', $path, 2);
-        } else {
-            $path = strtr($path, '\\', '/');
-            $parts = explode('/', $path, 2);
-        }
+        $path = strtr($path, '\\', '/');
+        $parts = explode('/', $path, 2);
 
         $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
