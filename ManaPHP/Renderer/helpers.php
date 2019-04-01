@@ -11,7 +11,12 @@ if (!function_exists('html')) {
      */
     function html($name, $data = [])
     {
-        return di('html')->render($name, $data);
+        static $html;
+        if (!$html) {
+            $html = Di::getDefault()->getShared('html');
+        }
+
+        return $html->render($name, $data);
     }
 }
 
@@ -56,7 +61,12 @@ if (!function_exists('widget')) {
      */
     function widget($name, $vars = [])
     {
-        return Di::getDefault()->view->widget($name, $vars);
+        static $view;
+        if (!$view) {
+            $view = Di::getDefault()->getShared('view');
+        }
+
+        return $view->widget($name, $vars);
     }
 }
 
@@ -69,7 +79,12 @@ if (!function_exists('partial')) {
      */
     function partial($path, $vars = [])
     {
-        Di::getDefault()->view->partial($path, $vars);
+        static $view;
+        if (!$view) {
+            $view = Di::getDefault()->getShared('view');
+        }
+
+        $view->partial($path, $vars);
     }
 }
 
@@ -82,7 +97,12 @@ if (!function_exists('block')) {
      */
     function block($path, $vars = [])
     {
-        Di::getDefault()->view->block($path, $vars);
+        static $view;
+        if (!$view) {
+            $view = Di::getDefault()->getShared('view');
+        }
+
+        $view->block($path, $vars);
     }
 }
 
@@ -162,6 +182,7 @@ if (!function_exists('action')) {
         if (!$router) {
             $router = Di::getDefault()->router;
         }
+
         return $router->createUrl($args, $scheme);
     }
 }
@@ -175,7 +196,12 @@ if (!function_exists('url')) {
      */
     function url($args, $scheme = false)
     {
-        return di('url')->get($args, $scheme);
+        static $url;
+        if (!$url) {
+            $url = Di::getDefault()->getShared('url');
+        }
+
+        return $url->get($args, $scheme);
     }
 }
 
@@ -192,10 +218,16 @@ if (!function_exists('asset')) {
             $alias = di('alias');
         }
 
+        static $paths = [];
+
+        if (isset($paths[$path])) {
+            return $paths[$path];
+        }
+
         if (strpos($path, '?') === false && is_file($file = $alias->resolve("@public{$path}"))) {
-            return $alias->resolve("@asset{$path}") . '?' . substr(md5_file($file), 0, 12);
+            return $paths[$path] = $alias->resolve("@asset{$path}") . '?' . substr(md5_file($file), 0, 12);
         } else {
-            return $alias->resolve("@asset{$path}");
+            return $paths[$path] = $alias->resolve("@asset{$path}");
         }
     }
 }
