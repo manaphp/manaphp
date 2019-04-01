@@ -38,15 +38,9 @@ class Sword extends Component implements EngineInterface
 
         $compiled = $this->alias->resolve($compiled);
 
-        if (isset($this->_compiled[$compiled])) {
-            return $compiled;
-        }
-
         if ($this->configure->debug || !file_exists($compiled) || filemtime($source) > filemtime($compiled)) {
             $this->swordCompiler->compileFile($source, $compiled);
         }
-
-        $this->_compiled[$compiled] = 1;
 
         return $compiled;
     }
@@ -61,7 +55,11 @@ class Sword extends Component implements EngineInterface
     {
         extract($vars, EXTR_SKIP);
 
+        if (!isset($this->_compiled[$file])) {
+            $this->_compiled[$file] = $this->getCompiledFile($file);
+        }
+	
         /** @noinspection PhpIncludeInspection */
-        require $this->getCompiledFile($file);
+        require $this->_compiled[$file];
     }
 }
