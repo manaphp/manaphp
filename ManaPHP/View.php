@@ -35,6 +35,11 @@ class ViewContext
 class View extends Component implements ViewInterface
 {
     /**
+     * @var array
+     */
+    protected $_dirs = [];
+
+    /**
      * @param false|string $layout
      *
      * @return static
@@ -200,7 +205,11 @@ class View extends Component implements ViewInterface
                 $dir = "@views/$controller";
             }
 
-            if ($this->filesystem->dirExists($dir)) {
+            if (!isset($this->_dirs[$dir])) {
+                $this->_dirs[$dir] = $this->filesystem->dirExists($dir);
+            }
+
+            if ($this->_dirs[$dir]) {
                 $template = $dir . '/' . ucfirst($this->dispatcher->getAction());
             } else {
                 $template = $dir;
