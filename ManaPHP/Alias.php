@@ -107,14 +107,17 @@ class Alias extends Component implements AliasInterface
         }
 
         $path = strtr($path, '\\', '/');
-        $parts = explode('/', $path, 2);
+        if (($pos = strpos($path, '/')) === false) {
+            return $path;
+        }
 
-        $alias = $parts[0];
+        $alias = substr($path, 0, $pos);
+
         if (!isset($this->_aliases[$alias])) {
             throw new InvalidArgumentException(['`:alias` is not exists for `:path`', 'alias' => $alias, 'path' => $path]);
         }
 
-        return str_replace($alias, $this->_aliases[$alias], $path);
+        return $this->_aliases[$alias] . substr($path, $pos);
     }
 
     /**
