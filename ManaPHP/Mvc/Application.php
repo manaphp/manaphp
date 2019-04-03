@@ -30,14 +30,11 @@ class Application extends \ManaPHP\Http\Application
 
             $actionReturnValue = $this->router->dispatch();
             if ($actionReturnValue === null || $actionReturnValue instanceof View) {
-                $this->view->render();
-                $this->response->setContent($this->view->getContent());
+                $this->response->setContent($this->view->render());
             } elseif ($actionReturnValue instanceof Response) {
                 null;
-            } elseif ($this->dispatcher->getControllerInstance() instanceof \ManaPHP\Rest\Controller) {
-                $this->response->setJsonContent($actionReturnValue);
             } else {
-                $this->response->setContent($actionReturnValue);
+                $this->response->setJsonContent($actionReturnValue);
             }
         } catch (\Exception $e) {
             $this->handleException($e);
