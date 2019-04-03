@@ -112,7 +112,7 @@ class Alias extends Component implements AliasInterface
 
         if (($pos = strpos($path, '/')) === false) {
             if (!isset($this->_aliases[$path])) {
-                throw new InvalidArgumentException(['`:alias` is not exists for `:path`', 'alias' => $alias, 'path' => $path]);
+                throw new InvalidArgumentException(['`:alias` is not exists', 'alias' => $path]);
             }
             return $this->_aliases[$path];
         }
