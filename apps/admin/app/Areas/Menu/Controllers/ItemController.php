@@ -18,16 +18,16 @@ class ItemController extends Controller
 
     public function createAction()
     {
-        return $this->request->isPost() ? Item::createOrFail() : null;
+        return Item::createOrNull();
     }
 
     public function editAction()
     {
-        return $this->request->isPost() ? Item::updateOrFail() : null;
+        return Item::updateOrNull();
     }
 
     public function deleteAction()
     {
-        return $this->request->isPost() ? Item::deleteOrFail(input('item_id')) : null;
+        return Item::deleteOrNull();
     }
 }

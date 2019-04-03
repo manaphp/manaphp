@@ -37,36 +37,21 @@ class AdminController extends Controller
 
     public function lockAction()
     {
-        return $this->request->isPost() ? Admin::updateOrFail(['status' => Admin::STATUS_LOCKED]) : null;
+        return Admin::updateOrNull(['status' => Admin::STATUS_LOCKED]);
     }
 
     public function activeAction()
     {
-        return $this->request->isPost() ? Admin::updateOrFail(['status' => Admin::STATUS_ACTIVE]) : null;
+        return Admin::updateOrNull(['status' => Admin::STATUS_ACTIVE]);
     }
 
     public function createAction()
     {
-        if ($this->request->isPost()) {
-            $admin = Admin::newOrFail();
-
-            $admin->salt = $this->password->salt();
-            $admin->password = $this->password->hash($admin->password, $admin->salt);
-
-            return $admin->create();
-        }
+        return Admin::createOrNull();
     }
 
     public function editAction()
     {
-        if ($this->request->isPost()) {
-            $data = input();
-            $admin = Admin::get(input('admin_id'))->assign($data);
-            if ($data['password'] !== '') {
-                $admin->salt = $this->password->salt();
-                $admin->password = $this->password->hash($data['password'], $admin->salt);
-            }
-            return $admin->update();
-        }
+        return Admin::updateOrNull();
     }
 }

@@ -29,7 +29,7 @@ class Admin extends ModelBase
     {
         return 'admin';
     }
-    
+
     public function rules()
     {
         return [
@@ -38,5 +38,43 @@ class Admin extends ModelBase
             'password' => ['length' => '6-32'],
             'status' => 'const'
         ];
+    }
+
+    /**
+     * @param string $password
+     *
+     * @return string
+     */
+    public function hashPassword($password)
+    {
+        md5(md5($password) . $this->salt);
+    }
+
+    /**
+     * @param string $password
+     *
+     * @return bool
+     */
+    public function verifyPassword($password)
+    {
+        return $this->hashPassword($password) === $this->password;
+    }
+
+    public function create()
+    {
+        $this->salt = bin2hex(random_bytes(8));
+        $this->password = $this->hashPassword($this->password);
+
+        return parent::create();
+    }
+
+    public function update()
+    {
+        if ($this->hasChanged('password')) {
+            $this->salt = bin2hex(random_bytes(8));
+            $this->password = $this->hashPassword($this->password);
+        }
+
+        return parent::update();
     }
 }

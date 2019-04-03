@@ -96,6 +96,6 @@ class PermissionController extends Controller
 
     public function editAction()
     {
-        return $this->request->isPost() ? Permission::updateOrFail() : null;
+        return Permission::updateOrNull();
     }
 }

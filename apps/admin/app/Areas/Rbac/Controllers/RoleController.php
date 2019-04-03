@@ -29,25 +29,21 @@ class RoleController extends Controller
 
     public function createAction()
     {
-        if ($this->request->isPost()) {
-            $role = Role::newOrFail();
-            $role->permissions = '';
-            return $role->create();
-        }
+        return Role::createOrNull();
     }
 
     public function editAction()
     {
-        return $this->request->isPost() ? Role::updateOrFail() : null;
+        return Role::updateOrNull();
     }
 
     public function disableAction()
     {
-        return $this->request->isPost() ? Role::updateOrFail(['enabled' => 0]) : null;
+        return Role::updateOrNull(['enabled' => 0]);
     }
 
     public function enableAction()
     {
-        return $this->request->isPost() ? Role::updateOrFail(['enabled' => 1]) : null;
+        return Role::updateOrNull(['enabled' => 1]);
     }
 }

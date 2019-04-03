@@ -29,16 +29,16 @@ class GroupController extends Controller
 
     public function createAction()
     {
-        return $this->request->isPost() ? Group::createOrFail() : null;
+        return Group::createOrNull();
     }
 
     public function editAction()
     {
-        return $this->request->isPost() ? Group::updateOrFail() : null;
+        return Group::updateOrNull();
     }
 
     public function deleteAction()
     {
-        return $this->request->isPost() ? Group::deleteOrFail(input('group_id')) : null;
+        return Group::deleteOrNull();
     }
 }

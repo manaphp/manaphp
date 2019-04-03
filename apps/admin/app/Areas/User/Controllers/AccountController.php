@@ -21,18 +21,7 @@ class AccountController extends Controller
     {
         if ($this->request->isAjax()) {
             $this->captcha->verify();
-
-            $admin = Admin::newOrFail();
-
-            $admin->status = Admin::STATUS_ACTIVE;
-            $admin->login_ip = '';
-            $admin->login_time = 0;
-            $admin->salt = $this->password->salt();
-            $admin->password = $this->password->hash($admin->password, $admin->salt);
-
-            $admin->create();
-
-            return 0;
+            return Admin::createOrNull();
         }
     }
 
@@ -43,15 +32,13 @@ class AccountController extends Controller
                 $this->captcha->verify();
             }
 
-            $old_password = input('old_password');
-            $new_password = input('new_password');
             $admin = Admin::get($this->identity->getId());
-            if (!$this->password->verify($old_password, $admin->password, $admin->salt)) {
-                return $this->response->setJsonError('旧密码不正确');
+            if (!$admin->verifyPassword(input('old_password'))) {
+                return '旧密码不正确';
             }
 
-            $admin->salt = $this->password->salt();
-            $admin->password = $this->password->hash($new_password, $admin->salt);
+            $admin->password = input('new_password');
+
             $admin->update();
             $this->session->destroy();
             return 0;
@@ -70,11 +57,9 @@ class AccountController extends Controller
                 return '已过期或无效';
             }
 
-            $password = input('password');
-            $admin = Admin::first(['admin_name' => $jwt['admin_name']]);
+            $admin = Admin::firstOrFail(['admin_name' => $jwt['admin_name']]);
 
-            $admin->salt = $this->password->salt();
-            $admin->password = $this->password->hash($password, $admin->salt);
+            $admin->password = input('password');
             $admin->update();
             $this->session->destroy();
             return $this->response->setJsonContent(0);

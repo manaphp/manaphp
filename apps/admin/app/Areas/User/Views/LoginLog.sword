@@ -1,16 +1,14 @@
 <div class="search-box">
     <el-row>
         <el-col :span="2">
-            <el-input v-model="request.admin_name" placeholder="用户名" size="small"
-                      @keyup.enter.native="reload_table" clearable></el-input>
+            <el-input v-model="request.admin_name" placeholder="用户名" size="small" clearable></el-input>
         </el-col>
         <el-col :span="2">
-            <el-input v-model="request.client_ip" placeholder="客户端IP" size="small"
-                      @keyup.enter.native="reload_table" clearable></el-input>
+            <el-input v-model="request.client_ip" placeholder="客户端IP" size="small" clearable></el-input>
         </el-col>
         <el-col :span="3">
             <el-date-picker v-model="request.created_time" type="daterange" start-placeholder="开始日期"
-                            end-placeholder="结束日期" value-format="yyyy-MM-dd" @change="reload_table" size="small"></el-date-picker>
+                            end-placeholder="结束日期" value-format="yyyy-MM-dd" size="small"></el-date-picker>
         </el-col>
     </el-row>
 </div>
@@ -24,8 +22,7 @@
         <el-table-column prop="user_agent" label="浏览器" show-overflow-tooltip align="left"></el-table-column>
         <el-table-column prop="created_time" label="生成时间" :formatter="fDate" width="150"></el-table-column>
     </el-table>
-    <el-pagination @current-change="reload_table" :current-page.sync="request.page" :page-size="response.size"
-                   :total="response.count" layout="total, prev, pager, next"></el-pagination>
+    <pager :data="response" @change="request.page=response.page"></pager>
 </div>
 
 @section('script')
@@ -36,7 +33,8 @@
                 request: {
                     admin_name: '',
                     client_ip: '',
-                    created_time: ''
+                    created_time: [],
+                    page: '1'
                 },
                 response: []
             },
@@ -47,7 +45,7 @@
                 request: {
                     handler: _.debounce(function () {
                         this.reload_table();
-                    }, 500),
+                    }, 1000),
                     deep: true
                 }
             }
