@@ -195,10 +195,10 @@ class View extends Component implements ViewInterface
             $context->vars = $vars;
         }
 
-        $area = $this->dispatcher->getArea();
-        $controller = $this->dispatcher->getController();
-
         if (!$template) {
+            $area = $this->dispatcher->getArea();
+            $controller = $this->dispatcher->getController();
+
             if ($area) {
                 $dir = "@app/Areas/$area/Views/$controller";
             } else {
