@@ -13,12 +13,12 @@ class RoleController extends ControllerBase
 
     public function indexAction()
     {
-        if ($this->request->isAjax()) {
-            return Role::query()
-                ->whereContains('role_name', $this->request->get('keyword'))
+        return $this->request->isAjax()
+            ? Role::query()
+                ->whereContains('role_name', input('keyword', ''))
                 ->orderBy('role_id desc')
-                ->paginate(15);
-        }
+                ->paginate(15)
+            : null;
     }
 
     public function listAction()
@@ -37,22 +37,16 @@ class RoleController extends ControllerBase
 
     public function editAction()
     {
-        if ($this->request->isPost()) {
-            return Role::updateOrFail();
-        }
+        return $this->request->isPost() ? Role::updateOrFail() : null;
     }
 
     public function disableAction()
     {
-        if ($this->request->isPost()) {
-            return Role::updateOrFail(['enabled' => 0]);
-        }
+        return $this->request->isPost() ? Role::updateOrFail(['enabled' => 0]) : null;
     }
 
     public function enableAction()
     {
-        if ($this->request->isPost()) {
-            return Role::updateOrFail(['enabled' => 1]);
-        }
+        return $this->request->isPost() ? Role::updateOrFail(['enabled' => 1]) : null;
     }
 }

@@ -20,20 +20,14 @@ class PermissionController extends ControllerBase
 
     public function indexAction()
     {
-        if ($this->request->isAjax()) {
-            if ($permission_id = $this->request->get('permission_id', 'int', 0)) {
-                return Permission::all(['permission_id' => $permission_id], ['with' => ['roles' => 'role_id, role_name']]);
-            } else {
-                return Permission::all([], ['with' => ['roles' => 'role_id, role_name']]);
-            }
-        }
+        return $this->request->isAjax()
+            ? Permission::all(['permission_id?' => input('permission_id', '')], ['with' => ['roles' => 'role_id, role_name']])
+            : null;
     }
 
     public function listAction()
     {
-        if ($this->request->isAjax()) {
-            return Permission::all([], [], ['permission_id', 'path', 'display_name']);
-        }
+        return $this->request->isAjax() ? Permission::all([], [], ['permission_id', 'path', 'display_name']) : null;
     }
 
     public function rebuildAction()
@@ -95,14 +89,12 @@ class PermissionController extends ControllerBase
                 }
             }
 
-            return $this->response->setJsonContent(['code' => 0, 'message' => "新增 $count 条"]);
+            return ['code' => 0, 'message' => "新增 $count 条"];
         }
     }
 
     public function editAction()
     {
-        if ($this->request->isPost()) {
-            return Permission::updateOrFail();
-        }
+        return $this->request->isPost() ? Permission::updateOrFail() : null;
     }
 }

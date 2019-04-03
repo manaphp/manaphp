@@ -8,19 +8,17 @@ class ActionLogController extends Controller
 {
     public function indexAction()
     {
-        if ($this->request->isAjax()) {
-
-            $criteria = AdminActionLog::query(['id', 'user_name', 'ip', 'udid', 'method', 'url', 'created_time'])
+        return $this->request->isAjax()
+            ? AdminActionLog::query()
+                ->select(['id', 'user_name', 'ip', 'udid', 'method', 'url', 'created_time'])
                 ->whereSearch(['user_name', 'url'])
-                ->orderBy(['id' => SORT_DESC]);
-            return $this->response->setJsonContent($criteria->paginate());
-        }
+                ->orderBy(['id' => SORT_DESC])
+                ->paginate()
+            : null;
     }
 
     public function detailAction()
     {
-        $id = $this->request->get('id');
-
-        return $this->response->setJsonContent(AdminActionLog::get($id));
+        return AdminActionLog::get(input('id'));
     }
 }

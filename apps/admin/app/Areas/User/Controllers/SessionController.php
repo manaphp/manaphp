@@ -26,12 +26,8 @@ class SessionController extends Controller
                 $this->captcha->verify();
             }
 
-            try {
-                $user_name = $this->request->get('user_name', '*|account');
-                $password = $this->request->get('password', '*');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
+            $user_name = input('user_name');
+            $password = input('password');
 
             if ($this->request->has('remember_me')) {
                 $this->cookies->set('user_name', $user_name, strtotime('1 year'));
@@ -40,7 +36,7 @@ class SessionController extends Controller
             }
 
             $admin = Admin::first(['admin_name' => $user_name]);
-            if (!$admin || !$this->password->verify($password, $admin->password, $admin->salt)) {
+            if (!$admin || md5(md5($password) . $admin->salt) !== $admin->password) {
                 return $this->response->setJsonError('account or password is wrong.');
             }
 
@@ -58,7 +54,7 @@ class SessionController extends Controller
             $admin->login_time = time();
             $admin->update();
 
-            $udid = $this->cookies->get('CLIENT_UDID', '');
+            $udid = $this->cookies->get('CLIENT_UDID');
             if (!$udid) {
                 $udid = $this->random->getBase(16);
                 $this->cookies->set('CLIENT_UDID', $udid, strtotime('10 year'), '/');
@@ -74,15 +70,11 @@ class SessionController extends Controller
 
             $adminLoginLog->create();
 
-            return $this->response->setJsonContent(0);
+            return 0;
         } else {
-            if ($this->request->has('redirect')) {
-                $this->view->setVar('redirect', $this->request->get('redirect'));
-            } else {
-                $this->view->setVar('redirect', $this->router->createUrl('/'));
-            }
+            $this->view->setVar('redirect', input('redirect', $this->router->createUrl('/')));
 
-            $this->view->setVar('user_name', $this->cookies->has('user_name') ? $this->cookies->get('user_name') : '');
+            return $this->view->setVar('user_name', $this->cookies->get('user_name'));
         }
     }
 
@@ -95,14 +87,12 @@ class SessionController extends Controller
 
     public function logAction()
     {
-        if ($this->request->isAjax()) {
-            $builder = AdminLoginLog::query()
+        return $this->request->isAjax()
+            ? AdminLoginLog::query()
                 ->select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
-                ->orderBy('login_id DESC');
-
-            $builder->whereSearch(['admin_id', 'admin_name*=', 'client_ip', 'created_time@=']);
-
-            return $this->response->setJsonContent($builder->paginate(20));
-        }
+                ->orderBy('login_id DESC')
+                ->whereSearch(['admin_id', 'admin_name*=', 'client_ip', 'created_time@='])
+                ->paginate(20)
+            : null;
     }
 }

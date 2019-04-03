@@ -17,8 +17,8 @@ class AdminController extends ControllerBase
             $builder = Admin::query()
                 ->select(['admin_id', 'admin_name', 'status', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
                 ->orderBy('admin_id DESC');
-            $keyword = $this->request->get('keyword', 'trim');
 
+            $keyword = input('keyword', '');
             if (strpos($keyword, '@') !== false) {
                 $builder->whereContains('email', $keyword);
             } else {
@@ -36,16 +36,12 @@ class AdminController extends ControllerBase
 
     public function lockAction()
     {
-        if ($this->request->isPost()) {
-            return Admin::updateOrFail(['status' => Admin::STATUS_LOCKED]);
-        }
+        return $this->request->isPost() ? Admin::updateOrFail(['status' => Admin::STATUS_LOCKED]) : null;
     }
 
     public function activeAction()
     {
-        if ($this->request->isPost()) {
-            return Admin::updateOrFail(['status' => Admin::STATUS_ACTIVE]);
-        }
+        return $this->request->isPost() ? Admin::updateOrFail(['status' => Admin::STATUS_ACTIVE]) : null;
     }
 
     public function createAction()
@@ -63,8 +59,8 @@ class AdminController extends ControllerBase
     public function editAction()
     {
         if ($this->request->isPost()) {
-            $data = $this->request->getPost();
-            $admin = Admin::get()->assign($data);
+            $data = input();
+            $admin = Admin::get(input('admin_id'))->assign($data);
             if ($data['password'] !== '') {
                 $admin->salt = $this->password->salt();
                 $admin->password = $this->password->hash($data['password'], $admin->salt);

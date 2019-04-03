@@ -7,6 +7,6 @@ class IndexController extends Controller
 {
     public function indexAction()
     {
-        return $this->response->redirectToAction('permission/');
+        return $this->response->redirect('permission/');
     }
 }

@@ -16,13 +16,7 @@ class RolePermissionController extends ControllerBase
     public function indexAction()
     {
         if ($this->request->isAjax()) {
-            try {
-                $role_id = $this->request->get('role_id', 'int');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-
-            return RolePermission::all(['role_id' => $role_id],
+            return RolePermission::all(['role_id' => input('role_id')],
                 ['with' => ['permission' => 'display_name, path', 'roles' => 'role_id, role_name']],
                 ['id', 'permission_id', 'creator_name', 'created_time']);
         }
@@ -31,12 +25,9 @@ class RolePermissionController extends ControllerBase
     public function saveAction()
     {
         if ($this->request->isPost()) {
-            try {
-                $role_id = $this->request->get('role_id');
-                $permission_ids = $this->request->get('permission_ids', []);
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
+
+            $role_id = input('role_id');
+            $permission_ids = input('permission_ids', []);
 
             $old_permissions = RolePermission::values('permission_id', ['role_id' => $role_id]);
 

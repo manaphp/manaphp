@@ -8,32 +8,26 @@ class ItemController extends Controller
 {
     public function indexAction()
     {
-        if ($this->request->isAjax()) {
-            return Item::query()
+        return $this->request->isAjax()
+            ? Item::query()
                 ->whereSearch(['group_id'])
                 ->orderBy(['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC])
-                ->fetch(true);
-        }
+                ->fetch(true)
+            : null;
     }
 
     public function createAction()
     {
-        if ($this->request->isPost()) {
-            return Item::createOrFail();
-        }
+        return $this->request->isPost() ? Item::createOrFail() : null;
     }
 
     public function editAction()
     {
-        if ($this->request->isPost()) {
-            return Item::updateOrFail();
-        }
+        return $this->request->isPost() ? Item::updateOrFail() : null;
     }
 
     public function deleteAction()
     {
-        if ($this->request->isPost()) {
-            return $this->response->setJsonContent(Item::deleteOrFail());
-        }
+        return $this->request->isPost() ? Item::deleteOrFail(input('item_id')) : null;
     }
 }

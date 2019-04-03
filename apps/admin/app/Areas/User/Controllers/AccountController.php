@@ -43,12 +43,8 @@ class AccountController extends Controller
                 $this->captcha->verify();
             }
 
-            try {
-                $old_password = $this->request->get('old_password', '*');
-                $new_password = $this->request->get('new_password', 'length:5-16');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
+            $old_password = input('old_password');
+            $new_password = input('new_password');
             $admin = Admin::get($this->identity->getId());
             if (!$this->password->verify($old_password, $admin->password, $admin->salt)) {
                 return $this->response->setJsonError('旧密码不正确');
@@ -58,7 +54,7 @@ class AccountController extends Controller
             $admin->password = $this->password->hash($new_password, $admin->salt);
             $admin->update();
             $this->session->destroy();
-            return $this->response->setJsonContent(0);
+            return 0;
         }
     }
 
@@ -69,16 +65,12 @@ class AccountController extends Controller
                 $this->captcha->verify();
             }
 
-            try {
-                $password = $this->request->get('password', 'length:5-16');
-                $token = $this->request->get('token', '*');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-            $jwt = $resetPasswordTokenService->verify($token);
+            $jwt = $resetPasswordTokenService->verify(input('token'));
             if (!$jwt) {
-                return $this->response->setJsonError('已过期或无效');
+                return '已过期或无效';
             }
+
+            $password = input('password');
             $admin = Admin::first(['admin_name' => $jwt['admin_name']]);
 
             $admin->salt = $this->password->salt();
@@ -88,8 +80,7 @@ class AccountController extends Controller
             return $this->response->setJsonContent(0);
         } else {
             if ($this->identity->getRole() === 'admin') {
-                $admin_name = $this->request->get('admin_name', '*');
-                return $this->response->setJsonData($resetPasswordTokenService->generate($admin_name));
+                return $this->response->setJsonData($resetPasswordTokenService->generate(input('admin_name')));
             }
         }
     }

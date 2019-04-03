@@ -14,39 +14,31 @@ class GroupController extends Controller
 
     public function indexAction()
     {
-        if ($this->request->isAjax()) {
-            return Group::query()
+        return $this->request->isAjax()
+            ? Group::query()
                 ->whereSearch(['group_id'])
                 ->orderBy('display_order DESC, group_id ASC')
-                ->fetch(true);
-        }
+                ->fetch(true)
+            : null;
     }
 
     public function listAction()
     {
-        if ($this->request->isAjax()) {
-            return Group::all([], null, ['group_id', 'group_name']);
-        }
+        return $this->request->isAjax() ? Group::all([], null, ['group_id', 'group_name']) : null;
     }
 
     public function createAction()
     {
-        if ($this->request->isPost()) {
-            return Group::createOrFail();
-        }
+        return $this->request->isPost() ? Group::createOrFail() : null;
     }
 
     public function editAction()
     {
-        if ($this->request->isPost()) {
-            return Group::updateOrFail();
-        }
+        return $this->request->isPost() ? Group::updateOrFail() : null;
     }
 
     public function deleteAction()
     {
-        if ($this->request->isPost()) {
-            return $this->response->setJsonContent(Group::deleteOrFail());
-        }
+        return $this->request->isPost() ? Group::deleteOrFail(input('group_id')) : null;
     }
 }

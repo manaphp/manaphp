@@ -2,48 +2,31 @@
 
 namespace App\Areas\Rbac\Controllers;
 
+use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Models\Admin;
-use App\Areas\Rbac\Models\AdminRole;
 
 class AdminRoleController extends ControllerBase
 {
     public function indexAction()
     {
-        if ($this->request->isAjax()) {
-            try {
-                $admin_id = $this->request->get('admin_id', 'int', 0);
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-
-            return AdminRole::all(['admin_id' => $admin_id],
+        return $this->request->isAjax()
+            ? AdminRole::all(['admin_id' => input('admin_id')],
                 ['with' => ['role', 'admins' => 'admin_id, admin_name']],
-                ['id', 'admin_id', 'role_id', 'creator_name', 'created_time']);
-        }
+                ['id', 'admin_id', 'role_id', 'creator_name', 'created_time'])
+            : null;
     }
 
     public function detailAction()
     {
-        if ($this->request->isAjax()) {
-            try {
-                $admin_id = $this->request->get('admin_id', '*|int');
-            } catch (\Exception $e) {
-                return $this->response->setJsonContent($e);
-            }
-            return $this->response->setJsonContent(AdminRole::all(['admin_id' => $admin_id]));
-        }
+        return $this->request->isAjax() ? AdminRole::all(['admin_id' => input('admin_id')]) : null;
     }
 
     public function editAction()
     {
         if ($this->request->isPost()) {
-            try {
-                $new_roles = $this->request->get('role_ids', '*');
-            } catch (\Exception $e) {
-                return $e;
-            }
-            $admin = Admin::get();
+            $new_roles = input('role_ids');
+            $admin = Admin::get(input('admin_id'));
 
             $old_roles = AdminRole::values('role_id', ['admin_id' => $admin->admin_id]);
             AdminRole::deleteAll(['role_id' => array_values(array_diff($old_roles, $new_roles))]);
