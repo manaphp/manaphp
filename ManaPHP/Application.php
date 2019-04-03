@@ -133,13 +133,13 @@ class Application extends Component implements ApplicationInterface
         foreach ($listeners as $listener) {
             if ($listener === '*') {
                 foreach ($this->filesystem->glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
-                    $item = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                    $item = str_replace($this->alias->get('@app'), $this->alias->get('@ns.app'), $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $this->eventsManager->addListener($item);
                 }
 
                 foreach ($this->filesystem->glob('@app/Listeners/*Listener.php') as $item) {
-                    $item = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                    $item = str_replace($this->alias->get('@app'), $this->alias->get('@ns.app'), $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $this->eventsManager->addListener($item);
                 }

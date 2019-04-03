@@ -110,7 +110,7 @@ class Router extends Component implements RouterInterface
     public function setAreas($areas = null)
     {
         if ($areas === null) {
-            $appDir = $this->alias->resolveNS('@app');
+            $appDir = $this->alias->get('@app');
             $dirs = glob("$appDir/Areas/*", GLOB_ONLYDIR) ?: glob("$appDir/Controllers/*", GLOB_ONLYDIR);
 
             $areas = [];
@@ -501,7 +501,7 @@ class Router extends Component implements RouterInterface
             $ca = substr($ca, 0, $pos);
         }
 
-        $url = $this->alias->resolve('@web') . $this->_prefix . '/' . lcfirst($ca);
+        $url = $this->alias->get('@web') . $this->_prefix . '/' . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }

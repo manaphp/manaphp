@@ -33,7 +33,7 @@ class Url extends Component implements UrlInterface
             }
         }
 
-        $prefix = $this->alias->resolve('@web');
+        $prefix = $this->alias->get('@web');
         if ($uri === '') {
             $strUrl = parse_url($this->request->getServer('REQUEST_URI'), PHP_URL_PATH);
         } elseif ($uri[0] !== '/') {

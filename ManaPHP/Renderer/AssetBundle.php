@@ -31,7 +31,7 @@ class AssetBundle extends Component implements AssetBundleInterface
      */
     protected function _replaceCssUrl($file, $content)
     {
-        $path = dirname(substr($this->alias->resolve($file), strlen($this->alias->resolve('@public'))));
+        $path = dirname(substr($this->alias->resolve($file), strlen($this->alias->get('@public'))));
 
         return preg_replace_callback('#url\((.+?)\)#', function ($match) use ($path) {
             $url = trim($match[1], '\'"');
@@ -47,7 +47,7 @@ class AssetBundle extends Component implements AssetBundleInterface
 
                 $url = rtrim($path, '/\\') . '/' . $url;
             }
-            return sprintf('url("%s")', $this->alias->resolve('@asset' . $url));
+            return sprintf('url("%s")', $this->alias->get('@asset') . $url);
         }, $content);
     }
 
@@ -71,7 +71,7 @@ class AssetBundle extends Component implements AssetBundleInterface
 
         $bundle = ($name[0] !== '/' ? "/assets/bundle/$name" : $name) . ".$hash.$extension";
 
-        if ($this->configure->debug || !is_file($target = $this->alias->resolve("@public/$bundle"))) {
+        if ($this->configure->debug || !is_file($target = $this->alias->get('@public') . "/$bundle")) {
             $r = '';
             foreach ($files as $file) {
                 if ($file[0] !== '@') {
