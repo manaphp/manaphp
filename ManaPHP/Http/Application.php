@@ -80,6 +80,8 @@ abstract class Application extends \ManaPHP\Application
                 }
             }
         }
+
+        $GLOBALS['globals'] = $globals;
     }
 
     public function send()
