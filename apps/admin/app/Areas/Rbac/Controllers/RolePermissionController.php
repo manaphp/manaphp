@@ -4,6 +4,7 @@ namespace App\Areas\Rbac\Controllers;
 
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
+use ManaPHP\Mvc\Controller;
 
 /**
  * Class RolePermission
@@ -11,7 +12,7 @@ use App\Areas\Rbac\Models\RolePermission;
  *
  * @property-read \ManaPHP\AuthorizationInterface $authorization
  */
-class RolePermissionController extends ControllerBase
+class RolePermissionController extends Controller
 {
     public function indexAction()
     {

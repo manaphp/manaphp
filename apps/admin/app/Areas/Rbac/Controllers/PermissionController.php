@@ -3,6 +3,7 @@
 namespace App\Areas\Rbac\Controllers;
 
 use App\Areas\Rbac\Models\Permission;
+use ManaPHP\Mvc\Controller;
 use ManaPHP\Utility\Text;
 
 /**
@@ -11,7 +12,7 @@ use ManaPHP\Utility\Text;
  * @package App\Controllers
  *
  */
-class PermissionController extends ControllerBase
+class PermissionController extends Controller
 {
     public function getAcl()
     {

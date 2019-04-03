@@ -3,8 +3,9 @@
 namespace App\Areas\Rbac\Controllers;
 
 use App\Models\Admin;
+use ManaPHP\Mvc\Controller;
 
-class AdminController extends ControllerBase
+class AdminController extends Controller
 {
     public function getAcl()
     {
