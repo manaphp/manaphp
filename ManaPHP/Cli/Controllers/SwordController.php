@@ -64,7 +64,7 @@ class SwordController extends Controller
         if ($replace) {
             $compiled = str_replace('.sword', '.phtml', $file);
         } else {
-            $compiled = str_replace($this->alias->resolve('@root'), '@data/sword', $file);
+            $compiled = str_replace($this->alias->get('@root'), $this->alias->resolve('@data/sword'), $file);
         }
 
         $this->swordCompiler->compileFile($file, $compiled);
