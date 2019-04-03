@@ -79,13 +79,7 @@ class Renderer extends Component implements RendererInterface
             $template = str_replace('\\', '/', $template);
         }
 
-        if ($template[0] === '@') {
-            $template = $this->alias->resolve($template);
-        } elseif ($template[0] === '/' || (isset($template[1]) && $template[1] === ':')) {
-            null;
-        } elseif (strpos($template, '/') !== false) {
-            throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
-        } else {
+        if (strpos($template, '/') === false) {
             $template = dirname(end($context->templates)) . '/' . $template;
         }
 
@@ -165,13 +159,7 @@ class Renderer extends Component implements RendererInterface
             $template = str_replace('\\', '/', $template);
         }
 
-        if ($template[0] === '@') {
-            $template = $this->alias->resolve($template);
-        } elseif ($template[0] === '/' || (isset($template[1]) && $template[1] === ':')) {
-            null;
-        } elseif (strpos($template, '/') !== false) {
-            throw new MisuseException(['`:template` template can not contains relative path', 'template' => $template]);
-        } else {
+        if (strpos($template, '/') === false) {
             $template = dirname(end($this->_context->templates)) . '/' . $template;
         }
 
