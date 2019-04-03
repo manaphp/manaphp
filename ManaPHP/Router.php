@@ -522,14 +522,13 @@ class Router extends Component implements RouterInterface
             }
         }
 
-        if ($scheme === true) {
-            $scheme = $this->request->getScheme();
-        }
-
         if ($scheme) {
-            $url = $scheme . '://' . $this->request->getServer('HTTP_HOST') . $url;
+            if ($scheme === true) {
+                $scheme = $this->request->getScheme();
+            }
+            return ($scheme === '//' ? '//' : "$scheme://") . $this->request->getServer('HTTP_HOST') . $url;
+        } else {
+            return $url;
         }
-
-        return $url;
     }
 }
