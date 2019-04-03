@@ -189,7 +189,7 @@ class Compiler extends Component
      */
     protected function _replaceAttrLinks($file, $str)
     {
-        return preg_replace_callback('#(\s+(?:href|action)=["\'])([\w-/:.]+)#', function ($match) use ($file) {
+        return preg_replace_callback('#(\s+(?:href|src|data-src|action)=["\'])([\w-/:.]+)#', function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
     }
@@ -202,7 +202,7 @@ class Compiler extends Component
      */
     protected function _replaceVueAttrLinks($file, $str)
     {
-        return preg_replace_callback("#(:(?:href|action)=\"')([\w-/:.]+)#", function ($match) use ($file) {
+        return preg_replace_callback("#(:(?:href|src|data-src|action)=\"')([\w-/:.]+)#", function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
     }
