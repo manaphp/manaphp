@@ -159,16 +159,6 @@ interface ResponseInterface
     public function redirect($location, $temporarily = true);
 
     /**
-     * Redirect by HTTP to another action or URL
-     *
-     * @param string|array $action
-     * @param bool         $temporarily
-     *
-     * @return static
-     */
-    public function redirectToAction($action, $temporarily = true);
-
-    /**
      * Sets HTTP response body
      *
      * @param string $content

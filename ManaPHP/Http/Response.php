@@ -3,6 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Validator\Exception as ValidatorException;
@@ -437,33 +438,11 @@ class Response extends Component implements ResponseInterface
             $this->setStatus(301, 'Permanently Moved');
         }
 
-        if (isset($this->url)) {
-            $this->setHeader('Location', is_array($location) ? call_user_func_array([$this->url, 'get'], $location) : $this->url->get($location));
-        } else {
-            $this->setHeader('Location', $location);
-        }
+        $this->setHeader('Location', $this->url->get($location));
 
-        return $this;
-    }
+        throw new AbortException();
 
-    /**
-     * Redirect by HTTP to another action or URL
-     *
-     * @param string|array $action
-     * @param bool         $temporarily
-     *
-     * @return static
-     */
-    public function redirectToAction($action, $temporarily = true)
-    {
-        if ($temporarily) {
-            $this->setStatus(302, 'Temporarily Moved');
-        } else {
-            $this->setStatus(301, 'Permanently Moved');
-        }
-
-        $this->setHeader('Location', $this->router->createUrl($action, true));
-
+        /** @noinspection PhpUnreachableStatementInspection */
         return $this;
     }
 
