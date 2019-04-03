@@ -164,13 +164,13 @@ class Authorization extends Component implements AuthorizationInterface
         $paths = [];
 
         $controllers = [];
-        foreach (glob($this->alias->resolve('@app/Areas/*/Controllers/*Controller.php')) as $item) {
-            $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+        foreach (glob($this->alias->get('@app') . '/Areas/*/Controllers/*Controller.php') as $item) {
+            $controller = str_replace($this->alias->get('@app'), $this->alias->get('@ns.app'), $item);
             $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
         }
 
-        foreach (glob($this->alias->resolve('@app/Controllers/*Controller.php')) as $item) {
-            $controllers[] = $this->alias->resolveNS('@ns.app\\Controllers\\' . basename($item, '.php'));
+        foreach (glob($this->alias->get('@app') . '/Controllers/*Controller.php') as $item) {
+            $controllers[] = $this->alias->get('@ns.app') . '\\Controllers\\' . basename($item, '.php');
         }
 
         foreach ($controllers as $controller) {

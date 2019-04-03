@@ -308,12 +308,12 @@ class Dispatcher extends Component implements DispatcherInterface
         $controller = $context->controller;
 
         if ($area) {
-            $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\$area\\{$controller}Controller");
+            $controllerClassName = $this->alias->get('@ns.app') . "\\Controllers\\$area\\{$controller}Controller";
             if (class_exists($controllerClassName)) {
                 return $controllerClassName;
             }
 
-            $controllerClassName2 = $this->alias->resolveNS("@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller");
+            $controllerClassName2 = $this->alias->get('@ns.app') . "\\Areas\\$area\\Controllers\\{$controller}Controller";
             if (class_exists($controllerClassName2)) {
                 return $controllerClassName2;
             } else {
@@ -322,7 +322,7 @@ class Dispatcher extends Component implements DispatcherInterface
                     'controller2' => $controllerClassName2]);
             }
         } else {
-            $controllerClassName = $this->alias->resolveNS("@ns.app\\Controllers\\{$controller}Controller");
+            $controllerClassName = $this->alias->get('@ns.app') . "\\Controllers\\{$controller}Controller";
             if (class_exists($controllerClassName)) {
                 return $controllerClassName;
             } else {

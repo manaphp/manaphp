@@ -175,7 +175,7 @@ class Application extends Component implements ApplicationInterface
 
             $plugin = ucfirst($plugin);
 
-            $pluginClassName = isset($app_plugins[$plugin]) ? $this->alias->resolveNS("@ns.app\\Plugins\\$plugin") : "ManaPHP\Plugins\\$plugin";
+            $pluginClassName = isset($app_plugins[$plugin]) ? $this->alias->get('@ns.app') . "\\Plugins\\$plugin" : "ManaPHP\Plugins\\$plugin";
             unset($app_plugins[$plugin]);
 
             $plugin = lcfirst($plugin);
@@ -183,7 +183,7 @@ class Application extends Component implements ApplicationInterface
         }
 
         foreach ($app_plugins as $plugin => $_) {
-            $pluginClassName = $this->alias->resolveNS("@ns.app\\Plugins\\$plugin");
+            $pluginClassName = $this->alias->get('@ns.app') . "\\Plugins\\$plugin";
             $plugin = lcfirst($plugin);
             $this->_di->setShared($plugin, $pluginClassName)->getShared($plugin);
         }
@@ -214,7 +214,7 @@ class Application extends Component implements ApplicationInterface
      */
     protected function _loadServices($services)
     {
-        $this->_di->setPattern('*Service', $this->alias->resolveNS('@ns.app\\Services\\'));
+        $this->_di->setPattern('*Service', $this->alias->get('@ns.app') . '\\Services\\');
 
         foreach ($services as $service => $params) {
             $this->_di->setShared($service, $params);
@@ -234,7 +234,7 @@ class Application extends Component implements ApplicationInterface
             $this->_di->alias->set($alias, $path);
         }
 
-        $routerClass = $this->alias->resolveNS('@ns.app\Router');
+        $routerClass = $this->alias->get('@ns.app') . '\Router';
         if (class_exists($routerClass)) {
             $this->_di->setShared('router', $routerClass);
         }

@@ -495,7 +495,7 @@ class Validator extends Component implements ValidatorInterface
             if (preg_match('#^(.*)_id$#', $field, $match)) {
                 $className = substr($modelName, 0, strrpos($modelName, '\\') + 1) . Text::camelize($match[1]);
                 if (!class_exists($className)) {
-                    $className = $this->alias->resolveNS('@ns.app\\Models\\' . Text::camelize($match[1]));
+                    $className = $this->alias->get('@ns.app') . '\\Models\\' . Text::camelize($match[1]);
                 }
             } else {
                 throw new InvalidValueException(['validate `:field` field failed: related model class name is not provided', 'field' => $field]);
