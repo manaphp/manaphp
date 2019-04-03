@@ -78,7 +78,7 @@ EOT;
         $this->assertEquals($wanted, $httpPurifier->purify($source));
 
         $source = <<<EOT
-<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.test.com/jquery/1.12.4/jquery.min.js"></script>
 EOT;
         $wanted = <<<EOT
 
@@ -86,7 +86,7 @@ EOT;
         $this->assertEquals($wanted, $httpPurifier->purify($source));
 
         $source = <<<EOT
-<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script><h1>manaphp</h1>
+<script src="https://cdn.test.com/jquery/1.12.4/jquery.min.js"></script><h1>manaphp</h1>
 EOT;
         $wanted = <<<EOT
 <h1>manaphp</h1>
