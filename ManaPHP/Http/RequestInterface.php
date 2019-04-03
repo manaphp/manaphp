@@ -49,6 +49,13 @@ interface RequestInterface
 
     /**
      * @param string $name
+     *
+     * @return int|string
+     */
+    public function getId($name = 'id');
+
+    /**
+     * @param string $name
      * @param mixed  $default
      *
      * @return mixed

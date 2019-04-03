@@ -4,6 +4,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Http\Request\File;
 
@@ -137,6 +138,35 @@ class Request extends Component implements RequestInterface
 
             return $default;
         }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return int|string
+     */
+    public function getId($name = 'id')
+    {
+        $source = $this->_context->_REQUEST;
+
+        if (isset($source[$name])) {
+            $id = $source[$name];
+        } else {
+            $params = $this->dispatcher->getParams();
+            if (isset($params[$name])) {
+                $id = $params[$name];
+            } elseif (count($params) === 1 && isset($params[0])) {
+                $id = $params[0];
+            } else {
+                throw new MissingFieldException(['missing `:id` key value', 'id' => $name]);
+            }
+        }
+
+        if (!is_scalar($id)) {
+            throw new InvalidValueException('primary key value is not scalar');
+        }
+
+        return $id;
     }
 
     /**
