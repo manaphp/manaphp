@@ -83,22 +83,37 @@ class Renderer extends Component implements RendererInterface
             $template = dirname(end($context->templates)) . '/' . $template;
         }
 
-        if (!$file = $this->exists($template)) {
-            throw new FileNotFoundException([
-                '`:template` with `:extensions` extension file was not found',
-                'template' => $template,
-                'extensions' => implode(', or ', array_keys($this->_engines))
-            ]);
-        }
+        $template = $template[0] === '@' ? $this->alias->resolve($template) : $template;
 
-        if (PHP_EOL !== "\n") {
-            $realPath = strtr(realpath($file), '\\', '/');
-            if ($file !== $realPath) {
-                trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
+        if (isset($this->_files[$template])) {
+            list($file, $extension) = $this->_files[$template];
+        } else {
+            $file = null;
+            $extension = null;
+            foreach ($this->_engines as $extension => $engine) {
+                if (is_file($file = $template . $extension)) {
+                    if (PHP_EOL !== "\n") {
+                        $realPath = strtr(realpath($file), '\\', '/');
+                        if ($file !== $realPath) {
+                            trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
+                        }
+                    }
+
+                    break;
+                }
             }
+
+            if (!$file) {
+                throw new FileNotFoundException([
+                    '`:template` with `:extensions` extension file was not found',
+                    'template' => $template,
+                    'extensions' => implode(', or ', array_keys($this->_engines))
+                ]);
+            }
+
+            $this->_files[$template] = [$file, $extension];
         }
 
-        $extension = substr($file, $file === $template ? strrpos($template, '.') : strlen($template));
         if (!isset($this->_resolved[$extension])) {
             $engine = $this->_resolved[$extension] = $this->_di->getShared($this->_engines[$extension]);
         } else {
@@ -151,7 +166,7 @@ class Renderer extends Component implements RendererInterface
     /**
      * @param string $template
      *
-     * @return string|false
+     * @return bool
      */
     public function exists($template)
     {
@@ -163,17 +178,26 @@ class Renderer extends Component implements RendererInterface
             $template = dirname(end($this->_context->templates)) . '/' . $template;
         }
 
+        $template = $template[0] === '@' ? $this->alias->resolve($template) : $template;
+
         if (isset($this->_files[$template])) {
-            return $this->_files[$template];
+            return true;
         }
 
         foreach ($this->_engines as $extension => $_) {
             if (is_file($file = $template . $extension)) {
-                return $this->_files[$template] = $file;
+                if (PHP_EOL !== "\n") {
+                    $realPath = strtr(realpath($file), '\\', '/');
+                    if ($file !== $realPath) {
+                        trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
+                    }
+                }
+                $this->_files[$template] = [$file, $extension];
+                return $file;
             }
         }
 
-        return $this->_files[$template] = false;
+        return false;
     }
 
     /**
