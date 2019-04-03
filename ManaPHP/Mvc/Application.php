@@ -4,7 +4,6 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Http\Response;
 use ManaPHP\View;
-use Swoole\Runtime;
 
 /**
  * Class ManaPHP\Mvc\Application

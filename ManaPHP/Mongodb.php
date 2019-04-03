@@ -253,7 +253,7 @@ class Mongodb extends Component implements MongodbInterface
         }
 
         $this->eventsManager->fireEvent('mongodb:afterQuery', $this, compact('namespace', 'filter', 'options', 'result', 'elapsed'));
-	
+
         $this->logger->debug(compact('namespace', 'filter', 'options', 'result', 'elapsed'), 'mongodb.query');
         return $result;
     }
