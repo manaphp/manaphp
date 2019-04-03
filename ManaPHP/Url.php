@@ -6,6 +6,7 @@ namespace ManaPHP;
  *
  * @package url
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\RouterInterface       $router
  *
  */
 class Url extends Component implements UrlInterface
@@ -18,57 +19,53 @@ class Url extends Component implements UrlInterface
      */
     public function get($args = [], $scheme = false)
     {
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $anchor = null;
         if (is_string($args)) {
-            $uri = $args;
-            $args = [];
-        } else {
-            $uri = $args[0];
-            unset($args[0]);
-
-            if (isset($args['#'])) {
-                $anchor = $args['#'];
-                unset($args['#']);
-            }
-        }
-
-        $prefix = $this->alias->get('@web');
-        if ($uri === '') {
-            $strUrl = parse_url($this->request->getServer('REQUEST_URI'), PHP_URL_PATH);
-        } elseif ($uri[0] !== '/') {
-            $strUrl = (strpos($prefix, '://') ? parse_url($prefix, PHP_URL_PATH) : $prefix) . '/' . $uri;
-        } else {
-            $strUrl = ($prefix === '/' ? '' : rtrim($prefix, '/')) . $uri;
-        }
-
-        if (strpos($strUrl, ':') !== false) {
-            /** @noinspection ForeachSourceInspection */
-            foreach ($args as $k => $v) {
-                $count = 0;
-                $strUrl = str_replace(':' . $k, $v, $strUrl, $count);
-                if ($count !== 0) {
-                    unset($args[$k]);
+            $url = $args;
+            if ($url === '') {
+                return $this->router->createUrl($url, $scheme);
+            } elseif ($url[0] === '/') {
+                $url = $this->alias->get('@web') . $url;
+                if (!$scheme) {
+                    return $url;
                 }
+            } elseif (parse_url($url, PHP_URL_SCHEME)) {
+                return $url;
+            } else {
+                return $this->router->createUrl($url, $scheme);
             }
+            $anchor = null;
+            $args = '';
+        } else {
+            $url = $args[0];
+            if ($url === '') {
+                return $this->router->createUrl($args, $scheme);
+            } elseif ($url[0] === '/') {
+                $url = $this->alias->get('@web') . $url;
+            } elseif (parse_url($url, PHP_URL_SCHEME)) {
+                null;
+            } else {
+                return $this->router->createUrl($args, $scheme);
+            }
+
+            $anchor = isset($args['#']) ? $args['#'] : null;
+            unset($args[0], $args['#']);
         }
 
-        if (count($args) !== 0) {
-            $strUrl .= (strpos($strUrl, '?') !== false ? '&' : '?') . http_build_query($args);
+        if ($args) {
+            $url .= (strpos($url, '?') !== false ? '&' : '?') . http_build_query($args);
         }
 
         if ($anchor !== null) {
-            $strUrl .= '#' . $anchor;
-        }
-
-        if ($scheme === true) {
-            $scheme = $this->request->getScheme();
+            $url .= '#' . $anchor;
         }
 
         if ($scheme) {
-            return $scheme . ($scheme === '//' ? '' : '://') . $_SERVER['HTTP_HOST'] . $strUrl;
+            if ($scheme === true) {
+                $scheme = $this->request->getScheme();
+            }
+            return ($scheme === '//' ? $scheme : "$scheme://") . $this->request->getServer('HTTP_HOST') . $url;
+        } else {
+            return $url;
         }
-
-        return $strUrl;
     }
 }
