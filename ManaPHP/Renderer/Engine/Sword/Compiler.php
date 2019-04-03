@@ -105,25 +105,7 @@ class Compiler extends Component
             }
             $hash = substr(md5_file($file), 0, $this->_hash_length);
 
-            return '="' . $this->alias->get('@asset') . $url . "?v=$hash\"";
-        }, $str);
-    }
-
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function _replaceAbsoluteLinks($str)
-    {
-        return preg_replace_callback('#(=\s*")(/[^":]+)"#', function ($match) {
-            $url = $match[2];
-            $path = parse_url($url, PHP_URL_PATH);
-            if (strpos($path, '.') !== false && pathinfo($path, PATHINFO_EXTENSION) !== 'html') {
-                return $match[0];
-            }
-
-            return $match[1] . $this->alias->get('@web') . $url . '"';
+            return "=\"$url?v=$hash\"";
         }, $str);
     }
 
@@ -179,7 +161,7 @@ class Compiler extends Component
      */
     protected function _replaceAxiosLinks($file, $str)
     {
-        return preg_replace_callback('#(axios\.[a-z]+\(["\'])([\w-/:]+)#', function ($match) use ($file) {
+        return preg_replace_callback('#(axios\.[a-z]+\(["\'])([\w-/:.]+)#', function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
     }
@@ -192,7 +174,7 @@ class Compiler extends Component
      */
     protected function _replaceAjaxLinks($file, $str)
     {
-        $str = preg_replace_callback('#((?:\$\.|ajax_)\w+\\(["\'])([\w-/:]+)#', function ($match) use ($file) {
+        $str = preg_replace_callback('#((?:\$\.|ajax_)\w+\\(["\'])([\w-/:.]+)#', function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
 
@@ -207,7 +189,7 @@ class Compiler extends Component
      */
     protected function _replaceAttrLinks($file, $str)
     {
-        return preg_replace_callback('#(\s+(?:href|action)=["\'])([\w-/:]+)#', function ($match) use ($file) {
+        return preg_replace_callback('#(\s+(?:href|action)=["\'])([\w-/:.]+)#', function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
     }
@@ -220,7 +202,7 @@ class Compiler extends Component
      */
     protected function _replaceVueAttrLinks($file, $str)
     {
-        return preg_replace_callback("#(:(?:href|action)=\"')([\w-/:]+)#", function ($match) use ($file) {
+        return preg_replace_callback("#(:(?:href|action)=\"')([\w-/:.]+)#", function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
     }
@@ -233,7 +215,7 @@ class Compiler extends Component
      */
     protected function _replaceUrlValLinks($file, $str)
     {
-        return preg_replace_callback('#((?:\s+|_)url\s*[:=]\s*[\"\'])([\w-/:]+)#', function ($match) use ($file) {
+        return preg_replace_callback('#((?:\s+|_)url\s*[:=]\s*[\"\'])([\w-/:.]+)#', function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
     }
@@ -269,10 +251,6 @@ class Compiler extends Component
 
         if ($this->_hash_length) {
             $result = $this->_addFileHash($result);
-        }
-
-        if ($this->alias->get('@web') !== '') {
-            $result = $this->_replaceAbsoluteLinks($result);
         }
 
         return $result;
