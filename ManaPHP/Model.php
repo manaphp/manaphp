@@ -5,6 +5,7 @@ use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;
@@ -377,6 +378,24 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
+     * @param int|string|array $filters
+     * @param array            $fields
+     * @param array            $options
+     *
+     * @return static|null
+     */
+    public static function firstOrNull($filters, $fields = null, $options = null)
+    {
+        $request = Di::getDefault()->request;
+        if (!$request->isAjax()) {
+            return null;
+        }
+
+        $model = new static();
+        return static::get($request->getId($model->getPrimaryKey()));
+    }
+
+    /**
      * Allows to query the last record that match the specified conditions
      *
      * @param array $filters
@@ -688,78 +707,85 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
     /**
      * @param array $data
-     * @param array $whiteList
      *
-     * @return static
+     * @return static|null
      */
-    public static function createOrFail($data = null, $whiteList = null)
+    public static function createOrNull($data = null)
     {
-        $instance = static::newOrFail($data, $whiteList);
-        $instance->create();
+        $request = Di::getDefault()->request;
 
-        return $instance;
-    }
-
-    /**
-     * @param array $data
-     * @param array $whiteList
-     *
-     * @return static
-     */
-    public static function newOrFail($data = null, $whiteList = null)
-    {
-        $model = new static();
-
-        if ($data === null) {
-            $data = $model->_di->request->get();
+        if (!$request->isPost()) {
+            return null;
         }
 
-        unset($data[$model->getPrimaryKey()]);
+        $instance = new static();
 
-        $model->assign($data, $whiteList);
-
-        return $model;
-    }
-
-    /**
-     * @param array $data
-     * @param array $whiteList
-     *
-     * @return static
-     */
-    public static function updateOrFail($data = null, $whiteList = null)
-    {
-        $model = new static;
-        $di = $model->_di;
+        $_request = $request->get();
 
         if ($data === null) {
-            $data = $di->request->get();
+            foreach ($instance->getSafeFields() as $field) {
+                if (isset($_request[$field])) {
+                    $instance->$field = $_request[$field];
+                }
+            }
         } else {
-            $data += $di->request->get();
+            foreach ($data as $k => $v) {
+                if (is_int($k)) {
+                    $field = $v;
+                    if (!isset($_request[$field])) {
+                        throw new MissingFieldException($field);
+                    }
+                    $instance->$field = $_request[$field];
+                } else {
+                    $instance->$k = $v;
+                }
+            }
         }
+
+        return $instance->create();
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return static|null
+     */
+    public static function updateOrNull($data = null)
+    {
+        $request = Di::getDefault()->request;
+
+        if (!$request->isPost() && !$request->isPut() && !$request->isPatch()) {
+            return null;
+        }
+
+        $model = new static;
 
         $pkName = $model->getPrimaryKey();
 
-        if (isset($data[$pkName])) {
-            $pkValue = $data[$pkName];
-            unset($data[$pkName]);
-        } elseif ($di->request->has($pkName)) {
-            $pkValue = $di->request->get($pkName);
-        } elseif ($di->dispatcher->hasParam($pkName)) {
-            $pkValue = $di->dispatcher->getParam($pkName);
-        } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
-            $pkValue = $params[0];
+        $_request = $request->get();
+        if ($data === null) {
+            $instance = static::get($request->getId($pkName));
+
+            foreach ($model->getSafeFields() as $field) {
+                if (isset($_request[$field])) {
+                    $instance->$field = $_request[$field];
+                }
+            }
         } else {
-            throw new PreconditionException('missing primary key value');
-        }
+            $instance = static::get(isset($data[$pkName]) ? $data[$pkName] : $request->getId($pkName));
 
-        if (!is_scalar($pkValue)) {
-            throw new InvalidValueException('primary key value is not scalar');
+            foreach ($data as $k => $v) {
+                if (is_int($k)) {
+                    $field = $v;
+                    if (!isset($_request[$field])) {
+                        throw new MissingFieldException($field);
+                    }
+                    $instance->$field = $_request[$field];
+                } else {
+                    $instance->$k = $v;
+                }
+            }
         }
-
-        $instance = static::firstOrFail([$pkName => $pkValue]);
-        $instance->assign($data, $whiteList);
-        $instance->update();
 
         return $instance;
     }
@@ -785,42 +811,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             return $this->update();
         } else {
             return $this->create();
-        }
-    }
-
-    /**
-     * @param array $data
-     * @param array $whiteList
-     *
-     * @return static
-     */
-    public static function saveOrFail($data = null, $whiteList = null)
-    {
-        $model = new static;
-        $di = $model->_di;
-
-        if ($data === null) {
-            $data = $di->request->get();
-        }
-
-        $pkName = $model->getPrimaryKey();
-
-        $pkValue = null;
-
-        if (isset($data[$pkName])) {
-            $pkValue = $data[$pkName];
-        } elseif ($di->dispatcher->hasParam($pkName)) {
-            $pkValue = $di->dispatcher->getParam($pkName);
-        } elseif (count($params = $di->dispatcher->getParams()) === 1 && isset($params[0])) {
-            $pkValue = $params[0];
-        }
-
-        if ($pkValue === null) {
-            return $model->assign($data, $whiteList)->create();
-        } elseif (is_scalar($pkValue)) {
-            return static::firstOrFail($pkValue)->assign($data, $whiteList)->update();
-        } else {
-            throw new InvalidValueException('primary key value is not scalar');
         }
     }
 
@@ -866,17 +856,20 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param int|string $id
-     *
      * @return static|null
      */
-    public static function deleteOrFail($id)
+    public static function deleteOrNull()
     {
-        if (!is_scalar($id)) {
-            throw new InvalidValueException('primary key value is not scalar');
+        $request = Di::getDefault()->request;
+
+        if (!$request->isDelete() && !$request->isPost()) {
+            return null;
         }
 
-        return ($instance = static::first($id)) ? $instance->delete() : null;
+        $model = new static();
+        $pkName = $model->getPrimaryKey();
+
+        return static::get($request->getId($pkName))->delete();
     }
 
     /**

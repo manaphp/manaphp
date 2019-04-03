@@ -178,6 +178,15 @@ interface ModelInterface
     public static function firstOrFail($filters, $fields = null, $options = null);
 
     /**
+     * @param int|string|array $filters
+     * @param array            $fields
+     * @param array            $options
+     *
+     * @return static|null
+     */
+    public static function firstOrNull($filters, $fields = null, $options = null);
+
+    /**
      * Allows to query the last record that match the specified conditions
      *
      * @param array $filters
@@ -328,14 +337,6 @@ interface ModelInterface
     public function save();
 
     /**
-     * @param array $data
-     * @param array $whiteList
-     *
-     * @return static
-     */
-    public static function saveOrFail($data = null, $whiteList = null);
-
-    /**
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
@@ -345,19 +346,10 @@ interface ModelInterface
 
     /**
      * @param array $data
-     * @param array $whiteList
      *
-     * @return static
+     * @return static|null
      */
-    public static function createOrFail($data = null, $whiteList = null);
-
-    /**
-     * @param array $data
-     * @param array $whiteList
-     *
-     * @return static
-     */
-    public static function newOrFail($data = null, $whiteList = null);
+    public static function createOrNull($data = null);
 
     /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
@@ -369,11 +361,10 @@ interface ModelInterface
 
     /**
      * @param array $data
-     * @param array $whiteList
      *
-     * @return static
+     * @return static|null
      */
-    public static function updateOrFail($data = null, $whiteList = null);
+    public static function updateOrNull($data = null);
 
     /**
      * @param array $fieldValues
@@ -399,11 +390,9 @@ interface ModelInterface
     public function delete();
 
     /**
-     * @param int|string $id
-     *
      * @return static|null
      */
-    public static function deleteOrFail($id);
+    public static function deleteOrNull();
 
     /**
      * @param array $filters
