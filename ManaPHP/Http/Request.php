@@ -72,7 +72,7 @@ class Request extends Component implements RequestInterface
 
         if ($name === null) {
             return $context->_COOKIE;
-        } elseif (isset($globals->_COOKIE[$name])) {
+        } elseif (isset($context->_COOKIE[$name])) {
             return $context->_COOKIE[$name];
         } else {
             return $default;
