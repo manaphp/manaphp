@@ -24,7 +24,7 @@ class SideMenuWidget extends Widget
                 ->where(['group_id' => $group['group_id']])
                 ->orderBy('display_order DESC, item_id ASC')
                 ->fetch(true);
-		
+
             foreach ($items as $k => $item) {
                 if (!$this->authorization->isAllowed($item['url'])) {
                     unset($items[$k]);

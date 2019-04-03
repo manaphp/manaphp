@@ -1,7 +1,6 @@
 <?php
 namespace App\Controllers;
 
-use App\Models\Country;
 use ManaPHP\Cli\Controller;
 
 class TestController extends Controller

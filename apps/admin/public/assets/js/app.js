@@ -70,7 +70,7 @@ Vue.mixin({
 Vue.component('pager', {
     props: ['data'],
     template: ' <el-pagination :current-page.sync="data.page"\n' +
-    '                   :page-size="data.size"\n' +
-    '                   @current-change="$emit(\'change\')"\n' +
-    '                   :total="data.count" layout="total, prev, pager, next"></el-pagination>\n',
+        '                   :page-size="data.size"\n' +
+        '                   @current-change="$emit(\'change\')"\n' +
+        '                   :total="data.count" layout="total, prev, pager, next"></el-pagination>\n',
 });
