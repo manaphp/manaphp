@@ -94,12 +94,12 @@
                 }
             },
             mounted: function () {
-                this.reload_table();
+                this.reload();
             },
             watch: {
                 request: {
                     handler: _.debounce(function () {
-                        this.reload_table();
+                        this.reload();
                     }, 500),
                     deep: true
                 }
@@ -120,7 +120,7 @@
                     this.ajax_post("create", this.create, function () {
                         this.$refs.create.resetFields();
                         this.createVisible = false;
-                        this.reload_table();
+                        this.reload();
                     });
                 },
                 show_edit: function (row) {
@@ -130,7 +130,7 @@
                 do_edit: function () {
                     this.ajax_post("edit", this.edit, function () {
                         this.editVisible = false;
-                        this.reload_table();
+                        this.reload();
                     });
                 }
             }

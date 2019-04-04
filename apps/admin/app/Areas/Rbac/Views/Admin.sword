@@ -105,12 +105,12 @@
                 statuses: {0: '未知', 1: '激活', 2: '锁定'}
             },
             mounted: function () {
-                this.reload_table();
+                this.reload();
             },
             watch: {
                 request: {
                     handler: _.debounce(function () {
-                        this.reload_table();
+                        this.reload();
                     }, 500),
                     deep: true
                 }
@@ -130,7 +130,7 @@
                     this.ajax_post('create', this.create, function () {
                         this.createVisible = false;
                         this.$refs.create.resetFields();
-                        this.reload_table();
+                        this.reload();
                     });
                 },
                 show_edit: function (row) {
@@ -141,7 +141,7 @@
                 do_edit: function () {
                     this.ajax_post("edit", this.edit, function () {
                         this.editVisible = false;
-                        this.reload_table();
+                        this.reload();
                     });
                 }
             }

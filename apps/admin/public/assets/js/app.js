@@ -47,7 +47,7 @@ Vue.mixin({
                 }
             }.bind(this));
         },
-        reload_table: function () {
+        reload: function () {
             var qs = this.$qs.stringify(this.request);
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
             this.response = [];

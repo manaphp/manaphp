@@ -1,7 +1,7 @@
 <div class="search-box">
     <el-row>
         <el-col :span="3">
-            <el-select v-model="request.group_id" size="small" clearable @change="reload_table">
+            <el-select v-model="request.group_id" size="small" clearable>
                 <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
             </el-select>
         </el-col>
@@ -87,7 +87,9 @@
         vm = new Vue({
             el: '#app',
             data: {
-                request: {},
+                request: {
+                    group_id: ''
+                },
                 response: [],
                 createVisible: false,
                 create: {
@@ -119,10 +121,11 @@
                 });
             },
             watch: {
-                'request.group_id': {
+                request: {
+                    deep: true,
                     immediate: true,
                     handler: function () {
-                        this.reload_table();
+                        this.reload();
                     }
                 }
             },
@@ -131,7 +134,7 @@
                     this.ajax_post("create", this.create, function (res) {
                         this.$refs.create.resetFields();
                         this.createVisible = false;
-                        this.reload_table();
+                        this.reload();
                     });
                 },
                 show_edit: function (row) {
@@ -141,13 +144,13 @@
                 do_edit: function () {
                     this.ajax_post("edit", this.edit, function (res) {
                         this.editVisible = false;
-                        this.reload_table();
+                        this.reload();
                     });
                 },
                 do_delete: function (row) {
                     this.$confirm('delete?').then(function (value) {
                         this.ajax_post("delete", {item_id: row.item_id}).then(function (res) {
-                            this.reload_table();
+                            this.reload();
                         });
                     }.bind(this));
                 }

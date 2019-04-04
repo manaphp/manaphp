@@ -70,13 +70,13 @@
                     if (!this.request.role_id) {
                         this.request.role_id = this._.keys(this.roles)[0];
                     }
-                    this.reload_table();
+                    this.reload();
                 });
             },
             watch: {
                 request: {
                     handler: _.debounce(function () {
-                        this.reload_table();
+                        this.reload();
                     }, 500),
                     deep: true
                 }
@@ -98,7 +98,7 @@
                 do_edit: function () {
                     this.ajax_post("save", this.edit, function () {
                         this.editVisible = false;
-                        this.reload_table();
+                        this.reload();
                     });
                 }
             }

@@ -1,7 +1,7 @@
 <div class="search-box">
     <el-row>
         <el-col :span="2">
-            <el-select filterable v-model="request.admin_id" size="small" @change="reload_table">
+            <el-select filterable v-model="request.admin_id" size="small">
                 <el-option v-for="(name, id) in admins" :key="id" :label="name" :value="id"></el-option>
             </el-select>
         </el-col>
@@ -89,13 +89,13 @@
                     if (!this.request.admin_id) {
                         this.request.admin_id = this._.keys(this.admins)[0];
                     }
-                    this.reload_table();
+                    this.reload();
                 });
             },
             watch: {
                 request: {
                     handler: _.debounce(function () {
-                        this.reload_table();
+                        this.reload();
                     }, 500),
                     deep: true
                 }
@@ -117,7 +117,7 @@
                 do_edit: function () {
                     this.ajax_post("edit", this.edit, function () {
                         this.editVisible = false;
-                        this.reload_table();
+                        this.reload();
                     });
                 },
                 show_detail: function (row) {

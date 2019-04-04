@@ -69,12 +69,12 @@
                 detail: {}
             },
             mounted: function () {
-                this.reload_table();
+                this.reload();
             },
             watch: {
                 request: {
                     handler: _.debounce(function () {
-                        this.reload_table();
+                        this.reload();
                     }, 500),
                     deep: true
                 }

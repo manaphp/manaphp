@@ -73,7 +73,7 @@
                 }
             },
             mounted: function () {
-                this.reload_table();
+                this.reload();
             },
             methods: {
                 show_edit: function (row) {
@@ -89,7 +89,7 @@
                 },
                 do_rebuild: function () {
                     this.ajax_post("rebuild", {}, function () {
-                        this.reload_table();
+                        this.reload();
                     });
                 }
             },
