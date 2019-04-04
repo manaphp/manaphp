@@ -84,6 +84,11 @@ interface DispatcherInterface
     public function hasParam($name);
 
     /**
+     * @return string
+     */
+    public function getPath();
+
+    /**
      * @return \ManaPHP\Rest\Controller
      */
     public function getControllerInstance();

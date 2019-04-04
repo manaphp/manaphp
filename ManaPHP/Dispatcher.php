@@ -12,6 +12,11 @@ class DispatcherContext
     /**
      * @var string
      */
+    public $path;
+
+    /**
+     * @var string
+     */
     public $area;
 
     /**
@@ -164,6 +169,14 @@ class Dispatcher extends Component implements DispatcherInterface
     public function hasParam($name)
     {
         return isset($this->_context->params[$name]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->_context->path;
     }
 
     /**
@@ -367,6 +380,24 @@ class Dispatcher extends Component implements DispatcherInterface
         $context->action = $action;
 
         $context->params = $params;
+
+        if ($area) {
+            if ($action === 'index') {
+                if ($controller === 'Index') {
+                    $context->path = $area === 'Index' ? '/' : '/' . Text::underscore($area);
+                } else {
+                    $context->path = '/' . Text::underscore($area) . '/' . Text::underscore($controller);
+                }
+            } else {
+                $context->path = '/' . Text::underscore($area) . '/' . Text::underscore($controller) . '/' . Text::underscore($action);
+            }
+        } else {
+            if ($action === 'index') {
+                $context->path = $controller === 'Index' ? '/' : '/' . Text::underscore($controller);
+            } else {
+                $context->path = '/' . Text::underscore($controller) . '/' . Text::underscore($action);
+            }
+        }
 
         $controllerClassName = $this->_getControllerClassName();
 
