@@ -1,7 +1,11 @@
 <div class="search-box">
     <el-row>
-        <el-col :span="2"><el-button @click="createVisible=true" icon="el-icon-plus" size="small" type="primary">新增角色</el-button></el-col>
-        <el-col :span="2"><el-input v-model="request.keyword" placeholder="角色" size="small"></el-input></el-col>
+        <el-col :span="2">
+            <el-button @click="createVisible=true" icon="el-icon-plus" size="small" type="primary">新增角色</el-button>
+        </el-col>
+        <el-col :span="2">
+            <el-input v-model="request.keyword" placeholder="角色" size="small"></el-input>
+        </el-col>
     </el-row>
 </div>
 <el-dialog title="新增角色" :visible.sync="createVisible">
@@ -71,7 +75,8 @@
             el: '#app',
             data: {
                 request: {
-                    keyword: ''
+                    keyword: '',
+                    page: 1
                 },
                 response: {},
                 createVisible: false,
