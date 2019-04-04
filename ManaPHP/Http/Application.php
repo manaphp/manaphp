@@ -63,6 +63,24 @@ abstract class Application extends \ManaPHP\Application
 
     protected function _prepareGlobals()
     {
+        if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+            $data = file_get_contents('php://input');
+
+            if (isset($_SERVER['CONTENT_TYPE'])
+                && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                $_POST = json_decode($data, true, 16);
+            } else {
+                parse_str($data, $_POST);
+            }
+
+            if (is_array($_POST)) {
+                /** @noinspection AdditionOperationOnArraysInspection */
+                $_REQUEST = $_POST + $_GET;
+            } else {
+                $_POST = [];
+            }
+        }
+
         $globals = $this->request->getGlobals();
 
         $globals->_GET = $_GET;

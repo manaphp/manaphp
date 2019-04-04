@@ -28,29 +28,6 @@ class RequestContext
  */
 class Request extends Component implements RequestInterface
 {
-    public function __construct()
-    {
-        $context = $this->_context;
-
-        if (!$context->_POST && isset($context->_SERVER['REQUEST_METHOD']) && !in_array($context->_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
-            $data = file_get_contents('php://input');
-
-            if (isset($context->_SERVER['CONTENT_TYPE'])
-                && strpos($context->_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-                $context->_POST = json_decode($data, true, 16);
-            } else {
-                parse_str($data, $context->_POST);
-            }
-
-            if (is_array($context->_POST)) {
-                /** @noinspection AdditionOperationOnArraysInspection */
-                $context->_REQUEST = $context->_POST + $context->_GET;
-            } else {
-                $context->_POST = [];
-            }
-        }
-    }
-
     /**
      * @return \ManaPHP\Http\RequestContext
      */
