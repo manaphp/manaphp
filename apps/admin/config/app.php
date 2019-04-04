@@ -10,6 +10,9 @@ return [
     'aliases' => [
         '@messages' => '@app/Messages'
     ],
+    'servers' => [
+        'http' => ['worker_num' => 1, 'max_request' => 1000000, 'dispatch_mode' => 1, 'enable_static_handler' => env('APP_DEBUG', false)]
+    ],
     'components' => [
         'db' => env('DB_URL'),
         'redis' => env('REDIS_URL'),
