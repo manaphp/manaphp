@@ -46,6 +46,7 @@
     </div>
 </el-dialog>
 <div class="result-box">
+    <pager :request="request" :response="response"></pager>
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="admin_id" label="用户ID" width="80"></el-table-column>
@@ -73,8 +74,7 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-pagination :current-page.sync="request.page" :page-size="response.size" :total="response.count"
-                   layout="total, prev, pager, next"></el-pagination>
+    <pager :request="request" :response="response"></pager>
 </div>
 @section('script')
     <script>
@@ -83,8 +83,9 @@
             el: '#app',
             data: {
                 request: {
-                    'keyword': '',
-                    'page': 1,
+                    keyword: '',
+                    size: 20,
+                    page: 1
                 },
                 response: {},
                 createVisible: false,

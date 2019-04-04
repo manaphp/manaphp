@@ -26,7 +26,7 @@ class AdminController extends Controller
                 $builder->whereContains(['admin_name', 'email'], $keyword);
             }
 
-            return $builder->paginate(15);
+            return $builder->paginate();
         }
     }
 

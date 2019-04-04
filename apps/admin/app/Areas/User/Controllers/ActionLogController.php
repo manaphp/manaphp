@@ -13,7 +13,7 @@ class ActionLogController extends Controller
                 ->select(['id', 'user_name', 'client_ip', 'client_udid', 'method', 'path', 'created_time'])
                 ->whereSearch(['user_name', 'path', 'client_ip', 'created_time@='])
                 ->orderBy(['id' => SORT_DESC])
-                ->paginate(20)
+                ->paginate()
             : null;
     }
 
