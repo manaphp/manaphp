@@ -18,7 +18,7 @@ class RolePermissionController extends Controller
     {
         if ($this->request->isAjax()) {
             return RolePermission::all(['role_id' => input('role_id')],
-                ['with' => ['permission' => 'display_name, path', 'roles' => 'role_id, role_name']],
+                ['with' => ['permission' => 'permission_id, display_name, path', 'roles' => 'role_id, role_name']],
                 ['id', 'permission_id', 'creator_name', 'created_time']);
         }
     }
