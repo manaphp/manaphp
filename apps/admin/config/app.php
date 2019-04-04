@@ -22,5 +22,5 @@ return [
     ],
     'services' => [],
     'listeners' => [],
-    'plugins' => []
+    'plugins' => ['adminActionLog']
 ];
