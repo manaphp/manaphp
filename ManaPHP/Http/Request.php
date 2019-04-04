@@ -134,6 +134,8 @@ class Request extends Component implements RequestInterface
                 $id = $params[$name];
             } elseif (count($params) === 1 && isset($params[0])) {
                 $id = $params[0];
+            } elseif (isset($source['id'])) {
+                return $source['id'];
             } else {
                 throw new MissingFieldException(['missing `:id` key value', 'id' => $name]);
             }
