@@ -1,0 +1,83 @@
+@layout(false)
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ManaPHP Admin</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        .login-box {
+            margin: 10% auto;
+            width: 270px;
+        }
+
+        .login-box > div {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="login-box">
+    <h1 align="center">重置密码</h1>
+    <el-input v-model="request.user_name" placeholder="用户名" autofocus>
+        <template slot="prepend">账号</template>
+    </el-input>
+    <el-input v-model="request.email" placeholder="邮箱">
+        <template slot="prepend">邮箱</template>
+    </el-input>
+    <el-input v-model="request.email" placeholder="邮箱">
+        <template slot="prepend">邮箱</template>
+    </el-input>
+    <el-row>
+        <el-col :span="16">
+            <el-input v-model="request.code" placeholder="验证码">
+                <template slot="prepend">验证码</template>
+            </el-input>
+        </el-col>
+        <el-col :offset="1" :span="7">
+            <img :src="captcha_url"
+                 @click="request.code=''; captcha_url='captcha'+'?t='+new Date().getTime()">
+        </el-col>
+    </el-row>
+    <el-button @click="login" style="width:100%" type="primary">找回</el-button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qs@6.7.0/dist/qs.js"></script>
+<script>
+    Vue.prototype.$axios = axios;
+
+    axios.defaults.baseURL = 'http://www.manaphp.com';
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+    vm = new Vue({
+        el: '#app',
+        data: {
+            request: {
+                user_name: '',
+                email: '',
+                code: ''
+            },
+            captcha_url: "captcha"
+        },
+        methods: {
+            login: function () {
+                this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
+                    this.$alert(res.data.message).then(function () {
+                        if (res.data.code === 0) {
+                            window.location.href = "/";
+                        } else {
+                            vm.captcha_url = "captcha" + '?t=' + new Date().getTime();
+                        }
+                    });
+                }.bind(this));
+            },
+        }
+    });
+</script>
+</body>
+</html>
