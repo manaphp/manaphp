@@ -4,7 +4,7 @@
             <el-input v-model="request.user_name" placeholder="用户名" size="small" clearable></el-input>
         </el-col>
         <el-col :span="2">
-            <el-input v-model="request.path" placeholder="路径" size="small" clearable></el-input>
+            <el-input v-model="request.path" placeholder="请求路径" size="small" clearable></el-input>
         </el-col>
         <el-col :span="2">
             <el-input v-model="request.client_ip" placeholder="客户端IP" size="small" clearable></el-input>
@@ -26,17 +26,18 @@
         <el-form-item label="客户端ID:">@{{ detail.client_udid }}</el-form-item>
         <el-form-item label="生成时间:">@{{ detail.created_time|date }}</el-form-item>
         <el-form-item label="数据:">
-            <pre>@{{detail.data|json}}</pre>
+            <pre>@{{  detail.data|json }}</pre>
         </el-form-item>
     </el-form>
 </el-dialog>
 <div class="result-box">
+    <pager :request="request" :response="response"></pager>
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
         <el-table-column prop="user_name" label="用户名" width="150"></el-table-column>
         <el-table-column prop="method" label="请求方式" width="80"></el-table-column>
-        <el-table-column prop="path" label="Path"></el-table-column>
+        <el-table-column prop="path" label="请求路径"></el-table-column>
         <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
         <el-table-column prop="client_udid" label="客户端ID"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
@@ -47,7 +48,7 @@
             </template>
         </el-table-column>
     </el-table>
-    <pager :data="response" @change="request.page=response.page;"></pager>
+    <pager :request="request" :response="response"></pager>
 </div>
 @section('script')
     <script>
@@ -61,6 +62,7 @@
                     client_ip: '',
                     client_udid: '',
                     created_time: [],
+                    size: 20,
                     page: 1
                 },
                 response: {},
