@@ -42,7 +42,8 @@
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="ID" width="100"></el-table-column>
         <el-table-column label="角色ID" width="100">
-            <template slot-scope="scope"><a :href="'role/?role_id='+scope.row.role_id">@{{scope.row.role_id}}</a></template>
+            <template slot-scope="scope"><a :href="'role/?role_id='+scope.row.role_id">@{{scope.row.role_id}}</a>
+            </template>
         </el-table-column>
         <el-table-column prop="role.role_name" label="角色名" width="100"></el-table-column>
         <el-table-column label="用户列表">
@@ -64,8 +65,12 @@
         vm = new Vue({
             el: '#app',
             data: {
-                request: {admin_id: ''},
-                response: [],
+                request: {
+                    admin_id: '',
+                    size: 20,
+                    page: 1
+                },
+                response: {},
 
                 editVisible: false,
                 edit: {
@@ -117,7 +122,7 @@
                 },
                 show_detail: function (row) {
                     this.detailVisible = true;
-                    this.ajax_post("detail", {admin_id: row.admin_id}, function (res) {
+                    this.ajax_get("detail?admin_id" + row.admin_id, function (res) {
                         this.detail = data;
                     });
                 }
