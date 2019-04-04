@@ -311,6 +311,49 @@ class Manager extends Component implements ManagerInterface
                 foreach ($r as $ri => $rv) {
                     $r[$ri][$name] = isset($rd[$ri]) ? $rd[$ri] : [];
                 }
+            } elseif ($relation->type === Relation::TYPE_HAS_MANY_TO_MANY) {
+                $ids = PHP_MAJOR_VERSION >= 7 ? array_column($r, $valueField) : array_field($r, $valueField);
+                $via_data = $model::query()->select([$keyField, $valueField])->whereIn($valueField, $ids)->execute();
+                $data = $query->where($query->getModel()->getPrimaryKey(),
+                    array_ufield($via_data, $keyField))->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
+
+                $rd = [];
+                foreach ($via_data as $dv) {
+                    $rd[$dv[$valueField]][] = $data[$dv[$keyField]];
+                }
+
+                foreach ($r as $ri => $rv) {
+                    $value = $rv[$valueField];
+                    $r[$ri][$name] = isset($rd[$value]) ? $rd[$value] : [];
+                }
+            } elseif ($relation->type === Relation::TYPE_HAS_MANY_VIA) {
+                foreach ($r as $kk => $vv) {
+                    $vv[$name] = [];
+                    $r[$kk] = $vv;
+                }
+
+                $r_index = [];
+                foreach ($r as $ri => $rv) {
+                    $r_index[$rv[$valueField]] = $ri;
+                }
+
+                /** @var \ManaPHP\ModelInterface $via */
+                $via = $relation->keyField;
+                /** @var \ManaPHP\ModelInterface $reference */
+                $reference = new $relation->referenceModel;
+                $via_data = $via::query()->select([$reference->getPrimaryKey(), $relation->valueField])->where($relation->valueField,
+                    array_ufield($r, $model->getPrimaryKey()))->execute();
+                $ids = array_ufield($via_data, $reference->getPrimaryKey());
+                $data = $query->where($query->getModel()->getPrimaryKey(), $ids)->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
+
+                $k1 = $relation->valueField;
+                $k2 = $reference->getPrimaryKey();
+                foreach ($via_data as $item) {
+                    $v1 = $item[$k1];
+                    $v2 = $item[$k2];
+                    $index = $r_index[$v1];
+                    $r[$index][$name] = array_merge($r[$index][$name], [$data[$v2]]);
+                }
             } else {
                 throw new NotSupportedException($name);
             }
