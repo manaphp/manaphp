@@ -18,7 +18,7 @@ class RoleController extends Controller
             ? Role::query()
                 ->whereContains('role_name', input('keyword', ''))
                 ->orderBy('role_id desc')
-                ->paginate(15)
+                ->paginate()
             : null;
     }
 
