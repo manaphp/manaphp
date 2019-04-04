@@ -180,7 +180,7 @@ if (!function_exists('action')) {
     {
         static $router;
         if (!$router) {
-            $router = Di::getDefault()->router;
+            $router = Di::getDefault()->getShared('router');
         }
 
         return $router->createUrl($args, $scheme);
