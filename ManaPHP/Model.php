@@ -385,7 +385,11 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public static function firstOrNull($fields = null, $options = null)
     {
-        $request = Di::getDefault()->request;
+        static $request;
+        if (!$request) {
+            $request = Di::getDefault()->getShared('request');
+        }
+
         if (!$request->isAjax()) {
             return null;
         }
@@ -711,7 +715,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public static function createOrNull($data = null)
     {
-        $request = Di::getDefault()->request;
+        static $request;
+        if (!$request) {
+            $request = Di::getDefault()->getShared('request');
+        }
 
         if (!$request->isPost()) {
             return null;
@@ -751,7 +758,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public static function updateOrNull($data = null)
     {
-        $request = Di::getDefault()->request;
+        static $request;
+        if (!$request) {
+            $request = Di::getDefault()->getShared('request');
+        }
 
         if (!$request->isPost() && !$request->isPut() && !$request->isPatch()) {
             return null;
@@ -859,7 +869,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public static function deleteOrNull()
     {
-        $request = Di::getDefault()->request;
+        static $request;
+        if (!$request) {
+            $request = Di::getDefault()->getShared('request');
+        }
 
         if (!$request->isDelete() && !$request->isPost()) {
             return null;
