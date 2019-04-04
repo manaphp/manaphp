@@ -40,6 +40,9 @@
         </el-col>
     </el-row>
     <el-button @click="login" style="width:100%" type="primary">登录</el-button>
+    <el-row>
+        <el-col :offset="16" span="8"><a href="password/forget"><span style="font-size: 0.8em">忘记密码?</span></a></el-col>
+    </el-row>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/index.js"></script>
