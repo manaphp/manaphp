@@ -332,8 +332,7 @@ class Manager extends Component implements ManagerInterface
                 /** @var \ManaPHP\ModelInterface $reference */
                 $reference = new $relation->referenceModel;
                 $keyField = $reference->getPrimaryKey();
-                $via_data = $via::query()->select([$keyField, $relation->valueField])->where($relation->valueField,
-                    array_ufield($r, $model->getPrimaryKey()))->execute();
+                $via_data = $via::query()->select([$keyField, $relation->valueField])->where($valueField, array_ufield($r, $model->getPrimaryKey()))->execute();
                 $ids = array_ufield($via_data, $keyField);
                 $data = $query->where($query->getModel()->getPrimaryKey(), $ids)->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
 
