@@ -27,8 +27,8 @@ class AdminActionLog extends Model
     public $id;
     public $user_id;
     public $user_name;
-    public $ip;
-    public $udid;
+    public $client_ip;
+    public $client_udid;
     public $path;
     public $method;
     public $url;

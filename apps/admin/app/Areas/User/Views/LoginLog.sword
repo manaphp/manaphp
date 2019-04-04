@@ -6,6 +6,9 @@
         <el-col :span="2">
             <el-input v-model="request.client_ip" placeholder="客户端IP" size="small" clearable></el-input>
         </el-col>
+        <el-col :span="2">
+            <el-input v-model="request.client_udid" placeholder="客户端ID" size="small" clearable></el-input>
+        </el-col>
         <el-col :span="3">
             <el-date-picker v-model="request.created_time" type="daterange" start-placeholder="开始日期"
                             end-placeholder="结束日期" value-format="yyyy-MM-dd" size="small"></el-date-picker>
@@ -13,7 +16,7 @@
     </el-row>
 </div>
 <div class="result-box">
-    <el-table :data="response.items" border size="small" align="left">
+    <el-table :data="response.items" border size="small" align="left" row-key="login_id">
         <el-table-column label="#" type="index" width="50"></el-table-column>
         <el-table-column prop="login_id" label="日志ID" width="100"></el-table-column>
         <el-table-column prop="admin_name" label="用户名" width="100"></el-table-column>
@@ -33,8 +36,9 @@
                 request: {
                     admin_name: '',
                     client_ip: '',
+                    client_udid: '',
                     created_time: [],
-                    page: '1'
+                    page: 1
                 },
                 response: []
             },

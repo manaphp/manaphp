@@ -18,6 +18,15 @@ axios.interceptors.response.use(function (res) {
         }
     });
 Vue.mixin({
+    filters: {
+        date: function (value, format='YYYY-MM-DD HH:mm:ss') {
+            return value ? moment(value * 1000).format(format) : '';
+        },
+        json: function (value) {
+            return JSON.stringify(typeof value === 'string' ? JSON.parse(value) : value, null, 2);
+        }
+    },
+
     methods: {
         ajax_get: function (url, success) {
             this.$axios.get(url).then(function (res) {
@@ -50,9 +59,13 @@ Vue.mixin({
                 }
             }.bind(this));
         },
-        fDate: function (row, column, value) {
+        format_date: function (value) {
             return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
         },
+        fDate: function (row, column, value) {
+            return this.format_date(value);
+        },
+
         fEnabled: function (row, column, value) {
             return ['禁用', '启用'][value];
         },

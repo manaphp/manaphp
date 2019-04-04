@@ -1,41 +1,53 @@
 <div class="search-box">
     <el-row>
         <el-col :span="2">
-            <el-input v-model="request.user_name" placeholder="用户名" size="small"></el-input>
+            <el-input v-model="request.user_name" placeholder="用户名" size="small" clearable></el-input>
         </el-col>
         <el-col :span="2">
-            <el-input v-model="request.url" placeholder="路径" size="small"></el-input>
+            <el-input v-model="request.path" placeholder="路径" size="small" clearable></el-input>
+        </el-col>
+        <el-col :span="2">
+            <el-input v-model="request.client_ip" placeholder="客户端IP" size="small" clearable></el-input>
+        </el-col>
+        <el-col :span="3">
+            <el-date-picker v-model="request.created_time" type="daterange" start-placeholder="开始日期"
+                            end-placeholder="结束日期" value-format="yyyy-MM-dd" size="small"></el-date-picker>
         </el-col>
     </el-row>
 </div>
 <el-dialog title="详情" :visible.sync="detailVisible">
-    <el-table :data="detail" border size="small">
-        <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
-        <el-table-column prop="user_name" label="用户名" width="100"></el-table-column>
-        <el-table-column prop="ip" label="IP" width="100"></el-table-column>
-        <el-table-column prop="udid" label="设备ID"></el-table-column>
-        <el-table-column prop="method" label="请求方式" width="80"></el-table-column>
-        <el-table-column prop="url" label="请求地址"></el-table-column>
-        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
-    </el-table>
+    <el-form :model="detail" label-width="100px" size="small">
+        <el-form-item label="id:">@{{ detail.id }}</el-form-item>
+        <el-form-item label="用户名:">@{{ detail.user_name }}</el-form-item>
+        <el-form-item label="请求方法:">@{{ detail.method }}</el-form-item>
+        <el-form-item label="请求路径:">@{{ detail.path }}</el-form-item>
+        <el-form-item label="请求URL:">@{{ detail.url }}</el-form-item>
+        <el-form-item label="客户端IP:">@{{ detail.client_ip }}</el-form-item>
+        <el-form-item label="客户端ID:">@{{ detail.client_udid }}</el-form-item>
+        <el-form-item label="生成时间:">@{{ detail.created_time|date }}</el-form-item>
+        <el-form-item label="数据:">
+            <pre>@{{detail.data|json}}</pre>
+        </el-form-item>
+    </el-form>
 </el-dialog>
 <div class="result-box">
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
         <el-table-column prop="user_name" label="用户名" width="150"></el-table-column>
-        <el-table-column prop="ip" label="IP" width="120"></el-table-column>
-        <el-table-column prop="udid" label="设备ID"></el-table-column>
         <el-table-column prop="method" label="请求方式" width="80"></el-table-column>
-        <el-table-column prop="url" label="请求地址"></el-table-column>
+        <el-table-column prop="path" label="Path"></el-table-column>
+        <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
+        <el-table-column prop="client_udid" label="客户端ID"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-                <el-button @click="show_detail(scope.row)" icon="el-icon-view" size="mini" plain round>详情</el-button>
+                <el-button @click="show_detail(scope.row)" icon="el-icon-view" size="mini" plain round>详情
+                </el-button>
             </template>
         </el-table-column>
     </el-table>
-    <pager :data="response" @change="request.page=response.page;reload_table();"></pager>
+    <pager :data="response" @change="request.page=response.page;"></pager>
 </div>
 @section('script')
     <script>
@@ -43,7 +55,14 @@
         vm = new Vue({
             el: '#app',
             data: {
-                request: {},
+                request: {
+                    user_name: '',
+                    path: '',
+                    client_ip: '',
+                    client_udid: '',
+                    created_time: [],
+                    page: 1
+                },
                 response: {},
                 detailVisible: false,
                 detail: {}
@@ -62,7 +81,7 @@
             methods: {
                 show_detail: function (row) {
                     this.detailVisible = true;
-                    this.ajax_post("detail", {id: row.id}, function (data) {
+                    this.ajax_get("detail?id=" + row.id, function (data) {
                         this.detail = data;
                     });
                 }
