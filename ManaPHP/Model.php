@@ -378,13 +378,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param int|string|array $filters
-     * @param array            $fields
-     * @param array            $options
+     * @param array $fields
+     * @param array $options
      *
      * @return static|null
      */
-    public static function firstOrNull($filters, $fields = null, $options = null)
+    public static function firstOrNull($fields = null, $options = null)
     {
         $request = Di::getDefault()->request;
         if (!$request->isAjax()) {
