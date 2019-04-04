@@ -81,9 +81,11 @@ Vue.mixin({
 });
 
 Vue.component('pager', {
-    props: ['data'],
-    template: ' <el-pagination :current-page.sync="data.page"\n' +
-        '                   :page-size="data.size"\n' +
-        '                   @current-change="$emit(\'change\')"\n' +
-        '                   :total="data.count" layout="total, prev, pager, next"></el-pagination>\n',
+    props: ['request', 'response'],
+    template: ' <el-pagination :current-page="request.page"\n' +
+        '                   :page-size="request.size"\n' +
+        '                   :page-sizes="[10,20,25,50,100,500,1000]"\n' +
+        '                   @current-change="request.page=$event"\n' +
+        '                   @size-change="request.size=$event"\n' +
+        '                   :total="response.count" layout="sizes,total, prev, pager, next"></el-pagination>\n',
 });
