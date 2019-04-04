@@ -18,8 +18,8 @@ class AdminActionLogPlugin extends Plugin
         }
 
         $adminActionLog = new AdminActionLog();
-        $adminActionLog->user_id = $this->identity->getId();
-        $adminActionLog->user_name = $this->identity->getName();
+        $adminActionLog->user_id = $this->identity->getId(0);
+        $adminActionLog->user_name = $this->identity->getName('');
         $adminActionLog->client_ip = $this->request->getClientIp();
         $adminActionLog->method = $this->request->getMethod();
         $adminActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);
