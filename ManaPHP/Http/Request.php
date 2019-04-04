@@ -168,6 +168,14 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->_context->_SERVER['REQUEST_METHOD'];
+    }
+
+    /**
      * @param string $name
      * @param mixed  $default
      *

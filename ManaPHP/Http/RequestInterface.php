@@ -63,6 +63,11 @@ interface RequestInterface
     public function getServer($name = null, $default = '');
 
     /**
+     * @return string
+     */
+    public function getMethod();
+
+    /**
      * @param string $name
      *
      * @return bool
