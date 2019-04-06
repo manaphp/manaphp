@@ -30,7 +30,11 @@ class Application extends \ManaPHP\Http\Application
             $this->eventsManager->fireEvent('request:authenticate', $this);
 
             $actionReturnValue = $this->router->dispatch();
-            if ($actionReturnValue !== null && !$actionReturnValue instanceof Response) {
+            if ($actionReturnValue === null || $actionReturnValue instanceof Response) {
+                null;
+            } elseif (is_string($actionReturnValue)) {
+                $this->response->setJsonError($actionReturnValue);
+            } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
         } catch (\Exception $exception) {

@@ -34,6 +34,8 @@ class Application extends \ManaPHP\Http\Application
                 $this->response->setContent($this->view->render());
             } elseif ($actionReturnValue instanceof Response) {
                 null;
+            } elseif (is_string($actionReturnValue)) {
+                $this->response->setJsonError($actionReturnValue);
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
