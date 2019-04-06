@@ -20,13 +20,14 @@ class Session extends Identity
      */
     public function authenticate($silent = true)
     {
-        $claims = $this->session->get($this->_name, []);
-        if (!$claims && !$silent) {
-            throw new NoCredentialException('');
+        if ($claims = $this->session->get($this->_name, [])) {
+            parent::setClaims($claims);
+            return $this;
+        } elseif ($silent) {
+            return $this;
+        } else {
+            throw new NoCredentialException('no token');
         }
-        parent::setClaims($claims);
-
-        return $this;
     }
 
     public function setClaims($claims)
