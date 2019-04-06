@@ -37,7 +37,6 @@ class FactoryDefault extends Di
             'ipcCache' => 'ManaPHP\Ipc\Cache\Adapter\Apcu',
             'httpClient' => 'ManaPHP\Http\Client\Adapter\Curl',
             'restClient' => 'ManaPHP\Http\Client\Adapter\Stream',
-            'identity' => 'ManaPHP\Identity\Adapter\Session',
             'paginator' => 'ManaPHP\Paginator',
             'filesystem' => 'ManaPHP\Filesystem\Adapter\File',
             'random' => 'ManaPHP\Security\Random',

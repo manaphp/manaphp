@@ -14,7 +14,6 @@ use Swoole\Runtime;
  * @property-read \ManaPHP\Http\SessionInterface       $session
  *
  * @package ManaPHP\Http
- * @method void authenticate()
  * @method void authorize()
  */
 abstract class Application extends \ManaPHP\Application
@@ -29,10 +28,7 @@ abstract class Application extends \ManaPHP\Application
         parent::__construct($loader);
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'generateRequestId']);
-
-        if (method_exists($this, 'authenticate')) {
-            $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
-        }
+        $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
 
         if (method_exists($this, 'authorize')) {
             $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
@@ -44,6 +40,11 @@ abstract class Application extends \ManaPHP\Application
             $this->alias->set('@web', '');
             $this->alias->set('@asset', '');
         }
+    }
+
+    public function authenticate()
+    {
+        $this->identity->authenticate();
     }
 
     public function generateRequestId()
