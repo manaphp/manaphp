@@ -283,6 +283,8 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $this->eventsManager->fireEvent('request:validate', $this, ['controller' => get_class($controller), 'action' => $action]);
 
+        $this->eventsManager->fireEvent('request:ready', $this);
+
         $this->eventsManager->fireEvent('request:invoke', $this, $action);
 
         $args = $this->_buildActionArgs($controller, $action, $params);
