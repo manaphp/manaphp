@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'id' => 'admin',
     'env' => env('APP_ENV', 'prod'),
     'debug' => env('APP_DEBUG', false),
     'version' => '1.1.1',
@@ -22,5 +23,8 @@ return [
     ],
     'services' => [],
     'listeners' => [],
-    'plugins' => ['adminActionLog']
+    'plugins' => [
+        //'debugger',
+        //'fiddler',
+        'adminActionLog']
 ];

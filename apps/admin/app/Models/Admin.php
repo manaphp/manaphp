@@ -47,7 +47,7 @@ class Admin extends ModelBase
      */
     public function hashPassword($password)
     {
-        md5(md5($password) . $this->salt);
+        return md5(md5($password) . $this->salt);
     }
 
     /**
