@@ -30,6 +30,7 @@ if ($uri !== '/') {
 }
 
 $_GET['_url'] = $uri;
+$_REQUEST['_url'] = $uri;
 require_once  'index.php';
 STR;
 

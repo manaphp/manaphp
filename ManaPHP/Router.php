@@ -312,9 +312,7 @@ class Router extends Component implements RouterInterface
 
         if ($this->_prefix) {
             if (strpos($uri, $this->_prefix) === 0) {
-                if (($handledUri = substr($uri, strlen($this->_prefix))) === '') {
-                    $handledUri = '/';
-                }
+                $handledUri = substr($uri, strlen($this->_prefix)) ?: '/';
             } else {
                 $handledUri = false;
             }
