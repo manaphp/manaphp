@@ -48,8 +48,9 @@ STR;
 
         echo "server listen on: $ip:$port", PHP_EOL;
 
+        $prefix = $this->router->getPrefix();
         if (DIRECTORY_SEPARATOR === '\\') {
-            shell_exec("explorer.exe http://$ip:$port/");
+            shell_exec("explorer.exe http://$ip:$port" . $prefix);
         }
 
         shell_exec("php -S $ip:$port -t public tmp/$router");
