@@ -330,18 +330,17 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      *
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array            $options
      *
      * @return static|null
      */
-    public static function first($filters, $fields = null, $options = null)
+    public static function first($filters, $fields = null)
     {
         if ($filters === null) {
             throw new MisuseException('Model:first is not support null value filters');
         }
 
         $model = new static;
-        $query = static::query(null, $model)->select($fields ?: null)->options($options)->limit(1);
+        $query = static::query(null, $model)->select($fields ?: null)->limit(1);
 
         if (is_scalar($filters)) {
             $query->whereEq($model->getPrimaryKey(), $filters);
@@ -356,13 +355,12 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array            $options
      *
      * @return static
      */
-    public static function firstOrFail($filters, $fields = null, $options = null)
+    public static function firstOrFail($filters, $fields = null)
     {
-        if (!$r = static::first($filters, $fields, $options)) {
+        if (!$r = static::first($filters, $fields)) {
             $exception = new NotFoundException([
                 'No record for `:model` model with `:query` query',
                 'model' => static::class,
@@ -379,11 +377,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
     /**
      * @param array $fields
-     * @param array $options
      *
      * @return static|null
      */
-    public static function firstOrNull($fields = null, $options = null)
+    public static function firstOrNull($fields = null)
     {
         static $request;
         if (!$request) {
@@ -403,26 +400,20 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      *
      * @param array $filters
      * @param array $fields
-     * @param array $options
      *
      * @return static|null
      */
-    public static function last($filters = null, $fields = null, $options = null)
+    public static function last($filters = null, $fields = null)
     {
         $model = new static();
-        if ($options === null) {
-            $options = [];
+
+        if (is_string($primaryKey = $model->getPrimaryKey())) {
+            $options['order'] = [$primaryKey => SORT_DESC];
+        } else {
+            throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => static::class]);
         }
 
-        if (!isset($options['order'])) {
-            if (is_string($primaryKey = $model->getPrimaryKey())) {
-                $options['order'] = [$primaryKey => SORT_DESC];
-            } else {
-                throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => static::class]);
-            }
-        }
-
-        $rs = static::query(null, $model)->select($fields)->where($filters)->options($options)->limit(1)->fetch();
+        $rs = static::query(null, $model)->select($fields)->where($filters)->limit(1)->fetch();
         return isset($rs[0]) ? $rs[0] : null;
     }
 

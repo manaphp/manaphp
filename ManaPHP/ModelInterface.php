@@ -145,39 +145,35 @@ interface ModelInterface
      *
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array            $options
      *
      * @return static|null
      */
-    public static function first($filters, $fields = null, $options = null);
+    public static function first($filters, $fields = null);
 
     /**
      * @param int|string|array $filters
      * @param array            $fields
-     * @param array            $options
      *
      * @return static
      */
-    public static function firstOrFail($filters, $fields = null, $options = null);
+    public static function firstOrFail($filters, $fields = null);
 
     /**
      * @param array $fields
-     * @param array $options
      *
      * @return static|null
      */
-    public static function firstOrNull($fields = null, $options = null);
+    public static function firstOrNull($fields = null);
 
     /**
      * Allows to query the last record that match the specified conditions
      *
      * @param array $filters
      * @param array $fields
-     * @param array $options
      *
      * @return static|null
      */
-    public static function last($filters = null, $fields = null, $options = null);
+    public static function last($filters = null, $fields = null);
 
     /**
      * @param int|string|array $filters
