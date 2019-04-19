@@ -107,24 +107,6 @@ interface ModelInterface
     public static function all($filters = [], $options = null, $fields = null);
 
     /**
-     * @param array $filters
-     * @param array $options
-     * @param array $fields
-     *
-     * @return  \ManaPHP\Paginator
-     */
-    public static function paginate($filters = [], $options = null, $fields = null);
-
-    /**
-     * @param array $filters
-     * @param array $options
-     * @param array $fields
-     *
-     * @return  \ManaPHP\Paginator
-     */
-    public static function search($filters = [], $options = null, $fields = null);
-
-    /**
      * @param array        $filters
      * @param string|array $field
      *

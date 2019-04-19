@@ -209,32 +209,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param array $filters
-     * @param array $options
-     * @param array $fields
-     *
-     * @return  \ManaPHP\Paginator
-     */
-    public static function paginate($filters = [], $options = null, $fields = null)
-    {
-        return static::query()->select($fields)->where($filters)->options($options)
-            ->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
-    }
-
-    /**
-     * @param array $filters
-     * @param array $options
-     * @param array $fields
-     *
-     * @return  \ManaPHP\Paginator
-     */
-    public static function search($filters = [], $options = null, $fields = null)
-    {
-        return static::query()->select($fields)->whereSearch($filters)->options($options)
-            ->paginate(isset($options['size']) ? $options['size'] : null, isset($options['page']) ? $options['page'] : null);
-    }
-
-    /**
      * @param array        $filters
      * @param string|array $field
      *
