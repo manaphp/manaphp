@@ -113,7 +113,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      *
      * @return int
      */
-    public function generateAutoIncrementId($step = 1)
+    public function getNextAutoIncrementId($step = 1)
     {
         return null;
     }
@@ -147,7 +147,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     {
         $autoIncrementField = $this->getAutoIncrementField();
         if ($autoIncrementField && $this->$autoIncrementField === null) {
-            $this->$autoIncrementField = $this->generateAutoIncrementId();
+            $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }
 
         $fields = $this->getFields();

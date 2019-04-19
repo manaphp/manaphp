@@ -75,7 +75,7 @@ interface ModelInterface
      *
      * @return int
      */
-    public function generateAutoIncrementId($step = 1);
+    public function getNextAutoIncrementId($step = 1);
 
     /**
      * @return string|null

@@ -263,7 +263,7 @@ class Model extends \ManaPHP\Model
      *
      * @return int
      */
-    public function generateAutoIncrementId($step = 1)
+    public function getNextAutoIncrementId($step = 1)
     {
         $source = $this->getSource();
         if ($pos = strpos($source, '.')) {
@@ -342,7 +342,7 @@ class Model extends \ManaPHP\Model
     {
         $autoIncrementField = $this->getAutoIncrementField();
         if ($autoIncrementField && $this->$autoIncrementField === null) {
-            $this->$autoIncrementField = $this->generateAutoIncrementId();
+            $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }
 
         $fields = $this->getFields();
@@ -544,7 +544,7 @@ class Model extends \ManaPHP\Model
         $fieldTypes = $instance->getFieldTypes();
         foreach ($documents as $i => $document) {
             if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-                $document[$autoIncrementField] = $instance->generateAutoIncrementId();
+                $document[$autoIncrementField] = $instance->getNextAutoIncrementId();
             }
             foreach ((array)$fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
@@ -605,7 +605,7 @@ class Model extends \ManaPHP\Model
         $fieldTypes = $instance->getFieldTypes();
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
-                $document[$primaryKey] = $instance->generateAutoIncrementId();
+                $document[$primaryKey] = $instance->getNextAutoIncrementId();
             }
             foreach ((array)$fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
@@ -637,7 +637,7 @@ class Model extends \ManaPHP\Model
         $fieldTypes = $instance->getFieldTypes();
         $autoIncrementField = $instance->getAutoIncrementField();
         if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-            $document[$autoIncrementField] = $instance->generateAutoIncrementId();
+            $document[$autoIncrementField] = $instance->getNextAutoIncrementId();
         }
 
         foreach ((array)$fieldTypes as $field => $type) {
