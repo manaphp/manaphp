@@ -202,21 +202,6 @@ interface ModelInterface
     public static function values($field, $filters = null);
 
     /**
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return array
-     */
-    public static function kvalues($field = null, $filters = null);
-
-    /**
-     * @param array $filters
-     *
-     * @return mixed
-     */
-    public static function vlabels($filters = null);
-
-    /**
      * @param string|array $filters
      *
      * @return bool

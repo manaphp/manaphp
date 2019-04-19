@@ -499,51 +499,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return array
-     */
-    public static function kvalues($field = null, $filters = null)
-    {
-        $model = new static();
-        if ($field === null && !$field = $model->getDisplayField()) {
-            throw new PreconditionException(['invoke :model:kvalues method must provide displayField', 'model' => static::class]);
-        }
-
-        $pkField = $model->getPrimaryKey();
-
-        $query = static::query(null, $model)->select([$pkField, $field])->where($filters)->indexBy([$pkField => $field]);
-        if (in_array('display_order', $model->getFields(), true)) {
-            $query->orderBy(['display_order' => SORT_DESC, $pkField => SORT_ASC]);
-        }
-
-        return $query->fetch(true);
-    }
-
-    /**
-     * @param array $filters
-     *
-     * @return mixed
-     */
-    public static function vlabels($filters = null)
-    {
-        $model = new static();
-        if (!$field = $model->getDisplayField()) {
-            throw new PreconditionException(['invoke :model:vlabels method must provide displayField', 'model' => static::class]);
-        }
-
-        $pkField = $model->getPrimaryKey();
-
-        $query = static::query(null, $model)->select(['value' => $pkField, 'label' => $field])->where($filters);
-        if (in_array('display_order', $model->getFields(), true)) {
-            $query->orderBy(['display_order' => SORT_DESC, $pkField => SORT_ASC]);
-        }
-
-        return $query->fetch(true);
-    }
-
-    /**
      * @param int|string|array $filters
      *
      * @return bool
