@@ -65,16 +65,6 @@ interface ViewInterface
     /**
      * Renders a partial view
      *
-     * <code>
-     *    //Show a partial inside another view
-     *    $this->partial('shared/footer');
-     * </code>
-     *
-     * <code>
-     *    //Show a partial inside another view with parameters
-     *    $this->partial('shared/footer', array('content' => $html));
-     * </code>
-     *
      * @param string $path
      * @param array  $vars
      */

@@ -20,10 +20,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     /**
      * Reads the complete meta-data for certain model
      *
-     *<code>
-     *    print_r($metaData->readMetaData(new Robots()));
-     *</code>
-     *
      * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
@@ -52,10 +48,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     /**
      * Returns table attributes names (fields)
      *
-     *<code>
-     *    print_r($metaData->getAttributes(new Robots()));
-     *</code>
-     *
      * @param string|\ManaPHP\Db\ModelInterface $model
      *
      * @return array
@@ -67,10 +59,6 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
 
     /**
      * Returns an array of fields which are part of the primary key
-     *
-     *<code>
-     *    print_r($metaData->getPrimaryKeyAttributes(new Robots()));
-     *</code>
      *
      * @param string|\ManaPHP\Db\ModelInterface $model
      *

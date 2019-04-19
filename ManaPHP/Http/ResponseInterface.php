@@ -192,9 +192,6 @@ interface ResponseInterface
 
     /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
-     *<code>
-     *    $response->setJsonContent(array("status" => "OK"));
-     *</code>
      *
      * @param array|\JsonSerializable|int|string|\Exception $content
      *

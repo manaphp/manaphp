@@ -23,11 +23,6 @@ interface QueryInterface
     public function getModel();
 
     /**
-     *
-     *<code>
-     *    $builder->from('Robots');
-     *</code>
-     *
      * @param string $table
      * @param string $alias
      *
@@ -53,11 +48,6 @@ interface QueryInterface
 
     /**
      * Appends a condition to the current conditions using a AND operator
-     *
-     *<code>
-     *    $builder->andWhere('name = "Peter"');
-     *    $builder->andWhere('name = :name: AND id > :id:', array('name' => 'Peter', 'id' => 100));
-     *</code>
      *
      * @param string|array           $filter
      * @param int|float|string|array $value
@@ -110,10 +100,6 @@ interface QueryInterface
     /**
      * Appends a BETWEEN condition to the current conditions
      *
-     *<code>
-     *    $builder->whereBetween('price', 100.25, 200.50);
-     *</code>
-     *
      * @param string           $expr
      * @param int|float|string $min
      * @param int|float|string $max
@@ -124,10 +110,6 @@ interface QueryInterface
 
     /**
      * Appends a NOT BETWEEN condition to the current conditions
-     *
-     *<code>
-     *    $builder->whereNotBetween('price', 100.25, 200.50);
-     *</code>
      *
      * @param string           $expr
      * @param int|float|string $min
@@ -149,10 +131,6 @@ interface QueryInterface
     /**
      * Appends an IN condition to the current conditions
      *
-     *<code>
-     *    $builder->whereIn('id', [1, 2, 3]);
-     *</code>
-     *
      * @param string                           $expr
      * @param array|\ManaPHP\Db\QueryInterface $values
      *
@@ -162,10 +140,6 @@ interface QueryInterface
 
     /**
      * Appends a NOT IN condition to the current conditions
-     *
-     *<code>
-     *    $builder->whereNotIn('id', [1, 2, 3]);
-     *</code>
      *
      * @param string                           $expr
      * @param array|\ManaPHP\Db\QueryInterface $values
@@ -291,11 +265,6 @@ interface QueryInterface
     /**
      * Sets a ORDER BY condition clause
      *
-     *<code>
-     *    $builder->orderBy('Robots.name');
-     *    $builder->orderBy(array('1', 'Robots.name'));
-     *</code>
-     *
      * @param string|array $orderBy
      *
      * @return static
@@ -311,10 +280,6 @@ interface QueryInterface
 
     /**
      * Sets a GROUP BY clause
-     *
-     *<code>
-     *    $builder->groupBy(array('Robots.name'));
-     *</code>
      *
      * @param string|array $groupBy
      *
@@ -338,11 +303,6 @@ interface QueryInterface
 
     /**
      * Sets a LIMIT clause, optionally a offset clause
-     *
-     *<code>
-     *    $builder->limit(100);
-     *    $builder->limit(100, 20);
-     *</code>
      *
      * @param int $limit
      * @param int $offset

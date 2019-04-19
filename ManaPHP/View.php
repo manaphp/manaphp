@@ -56,10 +56,6 @@ class View extends Component implements ViewInterface
     /**
      * Set a single view parameter
      *
-     *<code>
-     *    $this->view->setVar('products', $products);
-     *</code>
-     *
      * @param string $name
      * @param mixed  $value
      *
@@ -306,10 +302,6 @@ class View extends Component implements ViewInterface
 
     /**
      * Externally sets the view content
-     *
-     *<code>
-     *    $this->view->setContent(" < h1>hello </h1 > ");
-     *</code>
      *
      * @param string $content
      *

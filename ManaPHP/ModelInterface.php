@@ -5,9 +5,6 @@ interface ModelInterface
 {
     /**
      * Returns table name mapped in the model
-     * <code>
-     *  $city->getSource();
-     * </code>
      *
      * @param mixed $context
      *
@@ -101,13 +98,6 @@ interface ModelInterface
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * <code>
-     *  $cities=City::find(['country_id'=>2]);
-     *  $cities=City::find(['conditions'=>['country_id'=>2],'order'=>'city_id desc']);
-     *  $cities=City::find([['country_id'=>2],'order'=>'city_id desc']);
-     *  $cities=City::find(['conditions'=>'country_id =:country_id','bind'=>['country_id'=>2]]);
-     *
-     * </code>
      * @param array $filters
      * @param array $options
      * @param array $fields
@@ -152,13 +142,6 @@ interface ModelInterface
 
     /**
      * Allows to query the first record that match the specified conditions
-     *
-     * <code>
-     *  $city=City::first(10);
-     *  $city=City::first(['city_id'=>10]);
-     *  $city=City::first(['conditions'=>['city_id'=>10]]);
-     *  $city=City::first(['conditions'=>'city_id =:city_id','bind'=>['city_id'=>10]]);
-     * </code>
      *
      * @param int|string|array $filters
      * @param array            $fields
@@ -256,10 +239,6 @@ interface ModelInterface
     /**
      * Allows to count how many records match the specified conditions
      *
-     * <code>
-     * City::count(['country_id'=>2]);
-     * </code>
-     *
      * @param array  $filters
      * @param string $field
      *
@@ -309,10 +288,6 @@ interface ModelInterface
 
     /**
      * Assigns values to a model from an array
-     * <code>
-     *  $city->assign(['city_id'=>1,'city_name'=>'beijing']);
-     *  $city->assign(['city_id'=>1,'city_name'=>'beijing'],['city_name']);
-     * </code>
      *
      * @param array $data
      * @param array $whiteList
@@ -409,10 +384,6 @@ interface ModelInterface
 
     /**
      * Returns the instance as an array representation
-     *
-     *<code>
-     * print_r($robot->toArray());
-     *</code>
      *
      * @return array
      */

@@ -49,10 +49,6 @@ class Crypt extends Component implements CryptInterface
     /**
      * Encrypts a text
      *
-     *<code>
-     *    $encrypted = $crypt->encrypt("Ultra-secret text", "encrypt password");
-     *</code>
-     *
      * @param string $text
      * @param string $key
      *
@@ -73,10 +69,6 @@ class Crypt extends Component implements CryptInterface
 
     /**
      * Decrypts an encrypted text
-     *
-     *<code>
-     *    echo $crypt->decrypt($encrypted, "decrypt password");
-     *</code>
      *
      * @param string $text
      * @param string $key

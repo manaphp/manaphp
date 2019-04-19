@@ -12,10 +12,6 @@ class Version
     /**
      * Returns the active version (string)
      *
-     * <code>
-     * echo \ManaPHP\Version::get();
-     * </code>
-     *
      * @return string
      */
     public static function get()

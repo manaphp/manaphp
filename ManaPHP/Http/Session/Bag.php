@@ -31,11 +31,6 @@ class Bag extends Component implements BagInterface
 
     /**
      * Destroys the session bag
-     *
-     *<code>
-     * $user->destroy();
-     *</code>
-     *
      */
     public function destroy()
     {
@@ -44,10 +39,6 @@ class Bag extends Component implements BagInterface
 
     /**
      * Sets a value in the session bag
-     *
-     *<code>
-     * $user->set('name', 'Kimbra');
-     *</code>
      *
      * @param string $property
      * @param mixed  $value
@@ -64,10 +55,6 @@ class Bag extends Component implements BagInterface
 
     /**
      * Obtains a value from the session bag optionally setting a default value
-     *
-     *<code>
-     * echo $user->get('name', 'Kimbra');
-     *</code>
      *
      * @param string $property
      * @param string $default
@@ -89,10 +76,6 @@ class Bag extends Component implements BagInterface
     /**
      * Check whether a property is defined in the internal bag
      *
-     *<code>
-     * var_dump($user->has('name'));
-     *</code>
-     *
      * @param string $property
      *
      * @return bool
@@ -107,10 +90,6 @@ class Bag extends Component implements BagInterface
 
     /**
      * Removes a property from the internal bag
-     *
-     *<code>
-     * $user->remove('name');
-     *</code>
      *
      * @param string $property
      *

@@ -44,10 +44,6 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
     /**
      * Shows a HTML error message
      *
-     *<code>
-     * $flash->error('This is an error');
-     *</code>
-     *
      * @param string $message
      *
      * @return void
@@ -59,10 +55,6 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
 
     /**
      * Shows a HTML notice/information message
-     *
-     *<code>
-     * $flash->notice('This is an information');
-     *</code>
      *
      * @param string $message
      *
@@ -76,10 +68,6 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
     /**
      * Shows a HTML success message
      *
-     *<code>
-     * $flash->success('The process was finished successfully');
-     *</code>
-     *
      * @param string $message
      *
      * @return void
@@ -91,10 +79,6 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
 
     /**
      * Shows a HTML warning message
-     *
-     *<code>
-     * $flash->warning('Hey, this is important');
-     *</code>
      *
      * @param string $message
      *

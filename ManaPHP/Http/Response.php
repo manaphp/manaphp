@@ -128,9 +128,6 @@ class Response extends Component implements ResponseInterface
 
     /**
      * Sets the HTTP response code
-     *<code>
-     *    $response->setStatusCode(404, "Not Found");
-     *</code>
      *
      * @param int    $code
      * @param string $text
@@ -241,9 +238,6 @@ class Response extends Component implements ResponseInterface
 
     /**
      * Overwrites a header in the response
-     *<code>
-     *    $response->setHeader("Content-Type", "text/plain");
-     *</code>
      *
      * @param string $name
      * @param string $value
@@ -300,9 +294,6 @@ class Response extends Component implements ResponseInterface
 
     /**
      * Sets a Expires header to use HTTP cache
-     *<code>
-     *    $this->response->setExpires(new DateTime());
-     *</code>
      *
      * @param int $timestamp
      *
@@ -338,9 +329,6 @@ class Response extends Component implements ResponseInterface
 
     /**
      * Set a custom ETag
-     *<code>
-     *    $response->setEtag(md5(time()));
-     *</code>
      *
      * @param string $etag
      *
@@ -385,10 +373,6 @@ class Response extends Component implements ResponseInterface
 
     /**
      * Sets the response content-type mime, optionally the charset
-     *<code>
-     *    $response->setContentType('application/pdf');
-     *    $response->setContentType('text/plain', 'UTF-8');
-     *</code>
      *
      * @param string $contentType
      * @param string $charset
@@ -418,12 +402,6 @@ class Response extends Component implements ResponseInterface
 
     /**
      * Redirect by HTTP to another action or URL
-     *<code>
-     *  //Using a string redirect (internal/external)
-     *    $response->redirect("posts/index");
-     *    $response->redirect("http://www.google.com");
-     *    $response->redirect("http://www.example.com/new-location", false);
-     *</code>
      *
      * @param string|array $location
      * @param bool         $temporarily
@@ -448,9 +426,6 @@ class Response extends Component implements ResponseInterface
 
     /**
      * Sets HTTP response body
-     *<code>
-     *    $response->setContent("<h1>Hello!</h1>");
-     *</code>
      *
      * @param string $content
      *
@@ -509,10 +484,6 @@ class Response extends Component implements ResponseInterface
 
     /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
-     *<code>
-     *    $response->setJsonContent(array("status" => "OK"));
-     *    $response->setJsonContent(array("status" => "OK"));
-     *</code>
      *
      * @param array|\JsonSerializable|int|string|\Exception $content
      *

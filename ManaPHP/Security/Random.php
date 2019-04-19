@@ -112,12 +112,6 @@ class Random extends Component implements RandomInterface
      * Version 4 UUIDs have the form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx where x is any hexadecimal
      * digit and y is one of 8, 9, A, or B (e.g., f47ac10b-58cc-4372-a567-0e02b2c3d479).
      *
-     *<code>
-     *  $random = new \Phalcon\Security\Random();
-     *
-     *  echo $random->getUuid(); // 1378c906-64bb-4f81-a8d6-4ae1bfcdec22
-     *</code>
-     *
      * @link https://www.ietf.org/rfc/rfc4122.txt
      *
      * @return string

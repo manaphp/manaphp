@@ -159,10 +159,6 @@ class Router extends Component implements RouterInterface
     /**
      * Adds a route to the router on any HTTP method
      *
-     *<code>
-     * $router->add('/about', 'About::index');
-     *</code>
-     *
      * @param string       $pattern
      * @param string|array $paths
      * @param string|array $method

@@ -167,11 +167,6 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     /**
      * Sets a LIMIT clause, optionally a offset clause
      *
-     *<code>
-     *    $builder->limit(100);
-     *    $builder->limit(100, 20);
-     *</code>
-     *
      * @param int $limit
      * @param int $offset
      *
