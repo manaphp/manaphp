@@ -214,15 +214,16 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             $keyField = key($field);
             $valueField = current($field);
             /** @noinspection ForeachSourceInspection */
-            foreach ($query->select([$keyField, $valueField])->fetch() as $v) {
-                $keyValue = $v->{$keyField};
+            foreach ($query->select([$keyField, $valueField])->fetch(true) as $v) {
+                $key = $v[$keyField];
+                $value = $v[$valueField];
 
-                if (!isset($list[$keyValue])) {
-                    $list[$keyValue] = $v->{$valueField};
-                } elseif (is_array($list[$keyValue])) {
-                    $list[$keyValue][] = $v->{$valueField};
+                if (!isset($list[$key])) {
+                    $list[$key] = $value;
+                } elseif (is_array($list[$key])) {
+                    $list[$key][] = $value;
                 } else {
-                    $list[$keyValue] = [$list[$keyValue], $v->{$valueField}];
+                    $list[$key] = [$list[$key], $value];
                 }
             }
 
