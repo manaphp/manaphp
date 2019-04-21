@@ -4,6 +4,11 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
+/**
+ * Class ServeController
+ * @package ManaPHP\Cli\Controllers
+ * @property-read \ManaPHP\RouterInterface $router
+ */
 class ServeController extends Controller
 {
     /**
