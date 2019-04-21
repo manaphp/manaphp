@@ -78,11 +78,6 @@ interface ModelInterface
     public function getNextAutoIncrementId($step = 1);
 
     /**
-     * @return string|null
-     */
-    public function getDisplayField();
-
-    /**
      * @return array
      */
     public function rules();
@@ -107,12 +102,12 @@ interface ModelInterface
     public static function all($filters = [], $options = null, $fields = null);
 
     /**
-     * @param array        $filters
      * @param string|array $field
+     * @param array        $filters
      *
      * @return array
      */
-    public static function lists($filters = [], $field = null);
+    public static function lists($field, $filters = null);
 
     /**
      * @param int|string $id

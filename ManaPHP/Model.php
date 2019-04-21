@@ -165,28 +165,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @return string|null
-     */
-    public function getDisplayField()
-    {
-        $fields = $this->getFields();
-
-        if (in_array('name', $fields, true)) {
-            return 'name';
-        }
-
-        $primaryKey = $this->getPrimaryKey();
-        if (preg_match('#^(.*)_id$#', $primaryKey, $match)) {
-            $tryField = $match[1] . '_name';
-            if (in_array($tryField, $fields, true)) {
-                return $tryField;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @return array
      */
     public function rules()
@@ -209,21 +187,18 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param array        $filters
      * @param string|array $field
+     * @param array        $filters
      *
      * @return array
      */
-    public static function lists($filters = [], $field = null)
+    public static function lists($field, $filters = null)
     {
         $model = new static;
 
         $query = static::query(null, $model)->where($filters);
 
         $list = [];
-        if ($field === null && !$field = $model->getDisplayField()) {
-            throw new MisuseException(['invoke :model:lists method must provide displayField', 'model' => static::class]);
-        }
 
         if (is_string($field)) {
             $keyField = $model->getPrimaryKey();
