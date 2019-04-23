@@ -133,6 +133,11 @@ namespace PHPSTORM_META {
         'request:validate', 'request:authorize', 'request:authenticate', 'request:invoke', 'request:invoked');
     expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventsManager'));
     expectedArguments(\ManaPHP\Component::attachEvent(), 0, argumentsSet('eventsManager'));
+
+    expectedArguments(\ManaPHP\Http\RequestInterface::getServer(), 0, array_keys($_SERVER)[$i]);
+    expectedArguments(\ManaPHP\Http\RequestInterface::hasServer(), 0, array_keys($_SERVER)[$i]);
+
+    expectedArguments(\ManaPHP\Http\ResponseInterface::setJsonContent(), 0, ['code' => 0, 'message' => '', 'data' => []]);
 }
 
 /**
