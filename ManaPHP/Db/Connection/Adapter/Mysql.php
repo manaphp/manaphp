@@ -50,25 +50,33 @@ class Mysql extends Connection
         }
 
         if (isset($parts['query'])) {
-            parse_str($parts['query'], $parts2);
-        } else {
-            $parts2 = [];
-        }
+            parse_str($parts['query'], $query);
 
-        if (isset($parts2['charset'])) {
-            $this->_charset = $parts2['charset'];
-        }
+            if (isset($query['charset'])) {
+                $this->_charset = $query['charset'];
+            }
 
-        if (!MANAPHP_COROUTINE && isset($parts2['persistent'])) {
-            $this->_options[\PDO::ATTR_PERSISTENT] = $parts2['persistent'] === '1';
-        }
+            if (!MANAPHP_COROUTINE && isset($query['persistent'])) {
+                $this->_options[\PDO::ATTR_PERSISTENT] = $query['persistent'] === '1';
+            }
 
-        if (isset($parts2['timeout'])) {
-            $this->_options[\PDO::ATTR_TIMEOUT] = (int)$parts2['timeout'];
-        }
+            if (isset($query['timeout'])) {
+                $this->_options[\PDO::ATTR_TIMEOUT] = (int)$query['timeout'];
+            }
 
-        if (isset($parts2['heartbeat'])) {
-            $this->_heartbeat = (int)$parts2['heartbeat'];
+            if (isset($query['heartbeat'])) {
+                $this->_heartbeat = (int)$query['heartbeat'];
+            }
+
+            if (isset($query['user'])) {
+                $this->_username = $query['user'];
+            } elseif (isset($query['username'])) {
+                $this->_username = $query['username'];
+            }
+
+            if (isset($query['password'])) {
+                $this->_password = $query['password'];
+            }
         }
 
         $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
