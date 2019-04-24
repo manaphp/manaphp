@@ -2,12 +2,11 @@
 
 namespace ManaPHP\Mongodb;
 
+use http\Exception\RuntimeException;
 use ManaPHP\Di;
-use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
-use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\ExpressionInterface;
 use MongoDB\BSON\ObjectID;
 
@@ -158,60 +157,34 @@ class Model extends \ManaPHP\Model
         $class = static::class;
 
         if (!isset($cached[$class])) {
-            $fieldTypes = [];
-            $rc = new \ReflectionClass(static::class);
-
-            foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $rp) {
-                if ($rp->isStatic()) {
-                    continue;
-                }
-
-                $phpdoc = $rp->getDocComment();
-                if (!$phpdoc) {
-                    throw new RuntimeException(['`:property` property does not contain phpdoc', 'property' => $rp->getName()]);
-                }
-
-                if (!preg_match('#@var\s+(\S+)#', $phpdoc, $match)) {
-                    throw new InvalidFormatException([
-                        '`:property` property phpdoc does not contain data type definition: `:phpdoc`',
-                        'property' => $rp->getName(),
-                        'phpdoc' => $phpdoc
-                    ]);
-                }
-
-                switch ($match[1]) {
-                    case 'string':
-                        $type = 'string';
-                        break;
-                    case 'int':
-                    case 'integer':
-                        $type = 'int';
-                        break;
-                    case 'float':
-                    case 'double':
-                        $type = 'float';
-                        break;
-                    case 'bool':
-                    case 'boolean':
-                        $type = 'bool';
-                        break;
-                    case 'array':
-                    case '[]':
-                        $type = 'array';
-                        break;
-                    case '\MongoDB\BSON\ObjectId':
-                    case 'ObjectId':
-                        $type = 'objectid';
-                        break;
-                    default:
-                        throw new InvalidValueException(['`:property` property `:type` type unsupported', 'property' => $rp->getName(), 'type' => $match[1]]);
-                        break;
-                }
-
-                $fieldTypes[$rp->getName()] = $type;
+            if (!$docs = $this->getConnection()->fetchAll($this->getSource(), [], ['limit' => 1])) {
+                throw new RuntimeException(['`:collection` collection has none record', 'collection' => $this->getSource()]);
             }
 
-            return $cached[$class] = $fieldTypes;
+            $types = [];
+            foreach ($docs[0] as $field => $value) {
+                $type = gettype($value);
+                if ($type === 'integer') {
+                    $types[$field] = 'int';
+                } elseif ($type === 'string') {
+                    $types[$field] = 'string';
+                } elseif ($type === 'double') {
+                    $types[$field] = 'float';
+                } elseif ($type === 'boolean') {
+                    $types[$field] = 'bool';
+                } elseif ($type === 'array') {
+                    $types[$field] = 'array';
+                } elseif ($value instanceof ObjectID) {
+                    if ($field === '_id') {
+                        continue;
+                    }
+                    $types[$field] = 'objectid';
+                } else {
+                    throw new RuntimeException(['`:field` field value type can not be infered.', 'field' => $field]);
+                }
+            }
+
+            $cached[$class] = $types;
         }
 
         return $cached[$class];
