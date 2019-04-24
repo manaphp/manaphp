@@ -70,8 +70,6 @@ class Mysql extends Connection
 
             if (isset($query['user'])) {
                 $this->_username = $query['user'];
-            } elseif (isset($query['username'])) {
-                $this->_username = $query['username'];
             }
 
             if (isset($query['password'])) {
