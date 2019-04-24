@@ -87,16 +87,20 @@ class Connection extends Component
         }
 
         if (isset($parts['query'])) {
-            parse_str($parts['query'], $parts2);
+            parse_str($parts['query'], $query);
+
+            if (isset($query['db'])) {
+                $this->_db = (int)$query['db'];
+            }
         } else {
-            $parts2 = [];
+            $query = [];
         }
 
-        $this->_timeout = isset($parts2['timeout']) ? (float)$parts2['timeout'] : 0.0;
-        $this->_auth = isset($parts2['auth']) ? $parts2['auth'] : '';
-        $this->_persistent = !MANAPHP_COROUTINE && isset($parts2['persistent']) && $parts2['persistent'] === '1';
-        if (isset($parts2['heartbeat'])) {
-            $this->_heartbeat = $parts2['heartbeat'];
+        $this->_timeout = isset($query['timeout']) ? (float)$query['timeout'] : 0.0;
+        $this->_auth = isset($query['auth']) ? $query['auth'] : '';
+        $this->_persistent = !MANAPHP_COROUTINE && isset($query['persistent']) && $query['persistent'] === '1';
+        if (isset($query['heartbeat'])) {
+            $this->_heartbeat = $query['heartbeat'];
         }
     }
 
