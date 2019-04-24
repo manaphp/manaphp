@@ -77,6 +77,10 @@ class Mysql extends Connection
             if (isset($query['password'])) {
                 $this->_password = $query['password'];
             }
+
+            if (isset($query['db'])) {
+                $dsn['dbname'] = $query['db'];
+            }
         }
 
         $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
