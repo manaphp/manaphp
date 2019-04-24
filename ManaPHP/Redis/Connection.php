@@ -26,7 +26,7 @@ class Connection extends Component
     /**
      * @var float
      */
-    protected $_timeout;
+    protected $_timeout = 0.0;
 
     /**
      * @var string
@@ -92,15 +92,22 @@ class Connection extends Component
             if (isset($query['db'])) {
                 $this->_db = (int)$query['db'];
             }
-        } else {
-            $query = [];
-        }
 
-        $this->_timeout = isset($query['timeout']) ? (float)$query['timeout'] : 0.0;
-        $this->_auth = isset($query['auth']) ? $query['auth'] : '';
-        $this->_persistent = !MANAPHP_COROUTINE && isset($query['persistent']) && $query['persistent'] === '1';
-        if (isset($query['heartbeat'])) {
-            $this->_heartbeat = $query['heartbeat'];
+            if (isset($query['auth'])) {
+                $this->_auth = $query['auth'];
+            }
+
+            if (isset($query['timeout'])) {
+                $this->_timeout = (float)$query['timeout'];
+            }
+
+            if (isset($query['persistent'])) {
+                $this->_persistent = !MANAPHP_COROUTINE && $query['persistent'] === '1';
+            }
+
+            if (isset($query['heartbeat'])) {
+                $this->_heartbeat = $query['heartbeat'];
+            }
         }
     }
 
