@@ -106,6 +106,29 @@ class DbController extends Controller
             $str .= '    }' . PHP_EOL;
         }
 
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($service);
+        $sample = $db->fetchOne("SELECT * FROM [$table] LIMIT 1");
+        if ($sample) {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return array' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public static function sample()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= '        return [' . PHP_EOL;
+            foreach ($sample as $field => $value) {
+                if (is_string($value)) {
+                    $value = strpos($value, "'") === false ? "'" . $value . "'" : json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                } else {
+                    $value = json_encode($value);
+                }
+                $str .= "            '$field' => $value," . PHP_EOL;
+            }
+            $str .= '        ];' . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
         if ($optimized) {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
