@@ -157,12 +157,16 @@ class Model extends \ManaPHP\Model
         $class = static::class;
 
         if (!isset($cached[$class])) {
-            if (!$docs = $this->getConnection()->fetchAll($this->getSource(), [], ['limit' => 1])) {
-                throw new RuntimeException(['`:collection` collection has none record', 'collection' => $this->getSource()]);
+            if (!$doc = static::sample()) {
+
+                if (!$docs = $this->getConnection()->fetchAll($this->getSource(), [], ['limit' => 1])) {
+                    throw new RuntimeException(['`:collection` collection has none record', 'collection' => $this->getSource()]);
+                }
+                $doc = $docs[0];
             }
 
             $types = [];
-            foreach ($docs[0] as $field => $value) {
+            foreach ($doc as $field => $value) {
                 $type = gettype($value);
                 if ($type === 'integer') {
                     $types[$field] = 'int';
