@@ -64,6 +64,14 @@ abstract class Application extends \ManaPHP\Application
 
     protected function _prepareGlobals()
     {
+        if (!isset($_GET['_url']) && ($pos = strripos($_SERVER['SCRIPT_NAME'], '/public/')) !== false) {
+            $prefix = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
+            if (strpos($_SERVER['REQUEST_URI'], $prefix) === 0) {
+                $url = substr($_SERVER['REQUEST_URI'], $pos);
+                $_GET['_url'] = $_REQUEST['_url'] = ($pos = strpos($url, '?')) === false ? $url : substr($url, 0, $pos);
+            }
+        }
+
         if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
             $data = file_get_contents('php://input');
 
