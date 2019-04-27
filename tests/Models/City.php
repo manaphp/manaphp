@@ -40,9 +40,4 @@ class City extends Model
     {
         return ['countryExplicit' => [Country::class, Relation::TYPE_HAS_ONE]];
     }
-
-    public function getDisplayField()
-    {
-        return 'city';
-    }
 }
