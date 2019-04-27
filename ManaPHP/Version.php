@@ -16,6 +16,6 @@ class Version
      */
     public static function get()
     {
-        return '0.10.0';
+        return '1.0.0';
     }
 }
