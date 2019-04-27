@@ -81,6 +81,14 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * @return array
      */
+    public static function sample()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
     public function getForeignKeys()
     {
         $primaryKey = $this->getPrimaryKey();
@@ -122,7 +130,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string $field
+     * @param string $field =array_keys(static::sample())[$i]
      *
      * @return bool
      */
@@ -132,7 +140,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string $field
+     * @param string $field =array_keys(static::sample())[$i]
      *
      * @return string
      */
@@ -175,9 +183,9 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters
+     * @param array $filters =static::sample()
      * @param array $options
-     * @param array $fields
+     * @param array $fields =static::sample()
      *
      * @return  static[]
      */
@@ -187,8 +195,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string|array $field
-     * @param array        $filters
+     * @param string|array $field =array_keys(static::sample())[$i]
+     * @param array        $filters =static::sample()
      *
      * @return array
      */
@@ -233,7 +241,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
     /**
      * @param int|string $id
-     * @param int|array  $fieldsOrTtl
+     * @param int|array  $fieldsOrTtl =static::sample()
      *
      * @return static
      */
@@ -278,8 +286,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Allows to query the first record that match the specified conditions
      *
-     * @param int|string|array $filters
-     * @param array            $fields
+     * @param int|string|array $filters =static::sample()
+     * @param array            $fields =static::sample()
      *
      * @return static|null
      */
@@ -303,8 +311,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param int|string|array $filters
-     * @param array            $fields
+     * @param int|string|array $filters =static::sample()
+     * @param array            $fields =static::sample()
      *
      * @return static
      */
@@ -326,7 +334,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param array $fields
+     * @param array $fields =static::sample()
      *
      * @return static|null
      */
@@ -348,8 +356,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Allows to query the last record that match the specified conditions
      *
-     * @param array $filters
-     * @param array $fields
+     * @param array $filters =static::sample()
+     * @param array $fields =static::sample()
      *
      * @return static|null
      */
@@ -368,8 +376,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param int|string|array $filters
-     * @param string           $field
+     * @param int|string|array $filters =static::sample()
+     * @param string           $field =array_keys(static::sample())[$i]
      * @param int              $ttl
      *
      * @return int|float|string|null
@@ -416,8 +424,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param int|string|array $filters
-     * @param string           $field
+     * @param int|string|array $filters =static::sample()
+     * @param string           $field =array_keys(static::sample())[$i]
      * @param int              $ttl
      *
      * @return int|float|string
@@ -435,8 +443,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string $field
-     * @param array  $filters
+     * @param string $field =array_keys(static::sample())[$i]
+     * @param array  $filters =static::sample()
      *
      * @return array
      */
@@ -449,7 +457,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param int|string|array $filters
+     * @param int|string|array $filters =static::sample()
      *
      * @return bool
      */
@@ -464,7 +472,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param array        $filters
+     * @param array        $filters =static::sample()
      * @param array        $aggregation
      * @param string|array $options
      *
@@ -481,8 +489,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Allows to count how many records match the specified conditions
      *
-     * @param array  $filters
-     * @param string $field
+     * @param array  $filters =static::sample()
+     * @param string $field =array_keys(static::sample())[$i]
      *
      * @return int
      */
@@ -494,8 +502,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Allows to calculate a summary on a field that match the specified conditions
      *
-     * @param string $field
-     * @param array  $filters
+     * @param string $field =array_keys(static::sample())[$i]
+     * @param array  $filters =static::sample()
      *
      * @return int|float|null
      */
@@ -507,8 +515,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
-     * @param string $field
-     * @param array  $filters
+     * @param string $field =array_keys(static::sample())[$i]
+     * @param array  $filters =static::sample()
      *
      * @return int|float|null
      */
@@ -521,8 +529,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      * Allows to get the min value of a column that match the specified conditions
      *
      *
-     * @param string $field
-     * @param array  $filters
+     * @param string $field =array_keys(static::sample())[$i]
+     * @param array  $filters =static::sample()
      *
      * @return int|float|null
      */
@@ -534,8 +542,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
-     * @param string $field
-     * @param array  $filters
+     * @param string $field =array_keys(static::sample())[$i]
+     * @param array  $filters =static::sample()
      *
      * @return float|null
      */
@@ -548,7 +556,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      * Assigns values to a model from an array
      *
      * @param array $data
-     * @param array $whiteList
+     * @param array $whiteList =static::sample()
      *
      * @return static
      */
@@ -573,7 +581,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string|array $fields
+     * @param string|array $fields =static::sample()
      *
      * @return void
      */
@@ -781,8 +789,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param array $fieldValues
-     * @param array $filters
+     * @param array $fieldValues =static::sample()
+     * @param array $filters =static::sample()
      *
      * @return int
      */
@@ -793,7 +801,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
     /**
      * @param int|string $primaryKey
-     * @param array      $fieldValues
+     * @param array      $fieldValues =static::sample()
      *
      * @return int
      */
