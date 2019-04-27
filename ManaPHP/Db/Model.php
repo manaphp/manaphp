@@ -165,9 +165,12 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $this->eventsManager->fireEvent('model:beforeCreate', $this);
 
         $fieldValues = [];
+        $defaultValueFields = [];
         foreach ($fields as $field) {
             if ($this->$field !== null) {
                 $fieldValues[$field] = $this->$field;
+            } elseif ($field !== $autoIncrementField) {
+                $defaultValueFields[] = $field;
             }
         }
 
@@ -186,6 +189,14 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $this->$autoIncrementField = $connection->insert($this->getSource($this), $fieldValues, true);
         } else {
             $connection->insert($this->getSource($this), $fieldValues);
+        }
+
+        if ($defaultValueFields) {
+            if ($r = static::query(null, $this)->select($defaultValueFields)->where($this->_getPrimaryKeyValuePairs())->fetch(true)) {
+                foreach ($r[0] as $field => $value) {
+                    $this->$field = $value;
+                }
+            }
         }
 
         $this->_snapshot = $this->toArray();
