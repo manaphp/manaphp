@@ -1,5 +1,17 @@
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
 .el-pagination {
     text-align: center;
+}
+
+.el-aside{
+    width: 210px !important;
 }
 
 .el-submenu .el-menu-item {
@@ -38,9 +50,17 @@
 /*}*/
 
 .product-name {
-    margin: 20px 10px 50px;
+    margin: 0 10px 10px;
+}
+
+.product-name a {
+    font-size: 1.1em;
 }
 
 .el-aside {
     min-height: 800px;
+}
+
+.el-header {
+    height: 20px !important;
 }

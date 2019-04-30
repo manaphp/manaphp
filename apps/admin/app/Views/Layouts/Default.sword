@@ -14,16 +14,15 @@
 <body>
 
 <el-container id="app">
-    <el-aside width="200px">@widget('SideMenu')</el-aside>
+    <el-aside>@widget('SideMenu')</el-aside>
     <el-container>
         <el-header>
             <el-row>
-                <el-col :span="2" :offset="23">
-                    <div>
+                <el-col :span="3" :offset="21">
+                    <div class="right">
                         <el-dropdown>
                     <span class="el-dropdown-link">
-                    <i class="fa fa-user-circle"></i>
-                        {{$di->identity->getName('')}}<i class="el-icon-arrow-down el-icon--left"></i>
+                    <i class="fa fa-user-circle"></i> {{$di->identity->getName('')}}<i class="el-icon-arrow-down el-icon--left"></i>
                     </span>
                             <el-dropdown-menu slot="dropdown" trigger="click">
                                 <el-dropdown-item><el-link href="/user/login_log/latest" target="_self">最近登录</el-link></el-dropdown-item>
@@ -32,7 +31,6 @@
                             </el-dropdown-menu>
                         </el-dropdown>
                     </div>
-
                 </el-col>
             </el-row>
         </el-header>
