@@ -700,7 +700,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             }
         }
 
-        return $instance;
+        return $instance->update();
     }
 
     /**
