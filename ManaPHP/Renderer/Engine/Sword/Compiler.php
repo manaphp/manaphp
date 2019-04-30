@@ -215,9 +215,15 @@ class Compiler extends Component
      */
     protected function _replaceUrlValLinks($file, $str)
     {
-        return preg_replace_callback('#((?:\s+|_)url\s*[:=]\s*[\"\'])([\w-/:.]+)#', function ($match) use ($file) {
+        $str = preg_replace_callback('#((?:\s+|_)url\s*[:=]\s*[\"\'])([\w-/:.]+)#', function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
+
+        $str = preg_replace_callback('#([._]href\s*=\s*["\'])([\w-/:.]+)#', function ($match) use ($file) {
+            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
+        }, $str);
+
+        return $str;
     }
 
     /**
