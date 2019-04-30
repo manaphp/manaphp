@@ -7,14 +7,19 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.interceptors.response.use(function (res) {
         if (typeof res.data === 'string') {
             alert('unexpected response');
-        } else {
-            return res;
         }
+
+        return res;
     },
     function (error) {
+        console.log(error.response);
         switch (error.response.status) {
             case 401:
                 window.location.href = '@action(user/login)';
+                break;
+            default:
+                alert(error.response.data.message);
+                break;
         }
     });
 Vue.mixin({

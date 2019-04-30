@@ -97,7 +97,7 @@
                     display_order: 0,
                     group_id: '',
                     url: '',
-                    icon: ''
+                    icon: 'el-icon-arrow-right'
                 },
 
                 editVisible: false,
@@ -149,7 +149,7 @@
                 },
                 do_delete: function (row) {
                     this.$confirm('delete?').then(function (value) {
-                        this.ajax_post("delete", {item_id: row.item_id}).then(function (res) {
+                        this.ajax_post("delete", {item_id: row.item_id}, function (res) {
                             this.reload();
                         });
                     }.bind(this));
