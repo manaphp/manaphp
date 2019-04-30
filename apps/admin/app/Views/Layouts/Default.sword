@@ -25,6 +25,7 @@
                     <i class="fa fa-user-circle"></i> {{$di->identity->getName('')}}<i class="el-icon-arrow-down el-icon--left"></i>
                     </span>
                             <el-dropdown-menu slot="dropdown" trigger="click">
+                                <el-dropdown-item><el-link href="/user/action_log/latest" target="_self">最近操作</el-link></el-dropdown-item>
                                 <el-dropdown-item><el-link href="/user/login_log/latest" target="_self">最近登录</el-link></el-dropdown-item>
                                 <el-dropdown-item><el-link href="/user/password/change" target="_self">修改密码</el-link></el-dropdown-item>
                                 <el-dropdown-item><el-link href="/user/session/logout" target="_self">退出</el-link></el-dropdown-item>

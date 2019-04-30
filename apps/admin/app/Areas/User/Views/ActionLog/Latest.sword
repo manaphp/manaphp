@@ -1,0 +1,82 @@
+<div class="search-box">
+    <el-row>
+        <el-col :span="3">
+            <el-input v-model="request.path" placeholder="请求路径" size="small" clearable></el-input>
+        </el-col>
+        <el-col :span="3">
+            <date-picker v-model="request.created_time"></date-picker>
+        </el-col>
+    </el-row>
+</div>
+
+<el-dialog title="详情" :visible.sync="detailVisible">
+    <el-form :model="detail" label-width="100px" size="small">
+        <el-form-item label="id:">@{{ detail.id }}</el-form-item>
+        <el-form-item label="请求方法:">@{{ detail.method }}</el-form-item>
+        <el-form-item label="请求路径:">@{{ detail.path }}</el-form-item>
+        <el-form-item label="请求URL:">@{{ detail.url }}</el-form-item>
+        <el-form-item label="客户端IP:">@{{ detail.client_ip }}</el-form-item>
+        <el-form-item label="生成时间:">@{{ detail.created_time|date }}</el-form-item>
+        <el-form-item label="数据:">
+            <pre>@{{  detail.data|json }}</pre>
+        </el-form-item>
+    </el-form>
+</el-dialog>
+<div class="result-box">
+    <el-table :data="response.items" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
+        <el-table-column prop="method" label="请求方式" width="80"></el-table-column>
+        <el-table-column prop="path" label="请求路径"></el-table-column>
+        <el-table-column prop="url" label="请求Url"></el-table-column>
+        <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
+        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="200">
+            <template slot-scope="scope">
+                <el-button @click="show_detail(scope.row)" icon="el-icon-view" size="mini" plain round>详情
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <pager :request="request" :response="response"></pager>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                request: {
+                    path: '',
+                    client_ip: '',
+                    client_udid: '',
+                    created_time: [],
+                    size: 20,
+                    page: 1
+                },
+                response: {},
+                detailVisible: false,
+                detail: {}
+            },
+            mounted: function () {
+                this.reload();
+            },
+            watch: {
+                request: {
+                    handler: _.debounce(function () {
+                        this.reload();
+                    }, 500),
+                    deep: true
+                }
+            },
+            methods: {
+                show_detail: function (row) {
+                    this.detailVisible = true;
+                    this.ajax_get("detail_self?id=" + row.id, function (data) {
+                        this.detail = data;
+                    });
+                }
+            }
+        });
+    </script>
+@append
