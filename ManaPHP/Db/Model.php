@@ -186,7 +186,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $connection = $this->_di->getShared($this->getDb($this));
 
         if ($autoIncrementField && $this->$autoIncrementField === null) {
-            $this->$autoIncrementField = $connection->insert($this->getSource($this), $fieldValues, true);
+            $this->$autoIncrementField = (int)$connection->insert($this->getSource($this), $fieldValues, true);
         } else {
             $connection->insert($this->getSource($this), $fieldValues);
         }
