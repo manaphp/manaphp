@@ -71,6 +71,7 @@
                         window.location.href = "{{$redirect}}";
                     } else {
                         this.$alert(res.data.message);
+                        this.request.password = '';
                         this.captcha_url = "captcha" + '?t=' + new Date().getTime();
                     }
                 }.bind(this));

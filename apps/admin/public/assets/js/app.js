@@ -86,7 +86,7 @@ Vue.component('pager', {
         '                   :page-size="request.size"\n' +
         '                   :page-sizes="[10,20,25,50,100,500,1000]"\n' +
         '                   @current-change="request.page=$event"\n' +
-        '                   @size-change="request.size=$event"\n' +
+        '                   @size-change="request.size=$event; request.page=1"\n' +
         '                   :total="response.count" layout="sizes,total, prev, pager, next"></el-pagination>\n',
 });
 
