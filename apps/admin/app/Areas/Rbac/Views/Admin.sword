@@ -4,20 +4,20 @@
             <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">新增用户</el-button>
         </el-col>
         <el-col :span="2">
-            <el-input v-model="request.keyword" placeholder="用户名或邮箱" size="small"></el-input>
+            <el-input v-model.trim="request.keyword" placeholder="用户名或邮箱" size="small"></el-input>
         </el-col>
     </el-row>
 </div>
 <el-dialog title="新增用户" :visible.sync="createVisible">
     <el-form :model="create" ref="create">
         <el-form-item label="用户名:" prop="admin_name">
-            <el-input v-model="create.admin_name" auto-complete="off"></el-input>
+            <el-input v-model.trim="create.admin_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮箱:" prop="email">
-            <el-input v-model="create.email" auto-complete="off"></el-input>
+            <el-input v-model.trim="create.email" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码:" prop="password">
-            <el-input v-model="create.password" auto-complete="off" type="password"></el-input>
+            <el-input v-model.trim="create.password" auto-complete="off" type="password"></el-input>
         </el-form-item>
         <el-form-item label="状态:" prop="status">
             <el-radio-group v-model="create.status">
@@ -34,10 +34,10 @@
     <el-form :model="edit">
         <el-form-item label="用户名:"><span text-align="left">@{{ edit.admin_name }}</span></el-form-item>
         <el-form-item label="邮箱:">
-            <el-input v-model="edit.email" auto-complete="off"></el-input>
+            <el-input v-model.trim="edit.email" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码:">
-            <el-input v-model="edit.password" auto-complete="off"></el-input>
+            <el-input v-model.trim="edit.password" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer">

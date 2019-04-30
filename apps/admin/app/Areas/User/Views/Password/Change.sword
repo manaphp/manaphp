@@ -23,16 +23,16 @@
 <div id="app" class="login-box">
     <h1 align="center">修改密码</h1>
 
-    <el-input v-model="request.user_name" disabled>
+    <el-input v-model.trim="request.user_name" disabled>
         <template slot="prepend">账 &nbsp;&nbsp;号</template>
     </el-input>
-    <el-input v-model="request.old_password" type="password" placeholder="旧密码" autofocus>
+    <el-input v-model.trim="request.old_password" type="password" placeholder="旧密码" autofocus>
         <template slot="prepend">旧密码</template>
     </el-input>
-    <el-input v-model="request.new_password" type="password" placeholder="新密码">
+    <el-input v-model.trim="request.new_password" type="password" placeholder="新密码">
         <template slot="prepend">新密码</template>
     </el-input>
-    <el-input v-model="request.new_password_confirm" type="password" placeholder="确认新密码">
+    <el-input v-model.trim="request.new_password_confirm" type="password" placeholder="确认新密码">
         <template slot="prepend">新密码</template>
     </el-input>
     <div>

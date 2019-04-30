@@ -4,17 +4,17 @@
             <el-button @click="createVisible=true" icon="el-icon-plus" size="small" type="primary">新增角色</el-button>
         </el-col>
         <el-col :span="2">
-            <el-input v-model="request.keyword" placeholder="角色" size="small"></el-input>
+            <el-input v-model.trim="request.keyword" placeholder="角色" size="small"></el-input>
         </el-col>
     </el-row>
 </div>
 <el-dialog title="新增角色" :visible.sync="createVisible">
     <el-form :model="create" ref="create">
         <el-form-item label="编码:" prop="role_name">
-            <el-input v-model="create.role_name" auto-complete="off"></el-input>
+            <el-input v-model.trim="create.role_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="名称:" prop="display_name">
-            <el-input v-model="create.display_name" auto-complete="off"></el-input>
+            <el-input v-model.lazy.trim="create.display_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="启用:" prop="enabled">
             <el-switch v-model="create.enabled"></el-switch>
@@ -30,10 +30,10 @@
     <el-form :model="edit">
         <el-form-item label="ID:"><span text-align="left">@{{ edit.role_id }}</span></el-form-item>
         <el-form-item label="编码:">
-            <el-input v-model="edit.role_name" auto-complete="off"></el-input>
+            <el-input v-model.trim="edit.role_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="名称:">
-            <el-input v-model="edit.display_name" auto-complete="off"></el-input>
+            <el-input v-model.lazy.trim="edit.display_name" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer">

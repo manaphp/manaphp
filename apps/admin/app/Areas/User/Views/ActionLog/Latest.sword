@@ -1,7 +1,7 @@
 <div class="search-box">
     <el-row>
         <el-col :span="3">
-            <el-input v-model="request.path" placeholder="请求路径" size="small" clearable></el-input>
+            <el-input v-model.trim="request.path" placeholder="请求路径" size="small" clearable></el-input>
         </el-col>
         <el-col :span="3">
             <date-picker v-model="request.created_time"></date-picker>

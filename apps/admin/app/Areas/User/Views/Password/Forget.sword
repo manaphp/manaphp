@@ -22,15 +22,15 @@
 <body>
 <div id="app" class="login-box">
     <h1 align="center">找回密码</h1>
-    <el-input v-model="request.user_name" placeholder="用户名" autofocus>
+    <el-input v-model.trim="request.user_name" placeholder="用户名" autofocus>
         <template slot="prepend">账号</template>
     </el-input>
-    <el-input v-model="request.email" placeholder="邮箱">
+    <el-input v-model.trim="request.email" placeholder="邮箱">
         <template slot="prepend">邮箱</template>
     </el-input>
     <el-row>
         <el-col :span="16">
-            <el-input v-model="request.code" placeholder="验证码">
+            <el-input v-model.trim="request.code" placeholder="验证码">
                 <template slot="prepend">验证码</template>
             </el-input>
         </el-col>

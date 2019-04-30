@@ -19,16 +19,16 @@
             </el-select>
         </el-form-item>
         <el-form-item label="名称:" prop="item_name">
-            <el-input v-model="create.item_name" auto-complete="off"></el-input>
+            <el-input v-model.lazy.trim="create.item_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:" prop="display_order">
-            <el-input v-model="create.display_order" auto-complete="off"></el-input>
+            <el-input v-model.trim="create.display_order" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="链接:" prop="url">
-            <el-input v-model="create.url" auto-complete="off"></el-input>
+            <el-input v-model.trim="create.url" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="图标:" prop="icon">
-            <el-input v-model="create.icon" auto-complete="off"></el-input>
+            <el-input v-model.lazy.trim="create.icon" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <span slot="footer">
@@ -45,16 +45,16 @@
             </el-select>
         </el-form-item>
         <el-form-item label="名称:" prop="item_name">
-            <el-input v-model="edit.item_name" auto-complete="off"></el-input>
+            <el-input v-model.lazy.trim="edit.item_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:" prop="display_order">
-            <el-input v-model="edit.display_order" auto-complete="off"></el-input>
+            <el-input v-model.trim="edit.display_order" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="链接:" prop="url">
-            <el-input v-model="edit.url" auto-complete="off"></el-input>
+            <el-input v-model.trim="edit.url" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="图标:" prop="icon">
-            <el-input v-model="edit.icon" auto-complete="off"></el-input>
+            <el-input v-model.lazy.trim="edit.icon" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer">
