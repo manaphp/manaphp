@@ -22,6 +22,10 @@
 <body>
 <div id="app" class="login-box">
     <h1 align="center">修改密码</h1>
+
+    <el-input v-model="request.user_name" disabled>
+        <template slot="prepend">账 &nbsp;&nbsp;号</template>
+    </el-input>
     <el-input v-model="request.old_password" type="password" placeholder="旧密码" autofocus>
         <template slot="prepend">旧密码</template>
     </el-input>
@@ -31,17 +35,10 @@
     <el-input v-model="request.new_password_confirm" type="password" placeholder="确认新密码">
         <template slot="prepend">新密码</template>
     </el-input>
-    <el-row>
-        <el-col :span="16">
-            <el-input v-model="request.code" placeholder="验证码">
-                <template slot="prepend">验证码</template>
-            </el-input>
-        </el-col>
-        <el-col :offset="1" :span="7"><img :src="captcha_url"
-                                           @click="request.code=''; captcha_url='captcha'+'?t='+new Date().getTime()" />
-        </el-col>
-    </el-row>
-    <el-button @click="login" style="width:100%" type="primary">确认</el-button>
+    <div>
+        <el-button @click="change" type="primary" style="margin: 0 13% ">确认</el-button>
+        <el-button @click="window.location.href='/'">取消</el-button>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/index.js"></script>
@@ -57,16 +54,14 @@
         el: '#app',
         data: {
             request: {
-                user_name: '',
+                user_name: "<?=di('identity')->getName()?>",
                 old_password: '',
                 new_password: '',
                 new_password_confirm: '',
-                code: ''
             },
-            captcha_url: "captcha"
         },
         methods: {
-            login: function () {
+            change: function () {
                 this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
                     if (res.data.code === 0) {
                         window.location.href = "/";

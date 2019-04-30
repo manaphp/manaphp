@@ -54,16 +54,15 @@ class PasswordController extends Controller
     public function changeAction()
     {
         if ($this->request->isPost()) {
-            if (!$this->configure->debug) {
-                $this->captcha->verify();
-            }
-
             $admin = Admin::get($this->identity->getId());
             if (!$admin->verifyPassword(input('old_password'))) {
                 return '旧密码不正确';
             }
 
             $admin->password = input('new_password');
+            if (input('new_password_confirm') !== $admin->password) {
+                return '两次输入的密码不一致';
+            }
 
             $admin->update();
             $this->session->destroy();

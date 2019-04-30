@@ -6,7 +6,7 @@
     <title>ManaPHP Admin</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="/static/css/manaphp.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.8.2/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/css/app.css">
     @yield('css')
@@ -18,7 +18,7 @@
     <el-container>
         <el-header>
             <el-row>
-                <el-col :span="2" :offset="22">
+                <el-col :span="2" :offset="23">
                     <div>
                         <el-dropdown>
                     <span class="el-dropdown-link">
@@ -26,9 +26,9 @@
                         {{$di->identity->getName('')}}<i class="el-icon-arrow-down el-icon--left"></i>
                     </span>
                             <el-dropdown-menu slot="dropdown" trigger="click">
-                                <el-dropdown-item><a href="/user/login_log/latest" target="_self">最近登录</a></el-dropdown-item>
-                                <el-dropdown-item><a href="/user/account/change_password" target="_self">修改密码</a></el-dropdown-item>
-                                <el-dropdown-item><a href="/user/session/logout" target="_self">退出</a></el-dropdown-item>
+                                <el-dropdown-item><el-link href="/user/login_log/latest" target="_self">最近登录</el-link></el-dropdown-item>
+                                <el-dropdown-item><el-link href="/user/password/change" target="_self">修改密码</el-link></el-dropdown-item>
+                                <el-dropdown-item><el-link href="/user/session/logout" target="_self">退出</el-link></el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </div>
@@ -41,7 +41,7 @@
 </el-container>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.8.2/lib/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/min/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qs@6.7.0/dist/qs.js"></script>

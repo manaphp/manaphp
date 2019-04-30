@@ -32,7 +32,7 @@ class SessionController extends Controller
             }
 
             $admin = Admin::first(['admin_name' => input('user_name')]);
-            if (!$admin || $admin->verifyPassword(input('password'))) {
+            if (!$admin || !$admin->verifyPassword(input('password'))) {
                 return $this->response->setJsonError('account or password is wrong.');
             }
 

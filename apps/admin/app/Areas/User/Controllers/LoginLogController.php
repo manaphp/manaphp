@@ -22,7 +22,6 @@ class LoginLogController extends Controller
             : null;
     }
 
-
     public function latestAction()
     {
         return $this->request->isAjax()
