@@ -26,6 +26,7 @@
                         {{$di->identity->getName('')}}<i class="el-icon-arrow-down el-icon--left"></i>
                     </span>
                             <el-dropdown-menu slot="dropdown" trigger="click">
+                                <el-dropdown-item><a href="/user/login_log/latest" target="_self">最近登录</a></el-dropdown-item>
                                 <el-dropdown-item><a href="/user/account/change_password" target="_self">修改密码</a></el-dropdown-item>
                                 <el-dropdown-item><a href="/user/session/logout" target="_self">退出</a></el-dropdown-item>
                             </el-dropdown-menu>
