@@ -14,7 +14,7 @@
             <el-input v-model.trim="create.role_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="名称:" prop="display_name">
-            <el-input v-model.lazy.trim="create.display_name" auto-complete="off"></el-input>
+            <el-input v-model="create.display_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="启用:" prop="enabled">
             <el-switch v-model="create.enabled"></el-switch>
@@ -33,7 +33,7 @@
             <el-input v-model.trim="edit.role_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="名称:">
-            <el-input v-model.lazy.trim="edit.display_name" auto-complete="off"></el-input>
+            <el-input v-model="edit.display_name" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer">

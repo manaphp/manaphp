@@ -8,13 +8,13 @@
 <el-dialog title="创建新组" :visible.sync="createVisible">
     <el-form :model="create" ref="create">
         <el-form-item label="组名:" prop="group_name">
-            <el-input v-model.lazy.trim="create.group_name" auto-complete="off"></el-input>
+            <el-input v-model="create.group_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:" prop="display_order">
             <el-input v-model.trim="create.display_order" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="图标:" prop="icon">
-            <el-input v-model.lazy.trim="create.icon" auto-complete="off"></el-input>
+            <el-input v-model="create.icon" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <span slot="footer">
@@ -25,13 +25,13 @@
 <el-dialog title="菜单组编辑" :visible.sync="editVisible">
     <el-form :model="edit">
         <el-form-item label="组名:">
-            <el-input v-model.lazy.trim="edit.group_name" auto-complete="off"></el-input>
+            <el-input v-model="edit.group_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:">
             <el-input v-model.trim="edit.display_order" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="图标:" prop="icon">
-            <el-input v-model.lazy.trim="edit.icon" auto-complete="off"></el-input>
+            <el-input v-model="edit.icon" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer">
