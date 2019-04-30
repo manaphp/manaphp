@@ -70,7 +70,7 @@
                 create: {
                     group_name: '',
                     display_order: 0,
-                    icon: ''
+                    icon: 'el-icon-caret-right'
                 },
 
                 editVisible: false,
@@ -107,7 +107,7 @@
                 },
                 do_delete: function (row) {
                     this.$confirm('删除菜单组: ' + row.group_name + '?').then(function (value) {
-                        this.ajax_post("delete", {group_id: row.group_id}).then(function (res) {
+                        this.ajax_post("delete", {group_id: row.group_id}, function (res) {
                             this.reload();
                         });
                     }.bind(this));
