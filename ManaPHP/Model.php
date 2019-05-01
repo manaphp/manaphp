@@ -681,13 +681,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $instance = static::get(isset($data[$pkName]) ? $data[$pkName] : $request->getId($pkName));
 
-        if ($data === null) {
+        if ($data === null || !isset($data[0])) {
             foreach ($model->getSafeFields() as $field) {
                 if (isset($_request[$field])) {
                     $instance->$field = $_request[$field];
                 }
             }
-        } else {
+        }
+
+        if ($data) {
             foreach ($data as $k => $v) {
                 if (is_int($k)) {
                     $field = $v;
