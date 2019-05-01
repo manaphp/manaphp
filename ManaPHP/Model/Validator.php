@@ -552,4 +552,9 @@ class Validator extends Component implements ValidatorInterface
     {
         return strtoupper($value);
     }
+
+    public function _validate_trim($value)
+    {
+        return trim($value);
+    }
 }
