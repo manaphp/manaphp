@@ -29,7 +29,7 @@ class RoleController extends Controller
 
     public function createAction()
     {
-        return Role::createOrNull();
+        return Role::createOrNull(['permissions' => '']);
     }
 
     public function editAction()
