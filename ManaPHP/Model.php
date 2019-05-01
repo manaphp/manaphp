@@ -632,13 +632,15 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
 
         $_request = $request->get();
 
-        if ($data === null) {
+        if ($data === null || !isset($data[0])) {
             foreach ($instance->getSafeFields() as $field) {
                 if (isset($_request[$field])) {
                     $instance->$field = $_request[$field];
                 }
             }
-        } else {
+        }
+
+        if ($data) {
             foreach ($data as $k => $v) {
                 if (is_int($k)) {
                     $field = $v;
