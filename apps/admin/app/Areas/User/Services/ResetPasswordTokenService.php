@@ -21,14 +21,14 @@ class ResetPasswordTokenService extends Service
     }
 
     /**
-     * @param $user_name
+     * @param $admin_name
      *
      * @return string
      * @throws \ManaPHP\Model\NotFoundException
      */
-    public function generate($user_name)
+    public function generate($admin_name)
     {
-        $admin = Admin::firstOrFail(['admin_name' => $user_name]);
+        $admin = Admin::firstOrFail(['admin_name' => $admin_name]);
         $data = ['admin_name' => $admin->admin_name];
         return $this->_jwt->encode($data);
     }

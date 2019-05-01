@@ -19,18 +19,18 @@ class PasswordController extends Controller
     public function forgetAction()
     {
         if ($this->request->isPost()) {
-            $user_name = input('user_name');
+            $admin_name = input('admin_name');
             $email = input('email');
 
-            $admin = Admin::first(['admin_name' => $user_name]);
+            $admin = Admin::first(['admin_name' => $admin_name]);
             if (!$admin || $admin->email !== $email) {
                 return $this->response->setJsonError('账号不存在或账号与邮箱不匹配');
             }
-            return $this->response->setJsonData(jwt_encode(['user_name' => $user_name, 'scope' => 'admin.user.password.forget'], 300), '重置密码链接已发到您的邮箱');
+            return $this->response->setJsonData(jwt_encode(['admin_name' => $admin_name, 'scope' => 'admin.user.password.forget'], 300), '重置密码链接已发到您的邮箱');
         } else {
             $this->view->setVar('redirect', input('redirect', $this->router->createUrl('/')));
 
-            return $this->view->setVar('user_name', $this->cookies->get('user_name'));
+            return $this->view->setVar('admin_name', $this->cookies->get('admin_name'));
         }
     }
 
@@ -39,9 +39,9 @@ class PasswordController extends Controller
         if ($this->request->isAjax()) {
             $claims = jwt_decode(input('token'), 'admin.user.password.forget');
 
-            $user_name = $claims['user_name'];
+            $admin_name = $claims['admin_name'];
 
-            $admin = Admin::firstOrFail(['admin_name' => $user_name]);
+            $admin = Admin::firstOrFail(['admin_name' => $admin_name]);
             $admin->password = input('password');
             $admin->update();
 

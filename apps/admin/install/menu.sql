@@ -20,8 +20,8 @@ USE `manaphp`;
 
 CREATE TABLE `manaphp_log` (
   `log_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `user_name` varchar(32) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `admin_name` varchar(32) NOT NULL,
   `level` char(8) CHARACTER SET ascii NOT NULL,
   `category` varchar(64) NOT NULL,
   `location` varchar(128) NOT NULL,

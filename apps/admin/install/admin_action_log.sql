@@ -20,8 +20,8 @@ USE `manaphp`;
 
 CREATE TABLE `admin_action_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `user_name` varchar(32) CHARACTER SET ascii NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `admin_name` varchar(32) CHARACTER SET ascii NOT NULL,
   `ip` char(15) CHARACTER SET ascii NOT NULL,
   `udid` char(16) CHARACTER SET ascii NOT NULL,
   `path` varchar(32) CHARACTER SET ascii NOT NULL,

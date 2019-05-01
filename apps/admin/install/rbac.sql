@@ -48,7 +48,7 @@ CREATE TABLE `rbac_admin_role` (
   `creator_name` char(16) CHARACTER SET ascii NOT NULL,
   `created_time` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `user_id_role_id` (`admin_id`,`role_id`)
+  UNIQUE KEY `admin_id_role_id` (`admin_id`,`role_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `rbac_permission` */

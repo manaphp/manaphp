@@ -1,7 +1,7 @@
 <div class="search-box">
     <el-row>
         <el-col :span="2">
-            <el-input v-model.trim="request.user_name" placeholder="用户名" size="small" clearable></el-input>
+            <el-input v-model.trim="request.admin_name" placeholder="用户名" size="small" clearable></el-input>
         </el-col>
         <el-col :span="2">
             <el-input v-model.trim="request.path" placeholder="请求路径" size="small" clearable></el-input>
@@ -17,7 +17,7 @@
 <el-dialog title="详情" :visible.sync="detailVisible">
     <el-form :model="detail" label-width="100px" size="small">
         <el-form-item label="id:">@{{ detail.id }}</el-form-item>
-        <el-form-item label="用户名:">@{{ detail.user_name }}</el-form-item>
+        <el-form-item label="用户名:">@{{ detail.admin_name }}</el-form-item>
         <el-form-item label="请求方法:">@{{ detail.method }}</el-form-item>
         <el-form-item label="请求路径:">@{{ detail.path }}</el-form-item>
         <el-form-item label="请求URL:">@{{ detail.url }}</el-form-item>
@@ -34,7 +34,7 @@
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
-        <el-table-column prop="user_name" label="用户名" width="150"></el-table-column>
+        <el-table-column prop="admin_name" label="用户名" width="150"></el-table-column>
         <el-table-column prop="method" label="请求方式" width="80"></el-table-column>
         <el-table-column prop="path" label="请求路径"></el-table-column>
         <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
@@ -56,7 +56,7 @@
             el: '#app',
             data: {
                 request: {
-                    user_name: '',
+                    admin_name: '',
                     path: '',
                     client_ip: '',
                     client_udid: '',

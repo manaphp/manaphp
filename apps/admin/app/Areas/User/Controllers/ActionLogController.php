@@ -15,8 +15,8 @@ class ActionLogController extends Controller
     {
         return $this->request->isAjax()
             ? AdminActionLog::query()
-                ->select(['id', 'user_name', 'client_ip', 'client_udid', 'method', 'path', 'created_time'])
-                ->whereSearch(['user_name', 'path', 'client_ip', 'created_time@='])
+                ->select(['id', 'admin_name', 'client_ip', 'client_udid', 'method', 'path', 'created_time'])
+                ->whereSearch(['admin_name', 'path', 'client_ip', 'created_time@='])
                 ->orderBy(['id' => SORT_DESC])
                 ->paginate()
             : null;
@@ -30,7 +30,7 @@ class ActionLogController extends Controller
     public function detailSelfAction()
     {
         $log = AdminActionLog::firstOrNull();
-        if ($log->user_id != $this->identity->getId()) {
+        if ($log->admin_id != $this->identity->getId()) {
             return '没有权限';
         }
 
@@ -42,7 +42,7 @@ class ActionLogController extends Controller
         return $this->request->isAjax()
             ? AdminActionLog::query()
                 ->select(['id', 'client_ip', 'method', 'path', 'url', 'created_time'])
-                ->where('user_id', $this->identity->getId())
+                ->where('admin_id', $this->identity->getId())
                 ->whereSearch(['path', 'client_ip', 'created_time@='])
                 ->orderBy(['id' => SORT_DESC])
                 ->paginate()

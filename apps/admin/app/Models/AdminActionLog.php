@@ -9,8 +9,8 @@ use ManaPHP\Db\Model;
  *
  * CREATE TABLE `admin_action_log` (
  * `id` int(11) NOT NULL AUTO_INCREMENT,
- * `user_id` int(11) NOT NULL,
- * `user_name` varchar(32) CHARACTER SET ascii NOT NULL,
+ * `admin_id` int(11) NOT NULL,
+ * `admin_name` varchar(32) CHARACTER SET ascii NOT NULL,
  * `ip` char(15) CHARACTER SET ascii NOT NULL,
  * `udid` char(16) CHARACTER SET ascii NOT NULL DEFAULT '',
  * `path` varchar(32) CHARACTER SET ascii NOT NULL,
@@ -25,8 +25,8 @@ use ManaPHP\Db\Model;
 class AdminActionLog extends Model
 {
     public $id;
-    public $user_id;
-    public $user_name;
+    public $admin_id;
+    public $admin_name;
     public $client_ip;
     public $client_udid;
     public $path;

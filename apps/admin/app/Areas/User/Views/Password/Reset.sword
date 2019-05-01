@@ -22,7 +22,7 @@
 <body>
 <div id="app" class="login-box">
     <h1 align="center">重置密码</h1>
-    <el-input v-model.trim="request.user_name" placeholder="用户名" autofocus>
+    <el-input v-model.trim="request.admin_name" placeholder="用户名" autofocus>
         <template slot="prepend">账号</template>
     </el-input>
     <el-input v-model.trim="request.email" placeholder="邮箱">
@@ -58,7 +58,7 @@
         el: '#app',
         data: {
             request: {
-                user_name: '',
+                admin_name: '',
                 email: '',
                 code: ''
             },
