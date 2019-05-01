@@ -1,7 +1,7 @@
 <div class="search-box">
     <el-row>
         <el-col :span="2">
-            <el-select v-model="request.role_id" size="small" clearable>
+            <el-select v-model="request.role_id" size="small" filterable>
                 <el-option v-for="(role_name, role_id) in roles" :key="role_id" :label="role_name" :value="role_id"></el-option>
             </el-select>
         </el-col>
@@ -70,7 +70,6 @@
                     if (!this.request.role_id) {
                         this.request.role_id = this._.keys(this.roles)[0];
                     }
-                    this.reload();
                 });
             },
             watch: {

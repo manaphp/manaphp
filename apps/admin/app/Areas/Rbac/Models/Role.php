@@ -24,8 +24,8 @@ class Role extends Model
     {
         return [
             'role_name' => ['lower', 'length' => '3-15', 'unique'],
-            'display_name' => ['lower', 'length' => '3-15', 'unique'],
-            'enabled' => 'bool'
+            'display_name' => ['trim', 'lower', 'length' => '3-15', 'unique'],
+            'enabled' => 'bool',
         ];
     }
 }

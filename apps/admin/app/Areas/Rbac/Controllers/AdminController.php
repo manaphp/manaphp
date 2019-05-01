@@ -32,7 +32,7 @@ class AdminController extends Controller
 
     public function listAction()
     {
-        return Admin::lists([], ['admin_id' => 'admin_name']);
+        return Admin::lists(['admin_id' => 'admin_name']);
     }
 
     public function lockAction()

@@ -89,7 +89,6 @@
                     if (!this.request.admin_id) {
                         this.request.admin_id = this._.keys(this.admins)[0];
                     }
-                    this.reload();
                 });
             },
             watch: {

@@ -50,7 +50,7 @@
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="admin_id" label="用户ID" width="80"></el-table-column>
-        <el-table-column prop="admin_name" label="用户名" width="100"></el-table-column>
+        <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
         <el-table-column label="状态" width="80">
             <template slot-scope="scope">@{{ statuses[scope.row.status] }}</template>
@@ -70,7 +70,7 @@
                 <el-button v-if="scope.row.status!==1" @click="do_active(scope.row)" size="mini" plain
                            round>激活
                 </el-button>
-                <a :href="'admin_role/?admin_id='+scope.row.admin_id">角色列表</a>
+                <el-link :href="'admin_role/?admin_id='+scope.row.admin_id">角色</el-link>
             </template>
         </el-table-column>
     </el-table>
@@ -93,7 +93,7 @@
                     admin_name: '',
                     email: '',
                     password: '',
-                    status: 1
+                    status: '1'
                 },
 
                 editVisible: false,
@@ -102,7 +102,7 @@
                     email: '',
                     password: ''
                 },
-                statuses: {0: '未知', 1: '激活', 2: '锁定'}
+                statuses: {0: '未激活', 1: '激活', 2: '锁定'}
             },
             mounted: function () {
                 this.reload();
