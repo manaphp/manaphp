@@ -319,7 +319,11 @@ class Manager extends Component implements ManagerInterface
 
                 $rd = [];
                 foreach ($via_data as $dv) {
-                    $rd[$dv[$valueField]][] = $data[$dv[$keyField]];
+                    $key = $dv[$keyField];
+
+                    if (isset($data[$key])) {
+                        $rd[$dv[$valueField]][] = $data[$key];
+                    }
                 }
 
                 foreach ($r as $ri => $rv) {
@@ -338,7 +342,11 @@ class Manager extends Component implements ManagerInterface
 
                 $rd = [];
                 foreach ($via_data as $dv) {
-                    $rd[$dv[$valueField]][] = $data[$dv[$keyField]];
+                    $key = $dv[$keyField];
+
+                    if (isset($data[$key])) {
+                        $rd[$dv[$valueField]][] = $data[$key];
+                    }
                 }
 
                 foreach ($r as $ri => $_) {
