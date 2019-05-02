@@ -135,7 +135,7 @@
                     });
                 },
                 do_delete: function (row) {
-                    this.$confirm('删除角色: ' + row.role_name + '?').then(function (value) {
+                    this.$confirm('删除角色: ' + row.display_name + '?').then(function (value) {
                         this.ajax_post("delete", {role_id: row.role_id}, function (res) {
                             this.reload();
                         });
