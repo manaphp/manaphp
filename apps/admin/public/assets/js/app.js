@@ -2,8 +2,14 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$moment = moment;
 Vue.prototype.$qs = Qs;
 Vue.prototype._ = _;
-axios.defaults.baseURL = 'http://www.manaphp.com';
+//axios.defaults.baseURL = 'http://www.manaphp.com';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+axios.interceptors.request.use(function (config) {
+    config.url += config.url.indexOf('?') === -1 ? '?ajax' : '&ajax';
+    return config;
+});
+
 axios.interceptors.response.use(function (res) {
         if (typeof res.data === 'string') {
             alert('unexpected response');

@@ -1,33 +1,35 @@
 <el-row class="change-password-box">
-    <el-col :span="4" :offset="10">
-        <el-form :model="request" size="small">
-            <h1 align="center">修改密码</h1>
-            <el-input v-model.trim="request.admin_name" disabled>
-                <template slot="prepend">账 &nbsp;&nbsp;号</template>
-            </el-input>
-            <el-input v-model.trim="request.old_password" type="password" placeholder="旧密码" autofocus>
-                <template slot="prepend">旧密码</template>
-            </el-input>
-            <el-input v-model.trim="request.new_password" type="password" placeholder="新密码">
-                <template slot="prepend">新密码</template>
-            </el-input>
-            <el-input v-model.trim="request.new_password_confirm" type="password" placeholder="确认新密码">
-                <template slot="prepend">新密码</template>
-            </el-input>
-        </el-form>
-        <el-button @click="change" type="primary" class="change-password">确认</el-button>
-    </el-col>
+    <el-form :model="request" size="small">
+        <h1 align="center">修改密码</h1>
+        <el-input v-model.trim="request.admin_name" disabled>
+            <template slot="prepend">账 &nbsp;&nbsp;号</template>
+        </el-input>
+        <el-input v-model.trim="request.old_password" type="password" placeholder="旧密码" autofocus>
+            <template slot="prepend">旧密码</template>
+        </el-input>
+        <el-input v-model.trim="request.new_password" type="password" placeholder="新密码">
+            <template slot="prepend">新密码</template>
+        </el-input>
+        <el-input v-model.trim="request.new_password_confirm" type="password" placeholder="确认新密码">
+            <template slot="prepend">新密码</template>
+        </el-input>
+        <el-form-item>
+            <el-button @click="change" type="primary" class="change-password">确认</el-button>
+        </el-form-item>
+    </el-form>
 </el-row>
-@section('css'){
-<style type="text/css">
-    .change-password-box{
-        margin-top:10%;
-    }
-    .el-button.change-password {
-            margin-top: 30px;
-           margin-left: 30%;
-    }
-</style>
+@section('css')
+    <style type="text/css">
+        .el-form {
+            margin: 10% auto;
+            width: 300px;
+        }
+
+        .change-password {
+            display: block;
+            margin: 10px auto;
+        }
+    </style>
 @append
 @section('script')
     <script>

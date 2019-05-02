@@ -24,6 +24,14 @@
     line-height: 35px;
 }
 
+.el-submenu__title {
+    padding: 0 10px !important;
+}
+
+.el-submenu .el-menu-item {
+    padding: 0 25px 0 20px !important;
+}
+
 .el-table--small td, .el-table--small th {
     padding: 2px 0;
 }
@@ -50,11 +58,11 @@
 /*}*/
 
 .product-name {
-    margin: 0 10px 10px;
-}
+    margin: 8px 30px;
 
-.product-name a {
-    font-size: 1.1em;
+}
+.product-name span{
+    font-size: 1.2em;
 }
 
 .el-aside {
@@ -67,4 +75,8 @@
 
 .el-link.operate {
     margin-left: 10px;
+}
+
+.search-box .el-date-editor{
+    width: 220px;
 }
