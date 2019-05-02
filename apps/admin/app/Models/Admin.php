@@ -33,7 +33,7 @@ class Admin extends ModelBase
     public function rules()
     {
         return [
-            'admin_name' => ['lower', 'length' => '5-16', 'unique'],
+            'admin_name' => ['length' => '5-16', 'account'],
             'email' => ['lower', 'email', 'unique'],
             'password' => ['length' => '6-32'],
             'status' => 'const'
@@ -62,7 +62,10 @@ class Admin extends ModelBase
 
     public function create()
     {
+        $this->validate('password');
+
         $this->salt = bin2hex(random_bytes(8));
+
         $this->password = $this->hashPassword($this->password);
 
         return parent::create();
@@ -70,6 +73,8 @@ class Admin extends ModelBase
 
     public function update()
     {
+        $this->validate('password');
+
         if ($this->hasChanged('password')) {
             $this->salt = bin2hex(random_bytes(8));
             $this->password = $this->hashPassword($this->password);
