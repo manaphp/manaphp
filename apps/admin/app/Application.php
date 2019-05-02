@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use ManaPHP\Exception\ForbiddenException;
+
 class Application extends \ManaPHP\Mvc\Application
 {
     public function authenticate()
@@ -10,14 +12,16 @@ class Application extends \ManaPHP\Mvc\Application
 
     public function authorize()
     {
-        try {
+        if ($this->request->isAjax()) {
             $this->authorization->authorize();
-        } catch (\Exception $exception) {
-            if ($this->request->isAjax()) {
-                return $this->response->setJsonContent($exception);
-            } else {
-                $redirect = input('redirect', $this->request->getUrl());
-                return $this->response->redirect(["/login?redirect=$redirect"]);
+        } else {
+            if (!$this->authorization->isAllowed()) {
+                if ($this->identity->isGuest()) {
+                    $redirect = input('redirect', $this->request->getUrl());
+                    $this->response->redirect(["/login?redirect=$redirect"]);
+                } else {
+                    throw new ForbiddenException('');
+                }
             }
         }
     }
