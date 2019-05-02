@@ -2,6 +2,7 @@
 
 namespace App\Areas\Rbac\Controllers;
 
+use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use ManaPHP\Mvc\Controller;
 
@@ -45,5 +46,18 @@ class RoleController extends Controller
     public function enableAction()
     {
         return Role::updateOrNull(['enabled' => 1]);
+    }
+
+    public function deleteAction()
+    {
+        if (!$this->request->isGet()) {
+            $role = Role::get(input('role_id'));
+
+            if (AdminRole::exists(['role_id' => $role->role_id])) {
+                return '删除失败: 有用户绑定到此角色';
+            }
+
+            return $role->delete();
+        }
     }
 }

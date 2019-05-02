@@ -53,7 +53,7 @@
         <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="170">
+        <el-table-column fixed="right" label="操作" width="220">
             <template slot-scope="scope">
                 <el-button @click="show_edit(scope.row)" size="mini" type="primary">编辑</el-button>
                 <el-button v-if="scope.row.enabled" @click.native.prevent="do_disable(scope.row)" size="mini"
@@ -62,6 +62,7 @@
                 <el-button v-if="!scope.row.enabled" @click.native.prevent="do_enable(scope.row)" size="mini"
                            type="warning">启用
                 </el-button>
+                <el-button @click="do_delete(scope.row)" size="mini" type="danger">删除</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -132,6 +133,13 @@
                         this.editVisible = false;
                         this.reload();
                     });
+                },
+                do_delete: function (row) {
+                    this.$confirm('删除角色: ' + row.role_name + '?').then(function (value) {
+                        this.ajax_post("delete", {role_id: row.role_id}, function (res) {
+                            this.reload();
+                        });
+                    }.bind(this));
                 }
             }
         });

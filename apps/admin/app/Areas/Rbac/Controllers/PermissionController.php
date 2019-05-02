@@ -3,6 +3,8 @@
 namespace App\Areas\Rbac\Controllers;
 
 use App\Areas\Rbac\Models\Permission;
+use App\Areas\Rbac\Models\Role;
+use App\Areas\Rbac\Models\RolePermission;
 use ManaPHP\Mvc\Controller;
 use ManaPHP\Utility\Text;
 
@@ -22,7 +24,7 @@ class PermissionController extends Controller
     public function indexAction()
     {
         return $this->request->isAjax()
-            ? Permission::all(['permission_id?' => input('permission_id', '')], ['with' => ['roles' => 'role_id, role_name']])
+            ? Permission::all(['permission_id?' => input('permission_id', '')], ['with' => ['roles' => 'role_id, role_name'], 'order' => 'permission_id DESC'])
             : null;
     }
 
@@ -97,5 +99,22 @@ class PermissionController extends Controller
     public function editAction()
     {
         return Permission::updateOrNull();
+    }
+
+    public function deleteAction()
+    {
+        if (!$this->request->isGet()) {
+            $permission = Permission::get(input('permission_id'));
+            foreach (Role::all(['role_id' => RolePermission::values('role_id', ['permission_id' => $permission->permission_id])]) as $role) {
+                if (strpos($role->permissions, ",$permission->path,") !== false) {
+                    $role->permissions = str_replace(",$permission->path,", ',', $role->permissions);
+                    $role->update();
+                }
+            }
+
+            RolePermission::deleteAll(['permission_id' => $permission->permission_id]);
+
+            return $permission->delete();
+        }
     }
 }

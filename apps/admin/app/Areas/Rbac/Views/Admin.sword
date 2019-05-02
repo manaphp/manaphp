@@ -31,7 +31,7 @@
     </span>
 </el-dialog>
 <el-dialog title="用户编辑" :visible.sync="editVisible">
-    <el-form :model="edit">
+    <el-form :model="edit" size="mini">
         <el-form-item label="用户名:"><span text-align="left">@{{ edit.admin_name }}</span></el-form-item>
         <el-form-item label="邮箱:">
             <el-input v-model.trim="edit.email" auto-complete="off"></el-input>

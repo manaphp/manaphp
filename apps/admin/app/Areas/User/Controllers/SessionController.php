@@ -36,6 +36,12 @@ class SessionController extends Controller
                 return '账号或密码不正确';
             }
 
+            if ($admin->status === Admin::STATUS_INIT) {
+                return '账号还未激活';
+            } elseif ($admin->status === Admin::STATUS_LOCKED) {
+                return '账号已锁定';
+            }
+
             if ($this->request->has('remember_me')) {
                 $this->cookies->set('admin_name', $admin->admin_name, strtotime('1 year'));
             } else {
