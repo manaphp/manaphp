@@ -66,7 +66,7 @@ abstract class Application extends \ManaPHP\Application
     {
         if (!isset($_GET['_url']) && ($pos = strripos($_SERVER['SCRIPT_NAME'], '/public/')) !== false) {
             $prefix = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
-            if (strpos($_SERVER['REQUEST_URI'], $prefix) === 0) {
+            if ($prefix === '' || strpos($_SERVER['REQUEST_URI'], $prefix) === 0) {
                 $url = substr($_SERVER['REQUEST_URI'], $pos);
                 $_GET['_url'] = $_REQUEST['_url'] = ($pos = strpos($url, '?')) === false ? $url : substr($url, 0, $pos);
             }
