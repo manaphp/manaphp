@@ -18,6 +18,14 @@ interface AuthorizationInterface
 
     /**
      * @param string $role
+     * @param array  $explicit_permissions
+     *
+     * @return array
+     */
+    public function buildAllowed($role, $explicit_permissions = []);
+
+    /**
+     * @param string $role
      *
      * @return array
      */

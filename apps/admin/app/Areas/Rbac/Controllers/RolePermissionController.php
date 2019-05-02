@@ -2,6 +2,7 @@
 
 namespace App\Areas\Rbac\Controllers;
 
+use App\Areas\Rbac\Models\Permission;
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
 use ManaPHP\Mvc\Controller;
@@ -45,7 +46,8 @@ class RolePermissionController extends Controller
 
             $role = Role::get($role_id);
 
-            $paths = $this->authorization->getAllowed($role->role_name);
+            $explicit_permissions = Permission::values('path', ['permission_id' => $permission_ids]);
+            $paths = $this->authorization->buildAllowed($role->role_name, $explicit_permissions);
             sort($paths);
 
             $role->permissions = ',' . implode(',', $paths) . ',';

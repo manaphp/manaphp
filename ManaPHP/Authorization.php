@@ -156,10 +156,11 @@ class Authorization extends Component implements AuthorizationInterface
 
     /**
      * @param string $role
+     * @param array  $explicit_permissions
      *
      * @return array
      */
-    public function getAllowed($role)
+    public function buildAllowed($role, $explicit_permissions = [])
     {
         $paths = [];
 
@@ -181,14 +182,32 @@ class Authorization extends Component implements AuthorizationInterface
             foreach (get_class_methods($controller) as $method) {
                 if (preg_match('#^(.*)Action$#', $method, $match)) {
                     $action = $match[1];
+                    $path = $this->generatePath($controller, $action);
                     if ($this->isAclAllow($acl, $role, $action)) {
-                        $paths[] = $this->generatePath($controller, $action);
+                        $paths[] = $path;
+                    } elseif (in_array($path, $explicit_permissions, true)) {
+                        $paths[] = $path;
+                    } elseif (isset($acl[$action]) && $acl[$action][0] === '@') {
+                        $real_path = $this->generatePath($controller, substr($acl[$action], 1));
+                        if (in_array($real_path, $explicit_permissions, true)) {
+                            $paths[] = $path;
+                        }
                     }
                 }
             }
         }
 
         return $paths;
+    }
+
+    /**
+     * @param string $role
+     *
+     * @return array
+     */
+    public function getAllowed($role)
+    {
+        return $this->buildAllowed($role);
     }
 
     /**
