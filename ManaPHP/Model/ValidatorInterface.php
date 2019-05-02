@@ -5,7 +5,7 @@ interface ValidatorInterface
 {
     /**
      * @param \ManaPHP\Model $model
-     * @param array          $fields
+     * @param array|string   $fields
      *
      * @return  void
      */

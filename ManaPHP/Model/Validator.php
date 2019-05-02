@@ -109,7 +109,7 @@ class Validator extends Component implements ValidatorInterface
 
     /**
      * @param \ManaPHP\Model $model
-     * @param array          $fields
+     * @param array|string   $fields
      *
      * @return void
      * @throws \ManaPHP\Model\Validator\ValidateFailedException
@@ -125,6 +125,10 @@ class Validator extends Component implements ValidatorInterface
         }
 
         $context->model = $model;
+
+        if (is_string($fields)) {
+            $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
+        }
 
         $templates = null;
         foreach ($fields ?: $model->getChangedFields() as $field) {
