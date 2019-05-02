@@ -10,7 +10,7 @@ class RoleController extends Controller
 {
     public function getAcl()
     {
-        return ['list' => '@index'];
+        return ['list' => '@index', 'enable' => '@edit', 'disable' => '@edit', 'delete' => '@edit', 'create' => '@edit'];
     }
 
     public function indexAction()

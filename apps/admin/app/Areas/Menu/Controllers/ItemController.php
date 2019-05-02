@@ -6,6 +6,11 @@ use ManaPHP\Mvc\Controller;
 
 class ItemController extends Controller
 {
+    public function getAcl()
+    {
+        return ['create' => '@edit', 'delete' => '@edit'];
+    }
+
     public function indexAction()
     {
         return $this->request->isAjax()

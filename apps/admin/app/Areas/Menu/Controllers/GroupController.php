@@ -9,7 +9,7 @@ class GroupController extends Controller
 {
     public function getAcl()
     {
-        return ['list' => '@index'];
+        return ['list' => '@index', 'delete' => '@edit', 'create' => '@edit'];
     }
 
     public function indexAction()
