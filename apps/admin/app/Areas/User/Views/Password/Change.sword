@@ -1,78 +1,58 @@
-@layout(false)
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ManaPHP Admin</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/theme-chalk/index.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <style>
-        .login-box {
-            margin: 10% auto;
-            width: 270px;
-        }
-
-        .login-box > div {
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-<div id="app" class="login-box">
-    <h1 align="center">修改密码</h1>
-
-    <el-input v-model.trim="request.admin_name" disabled>
-        <template slot="prepend">账 &nbsp;&nbsp;号</template>
-    </el-input>
-    <el-input v-model.trim="request.old_password" type="password" placeholder="旧密码" autofocus>
-        <template slot="prepend">旧密码</template>
-    </el-input>
-    <el-input v-model.trim="request.new_password" type="password" placeholder="新密码">
-        <template slot="prepend">新密码</template>
-    </el-input>
-    <el-input v-model.trim="request.new_password_confirm" type="password" placeholder="确认新密码">
-        <template slot="prepend">新密码</template>
-    </el-input>
-    <div>
-        <el-button @click="change" type="primary" style="margin: 0 13% ">确认</el-button>
-        <el-button @click="window.location.href='/'">取消</el-button>
-    </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/index.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qs@6.7.0/dist/qs.js"></script>
-<script>
-    Vue.prototype.$axios = axios;
-
-    axios.defaults.baseURL = 'http://www.manaphp.com';
-    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-    vm = new Vue({
-        el: '#app',
-        data: {
-            request: {
-                admin_name: "<?=di('identity')->getName()?>",
-                old_password: '',
-                new_password: '',
-                new_password_confirm: '',
+<el-row class="change-password-box">
+    <el-col :span="4" :offset="10">
+        <el-form :model="request" size="small">
+            <h1 align="center">修改密码</h1>
+            <el-input v-model.trim="request.admin_name" disabled>
+                <template slot="prepend">账 &nbsp;&nbsp;号</template>
+            </el-input>
+            <el-input v-model.trim="request.old_password" type="password" placeholder="旧密码" autofocus>
+                <template slot="prepend">旧密码</template>
+            </el-input>
+            <el-input v-model.trim="request.new_password" type="password" placeholder="新密码">
+                <template slot="prepend">新密码</template>
+            </el-input>
+            <el-input v-model.trim="request.new_password_confirm" type="password" placeholder="确认新密码">
+                <template slot="prepend">新密码</template>
+            </el-input>
+        </el-form>
+        <el-button @click="change" type="primary" class="change-password">确认</el-button>
+    </el-col>
+</el-row>
+@section('css'){
+<style type="text/css">
+    .change-password-box{
+        margin-top:10%;
+    }
+    .el-button.change-password {
+            margin-top: 30px;
+           margin-left: 30%;
+    }
+</style>
+@append
+@section('script')
+    <script>
+        vm = new Vue({
+            el: '#app',
+            data: {
+                request: {
+                    admin_name: "<?=di('identity')->getName()?>",
+                    old_password: '',
+                    new_password: '',
+                    new_password_confirm: '',
+                },
             },
-        },
-        methods: {
-            change: function () {
-                this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
-                    if (res.data.code === 0) {
-                        window.location.href = "/";
-                    } else {
-                        this.$alert(res.data.message);
-                        this.captcha_url = "captcha" + '?t=' + new Date().getTime();
-                    }
-                }.bind(this));
-            },
-        }
-    });
-</script>
-</body>
-</html>
+            methods: {
+                change: function () {
+                    this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
+                        if (res.data.code === 0) {
+                            window.location.href = "/";
+                        } else {
+                            this.$alert(res.data.message);
+                            this.captcha_url = "captcha" + '?t=' + new Date().getTime();
+                        }
+                    }.bind(this));
+                },
+            }
+        });
+    </script>
+@append

@@ -9,7 +9,7 @@
                 <span>{{$group['group_name']}}</span>
             </template>
             @foreach($group['items'] as $item)
-                <el-menu-item index="<?=action($item['url'])?>"><i class="{{$item['icon']}}"></i><a href="<?=action($item['url'])?>">{{$item['item_name']}}</a></el-menu-item>
+                <el-menu-item index="<?=action($item['url'])?>"><i class="{{$item['icon']}}"></i><el-link href="<?=action($item['url'])?>">{{$item['item_name']}}</el-link></el-menu-item>
             @endforeach
         </el-submenu>
     @endforeach
