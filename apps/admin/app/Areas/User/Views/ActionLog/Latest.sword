@@ -31,9 +31,9 @@
         <el-table-column prop="url" label="请求Url"></el-table-column>
         <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="200">
+        <el-table-column fixed="right" label="操作" width="80">
             <template slot-scope="scope">
-                <el-button @click="show_detail(scope.row)" icon="el-icon-view" size="mini" plain round>详情
+                <el-button @click="show_detail(scope.row)" size="mini" type="info">详情
                 </el-button>
             </template>
         </el-table-column>

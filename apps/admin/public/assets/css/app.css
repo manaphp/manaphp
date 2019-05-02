@@ -10,7 +10,7 @@
     text-align: center;
 }
 
-.el-aside{
+.el-aside {
     width: 210px !important;
 }
 
@@ -63,4 +63,8 @@
 
 .el-header {
     height: 20px !important;
+}
+
+.el-link.operate {
+    margin-left: 10px;
 }
