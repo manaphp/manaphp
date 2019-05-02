@@ -561,4 +561,19 @@ class Validator extends Component implements ValidatorInterface
     {
         return trim($value);
     }
+
+    public function _validate_account($value)
+    {
+        $value = strtolower($value);
+
+        if (!preg_match('#^[a-z][a-z0-9_]{2,}$#', $value)) {
+            return null;
+        }
+
+        if (strpos($value, '__') !== false) {
+            return null;
+        }
+
+        return $this->_validate_unique($value);
+    }
 }
