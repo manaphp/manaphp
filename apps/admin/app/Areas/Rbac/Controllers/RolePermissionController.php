@@ -17,9 +17,11 @@ class RolePermissionController extends Controller
     public function indexAction()
     {
         if ($this->request->isAjax()) {
-            return RolePermission::all(['role_id' => input('role_id')],
-                ['with' => ['permission' => 'permission_id, display_name, path', 'roles' => 'role_id, role_name']],
-                ['id', 'permission_id', 'creator_name', 'created_time']);
+            return RolePermission::query()
+                ->select(['id', 'permission_id', 'creator_name', 'created_time'])
+                ->with(['permission' => 'permission_id, display_name, path', 'roles' => 'role_id, role_name'])
+                ->where(['role_id' => input('role_id')])
+                ->fetch(true);
         }
     }
 
