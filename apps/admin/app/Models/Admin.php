@@ -1,12 +1,9 @@
 <?php
 namespace App\Models;
 
-/**
- * Class Admin
- *
- * @package App\Models
- */
-class Admin extends ModelBase
+use ManaPHP\Db\Model;
+
+class Admin extends Model
 {
     const STATUS_INIT = 0;
     const STATUS_ACTIVE = 1;
