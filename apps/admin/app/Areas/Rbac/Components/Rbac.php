@@ -41,7 +41,7 @@ class Rbac extends Authorization
             list($controllerClassName, $action) = $this->inferControllerAction($permission);
             $controllerClassName = $this->alias->resolveNS($controllerClassName);
             if (!isset($this->_acl[$controllerClassName])) {
-                /** @var \ManaPHP\Controller $controllerInstance */
+                /** @var \ManaPHP\Mvc\Controller $controllerInstance */
                 $controllerInstance = new $controllerClassName;
                 $this->_acl[$controllerClassName] = $controllerInstance->getAcl();
             }
