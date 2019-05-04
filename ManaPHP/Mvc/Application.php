@@ -21,6 +21,11 @@ class Application extends \ManaPHP\Http\Application
         return $this->_di;
     }
 
+    public function authorize()
+    {
+        $this->authorization->authorize();
+    }
+
     public function handle()
     {
         try {

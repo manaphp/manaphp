@@ -10,8 +10,10 @@ use ManaPHP\Utility\Text;
  * Class Authorization
  * @package ManaPHP
  *
- * @property \ManaPHP\DispatcherInterface $dispatcher
- * @property \ManaPHP\RouterInterface     $router
+ * @property \ManaPHP\DispatcherInterface    $dispatcher
+ * @property \ManaPHP\RouterInterface        $router
+ * @property \ManaPHP\Http\RequestInterface  $request
+ * @property \ManaPHP\Http\ResponseInterface $response
  */
 class Authorization extends Component implements AuthorizationInterface
 {
@@ -255,20 +257,28 @@ class Authorization extends Component implements AuthorizationInterface
     }
 
     /**
-     * @param string $role
      *
      * @throws \ManaPHP\Identity\NoCredentialException
      * @throws \ManaPHP\Exception\ForbiddenException
      */
-    public function authorize($role = null)
+    public function authorize()
     {
-        $role = $role ?: $this->identity->getRole();
-
-        if (!$this->isAllowed(null, $role)) {
-            if ($role === 'guest') {
-                throw new NoCredentialException('No Credential or Invalid Credential');
-            } else {
-                throw new ForbiddenException('Access denied to resource');
+        if ($this->request->isAjax()) {
+            if (!$this->isAllowed()) {
+                if ($this->identity->isGuest()) {
+                    throw new NoCredentialException('No Credential or Invalid Credential');
+                } else {
+                    throw new ForbiddenException('Access denied to resource');
+                }
+            }
+        } else {
+            if (!$this->isAllowed()) {
+                if ($this->identity->isGuest()) {
+                    $redirect = input('redirect', $this->request->getUrl());
+                    $this->response->redirect(["/login?redirect=$redirect"]);
+                } else {
+                    throw new ForbiddenException('Access denied to resource');
+                }
             }
         }
     }
