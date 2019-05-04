@@ -9,14 +9,6 @@ namespace ManaPHP;
 interface AuthorizationInterface
 {
     /**
-     * @param string $controllerClassName
-     * @param string $action
-     *
-     * @return string
-     */
-    public function generatePath($controllerClassName, $action);
-
-    /**
      * @param string $role
      * @param array  $explicit_permissions
      *
