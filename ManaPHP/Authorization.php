@@ -213,10 +213,28 @@ class Authorization extends Component implements AuthorizationInterface
      */
     public function getAllowed($role)
     {
+        static $builtin;
+
+        if (isset($builtin[$role])) {
+            return $builtin[$role];
+        }
+
         $context = $this->_context;
 
         if (!isset($context->role_permissions[$role])) {
-            return $context->role_permissions[$role] = ',' . implode(',', $this->buildAllowed($role)) . ',';
+            /** @var \ManaPHP\ModelInterface $roleModel */
+            $roleModel = null;
+            if (class_exists('App\Areas\Rbac\Models\Role')) {
+                $roleModel = 'App\Areas\Rbac\Models\Role';
+            } elseif (class_exists('App\Models\Role')) {
+                $roleModel = 'App\Models\Role';
+            }
+
+            if ($roleModel) {
+                return $context->role_permissions[$role] = $roleModel::value(['role_name' => $role], 'permissions');
+            } else {
+                return $builtin[$role] = ',' . implode(',', $this->buildAllowed($role)) . ',';
+            }
         } else {
             return $context->role_permissions[$role];
         }
@@ -237,7 +255,7 @@ class Authorization extends Component implements AuthorizationInterface
             return true;
         }
 
-        if ($permission && $permission[0] === '/') {
+        if ($role !== 'guest' && $permission && $permission[0] === '/') {
             if (strpos($role, ',') === false) {
                 if (strpos($this->getAllowed($role), ",$permission,") !== false) {
                     return true;
@@ -262,6 +280,10 @@ class Authorization extends Component implements AuthorizationInterface
 
             if ($this->isAclAllow($acl, $action, $role)) {
                 return true;
+            }
+
+            if ($role === 'guest') {
+                return false;
             }
         }
 
