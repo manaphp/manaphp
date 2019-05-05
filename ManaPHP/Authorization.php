@@ -33,7 +33,7 @@ class Authorization extends Component implements AuthorizationInterface
      *
      * @return bool
      */
-    public function isAclAllow($acl, $role, $action)
+    public function isAclAllowed($acl, $role, $action)
     {
         if (isset($acl[$action])) {
             $roles = $acl[$action];
@@ -189,7 +189,7 @@ class Authorization extends Component implements AuthorizationInterface
                 if (preg_match('#^(.*)Action$#', $method, $match)) {
                     $action = $match[1];
                     $path = $this->generatePath($controller, $action);
-                    if ($this->isAclAllow($acl, $role, $action)) {
+                    if ($this->isAclAllowed($acl, $role, $action)) {
                         $paths[] = $path;
                     } elseif (in_array($path, $explicit_permissions, true)) {
                         $paths[] = $path;
@@ -278,7 +278,7 @@ class Authorization extends Component implements AuthorizationInterface
             $action = $permission ? lcfirst(Text::camelize($permission)) : $this->dispatcher->getAction();
             $acl = $controllerInstance->getAcl();
 
-            if ($this->isAclAllow($acl, $role, $action)) {
+            if ($this->isAclAllowed($acl, $role, $action)) {
                 return true;
             }
 
