@@ -6,6 +6,14 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Utility\Text;
 
+class AuthorizationContext
+{
+    /**
+     * @var array
+     */
+    public $role_permissions;
+}
+
 /**
  * Class Authorization
  * @package ManaPHP
@@ -14,14 +22,10 @@ use ManaPHP\Utility\Text;
  * @property \ManaPHP\RouterInterface        $router
  * @property \ManaPHP\Http\RequestInterface  $request
  * @property \ManaPHP\Http\ResponseInterface $response
+ * @property \ManaPHP\AuthorizationContext   $_context
  */
 class Authorization extends Component implements AuthorizationInterface
 {
-    /**
-     * @var array
-     */
-    protected $_acl;
-
     /**
      * @param array  $acl
      * @param string $role
@@ -205,11 +209,17 @@ class Authorization extends Component implements AuthorizationInterface
     /**
      * @param string $role
      *
-     * @return array
+     * @return string
      */
     public function getAllowed($role)
     {
-        return $this->buildAllowed($role);
+        $context = $this->_context;
+
+        if (!isset($context->role_permissions[$role])) {
+            return $context->role_permissions[$role] = ',' . implode(',', $this->buildAllowed($role)) . ',';
+        } else {
+            return $context->role_permissions[$role];
+        }
     }
 
     /**
@@ -222,38 +232,53 @@ class Authorization extends Component implements AuthorizationInterface
      */
     public function isAllowed($permission = null, $role = null)
     {
+        $role = $role ?: $this->identity->getRole();
+        if ($role === 'admin') {
+            return true;
+        }
+
+        if ($permission && $permission[0] === '/') {
+            if (strpos($role, ',') === false) {
+                if (strpos($this->getAllowed($role), ",$permission,") !== false) {
+                    return true;
+                }
+            } else {
+                foreach (explode(',', $role) as $r) {
+                    if (strpos($this->getAllowed($r), ",$permission,") !== false) {
+                        return true;
+                    }
+                }
+            }
+        }
+
         if ($permission && strpos($permission, '/') !== false) {
             list($controllerClassName, $action) = $this->inferControllerAction($permission);
             $controllerClassName = $this->alias->resolveNS($controllerClassName);
-            if (!isset($this->_acl[$controllerClassName])) {
-                /** @var \ManaPHP\Rest\Controller $controllerInstance */
-                $controllerInstance = new $controllerClassName;
-                $this->_acl[$controllerClassName] = $controllerInstance->getAcl();
-            }
         } else {
             $controllerInstance = $this->dispatcher->getControllerInstance();
             $controllerClassName = get_class($controllerInstance);
             $action = $permission ? lcfirst(Text::camelize($permission)) : $this->dispatcher->getAction();
+            $acl = $controllerInstance->getAcl();
 
-            if (!isset($this->_acl[$controllerClassName])) {
-                $this->_acl[$controllerClassName] = $controllerInstance->getAcl();
+            if ($this->isAclAllow($acl, $action, $role)) {
+                return true;
             }
         }
 
-        $acl = $this->_acl[$controllerClassName];
-
-        $role = $role ?: $this->identity->getRole();
+        $permission = $this->generatePath($controllerClassName, $action);
         if (strpos($role, ',') === false) {
-            return $this->isAclAllow($acl, $role, $action);
+            if (strpos($this->getAllowed($role), ",$permission,") !== false) {
+                return true;
+            }
         } else {
-            foreach (explode($role, ',') as $r) {
-                if ($this->isAclAllow($acl, $r, $action)) {
+            foreach (explode(',', $role) as $r) {
+                if (strpos($this->getAllowed($r), ",$permission,") !== false) {
                     return true;
                 }
             }
-
-            return false;
         }
+
+        return false;
     }
 
     /**

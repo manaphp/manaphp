@@ -19,7 +19,7 @@ interface AuthorizationInterface
     /**
      * @param string $role
      *
-     * @return array
+     * @return string
      */
     public function getAllowed($role);
 
