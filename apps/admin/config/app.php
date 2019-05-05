@@ -19,7 +19,6 @@ return [
         'redis' => env('REDIS_URL'),
         'mongodb' => env('MONGODB_URL'),
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
-        'authorization' => \App\Areas\Rbac\Components\Rbac::class
     ],
     'services' => [],
     'listeners' => [],
