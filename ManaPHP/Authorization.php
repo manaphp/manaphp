@@ -263,23 +263,19 @@ class Authorization extends Component implements AuthorizationInterface
      */
     public function authorize()
     {
-        if ($this->request->isAjax()) {
-            if (!$this->isAllowed()) {
-                if ($this->identity->isGuest()) {
-                    throw new NoCredentialException('No Credential or Invalid Credential');
-                } else {
-                    throw new ForbiddenException('Access denied to resource');
-                }
+        if ($this->isAllowed()) {
+            return;
+        }
+
+        if ($this->identity->isGuest()) {
+            if ($this->request->isAjax()) {
+                throw new NoCredentialException('No Credential or Invalid Credential');
+            } else {
+                $redirect = input('redirect', $this->request->getUrl());
+                $this->response->redirect(["/login?redirect=$redirect"]);
             }
         } else {
-            if (!$this->isAllowed()) {
-                if ($this->identity->isGuest()) {
-                    $redirect = input('redirect', $this->request->getUrl());
-                    $this->response->redirect(["/login?redirect=$redirect"]);
-                } else {
-                    throw new ForbiddenException('Access denied to resource');
-                }
-            }
+            throw new ForbiddenException('Access denied to resource');
         }
     }
 }
