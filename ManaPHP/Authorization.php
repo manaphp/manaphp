@@ -278,7 +278,7 @@ class Authorization extends Component implements AuthorizationInterface
             $action = $permission ? lcfirst(Text::camelize($permission)) : $this->dispatcher->getAction();
             $acl = $controllerInstance->getAcl();
 
-            if ($this->isAclAllow($acl, $action, $role)) {
+            if ($this->isAclAllow($acl, $role, $action)) {
                 return true;
             }
 
