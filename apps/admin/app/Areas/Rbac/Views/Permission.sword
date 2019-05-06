@@ -29,7 +29,7 @@
         <el-table-column prop="display_name" label="简述" width="250"></el-table-column>
         <el-table-column label="角色列表">
             <template slot-scope="scope">
-                <el-tag size="small" v-for="role in scope.row.roles">@{{role.role_name}}</el-tag>
+                <el-tag size="small" v-for="role in scope.row.roles" :key="role.role_id">@{{role.role_name}}</el-tag>
             </template>
         </el-table-column>
         <el-table-column prop="updated_time" label="重新时间" :formatter="fDate" width="150"></el-table-column>
@@ -49,13 +49,13 @@
             el: '#app',
             data: {
                 request: {},
-                response: {},
+                response: [],
                 editVisible: false,
                 edit: {},
                 row: {},
                 paths: [],
                 filter: {
-                    path: '',
+                    path: ''
                 }
             },
             computed: {

@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item label="状态:" prop="status">
             <el-radio-group v-model="create.status">
-                <el-radio v-for="(status, id) in statuses" :label="id">@{{status}}</el-radio>
+                <el-radio v-for="(status, id) in statuses" :label="id" :key="id">@{{status}}</el-radio>
             </el-radio-group>
         </el-form-item>
     </el-form>

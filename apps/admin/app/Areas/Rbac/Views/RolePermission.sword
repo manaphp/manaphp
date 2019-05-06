@@ -36,7 +36,7 @@
         <el-table-column prop="permission.display_name" label="权限简述"></el-table-column>
         <el-table-column label="角色列表">
             <template slot-scope="scope">
-                <el-button size="small" v-for="role in scope.row.roles" :key="index" type="text"
+                <el-button size="small" v-for="role in scope.row.roles" :key="role.role_id" type="text"
                            @click.native="request.role_id = role.role_id" :disabled="request.role_id == role.role_id">
                     @{{ role.role_name }}
                 </el-button>
@@ -62,7 +62,7 @@
                     role_name: '',
                     permission_ids: []
                 },
-                permissions: [],
+                permissions: []
             },
             mounted: function () {
                 this.ajax_get("role/list", function (res) {
