@@ -85,7 +85,15 @@ Vue.mixin({
         var qs = this.$qs.parse(document.location.search.substr(1));
         if (this.request) {
             for (var k in qs) {
-                this.request[k] = qs[k];
+                var v = qs[k];
+
+                if (typeof this.request[k] === 'number') {
+                    if (v !== '') {
+                        this.request[k] = parseInt(v);
+                    }
+                } else {
+                    this.request[k] = v;
+                }
             }
         }
     }
