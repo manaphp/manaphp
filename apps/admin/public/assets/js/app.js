@@ -21,7 +21,7 @@ axios.interceptors.response.use(function (res) {
         console.log(error.response);
         switch (error.response.status) {
             case 401:
-                window.location.href = '@action(user/login)';
+                window.location.href = window.login_url;
                 break;
             default:
                 alert(error.response.data.message);
