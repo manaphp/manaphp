@@ -11,6 +11,10 @@ axios.interceptors.request.use(function (config) {
 });
 
 axios.interceptors.response.use(function (res) {
+        if (!Vue.config.silent) {
+            console.log(res.config.url, res);
+        }
+
         if (typeof res.data === 'string') {
             alert('unexpected response');
         }
@@ -41,7 +45,6 @@ Vue.mixin({
     methods: {
         ajax_get: function (url, success) {
             this.$axios.get(url).then(function (res) {
-                console.log(res);
                 if (res.data.code === 0) {
                     success.bind(this)(res.data.data);
                 } else {
