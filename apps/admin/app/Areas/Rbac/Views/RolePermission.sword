@@ -2,7 +2,7 @@
     <el-row>
         <el-col :span="2">
             <el-select v-model="request.role_id" size="small" filterable>
-                <el-option v-for="(role_name, role_id) in roles" :key="role_id" :label="role_name" :value="role_id"></el-option>
+                <el-option v-for="role in roles" :key="role.role_id" :label="role.role_name" :value="role.role_id"></el-option>
             </el-select>
         </el-col>
         <el-col :span="2">
@@ -68,7 +68,7 @@
                 this.ajax_get("role/list", function (res) {
                     this.roles = res;
                     if (!this.request.role_id) {
-                        this.request.role_id = this._.keys(this.roles)[0];
+                        this.request.role_id = res ? res[0].role_id : 0;
                     }
                 });
             },

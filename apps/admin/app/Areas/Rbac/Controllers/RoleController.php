@@ -25,7 +25,7 @@ class RoleController extends Controller
 
     public function listAction()
     {
-        return Role::lists(['role_id' => 'role_name']);
+        return Role::lists('role_name');
     }
 
     public function createAction()
