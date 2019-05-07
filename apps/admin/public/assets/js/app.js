@@ -12,7 +12,8 @@ axios.interceptors.request.use(function (config) {
 
 axios.interceptors.response.use(function (res) {
         if (!Vue.config.silent) {
-            console.log(res.config.url, res);
+            var now = new Date();
+            console.warn('[AJAX][%s.%i][%s][%s] %o', now.toLocaleString('en-GB'), now.getMilliseconds(), res.headers['x-response-time'], res.config.url, res);
         }
 
         if (typeof res.data === 'string') {
