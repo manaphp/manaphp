@@ -48,7 +48,7 @@
         <el-table-column prop="role.role_name" label="角色名" width="100"></el-table-column>
         <el-table-column label="用户列表">
             <template slot-scope="scope">
-                <el-button size="small" v-for="admin in scope.row.admins" :key="index" type="text"
+                <el-button size="small" v-for="admin in scope.row.admins" :key="admin.admin_id" type="text"
                            @click.native="request.admin_id = admin.admin_id"
                            :disabled="request.admin_id == admin.admin_id">
                     @{{ admin.admin_name }}
@@ -70,7 +70,7 @@
                     size: 20,
                     page: 1
                 },
-                response: {},
+                response: [],
 
                 editVisible: false,
                 edit: {
@@ -81,7 +81,7 @@
                 detailVisible: false,
                 detail: [],
                 admins: [],
-                roles: [],
+                roles: []
             },
             mounted: function () {
                 this.ajax_get("admin/list", function (res) {
