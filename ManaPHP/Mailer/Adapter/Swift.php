@@ -21,39 +21,19 @@ class Swift extends Mailer
     /**
      * Swift constructor.
      *
-     * @param string|array $options
+     * @param string $url
      */
-    public function __construct($options = [])
+    public function __construct($url)
     {
-        if (is_string($options)) {
-            $this->_url = $options;
-        } else {
-            if (!isset($options['url'])) {
-                throw new MissingFieldException('url');
-            }
-            $this->_url = $options['url'];
-            if (isset($options['log'])) {
-                $this->_log = $options['log'];
-            }
+        $this->_url = $url;
 
-            if (isset($options['from'])) {
-                $this->_from = $options['from'];
-            }
-
-            if (isset($options['to'])) {
-                $this->_to = $options['to'];
-            }
-        }
-
-        if (!$parts = parse_url($this->_url)) {
-            throw new InvalidUrlException($this->_url);
-        }
+        $parts = parse_url($url);
 
         $scheme = $parts['scheme'];
 
         $host = $parts['host'];
         if (isset($parts['port'])) {
-            $port = $parts['port'];
+            $port = (int)$parts['port'];
         } else {
             $port = $scheme === 'smtp' ? 25 : 465;
         }
@@ -68,15 +48,48 @@ class Swift extends Mailer
             throw new NotSupportedException('`:scheme` scheme is not known', ['scheme' => $scheme]);
         }
 
-        $swiftTransport = new \Swift_SmtpTransport($host, $port, $encryption);
         if (isset($parts['user'])) {
-            if (strpos($parts['user'], '@')) {
+            if (strpos($parts['user'], '@') !== false) {
                 $this->_from = $parts['user'];
             }
-            $swiftTransport->setUsername($parts['user']);
+            $username = $parts['user'];
+        } else {
+            $username = null;
         }
-        if (isset($parts['pass'])) {
-            $swiftTransport->setPassword($parts['pass']);
+
+        $password = isset($parts['pass']) ? $parts['pass'] : null;
+
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
+
+            if (isset($query['log'])) {
+                $this->_log = $query['log'];
+            }
+
+            if (isset($query['from'])) {
+                $this->_from = $query['from'];
+            }
+
+            if (isset($query['to'])) {
+                $this->_to = $query['to'];
+            }
+
+            if (isset($query['user'])) {
+                $username = $query['user'];
+            }
+
+            if (isset($query['password'])) {
+                $password = $query['password'];
+            }
+        }
+
+        $swiftTransport = new \Swift_SmtpTransport($host, $port, $encryption);
+        if ($username) {
+            $swiftTransport->setUsername($username);
+        }
+
+        if ($password) {
+            $swiftTransport->setPassword($password);
         }
 
         $this->_swift = new \Swift_Mailer($swiftTransport);
