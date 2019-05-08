@@ -68,4 +68,19 @@ interface SessionInterface
      * @return string
      */
     public function getName();
+
+    /**
+     * @param string $session_id
+     *
+     * @return array
+     */
+    public function read($session_id);
+
+    /**
+     * @param string $session_id
+     * @param array  $data
+     *
+     * @return void
+     */
+    public function write($session_id, $data);
 }

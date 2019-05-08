@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
@@ -487,5 +488,32 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
     public function offsetUnset($offset)
     {
         $this->remove($offset);
+    }
+
+    /**
+     * @param string $session_id
+     *
+     * @return array
+     */
+    public function read($session_id)
+    {
+        $session = $this->do_read($session_id);
+        if (!$session) {
+            return [];
+        }
+
+        return $this->unserialize($session);
+    }
+
+    /**
+     * @param string $session_id
+     * @param array  $data
+     *
+     * @return void
+     */
+    public function write($session_id, $data)
+    {
+        $session = $this->serialize($data);
+        $this->do_write($session_id, $session, $this->_ttl);
     }
 }
