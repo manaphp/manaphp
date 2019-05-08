@@ -101,7 +101,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
             $this->_cookie_params['path'] = $this->alias->get('@web') ?: '/';
         }
 
-        $this->eventsManager->attachEvent('request:end', [$this, 'save']);
+        $this->eventsManager->attachEvent('response:beforeSend', [$this, 'save']);
     }
 
     /**
@@ -128,12 +128,6 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
             }
         } else {
             $session_id = $this->_generateSessionId();
-
-            $params = $this->_cookie_params;
-            $expire = $params['expire'] ? time() + $params['expire'] : 0;
-
-            $this->cookies->set($this->_name, $session_id, $expire, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-
             $context->is_new = true;
             $context->_SESSION = [];
         }
@@ -155,6 +149,12 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
             if (!$context->_SESSION) {
                 return;
             }
+
+            $params = $this->_cookie_params;
+            $expire = $params['expire'] ? time() + $params['expire'] : 0;
+
+            $this->cookies->set($this->_name, $context->session_id, $expire, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+
             $this->eventsManager->fireEvent('session:create', $this, ['context' => $this->_context]);
         } elseif ($context->is_dirty) {
             null;
@@ -194,7 +194,6 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
             $this->eventsManager->fireEvent('session:destroy', $this, ['session_id' => $session_id]);
             $this->do_destroy($session_id);
         } else {
-
             $context = $this->_context;
 
             if (!$context->started) {
