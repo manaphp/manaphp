@@ -1,15 +1,24 @@
 <?php
 namespace ManaPHP\Mailer\Adapter;
 
-use ManaPHP\Exception\InvalidUrlException;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Mailer;
 use ManaPHP\Mailer\Adapter\Exception\AuthenticationException;
 use ManaPHP\Mailer\Adapter\Exception\BadResponseException;
 use ManaPHP\Mailer\Adapter\Exception\ConnectionException;
 use ManaPHP\Mailer\Adapter\Exception\TransmitException;
 
+class SmtpContext
+{
+    public $socket;
+    public $file;
+}
+
+/**
+ * Class Smtp
+ * @package ManaPHP\Mailer\Adapter
+ * @property \ManaPHP\Mailer\Adapter\SmtpContext $_context
+ */
 class Smtp extends Mailer
 {
     /**
@@ -48,44 +57,23 @@ class Smtp extends Mailer
     protected $_timeout = 10;
 
     /**
-     * @var
-     */
-    protected $_socket;
-
-    /**
-     * @var string
-     */
-    protected $_file;
-
-    /**
      * Swift constructor.
      *
-     * @param string|array $options
+     * @param string url
      */
-    public function __construct($options = [])
+    public function __construct($url)
     {
-        if (is_string($options)) {
-            $this->_url = $options;
-            parent::__construct([]);
-        } else {
-            if (!isset($options['url'])) {
-                throw new MissingFieldException('url');
-            }
-            $this->_url = $options['url'];
-            parent::__construct($options);
-        }
+        $this->_url = $url;
 
-        if (!$parts = parse_url($this->_url)) {
-            throw new InvalidUrlException($this->_url);
-        }
+        $parts = parse_url($this->_url);
 
-        $this->_scheme = $scheme = $parts['scheme'];
+        $this->_scheme = $parts['scheme'];
         $this->_host = $parts['host'];
 
         if (isset($parts['port'])) {
-            $this->_port = $parts['port'];
+            $this->_port = (int)$parts['port'];
         } else {
-            $this->_port = $scheme === 'smtp' ? 25 : 465;
+            $this->_port = $this->_scheme === 'smtp' ? 25 : 465;
         }
 
         if (isset($parts['user'])) {
@@ -98,6 +86,30 @@ class Smtp extends Mailer
         if (isset($parts['pass'])) {
             $this->_password = $parts['pass'];
         }
+
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
+
+            if (isset($query['user'])) {
+                $this->_username = $query['user'];
+            }
+
+            if (isset($query['password'])) {
+                $this->_password = $query['password'];
+            }
+
+            if (isset($query['from'])) {
+                $this->_from = $query['from'];
+            }
+
+            if (isset($query['to'])) {
+                $this->_to = $query['to'];
+            }
+
+            if (isset($query['log'])) {
+                $this->_log = $query['log'];
+            }
+        }
     }
 
     /**
@@ -106,8 +118,10 @@ class Smtp extends Mailer
      */
     protected function _connect()
     {
-        if ($this->_socket) {
-            return $this->_socket;
+        $context = $this->_context;
+
+        if ($context->socket) {
+            return $context->socket;
         }
 
         $url = ($this->_scheme === 'smtp' ? '' : "$this->_scheme://") . $this->_host;
@@ -121,12 +135,12 @@ class Smtp extends Mailer
             throw new ConnectionException(['connection protocol is not be recognized: :message', 'message' => $response]);
         }
 
-        $this->_file = $this->alias->resolve('@data/mail/{ymd}/{ymd_His_}{16}.log');
+        $context->file = $this->alias->resolve('@data/mail/{ymd}/{ymd_His_}{16}.log');
 
         /** @noinspection MkdirRaceConditionInspection */
-        @mkdir(dirname($this->_file), 0777, true);
+        @mkdir(dirname($context->file), 0777, true);
 
-        return $this->_socket = $socket;
+        return $context->socket = $socket;
     }
 
     /**
@@ -169,16 +183,18 @@ class Smtp extends Mailer
      */
     protected function _writeLine($data = null)
     {
+        $context = $this->_context;
+
         if ($data !== null) {
-            if (fwrite($this->_socket, $data) === false) {
+            if (fwrite($context->socket, $data) === false) {
                 throw new TransmitException(['send data failed: :url', 'url' => $this->_url]);
             }
-            file_put_contents($this->_file, $data, FILE_APPEND);
+            file_put_contents($context->file, $data, FILE_APPEND);
         }
 
-        file_put_contents($this->_file, PHP_EOL, FILE_APPEND);
+        file_put_contents($context->file, PHP_EOL, FILE_APPEND);
 
-        if (fwrite($this->_socket, "\r\n") === false) {
+        if (fwrite($context->socket, "\r\n") === false) {
             throw new TransmitException(['send data failed: :url', 'url' => $this->_url]);
         }
 
@@ -191,11 +207,13 @@ class Smtp extends Mailer
      */
     protected function _readLine()
     {
-        if (($str = fgets($this->_socket)) === false) {
+        $context = $this->_context;
+
+        if (($str = fgets($context->socket)) === false) {
             throw new TransmitException(['receive data failed: :url', 'url' => $this->_url]);
         }
 
-        file_put_contents($this->_file, str_replace("\r\n", PHP_EOL, $str), FILE_APPEND);
+        file_put_contents($context->file, str_replace("\r\n", PHP_EOL, $str), FILE_APPEND);
         return $str;
     }
 
