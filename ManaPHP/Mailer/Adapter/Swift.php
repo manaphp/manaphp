@@ -14,9 +14,29 @@ class Swift extends Mailer
     protected $_url;
 
     /**
-     * @var \Swift_Mailer
+     * @var string
      */
-    protected $_swift;
+    protected $_encryption;
+
+    /**
+     * @var string
+     */
+    protected $_host;
+
+    /**
+     * @var int
+     */
+    protected $_port;
+
+    /**
+     * @var string
+     */
+    protected $_username;
+
+    /**
+     * @var string
+     */
+    protected $_password;
 
     /**
      * Swift constructor.
@@ -31,11 +51,11 @@ class Swift extends Mailer
 
         $scheme = $parts['scheme'];
 
-        $host = $parts['host'];
+        $this->_host = $parts['host'];
         if (isset($parts['port'])) {
-            $port = (int)$parts['port'];
+            $this->_port = (int)$parts['port'];
         } else {
-            $port = $scheme === 'smtp' ? 25 : 465;
+            $this->_port = $scheme === 'smtp' ? 25 : 465;
         }
 
         if ($scheme === 'smtp') {
@@ -47,17 +67,18 @@ class Swift extends Mailer
         } else {
             throw new NotSupportedException('`:scheme` scheme is not known', ['scheme' => $scheme]);
         }
+        $this->_encryption = $encryption;
 
         if (isset($parts['user'])) {
             if (strpos($parts['user'], '@') !== false) {
                 $this->_from = $parts['user'];
             }
-            $username = $parts['user'];
-        } else {
-            $username = null;
+            $this->_username = $parts['user'];
         }
 
-        $password = isset($parts['pass']) ? $parts['pass'] : null;
+        if (isset($parts['pass'])) {
+            $this->_password = $parts['pass'];
+        }
 
         if (isset($parts['query'])) {
             parse_str($parts['query'], $query);
@@ -75,24 +96,13 @@ class Swift extends Mailer
             }
 
             if (isset($query['user'])) {
-                $username = $query['user'];
+                $this->_username = $query['user'];
             }
 
             if (isset($query['password'])) {
-                $password = $query['password'];
+                $this->_password = $query['password'];
             }
         }
-
-        $swiftTransport = new \Swift_SmtpTransport($host, $port, $encryption);
-        if ($username) {
-            $swiftTransport->setUsername($username);
-        }
-
-        if ($password) {
-            $swiftTransport->setPassword($password);
-        }
-
-        $this->_swift = new \Swift_Mailer($swiftTransport);
     }
 
     /**
@@ -103,6 +113,17 @@ class Swift extends Mailer
      */
     protected function _send($message, &$failedRecipients = null)
     {
+        $swiftTransport = new \Swift_SmtpTransport($this->_host, $this->_port, $this->_encryption);
+        if ($this->_username) {
+            $swiftTransport->setUsername($this->_username);
+        }
+
+        if ($this->_password) {
+            $swiftTransport->setPassword($this->_password);
+        }
+
+        $swift = new \Swift_Mailer($swiftTransport);
+
         $swiftMessage = new \Swift_Message();
 
         if ($charset = $message->getCharset()) {
@@ -137,6 +158,6 @@ class Swift extends Mailer
                 (new \Swift_Attachment($attachment['data'], $attachment['file'], $attachment['contentType']))->setId($attachment['cid']));
         }
 
-        return $this->_swift->send($swiftMessage, $failedRecipients);
+        return $swift->send($swiftMessage, $failedRecipients);
     }
 }
