@@ -24,8 +24,11 @@
                 this.reload();
             },
             watch: {
-                "request.page": function () {
-                    this.reload();
+                request: {
+                    handler: _.debounce(function () {
+                        this.reload();
+                    }, 500),
+                    deep: true
                 }
             }
         });
