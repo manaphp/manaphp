@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP\Mailer;
 
+use ManaPHP\Di;
+
 class Message implements \JsonSerializable
 {
     const PRIORITY_HIGHEST = 1;
@@ -271,12 +273,25 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @param string $body
+     * @param string|array $body
      *
      * @return static
      */
     public function setHtmlBody($body)
     {
+        if (is_array($body)) {
+            $template = $body[0];
+
+            $vars = $body;
+            unset($vars[0]);
+
+            if ($template[0] !== '@') {
+                $template = "@views/Mail/$template";
+            }
+
+            $body = Di::getDefault()->renderer->render($template, $vars);
+        }
+
         $this->_htmlBody = $body;
 
         return $this;
