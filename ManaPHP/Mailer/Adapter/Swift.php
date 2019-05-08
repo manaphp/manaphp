@@ -27,13 +27,22 @@ class Swift extends Mailer
     {
         if (is_string($options)) {
             $this->_url = $options;
-            parent::__construct([]);
         } else {
             if (!isset($options['url'])) {
                 throw new MissingFieldException('url');
             }
             $this->_url = $options['url'];
-            parent::__construct($options);
+            if (isset($options['log'])) {
+                $this->_log = $options['log'];
+            }
+
+            if (isset($options['from'])) {
+                $this->_from = $options['from'];
+            }
+
+            if (isset($options['to'])) {
+                $this->_to = $options['to'];
+            }
         }
 
         if (!$parts = parse_url($this->_url)) {

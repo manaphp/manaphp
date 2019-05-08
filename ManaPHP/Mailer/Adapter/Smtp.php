@@ -54,7 +54,7 @@ class Smtp extends Mailer
     /**
      * @var int
      */
-    protected $_timeout = 10;
+    protected $_timeout = 3;
 
     /**
      * Swift constructor.
@@ -108,6 +108,10 @@ class Smtp extends Mailer
 
             if (isset($query['log'])) {
                 $this->_log = $query['log'];
+            }
+
+            if (isset($query['timeout'])) {
+                $this->_timeout = (int)$query['timeout'];
             }
         }
     }

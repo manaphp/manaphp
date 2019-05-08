@@ -11,6 +11,26 @@ class Memory extends Mailer
     protected $_message;
 
     /**
+     * Mailer constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['log'])) {
+            $this->_log = $options['log'];
+        }
+
+        if (isset($options['from'])) {
+            $this->_from = $options['from'];
+        }
+
+        if (isset($options['to'])) {
+            $this->_to = $options['to'];
+        }
+    }
+
+    /**
      * @return \ManaPHP\Mailer\Message
      */
     public function getLastMessage()

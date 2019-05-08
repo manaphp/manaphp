@@ -24,7 +24,6 @@ class File extends Mailer
     {
         if (is_string($options)) {
             $this->_file = $options;
-            parent::__construct([]);
         } else {
             if (isset($options['file'])) {
                 $this->_file = $options['file'];
@@ -32,7 +31,18 @@ class File extends Mailer
             if (isset($options['pretty'])) {
                 $this->_pretty = (bool)$options['pretty'];
             }
-            parent::__construct($options);
+
+            if (isset($options['log'])) {
+                $this->_log = $options['log'];
+            }
+
+            if (isset($options['from'])) {
+                $this->_from = $options['from'];
+            }
+
+            if (isset($options['to'])) {
+                $this->_to = $options['to'];
+            }
         }
     }
 
