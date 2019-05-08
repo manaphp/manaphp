@@ -17,6 +17,7 @@ class Admin extends Model
     public $password;
     public $login_ip;
     public $login_time;
+    public $session_id;
     public $creator_name;
     public $updator_name;
     public $created_time;

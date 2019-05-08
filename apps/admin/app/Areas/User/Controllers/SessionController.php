@@ -27,7 +27,9 @@ class SessionController extends Controller
         }
 
         if ($this->request->isPost()) {
-            if (!$this->configure->debug) {
+            if ($this->configure->debug) {
+                $this->session->remove('captcha');
+            } else {
                 $this->captcha->verify();
             }
 
@@ -58,8 +60,15 @@ class SessionController extends Controller
             $claims = ['admin_id' => $admin->admin_id, 'admin_name' => $admin->admin_name, 'role' => implode(',', $roles)];
             $this->identity->setClaims($claims);
 
+            $session_id = $this->session->getId();
+            if ($admin->session_id && $session_id !== $admin->session_id) {
+                //同一个账号互踢
+                $this->session->destroy($admin->session_id);
+            }
+
             $admin->login_ip = $this->request->getClientIp();
             $admin->login_time = time();
+            $admin->session_id = $session_id;
             $admin->update();
 
             $adminLoginLog = new AdminLoginLog();
