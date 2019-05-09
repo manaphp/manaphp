@@ -26,7 +26,15 @@ class PasswordController extends Controller
             if (!$admin || $admin->email !== $email) {
                 return $this->response->setJsonError('账号不存在或账号与邮箱不匹配');
             }
-            return $this->response->setJsonData(jwt_encode(['admin_name' => $admin_name, 'scope' => 'admin.user.password.forget'], 300), '重置密码链接已发到您的邮箱');
+
+            $token = jwt_encode(['admin_name' => $admin_name, 'scope' => 'admin.password.forget'], 600);
+
+            $this->mailer->compose()
+                ->setSubject($this->configure->name . '-重置密码邮件')
+                ->setTo($email)
+                ->setHtmlBody(['@app/Areas/User/Views/Mail/ResetPassword', 'email' => $email, 'admin_name' => $admin_name, 'token' => $token])
+                ->send();
+            return $this->response->setJsonOk('重置密码连接已经发送到您的邮箱');
         } else {
             $this->view->setVar('redirect', input('redirect', $this->router->createUrl('/')));
 
@@ -37,7 +45,11 @@ class PasswordController extends Controller
     public function resetAction()
     {
         if ($this->request->isAjax()) {
-            $claims = jwt_decode(input('token'), 'admin.user.password.forget');
+            try {
+                $claims = jwt_decode(input('token'), 'admin.password.forget');
+            } catch (\Exception $exception) {
+                return '重置失败：Token已过期';
+            }
 
             $admin_name = $claims['admin_name'];
 
@@ -47,7 +59,19 @@ class PasswordController extends Controller
 
             return $this->response->setJsonData([], '重置密码成功');
         } else {
-            $claims = jwt_decode(input('token'), 'admin.user.password.forget');
+            $token = input('token');
+
+            try {
+                $claims = jwt_decode($token, 'admin.password.forget');
+            } catch (\Exception $exception) {
+                return $this->view->setVars(['expired' => true]);
+            }
+
+            return $this->view->setVars([
+                'expired' => false,
+                'admin_name' => $claims['admin_name'],
+                'token' => $token,
+            ]);
         }
     }
 
