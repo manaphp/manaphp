@@ -100,6 +100,26 @@ abstract class Identity extends Component implements IdentityInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function isRole($name)
+    {
+        $role = $this->getRole();
+
+        if ($name === $role) {
+            return true;
+        }
+
+        if (strpos($role, ',') === false) {
+            return false;
+        } else {
+            return strpos(",$role,", ",$name,") !== false;
+        }
+    }
+
+    /**
      * @param string $role
      *
      * @return static
