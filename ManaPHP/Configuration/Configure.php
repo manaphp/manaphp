@@ -22,6 +22,11 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
+    public $name = 'ManaPHP';
+
+    /**
+     * @var string
+     */
     public $env = 'dev';
 
     /**
