@@ -1,21 +1,15 @@
 <div class="search-box">
-    <el-row>
-        <el-col :span="2">
-            <el-select filterable v-model="request.admin_id" size="small">
-                <el-option v-for="(name, id) in admins" :key="id" :label="name" :value="id"></el-option>
-            </el-select>
-        </el-col>
-        <el-col :span="2">
-            <el-button @click="show_edit()" type="primary" round size="small" icon="el-icon-edit">编辑</el-button>
-        </el-col>
-    </el-row>
+    <el-button @click="show_edit()" type="primary" size="small" icon="el-icon-edit">编辑</el-button>
+    <el-select filterable v-model="request.admin_id" size="small"  style="width: 150px;">
+        <el-option v-for="(name, id) in admins" :key="id" :label="name" :value="id"></el-option>
+    </el-select>
 </div>
 <el-dialog class="edit-dialog" title="编辑" :visible.sync="editVisible" width="50%">
     <el-form :model="edit" ref="edit">
         <el-checkbox-group v-model="edit.role_ids">
-            <el-checkbox v-for="(name,id) in roles" :label="parseInt(id)"
-                         :key="id" style="width: 20%; text-align: left">
-                @{{name}}
+            <el-checkbox v-for="role in roles" :label="parseInt(role.role_id)"
+                         :key="role.role_id" style="width: 20%; text-align: left">
+                @{{role.role_name}}
             </el-checkbox>
         </el-checkbox-group>
     </el-form>

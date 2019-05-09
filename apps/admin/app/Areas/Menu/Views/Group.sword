@@ -1,9 +1,5 @@
 <div class="search-box">
-    <el-row>
-        <el-col :span="3">
-            <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">创建菜单组</el-button>
-        </el-col>
-    </el-row>
+    <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">创建菜单组</el-button>
 </div>
 <el-dialog title="创建新组" :visible.sync="createVisible">
     <el-form :model="create" ref="create">

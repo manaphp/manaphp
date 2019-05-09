@@ -1,12 +1,6 @@
 <div class="search-box">
-    <el-row>
-        <el-col :span="2">
-            <el-button @click="createVisible=true" icon="el-icon-plus" size="small" type="primary">新增角色</el-button>
-        </el-col>
-        <el-col :span="2">
-            <el-input v-model.trim="request.keyword" placeholder="角色" size="small"></el-input>
-        </el-col>
-    </el-row>
+    <el-button @click="createVisible=true" icon="el-icon-plus" size="small" type="primary" style="width: 100px">新增角色</el-button>
+    <el-input v-model.trim="request.keyword" placeholder="角色" size="small" style="width: 150px"></el-input>
 </div>
 <el-dialog title="新增角色" :visible.sync="createVisible">
     <el-form :model="create" ref="create">
