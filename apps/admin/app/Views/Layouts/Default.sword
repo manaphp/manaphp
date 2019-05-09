@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ManaPHP Admin</title>
+    <title>{{$this->configure->name}}</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="/static/css/manaphp.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.8.2/lib/theme-chalk/index.css">

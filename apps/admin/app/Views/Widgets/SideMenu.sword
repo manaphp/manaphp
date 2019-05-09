@@ -1,4 +1,4 @@
-<div class="product-name"><el-link href="/">ManaPHP 管理系统</el-link></div>
+<div class="product-name"><el-link href="/">{{$this->configure->name}}</el-link></div>
 <el-menu
         default-active="<?=action('')?>"
         class="el-menu-vertical-demo">
