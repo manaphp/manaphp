@@ -10,22 +10,32 @@ use ManaPHP\Component;
 class AclBuilder extends Component implements AclBuilderInterface
 {
     /**
+     * @var array
+     */
+    protected $_controllers;
+
+    /**
      * @return array
      */
     public function getControllers()
     {
-        $controllers = [];
+        if ($this->_controllers === null) {
+            $controllers = [];
 
-        foreach (glob($this->alias->resolve('@app/Areas/*/Controllers/*Controller.php')) as $item) {
-            $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
-            $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
+            foreach ($this->filesystem->glob('@app/Controllers/*Controller.php') as $item) {
+                $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
+            }
+
+            foreach ($this->filesystem->glob('@app/Areas/*/Controllers/*Controller.php') as $item) {
+                $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
+            }
+
+            $this->_controllers = $controllers;
         }
 
-        foreach (glob($this->alias->resolve('@app/Controllers/*Controller.php')) as $item) {
-            $controllers[] = $this->alias->resolveNS('@ns.app\\Controllers\\' . basename($item, '.php'));
-        }
-
-        return $controllers;
+        return $this->_controllers;
     }
 
     /**
@@ -37,9 +47,11 @@ class AclBuilder extends Component implements AclBuilderInterface
     {
         $actions = [];
         foreach (get_class_methods($controller) as $method) {
-            if (preg_match('#^(.*)Action$#', $method, $match)) {
-                $actions[] = $match[1];
+            if ($method[0] === '_' || !preg_match('#^(.*)Action$#', $method, $match)) {
+                continue;
             }
+
+            $actions[] = $match[1];
         }
 
         return $actions;

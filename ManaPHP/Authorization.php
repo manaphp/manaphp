@@ -18,11 +18,12 @@ class AuthorizationContext
  * Class Authorization
  * @package ManaPHP
  *
- * @property \ManaPHP\DispatcherInterface    $dispatcher
- * @property \ManaPHP\RouterInterface        $router
- * @property \ManaPHP\Http\RequestInterface  $request
- * @property \ManaPHP\Http\ResponseInterface $response
- * @property \ManaPHP\AuthorizationContext   $_context
+ * @property \ManaPHP\DispatcherInterface               $dispatcher
+ * @property \ManaPHP\RouterInterface                   $router
+ * @property \ManaPHP\Http\RequestInterface             $request
+ * @property \ManaPHP\Http\ResponseInterface            $response
+ * @property \ManaPHP\Authorization\AclBuilderInterface $aclBuilder
+ * @property \ManaPHP\AuthorizationContext              $_context
  */
 class Authorization extends Component implements AuthorizationInterface
 {
@@ -170,34 +171,23 @@ class Authorization extends Component implements AuthorizationInterface
     {
         $paths = [];
 
-        $controllers = [];
-        foreach (glob($this->alias->get('@app') . '/Areas/*/Controllers/*Controller.php') as $item) {
-            $controller = str_replace($this->alias->get('@app'), $this->alias->get('@ns.app'), $item);
-            $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
-        }
-
-        foreach (glob($this->alias->get('@app') . '/Controllers/*Controller.php') as $item) {
-            $controllers[] = $this->alias->get('@ns.app') . '\\Controllers\\' . basename($item, '.php');
-        }
+        $controllers = $this->aclBuilder->getControllers();
 
         foreach ($controllers as $controller) {
             /** @var  \ManaPHP\Rest\Controller $controllerInstance */
             $controllerInstance = new $controller();
             $acl = $controllerInstance->getAcl();
 
-            foreach (get_class_methods($controller) as $method) {
-                if (preg_match('#^(.*)Action$#', $method, $match)) {
-                    $action = $match[1];
-                    $path = $this->generatePath($controller, $action);
-                    if ($this->isAclAllowed($acl, $role, $action)) {
+            foreach ($this->aclBuilder->getActions($controller) as $action) {
+                $path = $this->generatePath($controller, $action);
+                if ($this->isAclAllowed($acl, $role, $action)) {
+                    $paths[] = $path;
+                } elseif (in_array($path, $explicit_permissions, true)) {
+                    $paths[] = $path;
+                } elseif (isset($acl[$action]) && $acl[$action][0] === '@') {
+                    $real_path = $this->generatePath($controller, substr($acl[$action], 1));
+                    if (in_array($real_path, $explicit_permissions, true)) {
                         $paths[] = $path;
-                    } elseif (in_array($path, $explicit_permissions, true)) {
-                        $paths[] = $path;
-                    } elseif (isset($acl[$action]) && $acl[$action][0] === '@') {
-                        $real_path = $this->generatePath($controller, substr($acl[$action], 1));
-                        if (in_array($real_path, $explicit_permissions, true)) {
-                            $paths[] = $path;
-                        }
                     }
                 }
             }
