@@ -18,9 +18,9 @@ class Crypt extends Component implements CryptInterface
     protected $_master_key;
 
     /**
-     * @var resource
+     * @var string
      */
-    protected $_mcrypt;
+    protected $_method = 'AES-128-CBC';
 
     /**
      * Crypt constructor.
@@ -38,7 +38,9 @@ class Crypt extends Component implements CryptInterface
             $this->_master_key = $options['master_key'];
         }
 
-        $this->_mcrypt = @mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+        if (isset($options['method'])) {
+            $this->_method = $options['method'];
+        }
     }
 
     /**
@@ -51,15 +53,14 @@ class Crypt extends Component implements CryptInterface
      */
     public function encrypt($text, $key)
     {
-        $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
-        $encryptKey = md5($key, true);
-
+        $iv_length = openssl_cipher_iv_length($this->_method);
         /** @noinspection CryptographicallySecureRandomnessInspection */
-        $iv = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
+        if (!$iv = openssl_random_pseudo_bytes($iv_length)) {
+            throw new CryptException('generate iv failed');
+        }
 
-        mcrypt_generic_init($this->_mcrypt, $encryptKey, $iv);
-
-        return $iv . mcrypt_generic($this->_mcrypt, pack('N', strlen($text) + 16) . $text . md5($text, true));
+        $data = pack('N', strlen($text)) . $text . md5($text, true);
+        return $iv . openssl_encrypt($data, $this->_method, md5($key, true), OPENSSL_RAW_DATA, $iv);
     }
 
     /**
@@ -73,25 +74,21 @@ class Crypt extends Component implements CryptInterface
      */
     public function decrypt($text, $key)
     {
-        $ivSize = mcrypt_enc_get_block_size($this->_mcrypt);
+        $iv_length = openssl_cipher_iv_length($this->_method);
 
-        if (strlen($text) < $ivSize * 3) {
+        if (strlen($text) < $iv_length * 2) {
             throw new CryptException('encrypted data is too short.');
         }
 
-        $encryptKey = md5($key, true);
+        $decrypted = openssl_decrypt(substr($text, $iv_length), $this->_method, md5($key, true), OPENSSL_RAW_DATA, substr($text, 0, $iv_length));
 
-        mcrypt_generic_init($this->_mcrypt, $encryptKey, substr($text, 0, $ivSize));
-
-        $decrypted = mdecrypt_generic($this->_mcrypt, substr($text, $ivSize));
         $length = unpack('N', $decrypted)[1];
 
-        if ($length < 16 || 4 + $length > strlen($decrypted)) {
-            throw new CryptException('decrypted data length is too short.');
+        if (4 + $length + 16 !== strlen($decrypted)) {
+            throw new CryptException('decrypted data length is wrong.');
         }
 
-        $decrypted = substr($decrypted, 4, $length);
-        $plainText = substr($decrypted, 0, -16);
+        $plainText = substr($decrypted, 4, -16);
 
         if (md5($plainText, true) !== substr($decrypted, -16)) {
             throw new CryptException('decrypted md5 is not valid.');
