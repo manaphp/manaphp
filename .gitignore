@@ -13,3 +13,8 @@
 /manaphp_lite.tmp
 /tests/Image/Engine
 /ManaPHP/.idea
+/apps/user/app/Controllers/TestController.php
+/apps/admin/app/Controllers/TestController.php
+/apps/admin/app/Cli/Controllers/TestController.php
+/apps/api/app/Controllers/TimeController.php
+/apps/cli/app/Controllers/TestController.php
