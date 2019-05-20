@@ -15,7 +15,7 @@ class Crypt extends Component implements CryptInterface
     /**
      * @var string
      */
-    protected $_masterKey;
+    protected $_master_key;
 
     /**
      * @var resource
@@ -31,11 +31,11 @@ class Crypt extends Component implements CryptInterface
     public function __construct($options = [])
     {
         if (is_string($options)) {
-            $options = ['masterKey' => $options];
+            $options = ['master_key' => $options];
         }
 
-        if (isset($options['masterKey'])) {
-            $this->_masterKey = $options['masterKey'];
+        if (isset($options['master_key'])) {
+            $this->_master_key = $options['master_key'];
         }
 
         $this->_mcrypt = @mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
@@ -107,7 +107,7 @@ class Crypt extends Component implements CryptInterface
      */
     public function setMasterKey($key)
     {
-        $this->_masterKey = $key;
+        $this->_master_key = $key;
 
         return $this;
     }
@@ -120,10 +120,10 @@ class Crypt extends Component implements CryptInterface
      */
     public function getDerivedKey($type)
     {
-        if ($this->_masterKey === null) {
+        if ($this->_master_key === null) {
             throw new CryptException(['getDerivedKey for `:type` type Failed: master key is not set', 'type' => $type]);
         }
 
-        return md5($this->_masterKey . ':' . $type);
+        return md5($this->_master_key . ':' . $type);
     }
 }
