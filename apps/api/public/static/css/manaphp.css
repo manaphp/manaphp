@@ -1,12 +1,19 @@
 .debugger {
     position: fixed;
-    right: 80px;
-    top: 80px;
+    top: 1px;
+    left: 1px;
     z-index: 1000000;
-    min-width: 80px;
+    width: 80px;
+    border-radius: 5px;
+    background-color: lightskyblue;
+    margin: 0;
+    padding: 0;
     text-align: center;
-    border: 1px solid blue;
-    border-radius: 3px;
+    box-sizing: border-box;
+    line-height: 21px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    opacity: 0.8;
 }
 
 .debugger a {
