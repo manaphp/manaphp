@@ -27,14 +27,9 @@ class Crypt extends Component implements CryptInterface
      *
      * @param string|array $options
      *
-     * @throws \ManaPHP\Security\Crypt\Exception
      */
     public function __construct($options = [])
     {
-        if (!extension_loaded('mcrypt')) {
-            throw new CryptException('`mcrypt` extension is required');
-        }
-
         if (is_string($options)) {
             $options = ['masterKey' => $options];
         }
