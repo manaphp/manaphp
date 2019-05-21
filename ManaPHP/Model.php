@@ -669,7 +669,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
             $request = Di::getDefault()->getShared('request');
         }
 
-        if (!$request->isPost() && !$request->isPut() && !$request->isPatch()) {
+        if ($request->isGet()) {
             return null;
         }
 
