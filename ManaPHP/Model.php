@@ -443,6 +443,18 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
+     * @param int|string|array $filters
+     * @param string|float|int $field
+     * @param mixed            $default
+     *
+     * @return float|int|string
+     */
+    public static function valueOrDefault($filters, $field, $default)
+    {
+        return ($value = static::value($filters, $field)) === null ? $default : $value;
+    }
+
+    /**
      * @param string $field =array_keys(static::sample())[$i]
      * @param array  $filters =static::sample()
      *

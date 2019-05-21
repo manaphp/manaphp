@@ -171,6 +171,15 @@ interface ModelInterface
     public static function valueOrFail($filters, $field, $ttl = null);
 
     /**
+     * @param int|string|array $filters
+     * @param string|float|int $field
+     * @param mixed            $default
+     *
+     * @return float|int|string
+     */
+    public static function valueOrDefault($filters, $field, $default);
+
+    /**
      * @param string $field
      * @param array  $filters
      *
