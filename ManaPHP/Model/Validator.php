@@ -475,7 +475,8 @@ class Validator extends Component implements ValidatorInterface
         $context = $this->_context;
 
         $modelName = $context->model;
-        return ($value && $modelName::exists([$context->field => $value])) ? null : $value;
+        //we can NOT skip this validate, even though value is empty,
+        return $modelName::exists([$context->field => $value]) ? null : $value;
     }
 
     /**
