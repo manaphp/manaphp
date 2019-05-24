@@ -137,54 +137,50 @@ class Validator extends Component implements ValidatorInterface
             }
             $context->field = $field;
 
+            $value = $model->$field;
             foreach ((array)$rules[$field] as $k => $v) {
                 if (is_int($k)) {
                     $name = $v;
+                    if ($name === 'optional' && ($value === null || $value === '')) {
+                        break;
+                    }
+
+                    $method = "_validate_$name";
                     $parameters = null;
+                    if (!method_exists($this, $method)) {
+                        if ($name === '*') {
+                            $name = 'required';
+                        } elseif (preg_match('#^(\d+)-(\d+)$#', $name)) {
+                            $parameters = $name;
+                            $name = in_array($name, $model->getIntFields(), true) ? 'range' : 'length';
+                        } else {
+                            throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $name]);
+                        }
+                        $method = "_validate_$name";
+                    }
                 } else {
                     $name = $k;
                     $parameters = $v;
+                    $method = "_validate_$name";
+                    if (!method_exists($this, $method)) {
+                        throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $name]);
+                    }
                 }
 
-                $value = $this->_validate($model->$field, $name, $parameters);
-                if ($value === null) {
+                if (($value = $parameters === null ? $this->$method($value) : $this->$method($value, $parameters)) === null) {
                     $templates = $this->_templates ?: $this->_loadTemplates();
                     $template = isset($templates[$name]) ? $templates[$name] : $templates['default'];
                     $this->appendMessage(new Message($template, $context->model, $context->field, $parameters));
-                } else {
-                    $model->$field = $value;
+                    break;
                 }
             }
+
+            $model->$field = $value;
         }
 
         if ($context->messages) {
             throw new ValidateFailedException($context->messages);
         }
-    }
-
-    /**
-     * @param string|int|object $value
-     * @param string            $name
-     * @param string|array      $parameters
-     *
-     * @return mixed
-     */
-    protected function _validate($value, $name, $parameters)
-    {
-        if (is_object($value)) {
-            return $value;
-        }
-
-        $method = "_validate_$name";
-        if (method_exists($this, $method)) {
-            return $parameters === null ? $this->$method($value) : $this->$method($value, $parameters);
-        }
-
-        if (function_exists($name)) {
-            return $parameters === null ? $name($value) : $name($value, $parameters);
-        }
-
-        throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $name]);
     }
 
     /**
@@ -207,15 +203,10 @@ class Validator extends Component implements ValidatorInterface
         if (is_bool($value)) {
             return (int)$value;
         }
-
-        $trueValues = ['1', 'true', 'on'];
-        $falseValues = ['0', 'false', 'off'];
-
-        $value = strtolower($value);
-
-        if (in_array($value, $trueValues, true)) {
+	
+        if (strpos(',1,true,on,', ",$value,") !== false) {
             return 1;
-        } elseif (in_array($value, $falseValues, true)) {
+        } elseif (strpos(',0,false,off,', ",$value,") !== false) {
             return 0;
         } else {
             return null;
@@ -358,7 +349,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_regex($value, $parameter)
     {
-        return ($value === '' || preg_match($parameter, $value)) ? $value : null;
+        return preg_match($parameter, $value) ? $value : null;
     }
 
     /**
@@ -368,7 +359,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_alpha($value)
     {
-        return preg_match('#^[a-zA-Z]*$#', $value) ? $value : null;
+        return preg_match('#^[a-zA-Z]+$#', $value) ? $value : null;
     }
 
     /**
@@ -378,7 +369,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_digit($value)
     {
-        return preg_match('#^\d*$#', $value) ? $value : null;
+        return preg_match('#^\d+$#', $value) ? $value : null;
     }
 
     /**
@@ -388,7 +379,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_xdigit($value)
     {
-        return preg_match('#^[0-9a-fA-F]*$#', $value) ? $value : null;
+        return preg_match('#^[0-9a-fA-F]+$#', $value) ? $value : null;
     }
 
     /**
@@ -398,7 +389,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_alnum($value)
     {
-        return preg_match('#^[a-zA-Z0-9]*$#', $value) ? $value : null;
+        return preg_match('#^[a-zA-Z0-9]+$#', $value) ? $value : null;
     }
 
     /**
@@ -408,23 +399,23 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_email($value)
     {
-        return ($value === '' || filter_var($value, FILTER_VALIDATE_EMAIL) !== false) ? strtolower($value) : null;
+        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false ? strtolower($value) : null;
     }
 
     /**
-     * @param string $value
-     * @param string $parameter
+     * @param string       $value
+     * @param string|array $parameter
      *
      * @return null|string
      */
     protected function _validate_ext($value, $parameter)
     {
-        if ($value === '') {
-            return '';
+        $ext = strtolower(pathinfo($value, PATHINFO_EXTENSION));
+        if (is_array($parameter)) {
+            return in_array($ext, $parameter, true) ? $value : null;
+        } else {
+            return in_array($ext, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), true) ? $value : null;
         }
-
-        $ext = pathinfo($value, PATHINFO_EXTENSION);
-        return in_array(strtolower($ext), preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), true) ? $value : null;
     }
 
     /**
@@ -434,14 +425,6 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_url($value)
     {
-        if ($value === '') {
-            return '';
-        }
-
-        if (strpos($value, '://') === false) {
-            $value = 'http://' . $value;
-        }
-
         return filter_var($value, FILTER_VALIDATE_URL) !== false ? $value : null;
     }
 
@@ -452,7 +435,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_ip($value)
     {
-        return ($value === '' || filter_var($value, FILTER_VALIDATE_IP) !== false) ? $value : null;
+        return filter_var($value, FILTER_VALIDATE_IP) !== false ? $value : null;
     }
 
     /**
@@ -475,7 +458,7 @@ class Validator extends Component implements ValidatorInterface
         $context = $this->_context;
 
         $modelName = $context->model;
-        //we can NOT skip this validate, even though value is empty,
+
         return $modelName::exists([$context->field => $value]) ? null : $value;
     }
 
