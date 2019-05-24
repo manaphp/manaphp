@@ -1351,7 +1351,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         }
 
-        $this->_fields = substr($fields, 0, -2);
+        if ($this->_group) {
+            $this->_fields = $fields . $this->_group;
+        } else {
+            $this->_fields = substr($fields, 0, -2);
+        }
 
         return $this->execute();
     }
