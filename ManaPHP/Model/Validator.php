@@ -158,7 +158,7 @@ class Validator extends Component implements ValidatorInterface
         }
 
         if ($context->messages) {
-            throw new ValidateFailedException('validate failed: ' . json_encode($context->messages));
+            throw new ValidateFailedException($context->messages);
         }
     }
 
