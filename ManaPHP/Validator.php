@@ -38,9 +38,11 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @return array
+     * @param string $validate
+     *
+     * @return string|callable
      */
-    protected function _getTemplates()
+    protected function _getTemplate($validate)
     {
         $locate = strtolower($this->translator->getLocale());
         if (!isset($this->_templates[$locate])) {
@@ -48,7 +50,8 @@ class Validator extends Component implements ValidatorInterface
             $this->_templates[$locate] = require $this->alias->resolve($this->_dir . "/$locate.php");
         }
 
-        return $this->_templates[$locate];
+        $templates = $this->_templates[$locate];
+        return isset($templates[$validate]) ? $templates[$validate] : $templates['default'];
     }
 
     /**
@@ -77,8 +80,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _createValidateFailedException($validate, $field, $parameter = null)
     {
-        $templates = $this->_templates ?: $this->_getTemplates();
-        $template = isset($templates[$validate]) ? $templates[$validate] : $templates['default'];
+        $template = $this->_getTemplate($validate);
         $tr = [':field' => $field];
 
         if (is_string($template)) {
