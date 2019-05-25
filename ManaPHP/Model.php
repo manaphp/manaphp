@@ -567,8 +567,8 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Assigns values to a model from an array
      *
-     * @param array $data
-     * @param array $whiteList =static::sample()
+     * @param array|\ArrayAccess $data
+     * @param array              $whiteList =static::sample()
      *
      * @return static
      */
