@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
@@ -19,7 +18,7 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @var string
      */
-    protected $_dir = '@manaphp/Validator/Messages';
+    protected $_dir = '@manaphp/Validator/Templates';
 
     /**
      * @var array
@@ -41,15 +40,15 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @return array
      */
-    protected function _loadTemplates()
+    protected function _getTemplates()
     {
-        $languages = explode(',', $this->configure->language);
-        $file = "{$this->_dir}/$languages[0].php";
-        if (!$this->filesystem->fileExists($file)) {
-            throw new FileNotFoundException(['`:file` validator message template file is not exists', 'file' => $file]);
+        $locate = strtolower($this->translator->getLocale());
+        if (!isset($this->_templates[$locate])) {
+            /** @noinspection PhpIncludeInspection */
+            $this->_templates[$locate] = require $this->alias->resolve($this->_dir . "/$locate.php");
         }
-        /** @noinspection PhpIncludeInspection */
-        return $this->_templates = require $this->alias->resolve($file);
+
+        return $this->_templates[$locate];
     }
 
     /**
@@ -78,7 +77,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _createValidateFailedException($validate, $field, $parameter = null)
     {
-        $templates = $this->_templates ?: $this->_loadTemplates();
+        $templates = $this->_templates ?: $this->_getTemplates();
         $template = isset($templates[$validate]) ? $templates[$validate] : $templates['default'];
         $tr = [':field' => $field];
 
