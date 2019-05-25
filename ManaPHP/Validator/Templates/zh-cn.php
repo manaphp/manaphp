@@ -17,4 +17,5 @@ return [
     'email' => ':field 邮件格式错误',
     'json' => ':field 不是有效的JSON串',
     'ip' => ':field IP地址格式无效',
+    'unique' => ' :field 不能重复',
 ];

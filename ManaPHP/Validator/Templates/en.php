@@ -25,4 +25,5 @@ return [
     'email' => 'The :field must be a valid email address.',
     'json' => 'The :field must be a valid JSON string.',
     'ip' => 'The :field must be a valid IP address.',
+    'unique' => 'The :field must be unique',
 ];
