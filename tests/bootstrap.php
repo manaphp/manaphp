@@ -9,5 +9,6 @@
 require dirname(__DIR__) . '/ManaPHP/Loader.php';
 require dirname(__DIR__) . '/ManaPHP/helpers.php';
 
+define('MANAPHP_COROUTINE',false);
 $loader = new \ManaPHP\Loader();
 $loader->registerNamespaces(['Tests' => __DIR__]);

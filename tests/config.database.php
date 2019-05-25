@@ -1,6 +1,6 @@
 <?php
 return [
-    'mysql' => 'mysql://root@localhost:/manaphp_unit_test',
+    'mysql' => 'mysql://root:123456@localhost:/manaphp_unit_test',
     'sqlite' => [
         'file' => 'd:/wamp/manaphp_unit_test.sqlite'
     ],

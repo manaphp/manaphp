@@ -55,7 +55,7 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @param string               $field
      * @param \ManaPHP\Model|mixed $value
-     * @param array                $rules
+     * @param array|string         $rules
      *
      * @return mixed
      * @throws \ManaPHP\Validator\ValidateFailedException
@@ -126,7 +126,7 @@ class Validator extends Component implements ValidatorInterface
             }
 
             if (method_exists($this, $method = '_validate_model_' . $validate)) {
-                $value = $parameter === null ? $this->$method($model, $value) : $this->$method($model, $value, $parameter);
+                $value = $parameter === null ? $this->$method($model, $field) : $this->$method($model, $field, $parameter);
             } elseif (method_exists($this, $method = '_validate_' . $validate)) {
                 $value = $parameter === null ? $this->$method($value) : $this->$method($value, $parameter);
             } else {
@@ -159,6 +159,7 @@ class Validator extends Component implements ValidatorInterface
             }
         }
 
+        $rules = (array)$rules;
         foreach ($rules as $k => $v) {
             if (is_int($k)) {
                 if (strpos($v, '-') !== false) {
@@ -226,9 +227,9 @@ class Validator extends Component implements ValidatorInterface
             return (int)$value;
         }
 
-        if (strpos(',1,true,on,', ",$value,") !== false) {
+        if (strpos(',1,true,on,yes,', ",$value,") !== false) {
             return 1;
-        } elseif (strpos(',0,false,off,', ",$value,") !== false) {
+        } elseif (strpos(',0,false,off,no,', ",$value,") !== false) {
             return 0;
         } else {
             return null;
@@ -267,6 +268,16 @@ class Validator extends Component implements ValidatorInterface
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return string
+     */
+    protected function _validate_string($value)
+    {
+        return (string)$value;
     }
 
     /**
@@ -337,6 +348,13 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_range($value, $parameter)
     {
+        if (!is_int($value) && !is_float($value)) {
+            $value = strpos($parameter, '.') === false ? $this->_validate_int($value) : $this->_validate_float($value);
+            if ($value === null) {
+                return null;
+            }
+        }
+	
         if (preg_match('#^(-?[\.\d]+)-(-?[\d\.]+)$#', $parameter, $match)) {
             return $value >= $match[1] && $value <= $match[2] ? $value : null;
         } else {
@@ -451,6 +469,40 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string      $value
+     * @param null|string $parameter
+     *
+     * @return string|int
+     */
+    protected function _validate_date($value, $parameter = null)
+    {
+        $ts = is_numeric($value) ? (int)$value : strtotime($value);
+        if ($ts === false) {
+            return null;
+        }
+
+        return $parameter ? date($parameter, $ts) : $value;
+    }
+
+    /**
+     * @param \ManaPHP\Model $model
+     * @param string         $field
+     * @param null|string    $parameter
+     *
+     * @return string|int
+     */
+    protected function _validate_model_date($model, $field, $parameter)
+    {
+        $value = $model->$field;
+
+        if (($ts = is_numeric($value) ? (int)$value : strtotime($value)) === false) {
+            return null;
+        }
+
+        return date($parameter ?: $model->getDateFormat($field), $ts);
+    }
+
+    /**
      * @param string $value
      *
      * @return string
@@ -558,12 +610,7 @@ class Validator extends Component implements ValidatorInterface
             throw new InvalidValueException(['validate `:1` field failed: related `:2` model class is not exists.', $field, $className]);
         }
 
-        /**
-         * @var \ManaPHP\Model $model
-         * @var \ManaPHP\Model $className
-         */
-        $model = new $className;
-        return $className::exists([$model->getPrimaryKey() => $value]) ? $value : null;
+        return $className::exists($value) ? $value : null;
     }
 
     /**
@@ -595,6 +642,8 @@ class Validator extends Component implements ValidatorInterface
         if (strpos($value, '__') !== false) {
             return null;
         }
+
+        return $value;
     }
 
     /**
