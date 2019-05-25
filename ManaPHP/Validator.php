@@ -53,9 +53,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string               $field
-     * @param \ManaPHP\Model|mixed $value
-     * @param array|string         $rules
+     * @param string                $field
+     * @param \ManaPHP\Model|mixed  $value
+     * @param array|string|\Closure $rules
      *
      * @return mixed
      * @throws \ManaPHP\Validator\ValidateFailedException
@@ -93,15 +93,23 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string         $field
-     * @param \ManaPHP\Model $model
-     * @param array          $rules
+     * @param string                $field
+     * @param \ManaPHP\Model        $model
+     * @param array|string|\Closure $rules
      *
      * @return mixed
      */
     public function validateModel($field, $model, $rules)
     {
         $value = $model->$field;
+
+        if ($rules instanceof \Closure) {
+            if (($value = $rules($model, $field)) === null) {
+                throw $this->_createValidateFailedException('default', $field);
+            } else {
+                return $value;
+            }
+        }
 
         if ($value === '' || $value === null) {
             if (isset($rules['default'])) {
@@ -142,15 +150,23 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string               $field
-     * @param \ManaPHP\Model|mixed $value
-     * @param array                $rules
+     * @param string                $field
+     * @param mixed                 $value
+     * @param array|string|\Closure $rules
      *
      * @return mixed
      * @throws \ManaPHP\Validator\ValidateFailedException
      */
     public function validateValue($field, $value, $rules)
     {
+        if ($rules instanceof \Closure) {
+            if (($value = $rules($value)) === null) {
+                throw $this->_createValidateFailedException('default', $field);
+            } else {
+                return $value;
+            }
+        }
+
         if ($value === '' || $value === null) {
             if (isset($rules['default'])) {
                 return $rules['default'];
