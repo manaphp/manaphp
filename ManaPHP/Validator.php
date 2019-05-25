@@ -349,12 +349,13 @@ class Validator extends Component implements ValidatorInterface
     protected function _validate_range($value, $parameter)
     {
         if (!is_int($value) && !is_float($value)) {
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $value = strpos($parameter, '.') === false ? $this->_validate_int($value) : $this->_validate_float($value);
             if ($value === null) {
                 return null;
             }
         }
-	
+
         if (preg_match('#^(-?[\.\d]+)-(-?[\d\.]+)$#', $parameter, $match)) {
             return $value >= $match[1] && $value <= $match[2] ? $value : null;
         } else {
@@ -485,6 +486,17 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string $value
+     *
+     * @return string|int
+     */
+    protected function _validate_timestamp($value)
+    {
+        $ts = is_numeric($value) ? (int)$value : strtotime($value);
+        return $ts === false ? null : $ts;
+    }
+
+    /**
      * @param \ManaPHP\Model $model
      * @param string         $field
      * @param null|string    $parameter
@@ -610,6 +622,7 @@ class Validator extends Component implements ValidatorInterface
             throw new InvalidValueException(['validate `:1` field failed: related `:2` model class is not exists.', $field, $className]);
         }
 
+        /** @var \ManaPHP\ModelInterface $className */
         return $className::exists($value) ? $value : null;
     }
 
@@ -644,6 +657,17 @@ class Validator extends Component implements ValidatorInterface
         }
 
         return $value;
+    }
+
+    public function _validate_model_account($model, $field)
+    {
+        $value = $model->$field;
+
+        if (($value = $this->_validate_account($value)) === null) {
+            return null;
+        }
+
+        return $this->_validate_model_unique($model, $field);
     }
 
     /**
