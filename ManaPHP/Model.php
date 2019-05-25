@@ -14,14 +14,14 @@ use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
+use ManaPHP\Validator\ValidateFailedException;
 
 /**
  * Class ManaPHP\Model
  *
  * @package ManaPHP
  *
- * @property-read \ManaPHP\Model\ValidatorInterface $modelsValidator
- * @property-read \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 abstract class Model extends Component implements ModelInterface, \Serializable, \ArrayAccess
 {
@@ -599,7 +599,27 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public function validate($fields = null)
     {
-        $this->_di->modelsValidator->validate($this, $fields ?: $this->getChangedFields());
+        if (!$rules = $this->rules()) {
+            return;
+        }
+
+        $errors = [];
+
+        foreach ($fields ?: $this->getChangedFields() as $field) {
+            if (!isset($rules[$field])) {
+                continue;
+            }
+
+            try {
+                $this->$field = $this->_di->validator->validateModel($field, $this, (array)$rules[$field]);
+            } catch (ValidateFailedException $exception) {
+                $errors += $exception->getErrors();
+            }
+        }
+
+        if ($errors) {
+            throw new ValidateFailedException($errors);
+        }
     }
 
     /**

@@ -18,7 +18,6 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\RouterInterface                 $router
  * @property-read \ManaPHP\UrlInterface                    $url
  * @property-read \ManaPHP\Http\RequestInterface           $request
- * @property-read \ManaPHP\Http\ValidatorInterface         $validator
  * @property-read \ManaPHP\Http\ResponseInterface          $response
  * @property-read \ManaPHP\Http\CookiesInterface           $cookies
  * @property-read \ManaPHP\View\FlashInterface             $flash
@@ -28,7 +27,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\DbInterface                     $db
  * @property-read \ManaPHP\Security\CryptInterface         $crypt
  * @property-read \ManaPHP\Db\Model\MetadataInterface      $modelsMetadata
- * @property-read \ManaPHP\Model\ValidatorInterface        $modelsValidator
+ * @property-read \ManaPHP\ValidatorInterface              $validator
  * @property-read \ManaPHP\Di|\ManaPHP\DiInterface         $di
  * @property-read \ManaPHP\ViewInterface                   $view
  * @property-read \ManaPHP\Loader                          $loader

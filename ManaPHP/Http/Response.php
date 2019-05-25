@@ -6,7 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Http\Validator\Exception as ValidatorException;
 
 class ResponseContext
 {
@@ -507,8 +506,6 @@ class Response extends Component implements ResponseInterface
             $content = ['code' => $content, 'message' => ''];
         } elseif ($content === null) {
             $content = ['code' => 0, 'message' => '', 'data' => null];
-        } elseif ($content instanceof ValidatorException) {
-            $content = ['code' => -2, 'message' => $content->getMessage()];
         } elseif ($content instanceof \Exception) {
             if ($content instanceof \ManaPHP\Exception) {
                 $this->setStatus($content->getStatusCode());
