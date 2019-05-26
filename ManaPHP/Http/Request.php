@@ -70,6 +70,30 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param string $field
+     * @param mixed  $value
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    protected function _normalizeValue($field, $value, $default)
+    {
+        $type = gettype($default);
+
+        if ($type === 'string') {
+            return (string)$value;
+        } elseif ($type === 'integer') {
+            return $this->validator->validateValue($field, $value, 'int');
+        } elseif ($type === 'double') {
+            return $this->validator->validateValue($field, $value, 'float');
+        } elseif ($type === 'boolean') {
+            return (bool)$this->validator->validateValue($field, $value, 'bool');
+        } else {
+            return $value;
+        }
+    }
+
+    /**
      * Gets a variable from the $_REQUEST
      *
      * @param string $name
@@ -92,22 +116,7 @@ class Request extends Component implements RequestInterface
                 throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
             }
 
-            if ($default !== null) {
-                $type = gettype($default);
-                if ($type === 'string') {
-                    return (string)$value;
-                } elseif ($type === 'integer') {
-                    return $this->validator->validateValue($name, $value, 'int');
-                } elseif ($type === 'double') {
-                    return $this->validator->validateValue($name, $value, 'float');
-                } elseif ($type === 'boolean') {
-                    return (bool)$this->validator->validateValue($name, $value, 'bool');
-                } else {
-                    return $value;
-                }
-            } else {
-                return $value;
-            }
+            return $default === null ? $value : $this->_normalizeValue($name, $value, $default);
         } else {
             if ($default === null) {
                 throw new MissingRequiredFieldsException($name);
@@ -191,19 +200,7 @@ class Request extends Component implements RequestInterface
         if ($name === null) {
             return array_merge($this->get(), $params);
         } elseif (isset($params[$name])) {
-            $value = $params[$name];
-            $type = gettype($default);
-            if ($type === 'string') {
-                return (string)$value;
-            } elseif ($type === 'integer') {
-                return $this->validator->validateValue($name, $value, 'int');
-            } elseif ($type === 'double') {
-                return $this->validator->validateValue($name, $value, 'float');
-            } elseif ($type === 'boolean') {
-                return (bool)$this->validator->validateValue($name, $value, 'bool');
-            } else {
-                return $value;
-            }
+            return $default === null ? $params[$name] : $this->_normalizeValue($name, $params[$name], $default);
         } else {
             return $this->get($name, $default);
         }
