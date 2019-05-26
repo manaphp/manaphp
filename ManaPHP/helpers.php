@@ -269,18 +269,23 @@ if (!function_exists('jwt_get_claim')) {
 if (!function_exists('input')) {
     /**
      * @param string $name
-     * @param mixed  $default
+     * @param mixed  $defaultOrRules
      *
      * @return mixed
      */
-    function input($name = null, $default = null)
+    function input($name = null, $defaultOrRules = null)
     {
         static $request;
         if (!$request) {
             $request = di('request');
         }
 
-        return $request->getInput($name, $default);
+        if ($defaultOrRules && is_array($defaultOrRules)) {
+            $value = $request->getInput($name, isset($defaultOrRules['default']) ? $defaultOrRules['default'] : null);
+            return $request->validator->validateValue($name, $value, $defaultOrRules);
+        } else {
+            return $request->getInput($name, $defaultOrRules);
+        }
     }
 }
 
