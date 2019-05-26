@@ -188,7 +188,7 @@ class Validator extends Component implements ValidatorInterface
                     } elseif (isset($rules['default'])) {
                         $validate = is_string($rules['default']) ? 'length' : 'range';
                     } else {
-                        throw new InvalidArgumentException('');
+                        throw new InvalidArgumentException(['infer validate name failed: :value', 'value' => $v]);
                     }
                 } else {
                     $validate = $v;
