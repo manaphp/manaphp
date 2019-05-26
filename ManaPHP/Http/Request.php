@@ -97,11 +97,11 @@ class Request extends Component implements RequestInterface
                 if ($type === 'string') {
                     return (string)$value;
                 } elseif ($type === 'integer') {
-                    return (int)$value;
+                    return $this->validator->validateValue($name, $value, 'int');
                 } elseif ($type === 'double') {
-                    return (float)$value;
+                    return $this->validator->validateValue($name, $value, 'float');
                 } elseif ($type === 'boolean') {
-                    return (bool)$value;
+                    return (bool)$this->validator->validateValue($name, $value, 'bool');
                 } else {
                     return $value;
                 }
@@ -196,11 +196,11 @@ class Request extends Component implements RequestInterface
             if ($type === 'string') {
                 return (string)$value;
             } elseif ($type === 'integer') {
-                return (int)$value;
+                return $this->validator->validateValue($name, $value, 'int');
             } elseif ($type === 'double') {
-                return (float)$value;
+                return $this->validator->validateValue($name, $value, 'float');
             } elseif ($type === 'boolean') {
-                return (bool)$value;
+                return (bool)$this->validator->validateValue($name, $value, 'bool');
             } else {
                 return $value;
             }
