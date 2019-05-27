@@ -256,8 +256,8 @@ interface ModelInterface
     /**
      * Assigns values to a model from an array
      *
-     * @param array|\ArrayAccess $data
-     * @param array              $whiteList
+     * @param array|\ManaPHP\Model $data
+     * @param array                $whiteList
      *
      * @return static
      */

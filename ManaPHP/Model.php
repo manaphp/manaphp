@@ -567,25 +567,35 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     /**
      * Assigns values to a model from an array
      *
-     * @param array|\ArrayAccess $data
-     * @param array              $whiteList =static::sample()
+     * @param array|\ManaPHP\Model $data
+     * @param array                $whiteList =static::sample()
      *
      * @return static
      */
     public function assign($data, $whiteList = null)
     {
-        if ($whiteList === null) {
-            $whiteList = $this->getSafeFields();
-        }
+        if ($data instanceof Model) {
+            foreach ($whiteList as $k => $v) {
+                if (is_int($k)) {
+                    $this->$v = $data->$v;
+                } else {
+                    $this->$k = $v;
+                }
+            }
+        } else {
+            if ($whiteList === null) {
+                $whiteList = $this->getSafeFields();
+            }
 
-        if ($whiteList === null) {
-            throw new PreconditionException(['`:model` model do not define accessible fields.', 'model' => static::class]);
-        }
+            if ($whiteList === null) {
+                throw new PreconditionException(['`:model` model do not define accessible fields.', 'model' => static::class]);
+            }
 
-        foreach ($whiteList ?: $this->getFields() as $field) {
-            if (isset($data[$field])) {
-                $value = $data[$field];
-                $this->{$field} = is_string($value) ? trim($value) : $value;
+            foreach ($whiteList ?: $this->getFields() as $field) {
+                if (isset($data[$field])) {
+                    $value = $data[$field];
+                    $this->{$field} = is_string($value) ? trim($value) : $value;
+                }
             }
         }
 
