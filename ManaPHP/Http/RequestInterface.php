@@ -179,6 +179,13 @@ interface RequestInterface
     public function getFiles($onlySuccessful = true);
 
     /**
+     * @param string $key
+     *
+     * @return \ManaPHP\Http\Request\FileInterface
+     */
+    public function getFile($key = null);
+
+    /**
      * Gets web page that refers active request. ie: http://www.google.com
      *
      * @return string

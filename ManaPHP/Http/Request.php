@@ -438,6 +438,31 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param string $key
+     *
+     * @return \ManaPHP\Http\Request\FileInterface
+     */
+    public function getFile($key = null)
+    {
+        $files = $this->getFiles();
+
+        if ($key === null) {
+            if ($files) {
+                return current($files);
+            } else {
+                throw new FileException('can not found any uploaded files');
+            }
+        } else {
+            foreach ($files as $file) {
+                if ($file->getKey() === $key) {
+                    return $file;
+                }
+            }
+            throw new FileException(['can not found uploaded `:key` file', 'key' => $key]);
+        }
+    }
+
+    /**
      * Gets web page that refers active request. ie: http://www.google.com
      *
      * @return string
