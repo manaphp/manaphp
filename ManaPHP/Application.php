@@ -66,6 +66,7 @@ class Application extends Component implements ApplicationInterface
         $this->alias->set('@root', $rootDir);
         $this->alias->set('@data', $rootDir . '/data');
         $this->alias->set('@tmp', $rootDir . '/tmp');
+        $this->alias->set('@resources', $rootDir . '/Resources');
         $this->alias->set('@config', $rootDir . '/config');
 
         $web = '';
