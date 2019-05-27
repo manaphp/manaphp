@@ -264,11 +264,19 @@ interface ModelInterface
     public function assign($data, $whiteList = null);
 
     /**
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return void
      */
     public function validate($fields = null);
+
+    /**
+     * @param string $field
+     * @param array  $rules
+     *
+     * @return void
+     */
+    public function validateField($field, $rules = null);
 
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.

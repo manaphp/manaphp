@@ -603,7 +603,7 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     }
 
     /**
-     * @param string|array $fields =static::sample()
+     * @param array $fields =static::sample()
      *
      * @return void
      */
@@ -630,6 +630,25 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         if ($errors) {
             throw new ValidateFailedException($errors);
         }
+    }
+
+    /**
+     * @param string $field
+     * @param array  $rules
+     *
+     * @return void
+     */
+    public function validateField($field, $rules = null)
+    {
+        if ($rules === null) {
+            if (!isset($rules[$field])) {
+                return;
+            }
+
+            $rules = $rules[$field];
+        }
+
+        $this->$field = $this->_di->validator->validateModel($field, $this, (array)$rules);
     }
 
     /**
