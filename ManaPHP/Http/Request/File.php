@@ -10,13 +10,8 @@ use ManaPHP\Http\Request\File\Exception as FileException;
  *
  * @package request
  */
-class File extends Component implements FileInterface
+class File extends Component implements FileInterface, \JsonSerializable
 {
-    /**
-     * @var string
-     */
-    protected $_key;
-
     /**
      * @var array
      */
@@ -25,12 +20,10 @@ class File extends Component implements FileInterface
     /**
      * \ManaPHP\Http\Request\File constructor
      *
-     * @param string $key
-     * @param array  $file
+     * @param array $file
      */
-    public function __construct($key, $file)
+    public function __construct($file)
     {
-        $this->_key = $key;
         $this->_file = $file;
     }
 
@@ -95,7 +88,7 @@ class File extends Component implements FileInterface
      */
     public function getKey()
     {
-        return $this->_key;
+        return $this->_file['key'];
     }
 
     /**
@@ -166,5 +159,10 @@ class File extends Component implements FileInterface
     public function delete()
     {
         @unlink($this->_file['tmp_name']);
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->_file;
     }
 }

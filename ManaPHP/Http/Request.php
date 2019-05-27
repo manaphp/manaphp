@@ -7,6 +7,7 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Http\Request\File;
+use ManaPHP\Http\Request\File\Exception as FileException;
 
 class RequestContext
 {
@@ -405,13 +406,14 @@ class Request extends Component implements RequestInterface
             if (is_int($file['error'])) {
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $fileInfo = [
+                        'key' => $key,
                         'name' => $file['name'],
                         'type' => $file['type'],
                         'tmp_name' => $file['tmp_name'],
                         'error' => $file['error'],
                         'size' => $file['size'],
                     ];
-                    $files[] = new File($key, $fileInfo);
+                    $files[] = new File($fileInfo);
                 }
             } else {
                 $countFiles = count($file['error']);
@@ -419,13 +421,14 @@ class Request extends Component implements RequestInterface
                 for ($i = 0; $i < $countFiles; $i++) {
                     if (!$onlySuccessful || $file['error'][$i] === UPLOAD_ERR_OK) {
                         $fileInfo = [
+                            'key' => $key,
                             'name' => $file['name'][$i],
                             'type' => $file['type'][$i],
                             'tmp_name' => $file['tmp_name'][$i],
                             'error' => $file['error'][$i],
                             'size' => $file['size'][$i],
                         ];
-                        $files[] = new File($key, $fileInfo);
+                        $files[] = new File($fileInfo);
                     }
                 }
             }
