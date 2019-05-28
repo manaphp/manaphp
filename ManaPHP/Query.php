@@ -299,7 +299,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
     {
         $this->page($size, $page);
 
-        $items = $this->all();
+        $items = $this->fetch(true);
 
         if ($this->_limit === null) {
             $count = count($items);
@@ -307,10 +307,6 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
             $count = $this->count();
         } else {
             $count = $this->_offset + count($items);
-        }
-
-        if ($this->_with) {
-            $items = $this->relationsManager->earlyLoad($this->_model, $items, $this->_with, true);
         }
 
         $this->paginator->items = $items;
