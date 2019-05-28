@@ -2,6 +2,7 @@
 namespace ManaPHP\Model;
 
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\NotSupportedException;
 
 class Relation
@@ -66,6 +67,17 @@ class Relation
                 $this->keyField = $referenceField ?: $this->_inferReferenceField($model, get_class($model));
                 $this->valueField = $model->getPrimaryKey();
             } elseif ($type === self::TYPE_HAS_MANY_VIA) {
+                if ($referenceField === null) {
+                    $modelName = get_class($model);
+
+                    if (class_exists($try = $modelName . substr($referenceModel, strrpos($referenceModel, '\\') + 1))
+                        || class_exists($try = $referenceModel . substr($modelName, strrpos($modelName, '\\') + 1))) {
+                        $referenceField = $try;
+                    } else {
+                        throw new MissingFieldException('MANY_VIA relation must provide VIA class name(3rd parameter)');
+                    }
+                }
+
                 $this->keyField = $referenceField;
                 $this->valueField = $model->getPrimaryKey();
             } else {

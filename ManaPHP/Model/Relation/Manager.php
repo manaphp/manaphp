@@ -150,12 +150,7 @@ class Manager extends Component implements ManagerInterface
      */
     protected function _isPlural($str)
     {
-        if ($str[strlen($str) - 1] !== 's') {
-            return false;
-        }
-
-        //https://github.com/UlvHare/PHPixie-demo/blob/d000d8f11e6ab7c522feeb4457da5a802ca3e0bc/vendor/phpixie/orm/src/PHPixie/ORM/Configs/Inflector.php
-        return preg_match('#us|[sxz]es|[^aeioudgkprt]hes|[^aeiou]ies$#', $str) === 1;
+        return $str[strlen($str) - 1] === 's';
     }
 
     /**
@@ -170,38 +165,26 @@ class Manager extends Component implements ManagerInterface
 
         if (!isset($this->_relations[$modelName])) {
             $this->_relations[$modelName] = $model->relations();
-            foreach ($this->_relations[$modelName] as $k => $v) {
-                if (is_int($k)) {
-                    $this->_relations[$modelName][$v] = [];
-                    unset($this->_relations[$modelName][$k]);
-                }
-            }
-        }
-
-        if (!isset($this->_relations[$modelName][$name]) || !$this->_relations[$modelName][$name]) {
-            /** @noinspection NestedPositiveIfStatementsInspection */
-            if ($relation = $this->_inferRelation($model, $name)) {
-                $this->_relations[$modelName][$name] = $relation;
-            }
         }
 
         if (isset($this->_relations[$modelName][$name])) {
-            $relation = $this->_relations[$modelName][$name];
-            if ($relation instanceof Relation) {
+            if (($relation = $this->_relations[$modelName][$name]) instanceof Relation) {
                 return $relation;
-            } else {
-                if (is_string($relation)) {
-                    $relation = [$relation];
-                }
-
-                if (!isset($relation[1])) {
-                    $relation[1] = $this->_isPlural($name) ? Relation::TYPE_HAS_MANY : Relation::TYPE_HAS_ONE;
-                }
-                return $this->_relations[$modelName][$name] = new Relation($model, $relation);
             }
+        } elseif ($relation = $this->_inferRelation($model, $name)) {
+            $this->_relations[$modelName][$name] = $relation;
+        } else {
+            return false;
         }
 
-        return false;
+        if (is_string($relation)) {
+            $relation = [$relation];
+        }
+
+        if (!isset($relation[1])) {
+            $relation[1] = $this->_isPlural($name) ? Relation::TYPE_HAS_MANY : Relation::TYPE_HAS_ONE;
+        }
+        return $this->_relations[$modelName][$name] = new Relation($model, $relation);
     }
 
     /**
