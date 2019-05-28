@@ -297,6 +297,6 @@ abstract class Connection extends Component implements ConnectionInterface
 
     public function commit()
     {
-        return $this->_getPdo()->rollBack();
+        return $this->_getPdo()->commit();
     }
 }
