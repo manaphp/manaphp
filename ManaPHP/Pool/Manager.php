@@ -68,7 +68,7 @@ class Manager extends Component implements ManagerInterface
             $sample = $this->_di->getInstance($class, $sample);
         }
 
-        $queue->push(clone $sample);
+        $queue->push($sample);
 
         for ($i = 1; $i < $size; $i++) {
             $queue->push(clone $sample);
