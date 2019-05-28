@@ -261,14 +261,6 @@ class DebuggerPlugin extends Plugin
                 }
             }
 
-            if ($k === 'response' && isset($properties['_content'])) {
-                $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
-            }
-
-            if ($k === 'view' && isset($properties['_content'])) {
-                $properties['_content'] = '******[' . strlen($properties['_content']) . ']';
-            }
-
             $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
         }
 
