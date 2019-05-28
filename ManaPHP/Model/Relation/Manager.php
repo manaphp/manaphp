@@ -332,8 +332,9 @@ class Manager extends Component implements ManagerInterface
                     }
                 }
 
-                foreach ($r as $ri => $_) {
-                    $r[$ri][$name] = isset($rd[$ri]) ? $rd[$ri] : [];
+                foreach ($r as $ri => $rv) {
+                    $rvr = $rv[$valueField];
+                    $r[$ri][$name] = isset($rd[$rvr]) ? $rd[$rvr] : [];
                 }
             } else {
                 throw new NotSupportedException($name);
