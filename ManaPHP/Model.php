@@ -20,10 +20,9 @@ use ManaPHP\Validator\ValidateFailedException;
  * Class ManaPHP\Model
  *
  * @package ManaPHP
- *
- * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Di $_di
  */
-abstract class Model extends Component implements ModelInterface, \Serializable, \ArrayAccess
+abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \JsonSerializable
 {
     const OP_NONE = 0;
     const OP_CREATE = 1;
@@ -48,8 +47,6 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public function __construct($data = [])
     {
-        $this->_di = Di::getDefault();
-
         if ($data) {
             foreach ($this->getJsonFields() as $field) {
                 if (isset($data[$field]) && is_string($data[$field])) {
@@ -821,11 +818,11 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public function delete()
     {
-        $this->eventsManager->fireEvent('model:beforeDelete', $this);
+        $this->fireEvent('model:beforeDelete');
 
         static::query(null, $this)->where($this->_getPrimaryKeyValuePairs())->delete();
 
-        $this->eventsManager->fireEvent('model:afterDelete', $this);
+        $this->fireEvent('model:afterDelete');
 
         return $this;
     }
@@ -995,6 +992,11 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
         return false;
     }
 
+    public function fireEvent($event, $data = [])
+    {
+        $this->_di->eventsManager->fireEvent($event, $this, $data);
+    }
+
     /**
      * @param float $interval
      * @param array $fields
@@ -1135,6 +1137,10 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
      */
     public function __get($name)
     {
+        if ($name === '_di') {
+            return $this->_di = Di::getDefault();
+        }
+
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
@@ -1148,6 +1154,31 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
                 'field' => $name,
                 'fields' => implode(',', $this->getFields())]);
         }
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    public function __set($name, $value)
+    {
+        if (is_scalar($value)) {
+            $this->fireEvent('component:setUndefinedProperty', ['name' => $name, 'class' => static::class]);
+        }
+
+        $this->$name = $value;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->$name);
     }
 
     /**
@@ -1236,6 +1267,11 @@ abstract class Model extends Component implements ModelInterface, \Serializable,
     public function offsetUnset($offset)
     {
         $this->$offset = null;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**

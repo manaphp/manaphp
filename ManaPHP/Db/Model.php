@@ -161,8 +161,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $this->validate($fields);
 
-        $this->eventsManager->fireEvent('model:beforeSave', $this);
-        $this->eventsManager->fireEvent('model:beforeCreate', $this);
+        $this->fireEvent('model:beforeSave');
+        $this->fireEvent('model:beforeCreate');
 
         $fieldValues = [];
         $defaultValueFields = [];
@@ -201,8 +201,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $this->_snapshot = $this->toArray();
 
-        $this->eventsManager->fireEvent('model:afterCreate', $this);
-        $this->eventsManager->fireEvent('model:afterSave', $this);
+        $this->fireEvent('model:afterCreate');
+        $this->fireEvent('model:afterSave');
 
         return $this;
     }
@@ -253,8 +253,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $this->eventsManager->fireEvent('model:beforeSave', $this);
-        $this->eventsManager->fireEvent('model:beforeUpdate', $this);
+        $this->fireEvent('model:beforeSave');
+        $this->fireEvent('model:beforeUpdate');
 
         $fieldValues = [];
         foreach ($fields as $field) {
@@ -299,8 +299,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $this->_snapshot = $this->toArray();
 
-        $this->eventsManager->fireEvent('model:afterUpdate', $this);
-        $this->eventsManager->fireEvent('model:afterSave', $this);
+        $this->fireEvent('model:afterUpdate');
+        $this->fireEvent('model:afterSave');
 
         return $this;
     }
@@ -377,7 +377,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     {
         $instance = new static();
         if ($fields = array_diff(array_keys($record), $instance->_di->modelsMetadata->getAttributes($instance))) {
-            $instance->logger->debug(['insert `:1` table skip fields: :2', $instance->getSource(), array_values($fields)]);
+            $instance->_di->logger->debug(['insert `:1` table skip fields: :2', $instance->getSource(), array_values($fields)]);
 
             foreach ($fields as $field) {
                 unset($record[$field]);

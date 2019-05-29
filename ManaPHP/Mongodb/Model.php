@@ -356,8 +356,8 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        $this->eventsManager->fireEvent('model:beforeSave', $this);
-        $this->eventsManager->fireEvent('model:beforeCreate', $this);
+        $this->fireEvent('model:beforeSave');
+        $this->fireEvent('model:beforeCreate');
 
         $fieldValues = [];
         foreach ($fields as $field) {
@@ -380,8 +380,8 @@ class Model extends \ManaPHP\Model
 
         $this->_snapshot = $this->toArray();
 
-        $this->eventsManager->fireEvent('model:afterCreate', $this);
-        $this->eventsManager->fireEvent('model:afterSave', $this);
+        $this->fireEvent('model:afterCreate');
+        $this->fireEvent('model:afterSave');
 
         return $this;
     }
@@ -439,8 +439,8 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        $this->eventsManager->fireEvent('model:beforeSave', $this);
-        $this->eventsManager->fireEvent('model:beforeUpdate', $this);
+        $this->fireEvent('model:beforeSave');
+        $this->fireEvent('model:beforeUpdate');
 
         $fieldValues = [];
         foreach ($fields as $field) {
@@ -488,8 +488,8 @@ class Model extends \ManaPHP\Model
 
         $this->_snapshot = $this->toArray();
 
-        $this->eventsManager->fireEvent('model:afterUpdate', $this);
-        $this->eventsManager->fireEvent('model:afterSave', $this);
+        $this->fireEvent('model:afterUpdate');
+        $this->fireEvent('model:afterSave');
 
         return $this;
     }
