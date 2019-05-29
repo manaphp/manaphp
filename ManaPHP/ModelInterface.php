@@ -423,4 +423,12 @@ interface ModelInterface
      * @return \ManaPHP\QueryInterface
      */
     public static function select($fields = []);
+
+    /**
+     * @param int|string|array       $filter
+     * @param int|float|string|array $value
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public static function where($filter, $value = null);
 }

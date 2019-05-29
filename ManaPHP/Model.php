@@ -188,7 +188,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function all($filters = [], $options = null, $fields = null)
     {
-        return static::query()->select($fields)->where($filters)->options($options)->fetch();
+        return static::select($fields)->where($filters)->options($options)->fetch();
     }
 
     /**
@@ -482,7 +482,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
         if (!is_string($field)) {
             throw new ParameterOrderException(__METHOD__ . ' field');
         }
-        return static::query()->where($filters)->values($field);
+        return static::where($filters)->values($field);
     }
 
     /**
@@ -496,7 +496,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
             $model = new static;
             return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filters)->exists();
         } else {
-            return static::query()->where($filters)->exists();
+            return static::where($filters)->exists();
         }
     }
 
@@ -512,7 +512,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
         if (is_string($options)) {
             $options = ['group' => $options];
         }
-        return static::query()->where($filters)->options($options)->aggregate($aggregation);
+        return static::where($filters)->options($options)->aggregate($aggregation);
     }
 
     /**
@@ -525,7 +525,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function count($filters = null, $field = '*')
     {
-        return static::query()->where($filters)->count($field);
+        return static::where($filters)->count($field);
     }
 
     /**
@@ -538,7 +538,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function sum($field, $filters = null)
     {
-        return static::query()->where($filters)->sum($field);
+        return static::where($filters)->sum($field);
     }
 
     /**
@@ -551,7 +551,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function max($field, $filters = null)
     {
-        return static::query()->where($filters)->max($field);
+        return static::where($filters)->max($field);
     }
 
     /**
@@ -565,7 +565,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function min($field, $filters = null)
     {
-        return static::query()->where($filters)->min($field);
+        return static::where($filters)->min($field);
     }
 
     /**
@@ -578,7 +578,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function avg($field, $filters = null)
     {
-        return (float)static::query()->where($filters)->avg($field);
+        return (float)static::where($filters)->avg($field);
     }
 
     /**
@@ -875,7 +875,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function updateAll($fieldValues, $filters)
     {
-        return static::query()->where($filters)->update($fieldValues);
+        return static::where($filters)->update($fieldValues);
     }
 
     /**
@@ -891,7 +891,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
         }
 
         $instance = new static();
-        return static::query()->whereEq($instance->getPrimaryKey(), $primaryKey)->update($fieldValues);
+        return static::where([$instance->getPrimaryKey() => $primaryKey])->update($fieldValues);
     }
 
     /**
@@ -901,7 +901,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function deleteAll($filters)
     {
-        return static::query()->where($filters)->delete();
+        return static::where($filters)->delete();
     }
 
     /**
