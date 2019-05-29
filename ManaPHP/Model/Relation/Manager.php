@@ -58,7 +58,9 @@ class Manager extends Component implements ManagerInterface
     {
         $modelName = get_class($model);
 
-        if (($pos = strrpos($modelName, '\\')) !== false) {
+        if (class_exists($try = $modelName . ucfirst($plainName))) {
+            return $try;
+        } elseif (($pos = strrpos($modelName, '\\')) !== false) {
             $className = substr($modelName, 0, $pos + 1) . ucfirst($plainName);
         } else {
             $className = ucfirst($plainName);
