@@ -192,32 +192,42 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param string|array $field =array_keys(static::sample())[$i]
+     * @param string|array $fields =array_keys(static::sample())[$i]
      * @param array        $filters =static::sample()
      *
      * @return array
      */
-    public static function lists($field, $filters = null)
+    public static function lists($fields, $filters = null)
     {
         $model = new static;
 
         $query = static::query(null, $model)->where($filters);
 
-        $list = [];
-
-        if (is_string($field)) {
+        if (is_string($fields)) {
             $keyField = $model->getPrimaryKey();
-            $valueField = $field;
+            $valueField = $fields;
 
-            $query = $query->select([$keyField, $valueField]);
+            $query = $query->select($keyField . ', ' . $valueField);
+            if (in_array('display_order', $model->getFields(), true)) {
+                return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
+            } else {
+                return $query->orderBy($keyField)->fetch(true);
+            }
+        } elseif (isset($fields[0])) {
+            $keyField = $model->getPrimaryKey();
+            array_unshift($fields, $keyField);
+
+            $query->select($fields);
             if (in_array('display_order', $model->getFields(), true)) {
                 return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
             } else {
                 return $query->orderBy($keyField)->fetch(true);
             }
         } else {
-            $keyField = key($field);
-            $valueField = current($field);
+            $keyField = key($fields);
+            $valueField = current($fields);
+
+            $list = [];
             /** @noinspection ForeachSourceInspection */
             foreach ($query->select([$keyField, $valueField])->fetch(true) as $v) {
                 $key = $v[$keyField];

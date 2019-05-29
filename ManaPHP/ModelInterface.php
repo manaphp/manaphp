@@ -102,12 +102,12 @@ interface ModelInterface
     public static function all($filters = [], $options = null, $fields = null);
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param array        $filters
      *
      * @return array
      */
-    public static function lists($field, $filters = null);
+    public static function lists($fields, $filters = null);
 
     /**
      * @param int|string $id
