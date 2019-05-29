@@ -291,6 +291,16 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
+     * @param array|string $fields
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public static function select($fields = [])
+    {
+        return static::query()->select($fields);
+    }
+
+    /**
      * Allows to query the first record that match the specified conditions
      *
      * @param int|string|array $filters =static::sample()

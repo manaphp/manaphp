@@ -416,4 +416,11 @@ interface ModelInterface
      * @return static
      */
     public function decrement($field, $step = 1);
+
+    /**
+     * @param array|string $fields
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public static function select($fields = []);
 }
