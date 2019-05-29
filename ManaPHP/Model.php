@@ -292,12 +292,13 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
 
     /**
      * @param array|string $fields
+     * @param string       $alias
      *
      * @return \ManaPHP\QueryInterface
      */
-    public static function select($fields = [])
+    public static function select($fields = [], $alias = null)
     {
-        return static::query()->select($fields);
+        return static::query($alias)->select($fields);
     }
 
     /**

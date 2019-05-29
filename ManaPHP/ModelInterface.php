@@ -419,10 +419,11 @@ interface ModelInterface
 
     /**
      * @param array|string $fields
+     * @param string       $alias
      *
      * @return \ManaPHP\QueryInterface
      */
-    public static function select($fields = []);
+    public static function select($fields = [], $alias = null);
 
     /**
      * @param int|string|array       $filter
