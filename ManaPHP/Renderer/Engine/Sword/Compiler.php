@@ -137,17 +137,9 @@ class Compiler extends Component
             $controller = Text::underscore($parts[0]);
         }
         if (strpos($str, '/') === false) {
-            if ($area) {
-                $absolute = "/$area/$controller/$str";
-            } else {
-                $absolute = "/$controller/$str";
-            }
+            $absolute = $area ? "/$area/$controller/$str" : "/$controller/$str";
         } else {
-            if ($area) {
-                $absolute = "/$area/$str";
-            } else {
-                $absolute = "/$str";
-            }
+            $absolute = $area ? "/$area/$str" : "/$str";
         }
 
         return $this->alias->get('@web') . $absolute;
