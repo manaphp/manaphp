@@ -5,7 +5,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MissingFieldException;
-use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Http\Request\File;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
@@ -119,11 +118,7 @@ class Request extends Component implements RequestInterface
 
             return $default === null ? $value : $this->_normalizeValue($name, $value, $default);
         } else {
-            if ($default === null) {
-                throw new MissingRequiredFieldsException($name);
-            }
-
-            return $default;
+            $this->validator->validateValue($name, $default, []);
         }
     }
 

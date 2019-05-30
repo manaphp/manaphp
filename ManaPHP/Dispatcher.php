@@ -4,8 +4,8 @@ namespace ManaPHP;
 
 use ManaPHP\Dispatcher\NotFoundActionException;
 use ManaPHP\Dispatcher\NotFoundControllerException;
-use ManaPHP\Exception\MissingRequiredFieldsException;
 use ManaPHP\Utility\Text;
+use ManaPHP\Validator\ValidateFailedException;
 
 class DispatcherContext
 {
@@ -254,7 +254,11 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         if ($missing) {
-            throw new MissingRequiredFieldsException($missing);
+            $errors = [];
+            foreach ($missing as $field) {
+                $errors[$field] = $this->validator->createError('required', $field);
+            }
+            throw new ValidateFailedException($errors);
         }
 
         return $args;
