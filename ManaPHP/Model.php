@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Db\AssignmentInterface;
 use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
@@ -634,7 +635,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
         $errors = [];
 
         foreach ($fields ?: $this->getChangedFields() as $field) {
-            if (!isset($rules[$field])) {
+            /** @noinspection NotOptimalIfConditionsInspection */
+            if (!isset($rules[$field]) || $this->$field instanceof AssignmentInterface) {
                 continue;
             }
 
