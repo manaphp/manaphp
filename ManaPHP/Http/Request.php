@@ -117,8 +117,10 @@ class Request extends Component implements RequestInterface
             }
 
             return $default === null ? $value : $this->_normalizeValue($name, $value, $default);
+        } elseif ($default === null) {
+            return $this->validator->validateValue($name, null, ['required']);
         } else {
-            return $this->validator->validateValue($name, $default, ['required']);
+            return $default;
         }
     }
 
