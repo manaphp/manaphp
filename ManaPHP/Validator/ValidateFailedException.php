@@ -21,7 +21,7 @@ class ValidateFailedException extends Exception
     public function __construct($errors, $code = 0, \Exception $previous = null)
     {
         $this->_errors = $errors;
-        $this->_json = ['code' => 'validate.errors', 'message' => json_encode($errors, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)];
+        $this->_json = ['code' => 'validator.errors', 'message' => json_encode($errors, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)];
 
         parent::__construct(json_encode($errors, JSON_UNESCAPED_UNICODE), $code, $previous);
     }
