@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP\Mailer\Adapter;
 
-use ManaPHP\Exception\InvalidUrlException;
-use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Mailer;
 
