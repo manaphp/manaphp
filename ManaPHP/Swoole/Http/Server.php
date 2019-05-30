@@ -227,7 +227,7 @@ class Server extends Component implements ServerInterface
     {
         $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
 
-        /** @var \ManaPHP\Http\ResponseContext $response_context */
+        /** @var \ManaPHP\Http\Response $response */
         $response_context = $response->_context;
         $sw_response = $this->_context->response;
 
