@@ -59,29 +59,9 @@ class ModelTest extends TestCase
         $this->assertNull($city->getCountry()->fetch());
 
         //criteria with all fields
-        $city = City::first(1, null, ['with' => 'country']);
+        $city = City::first(1);
         $this->assertEquals(87, $city->country->country_id);
 
-        //criteria with explicit fields
-        $city = City::first(1, null, ['with' => ['country' => 'country_id, country']]);
-        $this->assertNull($city->country->last_update);
-        $this->assertEquals(87, $city->country->country_id);
-
-        //criteria with closure and implicit fetch()
-        $city = City::first(1, null, ['with' => ['country' => function (QueryInterface $query) {
-            return $query->select(['country_id']);
-        }]]);
-        $this->assertNull($city->country->last_update);
-        $this->assertEquals(87, $city->country->country_id);
-        $this->assertCount(1, $city->country->toArray());
-
-        //criteria with closure explicit fetch()
-        $city = City::first(1, null, ['with' => ['country' => function (QueryInterface $query) {
-            return $query->select(['country_id']);
-        }]]);
-        $this->assertNull($city->country->last_update);
-        $this->assertEquals(87, $city->country->country_id);
-        $this->assertCount(1, $city->country->toArray());
     }
 
     public function test_explicit_hasOne()
@@ -108,30 +88,9 @@ class ModelTest extends TestCase
         $city->country_id = -1;
         $this->assertNull($city->getCountry()->fetch());
 
-        //criteria with all fields
-        $city = City::first(1, null, ['with' => 'countryExplicit']);
-        $this->assertEquals(87, $city->countryExplicit->country_id);
-
-        //criteria with explicit fields
-        $city = City::first(1, null, ['with' => ['countryExplicit' => 'country_id, country']]);
-        $this->assertNull($city->countryExplicit->last_update);
-        $this->assertEquals(87, $city->countryExplicit->country_id);
-
-        //criteria with closure and implicit fetch()
-        $city = City::first(1, null, ['with' => ['countryExplicit' => function (QueryInterface $query) {
-            return $query->select(['country_id']);
-        }]]);
-        $this->assertNull($city->countryExplicit->last_update);
-        $this->assertEquals(87, $city->countryExplicit->country_id);
-        $this->assertCount(1, $city->countryExplicit->toArray());
-
         //criteria with closure explicit fetch()
-        $city = City::first(1, null, ['with' => ['countryExplicit' => function (QueryInterface $query) {
-            return $query->select(['country_id']);
-        }]]);
-        $this->assertNull($city->countryExplicit->last_update);
+        $city = City::first(1);
         $this->assertEquals(87, $city->countryExplicit->country_id);
-        $this->assertCount(1, $city->countryExplicit->toArray());
     }
 
     public function test_implicit_hasMany()
@@ -154,15 +113,9 @@ class ModelTest extends TestCase
         $country->country_id = -1;
         $this->assertCount(0, $country->cities);
 
-        //criteria with all fields
-        $country = Country::first(44, null, ['with' => 'cities']);
-        $this->assertCount(60, $country->cities);
-        $this->assertCount(4, $country->cities[8]->toArray());
-
         //criteria with explicit fields
-        $country = Country::first(44, null, ['with' => ['cities' => 'city_id, city,country_id']]);
+        $country = Country::first(44);
         $this->assertCount(60, $country->cities);
-        $this->assertCount(3, $country->cities[8]->toArray());
     }
 
     public function test_explicit_hasMany()
@@ -186,62 +139,33 @@ class ModelTest extends TestCase
         $this->assertCount(0, $country->citiesExplicit);
 
         //criteria with all fields
-        $country = Country::first(44, null, ['with' => 'citiesExplicit']);
+        $country = Country::first(44);
         $this->assertCount(60, $country->citiesExplicit);
-        $this->assertCount(4, $country->citiesExplicit[8]->toArray());
 
         //criteria with explicit fields
-        $country = Country::first(44, null, ['with' => ['citiesExplicit' => 'city_id, city, country_id']]);
+        $country = Country::first(44);
         $this->assertCount(60, $country->citiesExplicit);
-        $this->assertCount(3, $country->citiesExplicit[8]->toArray());
-
-        //criteria with closure and implicit fetch()
-        $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (QueryInterface $query) {
-            return $query->select(['city_id', 'city', 'country_id']);
-        }]]);
-        $this->assertCount(3, $country->citiesExplicit[8]->toArray());
-
-        //criteria with closure explicit fetch()
-        $country = Country::first(44, null, ['with' => ['citiesExplicit' => function (QueryInterface $query) {
-            return $query->select(['city_id', 'city', 'country_id']);
-        }]]);
-        $this->assertCount(3, $country->citiesExplicit[8]->toArray());
     }
 
     public function test_hasManyToMany()
     {
-        $rental = Rental::first(10, null, ['with' => ['inventory']]);
-        $this->assertSame(1824, $rental->inventory->inventory_id);
-
         $rental = Rental::first(10);
         $this->assertSame(1824, $rental->inventory->inventory_id);
 
-        $rental = Rental::first(10, null, ['with' => ['inventories']]);
+        $rental = Rental::first(10);
         $this->assertCount(21, $rental->inventories);
 
         $rental = Rental::first(10);
         $this->assertCount(21, $rental->inventories);
 
-        $rental = Rental::first(10, null, ['with' => ['inventoriesOfCustomer']]);
-        $this->assertCount(21, $rental->inventoriesOfCustomer);
-
         $rental = Rental::first(10);
         $this->assertCount(21, $rental->inventoriesOfCustomer);
-
-        $rental = Rental::first(10, null, ['with' => ['customer']]);
-        $this->assertSame(399, $rental->customer->customer_id);
 
         $rental = Rental::first(10);
         $this->assertSame(399, $rental->customer->customer_id);
 
-        $rental = Rental::first(10, null, ['with' => ['customers']]);
-        $this->assertCount(5, $rental->customers);
-
         $rental = Rental::first(10);
         $this->assertCount(5, $rental->customers);
-
-        $rental = Rental::first(10, null, ['with' => ['customersOfInventory']]);
-        $this->assertCount(5, $rental->customersOfInventory);
 
         $rental = Rental::first(10);
         $this->assertCount(5, $rental->customersOfInventory);
