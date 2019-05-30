@@ -2,24 +2,6 @@
 
 use ManaPHP\Di;
 
-if (!function_exists('html')) {
-    /**
-     * @param string $name
-     * @param array  $data
-     *
-     * @return string
-     */
-    function html($name, $data = [])
-    {
-        static $html;
-        if (!$html) {
-            $html = Di::getDefault()->getShared('html');
-        }
-
-        return $html->render($name, $data);
-    }
-}
-
 if (!function_exists('attr_nv')) {
     /**
      * @param string $name

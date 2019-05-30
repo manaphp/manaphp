@@ -30,7 +30,6 @@ class FactoryDefault extends Di
             'crypt' => 'ManaPHP\Security\Crypt',
             'logger' => 'ManaPHP\Logger',
             'renderer' => 'ManaPHP\Renderer',
-            'html' => 'ManaPHP\Renderer\Html',
             'assetBundle' => 'ManaPHP\Renderer\AssetBundle',
             'cache' => 'ManaPHP\Cache\Adapter\Redis',
             'ipcCache' => 'ManaPHP\Ipc\Cache\Adapter\Apcu',
