@@ -4,6 +4,15 @@ namespace ManaPHP;
 interface ValidatorInterface
 {
     /**
+     * @param string $validate
+     * @param string $field
+     * @param mixed  $parameter
+     *
+     * @return string
+     */
+    public function createError($validate, $field, $parameter = null);
+
+    /**
      * @param string                $field
      * @param \ManaPHP\Model|mixed  $model
      * @param array|string|\Closure $rules

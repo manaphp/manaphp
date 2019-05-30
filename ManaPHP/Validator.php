@@ -76,21 +76,19 @@ class Validator extends Component implements ValidatorInterface
      * @param string $field
      * @param mixed  $parameter
      *
-     * @return \ManaPHP\Validator\ValidateFailedException
+     * @return string
      */
-    protected function _createValidateFailedException($validate, $field, $parameter = null)
+    public function createError($validate, $field, $parameter = null)
     {
         $template = $this->_getTemplate($validate);
         $tr = [':field' => $field];
 
         if (is_string($template)) {
             $tr[':parameter'] = $parameter;
-            $error = strtr($template, $tr);
+            return strtr($template, $tr);
         } else {
-            $error = $template($field, $parameter);
+            return $template($field, $parameter);
         }
-
-        return new ValidateFailedException([$field => $error]);
     }
 
     /**
@@ -106,7 +104,7 @@ class Validator extends Component implements ValidatorInterface
 
         if ($rules instanceof \Closure) {
             if (($value = $rules($model, $field)) === null) {
-                throw $this->_createValidateFailedException('default', $field);
+                throw new ValidateFailedException([$field => $this->createError('default', $field)]);
             } else {
                 return $value;
             }
@@ -116,7 +114,7 @@ class Validator extends Component implements ValidatorInterface
             if (isset($rules['default'])) {
                 return $model->$field = $rules['default'];
             } else {
-                throw $this->_createValidateFailedException('required', $field);
+                throw new ValidateFailedException([$field => $this->createError('required', $field)]);
             }
         }
 
@@ -143,7 +141,7 @@ class Validator extends Component implements ValidatorInterface
             }
 
             if ($value === null) {
-                throw $this->_createValidateFailedException($validate, $field, $parameter);
+                throw new ValidateFailedException([$field => $this->createError($validate, $field, $parameter)]);
             }
         }
 
@@ -162,7 +160,7 @@ class Validator extends Component implements ValidatorInterface
     {
         if ($rules instanceof \Closure) {
             if (($value = $rules($value)) === null) {
-                throw $this->_createValidateFailedException('default', $field);
+                throw new ValidateFailedException([$field => $this->createError('default', $field)]);
             } else {
                 return $value;
             }
@@ -172,7 +170,7 @@ class Validator extends Component implements ValidatorInterface
             if (isset($rules['default'])) {
                 return $rules['default'];
             } else {
-                throw $this->_createValidateFailedException('required', $field, $value);
+                throw new ValidateFailedException([$field => $this->createError('required', $field)]);
             }
         }
 
@@ -206,7 +204,7 @@ class Validator extends Component implements ValidatorInterface
             }
 
             if ($value === null) {
-                throw $this->_createValidateFailedException($validate, $field, $parameter);
+                throw new ValidateFailedException([$field => $this->createError($validate, $field, $parameter)]);
             }
         }
 
