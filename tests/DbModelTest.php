@@ -13,6 +13,7 @@ use ManaPHP\Db\Assignment;
 use ManaPHP\Db\Model;
 use ManaPHP\DbInterface;
 use ManaPHP\Exception;
+use ManaPHP\Identity\Adapter\Jwt;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\Actor;
@@ -46,29 +47,25 @@ class TestCity3 extends Model
 class DbModelTest extends TestCase
 {
     /**
-     * @var \ManaPHP\Di
-     */
-    protected $di;
-
-    /**
      * @var \ManaPHP\Db\ConnectionInterface
      */
     public $connection;
 
     public function setUp()
     {
-        $this->di = new Factory();
-        $this->di->alias->set('@data', __DIR__ . '/tmp/data');
+        $di = new Factory();
+        $di->alias->set('@data', __DIR__ . '/tmp/data');
 
         $config = require __DIR__ . '/config.database.php';
         $this->connection = new Db\Connection\Adapter\Mysql($config['mysql']);
         $db = new Db($this->connection);
-        $this->di->set('db', $db);
+        $di->set('db', $db);
+        $di->set('identity', new Jwt(['key'=>'test']));
         $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
             // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getEmulatedSQL());
         });
-        $this->di->identity->setClaims([]);
+        $di->identity->setClaims([]);
     }
 
     public function test_count()
