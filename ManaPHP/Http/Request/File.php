@@ -10,7 +10,7 @@ use ManaPHP\Http\Request\File\Exception as FileException;
  *
  * @package request
  */
-class File extends Component implements FileInterface, \JsonSerializable
+class File extends Component implements FileInterface
 {
     /**
      * @var array
