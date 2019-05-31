@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
 namespace ManaPHP;
 
 use ManaPHP\Exception\InvalidArgumentException;
@@ -133,9 +133,9 @@ class Validator extends Component implements ValidatorInterface
             }
 
             if (method_exists($this, $method = '_validate_model_' . $validate)) {
-                $value = $parameter === null ? $this->$method($model, $field) : $this->$method($model, $field, $parameter);
+                $value = $parameter === null ? $this->$method($field, $model) : $this->$method($field, $model, $parameter);
             } elseif (method_exists($this, $method = '_validate_' . $validate)) {
-                $value = $parameter === null ? $this->$method($value) : $this->$method($value, $parameter);
+                $value = $parameter === null ? $this->$method($field, $value) : $this->$method($field, $value, $parameter);
             } else {
                 throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $validate]);
             }
@@ -198,7 +198,7 @@ class Validator extends Component implements ValidatorInterface
             }
 
             if (method_exists($this, $method = '_validate_' . $validate)) {
-                $value = $parameter === null ? $this->$method($value) : $this->$method($value, $parameter);
+                $value = $parameter === null ? $this->$method($field, $value) : $this->$method($field, $value, $parameter);
             } else {
                 throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $validate]);
             }
@@ -212,31 +212,34 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return null|string
      */
-    protected function _validate_required($value)
+    protected function _validate_required($field, $value)
     {
         return $value !== null && $value !== '' ? $value : null;
     }
 
     /**
-     * @param mixed $value
+     * @param string $field
+     * @param mixed  $value
      *
      * @return mixed
      */
-    protected function _validate_default($value)
+    protected function _validate_default($field, $value)
     {
         return $value;
     }
 
     /**
+     * @param string      $field
      * @param string|bool $value
      *
      * @return int|null
      */
-    protected function _validate_bool($value)
+    protected function _validate_bool($field, $value)
     {
         if (is_bool($value)) {
             return (int)$value;
@@ -252,11 +255,12 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string|int $value
+     * @param string          $field
+     * @param string|int|null $value
      *
      * @return int|null
      */
-    protected function _validate_int($value)
+    protected function _validate_int($field, $value)
     {
         if (is_int($value)) {
             return $value;
@@ -266,11 +270,12 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string           $field
      * @param string|float|int $value
      *
      * @return float|null
      */
-    protected function _validate_float($value)
+    protected function _validate_float($field, $value)
     {
         if (is_int($value) || is_float($value)) {
             return $value;
@@ -286,44 +291,56 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param mixed $value
+     * @param string $field
+     * @param mixed  $value
      *
      * @return string
      */
-    protected function _validate_string($value)
+    protected function _validate_string($field, $value)
     {
         return (string)$value;
     }
 
     /**
-     * @param int|float $value
-     * @param int|float $parameter
+     * @param string         $field
+     * @param int|float|null $value
+     * @param int|float      $parameter
      *
      * @return int|float|null
      */
-    protected function _validate_min($value, $parameter)
+    protected function _validate_min($field, $value, $parameter)
     {
+        if (!is_int($value) && !is_float($value) && ($value = $this->_validate_int($field, $value)) === null) {
+            throw new ValidateFailedException([$field => $this->createError('int', $field)]);
+        }
+
         return $value < $parameter ? null : $value;
     }
 
     /**
-     * @param int|float $value
-     * @param int|float $parameter
+     * @param string         $field
+     * @param int|float|null $value
+     * @param int|float      $parameter
      *
      * @return int|float|null
      */
-    protected function _validate_max($value, $parameter)
+    protected function _validate_max($field, $value, $parameter)
     {
+        if (!is_int($value) && !is_float($value) && ($value = $this->_validate_int($field, $value)) === null) {
+            throw new ValidateFailedException([$field => $this->createError('int', $field)]);
+        }
+
         return $value > $parameter ? null : $value;
     }
 
     /**
+     * @param string    $field
      * @param int|float $value
      * @param string    $parameter
      *
      * @return int|float|null
      */
-    protected function _validate_length($value, $parameter)
+    protected function _validate_length($field, $value, $parameter)
     {
         $len = mb_strlen($value);
         if (preg_match('#^(\d+)-(\d+)$#', $parameter, $match)) {
@@ -336,41 +353,40 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string  $field
      * @param string  $value
      * @param integer $parameter
      *
      * @return string|null
      */
-    protected function _validate_minLength($value, $parameter)
+    protected function _validate_minLength($field, $value, $parameter)
     {
         return mb_strlen($value) >= $parameter ? $value : null;
     }
 
     /**
+     * @param string $field
      * @param string $value
      * @param string $parameter
      *
      * @return string|null
      */
-    protected function _validate_maxLength($value, $parameter)
+    protected function _validate_maxLength($field, $value, $parameter)
     {
         return mb_strlen($value) <= $parameter ? $value : null;
     }
 
     /**
-     * @param int|float $value
-     * @param string    $parameter
+     * @param string         $field
+     * @param int|float|null $value
+     * @param string         $parameter
      *
      * @return int|float|null
      */
-    protected function _validate_range($value, $parameter)
+    protected function _validate_range($field, $value, $parameter)
     {
-        if (!is_int($value) && !is_float($value)) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-            $value = strpos($parameter, '.') === false ? $this->_validate_int($value) : $this->_validate_float($value);
-            if ($value === null) {
-                return null;
-            }
+        if (!is_int($value) && !is_float($value) && ($value = $this->_validate_int($field, $value)) === null) {
+            throw new ValidateFailedException([$field => $this->createError('int', $field)]);
         }
 
         if (preg_match('#^(-?[\.\d]+)-(-?[\d\.]+)$#', $parameter, $match)) {
@@ -381,118 +397,145 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string $field
      * @param string $value
      * @param string $parameter
      *
      * @return string|null
      */
-    protected function _validate_regex($value, $parameter)
+    protected function _validate_regex($field, $value, $parameter)
     {
         return preg_match($parameter, $value) ? $value : null;
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string|null
      */
-    protected function _validate_alpha($value)
+    protected function _validate_alpha($field, $value)
     {
         return preg_match('#^[a-zA-Z]+$#', $value) ? $value : null;
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string|null
      */
-    protected function _validate_digit($value)
+    protected function _validate_digit($field, $value)
     {
         return preg_match('#^\d+$#', $value) ? $value : null;
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string|null
      */
-    protected function _validate_xdigit($value)
+    protected function _validate_xdigit($field, $value)
     {
         return preg_match('#^[0-9a-fA-F]+$#', $value) ? $value : null;
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string|null
      */
-    protected function _validate_alnum($value)
+    protected function _validate_alnum($field, $value)
     {
         return preg_match('#^[a-zA-Z0-9]+$#', $value) ? $value : null;
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string
      */
-    public function _validate_lower($value)
+    public function _validate_lower($field, $value)
     {
         return strtolower($value);
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string
      */
-    public function _validate_upper($value)
+    public function _validate_upper($field, $value)
     {
         return strtoupper($value);
     }
 
-    public function _validate_trim($value)
+    /**
+     * @param string       $field
+     * @param string|array $value
+     *
+     * @return string|array
+     */
+    public function _validate_trim($field, $value)
     {
-        return trim($value);
+        if (is_array($value)) {
+            $r = [];
+            foreach ($value as $v) {
+                if (($v = trim($v)) !== '') {
+                    $r[] = $v;
+                }
+            }
+            return $r;
+        } else {
+            return trim($value);
+        }
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return null|string
      */
-    protected function _validate_email($value)
+    protected function _validate_email($field, $value)
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false ? strtolower($value) : null;
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return null|string
      */
-    protected function _validate_url($value)
+    protected function _validate_url($field, $value)
     {
         return filter_var($value, FILTER_VALIDATE_URL) !== false ? $value : null;
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return null|string
      */
-    protected function _validate_ip($value)
+    protected function _validate_ip($field, $value)
     {
         return filter_var($value, FILTER_VALIDATE_IP) !== false ? $value : null;
     }
 
     /**
+     * @param string      $field
      * @param string      $value
      * @param null|string $parameter
      *
      * @return string|int
      */
-    protected function _validate_date($value, $parameter = null)
+    protected function _validate_date($field, $value, $parameter = null)
     {
         $ts = is_numeric($value) ? (int)$value : strtotime($value);
         if ($ts === false) {
@@ -503,24 +546,25 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string|int
      */
-    protected function _validate_timestamp($value)
+    protected function _validate_timestamp($field, $value)
     {
         $ts = is_numeric($value) ? (int)$value : strtotime($value);
         return $ts === false ? null : $ts;
     }
 
     /**
-     * @param \ManaPHP\Model $model
      * @param string         $field
+     * @param \ManaPHP\Model $model
      * @param null|string    $parameter
      *
      * @return string|int
      */
-    protected function _validate_model_date($model, $field, $parameter)
+    protected function _validate_model_date($field, $model, $parameter)
     {
         $value = $model->$field;
 
@@ -532,21 +576,23 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string
      */
-    public function _validate_escape($value)
+    public function _validate_escape($field, $value)
     {
         return htmlspecialchars($value);
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string
      */
-    protected function _validate_xss($value)
+    protected function _validate_xss($field, $value)
     {
         if ($value === '') {
             return $value;
@@ -556,34 +602,37 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string     $field
      * @param string|int $value
      * @param string     $parameter
      *
      * @return string|int
      */
-    protected function _validate_in($value, $parameter)
+    protected function _validate_in($field, $value, $parameter)
     {
         return in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
     /**
+     * @param string     $field
      * @param string|int $value
      * @param string     $parameter
      *
      * @return string|int
      */
-    protected function _validate_not_in($value, $parameter)
+    protected function _validate_not_in($field, $value, $parameter)
     {
         return !in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
     /**
+     * @param string       $field
      * @param string       $value
      * @param string|array $parameter
      *
      * @return null|string
      */
-    protected function _validate_ext($value, $parameter)
+    protected function _validate_ext($field, $value, $parameter)
     {
         $ext = strtolower(pathinfo($value, PATHINFO_EXTENSION));
         if (is_array($parameter)) {
@@ -595,25 +644,25 @@ class Validator extends Component implements ValidatorInterface
 
 
     /**
-     * @param \ManaPHP\Model $model
      * @param string|int     $field
+     * @param \ManaPHP\Model $model
      *
      * @return int|string|null
      */
-    protected function _validate_model_unique($model, $field)
+    protected function _validate_model_unique($field, $model)
     {
         $value = $model->$field;
         return $model::exists([$field => $value]) ? null : $value;
     }
 
     /**
-     * @param \ManaPHP\Model $model
      * @param string         $field
+     * @param \ManaPHP\Model $model
      * @param string         $parameter
      *
      * @return string|null
      */
-    protected function _validate_model_exists($model, $field, $parameter = null)
+    protected function _validate_model_exists($field, $model, $parameter = null)
     {
         $value = $model->$field;
 
@@ -642,13 +691,13 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param \ManaPHP\Model $model
      * @param string         $field
+     * @param \ManaPHP\Model $model
      * @param string         $parameter
      *
      * @return int|string|null
      */
-    protected function _validate_model_const($model, $field, $parameter = null)
+    protected function _validate_model_const($field, $model, $parameter = null)
     {
         $value = $model->$field;
         $constants = $model::consts($parameter ?: $field);
@@ -659,7 +708,13 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    public function _validate_account($value)
+    /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return string|null
+     */
+    public function _validate_account($field, $value)
     {
         $value = strtolower($value);
 
@@ -674,23 +729,34 @@ class Validator extends Component implements ValidatorInterface
         return $value;
     }
 
-    public function _validate_model_account($model, $field)
+    /**
+     * @param string         $field
+     * @param \ManaPHP\Model $model
+     *
+     * @return int|string|null
+     */
+    public function _validate_model_account($field, $model)
     {
         $value = $model->$field;
 
-        if (($value = $this->_validate_account($value)) === null) {
+        if (($value = $this->_validate_account($field, $value)) === null) {
             return null;
         }
 
-        return $this->_validate_model_unique($model, $field);
+        if (($value = $this->_validate_model_unique($field, $model)) === null) {
+            throw new ValidateFailedException([$field => $this->createError('unique', $field)]);
+        }
+
+        return $value;
     }
 
     /**
+     * @param string $field
      * @param string $value
      *
      * @return string|null
      */
-    protected function _validate_mobile($value)
+    protected function _validate_mobile($field, $value)
     {
         $value = trim($value);
 
