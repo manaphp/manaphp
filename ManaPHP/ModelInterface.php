@@ -432,4 +432,11 @@ interface ModelInterface
      * @return \ManaPHP\QueryInterface
      */
     public static function where($filter, $value = null);
+
+    /**
+     * @param array $filters
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public static function whereSearch($filters);
 }

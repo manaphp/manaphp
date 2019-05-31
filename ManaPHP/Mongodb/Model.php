@@ -644,6 +644,16 @@ class Model extends \ManaPHP\Model
         }
     }
 
+    /**
+     * @param array $filters
+     *
+     * @return \ManaPHP\Mongodb\Query
+     */
+    public static function whereSearch($filters)
+    {
+        return static::query()->where($filters);
+    }
+
     public function __debugInfo()
     {
         $data = parent::__debugInfo();
