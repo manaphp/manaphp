@@ -6,11 +6,19 @@ Vue.prototype._ = _;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 axios.interceptors.request.use(function (config) {
+    if (typeof vm.loading == 'boolean') {
+        vm.loading = true;
+    }
+
     config.url += config.url.indexOf('?') === -1 ? '?ajax' : '&ajax';
     return config;
 });
 
 axios.interceptors.response.use(function (res) {
+        if (typeof vm.loading === 'boolean') {
+            vm.loading = false;
+        }
+
         if (!Vue.config.silent) {
             var now = new Date();
             console.warn('[AJAX][%s.%i][%s][%s] %o', now.toLocaleString('en-GB'), now.getMilliseconds(), res.headers['x-response-time'], res.config.url, res);
@@ -23,19 +31,30 @@ axios.interceptors.response.use(function (res) {
         return res;
     },
     function (error) {
-        console.log(error.response);
-        switch (error.response.status) {
-            case 401:
-                window.location.href = window.login_url;
-                break;
-            default:
-                alert(error.response.data.message);
-                break;
+        if (typeof vm.loading == 'boolean') {
+            vm.loading = false;
+        }
+
+        console.log(error);
+        if (error.response.status) {
+            switch (error.response.status) {
+                case 400:
+                    alert(error.response.data.message);
+                    break;
+                case 401:
+                    window.location.href = window.login_url;
+                    break;
+                default:
+                    alert(error.response.message || '网络错误，请稍后重试: ' + error.response.status);
+                    break;
+            }
+        } else {
+            alert('网络错误，请稍后重试。');
         }
     });
 Vue.mixin({
     filters: {
-        date: function (value, format='YYYY-MM-DD HH:mm:ss') {
+        date: function (value, format = 'YYYY-MM-DD HH:mm:ss') {
             return value ? moment(value * 1000).format(format) : '';
         },
         json: function (value) {
@@ -44,20 +63,47 @@ Vue.mixin({
     },
 
     methods: {
-        ajax_get: function (url, success) {
+        ajax_get: function (url, data, success) {
+            if (!success && typeof data === 'object') {
+                success = function (res) {
+                    Object.keys(res).forEach(function (key) {
+                        data[key] = res[key];
+                    })
+                }
+            } else if (typeof data === 'function') {
+                success = data;
+                data = null;
+            } else if (data) {
+                url += (url.indexOf('?') === -1 ? '?' : '&') + Qs.stringify(data);
+            }
+
             this.$axios.get(url).then(function (res) {
                 if (res.data.code === 0) {
-                    success.bind(this)(res.data.data);
+                    if (success) {
+                        success.bind(this)(res.data.data);
+                    }
                 } else {
                     this.$alert(res.data.message);
                 }
             }.bind(this));
         },
         ajax_post: function (url, data, success) {
-            this.$axios.post(url, data).then(function (res) {
-                if (res.data.code === 0) {
+            if (typeof data === 'function') {
+                success = data;
+                data = {};
+            }
+
+            var config = {};
+            if (data instanceof FormData) {
+                config.headers = {'Content-Type': 'multipart/form-data'};
+            }
+
+            this.$axios.post(url, data, config).then(function (res) {
+                if (res.data.code === 0 && success) {
                     success.bind(this)(res.data.data);
-                } else {
+                }
+
+                if (res.data.message !== '') {
                     this.$alert(res.data.message);
                 }
             }.bind(this));
@@ -84,6 +130,50 @@ Vue.mixin({
         fEnabled: function (row, column, value) {
             return ['禁用', '启用'][value];
         },
+        do_create: function () {
+            this.ajax_post(window.location.pathname + "/create", this.create, function (res) {
+                this.createVisible = false;
+                this.$refs.create.resetFields();
+                this.reload();
+            });
+        },
+        show_edit: function (row) {
+            this.edit = Object.assign({}, row);
+            this.editVisible = true;
+        },
+        do_edit: function () {
+            this.ajax_post(window.location.pathname + "/edit", this.edit, function (res) {
+                this.editVisible = false;
+                this.reload();
+            });
+        },
+        show_detail: function (row, action) {
+            this.detailVisible = true;
+
+            var data = {};
+            var key = Object.keys(row)[0];
+            data[key] = row[key];
+
+            this.ajax_get(window.location.pathname + '/' + (action ? action : "/detail"), data, function (res) {
+                this.detail = res;
+            });
+        },
+        do_delete: function (row, name = '') {
+            var data = {};
+            var keys = Object.keys(row);
+            var key = keys[0];
+            data[key] = row[key];
+
+            if (!name) {
+                name = (typeof keys[1] !== 'undefined' && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
+            }
+
+            this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(function (value) {
+                this.ajax_post(window.location.pathname + "/delete", data, function (res) {
+                    this.reload();
+                });
+            }.bind(this));
+        }
     },
     created: function () {
         var qs = this.$qs.parse(document.location.search.substr(1));

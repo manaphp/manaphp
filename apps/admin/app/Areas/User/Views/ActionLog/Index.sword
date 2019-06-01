@@ -5,7 +5,7 @@
     <date-picker v-model="request.created_time"></date-picker>
 </div>
 <el-dialog title="详情" :visible.sync="detailVisible">
-    <el-form :model="detail" label-width="100px" size="small">
+    <el-form :model="detail" label-width="100px" size="mini">
         <el-form-item label="id:">@{{ detail.id }}</el-form-item>
         <el-form-item label="用户名:">@{{ detail.admin_name }}</el-form-item>
         <el-form-item label="请求方法:">@{{ detail.method }}</el-form-item>
@@ -57,25 +57,6 @@
                 response: {},
                 detailVisible: false,
                 detail: {}
-            },
-            mounted: function () {
-                this.reload();
-            },
-            watch: {
-                request: {
-                    handler: _.debounce(function () {
-                        this.reload();
-                    }, 500),
-                    deep: true
-                }
-            },
-            methods: {
-                show_detail: function (row) {
-                    this.detailVisible = true;
-                    this.ajax_get("detail?id=" + row.id, function (data) {
-                        this.detail = data;
-                    });
-                }
             }
         });
     </script>

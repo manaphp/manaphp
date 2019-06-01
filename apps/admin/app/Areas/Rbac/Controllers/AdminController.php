@@ -15,8 +15,7 @@ class AdminController extends Controller
     public function indexAction()
     {
         if ($this->request->isAjax()) {
-            $builder = Admin::query()
-                ->select(['admin_id', 'admin_name', 'status', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
+            $builder = Admin::select(['admin_id', 'admin_name', 'status', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
                 ->orderBy('admin_id DESC');
 
             $keyword = input('keyword', '');
@@ -37,6 +36,10 @@ class AdminController extends Controller
 
     public function lockAction()
     {
+        if ($this->identity->getId() == input('admin_id')) {
+            return '不能锁定自己';
+        }
+
         return Admin::updateOrNull(['status' => Admin::STATUS_LOCKED]);
     }
 

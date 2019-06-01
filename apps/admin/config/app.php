@@ -2,6 +2,7 @@
 
 return [
     'id' => 'admin',
+    'name' => 'ManaPHP管理系统',
     'env' => env('APP_ENV', 'prod'),
     'debug' => env('APP_DEBUG', false),
     'version' => '1.1.1',
@@ -12,12 +13,11 @@ return [
         '@messages' => '@app/Messages'
     ],
     'servers' => [
-        'http' => ['worker_num' => 1, 'max_request' => 1000000, 'dispatch_mode' => 1, 'enable_static_handler' => env('APP_DEBUG', false)]
+        'http' => ['port' => 9502, 'worker_num' => 1, 'max_request' => 1000000, 'dispatch_mode' => 1, 'enable_static_handler' => env('APP_DEBUG', false)]
     ],
     'components' => [
         'db' => env('DB_URL'),
         'redis' => env('REDIS_URL'),
-        'mongodb' => env('MONGODB_URL'),
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
     ],
     'services' => [],

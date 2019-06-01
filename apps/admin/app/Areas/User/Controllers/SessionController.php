@@ -63,7 +63,7 @@ class SessionController extends Controller
             $session_id = $this->session->getId();
             if ($admin->session_id && $session_id !== $admin->session_id) {
                 //同一个账号互踢
-                $this->session->destroy($admin->session_id);
+               // $this->session->destroy($admin->session_id);
             }
 
             $admin->login_ip = $this->request->getClientIp();

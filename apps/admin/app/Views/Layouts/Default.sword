@@ -21,7 +21,7 @@
                 <el-link href="https://github.com/manaphp">您有新到消息，请注意查收。</el-link>
             </marquee>
             <div class="right">
-                <el-dropdown>
+                <el-dropdown size="small">
                     <span class="el-dropdown-link">
                     <i class="fa fa-user-circle"></i> {{$di->identity->getName('')}}<i
                                 class="el-icon-arrow-down el-icon--left"></i>
@@ -65,6 +65,18 @@
             el: '#app'
         });
     }
+
+    if (typeof vm.request === 'object') {
+        console.log(vm.$options.created);
+        if (vm.$options.created.length === 1) {
+            vm.reload();
+        }
+
+        vm.$watch('request', _.debounce(function () {
+            vm.reload();
+        }, 500), {deep: true});
+    }
+
 </script>
 </body>
 </html>

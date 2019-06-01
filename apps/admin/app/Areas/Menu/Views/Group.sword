@@ -76,38 +76,6 @@
                     display_order: 0,
                     icon: ''
                 }
-            },
-            mounted: function () {
-                this.reload();
-            },
-            methods: {
-                do_create: function () {
-                    this.ajax_post("create", this.create, function (res) {
-                        this.createVisible = false;
-                        this.$refs.create.resetFields();
-                        this.reload();
-                    });
-                },
-                show_edit: function (row) {
-                    this.edit.group_id = row.group_id;
-                    this.edit.group_name = row.group_name;
-                    this.edit.display_order = row.display_order;
-                    this.edit.icon = row.icon;
-                    this.editVisible = true;
-                },
-                do_edit: function () {
-                    this.ajax_post("edit", this.edit, function (res) {
-                        this.editVisible = false;
-                        this.reload();
-                    });
-                },
-                do_delete: function (row) {
-                    this.$confirm('删除菜单组: ' + row.group_name + '?').then(function (value) {
-                        this.ajax_post("delete", {group_id: row.group_id}, function (res) {
-                            this.reload();
-                        });
-                    }.bind(this));
-                }
             }
         });
     </script>

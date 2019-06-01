@@ -1,16 +1,16 @@
 <el-row class="change-password-box">
-    <el-form :model="request" size="small">
+    <el-form :model="edit" size="small">
         <h1 align="center">修改密码</h1>
-        <el-input v-model.trim="request.admin_name" disabled>
+        <el-input v-model.trim="edit.admin_name" disabled>
             <template slot="prepend">账 &nbsp;&nbsp;号</template>
         </el-input>
-        <el-input v-model.trim="request.old_password" type="password" placeholder="旧密码" autofocus>
+        <el-input v-model.trim="edit.old_password" type="password" placeholder="旧密码" autofocus>
             <template slot="prepend">旧密码</template>
         </el-input>
-        <el-input v-model.trim="request.new_password" type="password" placeholder="新密码">
+        <el-input v-model.trim="edit.new_password" type="password" placeholder="新密码">
             <template slot="prepend">新密码</template>
         </el-input>
-        <el-input v-model.trim="request.new_password_confirm" type="password" placeholder="确认新密码">
+        <el-input v-model.trim="edit.new_password_confirm" type="password" placeholder="确认新密码">
             <template slot="prepend">新密码</template>
         </el-input>
         <el-form-item>
@@ -36,7 +36,7 @@
         vm = new Vue({
             el: '#app',
             data: {
-                request: {
+                edit: {
                     admin_name: "<?=di('identity')->getName()?>",
                     old_password: '',
                     new_password: '',
@@ -45,7 +45,7 @@
             },
             methods: {
                 change: function () {
-                    this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
+                    this.$axios.post(document.location.href, Qs.stringify(this.edit)).then(function (res) {
                         if (res.data.code === 0) {
                             window.location.href = "/";
                         } else {

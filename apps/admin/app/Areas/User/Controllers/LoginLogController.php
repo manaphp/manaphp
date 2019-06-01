@@ -14,8 +14,7 @@ class LoginLogController extends Controller
     public function indexAction()
     {
         return $this->request->isAjax()
-            ? AdminLoginLog::query()
-                ->select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
+            ? AdminLoginLog::select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
                 ->orderBy('login_id DESC')
                 ->whereSearch(['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@='])
                 ->paginate()
@@ -25,8 +24,7 @@ class LoginLogController extends Controller
     public function latestAction()
     {
         return $this->request->isAjax()
-            ? AdminLoginLog::query()
-                ->select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
+            ? AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
                 ->orderBy('login_id DESC')
                 ->where('admin_id', $this->identity->getId())
                 ->paginate()

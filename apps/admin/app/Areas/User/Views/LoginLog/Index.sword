@@ -31,17 +31,6 @@
                     page: 1
                 },
                 response: {}
-            },
-            mounted: function () {
-                this.reload();
-            },
-            watch: {
-                request: {
-                    handler: _.debounce(function () {
-                        this.reload();
-                    }, 1000),
-                    deep: true
-                }
             }
         });
     </script>

@@ -29,7 +29,7 @@
         <el-table-column prop="display_name" label="简述" width="250"></el-table-column>
         <el-table-column label="角色列表">
             <template slot-scope="scope">
-                <el-tag size="small" v-for="role in scope.row.roles" :key="role.role_id">@{{role.role_name}}</el-tag>
+                <el-tag size="small" v-for="role in scope.row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
             </template>
         </el-table-column>
         <el-table-column prop="updated_time" label="重新时间" :formatter="fDate" width="150"></el-table-column>
@@ -52,7 +52,6 @@
                 response: [],
                 editVisible: false,
                 edit: {},
-                row: {},
                 paths: [],
                 filter: {
                     path: ''
@@ -61,6 +60,11 @@
             computed: {
                 filteredResponse: function () {
                     var filter = this.filter;
+
+                    if (!filter.path) {
+                        return this.response;
+                    }
+
                     var permissions = [];
                     for (var item of this.response) {
                         if (filter.path !== '' && item.path !== filter.path && item.path.indexOf(filter.path + '/') !== 0 && filter.path !== '/') {
@@ -73,28 +77,9 @@
                     return permissions;
                 }
             },
-            mounted: function () {
-                this.reload();
-            },
             methods: {
-                show_edit: function (row) {
-                    this.editVisible = true;
-                    this.row = row;
-                    this.edit = Object.assign({}, row)
-                },
-                do_edit: function () {
-                    this.ajax_post("edit", this.edit, function () {
-                        this.editVisible = false;
-                        this.row = Object.assign(this.row, this.edit);
-                    });
-                },
                 do_rebuild: function () {
                     this.ajax_post("rebuild", {}, function () {
-                        this.reload();
-                    });
-                },
-                do_delete: function (row) {
-                    this.ajax_post("delete", {permission_id: row.permission_id}, function (res) {
                         this.reload();
                     });
                 }

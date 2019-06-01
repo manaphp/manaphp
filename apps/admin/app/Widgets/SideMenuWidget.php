@@ -3,6 +3,7 @@ namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
 use App\Areas\Menu\Models\Item;
+use ManaPHP\Query;
 use ManaPHP\View\Widget;
 
 /**
@@ -14,19 +15,31 @@ class SideMenuWidget extends Widget
 {
     public function run($vars = [])
     {
-        $groups = Group::query()
+        $groups = Group::select(['group_id', 'group_name', 'icon'])
             ->orderBy('display_order DESC, group_id ASC')
+            ->with(['items' => function (Query $query) {
+                return $query
+                    ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])
+                    ->orderBy('display_order DESC, item_id ASC');
+            }])
             ->fetch(true);
 
+        $role = $this->identity->getRole();
         $menu = [];
         foreach ($groups as $group) {
-            $items = Item::query()
-                ->where(['group_id' => $group['group_id']])
-                ->orderBy('display_order DESC, item_id ASC')
-                ->fetch(true);
-
+            $items = $group['items'];
             foreach ($items as $k => $item) {
-                if (!$this->authorization->isAllowed($item['url'])) {
+                $url = $item['url'];
+
+                if (!$url || $url[0] !== '/') {
+                    continue;
+                }
+
+                if (($pos = strpos($url, '?')) !== false) {
+                    $url = substr($url, 0, $pos);
+                }
+
+                if (!$this->authorization->isAllowed($url, $role)) {
                     unset($items[$k]);
                 }
             }

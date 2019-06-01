@@ -16,7 +16,7 @@ class RoleController extends Controller
     public function indexAction()
     {
         return $this->request->isAjax()
-            ? Role::query()
+            ? Role::select()
                 ->whereContains('role_name', input('keyword', ''))
                 ->orderBy('role_id desc')
                 ->paginate()
@@ -25,12 +25,18 @@ class RoleController extends Controller
 
     public function listAction()
     {
-        return Role::lists('role_name');
+        return Role::lists(['display_name', 'role_name']);
     }
 
     public function createAction()
     {
-        return Role::createOrNull(['permissions' => '']);
+        if ($role_name = input('role_name', '')) {
+            $permissions = ',' . implode(',', $this->authorization->buildAllowed($role_name)) . ',';
+        } else {
+            $permissions = '';
+        }
+
+        return Role::createOrNull(['permissions' => $permissions]);
     }
 
     public function editAction()

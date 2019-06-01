@@ -19,17 +19,6 @@
                     page: 1
                 },
                 response: {}
-            },
-            mounted: function () {
-                this.reload();
-            },
-            watch: {
-                request: {
-                    handler: _.debounce(function () {
-                        this.reload();
-                    }, 500),
-                    deep: true
-                }
             }
         });
     </script>

@@ -17,9 +17,11 @@ class AdminRoleController extends Controller
     public function indexAction()
     {
         return $this->request->isAjax()
-            ? AdminRole::all(['admin_id' => input('admin_id')],
-                ['with' => ['role', 'admins' => 'admin_id, admin_name']],
-                ['id', 'admin_id', 'role_id', 'creator_name', 'created_time'])
+            ? Admin::select(['admin_id', 'admin_name', 'created_time'])
+                ->orderBy(['admin_id' => SORT_DESC])
+                ->where(['admin_name*=' => input('keyword', '')])
+                ->with(['roles' => 'role_id, display_name'])
+                ->paginate()
             : null;
     }
 

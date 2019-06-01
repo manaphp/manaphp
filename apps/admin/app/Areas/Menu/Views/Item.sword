@@ -113,41 +113,6 @@
                         this.request.group_id = this.groups[0].group_id;
                     }
                 });
-            },
-            watch: {
-                request: {
-                    deep: true,
-                    immediate: true,
-                    handler: function () {
-                        this.reload();
-                    }
-                }
-            },
-            methods: {
-                do_create: function () {
-                    this.ajax_post("create", this.create, function (res) {
-                        this.$refs.create.resetFields();
-                        this.createVisible = false;
-                        this.reload();
-                    });
-                },
-                show_edit: function (row) {
-                    this.edit = Object.assign({}, row);
-                    this.editVisible = true;
-                },
-                do_edit: function () {
-                    this.ajax_post("edit", this.edit, function (res) {
-                        this.editVisible = false;
-                        this.reload();
-                    });
-                },
-                do_delete: function (row) {
-                    this.$confirm('删除菜单项: ' + row.item_name + '?').then(function (value) {
-                        this.ajax_post("delete", {item_id: row.item_id}, function (res) {
-                            this.reload();
-                        });
-                    }.bind(this));
-                }
             }
         });
     </script>

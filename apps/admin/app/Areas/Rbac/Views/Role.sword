@@ -51,7 +51,7 @@
             <template slot-scope="scope">
                 <el-button @click="show_edit(scope.row)" size="mini" type="primary">编辑</el-button>
                 <el-button v-if="scope.row.enabled" @click.native.prevent="do_disable(scope.row)" size="mini"
-                           type="warning">禁用
+                           type="danger">禁用
                 </el-button>
                 <el-button v-if="!scope.row.enabled" @click.native.prevent="do_enable(scope.row)" size="mini"
                            type="warning">启用
@@ -88,17 +88,6 @@
                     display_name: ''
                 }
             },
-            mounted: function () {
-                this.reload();
-            },
-            watch: {
-                request: {
-                    handler: _.debounce(function () {
-                        this.reload();
-                    }, 500),
-                    deep: true
-                }
-            },
             methods: {
                 do_enable: function (row) {
                     this.ajax_post("enable", {role_id: row.role_id}, function () {
@@ -109,31 +98,6 @@
                     this.ajax_post("disable", {role_id: row.role_id}, function () {
                         row.enabled = 0;
                     });
-                },
-
-                do_create: function () {
-                    this.ajax_post("create", this.create, function () {
-                        this.$refs.create.resetFields();
-                        this.createVisible = false;
-                        this.reload();
-                    });
-                },
-                show_edit: function (row) {
-                    this.editVisible = true;
-                    this.edit = Object.assign({}, row);
-                },
-                do_edit: function () {
-                    this.ajax_post("edit", this.edit, function () {
-                        this.editVisible = false;
-                        this.reload();
-                    });
-                },
-                do_delete: function (row) {
-                    this.$confirm('删除角色: ' + row.display_name + '?').then(function (value) {
-                        this.ajax_post("delete", {role_id: row.role_id}, function (res) {
-                            this.reload();
-                        });
-                    }.bind(this));
                 }
             }
         });

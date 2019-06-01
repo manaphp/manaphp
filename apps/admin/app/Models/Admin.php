@@ -1,13 +1,18 @@
 <?php
 namespace App\Models;
 
+use App\Areas\Rbac\Models\AdminRole;
+use App\Areas\Rbac\Models\Role;
 use ManaPHP\Db\Model;
+use ManaPHP\Model\Relation;
 
 class Admin extends Model
 {
     const STATUS_INIT = 0;
     const STATUS_ACTIVE = 1;
     const STATUS_LOCKED = 2;
+
+    const PASSWORD_LENGTH = '1-30';
 
     public $admin_id;
     public $admin_name;
@@ -31,11 +36,15 @@ class Admin extends Model
     public function rules()
     {
         return [
-            'admin_name' => ['length' => '5-16', 'account'],
+            'admin_name' => ['length' => '4-16', 'account'],
             'email' => ['lower', 'email', 'unique'],
-            'password' => ['length' => '6-32'],
             'status' => 'const'
         ];
+    }
+
+    public function relations()
+    {
+        return ['roles' => [Role::class, Relation::TYPE_HAS_MANY_VIA, AdminRole::class]];
     }
 
     /**
@@ -60,22 +69,18 @@ class Admin extends Model
 
     public function create()
     {
-        $this->validate('password');
-
         $this->salt = bin2hex(random_bytes(8));
 
-        $this->password = $this->hashPassword($this->password);
+        $this->password = $this->hashPassword(input('password', ['string', self::PASSWORD_LENGTH]));
 
         return parent::create();
     }
 
     public function update()
     {
-        $this->validate('password');
-
-        if ($this->hasChanged('password')) {
+        if (($password = input('password', ['default' => '', self::PASSWORD_LENGTH])) !== '') {
             $this->salt = bin2hex(random_bytes(8));
-            $this->password = $this->hashPassword($this->password);
+            $this->password = $this->hashPassword($password);
         }
 
         return parent::update();
