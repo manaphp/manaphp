@@ -51,6 +51,7 @@ class Application extends \ManaPHP\Application
 
             $this->eventsManager->fireEvent('request:authenticate', $this);
             $this->eventsManager->fireEvent('ws:open', $fd);
+
             $actionReturnValue = $this->router->dispatch();
             if ($actionReturnValue === null || $actionReturnValue instanceof Response) {
                 null;
@@ -92,7 +93,7 @@ class Application extends \ManaPHP\Application
      */
     public function onMessage($fd, $data)
     {
-        $this->eventsManager->fireEvent('request:message', $this, compact('fd', 'data'));
+        $this->eventsManager->fireEvent('ws:message', $this, compact('fd', 'data'));
 
         $globals = $this->request->getGlobals();
         if (!is_array($post = json_decode($data, true, 16))) {
@@ -117,11 +118,7 @@ class Application extends \ManaPHP\Application
             $this->handleException($error);
         }
 
-        $globals->_POST = [];
-        $globals->_REQUEST = $globals->_GET;
-
         $this->wsServer->push($fd, $this->response->getContent());
-        $this->response->setContent('');
     }
 
     public function main()
