@@ -41,11 +41,6 @@ class Server extends Component implements ServerInterface
     protected $_settings = [];
 
     /**
-     * @var array
-     */
-    protected $_server = [];
-
-    /**
      * @var \swoole_http_server
      */
     protected $_swoole;
@@ -64,14 +59,11 @@ class Server extends Component implements ServerInterface
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME' => '/' . basename($script_filename),
             'SERVER_ADDR' => $this->_host,
-            'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' ' . php_uname('s') . '/' . $parts[1] . ' PHP/' . $parts[0]
+            'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' ' . php_uname('s') . '/' . $parts[1] . ' PHP/' . $parts[0],
+            'PHP_SELF' => '/' . basename($script_filename),
+            'QUERY_STRING' => '',
+            'REQUEST_SCHEME' => 'http',
         ];
-
-        $this->_server = $_SERVER + [
-                'PHP_SELF' => '/' . basename($script_filename),
-                'QUERY_STRING' => '',
-                'REQUEST_SCHEME' => 'http',
-            ];
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
     }
@@ -83,8 +75,6 @@ class Server extends Component implements ServerInterface
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
         unset($_server['SERVER_SOFTWARE']);
-        /** @noinspection AdditionOperationOnArraysInspection */
-        $_server += $this->_server;
 
         foreach ($request->header ?: [] as $k => $v) {
             if (in_array($k, ['content-type', 'content-length'], true)) {
@@ -93,6 +83,9 @@ class Server extends Component implements ServerInterface
                 $_server['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
             }
         }
+
+        /** @noinspection AdditionOperationOnArraysInspection */
+        $_server += $_SERVER;
 
         $_get = $request->get ?: [];
         $request_uri = $_server['REQUEST_URI'];
