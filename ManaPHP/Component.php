@@ -159,11 +159,7 @@ class Component implements ComponentInterface, \JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_di' && ($v === null || $v === Di::getDefault())) {
-                continue;
-            }
-
-            if ($k === '_context' && $v === null) {
+            if ($k === '_di') {
                 continue;
             }
 
