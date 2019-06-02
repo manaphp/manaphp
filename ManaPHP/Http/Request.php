@@ -265,6 +265,14 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isWebSocket()
+    {
+        return $this->getServer('HTTP_UPGRADE') === 'websocket';
+    }
+
+    /**
      * @return string
      */
     public function getClientIp()

@@ -101,6 +101,11 @@ interface RequestInterface
     public function isAjax();
 
     /**
+     * @return bool
+     */
+    public function isWebSocket();
+
+    /**
      * @return string
      */
     public function getClientIp();
