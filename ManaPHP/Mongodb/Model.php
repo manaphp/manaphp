@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Mongodb;
 
-use http\Exception\RuntimeException;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
