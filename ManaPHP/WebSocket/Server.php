@@ -4,7 +4,6 @@ namespace ManaPHP\WebSocket;
 use ManaPHP\Component;
 use ManaPHP\ContextManager;
 use Swoole\Coroutine;
-use Swoole\Runtime;
 use Swoole\WebSocket\Frame;
 
 /**
@@ -140,14 +139,13 @@ class Server extends Component implements ServerInterface
         });
 
         $swoole->on('close', function ($server, $fd) {
+            if (!isset($this->_fd2cid[$fd])) {
+                return;
+            }
+
             $cid = Coroutine::getCid();
 
             try {
-                while (!isset($this->_fd2cid[$fd])) {
-                    usleep(0.01);
-                    $this->log('info', 'open is not ready');
-                }
-
                 $old_cid = $this->_fd2cid[$fd];
 
                 ContextManager::clones($old_cid, $cid);
@@ -165,7 +163,7 @@ class Server extends Component implements ServerInterface
 
             try {
                 while (!isset($this->_fd2cid[$fd])) {
-                    usleep(0.01);
+                    Coroutine::sleep(0.01);
                     $this->log('info', 'open is not ready');
                 }
 
@@ -182,7 +180,7 @@ class Server extends Component implements ServerInterface
 
         $this->log('info',
             sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
-       $swoole->start();
+        $swoole->start();
 
         echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
     }
