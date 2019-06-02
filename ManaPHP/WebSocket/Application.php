@@ -60,10 +60,8 @@ class Application extends \ManaPHP\Application
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             $this->handleException($exception);
-        } catch (\Error $error) {
-            $this->handleException($error);
         }
 
         $content = $this->response->getContent();
@@ -112,10 +110,8 @@ class Application extends \ManaPHP\Application
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
-        } catch (\Exception $exception) {
+        }catch (\Throwable $exception) {
             $this->handleException($exception);
-        } catch (\Error $error) {
-            $this->handleException($error);
         }
 
         $this->wsServer->push($fd, $this->response->getContent());
