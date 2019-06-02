@@ -5,7 +5,7 @@ use Swoole\Runtime;
 
 /**
  * Class Application
- * @property-read \ManaPHP\Swoole\Http\ServerInterface $swooleHttpServer
+ * @property-read \ManaPHP\Swoole\Http\ServerInterface $httpServer
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Http\ResponseInterface      $response
  * @property-read \ManaPHP\RouterInterface             $router
@@ -114,7 +114,7 @@ abstract class Application extends \ManaPHP\Application
     public function send()
     {
         if ($this->_use_swoole) {
-            $this->swooleHttpServer->send($this->response);
+            $this->httpServer->send($this->response);
         } else {
             $this->response->send();
         }
@@ -134,7 +134,7 @@ abstract class Application extends \ManaPHP\Application
         $this->registerServices();
 
         if ($this->_use_swoole) {
-            $this->swooleHttpServer->start([$this, 'handle']);
+            $this->httpServer->start([$this, 'handle']);
         } else {
             $this->_prepareGlobals();
             $this->handle();
