@@ -18,5 +18,14 @@
       "ManaPHP\\": "ManaPHP/"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "require": {
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-pdo": "*",
+    "ext-redis": "*",
+    "ext-apcu": "*",
+    "ext-curl": "*",
+    "ext-openssl": "*"
+  }
 }
