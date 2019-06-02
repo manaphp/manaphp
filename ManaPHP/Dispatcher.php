@@ -316,6 +316,13 @@ class Dispatcher extends Component implements DispatcherInterface
         return $r;
     }
 
+    public function invoke()
+    {
+        $context = $this->_context;
+
+        return $this->invokeAction($context->controllerInstance, $context->action, $context->params);
+    }
+
     /**
      * @return string
      */
