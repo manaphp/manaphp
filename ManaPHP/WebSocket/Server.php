@@ -139,11 +139,17 @@ class Server extends Component implements ServerInterface
         });
 
         $swoole->on('close', function ($server, $fd) {
-            if (!isset($this->_fd2cid[$fd])) {
+            /** @var  \Swoole\WebSocket\Server $server */
+            if (!$server->isEstablished($fd)) {
                 return;
             }
 
             $cid = Coroutine::getCid();
+
+            while (!isset($this->_fd2cid[$fd])) {
+                Coroutine::sleep(0.01);
+                $this->log('info', 'open is not ready');
+            }
 
             try {
                 $old_cid = $this->_fd2cid[$fd];
@@ -201,7 +207,9 @@ class Server extends Component implements ServerInterface
         $swoole = $this->_swoole;
 
         foreach ($swoole->connections as $connection) {
-            $swoole->push($connection, $data);
+            if ($swoole->isEstablished($connection)) {
+                $swoole->push($connection, $data);
+            }
         }
     }
 
