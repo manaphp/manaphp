@@ -15,7 +15,6 @@ class Application extends \ManaPHP\Http\Application
     {
         if (!$this->_di) {
             $this->_di = new Factory();
-            $this->_di->setShared('identity', 'ManaPHP\Identity\Adapter\Jwt');
         }
 
         return $this->_di;
