@@ -13,7 +13,7 @@ use ManaPHP\Http\Response;
  * @property-read \ManaPHP\Http\ResponseInterface    $response
  * @property-read \ManaPHP\DispatcherInterface       $dispatcher
  */
-class Application extends \ManaPHP\Application
+class Application extends \ManaPHP\Application implements ApplicationInterface
 {
     public function __construct($loader = null)
     {
@@ -110,7 +110,7 @@ class Application extends \ManaPHP\Application
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
-        }catch (\Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handleException($exception);
         }
 
